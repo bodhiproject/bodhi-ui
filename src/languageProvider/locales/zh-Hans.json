@@ -1,0 +1,12 @@
+{
+  "sidebar.blankPage": "空白页",
+  "page.signInTitle": "同构",
+  "page.signInRememberMe": "记住我",
+  "page.signInButton": "签到",
+  "page.signInPreview": "用户名：demo，密码：demodemo，或者点击任意按钮。",
+  "page.signInFacebook": "用Facebook登录",
+  "page.signInGooglePlus": "使用Google Plus登录",
+  "page.signInAuth0": "用Auth0登录",
+  "page.signInForgotPass": "忘记密码",
+  "page.signInCreateAccount": "创建一个异构帐户"
+}

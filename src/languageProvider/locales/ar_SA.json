@@ -1,0 +1,13 @@
+{
+  "sidebar.blankPage": "صفحة فارغة",
+  "page.signInTitle": "متماثل",
+  "page.signInRememberMe": "تذكرنى",
+  "page.signInButton": "تسجيل الدخول",
+  "page.signInPreview":
+    "اسم المستخدم  تجريبي، كلمة السر  ديموديمو، أو فقط اضغط على أي زر.",
+  "page.signInFacebook": "قم بتسجيل الدخول باستخدام الفيسبوك",
+  "page.signInGooglePlus": "سجل الدخول باستخدام غوغل بلوس",
+  "page.signInAuth0": "سجل الدخول باستخدام أوث0",
+  "page.signInForgotPass": "هل نسيت كلمة المرور",
+  "page.signInCreateAccount": "إنشاء حساب إسومورفويك"
+}

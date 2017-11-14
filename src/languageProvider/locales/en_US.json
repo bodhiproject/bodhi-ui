@@ -1,0 +1,13 @@
+{
+  "sidebar.blankPage": "Blank Page",
+  "page.signInTitle": "Isomorphic",
+  "page.signInRememberMe": "Remember me",
+  "page.signInButton": "Sign in",
+  "page.signInPreview":
+    "username: demo   password: demodemo   or just click on any button.",
+  "page.signInFacebook": "Sign in with Facebook",
+  "page.signInGooglePlus": "Sign in with Google Plus",
+  "page.signInAuth0": "Sign in with Auth0",
+  "page.signInForgotPass": "Forgot password",
+  "page.signInCreateAccount": "Create an Isomorphoic account"
+}
