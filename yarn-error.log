@@ -1,0 +1,32 @@
+Arguments: 
+  /Users/Venomancer/.nvm/versions/node/v8.6.0/bin/node /usr/local/Cellar/yarn/1.1.0/libexec/bin/yarn.js
+
+PATH: 
+  /Library/Frameworks/Python.framework/Versions/3.6/bin:/Users/Venomancer/.cargo/bin:/Users/Venomancer/.nvm/versions/node/v8.6.0/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/3.4/bin:/Library/Frameworks/Python.framework/Versions/3.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Library/TeX/texbin:/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/bin:/Users/Venomancer/Documents/acompli/run/bin:/Users/Venomancer/Documents/acompli/gradle/bin
+
+Yarn version: 
+  1.1.0
+
+Node version: 
+  8.6.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  
+
+Trace: 
+  SyntaxError: /Users/Venomancer/Documents/code-examples/bodhi-ui/package.json: Unexpected end of JSON input
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.1.0/libexec/lib/cli.js:764:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.1.0/libexec/lib/cli.js:92:30)
+      at /usr/local/Cellar/yarn/1.1.0/libexec/lib/cli.js:103:13
+      at <anonymous>

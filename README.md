@@ -1,2 +1,3 @@
-# bodhi-ui
-An open source ui for interacting with bodhi api
+# Isomorphic - React Redux Admin Dashboard `Version 2.0`
+
+### Please check `src/config.js` & edit as your app.
