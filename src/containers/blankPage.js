@@ -1,63 +1,33 @@
 import React from 'react';
+import { Button } from 'antd';
 import { Row, Col } from 'antd';
 
-// import { Link, Redirect } from 'react-router-dom';
-// import { connect } from 'react-redux';
-// import Input from '../components/uielements/input';
-// import Checkbox from '../components/uielements/checkbox';
-import Button from '../components/uielements/button';
-import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import LayoutContent from '../components/utility/layoutContent';
-// import ContentHolder from '../components/utility/contentHolder';
-import basicStyle from '../config/basicStyle';
-import IntlMessages from '../components/utility/intlMessages';
-import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
+import LayoutContentWrapper from '../components/utility/layoutWrapper';
+import Spacing from '../components/bodhi-dls/spacing';
 
 class BlankPage extends React.PureComponent {
   render() {
-    const { rowStyle, colStyle, gutter } = basicStyle;
-
     return (
       <LayoutContentWrapper style={{ height: '100vh' }}>
         <LayoutContent>
-          <Row>
-            <Col xs={24} style={colStyle}>
-              <h1>Mockup Page</h1>
-            </Col>
-          </Row>
-          <Row style={rowStyle} gutter={gutter} justify="start">
-            <Col md={12} sm={12} xs={24} style={colStyle}>
-              <IsoWidgetsWrapper>
-                <Button type="primary" >
-                  <IntlMessages id="page.signInButton" />
-                </Button>
-                <Button type="default">
-                  <IntlMessages id="page.signInButton" />
-                </Button>
-              </IsoWidgetsWrapper>
-            </Col>
-            <Col md={12} sm={12} xs={24} style={colStyle}>
-              <IsoWidgetsWrapper />
-            </Col>
-          </Row>
-          <Row style={rowStyle} gutter={gutter} justify="start">
-            <Col md={12} sm={12} xs={24} style={colStyle}>
-              <IsoWidgetsWrapper>
-                <p></p>
-              </IsoWidgetsWrapper>
-            </Col>
-            <Col md={12} sm={12} xs={24} style={colStyle}>
-              <IsoWidgetsWrapper />
-            </Col>
-          </Row>
+          <Spacing bottom={2}>
+            <h1>Bodhi UI Elements</h1>
+          </Spacing>
+          <Spacing bottom={2}>
+            <hr />
+          </Spacing>
+          <Spacing bottom={2}>
+            <h2>Buttons</h2>
+          </Spacing>
+          <Spacing bottom={2}>
+            <h3>Basic Buttons</h3>
+          </Spacing>
+          <Button>Small</Button>
         </LayoutContent>
       </LayoutContentWrapper>
     );
   }
 }
-
-BlankPage.propTypes = {
-
-};
 
 export default BlankPage;
