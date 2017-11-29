@@ -5,12 +5,12 @@ import actions, { getView } from './actions';
 const preKeys = getDefaultPath();
 
 const initState = new Map({
-  collapsed: window.innerWidth > 1220 ? false : true,
+  collapsed: !(window.innerWidth > 1220),
   view: getView(window.innerWidth),
   height: window.innerHeight,
   openDrawer: false,
   openKeys: preKeys,
-  current: preKeys
+  current: preKeys,
 });
 export default function appReducer(state = initState, action) {
   switch (action.type) {

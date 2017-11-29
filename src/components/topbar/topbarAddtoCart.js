@@ -33,7 +33,7 @@ class TopbarAddtoCart extends Component {
         </div>
       );
     }
-    return productQuantity.map(product => {
+    return productQuantity.map((product) => {
       totalPrice += product.quantity * products[product.objectID].price;
       return (
         <SingleCart
@@ -49,7 +49,7 @@ class TopbarAddtoCart extends Component {
   changeQuantity(objectID, quantity) {
     const { productQuantity } = this.props;
     const newProductQuantity = [];
-    productQuantity.forEach(product => {
+    productQuantity.forEach((product) => {
       if (product.objectID !== objectID) {
         newProductQuantity.push(product);
       } else {
@@ -64,7 +64,7 @@ class TopbarAddtoCart extends Component {
   cancelQuantity(objectID) {
     const { productQuantity } = this.props;
     const newProductQuantity = [];
-    productQuantity.forEach(product => {
+    productQuantity.forEach((product) => {
       if (product.objectID !== objectID) {
         newProductQuantity.push(product);
       }
@@ -114,7 +114,7 @@ class TopbarAddtoCart extends Component {
           {productQuantity.length === 0
             ? ''
             : <span>
-                {productQuantity.length}
+              {productQuantity.length}
               </span>}
         </div>
       </Popover>

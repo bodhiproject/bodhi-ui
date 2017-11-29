@@ -28,7 +28,7 @@ export default function mailList(
     const activeClass = isSelected ? 'activeMail' : '';
     const unreadClass = !mail.read ? 'unreadMail' : '';
     const tagOption = mail.tags
-      ? tagColor[tags.findIndex(tags => tags === mail.tags)]
+      ? tagColor[tags.findIndex((tags) => tags === mail.tags)]
       : 'transparent';
     return (
       <div
@@ -59,7 +59,7 @@ export default function mailList(
             <span className="isoReceiveDate">{timeDifference(mail.date)}</span>
           </div>
           <p className="isoSubject">{mail.subject}</p>
-          {/*<p className="isoDescription">{mail.body}</p>*/}
+          {/* <p className="isoDescription">{mail.body}</p> */}
         </div>
       </div>
     );

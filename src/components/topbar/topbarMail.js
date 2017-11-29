@@ -60,8 +60,8 @@ class TopbarMail extends Component {
           <h3>Email</h3>
         </div>
         <div className="isoDropdownBody">
-          {demoMails.map(mail =>
-            <Link to={`${url}/mailbox`} onClick={this.hide} key={mail.id}>
+          {demoMails.map((mail) =>
+            (<Link to={`${url}/mailbox`} onClick={this.hide} key={mail.id}>
               <div className="isoDropdownListItem">
                 <div className="isoListHead">
                   <h5>
@@ -75,8 +75,7 @@ class TopbarMail extends Component {
                   {mail.desc}
                 </p>
               </div>
-            </Link>
-          )}
+             </Link>))}
         </div>
         <a className="isoViewAllBtn">View All</a>
       </TopbarDropdownWrapper>
@@ -103,7 +102,7 @@ class TopbarMail extends Component {
   }
 }
 
-export default connect(state => ({
+export default connect((state) => ({
   ...state.App.toJS(),
   customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarMail);

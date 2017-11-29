@@ -14,7 +14,7 @@ const actions = {
   TOGGLE_ALL: 'TOGGLE_ALL',
   CHANGE_CURRENT: 'CHANGE_CURRENT',
   toggleCollapsed: () => ({
-    type: actions.COLLPSE_CHANGE
+    type: actions.COLLPSE_CHANGE,
   }),
   toggleAll: (width, height) => {
     const view = getView(width);
@@ -23,19 +23,19 @@ const actions = {
       type: actions.TOGGLE_ALL,
       collapsed,
       view,
-      height
+      height,
     };
   },
   toggleOpenDrawer: () => ({
-    type: actions.COLLPSE_OPEN_DRAWER
+    type: actions.COLLPSE_OPEN_DRAWER,
   }),
-  changeOpenKeys: openKeys => ({
+  changeOpenKeys: (openKeys) => ({
     type: actions.CHANGE_OPEN_KEYS,
-    openKeys
+    openKeys,
   }),
-  changeCurrent: current => ({
+  changeCurrent: (current) => ({
     type: actions.CHANGE_CURRENT,
-    current
-  })
+    current,
+  }),
 };
 export default actions;

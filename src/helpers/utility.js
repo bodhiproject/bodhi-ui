@@ -14,13 +14,11 @@ export function getToken() {
   }
 }
 
-export function timeDifference(givenTime) {
-  givenTime = new Date(givenTime);
+export function timeDifference(time) {
+  const givenTime = new Date(time);
   const milliseconds = new Date().getTime() - givenTime.getTime();
-  const numberEnding = number => {
-    return number > 1 ? 's' : '';
-  };
-  const number = num => num > 9 ? '' + num : '0' + num;
+  const numberEnding = (number) => number > 1 ? 's' : '';
+  const number = (num) => num > 9 ? `${num}` : `0${num}`;
   const getTime = () => {
     let temp = Math.floor(milliseconds / 1000);
     const years = Math.floor(temp / 31536000);
@@ -33,26 +31,25 @@ export function timeDifference(givenTime) {
     const days = Math.floor((temp %= 31536000) / 86400);
     if (days) {
       if (days < 28) {
-        return days + ' day' + numberEnding(days);
-      } else {
-        const months = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ];
-        const month = months[givenTime.getUTCMonth()];
-        const day = number(givenTime.getUTCDate());
-        return `${day} ${month}`;
+        return `${days} day${numberEnding(days)}`;
       }
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      const month = months[givenTime.getUTCMonth()];
+      const day = number(givenTime.getUTCDate());
+      return `${day} ${month}`;
     }
     const hours = Math.floor((temp %= 86400) / 3600);
     if (hours) {

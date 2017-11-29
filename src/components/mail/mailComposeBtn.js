@@ -8,7 +8,7 @@ export default class ComposeBtn extends Component {
       <MailComposeBtnWrapper className="isoComposeBtnWrapper">
         <button
           type="button"
-          onClick={event => {
+          onClick={(event) => {
             this.props.changeComposeMail(true);
             if (this.props.onDrawerClose) {
               this.props.onDrawerClose();

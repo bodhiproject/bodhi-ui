@@ -13,14 +13,14 @@ export default function uppyInit(options, onSuccess) {
   const uppy = Uppy({
     debug: true,
     autoProceed: options.autoProceed,
-    restrictions: options.restrictions || ''
+    restrictions: options.restrictions || '',
   });
   uppy.use(Tus10, { endpoint: options.endpoint, resume: true });
   uppy.use(Dashboard, {
     trigger: options.trigger,
     inline: options.DashboardInline,
     target: options.target,
-    note: options.restrictions || 'Images and video only, 300kb or less'
+    note: options.restrictions || 'Images and video only, 300kb or less',
   });
   if (options.GoogleDrive) {
     uppy.use(GoogleDrive, { target: Dashboard, host: SERVER });
@@ -35,9 +35,9 @@ export default function uppyInit(options, onSuccess) {
     uppy.use(Webcam, { target: Dashboard });
   }
   uppy.use(MetaData, {
-    fields: options.metaFields || []
+    fields: options.metaFields || [],
   });
-  uppy.on('core:success', fileList => {
+  uppy.on('core:success', (fileList) => {
     onSuccess(fileList);
   });
   uppy.run();

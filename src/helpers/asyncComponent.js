@@ -22,7 +22,7 @@ class AsyncComponent extends Component {
     }
     if (this.mounted) {
       this.setState({
-        Component: <Component {...this.props.componentProps} />
+        Component: <Component {...this.props.componentProps} />,
       });
     }
   }

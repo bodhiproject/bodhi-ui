@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Input from '../../components/uielements/input';
@@ -8,9 +8,9 @@ import authAction from '../../redux/auth/actions';
 import IntlMessages from '../../components/utility/intlMessages';
 import SignInStyleWrapper from './signin.style';
 
-const { login } = authAction;
+const { loginAction } = authAction;
 
-class SignIn extends Component {
+class SignIn extends React.Component {
   state = {
     redirectToReferrer: false,
   };
@@ -75,10 +75,10 @@ class SignIn extends Component {
                 </Button>
               </div>
               <div className="isoCenterComponent isoHelperWrapper">
-                <Link to="" className="isoForgotPass">
+                <Link to="/" className="isoForgotPass">
                   <IntlMessages id="page.signInForgotPass" />
                 </Link>
-                <Link to="">
+                <Link to="/">
                   <IntlMessages id="page.signInCreateAccount" />
                 </Link>
               </div>
@@ -90,9 +90,15 @@ class SignIn extends Component {
   }
 }
 
+SignIn.propTypes = {
+  history: PropTypes.array.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  login: PropTypes.func.isRequired,
+};
+
 export default connect(
-  state => ({
-    isLoggedIn: state.Auth.get('idToken') !== null ? true : false,
+  (state) => ({
+    isLoggedIn: state.Auth.get('idToken') !== null,
   }),
-  { login }
+  { login: loginAction }
 )(SignIn);

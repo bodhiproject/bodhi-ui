@@ -9,7 +9,7 @@ import ComposeForm from './composeMail.style';
 
 // import '../../style/mailbox/draft-editor.css';
 
-const Editor = props => (
+const Editor = (props) => (
   <Async
     load={import(/* webpackChunkName: "compose-mAIL--editor" */ '../uielements/editor')}
     componentProps={props}
@@ -44,7 +44,7 @@ export default class ComposeMail extends Component {
     };
   }
   render() {
-    const onEditorStateChange = editorState => {
+    const onEditorStateChange = (editorState) => {
       this.setState({ editorState });
     };
     const ComposeAutoCompleteTO = {
@@ -63,9 +63,9 @@ export default class ComposeMail extends Component {
       toolbarClassName: 'home-toolbar',
       wrapperClassName: 'home-wrapper',
       editorClassName: 'home-editor',
-      onEditorStateChange: onEditorStateChange,
-      uploadCallback: uploadCallback,
-      toolbar: { image: { uploadCallback: uploadCallback } },
+      onEditorStateChange,
+      uploadCallback,
+      toolbar: { image: { uploadCallback } },
     };
 
     return (
@@ -91,7 +91,7 @@ export default class ComposeMail extends Component {
 
           <Button
             type="primary"
-            onClick={e => notification('success', `Mail has been sent`, '')}
+            onClick={(e) => notification('success', 'Mail has been sent', '')}
             className="isoSendMailBtn"
           >
             <IntlMessages id="email.send" />

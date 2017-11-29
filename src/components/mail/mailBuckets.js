@@ -13,7 +13,7 @@ const buckets = [
 
 function getUnread(mails) {
   const unread = {};
-  mails.forEach(mail => {
+  mails.forEach((mail) => {
     if (!unread[mail.bucket]) {
       unread[mail.bucket] = 0;
     }

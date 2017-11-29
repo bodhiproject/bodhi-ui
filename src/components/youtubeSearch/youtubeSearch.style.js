@@ -192,9 +192,7 @@ const YoutubeModal = ComponentName => styled(ComponentName)`
   }
 `;
 
-const YoutubeSearchListStyleWrapper = WithDirection(
-  WDYoutubeSearchListStyleWrapper
-);
+const YoutubeSearchListStyleWrapper = WithDirection(WDYoutubeSearchListStyleWrapper);
 
 export {
   YoutubeSearchListStyleWrapper,

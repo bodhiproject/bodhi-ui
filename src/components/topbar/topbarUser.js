@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Popover from '../uielements/popover';
 import userpic from '../../image/user1.png';
@@ -7,7 +7,7 @@ import TopbarDropdownWrapper from './topbarDropdown.style';
 
 const { logout } = authAction;
 
-class TopbarUser extends Component {
+class TopbarUser extends React.Component {
   constructor(props) {
     super(props);
     this.handleVisibleChange = this.handleVisibleChange.bind(this);
@@ -29,7 +29,7 @@ class TopbarUser extends Component {
         <a className="isoDropdownLink">Settings</a>
         <a className="isoDropdownLink">Feedback</a>
         <a className="isoDropdownLink">Help</a>
-        <a className="isoDropdownLink" onClick={this.props.logout}>
+        <a className="isoDropdownLink" onClick={this.props.logoutProp}>
           Logout
         </a>
       </TopbarDropdownWrapper>
@@ -41,7 +41,7 @@ class TopbarUser extends Component {
         trigger="click"
         visible={this.state.visible}
         onVisibleChange={this.handleVisibleChange}
-        arrowPointAtCenter={true}
+        arrowPointAtCenter
         placement="bottomLeft"
       >
         <div className="isoImgWrapper">
@@ -52,4 +52,9 @@ class TopbarUser extends Component {
     );
   }
 }
-export default connect(null, { logout })(TopbarUser);
+
+TopbarUser.propTypes = {
+  logoutProp: PropTypes.func.isRequired,
+};
+
+export default connect(null, { logoutProp: logout })(TopbarUser);

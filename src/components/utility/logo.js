@@ -1,25 +1,28 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import { siteConfig } from '../../config.js';
+import { siteConfig } from '../../config';
 
 // export default function({ collapsed, styling }) {
-export default function({ collapsed }) {
+export default function Logo({ collapsed }) {
   return (
-    <div
-      className="isoLogoWrapper">
-      {collapsed
-        ? <div>
-            <h3>
-              <Link to="/dashboard">
-                <i className={siteConfig.siteIcon} />
-              </Link>
-            </h3>
-          </div>
-        : <h3>
+    <div className="isoLogoWrapper">
+      {collapsed ?
+        <div>
+          <h3>
             <Link to="/dashboard">
-              {siteConfig.siteName}
+              <i className={siteConfig.siteIcon} />
             </Link>
-          </h3>}
+          </h3>
+        </div> :
+        <h3>
+          <Link to="/dashboard">
+            {siteConfig.siteName}
+          </Link>
+        </h3>}
     </div>
   );
 }
+
+Logo.propTypes = {
+  collapsed: PropTypes.bool.isRequired,
+};

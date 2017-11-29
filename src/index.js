@@ -31,7 +31,7 @@ ReactDOM.render(
 // Hot Module Replacement API
 if (module.hot) {
   module.hot.accept('./dashApp.js', () => {
-    const NextApp = require('./dashApp').default;
+    const NextApp = DashApp.default;
     ReactDOM.render(<NextApp />, document.getElementById('root'));
   });
 }

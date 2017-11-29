@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Layout, LocaleProvider } from 'antd';
 import { IntlProvider } from 'react-intl';
@@ -10,17 +10,17 @@ import appActions from '../../redux/app/actions';
 import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import AppRouter from './AppRouter';
-import { siteConfig } from '../../config.js';
 import { AppLocale } from '../../index';
 import themes from '../../config/themes';
-import { themeConfig } from '../../config';
+import { themeConfig, siteConfig } from '../../config';
 import AppHolder from './commonStyle';
 import './global.css';
 
 const { Content, Footer } = Layout;
 const { logout } = authAction;
 const { toggleAll } = appActions;
-export class App extends Component {
+
+export class App extends React.PureComponent {
   render() {
     const { url } = this.props.match;
     const currentAppLocale = AppLocale.en;
@@ -35,7 +35,7 @@ export class App extends Component {
               <Layout style={{ height: '100vh' }}>
                 <Debounce time="1000" handler="onResize">
                   <WindowResizeListener
-                    onResize={windowSize =>
+                    onResize={(windowSize) =>
                       this.props.toggleAll(
                         windowSize.windowWidth,
                         windowSize.windowHeight
@@ -81,9 +81,14 @@ export class App extends Component {
   }
 }
 
+App.propTypes = {
+  toggleAll: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+};
+
 export default connect(
-  state => ({
-    auth: state.Auth
+  (state) => ({
+    auth: state.Auth,
   }),
   { logout, toggleAll }
 )(App);

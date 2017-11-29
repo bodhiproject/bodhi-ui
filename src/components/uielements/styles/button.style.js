@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { palette } from 'styled-theme';
 import { transition } from '../../../config/style-util';
 
-const Buttons = ComponentName => styled(ComponentName)`
+const Buttons = (ComponentName) => styled(ComponentName)`
   &.ant-btn {
     display: inline-block;
     margin-bottom: 0;
@@ -35,18 +35,18 @@ const Buttons = ComponentName => styled(ComponentName)`
 
     > .anticon + span,
     > span + .anticon {
-      margin: ${props =>
-        props['data-rtl'] === 'rtl' ? '0 0.5em 0 0' : '0 0 0 0.5em'};
+      margin: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 0.5em 0 0' : '0 0 0 0.5em'};
     }
 
     .anticon-right {
-      transform: ${props =>
-        props['data-rtl'] === 'rtl' ? 'rotate(180deg)' : 'rotate(0)'};
+      transform: ${(props) =>
+    props['data-rtl'] === 'rtl' ? 'rotate(180deg)' : 'rotate(0)'};
     }
 
     .anticon-left {
-      transform: ${props =>
-        props['data-rtl'] === 'rtl' ? 'rotate(180deg)' : 'rotate(0)'};
+      transform: ${(props) =>
+    props['data-rtl'] === 'rtl' ? 'rotate(180deg)' : 'rotate(0)'};
     }
 
     &.ant-btn-primary {
@@ -66,11 +66,11 @@ const Buttons = ComponentName => styled(ComponentName)`
       font-size: 12px;
 
       &.ant-btn-loading:not(.ant-btn-circle):not(.ant-btn-circle-outline) {
-        padding: ${props =>
-          props['data-rtl'] === 'rtl' ? '0 24px 0 15px' : '0 15px 0 24px'};
+        padding: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 24px 0 15px' : '0 15px 0 24px'};
         .anticon {
-          margin: ${props =>
-            props['data-rtl'] === 'rtl' ? '0 -17px 0 0' : '0 0 0 -17px'};
+          margin: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 -17px 0 0' : '0 0 0 -17px'};
         }
       }
     }
@@ -158,8 +158,8 @@ const Buttons = ComponentName => styled(ComponentName)`
 
     &.ant-btn-loading:not(.ant-btn-circle):not(.ant-btn-circle-outline)
       .anticon {
-      margin: ${props =>
-        props['data-rtl'] === 'rtl' ? '0 -14px 0 0' : '0 0 0 -14px'};
+      margin: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 -14px 0 0' : '0 0 0 -14px'};
     }
 
     &.isoButton {
@@ -206,14 +206,14 @@ const Buttons = ComponentName => styled(ComponentName)`
   }
 
   + .ant-btn-group {
-    margin-left: ${props =>
-      props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
-    margin-right: ${props =>
-      props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
+    margin-left: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
+    margin-right: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
   }
 `;
 
-const RadioButtons = ComponentName => styled(ComponentName)`
+const RadioButtons = (ComponentName) => styled(ComponentName)`
   .ant-radio-button-wrapper {
     height: 35px;
     line-height: 33px;
@@ -237,7 +237,7 @@ const RadioButtons = ComponentName => styled(ComponentName)`
   }
 `;
 
-const ButtonsGroup = ComponentName => styled(ComponentName)`
+const ButtonsGroup = (ComponentName) => styled(ComponentName)`
   &.ant-btn-group {
     .ant-btn {
       margin: 0;
@@ -287,48 +287,48 @@ const ButtonsGroup = ComponentName => styled(ComponentName)`
     }
 
     > .ant-btn:first-child:not(:last-child) {
-      border-radius: ${props =>
-        props['data-rtl'] === 'rtl' ? '0 4px 4px 0' : '4px 0 0 4px'};
-      padding: ${props =>
-        props['data-rtl'] === 'rtl' ? '0 25px 0 8px' : '0 8px 0 25px'};
+      border-radius: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 4px 4px 0' : '4px 0 0 4px'};
+      padding: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 25px 0 8px' : '0 8px 0 25px'};
     }
 
     > .ant-btn:last-child:not(:first-child) {
-      border-radius: ${props =>
-        props['data-rtl'] === 'rtl' ? '4px 0 0 4px' : '0 4px 4px 0'};
-      padding: ${props =>
-        props['data-rtl'] === 'rtl' ? '0 8px 0 25px' : '0 25px 0 8px'};
+      border-radius: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '4px 0 0 4px' : '0 4px 4px 0'};
+      padding: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 8px 0 25px' : '0 25px 0 8px'};
     }
 
     .ant-btn-primary:last-child:not(:first-child),
     .ant-btn-primary + .ant-btn-primary {
-      border-left-color: ${props =>
-        props['data-rtl'] === 'rtl'
-          ? palette('primary', 0)
-          : palette('primary', 2)};
-      border-right-color: ${props =>
-        props['data-rtl'] === 'rtl'
-          ? palette('primary', 2)
-          : palette('primary', 0)};
+      border-left-color: ${(props) =>
+    props['data-rtl'] === 'rtl'
+      ? palette('primary', 0)
+      : palette('primary', 2)};
+      border-right-color: ${(props) =>
+    props['data-rtl'] === 'rtl'
+      ? palette('primary', 2)
+      : palette('primary', 0)};
     }
 
     .ant-btn-primary:first-child:not(:last-child) {
-      border-left-color: ${props =>
-        props['data-rtl'] === 'rtl'
-          ? palette('primary', 2)
-          : palette('primary', 0)};
-      border-right-color: ${props =>
-        props['data-rtl'] === 'rtl'
-          ? palette('primary', 0)
-          : palette('primary', 2)};
+      border-left-color: ${(props) =>
+    props['data-rtl'] === 'rtl'
+      ? palette('primary', 2)
+      : palette('primary', 0)};
+      border-right-color: ${(props) =>
+    props['data-rtl'] === 'rtl'
+      ? palette('primary', 0)
+      : palette('primary', 2)};
     }
 
     .ant-btn + .ant-btn,
     + .ant-btn {
-      margin-left: ${props =>
-        props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
-      margin-right: ${props =>
-        props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
+      margin-left: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
+      margin-right: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
     }
 
     &.ant-btn-group-lg {
@@ -349,14 +349,14 @@ const ButtonsGroup = ComponentName => styled(ComponentName)`
   }
 
   &.ant-btn-group + &.ant-btn-group {
-    margin-left: ${props =>
-      props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
-    margin-right: ${props =>
-      props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
+    margin-left: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0' : '-1px'} !important;
+    margin-right: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '-1px' : '0'} !important;
   }
 `;
 
-const GhostButtons = ComponentName => styled(ComponentName)`
+const GhostButtons = (ComponentName) => styled(ComponentName)`
   .ant-btn-background-ghost {
     background: transparent !important;
     border-color: #fff;

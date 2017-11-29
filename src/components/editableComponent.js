@@ -33,22 +33,22 @@ export default class EditableComponent extends Component {
       <div className="isoNoteContent">
         {editable
           ? <div className="isoNoteEditWrapper">
-              <Input
-                type="textarea"
-                rows={5}
-                value={value}
-                onChange={this.handleChange}
-                onPressEnter={this.check}
-              />
-              <Icon
-                type="check"
-                className="isoNoteEditIcon"
-                onClick={this.check}
-              />
+            <Input
+              type="textarea"
+              rows={5}
+              value={value}
+              onChange={this.handleChange}
+              onPressEnter={this.check}
+            />
+            <Icon
+              type="check"
+              className="isoNoteEditIcon"
+              onClick={this.check}
+            />
             </div>
           : <p className="isoNoteTextWrapper" onClick={this.edit}>
-              {value || ' '}
-              <Icon type="edit" className="isoNoteEditIcon" />
+            {value || ' '}
+            <Icon type="edit" className="isoNoteEditIcon" />
             </p>}
       </div>
     );

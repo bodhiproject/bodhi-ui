@@ -8,7 +8,7 @@ import { ContactListWrapper } from './contactList.style';
 function filterContacts(contacts, search) {
   search = search.toUpperCase();
   return search
-    ? contacts.filter(contact => contact.name.toUpperCase().includes(search))
+    ? contacts.filter((contact) => contact.name.toUpperCase().includes(search))
     : contacts;
 }
 
@@ -18,7 +18,7 @@ export default class ContactList extends Component {
     this.singleContact = this.singleContact.bind(this);
     this.onChange = this.onChange.bind(this);
     this.state = {
-      search: ''
+      search: '',
     };
   }
   singleContact(contact) {
@@ -51,7 +51,7 @@ export default class ContactList extends Component {
       <ContactListWrapper className="isoContactListWrapper">
         <InputSearch
           placeholder={this.context.intl.formatMessage({
-            id: 'contactlist.searchContacts'
+            id: 'contactlist.searchContacts',
           })}
           value={search}
           onChange={this.onChange}
@@ -59,7 +59,7 @@ export default class ContactList extends Component {
         />
         {contacts && contacts.length > 0 ? (
           <div className="isoContactList">
-            {contacts.map(contact => this.singleContact(contact))}
+            {contacts.map((contact) => this.singleContact(contact))}
           </div>
         ) : (
           <span className="isoNoResultMsg">
@@ -72,5 +72,5 @@ export default class ContactList extends Component {
 }
 
 ContactList.contextTypes = {
-  intl: PropTypes.object.isRequired
+  intl: PropTypes.object.isRequired,
 };

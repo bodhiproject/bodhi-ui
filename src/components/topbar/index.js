@@ -11,5 +11,5 @@ export {
   TopbarNotification,
   TopbarMessage,
   TopbarUser,
-  TopbarAddtoCart
+  TopbarAddtoCart,
 };

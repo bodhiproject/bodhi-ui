@@ -21,7 +21,7 @@ export default class ColorChoser extends Component {
   render() {
     const { colors, seectedColor, changeColor } = this.props;
     const content = () =>
-      <ColorChooserDropdown className="isoColorOptions">
+      (<ColorChooserDropdown className="isoColorOptions">
         {colors.map((color, index) => {
           const onClick = () => {
             this.hide();
@@ -32,7 +32,7 @@ export default class ColorChoser extends Component {
           };
           return <Button key={index} onClick={onClick} style={style} />;
         })}
-      </ColorChooserDropdown>;
+       </ColorChooserDropdown>);
     return (
       <Popover
         content={content()}

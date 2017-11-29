@@ -3,7 +3,7 @@ import InputNumber from '../uielements/InputNumber';
 import { notification } from '../index';
 
 export default class CartRow extends Component {
-  onChange = value => {
+  onChange = (value) => {
     if (!isNaN(value)) {
       if (value !== this.props.quantity) {
         this.props.changeQuantity(this.props.objectID, value);
@@ -21,7 +21,7 @@ export default class CartRow extends Component {
       name,
       description,
       objectID,
-      cancelQuantity
+      cancelQuantity,
     } = this.props;
     const totalPrice = (price * quantity).toFixed(2);
     return (

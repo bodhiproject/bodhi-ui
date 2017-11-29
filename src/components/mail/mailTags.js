@@ -19,9 +19,9 @@ const tagColor = [
 
 function gettags(mails, filterAttr) {
   const tags = {};
-  mails.forEach(mail => {
+  mails.forEach((mail) => {
     if (mail.tags && mail.bucket === filterAttr.bucket) {
-      mail.tags.split(' ').forEach(tag => (tags[tag] = 1));
+      mail.tags.split(' ').forEach((tag) => (tags[tag] = 1));
     }
   });
   return tags;
@@ -43,7 +43,7 @@ export default function mailtags(
     };
     const selectedTag = tag === filterAttr.tag;
     const activeClass = selectedTag ? 'active' : '';
-    const background = tagColor[tags.findIndex(tags => tags === tag)];
+    const background = tagColor[tags.findIndex((tags) => tags === tag)];
     return (
       <li
         key={`tag${key}`}

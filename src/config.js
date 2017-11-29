@@ -17,5 +17,5 @@ const language = 'english';
 export {
   siteConfig,
   language,
-  themeConfig
+  themeConfig,
 };

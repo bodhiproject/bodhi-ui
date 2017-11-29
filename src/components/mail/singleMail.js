@@ -30,7 +30,7 @@ export default function singleMail(
   };
 
   const labelColor = mail.tags
-    ? tagColor[tags.findIndex(tags => tags === mail.tags)]
+    ? tagColor[tags.findIndex((tags) => tags === mail.tags)]
     : '';
 
   return (
@@ -79,7 +79,7 @@ export default function singleMail(
             <ComposeMail allMail={allMail} />
           ) : (
             <div
-              onClick={event => changeReplyMail(true)}
+              onClick={(event) => changeReplyMail(true)}
               className="isoReplyMailBtn"
             >
               Click here to <span>Reply</span>

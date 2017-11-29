@@ -94,7 +94,7 @@ export default class extends Component {
                     placeholder={title}
                     type="text"
                     className={`isoCardInput ${key}`}
-                    onChange={event => {
+                    onChange={(event) => {
                       selectedCard[key] = event.target.value;
                       updateCard(selectedCard);
                     }}

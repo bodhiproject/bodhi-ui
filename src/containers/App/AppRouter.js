@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import asyncComponent from '../../helpers/AsyncFunc';
 
@@ -21,5 +21,9 @@ class AppRouter extends React.Component {
     );
   }
 }
+
+AppRouter.propTypes = {
+  url: PropTypes.string.isRequired,
+};
 
 export default AppRouter;

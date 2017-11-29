@@ -21,9 +21,8 @@ const CustomResults = createConnector({
     );
   } else if (status) {
     return <EmptyComponent value="No results for these filtering" />;
-  } else {
-    return <ContentElement />;
   }
+  return <ContentElement />;
 });
 
 export default CustomResults;

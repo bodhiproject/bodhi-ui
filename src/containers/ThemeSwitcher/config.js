@@ -1,4 +1,4 @@
-import { themeConfig } from '../../config.js';
+import { themeConfig } from '../../config';
 const changeThemes = {
   id: 'changeThemes',
   label: 'themeSwitcher',
@@ -7,14 +7,14 @@ const changeThemes = {
     {
       themeName: 'themedefault',
       buttonColor: '#ffffff',
-      textColor: '#323332'
+      textColor: '#323332',
     },
     {
       themeName: 'theme2',
       buttonColor: '#ffffff',
-      textColor: '#323332'
-    }
-  ]
+      textColor: '#323332',
+    },
+  ],
 };
 const topbarTheme = {
   id: 'topbarTheme',
@@ -24,51 +24,51 @@ const topbarTheme = {
     {
       themeName: 'themedefault',
       buttonColor: '#ffffff',
-      textColor: '#323332'
+      textColor: '#323332',
     },
     {
       themeName: 'theme1',
       buttonColor: '#e0364c',
       backgroundColor: '#e0364c',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme2',
       buttonColor: '#6534ff',
       backgroundColor: '#6534ff',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme3',
       buttonColor: '#4482FF',
       backgroundColor: '#4482FF',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme4',
       buttonColor: '#422e62',
       backgroundColor: '#422e62',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme5',
       buttonColor: '#22144c',
       backgroundColor: '#22144c',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme6',
       buttonColor: '#4670a2',
       backgroundColor: '#4670a2',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme7',
       buttonColor: '#494982',
       backgroundColor: '#494982',
-      textColor: '#ffffff'
-    }
-  ]
+      textColor: '#ffffff',
+    },
+  ],
 };
 const sidebarTheme = {
   id: 'sidebarTheme',
@@ -79,51 +79,51 @@ const sidebarTheme = {
       themeName: 'themedefault',
       buttonColor: '#323332',
       backgroundColor: undefined,
-      textColor: '#788195'
+      textColor: '#788195',
     },
     {
       themeName: 'theme1',
       buttonColor: '#e0364c',
       backgroundColor: '#e0364c',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme2',
       buttonColor: '#6534ff',
       backgroundColor: '#6534ff',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme3',
       buttonColor: '#4482FF',
       backgroundColor: '#4482FF',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme4',
       buttonColor: '#422e62',
       backgroundColor: '#422e62',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme5',
       buttonColor: '#22144c',
       backgroundColor: '#22144c',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme6',
       buttonColor: '#4670a2',
       backgroundColor: '#4670a2',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme7',
       buttonColor: '#494982',
       backgroundColor: '#494982',
-      textColor: '#ffffff'
-    }
-  ]
+      textColor: '#ffffff',
+    },
+  ],
 };
 const layoutTheme = {
   id: 'layoutTheme',
@@ -134,37 +134,37 @@ const layoutTheme = {
       themeName: 'themedefault',
       buttonColor: '#ffffff',
       backgroundColor: '#F1F3F6',
-      textColor: undefined
+      textColor: undefined,
     },
     {
       themeName: 'theme1',
       buttonColor: '#ffffff',
       backgroundColor: '#ffffff',
-      textColor: '#323232'
+      textColor: '#323232',
     },
     {
       themeName: 'theme2',
       buttonColor: '#F9F9F9',
       backgroundColor: '#F9F9F9',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
     },
     {
       themeName: 'theme3',
       buttonColor: '#ebebeb',
       backgroundColor: '#ebebeb',
-      textColor: '#ffffff'
-    }
-  ]
+      textColor: '#ffffff',
+    },
+  ],
 };
 const customizedThemes = {
   changeThemes,
   topbarTheme,
   sidebarTheme,
-  layoutTheme
+  layoutTheme,
 };
 export function getCurrentTheme(attribute, selectedThemename) {
   let selecetedTheme = {};
-  customizedThemes[attribute].options.forEach(theme => {
+  customizedThemes[attribute].options.forEach((theme) => {
     if (theme.themeName === selectedThemename) {
       selecetedTheme = theme;
     }

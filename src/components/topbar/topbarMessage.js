@@ -59,8 +59,8 @@ class TopbarMessage extends Component {
           <h3>Messages</h3>
         </div>
         <div className="isoDropdownBody">
-          {demoMassage.map(massage =>
-            <a className="isoDropdownListItem" key={massage.id}>
+          {demoMassage.map((massage) =>
+            (<a className="isoDropdownListItem" key={massage.id}>
               <div className="isoImgWrapper">
                 <img alt="#" src={Image} />
               </div>
@@ -78,8 +78,7 @@ class TopbarMessage extends Component {
                   {massage.massage}
                 </p>
               </div>
-            </a>
-          )}
+             </a>))}
         </div>
         <a className="isoViewAllBtn">View All</a>
       </TopbarDropdownWrapper>
@@ -106,7 +105,7 @@ class TopbarMessage extends Component {
   }
 }
 
-export default connect(state => ({
+export default connect((state) => ({
   ...state.App.toJS(),
   customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarMessage);

@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import { firebaseConfig } from '../../config.js';
 
-const valid = firebaseConfig  && firebaseConfig.apiKey && firebaseConfig.projectId;
+const valid = firebaseConfig && firebaseConfig.apiKey && firebaseConfig.projectId;
 
 firebase.initializeApp(firebaseConfig);
 const firebaseAuth = firebase.auth;
@@ -40,9 +40,7 @@ class FirebaseHelper {
   }
 
   isAuthenticated() {
-    firebaseAuth().onAuthStateChanged(user => {
-      return user ? true : false;
-    });
+    firebaseAuth().onAuthStateChanged((user) => !!user);
   }
   resetPassword(email) {
     return firebaseAuth().sendPasswordResetEmail(email);

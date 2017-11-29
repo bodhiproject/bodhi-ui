@@ -11,7 +11,7 @@ import {
 function SearchList(result, handleSelectedVideo) {
   return (
     <YoutubeSearchListStyleWrapper className="isoYoutubeResultList">
-      {result.map(item => {
+      {result.map((item) => {
         const {
           publishedAt,
           title,
@@ -22,11 +22,11 @@ function SearchList(result, handleSelectedVideo) {
         } = item.snippet;
         const id = item.id.videoId;
         const updateDate = new Date(publishedAt).toDateString();
-        const onClick = event => {
+        const onClick = (event) => {
           event.preventDefault();
           handleSelectedVideo(item);
         };
-        const onChannelClick = event => {
+        const onChannelClick = (event) => {
           event.preventDefault();
           event.stopPropagation();
           window.open(`https://www.youtube.com/channel/${channelId}`, '_blank');
@@ -64,7 +64,7 @@ class YoutubeResult extends Component {
   handleCancel = () => {
     this.handleSelectedVideo(null);
   };
-  handleSelectedVideo = selectedVideo => {
+  handleSelectedVideo = (selectedVideo) => {
     this.setState({ selectedVideo });
   };
   render() {

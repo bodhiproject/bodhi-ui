@@ -7,10 +7,10 @@ class Auth0Helper {
   isValid = Auth0Config.clientID && Auth0Config.domain;
   lock = this.isValid
     ? new Auth0Lock(
-        Auth0Config.clientID,
-        Auth0Config.domain,
-        Auth0Config.options
-      )
+      Auth0Config.clientID,
+      Auth0Config.domain,
+      Auth0Config.options
+    )
     : null;
   constructor() {
     this.login = this.login.bind(this);
@@ -19,7 +19,7 @@ class Auth0Helper {
     this.isAuthenticated = this.isAuthenticated.bind(this);
   }
   login(handleLogin) {
-    this.lock.on('authenticated', authResult => {
+    this.lock.on('authenticated', (authResult) => {
       if (authResult && authResult.accessToken) {
         if (window) {
           localStorage.setItem('id_token', authResult.accessToken);
@@ -37,9 +37,7 @@ class Auth0Helper {
   }
   setSession(authResult) {
     // Set the time that the access token will expire at
-    let expiresAt = JSON.stringify(
-      authResult.expiresIn * 1000 + new Date().getTime()
-    );
+    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime());
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);

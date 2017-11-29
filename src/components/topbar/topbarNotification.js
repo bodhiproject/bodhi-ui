@@ -53,16 +53,15 @@ class TopbarNotification extends Component {
           <h3>Notifications</h3>
         </div>
         <div className="isoDropdownBody">
-          {demoNotifications.map(notification =>
-            <a className="isoDropdownListItem" key={notification.id}>
+          {demoNotifications.map((notification) =>
+            (<a className="isoDropdownListItem" key={notification.id}>
               <h5>
                 {notification.name}
               </h5>
               <p>
                 {notification.notification}
               </p>
-            </a>
-          )}
+             </a>))}
         </div>
         <a className="isoViewAllBtn">View All</a>
       </TopbarDropdownWrapper>
@@ -89,7 +88,7 @@ class TopbarNotification extends Component {
   }
 }
 
-export default connect(state => ({
+export default connect((state) => ({
   ...state.App.toJS(),
   customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarNotification);

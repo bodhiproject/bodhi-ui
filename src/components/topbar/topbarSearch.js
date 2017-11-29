@@ -29,23 +29,23 @@ class TopbarSearch extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.showModal = this.showModal.bind(this);
     this.state = {
-      visiblity: false
+      visiblity: false,
     };
   }
 
   handleOk() {
     this.setState({
-      visible: false
+      visible: false,
     });
   }
   handleCancel() {
     this.setState({
-      visible: false
+      visible: false,
     });
   }
   showModal() {
     this.setState({
-      visible: true
+      visible: true,
     });
   }
   render() {
@@ -76,7 +76,7 @@ class TopbarSearch extends Component {
   }
 }
 
-export default connect(state => ({
+export default connect((state) => ({
   ...state.App.toJS(),
-  customizedTheme: state.ThemeSwitcher.toJS().topbarTheme
+  customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarSearch);

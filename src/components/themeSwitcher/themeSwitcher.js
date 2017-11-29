@@ -9,7 +9,7 @@ export default ({ config, changeTheme, selectedId }) => {
         <IntlMessages id={label} />
       </h4>
       <div className="themeSwitchBtnWrapper">
-        {options.map(option => {
+        {options.map((option) => {
           const { themeName, buttonColor } = option;
           const onClick = () => {
             changeTheme(id, themeName);

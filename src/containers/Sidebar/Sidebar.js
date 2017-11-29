@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import clone from 'clone';
 import { Link } from 'react-router-dom';
@@ -22,29 +22,17 @@ const {
   toggleCollapsed,
 } = appActions;
 
-class Sidebar extends Component {
+class Sidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.onOpenChange = this.onOpenChange.bind(this);
   }
-  handleClick(e) {
-    this.props.changeCurrent([e.key]);
-    if (this.props.app.view === 'MobileView') {
-      setTimeout(() => {
-        this.props.toggleCollapsed();
-        this.props.toggleOpenDrawer();
-      }, 100);
-    }
-  }
+
   onOpenChange(newOpenKeys) {
-    const { app, changeOpenKeys } = this.props;
-    const latestOpenKey = newOpenKeys.find(
-      key => !(app.openKeys.indexOf(key) > -1)
-    );
-    const latestCloseKey = app.openKeys.find(
-      key => !(newOpenKeys.indexOf(key) > -1)
-    );
+    const { app, changeOpenKeysProp } = this.props;
+    const latestOpenKey = newOpenKeys.find((key) => !(app.openKeys.indexOf(key) > -1));
+    const latestCloseKey = app.openKeys.find((key) => !(newOpenKeys.indexOf(key) > -1));
     let nextOpenKeys = [];
     if (latestOpenKey) {
       nextOpenKeys = this.getAncestorKeys(latestOpenKey).concat(latestOpenKey);
@@ -52,14 +40,24 @@ class Sidebar extends Component {
     if (latestCloseKey) {
       nextOpenKeys = this.getAncestorKeys(latestCloseKey);
     }
-    changeOpenKeys(nextOpenKeys);
+    changeOpenKeysProp(nextOpenKeys);
   }
-  getAncestorKeys = key => {
+  getAncestorKeys = (key) => {
     const map = {
       sub3: ['sub2'],
     };
     return map[key] || [];
   };
+
+  handleClick(e) {
+    this.props.changeCurrent([e.key]);
+    if (this.props.app.view === 'MobileView') {
+      setTimeout(() => {
+        this.props.toggleCollapsedProp();
+        this.props.toggleOpenDrawerProp();
+      }, 100);
+    }
+  }
 
   renderView({ style, ...props }) {
     const viewStyle = {
@@ -74,22 +72,20 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { url, app, toggleOpenDrawer } = this.props;
+    const { url, app, toggleOpenDrawerProp } = this.props;
     const customizedTheme = getCurrentTheme('sidebarTheme', themeConfig.theme);
     const collapsed = clone(app.collapsed) && !clone(app.openDrawer);
     const { openDrawer } = app;
     const mode = collapsed === true ? 'vertical' : 'inline';
-    const onMouseEnter = event => {
+    const onMouseEnter = () => {
       if (openDrawer === false) {
-        toggleOpenDrawer();
+        toggleOpenDrawerProp();
       }
-      return;
     };
     const onMouseLeave = () => {
       if (openDrawer === true) {
-        toggleOpenDrawer();
+        toggleOpenDrawerProp();
       }
-      return;
     };
     const scrollheight = app.height;
     const styling = {
@@ -102,7 +98,7 @@ class Sidebar extends Component {
       <SidebarWrapper>
         <Sider
           trigger={null}
-          collapsible={true}
+          collapsible
           collapsed={collapsed}
           width="240"
           className="isomorphicSidebar"
@@ -142,9 +138,23 @@ class Sidebar extends Component {
   }
 }
 
+Sidebar.propTypes = {
+  changeCurrent: PropTypes.func.isRequired,
+  app: PropTypes.object.isRequired,
+  changeOpenKeysProp: PropTypes.func.isRequired,
+  toggleCollapsedProp: PropTypes.func.isRequired,
+  toggleOpenDrawerProp: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+};
+
 export default connect(
-  state => ({
-    app: state.App.toJS()
+  (state) => ({
+    app: state.App.toJS(),
   }),
-  { toggleOpenDrawer, changeOpenKeys, changeCurrent, toggleCollapsed }
+  {
+    toggleOpenDrawerProp: toggleOpenDrawer,
+    changeOpenKeysProp: changeOpenKeys,
+    changeCurrent,
+    toggleCollapsedProp: toggleCollapsed,
+  }
 )(Sidebar);

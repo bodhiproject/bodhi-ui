@@ -95,8 +95,8 @@ const SidebarWrapper = styled.div`
       i {
         font-size: 19px;
         color: inherit;
-        margin: ${props =>
-          props['data-rtl'] === 'rtl' ? '0 0 0 30px' : '0 30px 0 0'};
+        margin: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0 0 0 30px' : '0 30px 0 0'};
         width: 18px;
         ${transition()};
       }
@@ -155,8 +155,8 @@ const SidebarWrapper = styled.div`
           font-family: 'Ionicons' !important;
           font-size: 16px;
           color: inherit;
-          left: ${props => (props['data-rtl'] === 'rtl' ? '16px' : 'auto')};
-          right: ${props => (props['data-rtl'] === 'rtl' ? 'auto' : '16px')};
+          left: ${(props) => (props['data-rtl'] === 'rtl' ? '16px' : 'auto')};
+          right: ${(props) => (props['data-rtl'] === 'rtl' ? 'auto' : '16px')};
           ${transition()};
         }
 
@@ -170,10 +170,10 @@ const SidebarWrapper = styled.div`
       .ant-menu-inline,
       .ant-menu-submenu-vertical {
         > li:not(.ant-menu-item-group) {
-          padding-left: ${props =>
-            props['data-rtl'] === 'rtl' ? '0px !important' : '74px !important'};
-          padding-right: ${props =>
-            props['data-rtl'] === 'rtl' ? '74px !important' : '0px !important'};
+          padding-left: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '0px !important' : '74px !important'};
+          padding-right: ${(props) =>
+    props['data-rtl'] === 'rtl' ? '74px !important' : '0px !important'};
           font-size: 13px;
           font-weight: 400;
           color: inherit;

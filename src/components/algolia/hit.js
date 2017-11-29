@@ -22,7 +22,7 @@ class Hit extends Component {
         ? 'isoAlgoliaGrid GridView'
         : 'isoAlgoliaGrid ListView';
     let addedTocart = false;
-    this.props.productQuantity.forEach(product => {
+    this.props.productQuantity.forEach((product) => {
       if (product.objectID === hit.objectID) {
         addedTocart = true;
       }
@@ -33,26 +33,26 @@ class Hit extends Component {
           <img alt="#" src={hit.image} />
           {!addedTocart
             ? <Button
-                onClick={() => {
-                  this.setState({ addCartLoading: true });
-                  const update = () => {
-                    this.props.addToCart(hit);
-                    this.setState({ addCartLoading: false });
-                  };
-                  setTimeout(update, 1500);
-                }}
-                type="primary"
-                className="isoAlAddToCart"
-                loading={this.state.addCartLoading}
-              >
-                <i className="ion-android-cart" />
+              onClick={() => {
+                this.setState({ addCartLoading: true });
+                const update = () => {
+                  this.props.addToCart(hit);
+                  this.setState({ addCartLoading: false });
+                };
+                setTimeout(update, 1500);
+              }}
+              type="primary"
+              className="isoAlAddToCart"
+              loading={this.state.addCartLoading}
+            >
+              <i className="ion-android-cart" />
                 Add to cart
               </Button>
             : <Button
-                onClick={() => this.props.changeViewTopbarCart(true)}
-                type="primary"
-                className="isoAlAddToCart"
-              >
+              onClick={() => this.props.changeViewTopbarCart(true)}
+              type="primary"
+              className="isoAlAddToCart"
+            >
                 View Cart
               </Button>}
         </div>
@@ -86,6 +86,4 @@ function mapStateToProps(state) {
     productQuantity,
   };
 }
-export default connect(mapStateToProps, { addToCart, changeViewTopbarCart })(
-  Hit
-);
+export default connect(mapStateToProps, { addToCart, changeViewTopbarCart })(Hit);

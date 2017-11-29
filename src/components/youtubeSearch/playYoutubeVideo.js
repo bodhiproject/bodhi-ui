@@ -12,7 +12,7 @@ export default class extends Component {
     return (
       <Modal
         title={selectedVideo.snippet.tittle}
-        visible={true}
+        visible
         footer={null}
         onCancel={handleCancel}
         cancelText="Cancel"

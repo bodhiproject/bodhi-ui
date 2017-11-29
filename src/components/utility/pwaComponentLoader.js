@@ -1,8 +1,8 @@
 import React from 'react';
 import PwaLoader from './pwaloader.style';
 
-export default PWAComponentLoader =>
-  <PwaLoader>
+export default (PWAComponentLoader) =>
+  (<PwaLoader>
     <div className="pwaComponentLoaderWrapper">
       <div className="pwaLoader">
         <div className="animated-background">
@@ -19,4 +19,4 @@ export default PWAComponentLoader =>
         </div>
       </div>
     </div>
-  </PwaLoader>;
+   </PwaLoader>);

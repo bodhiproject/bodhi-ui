@@ -17,11 +17,11 @@ class DeleteButton extends Component {
   render() {
     return (
       <Popconfirm
-        title={`Sure to delete This mail?`}
+        title="Sure to delete This mail?"
         okText="DELETE"
         cancelText="No"
         onConfirm={() => {
-          notification('error', `Deleted selected mail`, '');
+          notification('error', 'Deleted selected mail', '');
         }}
       >
         <button type="button" className="mailDelete">
@@ -34,10 +34,10 @@ class DeleteButton extends Component {
 
 class MoveMailButton extends Component {
   render() {
-    const bucketOptions = buckets.map(bucket => (
+    const bucketOptions = buckets.map((bucket) => (
       <li
         onClick={() => {
-          notification('success', `Massage Moved Successfully`, '');
+          notification('success', 'Massage Moved Successfully', '');
         }}
         key={bucket}
       >
@@ -47,7 +47,7 @@ class MoveMailButton extends Component {
     const content = <MailActionDropdown>{bucketOptions}</MailActionDropdown>;
     return (
       <Popover
-        title={`Move mail`}
+        title="Move mail"
         content={content}
         overlayClassName="mailMoveDropdown"
       >
@@ -61,10 +61,10 @@ class MoveMailButton extends Component {
 
 class SelectTagButton extends Component {
   render() {
-    const tagOptions = tags.map(tag => (
+    const tagOptions = tags.map((tag) => (
       <li
         onClick={() => {
-          notification('success', `Label Added`, '');
+          notification('success', 'Label Added', '');
         }}
         key={tag}
       >
@@ -74,7 +74,7 @@ class SelectTagButton extends Component {
     const content = <MailActionDropdown>{tagOptions}</MailActionDropdown>;
     return (
       <Popover
-        title={`Select tag`}
+        title="Select tag"
         content={content}
         overlayClassName="mailMoveDropdown"
       >
@@ -88,10 +88,10 @@ class SelectTagButton extends Component {
 
 export default class MailAction extends Component {
   render() {
-    const { mail, filterMails, selectMail, toggleListVisible } = this.props;
-    const index = filterMails.findIndex(
-      filterMail => filterMail.id === mail.id
-    );
+    const {
+      mail, filterMails, selectMail, toggleListVisible,
+    } = this.props;
+    const index = filterMails.findIndex((filterMail) => filterMail.id === mail.id);
     const toggleView = () => {
       toggleListVisible();
     };

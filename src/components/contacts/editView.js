@@ -29,9 +29,9 @@ export default class editContactView extends Component {
       { value: 'firstName', title: 'First Name' },
       { value: 'lastName', title: 'Last Name' },
     ];
-    [...names, ...otherAttributes].forEach(attribute => {
+    [...names, ...otherAttributes].forEach((attribute) => {
       const value = contact[attribute.value];
-      const editContact = event => {
+      const editContact = (event) => {
         contact[attribute.value] = event.target.value;
         let name = '';
         if (contact.firstName) {
@@ -44,29 +44,25 @@ export default class editContactView extends Component {
         this.props.editContact(contact);
       };
       if (attribute.value === 'note') {
-        extraInfos.push(
-          <div className="isoContactCardInfos" key={attribute.value}>
-            <p className="isoInfoLabel">{`${attribute.title}`}</p>
-            <Input
-              placeholder={`${attribute.title}`}
-              value={value}
-              type="textarea"
-              rows={5}
-              onChange={event => editContact(event)}
-            />
-          </div>
-        );
+        extraInfos.push(<div className="isoContactCardInfos" key={attribute.value}>
+          <p className="isoInfoLabel">{`${attribute.title}`}</p>
+          <Input
+            placeholder={`${attribute.title}`}
+            value={value}
+            type="textarea"
+            rows={5}
+            onChange={(event) => editContact(event)}
+          />
+        </div>);
       } else {
-        extraInfos.push(
-          <div className="isoContactCardInfos" key={attribute.value}>
-            <p className="isoInfoLabel">{`${attribute.title}`}</p>
-            <Input
-              placeholder={`${attribute.title}`}
-              value={value}
-              onChange={event => editContact(event)}
-            />
-          </div>
-        );
+        extraInfos.push(<div className="isoContactCardInfos" key={attribute.value}>
+          <p className="isoInfoLabel">{`${attribute.title}`}</p>
+          <Input
+            placeholder={`${attribute.title}`}
+            value={value}
+            onChange={(event) => editContact(event)}
+          />
+        </div>);
       }
     });
     return (
