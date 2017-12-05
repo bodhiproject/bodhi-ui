@@ -7,16 +7,15 @@ import { WindowResizeListener } from 'react-window-resize-listener';
 import { ThemeProvider } from 'styled-components';
 import authAction from '../../redux/auth/actions';
 import appActions from '../../redux/app/actions';
-import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import AppRouter from './AppRouter';
 import { AppLocale } from '../../index';
 import themes from '../../config/themes';
-import { themeConfig, siteConfig } from '../../config';
+import { themeConfig /* siteConfig */ } from '../../config';
 import AppHolder from './commonStyle';
 import './global.css';
 
-const { Content, Footer } = Layout;
+const { Content /* Footer */ } = Layout;
 const { logout } = authAction;
 const { toggleAll } = appActions;
 
@@ -44,7 +43,6 @@ export class App extends React.PureComponent {
                 </Debounce>
                 <Topbar url={url} />
                 <Layout style={{ flexDirection: 'row', overflowX: 'hidden' }}>
-                  <Sidebar url={url} />
                   <Layout
                     className="isoContentMainLayout"
                     style={{
@@ -56,20 +54,20 @@ export class App extends React.PureComponent {
                       style={{
                         padding: '70px 0 0',
                         flexShrink: '0',
-                        background: '#f1f3f6',
+                        background: '#f9f9f9',
                       }}
                     >
                       <AppRouter url={url} />
                     </Content>
-                    <Footer
-                      style={{
-                        background: '#ffffff',
-                        textAlign: 'center',
-                        borderTop: '1px solid #ededed',
-                      }}
-                    >
-                      {siteConfig.footerText}
-                    </Footer>
+                    {/* <Footer
+                                          style={{
+                                            background: '#ffffff',
+                                            textAlign: 'center',
+                                            borderTop: '1px solid #ededed',
+                                          }}
+                                        >
+                                          {siteConfig.footerText}
+                                        </Footer> */}
                   </Layout>
                 </Layout>
               </Layout>
