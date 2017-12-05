@@ -10,7 +10,7 @@ import { themeConfig } from '../../config';
 const { Header } = Layout;
 const { toggleCollapsed } = appActions;
 
-class Topbar extends React.Component {
+class Topbar extends React.PureComponent {
   render() {
     const { toggle } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);

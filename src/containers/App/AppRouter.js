@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import asyncComponent from '../../helpers/AsyncFunc';
 
-class AppRouter extends React.Component {
+class AppRouter extends React.PureComponent {
   render() {
     const { url } = this.props;
     return (

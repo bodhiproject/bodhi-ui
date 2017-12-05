@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { Row, Col } from 'antd';
+// import { Row, Col } from 'antd';
 
 import LayoutContent from '../components/utility/layoutContent';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';

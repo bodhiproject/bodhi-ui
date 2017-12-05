@@ -6,6 +6,7 @@
 Node version greater than 8.6.0
 Yarn
 
+## Steps
 1. Installing Packages & Dependencies:
 `yarn`
 it will download all the necessary packages and dependencies in to node_modules folder.
