@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
-import TopbarUser from '../../components/topbar/topbarUser';
+import { TopbarSearch } from '../../components/topbar';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
 
@@ -30,21 +30,15 @@ class Topbar extends React.PureComponent {
           }
         >
           <div className="isoLeft">
-            <button
-              className={
-                collapsed ? 'triggerBtn menuCollapsed' : 'triggerBtn menuOpen'
-              }
-              style={{ color: customizedTheme.textColor }}
-              onClick={toggle}
-            />
+            <div className="isoSearch">
+              <TopbarSearch />
+            </div>
           </div>
 
           <ul className="isoRight">
-            <li
-              className="isoUser"
-            >
-              <TopbarUser />
-            </li>
+            <li className="">Events</li>
+            <li className="">Create an Event</li>
+            <li className="">0x39...9876</li>
           </ul>
         </Header>
       </TopbarWrapper>
