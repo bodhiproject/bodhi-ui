@@ -12,14 +12,20 @@ export default class ProgressWidget extends Component {
       barHeight,
       status,
     } = this.props;
+
     const iconStyle = {
       color: iconcolor,
+    };
+
+    const titleStyle = {
+      'font-size': '16px',
+      'font-weight': 300,
     };
 
     return (
       <div className="isoProgressWidget">
         <div className="isoProgressWidgetTopbar">
-          <h3>{label}</h3>
+          <h3 style={titleStyle}>{label}</h3>
           <i className={icon} style={iconStyle} />
         </div>
 

@@ -31,26 +31,26 @@ export default class IsoWidgetsWrapper extends React.PureComponent {
 }
 
 IsoWidgetsWrapper.propTypes = {
-  width: PropTypes.number,
-  gutterTop: PropTypes.number,
-  gutterRight: PropTypes.number,
-  gutterBottom: PropTypes.number,
-  gutterLeft: PropTypes.number,
-  padding: PropTypes.number,
+  width: PropTypes.string,
+  gutterTop: PropTypes.string,
+  gutterRight: PropTypes.string,
+  gutterBottom: PropTypes.string,
+  gutterLeft: PropTypes.string,
+  padding: PropTypes.string,
   bgColor: PropTypes.string,
   children: PropTypes.oneOfType([
-    PropTypes.object,
+    PropTypes.element,
     PropTypes.array,
   ]),
 };
 
 IsoWidgetsWrapper.defaultProps = {
-  width: 0,
-  gutterTop: 0,
-  gutterRight: 0,
-  gutterBottom: 0,
-  gutterLeft: 0,
-  padding: 0,
+  width: '100%',
+  gutterTop: '0px',
+  gutterRight: 'auto',
+  gutterBottom: '0px',
+  gutterLeft: 'auto',
+  padding: '24px 24px 0px 24px',
   bgColor: '#fff',
   children: [],
 };

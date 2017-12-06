@@ -63,7 +63,7 @@ export default class IsoWidgets extends Component {
                     <IntlMessages id="widget.singleprogresswidget1.label" />
                   }
                   percent={70}
-                  barHeight={7}
+                  barHeight={12}
                   status="active"
                   info // Boolean: true, false
                 />
@@ -72,7 +72,7 @@ export default class IsoWidgets extends Component {
                     <IntlMessages id="widget.singleprogresswidget2.label" />
                   }
                   percent={80}
-                  barHeight={7}
+                  barHeight={12}
                   status="active"
                   info // Boolean: true, false
                 />
@@ -81,7 +81,7 @@ export default class IsoWidgets extends Component {
                     <IntlMessages id="widget.singleprogresswidget3.label" />
                   }
                   percent={40}
-                  barHeight={7}
+                  barHeight={12}
                   status="active"
                   info // Boolean: true, false
                 />
@@ -90,7 +90,7 @@ export default class IsoWidgets extends Component {
                     <IntlMessages id="widget.singleprogresswidget4.label" />
                   }
                   percent={60}
-                  barHeight={7}
+                  barHeight={12}
                   status="active"
                   info // Boolean: true, false
                 />
@@ -257,7 +257,7 @@ export default class IsoWidgets extends Component {
                 icon="ion-archive"
                 iconcolor="#4482FF"
                 percent={50}
-                barHeight={7}
+                barHeight={12}
                 status="active"
               />
             </IsoWidgetsWrapper>
@@ -270,7 +270,7 @@ export default class IsoWidgets extends Component {
                 icon="ion-pie-graph"
                 iconcolor="#F75D81"
                 percent={80}
-                barHeight={7}
+                barHeight={12}
                 status="active"
               />
             </IsoWidgetsWrapper>
@@ -283,7 +283,7 @@ export default class IsoWidgets extends Component {
                 icon="ion-android-download"
                 iconcolor="#494982"
                 percent={65}
-                barHeight={7}
+                barHeight={12}
                 status="active"
               />
             </IsoWidgetsWrapper>
