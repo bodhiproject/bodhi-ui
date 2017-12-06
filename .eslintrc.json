@@ -71,7 +71,7 @@
       }
     ],
     "no-unused-vars": [
-      2,
+      1,
       {
         "ignoreRestSiblings": true
       }
@@ -97,6 +97,7 @@
     "react/prefer-stateless-function": 1,
     "redux-saga/no-yield-in-race": 2,
     "redux-saga/yield-effects": 2,
+    "react/jsx-closing-tag-location": 0,
     "require-yield": 0,
     "import/no-webpack-loader-syntax": 0,
     "semi": [
