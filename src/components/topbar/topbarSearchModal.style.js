@@ -1,6 +1,6 @@
-import Modal from '../../components/feedback/modal';
 import styled from 'styled-components';
 import { palette } from 'styled-theme';
+import Modal from '../../components/feedback/modal';
 import WithDirection from '../../config/withDirection';
 
 const TopbarSearchModal = styled(Modal)`

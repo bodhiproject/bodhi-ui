@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Popover } from 'antd';
 import { connect } from 'react-redux';
 import TopbarDropdownWrapper from './topbarDropdown.style';
@@ -78,7 +78,7 @@ class TopbarMessage extends Component {
                   {massage.massage}
                 </p>
               </div>
-             </a>))}
+            </a>))}
         </div>
         <a className="isoViewAllBtn">View All</a>
       </TopbarDropdownWrapper>
@@ -109,3 +109,11 @@ export default connect((state) => ({
   ...state.App.toJS(),
   customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarMessage);
+
+TopbarMessage.propTypes = {
+  customizedTheme: PropTypes.object,
+};
+
+TopbarMessage.defaultProps = {
+  customizedTheme: {},
+};

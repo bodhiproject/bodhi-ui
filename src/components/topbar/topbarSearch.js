@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { InputSearch } from '../../components/uielements/input';
 import TopbarSearchModal from './topbarSearchModal.style';
@@ -8,7 +8,9 @@ class Searchbar extends Component {
     setTimeout(() => {
       try {
         document.getElementById('InputTopbarSearch').focus();
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }, 200);
   }
   render() {
@@ -29,7 +31,7 @@ class TopbarSearch extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.showModal = this.showModal.bind(this);
     this.state = {
-      visiblity: false,
+      visible: false,
     };
   }
 
@@ -76,7 +78,15 @@ class TopbarSearch extends Component {
   }
 }
 
+TopbarSearch.propTypes = {
+  customizedTheme: PropTypes.object,
+};
+
+TopbarSearch.defaultProps = {
+  customizedTheme: {},
+};
+
 export default connect((state) => ({
   ...state.App.toJS(),
-  customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
+  customizedTheme: state.ThemeSwitcher ? state.ThemeSwitcher.toJS().topbarTheme : {},
 }))(TopbarSearch);

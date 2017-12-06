@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Icon } from 'antd';
 import Input from './uielements/input';
 
@@ -14,7 +14,7 @@ export default class EditableComponent extends Component {
     };
   }
   handleChange(event) {
-    const value = event.target.value;
+    const { value } = event.target;
     this.setState({ value });
   }
   check() {
@@ -45,12 +45,24 @@ export default class EditableComponent extends Component {
               className="isoNoteEditIcon"
               onClick={this.check}
             />
-            </div>
+          </div>
           : <p className="isoNoteTextWrapper" onClick={this.edit}>
             {value || ' '}
             <Icon type="edit" className="isoNoteEditIcon" />
-            </p>}
+          </p>}
       </div>
     );
   }
 }
+
+EditableComponent.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  itemKey: PropTypes.string,
+};
+
+EditableComponent.defaultProps = {
+  value: '',
+  onChange: undefined,
+  itemKey: '',
+};

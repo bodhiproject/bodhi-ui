@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Popover from '../uielements/popover';
@@ -75,7 +75,7 @@ class TopbarMail extends Component {
                   {mail.desc}
                 </p>
               </div>
-             </Link>))}
+            </Link>))}
         </div>
         <a className="isoViewAllBtn">View All</a>
       </TopbarDropdownWrapper>
@@ -106,3 +106,14 @@ export default connect((state) => ({
   ...state.App.toJS(),
   customizedTheme: state.ThemeSwitcher.toJS().topbarTheme,
 }))(TopbarMail);
+
+TopbarMail.propTypes = {
+  customizedTheme: PropTypes.object,
+  url: PropTypes.string,
+};
+
+TopbarMail.defaultProps = {
+  customizedTheme: {},
+  url: '',
+};
+
