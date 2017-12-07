@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import gql from 'graphql-tag';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
@@ -27,6 +28,7 @@ class Dashboard extends React.Component {
 
   render() {
     const { rowStyle, colStyle } = basicStyle;
+    const numShowInOptions = 3;
 
     // Specify how many col in each row
     const colPerRow = {
@@ -50,30 +52,30 @@ class Dashboard extends React.Component {
 
     const topicArray = [];
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
-      this.props.getTopicsSuccess.forEach((entry) => {
+      _.each(this.props.getTopicsSuccess, (entry) => {
         const entryEle =
-          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.name} style={colStyle}>
+          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={colStyle}>
             <IsoWidgetsWrapper>
               {/* Report Widget */}
               <ReportsWidget
                 label={entry.name}
                 details={['Raised: 398,841,00 QTUM', 'Ends: 12/21/2017']}
               >
-                {entry.resultNames.map((result) =>
-                  (<SingleProgressWidget
-                    key={result}
-                    label={result}
-                    percent={_.random(100)}
-                    barHeight={12}
-                    status="active"
-                    fontColor="#4A4A4A"
-                    info
-                  />))}
+                {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
+                  key={result}
+                  label={result}
+                  percent={_.random(100)}
+                  barHeight={12}
+                  status="active"
+                  fontColor="#4A4A4A"
+                  info
+                />))}
               </ReportsWidget>
 
               <BottomButtonWidget />
             </IsoWidgetsWrapper>
           </Col>);
+
         topicArray.push(entryEle);
       });
     }
