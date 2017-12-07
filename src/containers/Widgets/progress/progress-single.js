@@ -7,7 +7,7 @@ export default class SingleProgressWidget extends Component {
       label, percent, barHeight, status, info, fontColor,
     } = this.props;
 
-    const wrapperStyle = { 'margin-top': '18px', 'margin-bottom': '18px' };
+    const wrapperStyle = { marginTop: '18px', marginBottom: '18px' };
 
     const titleStyle = {
       color: fontColor,

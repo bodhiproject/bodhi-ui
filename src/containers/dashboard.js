@@ -2,15 +2,13 @@ import React, { PropTypes } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import gql from 'graphql-tag';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import BottomButtonWidget from './Widgets/bottom-button';
 import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
-import basicStyle from '../config/basicStyle';
-
+import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
 
 class Dashboard extends React.Component {
@@ -27,7 +25,6 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { rowStyle, colStyle } = basicStyle;
     const numShowInOptions = 3;
 
     // Specify how many col in each row
@@ -41,7 +38,9 @@ class Dashboard extends React.Component {
       xs: 0,
       sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
       md: 24,
+      lg: 24,
       xl: 32,
+      xxl: 32,
     };
 
     // Calculate grid number for Col attribute
@@ -54,7 +53,7 @@ class Dashboard extends React.Component {
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
         const entryEle =
-          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={colStyle}>
+          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
             <IsoWidgetsWrapper>
               {/* Report Widget */}
               <ReportsWidget
@@ -82,7 +81,20 @@ class Dashboard extends React.Component {
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
-        <Row style={rowStyle} gutter={24} justify="start">
+        <TabBtnGroup
+          buttons={[{
+            text: 'OnGoing',
+          }, {
+            text: 'Voting',
+          }, {
+            text: 'Completed',
+          }]}
+        />
+        <Row
+          // style={rowStyle}
+          gutter={28}
+          justify="center"
+        >
           {topicArray}
         </Row>
       </LayoutContentWrapper>
@@ -91,7 +103,11 @@ class Dashboard extends React.Component {
 }
 
 Dashboard.propTypes = {
-  getTopicsSuccess: PropTypes.array,
+  getTopicsSuccess: PropTypes.oneOfType([
+    PropTypes.array, // Result array
+    PropTypes.string, // error message
+    PropTypes.bool, // No result
+  ]),
   onGetTopics: PropTypes.func,
 };
 

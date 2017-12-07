@@ -23,8 +23,10 @@ export default class IsoWidgetsWrapper extends React.PureComponent {
     };
 
     return (
-      <div className="isoWidgetsWrapper" style={wrapperStyle}>
-        {children}
+      <div className="cardWrapper" style={{ padding: '2px' }}>
+        <div className="inner" style={wrapperStyle}>
+          {children}
+        </div>
       </div>
     );
   }

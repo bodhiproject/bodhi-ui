@@ -18,7 +18,7 @@ export default function LayoutWrapper(props) {
 
 LayoutWrapper.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]).isRequired,
 };
 
 LayoutWrapper.defaultProps = {

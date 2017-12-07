@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 const labelStyle = {
-  'font-size': '24px',
+  fontSize: '24px',
   padding: '0px',
 };
 
