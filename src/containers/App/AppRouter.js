@@ -4,18 +4,32 @@ import asyncComponent from '../../helpers/AsyncFunc';
 
 class AppRouter extends React.Component {
   render() {
-    const { url } = this.props;
+    let { url } = this.props;
+
+    // Remove trailing '/' from url so that we can use `${url}/topic` below
+    if (url[url.length - 1] === '/') {
+      url = url.slice(0, url.length - 1);
+    }
+
     return (
       <Switch>
         <Route
           exact
           path={`${url}/`}
-          component={asyncComponent(() => import('../dashboard'))}
+          component={asyncComponent(() => {
+            console.log('{url}/');
+            return import('../dashboard');
+          })}
         />
         <Route
           exact
           path={`${url}/blankPage`}
           component={asyncComponent(() => import('../blankPage'))}
+        />
+        <Route
+          exact
+          path={`${url}/topic`}
+          component={asyncComponent(() => import('../topic'))}
         />
       </Switch>
     );
