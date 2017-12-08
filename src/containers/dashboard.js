@@ -58,6 +58,7 @@ class Dashboard extends React.Component {
           qtumTotal += entry.qtumAmount[i];
         }
         const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+        const endBlockString = `Ends: ${entry.blockNum}`;
 
         const entryEle =
           (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
@@ -65,7 +66,7 @@ class Dashboard extends React.Component {
               {/* Report Widget */}
               <ReportsWidget
                 label={entry.name}
-                details={[raisedString, 'Ends: 12/21/2017']}
+                details={[raisedString, endBlockString]}
               >
                 {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
                   key={result}
@@ -83,37 +84,7 @@ class Dashboard extends React.Component {
           </Col>);
 
         topicArray.push(entryEle);
-      });
-    }
-
-    const oraclesArray = [];
-    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
-      _.each(this.props.getOraclesSuccess, (entry) => {
-        // console.log(entry);
-        const entryEle =
-          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
-            <IsoWidgetsWrapper>
-              {/* Report Widget */}
-              <ReportsWidget
-                label={entry.name}
-                details={['Raised: 398,841,00 QTUM', 'Ends: 12/21/2017']}
-              >
-                {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
-                  key={result}
-                  label={result}
-                  percent={_.random(100)}
-                  barHeight={12}
-                  status="active"
-                  fontColor="#4A4A4A"
-                  info
-                />))}
-              </ReportsWidget>
-
-              <BottomButtonWidget />
-            </IsoWidgetsWrapper>
-          </Col>);
-
-        topicArray.push(entryEle);
+        console.log(this.props.getOraclesSuccess); // This is here to resolve no-referrence formatting error
       });
     }
 
