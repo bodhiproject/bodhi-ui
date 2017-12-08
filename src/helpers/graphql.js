@@ -20,7 +20,7 @@ query{
 }
 `;
 
-const ALL_ORACLES_WITH_FILTER = gql`
+const ALL_ORACLES = gql`
   query AllOracles($topicAddress: String) {
     allOracles(filter: {
       topicAddress: $topicAddress
@@ -38,26 +38,26 @@ const ALL_ORACLES_WITH_FILTER = gql`
   }
 `;
 
-// export function queryAllTopics() {
-//   return client.query({ query: ALL_TOPICS }).then((res) => {
-//     const queryName = 'allTopics';
-//     const queryData = res.data[queryName].map((entry) => ({
-//       address: entry.address,
-//       name: entry.name,
-//       options: entry.options,
-//       bettingEndBlock: entry.blockNum,
-//       creatorAddress: entry.creatorAddress,
-//     }));
-//     console.log(queryData);
-//     return queryData;
-//   });
-// }
-
 export function queryAllTopics() {
+  return client.query({ query: ALL_TOPICS }).then((res) => {
+    const queryName = 'allTopics';
+    const queryData = res.data[queryName].map((entry) => ({
+      address: entry.address,
+      name: entry.name,
+      options: entry.options,
+      bettingEndBlock: entry.blockNum,
+      creatorAddress: entry.creatorAddress,
+    }));
+    console.log(queryData);
+    return queryData;
+  });
+}
+
+export function queryAllOracles(address) {
   return client.query({
-    query: ALL_ORACLES_WITH_FILTER,
+    query: ALL_ORACLES,
     variables: {
-      topicAddress: '5a298f9107edc5e1f55d9814',
+      topicAddress: address,
     },
   }).then((res) => {
     const queryName = 'allOracles';

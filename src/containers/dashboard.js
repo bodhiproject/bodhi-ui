@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
 
   componentWillMount() {
     this.props.onGetTopics();
+    this.props.onGetOracles();
   }
 
   render() {
@@ -79,6 +80,37 @@ class Dashboard extends React.Component {
       });
     }
 
+    const oraclesArray = [];
+    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
+      _.each(this.props.getOraclesSuccess, (entry) => {
+        console.log(entry);
+        // const entryEle =
+        //   (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+        //     <IsoWidgetsWrapper>
+        //       {/* Report Widget */}
+        //       <ReportsWidget
+        //         label={entry.name}
+        //         details={['Raised: 398,841,00 QTUM', 'Ends: 12/21/2017']}
+        //       >
+        //         {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
+        //           key={result}
+        //           label={result}
+        //           percent={_.random(100)}
+        //           barHeight={12}
+        //           status="active"
+        //           fontColor="#4A4A4A"
+        //           info
+        //         />))}
+        //       </ReportsWidget>
+
+        //       <BottomButtonWidget />
+        //     </IsoWidgetsWrapper>
+        //   </Col>);
+
+        // topicArray.push(entryEle);
+      });
+    }
+
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
         <TabBtnGroup
@@ -109,11 +141,19 @@ Dashboard.propTypes = {
     PropTypes.bool, // No result
   ]),
   onGetTopics: PropTypes.func,
+  getOraclesSuccess: PropTypes.oneOfType([
+    PropTypes.array, // Result array
+    PropTypes.string, // error message
+    PropTypes.bool, // No result
+  ]),
+  onGetOracles: PropTypes.func,
 };
 
 Dashboard.defaultProps = {
   getTopicsSuccess: [],
   onGetTopics: undefined,
+  getOraclesSuccess: [],
+  onGetOracles: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -124,6 +164,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onGetOracles: () => dispatch(dashboardActions.getOracles()),
   };
 }
 
