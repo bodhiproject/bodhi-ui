@@ -11,11 +11,15 @@ const client = new ApolloClient({
 const ALL_TOPICS = gql`
 query{
   allTopics{
-    address,
-    creatorAddress,
-    name,
-    options,
+    address
+    creatorAddress
+    name
+    options
     blockNum
+    status
+    resultIdx
+    qtumAmount
+    botAmount
   }
 }
 `;
@@ -43,10 +47,15 @@ export function queryAllTopics() {
     const queryName = 'allTopics';
     const queryData = res.data[queryName].map((entry) => ({
       address: entry.address,
+      creatorAddress: entry.creatorAddress,
       name: entry.name,
       options: entry.options,
       bettingEndBlock: entry.blockNum,
-      creatorAddress: entry.creatorAddress,
+      status: entry.status,
+      resultIdx: entry.resultIdx,
+      qtumAmount: entry.qtumAmount,
+      botAmount: entry.botAmount,
+      oracles: entry.oracles,
     }));
     console.log(queryData);
     return queryData;
@@ -72,7 +81,7 @@ export function queryAllOracles(address) {
       amounts: entry.amounts,
       endBlock: entry.endBlock,
     }));
-    console.log('Oracle data: ');
+    console.log('Oracle data:');
     console.log(queryData);
     return queryData;
   });
