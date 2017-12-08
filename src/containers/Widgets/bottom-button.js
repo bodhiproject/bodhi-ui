@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class BottomButtonWidget extends React.PureComponent {
   render() {
     const {
       height,
+      pathname,
+      query,
     } = this.props;
 
     const style = {
@@ -26,7 +29,7 @@ export default class BottomButtonWidget extends React.PureComponent {
 
     return (
       <div style={style}>
-        <a href="#">Participate</a>
+        <Link to={{ pathname, query }}>Participate</Link>
       </div>
     );
   }
@@ -34,8 +37,12 @@ export default class BottomButtonWidget extends React.PureComponent {
 
 BottomButtonWidget.propTypes = {
   height: PropTypes.string,
+  pathname: PropTypes.string,
+  query: PropTypes.object,
 };
 
 BottomButtonWidget.defaultProps = {
   height: '48px',
+  pathname: '',
+  query: '',
 };
