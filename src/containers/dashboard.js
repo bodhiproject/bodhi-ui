@@ -71,7 +71,7 @@ class Dashboard extends React.Component {
                 />))}
               </ReportsWidget>
 
-              <BottomButtonWidget />
+              <BottomButtonWidget pathname="/topic" query={{ input: entry }} />
             </IsoWidgetsWrapper>
           </Col>);
 
