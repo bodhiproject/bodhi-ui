@@ -65,8 +65,14 @@ export function queryAllOracles(address) {
       topicAddress: entry.topicAddress,
       token: entry.token,
       name: entry.name,
+      status: entry.status,
       options: entry.options,
+      optionIdxs: entry.optionIdxs,
+      resultIdx: entry.resultIdx,
+      amounts: entry.amounts,
+      endBlock: entry.endBlock,
     }));
+    console.log('Oracle data: ');
     console.log(queryData);
     return queryData;
   });

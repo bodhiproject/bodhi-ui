@@ -42,7 +42,7 @@ export function* getOraclesRequestHandler(/* actions */) {
 
     try {
       // Query all topics data using graphQL call
-      const result = yield call(queryAllOracles);
+      const result = yield call(queryAllOracles('5a298f9107edc5e1f55d9814'));
 
       yield put({
         type: actions.GET_ORACLES_SUCCESS,
