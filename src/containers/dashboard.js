@@ -51,14 +51,16 @@ class Dashboard extends React.Component {
     });
 
     const topicArray = [];
+    console.log(this.props.getTopicsSuccess[0]);
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
         let qtumTotal = 0;
         for (let i = 0; i < entry.qtumAmount.length; i++) {
           qtumTotal += entry.qtumAmount[i];
         }
+
         const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
-        const endBlockString = `Ends: ${entry.blockNum}`;
+        const endBlockString = `Ends: ${entry.blockNum ? entry.blockNum : 45000}`;
 
         const entryEle =
           (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
@@ -68,10 +70,10 @@ class Dashboard extends React.Component {
                 label={entry.name}
                 details={[raisedString, endBlockString]}
               >
-                {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
+                {entry.options.slice(0, numShowInOptions).map((result, index) => (<SingleProgressWidget
                   key={result}
                   label={result}
-                  percent={_.random(100)}
+                  percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
                   barHeight={12}
                   status="active"
                   fontColor="#4A4A4A"
