@@ -20,6 +20,22 @@ After the compiled process completed successfully, it will show success commands
 
 # Development
 
+## Prepare Database data
+
+### Importing 
+1. use `which mongo` find mongo install directory, in which you will also find a mongorestore executable.
+
+2.  `mongorestore --db <dbname> topics.json`
+bodhi-ui use "bodhiapi" as <dbname>, if you use another name you need to go to bodhi-graphql/src/db/index.js to update it.
+This command will create a table with file name 'topics' in database <dbname>.
+
+### Exporting
+1. Use `which mongo` find mongo install directory, in which you will also find a mongodump executable.
+
+2.`mongodump --db bodhiapi --collection <colleciton_name> --out - > <output_path>/<filename>.bson`
+Note that filename is best to be same as collection name for the ease of importing.
+
+
 ## Coding
 
 ### Javascript formatter
