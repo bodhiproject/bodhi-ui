@@ -10,7 +10,7 @@ const PublicRoutes = ({ history }) => (
   <ConnectedRouter history={history}>
     <div>
       <Route
-        path="/dashboard"
+        path="/"
         component={App}
       />
     </div>
