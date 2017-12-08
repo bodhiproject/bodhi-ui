@@ -53,13 +53,19 @@ class Dashboard extends React.Component {
     const topicArray = [];
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
+        let qtumTotal = 0;
+        for (let i = 0; i < entry.qtumAmount.length; i++) {
+          qtumTotal += entry.qtumAmount[i];
+        }
+        const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+
         const entryEle =
           (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
             <IsoWidgetsWrapper>
               {/* Report Widget */}
               <ReportsWidget
                 label={entry.name}
-                details={['Raised: 398,841,00 QTUM', 'Ends: 12/21/2017']}
+                details={[raisedString, 'Ends: 12/21/2017']}
               >
                 {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
                   key={result}
