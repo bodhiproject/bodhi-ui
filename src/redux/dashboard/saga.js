@@ -1,6 +1,6 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 // import { push } from 'react-router-redux';
-import { queryAllTopics } from '../../helpers/graphql';
+import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
 
 import actions from './actions';
 
@@ -36,8 +36,30 @@ export function* getTopicsRequestHandler(/* actions */) {
   });
 }
 
+export function* getOraclesRequestHandler(/* actions */) {
+  yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest() {
+    console.log('saga: onGetOraclesRequest');
+
+    try {
+      // Query all topics data using graphQL call
+      const result = yield call(queryAllOracles('5a298f9107edc5e1f55d9814'));
+
+      yield put({
+        type: actions.GET_ORACLES_SUCCESS,
+        value: result,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_ORACLES_ERROR,
+        value: error.message,
+      });
+    }
+  });
+}
+
 export default function* dashboardSaga() {
   yield all([
     fork(getTopicsRequestHandler),
+    fork(getOraclesRequestHandler),
   ]);
 }

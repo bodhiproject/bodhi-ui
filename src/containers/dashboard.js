@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
 
   componentWillMount() {
     this.props.onGetTopics();
+    this.props.onGetOracles();
   }
 
   render() {
@@ -50,20 +51,29 @@ class Dashboard extends React.Component {
     });
 
     const topicArray = [];
+    console.log(this.props.getTopicsSuccess[0]);
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
+        let qtumTotal = 0;
+        for (let i = 0; i < entry.qtumAmount.length; i++) {
+          qtumTotal += entry.qtumAmount[i];
+        }
+
+        const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+        const endBlockString = `Ends: ${entry.blockNum ? entry.blockNum : 45000}`;
+
         const entryEle =
           (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
             <IsoWidgetsWrapper>
               {/* Report Widget */}
               <ReportsWidget
                 label={entry.name}
-                details={['Raised: 398,841,00 QTUM', 'Ends: 12/21/2017']}
+                details={[raisedString, endBlockString]}
               >
-                {entry.options.slice(0, numShowInOptions).map((result) => (<SingleProgressWidget
+                {entry.options.slice(0, numShowInOptions).map((result, index) => (<SingleProgressWidget
                   key={result}
                   label={result}
-                  percent={_.random(100)}
+                  percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
                   barHeight={12}
                   status="active"
                   fontColor="#4A4A4A"
@@ -76,6 +86,7 @@ class Dashboard extends React.Component {
           </Col>);
 
         topicArray.push(entryEle);
+        console.log(this.props.getOraclesSuccess); // This is here to resolve no-referrence formatting error
       });
     }
 
@@ -109,11 +120,19 @@ Dashboard.propTypes = {
     PropTypes.bool, // No result
   ]),
   onGetTopics: PropTypes.func,
+  getOraclesSuccess: PropTypes.oneOfType([
+    PropTypes.array, // Result array
+    PropTypes.string, // error message
+    PropTypes.bool, // No result
+  ]),
+  onGetOracles: PropTypes.func,
 };
 
 Dashboard.defaultProps = {
   getTopicsSuccess: [],
   onGetTopics: undefined,
+  getOraclesSuccess: [],
+  onGetOracles: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -124,6 +143,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onGetOracles: () => dispatch(dashboardActions.getOracles()),
   };
 }
 

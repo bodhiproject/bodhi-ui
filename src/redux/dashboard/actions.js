@@ -5,5 +5,11 @@ const dashboardActions = {
   getTopics: () => ({
     type: dashboardActions.GET_TOPICS_REQUEST,
   }),
+  GET_ORACLES_REQUEST: 'GET_ORACLES_REQUEST',
+  GET_ORACLES_SUCCESS: 'GET_ORACLES_SUCCESS',
+  GET_ORACLES_ERROR: 'GET_ORACLES_ERROR',
+  getOracles: () => ({
+    type: dashboardActions.GET_ORACLES_REQUEST,
+  }),
 };
 export default dashboardActions;
