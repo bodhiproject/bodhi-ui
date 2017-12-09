@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Layout } from 'antd';
+import { Link } from 'react-router-dom';
+import { Layout, Menu, Dropdown, Icon, message } from 'antd';
+
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
 import { TopbarSearch } from '../../components/topbar';
@@ -10,36 +12,55 @@ import { themeConfig } from '../../config';
 const { Header } = Layout;
 const { toggleCollapsed } = appActions;
 
+
 class Topbar extends React.PureComponent {
+  onClick({ key }) {
+    message.info(`Click on item ${key}`);
+  }
+
   render() {
     const { toggle } = this.props;
+    console.log('Topbar: themeConfig.theme is ', themeConfig.theme);
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
+    console.log('Topbar: customizedTheme', customizedTheme);
     const collapsed = this.props.collapsed && !this.props.openDrawer;
-    const styling = {
-      background: customizedTheme.backgroundColor,
-      position: 'fixed',
-      width: '100%',
-      height: 70,
-    };
+
+    const menu = (
+      <Menu onClick={this.onClick}>
+        <Menu.Item key="1">1st address</Menu.Item>
+        <Menu.Item key="2">2nd address</Menu.Item>
+        <Menu.Item key="3">3rd address</Menu.Item>
+      </Menu>
+    );
+
     return (
       <TopbarWrapper>
         <Header
-          style={styling}
+          style={{
+            background: customizedTheme.backgroundColor,
+          }}
           className={
-            collapsed ? 'isomorphicTopbar collapsed' : 'isomorphicTopbar'
+            collapsed ? 'collapsed' : ''
           }
         >
-          <div className="isoLeft">
-            <div className="isoSearch">
-              <TopbarSearch />
+          <div className="horizontalWrapper">
+            <div className="topbarWrapper">
+              <div className="isoLeft">
+                <div className="isoSearch">
+                  <TopbarSearch customizedTheme={customizedTheme} />
+                </div>
+              </div>
+
+              <ul className="isoRight">
+                <li><Link to="/" >Events</Link></li>
+                <li><Link to="/create-topic" >Create an Event</Link></li>
+                <li><Dropdown overlay={menu}>
+                  <a className="ant-dropdown-link" href="#">0x39...9876<Icon type="down" />
+                  </a>
+                </Dropdown></li>
+              </ul>
             </div>
           </div>
-
-          <ul className="isoRight">
-            <li className="">Events</li>
-            <li className="">Create an Event</li>
-            <li className="">0x39...9876</li>
-          </ul>
         </Header>
       </TopbarWrapper>
     );

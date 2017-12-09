@@ -52,7 +52,6 @@ export class App extends React.PureComponent {
                     <Content
                       className="isomorphicContent"
                       style={{
-                        padding: '70px 0 0',
                         flexShrink: '0',
                         background: '#f9f9f9',
                       }}

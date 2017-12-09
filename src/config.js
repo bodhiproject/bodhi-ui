@@ -7,13 +7,16 @@ const siteConfig = {
   siteIcon: 'ion-flash',
   footerText: 'Isomorphic ©2017 Created by RedQ, Inc',
 };
+
 const themeConfig = {
   topbar: 'themedefault',
   sidebar: 'themedefault',
   layout: 'themedefault',
-  theme: 'themedefault',
+  theme: 'themeBodhi',
 };
+
 const language = 'english';
+
 export {
   siteConfig,
   language,

@@ -86,7 +86,4 @@ TopbarSearch.defaultProps = {
   customizedTheme: {},
 };
 
-export default connect((state) => ({
-  ...state.App.toJS(),
-  customizedTheme: state.ThemeSwitcher ? state.ThemeSwitcher.toJS().topbarTheme : {},
-}))(TopbarSearch);
+export default TopbarSearch;

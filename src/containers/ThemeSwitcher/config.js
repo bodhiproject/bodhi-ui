@@ -1,4 +1,10 @@
 import { themeConfig } from '../../config';
+
+const primaryColor = '#585AFA';
+const white = '#ffffff';
+
+console.log(`themeConfig.theme is ${themeConfig.theme}`);
+
 const changeThemes = {
   id: 'changeThemes',
   label: 'themeSwitcher',
@@ -33,40 +39,10 @@ const topbarTheme = {
       textColor: '#ffffff',
     },
     {
-      themeName: 'theme2',
-      buttonColor: '#6534ff',
-      backgroundColor: '#6534ff',
-      textColor: '#ffffff',
-    },
-    {
-      themeName: 'theme3',
-      buttonColor: '#4482FF',
-      backgroundColor: '#4482FF',
-      textColor: '#ffffff',
-    },
-    {
-      themeName: 'theme4',
-      buttonColor: '#422e62',
-      backgroundColor: '#422e62',
-      textColor: '#ffffff',
-    },
-    {
-      themeName: 'theme5',
-      buttonColor: '#22144c',
-      backgroundColor: '#22144c',
-      textColor: '#ffffff',
-    },
-    {
-      themeName: 'theme6',
-      buttonColor: '#4670a2',
-      backgroundColor: '#4670a2',
-      textColor: '#ffffff',
-    },
-    {
-      themeName: 'theme7',
-      buttonColor: '#494982',
-      backgroundColor: '#494982',
-      textColor: '#ffffff',
+      themeName: 'themeBodhi',
+      buttonColor: white,
+      backgroundColor: primaryColor,
+      textColor: white,
     },
   ],
 };
