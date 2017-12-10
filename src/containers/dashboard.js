@@ -51,7 +51,7 @@ class Dashboard extends React.Component {
     });
 
     const topicArray = [];
-    console.log(this.props.getTopicsSuccess[0]);
+    console.log(this.props.getOraclesSuccess);
 
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
@@ -71,15 +71,17 @@ class Dashboard extends React.Component {
                 label={entry.name}
                 details={[raisedString, endBlockString]}
               >
-                {entry.options.slice(0, numShowInOptions).map((result, index) => (<SingleProgressWidget
-                  key={result}
-                  label={result}
-                  percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
-                  barHeight={12}
-                  status="active"
-                  fontColor="#4A4A4A"
-                  info
-                />))}
+                {entry.options.slice(0, numShowInOptions).map((result, index) => (
+                  <SingleProgressWidget
+                    key={result}
+                    label={result}
+                    percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
+                    barHeight={12}
+                    status="active"
+                    fontColor="#4A4A4A"
+                    info
+                  />
+                ))}
               </ReportsWidget>
 
               <BottomButtonWidget pathname={`/topic/${entry.address}`} />
@@ -89,8 +91,6 @@ class Dashboard extends React.Component {
         topicArray.push(entryEle);
       });
     }
-
-    console.log(this.props.getOraclesSuccess);
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
@@ -140,6 +140,8 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getOraclesSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getOraclesError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
 });
 
 function mapDispatchToProps(dispatch) {

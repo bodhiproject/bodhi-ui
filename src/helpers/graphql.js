@@ -79,12 +79,9 @@ export function queryAllTopics() {
   });
 }
 
-export function queryAllOracles(address) {
+export function queryAllOracles() {
   return client.query({
     query: ALL_ORACLES,
-    variables: {
-      topicAddress: address,
-    },
   }).then((res) => {
     const queryName = 'allOracles';
     const queryData = res.data[queryName].map((entry) => ({
