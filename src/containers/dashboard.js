@@ -52,6 +52,7 @@ class Dashboard extends React.Component {
 
     const topicArray = [];
     console.log(this.props.getTopicsSuccess[0]);
+
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
         let qtumTotal = 0;
@@ -81,14 +82,15 @@ class Dashboard extends React.Component {
                 />))}
               </ReportsWidget>
 
-              <BottomButtonWidget pathname="/topic" query={{ input: entry }} />
+              <BottomButtonWidget pathname={`/topic/${entry.address}`} />
             </IsoWidgetsWrapper>
           </Col>);
 
         topicArray.push(entryEle);
-        console.log(this.props.getOraclesSuccess); // This is here to resolve no-referrence formatting error
       });
     }
+
+    console.log(this.props.getOraclesSuccess);
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
