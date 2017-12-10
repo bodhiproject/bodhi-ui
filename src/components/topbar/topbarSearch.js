@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
 import { InputSearch } from '../../components/uielements/input';
 import TopbarSearchModal from './topbarSearchModal.style';
 

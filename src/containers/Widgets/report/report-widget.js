@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 
 const labelStyle = {
   fontSize: '24px',
   padding: '0px',
 };
 
-export default class ReportsWidget extends Component {
+export default class ReportsWidget extends React.PureComponent {
   render() {
     const { label, details, children } = this.props;
 

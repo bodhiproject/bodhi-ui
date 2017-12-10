@@ -32,7 +32,6 @@ class TopicPage extends React.Component {
   }
 
   onRadioGroupChange(evt) {
-    console.log('radio checked', evt.target.value);
     this.setState({
       radioValue: evt.target.value,
     });
@@ -46,8 +45,6 @@ class TopicPage extends React.Component {
   render() {
     const { match, getTopicsSuccess, editingToggled } = this.props;
     const { topicAddress } = match.params;
-    console.log('topicAddress', topicAddress);
-    console.log('editingToggled', editingToggled);
 
     const topic = _.find(getTopicsSuccess, { address: topicAddress });
 

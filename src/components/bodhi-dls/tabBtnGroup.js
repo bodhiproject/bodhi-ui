@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Row, Col, Button, Icon } from 'antd';
 import _ from 'lodash';
 
-const ButtonGroup = Button.Group;
-
 class TabBtnGroup extends Component {
   constructor(props) {
     super(props);

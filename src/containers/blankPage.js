@@ -6,7 +6,15 @@ import LayoutContent from '../components/utility/layoutContent';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import Spacing from '../components/bodhi-dls/spacing';
 
-class BlankPage extends React.PureComponent {
+class BlankPage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+  }
+
   render() {
     return (
       <LayoutContentWrapper style={{ height: '100vh' }}>
