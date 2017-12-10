@@ -140,8 +140,8 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
-  getOraclesSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  getOraclesError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {
