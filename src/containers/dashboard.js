@@ -50,18 +50,20 @@ class Dashboard extends React.Component {
       colWidth[key] = 24 / colPerRow[key];
     });
 
-    const topicArray = [];
-    console.log(this.props.getOraclesSuccess);
+    console.log(this.props.getTopicsSuccess);
 
-    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
-      _.each(this.props.getTopicsSuccess, (entry) => {
+    // Render Ongoing
+    const oracleArray = [];
+    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
+      console.log(this.props.getOraclesSuccess);
+      _.each(this.props.getOraclesSuccess, (entry) => {
         let qtumTotal = 0;
-        for (let i = 0; i < entry.qtumAmount.length; i++) {
-          qtumTotal += entry.qtumAmount[i];
+        for (let i = 0; i < entry.amounts.length; i++) {
+          qtumTotal += entry.amounts[i];
         }
 
         const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
-        const endBlockString = `Ends: ${entry.blockNum ? entry.blockNum : 45000}`;
+        const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
         const entryEle =
           (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
@@ -75,7 +77,7 @@ class Dashboard extends React.Component {
                   <SingleProgressWidget
                     key={result}
                     label={result}
-                    percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
+                    percent={_.floor((entry.amounts[index] / qtumTotal) * 100)}
                     barHeight={12}
                     status="active"
                     fontColor="#4A4A4A"
@@ -88,7 +90,7 @@ class Dashboard extends React.Component {
             </IsoWidgetsWrapper>
           </Col>);
 
-        topicArray.push(entryEle);
+        oracleArray.push(entryEle);
       });
     }
 
@@ -108,7 +110,7 @@ class Dashboard extends React.Component {
           gutter={28}
           justify="center"
         >
-          {topicArray}
+          {oracleArray}
         </Row>
       </LayoutContentWrapper>
     );
