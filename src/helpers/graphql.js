@@ -57,7 +57,7 @@ export function queryAllTopics() {
       botAmount: entry.botAmount,
       oracles: entry.oracles,
     }));
-    console.log(queryData);
+
     return queryData;
   });
 }
@@ -81,8 +81,7 @@ export function queryAllOracles(address) {
       amounts: entry.amounts,
       endBlock: entry.endBlock,
     }));
-    console.log('Oracle data:');
-    console.log(queryData);
+
     return queryData;
   });
 }

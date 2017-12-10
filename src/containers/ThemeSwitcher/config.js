@@ -3,8 +3,6 @@ import { themeConfig } from '../../config';
 const primaryColor = '#585AFA';
 const white = '#ffffff';
 
-console.log(`themeConfig.theme is ${themeConfig.theme}`);
-
 const changeThemes = {
   id: 'changeThemes',
   label: 'themeSwitcher',

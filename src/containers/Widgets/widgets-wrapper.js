@@ -12,6 +12,7 @@ export default class IsoWidgetsWrapper extends React.PureComponent {
       bgColor,
       children,
     } = this.props;
+
     const wrapperStyle = {
       width,
       marginTop: gutterTop,

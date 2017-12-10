@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Progress from '../../../components/uielements/progress';
 
-export default class SingleProgressWidget extends Component {
+export default class SingleProgressWidget extends React.PureComponent {
   render() {
     const {
       label, percent, barHeight, status, info, fontColor,

@@ -6,12 +6,10 @@ import actions from './actions';
 
 import fakeData from './fakedata';
 
-const isFake = false;
+const isFake = true;
 
 export function* getTopicsRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest() {
-    console.log('saga: onGetTopicsRequest');
-
     if (isFake) {
       yield put({
         type: actions.GET_TOPICS_SUCCESS,
@@ -38,8 +36,6 @@ export function* getTopicsRequestHandler(/* actions */) {
 
 export function* getOraclesRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest() {
-    console.log('saga: onGetOraclesRequest');
-
     try {
       // Query all topics data using graphQL call
       const result = yield call(queryAllOracles('5a298f9107edc5e1f55d9814'));

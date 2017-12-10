@@ -20,9 +20,7 @@ class Topbar extends React.PureComponent {
 
   render() {
     const { toggle } = this.props;
-    console.log('Topbar: themeConfig.theme is ', themeConfig.theme);
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    console.log('Topbar: customizedTheme', customizedTheme);
     const collapsed = this.props.collapsed && !this.props.openDrawer;
 
     const menu = (
