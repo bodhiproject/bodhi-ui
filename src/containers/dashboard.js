@@ -67,8 +67,8 @@ class Dashboard extends React.Component {
       });
     }
 
-    // Render Ongoing
     const oracleArray = [];
+    // Render Ongoing items
     if (centralizedOracles.length > 0) {
       _.each(centralizedOracles, (entry) => {
         let qtumTotal = 0;
@@ -79,8 +79,8 @@ class Dashboard extends React.Component {
         const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
         const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
-        const entryEle =
-          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+        const entryEle = (
+          <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
             <IsoWidgetsWrapper>
               {/* Report Widget */}
               <ReportsWidget
@@ -102,11 +102,53 @@ class Dashboard extends React.Component {
 
               <BottomButtonWidget pathname={`/topic/${entry.address}`} />
             </IsoWidgetsWrapper>
-          </Col>);
+          </Col>
+        );
 
         oracleArray.push(entryEle);
       });
     }
+
+    // Render Voting items
+    // if (decentralizedOracles.length > 0) {
+    //   _.each(decentralizedOracles, (entry) => {
+    //     let botTotal = 0;
+    //     for (let i = 0; i < entry.amounts.length; i++) {
+    //       botTotal += entry.amounts[i];
+    //     }
+
+    //     const raisedString = 'Raised: '.concat(botTotal).concat(' BOT');
+    //     const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+
+    //     const entryEle = (
+    //       <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+    //         <IsoWidgetsWrapper>
+    //           {/* Report Widget */}
+    //           <ReportsWidget
+    //             label={entry.name}
+    //             details={[raisedString, endBlockString]}
+    //           >
+    //             {entry.options.slice(0, numShowInOptions).map((result, index) => (
+    //               <SingleProgressWidget
+    //                 key={result}
+    //                 label={result}
+    //                 percent={_.floor((entry.amounts[index] / botTotal) * 100)}
+    //                 barHeight={12}
+    //                 status="active"
+    //                 fontColor="#4A4A4A"
+    //                 info
+    //               />
+    //             ))}
+    //           </ReportsWidget>
+
+    //           <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+    //         </IsoWidgetsWrapper>
+    //       </Col>
+    //     );
+
+    //     oracleArray.push(entryEle);
+    //   });
+    // }
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
