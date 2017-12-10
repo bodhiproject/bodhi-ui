@@ -67,47 +67,48 @@ class Dashboard extends React.Component {
       });
     }
 
-    const oracleArray = [];
+    const rowItems = [];
+
     // Render Ongoing items
-    if (centralizedOracles.length > 0) {
-      _.each(centralizedOracles, (entry) => {
-        let qtumTotal = 0;
-        for (let i = 0; i < entry.amounts.length; i++) {
-          qtumTotal += entry.amounts[i];
-        }
+    // if (centralizedOracles.length > 0) {
+    //   _.each(centralizedOracles, (entry) => {
+    //     let qtumTotal = 0;
+    //     for (let i = 0; i < entry.amounts.length; i++) {
+    //       qtumTotal += entry.amounts[i];
+    //     }
 
-        const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
-        const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+    //     const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+    //     const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
-        const entryEle = (
-          <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
-            <IsoWidgetsWrapper>
-              {/* Report Widget */}
-              <ReportsWidget
-                label={entry.name}
-                details={[raisedString, endBlockString]}
-              >
-                {entry.options.slice(0, numShowInOptions).map((result, index) => (
-                  <SingleProgressWidget
-                    key={result}
-                    label={result}
-                    percent={_.floor((entry.amounts[index] / qtumTotal) * 100)}
-                    barHeight={12}
-                    status="active"
-                    fontColor="#4A4A4A"
-                    info
-                  />
-                ))}
-              </ReportsWidget>
+    //     const entryEle = (
+    //       <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+    //         <IsoWidgetsWrapper>
+    //           {/* Report Widget */}
+    //           <ReportsWidget
+    //             label={entry.name}
+    //             details={[raisedString, endBlockString]}
+    //           >
+    //             {entry.options.slice(0, numShowInOptions).map((result, index) => (
+    //               <SingleProgressWidget
+    //                 key={result}
+    //                 label={result}
+    //                 percent={_.floor((entry.amounts[index] / qtumTotal) * 100)}
+    //                 barHeight={12}
+    //                 status="active"
+    //                 fontColor="#4A4A4A"
+    //                 info
+    //               />
+    //             ))}
+    //           </ReportsWidget>
 
-              <BottomButtonWidget pathname={`/topic/${entry.address}`} />
-            </IsoWidgetsWrapper>
-          </Col>
-        );
+    //           <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+    //         </IsoWidgetsWrapper>
+    //       </Col>
+    //     );
 
-        oracleArray.push(entryEle);
-      });
-    }
+    //     rowItems.push(entryEle);
+    //   });
+    // }
 
     // Render Voting items
     // if (decentralizedOracles.length > 0) {
@@ -146,9 +147,54 @@ class Dashboard extends React.Component {
     //       </Col>
     //     );
 
-    //     oracleArray.push(entryEle);
+    //     rowItems.push(entryEle);
     //   });
     // }
+
+    // Render Finished items
+    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
+      _.each(this.props.getTopicsSuccess, (entry) => {
+        let qtumTotal = 0;
+        for (let i = 0; i < entry.qtumAmount.length; i++) {
+          qtumTotal += entry.qtumAmount[i];
+        }
+        let botTotal = 0;
+        for (let i = 0; i < entry.botAmount.length; i++) {
+          botTotal += entry.botAmount[i];
+        }
+
+        const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM, ').concat(botTotal).concat(' BOT');
+        const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+
+        const entryEle = (
+          <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+            <IsoWidgetsWrapper>
+              {/* Report Widget */}
+              <ReportsWidget
+                label={entry.name}
+                details={[raisedString, endBlockString]}
+              >
+                {entry.options.slice(0, numShowInOptions).map((result, index) => (
+                  <SingleProgressWidget
+                    key={result}
+                    label={result}
+                    percent={100}
+                    barHeight={12}
+                    status="active"
+                    fontColor="#4A4A4A"
+                    info
+                  />
+                ))}
+              </ReportsWidget>
+
+              <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+            </IsoWidgetsWrapper>
+          </Col>
+        );
+
+        rowItems.push(entryEle);
+      });
+    }
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
@@ -166,7 +212,7 @@ class Dashboard extends React.Component {
           gutter={28}
           justify="center"
         >
-          {oracleArray}
+          {rowItems}
         </Row>
       </LayoutContentWrapper>
     );
