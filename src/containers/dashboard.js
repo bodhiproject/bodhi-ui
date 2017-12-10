@@ -26,6 +26,8 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    const tokenQtum = 'QTUM';
+    const tokenBot = 'BOT';
     const numShowInOptions = 3;
 
     // Specify how many col in each row
@@ -52,11 +54,23 @@ class Dashboard extends React.Component {
 
     console.log(this.props.getTopicsSuccess);
 
+    // Separate Oracles by token type
+    const centralizedOracles = [];
+    const decentralizedOracles = [];
+    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
+      _.each(this.props.getOraclesSuccess, (entry) => {
+        if (entry.token === tokenQtum) {
+          centralizedOracles.push(entry);
+        } else if (entry.token === tokenBot) {
+          decentralizedOracles.push(entry);
+        }
+      });
+    }
+
     // Render Ongoing
     const oracleArray = [];
-    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
-      console.log(this.props.getOraclesSuccess);
-      _.each(this.props.getOraclesSuccess, (entry) => {
+    if (centralizedOracles.length > 0) {
+      _.each(centralizedOracles, (entry) => {
         let qtumTotal = 0;
         for (let i = 0; i < entry.amounts.length; i++) {
           qtumTotal += entry.amounts[i];
