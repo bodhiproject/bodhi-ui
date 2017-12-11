@@ -6,7 +6,7 @@ import actions from './actions';
 
 import fakeData from './fakedata';
 
-const isFake = true;
+const isFake = false;
 
 export function* getTopicsRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest() {

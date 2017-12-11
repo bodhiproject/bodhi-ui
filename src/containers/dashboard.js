@@ -65,10 +65,11 @@ class Dashboard extends React.Component {
     }
     const topicEvents = this.props.getTopicsSuccess;
 
-    const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
     // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
-    // const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
 
+    console.log(topicEvents);
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
         <TabBtnGroup
@@ -194,6 +195,7 @@ function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
 
     const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM, ').concat(botTotal).concat(' BOT');
     const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+    const winningResultName = entry.options[entry.resultIdx];
 
     const entryEle = (
       <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
@@ -203,17 +205,15 @@ function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
             label={entry.name}
             details={[raisedString, endBlockString]}
           >
-            {entry.options.slice(0, numShowInOptions).map((result, index) => (
-              <SingleProgressWidget
-                key={result}
-                label={result}
-                percent={100}
-                barHeight={12}
-                status="active"
-                fontColor="#4A4A4A"
-                info
-              />
-            ))}
+            <SingleProgressWidget
+              key={winningResultName}
+              label={winningResultName}
+              percent={_.floor((entry.botAmount[entry.resultIdx] / botTotal) * 100)}
+              barHeight={12}
+              status="active"
+              fontColor="#4A4A4A"
+              info
+            />
           </ReportsWidget>
 
           <BottomButtonWidget pathname={`/topic/${entry.address}`} />
