@@ -10,12 +10,7 @@ import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
-import Contracts from './config/contracts';
-
-const QWeb3 = require('./src/modules/qweb3').default;
-const qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
-const centralizedOracleContract = new qweb3Instance.Contract(Contracts.CentralizedOracle.address, 
-  Contracts.CentralizedOracle.abi);
+import { listUnspent } from '../helpers/blockchain/qtumcli';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -57,6 +52,8 @@ class Dashboard extends React.Component {
     Object.keys(colPerRow).forEach((key) => {
       colWidth[key] = 24 / colPerRow[key];
     });
+
+    listUnspent();
 
     const centralizedOracles = [];
     const decentralizedOracles = [];
