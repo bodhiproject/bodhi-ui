@@ -20,6 +20,20 @@ query{
     resultIdx
     qtumAmount
     botAmount
+    oracles{
+      address,
+      creatorAddress,
+      topicAddress,
+      status,
+      token,
+      name,
+      optionIdxs,
+      options,
+      amounts,
+      resultIdx,
+      blockNum,
+      endBlock
+    }
   }
 }
 `;
