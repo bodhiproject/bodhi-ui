@@ -1,9 +1,6 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-// import { push } from 'react-router-redux';
 import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
-
 import actions from './actions';
-
 import fakeData from './fakedata';
 
 const isFake = true;
