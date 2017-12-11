@@ -41,22 +41,24 @@ class Topbar extends React.PureComponent {
             collapsed ? 'collapsed' : ''
           }
         >
-          <div className="horizontalWrapper">
-            <div className="topbarWrapper">
-              <div className="isoLeft">
-                <div className="isoSearch">
-                  <TopbarSearch customizedTheme={customizedTheme} />
+          <div className="cancel-ant-layout-header">
+            <div className="horizontalWrapper">
+              <div className="topbarWrapper">
+                <div className="isoLeft">
+                  <div className="isoSearch">
+                    <TopbarSearch customizedTheme={customizedTheme} />
+                  </div>
                 </div>
-              </div>
 
-              <ul className="isoRight">
-                <li><Link to="/" >Events</Link></li>
-                <li><Link to="/create-topic" >Create an Event</Link></li>
-                <li><Dropdown overlay={menu}>
-                  <a className="ant-dropdown-link" href="#">0x39...9876<Icon type="down" />
-                  </a>
-                </Dropdown></li>
-              </ul>
+                <ul className="isoRight">
+                  <li><Link to="/" >Events</Link></li>
+                  <li><Link to="/create-topic" >Create an Event</Link></li>
+                  <li><Dropdown overlay={menu}>
+                    <a className="ant-dropdown-link" href="#">0x39...9876<Icon type="down" />
+                    </a>
+                  </Dropdown></li>
+                </ul>
+              </div>
             </div>
           </div>
         </Header>

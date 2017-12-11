@@ -90,7 +90,7 @@ class Dashboard extends React.Component {
       });
     }
 
-    console.log(this.props.getOraclesSuccess);
+    // console.log(this.props.getOraclesSuccess);
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
@@ -122,18 +122,18 @@ Dashboard.propTypes = {
     PropTypes.bool, // No result
   ]),
   onGetTopics: PropTypes.func,
-  getOraclesSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
+  // getOraclesSuccess: PropTypes.oneOfType([
+  //   PropTypes.array, // Result array
+  //   PropTypes.string, // error message
+  //   PropTypes.bool, // No result
+  // ]),
   onGetOracles: PropTypes.func,
 };
 
 Dashboard.defaultProps = {
   getTopicsSuccess: [],
   onGetTopics: undefined,
-  getOraclesSuccess: [],
+  // getOraclesSuccess: [],
   onGetOracles: undefined,
 };
 

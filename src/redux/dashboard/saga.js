@@ -6,7 +6,8 @@ import actions from './actions';
 
 import fakeData from './fakedata';
 
-const isFake = true;
+/** @type {Boolean} [ Use ./fakedata if true; othwerwise read from DB. ] */
+const isFake = false;
 
 export function* getTopicsRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest() {

@@ -38,7 +38,10 @@ export default class BottomButtonWidget extends React.PureComponent {
 BottomButtonWidget.propTypes = {
   height: PropTypes.string,
   pathname: PropTypes.string,
-  query: PropTypes.object,
+  query: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
 };
 
 BottomButtonWidget.defaultProps = {
