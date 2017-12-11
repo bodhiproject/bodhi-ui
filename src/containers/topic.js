@@ -17,7 +17,9 @@ class TopicPage extends React.Component {
   constructor(props) {
     super(props);
 
+
     this.state = {
+      address: this.props.match.params.topicAddress,
       topic: undefined, // Topic object for this page
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
@@ -27,25 +29,23 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    // Retrive topic data if state doesn't already have it
-    if (_.isUndefined(this.props.getTopicsSuccess)) {
-      this.props.onGetTopics();
-    }
+    const { getTopicsSuccess, onGetTopics } = this.props;
 
-    console.log(`componentWillMount: radioValue ${this.state.radioValue}`);
+    // Retrive topic data if state doesn't already have it
+    if (_.isUndefined(getTopicsSuccess)) {
+      console.log('calling onGetTopics');
+      onGetTopics();
+    } else {
+      const topic = _.find(getTopicsSuccess, { address: this.state.address });
+      this.setState({ topic });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getTopicsSuccess, match } = nextProps;
-    const { topicAddress } = match.params;
-
-    if (_.isUndefined(topicAddress)) {
-      console.error('No topic address defined in match.params; returning. ');
-      return;
-    }
+    const { getTopicsSuccess } = nextProps;
 
     if (!_.isEmpty(getTopicsSuccess)) {
-      const topic = _.find(getTopicsSuccess, { address: match.params.topicAddress });
+      const topic = _.find(getTopicsSuccess, { address: this.state.address });
 
       this.setState({ topic });
       // let oracle = undefined;
