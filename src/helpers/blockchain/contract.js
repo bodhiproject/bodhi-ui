@@ -22,60 +22,60 @@ const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 // });
 
 // Blockchain functions
-async function listUnspent() {
+export async function listUnspent() {
   console.log('listUnspent');
   const result = await Qweb3Instance.listUnspent();
   console.log(result);
 }
 
-async function getBlockCount() {
+export async function getBlockCount() {
   console.log('getBlockCount');
   const result = await Qweb3Instance.getBlockCount();
   console.log(result);
 }
 
 // CentralizedOracle functions
-async function bet(centralizedOracleAddress, resultIndex, senderAddress) {
+export async function bet(centralizedOracleAddress, resultIndex, senderAddress) {
   console.log('bet() '.concat(centralizedOracleAddress));
   const tx = await getCentralizedOracle(centralizedOracleAddress).send('bet', {
     methodArgs: [resultIndex],
     amount: 1,
-    senderAddress: senderAddress,
+    senderAddress,
   });
   console.log(tx);
 }
 
-async function setResult(centralizedOracleAddress, resultIndex, senderAddress) {
+export async function setResult(centralizedOracleAddress, resultIndex, senderAddress) {
   console.log('setResult() '.concat(centralizedOracleAddress));
   const tx = await getCentralizedOracle(centralizedOracleAddress).send('setResult', {
     methodArgs: [resultIndex],
     gasLimit: 3000000,
-    senderAddress: senderAddress,
+    senderAddress,
   });
   console.log(tx);
 }
 
-async function getBetBalances(centralizedOracleAddress, senderAddress) {
+export async function getBetBalances(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'getBetBalances', [], senderAddress);
 }
 
-async function getVoteBalances(centralizedOracleAddress, senderAddress) {
+export async function getVoteBalances(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'getVoteBalances', [], senderAddress);
 }
 
-async function getTotalBets(centralizedOracleAddress, senderAddress) {
+export async function getTotalBets(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'getTotalBets', [], senderAddress);
 }
 
-async function getTotalVotes(centralizedOracleAddress, senderAddress) {
+export async function getTotalVotes(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'getTotalVotes', [], senderAddress);
 }
 
-async function getResult(centralizedOracleAddress, senderAddress) {
+export async function getResult(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'getResult', [], senderAddress);
 }
 
-async function finished(centralizedOracleAddress, senderAddress) {
+export async function finished(centralizedOracleAddress, senderAddress) {
   this.callCentralizedOracle(centralizedOracleAddress, 'finished', [], senderAddress);
 }
 
@@ -83,10 +83,9 @@ async function callCentralizedOracle(centralizedOracleAddress, methodName, metho
   console.log(methodName.concat(' ').concat(centralizedOracleAddress));
 
   try {
-    const oracle = new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
     const result = await getCentralizedOracle(centralizedOracleAddress).call(methodName, {
-      methodArgs: methodArgs,
-      senderAddress: senderAddress,
+      methodArgs,
+      senderAddress,
     });
     console.log(result);
   } catch (err) {
@@ -94,14 +93,6 @@ async function callCentralizedOracle(centralizedOracleAddress, methodName, metho
   }
 }
 
-module.exports = {
-  listUnspent: listUnspent,
-  bet: bet,
-  setResult: setResult,
-  getBetBalances: getBetBalances,
-  getVoteBalances: getVoteBalances,
-  getTotalBets: getTotalBets,
-  getTotalVotes: getTotalVotes,
-  getResult: getResult,
-  finished: finished,
-};
+function getCentralizedOracle(centralizedOracleAddress) {
+  return new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
+}
