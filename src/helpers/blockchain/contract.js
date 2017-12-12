@@ -23,8 +23,14 @@ const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 
 // Blockchain functions
 async function listUnspent() {
-  console.log('Listing unspent outputs:');
+  console.log('listUnspent');
   const result = await Qweb3Instance.listUnspent();
+  console.log(result);
+}
+
+async function getBlockCount() {
+  console.log('getBlockCount');
+  const result = await Qweb3Instance.getBlockCount();
   console.log(result);
 }
 
