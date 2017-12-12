@@ -12,11 +12,12 @@ import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 
 const RadioGroup = Radio.Group;
-const DEFAULT_RADIO_VALUE = 1;
+const DEFAULT_RADIO_VALUE = 0;
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
 
+    // Make sure address is defined; otherwise TopicPage don't know what to find
 
     this.state = {
       address: this.props.match.params.topicAddress,

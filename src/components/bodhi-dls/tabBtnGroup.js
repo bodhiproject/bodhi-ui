@@ -1,23 +1,29 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, Button, Icon } from 'antd';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+
+import dashboardActions from '../../redux/dashboard/actions';
 
 class TabBtnGroup extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      active: 0,
     };
 
-    this.toggleView = this.toggleView.bind(this);
+    this.onTabBtnClicked = this.onTabBtnClicked.bind(this);
+    this.onSortBtnClicked = this.onSortBtnClicked.bind(this);
   }
 
-  toggleView(event) {
+  onTabBtnClicked(event) {
     const { index } = event.target.dataset;
-    this.setState({
-      active: index,
-    });
+
+    this.props.tabViewChanged(parseInt(index, 10));
+  }
+
+  onSortBtnClicked(event) {
+
   }
 
   render() {
@@ -25,8 +31,8 @@ class TabBtnGroup extends Component {
 
       <Button
         key={entry.text}
-        type={index === _.toNumber(this.state.active) ? 'primary' : 'default'}
-        onClick={this.toggleView}
+        type={index === _.toNumber(this.props.tabIndex) ? 'primary' : 'default'}
+        onClick={this.onTabBtnClicked}
         data-index={index}
       >
         {entry.text}
@@ -45,7 +51,7 @@ class TabBtnGroup extends Component {
             <div className="controlBtnGroup">
               <Button
                 type="default"
-                onClick={this.toggleView}
+                onClick={this.onSortBtnClicked}
               >
               Sort
                 <Icon type="down-circle-o" />
@@ -59,6 +65,23 @@ class TabBtnGroup extends Component {
 
 TabBtnGroup.propTypes = {
   buttons: PropTypes.array.isRequired,
+  tabViewChanged: PropTypes.func,
+  tabIndex: PropTypes.number,
 };
 
-export default TabBtnGroup;
+TabBtnGroup.defaultProps = {
+  tabViewChanged: undefined,
+  tabIndex: 0,
+};
+
+const mapStateToProps = (state) => ({
+  tabIndex: state.Dashboard.get('tabIndex'),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    tabViewChanged: (index) => dispatch(dashboardActions.tabViewChanged(index)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabBtnGroup);

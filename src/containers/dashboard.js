@@ -11,18 +11,25 @@ import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
 
+const DEFAULT_TAB_INDEX = 0;
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-
     };
   }
 
   componentWillMount() {
     this.props.onGetTopics();
     this.props.onGetOracles();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.tabIndex !== nextProps.tabIndex) {
+      console.log(`tab index changed from ${this.props.tabIndex} to ${nextProps.tabIndex}`);
+    }
   }
 
   render() {
@@ -51,7 +58,6 @@ class Dashboard extends React.Component {
     });
 
     const topicArray = [];
-    console.log(this.props.getTopicsSuccess[0]);
 
     if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
       _.each(this.props.getTopicsSuccess, (entry) => {
@@ -128,6 +134,7 @@ Dashboard.propTypes = {
   //   PropTypes.bool, // No result
   // ]),
   onGetOracles: PropTypes.func,
+  tabIndex: PropTypes.number,
 };
 
 Dashboard.defaultProps = {
@@ -135,11 +142,13 @@ Dashboard.defaultProps = {
   onGetTopics: undefined,
   // getOraclesSuccess: [],
   onGetOracles: undefined,
+  tabIndex: DEFAULT_TAB_INDEX,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  tabIndex: state.Dashboard.get('tabIndex'),
 });
 
 function mapDispatchToProps(dispatch) {
