@@ -1,4 +1,4 @@
 build
 node_modules
-src/modules
+src/modules/*
 yarn-error.log

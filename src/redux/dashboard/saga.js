@@ -1,9 +1,6 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-// import { push } from 'react-router-redux';
 import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
-
 import actions from './actions';
-
 import fakeData from './fakedata';
 
 /** @type {Boolean} [ Use ./fakedata if true; othwerwise read from DB. ] */
@@ -39,7 +36,7 @@ export function* getOraclesRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest() {
     try {
       // Query all topics data using graphQL call
-      const result = yield call(queryAllOracles('5a298f9107edc5e1f55d9814'));
+      const result = yield call(queryAllOracles);
 
       yield put({
         type: actions.GET_ORACLES_SUCCESS,

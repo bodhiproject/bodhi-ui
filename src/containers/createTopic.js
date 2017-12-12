@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import CreateTopic from '../components/bodhi/createTopic';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 
-class CreateTopic extends React.Component {
+class CreateTopicContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -18,17 +19,17 @@ class CreateTopic extends React.Component {
   render() {
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
-        Something here
+        <CreateTopic />
       </LayoutContentWrapper>
     );
   }
 }
 
-CreateTopic.propTypes = {
+CreateTopicContainer.propTypes = {
 
 };
 
-CreateTopic.defaultProps = {
+CreateTopicContainer.defaultProps = {
 
 };
 
@@ -41,4 +42,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Wrap the component to inject dispatch and state into it
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTopic);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTopicContainer);
