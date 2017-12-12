@@ -10,6 +10,8 @@ import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
+import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBalances, getTotalBets, getTotalVotes,
+  getResult, finished } from '../helpers/blockchain/contract';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -26,6 +28,8 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    const tokenQtum = 'QTUM';
+    const tokenBot = 'BOT';
     const numShowInOptions = 3;
 
     // Specify how many col in each row
@@ -50,48 +54,26 @@ class Dashboard extends React.Component {
       colWidth[key] = 24 / colPerRow[key];
     });
 
-    const topicArray = [];
-    console.log(this.props.getTopicsSuccess[0]);
+    listUnspent();
 
-    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
-      _.each(this.props.getTopicsSuccess, (entry) => {
-        let qtumTotal = 0;
-        for (let i = 0; i < entry.qtumAmount.length; i++) {
-          qtumTotal += entry.qtumAmount[i];
+    const centralizedOracles = [];
+    const decentralizedOracles = [];
+    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
+      _.each(this.props.getOraclesSuccess, (entry) => {
+        if (entry.token === tokenQtum) {
+          centralizedOracles.push(entry);
+        } else if (entry.token === tokenBot) {
+          decentralizedOracles.push(entry);
         }
-
-        const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
-        const endBlockString = `Ends: ${entry.blockNum ? entry.blockNum : 45000}`;
-
-        const entryEle =
-          (<Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
-            <IsoWidgetsWrapper>
-              {/* Report Widget */}
-              <ReportsWidget
-                label={entry.name}
-                details={[raisedString, endBlockString]}
-              >
-                {entry.options.slice(0, numShowInOptions).map((result, index) => (<SingleProgressWidget
-                  key={result}
-                  label={result}
-                  percent={_.floor((entry.qtumAmount[index] / qtumTotal) * 100)}
-                  barHeight={12}
-                  status="active"
-                  fontColor="#4A4A4A"
-                  info
-                />))}
-              </ReportsWidget>
-
-              <BottomButtonWidget pathname={`/topic/${entry.address}`} />
-            </IsoWidgetsWrapper>
-          </Col>);
-
-        topicArray.push(entryEle);
       });
     }
+    const topicEvents = this.props.getTopicsSuccess;
 
-    console.log(this.props.getOraclesSuccess);
+    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+    // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
+    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
 
+    console.log(topicEvents);
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
         <TabBtnGroup
@@ -108,11 +90,144 @@ class Dashboard extends React.Component {
           gutter={28}
           justify="center"
         >
-          {topicArray}
+          {rowItems}
         </Row>
       </LayoutContentWrapper>
     );
   }
+}
+
+function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions) {
+  const rowItems = [];
+  if (centralizedOracles.length > 0) {
+    _.each(centralizedOracles, (entry) => {
+      let qtumTotal = 0;
+      for (let i = 0; i < entry.amounts.length; i++) {
+        qtumTotal += entry.amounts[i];
+      }
+
+      const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+      const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+
+      const entryEle = (
+        <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+          <IsoWidgetsWrapper>
+            {/* Report Widget */}
+            <ReportsWidget
+              label={entry.name}
+              details={[raisedString, endBlockString]}
+            >
+              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+                <SingleProgressWidget
+                  key={result}
+                  label={result}
+                  percent={_.floor((entry.amounts[index] / qtumTotal) * 100)}
+                  barHeight={12}
+                  status="active"
+                  fontColor="#4A4A4A"
+                  info
+                />
+              ))}
+            </ReportsWidget>
+
+            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+          </IsoWidgetsWrapper>
+        </Col>
+      );
+
+      rowItems.push(entryEle);
+    });
+  }
+  return rowItems;
+}
+
+function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions) {
+  const rowItems = [];
+  if (decentralizedOracles.length > 0) {
+    _.each(decentralizedOracles, (entry) => {
+      let botTotal = 0;
+      for (let i = 0; i < entry.amounts.length; i++) {
+        botTotal += entry.amounts[i];
+      }
+
+      const raisedString = 'Raised: '.concat(botTotal).concat(' BOT');
+      const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+
+      const entryEle = (
+        <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+          <IsoWidgetsWrapper>
+            {/* Report Widget */}
+            <ReportsWidget
+              label={entry.name}
+              details={[raisedString, endBlockString]}
+            >
+              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+                <SingleProgressWidget
+                  key={result}
+                  label={result}
+                  percent={_.floor((entry.amounts[index] / botTotal) * 100)}
+                  barHeight={12}
+                  status="active"
+                  fontColor="#4A4A4A"
+                  info
+                />
+              ))}
+            </ReportsWidget>
+
+            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+          </IsoWidgetsWrapper>
+        </Col>
+      );
+
+      rowItems.push(entryEle);
+    });
+  }
+  return rowItems;
+}
+
+function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
+  const rowItems = [];
+  _.each(topicEvents, (entry) => {
+    let qtumTotal = 0;
+    for (let i = 0; i < entry.qtumAmount.length; i++) {
+      qtumTotal += entry.qtumAmount[i];
+    }
+    let botTotal = 0;
+    for (let i = 0; i < entry.botAmount.length; i++) {
+      botTotal += entry.botAmount[i];
+    }
+
+    const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM, ').concat(botTotal).concat(' BOT');
+    const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+    const winningResultName = entry.options[entry.resultIdx];
+
+    const entryEle = (
+      <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+        <IsoWidgetsWrapper>
+          {/* Report Widget */}
+          <ReportsWidget
+            label={entry.name}
+            details={[raisedString, endBlockString]}
+          >
+            <SingleProgressWidget
+              key={winningResultName}
+              label={winningResultName}
+              percent={_.floor((entry.botAmount[entry.resultIdx] / botTotal) * 100)}
+              barHeight={12}
+              status="active"
+              fontColor="#4A4A4A"
+              info
+            />
+          </ReportsWidget>
+
+          <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+        </IsoWidgetsWrapper>
+      </Col>
+    );
+
+    rowItems.push(entryEle);
+  });
+  return rowItems;
 }
 
 Dashboard.propTypes = {
@@ -140,6 +255,8 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {

@@ -25,6 +25,23 @@ query{
 `;
 
 const ALL_ORACLES = gql`
+  query {
+    allOracles {
+      token
+      address
+      topicAddress
+      status
+      name
+      options
+      optionIdxs
+      resultIdx
+      amounts
+      endBlock
+    }
+  }
+`;
+
+const ORACLES_BY_ADDRESS = gql`
   query AllOracles($topicAddress: String) {
     allOracles(filter: {
       topicAddress: $topicAddress
@@ -62,19 +79,17 @@ export function queryAllTopics() {
   });
 }
 
-export function queryAllOracles(address) {
+export function queryAllOracles() {
   return client.query({
     query: ALL_ORACLES,
-    variables: {
-      topicAddress: address,
-    },
   }).then((res) => {
     const queryName = 'allOracles';
     const queryData = res.data[queryName].map((entry) => ({
-      topicAddress: entry.topicAddress,
       token: entry.token,
-      name: entry.name,
+      address: entry.address,
+      topicAddress: entry.topicAddress,
       status: entry.status,
+      name: entry.name,
       options: entry.options,
       optionIdxs: entry.optionIdxs,
       resultIdx: entry.resultIdx,
