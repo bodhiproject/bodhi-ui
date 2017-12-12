@@ -21,21 +21,51 @@ const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 //     });
 // });
 
-export async function listUnspent() {
+async function listUnspent() {
   console.log('Listing unspent outputs:');
   const result = await Qweb3Instance.listUnspent();
   console.log(result);
 }
 
-export async function bet(centralizedOracleAddress, resultIndex, senderAddress) {
-  console.log('Placing bet @ '.concat(centralizedOracleAddress));
+// CentralizedOracle functions
+async function bet(centralizedOracleAddress, resultIndex, senderAddress) {
+  console.log('bet() '.concat(centralizedOracleAddress));
 
-  const centralizedOracle = new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
-  const hardcodedAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
-  const result = await centralizedOracle.send('bet', {
-    data: [resultIndex],
+  const oracle = new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
+  const tx = await oracle.send('bet', {
+    methodArgs: [resultIndex],
     amount: 1,
-    senderAddress: hardcodedAddress,
+    senderAddress: senderAddress,
+  });
+  console.log(tx);
+}
+
+async function setResult(centralizedOracleAddress, resultIndex, senderAddress) {
+  console.log('setResult() '.concat(centralizedOracleAddress));
+
+  const oracle = new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
+  const tx = await oracle.send('setResult', {
+    methodArgs: [resultIndex],
+    gasLimit: 3000000,
+    senderAddress: senderAddress,
+  });
+  console.log(tx);
+}
+
+async function getBetBalances(centralizedOracleAddress, senderAddress) {
+  console.log('getBetBalances() '.concat(centralizedOracleAddress));
+
+  const oracle = new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
+  const result = await oracle.send('getBetBalances', {
+    methodArgs: [],
+    senderAddress: senderAddress,
   });
   console.log(result);
 }
+
+module.exports = {
+  listUnspent: listUnspent,
+  bet: bet,
+  setResult: setResult,
+  getBetBalances: getBetBalances,
+};
