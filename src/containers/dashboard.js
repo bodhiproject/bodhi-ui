@@ -10,7 +10,7 @@ import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
-import { listUnspent } from '../helpers/blockchain/qtumcli';
+import { listUnspent } from '../helpers/blockchain/contract';
 
 class Dashboard extends React.Component {
   constructor(props) {
