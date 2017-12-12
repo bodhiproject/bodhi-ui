@@ -1,11 +1,11 @@
-import Contracts from '../../../config/contracts';
+import Contracts from '../../config/contracts';
 
 const Qweb3 = require('../../modules/qweb3.js').default;
 const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 
 export async function listUnspent() {
   console.log('Listing unspent outputs:');
-  const result = await Qweb3.listUnspent();
+  const result = await Qweb3Instance.listUnspent();
   console.log(result);
 }
 
