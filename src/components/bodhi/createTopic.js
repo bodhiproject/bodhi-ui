@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Checkbox, Col, DatePicker, Form, Input, Row, Select, TimePicker } from 'antd';
+import { Button, Checkbox, Col, DatePicker, Form, Icon, Input, Row, Select, TimePicker } from 'antd';
 import moment from 'moment';
 
 const propTypes = {
@@ -42,25 +42,46 @@ function CreateTopic({ form }) {
         </Row>
         <Row>
           <Col sm={4}>Outcomes</Col>
-          <Col sm={6}>
-            <Input
-              addonBefore={
-                form.getFieldDecorator('prefix')(<span>1</span>)
-              }
-            />
+          <Col sm={8}>
+            <Row type="flex" justify="start" align="middle">
+              <Col span={20}>
+                <Input
+                  addonBefore={
+                    form.getFieldDecorator('prefix')(<span>1</span>)
+                  }
+                />
+              </Col>
+              <Col span={4}>
+                <a>
+                  <Icon type="close" />
+                </a>
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Row>
           <Col sm={4}>{/* Outcome placeholder */}</Col>
-          <Col sm={6}>
-            <Input
-              addonBefore={
-                form.getFieldDecorator('prefix')(<span>2</span>)
-              }
-            />
+          <Col sm={8}>
+            <Row type="flex" justify="start" align="middle">
+              <Col span={20}>
+                <Input
+                  addonBefore={
+                    form.getFieldDecorator('prefix')(<span>2</span>)
+                  }
+                />
+              </Col>
+              <Col span={4}>
+                <a>
+                  <Icon type="close" />
+                </a>
+              </Col>
+            </Row>
           </Col>
-          <Col sm={2}>
-            <Button>Add</Button>
+        </Row>
+        <Row>
+          <Col sm={4}>{/* Outcome add button placeholder */}</Col>
+          <Col sm={8}>
+            <Button type="primary">Add</Button>
           </Col>
         </Row>
         <Row>
