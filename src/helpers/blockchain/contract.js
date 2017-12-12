@@ -67,6 +67,24 @@ async function getVoteBalances(centralizedOracleAddress, senderAddress) {
   console.log(result);
 }
 
+async function getTotalBets(centralizedOracleAddress, senderAddress) {
+  console.log('getTotalBets() '.concat(centralizedOracleAddress));
+  const result = await getCentralizedOracle(centralizedOracleAddress).call('getTotalBets', {
+    methodArgs: [],
+    senderAddress: senderAddress,
+  });
+  console.log(result);
+}
+
+async function getTotalVotes(centralizedOracleAddress, senderAddress) {
+  console.log('getTotalVotes() '.concat(centralizedOracleAddress));
+  const result = await getCentralizedOracle(centralizedOracleAddress).call('getTotalVotes', {
+    methodArgs: [],
+    senderAddress: senderAddress,
+  });
+  console.log(result);
+}
+
 function getCentralizedOracle(centralizedOracleAddress) {
   return new Qweb3Instance.Contract(centralizedOracleAddress, Contracts.CentralizedOracle.abi);
 }
@@ -76,4 +94,7 @@ module.exports = {
   bet: bet,
   setResult: setResult,
   getBetBalances: getBetBalances,
+  getVoteBalances: getVoteBalances,
+  getTotalBets: getTotalBets,
+
 };
