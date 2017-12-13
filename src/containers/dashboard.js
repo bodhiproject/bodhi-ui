@@ -20,6 +20,20 @@ const TAB_COMPLETED = 3;
 const DEFAULT_TAB_INDEX = TAB_BETTING;
 const QTUM = 'QTUM';
 const BOT = 'BOT';
+const NUM_SHOW_IN_OPTIONS = 3;
+const COL_PER_ROW = { // Specify how many col in each row
+  xs: 1,
+  sm: 3,
+  xl: 4,
+};
+const ROW_GUTTER = {
+  xs: 0,
+  sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
+  md: 24,
+  lg: 24,
+  xl: 32,
+  xxl: 32,
+};
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -45,25 +59,10 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const numShowInOptions = 3;
-    const colPerRow = { // Specify how many col in each row
-      xs: 1,
-      sm: 3,
-      xl: 4,
-    };
-    const rowGutter = {
-      xs: 0,
-      sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
-      md: 24,
-      lg: 24,
-      xl: 32,
-      xxl: 32,
-    };
-
     // Calculate grid number for Col attribute
     const colWidth = {};
-    Object.keys(colPerRow).forEach((key) => {
-      colWidth[key] = 24 / colPerRow[key];
+    Object.keys(COL_PER_ROW).forEach((key) => {
+      colWidth[key] = 24 / COL_PER_ROW[key];
     });
 
     const centralizedOracles = [];
@@ -87,19 +86,19 @@ class Dashboard extends React.Component {
     let rowItems;
     switch (this.state.currentTab) {
       case TAB_BETTING: {
-        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
         break;
       }
       case TAB_WAITING: {
-        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
         break;
       }
       case TAB_VOTING: {
-        rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
+        rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth);
         break;
       }
       case TAB_COMPLETED: {
-        rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+        rowItems = getFinishedItems(topicEvents, colWidth);
         break;
       }
       default: {
@@ -135,7 +134,7 @@ class Dashboard extends React.Component {
   }
 }
 
-function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions) {
+function getCentralizedOracleItems(centralizedOracles, colWidth) {
   const rowItems = [];
   if (centralizedOracles.length > 0) {
     _.each(centralizedOracles, (entry) => {
@@ -161,7 +160,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
               label={entry.name}
               details={[raisedString, endBlockString]}
             >
-              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
                 <SingleProgressWidget
                   key={result}
                   label={result}
@@ -184,7 +183,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
   return rowItems;
 }
 
-function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions) {
+function getDecentralizedOracleItems(decentralizedOracles, colWidth) {
   const rowItems = [];
   if (decentralizedOracles.length > 0) {
     _.each(decentralizedOracles, (entry) => {
@@ -204,7 +203,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
               label={entry.name}
               details={[raisedString, endBlockString]}
             >
-              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
                 <SingleProgressWidget
                   key={result}
                   label={result}
@@ -228,7 +227,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
   return rowItems;
 }
 
-function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
+function getFinishedItems(topicEvents, colWidth) {
   const rowItems = [];
   _.each(topicEvents, (entry) => {
     let qtumTotal = 0;
