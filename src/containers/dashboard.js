@@ -13,13 +13,17 @@ import dashboardActions from '../redux/dashboard/actions';
 import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBalances, getTotalBets, getTotalVotes,
   getResult, finished } from '../helpers/blockchain/contract';
 
-const DEFAULT_TAB_INDEX = 0;
+const TAB_BETTING = 0;
+const TAB_VOTING = 1;
+const TAB_COMPLETED = 2;
+const DEFAULT_TAB_INDEX = TAB_BETTING;
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      currentTab: TAB_BETTING,
     };
   }
 
@@ -31,6 +35,9 @@ class Dashboard extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.tabIndex !== nextProps.tabIndex) {
       console.log(`tab index changed from ${this.props.tabIndex} to ${nextProps.tabIndex}`);
+      this.setState({
+        currentTab: nextProps.tabIndex,
+      });
     }
   }
 
@@ -38,14 +45,11 @@ class Dashboard extends React.Component {
     const tokenQtum = 'QTUM';
     const tokenBot = 'BOT';
     const numShowInOptions = 3;
-
-    // Specify how many col in each row
-    const colPerRow = {
+    const colPerRow = { // Specify how many col in each row
       xs: 1,
       sm: 3,
       xl: 4,
     };
-
     const rowGutter = {
       xs: 0,
       sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
@@ -63,6 +67,7 @@ class Dashboard extends React.Component {
 
     const centralizedOracles = [];
     const decentralizedOracles = [];
+    let topicEvents = [];
 
     if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
       _.each(this.props.getOraclesSuccess, (entry) => {
@@ -74,14 +79,28 @@ class Dashboard extends React.Component {
       });
     }
 
-    console.log(centralizedOracles);
-    const topicEvents = this.props.getTopicsSuccess;
+    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
+      topicEvents = this.props.getTopicsSuccess;
+    }
 
-    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
-    // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
-    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+    let rowItems;
+    switch (this.state.currentTab) {
+      case TAB_BETTING:
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+        break;
+      case TAB_VOTING: {
+        rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
+        break;
+      }
+      case TAB_COMPLETED: {
+        rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+        break;
+      }
+      default: {
+        throw new RangeError('Invalid tab position');
+      }
+    }
 
-    console.log(topicEvents);
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
         <TabBtnGroup
@@ -118,7 +137,13 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
       const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
       const entryEle = (
-        <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+        <Col
+          xs={colWidth.xs}
+          sm={colWidth.sm}
+          xl={colWidth.xl}
+          key={entry.address}
+          style={{ marginBottom: '24px' }}
+        >
           <IsoWidgetsWrapper>
             {/* Report Widget */}
             <ReportsWidget
@@ -137,7 +162,6 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
                 />
               ))}
             </ReportsWidget>
-
             <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
           </IsoWidgetsWrapper>
         </Col>
