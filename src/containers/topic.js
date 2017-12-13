@@ -31,18 +31,16 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    // const { getTopicsSuccess, onGetTopics } = this.props;
+    const { getTopicsSuccess, onGetTopics } = this.props;
 
-    // // Retrive topic data if state doesn't already have it
-    // if (_.isUndefined(getTopicsSuccess)) {
-    //   console.log('calling onGetTopics');
-    //   onGetTopics();
-    // } else {
-    //   const topic = _.find(getTopicsSuccess, { address: this.state.address });
-    //   this.setState({ topic });
-    // }
-
-    this.props.onGetOracles();
+    // Retrive topic data if state doesn't already have it
+    if (_.isUndefined(getTopicsSuccess)) {
+      console.log('calling onGetTopics');
+      onGetTopics();
+    } else {
+      const topic = _.find(getTopicsSuccess, { address: this.state.address });
+      this.setState({ topic });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -218,49 +216,36 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
-  // getTopicsSuccess: PropTypes.oneOfType([
-  //   PropTypes.array, // Result array
-  //   PropTypes.string, // error message
-  //   PropTypes.bool, // No result
-  // ]),
+  getTopicsSuccess: PropTypes.oneOfType([
+    PropTypes.array, // Result array
+    PropTypes.string, // error message
+    PropTypes.bool, // No result
+  ]),
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   // onGetTopics: PropTypes.func,
   onBet: PropTypes.func,
   betResult: PropTypes.object,
-  getOraclesSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
-  // getOraclesError: PropTypes.string,
-  onGetOracles: PropTypes.func,
 };
 
 TopicPage.defaultProps = {
-  // getTopicsSuccess: undefined,
+  getTopicsSuccess: undefined,
+  onGetTopics: undefined,
   editingToggled: false,
   match: {},
-  // onGetTopics: undefined,
   onBet: undefined,
   betResult: undefined,
-  getOraclesSuccess: [],
-  // getOraclesError: '',
-  onGetOracles: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  // getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
-  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    // onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    onGetTopics: () => dispatch(dashboardActions.getTopics()),
     onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
   };
 }
