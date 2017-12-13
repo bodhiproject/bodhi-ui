@@ -11,9 +11,18 @@ const initState = new Map({
   openDrawer: false,
   openKeys: preKeys,
   current: preKeys,
+  walletAddrs: [],
 });
+
 export default function appReducer(state = initState, action) {
+  console.log('appReducer', action);
   switch (action.type) {
+    case actions.Add_WALLET_ADDRESS:
+      console.log(state.get('walletAddrs'));
+      console.log(action.value);
+      state.get('walletAddrs').push(action.value);
+      console.log(state.get('walletAddrs'));
+      return state.set('walletAddrs', state.get('walletAddrs'));
     case actions.COLLPSE_CHANGE:
       return state.set('collapsed', !state.get('collapsed'));
     case actions.COLLPSE_OPEN_DRAWER:

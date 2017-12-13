@@ -13,6 +13,8 @@ export default function topicReducer(
   switch (action.type) {
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
+    case actions.BET_RESULT:
+      return state.set('bet_result', action.value);
     default:
       return state;
   }

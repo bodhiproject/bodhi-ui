@@ -10,6 +10,7 @@ import ProgressBar from '../components/bodhi-dls/progressBar';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
+import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
@@ -102,14 +103,20 @@ class TopicPage extends React.Component {
     const { topic, radioValue } = this.state;
     const oracle = _.last(topic.oracles || []);
 
-    const result = _.assign({}, obj, {
-      optionIdxsIndex: radioValue,
-      optionSelected: oracle && !_.isEmpty(oracle.options) && !_.isEmpty(oracle.optionIdxs) ?
-        oracle.options[oracle.optionIdxs[radioValue - 1]] :
-        undefined,
-    });
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const { amount } = obj;
 
-    console.log('onSubmit result: ', result);
+    // const result = _.assign({}, obj, {
+    //   optionIdxsIndex: radioValue,
+    //   optionSelected: oracle && !_.isEmpty(oracle.options) && !_.isEmpty(oracle.optionIdxs) ?
+    //     oracle.options[selectedIndex] :
+    //     undefined,
+    // });
+
+    console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}`);
+    const senderAddress = 'qavg9ZznisqQ5CbwS13Cv7d2JXciFKzxbk';
+
+    this.props.onBet(selectedIndex, amount, senderAddress);
   }
 
   render() {
@@ -158,7 +165,7 @@ class TopicPage extends React.Component {
       </Col>
       <Col xl={12} lg={12}>
         <IsoWidgetsWrapper padding="32px">
-
+          {this.props.betResult}
           <CardVoting amount={totalBalance} token={token} voteBalance={betBalance} onSubmit={this.onSubmit}>
             {editingToggled
               ?
@@ -189,7 +196,6 @@ class TopicPage extends React.Component {
                   marginBottom={18}
                 />))
             }
-
           </CardVoting>
         </IsoWidgetsWrapper>
       </Col>
@@ -221,7 +227,8 @@ TopicPage.propTypes = {
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onGetTopics: PropTypes.func,
-
+  onBet: PropTypes.func,
+  betResult: PropTypes.object,
 };
 
 TopicPage.defaultProps = {
@@ -229,17 +236,20 @@ TopicPage.defaultProps = {
   editingToggled: false,
   match: {},
   onGetTopics: undefined,
-
+  onBet: undefined,
+  betResult: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   editingToggled: state.Topic.get('toggled'),
+  betResult: state.Topic.get('bet_result'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
   };
 }
 

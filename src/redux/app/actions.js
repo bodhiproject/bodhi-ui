@@ -7,12 +7,14 @@ export function getView(width) {
   }
   return newView;
 }
+
 const actions = {
   COLLPSE_CHANGE: 'COLLPSE_CHANGE',
   COLLPSE_OPEN_DRAWER: 'COLLPSE_OPEN_DRAWER',
   CHANGE_OPEN_KEYS: 'CHANGE_OPEN_KEYS',
   TOGGLE_ALL: 'TOGGLE_ALL',
   CHANGE_CURRENT: 'CHANGE_CURRENT',
+  Add_WALLET_ADDRESS: 'Add_WALLET_ADDRESS',
   toggleCollapsed: () => ({
     type: actions.COLLPSE_CHANGE,
   }),
@@ -37,5 +39,12 @@ const actions = {
     type: actions.CHANGE_CURRENT,
     current,
   }),
+  addWalletAddress: (value) => {
+    console.log(`actions: ${value}`);
+    return {
+      type: actions.Add_WALLET_ADDRESS,
+      value,
+    };
+  },
 };
 export default actions;

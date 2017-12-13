@@ -26,8 +26,6 @@ class Dashboard extends React.Component {
   componentWillMount() {
     this.props.onGetTopics();
     this.props.onGetOracles();
-
-    listUnspent();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,6 +63,7 @@ class Dashboard extends React.Component {
 
     const centralizedOracles = [];
     const decentralizedOracles = [];
+
     if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
       _.each(this.props.getOraclesSuccess, (entry) => {
         if (entry.token === tokenQtum) {
@@ -74,6 +73,7 @@ class Dashboard extends React.Component {
         }
       });
     }
+
     const topicEvents = this.props.getTopicsSuccess;
 
     // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
@@ -244,11 +244,12 @@ Dashboard.propTypes = {
     PropTypes.bool, // No result
   ]),
   onGetTopics: PropTypes.func,
-  // getOraclesSuccess: PropTypes.oneOfType([
-  //   PropTypes.array, // Result array
-  //   PropTypes.string, // error message
-  //   PropTypes.bool, // No result
-  // ]),
+  getOraclesSuccess: PropTypes.oneOfType([
+    PropTypes.array, // Result array
+    PropTypes.string, // error message
+    PropTypes.bool, // No result
+  ]),
+  // getOraclesError: PropTypes.string,
   onGetOracles: PropTypes.func,
   tabIndex: PropTypes.number,
 };
@@ -256,7 +257,8 @@ Dashboard.propTypes = {
 Dashboard.defaultProps = {
   getTopicsSuccess: [],
   onGetTopics: undefined,
-  // getOraclesSuccess: [],
+  getOraclesSuccess: [],
+  // getOraclesError: '',
   onGetOracles: undefined,
   tabIndex: DEFAULT_TAB_INDEX,
 };
@@ -264,12 +266,9 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
-<<<<<<< HEAD
   tabIndex: state.Dashboard.get('tabIndex'),
-=======
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
->>>>>>> master
+  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {
