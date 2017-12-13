@@ -28,7 +28,7 @@ class AppRouter extends React.Component {
         />
         <Route
           exact
-          path={`${url}/topic/:topicAddress`}
+          path={`${url}/topic/:address`}
           component={asyncComponent(() => import('../topic'))}
         />
         <Route

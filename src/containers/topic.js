@@ -21,8 +21,8 @@ class TopicPage extends React.Component {
     // Make sure address is defined; otherwise TopicPage don't know what to find
 
     this.state = {
-      address: this.props.match.params.topicAddress,
-      topic: undefined, // Topic object for this page
+      address: this.props.match.params.address,
+      oracle: undefined, // Topic object for this page
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
@@ -31,25 +31,27 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const { getTopicsSuccess, onGetTopics } = this.props;
+    // const { getTopicsSuccess, onGetTopics } = this.props;
 
-    // Retrive topic data if state doesn't already have it
-    if (_.isUndefined(getTopicsSuccess)) {
-      console.log('calling onGetTopics');
-      onGetTopics();
-    } else {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
-      this.setState({ topic });
-    }
+    // // Retrive topic data if state doesn't already have it
+    // if (_.isUndefined(getTopicsSuccess)) {
+    //   console.log('calling onGetTopics');
+    //   onGetTopics();
+    // } else {
+    //   const topic = _.find(getTopicsSuccess, { address: this.state.address });
+    //   this.setState({ topic });
+    // }
+
+    this.props.onGetOracles();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getTopicsSuccess } = nextProps;
+    const { getOraclesSuccess } = nextProps;
 
-    if (!_.isEmpty(getTopicsSuccess)) {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
+    if (!_.isEmpty(getOraclesSuccess)) {
+      const oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
-      this.setState({ topic });
+      this.setState({ oracle });
       // let oracle = undefined;
 
       // // Determine current phase of this topic
@@ -86,7 +88,7 @@ class TopicPage extends React.Component {
       //   console.log('topic not load yet');
       // }
     } else {
-      console.log('getTopicsSuccess is empty');
+      console.log('getOraclesSuccess is empty');
     }
   }
 
@@ -100,8 +102,7 @@ class TopicPage extends React.Component {
 
   /** Confirm button on click handler passed down to CardVoting */
   onSubmit(obj) {
-    const { topic, radioValue } = this.state;
-    const oracle = _.last(topic.oracles || []);
+    const { oracle, radioValue } = this.state;
 
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
@@ -114,21 +115,19 @@ class TopicPage extends React.Component {
     // });
 
     console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}`);
-    const senderAddress = 'qavg9ZznisqQ5CbwS13Cv7d2JXciFKzxbk';
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
 
     this.props.onBet(selectedIndex, amount, senderAddress);
   }
 
   render() {
     const { editingToggled } = this.props;
-    const { topic } = this.state;
+    const { oracle } = this.state;
 
-    if (!topic || _.isEmpty(topic.oracles)) {
+    if (!oracle) {
       // TODO: render no result page
       return <div></div>;
     }
-
-    const oracle = _.last(topic.oracles);
 
     const timeline = [{
       label: 'Prediction start block',
@@ -219,36 +218,49 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
-  getTopicsSuccess: PropTypes.oneOfType([
+  // getTopicsSuccess: PropTypes.oneOfType([
+  //   PropTypes.array, // Result array
+  //   PropTypes.string, // error message
+  //   PropTypes.bool, // No result
+  // ]),
+  editingToggled: PropTypes.bool,
+  match: PropTypes.object,
+  // onGetTopics: PropTypes.func,
+  onBet: PropTypes.func,
+  betResult: PropTypes.object,
+  getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  editingToggled: PropTypes.bool,
-  match: PropTypes.object,
-  onGetTopics: PropTypes.func,
-  onBet: PropTypes.func,
-  betResult: PropTypes.object,
+  // getOraclesError: PropTypes.string,
+  onGetOracles: PropTypes.func,
 };
 
 TopicPage.defaultProps = {
-  getTopicsSuccess: undefined,
+  // getTopicsSuccess: undefined,
   editingToggled: false,
   match: {},
-  onGetTopics: undefined,
+  // onGetTopics: undefined,
   onBet: undefined,
   betResult: undefined,
+  getOraclesSuccess: [],
+  // getOraclesError: '',
+  onGetOracles: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
+  // getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
+  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    // onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
   };
 }

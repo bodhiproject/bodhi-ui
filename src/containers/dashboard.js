@@ -74,11 +74,12 @@ class Dashboard extends React.Component {
       });
     }
 
+    console.log(centralizedOracles);
     const topicEvents = this.props.getTopicsSuccess;
 
-    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+    const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
     // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
-    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+    // const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
 
     console.log(topicEvents);
     return (
@@ -268,7 +269,7 @@ const mapStateToProps = (state) => ({
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
   tabIndex: state.Dashboard.get('tabIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });
 
 function mapDispatchToProps(dispatch) {
