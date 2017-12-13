@@ -156,10 +156,10 @@ class TopicPage extends React.Component {
             {editingToggled
               ?
               (
-                <RadioGroup 
-                  onChange={this.onRadioGroupChange} 
-                  value={this.state.radioValue} 
-                  size="large" 
+                <RadioGroup
+                  onChange={this.onRadioGroupChange}
+                  value={this.state.radioValue}
+                  size="large"
                   defaultValue={DEFAULT_RADIO_VALUE}
                 >
                   {betBalance.map((entry, index) => (
