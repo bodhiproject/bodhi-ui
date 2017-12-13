@@ -28,7 +28,7 @@ export function* betRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.BET_RESULT,
-        value: { error },
+        value: { error: error.message ? error.message : '' },
       });
     }
   });
@@ -60,7 +60,7 @@ function request(url, options) {
 function checkStatus(response) {
   // We can rely on checking error object so dont check HTTP status code here.
   if (response.error) {
-    throw new Error(response.error.message);
+    throw new Error(response.error);
   } else {
     return response.result;
   }

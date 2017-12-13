@@ -2,7 +2,7 @@ import Contracts from '../../config/contracts';
 
 // const restify = require('restify');
 // const corsMiddleware = require('restify-cors-middleware');
-const Qweb3 = require('../../modules/qweb3/index');
+const Qweb3 = require('../../modules/qweb3.js/index');
 const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 
 // const server = restify.createServer();
