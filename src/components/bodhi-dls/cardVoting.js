@@ -22,7 +22,8 @@ class CardVoting extends Component {
   }
 
   onConfirm(evt) {
-    console.log(`voteAmount is ${this.state.voteAmount}`);
+    console.log(`onConfirm: amount ${this.state.voteAmount}`);
+    this.props.onSubmit({ amount: this.state.voteAmount });
   }
 
   onInputNumberChange(value) {
@@ -82,7 +83,7 @@ class CardVoting extends Component {
               onClick={this.onParticipateClick}
               size="large"
             >
-            Participate
+              {token === 'BOT' ? 'Vote' : 'Participate'}
             </Button>)
           }
 
@@ -95,9 +96,13 @@ class CardVoting extends Component {
 CardVoting.propTypes = {
   amount: PropTypes.number,
   token: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.element,
+  ]),
   editingToggled: PropTypes.bool,
   onEditingToggled: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 CardVoting.defaultProps = {
@@ -106,8 +111,8 @@ CardVoting.defaultProps = {
   children: [],
   editingToggled: false,
   onEditingToggled: undefined,
+  onSubmit: undefined,
 };
-
 
 const mapStateToProps = (state) => ({
   editingToggled: state.Topic.get('toggled'),

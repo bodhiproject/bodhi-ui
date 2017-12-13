@@ -25,11 +25,18 @@
       padding-left: 6px;
       font-size: 16px;
     }
-  } // border style for the last <li><a>
+  } 
+
+  // border style for the last <li><a>
   &:last-of-type a {
     border: 1px solid white;
     border-radius: 55px;
     padding: 8px 16px;
+
+    i {
+      font-weight: 700;
+      margin-right: 4px;
+    }
   }
 
   // Underline style for all but not last <li>
@@ -55,5 +62,11 @@
       background-color: white;
       width: 100%;
     }
+  }
+}
+
+.ant-modal-content{
+  .ant-modal-footer {
+    text-align: center;
   }
 }

@@ -20,7 +20,7 @@ class TopicPage extends React.Component {
 
     this.state = {
       address: this.props.match.params.address,
-      topic: undefined, // Topic object for this page
+      oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
@@ -29,25 +29,16 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const { getTopicsSuccess, onGetTopics } = this.props;
-
-    // Retrive topic data if state doesn't already have it
-    if (_.isUndefined(getTopicsSuccess)) {
-      console.log('calling onGetTopics');
-      onGetTopics();
-    } else {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
-      this.setState({ topic });
-    }
+    this.props.onGetOracles();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getTopicsSuccess } = nextProps;
+    const { getOraclesSuccess } = nextProps;
 
-    if (!_.isEmpty(getTopicsSuccess)) {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
+    if (!_.isEmpty(getOraclesSuccess)) {
+      const oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
-      this.setState({ topic });
+      this.setState({ oracle });
       // let oracle = undefined;
 
       // // Determine current phase of this topic
@@ -98,9 +89,9 @@ class TopicPage extends React.Component {
 
   /** Confirm button on click handler passed down to CardVoting */
   onSubmit(obj) {
-    const { topic, radioValue } = this.state;
+    const { oracle, radioValue } = this.state;
 
-    const selectedIndex = topic.optionIdxs[radioValue - 1];
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
     // const result = _.assign({}, obj, {
@@ -165,7 +156,12 @@ class TopicPage extends React.Component {
             {editingToggled
               ?
               (
-                <RadioGroup onChange={this.onRadioGroupChange} value={this.state.radioValue} size="large" defaultValue={DEFAULT_RADIO_VALUE}>
+                <RadioGroup
+                  onChange={this.onRadioGroupChange}
+                  value={this.state.radioValue}
+                  size="large"
+                  defaultValue={DEFAULT_RADIO_VALUE}
+                >
                   {betBalance.map((entry, index) => (
                     <Radio value={index + 1} key={entry.name}>
                       <ProgressBar
@@ -214,12 +210,13 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
-  onGetTopics: PropTypes.func,
-  getTopicsSuccess: PropTypes.oneOfType([
+  onGetOracles: PropTypes.func,
+  getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
+  // getOraclesError: PropTypes.string,
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onBet: PropTypes.func,
@@ -227,8 +224,9 @@ TopicPage.propTypes = {
 };
 
 TopicPage.defaultProps = {
-  getTopicsSuccess: undefined,
-  onGetTopics: undefined,
+  onGetOracles: undefined,
+  getOraclesSuccess: [],
+  // getOraclesError: '',
   editingToggled: false,
   match: {},
   onBet: undefined,
@@ -236,14 +234,15 @@ TopicPage.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
   };
 }

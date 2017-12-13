@@ -11,5 +11,10 @@ const dashboardActions = {
   getOracles: () => ({
     type: dashboardActions.GET_ORACLES_REQUEST,
   }),
+  TAB_VIEW_CHANGED: 'TAB_VIEW_CHANGED',
+  tabViewChanged: (value) => ({
+    type: dashboardActions.TAB_VIEW_CHANGED,
+    value,
+  }),
 };
 export default dashboardActions;

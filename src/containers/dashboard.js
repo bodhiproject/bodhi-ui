@@ -13,12 +13,34 @@ import dashboardActions from '../redux/dashboard/actions';
 import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBalances, getTotalBets, getTotalVotes,
   getResult, finished } from '../helpers/blockchain/contract';
 
+const TAB_BETTING = 0;
+const TAB_WAITING = 1;
+const TAB_VOTING = 2;
+const TAB_COMPLETED = 3;
+const DEFAULT_TAB_INDEX = TAB_BETTING;
+const QTUM = 'QTUM';
+const BOT = 'BOT';
+const NUM_SHOW_IN_OPTIONS = 3;
+const COL_PER_ROW = { // Specify how many col in each row
+  xs: 1,
+  sm: 3,
+  xl: 4,
+};
+const ROW_GUTTER = {
+  xs: 0,
+  sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
+  md: 24,
+  lg: 24,
+  xl: 32,
+  xxl: 32,
+};
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-
+      currentTab: TAB_BETTING,
     };
   }
 
@@ -27,58 +49,72 @@ class Dashboard extends React.Component {
     this.props.onGetOracles();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.tabIndex !== nextProps.tabIndex) {
+      this.setState({
+        currentTab: nextProps.tabIndex,
+      });
+    }
+  }
+
   render() {
-    const tokenQtum = 'QTUM';
-    const tokenBot = 'BOT';
-    const numShowInOptions = 3;
-
-    // Specify how many col in each row
-    const colPerRow = {
-      xs: 1,
-      sm: 3,
-      xl: 4,
-    };
-
-    const rowGutter = {
-      xs: 0,
-      sm: 16, // Set gutter to 16 + 8 * n, with n being a natural number
-      md: 24,
-      lg: 24,
-      xl: 32,
-      xxl: 32,
-    };
-
     // Calculate grid number for Col attribute
     const colWidth = {};
-    Object.keys(colPerRow).forEach((key) => {
-      colWidth[key] = 24 / colPerRow[key];
+    Object.keys(COL_PER_ROW).forEach((key) => {
+      colWidth[key] = 24 / COL_PER_ROW[key];
     });
-
-    listUnspent();
 
     const centralizedOracles = [];
     const decentralizedOracles = [];
+    let topicEvents = [];
+
     if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
       _.each(this.props.getOraclesSuccess, (entry) => {
-        if (entry.token === tokenQtum) {
+        if (entry.token === QTUM) {
           centralizedOracles.push(entry);
-        } else if (entry.token === tokenBot) {
+        } else if (entry.token === BOT) {
           decentralizedOracles.push(entry);
         }
       });
     }
-    const topicEvents = this.props.getTopicsSuccess;
 
-    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
-    // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
-    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
+      topicEvents = this.props.getTopicsSuccess;
+    }
 
-    console.log(topicEvents);
+    let rowItems;
+    switch (this.state.currentTab) {
+      case TAB_BETTING: {
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
+        break;
+      }
+      case TAB_WAITING: {
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
+        break;
+      }
+      case TAB_VOTING: {
+        rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth);
+        break;
+      }
+      case TAB_COMPLETED: {
+        rowItems = getFinishedItems(topicEvents, colWidth);
+        break;
+      }
+      default: {
+        throw new RangeError('Invalid tab position');
+      }
+    }
+
     return (
-      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
+      <LayoutContentWrapper
+        className="horizontalWrapper"
+        style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}
+      >
         <TabBtnGroup
           buttons={[{
-            text: 'OnGoing',
+            text: 'Betting',
+          }, {
+            text: 'Waiting',
           }, {
             text: 'Voting',
           }, {
@@ -97,7 +133,7 @@ class Dashboard extends React.Component {
   }
 }
 
-function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions) {
+function getCentralizedOracleItems(centralizedOracles, colWidth) {
   const rowItems = [];
   if (centralizedOracles.length > 0) {
     _.each(centralizedOracles, (entry) => {
@@ -106,18 +142,24 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
         qtumTotal += entry.amounts[i];
       }
 
-      const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+      const raisedString = `Raised: ${qtumTotal} ${QTUM}`;
       const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
       const entryEle = (
-        <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+        <Col
+          xs={colWidth.xs}
+          sm={colWidth.sm}
+          xl={colWidth.xl}
+          key={entry.address}
+          style={{ marginBottom: '24px' }}
+        >
           <IsoWidgetsWrapper>
             {/* Report Widget */}
             <ReportsWidget
               label={entry.name}
               details={[raisedString, endBlockString]}
             >
-              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
                 <SingleProgressWidget
                   key={result}
                   label={result}
@@ -129,8 +171,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
                 />
               ))}
             </ReportsWidget>
-
-            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
           </IsoWidgetsWrapper>
         </Col>
       );
@@ -141,7 +182,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
   return rowItems;
 }
 
-function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions) {
+function getDecentralizedOracleItems(decentralizedOracles, colWidth) {
   const rowItems = [];
   if (decentralizedOracles.length > 0) {
     _.each(decentralizedOracles, (entry) => {
@@ -150,7 +191,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
         botTotal += entry.amounts[i];
       }
 
-      const raisedString = 'Raised: '.concat(botTotal).concat(' BOT');
+      const raisedString = `Raised: ${botTotal} ${BOT}`;
       const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
       const entryEle = (
@@ -161,7 +202,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
               label={entry.name}
               details={[raisedString, endBlockString]}
             >
-              {entry.options.slice(0, numShowInOptions).map((result, index) => (
+              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
                 <SingleProgressWidget
                   key={result}
                   label={result}
@@ -174,7 +215,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
               ))}
             </ReportsWidget>
 
-            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
           </IsoWidgetsWrapper>
         </Col>
       );
@@ -185,7 +226,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
   return rowItems;
 }
 
-function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
+function getFinishedItems(topicEvents, colWidth) {
   const rowItems = [];
   _.each(topicEvents, (entry) => {
     let qtumTotal = 0;
@@ -197,7 +238,7 @@ function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
       botTotal += entry.botAmount[i];
     }
 
-    const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM, ').concat(botTotal).concat(' BOT');
+    const raisedString = `Raised: ${qtumTotal} ${QTUM}, ${botTotal} ${BOT}`;
     const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
     const winningResultName = entry.options[entry.resultIdx];
 
@@ -242,19 +283,24 @@ Dashboard.propTypes = {
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
+  // getOraclesError: PropTypes.string,
   onGetOracles: PropTypes.func,
+  tabIndex: PropTypes.number,
 };
 
 Dashboard.defaultProps = {
   getTopicsSuccess: [],
   onGetTopics: undefined,
   getOraclesSuccess: [],
+  // getOraclesError: '',
   onGetOracles: undefined,
+  tabIndex: DEFAULT_TAB_INDEX,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  tabIndex: state.Dashboard.get('tabIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
 });

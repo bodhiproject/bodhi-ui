@@ -3,6 +3,7 @@ import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
 import actions from './actions';
 import fakeData from './fakedata';
 
+/** @type {Boolean} [ Use ./fakedata if true; othwerwise read from DB. ] */
 const isFake = false;
 
 export function* getTopicsRequestHandler(/* actions */) {
