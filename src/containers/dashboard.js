@@ -51,7 +51,6 @@ class Dashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.tabIndex !== nextProps.tabIndex) {
-      console.log(`tab index changed from ${this.props.tabIndex} to ${nextProps.tabIndex}`);
       this.setState({
         currentTab: nextProps.tabIndex,
       });

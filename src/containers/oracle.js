@@ -20,7 +20,7 @@ class TopicPage extends React.Component {
 
     this.state = {
       address: this.props.match.params.address,
-      oracle: undefined, // Topic object for this page
+      oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
@@ -29,17 +29,6 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    // const { getTopicsSuccess, onGetTopics } = this.props;
-
-    // // Retrive topic data if state doesn't already have it
-    // if (_.isUndefined(getTopicsSuccess)) {
-    //   console.log('calling onGetTopics');
-    //   onGetTopics();
-    // } else {
-    //   const topic = _.find(getTopicsSuccess, { address: this.state.address });
-    //   this.setState({ topic });
-    // }
-
     this.props.onGetOracles();
   }
 
@@ -167,7 +156,12 @@ class TopicPage extends React.Component {
             {editingToggled
               ?
               (
-                <RadioGroup onChange={this.onRadioGroupChange} value={this.state.radioValue} size="large" defaultValue={DEFAULT_RADIO_VALUE}>
+                <RadioGroup 
+                  onChange={this.onRadioGroupChange} 
+                  value={this.state.radioValue} 
+                  size="large" 
+                  defaultValue={DEFAULT_RADIO_VALUE}
+                >
                   {betBalance.map((entry, index) => (
                     <Radio value={index + 1} key={entry.name}>
                       <ProgressBar
@@ -216,48 +210,38 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
-  // getTopicsSuccess: PropTypes.oneOfType([
-  //   PropTypes.array, // Result array
-  //   PropTypes.string, // error message
-  //   PropTypes.bool, // No result
-  // ]),
-  editingToggled: PropTypes.bool,
-  match: PropTypes.object,
-  // onGetTopics: PropTypes.func,
-  onBet: PropTypes.func,
-  betResult: PropTypes.object,
+  onGetOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
   // getOraclesError: PropTypes.string,
-  onGetOracles: PropTypes.func,
+  editingToggled: PropTypes.bool,
+  match: PropTypes.object,
+  onBet: PropTypes.func,
+  betResult: PropTypes.object,
 };
 
 TopicPage.defaultProps = {
-  // getTopicsSuccess: undefined,
-  editingToggled: false,
-  match: {},
-  // onGetTopics: undefined,
-  onBet: undefined,
-  betResult: undefined,
+  onGetOracles: undefined,
   getOraclesSuccess: [],
   // getOraclesError: '',
-  onGetOracles: undefined,
+  editingToggled: false,
+  match: {},
+  onBet: undefined,
+  betResult: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  // getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  editingToggled: state.Topic.get('toggled'),
-  betResult: state.Topic.get('bet_result'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  editingToggled: state.Topic.get('toggled'),
+  betResult: state.Topic.get('bet_result'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    // onGetTopics: () => dispatch(dashboardActions.getTopics()),
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
   };
