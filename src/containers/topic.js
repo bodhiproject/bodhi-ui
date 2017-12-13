@@ -18,11 +18,9 @@ class TopicPage extends React.Component {
   constructor(props) {
     super(props);
 
-    // Make sure address is defined; otherwise TopicPage don't know what to find
-
     this.state = {
       address: this.props.match.params.address,
-      oracle: undefined, // Topic object for this page
+      topic: undefined, // Topic object for this page
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
@@ -44,12 +42,12 @@ class TopicPage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getOraclesSuccess } = nextProps;
+    const { getTopicsSuccess } = nextProps;
 
-    if (!_.isEmpty(getOraclesSuccess)) {
-      const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    if (!_.isEmpty(getTopicsSuccess)) {
+      const topic = _.find(getTopicsSuccess, { address: this.state.address });
 
-      this.setState({ oracle });
+      this.setState({ topic });
       // let oracle = undefined;
 
       // // Determine current phase of this topic
@@ -100,9 +98,9 @@ class TopicPage extends React.Component {
 
   /** Confirm button on click handler passed down to CardVoting */
   onSubmit(obj) {
-    const { oracle, radioValue } = this.state;
+    const { topic, radioValue } = this.state;
 
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const selectedIndex = topic.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
     // const result = _.assign({}, obj, {
@@ -216,6 +214,7 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
+  onGetTopics: PropTypes.func,
   getTopicsSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
@@ -223,7 +222,6 @@ TopicPage.propTypes = {
   ]),
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
-  // onGetTopics: PropTypes.func,
   onBet: PropTypes.func,
   betResult: PropTypes.object,
 };

@@ -18,8 +18,6 @@ class TopicPage extends React.Component {
   constructor(props) {
     super(props);
 
-    // Make sure address is defined; otherwise TopicPage don't know what to find
-
     this.state = {
       address: this.props.match.params.address,
       oracle: undefined, // Topic object for this page

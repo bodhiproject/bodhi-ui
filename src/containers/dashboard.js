@@ -77,9 +77,9 @@ class Dashboard extends React.Component {
     console.log(centralizedOracles);
     const topicEvents = this.props.getTopicsSuccess;
 
-    const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+    // const rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
     // const rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
-    // const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
+    const rowItems = getFinishedItems(topicEvents, colWidth, numShowInOptions);
 
     console.log(topicEvents);
     return (
