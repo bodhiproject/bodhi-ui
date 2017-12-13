@@ -14,9 +14,12 @@ import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBala
   getResult, finished } from '../helpers/blockchain/contract';
 
 const TAB_BETTING = 0;
-const TAB_VOTING = 1;
-const TAB_COMPLETED = 2;
+const TAB_WAITING = 1;
+const TAB_VOTING = 2;
+const TAB_COMPLETED = 3;
 const DEFAULT_TAB_INDEX = TAB_BETTING;
+const QTUM = 'QTUM';
+const BOT = 'BOT';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -42,8 +45,6 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const tokenQtum = 'QTUM';
-    const tokenBot = 'BOT';
     const numShowInOptions = 3;
     const colPerRow = { // Specify how many col in each row
       xs: 1,
@@ -71,9 +72,9 @@ class Dashboard extends React.Component {
 
     if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
       _.each(this.props.getOraclesSuccess, (entry) => {
-        if (entry.token === tokenQtum) {
+        if (entry.token === QTUM) {
           centralizedOracles.push(entry);
-        } else if (entry.token === tokenBot) {
+        } else if (entry.token === BOT) {
           decentralizedOracles.push(entry);
         }
       });
@@ -85,9 +86,14 @@ class Dashboard extends React.Component {
 
     let rowItems;
     switch (this.state.currentTab) {
-      case TAB_BETTING:
+      case TAB_BETTING: {
         rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
         break;
+      }
+      case TAB_WAITING: {
+        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOptions);
+        break;
+      }
       case TAB_VOTING: {
         rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOptions);
         break;
@@ -102,10 +108,15 @@ class Dashboard extends React.Component {
     }
 
     return (
-      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
+      <LayoutContentWrapper
+        className="horizontalWrapper"
+        style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}
+      >
         <TabBtnGroup
           buttons={[{
-            text: 'OnGoing',
+            text: 'Betting',
+          }, {
+            text: 'Waiting',
           }, {
             text: 'Voting',
           }, {
@@ -133,7 +144,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
         qtumTotal += entry.amounts[i];
       }
 
-      const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM');
+      const raisedString = `Raised: ${qtumTotal} ${QTUM}`;
       const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
       const entryEle = (
@@ -182,7 +193,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
         botTotal += entry.amounts[i];
       }
 
-      const raisedString = 'Raised: '.concat(botTotal).concat(' BOT');
+      const raisedString = `Raised: ${botTotal} ${BOT}`;
       const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
 
       const entryEle = (
@@ -229,7 +240,7 @@ function getFinishedItems(topicEvents, colWidth, numShowInOptions) {
       botTotal += entry.botAmount[i];
     }
 
-    const raisedString = 'Raised: '.concat(qtumTotal).concat(' QTUM, ').concat(botTotal).concat(' BOT');
+    const raisedString = `Raised: ${qtumTotal} ${QTUM}, ${botTotal} ${BOT}`;
     const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
     const winningResultName = entry.options[entry.resultIdx];
 
