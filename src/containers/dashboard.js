@@ -138,7 +138,7 @@ function getCentralizedOracleItems(centralizedOracles, colWidth, numShowInOption
               ))}
             </ReportsWidget>
 
-            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
           </IsoWidgetsWrapper>
         </Col>
       );
@@ -182,7 +182,7 @@ function getDecentralizedOracleItems(decentralizedOracles, colWidth, numShowInOp
               ))}
             </ReportsWidget>
 
-            <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
           </IsoWidgetsWrapper>
         </Col>
       );
