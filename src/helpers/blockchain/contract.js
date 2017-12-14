@@ -1,6 +1,6 @@
 import Contracts from '../../config/contracts';
 
-const Qweb3 = require('../../modules/qweb3.js/index');
+import Qweb3 from '../../modules/qweb3.js/index';
 const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
 
 // Blockchain functions
