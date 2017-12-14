@@ -103,8 +103,9 @@ class TopicPage extends React.Component {
 
     console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}`);
     const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
 
-    this.props.onBet(selectedIndex, amount, senderAddress);
+    this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
   render() {
@@ -243,7 +244,8 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
-    onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
+    onBet: (contractAddress, index, amount, senderAddress) =>
+      dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
   };
 }
 
