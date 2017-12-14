@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 import { getDefaultPath } from '../../helpers/urlSync';
 import actions, { getView } from './actions';
 
@@ -22,6 +23,19 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddrs', state.get('walletAddrs'));
     case actions.SELECT_WALLET_ADDRESS:
       return state.set('walletAddrsIndex', action.value);
+    case actions.LIST_UNSPENT_RESULT:
+    {
+      let result = [];
+
+      if (action.value.result) {
+        result = _.orderBy(_.map(action.value.result, (item) => ({
+          address: item.address,
+          qtum: item.amount,
+        })), ['qtum'], ['desc']);
+      }
+
+      return state.set('walletAddrs', result);
+    }
     case actions.COLLPSE_CHANGE:
       return state.set('collapsed', !state.get('collapsed'));
     case actions.COLLPSE_OPEN_DRAWER:

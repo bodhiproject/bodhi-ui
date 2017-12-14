@@ -1,25 +1,7 @@
 import Contracts from '../../config/contracts';
 
-// const restify = require('restify');
-// const corsMiddleware = require('restify-cors-middleware');
-const Qweb3 = require('../../modules/qweb3.js/index');
+import Qweb3 from '../../modules/qweb3.js/index';
 const Qweb3Instance = new Qweb3('http://bodhi:bodhi@localhost:13889');
-
-// const server = restify.createServer();
-// const cors = corsMiddleware({
-//   origins: ['*'],
-// });
-// server.pre(cors.preflight);
-// server.use(cors.actual);
-// server.post('/isconnected', (req, res, next) => {
-//   Qweb3.isConnected()
-//     .then((result) => {
-//       res.send(200, {
-//         isConnected: result,
-//       });
-//       next();
-//     });
-// });
 
 // Blockchain functions
 export async function listUnspent() {

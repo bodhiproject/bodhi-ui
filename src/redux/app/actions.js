@@ -16,6 +16,8 @@ const actions = {
   CHANGE_CURRENT: 'CHANGE_CURRENT',
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
   SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
+  LIST_UNSPENT: 'LIST_UNSPENT',
+  LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
   toggleCollapsed: () => ({
     type: actions.COLLPSE_CHANGE,
   }),
@@ -55,5 +57,8 @@ const actions = {
       value,
     };
   },
+  listUnspent: () => ({
+    type: actions.LIST_UNSPENT,
+  }),
 };
 export default actions;

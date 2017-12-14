@@ -21,6 +21,8 @@ function shortenAddress(text, maxLength) {
   const startLen = (maxLength - 3) / 2;
   const endLen = (maxLength - 3) / 2;
 
+  console.log(`ret is ${ret}`);
+
   if (ret.length > maxLength) {
     ret = `${ret.substr(0, startLen)} ... ${ret.substr(ret.length - endLen)}`;
   }
@@ -42,6 +44,10 @@ class Topbar extends React.PureComponent {
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onDropdownClick = this.onDropdownClick.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.listUnspent();
   }
 
   onDropdownClick({ key, item }) {
@@ -96,18 +102,20 @@ class Topbar extends React.PureComponent {
 
     const menu = (
       <Menu onClick={this.onDropdownClick}>
-        {_.map(walletAddrs, (addr, index) => <Menu.Item key={addr} index={index}>{addr}</Menu.Item>)}
+        {_.map(walletAddrs, (item, index) => <Menu.Item key={item.address} index={index}>{item.address} {item.qtum.toFixed(1)}</Menu.Item>)}
         <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item>
       </Menu>
     );
 
+    console.log('walletAddrs', walletAddrs);
+
     const walletAddrsEle = (_.isEmpty(walletAddrs)) ?
       (<Link to="#" onClick={this.showModal}>
-        <Icon type="plus" />Add account
+        <Icon type="plus" />Add address
       </Link>)
       :
       (<Dropdown overlay={menu}>
-        <a className="ant-dropdown-link" href="#">{shortenAddress(walletAddrs[walletAddrsIndex], addressMaxDisplayLength)}<Icon type="down" />
+        <a className="ant-dropdown-link" href="#">{shortenAddress(walletAddrs[walletAddrsIndex].address, addressMaxDisplayLength)} {walletAddrs[walletAddrsIndex].qtum.toFixed(1)}<Icon type="down" />
         </a>
       </Dropdown>);
 
@@ -166,6 +174,7 @@ Topbar.propTypes = {
   walletAddrsIndex: PropTypes.number,
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
+  listUnspent: PropTypes.func,
 };
 
 Topbar.defaultProps = {
@@ -173,7 +182,7 @@ Topbar.defaultProps = {
   walletAddrsIndex: 0,
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
-  // form: undefined,
+  listUnspent: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -186,6 +195,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggle: appActions.toggleCollapsed,
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
+  listUnspent: () => dispatch(appActions.listUnspent()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);

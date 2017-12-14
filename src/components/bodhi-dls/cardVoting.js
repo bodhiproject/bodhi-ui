@@ -33,7 +33,7 @@ class CardVoting extends Component {
 
   render() {
     const {
-      amount, token, children, editingToggled, result,
+      amount, token, children, editingToggled, result, radioIndex,
     } = this.props;
 
     const titleLineHeight = 36;
@@ -95,7 +95,7 @@ class CardVoting extends Component {
                   type="primary"
                   onClick={this.onConfirm}
                   size="large"
-                  disabled={!this.state.voteAmount || !this.props.radioIndex}
+                  disabled={!this.state.voteAmount || !radioIndex}
                 >
                   Confirm
                 </Button>
