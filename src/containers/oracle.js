@@ -132,74 +132,75 @@ class TopicPage extends React.Component {
       value: `${oracle.amounts[index]} ${oracle.token}`,
       percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
     }));
+    const breadcrumbItem = ((oracle.token === 'QTUM') ? 'Betting' : 'Voting');
 
-    const oracleElement = (<Row
-      gutter={28}
-      justify="center"
-    >
+    const oracleElement = (
+      <Row
+        gutter={28}
+        justify="center"
+      >
 
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px" >
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px" >
 
-          <CardInfo
-            title={oracle.name}
-            timeline={timeline}
-          >
+            <CardInfo
+              title={oracle.name}
+              timeline={timeline}
+            >
+            </CardInfo>
+          </IsoWidgetsWrapper>
 
-          </CardInfo>
-        </IsoWidgetsWrapper>
+        </Col>
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px">
+            {this.props.betResult}
+            <CardVoting amount={totalBalance} token={token} voteBalance={betBalance} onSubmit={this.onSubmit}>
+              {editingToggled
+                ?
+                (
+                  <RadioGroup
+                    onChange={this.onRadioGroupChange}
+                    value={this.state.radioValue}
+                    size="large"
+                    defaultValue={DEFAULT_RADIO_VALUE}
+                  >
+                    {betBalance.map((entry, index) => (
+                      <Radio value={index + 1} key={entry.name}>
+                        <ProgressBar
+                          label={entry.name}
+                          value={entry.value}
+                          percent={entry.percent}
+                          barHeight={12}
+                          info
+                        />
+                      </Radio>))
+                    }
+                  </RadioGroup>
+                )
+                :
+                betBalance.map((entry) => (
+                  <ProgressBar
+                    key={entry.name}
+                    label={entry.name}
+                    value={entry.value}
+                    percent={entry.percent}
+                    barHeight={12}
+                    info
+                    marginBottom={18}
+                  />))
+              }
+            </CardVoting>
+          </IsoWidgetsWrapper>
+        </Col>
 
-      </Col>
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px">
-          {this.props.betResult}
-          <CardVoting amount={totalBalance} token={token} voteBalance={betBalance} onSubmit={this.onSubmit}>
-            {editingToggled
-              ?
-              (
-                <RadioGroup
-                  onChange={this.onRadioGroupChange}
-                  value={this.state.radioValue}
-                  size="large"
-                  defaultValue={DEFAULT_RADIO_VALUE}
-                >
-                  {betBalance.map((entry, index) => (
-                    <Radio value={index + 1} key={entry.name}>
-                      <ProgressBar
-                        label={entry.name}
-                        value={entry.value}
-                        percent={entry.percent}
-                        barHeight={12}
-                        info
-                      />
-                    </Radio>))
-                  }
-                </RadioGroup>
-              )
-              :
-              betBalance.map((entry) => (
-                <ProgressBar
-                  key={entry.name}
-                  label={entry.name}
-                  value={entry.value}
-                  percent={entry.percent}
-                  barHeight={12}
-                  info
-                  marginBottom={18}
-                />))
-            }
-          </CardVoting>
-        </IsoWidgetsWrapper>
-      </Col>
-
-    </Row>);
+      </Row>);
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
             <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Ongoing</Breadcrumb.Item>
+            <Breadcrumb.Item>{breadcrumbItem}</Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
