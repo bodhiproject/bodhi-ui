@@ -5,12 +5,15 @@ import { request } from '../../helpers/utility';
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
-    const { index, amount, senderAddress } = action.payload;
+    const {
+      contractAddress, index, amount, senderAddress,
+    } = action.payload;
 
     try {
       const options = {
         method: 'POST',
         body: JSON.stringify({
+          contractAddress,
           index,
           amount,
           senderAddress,

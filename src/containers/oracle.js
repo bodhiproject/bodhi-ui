@@ -97,10 +97,11 @@ class TopicPage extends React.Component {
     const { amount } = obj;
 
     const senderAddress = walletAddrs[walletAddrsIndex].address;
+    
+    const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
-    console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
-
-    this.props.onBet(selectedIndex, amount, senderAddress);
+    this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
   render() {
@@ -128,79 +129,81 @@ class TopicPage extends React.Component {
       percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
     }));
 
-    const oracleElement = (<Row
-      gutter={28}
-      justify="center"
-    >
+    const breadcrumbItem = ((oracle.token === 'QTUM') ? 'Betting' : 'Voting');
 
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px" >
+    const oracleElement = (
+      <Row
+        gutter={28}
+        justify="center"
+      >
 
-          <CardInfo
-            title={oracle.name}
-            timeline={timeline}
-          >
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px" >
 
-          </CardInfo>
-        </IsoWidgetsWrapper>
+            <CardInfo
+              title={oracle.name}
+              timeline={timeline}
+            >
+            </CardInfo>
+          </IsoWidgetsWrapper>
 
-      </Col>
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px">
-          <CardVoting
-            amount={totalBalance}
-            token={token}
-            voteBalance={betBalance}
-            onSubmit={this.onSubmit}
-            radioIndex={this.state.radioValue}
-            result={betResult}
-          >
-            {editingToggled
-              ?
-              (
-                <RadioGroup
-                  onChange={this.onRadioGroupChange}
-                  value={this.state.radioValue}
-                  size="large"
-                  defaultValue={DEFAULT_RADIO_VALUE}
-                >
-                  {betBalance.map((entry, index) => (
-                    <Radio value={index + 1} key={entry.name}>
-                      <ProgressBar
-                        label={entry.name}
-                        value={entry.value}
-                        percent={entry.percent}
-                        barHeight={12}
-                        info
-                      />
-                    </Radio>))
-                  }
-                </RadioGroup>
-              )
-              :
-              betBalance.map((entry) => (
-                <ProgressBar
-                  key={entry.name}
-                  label={entry.name}
-                  value={entry.value}
-                  percent={entry.percent}
-                  barHeight={12}
-                  info
-                  marginBottom={18}
-                />))
-            }
-          </CardVoting>
-        </IsoWidgetsWrapper>
-      </Col>
+        </Col>
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px">
+            {this.props.betResult}
+            <CardVoting 
+              amount={totalBalance}
+              token={token}
+              voteBalance={betBalance}
+              onSubmit={this.onSubmit}
+              radioIndex={this.state.radioValue}
+              result={betResult}>
+              {editingToggled
+                ?
+                (
+                  <RadioGroup
+                    onChange={this.onRadioGroupChange}
+                    value={this.state.radioValue}
+                    size="large"
+                    defaultValue={DEFAULT_RADIO_VALUE}
+                  >
+                    {betBalance.map((entry, index) => (
+                      <Radio value={index + 1} key={entry.name}>
+                        <ProgressBar
+                          label={entry.name}
+                          value={entry.value}
+                          percent={entry.percent}
+                          barHeight={12}
+                          info
+                        />
+                      </Radio>))
+                    }
+                  </RadioGroup>
+                )
+                :
+                betBalance.map((entry) => (
+                  <ProgressBar
+                    key={entry.name}
+                    label={entry.name}
+                    value={entry.value}
+                    percent={entry.percent}
+                    barHeight={12}
+                    info
+                    marginBottom={18}
+                  />))
+              }
+            </CardVoting>
+          </IsoWidgetsWrapper>
+        </Col>
 
-    </Row>);
+      </Row>);
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
             <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Ongoing</Breadcrumb.Item>
+            <Breadcrumb.Item>{breadcrumbItem}</Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
@@ -253,7 +256,8 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
-    onBet: (index, amount, senderAddress) => dispatch(topicActions.onBet(index, amount, senderAddress)),
+    onBet: (contractAddress, index, amount, senderAddress) =>
+      dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
   };
 }
 

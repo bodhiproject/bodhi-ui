@@ -5,9 +5,11 @@ const topicActions = {
   editingToggled: () => ({
     type: topicActions.EDITING_TOGGLED,
   }),
-  onBet: (index, amount, senderAddress) => ({
+  onBet: (contractAddress, index, amount, senderAddress) => ({
     type: topicActions.BET,
-    payload: { index, amount, senderAddress },
+    payload: {
+      contractAddress, index, amount, senderAddress,
+    },
   }),
 };
 export default topicActions;
