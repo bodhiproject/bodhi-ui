@@ -14,7 +14,7 @@ import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
-class TopicPage extends React.Component {
+class OraclePage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -214,7 +214,7 @@ class TopicPage extends React.Component {
   }
 }
 
-TopicPage.propTypes = {
+OraclePage.propTypes = {
   onGetOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
@@ -231,7 +231,7 @@ TopicPage.propTypes = {
 
 };
 
-TopicPage.defaultProps = {
+OraclePage.defaultProps = {
   onGetOracles: undefined,
   getOraclesSuccess: [],
   // getOraclesError: '',
@@ -250,7 +250,6 @@ const mapStateToProps = (state) => ({
   betResult: state.Topic.get('bet_result'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-
 });
 
 function mapDispatchToProps(dispatch) {
@@ -262,4 +261,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Wrap the component to inject dispatch and state into it
-export default connect(mapStateToProps, mapDispatchToProps)(TopicPage);
+export default connect(mapStateToProps, mapDispatchToProps)(OraclePage);
