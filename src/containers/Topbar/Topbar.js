@@ -60,6 +60,7 @@ class Topbar extends React.PureComponent {
     if (key === KEY_ADD_ADDRESS_BTN) {
       this.showModal();
     } else {
+      message.info(`Primary wallet address is set to "${key}".`);
       this.props.selectWalletAddress(item.props.index);
     }
   }
@@ -102,7 +103,7 @@ class Topbar extends React.PureComponent {
     const menu = (
       <Menu onClick={this.onDropdownClick}>
         {_.map(walletAddrs, (item, index) => <Menu.Item key={item.address} index={index}>{item.address} {item.qtum.toFixed(1)}</Menu.Item>)}
-        <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item>
+        {/* <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item> */}
       </Menu>
     );
 
