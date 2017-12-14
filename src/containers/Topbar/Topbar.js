@@ -12,25 +12,31 @@ import { themeConfig } from '../../config';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
-const addressMaxDisplayLength = 11;
+const ADDRESS_MAX_DISPLAY_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
 
-function shortenAddress(text, maxLength) {
-  let ret = text;
+class Topbar extends React.PureComponent {
+  /**
+   * Utility func to convert address into format of  "Qjsb ... 3dkb"
+   * @param  {string} text      Origin address
+   * @param  {number} maxLength Length of output string, including 3 dots
+   * @return {string}
+   */
+  static shortenAddress(text, maxLength) {
+    let ret = text;
 
-  const startLen = (maxLength - 3) / 2;
-  const endLen = (maxLength - 3) / 2;
+    const startLen = (maxLength - 3) / 2;
+    const endLen = (maxLength - 3) / 2;
 
-  console.log(`ret is ${ret}`);
+    console.log(`ret is ${ret}`);
 
-  if (ret.length > maxLength) {
-    ret = `${ret.substr(0, startLen)} ... ${ret.substr(ret.length - endLen)}`;
+    if (ret.length > maxLength) {
+      ret = `${ret.substr(0, startLen)} ... ${ret.substr(ret.length - endLen)}`;
+    }
+
+    return ret;
   }
 
-  return ret;
-}
-
-class Topbar extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -88,13 +94,6 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  // handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   console.log(this.state.addressInput);
-  //   this.props.addWalletAddress(this.state.addressInput);
-  // }
-
   render() {
     const { toggle, walletAddrs, walletAddrsIndex } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
@@ -115,7 +114,7 @@ class Topbar extends React.PureComponent {
       </Link>)
       :
       (<Dropdown overlay={menu}>
-        <a className="ant-dropdown-link" href="#">{shortenAddress(walletAddrs[walletAddrsIndex].address, addressMaxDisplayLength)} {walletAddrs[walletAddrsIndex].qtum.toFixed(1)}<Icon type="down" />
+        <a className="ant-dropdown-link" href="#">{Topbar.shortenAddress(walletAddrs[walletAddrsIndex].address, ADDRESS_MAX_DISPLAY_LENGTH)} {walletAddrs[walletAddrsIndex].qtum.toFixed(1)}<Icon type="down" />
         </a>
       </Dropdown>);
 
