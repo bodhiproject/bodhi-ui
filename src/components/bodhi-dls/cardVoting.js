@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Button, InputNumber } from 'antd';
+import { Button, InputNumber, Alert } from 'antd';
 import { connect } from 'react-redux';
 
 import topicActions from '../../redux/topic/actions';
@@ -22,7 +22,6 @@ class CardVoting extends Component {
   }
 
   onConfirm(evt) {
-    console.log(`onConfirm: amount ${this.state.voteAmount}`);
     this.props.onSubmit({ amount: this.state.voteAmount });
   }
 
@@ -34,11 +33,34 @@ class CardVoting extends Component {
 
   render() {
     const {
-      amount, token, children, editingToggled,
+      amount, token, children, editingToggled, result, radioIndex,
     } = this.props;
 
     const titleLineHeight = 36;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    let alertElement;
+
+    if (result) {
+      if (result.result) {
+        alertElement =
+            (<Alert
+              message="Success!"
+              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}.`}
+              type="success"
+              closable={false}
+            />);
+      } else if (result.error) {
+        alertElement = (<Alert
+          message="Oops, something went wrong"
+          description={result.error}
+          type="error"
+          closable={false}
+        />);
+      }
+    }
+    const alertContainer = <div className="alert-container">{alertElement}</div>;
+
 
     return (
       <div className="cardVoting">
@@ -67,13 +89,15 @@ class CardVoting extends Component {
                     <span>{token}</span>
                   </div>
                 </div>
+                {alertContainer}
+
                 <Button
                   type="primary"
                   onClick={this.onConfirm}
                   size="large"
-                  disabled={!this.state.voteAmount}
+                  disabled={!this.state.voteAmount || !radioIndex}
                 >
-                Confirm
+                  Confirm
                 </Button>
               </div>
             )
@@ -103,6 +127,8 @@ CardVoting.propTypes = {
   editingToggled: PropTypes.bool,
   onEditingToggled: PropTypes.func,
   onSubmit: PropTypes.func,
+  result: PropTypes.object,
+  radioIndex: PropTypes.number,
 };
 
 CardVoting.defaultProps = {
@@ -112,6 +138,8 @@ CardVoting.defaultProps = {
   editingToggled: false,
   onEditingToggled: undefined,
   onSubmit: undefined,
+  result: undefined,
+  radioIndex: 0,
 };
 
 const mapStateToProps = (state) => ({

@@ -14,7 +14,10 @@ const actions = {
   CHANGE_OPEN_KEYS: 'CHANGE_OPEN_KEYS',
   TOGGLE_ALL: 'TOGGLE_ALL',
   CHANGE_CURRENT: 'CHANGE_CURRENT',
-  Add_WALLET_ADDRESS: 'Add_WALLET_ADDRESS',
+  ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
+  SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
+  LIST_UNSPENT: 'LIST_UNSPENT',
+  LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
   toggleCollapsed: () => ({
     type: actions.COLLPSE_CHANGE,
   }),
@@ -42,9 +45,20 @@ const actions = {
   addWalletAddress: (value) => {
     console.log(`actions: ${value}`);
     return {
-      type: actions.Add_WALLET_ADDRESS,
+      type: actions.ADD_WALLET_ADDRESS,
       value,
     };
   },
+  selectWalletAddress: (value) => {
+    console.log(`selectWalletAddress actions: ${value}`);
+
+    return {
+      type: actions.SELECT_WALLET_ADDRESS,
+      value,
+    };
+  },
+  listUnspent: () => ({
+    type: actions.LIST_UNSPENT,
+  }),
 };
 export default actions;

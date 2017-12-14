@@ -89,7 +89,7 @@ class TopicPage extends React.Component {
   }
 
   onRadioGroupChange(evt) {
-    console.log(`Radio value change ${evt.target.value}`);
+    console.log(`Radio value change from ${this.state.radioValue} to ${evt.target.value}`);
 
     this.setState({
       radioValue: evt.target.value,
@@ -103,22 +103,17 @@ class TopicPage extends React.Component {
     const selectedIndex = topic.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
-    // const result = _.assign({}, obj, {
-    //   optionIdxsIndex: radioValue,
-    //   optionSelected: oracle && !_.isEmpty(oracle.options) && !_.isEmpty(oracle.optionIdxs) ?
-    //     oracle.options[selectedIndex] :
-    //     undefined,
-    // });
-
-    console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}`);
-    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    const walletAddrIndex = [0];
+    const senderAddress = this.props.walletAddrs[walletAddrIndex];
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
+    
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
   render() {
-    const { editingToggled } = this.props;
+    const { editingToggled, betResult } = this.props;
     const { oracle } = this.state;
 
     if (!oracle) {
@@ -161,8 +156,14 @@ class TopicPage extends React.Component {
       </Col>
       <Col xl={12} lg={12}>
         <IsoWidgetsWrapper padding="32px">
-          {this.props.betResult}
-          <CardVoting amount={totalBalance} token={token} voteBalance={betBalance} onSubmit={this.onSubmit}>
+          <CardVoting
+            amount={totalBalance}
+            token={token}
+            voteBalance={betBalance}
+            onSubmit={this.onSubmit}
+            radioIndex={this.state.radioValue}
+            result={betResult}
+          >
             {editingToggled
               ?
               (
@@ -225,6 +226,7 @@ TopicPage.propTypes = {
   match: PropTypes.object,
   onBet: PropTypes.func,
   betResult: PropTypes.object,
+  walletAddrs: PropTypes.array,
 };
 
 TopicPage.defaultProps = {
@@ -234,12 +236,14 @@ TopicPage.defaultProps = {
   match: {},
   onBet: undefined,
   betResult: undefined,
+  walletAddrs: [],
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
+  walletAddrs: state.App.get('walletAddrs'),
 });
 
 function mapDispatchToProps(dispatch) {

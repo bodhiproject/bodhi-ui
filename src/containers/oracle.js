@@ -91,25 +91,21 @@ class TopicPage extends React.Component {
   onSubmit(obj) {
     const { oracle, radioValue } = this.state;
 
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
-    // const result = _.assign({}, obj, {
-    //   optionIdxsIndex: radioValue,
-    //   optionSelected: oracle && !_.isEmpty(oracle.options) && !_.isEmpty(oracle.optionIdxs) ?
-    //     oracle.options[selectedIndex] :
-    //     undefined,
-    // });
-
-    console.log(`selectedIndex is ${selectedIndex}, amount is ${amount}`);
-    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    const senderAddress = walletAddrs[walletAddrsIndex].address;
+    
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
   render() {
-    const { editingToggled } = this.props;
+    const { editingToggled, betResult } = this.props;
     const { oracle } = this.state;
 
     if (!oracle) {
@@ -132,6 +128,7 @@ class TopicPage extends React.Component {
       value: `${oracle.amounts[index]} ${oracle.token}`,
       percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
     }));
+
     const breadcrumbItem = ((oracle.token === 'QTUM') ? 'Betting' : 'Voting');
 
     const oracleElement = (
@@ -154,7 +151,13 @@ class TopicPage extends React.Component {
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
             {this.props.betResult}
-            <CardVoting amount={totalBalance} token={token} voteBalance={betBalance} onSubmit={this.onSubmit}>
+            <CardVoting 
+              amount={totalBalance}
+              token={token}
+              voteBalance={betBalance}
+              onSubmit={this.onSubmit}
+              radioIndex={this.state.radioValue}
+              result={betResult}>
               {editingToggled
                 ?
                 (
@@ -223,6 +226,9 @@ TopicPage.propTypes = {
   match: PropTypes.object,
   onBet: PropTypes.func,
   betResult: PropTypes.object,
+  walletAddrs: PropTypes.array,
+  walletAddrsIndex: PropTypes.number,
+
 };
 
 TopicPage.defaultProps = {
@@ -233,6 +239,8 @@ TopicPage.defaultProps = {
   match: {},
   onBet: undefined,
   betResult: undefined,
+  walletAddrs: [],
+  walletAddrsIndex: 0,
 };
 
 const mapStateToProps = (state) => ({
@@ -240,6 +248,9 @@ const mapStateToProps = (state) => ({
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
+  walletAddrs: state.App.get('walletAddrs'),
+  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+
 });
 
 function mapDispatchToProps(dispatch) {
