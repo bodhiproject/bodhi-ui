@@ -106,7 +106,7 @@ class TopicPage extends React.Component {
     const walletAddrIndex = [0];
     const senderAddress = this.props.walletAddrs[walletAddrIndex];
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
-    
+
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);

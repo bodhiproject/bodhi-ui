@@ -97,7 +97,7 @@ class TopicPage extends React.Component {
     const { amount } = obj;
 
     const senderAddress = walletAddrs[walletAddrsIndex].address;
-    
+
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
@@ -150,14 +150,14 @@ class TopicPage extends React.Component {
         </Col>
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
-            {this.props.betResult}
-            <CardVoting 
+            <CardVoting
               amount={totalBalance}
               token={token}
               voteBalance={betBalance}
               onSubmit={this.onSubmit}
               radioIndex={this.state.radioValue}
-              result={betResult}>
+              result={betResult}
+            >
               {editingToggled
                 ?
                 (
