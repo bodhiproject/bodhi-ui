@@ -11,5 +11,12 @@ const topicActions = {
       contractAddress, index, amount, senderAddress,
     },
   }),
+  SET_RESULT: 'SET_RESULT',
+  onSetResult: (contractAddress, resultIndex, senderAddress) => ({
+    type: topicActions.SET_RESULT,
+    payload: {
+      contractAddress, resultIndex, senderAddress,
+    },
+  }),
 };
 export default topicActions;
