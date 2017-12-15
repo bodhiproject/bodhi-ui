@@ -166,7 +166,6 @@ class TopicPage extends React.Component {
 
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px" >
-
             <CardInfo
               title={oracle.name}
               timeline={timeline}
@@ -177,12 +176,14 @@ class TopicPage extends React.Component {
         </Col>
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
+            {this.props.betReturn}
             <CardVoting
               amount={totalBalance}
               token={token}
               voteBalance={betBalance}
               onSubmit={this.onBet}
               radioIndex={this.state.radioValue}
+              result={betReturn}
             >
               {editingToggled
                 ?
