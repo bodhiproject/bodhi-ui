@@ -25,7 +25,9 @@ class TopicPage extends React.Component {
     };
 
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onBet = this.onBet.bind(this);
+    this.onSetResult = this.onSetResult.bind(this);
+    this.onFinalizeResult = this.onFinalizeResult.bind(this);
   }
 
   componentWillMount() {
@@ -77,6 +79,9 @@ class TopicPage extends React.Component {
     } else {
       console.log('getOraclesSuccess is empty');
     }
+
+    console.log(`setResultReturn: ${this.props.setResultReturn}`);
+    console.log(`finalizeResultReturn: ${this.props.finalizeResultReturn}`);
   }
 
   onRadioGroupChange(evt) {
@@ -88,7 +93,7 @@ class TopicPage extends React.Component {
   }
 
   /** Confirm button on click handler passed down to CardVoting */
-  onSubmit(obj) {
+  onBet(obj) {
     const { oracle, radioValue } = this.state;
 
     const { walletAddrs, walletAddrsIndex } = this.props;
@@ -97,15 +102,37 @@ class TopicPage extends React.Component {
     const { amount } = obj;
 
     const senderAddress = walletAddrs[walletAddrsIndex].address;
-    
+
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
+  onSetResult() {
+    const { oracle, radioValue } = this.state;
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, senderAddress is ${senderAddress}`);
+
+    this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
+  }
+
+  onFinalizeResult() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    console.log(`contractAddress is ${contractAddress}, senderAddress is ${senderAddress}`);
+
+    this.props.onFinalizeResult(contractAddress, senderAddress);
+  }
+
   render() {
-    const { editingToggled, betResult } = this.props;
+    const { editingToggled, betReturn } = this.props;
     const { oracle } = this.state;
 
     if (!oracle) {
@@ -150,14 +177,15 @@ class TopicPage extends React.Component {
         </Col>
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
-            {this.props.betResult}
-            <CardVoting 
+            {this.props.betReturn}
+            <CardVoting
               amount={totalBalance}
               token={token}
               voteBalance={betBalance}
-              onSubmit={this.onSubmit}
+              onSubmit={this.onBet}
               radioIndex={this.state.radioValue}
-              result={betResult}>
+              result={betReturn}
+            >
               {editingToggled
                 ?
                 (
@@ -225,10 +253,13 @@ TopicPage.propTypes = {
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onBet: PropTypes.func,
-  betResult: PropTypes.object,
+  betReturn: PropTypes.object,
+  onSetResult: PropTypes.func,
+  setResultReturn: PropTypes.object,
+  onFinalizeResult: PropTypes.func,
+  finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-
 };
 
 TopicPage.defaultProps = {
@@ -238,7 +269,11 @@ TopicPage.defaultProps = {
   editingToggled: false,
   match: {},
   onBet: undefined,
-  betResult: undefined,
+  betReturn: undefined,
+  onSetResult: undefined,
+  setResultReturn: undefined,
+  onFinalizeResult: undefined,
+  finalizeResultReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
 };
@@ -247,10 +282,11 @@ const mapStateToProps = (state) => ({
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
-  betResult: state.Topic.get('bet_result'),
+  betReturn: state.Topic.get('bet_return'),
+  setResultReturn: state.Topic.get('set_result_return'),
+  finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-
 });
 
 function mapDispatchToProps(dispatch) {
@@ -258,6 +294,10 @@ function mapDispatchToProps(dispatch) {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
+    onSetResult: (contractAddress, resultIndex, senderAddress) =>
+      dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
+    onFinalizeResult: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
   };
 }
 
