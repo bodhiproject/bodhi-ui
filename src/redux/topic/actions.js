@@ -20,7 +20,7 @@ const topicActions = {
     },
   }),
   FINALIZE_RESULT: 'FINALIZE_RESULT',
-  FINALIZE_RESULT_RESULT: 'FINALIZE_RESULT_RESULT',
+  FINALIZE_RESULT_RETURN: 'FINALIZE_RESULT_RETURN',
   onSetResult: (contractAddress, senderAddress) => ({
     type: topicActions.FINALIZE_RESULT,
     payload: {

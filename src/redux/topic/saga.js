@@ -71,9 +71,42 @@ export function* setResultRequestHandler() {
   });
 }
 
+export function* finalizeResultRequestHandler() {
+  yield takeEvery(actions.FINALIZE_RESULT, function* onFinalizeResultRequest(action) {
+    const {
+      contractAddress, senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/finalizeresult', options);
+      console.log('finalizeResult return: ', result);
+
+      yield put({
+        type: actions.FINALIZE_RESULT_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.FINALIZE_RESULT_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(betRequestHandler),
     fork(setResultRequestHandler),
+    fork(finalizeResultRequestHandler),
   ]);
 }
