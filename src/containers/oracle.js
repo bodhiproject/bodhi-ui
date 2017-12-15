@@ -123,7 +123,7 @@ class TopicPage extends React.Component {
 
   onFinalizeResult() {
     const { walletAddrs, walletAddrsIndex } = this.props;
-    
+
     const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
     const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
     console.log(`contractAddress is ${contractAddress}, senderAddress is ${senderAddress}`);
