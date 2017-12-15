@@ -11,15 +11,21 @@ class CreateTopicContainer extends React.Component {
     this.state = {
 
     };
+
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentWillMount() {
   }
 
+  onSubmit() {
+
+  }
+
   render() {
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
-        <CreateTopic />
+        <CreateTopic onSubmit={this.onSubmit} />
       </LayoutContentWrapper>
     );
   }

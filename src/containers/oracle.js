@@ -79,6 +79,12 @@ class OraclePage extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    console.log('componentWillUnmount');
+
+    this.props.onClearBetResult();
+  }
+
   onRadioGroupChange(evt) {
     console.log(`Radio value change ${evt.target.value}`);
 
@@ -225,10 +231,10 @@ OraclePage.propTypes = {
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onBet: PropTypes.func,
+  onClearBetResult: PropTypes.func,
   betResult: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-
 };
 
 OraclePage.defaultProps = {
@@ -238,6 +244,7 @@ OraclePage.defaultProps = {
   editingToggled: false,
   match: {},
   onBet: undefined,
+  onClearBetResult: undefined,
   betResult: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -257,6 +264,7 @@ function mapDispatchToProps(dispatch) {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
+    onClearBetResult: () => dispatch(topicActions.onClearBetResult()),
   };
 }
 
