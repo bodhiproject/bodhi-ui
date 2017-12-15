@@ -12,6 +12,7 @@ const topicActions = {
     },
   }),
   SET_RESULT: 'SET_RESULT',
+  SET_RESULT_RESULT: 'SET_RESULT_RESULT',
   onSetResult: (contractAddress, resultIndex, senderAddress) => ({
     type: topicActions.SET_RESULT,
     payload: {
