@@ -26,12 +26,12 @@ export function* betRequestHandler() {
       console.log('onBetRequest: result is', result);
 
       yield put({
-        type: actions.BET_RESULT,
+        type: actions.BET_RETURN,
         value: { result },
       });
     } catch (error) {
       yield put({
-        type: actions.BET_RESULT,
+        type: actions.BET_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }

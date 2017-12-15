@@ -1,6 +1,6 @@
 const topicActions = {
   BET: 'BET',
-  BET_RESULT: 'BET_RESULT',
+  BET_RETURN: 'BET_RETURN',
   EDITING_TOGGLED: 'EDITING_TOGGLED',
   editingToggled: () => ({
     type: topicActions.EDITING_TOGGLED,

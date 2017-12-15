@@ -25,7 +25,7 @@ class TopicPage extends React.Component {
     };
 
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onBet = this.onBet.bind(this);
     this.onSetResult = this.onSetResult.bind(this);
     this.onFinalizeResult = this.onFinalizeResult.bind(this);
   }
@@ -93,7 +93,7 @@ class TopicPage extends React.Component {
   }
 
   /** Confirm button on click handler passed down to CardVoting */
-  onSubmit(obj) {
+  onBet(obj) {
     const { oracle, radioValue } = this.state;
 
     const { walletAddrs, walletAddrsIndex } = this.props;
@@ -132,7 +132,7 @@ class TopicPage extends React.Component {
   }
 
   render() {
-    const { editingToggled, betResult } = this.props;
+    const { editingToggled, betReturn } = this.props;
     const { oracle } = this.state;
 
     if (!oracle) {
@@ -177,14 +177,14 @@ class TopicPage extends React.Component {
         </Col>
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
-            {this.props.betResult}
+            {this.props.betReturn}
             <CardVoting
               amount={totalBalance}
               token={token}
               voteBalance={betBalance}
-              onSubmit={this.onSubmit}
+              onSubmit={this.onBet}
               radioIndex={this.state.radioValue}
-              result={betResult}
+              result={betReturn}
             >
               {editingToggled
                 ?
@@ -253,7 +253,7 @@ TopicPage.propTypes = {
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onBet: PropTypes.func,
-  betResult: PropTypes.object,
+  betReturn: PropTypes.object,
   onSetResult: PropTypes.func,
   setResultReturn: PropTypes.object,
   onFinalizeResult: PropTypes.func,
@@ -269,7 +269,7 @@ TopicPage.defaultProps = {
   editingToggled: false,
   match: {},
   onBet: undefined,
-  betResult: undefined,
+  betReturn: undefined,
   onSetResult: undefined,
   setResultReturn: undefined,
   onFinalizeResult: undefined,
@@ -282,7 +282,7 @@ const mapStateToProps = (state) => ({
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
-  betResult: state.Topic.get('bet_result'),
+  betReturn: state.Topic.get('bet_return'),
   setResultReturn: state.Topic.get('set_result_return'),
   finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
