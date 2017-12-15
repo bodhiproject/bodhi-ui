@@ -56,15 +56,15 @@ export function* setResultRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/setresult', options);
-      console.log('setResultRequest result: ', result);
+      console.log('setResultReturn result: ', result);
 
       yield put({
-        type: actions.SET_RESULT_RESULT,
+        type: actions.SET_RESULT_RETURN,
         value: { result },
       });
     } catch (error) {
       yield put({
-        type: actions.SET_RESULT_RESULT,
+        type: actions.SET_RESULT_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }

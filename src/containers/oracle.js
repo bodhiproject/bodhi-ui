@@ -80,7 +80,7 @@ class TopicPage extends React.Component {
       console.log('getOraclesSuccess is empty');
     }
 
-    console.log(`setResultResult: ${this.props.setResultResult}`);
+    console.log(`setResultReturn: ${this.props.setResultReturn}`);
     console.log(`finalizeResultReturn: ${this.props.finalizeResultReturn}`);
   }
 
@@ -113,9 +113,9 @@ class TopicPage extends React.Component {
     const { oracle, radioValue } = this.state;
     const { walletAddrs, walletAddrsIndex } = this.props;
 
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
-    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, senderAddress is ${senderAddress}`);
 
     this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
@@ -123,6 +123,7 @@ class TopicPage extends React.Component {
 
   onFinalizeResult() {
     const { walletAddrs, walletAddrsIndex } = this.props;
+    
     const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
     const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
     console.log(`contractAddress is ${contractAddress}, senderAddress is ${senderAddress}`);
@@ -254,7 +255,7 @@ TopicPage.propTypes = {
   onBet: PropTypes.func,
   betResult: PropTypes.object,
   onSetResult: PropTypes.func,
-  setResultResult: PropTypes.object,
+  setResultReturn: PropTypes.object,
   onFinalizeResult: PropTypes.func,
   finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
@@ -270,7 +271,7 @@ TopicPage.defaultProps = {
   onBet: undefined,
   betResult: undefined,
   onSetResult: undefined,
-  setResultResult: undefined,
+  setResultReturn: undefined,
   onFinalizeResult: undefined,
   finalizeResultReturn: undefined,
   walletAddrs: [],
@@ -282,7 +283,7 @@ const mapStateToProps = (state) => ({
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
-  setResultResult: state.Topic.get('set_result_result'),
+  setResultReturn: state.Topic.get('set_result_return'),
   finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),

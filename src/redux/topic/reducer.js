@@ -15,8 +15,8 @@ export default function topicReducer(
       return state.set('toggled', true);
     case actions.BET_RESULT:
       return state.set('bet_result', action.value);
-    case actions.SET_RESULT_RESULT:
-      return state.set('set_result_result', action.value);
+    case actions.SET_RESULT_RETURN:
+      return state.set('set_result_return', action.value);
     case actions.FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', action.value);
     default:
