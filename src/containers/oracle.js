@@ -26,6 +26,7 @@ class TopicPage extends React.Component {
 
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onSetResult = this.onSetResult.bind(this);
   }
 
   componentWillMount() {
@@ -77,6 +78,8 @@ class TopicPage extends React.Component {
     } else {
       console.log('getOraclesSuccess is empty');
     }
+
+    console.log(`setResultResult: ${this.props.setResultResult}`);
   }
 
   onRadioGroupChange(evt) {
@@ -102,6 +105,18 @@ class TopicPage extends React.Component {
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
 
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
+  }
+
+  onSetResult() {
+    const { oracle, radioValue } = this.state;
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, senderAddress is ${senderAddress}`);
+
+    this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
   }
 
   render() {
@@ -227,9 +242,10 @@ TopicPage.propTypes = {
   match: PropTypes.object,
   onBet: PropTypes.func,
   betResult: PropTypes.object,
+  onSetResult: PropTypes.func,
+  setResultResult: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-
 };
 
 TopicPage.defaultProps = {
@@ -240,6 +256,8 @@ TopicPage.defaultProps = {
   match: {},
   onBet: undefined,
   betResult: undefined,
+  onSetResult: undefined,
+  setResultResult: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
 };
@@ -249,9 +267,9 @@ const mapStateToProps = (state) => ({
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
+  setResultResult: state.Topic.get('set_result_result'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-
 });
 
 function mapDispatchToProps(dispatch) {
@@ -259,6 +277,8 @@ function mapDispatchToProps(dispatch) {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
+    onSetResult: (contractAddress, resultIndex, senderAddress) =>
+      dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
   };
 }
 
