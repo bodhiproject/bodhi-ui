@@ -27,6 +27,7 @@ class TopicPage extends React.Component {
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onSetResult = this.onSetResult.bind(this);
+    this.onFinalizeResult = this.onFinalizeResult.bind(this);
   }
 
   componentWillMount() {
@@ -80,6 +81,7 @@ class TopicPage extends React.Component {
     }
 
     console.log(`setResultResult: ${this.props.setResultResult}`);
+    console.log(`finalizeResultReturn: ${this.props.finalizeResultReturn}`);
   }
 
   onRadioGroupChange(evt) {
@@ -117,6 +119,15 @@ class TopicPage extends React.Component {
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, senderAddress is ${senderAddress}`);
 
     this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
+  }
+
+  onFinalizeResult() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    console.log(`contractAddress is ${contractAddress}, senderAddress is ${senderAddress}`);
+
+    this.props.onFinalizeResult(contractAddress, senderAddress);
   }
 
   render() {
@@ -244,6 +255,8 @@ TopicPage.propTypes = {
   betResult: PropTypes.object,
   onSetResult: PropTypes.func,
   setResultResult: PropTypes.object,
+  onFinalizeResult: PropTypes.func,
+  finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
 };
@@ -258,6 +271,8 @@ TopicPage.defaultProps = {
   betResult: undefined,
   onSetResult: undefined,
   setResultResult: undefined,
+  onFinalizeResult: undefined,
+  finalizeResultReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
 };
@@ -268,6 +283,7 @@ const mapStateToProps = (state) => ({
   editingToggled: state.Topic.get('toggled'),
   betResult: state.Topic.get('bet_result'),
   setResultResult: state.Topic.get('set_result_result'),
+  finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
 });
@@ -279,6 +295,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
+    onFinalizeResult: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
   };
 }
 
