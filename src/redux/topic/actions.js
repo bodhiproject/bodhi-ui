@@ -19,5 +19,13 @@ const topicActions = {
       contractAddress, resultIndex, senderAddress,
     },
   }),
+  FINALIZE_RESULT: 'FINALIZE_RESULT',
+  FINALIZE_RESULT_RESULT: 'FINALIZE_RESULT_RESULT',
+  onSetResult: (contractAddress, senderAddress) => ({
+    type: topicActions.FINALIZE_RESULT,
+    payload: {
+      contractAddress, senderAddress,
+    },
+  }),
 };
 export default topicActions;
