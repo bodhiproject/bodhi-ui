@@ -87,7 +87,7 @@ class Topbar extends React.PureComponent {
     if (key === KEY_ADD_ADDRESS_BTN) {
       this.showModal();
     } else {
-      message.info(`Primary wallet address is set to "${key}".`);
+      message.info(`Primary wallet address set to "${key}".`);
       this.props.selectWalletAddress(item.props.index);
     }
   }

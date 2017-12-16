@@ -58,46 +58,25 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    // Calculate grid number for Col attribute
-    const colWidth = {};
-    Object.keys(COL_PER_ROW).forEach((key) => {
-      colWidth[key] = 24 / COL_PER_ROW[key];
-    });
-
-    const centralizedOracles = [];
-    const decentralizedOracles = [];
-    let topicEvents = [];
-
-    if (this.props.getOraclesSuccess && this.props.getOraclesSuccess.length > 0) {
-      _.each(this.props.getOraclesSuccess, (entry) => {
-        if (entry.token === QTUM) {
-          centralizedOracles.push(entry);
-        } else if (entry.token === BOT) {
-          decentralizedOracles.push(entry);
-        }
-      });
-    }
-
-    if (this.props.getTopicsSuccess && this.props.getTopicsSuccess.length > 0) {
-      topicEvents = this.props.getTopicsSuccess;
-    }
+    const topicEvents = this.props.getTopicsSuccess;
+    const allOracles = this.props.getOraclesSuccess;
 
     let rowItems;
     switch (this.state.currentTab) {
       case TAB_BETTING: {
-        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
+        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;
       }
       case TAB_WAITING: {
-        rowItems = getCentralizedOracleItems(centralizedOracles, colWidth);
+        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'WAITRESULT' }));
         break;
       }
       case TAB_VOTING: {
-        rowItems = getDecentralizedOracleItems(decentralizedOracles, colWidth);
+        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'BOT', status: 'VOTING' }));
         break;
       }
       case TAB_COMPLETED: {
-        rowItems = getFinishedItems(topicEvents, colWidth);
+        rowItems = getFinishedItems(_.filter(topicEvents, { status: 'WITHDRAW' }));
         break;
       }
       default: {
@@ -114,7 +93,7 @@ class Dashboard extends React.Component {
           buttons={[{
             text: 'Betting',
           }, {
-            text: 'Waiting',
+            text: 'Setting',
           }, {
             text: 'Voting',
           }, {
@@ -133,140 +112,134 @@ class Dashboard extends React.Component {
   }
 }
 
-function getCentralizedOracleItems(centralizedOracles, colWidth) {
+/**
+ * Build Col in Betting, Setting and Voting tabs using Oracles array
+ * @param  {[type]} oracles [description]
+ * @return {[type]}         [description]
+ */
+function buildOracleColElement(oracles) {
+  // Calculate grid number for Col attribute
+  const colWidth = {};
+
+  Object.keys(COL_PER_ROW).forEach((key) => {
+    colWidth[key] = 24 / COL_PER_ROW[key];
+  });
+
   const rowItems = [];
-  if (centralizedOracles.length > 0) {
-    _.each(centralizedOracles, (entry) => {
-      let qtumTotal = 0;
-      for (let i = 0; i < entry.amounts.length; i++) {
-        qtumTotal += entry.amounts[i];
-      }
 
-      const raisedString = `Raised: ${qtumTotal} ${QTUM}`;
-      const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
+  _.each(oracles, (oracle) => {
+    const totalBalance = _.sum(oracle.amounts);
 
-      const entryEle = (
-        <Col
-          xs={colWidth.xs}
-          sm={colWidth.sm}
-          xl={colWidth.xl}
-          key={entry.address}
-          style={{ marginBottom: '24px' }}
-        >
-          <IsoWidgetsWrapper>
-            {/* Report Widget */}
-            <ReportsWidget
-              label={entry.name}
-              details={[raisedString, endBlockString]}
-            >
-              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
-                <SingleProgressWidget
-                  key={result}
-                  label={result}
-                  percent={_.floor((entry.amounts[index] / qtumTotal) * 100)}
-                  barHeight={12}
-                  status="active"
-                  fontColor="#4A4A4A"
-                  info
-                />
-              ))}
-            </ReportsWidget>
-            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
-          </IsoWidgetsWrapper>
-        </Col>
-      );
+    const raisedString = `Raised: ${totalBalance} ${oracle.token}`;
+    const endBlockString = `Ends: ${oracle.endBlock ? oracle.endBlock : '45000'}`;
 
-      rowItems.push(entryEle);
-    });
-  }
-  return rowItems;
-}
+    let displayOptions = [];
 
-function getDecentralizedOracleItems(decentralizedOracles, colWidth) {
-  const rowItems = [];
-  if (decentralizedOracles.length > 0) {
-    _.each(decentralizedOracles, (entry) => {
-      let botTotal = 0;
-      for (let i = 0; i < entry.amounts.length; i++) {
-        botTotal += entry.amounts[i];
-      }
+    // Determine what options showing in progress bars
+    if (oracle.token === 'BOT') {
+      displayOptions = _.filter(oracle.options, (option, index) => {
+        // If index of option is in optionsIdx array
+        if (oracle.optionIdxs.indexOf(index) >= 0) {
+          return option;
+        }
 
-      const raisedString = `Raised: ${botTotal} ${BOT}`;
-      const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
-
-      const entryEle = (
-        <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
-          <IsoWidgetsWrapper>
-            {/* Report Widget */}
-            <ReportsWidget
-              label={entry.name}
-              details={[raisedString, endBlockString]}
-            >
-              {entry.options.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
-                <SingleProgressWidget
-                  key={result}
-                  label={result}
-                  percent={_.floor((entry.amounts[index] / botTotal) * 100)}
-                  barHeight={12}
-                  status="active"
-                  fontColor="#4A4A4A"
-                  info
-                />
-              ))}
-            </ReportsWidget>
-
-            <BottomButtonWidget pathname={`/oracle/${entry.address}`} />
-          </IsoWidgetsWrapper>
-        </Col>
-      );
-
-      rowItems.push(entryEle);
-    });
-  }
-  return rowItems;
-}
-
-function getFinishedItems(topicEvents, colWidth) {
-  const rowItems = [];
-  _.each(topicEvents, (entry) => {
-    let qtumTotal = 0;
-    for (let i = 0; i < entry.qtumAmount.length; i++) {
-      qtumTotal += entry.qtumAmount[i];
-    }
-    let botTotal = 0;
-    for (let i = 0; i < entry.botAmount.length; i++) {
-      botTotal += entry.botAmount[i];
+        return false;
+      });
+    } else {
+      displayOptions = oracle.options;
     }
 
-    const raisedString = `Raised: ${qtumTotal} ${QTUM}, ${botTotal} ${BOT}`;
-    const endBlockString = `Ends: ${entry.endBlock ? entry.endBlock : 45000}`;
-    const winningResultName = entry.options[entry.resultIdx];
-
-    const entryEle = (
-      <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={entry.address} style={{ marginBottom: '24px' }}>
+    // Constructing Card element on the right
+    const oracleEle = (
+      <Col
+        xs={colWidth.xs}
+        sm={colWidth.sm}
+        xl={colWidth.xl}
+        key={oracle.address}
+        style={{ marginBottom: '24px' }}
+      >
         <IsoWidgetsWrapper>
           {/* Report Widget */}
           <ReportsWidget
-            label={entry.name}
+            label={oracle.name}
             details={[raisedString, endBlockString]}
           >
-            <SingleProgressWidget
-              key={winningResultName}
-              label={winningResultName}
-              percent={_.floor((entry.botAmount[entry.resultIdx] / botTotal) * 100)}
-              barHeight={12}
-              status="active"
-              fontColor="#4A4A4A"
-              info
-            />
+            {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
+              <SingleProgressWidget
+                key={result}
+                label={result}
+                percent={_.floor((oracle.amounts[index] / totalBalance) * 100)}
+                barHeight={12}
+                status="active"
+                fontColor="#4A4A4A"
+                info
+              />
+            ))}
           </ReportsWidget>
-
-          <BottomButtonWidget pathname={`/topic/${entry.address}`} />
+          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === 'QTUM' ? 'Participate' : 'Vote'} />
         </IsoWidgetsWrapper>
       </Col>
     );
 
-    rowItems.push(entryEle);
+    rowItems.push(oracleEle);
+  });
+
+  return rowItems;
+}
+
+/**
+ * Build Col in Completed tab using topics array
+ * @param  {[type]} topicEvents [description]
+ * @return {[type]}             [description]
+ */
+function getFinishedItems(topicEvents) {
+
+  // Calculate grid number for Col attribute
+  const colWidth = {};
+
+  Object.keys(COL_PER_ROW).forEach((key) => {
+    colWidth[key] = 24 / COL_PER_ROW[key];
+  });
+
+  const rowItems = [];
+
+  _.each(topicEvents, (topic) => {
+    const qtumTotal = _.sum(topic.qtumAmount);
+    const botTotal = _.sum(topic.botAmount);
+
+    const raisedString = `Raised: ${qtumTotal} QTUM, ${botTotal} BOT`;
+    const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : 45000}`;
+    const displayOptions = topic.options;
+
+    const topicEle = (
+      <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={topic.address} style={{ marginBottom: '24px' }}>
+        <IsoWidgetsWrapper>
+          {/* Report Widget */}
+          <ReportsWidget
+            label={topic.name}
+            details={[raisedString, endBlockString]}
+          >
+            {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
+
+              <SingleProgressWidget
+                key={result}
+                label={result}
+                percent={_.floor((topic.botAmount[index] / botTotal) * 100)}
+                barHeight={12}
+                status="active"
+                fontColor="#4A4A4A"
+                barColor={index !== topic.resultIdx ? 'grey' : ''}
+                info
+              />))
+            }
+          </ReportsWidget>
+
+          <BottomButtonWidget pathname={`/topic/${topic.address}`} text="Check out" />
+        </IsoWidgetsWrapper>
+      </Col>
+    );
+
+    rowItems.push(topicEle);
   });
   return rowItems;
 }

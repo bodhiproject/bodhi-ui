@@ -4,7 +4,7 @@ import Progress from '../../../components/uielements/progress';
 export default class SingleProgressWidget extends React.PureComponent {
   render() {
     const {
-      label, percent, barHeight, status, info, fontColor,
+      label, percent, barHeight, status, info, fontColor, barColor,
     } = this.props;
 
     const wrapperStyle = { marginTop: '18px', marginBottom: '18px' };
@@ -19,6 +19,7 @@ export default class SingleProgressWidget extends React.PureComponent {
       <div className="isoSingleProgressBar" style={wrapperStyle}>
         <h3 style={titleStyle}>{label}</h3>
         <Progress
+          className={barColor}
           percent={percent}
           strokeWidth={barHeight}
           status={status}
@@ -36,6 +37,7 @@ SingleProgressWidget.propTypes = {
   status: PropTypes.string,
   info: PropTypes.bool,
   fontColor: PropTypes.string,
+  barColor: PropTypes.string,
 };
 
 SingleProgressWidget.defaultProps = {
@@ -45,4 +47,5 @@ SingleProgressWidget.defaultProps = {
   status: 'active',
   info: false,
   fontColor: '#000',
+  barColor: '',
 };
