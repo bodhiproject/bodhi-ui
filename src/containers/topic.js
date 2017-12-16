@@ -48,41 +48,7 @@ class TopicPage extends React.Component {
       const topic = _.find(getTopicsSuccess, { address: this.state.address });
 
       this.setState({ topic });
-      // let oracle = undefined;
-
-      // // Determine current phase of this topic
-      // if(topic.oracles.length === 1)
-      // {
-      //   // Centralised oracle
-      //   oracle = topic.oracles[0];
-      // }
-      // else if(topic.oracles.length >1)
-      // {
-      //   // Decentralised oracle
-      //   oracle = _.last(topic.oracles);
-      // }
-      // else if( topic.resultIdx !== -1){
-      //   // Finished oracles
-      //  oracle = _.last();
-      // }
-      // else{
-
-      //   // default phase - oracles empty
-      //   // Display something on page
-      //   console.log(`Oracle is empty.`);
-      // }
-
-      // const lastOracle = _.last(topic.oracles);
-
-      // if (lastOracle) {
-      //   console.log('Found oracle', lastOracle);
-
-      //   this.setState({
-      //     oracle: lastOracle,
-      //   });
-      // } else {
-      //   console.log('topic not load yet');
-      // }
+      
     } else {
       console.log('getOraclesSuccess is empty');
     }
@@ -114,30 +80,30 @@ class TopicPage extends React.Component {
 
   render() {
     const { editingToggled, betResult } = this.props;
-    const { oracle } = this.state;
+    const { topic } = this.state;
 
-    if (!oracle) {
+    if (!topic) {
       // TODO: render no result page
       return <div></div>;
     }
 
     const timeline = [{
       label: 'Prediction start block',
-      value: oracle.blockNum,
+      value: topic.blockNum,
     }, {
       label: 'Prediction end block',
-      value: oracle.endBlock,
+      value: topic.endBlock,
     }];
 
-    const totalBalance = _.sum(oracle.amounts);
-    const { token } = oracle;
-    const betBalance = _.map(oracle.optionIdxs, (optIndex, index) => ({
-      name: oracle.options[optIndex],
-      value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+    const totalBalance = _.sum(topic.amounts);
+    const { token } = topic;
+    const betBalance = _.map(topic.optionIdxs, (optIndex, index) => ({
+      name: topic.options[optIndex],
+      value: `${topic.amounts[index]} ${topic.token}`,
+      percent: _.floor((topic.amounts[index] / totalBalance) * 100),
     }));
 
-    const oracleElement = (<Row
+    const topicElement = (<Row
       gutter={28}
       justify="center"
     >
@@ -146,7 +112,7 @@ class TopicPage extends React.Component {
         <IsoWidgetsWrapper padding="32px" >
 
           <CardInfo
-            title={oracle.name}
+            title={topic.name}
             timeline={timeline}
           >
 
@@ -208,7 +174,7 @@ class TopicPage extends React.Component {
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
-          {oracleElement}
+          {topicElement}
         </Row>
       </LayoutContentWrapper>
     );
