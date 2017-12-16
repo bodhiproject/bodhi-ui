@@ -9,7 +9,6 @@ export function getView(width) {
 }
 
 const actions = {
-  COLLPSE_CHANGE: 'COLLPSE_CHANGE',
   COLLPSE_OPEN_DRAWER: 'COLLPSE_OPEN_DRAWER',
   CHANGE_OPEN_KEYS: 'CHANGE_OPEN_KEYS',
   TOGGLE_ALL: 'TOGGLE_ALL',
@@ -18,9 +17,6 @@ const actions = {
   SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
   LIST_UNSPENT: 'LIST_UNSPENT',
   LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
-  toggleCollapsed: () => ({
-    type: actions.COLLPSE_CHANGE,
-  }),
   toggleAll: (width, height) => {
     const view = getView(width);
     const collapsed = view !== 'DesktopView';
