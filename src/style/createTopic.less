@@ -1,0 +1,54 @@
+@inputHeight: 48px;
+@purple: #585AFA;
+
+.create-topic-container {
+  padding-left: 64px;
+  padding-right: 64px;
+
+  h3 {
+    font-size: 30px;
+    margin-bottom: 48px;
+  }
+
+  button {
+    border-radius: 42px;
+    background-color: @purple;
+    color: white;
+    width: 90px
+  }
+
+  .ant-input {
+    height: @inputHeight;
+  }
+
+  .ant-btn {
+    height: @inputHeight;
+  }
+
+  .ant-form-item-label {
+    text-transform: uppercase;
+    text-align: left;
+    line-height: @inputHeight;
+  }
+
+  .options-container {
+
+    .options-item {
+      display: flex;
+      margin-bottom: 16px;
+
+      button {
+        margin-left: 24px;
+        margin-right: 24px;
+      }
+    }
+  }
+
+  .submit-controller {
+    padding-top: 24px;
+    button {
+    	margin-top: 24px;
+      width: 150px;
+    }
+  }
+}

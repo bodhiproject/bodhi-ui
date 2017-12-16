@@ -108,3 +108,31 @@ function checkStatus(response) {
 function parseJSON(response) {
   return response.json();
 }
+
+// Returns a new random alphanumeric string of the given size.
+//
+// Note: to simplify implementation, the result has slight modulo bias,
+// because chars length of 62 doesn't divide the number of all bytes
+// (256) evenly. Such bias is acceptable for most cases when the output
+// length is long enough and doesn't need to be uniform.
+export function randomString(size) {
+  if (size === 0) {
+    throw new Error('Zero-length randomString is useless.');
+  }
+  const chars = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+    'abcdefghijklmnopqrstuvwxyz' +
+    '0123456789');
+
+  let result = '';
+
+  for (let i = size; i > 0; --i) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return result;
+}
+
+// Returns a new random alphanumeric string suitable for object ID.
+export function newObjectId(size = 10) {
+  return randomString(size);
+}

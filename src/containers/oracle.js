@@ -14,7 +14,51 @@ import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
-class TopicPage extends React.Component {
+
+const OracleType = {
+  CENTRALISED: 'CENTRALISED',
+  DECENTRALISED: 'DECENTRALISED',
+};
+
+class OraclePage extends React.Component {
+  /**
+   * Determine OracleType; default DECENTRALISED
+   * @param  {object} oracle Oracle object
+   * @return {string}        OracleType
+   */
+  static getOracleType(oracle) {
+    switch (oracle.token) {
+      case 'QTUM':
+        return OracleType.CENTRALISED;
+      case 'BOT':
+      default:
+        return OracleType.DECENTRALISED;
+    }
+  }
+
+  /**
+ * Get Bet or Vote names and balances from oracle
+ * @param  {object} oracle Oracle object
+ * @return {array}         {name, value, percent}
+ */
+  static getBetOrVoteArray(oracle) {
+    const totalBalance = _.sum(oracle.amounts);
+
+    if (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED) {
+      return _.map(oracle.options, (optionName, index) => ({
+        name: optionName,
+        value: `${oracle.amounts[index]} ${oracle.token}`,
+        percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+      }));
+    }
+
+    return _.map(oracle.optionIdxs, (optIndex, index) => ({
+      name: oracle.options[optIndex],
+      value: `${oracle.amounts[index]} ${oracle.token}`,
+      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+    }));
+  }
+
   constructor(props) {
     super(props);
 
@@ -84,6 +128,12 @@ class TopicPage extends React.Component {
     console.log(`finalizeResultReturn: ${this.props.finalizeResultReturn}`);
   }
 
+  componentWillUnmount() {
+    console.log('componentWillUnmount');
+
+    this.props.onClearBetReturn();
+  }
+
   onRadioGroupChange(evt) {
     console.log(`Radio value change ${evt.target.value}`);
 
@@ -150,13 +200,10 @@ class TopicPage extends React.Component {
 
     const totalBalance = _.sum(oracle.amounts);
     const { token } = oracle;
-    const betBalance = _.map(oracle.optionIdxs, (optIndex, index) => ({
-      name: oracle.options[optIndex],
-      value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
-    }));
 
-    const breadcrumbItem = ((oracle.token === 'QTUM') ? 'Betting' : 'Voting');
+    const betBalance = OraclePage.getBetOrVoteArray(oracle);
+
+    const breadcrumbItem = (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED ? 'Betting' : 'Voting');
 
     const oracleElement = (
       <Row
@@ -177,7 +224,6 @@ class TopicPage extends React.Component {
         </Col>
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
-            {this.props.betReturn}
             <CardVoting
               amount={totalBalance}
               token={token}
@@ -242,7 +288,7 @@ class TopicPage extends React.Component {
   }
 }
 
-TopicPage.propTypes = {
+OraclePage.propTypes = {
   onGetOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
@@ -254,6 +300,7 @@ TopicPage.propTypes = {
   match: PropTypes.object,
   onBet: PropTypes.func,
   betReturn: PropTypes.object,
+  onClearBetReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   setResultReturn: PropTypes.object,
   onFinalizeResult: PropTypes.func,
@@ -262,13 +309,14 @@ TopicPage.propTypes = {
   walletAddrsIndex: PropTypes.number,
 };
 
-TopicPage.defaultProps = {
+OraclePage.defaultProps = {
   onGetOracles: undefined,
   getOraclesSuccess: [],
   // getOraclesError: '',
   editingToggled: false,
   match: {},
   onBet: undefined,
+  onClearBetReturn: undefined,
   betReturn: undefined,
   onSetResult: undefined,
   setResultReturn: undefined,
@@ -294,6 +342,7 @@ function mapDispatchToProps(dispatch) {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
+    onClearBetReturn: () => dispatch(topicActions.onClearBetReturn()),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
@@ -302,4 +351,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Wrap the component to inject dispatch and state into it
-export default connect(mapStateToProps, mapDispatchToProps)(TopicPage);
+export default connect(mapStateToProps, mapDispatchToProps)(OraclePage);

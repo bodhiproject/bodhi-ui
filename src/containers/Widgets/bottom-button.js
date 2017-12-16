@@ -7,6 +7,7 @@ export default class BottomButtonWidget extends React.PureComponent {
       height,
       pathname,
       query,
+      text,
     } = this.props;
 
     const style = {
@@ -29,7 +30,7 @@ export default class BottomButtonWidget extends React.PureComponent {
 
     return (
       <div style={style}>
-        <Link to={{ pathname, query }}>Participate</Link>
+        <Link to={{ pathname, query }}>{text}</Link>
       </div>
     );
   }
@@ -42,10 +43,12 @@ BottomButtonWidget.propTypes = {
     PropTypes.object,
     PropTypes.string,
   ]),
+  text: PropTypes.string,
 };
 
 BottomButtonWidget.defaultProps = {
   height: '48px',
   pathname: '',
   query: '',
+  text: 'Participate',
 };
