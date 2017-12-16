@@ -213,7 +213,6 @@ class OraclePage extends React.Component {
 
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px" >
-
             <CardInfo
               title={oracle.name}
               timeline={timeline}
