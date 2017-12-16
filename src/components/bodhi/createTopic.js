@@ -31,7 +31,7 @@ class CreateTopic extends React.Component {
   componentWillUnmount() {
     console.log('componentWillUnmount');
 
-    this.props.onClearCreateResult();
+    this.props.onClearCreateReturn();
   }
 
   handleSubmit(evt) {
@@ -52,7 +52,7 @@ class CreateTopic extends React.Component {
           resultSettingEndBlock,
         } = values;
 
-        const senderAddress = this.props.walletAddrs[this.props.walletAddrsIndex];
+        const senderAddress = this.props.walletAddrs[this.props.walletAddrsIndex].address;
 
         console.log('resultSetterAddress', resultSetterAddress, 'name', name, 'options', options, 'bettingEndBlock', bettingEndBlock, 'resultSettingEndBlock', resultSettingEndBlock, 'senderAddress', senderAddress.address);
 
@@ -77,7 +77,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createResult } = this.props;
+    const { createReturn } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
@@ -109,19 +109,19 @@ class CreateTopic extends React.Component {
 
     let alertElement;
 
-    if (createResult) {
-      if (createResult.result) {
+    if (createReturn) {
+      if (createReturn.result) {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${createResult.result.txid}.`}
+              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}.`}
               type="success"
               closable={false}
             />);
-      } else if (createResult.error) {
+      } else if (createReturn.error) {
         alertElement = (<Alert
           message="Oops, something went wrong"
-          description={createResult.error}
+          description={createReturn.error}
           type="error"
           closable={false}
         />);
@@ -172,7 +172,7 @@ class CreateTopic extends React.Component {
             label="Outcomes"
           >
             {getFieldDecorator('options', {
-              initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+              initialValue: ['Yes', 'No', "I don't know"],
               rules: [{
                 type: 'array',
                 required: true,
@@ -203,17 +203,17 @@ class CreateTopic extends React.Component {
 
 CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
-  createResult: PropTypes.object,
+  createReturn: PropTypes.object,
   onCreateTopic: PropTypes.func,
-  onClearCreateResult: PropTypes.func,
+  onClearCreateReturn: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
 };
 
 CreateTopic.defaultProps = {
-  createResult: undefined,
+  createReturn: undefined,
   onCreateTopic: undefined,
-  onClearCreateResult: undefined,
+  onClearCreateReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
 };
@@ -342,7 +342,7 @@ OptionsInput.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  createResult: state.Topic.get('create_result'),
+  createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
 });
@@ -350,7 +350,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onCreateTopic: (params) => dispatch(actions.onCreate(params)),
-    onClearCreateResult: () => dispatch(actions.onClearCreateResult()),
+    onClearCreateReturn: () => dispatch(actions.onClearCreateReturn()),
   };
 }
 

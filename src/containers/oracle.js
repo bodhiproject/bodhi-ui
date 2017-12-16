@@ -14,7 +14,51 @@ import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
+
+const OracleType = {
+  CENTRALISED: 'CENTRALISED',
+  DECENTRALISED: 'DECENTRALISED',
+};
+
 class OraclePage extends React.Component {
+  /**
+   * Determine OracleType; default DECENTRALISED
+   * @param  {object} oracle Oracle object
+   * @return {string}        OracleType
+   */
+  static getOracleType(oracle) {
+    switch (oracle.token) {
+      case 'QTUM':
+        return OracleType.CENTRALISED;
+      case 'BOT':
+      default:
+        return OracleType.DECENTRALISED;
+    }
+  }
+
+  /**
+ * Get Bet or Vote names and balances from oracle
+ * @param  {object} oracle Oracle object
+ * @return {array}         {name, value, percent}
+ */
+  static getBetOrVoteArray(oracle) {
+    const totalBalance = _.sum(oracle.amounts);
+
+    if (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED) {
+      return _.map(oracle.options, (optionName, index) => ({
+        name: optionName,
+        value: `${oracle.amounts[index]} ${oracle.token}`,
+        percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+      }));
+    }
+
+    return _.map(oracle.optionIdxs, (optIndex, index) => ({
+      name: oracle.options[optIndex],
+      value: `${oracle.amounts[index]} ${oracle.token}`,
+      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+    }));
+  }
+
   constructor(props) {
     super(props);
 
@@ -25,7 +69,9 @@ class OraclePage extends React.Component {
     };
 
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onBet = this.onBet.bind(this);
+    this.onSetResult = this.onSetResult.bind(this);
+    this.onFinalizeResult = this.onFinalizeResult.bind(this);
   }
 
   componentWillMount() {
@@ -77,12 +123,15 @@ class OraclePage extends React.Component {
     } else {
       console.log('getOraclesSuccess is empty');
     }
+
+    console.log(`setResultReturn: ${this.props.setResultReturn}`);
+    console.log(`finalizeResultReturn: ${this.props.finalizeResultReturn}`);
   }
 
   componentWillUnmount() {
     console.log('componentWillUnmount');
 
-    this.props.onClearBetResult();
+    this.props.onClearBetReturn();
   }
 
   onRadioGroupChange(evt) {
@@ -94,7 +143,7 @@ class OraclePage extends React.Component {
   }
 
   /** Confirm button on click handler passed down to CardVoting */
-  onSubmit(obj) {
+  onBet(obj) {
     const { oracle, radioValue } = this.state;
 
     const { walletAddrs, walletAddrsIndex } = this.props;
@@ -110,8 +159,30 @@ class OraclePage extends React.Component {
     this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
+  onSetResult() {
+    const { oracle, radioValue } = this.state;
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, senderAddress is ${senderAddress}`);
+
+    this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
+  }
+
+  onFinalizeResult() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+    console.log(`contractAddress is ${contractAddress}, senderAddress is ${senderAddress}`);
+
+    this.props.onFinalizeResult(contractAddress, senderAddress);
+  }
+
   render() {
-    const { editingToggled, betResult } = this.props;
+    const { editingToggled, betReturn } = this.props;
     const { oracle } = this.state;
 
     if (!oracle) {
@@ -129,13 +200,10 @@ class OraclePage extends React.Component {
 
     const totalBalance = _.sum(oracle.amounts);
     const { token } = oracle;
-    const betBalance = _.map(oracle.optionIdxs, (optIndex, index) => ({
-      name: oracle.options[optIndex],
-      value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
-    }));
 
-    const breadcrumbItem = ((oracle.token === 'QTUM') ? 'Betting' : 'Voting');
+    const betBalance = OraclePage.getBetOrVoteArray(oracle);
+
+    const breadcrumbItem = (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED ? 'Betting' : 'Voting');
 
     const oracleElement = (
       <Row
@@ -160,9 +228,9 @@ class OraclePage extends React.Component {
               amount={totalBalance}
               token={token}
               voteBalance={betBalance}
-              onSubmit={this.onSubmit}
+              onSubmit={this.onBet}
               radioIndex={this.state.radioValue}
-              result={betResult}
+              result={betReturn}
             >
               {editingToggled
                 ?
@@ -231,8 +299,12 @@ OraclePage.propTypes = {
   editingToggled: PropTypes.bool,
   match: PropTypes.object,
   onBet: PropTypes.func,
-  onClearBetResult: PropTypes.func,
-  betResult: PropTypes.object,
+  betReturn: PropTypes.object,
+  onClearBetReturn: PropTypes.func,
+  onSetResult: PropTypes.func,
+  setResultReturn: PropTypes.object,
+  onFinalizeResult: PropTypes.func,
+  finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
 };
@@ -244,8 +316,12 @@ OraclePage.defaultProps = {
   editingToggled: false,
   match: {},
   onBet: undefined,
-  onClearBetResult: undefined,
-  betResult: undefined,
+  onClearBetReturn: undefined,
+  betReturn: undefined,
+  onSetResult: undefined,
+  setResultReturn: undefined,
+  onFinalizeResult: undefined,
+  finalizeResultReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
 };
@@ -254,7 +330,9 @@ const mapStateToProps = (state) => ({
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
-  betResult: state.Topic.get('bet_result'),
+  betReturn: state.Topic.get('bet_return'),
+  setResultReturn: state.Topic.get('set_result_return'),
+  finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
 });
@@ -264,7 +342,11 @@ function mapDispatchToProps(dispatch) {
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
-    onClearBetResult: () => dispatch(topicActions.onClearBetResult()),
+    onClearBetReturn: () => dispatch(topicActions.onClearBetReturn()),
+    onSetResult: (contractAddress, resultIndex, senderAddress) =>
+      dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
+    onFinalizeResult: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
   };
 }
 
