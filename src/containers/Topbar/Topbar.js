@@ -12,7 +12,8 @@ import { themeConfig } from '../../config';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
-const ADDRESS_MAX_DISPLAY_LENGTH = 11;
+const DROPDOWN_LIST_MAX_LENGTH = 8;
+const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
 
 /**
@@ -127,18 +128,24 @@ class Topbar extends React.PureComponent {
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
     const collapsed = this.props.collapsed && !this.props.openDrawer;
 
+    // Limit max length of wallet addresses to not be too long
+    // walletAddrs is already sorted by amount of qtum in reducers
+    const trimmedWalletAddrs = walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH);
+
     const menu = (
       <Menu onClick={this.onDropdownClick}>
-        {_.map(walletAddrs, (item, index) => (
-          <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
-            <DropdownMenuItem
-              address={item.address}
-              qtum={item.qtum}
-              onCopyClick={() => {}}
-            />
-          </Menu.Item>
-        ))}
-        {/* <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item> */}
+        {
+          // Build dropdown list using walletAddrs array
+          _.map(trimmedWalletAddrs, (item, index) => (
+            <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
+              <DropdownMenuItem
+                address={item.address}
+                qtum={item.qtum}
+                onCopyClick={() => {}}
+              />
+            </Menu.Item>
+          ))}
+        {/* Add a "Add Address" button in the end <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item> */}
       </Menu>
     );
 
@@ -150,7 +157,7 @@ class Topbar extends React.PureComponent {
       ) : (
         <Dropdown overlay={menu} placement="bottomRight">
           <a className="ant-dropdown-link" href="#">
-            {shortenAddress(walletAddrs[walletAddrsIndex].address, ADDRESS_MAX_DISPLAY_LENGTH)}
+            {shortenAddress(walletAddrs[walletAddrsIndex].address, ADDRESS_TEXT_MAX_LENGTH)}
             {walletAddrs[walletAddrsIndex].qtum.toFixed(1)}
             <Icon type="down" />
           </a>

@@ -193,7 +193,6 @@ function buildOracleColElement(oracles) {
  * @return {[type]}             [description]
  */
 function getFinishedItems(topicEvents) {
-
   // Calculate grid number for Col attribute
   const colWidth = {};
 

@@ -48,7 +48,6 @@ class TopicPage extends React.Component {
       const topic = _.find(getTopicsSuccess, { address: this.state.address });
 
       this.setState({ topic });
-      
     } else {
       console.log('getOraclesSuccess is empty');
     }
