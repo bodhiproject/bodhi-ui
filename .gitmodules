@@ -1,4 +1,3 @@
-[submodule "src/modules/qweb3.js"]
-	path = src/modules/qweb3.js
-	url = https://github.com/bodhiproject/qweb3.js
-	branch = add_demo_functions
+[submodule "qweb3"]
+	path = src/modules/qweb3
+	url = https://github.com/bodhiproject/qweb3.js.git
