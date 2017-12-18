@@ -113,12 +113,13 @@ export function* voteRequestHandler() {
     } = action.payload;
 
     try {
+
       const options = {
         method: 'POST',
         body: JSON.stringify({
           contractAddress,
-          index,
-          amount,
+          resultIndex: index,
+          botAmount: amount,
           senderAddress,
         }),
         headers: { 'Content-Type': 'application/json' },
