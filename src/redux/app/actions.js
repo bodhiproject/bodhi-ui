@@ -9,8 +9,6 @@ export function getView(width) {
 }
 
 const actions = {
-  COLLPSE_OPEN_DRAWER: 'COLLPSE_OPEN_DRAWER',
-  CHANGE_OPEN_KEYS: 'CHANGE_OPEN_KEYS',
   TOGGLE_ALL: 'TOGGLE_ALL',
   CHANGE_CURRENT: 'CHANGE_CURRENT',
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
@@ -27,13 +25,6 @@ const actions = {
       height,
     };
   },
-  toggleOpenDrawer: () => ({
-    type: actions.COLLPSE_OPEN_DRAWER,
-  }),
-  changeOpenKeys: (openKeys) => ({
-    type: actions.CHANGE_OPEN_KEYS,
-    openKeys,
-  }),
   changeCurrent: (current) => ({
     type: actions.CHANGE_CURRENT,
     current,

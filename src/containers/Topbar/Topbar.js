@@ -126,7 +126,7 @@ class Topbar extends React.PureComponent {
   render() {
     const { walletAddrs, walletAddrsIndex } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    const collapsed = this.props.collapsed && !this.props.openDrawer;
+    const { collapsed } = this.props;
 
     // Limit max length of wallet addresses to not be too long
     // walletAddrs is already sorted by amount of qtum in reducers
@@ -213,7 +213,6 @@ class Topbar extends React.PureComponent {
 
 Topbar.propTypes = {
   collapsed: PropTypes.bool.isRequired,
-  openDrawer: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   addWalletAddress: PropTypes.func,
