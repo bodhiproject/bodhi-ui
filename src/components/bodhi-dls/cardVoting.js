@@ -63,7 +63,7 @@ class CardVoting extends Component {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}.`}
+              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}`}
               type="success"
               closable={false}
             />);
