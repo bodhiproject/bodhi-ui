@@ -26,19 +26,22 @@ export default function topicReducer(
     case actions.CLEAR_CREATE_RETURN:
       return state.set('create_return', undefined);
 
+      /* Approve return, not captured by view files at this moment */
+
+    case actions.APPROVE_RETURN:
+      return state.set('approve_return', action.value);
+
       /* Set result return */
 
     case actions.SET_RESULT_RETURN:
       return state.set('req_return', action.value);
-    // case actions.CLEAR_SET_RESULT_RETURN:
-    //   return state.set('request_return', undefined);
 
       /* Vote return */
 
     case actions.VOTE_RETURN:
       return state.set('req_return', action.value);
 
-      /* finalize result return */
+      /* finalize result return, not captured by view files at this moment */
 
     case actions.FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', action.value);
@@ -47,7 +50,6 @@ export default function topicReducer(
 
 
       /* Withdraw result return */
-
     case actions.WITHDRAW_RETURN:
       return state.set('withdraw_return', action.value);
 

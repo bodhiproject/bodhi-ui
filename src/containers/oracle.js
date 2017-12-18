@@ -14,6 +14,8 @@ import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
+const ORACLE_BOT_THRESHOLD = 100;
+const SUB_REQ_DELAY = 30 * 1000; // Delay subsequent request by 30 sec
 
 const OracleType = {
   CENTRALISED: 'CENTRALISED',
@@ -102,7 +104,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getOraclesSuccess } = nextProps;
+    const { getOraclesSuccess, finalizeResultReturn } = nextProps;
 
     if (!_.isEmpty(getOraclesSuccess)) {
       const oracle = _.find(getOraclesSuccess, { address: this.state.address });
@@ -112,7 +114,7 @@ class OraclePage extends React.Component {
 
         let configName;
 
-        /** Determine what style to use in current card * */
+        /** Determine what config to use in current card * */
         switch (status) {
           case 'VOTING':
             if (token === 'BOT') {
@@ -134,10 +136,12 @@ class OraclePage extends React.Component {
           oracle,
           config: _.find(PageConfig, { name: configName }),
         });
-
-        console.log('finalizeResultReturn', this.props.finalizeResultReturn);
       }
     }
+
+    // Leave here temporarily for debugging purpose
+    console.log('finalizeResultReturn', finalizeResultReturn);
+
 
     // TODO: For any error case we will render an Oracle not found page
   }
@@ -155,20 +159,40 @@ class OraclePage extends React.Component {
   /** The right card Confirm Button event handler * */
   onConfirmBtnClicked(obj) {
     const { oracle, radioValue } = this.state;
+    const {
+      onBet, onSetResult, onVote, onFinalizeResult, onApprove,
+    } = this.props;
     const senderAddress = this.getCurrentSenderAddress();
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
-    // This should be the address of this oracle
+    // contractAddress should be the address of this oracle
+    // TODO: Update this to oracle.address for testing on testnet
     const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
 
     if (this.state.config.name === 'BETTING') {
-      console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
-      this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
+      onBet(contractAddress, selectedIndex, amount, senderAddress);
     } else if (this.state.config.name === 'SETTING') {
-      this.props.onSetResult(contractAddress, selectedIndex, senderAddress);
+      /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+      onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+
+      setTimeout(() => {
+        onSetResult(contractAddress, selectedIndex, senderAddress);
+      }, SUB_REQ_DELAY);
     } else if (this.state.config.name === 'VOTING') {
-      this.props.onVote(contractAddress, selectedIndex, amount, senderAddress);
+      /** The amount of voting needs to be approved by Bodhi_token * */
+      onApprove(oracle.topicAddress, amount, senderAddress);
+
+      setTimeout(() => {
+        onVote(contractAddress, selectedIndex, amount, senderAddress);
+      }, SUB_REQ_DELAY);
+
+      // The last Vote that hits BOT threshold needs to issue a finalize() after certain delay
+      if (oracle.amounts[selectedIndex] + amount >= ORACLE_BOT_THRESHOLD) {
+        setTimeout(() => {
+          onFinalizeResult(contractAddress, senderAddress);
+        }, SUB_REQ_DELAY);
+      }
     }
   }
 
@@ -303,11 +327,11 @@ OraclePage.propTypes = {
   match: PropTypes.object.isRequired,
   onBet: PropTypes.func,
   onVote: PropTypes.func,
-  // betReturn: PropTypes.object,
-  requestReturn: PropTypes.object,
+  onApprove: PropTypes.func,
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
+  requestReturn: PropTypes.object,
   finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -320,6 +344,7 @@ OraclePage.defaultProps = {
   editingToggled: false,
   onBet: undefined,
   onVote: undefined,
+  onApprove: undefined,
   onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
@@ -347,6 +372,7 @@ function mapDispatchToProps(dispatch) {
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onVote: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, index, amount, senderAddress)),
+    onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>

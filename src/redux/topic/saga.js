@@ -39,6 +39,38 @@ export function* betRequestHandler() {
   });
 }
 
+export function* approveRequestHandler() {
+  yield takeEvery(actions.APPROVE, function* onApproveRequest(action) {
+    const {
+      spender, value, senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          spender,
+          value,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/approve', options);
+
+      yield put({
+        type: actions.APPROVE_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.APPROVE_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export function* setResultRequestHandler() {
   yield takeEvery(actions.SET_RESULT, function* onSetResultRequest(action) {
     const {
@@ -182,6 +214,7 @@ export default function* topicSaga() {
   yield all([
     fork(betRequestHandler),
     fork(createRequestHandler),
+    fork(approveRequestHandler),
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),

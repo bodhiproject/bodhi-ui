@@ -47,9 +47,19 @@ const topicActions = {
   onClearCreateReturn: () => ({
     type: topicActions.CLEAR_CREATE_RETURN,
   }),
+
+  APPROVE: 'APPROVE',
+  APPROVE_RETURN: 'APPROVE_RETURN',
+  onApprove: (spender, value, senderAddress) => ({
+    type: topicActions.APPROVE,
+    payload: {
+      spender,
+      value,
+      senderAddress,
+    },
+  }),
   SET_RESULT: 'SET_RESULT',
   SET_RESULT_RETURN: 'SET_RESULT_RETURN',
-  CLEAR_SET_RESULT_RETURN: 'CLEAR_SET_RESULT_RETURN',
   onSetResult: (contractAddress, resultIndex, senderAddress) => ({
     type: topicActions.SET_RESULT,
     payload: {
