@@ -77,14 +77,14 @@ class Topbar extends React.PureComponent {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
-    this.onDropdownClick = this.onDropdownClick.bind(this);
+    this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
   }
 
   componentWillMount() {
     this.props.listUnspent();
   }
 
-  onDropdownClick({ key, item }) {
+  onAddressDropdownClick({ key, item }) {
     if (key === KEY_ADD_ADDRESS_BTN) {
       this.showModal();
     } else {
@@ -99,7 +99,7 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  handleOk(e) {
+  handleOk() {
     // Push this.state.addressInput to state.App
     this.props.addWalletAddress(this.state.addressInput);
 
@@ -116,7 +116,7 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  handleCancel(e) {
+  handleCancel() {
     this.setState({
       visible: false,
       addressInput: '',
@@ -124,16 +124,16 @@ class Topbar extends React.PureComponent {
   }
 
   render() {
-    const { toggle, walletAddrs, walletAddrsIndex } = this.props;
+    const { walletAddrs, walletAddrsIndex } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    const collapsed = this.props.collapsed && !this.props.openDrawer;
+    const { collapsed } = this.props;
 
     // Limit max length of wallet addresses to not be too long
     // walletAddrs is already sorted by amount of qtum in reducers
     const trimmedWalletAddrs = walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH);
 
     const menu = (
-      <Menu onClick={this.onDropdownClick}>
+      <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
           _.map(trimmedWalletAddrs, (item, index) => (
@@ -212,9 +212,7 @@ class Topbar extends React.PureComponent {
 }
 
 Topbar.propTypes = {
-  toggle: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
-  openDrawer: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   addWalletAddress: PropTypes.func,
@@ -237,7 +235,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  toggle: appActions.toggleCollapsed,
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
