@@ -22,7 +22,7 @@ class TabBtnGroup extends Component {
     this.props.tabViewChanged(parseInt(index, 10));
   }
 
-  onSortBtnClicked(event) {
+  onSortBtnClicked() {
 
   }
 

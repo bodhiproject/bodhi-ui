@@ -4,11 +4,29 @@ const topicActions = {
   editingToggled: () => ({
     type: topicActions.EDITING_TOGGLED,
   }),
+
+  REQ_RETURN: 'REQ_RETURN',
+  CLEAR_REQ_RETURN: 'CLEAR_REQ_RETURN',
+  onClearRequestReturn: () => ({
+    type: topicActions.CLEAR_REQ_RETURN,
+  }),
+
   BET: 'BET',
   BET_RETURN: 'BET_RETURN',
-  CLEAR_BET_RETURN: 'CLEAR_BET_RETURN',
   onBet: (contractAddress, index, amount, senderAddress) => ({
     type: topicActions.BET,
+    payload: {
+      contractAddress,
+      index,
+      amount,
+      senderAddress,
+    },
+  }),
+
+  VOTE: 'VOTE',
+  VOTE_RETURN: 'VOTE_RETURN',
+  onVote: (contractAddress, index, amount, senderAddress) => ({
+    type: topicActions.VOTE,
     payload: {
       contractAddress,
       index,
@@ -50,5 +68,15 @@ const topicActions = {
       senderAddress,
     },
   }),
+
+  WITHDRAW: 'WITHDRAW',
+  WITHDRAW_RETURN: 'WITHDRAW_RETURN',
+  onWithdraw: (contractAddress,senderAddress) =>({
+    type: topicActions.WITHDRAW,
+    payload: {
+      contractAddress,
+      senderAddress
+    }
+  })
 };
 export default topicActions;

@@ -26,8 +26,6 @@ export function* betRequestHandler() {
 
       const result = yield call(request, 'http://localhost:8080/bet', options);
 
-      console.log('onBetRequest: result is', result);
-
       yield put({
         type: actions.BET_RETURN,
         value: { result },
@@ -59,7 +57,6 @@ export function* setResultRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/setresult', options);
-      console.log('setResultReturn result: ', result);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
@@ -68,6 +65,42 @@ export function* setResultRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.SET_RESULT_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
+export function* voteRequestHandler() {
+  yield takeEvery(actions.VOTE, function* onVoteRequest(action) {
+    const {
+      contractAddress,
+      index,
+      amount,
+      senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          index,
+          amount,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/vote', options);
+
+      yield put({
+        type: actions.VOTE_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.VOTE_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -91,7 +124,6 @@ export function* finalizeResultRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/finalizeresult', options);
-      console.log('finalizeResult return: ', result);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
@@ -117,8 +149,6 @@ export function* createRequestHandler() {
       senderAddress,
     } = action.payload;
 
-    console.log('action:createRequestHandler', resultSetterAddress, name, options, bettingEndBlock, resultSettingEndBlock, senderAddress);
-
     try {
       const requestOptions = {
         method: 'POST',
@@ -134,8 +164,6 @@ export function* createRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/createtopic', requestOptions);
-
-      console.log('onCreateRequest: result is', result);
 
       yield put({
         type: actions.CREATE_RETURN,
@@ -155,6 +183,7 @@ export default function* topicSaga() {
     fork(betRequestHandler),
     fork(createRequestHandler),
     fork(setResultRequestHandler),
+    fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
   ]);
 }

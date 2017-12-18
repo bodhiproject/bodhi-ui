@@ -10,6 +10,7 @@ export default function topicReducer(
   state = initState,
   action
 ) {
+  console.log('reducer', action);
   switch (action.type) {
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
@@ -17,9 +18,7 @@ export default function topicReducer(
       /* Bet return */
 
     case actions.BET_RETURN:
-      return state.set('bet_return', action.value);
-    case actions.CLEAR_BET_RESULT:
-      return state.set('bet_return', undefined);
+      return state.set('req_return', action.value);
 
       /* Create return */
 
@@ -31,9 +30,14 @@ export default function topicReducer(
       /* Set result return */
 
     case actions.SET_RESULT_RETURN:
-      return state.set('set_result_return', action.value);
-    case actions.CLEAR_SET_RESULT_RETURN:
-      return state.set('set_result_return', undefined);
+      return state.set('req_return', action.value);
+    // case actions.CLEAR_SET_RESULT_RETURN:
+    //   return state.set('request_return', undefined);
+
+      /* Vote return */
+
+    case actions.VOTE_RETURN:
+      return state.set('req_return', action.value);
 
       /* finalize result return */
 
@@ -41,6 +45,10 @@ export default function topicReducer(
       return state.set('finalize_result_return', action.value);
     case actions.CLEAR_FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', undefined);
+
+    /* Clear request return on the page */
+    case actions.CLEAR_REQ_RETURN:
+      return state.set('req_return', undefined);
 
     default:
       return state;

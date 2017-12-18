@@ -16,7 +16,6 @@ const initState = new Map({
 });
 
 export default function appReducer(state = initState, action) {
-  console.log('appReducer', action);
   switch (action.type) {
     case actions.ADD_WALLET_ADDRESS:
       state.get('walletAddrs').push(action.value);

@@ -56,24 +56,24 @@ const ALL_ORACLES = gql`
   }
 `;
 
-const ORACLES_BY_ADDRESS = gql`
-  query AllOracles($topicAddress: String) {
-    allOracles(filter: {
-      topicAddress: $topicAddress
-    }) {
-      topicAddress
-      token
-      name
-      status
-      options
-      optionIdxs
-      resultIdx
-      amounts
-      endBlock
-      blockNum
-    }
-  }
-`;
+// const ORACLES_BY_ADDRESS = gql`
+//   query AllOracles($topicAddress: String) {
+//     allOracles(filter: {
+//       topicAddress: $topicAddress
+//     }) {
+//       topicAddress
+//       token
+//       name
+//       status
+//       options
+//       optionIdxs
+//       resultIdx
+//       amounts
+//       endBlock
+//       blockNum
+//     }
+//   }
+// `;
 
 export function queryAllTopics() {
   return client.query({ query: ALL_TOPICS }).then((res) => {
