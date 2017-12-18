@@ -20,7 +20,7 @@ class CardFinished extends Component {
   onWithdrawBtnClicked() {
     // Withdraw action
 
-    this.props.onSubmit();
+    this.props.onWithdraw();
   }
 
   render() {
@@ -101,7 +101,7 @@ CardFinished.propTypes = {
     PropTypes.array,
     PropTypes.element,
   ]),
-  onSubmit: PropTypes.func,
+  onWithdraw: PropTypes.func,
   result: PropTypes.object,
 };
 
@@ -109,16 +109,17 @@ CardFinished.defaultProps = {
   amount: 0,
   config: undefined,
   children: [],
-  onSubmit: undefined,
+  onWithdraw: undefined,
   result: undefined,
 };
 
 const mapStateToProps = (state) => ({
+  result: state.Topic.get('WITHDRAW_RETURN'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSubmit: () => dispatch(topicActions.onSubmit()),
+    onWithdraw: () => dispatch(topicActions.onWithdraw()),
   };
 }
 
