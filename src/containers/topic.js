@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import CardInfo from '../components/bodhi-dls/cardInfo';
-import CardVoting from '../components/bodhi-dls/cardVoting';
+import CardFinished from '../components/bodhi-dls/cardFinished';
 import ProgressBar from '../components/bodhi-dls/progressBar';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
@@ -24,8 +24,7 @@ class TopicPage extends React.Component {
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
-    this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
   }
 
   componentWillMount() {
@@ -53,16 +52,9 @@ class TopicPage extends React.Component {
     }
   }
 
-  onRadioGroupChange(evt) {
-    console.log(`Radio value change from ${this.state.radioValue} to ${evt.target.value}`);
 
-    this.setState({
-      radioValue: evt.target.value,
-    });
-  }
-
-  /** Confirm button on click handler passed down to CardVoting */
-  onSubmit(obj) {
+  /** Confirm button on click handler passed down to CardFinished */
+  onWithdrawClicked(obj) {
     const { topic, radioValue } = this.state;
 
     const selectedIndex = topic.optionIdxs[radioValue - 1];
@@ -73,12 +65,10 @@ class TopicPage extends React.Component {
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
 
     console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
-
-    this.props.onBet(contractAddress, selectedIndex, amount, senderAddress);
   }
 
   render() {
-    const { editingToggled, betResult } = this.props;
+    const { requestReturn } = this.props;
     const { topic } = this.state;
 
     if (!topic) {
@@ -91,15 +81,22 @@ class TopicPage extends React.Component {
       value: topic.blockNum,
     }, {
       label: 'Prediction end block',
-      value: topic.endBlock,
+      value: topic.bettingEndBlock || 56000,
     }];
 
-    const totalBalance = _.sum(topic.amounts);
-    const { token } = topic;
-    const betBalance = _.map(topic.optionIdxs, (optIndex, index) => ({
-      name: topic.options[optIndex],
-      value: `${topic.amounts[index]} ${topic.token}`,
-      percent: _.floor((topic.amounts[index] / totalBalance) * 100),
+    const qtumTotal = _.sum(topic.qtumAmount);
+    const qtumBalance = _.map(topic.qtumAmount, (amount, idx) => ({
+      name: topic.options[idx],
+      value: `${amount} QTUM`,
+      percent: _.floor((amount / qtumTotal) * 100),
+    }));
+
+
+    const botTotal = _.sum(topic.botAmount);
+    const botBalance = _.map(topic.botAmount, (amount, idx) => ({
+      name: topic.options[idx],
+      value: `${amount} BOT`,
+      percent: _.floor((amount / botTotal) * 100),
     }));
 
     const topicElement = (<Row
@@ -121,44 +118,24 @@ class TopicPage extends React.Component {
       </Col>
       <Col xl={12} lg={12}>
         <IsoWidgetsWrapper padding="32px">
-          <CardVoting
-            amount={totalBalance}
-            token={token}
-            voteBalance={betBalance}
-            onSubmit={this.onSubmit}
+          <CardFinished
+            amount={qtumTotal}
+            voteBalance={qtumBalance}
+            onWithdrawClicked={this.onWithdrawClicked}
             radioIndex={this.state.radioValue}
-            result={betResult}
+            result={requestReturn}
           >
-            {editingToggled
-              ?
-              (
-                <RadioGroup onChange={this.onRadioGroupChange} value={this.state.radioValue} size="large" defaultValue={DEFAULT_RADIO_VALUE}>
-                  {betBalance.map((entry, index) => (
-                    <Radio value={index + 1} key={entry.name}>
-                      <ProgressBar
-                        label={entry.name}
-                        value={entry.value}
-                        percent={entry.percent}
-                        barHeight={12}
-                        info
-                      />
-                    </Radio>))
-                  }
-                </RadioGroup>
-              )
-              :
-              betBalance.map((entry) => (
-                <ProgressBar
-                  key={entry.name}
-                  label={entry.name}
-                  value={entry.value}
-                  percent={entry.percent}
-                  barHeight={12}
-                  info
-                  marginBottom={18}
-                />))
-            }
-          </CardVoting>
+            {qtumBalance.map((entry) => (
+              <ProgressBar
+                key={entry.name}
+                label={entry.name}
+                value={entry.value}
+                percent={entry.percent}
+                barHeight={12}
+                info
+                marginBottom={18}
+              />))}
+          </CardFinished>
         </IsoWidgetsWrapper>
       </Col>
 
@@ -169,7 +146,7 @@ class TopicPage extends React.Component {
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
             <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Ongoing</Breadcrumb.Item>
+            <Breadcrumb.Item>Completed</Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
@@ -187,35 +164,27 @@ TopicPage.propTypes = {
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  editingToggled: PropTypes.bool,
-  match: PropTypes.object,
-  onBet: PropTypes.func,
-  betResult: PropTypes.object,
+  match: PropTypes.object.isRequired,
+  requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
 };
 
 TopicPage.defaultProps = {
   getTopicsSuccess: undefined,
   onGetTopics: undefined,
-  editingToggled: false,
-  match: {},
-  onBet: undefined,
-  betResult: undefined,
+  requestReturn: undefined,
   walletAddrs: [],
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  editingToggled: state.Topic.get('toggled'),
-  betResult: state.Topic.get('bet_result'),
+  requestReturn: state.Topic.get('req_return'),
   walletAddrs: state.App.get('walletAddrs'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onBet: (contractAddress, index, amount, senderAddress) =>
-      dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
   };
 }
 
