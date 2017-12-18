@@ -72,14 +72,14 @@ class OraclePage extends React.Component {
       return _.map(oracle.options, (optionName, index) => ({
         name: optionName,
         value: `${oracle.amounts[index]} ${oracle.token}`,
-        percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+        percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
       }));
     }
 
     return _.map(oracle.optionIdxs, (optIndex, index) => ({
       name: oracle.options[optIndex],
       value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: _.floor((oracle.amounts[index] / totalBalance) * 100),
+      percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
     }));
   }
 
