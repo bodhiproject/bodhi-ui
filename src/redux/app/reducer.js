@@ -35,6 +35,8 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddrs', result);
     }
+    case actions.COLLPSE_CHANGE:
+      return state.set('collapsed', !state.get('collapsed'));
     case actions.COLLPSE_OPEN_DRAWER:
       return state.set('openDrawer', !state.get('openDrawer'));
     case actions.TOGGLE_ALL:

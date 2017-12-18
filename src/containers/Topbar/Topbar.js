@@ -77,14 +77,14 @@ class Topbar extends React.PureComponent {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
-    this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
+    this.onDropdownClick = this.onDropdownClick.bind(this);
   }
 
   componentWillMount() {
     this.props.listUnspent();
   }
 
-  onAddressDropdownClick({ key, item }) {
+  onDropdownClick({ key, item }) {
     if (key === KEY_ADD_ADDRESS_BTN) {
       this.showModal();
     } else {
@@ -99,7 +99,7 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  handleOk() {
+  handleOk(e) {
     // Push this.state.addressInput to state.App
     this.props.addWalletAddress(this.state.addressInput);
 
@@ -116,7 +116,7 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  handleCancel() {
+  handleCancel(e) {
     this.setState({
       visible: false,
       addressInput: '',
@@ -124,7 +124,7 @@ class Topbar extends React.PureComponent {
   }
 
   render() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
+    const { toggle, walletAddrs, walletAddrsIndex } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
     const collapsed = this.props.collapsed && !this.props.openDrawer;
 
@@ -133,7 +133,7 @@ class Topbar extends React.PureComponent {
     const trimmedWalletAddrs = walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH);
 
     const menu = (
-      <Menu onClick={this.onAddressDropdownClick}>
+      <Menu onClick={this.onDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
           _.map(trimmedWalletAddrs, (item, index) => (
@@ -212,6 +212,7 @@ class Topbar extends React.PureComponent {
 }
 
 Topbar.propTypes = {
+  toggle: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
   openDrawer: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
@@ -236,6 +237,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  toggle: appActions.toggleCollapsed,
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
