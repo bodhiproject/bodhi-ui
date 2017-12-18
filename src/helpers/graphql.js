@@ -51,6 +51,7 @@ const ALL_ORACLES = gql`
       resultIdx
       amounts
       endBlock
+      blockNum
     }
   }
 `;
@@ -69,6 +70,7 @@ const ORACLES_BY_ADDRESS = gql`
       resultIdx
       amounts
       endBlock
+      blockNum
     }
   }
 `;
@@ -87,6 +89,7 @@ export function queryAllTopics() {
       qtumAmount: entry.qtumAmount,
       botAmount: entry.botAmount,
       oracles: entry.oracles,
+      blockNum: entry.blockNum,
     }));
 
     return queryData;
@@ -109,6 +112,7 @@ export function queryAllOracles() {
       resultIdx: entry.resultIdx,
       amounts: entry.amounts,
       endBlock: entry.endBlock,
+      blockNum: entry.blockNum,
     }));
 
     return queryData;
