@@ -22,7 +22,6 @@ query{
     botAmount
     oracles{
       address,
-      creatorAddress,
       topicAddress,
       status,
       token,
