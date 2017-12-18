@@ -10,7 +10,6 @@ export default function topicReducer(
   state = initState,
   action
 ) {
-  console.log('reducer', action);
   switch (action.type) {
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
@@ -45,6 +44,12 @@ export default function topicReducer(
       return state.set('finalize_result_return', action.value);
     case actions.CLEAR_FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', undefined);
+
+
+      /* Withdraw result return */
+
+    case actions.WITHDRAW_RETURN:
+      return state.set('withdraw_return', action.value);
 
     /* Clear request return on the page */
     case actions.CLEAR_REQ_RETURN:

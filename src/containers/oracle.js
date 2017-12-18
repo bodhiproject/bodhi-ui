@@ -203,7 +203,7 @@ class OraclePage extends React.Component {
     }];
 
     const totalBalance = _.sum(oracle.amounts);
-    const { status, token } = oracle;
+    const { token } = oracle;
 
     const betBalance = OraclePage.getBetOrVoteArray(oracle);
     const breadcrumbLabel = config && config.breadcrumbLabel;

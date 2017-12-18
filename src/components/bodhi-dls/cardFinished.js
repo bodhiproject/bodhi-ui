@@ -28,7 +28,6 @@ class CardFinished extends Component {
       amount, config, children, result,
     } = this.props;
 
-    const titleLineHeight = 36;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     // Build Alert elements based on result
@@ -83,6 +82,7 @@ class CardFinished extends Component {
             type="primary"
             onClick={this.onWithdrawBtnClicked}
             size="large"
+            disabled={confirmBtnDisabled}
           >
               Withdraw
           </Button>

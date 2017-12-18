@@ -20,11 +20,11 @@ class CardVoting extends Component {
   componentWillMount() {
   }
 
-  onBottomBtnClicked(evt) {
+  onBottomBtnClicked() {
     this.props.onEditingToggled();
   }
 
-  onConfirmBtnClicked(evt) {
+  onConfirmBtnClicked() {
     this.props.onSubmit({ amount: this.state.voteAmount });
   }
 
@@ -39,7 +39,6 @@ class CardVoting extends Component {
       amount, config, token, children, editingToggled, result, radioIndex,
     } = this.props;
 
-    const titleLineHeight = 36;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     // Build AmountInput elements and determine whether to show based on config

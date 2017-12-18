@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Col, Breadcrumb, Radio } from 'antd';
+import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -12,8 +12,6 @@ import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 
-const RadioGroup = Radio.Group;
-const DEFAULT_RADIO_VALUE = 0;
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
@@ -21,10 +19,10 @@ class TopicPage extends React.Component {
     this.state = {
       address: this.props.match.params.address,
       topic: undefined, // Topic object for this page
-      radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
+    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
   componentWillMount() {
@@ -32,7 +30,6 @@ class TopicPage extends React.Component {
 
     // Retrive topic data if state doesn't already have it
     if (_.isUndefined(getTopicsSuccess)) {
-      console.log('calling onGetTopics');
       onGetTopics();
     } else {
       const topic = _.find(getTopicsSuccess, { address: this.state.address });
@@ -52,19 +49,23 @@ class TopicPage extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.onClearRequestReturn();
+  }
 
-  /** Confirm button on click handler passed down to CardFinished */
+  /** Withdraw button on click handler passed down to CardFinished */
   onWithdrawClicked(obj) {
-    const { topic, radioValue } = this.state;
-
-    const selectedIndex = topic.optionIdxs[radioValue - 1];
-    const { amount } = obj;
-
-    const walletAddrIndex = [0];
-    const senderAddress = this.props.walletAddrs[walletAddrIndex];
+    const senderAddress = this.getCurrentSenderAddress();
     const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
 
-    console.log(`contractAddress is ${contractAddress}, selectedIndex is ${selectedIndex}, amount is ${amount}, senderAddress is ${senderAddress}`);
+    this.props.onWithdraw(contractAddress, senderAddress);
+  }
+
+
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
   }
 
   render() {
@@ -122,7 +123,7 @@ class TopicPage extends React.Component {
             amount={qtumTotal}
             voteBalance={qtumBalance}
             onWithdrawClicked={this.onWithdrawClicked}
-            radioIndex={this.state.radioValue}
+            radioIndex={topic.resultIdx}
             result={requestReturn}
           >
             {qtumBalance.map((entry) => (
@@ -167,6 +168,9 @@ TopicPage.propTypes = {
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
+  walletAddrsIndex: PropTypes.number,
+  onWithdraw: PropTypes.func,
+  onClearRequestReturn: PropTypes.func,
 };
 
 TopicPage.defaultProps = {
@@ -174,17 +178,23 @@ TopicPage.defaultProps = {
   onGetTopics: undefined,
   requestReturn: undefined,
   walletAddrs: [],
+  walletAddrsIndex: 0,
+  onWithdraw: undefined,
+  onClearRequestReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   requestReturn: state.Topic.get('req_return'),
   walletAddrs: state.App.get('walletAddrs'),
+  walletAddrsIndex: state.App.get('walletAddrsIndex'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onWithdraw: () => dispatch(topicActions.onWithdraw()),
+    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
   };
 }
 
