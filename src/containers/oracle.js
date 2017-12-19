@@ -111,6 +111,7 @@ class OraclePage extends React.Component {
     this.onFinalizeResult = this.onFinalizeResult.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.setResult = this.setResult.bind(this);
+    this.vote = this.vote.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
@@ -205,15 +206,7 @@ class OraclePage extends React.Component {
         break;
 
       case 'VOTING':
-        // User needs to approve vote amount to BodhiToken contract
-        // address should be TopicEvent
-        onApprove(oracle.topicAddress, amount, senderAddress);
-
-        setTimeout(() => {
-          // contractAddress should be DecentralizedOracle
-          onVote(oracle.address, selectedIndex, amount, senderAddress);
-        }, SUB_REQ_DELAY);
-
+        this.vote(amount);
         break;
 
       case 'FINALIZING':
@@ -241,7 +234,7 @@ class OraclePage extends React.Component {
     const senderAddress = this.getCurrentSenderAddress();
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
-    // Result setter needs to approve 100 BOT to BodhiToken contract.
+    // Result setter needs to approve 100 BOT to BodhiToken contract
     // address should be TopicEvent
     onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
@@ -255,6 +248,22 @@ class OraclePage extends React.Component {
   getCurrentSenderAddress() {
     const { walletAddrs, walletAddrsIndex } = this.props;
     return walletAddrs[walletAddrsIndex].address;
+  }
+
+  vote(amount) {
+    const { oracle, radioValue } = this.state;
+    const { onApprove, onVote } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+
+    // User needs to approve vote amount to BodhiToken contract
+    // address should be TopicEvent
+    onApprove(oracle.topicAddress, amount, senderAddress);
+
+    setTimeout(() => {
+      // contractAddress should be DecentralizedOracle
+      onVote(oracle.address, selectedIndex, amount, senderAddress);
+    }, SUB_REQ_DELAY);
   }
 
   render() {
