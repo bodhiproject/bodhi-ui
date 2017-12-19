@@ -108,11 +108,12 @@ class OraclePage extends React.Component {
     };
 
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onFinalizeResult = this.onFinalizeResult.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
+    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.bet = this.bet.bind(this);
     this.setResult = this.setResult.bind(this);
     this.vote = this.vote.bind(this);
-    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.finalizeResult = this.finalizeResult.bind(this);
   }
 
   componentWillMount() {
@@ -187,18 +188,11 @@ class OraclePage extends React.Component {
 
   /** The right card Confirm Button event handler * */
   onConfirmBtnClicked(obj) {
-    const { oracle, radioValue } = this.state;
-    const {
-      onBet, onSetResult, onVote, onFinalizeResult, onApprove,
-    } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
     switch (this.state.config.name) {
       case 'BETTING':
-        // contractAddress should be CentralizedOracle
-        onBet(oracle.address, selectedIndex, amount, senderAddress);
+        this.bet(amount);
         break;
 
       case 'SETTING':
@@ -210,9 +204,7 @@ class OraclePage extends React.Component {
         break;
 
       case 'FINALIZING':
-        // Finalize oracle to enter next stage, withdraw
-        // contractAddress should be DecentralizedOracle
-        onFinalizeResult(oracle.address, senderAddress);
+        this.finalizeResult();
         break;
 
       default:
@@ -221,11 +213,20 @@ class OraclePage extends React.Component {
     }
   }
 
-  onFinalizeResult() {
-    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
-    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
 
-    this.props.onFinalizeResult(contractAddress, senderAddress);
+  bet(amount) {
+    const { oracle, radioValue } = this.state;
+    const { onBet } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+
+    // contractAddress should be CentralizedOracle
+    onBet(oracle.address, selectedIndex, amount, senderAddress);
   }
 
   setResult() {
@@ -244,12 +245,6 @@ class OraclePage extends React.Component {
     }, SUB_REQ_DELAY);
   }
 
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
   vote(amount) {
     const { oracle, radioValue } = this.state;
     const { onApprove, onVote } = this.props;
@@ -264,6 +259,16 @@ class OraclePage extends React.Component {
       // contractAddress should be DecentralizedOracle
       onVote(oracle.address, selectedIndex, amount, senderAddress);
     }, SUB_REQ_DELAY);
+  }
+
+  finalizeResult() {
+    const { oracle, radioValue } = this.state;
+    const { onFinalizeResult } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    // Finalize oracle to enter next stage, withdraw
+    // contractAddress should be DecentralizedOracle
+    onFinalizeResult(oracle.address, senderAddress);
   }
 
   render() {
