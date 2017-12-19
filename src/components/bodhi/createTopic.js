@@ -5,7 +5,8 @@ import React, { PropTypes } from 'react';
 import { Alert, Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
 
-import actions from '../../redux/topic/actions';
+import topicActions from '../../redux/topic/actions';
+import appActions from '../../redux/app/actions';
 
 const FormItem = Form.Item;
 
@@ -21,6 +22,10 @@ class CreateTopic extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleOptionsInputChange = this.handleOptionsInputChange.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.onGetBlockCount();
   }
 
   componentWillUnmount() {
@@ -62,7 +67,10 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn } = this.props;
+    const { createReturn, blockCount } = this.props;
+
+    console.log(`blockCount is ${blockCount}`);
+
     const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
@@ -138,7 +146,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder="e.g. 62000" />)}
+            })(<Input placeholder={`Current block number ${blockCount}`} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -148,7 +156,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder="e.g. 65000" />)}
+            })(<Input placeholder={`Current block number ${blockCount}`} />)}
           </FormItem>
 
           <FormItem
@@ -194,16 +202,20 @@ CreateTopic.propTypes = {
   createReturn: PropTypes.object,
   onCreateTopic: PropTypes.func,
   onClearCreateReturn: PropTypes.func,
+  onGetBlockCount: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
+  blockCount: PropTypes.number,
 };
 
 CreateTopic.defaultProps = {
   createReturn: undefined,
   onCreateTopic: undefined,
   onClearCreateReturn: undefined,
+  onGetBlockCount: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
+  blockCount: 0,
 };
 
 class OptionsInput extends React.Component {
@@ -333,12 +345,14 @@ const mapStateToProps = (state) => ({
   createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreateTopic: (params) => dispatch(actions.onCreate(params)),
-    onClearCreateReturn: () => dispatch(actions.onClearCreateReturn()),
+    onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
+    onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
+    onGetBlockCount: () => dispatch(appActions.getBlockCount()),
   };
 }
 
