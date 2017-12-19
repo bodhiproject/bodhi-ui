@@ -18,6 +18,8 @@ const actions = {
   SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
   LIST_UNSPENT: 'LIST_UNSPENT',
   LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
+  GET_BLOCK_COUNT: 'GET_BLOCK_COUNT',
+  GET_BLOCK_COUNT_RETURN: 'GET_BLOCK_COUNT_RETURN',
   toggleCollapsed: () => ({
     type: actions.COLLPSE_CHANGE,
   }),
@@ -60,5 +62,8 @@ const actions = {
   listUnspent: () => ({
     type: actions.LIST_UNSPENT,
   }),
+  getBlockCount: () =>({
+    type: actions.GET_BLOCK_COUNT,
+  })
 };
 export default actions;

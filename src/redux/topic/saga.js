@@ -113,7 +113,6 @@ export function* voteRequestHandler() {
     } = action.payload;
 
     try {
-
       const options = {
         method: 'POST',
         body: JSON.stringify({
@@ -171,6 +170,37 @@ export function* finalizeResultRequestHandler() {
   });
 }
 
+export function* withdrawRequestHandler() {
+  yield takeEvery(actions.WITHDRAW, function* onWithdrawResultRequest(action) {
+    const {
+      contractAddress, senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/withdraw', options);
+
+      yield put({
+        type: actions.WITHDRAW_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.WITHDRAW_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export function* createRequestHandler() {
   yield takeEvery(actions.CREATE, function* onCreateRequest(action) {
     const {
@@ -219,5 +249,6 @@ export default function* topicSaga() {
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
+    fork(withdrawRequestHandler),
   ]);
 }

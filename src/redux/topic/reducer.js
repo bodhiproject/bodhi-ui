@@ -51,7 +51,7 @@ export default function topicReducer(
 
       /* Withdraw result return */
     case actions.WITHDRAW_RETURN:
-      return state.set('withdraw_return', action.value);
+      return state.set('req_return', action.value);
 
     /* Clear request return on the page */
     case actions.CLEAR_REQ_RETURN:
