@@ -140,10 +140,11 @@ class OraclePage extends React.Component {
     console.log(`blockCount is ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
-      const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+      let oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
       if (oracle) {
         const { token, status, endBlock } = oracle;
+        console.log('oracle', oracle);
 
         let configName;
 
@@ -155,6 +156,7 @@ class OraclePage extends React.Component {
               // Finalize oracle if current block has passed arbitrationEndBlock and threshold is not met
               // Since new oracle is guarranteed to spawn if total amount threshold is met we are not checking total BOT amount here
               if (blockCount > oracle.endBlock) {
+                console.log(`!! blockCount ${blockCount} is greater than endBlock ${endBlock}.`);
                 configName = 'FINALIZING';
               } else {
                 configName = 'VOTING';
@@ -169,8 +171,13 @@ class OraclePage extends React.Component {
             configName = 'SETTING';
             break;
           default:
+            console.warn('Oracle exists but cant determine status. ');
+            oracle = undefined;
             break;
         }
+
+        console.log('oracle', oracle);
+        console.log(`configName is ${configName}`);
 
         this.setState({
           oracle,
@@ -284,7 +291,7 @@ class OraclePage extends React.Component {
 
       case 'VOTING':
         /** The amount of voting needs to be approved by Bodhi_token * */
-        onApprove(oracle.topicAddress, amount, senderAddress);
+        onApprove(oracle.address, amount, senderAddress);
 
         setTimeout(() => {
           onVote(oracle.address, selectedIndex, amount, senderAddress);
@@ -412,7 +419,7 @@ class OraclePage extends React.Component {
 
     if (!oracle) {
       // TODO: render no result page
-      return <div></div>;
+      return <div> 404 Page not found. </div>;
     }
 
     const timeline = [{
