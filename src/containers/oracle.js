@@ -59,8 +59,6 @@ const PageConfig =
       bottomBtnText: 'Finalize',
     }];
 
-let allowancePollingSvc;
-
 class OraclePage extends React.Component {
   /**
    * Determine OracleType; default DECENTRALISED
@@ -109,6 +107,7 @@ class OraclePage extends React.Component {
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
+      allowanceIntervalId: undefined,
     };
 
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
@@ -224,7 +223,10 @@ class OraclePage extends React.Component {
         }
       }
     } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
-      clearInterval(allowancePollingSvc);
+      clearInterval(this.state.allowanceIntervalId);
+      this.setState({
+        allowanceIntervalId: undefined,
+      });
 
       switch (configName) {
         case 'SETTING': {
@@ -331,10 +333,16 @@ class OraclePage extends React.Component {
 
   checkAllowance() {
     console.log('starting allowance polling service');
-    allowancePollingSvc = setInterval(function () {
+    const allowancePoll = function () {
       const senderAddress = this.getCurrentSenderAddress();
       this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
-    }, SUB_REQ_DELAY);
+    };
+
+    allowancePoll();
+    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
+    this.setState({
+      allowanceIntervalId: intervalId,
+    });
   }
 
   bet(amount) {
