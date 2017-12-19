@@ -17,8 +17,7 @@ const initState = new Map({
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-
-    /** Wallet Addresses **/
+    /** Wallet Addresses * */
     case actions.ADD_WALLET_ADDRESS:
       state.get('walletAddrs').push(action.value);
       return state.set('walletAddrs', state.get('walletAddrs'));
@@ -37,10 +36,10 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddrs', result);
     }
-    
-    /** Block Count **/
+
+    /** Block Count * */
     case actions.GET_BLOCK_COUNT_RETURN:
-    return state.set('get_block_count_return', actions.value);
+      return state.set('get_block_count_return', action.value);
 
     case actions.COLLPSE_CHANGE:
       return state.set('collapsed', !state.get('collapsed'));

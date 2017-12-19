@@ -10,6 +10,7 @@ import ProgressBar from '../components/bodhi-dls/progressBar';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
+import appActions from '../redux/app/actions';
 import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
@@ -41,6 +42,11 @@ const PageConfig =
       breadcrumbLabel: 'Voting',
       showAmountInput: true,
       bottomBtnText: 'Vote',
+    }, {
+      name: 'FINALIZING',
+      breadcrumbLabel: 'Voting', // Finalize state should be transparent to end user
+      showAmountInput: false,
+      bottomBtnText: 'Finalize',
     }];
 
 
@@ -100,25 +106,38 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
+    // TODO: Get current oracle
     this.props.onGetOracles();
+
+    // Get current block count
+    this.props.onGetBlockCount();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getOraclesSuccess, finalizeResultReturn } = nextProps;
+    const { getOraclesSuccess, finalizeResultReturn, blockCount } = nextProps;
+
+    console.log(`blockCount is ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
       const oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
       if (oracle) {
-        const { token, status } = oracle;
+        const { token, status, endBlock } = oracle;
 
         let configName;
 
         /** Determine what config to use in current card * */
         switch (status) {
           case 'VOTING':
+
             if (token === 'BOT') {
-              configName = 'VOTING';
+              // Finalize oracle if current block has passed arbitrationEndBlock and threshold is not met
+              // Since new oracle is guarranteed to spawn if total amount threshold is met we are not checking total BOT amount here
+              if (blockCount > oracle.endBlock) {
+                configName = 'FINALIZING';
+              } else {
+                configName = 'VOTING';
+              }
               break;
             }
 
@@ -167,7 +186,8 @@ class OraclePage extends React.Component {
     const { amount } = obj;
 
     // contractAddress should be the address of this oracle
-    const contractAddress = oracle.address;
+    const contractAddress = _.trimStart(oracle.topicAddress, '0x');
+    console.log(`contractAddress is ${contractAddress}`);
 
     switch (this.state.config.name) {
       case 'BETTING':
@@ -194,12 +214,16 @@ class OraclePage extends React.Component {
           onVote(contractAddress, selectedIndex, amount, senderAddress);
         }, SUB_REQ_DELAY);
 
-        // The last Vote that hits BOT threshold needs to issue a finalize() after certain delay
-        if (oracle.amounts[selectedIndex] + amount >= ORACLE_BOT_THRESHOLD) {
-          setTimeout(() => {
-            onFinalizeResult(contractAddress, senderAddress);
-          }, SUB_REQ_DELAY);
-        }
+        break;
+
+      case 'FINALIZING':
+        // Finalize oracle to enter next stage, withdraw
+        onFinalizeResult(contractAddress, senderAddress);
+        break;
+
+      default:
+
+        // TODO: oracle not found page
         break;
     }
   }
@@ -339,10 +363,12 @@ OraclePage.propTypes = {
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
+  onGetBlockCount: PropTypes.func,
   requestReturn: PropTypes.object,
   finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
+  blockCount: PropTypes.number,
 };
 
 OraclePage.defaultProps = {
@@ -356,10 +382,12 @@ OraclePage.defaultProps = {
   onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
+  onGetBlockCount: undefined,
   requestReturn: undefined,
   finalizeResultReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
+  blockCount: 0,
 };
 
 const mapStateToProps = (state) => ({
@@ -370,6 +398,7 @@ const mapStateToProps = (state) => ({
   finalizeResultReturn: state.Topic.get('finalize_result_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
 });
 
 function mapDispatchToProps(dispatch) {
@@ -378,13 +407,14 @@ function mapDispatchToProps(dispatch) {
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    onVote: (contractAddress, index, amount, senderAddress) =>
-      dispatch(topicActions.onVote(contractAddress, index, amount, senderAddress)),
+    onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
+    onGetBlockCount: () => dispatch(appActions.getBlockCount()),
   };
 }
 

@@ -62,8 +62,8 @@ const actions = {
   listUnspent: () => ({
     type: actions.LIST_UNSPENT,
   }),
-  getBlockCount: () =>({
+  getBlockCount: () => ({
     type: actions.GET_BLOCK_COUNT,
-  })
+  }),
 };
 export default actions;

@@ -107,8 +107,8 @@ export function* voteRequestHandler() {
   yield takeEvery(actions.VOTE, function* onVoteRequest(action) {
     const {
       contractAddress,
-      index,
-      amount,
+      resultIndex,
+      botAmount,
       senderAddress,
     } = action.payload;
 
@@ -117,8 +117,8 @@ export function* voteRequestHandler() {
         method: 'POST',
         body: JSON.stringify({
           contractAddress,
-          resultIndex: index,
-          botAmount: amount,
+          resultIndex,
+          botAmount,
           senderAddress,
         }),
         headers: { 'Content-Type': 'application/json' },

@@ -25,12 +25,12 @@ const topicActions = {
 
   VOTE: 'VOTE',
   VOTE_RETURN: 'VOTE_RETURN',
-  onVote: (contractAddress, index, amount, senderAddress) => ({
+  onVote: (contractAddress, resultIndex, botAmount, senderAddress) => ({
     type: topicActions.VOTE,
     payload: {
       contractAddress,
-      index,
-      amount,
+      resultIndex,
+      botAmount,
       senderAddress,
     },
   }),
