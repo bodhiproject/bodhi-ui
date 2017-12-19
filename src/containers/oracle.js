@@ -110,6 +110,7 @@ class OraclePage extends React.Component {
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onFinalizeResult = this.onFinalizeResult.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
+    this.setResult = this.setResult.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
@@ -200,14 +201,7 @@ class OraclePage extends React.Component {
         break;
 
       case 'SETTING':
-        // Result setter needs to approve 100 BOT to BodhiToken contract
-        // address should be TopicEvent
-        onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
-
-        setTimeout(() => {
-          // contractAddress should be CentralizedOracle
-          onSetResult(oracle.address, selectedIndex, senderAddress);
-        }, SUB_REQ_DELAY);
+        this.setResult();
         break;
 
       case 'VOTING':
@@ -239,6 +233,22 @@ class OraclePage extends React.Component {
     const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
 
     this.props.onFinalizeResult(contractAddress, senderAddress);
+  }
+
+  setResult() {
+    const { oracle, radioValue } = this.state;
+    const { onApprove, onSetResult } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+
+    // Result setter needs to approve 100 BOT to BodhiToken contract.
+    // address should be TopicEvent
+    onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+
+    setTimeout(() => {
+      // contractAddress should be CentralizedOracle
+      onSetResult(oracle.address, selectedIndex, senderAddress);
+    }, SUB_REQ_DELAY);
   }
 
   /** Return selected address on Topbar as sender * */
