@@ -119,10 +119,11 @@ class OraclePage extends React.Component {
     console.log(`blockCount is ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
-      const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+      let oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
       if (oracle) {
         const { token, status, endBlock } = oracle;
+        console.log('oracle', oracle);
 
         let configName;
 
@@ -134,6 +135,7 @@ class OraclePage extends React.Component {
               // Finalize oracle if current block has passed arbitrationEndBlock and threshold is not met
               // Since new oracle is guarranteed to spawn if total amount threshold is met we are not checking total BOT amount here
               if (blockCount > oracle.endBlock) {
+                console.log(`!! blockCount ${blockCount} is greater than endBlock ${endBlock}.`);
                 configName = 'FINALIZING';
               } else {
                 configName = 'VOTING';
@@ -148,8 +150,13 @@ class OraclePage extends React.Component {
             configName = 'SETTING';
             break;
           default:
+            console.warn('Oracle exists but cant determine status. ');
+            oracle = undefined;
             break;
         }
+
+        console.log('oracle', oracle);
+        console.log(`configName is ${configName}`);
 
         this.setState({
           oracle,
@@ -160,7 +167,6 @@ class OraclePage extends React.Component {
 
     // Leave here temporarily for debugging purpose
     console.log('finalizeResultReturn', finalizeResultReturn);
-
 
     // TODO: For any error case we will render an Oracle not found page
   }
@@ -201,6 +207,7 @@ class OraclePage extends React.Component {
         onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
         setTimeout(() => {
+          console.log('onSetResult');
           onSetResult(contractAddress, selectedIndex, senderAddress);
         }, SUB_REQ_DELAY);
         break;
@@ -208,9 +215,10 @@ class OraclePage extends React.Component {
       case 'VOTING':
 
         /** The amount of voting needs to be approved by Bodhi_token * */
-        onApprove(oracle.topicAddress, amount, senderAddress);
+        onApprove(_.trimStart(oracle.address, '0x'), amount, senderAddress);
 
         setTimeout(() => {
+          console.log('onSetResult');
           onVote(contractAddress, selectedIndex, amount, senderAddress);
         }, SUB_REQ_DELAY);
 
@@ -247,7 +255,7 @@ class OraclePage extends React.Component {
 
     if (!oracle) {
       // TODO: render no result page
-      return <div></div>;
+      return <div> 404 Page not found. </div>;
     }
 
     const timeline = [{
