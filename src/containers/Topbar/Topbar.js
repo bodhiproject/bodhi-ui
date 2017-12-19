@@ -20,9 +20,14 @@ const KEY_ADD_ADDRESS_BTN = 'add_address';
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
  * @param  {string} text      Origin address
  * @param  {number} maxLength Length of output string, including 3 dots
- * @return {string}
+ * @return {string} string in format "Qjsb ... 3dkb", or empty string "" if input is undefined or empty
  */
 function shortenAddress(text, maxLength) {
+
+  if(!text){
+    return "";
+  }
+
   const cutoffLength = (maxLength - 3) / 2;
   return text.length > maxLength
     ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
