@@ -22,6 +22,7 @@ class CreateTopic extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleOptionsInputChange = this.handleOptionsInputChange.bind(this);
+    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
   componentWillMount() {
@@ -46,7 +47,7 @@ class CreateTopic extends React.Component {
           resultSettingEndBlock,
         } = values;
 
-        const senderAddress = this.props.walletAddrs[this.props.walletAddrsIndex].address;
+        const senderAddress = this.getCurrentSenderAddress();
 
         this.props.onCreateTopic({
           resultSetterAddress,
@@ -64,6 +65,17 @@ class CreateTopic extends React.Component {
     this.props.form.setFieldsValue({
       options: value,
     });
+  }
+
+  /** Return selected address on Topbar as sender; empty string if not found * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+
+    return '';
   }
 
   render() {

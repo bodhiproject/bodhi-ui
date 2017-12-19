@@ -303,10 +303,15 @@ class OraclePage extends React.Component {
     }
   }
 
-  /** Return selected address on Topbar as sender * */
+  /** Return selected address on Topbar as sender; empty string if not found * */
   getCurrentSenderAddress() {
     const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+
+    return '';
   }
 
   // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
