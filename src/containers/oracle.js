@@ -15,8 +15,8 @@ import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
-const ORACLE_BOT_THRESHOLD = 100;
-const SUB_REQ_DELAY = 30 * 1000; // Delay subsequent request by 30 sec
+const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
+const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
 
 const OracleType = {
   CENTRALISED: 'CENTRALISED',
@@ -185,44 +185,42 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
-    // contractAddress should be the address of this oracle
-    const contractAddress = _.trimStart(oracle.topicAddress, '0x');
-    console.log(`contractAddress is ${contractAddress}`);
-
     switch (this.state.config.name) {
       case 'BETTING':
-
-        onBet(contractAddress, selectedIndex, amount, senderAddress);
+        // contractAddress should be CentralizedOracle
+        onBet(oracle.address, selectedIndex, amount, senderAddress);
         break;
 
       case 'SETTING':
-
-        /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+        // Result setter needs to approve 100 BOT to BodhiToken contract
+        // address should be TopicEvent
         onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
         setTimeout(() => {
-          onSetResult(contractAddress, selectedIndex, senderAddress);
+          // contractAddress should be CentralizedOracle
+          onSetResult(oracle.address, selectedIndex, senderAddress);
         }, SUB_REQ_DELAY);
         break;
 
       case 'VOTING':
-
-        /** The amount of voting needs to be approved by Bodhi_token * */
+        // User needs to approve vote amount to BodhiToken contract
+        // address should be TopicEvent
         onApprove(oracle.topicAddress, amount, senderAddress);
 
         setTimeout(() => {
-          onVote(contractAddress, selectedIndex, amount, senderAddress);
+          // contractAddress should be DecentralizedOracle
+          onVote(oracle.address, selectedIndex, amount, senderAddress);
         }, SUB_REQ_DELAY);
 
         break;
 
       case 'FINALIZING':
         // Finalize oracle to enter next stage, withdraw
-        onFinalizeResult(contractAddress, senderAddress);
+        // contractAddress should be DecentralizedOracle
+        onFinalizeResult(oracle.address, senderAddress);
         break;
 
       default:
-
         // TODO: oracle not found page
         break;
     }
