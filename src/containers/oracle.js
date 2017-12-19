@@ -28,23 +28,31 @@ const PageConfig =
     {
       name: 'BETTING',
       breadcrumbLabel: 'Betting',
+      blockStartLabel: 'Betting starts at block:',
+      blockEndLabel: 'Betting ends at block:',
       showAmountInput: true,
       bottomBtnText: 'Participate',
     },
     {
       name: 'SETTING',
       breadcrumbLabel: 'Setting',
+      blockStartLabel: 'Betting starts at block:',
+      blockEndLabel: 'Betting ends at block:',
       showAmountInput: false,
       bottomBtnText: 'Set Result',
     },
     {
       name: 'VOTING',
       breadcrumbLabel: 'Voting',
+      blockStartLabel: 'Voting starts at block:',
+      blockEndLabel: 'Voting ends at block:',
       showAmountInput: true,
       bottomBtnText: 'Vote',
     }, {
       name: 'FINALIZING',
       breadcrumbLabel: 'Voting', // Finalize state should be transparent to end user
+      blockStartLabel: 'Voting starts at block:',
+      blockEndLabel: 'Voting ends at block:',
       showAmountInput: false,
       bottomBtnText: 'Finalize',
     }];
@@ -249,10 +257,10 @@ class OraclePage extends React.Component {
     }
 
     const timeline = [{
-      label: 'Prediction start block',
+      label: config.blockStartLabel,
       value: oracle.blockNum,
     }, {
-      label: 'Prediction end block',
+      label: config.blockEndLabel,
       value: oracle.endBlock,
     }];
 
