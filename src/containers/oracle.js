@@ -167,32 +167,40 @@ class OraclePage extends React.Component {
     const { amount } = obj;
 
     // contractAddress should be the address of this oracle
-    // TODO: Update this to oracle.address for testing on testnet
-    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
+    const contractAddress = oracle.address;
 
-    if (this.state.config.name === 'BETTING') {
-      onBet(contractAddress, selectedIndex, amount, senderAddress);
-    } else if (this.state.config.name === 'SETTING') {
-      /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
-      onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+    switch (this.state.config.name) {
+      case 'BETTING':
 
-      setTimeout(() => {
-        onSetResult(contractAddress, selectedIndex, senderAddress);
-      }, SUB_REQ_DELAY);
-    } else if (this.state.config.name === 'VOTING') {
-      /** The amount of voting needs to be approved by Bodhi_token * */
-      onApprove(oracle.topicAddress, amount, senderAddress);
+        onBet(contractAddress, selectedIndex, amount, senderAddress);
+        break;
 
-      setTimeout(() => {
-        onVote(contractAddress, selectedIndex, amount, senderAddress);
-      }, SUB_REQ_DELAY);
+      case 'SETTING':
 
-      // The last Vote that hits BOT threshold needs to issue a finalize() after certain delay
-      if (oracle.amounts[selectedIndex] + amount >= ORACLE_BOT_THRESHOLD) {
+        /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+        onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+
         setTimeout(() => {
-          onFinalizeResult(contractAddress, senderAddress);
+          onSetResult(contractAddress, selectedIndex, senderAddress);
         }, SUB_REQ_DELAY);
-      }
+        break;
+
+      case 'VOTING':
+
+        /** The amount of voting needs to be approved by Bodhi_token * */
+        onApprove(oracle.topicAddress, amount, senderAddress);
+
+        setTimeout(() => {
+          onVote(contractAddress, selectedIndex, amount, senderAddress);
+        }, SUB_REQ_DELAY);
+
+        // The last Vote that hits BOT threshold needs to issue a finalize() after certain delay
+        if (oracle.amounts[selectedIndex] + amount >= ORACLE_BOT_THRESHOLD) {
+          setTimeout(() => {
+            onFinalizeResult(contractAddress, senderAddress);
+          }, SUB_REQ_DELAY);
+        }
+        break;
     }
   }
 

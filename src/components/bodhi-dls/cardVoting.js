@@ -47,7 +47,6 @@ class CardVoting extends Component {
       <div className="row-second">
         <InputNumber
           size="large"
-          min={1}
           defaultValue={0}
           onChange={this.onInputNumberChange}
         />
@@ -148,7 +147,7 @@ CardVoting.propTypes = {
   ]),
   editingToggled: PropTypes.bool,
   onEditingToggled: PropTypes.func,
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
   result: PropTypes.object,
   radioIndex: PropTypes.number,
 };
@@ -159,7 +158,6 @@ CardVoting.defaultProps = {
   children: [],
   editingToggled: false,
   onEditingToggled: undefined,
-  onSubmit: undefined,
   result: undefined,
   radioIndex: 0,
 };
@@ -170,7 +168,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSubmit: () => dispatch(topicActions.onSubmit()),
+    onEditingToggled: () => dispatch(topicActions.editingToggled()),
   };
 }
 

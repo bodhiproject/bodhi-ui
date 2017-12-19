@@ -89,7 +89,7 @@ class TopicPage extends React.Component {
     const qtumBalance = _.map(topic.qtumAmount, (amount, idx) => ({
       name: topic.options[idx],
       value: `${amount} QTUM`,
-      percent: _.floor((amount / qtumTotal) * 100),
+      percent: qtumTotal === 0 ? qtumTotal : _.floor((amount / qtumTotal) * 100),
     }));
 
 
@@ -97,7 +97,7 @@ class TopicPage extends React.Component {
     const botBalance = _.map(topic.botAmount, (amount, idx) => ({
       name: topic.options[idx],
       value: `${amount} BOT`,
-      percent: _.floor((amount / botTotal) * 100),
+      percent: botTotal === 0 ? botTotal : _.floor((amount / botTotal) * 100),
     }));
 
     const topicElement = (<Row
@@ -122,7 +122,7 @@ class TopicPage extends React.Component {
           <CardFinished
             amount={qtumTotal}
             voteBalance={qtumBalance}
-            onWithdrawClicked={this.onWithdrawClicked}
+            onWithdraw={this.onWithdrawClicked}
             radioIndex={topic.resultIdx}
             result={requestReturn}
           >
@@ -169,7 +169,7 @@ TopicPage.propTypes = {
   requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-  onWithdraw: PropTypes.func,
+  onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
 };
 
@@ -179,7 +179,6 @@ TopicPage.defaultProps = {
   requestReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
-  onWithdraw: undefined,
   onClearRequestReturn: undefined,
 };
 
@@ -193,7 +192,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onWithdraw: () => dispatch(topicActions.onWithdraw()),
+    onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
   };
 }

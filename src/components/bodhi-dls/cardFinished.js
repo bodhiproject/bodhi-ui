@@ -101,7 +101,7 @@ CardFinished.propTypes = {
     PropTypes.array,
     PropTypes.element,
   ]),
-  onWithdraw: PropTypes.func,
+  onWithdraw: PropTypes.func.isRequired,
   result: PropTypes.object,
 };
 
@@ -109,17 +109,14 @@ CardFinished.defaultProps = {
   amount: 0,
   config: undefined,
   children: [],
-  onWithdraw: undefined,
   result: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  result: state.Topic.get('WITHDRAW_RETURN'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onWithdraw: () => dispatch(topicActions.onWithdraw()),
   };
 }
 
