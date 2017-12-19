@@ -176,7 +176,11 @@ class OraclePage extends React.Component {
 
     // Leave here temporarily for debugging purpose
     console.log('finalizeResultReturn', finalizeResultReturn);
-    console.log('allowanceReturn', allowanceReturn);
+
+    if (allowanceReturn) {
+      console.log('allowanceReturn', allowanceReturn);
+      
+    }
 
     // TODO: For any error case we will render an Oracle not found page
   }
