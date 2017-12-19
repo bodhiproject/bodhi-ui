@@ -253,12 +253,6 @@ class OraclePage extends React.Component {
     }
   }
 
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -309,6 +303,12 @@ class OraclePage extends React.Component {
     }
   }
 
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
   // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
   // onConfirmBtnClicked(obj) {
   //   const { amount } = obj;
@@ -338,18 +338,14 @@ class OraclePage extends React.Component {
   //   }
   // }
 
-  checkAllowance() {
-    console.log('starting allowance polling service');
-    const allowancePoll = function () {
-      const senderAddress = this.getCurrentSenderAddress();
-      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
-    };
+  setResult() {
+    const { onSetResult } = this.props;
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
 
-    allowancePoll();
-    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
-    this.setState({
-      allowanceIntervalId: intervalId,
-    });
+    // address should be CentralizedOracle
+    onSetResult(oracle.address, selectedIndex, senderAddress);
   }
 
   bet(amount) {
@@ -362,14 +358,18 @@ class OraclePage extends React.Component {
     onBet(oracle.address, selectedIndex, amount, senderAddress);
   }
 
-  setResult() {
-    const { onSetResult } = this.props;
-    const { oracle, radioValue } = this.state;
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
-    const senderAddress = this.getCurrentSenderAddress();
+  checkAllowance() {
+    console.log('starting allowance polling service');
+    const allowancePoll = function () {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    };
 
-    // address should be CentralizedOracle
-    onSetResult(oracle.address, selectedIndex, senderAddress);
+    allowancePoll();
+    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
+    this.setState({
+      allowanceIntervalId: intervalId,
+    });
   }
 
   vote(amount) {
