@@ -22,7 +22,6 @@ query{
     botAmount
     oracles{
       address,
-      creatorAddress,
       topicAddress,
       status,
       token,
@@ -51,27 +50,29 @@ const ALL_ORACLES = gql`
       resultIdx
       amounts
       endBlock
+      blockNum
     }
   }
 `;
 
-const ORACLES_BY_ADDRESS = gql`
-  query AllOracles($topicAddress: String) {
-    allOracles(filter: {
-      topicAddress: $topicAddress
-    }) {
-      topicAddress
-      token
-      name
-      status
-      options
-      optionIdxs
-      resultIdx
-      amounts
-      endBlock
-    }
-  }
-`;
+// const ORACLES_BY_ADDRESS = gql`
+//   query AllOracles($topicAddress: String) {
+//     allOracles(filter: {
+//       topicAddress: $topicAddress
+//     }) {
+//       topicAddress
+//       token
+//       name
+//       status
+//       options
+//       optionIdxs
+//       resultIdx
+//       amounts
+//       endBlock
+//       blockNum
+//     }
+//   }
+// `;
 
 export function queryAllTopics() {
   return client.query({ query: ALL_TOPICS }).then((res) => {
@@ -87,6 +88,7 @@ export function queryAllTopics() {
       qtumAmount: entry.qtumAmount,
       botAmount: entry.botAmount,
       oracles: entry.oracles,
+      blockNum: entry.blockNum,
     }));
 
     return queryData;
@@ -109,6 +111,7 @@ export function queryAllOracles() {
       resultIdx: entry.resultIdx,
       amounts: entry.amounts,
       endBlock: entry.endBlock,
+      blockNum: entry.blockNum,
     }));
 
     return queryData;

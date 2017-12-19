@@ -9,7 +9,7 @@ class CardInfo extends Component {
   }
 
   render() {
-    const { title, description, timeline } = this.props;
+    const { title, /* description, */ timeline } = this.props;
 
     const timelineArray = timeline.map((entry) =>
 
@@ -45,13 +45,13 @@ class CardInfo extends Component {
 
 CardInfo.propTypes = {
   title: PropTypes.string,
-  description: PropTypes.string,
+  // description: PropTypes.string,
   timeline: PropTypes.array,
 };
 
 CardInfo.defaultProps = {
   title: '',
-  description: '',
+  // description: '',
   timeline: [],
 };
 

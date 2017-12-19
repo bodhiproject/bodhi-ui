@@ -4,15 +4,33 @@ const topicActions = {
   editingToggled: () => ({
     type: topicActions.EDITING_TOGGLED,
   }),
+
+  REQ_RETURN: 'REQ_RETURN',
+  CLEAR_REQ_RETURN: 'CLEAR_REQ_RETURN',
+  onClearRequestReturn: () => ({
+    type: topicActions.CLEAR_REQ_RETURN,
+  }),
+
   BET: 'BET',
   BET_RETURN: 'BET_RETURN',
-  CLEAR_BET_RETURN: 'CLEAR_BET_RETURN',
   onBet: (contractAddress, index, amount, senderAddress) => ({
     type: topicActions.BET,
     payload: {
       contractAddress,
       index,
       amount,
+      senderAddress,
+    },
+  }),
+
+  VOTE: 'VOTE',
+  VOTE_RETURN: 'VOTE_RETURN',
+  onVote: (contractAddress, resultIndex, botAmount, senderAddress) => ({
+    type: topicActions.VOTE,
+    payload: {
+      contractAddress,
+      resultIndex,
+      botAmount,
       senderAddress,
     },
   }),
@@ -29,9 +47,19 @@ const topicActions = {
   onClearCreateReturn: () => ({
     type: topicActions.CLEAR_CREATE_RETURN,
   }),
+
+  APPROVE: 'APPROVE',
+  APPROVE_RETURN: 'APPROVE_RETURN',
+  onApprove: (spender, value, senderAddress) => ({
+    type: topicActions.APPROVE,
+    payload: {
+      spender,
+      value,
+      senderAddress,
+    },
+  }),
   SET_RESULT: 'SET_RESULT',
   SET_RESULT_RETURN: 'SET_RESULT_RETURN',
-  CLEAR_SET_RESULT_RETURN: 'CLEAR_SET_RESULT_RETURN',
   onSetResult: (contractAddress, resultIndex, senderAddress) => ({
     type: topicActions.SET_RESULT,
     payload: {
@@ -45,6 +73,16 @@ const topicActions = {
   CLEAR_FINALIZE_RESULT_RETURN: 'CLEAR_FINALIZE_RESULT_RETURN',
   onFinalizeResult: (contractAddress, senderAddress) => ({
     type: topicActions.FINALIZE_RESULT,
+    payload: {
+      contractAddress,
+      senderAddress,
+    },
+  }),
+
+  WITHDRAW: 'WITHDRAW',
+  WITHDRAW_RETURN: 'WITHDRAW_RETURN',
+  onWithdraw: (contractAddress, senderAddress) => ({
+    type: topicActions.WITHDRAW,
     payload: {
       contractAddress,
       senderAddress,

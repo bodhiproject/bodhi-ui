@@ -12,16 +12,19 @@ class CardVoting extends Component {
       voteAmount: 0,
     };
 
-    this.onParticipateClick = this.onParticipateClick.bind(this);
-    this.onConfirm = this.onConfirm.bind(this);
+    this.onBottomBtnClicked = this.onBottomBtnClicked.bind(this);
+    this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.onInputNumberChange = this.onInputNumberChange.bind(this);
   }
 
-  onParticipateClick(evt) {
+  componentWillMount() {
+  }
+
+  onBottomBtnClicked() {
     this.props.onEditingToggled();
   }
 
-  onConfirm(evt) {
+  onConfirmBtnClicked() {
     this.props.onSubmit({ amount: this.state.voteAmount });
   }
 
@@ -33,12 +36,25 @@ class CardVoting extends Component {
 
   render() {
     const {
-      amount, token, children, editingToggled, result, radioIndex,
+      amount, config, token, children, editingToggled, result, radioIndex,
     } = this.props;
 
-    const titleLineHeight = 36;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
+    // Build AmountInput elements and determine whether to show based on config
+    const amountInputEle = (config.showAmountInput ? (<div className="input-number-container">
+      <p style={{ marginBottom: '24px' }}>AMOUNT:</p>
+      <div className="row-second">
+        <InputNumber
+          size="large"
+          defaultValue={0}
+          onChange={this.onInputNumberChange}
+        />
+        <span>{token}</span>
+      </div>
+    </div>) : null);
+
+    // Build Alert elements based on result
     let alertElement;
 
     if (result) {
@@ -46,7 +62,7 @@ class CardVoting extends Component {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}.`}
+              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}`}
               type="success"
               closable={false}
             />);
@@ -59,8 +75,22 @@ class CardVoting extends Component {
         />);
       }
     }
-    const alertContainer = <div className="alert-container">{alertElement}</div>;
 
+    const alertContainerEle = <div className="alert-container">{alertElement}</div>;
+
+    // Determine Confirm button disabled status
+    let confirmBtnDisabled = true;
+
+    if (result && result.result) {
+      // Disable the button if request went through
+      confirmBtnDisabled = true;
+    } else if (config.showAmountInput) {
+      // Both amount input and radio box has to be set for disabled to be false
+      confirmBtnDisabled = !this.state.voteAmount || !radioIndex;
+    } else {
+      // If radio box is set, set disabled to false
+      confirmBtnDisabled = !radioIndex;
+    }
 
     return (
       <div className="cardVoting">
@@ -77,25 +107,14 @@ class CardVoting extends Component {
           {editingToggled ?
             (
               <div>
-                <div className="input-number-container">
-                  <p style={{ marginBottom: '24px' }}>AMOUNT:</p>
-                  <div className="row-second">
-                    <InputNumber
-                      size="large"
-                      min={1}
-                      defaultValue={0}
-                      onChange={this.onInputNumberChange}
-                    />
-                    <span>{token}</span>
-                  </div>
-                </div>
-                {alertContainer}
+                {amountInputEle}
+                {alertContainerEle}
 
                 <Button
                   type="primary"
-                  onClick={this.onConfirm}
+                  onClick={this.onConfirmBtnClicked}
                   size="large"
-                  disabled={!this.state.voteAmount || !radioIndex}
+                  disabled={confirmBtnDisabled}
                 >
                   Confirm
                 </Button>
@@ -104,10 +123,11 @@ class CardVoting extends Component {
             :
             (<Button
               type="primary"
-              onClick={this.onParticipateClick}
+              onClick={this.onBottomBtnClicked}
               size="large"
             >
-              {token === 'BOT' ? 'Vote' : 'Participate'}
+              {config && config.bottomBtnText}
+
             </Button>)
           }
 
@@ -119,25 +139,25 @@ class CardVoting extends Component {
 
 CardVoting.propTypes = {
   amount: PropTypes.number,
-  token: PropTypes.string,
+  config: PropTypes.object,
+  token: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.element,
   ]),
   editingToggled: PropTypes.bool,
   onEditingToggled: PropTypes.func,
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
   result: PropTypes.object,
   radioIndex: PropTypes.number,
 };
 
 CardVoting.defaultProps = {
   amount: 0,
-  token: 'QTUM',
+  config: undefined,
   children: [],
   editingToggled: false,
   onEditingToggled: undefined,
-  onSubmit: undefined,
   result: undefined,
   radioIndex: 0,
 };

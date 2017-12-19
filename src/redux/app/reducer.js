@@ -14,8 +14,8 @@ const initState = new Map({
 });
 
 export default function appReducer(state = initState, action) {
-  console.log('appReducer', action);
   switch (action.type) {
+    /** Wallet Addresses * */
     case actions.ADD_WALLET_ADDRESS:
       state.get('walletAddrs').push(action.value);
       return state.set('walletAddrs', state.get('walletAddrs'));
@@ -34,6 +34,10 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddrs', result);
     }
+      
+    /** Block Count * */
+    case actions.GET_BLOCK_COUNT_RETURN:
+      return state.set('get_block_count_return', action.value);
     case actions.TOGGLE_ALL:
       if (state.get('view') !== action.view || action.height !== state.height) {
         const height = action.height ? action.height : state.height;

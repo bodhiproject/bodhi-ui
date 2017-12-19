@@ -168,7 +168,7 @@ function buildOracleColElement(oracles) {
               <SingleProgressWidget
                 key={result}
                 label={result}
-                percent={_.floor((oracle.amounts[index] / totalBalance) * 100)}
+                percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
                 barHeight={12}
                 status="active"
                 fontColor="#4A4A4A"
@@ -223,7 +223,7 @@ function getFinishedItems(topicEvents) {
               <SingleProgressWidget
                 key={result}
                 label={result}
-                percent={_.floor((topic.botAmount[index] / botTotal) * 100)}
+                percent={botTotal === 0 ? botTotal : _.floor((topic.botAmount[index] / botTotal) * 100)}
                 barHeight={12}
                 status="active"
                 fontColor="#4A4A4A"

@@ -2,17 +2,12 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Alert, Button, Checkbox, Col, Form, Icon, Input, Row, Select } from 'antd';
+import { Alert, Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
 
 import actions from '../../redux/topic/actions';
 
-import { newObjectId } from '../../helpers/utility';
-
 const FormItem = Form.Item;
-
-const { TextArea } = Input;
-const DATE_FORMAT = 'YYYY/MM/DD';
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -29,20 +24,14 @@ class CreateTopic extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
-
     this.props.onClearCreateReturn();
   }
 
   handleSubmit(evt) {
     evt.preventDefault();
 
-    console.log('handleFormSubmit');
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
-
         // Maps form variables to saga request variables
         const {
           resultSetter: resultSetterAddress,
@@ -53,8 +42,6 @@ class CreateTopic extends React.Component {
         } = values;
 
         const senderAddress = this.props.walletAddrs[this.props.walletAddrsIndex].address;
-
-        console.log('resultSetterAddress', resultSetterAddress, 'name', name, 'options', options, 'bettingEndBlock', bettingEndBlock, 'resultSettingEndBlock', resultSettingEndBlock, 'senderAddress', senderAddress.address);
 
         this.props.onCreateTopic({
           resultSetterAddress,
@@ -69,8 +56,6 @@ class CreateTopic extends React.Component {
   }
 
   handleOptionsInputChange(value) {
-    console.log('handleOptionsInputChange', value);
-
     this.props.form.setFieldsValue({
       options: value,
     });
@@ -106,7 +91,6 @@ class CreateTopic extends React.Component {
 
     const optionsEle = _.map(this.state.options, (item) => (<Input />));
 
-
     let alertElement;
 
     if (createReturn) {
@@ -114,7 +98,7 @@ class CreateTopic extends React.Component {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}.`}
+              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}`}
               type="success"
               closable={false}
             />);
@@ -193,7 +177,11 @@ class CreateTopic extends React.Component {
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
             {alertContainer}
-            <Button type="primary" htmlType="submit">Publish</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={createReturn && createReturn.result}
+            >Publish</Button>
           </FormItem>
         </Form>
       </div>

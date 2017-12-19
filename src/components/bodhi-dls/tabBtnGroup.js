@@ -22,7 +22,7 @@ class TabBtnGroup extends Component {
     this.props.tabViewChanged(parseInt(index, 10));
   }
 
-  onSortBtnClicked(event) {
+  onSortBtnClicked() {
 
   }
 
@@ -42,12 +42,12 @@ class TabBtnGroup extends Component {
     return (
       <div className="tabBtnGroup">
         <Row>
-          <Col xs={16}>
+          <Col xs={20}>
             <div className="viewBtnGroup">
               {buttonArray}
             </div>
           </Col>
-          <Col xs={8}>
+          <Col xs={4}>
             <div className="controlBtnGroup">
               <Button
                 type="default"

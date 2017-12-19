@@ -8,8 +8,6 @@ export function* listUnspentRequestHandler() {
     try {
       const result = yield call(request, 'http://localhost:8080/listunspent');
 
-      console.log('listUnspentRequest: result is', result);
-
       yield put({
         type: actions.LIST_UNSPENT_RESULT,
         value: { result },
@@ -23,8 +21,27 @@ export function* listUnspentRequestHandler() {
   });
 }
 
+export function* getBlockCountRequestHandler() {
+  yield takeEvery(actions.GET_BLOCK_COUNT, function* getBlockCountRequest() {
+    try {
+      const result = yield call(request, 'http://localhost:8080/getblockcount');
+
+      yield put({
+        type: actions.GET_BLOCK_COUNT_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_BLOCK_COUNT_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
+    fork(getBlockCountRequestHandler),
   ]);
 }
