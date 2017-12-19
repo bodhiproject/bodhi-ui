@@ -59,6 +59,7 @@ const PageConfig =
       bottomBtnText: 'Finalize',
     }];
 
+let allowancePollingSvc;
 
 class OraclePage extends React.Component {
   /**
@@ -114,6 +115,7 @@ class OraclePage extends React.Component {
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.checkAllowance = this.checkAllowance.bind(this);
     this.bet = this.bet.bind(this);
     this.setResult = this.setResult.bind(this);
     this.vote = this.vote.bind(this);
@@ -183,6 +185,7 @@ class OraclePage extends React.Component {
       console.log('finalizeResultReturn', finalizeResultReturn);
     }
 
+    // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
     // if (allowanceReturn) {
     //   const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
     //   this.onAllowanceReturn(allowance);
@@ -195,6 +198,13 @@ class OraclePage extends React.Component {
     this.props.onClearRequestReturn();
   }
 
+  /*
+  * TODO: use this to handle the callbacks of allowanceReturn from componentWillReceiveProps
+  * this logic checks the allowance amount:
+  * if 0, then just approve.
+  * if equal or greater than needed amount, call setResult/vote.
+  * if less than needed amount, reset allowance to 0 first.
+  */
   onAllowanceReturn(allowance) {
     console.log('allowance', allowance);
 
@@ -214,6 +224,8 @@ class OraclePage extends React.Component {
         }
       }
     } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
+      clearInterval(allowancePollingSvc);
+
       switch (configName) {
         case 'SETTING': {
           this.setResult();
@@ -246,32 +258,83 @@ class OraclePage extends React.Component {
 
   /** The right card Confirm Button event handler * */
   onConfirmBtnClicked(obj) {
+    const { oracle, radioValue } = this.state;
+    const {
+      onBet, onSetResult, onVote, onFinalizeResult, onApprove,
+    } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
-    this.setState({
-      voteAmount: amount,
-    });
 
-    // setResult and vote are handled in onAllowanceReturn
     switch (this.state.config.name) {
-      case 'BETTING': {
-        this.bet(amount);
+      case 'BETTING':
+        onBet(oracle.address, selectedIndex, amount, senderAddress);
         break;
-      }
-      case 'FINALIZING': {
-        this.finalizeResult();
-        break;
-      }
+
       case 'SETTING':
-      case 'VOTING': {
-        const senderAddress = this.getCurrentSenderAddress();
-        this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+        /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+        onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+
+        setTimeout(() => {
+          onSetResult(oracle.address, selectedIndex, senderAddress);
+        }, SUB_REQ_DELAY);
         break;
-      }
-      default: {
+
+      case 'VOTING':
+        /** The amount of voting needs to be approved by Bodhi_token * */
+        onApprove(oracle.topicAddress, amount, senderAddress);
+
+        setTimeout(() => {
+          onVote(oracle.address, selectedIndex, amount, senderAddress);
+        }, SUB_REQ_DELAY);
+        break;
+
+      case 'FINALIZING':
+        // Finalize oracle to enter next stage, withdraw
+        onFinalizeResult(oracle.address, senderAddress);
+        break;
+
+      default:
         // TODO: oracle not found page
         break;
-      }
     }
+  }
+
+  // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
+  // onConfirmBtnClicked(obj) {
+  //   const { amount } = obj;
+  //   this.setState({
+  //     voteAmount: amount,
+  //   });
+
+  //   // setResult and vote are handled in onAllowanceReturn
+  //   switch (this.state.config.name) {
+  //     case 'BETTING': {
+  //       this.bet(amount);
+  //       break;
+  //     }
+  //     case 'FINALIZING': {
+  //       this.finalizeResult();
+  //       break;
+  //     }
+  //     case 'SETTING':
+  //     case 'VOTING': {
+  //       this.checkAllowance();
+  //       break;
+  //     }
+  //     default: {
+  //       // TODO: oracle not found page
+  //       break;
+  //     }
+  //   }
+  // }
+
+  checkAllowance() {
+    console.log('starting allowance polling service');
+    allowancePollingSvc = setInterval(function () {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    }, SUB_REQ_DELAY);
   }
 
   bet(amount) {
