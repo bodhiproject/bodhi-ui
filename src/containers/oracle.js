@@ -180,6 +180,12 @@ class OraclePage extends React.Component {
     this.props.onClearRequestReturn();
   }
 
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -211,12 +217,6 @@ class OraclePage extends React.Component {
         // TODO: oracle not found page
         break;
     }
-  }
-
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
   }
 
   bet(amount) {

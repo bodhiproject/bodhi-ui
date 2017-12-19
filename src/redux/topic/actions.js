@@ -34,6 +34,7 @@ const topicActions = {
       senderAddress,
     },
   }),
+
   CREATE: 'CREATE',
   CREATE_RETURN: 'CREATE_RETURN',
   CLEAR_CREATE_RETURN: 'CLEAR_CREATE_RETURN',
@@ -48,6 +49,17 @@ const topicActions = {
     type: topicActions.CLEAR_CREATE_RETURN,
   }),
 
+  ALLOWANCE: 'ALLOWANCE',
+  ALLOWANCE_RETURN: 'ALLOWANCE_RETURN',
+  onAllowance: (owner, spender, senderAddress) => ({
+    type: topicActions.ALLOWANCE,
+    payload: {
+      owner,
+      spender,
+      senderAddress,
+    },
+  }),
+
   APPROVE: 'APPROVE',
   APPROVE_RETURN: 'APPROVE_RETURN',
   onApprove: (spender, value, senderAddress) => ({
@@ -58,6 +70,7 @@ const topicActions = {
       senderAddress,
     },
   }),
+
   SET_RESULT: 'SET_RESULT',
   SET_RESULT_RETURN: 'SET_RESULT_RETURN',
   onSetResult: (contractAddress, resultIndex, senderAddress) => ({
@@ -68,6 +81,7 @@ const topicActions = {
       senderAddress,
     },
   }),
+
   FINALIZE_RESULT: 'FINALIZE_RESULT',
   FINALIZE_RESULT_RETURN: 'FINALIZE_RESULT_RETURN',
   CLEAR_FINALIZE_RESULT_RETURN: 'CLEAR_FINALIZE_RESULT_RETURN',
@@ -89,4 +103,5 @@ const topicActions = {
     },
   }),
 };
+
 export default topicActions;
