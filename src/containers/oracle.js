@@ -125,7 +125,12 @@ class OraclePage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getOraclesSuccess, finalizeResultReturn, blockCount } = nextProps;
+    const {
+      getOraclesSuccess,
+      finalizeResultReturn,
+      allowanceReturn,
+      blockCount,
+    } = nextProps;
 
     console.log(`blockCount is ${blockCount}`);
 
@@ -171,7 +176,7 @@ class OraclePage extends React.Component {
 
     // Leave here temporarily for debugging purpose
     console.log('finalizeResultReturn', finalizeResultReturn);
-
+    console.log('allowanceReturn', allowanceReturn);
 
     // TODO: For any error case we will render an Oracle not found page
   }
@@ -194,23 +199,26 @@ class OraclePage extends React.Component {
 
   /** The right card Confirm Button event handler * */
   onConfirmBtnClicked(obj) {
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
     const { amount } = obj;
 
     switch (this.state.config.name) {
       case 'BETTING':
-        this.bet(amount);
+        this.bet(oracle, selectedIndex, amount, senderAddress);
         break;
 
       case 'SETTING':
-        this.setResult();
+        this.setResult(oracle, selectedIndex, senderAddress);
         break;
 
       case 'VOTING':
-        this.vote(amount);
+        this.vote(oracle, selectedIndex, amount, senderAddress);
         break;
 
       case 'FINALIZING':
-        this.finalizeResult();
+        this.finalizeResult(oracle, senderAddress);
         break;
 
       default:
@@ -219,24 +227,19 @@ class OraclePage extends React.Component {
     }
   }
 
-  bet(amount) {
-    const { oracle, radioValue } = this.state;
+  bet(oracle, selectedIndex, amount, senderAddress) {
     const { onBet } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
     // contractAddress should be CentralizedOracle
     onBet(oracle.address, selectedIndex, amount, senderAddress);
   }
 
-  setResult() {
-    const { oracle, radioValue } = this.state;
-    const { onApprove, onSetResult } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+  setResult(oracle, selectedIndex, senderAddress) {
+    const { onAllowance, onApprove, onSetResult } = this.props;
 
     // Result setter needs to approve 100 BOT to BodhiToken contract
     // address should be TopicEvent
+    onAllowance(senderAddress, oracle.topicAddress, senderAddress);
     onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
     setTimeout(() => {
@@ -245,14 +248,12 @@ class OraclePage extends React.Component {
     }, SUB_REQ_DELAY);
   }
 
-  vote(amount) {
-    const { oracle, radioValue } = this.state;
-    const { onApprove, onVote } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+  vote(oracle, selectedIndex, amount, senderAddress) {
+    const { onAllowance, onApprove, onVote } = this.props;
 
     // User needs to approve vote amount to BodhiToken contract
     // address should be TopicEvent
+    onAllowance(senderAddress, oracle.topicAddress, senderAddress);
     onApprove(oracle.topicAddress, amount, senderAddress);
 
     setTimeout(() => {
@@ -261,14 +262,25 @@ class OraclePage extends React.Component {
     }, SUB_REQ_DELAY);
   }
 
-  finalizeResult() {
-    const { oracle, radioValue } = this.state;
+  finalizeResult(oracle, senderAddress) {
     const { onFinalizeResult } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
 
     // Finalize oracle to enter next stage, withdraw
     // contractAddress should be DecentralizedOracle
     onFinalizeResult(oracle.address, senderAddress);
+  }
+
+  /*
+  * If the sender to TopicEvent allowance is less than the amount needed, it needs to be reset to 0 first.
+  * There is a race condition issue in the transferFrom() function that requires allowance to be reset to 0,
+  * then approve() again for the correct amount.
+  */
+  resetAllowance() {
+    const { oracle } = this.state;
+    const { onApprove } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    onApprove(oracle.topicAddress, 0, senderAddress);
   }
 
   render() {
@@ -390,6 +402,8 @@ OraclePage.propTypes = {
   onBet: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
+  onAllowance: PropTypes.func,
+  allowanceReturn: PropTypes.object,
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
@@ -409,6 +423,8 @@ OraclePage.defaultProps = {
   onBet: undefined,
   onVote: undefined,
   onApprove: undefined,
+  onAllowance: undefined,
+  allowanceReturn: undefined,
   onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
@@ -426,6 +442,7 @@ const mapStateToProps = (state) => ({
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   finalizeResultReturn: state.Topic.get('finalize_result_return'),
+  allowanceReturn: state.Topic.get('allowance_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
@@ -440,6 +457,7 @@ function mapDispatchToProps(dispatch) {
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
+    onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
