@@ -13,10 +13,12 @@ import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
 import topicActions from '../redux/topic/actions';
 
+const Qweb3Utils = require('../modules/qweb3/src/utils');
+
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
-const ORACLE_BOT_THRESHOLD = 100;
-const SUB_REQ_DELAY = 30 * 1000; // Delay subsequent request by 30 sec
+const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
+const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
 
 const OracleType = {
   CENTRALISED: 'CENTRALISED',
@@ -28,27 +30,34 @@ const PageConfig =
     {
       name: 'BETTING',
       breadcrumbLabel: 'Betting',
+      blockStartLabel: 'Betting starts at block:',
+      blockEndLabel: 'Betting ends at block:',
       showAmountInput: true,
       bottomBtnText: 'Participate',
     },
     {
       name: 'SETTING',
       breadcrumbLabel: 'Setting',
+      blockStartLabel: 'Betting starts at block:',
+      blockEndLabel: 'Betting ends at block:',
       showAmountInput: false,
       bottomBtnText: 'Set Result',
     },
     {
       name: 'VOTING',
       breadcrumbLabel: 'Voting',
+      blockStartLabel: 'Voting starts at block:',
+      blockEndLabel: 'Voting ends at block:',
       showAmountInput: true,
       bottomBtnText: 'Vote',
     }, {
       name: 'FINALIZING',
       breadcrumbLabel: 'Voting', // Finalize state should be transparent to end user
+      blockStartLabel: 'Voting starts at block:',
+      blockEndLabel: 'Voting ends at block:',
       showAmountInput: false,
       bottomBtnText: 'Finalize',
     }];
-
 
 class OraclePage extends React.Component {
   /**
@@ -97,12 +106,19 @@ class OraclePage extends React.Component {
       oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
+      voteAmount: undefined,
+      allowanceIntervalId: undefined,
     };
 
+    this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onFinalizeResult = this.onFinalizeResult.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.checkAllowance = this.checkAllowance.bind(this);
+    this.bet = this.bet.bind(this);
+    this.setResult = this.setResult.bind(this);
+    this.vote = this.vote.bind(this);
+    this.finalizeResult = this.finalizeResult.bind(this);
   }
 
   componentWillMount() {
@@ -114,7 +130,12 @@ class OraclePage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getOraclesSuccess, finalizeResultReturn, blockCount } = nextProps;
+    const {
+      getOraclesSuccess,
+      finalizeResultReturn,
+      allowanceReturn,
+      blockCount,
+    } = nextProps;
 
     console.log(`blockCount is ${blockCount}`);
 
@@ -166,13 +187,76 @@ class OraclePage extends React.Component {
     }
 
     // Leave here temporarily for debugging purpose
-    console.log('finalizeResultReturn', finalizeResultReturn);
+    if (finalizeResultReturn) {
+      console.log('finalizeResultReturn', finalizeResultReturn);
+    }
+
+    // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
+    // if (allowanceReturn) {
+    //   const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
+    //   this.onAllowanceReturn(allowance);
+    // }
 
     // TODO: For any error case we will render an Oracle not found page
   }
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
+  }
+
+  /*
+  * TODO: use this to handle the callbacks of allowanceReturn from componentWillReceiveProps
+  * this logic checks the allowance amount:
+  * if 0, then just approve.
+  * if equal or greater than needed amount, call setResult/vote.
+  * if less than needed amount, reset allowance to 0 first.
+  */
+  onAllowanceReturn(allowance) {
+    console.log('allowance', allowance);
+
+    const configName = this.state.config.name;
+    if (allowance === 0) { // Need to approved for setResult or vote
+      switch (configName) {
+        case 'SETTING': {
+          this.approve(ORACLE_BOT_THRESHOLD);
+          break;
+        }
+        case 'VOTING': {
+          this.approve(this.state.voteAmount);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
+      clearInterval(this.state.allowanceIntervalId);
+      this.setState({
+        allowanceIntervalId: undefined,
+      });
+
+      switch (configName) {
+        case 'SETTING': {
+          this.setResult();
+          break;
+        }
+        case 'VOTING': {
+          this.vote();
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    } else { // The approved amount does not match the amount so reset allowance
+      this.resetAllowance();
+    }
+  }
+
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
   }
 
   onRadioGroupChange(evt) {
@@ -191,62 +275,142 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const { amount } = obj;
 
-    // contractAddress should be the address of this oracle
-    const contractAddress = oracle.topicAddress;
-    console.log(`contractAddress is ${contractAddress}`);
-
     switch (this.state.config.name) {
       case 'BETTING':
-
-        onBet(contractAddress, selectedIndex, amount, senderAddress);
+        onBet(oracle.address, selectedIndex, amount, senderAddress);
         break;
 
       case 'SETTING':
-
         /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
         onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
         setTimeout(() => {
-          console.log('onSetResult');
-          onSetResult(contractAddress, selectedIndex, senderAddress);
+          onSetResult(oracle.address, selectedIndex, senderAddress);
         }, SUB_REQ_DELAY);
         break;
 
       case 'VOTING':
-
         /** The amount of voting needs to be approved by Bodhi_token * */
         onApprove(oracle.address, amount, senderAddress);
 
         setTimeout(() => {
-          console.log('onSetResult');
-          onVote(contractAddress, selectedIndex, amount, senderAddress);
+          onVote(oracle.address, selectedIndex, amount, senderAddress);
         }, SUB_REQ_DELAY);
-
         break;
 
       case 'FINALIZING':
         // Finalize oracle to enter next stage, withdraw
-        onFinalizeResult(contractAddress, senderAddress);
+        onFinalizeResult(oracle.address, senderAddress);
         break;
 
       default:
-
         // TODO: oracle not found page
         break;
     }
   }
 
-  onFinalizeResult() {
-    const contractAddress = '9697b1f2701ca9434132723ee790d1cb0ab0e414';
-    const senderAddress = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+  // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
+  // onConfirmBtnClicked(obj) {
+  //   const { amount } = obj;
+  //   this.setState({
+  //     voteAmount: amount,
+  //   });
 
-    this.props.onFinalizeResult(contractAddress, senderAddress);
+  //   // setResult and vote are handled in onAllowanceReturn
+  //   switch (this.state.config.name) {
+  //     case 'BETTING': {
+  //       this.bet(amount);
+  //       break;
+  //     }
+  //     case 'FINALIZING': {
+  //       this.finalizeResult();
+  //       break;
+  //     }
+  //     case 'SETTING':
+  //     case 'VOTING': {
+  //       this.checkAllowance();
+  //       break;
+  //     }
+  //     default: {
+  //       // TODO: oracle not found page
+  //       break;
+  //     }
+  //   }
+  // }
+
+  checkAllowance() {
+    console.log('starting allowance polling service');
+    const allowancePoll = function () {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    };
+
+    allowancePoll();
+    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
+    this.setState({
+      allowanceIntervalId: intervalId,
+    });
   }
 
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
+  bet(amount) {
+    const { onBet } = this.props;
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
+
+    // contractAddress should be CentralizedOracle
+    onBet(oracle.address, selectedIndex, amount, senderAddress);
+  }
+
+  setResult() {
+    const { onSetResult } = this.props;
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
+
+    // address should be CentralizedOracle
+    onSetResult(oracle.address, selectedIndex, senderAddress);
+  }
+
+  vote(amount) {
+    const { onVote } = this.props;
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
+
+    // address should be DecentralizedOracle
+    onVote(oracle.address, selectedIndex, amount, senderAddress);
+  }
+
+  finalizeResult() {
+    const { onFinalizeResult } = this.props;
+    const { oracle } = this.state;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    // Finalize oracle to enter next stage, withdraw
+    // contractAddress should be DecentralizedOracle
+    onFinalizeResult(oracle.address, senderAddress);
+  }
+
+  approve(amount) {
+    const { onApprove } = this.props;
+    const { oracle } = this.state;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    onApprove(oracle.topicAddress, amount, senderAddress);
+  }
+
+  /*
+  * If the sender to TopicEvent allowance is less than the amount needed, it needs to be reset to 0 first.
+  * There is a race condition issue in the transferFrom() function that requires allowance to be reset to 0,
+  * then approve() again for the correct amount.
+  */
+  resetAllowance() {
+    const { oracle } = this.state;
+    const { onApprove } = this.props;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    onApprove(oracle.topicAddress, 0, senderAddress);
   }
 
   render() {
@@ -259,10 +423,10 @@ class OraclePage extends React.Component {
     }
 
     const timeline = [{
-      label: 'Prediction start block',
+      label: config.blockStartLabel,
       value: oracle.blockNum,
     }, {
-      label: 'Prediction end block',
+      label: config.blockEndLabel,
       value: oracle.endBlock,
     }];
 
@@ -368,6 +532,8 @@ OraclePage.propTypes = {
   onBet: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
+  onAllowance: PropTypes.func,
+  allowanceReturn: PropTypes.object,
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
@@ -387,6 +553,8 @@ OraclePage.defaultProps = {
   onBet: undefined,
   onVote: undefined,
   onApprove: undefined,
+  onAllowance: undefined,
+  allowanceReturn: undefined,
   onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
@@ -404,6 +572,7 @@ const mapStateToProps = (state) => ({
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   finalizeResultReturn: state.Topic.get('finalize_result_return'),
+  allowanceReturn: state.Topic.get('allowance_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
@@ -418,6 +587,7 @@ function mapDispatchToProps(dispatch) {
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
+    onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>

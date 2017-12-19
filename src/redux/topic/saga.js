@@ -71,6 +71,38 @@ export function* approveRequestHandler() {
   });
 }
 
+export function* allowanceRequestHandler() {
+  yield takeEvery(actions.ALLOWANCE, function* onAllowanceRequest(action) {
+    const {
+      owner, spender, senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          owner,
+          spender,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/allowance', options);
+
+      yield put({
+        type: actions.ALLOWANCE_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.ALLOWANCE_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export function* setResultRequestHandler() {
   yield takeEvery(actions.SET_RESULT, function* onSetResultRequest(action) {
     const {
@@ -246,6 +278,7 @@ export default function* topicSaga() {
     fork(betRequestHandler),
     fork(createRequestHandler),
     fork(approveRequestHandler),
+    fork(allowanceRequestHandler),
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),

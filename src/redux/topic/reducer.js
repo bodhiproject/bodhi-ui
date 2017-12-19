@@ -14,42 +14,39 @@ export default function topicReducer(
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
 
-      /* Bet return */
-
+    /* Bet return */
     case actions.BET_RETURN:
       return state.set('req_return', action.value);
 
-      /* Create return */
-
+    /* Create return */
     case actions.CREATE_RETURN:
       return state.set('create_return', action.value);
     case actions.CLEAR_CREATE_RETURN:
       return state.set('create_return', undefined);
 
-      /* Approve return, not captured by view files at this moment */
-
+    /* Approve return, not captured by view files at this moment */
     case actions.APPROVE_RETURN:
       return state.set('approve_return', action.value);
 
-      /* Set result return */
+    /* Allowance return */
+    case actions.ALLOWANCE_RETURN:
+      return state.set('allowance_return', action.value);
 
+    /* Set result return */
     case actions.SET_RESULT_RETURN:
       return state.set('req_return', action.value);
 
-      /* Vote return */
-
+    /* Vote return */
     case actions.VOTE_RETURN:
       return state.set('req_return', action.value);
 
-      /* finalize result return, not captured by view files at this moment */
-
+    /* Finalize result return, not captured by view files at this moment */
     case actions.FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', action.value);
     case actions.CLEAR_FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', undefined);
 
-
-      /* Withdraw result return */
+    /* Withdraw result return */
     case actions.WITHDRAW_RETURN:
       return state.set('req_return', action.value);
 
