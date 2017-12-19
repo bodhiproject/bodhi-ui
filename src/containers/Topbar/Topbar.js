@@ -23,9 +23,8 @@ const KEY_ADD_ADDRESS_BTN = 'add_address';
  * @return {string} string in format "Qjsb ... 3dkb", or empty string "" if input is undefined or empty
  */
 function shortenAddress(text, maxLength) {
-
-  if(!text){
-    return "";
+  if (!text) {
+    return '';
   }
 
   const cutoffLength = (maxLength - 3) / 2;

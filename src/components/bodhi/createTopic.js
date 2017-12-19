@@ -10,6 +10,8 @@ import appActions from '../../redux/app/actions';
 
 const FormItem = Form.Item;
 
+const MAX_OPTION_NUMBER = 10;
+
 class CreateTopic extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +23,6 @@ class CreateTopic extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleOptionsInputChange = this.handleOptionsInputChange.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
@@ -31,6 +32,17 @@ class CreateTopic extends React.Component {
 
   componentWillUnmount() {
     this.props.onClearCreateReturn();
+  }
+
+  /** Return selected address on Topbar as sender; empty string if not found * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+
+    return '';
   }
 
   handleSubmit(evt) {
@@ -49,6 +61,15 @@ class CreateTopic extends React.Component {
 
         const senderAddress = this.getCurrentSenderAddress();
 
+        console.log(
+          resultSetterAddress,
+          name,
+          options,
+          bettingEndBlock,
+          resultSettingEndBlock,
+          senderAddress
+        );
+
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
@@ -61,27 +82,8 @@ class CreateTopic extends React.Component {
     });
   }
 
-  handleOptionsInputChange(value) {
-    this.props.form.setFieldsValue({
-      options: value,
-    });
-  }
-
-  /** Return selected address on Topbar as sender; empty string if not found * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex].address;
-    }
-
-    return '';
-  }
-
   render() {
     const { createReturn, blockCount } = this.props;
-
-    console.log(`blockCount is ${blockCount}`);
 
     const { getFieldDecorator } = this.props.form;
 
@@ -176,7 +178,7 @@ class CreateTopic extends React.Component {
             label="Outcomes"
           >
             {getFieldDecorator('options', {
-              initialValue: ['Yes', 'No', "I don't know"],
+              initialValue: ['', '', ''],
               rules: [{
                 type: 'array',
                 required: true,
@@ -230,129 +232,6 @@ CreateTopic.defaultProps = {
   blockCount: 0,
 };
 
-class OptionsInput extends React.Component {
-  static Constants() {
-    return {
-      MAX_OPTION_NUMBER: 10,
-    };
-  }
-
-  constructor(props) {
-    super(props);
-
-    console.log('this.props.value', this.props.value);
-
-    const value = this.props.value || [];
-
-    this.state = {
-      value,
-    };
-
-    this.onValueChanged = this.onValueChanged.bind(this);
-    // this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
-    // this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
-    // this.triggerChange = this.triggerChange.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps nextProps', nextProps);
-    // Should be a controlled component.
-    if ('value' in nextProps) {
-      const { value } = nextProps;
-      // this.setState({ value });
-    }
-  }
-
-  onValueChanged(evt) {
-    const { value } = evt.target;
-    const { index } = evt.target.dataset;
-
-    console.log(`value change: index is ${index}, value is ${value}`);
-
-    const newValue = this.state.value;
-    newValue[index] = value;
-
-    this.setState({
-      [index]: value,
-    });
-
-    // this.triggerChange(newValue);
-  }
-
-  // onAddBtnClicked(evt) {
-  //   console.log('onAddBtnClicked');
-  //   const numOfOptions = this.state.value.length;
-
-  //   if (numOfOptions < OptionsInput.Constants().MAX_OPTION_NUMBER) {
-  //     const newKey = numOfOptions;
-
-  //     console.log(`onAddBtnClicked(): newKey is ${newKey}`);
-
-  //     const newValue = this.state.value;
-  //     newValue.push('');
-
-  //     this.setState({
-  //       value: newValue,
-  //     });
-
-  //     this.triggerChange(newValue);
-  //   } else {
-  //     console.log(`Max option number ${OptionsInput.Constants().MAX_OPTION_NUMBER} reached!`);
-  //   }
-  // }
-
-  // onDeleteBtnClicked(evt) {
-  //   const { index } = evt.target.dataset;
-
-  //   const indexNumber = _.toNumber(index);
-  //   console.log(`onDeleteBtnClicked: index is ${indexNumber}`);
-
-  //   const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
-
-  //   this.setState({
-  //     value: newValues,
-  //   });
-
-  //   this.triggerChange(newValues);
-  // }
-
-  // triggerChange(changedValue) {
-  //   const { onChange } = this.props;
-
-  //   if (onChange) {
-  //     onChange(changedValue);
-  //   }
-  // }
-
-  render() {
-    console.log('render(): this.state.value', this.state.value);
-
-    return (
-      <div className="options-container">
-        {_.map(this.state.value, (value, index) => (
-          <div key={value} className="options-item" >
-            <Input
-              data-index={index}
-              onChange={this.onValueChanged}
-              placeholder={`# ${index + 1} option`}
-              value={value}
-            />
-            {/* <Button data-index={index}  onClick={this.onDeleteBtnClicked} >Delete</Button> */}
-          </div>))}
-        {/* <Button onClick={this.onAddBtnClicked}>Add</Button> */}
-      </div>
-    );
-  }
-}
-
-OptionsInput.propTypes = {
-  // onChange: PropTypes.func,
-};
-
-OptionsInput.defaultProps = {
-  // onChange: undefined,
-};
-
 const mapStateToProps = (state) => ({
   createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
@@ -369,3 +248,101 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(CreateTopic));
+
+class OptionsInput extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const value = this.props.value || [];
+
+    this.state = {
+      value,
+    };
+
+    this.onValueChanged = this.onValueChanged.bind(this);
+    this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
+    this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
+    this.triggerChange = this.triggerChange.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // Should be a controlled component.
+    if ('value' in nextProps) {
+      const { value } = nextProps;
+
+      this.setState({ value });
+    }
+  }
+
+  onValueChanged(evt) {
+    const { value } = evt.target;
+    const { index } = evt.target.dataset;
+    const { onChange } = this.props;
+
+    const newValue = this.state.value;
+    newValue[index] = value;
+
+    this.triggerChange(newValue);
+  }
+
+  onAddBtnClicked(evt) {
+    console.log('onAddBtnClicked');
+    const numOfOptions = this.state.value.length;
+
+    if (numOfOptions < MAX_OPTION_NUMBER) {
+      const newKey = numOfOptions;
+      const newValue = this.state.value;
+
+      newValue.push('');
+
+      this.triggerChange(newValue);
+    } else {
+      console.log(`Max option number ${MAX_OPTION_NUMBER} reached!`);
+    }
+  }
+
+  onDeleteBtnClicked(evt) {
+    const { index } = evt.target.dataset;
+
+    const indexNumber = _.toNumber(index);
+    console.log(`onDeleteBtnClicked: index is ${indexNumber}`);
+
+    const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
+
+    this.triggerChange(newValues);
+  }
+
+  triggerChange(changedValue) {
+    const { onChange } = this.props;
+
+    if (onChange) {
+      onChange(changedValue);
+    }
+  }
+
+  render() {
+    return (
+      <div className="options-container">
+        {_.map(this.state.value, (value, index) => (
+          <div key={`option${index}`} className="options-item" >
+            <Input
+              data-index={index}
+              onChange={this.onValueChanged}
+              value={value}
+              placeholder={`# ${index + 1} option`}
+            />
+            <Button data-index={index} onClick={this.onDeleteBtnClicked} >Delete</Button>
+          </div>))}
+        <Button onClick={this.onAddBtnClicked}>Add</Button>
+      </div>
+    );
+  }
+}
+
+OptionsInput.propTypes = {
+  onChange: PropTypes.func,
+};
+
+OptionsInput.defaultProps = {
+  onChange: undefined,
+};
