@@ -34,7 +34,7 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddrs', result);
     }
-      
+
     /** Block Count * */
     case actions.GET_BLOCK_COUNT_RETURN:
       return state.set('get_block_count_return', action.value);
