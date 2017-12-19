@@ -40,9 +40,11 @@ class CardVoting extends Component {
     } = this.props;
 
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const showAmountInput = config && config.showAmountInput;
+    const bottomBtnText = config && config.bottomBtnText;
 
     // Build AmountInput elements and determine whether to show based on config
-    const amountInputEle = (config.showAmountInput ? (<div className="input-number-container">
+    const amountInputEle = (showAmountInput ? (<div className="input-number-container">
       <p style={{ marginBottom: '24px' }}>AMOUNT:</p>
       <div className="row-second">
         <InputNumber
@@ -84,7 +86,7 @@ class CardVoting extends Component {
     if (result && result.result) {
       // Disable the button if request went through
       confirmBtnDisabled = true;
-    } else if (config.showAmountInput) {
+    } else if (showAmountInput) {
       // Both amount input and radio box has to be set for disabled to be false
       confirmBtnDisabled = !this.state.voteAmount || !radioIndex;
     } else {
@@ -126,7 +128,7 @@ class CardVoting extends Component {
               onClick={this.onBottomBtnClicked}
               size="large"
             >
-              {config && config.bottomBtnText}
+              {bottomBtnText}
 
             </Button>)
           }
