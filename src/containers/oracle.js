@@ -192,7 +192,7 @@ class OraclePage extends React.Component {
     const { amount } = obj;
 
     // contractAddress should be the address of this oracle
-    const contractAddress = _.trimStart(oracle.topicAddress, '0x');
+    const contractAddress = oracle.topicAddress;
     console.log(`contractAddress is ${contractAddress}`);
 
     switch (this.state.config.name) {
@@ -215,7 +215,7 @@ class OraclePage extends React.Component {
       case 'VOTING':
 
         /** The amount of voting needs to be approved by Bodhi_token * */
-        onApprove(_.trimStart(oracle.address, '0x'), amount, senderAddress);
+        onApprove(oracle.address, amount, senderAddress);
 
         setTimeout(() => {
           console.log('onSetResult');
