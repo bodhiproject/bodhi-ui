@@ -9,9 +9,6 @@ export function getView(width) {
 }
 
 const actions = {
-  COLLPSE_CHANGE: 'COLLPSE_CHANGE',
-  COLLPSE_OPEN_DRAWER: 'COLLPSE_OPEN_DRAWER',
-  CHANGE_OPEN_KEYS: 'CHANGE_OPEN_KEYS',
   TOGGLE_ALL: 'TOGGLE_ALL',
   CHANGE_CURRENT: 'CHANGE_CURRENT',
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
@@ -20,9 +17,6 @@ const actions = {
   LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
   GET_BLOCK_COUNT: 'GET_BLOCK_COUNT',
   GET_BLOCK_COUNT_RETURN: 'GET_BLOCK_COUNT_RETURN',
-  toggleCollapsed: () => ({
-    type: actions.COLLPSE_CHANGE,
-  }),
   toggleAll: (width, height) => {
     const view = getView(width);
     const collapsed = view !== 'DesktopView';
@@ -33,13 +27,6 @@ const actions = {
       height,
     };
   },
-  toggleOpenDrawer: () => ({
-    type: actions.COLLPSE_OPEN_DRAWER,
-  }),
-  changeOpenKeys: (openKeys) => ({
-    type: actions.CHANGE_OPEN_KEYS,
-    openKeys,
-  }),
   changeCurrent: (current) => ({
     type: actions.CHANGE_CURRENT,
     current,
