@@ -179,12 +179,14 @@ class OraclePage extends React.Component {
     }
 
     // Leave here temporarily for debugging purpose
-    console.log('finalizeResultReturn', finalizeResultReturn);
-
-    if (allowanceReturn) {
-      const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
-      this.onAllowanceReturn(allowance);
+    if (finalizeResultReturn) {
+      console.log('finalizeResultReturn', finalizeResultReturn);
     }
+
+    // if (allowanceReturn) {
+    //   const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
+    //   this.onAllowanceReturn(allowance);
+    // }
 
     // TODO: For any error case we will render an Oracle not found page
   }
