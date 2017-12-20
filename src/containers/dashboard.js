@@ -54,11 +54,10 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const topicEvents = this.props.getTopicsSuccess;
-    const allOracles = this.props.getOraclesSuccess;
+    const { tabIndex, getTopicsSuccess: topicEvents, getOraclesSuccess: allOracles } = this.props;
 
     let rowItems;
-    switch (this.props.tabIndex) {
+    switch (tabIndex) {
       case TAB_BETTING: {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;

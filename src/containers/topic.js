@@ -26,26 +26,28 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const { getTopicsSuccess, onGetTopics } = this.props;
+    const { getTopicsSuccess: allTopics, onGetTopics } = this.props;
 
-    // Retrive topic data if state doesn't already have it
-    if (_.isUndefined(getTopicsSuccess)) {
+    const topic = _.find(allTopics, { address: this.state.address });
+
+    if (topic) {
+      // If we are able to find topic by address from allTopics
+      this.setState({ topic });
+    } else if (_.isEmpty(allTopics)) {
+      // Make a request to retrieve all topics
       onGetTopics();
     } else {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
-      this.setState({ topic });
+      // All other cases, display empty page for short load time
+      // In future we can add some loading animation here
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getTopicsSuccess } = nextProps;
+    const { getTopicsSuccess: allTopics } = nextProps;
+    const topic = _.find(allTopics, { address: this.state.address });
 
-    if (!_.isEmpty(getTopicsSuccess)) {
-      const topic = _.find(getTopicsSuccess, { address: this.state.address });
-
+    if (topic) {
       this.setState({ topic });
-    } else {
-      console.log('getOraclesSuccess is empty');
     }
   }
 
