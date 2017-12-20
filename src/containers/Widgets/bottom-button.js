@@ -30,7 +30,7 @@ export default class BottomButtonWidget extends React.PureComponent {
 
     return (
       <div style={style}>
-        <Link to={{ pathname, query }}>{text}</Link>
+        <Link to={{ pathname, query }} style={{ display: 'block' }}>{text}</Link>
       </div>
     );
   }

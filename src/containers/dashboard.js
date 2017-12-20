@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+/* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
 import { Row, Col } from 'antd';
@@ -16,7 +16,7 @@ import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBala
   getResult, finished } from '../helpers/blockchain/contract';
 
 const TAB_BETTING = 0;
-const TAB_WAITING = 1;
+const TAB_SETTING = 1;
 const TAB_VOTING = 2;
 const TAB_COMPLETED = 3;
 const DEFAULT_TAB_INDEX = TAB_BETTING;
@@ -69,7 +69,7 @@ class Dashboard extends React.Component {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;
       }
-      case TAB_WAITING: {
+      case TAB_SETTING: {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'WAITRESULT' }));
         break;
       }
@@ -148,7 +148,34 @@ function buildOracleColElement(oracles) {
         return false;
       });
     } else {
-      displayOptions = oracle.options;
+      displayOptions = _.map(oracle.options, _.clone);
+    }
+
+    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
+    if (!_.isEmpty(displayOptions) && displayOptions.length > NUM_SHOW_IN_OPTIONS) {
+      displayOptions = displayOptions.slice(0, NUM_SHOW_IN_OPTIONS);
+    }
+
+    // Constructing opitons elements
+    let optionsEle = null;
+
+    if (!_.isEmpty(displayOptions)) {
+      optionsEle = displayOptions.map((result, index) => (
+        <SingleProgressWidget
+          key={`option${index}`}
+          label={result}
+          percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
+          barHeight={12}
+          status="active"
+          fontColor="#4A4A4A"
+          info
+        />
+      ));
+    }
+
+    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
+    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
+      optionsEle.push(<div style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
     }
 
     // Constructing Card element on the right
@@ -166,19 +193,9 @@ function buildOracleColElement(oracles) {
             label={oracle.name}
             details={[raisedString, endBlockString]}
           >
-            {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
-              <SingleProgressWidget
-                key={`option${index}`}
-                label={result}
-                percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
-                barHeight={12}
-                status="active"
-                fontColor="#4A4A4A"
-                info
-              />
-            ))}
+            {optionsEle}
           </ReportsWidget>
-          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === 'QTUM' ? 'Participate' : 'Vote'} />
+          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === QTUM ? (oracle.status === 'WAITRESULT' ? 'Set Result' : 'Participate') : 'Vote'} />
         </IsoWidgetsWrapper>
       </Col>
     );
