@@ -194,10 +194,10 @@ class OraclePage extends React.Component {
     }
 
     // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
-    if (allowanceReturn) {
-      const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
-      this.onAllowanceReturn(allowance);
-    }
+    // if (allowanceReturn) {
+    //   const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
+    //   this.onAllowanceReturn(allowance);
+    // }
 
     // TODO: For any error case we will render an Oracle not found page
   }
@@ -277,15 +277,12 @@ class OraclePage extends React.Component {
         break;
 
       case 'SETTING':
+        /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+        onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
 
-        this.checkAllowance();
-
-        // /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
-        // onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
-
-        // setTimeout(() => {
-        //   onSetResult(oracle.address, selectedIndex, senderAddress);
-        // }, SUB_REQ_DELAY);
+        setTimeout(() => {
+          onSetResult(oracle.address, selectedIndex, senderAddress);
+        }, SUB_REQ_DELAY);
         break;
 
       case 'VOTING':
@@ -370,11 +367,9 @@ class OraclePage extends React.Component {
 
   checkAllowance() {
     console.log('starting allowance polling service');
-    const self = this;
-    const { onAllowance } = this.props;
     const allowancePoll = function () {
-      const senderAddress = self.getCurrentSenderAddress();
-      onAllowance(senderAddress, self.state.oracle.address, senderAddress);
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
     };
 
     allowancePoll();
