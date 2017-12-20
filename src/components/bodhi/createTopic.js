@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Alert, Button, Form, Input } from 'antd';
+import { Alert, Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 
 import topicActions from '../../redux/topic/actions';
@@ -10,6 +10,7 @@ import appActions from '../../redux/app/actions';
 
 const FormItem = Form.Item;
 
+const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 
 class CreateTopic extends React.Component {
@@ -277,7 +278,6 @@ class OptionsInput extends React.Component {
   }
 
   onAddBtnClicked(evt) {
-    console.log('onAddBtnClicked');
     const numOfOptions = this.state.value.length;
 
     if (numOfOptions < MAX_OPTION_NUMBER) {
@@ -288,16 +288,20 @@ class OptionsInput extends React.Component {
 
       this.triggerChange(newValue);
     } else {
-      console.log(`Max option number ${MAX_OPTION_NUMBER} reached!`);
+      message.warning(`Cannot add more than ${MAX_OPTION_NUMBER} options.`);
     }
   }
 
   onDeleteBtnClicked(evt) {
     const { index } = evt.target.dataset;
+    const numOfOptions = this.state.value.length;
+
+    if (numOfOptions === MIN_OPTION_NUMBER) {
+      message.warning(`Options count cannot be less than ${MIN_OPTION_NUMBER}.`);
+      return;
+    }
 
     const indexNumber = _.toNumber(index);
-    console.log(`onDeleteBtnClicked: index is ${indexNumber}`);
-
     const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
 
     this.triggerChange(newValues);
