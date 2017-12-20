@@ -148,7 +148,34 @@ function buildOracleColElement(oracles) {
         return false;
       });
     } else {
-      displayOptions = oracle.options;
+      displayOptions = _.map(oracle.options, _.clone);
+    }
+
+    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
+    if (!_.isEmpty(displayOptions) && displayOptions.length > NUM_SHOW_IN_OPTIONS) {
+      displayOptions = displayOptions.slice(0, NUM_SHOW_IN_OPTIONS);
+    }
+
+    // Constructing opitons elements
+    let optionsEle = null;
+
+    if (!_.isEmpty(displayOptions)) {
+      optionsEle = displayOptions.map((result, index) => (
+        <SingleProgressWidget
+          key={`option${index}`}
+          label={result}
+          percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
+          barHeight={12}
+          status="active"
+          fontColor="#4A4A4A"
+          info
+        />
+      ));
+    }
+
+    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
+    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
+      optionsEle.push(<div style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
     }
 
     // Constructing Card element on the right
@@ -166,17 +193,7 @@ function buildOracleColElement(oracles) {
             label={oracle.name}
             details={[raisedString, endBlockString]}
           >
-            {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
-              <SingleProgressWidget
-                key={`option${index}`}
-                label={result}
-                percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
-                barHeight={12}
-                status="active"
-                fontColor="#4A4A4A"
-                info
-              />
-            ))}
+            {optionsEle}
           </ReportsWidget>
           <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === 'QTUM' ? 'Participate' : 'Vote'} />
         </IsoWidgetsWrapper>

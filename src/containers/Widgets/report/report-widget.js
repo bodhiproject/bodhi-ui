@@ -3,6 +3,8 @@ import React, { PropTypes } from 'react';
 const labelStyle = {
   fontSize: '24px',
   padding: '0px',
+  height: '72px', // Fix title to 2 lines of text and use gradient effect to indicate there are more
+  overflow: 'hidden',
 };
 
 export default class ReportsWidget extends React.PureComponent {
@@ -15,8 +17,8 @@ export default class ReportsWidget extends React.PureComponent {
       <p key={entry} className="isoDescription">{entry}</p>);
 
     return (
-      <div>
-        <h3 style={labelStyle} >{label}</h3>
+      <div className="report-widget">
+        <h3 style={labelStyle} className={label.length > 63 ? 'gradient' : ''} >{label}</h3>
 
         <div>
           {children}
@@ -24,7 +26,7 @@ export default class ReportsWidget extends React.PureComponent {
 
         <div
           style={{
-            padding: '24px 0px 24px 0px',
+            padding: '0px 0px 24px 0px',
             fontSize: '16px',
             color: '#4A4A4A',
             fontWeight: 500,

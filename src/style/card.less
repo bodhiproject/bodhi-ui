@@ -16,9 +16,42 @@
       }
     }
 
-    .ant-progress.grey{
-      .ant-progress-bg{
+    .ant-progress.grey {
+      .ant-progress-bg {
         background-color: grey;
+      }
+    }
+  } // Gradient transparent overlay on top of the third options
+  .isoSingleProgressBar {
+    position: relative;
+    &:nth-of-type(3):after {
+      content: " ";
+      z-index: 10;
+      display: block;
+      position: absolute;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      .gradient(transparent);
+    }
+  } // Gradient transparent overlay on top of long titles
+  .report-widget {
+
+    h3.gradient {
+      position: relative;
+      &:after {
+        content: " ";
+        z-index: 10;
+        display: block;
+        position: absolute;
+        height: 50%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .gradient(transparent);
       }
     }
   }
@@ -51,19 +84,13 @@
     border-bottom: 1px solid @boderColor;
 
     .ant-radio-group {
-      width: 100%;
-
-      // Wrapper horizontally aligned (elements on one line)
+      width: 100%; // Wrapper horizontally aligned (elements on one line)
       .ant-radio-wrapper {
         display: flex;
-        margin-bottom: 18px;
-
-        // Make radio button vertically center
-        .ant-radio{
-        	padding: 24px 12px 24px 0px;
-        }
-
-        // Make last span take most horizontal space
+        margin-bottom: 18px; // Make radio button vertically center
+        .ant-radio {
+          padding: 24px 12px 24px 0px;
+        } // Make last span take most horizontal space
         span:last-of-type {
           flex: 1 0 0;
         }
@@ -99,10 +126,10 @@
       }
     }
 
-    .alert-container{
-          text-align: left;
-          padding-top: 24px;
-          padding-bottom: 24px;
+    .alert-container {
+      text-align: left;
+      padding-top: 24px;
+      padding-bottom: 24px;
     }
 
     button {

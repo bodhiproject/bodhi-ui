@@ -13,6 +13,7 @@ export default class SingleProgressWidget extends React.PureComponent {
       color: fontColor,
       fontSize: '16px',
       fontWeight: 300,
+      height: '24px', // Fix option name height so all are the same even without text
     };
 
     return (
