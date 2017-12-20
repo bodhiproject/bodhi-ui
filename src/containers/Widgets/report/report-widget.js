@@ -7,6 +7,8 @@ const labelStyle = {
   overflow: 'hidden',
 };
 
+const TITLE_MAX_LENGTH = 64;
+
 export default class ReportsWidget extends React.PureComponent {
   render() {
     const { label, details, children } = this.props;
@@ -18,7 +20,7 @@ export default class ReportsWidget extends React.PureComponent {
 
     return (
       <div className="report-widget">
-        <h3 style={labelStyle} className={label.length > 63 ? 'gradient' : ''} >{label}</h3>
+        <h3 style={labelStyle} className={label.length > TITLE_MAX_LENGTH ? 'gradient' : ''} >{label}</h3>
 
         <div>
           {children}

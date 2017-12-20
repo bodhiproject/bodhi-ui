@@ -26,7 +26,6 @@ class CardInfo extends Component {
           style={{
             fontSize: '24px',
             lineHeight: `${titleLineHeight}px`,
-            height: `${titleLineHeight * 2}px`,
           }}
         >{title}</h3>
         <div
