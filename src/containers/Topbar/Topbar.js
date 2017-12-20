@@ -176,12 +176,12 @@ class Topbar extends React.PureComponent {
               />
             </Menu.Item>
           ))}
-        <Menu.Item
-          key={KEY_ADD_ADDRESS_BTN}
-          style={{
-            padding: '14px 0px', borderBottom: '1px solid #eee', fontSize: '16px', textAlign: 'center',
-          }}
-        >Add address</Menu.Item>
+        {/* Add Address button at end of dropdown <Menu.Item
+                  key={KEY_ADD_ADDRESS_BTN}
+                  style={{
+                    padding: '14px 0px', borderBottom: '1px solid #eee', fontSize: '16px', textAlign: 'center',
+                  }}
+                >Add address</Menu.Item> */}
       </Menu>
     );
 
