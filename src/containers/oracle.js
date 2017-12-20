@@ -21,6 +21,7 @@ const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
 const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
 const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
+const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 const OracleType = {
   CENTRALISED: 'CENTRALISED',
@@ -134,14 +135,14 @@ class OraclePage extends React.Component {
   }
 
   componentDidMount() {
+    // Repeating allowance checking timer
     const check = function () {
       if (this.state.checkAllowance) {
         this.checkAllowance();
       }
-      this.allowanceTimer = setTimeout(check, 10000);
+      this.allowanceTimer = setTimeout(check, ALLOWANCE_TIMER_INTERVAL);
     }.bind(this);
-
-    this.allowanceTimer = setTimeout(check, 10000);
+    check();
   }
 
   componentWillReceiveProps(nextProps) {
