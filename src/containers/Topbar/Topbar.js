@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
@@ -54,9 +55,11 @@ function DropdownMenuItem({
         <Tag>{qtum.toFixed(3)}</Tag>
       </Col>
       <Col>
-        <Button onClick={onCopyClick}>
-          <Icon type="copy" /> Copy
-        </Button>
+        <CopyToClipboard text={address} onCopy={onCopyClick} >
+          <Button onClick={(evt) => evt.stopPropagation()}>
+            <Icon type="copy" /> Copy
+          </Button>
+        </CopyToClipboard>
       </Col>
     </Row>
   );
@@ -83,6 +86,7 @@ class Topbar extends React.PureComponent {
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
     this.getSelectedAddressObject = this.getSelectedAddressObject.bind(this);
+    this.onCopyClicked = this.onCopyClicked.bind(this);
   }
 
   componentWillMount() {
@@ -102,6 +106,10 @@ class Topbar extends React.PureComponent {
     this.setState({
       addressInput: e.target.value,
     });
+  }
+
+  onCopyClicked(text) {
+    message.info(`Copied address ${text}`);
   }
 
   /** Return selected address object on Topbar as sender; undefined if not found * */
@@ -172,7 +180,7 @@ class Topbar extends React.PureComponent {
               <DropdownMenuItem
                 address={item.address}
                 qtum={item.qtum}
-                onCopyClick={() => {}}
+                onCopyClick={this.onCopyClicked}
               />
             </Menu.Item>
           ))}
@@ -184,6 +192,7 @@ class Topbar extends React.PureComponent {
                 >Add address</Menu.Item> */}
       </Menu>
     );
+
 
     const walletAddrsEle = _.isEmpty(walletAddresses)
       ? (

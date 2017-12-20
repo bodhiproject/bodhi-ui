@@ -74,7 +74,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'BOT', status: 'VOTING' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'BOT' }));
         break;
       }
       case TAB_COMPLETED: {
@@ -174,8 +174,9 @@ function buildOracleColElement(oracles) {
     }
 
     // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
     if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      optionsEle.push(<div style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
+      optionsEle.push(<div key="option-placeholder" style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
     }
 
     // Constructing Card element on the right
