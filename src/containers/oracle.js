@@ -157,15 +157,13 @@ class OraclePage extends React.Component {
       blockCount,
     } = nextProps;
 
-    // console.log(`blockCount is ${blockCount}`);
+    console.log(`blockCount is ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
       let oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
       if (oracle) {
         const { token, status, endBlock } = oracle;
-        console.log('oracle', oracle);
-
         let configName;
 
         /** Determine what config to use in current card * */
@@ -213,8 +211,8 @@ class OraclePage extends React.Component {
           }
         }
 
-        // console.log('oracle', oracle);
-        // console.log(`configName is ${configName}`);
+        console.log('oracle', oracle);
+        console.log(`configName is ${configName}`);
 
         this.setState({
           oracle,
