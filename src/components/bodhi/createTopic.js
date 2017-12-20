@@ -60,15 +60,13 @@ class CreateTopic extends React.Component {
           resultSettingEndBlock,
         } = values;
 
-        const senderAddress = this.getCurrentSenderAddress();
-
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
-          options,
+          options: _.filter(options, (item) => !!item), // Filter out empty strings in options
           bettingEndBlock,
           resultSettingEndBlock,
-          senderAddress,
+          senderAddress: this.getCurrentSenderAddress(),
         });
       }
     });
