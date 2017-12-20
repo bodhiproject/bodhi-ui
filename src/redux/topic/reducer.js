@@ -42,7 +42,7 @@ export default function topicReducer(
 
     /* Finalize result return, not captured by view files at this moment */
     case actions.FINALIZE_RESULT_RETURN:
-      return state.set('finalize_result_return', action.value);
+      return state.set('req_return', action.value);
     case actions.CLEAR_FINALIZE_RESULT_RETURN:
       return state.set('finalize_result_return', undefined);
 

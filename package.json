@@ -12,6 +12,7 @@
     "globalize": "^1.2.3",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.6.0",
+    "halogen": "^0.2.0",
     "history": "^4.6.3",
     "immutable": "^3.8.1",
     "immutable-devtools": "^0.0.7",
