@@ -149,7 +149,6 @@ class OraclePage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesSuccess,
-      finalizeResultReturn,
       allowanceReturn,
       blockCount,
     } = nextProps;
@@ -221,11 +220,6 @@ class OraclePage extends React.Component {
     if (allowanceReturn) {
       const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
       this.onAllowanceReturn(parsedAllowance);
-    }
-
-    if (finalizeResultReturn) {
-      // TODO: handle finalize result return, show message?
-      console.log('finalizeResultReturn', finalizeResultReturn);
     }
 
     // TODO: For any error case we will render an Oracle not found page
@@ -514,7 +508,6 @@ OraclePage.propTypes = {
   onFinalizeResult: PropTypes.func,
   onGetBlockCount: PropTypes.func,
   requestReturn: PropTypes.object,
-  finalizeResultReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   blockCount: PropTypes.number,
@@ -535,7 +528,6 @@ OraclePage.defaultProps = {
   onClearRequestReturn: undefined,
   onGetBlockCount: undefined,
   requestReturn: undefined,
-  finalizeResultReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
@@ -546,7 +538,6 @@ const mapStateToProps = (state) => ({
   // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
-  finalizeResultReturn: state.Topic.get('finalize_result_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
