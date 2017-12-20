@@ -72,9 +72,9 @@ class OraclePage extends React.Component {
    */
   static getOracleType(oracle) {
     switch (oracle.token) {
-      case 'QTUM':
+      case QTUM:
         return OracleType.CENTRALISED;
-      case 'BOT':
+      case BOT:
       default:
         return OracleType.DECENTRALISED;
     }
@@ -116,11 +116,11 @@ class OraclePage extends React.Component {
       approving: false,
     };
 
-    this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
+    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
-    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.checkAllowance = this.checkAllowance.bind(this);
+    this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.bet = this.bet.bind(this);
     this.setResult = this.setResult.bind(this);
     this.vote = this.vote.bind(this);
@@ -136,9 +136,8 @@ class OraclePage extends React.Component {
   }
 
   componentDidMount() {
-    // Repeating allowance checking timer
+    // Start repeating allowance requests timer
     const check = function () {
-      console.log('timer execute');
       if (this.state.checkingAllowance) {
         this.checkAllowance();
       }
@@ -155,7 +154,7 @@ class OraclePage extends React.Component {
       blockCount,
     } = nextProps;
 
-    console.log(`blockCount is ${blockCount}`);
+    console.log(`blockCount: ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
       let oracle = _.find(getOraclesSuccess, { address: this.state.address });
@@ -210,7 +209,7 @@ class OraclePage extends React.Component {
         }
 
         // console.log('oracle', oracle);
-        // console.log(`configName is ${configName}`);
+        // console.log(`configName: ${configName}`);
 
         this.setState({
           oracle,
@@ -219,7 +218,6 @@ class OraclePage extends React.Component {
       }
     }
 
-    // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
     if (allowanceReturn) {
       const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
       this.onAllowanceReturn(parsedAllowance);
@@ -250,75 +248,6 @@ class OraclePage extends React.Component {
     return '';
   }
 
-  checkAllowance() {
-    try {
-      const senderAddress = this.getCurrentSenderAddress();
-      this.props.onAllowance(senderAddress, this.state.oracle.topicAddress, senderAddress);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  /*
-  * TODO: use this to handle the callbacks of allowanceReturn from componentWillReceiveProps
-  * this logic checks the allowance amount:
-  * if 0, then just approve.
-  * if equal or greater than needed amount, call setResult/vote.
-  * if less than needed amount, reset allowance to 0 first.
-  */
-  onAllowanceReturn(allowance) {
-    const { voteAmount } = this.state;
-
-    console.log('allowance', allowance);
-    console.log('voteAmount', voteAmount);
-
-    const configName = this.state.config.name;
-    if (allowance === 0) { // Need to approved for setResult or vote
-      if (this.state.approving) {
-        return;
-      }
-      this.approve(voteAmount);
-    } else if (allowance >= voteAmount) { // Already approved call setResult or vote
-      switch (configName) {
-        case 'SETTING': {
-          this.setResult();
-          break;
-        }
-        case 'VOTING': {
-          this.vote(voteAmount);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-
-      this.setState({
-        checkingAllowance: false,
-        approving: false,
-        voteAmount: undefined,
-      });
-    } else { // The approved amount does not match the amount so reset allowance
-      if (this.state.approving) {
-        return;
-      }
-
-      this.approve(0);
-    }
-  }
-
-  approve(amount) {
-    const { onApprove } = this.props;
-    const { oracle } = this.state;
-    const senderAddress = this.getCurrentSenderAddress();
-
-    onApprove(oracle.topicAddress, amount, senderAddress);
-
-    this.setState({
-      approving: true,
-    });
-  }
-
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -328,7 +257,6 @@ class OraclePage extends React.Component {
   onConfirmBtnClicked(obj) {
     const { amount } = obj;
 
-    // setResult and vote are handled in onAllowanceReturn
     switch (this.state.config.name) {
       case 'BETTING': {
         this.bet(amount);
@@ -359,13 +287,70 @@ class OraclePage extends React.Component {
     }
   }
 
+  checkAllowance() {
+    try {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.topicAddress, senderAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  onAllowanceReturn(allowance) {
+    const { voteAmount } = this.state;
+    const configName = this.state.config.name;
+
+    if (allowance === 0) { // Need to approved for setResult or vote
+      if (this.state.approving) {
+        return;
+      }
+      this.approve(voteAmount);
+    } else if (allowance >= voteAmount) { // Already approved call setResult or vote
+      switch (configName) {
+        case 'SETTING': {
+          this.setResult();
+          break;
+        }
+        case 'VOTING': {
+          this.vote(voteAmount);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+
+      this.setState({
+        checkingAllowance: false,
+        approving: false,
+        voteAmount: undefined,
+      });
+    } else { // The approved amount does not match the amount so reset allowance
+      if (this.state.approving) {
+        return;
+      }
+      this.approve(0);
+    }
+  }
+
+  approve(amount) {
+    const { onApprove } = this.props;
+    const { oracle } = this.state;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    onApprove(oracle.topicAddress, amount, senderAddress);
+
+    this.setState({
+      approving: true,
+    });
+  }
+
   bet(amount) {
     const { onBet } = this.props;
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const senderAddress = this.getCurrentSenderAddress();
 
-    // contractAddress should be CentralizedOracle
     onBet(oracle.address, selectedIndex, amount, senderAddress);
   }
 
@@ -375,7 +360,6 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const senderAddress = this.getCurrentSenderAddress();
 
-    // address should be CentralizedOracle
     onSetResult(oracle.address, selectedIndex, senderAddress);
   }
 
@@ -385,7 +369,6 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
     const senderAddress = this.getCurrentSenderAddress();
 
-    // address should be DecentralizedOracle
     onVote(oracle.address, selectedIndex, amount, senderAddress);
   }
 
@@ -394,8 +377,6 @@ class OraclePage extends React.Component {
     const { oracle } = this.state;
     const senderAddress = this.getCurrentSenderAddress();
 
-    // Finalize oracle to enter next stage, withdraw
-    // contractAddress should be DecentralizedOracle
     onFinalizeResult(oracle.address, senderAddress);
   }
 
