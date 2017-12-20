@@ -215,9 +215,9 @@ class Topbar extends React.PureComponent {
                       <img src="https://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,w_256/v1513745449/logo_wht_1024x1024_wg6m7u.png" style={{ height: '44px', verticalAlign: 'middle' }} alt="bodhi-logo" />
                     </Link>
                   </div>
-                  <div className="isoSearch" style={{ cursor: 'pointer' }}>
-                    <TopbarSearch customizedTheme={customizedTheme} />
-                  </div>
+                  {/* <div className="isoSearch" style={{ cursor: 'pointer' }}>
+                                      <TopbarSearch customizedTheme={customizedTheme} />
+                                    </div> */}
                 </div>
 
                 <ul className="isoRight">
