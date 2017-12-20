@@ -469,6 +469,7 @@ class OraclePage extends React.Component {
               onSubmit={this.onConfirmBtnClicked}
               radioIndex={this.state.radioValue}
               result={requestReturn}
+              approving={this.state.approving}
             >
               {editingToggled ? (this.getRadioButtonViews()) : (this.getProgressBarViews())}
             </CardVoting>

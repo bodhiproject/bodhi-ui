@@ -36,7 +36,7 @@ class CardVoting extends Component {
 
   getConfirmViews() {
     const {
-      amount, config, token, result, radioIndex,
+      amount, config, token, result, radioIndex, approving,
     } = this.props;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.showAmountInput;
@@ -82,7 +82,9 @@ class CardVoting extends Component {
 
     // Determine Confirm button disabled status
     let confirmBtnDisabled = true;
-    if (result && result.result) {
+    if (approving) {
+      confirmBtnDisabled = true;
+    } else if (result && result.result) {
       // Disable the button if request went through
       confirmBtnDisabled = true;
     } else if (showAmountInput) {
@@ -166,6 +168,7 @@ CardVoting.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   result: PropTypes.object,
   radioIndex: PropTypes.number,
+  approving: PropTypes.bool,
 };
 
 CardVoting.defaultProps = {
@@ -176,6 +179,7 @@ CardVoting.defaultProps = {
   onEditingToggled: undefined,
   result: undefined,
   radioIndex: 0,
+  approving: false,
 };
 
 const mapStateToProps = (state) => ({
