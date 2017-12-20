@@ -5,9 +5,12 @@ import React, { PropTypes } from 'react';
 import { Alert, Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
 
-import actions from '../../redux/topic/actions';
+import topicActions from '../../redux/topic/actions';
+import appActions from '../../redux/app/actions';
 
 const FormItem = Form.Item;
+
+const MAX_OPTION_NUMBER = 10;
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -20,11 +23,26 @@ class CreateTopic extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleOptionsInputChange = this.handleOptionsInputChange.bind(this);
+    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.onGetBlockCount();
   }
 
   componentWillUnmount() {
     this.props.onClearCreateReturn();
+  }
+
+  /** Return selected address on Topbar as sender; empty string if not found * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+
+    return '';
   }
 
   handleSubmit(evt) {
@@ -41,7 +59,7 @@ class CreateTopic extends React.Component {
           resultSettingEndBlock,
         } = values;
 
-        const senderAddress = this.props.walletAddrs[this.props.walletAddrsIndex].address;
+        const senderAddress = this.getCurrentSenderAddress();
 
         this.props.onCreateTopic({
           resultSetterAddress,
@@ -55,14 +73,9 @@ class CreateTopic extends React.Component {
     });
   }
 
-  handleOptionsInputChange(value) {
-    this.props.form.setFieldsValue({
-      options: value,
-    });
-  }
-
   render() {
-    const { createReturn } = this.props;
+    const { createReturn, blockCount } = this.props;
+
     const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
@@ -138,7 +151,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder="e.g. 62000" />)}
+            })(<Input placeholder={`Current block number ${blockCount}`} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -148,7 +161,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder="e.g. 65000" />)}
+            })(<Input placeholder={`Current block number ${blockCount}`} />)}
           </FormItem>
 
           <FormItem
@@ -156,7 +169,7 @@ class CreateTopic extends React.Component {
             label="Outcomes"
           >
             {getFieldDecorator('options', {
-              initialValue: ['Yes', 'No', "I don't know"],
+              initialValue: ['', '', ''],
               rules: [{
                 type: 'array',
                 required: true,
@@ -194,29 +207,42 @@ CreateTopic.propTypes = {
   createReturn: PropTypes.object,
   onCreateTopic: PropTypes.func,
   onClearCreateReturn: PropTypes.func,
+  onGetBlockCount: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
+  blockCount: PropTypes.number,
 };
 
 CreateTopic.defaultProps = {
   createReturn: undefined,
   onCreateTopic: undefined,
   onClearCreateReturn: undefined,
+  onGetBlockCount: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
+  blockCount: 0,
 };
 
-class OptionsInput extends React.Component {
-  static Constants() {
-    return {
-      MAX_OPTION_NUMBER: 10,
-    };
-  }
+const mapStateToProps = (state) => ({
+  createReturn: state.Topic.get('create_return'),
+  walletAddrs: state.App.get('walletAddrs'),
+  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+});
 
+function mapDispatchToProps(dispatch) {
+  return {
+    onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
+    onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
+    onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(CreateTopic));
+
+class OptionsInput extends React.Component {
   constructor(props) {
     super(props);
-
-    console.log('this.props.value', this.props.value);
 
     const value = this.props.value || [];
 
@@ -225,121 +251,89 @@ class OptionsInput extends React.Component {
     };
 
     this.onValueChanged = this.onValueChanged.bind(this);
-    // this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
-    // this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
-    // this.triggerChange = this.triggerChange.bind(this);
+    this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
+    this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
+    this.triggerChange = this.triggerChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps nextProps', nextProps);
     // Should be a controlled component.
     if ('value' in nextProps) {
       const { value } = nextProps;
-      // this.setState({ value });
+
+      this.setState({ value });
     }
   }
 
   onValueChanged(evt) {
     const { value } = evt.target;
     const { index } = evt.target.dataset;
-
-    console.log(`value change: index is ${index}, value is ${value}`);
+    const { onChange } = this.props;
 
     const newValue = this.state.value;
     newValue[index] = value;
 
-    this.setState({
-      [index]: value,
-    });
-
-    // this.triggerChange(newValue);
+    this.triggerChange(newValue);
   }
 
-  // onAddBtnClicked(evt) {
-  //   console.log('onAddBtnClicked');
-  //   const numOfOptions = this.state.value.length;
+  onAddBtnClicked(evt) {
+    console.log('onAddBtnClicked');
+    const numOfOptions = this.state.value.length;
 
-  //   if (numOfOptions < OptionsInput.Constants().MAX_OPTION_NUMBER) {
-  //     const newKey = numOfOptions;
+    if (numOfOptions < MAX_OPTION_NUMBER) {
+      const newKey = numOfOptions;
+      const newValue = this.state.value;
 
-  //     console.log(`onAddBtnClicked(): newKey is ${newKey}`);
+      newValue.push('');
 
-  //     const newValue = this.state.value;
-  //     newValue.push('');
+      this.triggerChange(newValue);
+    } else {
+      console.log(`Max option number ${MAX_OPTION_NUMBER} reached!`);
+    }
+  }
 
-  //     this.setState({
-  //       value: newValue,
-  //     });
+  onDeleteBtnClicked(evt) {
+    const { index } = evt.target.dataset;
 
-  //     this.triggerChange(newValue);
-  //   } else {
-  //     console.log(`Max option number ${OptionsInput.Constants().MAX_OPTION_NUMBER} reached!`);
-  //   }
-  // }
+    const indexNumber = _.toNumber(index);
+    console.log(`onDeleteBtnClicked: index is ${indexNumber}`);
 
-  // onDeleteBtnClicked(evt) {
-  //   const { index } = evt.target.dataset;
+    const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
 
-  //   const indexNumber = _.toNumber(index);
-  //   console.log(`onDeleteBtnClicked: index is ${indexNumber}`);
+    this.triggerChange(newValues);
+  }
 
-  //   const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
+  triggerChange(changedValue) {
+    const { onChange } = this.props;
 
-  //   this.setState({
-  //     value: newValues,
-  //   });
-
-  //   this.triggerChange(newValues);
-  // }
-
-  // triggerChange(changedValue) {
-  //   const { onChange } = this.props;
-
-  //   if (onChange) {
-  //     onChange(changedValue);
-  //   }
-  // }
+    if (onChange) {
+      onChange(changedValue);
+    }
+  }
 
   render() {
-    console.log('render(): this.state.value', this.state.value);
-
     return (
       <div className="options-container">
         {_.map(this.state.value, (value, index) => (
-          <div key={value} className="options-item" >
+          <div key={`option${index}`} className="options-item" >
             <Input
               data-index={index}
               onChange={this.onValueChanged}
-              placeholder={`# ${index + 1} option`}
               value={value}
+              placeholder={`# ${index + 1} option`}
             />
-            {/* <Button data-index={index}  onClick={this.onDeleteBtnClicked} >Delete</Button> */}
+            <Button data-index={index} onClick={this.onDeleteBtnClicked} >Delete</Button>
           </div>))}
-        {/* <Button onClick={this.onAddBtnClicked}>Add</Button> */}
+        <Button onClick={this.onAddBtnClicked}>Add</Button>
       </div>
     );
   }
 }
 
 OptionsInput.propTypes = {
-  // onChange: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 OptionsInput.defaultProps = {
-  // onChange: undefined,
+  onChange: undefined,
 };
-
-const mapStateToProps = (state) => ({
-  createReturn: state.Topic.get('create_return'),
-  walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    onCreateTopic: (params) => dispatch(actions.onCreate(params)),
-    onClearCreateReturn: () => dispatch(actions.onClearCreateReturn()),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(CreateTopic));

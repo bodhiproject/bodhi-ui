@@ -20,9 +20,13 @@ const KEY_ADD_ADDRESS_BTN = 'add_address';
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
  * @param  {string} text      Origin address
  * @param  {number} maxLength Length of output string, including 3 dots
- * @return {string}
+ * @return {string} string in format "Qjsb ... 3dkb", or empty string "" if input is undefined or empty
  */
 function shortenAddress(text, maxLength) {
+  if (!text) {
+    return '';
+  }
+
   const cutoffLength = (maxLength - 3) / 2;
   return text.length > maxLength
     ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
@@ -74,10 +78,11 @@ class Topbar extends React.PureComponent {
     };
 
     this.showModal = this.showModal.bind(this);
-    this.handleOk = this.handleOk.bind(this);
+    this.handleAddAccountClicked = this.handleAddAccountClicked.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
+    this.getSelectedAddressObject = this.getSelectedAddressObject.bind(this);
   }
 
   componentWillMount() {
@@ -99,7 +104,18 @@ class Topbar extends React.PureComponent {
     });
   }
 
-  handleOk() {
+  /** Return selected address object on Topbar as sender; undefined if not found * */
+  getSelectedAddressObject() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex];
+    }
+
+    return undefined;
+  }
+
+  handleAddAccountClicked() {
     // Push this.state.addressInput to state.App
     this.props.addWalletAddress(this.state.addressInput);
 
@@ -124,19 +140,34 @@ class Topbar extends React.PureComponent {
   }
 
   render() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    const { collapsed } = this.props;
+    const { collapsed, walletAddrs, walletAddrsIndex } = this.props;
+    let walletAddresses;
 
-    // Limit max length of wallet addresses to not be too long
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length) { // Limit max length of wallet addresses to not be too long
     // walletAddrs is already sorted by amount of qtum in reducers
-    const trimmedWalletAddrs = walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH);
+      const combinedAddresses = [];
+
+      _.each(walletAddrs, (item) => {
+        const foundObj = _.find(combinedAddresses, { address: item.address });
+        if (foundObj) {
+          foundObj.qtum += item.qtum;
+        } else {
+          combinedAddresses.push({
+            address: item.address,
+            qtum: item.qtum,
+          });
+        }
+      });
+
+      walletAddresses = combinedAddresses.slice(0, DROPDOWN_LIST_MAX_LENGTH);
+    }
 
     const menu = (
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(trimmedWalletAddrs, (item, index) => (
+          _.map(walletAddresses, (item, index) => (
             <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
               <DropdownMenuItem
                 address={item.address}
@@ -145,11 +176,16 @@ class Topbar extends React.PureComponent {
               />
             </Menu.Item>
           ))}
-        {/* Add a "Add Address" button in the end <Menu.Item key={KEY_ADD_ADDRESS_BTN}>Add address</Menu.Item> */}
+        {/* Add Address button at end of dropdown <Menu.Item
+                  key={KEY_ADD_ADDRESS_BTN}
+                  style={{
+                    padding: '14px 0px', borderBottom: '1px solid #eee', fontSize: '16px', textAlign: 'center',
+                  }}
+                >Add address</Menu.Item> */}
       </Menu>
     );
 
-    const walletAddrsEle = _.isEmpty(walletAddrs)
+    const walletAddrsEle = _.isEmpty(walletAddresses)
       ? (
         <Link to="#" onClick={this.showModal}>
           <Icon type="plus" />Add address
@@ -157,8 +193,8 @@ class Topbar extends React.PureComponent {
       ) : (
         <Dropdown overlay={menu} placement="bottomRight">
           <a className="ant-dropdown-link" href="#">
-            {shortenAddress(walletAddrs[walletAddrsIndex].address, ADDRESS_TEXT_MAX_LENGTH)}
-            {walletAddrs[walletAddrsIndex].qtum.toFixed(1)}
+            {this.getSelectedAddressObject() ? shortenAddress(this.getSelectedAddressObject().address, ADDRESS_TEXT_MAX_LENGTH) : null}
+            {this.getSelectedAddressObject() && !_.isUndefined(this.getSelectedAddressObject().qtum) ? this.getSelectedAddressObject().qtum.toFixed(1) : null}
             <Icon type="down" />
           </a>
         </Dropdown>
@@ -192,7 +228,7 @@ class Topbar extends React.PureComponent {
           title="Add account"
           okText="Add associated address"
           visible={this.state.visible}
-          onOk={this.handleOk}
+          onOk={this.handleAddAccountClicked}
           onCancel={this.handleCancel}
         >
           <h3>Address</h3>

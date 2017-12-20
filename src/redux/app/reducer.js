@@ -17,8 +17,9 @@ export default function appReducer(state = initState, action) {
   switch (action.type) {
     /** Wallet Addresses * */
     case actions.ADD_WALLET_ADDRESS:
-      state.get('walletAddrs').push(action.value);
-      return state.set('walletAddrs', state.get('walletAddrs'));
+    { const addresses = state.get('walletAddrs');
+      addresses.push({ address: action.value, qtum: 0 });
+      return state.set('walletAddrs', addresses); }
     case actions.SELECT_WALLET_ADDRESS:
       return state.set('walletAddrsIndex', action.value);
     case actions.LIST_UNSPENT_RESULT:

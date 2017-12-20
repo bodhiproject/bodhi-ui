@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+
 import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb, Radio } from 'antd';
 import { connect } from 'react-redux';
@@ -253,12 +255,6 @@ class OraclePage extends React.Component {
     }
   }
 
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -309,6 +305,17 @@ class OraclePage extends React.Component {
     }
   }
 
+  /** Return selected address on Topbar as sender; empty string if not found * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+
+    return '';
+  }
+
   // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
   // onConfirmBtnClicked(obj) {
   //   const { amount } = obj;
@@ -338,18 +345,14 @@ class OraclePage extends React.Component {
   //   }
   // }
 
-  checkAllowance() {
-    console.log('starting allowance polling service');
-    const allowancePoll = function () {
-      const senderAddress = this.getCurrentSenderAddress();
-      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
-    };
+  setResult() {
+    const { onSetResult } = this.props;
+    const { oracle, radioValue } = this.state;
+    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const senderAddress = this.getCurrentSenderAddress();
 
-    allowancePoll();
-    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
-    this.setState({
-      allowanceIntervalId: intervalId,
-    });
+    // address should be CentralizedOracle
+    onSetResult(oracle.address, selectedIndex, senderAddress);
   }
 
   bet(amount) {
@@ -362,14 +365,18 @@ class OraclePage extends React.Component {
     onBet(oracle.address, selectedIndex, amount, senderAddress);
   }
 
-  setResult() {
-    const { onSetResult } = this.props;
-    const { oracle, radioValue } = this.state;
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
-    const senderAddress = this.getCurrentSenderAddress();
+  checkAllowance() {
+    console.log('starting allowance polling service');
+    const allowancePoll = function () {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    };
 
-    // address should be CentralizedOracle
-    onSetResult(oracle.address, selectedIndex, senderAddress);
+    allowancePoll();
+    const intervalId = setInterval(allowancePoll(), SUB_REQ_DELAY);
+    this.setState({
+      allowanceIntervalId: intervalId,
+    });
   }
 
   vote(amount) {
@@ -473,7 +480,7 @@ class OraclePage extends React.Component {
                     defaultValue={DEFAULT_RADIO_VALUE}
                   >
                     {betBalance.map((entry, index) => (
-                      <Radio value={index + 1} key={entry.name}>
+                      <Radio value={index + 1} key={`option ${index}`}>
                         <ProgressBar
                           label={entry.name}
                           value={entry.value}
@@ -486,9 +493,9 @@ class OraclePage extends React.Component {
                   </RadioGroup>
                 )
                 :
-                betBalance.map((entry) => (
+                betBalance.map((entry, index) => (
                   <ProgressBar
-                    key={entry.name}
+                    key={`option ${index}`}
                     label={entry.name}
                     value={entry.value}
                     percent={entry.percent}
