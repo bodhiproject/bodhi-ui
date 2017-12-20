@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import topicActions from '../../redux/topic/actions';
 
+const Loader = require('halogen/SyncLoader');
+
 class CardVoting extends Component {
   constructor(props) {
     super(props);
@@ -98,6 +100,8 @@ class CardVoting extends Component {
       confirmBtnDisabled = !radioIndex;
     }
 
+    const loaderView = checkingAllowance ? <Loader color="#5859FA" size="10px" margin="6px" /> : null;
+
     // Construct entire view
     const confirmViews = (
       <div>
@@ -112,6 +116,7 @@ class CardVoting extends Component {
         >
           {buttonText}
         </Button>
+        {loaderView}
       </div>
     );
 
