@@ -42,7 +42,6 @@ class Dashboard extends React.Component {
     super(props);
 
     this.state = {
-      currentTab: TAB_BETTING,
     };
   }
 
@@ -52,11 +51,6 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.tabIndex !== nextProps.tabIndex) {
-      this.setState({
-        currentTab: nextProps.tabIndex,
-      });
-    }
   }
 
   render() {
@@ -64,7 +58,7 @@ class Dashboard extends React.Component {
     const allOracles = this.props.getOraclesSuccess;
 
     let rowItems;
-    switch (this.state.currentTab) {
+    switch (this.props.tabIndex) {
       case TAB_BETTING: {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;
@@ -196,7 +190,10 @@ function buildOracleColElement(oracles) {
           >
             {optionsEle}
           </ReportsWidget>
-          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === QTUM ? (oracle.status === 'WAITRESULT' ? 'Set Result' : 'Participate') : 'Vote'} />
+          <BottomButtonWidget
+            pathname={`/oracle/${oracle.address}`}
+            text={oracle.token === QTUM ? (oracle.status === 'WAITRESULT' ? 'Set Result' : 'Participate') : 'Vote'}
+          />
         </IsoWidgetsWrapper>
       </Col>
     );
