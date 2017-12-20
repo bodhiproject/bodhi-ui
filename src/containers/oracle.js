@@ -112,7 +112,8 @@ class OraclePage extends React.Component {
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
-      checkAllowance: false,
+      checkingAllowance: false,
+      approving: false,
     };
 
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
@@ -137,7 +138,8 @@ class OraclePage extends React.Component {
   componentDidMount() {
     // Repeating allowance checking timer
     const check = function () {
-      if (this.state.checkAllowance) {
+      console.log('timer execute');
+      if (this.state.checkingAllowance) {
         this.checkAllowance();
       }
       this.allowanceTimer = setTimeout(check, ALLOWANCE_TIMER_INTERVAL);
@@ -220,6 +222,21 @@ class OraclePage extends React.Component {
     this.props.onClearRequestReturn();
   }
 
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
+  checkAllowance() {
+    try {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   /*
   * TODO: use this to handle the callbacks of allowanceReturn from componentWillReceiveProps
   * this logic checks the allowance amount:
@@ -232,6 +249,10 @@ class OraclePage extends React.Component {
 
     const configName = this.state.config.name;
     if (allowance === 0) { // Need to approved for setResult or vote
+      if (this.state.approving) {
+        return;
+      }
+
       switch (configName) {
         case 'SETTING': {
           this.approve(ORACLE_BOT_THRESHOLD);
@@ -247,7 +268,9 @@ class OraclePage extends React.Component {
       }
     } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
       this.setState({
-        checkAllowance: false,
+        checkingAllowance: false,
+        approving: false,
+        neededAllowance: undefined,
       });
 
       switch (configName) {
@@ -264,10 +287,27 @@ class OraclePage extends React.Component {
         }
       }
     } else { // The approved amount does not match the amount so reset allowance
-      this.resetAllowance();
+      if (this.state.approving) {
+        return;
+      }
+
+      this.approve(0);
     }
   }
 
+  approve(amount) {
+    const { onApprove } = this.props;
+    const { oracle } = this.state;
+    const senderAddress = this.getCurrentSenderAddress();
+
+    onApprove(oracle.topicAddress, amount, senderAddress);
+
+    this.setState({
+      approving: true,
+      neededAllowance: amount,
+    });
+  }
+ 
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -403,7 +443,7 @@ class OraclePage extends React.Component {
       case 'SETTING':
       case 'VOTING': {
         this.setState({
-          checkAllowance: true,
+          checkingAllowance: true,
         });
         break;
       }
@@ -411,15 +451,6 @@ class OraclePage extends React.Component {
         // TODO: oracle not found page
         break;
       }
-    }
-  }
-
-  checkAllowance() {
-    try {
-      const senderAddress = this.getCurrentSenderAddress();
-      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
-    } catch (err) {
-      console.log(err.message);
     }
   }
 
@@ -465,27 +496,6 @@ class OraclePage extends React.Component {
     // Finalize oracle to enter next stage, withdraw
     // contractAddress should be DecentralizedOracle
     onFinalizeResult(oracle.address, senderAddress);
-  }
-
-  approve(amount) {
-    const { onApprove } = this.props;
-    const { oracle } = this.state;
-    const senderAddress = this.getCurrentSenderAddress();
-
-    onApprove(oracle.topicAddress, amount, senderAddress);
-  }
-
-  /*
-  * If the sender to TopicEvent allowance is less than the amount needed, it needs to be reset to 0 first.
-  * There is a race condition issue in the transferFrom() function that requires allowance to be reset to 0,
-  * then approve() again for the correct amount.
-  */
-  resetAllowance() {
-    const { oracle } = this.state;
-    const { onApprove } = this.props;
-    const senderAddress = this.getCurrentSenderAddress();
-
-    onApprove(oracle.topicAddress, 0, senderAddress);
   }
 
   render() {
