@@ -34,37 +34,38 @@ class CardVoting extends Component {
     });
   }
 
-  render() {
+  getConfirmViews() {
     const {
-      amount, config, token, children, editingToggled, result, radioIndex,
+      amount, config, token, result, radioIndex,
     } = this.props;
-
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.showAmountInput;
-    const bottomBtnText = config && config.bottomBtnText;
 
-    // Build AmountInput elements and determine whether to show based on config
-    const amountInputEle = (showAmountInput ? (<div className="input-number-container">
-      <p style={{ marginBottom: '24px' }}>AMOUNT:</p>
-      <div className="row-second">
-        <InputNumber
-          size="large"
-          defaultValue={0}
-          onChange={this.onInputNumberChange}
-        />
-        <span>{token}</span>
-      </div>
-    </div>) : null);
+    // Construct amount input
+    const amountInputEle = (showAmountInput ? (
+      <div className="input-number-container">
+        <p style={{ marginBottom: '24px' }}>AMOUNT:</p>
+        <div className="row-second">
+          <InputNumber
+            size="large"
+            defaultValue={0}
+            onChange={this.onInputNumberChange}
+          />
+          <span>{token}</span>
+        </div>
+      </div>)
+      :
+      null);
 
-    // Build Alert elements based on result
+    // Construct alert
     let alertElement;
-
     if (result) {
       if (result.result) {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}`}
+              description={`The transaction is broadcasted to blockchain. 
+                You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}`}
               type="success"
               closable={false}
             />);
@@ -77,12 +78,10 @@ class CardVoting extends Component {
         />);
       }
     }
-
     const alertContainerEle = <div className="alert-container">{alertElement}</div>;
 
     // Determine Confirm button disabled status
     let confirmBtnDisabled = true;
-
     if (result && result.result) {
       // Disable the button if request went through
       confirmBtnDisabled = true;
@@ -93,6 +92,47 @@ class CardVoting extends Component {
       // If radio box is set, set disabled to false
       confirmBtnDisabled = !radioIndex;
     }
+
+    // Construct entire view
+    const confirmViews = (
+      <div>
+        {amountInputEle}
+        {alertContainerEle}
+
+        <Button
+          type="primary"
+          onClick={this.onConfirmBtnClicked}
+          size="large"
+          disabled={confirmBtnDisabled}
+        >
+          Confirm
+        </Button>
+      </div>
+    );
+
+    return confirmViews;
+  }
+
+  getBottomButtonViews() {
+    const { config } = this.props;
+    const bottomBtnText = config && config.bottomBtnText;
+    const bottomButtonViews = (
+      <Button
+        type="primary"
+        onClick={this.onBottomBtnClicked}
+        size="large"
+      >
+        {bottomBtnText}
+      </Button>
+    );
+    return bottomButtonViews;
+  }
+
+  render() {
+    const {
+      amount, token, children, editingToggled,
+    } = this.props;
+    const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     return (
       <div className="cardVoting">
@@ -106,33 +146,7 @@ class CardVoting extends Component {
           {children}
         </div>
         <div className="action">
-          {editingToggled ?
-            (
-              <div>
-                {amountInputEle}
-                {alertContainerEle}
-
-                <Button
-                  type="primary"
-                  onClick={this.onConfirmBtnClicked}
-                  size="large"
-                  disabled={confirmBtnDisabled}
-                >
-                  Confirm
-                </Button>
-              </div>
-            )
-            :
-            (<Button
-              type="primary"
-              onClick={this.onBottomBtnClicked}
-              size="large"
-            >
-              {bottomBtnText}
-
-            </Button>)
-          }
-
+          {editingToggled ? (this.getConfirmViews()) : (this.getBottomButtonViews())}
         </div>
       </div>
     );
