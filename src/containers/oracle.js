@@ -18,6 +18,8 @@ import topicActions from '../redux/topic/actions';
 const Qweb3Utils = require('../modules/qweb3/src/utils');
 
 const RadioGroup = Radio.Group;
+const QTUM = 'QTUM';
+const BOT = 'BOT';
 const DEFAULT_RADIO_VALUE = 0;
 const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
 const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
@@ -162,36 +164,53 @@ class OraclePage extends React.Component {
 
       if (oracle) {
         const { token, status, endBlock } = oracle;
-        // console.log('oracle', oracle);
+        console.log('oracle', oracle);
 
         let configName;
 
         /** Determine what config to use in current card * */
         switch (status) {
-          case 'VOTING':
-
-            if (token === 'BOT') {
-              // Finalize oracle if current block has passed arbitrationEndBlock and threshold is not met
-              // Since new oracle is guarranteed to spawn if total amount threshold is met we are not checking total BOT amount here
-              if (blockCount > oracle.endBlock) {
-                console.log(`!! blockCount ${blockCount} is greater than endBlock ${endBlock}.`);
-                configName = 'FINALIZING';
-              } else {
-                configName = 'VOTING';
+          case 'VOTING': {
+            switch (token) {
+              case QTUM: {
+                configName = 'BETTING';
+                break;
               }
-              break;
+              case BOT: {
+                configName = 'VOTING';
+                break;
+              }
+              default: {
+                console.warn('Invalid oracle type');
+                oracle = undefined;
+                break;
+              }
             }
-
-            configName = 'BETTING';
             break;
-
-          case 'WAITRESULT':
-            configName = 'SETTING';
+          }
+          case 'WAITRESULT': {
+            switch (token) {
+              case QTUM: {
+                configName = 'SETTING';
+                break;
+              }
+              case BOT: {
+                configName = 'FINALIZING';
+                break;
+              }
+              default: {
+                console.warn('Invalid oracle type');
+                oracle = undefined;
+                break;
+              }
+            }
             break;
-          default:
-            console.warn('Oracle exists but cant determine status. ');
+          }
+          default: {
+            console.warn('Oracle exists but cant determine status.');
             oracle = undefined;
             break;
+          }
         }
 
         // console.log('oracle', oracle);
