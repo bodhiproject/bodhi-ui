@@ -61,15 +61,6 @@ class CreateTopic extends React.Component {
 
         const senderAddress = this.getCurrentSenderAddress();
 
-        console.log(
-          resultSetterAddress,
-          name,
-          options,
-          bettingEndBlock,
-          resultSettingEndBlock,
-          senderAddress
-        );
-
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
