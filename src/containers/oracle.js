@@ -61,6 +61,8 @@ const PageConfig =
       bottomBtnText: 'Finalize',
     }];
 
+let allowanceTimer;
+
 class OraclePage extends React.Component {
   /**
    * Determine OracleType; default DECENTRALISED
@@ -109,7 +111,7 @@ class OraclePage extends React.Component {
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
-      allowanceIntervalId: undefined,
+      checkAllowance: false,
     };
 
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
@@ -131,6 +133,17 @@ class OraclePage extends React.Component {
     this.props.onGetBlockCount();
   }
 
+  componentDidMount() {
+    const check = function () {
+      if (this.state.checkAllowance) {
+        this.checkAllowance();
+      }
+      this.allowanceTimer = setTimeout(check, 10000);
+    }.bind(this);
+
+    this.allowanceTimer = setTimeout(check, 10000);
+  }
+
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesSuccess,
@@ -139,14 +152,14 @@ class OraclePage extends React.Component {
       blockCount,
     } = nextProps;
 
-    console.log(`blockCount is ${blockCount}`);
+    // console.log(`blockCount is ${blockCount}`);
 
     if (!_.isEmpty(getOraclesSuccess)) {
       let oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
       if (oracle) {
         const { token, status, endBlock } = oracle;
-        console.log('oracle', oracle);
+        // console.log('oracle', oracle);
 
         let configName;
 
@@ -178,8 +191,8 @@ class OraclePage extends React.Component {
             break;
         }
 
-        console.log('oracle', oracle);
-        console.log(`configName is ${configName}`);
+        // console.log('oracle', oracle);
+        // console.log(`configName is ${configName}`);
 
         this.setState({
           oracle,
@@ -194,10 +207,10 @@ class OraclePage extends React.Component {
     }
 
     // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
-    // if (allowanceReturn) {
-    //   const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
-    //   this.onAllowanceReturn(allowance);
-    // }
+    if (allowanceReturn) {
+      const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
+      this.onAllowanceReturn(allowance);
+    }
 
     // TODO: For any error case we will render an Oracle not found page
   }
@@ -232,9 +245,8 @@ class OraclePage extends React.Component {
         }
       }
     } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
-      clearInterval(this.state.allowanceIntervalId);
       this.setState({
-        allowanceIntervalId: undefined,
+        checkAllowance: false,
       });
 
       switch (configName) {
@@ -318,30 +330,45 @@ class OraclePage extends React.Component {
 
   // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
   // onConfirmBtnClicked(obj) {
+  //   const { oracle, radioValue } = this.state;
+  //   const {
+  //     onBet, onSetResult, onVote, onFinalizeResult, onApprove,
+  //   } = this.props;
+  //   const senderAddress = this.getCurrentSenderAddress();
+  //   const selectedIndex = oracle.optionIdxs[radioValue - 1];
   //   const { amount } = obj;
-  //   this.setState({
-  //     voteAmount: amount,
-  //   });
 
-  //   // setResult and vote are handled in onAllowanceReturn
   //   switch (this.state.config.name) {
-  //     case 'BETTING': {
-  //       this.bet(amount);
+  //     case 'BETTING':
+  //       onBet(oracle.address, selectedIndex, amount, senderAddress);
   //       break;
-  //     }
-  //     case 'FINALIZING': {
-  //       this.finalizeResult();
-  //       break;
-  //     }
+
   //     case 'SETTING':
-  //     case 'VOTING': {
-  //       this.checkAllowance();
+  //       /** Result setter needs to have 100 BOT and get approved by Bodhi_token contract to use them* */
+  //       onApprove(oracle.topicAddress, ORACLE_BOT_THRESHOLD, senderAddress);
+
+  //       setTimeout(() => {
+  //         onSetResult(oracle.address, selectedIndex, senderAddress);
+  //       }, SUB_REQ_DELAY);
   //       break;
-  //     }
-  //     default: {
+
+  //     case 'VOTING':
+  //       /** The amount of voting needs to be approved by Bodhi_token * */
+  //       onApprove(oracle.address, amount, senderAddress);
+
+  //       setTimeout(() => {
+  //         onVote(oracle.address, selectedIndex, amount, senderAddress);
+  //       }, SUB_REQ_DELAY);
+  //       break;
+
+  //     case 'FINALIZING':
+  //       // Finalize oracle to enter next stage, withdraw
+  //       onFinalizeResult(oracle.address, senderAddress);
+  //       break;
+
+  //     default:
   //       // TODO: oracle not found page
   //       break;
-  //     }
   //   }
   // }
 
@@ -353,6 +380,46 @@ class OraclePage extends React.Component {
 
     // address should be CentralizedOracle
     onSetResult(oracle.address, selectedIndex, senderAddress);
+  }
+  
+  // TODO: this logic is the start of checking the allowance to execute the proper methods after they are approved.
+  onConfirmBtnClicked(obj) {
+    const { amount } = obj;
+    this.setState({
+      voteAmount: amount,
+    });
+
+    // setResult and vote are handled in onAllowanceReturn
+    switch (this.state.config.name) {
+      case 'BETTING': {
+        this.bet(amount);
+        break;
+      }
+      case 'FINALIZING': {
+        this.finalizeResult();
+        break;
+      }
+      case 'SETTING':
+      case 'VOTING': {
+        this.setState({
+          checkAllowance: true,
+        });
+        break;
+      }
+      default: {
+        // TODO: oracle not found page
+        break;
+      }
+    }
+  }
+
+  checkAllowance() {
+    try {
+      const senderAddress = this.getCurrentSenderAddress();
+      this.props.onAllowance(senderAddress, this.state.oracle.address, senderAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   bet(amount) {
