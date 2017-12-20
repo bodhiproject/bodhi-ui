@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+/* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
 import { Row, Col } from 'antd';
@@ -16,7 +16,7 @@ import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBala
   getResult, finished } from '../helpers/blockchain/contract';
 
 const TAB_BETTING = 0;
-const TAB_WAITING = 1;
+const TAB_SETTING = 1;
 const TAB_VOTING = 2;
 const TAB_COMPLETED = 3;
 const DEFAULT_TAB_INDEX = TAB_BETTING;
@@ -69,7 +69,7 @@ class Dashboard extends React.Component {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;
       }
-      case TAB_WAITING: {
+      case TAB_SETTING: {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'WAITRESULT' }));
         break;
       }
@@ -195,7 +195,7 @@ function buildOracleColElement(oracles) {
           >
             {optionsEle}
           </ReportsWidget>
-          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === 'QTUM' ? 'Participate' : 'Vote'} />
+          <BottomButtonWidget pathname={`/oracle/${oracle.address}`} text={oracle.token === QTUM ? (oracle.status === 'WAITRESULT' ? 'Set Result' : 'Participate') : 'Vote'} />
         </IsoWidgetsWrapper>
       </Col>
     );
