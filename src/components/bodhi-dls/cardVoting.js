@@ -36,7 +36,7 @@ class CardVoting extends Component {
 
   getConfirmViews() {
     const {
-      amount, config, token, result, radioIndex, approving,
+      amount, config, token, result, radioIndex, checkingAllowance,
     } = this.props;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.showAmountInput;
@@ -81,12 +81,15 @@ class CardVoting extends Component {
     const alertContainerEle = <div className="alert-container">{alertElement}</div>;
 
     // Determine Confirm button disabled status
+    let buttonText = 'Confirm';
     let confirmBtnDisabled = true;
-    if (approving) {
+    if (checkingAllowance) {
       confirmBtnDisabled = true;
+      buttonText = 'Approving BOT transfer... please wait';
     } else if (result && result.result) {
       // Disable the button if request went through
       confirmBtnDisabled = true;
+      buttonText = 'Transaction posted';
     } else if (showAmountInput) {
       // Both amount input and radio box has to be set for disabled to be false
       confirmBtnDisabled = !this.state.voteAmount || !radioIndex;
@@ -107,7 +110,7 @@ class CardVoting extends Component {
           size="large"
           disabled={confirmBtnDisabled}
         >
-          Confirm
+          {buttonText}
         </Button>
       </div>
     );
@@ -168,7 +171,7 @@ CardVoting.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   result: PropTypes.object,
   radioIndex: PropTypes.number,
-  approving: PropTypes.bool,
+  checkingAllowance: PropTypes.bool,
 };
 
 CardVoting.defaultProps = {
@@ -179,7 +182,7 @@ CardVoting.defaultProps = {
   onEditingToggled: undefined,
   result: undefined,
   radioIndex: 0,
-  approving: false,
+  checkingAllowance: false,
 };
 
 const mapStateToProps = (state) => ({
