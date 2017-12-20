@@ -53,6 +53,7 @@ class TopicPage extends React.Component {
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
+    this.props.clearEditingToggled();
   }
 
   /** Withdraw button on click handler passed down to CardFinished */
@@ -62,7 +63,6 @@ class TopicPage extends React.Component {
 
     this.props.onWithdraw(contractAddress, senderAddress);
   }
-
 
   /** Return selected address on Topbar as sender * */
   getCurrentSenderAddress() {
@@ -173,6 +173,7 @@ TopicPage.propTypes = {
   walletAddrsIndex: PropTypes.number,
   onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
+  clearEditingToggled: PropTypes.func,
 };
 
 TopicPage.defaultProps = {
@@ -182,6 +183,7 @@ TopicPage.defaultProps = {
   walletAddrs: [],
   walletAddrsIndex: 0,
   onClearRequestReturn: undefined,
+  clearEditingToggled: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -196,6 +198,7 @@ function mapDispatchToProps(dispatch) {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
     onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
+    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };
 }
 

@@ -14,6 +14,10 @@ export default function topicReducer(
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
 
+    /* Clear editing toggled on oracle.js and topic.js */
+    case actions.CLEAR_EDITING_TOGGLED:
+      return state.set('toggled', false);
+
     /* Bet return */
     case actions.BET_RETURN:
       return state.set('req_return', action.value);

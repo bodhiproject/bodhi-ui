@@ -227,6 +227,8 @@ class OraclePage extends React.Component {
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
+    this.props.clearEditingToggled();
+
     clearTimeout(this.allowanceTimer);
   }
 
@@ -507,6 +509,7 @@ OraclePage.propTypes = {
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
   onGetBlockCount: PropTypes.func,
+  clearEditingToggled: PropTypes.func,
   requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -528,6 +531,8 @@ OraclePage.defaultProps = {
   onClearRequestReturn: undefined,
   onGetBlockCount: undefined,
   requestReturn: undefined,
+  clearEditingToggled: undefined,
+
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
@@ -559,6 +564,7 @@ function mapDispatchToProps(dispatch) {
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };
 }
 
