@@ -208,8 +208,8 @@ class OraclePage extends React.Component {
           }
         }
 
-        // console.log('oracle', oracle);
-        // console.log(`configName: ${configName}`);
+        console.log('oracle', oracle);
+        console.log(`configName: ${configName}`);
 
         this.setState({
           oracle,
@@ -224,6 +224,7 @@ class OraclePage extends React.Component {
     }
 
     if (finalizeResultReturn) {
+      // TODO: handle finalize result return, show message?
       console.log('finalizeResultReturn', finalizeResultReturn);
     }
 
@@ -380,6 +381,49 @@ class OraclePage extends React.Component {
     onFinalizeResult(oracle.address, senderAddress);
   }
 
+  getRadioButtonViews() {
+    const { oracle } = this.state;
+    const betBalance = OraclePage.getBetOrVoteArray(oracle);
+
+    return (
+      <RadioGroup
+        onChange={this.onRadioGroupChange}
+        value={this.state.radioValue}
+        size="large"
+        defaultValue={DEFAULT_RADIO_VALUE}
+      >
+        {betBalance.map((entry, index) => (
+          <Radio value={index + 1} key={`option ${index}`}>
+            <ProgressBar
+              label={entry.name}
+              value={entry.value}
+              percent={entry.percent}
+              barHeight={12}
+              info
+            />
+          </Radio>))
+        }
+      </RadioGroup>
+    );
+  }
+
+  getProgressBarViews() {
+    const { oracle } = this.state;
+    const betBalance = OraclePage.getBetOrVoteArray(oracle);
+
+    return betBalance.map((entry, index) => (
+      <ProgressBar
+        key={`option ${index}`}
+        label={entry.name}
+        value={entry.value}
+        percent={entry.percent}
+        barHeight={12}
+        info
+        marginBottom={18}
+      />
+    ));
+  }
+
   render() {
     const { editingToggled, requestReturn } = this.props;
     const { oracle, config } = this.state;
@@ -404,11 +448,7 @@ class OraclePage extends React.Component {
     const breadcrumbLabel = config && config.breadcrumbLabel;
 
     const oracleElement = (
-      <Row
-        gutter={28}
-        justify="center"
-      >
-
+      <Row gutter={28} justify="center">
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px" >
             <CardInfo
@@ -417,8 +457,8 @@ class OraclePage extends React.Component {
             >
             </CardInfo>
           </IsoWidgetsWrapper>
-
         </Col>
+
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
             <CardVoting
@@ -430,45 +470,12 @@ class OraclePage extends React.Component {
               radioIndex={this.state.radioValue}
               result={requestReturn}
             >
-              {editingToggled
-                ?
-                (
-                  <RadioGroup
-                    onChange={this.onRadioGroupChange}
-                    value={this.state.radioValue}
-                    size="large"
-                    defaultValue={DEFAULT_RADIO_VALUE}
-                  >
-                    {betBalance.map((entry, index) => (
-                      <Radio value={index + 1} key={`option ${index}`}>
-                        <ProgressBar
-                          label={entry.name}
-                          value={entry.value}
-                          percent={entry.percent}
-                          barHeight={12}
-                          info
-                        />
-                      </Radio>))
-                    }
-                  </RadioGroup>
-                )
-                :
-                betBalance.map((entry, index) => (
-                  <ProgressBar
-                    key={`option ${index}`}
-                    label={entry.name}
-                    value={entry.value}
-                    percent={entry.percent}
-                    barHeight={12}
-                    info
-                    marginBottom={18}
-                  />))
-              }
+              {editingToggled ? (this.getRadioButtonViews()) : (this.getProgressBarViews())}
             </CardVoting>
           </IsoWidgetsWrapper>
         </Col>
-
-      </Row>);
+      </Row>
+    );
 
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
