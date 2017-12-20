@@ -15,8 +15,6 @@ import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
 import topicActions from '../redux/topic/actions';
 
-const Qweb3Utils = require('../modules/qweb3/src/utils');
-
 const RadioGroup = Radio.Group;
 const QTUM = 'QTUM';
 const BOT = 'BOT';
@@ -113,7 +111,7 @@ class OraclePage extends React.Component {
       oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
-      neededAllowance: undefined,
+      voteAmount: undefined,
       checkingAllowance: false,
       approving: false,
     };
@@ -211,8 +209,8 @@ class OraclePage extends React.Component {
           }
         }
 
-        console.log('oracle', oracle);
-        console.log(`configName is ${configName}`);
+        // console.log('oracle', oracle);
+        // console.log(`configName is ${configName}`);
 
         this.setState({
           oracle,
@@ -221,15 +219,14 @@ class OraclePage extends React.Component {
       }
     }
 
-    // Leave here temporarily for debugging purpose
-    if (finalizeResultReturn) {
-      console.log('finalizeResultReturn', finalizeResultReturn);
-    }
-
     // TODO: use this when ready to use callback method to handle the flow of approve > setResult/vote
     if (allowanceReturn) {
-      const allowance = Qweb3Utils.hexToNumber(allowanceReturn.result.executionResult.output);
-      this.onAllowanceReturn(allowance);
+      const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
+      this.onAllowanceReturn(parsedAllowance);
+    }
+
+    if (finalizeResultReturn) {
+      console.log('finalizeResultReturn', finalizeResultReturn);
     }
 
     // TODO: For any error case we will render an Oracle not found page
@@ -270,47 +267,37 @@ class OraclePage extends React.Component {
   * if less than needed amount, reset allowance to 0 first.
   */
   onAllowanceReturn(allowance) {
+    const { voteAmount } = this.state;
+
     console.log('allowance', allowance);
+    console.log('voteAmount', voteAmount);
 
     const configName = this.state.config.name;
     if (allowance === 0) { // Need to approved for setResult or vote
       if (this.state.approving) {
         return;
       }
-
-      switch (configName) {
-        case 'SETTING': {
-          this.approve(ORACLE_BOT_THRESHOLD);
-          break;
-        }
-        case 'VOTING': {
-          this.approve(this.state.voteAmount);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-    } else if (allowance >= this.state.neededAllowance) { // Already approved call setResult or vote
-      this.setState({
-        checkingAllowance: false,
-        approving: false,
-        neededAllowance: undefined,
-      });
-
+      this.approve(voteAmount);
+    } else if (allowance >= voteAmount) { // Already approved call setResult or vote
       switch (configName) {
         case 'SETTING': {
           this.setResult();
           break;
         }
         case 'VOTING': {
-          this.vote();
+          this.vote(voteAmount);
           break;
         }
         default: {
           break;
         }
       }
+
+      this.setState({
+        checkingAllowance: false,
+        approving: false,
+        voteAmount: undefined,
+      });
     } else { // The approved amount does not match the amount so reset allowance
       if (this.state.approving) {
         return;
@@ -329,7 +316,6 @@ class OraclePage extends React.Component {
 
     this.setState({
       approving: true,
-      neededAllowance: amount,
     });
   }
 
@@ -341,9 +327,6 @@ class OraclePage extends React.Component {
 
   onConfirmBtnClicked(obj) {
     const { amount } = obj;
-    this.setState({
-      voteAmount: amount,
-    });
 
     // setResult and vote are handled in onAllowanceReturn
     switch (this.state.config.name) {
@@ -351,15 +334,22 @@ class OraclePage extends React.Component {
         this.bet(amount);
         break;
       }
-      case 'FINALIZING': {
-        this.finalizeResult();
+      case 'SETTING': {
+        this.setState({
+          checkingAllowance: true,
+          voteAmount: ORACLE_BOT_THRESHOLD,
+        });
         break;
       }
-      case 'SETTING':
       case 'VOTING': {
         this.setState({
           checkingAllowance: true,
+          voteAmount: amount,
         });
+        break;
+      }
+      case 'FINALIZING': {
+        this.finalizeResult();
         break;
       }
       default: {
