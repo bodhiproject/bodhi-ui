@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+
 import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb, Radio } from 'antd';
 import { connect } from 'react-redux';
@@ -478,7 +480,7 @@ class OraclePage extends React.Component {
                     defaultValue={DEFAULT_RADIO_VALUE}
                   >
                     {betBalance.map((entry, index) => (
-                      <Radio value={index + 1} key={entry.name}>
+                      <Radio value={index + 1} key={`option ${index}`}>
                         <ProgressBar
                           label={entry.name}
                           value={entry.value}
@@ -491,9 +493,9 @@ class OraclePage extends React.Component {
                   </RadioGroup>
                 )
                 :
-                betBalance.map((entry) => (
+                betBalance.map((entry, index) => (
                   <ProgressBar
-                    key={entry.name}
+                    key={`option ${index}`}
                     label={entry.name}
                     value={entry.value}
                     percent={entry.percent}

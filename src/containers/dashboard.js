@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+
 import React, { PropTypes } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'react-redux';
@@ -166,7 +168,7 @@ function buildOracleColElement(oracles) {
           >
             {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
               <SingleProgressWidget
-                key={result}
+                key={`option${index}`}
                 label={result}
                 percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
                 barHeight={12}
@@ -221,7 +223,7 @@ function getFinishedItems(topicEvents) {
             {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
 
               <SingleProgressWidget
-                key={result}
+                key={`topic ${index}`}
                 label={result}
                 percent={botTotal === 0 ? botTotal : _.floor((topic.botAmount[index] / botTotal) * 100)}
                 barHeight={12}
