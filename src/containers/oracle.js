@@ -425,8 +425,8 @@ class OraclePage extends React.Component {
     const { oracle, config } = this.state;
 
     if (!oracle) {
-      // TODO: render no result page
-      return <div> 404 Page not found. </div>;
+      // Don't render anything if page is loading. In future we could make a loading animation 
+      return <div></div>;
     }
 
     const timeline = [{
@@ -466,6 +466,7 @@ class OraclePage extends React.Component {
               radioIndex={this.state.radioValue}
               result={requestReturn}
               checkingAllowance={this.state.checkingAllowance}
+              skipToggle={config.name === 'FINALIZING'}
             >
               {editingToggled ? (this.getRadioButtonViews()) : (this.getProgressBarViews())}
             </CardVoting>
