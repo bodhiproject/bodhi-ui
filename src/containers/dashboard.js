@@ -71,7 +71,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'BOT' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === BOT && oracle.status !== 'WITHDRAW'));
         break;
       }
       case TAB_COMPLETED: {
