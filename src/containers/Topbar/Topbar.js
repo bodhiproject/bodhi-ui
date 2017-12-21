@@ -219,9 +219,9 @@ class Topbar extends React.PureComponent {
             <div className="horizontalWrapper">
               <div className="topbarWrapper">
                 <div className="isoLeft">
-                  <div className="logo-container" style={{ margin: '0px 18px' }}>
+                  <div className="logo-container" style={{ margin: '0px' }}>
                     <Link to="/">
-                      <img src="https://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,w_256/v1513745449/logo_wht_1024x1024_wg6m7u.png" style={{ height: '44px', verticalAlign: 'middle' }} alt="bodhi-logo" />
+                      <img src="https://res.cloudinary.com/dd1ixvdxn/image/upload/v1513814413/logo_txyg1i.png" style={{ height: '56px', verticalAlign: 'middle' }} alt="bodhi-logo" />
                     </Link>
                   </div>
                   {/* <div className="isoSearch" style={{ cursor: 'pointer' }}>
