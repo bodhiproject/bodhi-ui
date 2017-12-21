@@ -54,7 +54,11 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { tabIndex, getTopicsSuccess: topicEvents, getOraclesSuccess: allOracles } = this.props;
+    const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
+
+    // Sorting all topics and oracles by blockNum in descending order now
+    const topicEvents = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
+    const allOracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
 
     let rowItems;
     switch (tabIndex) {
