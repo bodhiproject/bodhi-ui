@@ -201,9 +201,8 @@ class Topbar extends React.PureComponent {
         </Link>
       ) : (
         <Dropdown overlay={menu} placement="bottomRight">
-          <a className="ant-dropdown-link" href="#">
+          <a className="ant-dropdown-link" onClick={(evt) => { evt.preventDefault(); }}>
             {this.getSelectedAddressObject() ? shortenAddress(this.getSelectedAddressObject().address, ADDRESS_TEXT_MAX_LENGTH) : null}
-            {this.getSelectedAddressObject() && !_.isUndefined(this.getSelectedAddressObject().qtum) ? this.getSelectedAddressObject().qtum.toFixed(1) : null}
             <Icon type="down" />
           </a>
         </Dropdown>
