@@ -38,7 +38,7 @@ class CardVoting extends Component {
 
   getConfirmViews() {
     const {
-      amount, config, token, result, radioIndex, checkingAllowance,
+      amount, config, token, result, radioIndex, checkingAllowance, skipToggle,
     } = this.props;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.showAmountInput;
@@ -92,6 +92,9 @@ class CardVoting extends Component {
       // Disable the button if request went through
       confirmBtnDisabled = true;
       buttonText = 'Transaction posted';
+    } else if (skipToggle) {
+      confirmBtnDisabled = false;
+      buttonText = 'Finalize';
     } else if (showAmountInput) {
       // Both amount input and radio box has to be set for disabled to be false
       confirmBtnDisabled = !this.state.voteAmount || !radioIndex;
@@ -140,7 +143,7 @@ class CardVoting extends Component {
 
   render() {
     const {
-      amount, token, children, editingToggled,
+      amount, token, children, editingToggled, skipToggle,
     } = this.props;
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
@@ -156,7 +159,7 @@ class CardVoting extends Component {
           {children}
         </div>
         <div className="action">
-          {editingToggled ? (this.getConfirmViews()) : (this.getBottomButtonViews())}
+          {(skipToggle || editingToggled) ? (this.getConfirmViews()) : (this.getBottomButtonViews())}
         </div>
       </div>
     );
@@ -177,6 +180,7 @@ CardVoting.propTypes = {
   result: PropTypes.object,
   radioIndex: PropTypes.number,
   checkingAllowance: PropTypes.bool,
+  skipToggle: PropTypes.bool,
 };
 
 CardVoting.defaultProps = {
@@ -188,6 +192,7 @@ CardVoting.defaultProps = {
   result: undefined,
   radioIndex: 0,
   checkingAllowance: false,
+  skipToggle: false,
 };
 
 const mapStateToProps = (state) => ({

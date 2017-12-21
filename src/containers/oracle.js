@@ -425,7 +425,7 @@ class OraclePage extends React.Component {
     const { oracle, config } = this.state;
 
     if (!oracle) {
-      // Don't render anything if page is loading. In future we could make a loading animation 
+      // Don't render anything if page is loading. In future we could make a loading animation
       return <div></div>;
     }
 
