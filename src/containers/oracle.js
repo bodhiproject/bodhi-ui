@@ -89,18 +89,25 @@ class OraclePage extends React.Component {
     const totalBalance = _.sum(oracle.amounts);
 
     if (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED) {
-      return _.map(oracle.options, (optionName, index) => ({
-        name: optionName,
-        value: `${oracle.amounts[index]} ${oracle.token}`,
-        percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
-      }));
+      return _.map(oracle.options, (optionName, index) => {
+        const optionAmount = oracle.amounts[index] || 0;
+        return {
+          name: optionName,
+          value: `${optionAmount} ${oracle.token}`,
+          percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+        };
+      });
     }
 
-    return _.map(oracle.optionIdxs, (optIndex, index) => ({
-      name: oracle.options[optIndex],
-      value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
-    }));
+    return _.map(oracle.optionIdxs, (optIndex, index) => {
+      const optionAmount = oracle.amounts[index] || 0;
+
+      return {
+        name: oracle.options[optIndex],
+        value: `${optionAmount} ${oracle.token}`,
+        percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+      };
+    });
   }
 
   constructor(props) {
