@@ -24,6 +24,19 @@ export default function appReducer(state = initState, action) {
     }
     case actions.SELECT_WALLET_ADDRESS:
       return state.set('walletAddrsIndex', action.value);
+    case actions.SELECTED_WALLET_ADDRESS:
+    {
+      const walletAddrs = state.get('walletAddrs');
+      const walletAddrsIndex = state.get('walletAddrsIndex');
+
+      if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+        return state.get('selected_wallet_address', walletAddrs[walletAddrsIndex].address);
+      }
+
+      return state.get('selected_wallet_address', undefined);
+    }
+
+    /** List Unspent Return * */
     case actions.LIST_UNSPENT_RESULT:
     {
       let result = [];

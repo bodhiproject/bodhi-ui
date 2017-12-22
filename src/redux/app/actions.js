@@ -23,6 +23,7 @@ const actions = {
 
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
   SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
+  SELECTED_WALLET_ADDRESS: 'SELECTED_WALLET_ADDRESS',
   addWalletAddress: (value) => {
     console.log(`actions: ${value}`);
     return {

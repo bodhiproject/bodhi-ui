@@ -17,6 +17,7 @@ const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
 const POOL_INTERVAL = 30000;
+const MINIMAL_GAS_FEE = 0.01;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -86,9 +87,7 @@ class Topbar extends React.PureComponent {
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
-    this.getSelectedAddressObject = this.getSelectedAddressObject.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
-    this.getBotBalances = this.getBotBalances.bind(this);
   }
 
   componentWillMount() {
@@ -99,11 +98,8 @@ class Topbar extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetBlockCount, blockCount, onGetBotBalance, botBalance,
+      onGetBlockCount, blockCount, getBotBalance, botBalance, selectedWalletAddress,
     } = this.props;
-
-    console.log(onGetBotBalance);
-    console.log(botBalance);
 
     setTimeout(() => {
       onGetBlockCount();
@@ -127,26 +123,6 @@ class Topbar extends React.PureComponent {
 
   onCopyClicked(text) {
     message.info(`Copied address ${text}`);
-  }
-
-  /** Return selected address object on Topbar as sender; undefined if not found * */
-  getSelectedAddressObject() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex];
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Calling API server to retrieve BOT balance for each address in array
-   * @param {array} addressArray Array of Qtum address
-   * @return {[type]}
-   */
-  getBotBalances(addressArray) {
-    console.log('getBotBalances is called');
   }
 
   handleAddAccountClicked() {
@@ -176,11 +152,11 @@ class Topbar extends React.PureComponent {
   render() {
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
     const {
-      collapsed, walletAddrs, walletAddrsIndex, blockCount,
+      collapsed, walletAddrs, blockCount, selectedWalletAddress,
     } = this.props;
     let walletAddresses;
 
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length) { // Limit max length of wallet addresses to not be too long
+    if (!_.isEmpty(walletAddrs)) { // Limit max length of wallet addresses to not be too long
     // walletAddrs is already sorted by amount of qtum in reducers
       const combinedAddresses = [];
 
@@ -230,7 +206,7 @@ class Topbar extends React.PureComponent {
       ) : (
         <Dropdown overlay={menu} placement="bottomRight">
           <a className="ant-dropdown-link" onClick={(evt) => { evt.preventDefault(); }}>
-            {this.getSelectedAddressObject() ? shortenAddress(this.getSelectedAddressObject().address, ADDRESS_TEXT_MAX_LENGTH) : null}
+            {selectedWalletAddress ? shortenAddress(selectedWalletAddress, ADDRESS_TEXT_MAX_LENGTH) : null}
             <Icon type="down" />
           </a>
         </Dropdown>
@@ -297,34 +273,34 @@ class Topbar extends React.PureComponent {
 Topbar.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  selectedWalletAddress: PropTypes.string,
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
   onGetBlockCount: PropTypes.func,
   blockCount: PropTypes.number,
-  onGetBotBalance: PropTypes.func,
+  getBotBalance: PropTypes.func,
   botBalance: PropTypes.string,
 };
 
 Topbar.defaultProps = {
   walletAddrs: [],
-  walletAddrsIndex: 0,
+  selectedWalletAddress: undefined,
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
   onGetBlockCount: undefined,
   blockCount: 0,
-  onGetBotBalance: undefined,
+  getBotBalance: undefined,
   botBalance: '',
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
   botBalance: state.App.get('bot_balance') && state.App.get('bot_balance').result,
+  selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -332,7 +308,7 @@ const mapDispatchToProps = (dispatch) => ({
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   onGetBlockCount: () => dispatch(appActions.getBlockCount()),
-  onGetBotBalance: (owner, senderAddress) => dispatch(appActions.onGetBotBalance(owner, senderAddress)),
+  getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);
