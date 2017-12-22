@@ -4,6 +4,10 @@ const topicActions = {
   editingToggled: () => ({
     type: topicActions.EDITING_TOGGLED,
   }),
+  CLEAR_EDITING_TOGGLED: 'CLEAR_EDITING_TOGGLED',
+  clearEditingToggled: () => ({
+    type: topicActions.CLEAR_EDITING_TOGGLED,
+  }),
 
   REQ_RETURN: 'REQ_RETURN',
   CLEAR_REQ_RETURN: 'CLEAR_REQ_RETURN',

@@ -89,18 +89,25 @@ class OraclePage extends React.Component {
     const totalBalance = _.sum(oracle.amounts);
 
     if (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED) {
-      return _.map(oracle.options, (optionName, index) => ({
-        name: optionName,
-        value: `${oracle.amounts[index]} ${oracle.token}`,
-        percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
-      }));
+      return _.map(oracle.options, (optionName, index) => {
+        const optionAmount = oracle.amounts[index] || 0;
+        return {
+          name: optionName,
+          value: `${optionAmount} ${oracle.token}`,
+          percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+        };
+      });
     }
 
-    return _.map(oracle.optionIdxs, (optIndex, index) => ({
-      name: oracle.options[optIndex],
-      value: `${oracle.amounts[index]} ${oracle.token}`,
-      percent: totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100),
-    }));
+    return _.map(oracle.optionIdxs, (optIndex, index) => {
+      const optionAmount = oracle.amounts[index] || 0;
+
+      return {
+        name: oracle.options[optIndex],
+        value: `${optionAmount} ${oracle.token}`,
+        percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+      };
+    });
   }
 
   constructor(props) {
@@ -227,6 +234,8 @@ class OraclePage extends React.Component {
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
+    this.props.clearEditingToggled();
+
     clearTimeout(this.allowanceTimer);
   }
 
@@ -423,8 +432,8 @@ class OraclePage extends React.Component {
     const { oracle, config } = this.state;
 
     if (!oracle) {
-      // TODO: render no result page
-      return <div> 404 Page not found. </div>;
+      // Don't render anything if page is loading. In future we could make a loading animation
+      return <div></div>;
     }
 
     const timeline = [{
@@ -464,6 +473,7 @@ class OraclePage extends React.Component {
               radioIndex={this.state.radioValue}
               result={requestReturn}
               checkingAllowance={this.state.checkingAllowance}
+              skipToggle={config.name === 'FINALIZING'}
             >
               {editingToggled ? (this.getRadioButtonViews()) : (this.getProgressBarViews())}
             </CardVoting>
@@ -507,6 +517,7 @@ OraclePage.propTypes = {
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
   onGetBlockCount: PropTypes.func,
+  clearEditingToggled: PropTypes.func,
   requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -528,6 +539,8 @@ OraclePage.defaultProps = {
   onClearRequestReturn: undefined,
   onGetBlockCount: undefined,
   requestReturn: undefined,
+  clearEditingToggled: undefined,
+
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
@@ -559,6 +572,7 @@ function mapDispatchToProps(dispatch) {
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };
 }
 

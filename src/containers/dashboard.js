@@ -54,11 +54,14 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const topicEvents = this.props.getTopicsSuccess;
-    const allOracles = this.props.getOraclesSuccess;
+    const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
+
+    // Sorting all topics and oracles by blockNum in descending order now
+    const topicEvents = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
+    const allOracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
 
     let rowItems;
-    switch (this.props.tabIndex) {
+    switch (tabIndex) {
       case TAB_BETTING: {
         rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
         break;
@@ -68,7 +71,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'BOT' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === BOT && oracle.status !== 'WITHDRAW'));
         break;
       }
       case TAB_COMPLETED: {
