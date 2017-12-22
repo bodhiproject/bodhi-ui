@@ -16,6 +16,7 @@ const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
+const POOL_INTERVAL = 30000;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -78,6 +79,7 @@ class Topbar extends React.PureComponent {
     this.state = {
       visible: false,
       addressInput: '',
+      pollTimeout: 0,
     };
 
     this.showModal = this.showModal.bind(this);
@@ -93,6 +95,18 @@ class Topbar extends React.PureComponent {
     const { onGetBlockCount, listUnspent } = this.props;
     listUnspent();
     onGetBlockCount();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { onGetBlockCount, blockCount } = this.props;
+
+    setTimeout(() => {
+      onGetBlockCount();
+    }, POOL_INTERVAL);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.pollTimeout);
   }
 
   onAddressDropdownClick({ key, item }) {
