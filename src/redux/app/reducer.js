@@ -11,6 +11,8 @@ const initState = new Map({
   height: window.innerHeight,
   current: preKeys,
   walletAddrs: [],
+  walletAddrsIndex: 0,
+  selected_wallet_address: 'wtf',
 });
 
 export default function appReducer(state = initState, action) {
@@ -23,32 +25,35 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddrs', addresses);
     }
     case actions.SELECT_WALLET_ADDRESS:
-      return state.set('walletAddrsIndex', action.value);
-    case actions.SELECTED_WALLET_ADDRESS:
     {
+      const walletAddrsIndex = action.value;
       const walletAddrs = state.get('walletAddrs');
-      const walletAddrsIndex = state.get('walletAddrsIndex');
 
       if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-        return state.get('selected_wallet_address', walletAddrs[walletAddrsIndex].address);
+        const newState = state.set('walletAddrsIndex', walletAddrsIndex);
+        return newState.set('selected_wallet_address', walletAddrs[walletAddrsIndex].address);
       }
 
-      return state.get('selected_wallet_address', undefined);
+      break;
     }
 
     /** List Unspent Return * */
     case actions.LIST_UNSPENT_RESULT:
     {
       let result = [];
+      let newState = state;
 
       if (action.value.result) {
         result = _.orderBy(_.map(action.value.result, (item) => ({
           address: item.address,
           qtum: item.amount,
         })), ['qtum'], ['desc']);
+
+        // Initial value for selected_wallet_address
+        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
       }
 
-      return state.set('walletAddrs', result);
+      return newState.set('walletAddrs', result);
     }
 
     /** Bot Balance Return - update walletAddrs with returned BOT value * */

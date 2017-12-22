@@ -92,8 +92,12 @@ class Topbar extends React.PureComponent {
 
   componentWillMount() {
     const { onGetBlockCount, listUnspent } = this.props;
-    listUnspent();
-    onGetBlockCount();
+
+    (function startPoll() {
+      onGetBlockCount();
+      listUnspent();
+      setTimeout(startPoll, POOL_INTERVAL);
+    }());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -125,10 +129,6 @@ class Topbar extends React.PureComponent {
         }
       });
     }
-
-    setTimeout(() => {
-      onGetBlockCount();
-    }, POOL_INTERVAL);
   }
 
   onAddressDropdownClick({ key, item }) {
