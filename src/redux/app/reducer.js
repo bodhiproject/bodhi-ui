@@ -51,6 +51,23 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddrs', result);
     }
 
+    /** Bot Balance Return - update walletAddrs with returned BOT value * */
+    case actions.GET_BOT_BALANCE_RETURN:
+    {
+      const walletAddrs = state.get('walletAddrs');
+      if (action && action.value) {
+        const ownerAddress = action.value.address;
+        const ownerBotBalance = action.value.value;
+
+        const ownerObj = _.find(walletAddrs, (item) => item.address === ownerAddress);
+
+        if (ownerObj) {
+          ownerObj.bot = ownerBotBalance;
+        }
+      }
+
+      return state.set('walletAddrs', walletAddrs); }
+
     /** Block Count * */
     case actions.GET_BLOCK_COUNT_RETURN:
       return state.set('get_block_count_return', action.value);
@@ -63,10 +80,6 @@ export default function appReducer(state = initState, action) {
           .set('height', height);
       }
       break;
-
-      /** Bot Balance * */
-    case actions.GET_BOT_BALANCE_RETURN:
-      return state.set('bot_balance', action.value);
 
     default:
       return state;

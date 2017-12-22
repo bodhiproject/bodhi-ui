@@ -98,8 +98,33 @@ class Topbar extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetBlockCount, blockCount, getBotBalance, botBalance, selectedWalletAddress,
+      onGetBlockCount, getBotBalance, selectedWalletAddress,
     } = this.props;
+
+
+    // Call API to retrieve BOT balance if wallet addresses have changed
+    if (!_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
+      _.each(nextProps.walletAddrs, (addressObj) => {
+        const ownerAddress = addressObj.address;
+        let senderAddress;
+
+        // Determine an address that has enough qtum for gas to be a sender
+        if (addressObj.qtum >= MINIMAL_GAS_FEE) {
+          senderAddress = addressObj.address;
+        } else {
+          const objWithQtum = _.find(nextProps.walletAddrs, (item) => item.qtum >= MINIMAL_GAS_FEE);
+
+          if (objWithQtum) {
+            senderAddress = objWithQtum.address;
+          }
+        }
+
+        // Found any address with balance greater than minimal gas fee
+        if (senderAddress) {
+          getBotBalance(ownerAddress, senderAddress);
+        }
+      });
+    }
 
     setTimeout(() => {
       onGetBlockCount();
@@ -280,7 +305,6 @@ Topbar.propTypes = {
   onGetBlockCount: PropTypes.func,
   blockCount: PropTypes.number,
   getBotBalance: PropTypes.func,
-  botBalance: PropTypes.string,
 };
 
 Topbar.defaultProps = {
@@ -292,14 +316,12 @@ Topbar.defaultProps = {
   onGetBlockCount: undefined,
   blockCount: 0,
   getBotBalance: undefined,
-  botBalance: '',
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
-  botBalance: state.App.get('bot_balance') && state.App.get('bot_balance').result,
   selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
