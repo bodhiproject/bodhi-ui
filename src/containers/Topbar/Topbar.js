@@ -90,7 +90,9 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    this.props.listUnspent();
+    const { onGetBlockCount, listUnspent } = this.props;
+    listUnspent();
+    onGetBlockCount();
   }
 
   onAddressDropdownClick({ key, item }) {
@@ -149,7 +151,9 @@ class Topbar extends React.PureComponent {
 
   render() {
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    const { collapsed, walletAddrs, walletAddrsIndex } = this.props;
+    const {
+      collapsed, walletAddrs, walletAddrsIndex, blockCount,
+    } = this.props;
     let walletAddresses;
 
     if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length) { // Limit max length of wallet addresses to not be too long
@@ -232,6 +236,12 @@ class Topbar extends React.PureComponent {
                   <li><Link to="/" >Events</Link></li>
                   <li><Link to="/create-topic" >Create an Event</Link></li>
                   <li>{walletAddrsEle}</li>
+                  <li>
+                    <div className="block-count" style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}>
+                      <div className="label" style={{ fontSize: '10px', lineHeight: 'normal' }}><Icon type="clock-circle-o" style={{ marginRight: '6px' }}></Icon>Block Count</div>
+                      <div style={{ fontSize: '20px', lineHeight: 'normal', marginTop: '2px' }}>{blockCount}</div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -267,6 +277,9 @@ Topbar.propTypes = {
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
+  onGetBlockCount: PropTypes.func,
+  blockCount: PropTypes.number,
+
 };
 
 Topbar.defaultProps = {
@@ -275,18 +288,22 @@ Topbar.defaultProps = {
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
+  onGetBlockCount: undefined,
+  blockCount: 0,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
+  onGetBlockCount: () => dispatch(appActions.getBlockCount()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);
