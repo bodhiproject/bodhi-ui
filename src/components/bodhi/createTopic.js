@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { Alert, Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
@@ -24,6 +25,7 @@ class CreateTopic extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
   }
 
@@ -70,6 +72,12 @@ class CreateTopic extends React.Component {
         });
       }
     });
+  }
+
+  onCancel(evt) {
+    evt.preventDefault();
+
+    this.props.history.push('/');
   }
 
   render() {
@@ -194,6 +202,10 @@ class CreateTopic extends React.Component {
               htmlType="submit"
               disabled={createReturn && createReturn.result}
             >Publish</Button>
+            <Button
+              type="default"
+              onClick={this.onCancel}
+            >Cancel</Button>
           </FormItem>
         </Form>
       </div>
@@ -237,7 +249,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(CreateTopic));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Form.create()(CreateTopic)));
 
 class OptionsInput extends React.Component {
   constructor(props) {
