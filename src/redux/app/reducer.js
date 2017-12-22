@@ -17,9 +17,11 @@ export default function appReducer(state = initState, action) {
   switch (action.type) {
     /** Wallet Addresses * */
     case actions.ADD_WALLET_ADDRESS:
-    { const addresses = state.get('walletAddrs');
+    {
+      const addresses = state.get('walletAddrs');
       addresses.push({ address: action.value, qtum: 0 });
-      return state.set('walletAddrs', addresses); }
+      return state.set('walletAddrs', addresses);
+    }
     case actions.SELECT_WALLET_ADDRESS:
       return state.set('walletAddrsIndex', action.value);
     case actions.LIST_UNSPENT_RESULT:
@@ -48,8 +50,11 @@ export default function appReducer(state = initState, action) {
           .set('height', height);
       }
       break;
-    case actions.CHANGE_CURRENT:
-      return state.set('current', action.current);
+
+      /** Bot Balance * */
+    case actions.GET_BOT_BALANCE_RETURN:
+      return state.set('bot_balance', action.value);
+
     default:
       return state;
   }

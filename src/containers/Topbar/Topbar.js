@@ -88,6 +88,7 @@ class Topbar extends React.PureComponent {
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
     this.getSelectedAddressObject = this.getSelectedAddressObject.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
+    this.getBotBalances = this.getBotBalances.bind(this);
   }
 
   componentWillMount() {
@@ -97,7 +98,12 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { onGetBlockCount, blockCount } = this.props;
+    const {
+      onGetBlockCount, blockCount, onGetBotBalance, botBalance,
+    } = this.props;
+
+    console.log(onGetBotBalance);
+    console.log(botBalance);
 
     setTimeout(() => {
       onGetBlockCount();
@@ -132,6 +138,15 @@ class Topbar extends React.PureComponent {
     }
 
     return undefined;
+  }
+
+  /**
+   * Calling API server to retrieve BOT balance for each address in array
+   * @param {array} addressArray Array of Qtum address
+   * @return {[type]}
+   */
+  getBotBalances(addressArray) {
+    console.log('getBotBalances is called');
   }
 
   handleAddAccountClicked() {
@@ -288,7 +303,8 @@ Topbar.propTypes = {
   listUnspent: PropTypes.func,
   onGetBlockCount: PropTypes.func,
   blockCount: PropTypes.number,
-
+  onGetBotBalance: PropTypes.func,
+  botBalance: PropTypes.string,
 };
 
 Topbar.defaultProps = {
@@ -299,6 +315,8 @@ Topbar.defaultProps = {
   listUnspent: undefined,
   onGetBlockCount: undefined,
   blockCount: 0,
+  onGetBotBalance: undefined,
+  botBalance: '',
 };
 
 const mapStateToProps = (state) => ({
@@ -306,6 +324,7 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  botBalance: state.App.get('bot_balance') && state.App.get('bot_balance').result,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -313,6 +332,7 @@ const mapDispatchToProps = (dispatch) => ({
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+  onGetBotBalance: (owner, senderAddress) => dispatch(appActions.onGetBotBalance(owner, senderAddress)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);

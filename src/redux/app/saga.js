@@ -39,9 +39,42 @@ export function* getBlockCountRequestHandler() {
   });
 }
 
+export function* getBotBalanceRequestHandler() {
+  yield takeEvery(actions.GET_BOT_BALANCE, function* getBotBalanceRequest(action) {
+    try {
+      const {
+        owner,
+        senderAddress,
+      } = action.payload;
+
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          owner,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/balanceof', options);
+
+      yield put({
+        type: actions.GET_BOT_BALANCE_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_BOT_BALANCE_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBlockCountRequestHandler),
+    fork(getBotBalanceRequestHandler),
   ]);
 }
