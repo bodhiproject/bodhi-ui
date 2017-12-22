@@ -79,7 +79,6 @@ class Topbar extends React.PureComponent {
     this.state = {
       visible: false,
       addressInput: '',
-      pollTimeout: 0,
     };
 
     this.showModal = this.showModal.bind(this);
@@ -103,10 +102,6 @@ class Topbar extends React.PureComponent {
     setTimeout(() => {
       onGetBlockCount();
     }, POOL_INTERVAL);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.state.pollTimeout);
   }
 
   onAddressDropdownClick({ key, item }) {
