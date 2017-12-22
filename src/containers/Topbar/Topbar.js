@@ -39,6 +39,7 @@ function shortenAddress(text, maxLength) {
 function DropdownMenuItem({
   address,
   qtum,
+  bot,
   onCopyClick,
 }) {
   const style = {
@@ -48,13 +49,17 @@ function DropdownMenuItem({
     paddingBottom: 16,
     fontSize: 16,
   };
+
   return (
     <Row type="flex" justify="space-between" align="middle" gutter={16} style={style}>
       <Col>
         <span>{address}</span>
       </Col>
       <Col>
-        <Tag>{qtum.toFixed(3)}</Tag>
+        <Tag >{qtum.toFixed(2)}</Tag>
+      </Col>
+      <Col>
+        <Tag>{bot.toFixed(2)}</Tag>
       </Col>
       <Col>
         <CopyToClipboard text={address} onCopy={onCopyClick} >
@@ -70,6 +75,7 @@ function DropdownMenuItem({
 DropdownMenuItem.propTypes = {
   address: PropTypes.string.isRequired,
   qtum: PropTypes.number.isRequired,
+  bot: PropTypes.number.isRequired,
   onCopyClick: PropTypes.func.isRequired,
 };
 
@@ -208,7 +214,8 @@ class Topbar extends React.PureComponent {
             <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
               <DropdownMenuItem
                 address={item.address}
-                qtum={item.qtum}
+                qtum={item.qtum || 0}
+                bot={item.bot || 0}
                 onCopyClick={this.onCopyClicked}
               />
             </Menu.Item>
