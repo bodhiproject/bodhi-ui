@@ -176,7 +176,7 @@ class CreateTopic extends React.Component {
             label="Outcomes"
           >
             {getFieldDecorator('options', {
-              initialValue: ['', '', ''],
+              initialValue: ['', ''],
               rules: [{
                 type: 'array',
                 required: true,
