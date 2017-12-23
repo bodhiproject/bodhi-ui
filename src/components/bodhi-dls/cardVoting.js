@@ -4,26 +4,57 @@ import { connect } from 'react-redux';
 
 import topicActions from '../../redux/topic/actions';
 
-const Loader = require('halogen/SyncLoader');
-
 class CardVoting extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       voteAmount: 0,
+      btnLoading: false,
+      btnText: '',
+      btnDisabled: false,
     };
 
-    this.onBottomBtnClicked = this.onBottomBtnClicked.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.onInputNumberChange = this.onInputNumberChange.bind(this);
+    this.getBeforeToggleView = this.getBeforeToggleView.bind(this);
+    this.getAfterToggleView = this.getAfterToggleView.bind(this);
+    this.buildAlertElements = this.buildAlertElements.bind(this);
   }
 
   componentWillMount() {
+    const { config } = this.props;
+
+    const btnText = config && config.beforeToggle && config.beforeToggle.btnText;
+    const btnDisabled = config && config.beforeToggle && config.beforeToggle.btnDisabled;
+
+    this.setState({
+      btnText,
+      btnDisabled,
+    });
   }
 
-  onBottomBtnClicked() {
-    this.props.onEditingToggled();
+  componentWillReceiveProps(nextProps) {
+    const { editingToggled, checkingAllowance, result } = nextProps;
+
+    // Determine Confirm button disabled status based on request return
+    if (this.props.editingToggled === false && editingToggled === true) {
+      this.setState({
+        btnText: this.props.config.afterToggle.btnText,
+      });
+    } else if (checkingAllowance) {
+      this.setState({
+        btnText: 'Approving BOT transfer... please wait',
+        btnLoading: true,
+      });
+    } else if (result && result.result) {
+      // Disable the button if request went through
+      this.setState({
+        btnText: 'Transaction posted',
+        btnLoading: false,
+        btnDisabled: true,
+      });
+    }
   }
 
   onConfirmBtnClicked() {
@@ -36,12 +67,15 @@ class CardVoting extends Component {
     });
   }
 
-  getConfirmViews() {
+  getAfterToggleView() {
     const {
-      amount, config, token, result, radioIndex, checkingAllowance, skipToggle,
+      amount, config, token, result, radioIndex, skipToggle,
     } = this.props;
+
+    let { btnDisabled } = this.state;
+
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    const showAmountInput = config && config.showAmountInput;
+    const showAmountInput = config && config.afterToggle && config.afterToggle.showAmountInput;
 
     // Construct amount input
     const amountInputEle = (showAmountInput ? (
@@ -59,7 +93,59 @@ class CardVoting extends Component {
       :
       null);
 
-    // Construct alert
+    // Construct alert elements
+    const alertContainerEle = this.buildAlertElements();
+
+    // Determine Confirm button disabled status
+    if (skipToggle) {
+      btnDisabled = false;
+      // buttonText = 'Finalize';
+    } else if (showAmountInput) {
+      // Both amount input and radio box has to be set for disabled to be false
+      btnDisabled = !this.state.voteAmount || !radioIndex;
+    } else {
+      // If radio box is set, set disabled to false
+      btnDisabled = !radioIndex;
+    }
+
+    return (
+      <div>
+        {amountInputEle}
+        {alertContainerEle}
+
+        <Button
+          type="primary"
+          onClick={this.onConfirmBtnClicked}
+          size="large"
+          disabled={this.state.btnDisabled}
+          loading={this.state.btnLoading}
+        >
+          {this.state.btnText}
+        </Button>
+
+      </div>
+    );
+  }
+
+  getBeforeToggleView() {
+    const { config, onEditingToggled } = this.props;
+    const btnText = config && config.beforeToggle && config.beforeToggle.btnText;
+
+    return (
+      <Button
+        type="primary"
+        onClick={onEditingToggled}
+        size="large"
+        disabled={config && config.beforeToggle && config.beforeToggle.btnDisabled}
+      >
+        {btnText}
+      </Button>
+    );
+  }
+
+  buildAlertElements() {
+    const { result } = this.props;
+
     let alertElement;
     if (result) {
       if (result.result) {
@@ -80,65 +166,8 @@ class CardVoting extends Component {
         />);
       }
     }
-    const alertContainerEle = <div className="alert-container">{alertElement}</div>;
 
-    // Determine Confirm button disabled status
-    let buttonText = 'Confirm';
-    let confirmBtnDisabled = true;
-    if (checkingAllowance) {
-      confirmBtnDisabled = true;
-      buttonText = 'Approving BOT transfer... please wait';
-    } else if (result && result.result) {
-      // Disable the button if request went through
-      confirmBtnDisabled = true;
-      buttonText = 'Transaction posted';
-    } else if (skipToggle) {
-      confirmBtnDisabled = false;
-      buttonText = 'Finalize';
-    } else if (showAmountInput) {
-      // Both amount input and radio box has to be set for disabled to be false
-      confirmBtnDisabled = !this.state.voteAmount || !radioIndex;
-    } else {
-      // If radio box is set, set disabled to false
-      confirmBtnDisabled = !radioIndex;
-    }
-
-    const loaderView = checkingAllowance ? <Loader color="#5859FA" size="10px" margin="6px" /> : null;
-
-    // Construct entire view
-    const confirmViews = (
-      <div>
-        {amountInputEle}
-        {alertContainerEle}
-
-        <Button
-          type="primary"
-          onClick={this.onConfirmBtnClicked}
-          size="large"
-          disabled={confirmBtnDisabled}
-        >
-          {buttonText}
-        </Button>
-        {loaderView}
-      </div>
-    );
-
-    return confirmViews;
-  }
-
-  getBottomButtonViews() {
-    const { config } = this.props;
-    const bottomBtnText = config && config.bottomBtnText;
-    const bottomButtonViews = (
-      <Button
-        type="primary"
-        onClick={this.onBottomBtnClicked}
-        size="large"
-      >
-        {bottomBtnText}
-      </Button>
-    );
-    return bottomButtonViews;
+    return <div className="alert-container">{alertElement}</div>;
   }
 
   render() {
@@ -159,7 +188,7 @@ class CardVoting extends Component {
           {children}
         </div>
         <div className="action">
-          {(skipToggle || editingToggled) ? (this.getConfirmViews()) : (this.getBottomButtonViews())}
+          {(skipToggle || editingToggled) ? (this.getAfterToggleView()) : (this.getBeforeToggleView())}
         </div>
       </div>
     );
