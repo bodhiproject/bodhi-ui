@@ -31,7 +31,9 @@ query{
       amounts,
       resultIdx,
       blockNum,
-      endBlock
+      endBlock,
+      resultSetEndBlock,
+      resultSetterAddress,
     }
   }
 }
@@ -51,6 +53,8 @@ const ALL_ORACLES = gql`
       amounts
       endBlock
       blockNum
+      resultSetEndBlock
+      resultSetterAddress
     }
   }
 `;
@@ -112,6 +116,8 @@ export function queryAllOracles() {
       amounts: entry.amounts,
       endBlock: entry.endBlock,
       blockNum: entry.blockNum,
+      resultSetEndBlock: entry.resultSetEndBlock,
+      resultSetterAddress: entry.resultSetterAddress,
     }));
 
     return queryData;
