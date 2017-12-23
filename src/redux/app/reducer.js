@@ -4,6 +4,7 @@ import { getDefaultPath } from '../../helpers/urlSync';
 import actions, { getView } from './actions';
 
 const preKeys = getDefaultPath();
+const WALLET_ADDRESS_MAX_COUNT = 8;
 
 const initState = new Map({
   collapsed: !(window.innerWidth > 1220),
@@ -42,6 +43,7 @@ export default function appReducer(state = initState, action) {
     {
       let result = [];
       let newState = state;
+      let combinedAddresses = [];
 
       if (action.value.result) {
         result = _.orderBy(_.map(action.value.result, (item) => ({
@@ -49,11 +51,30 @@ export default function appReducer(state = initState, action) {
           qtum: item.amount,
         })), ['qtum'], ['desc']);
 
-        // Initial value for selected_wallet_address
-        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
+
+        // Sum qtum balance of same addresses
+        if (!_.isEmpty(result)) {
+          _.each(result, (item) => {
+            const foundObj = _.find(combinedAddresses, { address: item.address });
+            if (foundObj) {
+              foundObj.qtum += item.qtum;
+            } else {
+              combinedAddresses.push({
+                address: item.address,
+                qtum: item.qtum,
+              });
+            }
+          });
+
+          // Make sure address list is not too long
+          combinedAddresses = combinedAddresses.slice(0, WALLET_ADDRESS_MAX_COUNT);
+
+          // Initial value for selected_wallet_address
+          newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
+        }
       }
 
-      return newState.set('walletAddrs', result);
+      return newState.set('walletAddrs', combinedAddresses);
     }
 
     /** Bot Balance Return - update walletAddrs with returned BOT value * */

@@ -185,32 +185,12 @@ class Topbar extends React.PureComponent {
     const {
       collapsed, walletAddrs, blockCount, selectedWalletAddress,
     } = this.props;
-    let walletAddresses;
-
-    if (!_.isEmpty(walletAddrs)) { // Limit max length of wallet addresses to not be too long
-    // walletAddrs is already sorted by amount of qtum in reducers
-      const combinedAddresses = [];
-
-      _.each(walletAddrs, (item) => {
-        const foundObj = _.find(combinedAddresses, { address: item.address });
-        if (foundObj) {
-          foundObj.qtum += item.qtum;
-        } else {
-          combinedAddresses.push({
-            address: item.address,
-            qtum: item.qtum,
-          });
-        }
-      });
-
-      walletAddresses = combinedAddresses.slice(0, DROPDOWN_LIST_MAX_LENGTH);
-    }
 
     const menu = (
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(walletAddresses, (item, index) => (
+          _.map(walletAddrs, (item, index) => (
             <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
               <DropdownMenuItem
                 address={item.address}
@@ -230,7 +210,7 @@ class Topbar extends React.PureComponent {
     );
 
 
-    const walletAddrsEle = _.isEmpty(walletAddresses)
+    const walletAddrsEle = _.isEmpty(walletAddrs)
       ? (
         <Link to="#" onClick={this.showModal}>
           <Icon type="plus" />Add address
