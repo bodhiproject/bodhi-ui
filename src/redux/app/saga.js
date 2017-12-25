@@ -1,10 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import BN from 'bn.js';
 import actions from './actions';
 
-import { request } from '../../helpers/utility';
-
-const BOTOSHI_TO_BOT = 100000000;
+import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
@@ -60,7 +57,7 @@ export function* getBotBalanceRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/botbalance', options);
-      const botValue = result && result.balance ? ((new BN(result.balance, 16).toNumber()) / BOTOSHI_TO_BOT) : 0;
+      const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0; // Convert BN hex string from request to BOT number
 
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
