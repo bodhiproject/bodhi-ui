@@ -18,7 +18,7 @@ import topicActions from '../redux/topic/actions';
 const RadioGroup = Radio.Group;
 const QTUM = 'QTUM';
 const BOT = 'BOT';
-const DEFAULT_RADIO_VALUE = 1;
+const DEFAULT_RADIO_VALUE = 0;
 const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
 const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
