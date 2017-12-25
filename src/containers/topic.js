@@ -183,7 +183,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${this.state.botWinnings} BOT & ${this.state.qtumWinnings} QTUM`,
+          text: `You can withdraw ${this.state.botWinnings} BOT & ${this.state.qtumWinnings} QTUM.`,
           type: 'default',
         });
 
