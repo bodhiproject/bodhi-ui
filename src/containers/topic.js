@@ -133,6 +133,12 @@ class TopicPage extends React.Component {
           description: `Block No. ${(lastEndBlock + 1) || ''} - `,
         });
 
+        // Add withdrawal amount
+        config.cardInfo.messages.push({
+          text: `You can withdraw ${1} BOT & ${1} QTUM`,
+          type: 'default',
+        });
+
         // Highlight current step using current field
         config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
 

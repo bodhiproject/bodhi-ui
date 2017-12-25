@@ -202,6 +202,70 @@ export function* finalizeResultRequestHandler() {
   });
 }
 
+export function* calculateQtumWinningsRequestHandler() {
+  yield takeEvery(actions.CALCULATE_QTUM_WINNINGS, function* onCalculateQtumWinningsRequest(action) {
+    const {
+      contractAddress, 
+      senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/qtumwinnings', options);
+
+      yield put({
+        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
+export function* calculateBotWinningsRequestHandler() {
+  yield takeEvery(actions.CALCULATE_BOT_WINNINGS, function* onCalculateBotWinningsRequest(action) {
+    const {
+      contractAddress, 
+      senderAddress,
+    } = action.payload;
+
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, 'http://localhost:8080/botwinnings', options);
+
+      yield put({
+        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export function* withdrawRequestHandler() {
   yield takeEvery(actions.WITHDRAW, function* onWithdrawResultRequest(action) {
     const {
