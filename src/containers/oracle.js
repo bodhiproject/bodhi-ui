@@ -230,9 +230,8 @@ class OraclePage extends React.Component {
                 text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed for result setting.`,
                 type: 'default',
               },
-
               {
-                text: 'Upon clicking Confirm, you will need to wait for BOT token to get approved. Those BOT amount will automatically be used to set result afterwards.',
+                text: 'Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those BOT amount will automatically be used to set result afterwards.',
                 type: 'default',
               },
             ],
@@ -271,7 +270,7 @@ class OraclePage extends React.Component {
 
         config = {
           name: 'VOTING',
-          breadcrumbLabel: 'Votting',
+          breadcrumbLabel: 'Voting',
           cardInfo: {
             steps: {
               current: 3,
@@ -298,7 +297,7 @@ class OraclePage extends React.Component {
                 text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
                 type: 'default',
               }, {
-                text: 'BOT tokens are needed for Voting. Upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
+                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
                 type: 'default',
               },
             ],
