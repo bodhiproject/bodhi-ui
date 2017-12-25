@@ -1,7 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
-import { request } from '../../helpers/utility';
+import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
@@ -221,9 +221,11 @@ export function* calculateQtumWinningsRequestHandler() {
 
       const result = yield call(request, 'http://localhost:8080/qtumwinnings', options);
 
+      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
+
       yield put({
         type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
-        value: { result },
+        value,
       });
     } catch (error) {
       yield put({
@@ -253,9 +255,11 @@ export function* calculateBotWinningsRequestHandler() {
 
       const result = yield call(request, 'http://localhost:8080/botwinnings', options);
 
+      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
+
       yield put({
         type: actions.CALCULATE_BOT_WINNINGS_RETURN,
-        value: { result },
+        value,
       });
     } catch (error) {
       yield put({
