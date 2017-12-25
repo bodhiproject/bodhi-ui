@@ -111,7 +111,6 @@ class Topbar extends React.PureComponent {
       onGetBlockCount, getBotBalance, selectedWalletAddress,
     } = this.props;
 
-
     // Call API to retrieve BOT balance if wallet addresses have changed
     if (!_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
       _.each(nextProps.walletAddrs, (addressObj) => {
