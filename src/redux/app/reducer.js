@@ -51,7 +51,6 @@ export default function appReducer(state = initState, action) {
           qtum: item.amount,
         })), ['qtum'], ['desc']);
 
-
         // Sum qtum balance of same addresses
         if (!_.isEmpty(result)) {
           _.each(result, (item) => {

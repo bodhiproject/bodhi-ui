@@ -56,7 +56,7 @@ export function* getBotBalanceRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, 'http://localhost:8080/balanceof', options);
+      const result = yield call(request, 'http://localhost:8080/botbalance', options);
 
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
