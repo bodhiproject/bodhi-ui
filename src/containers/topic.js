@@ -59,28 +59,31 @@ class TopicPage extends React.Component {
       calculateBotWinningsReturn,
     } = nextProps;
     const topic = _.find(allTopics, { address: this.state.address });
-    this.pageConfiguration(topic);
 
     // Wallet address changed, call calculate winnings again
     if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
       this.calculateWinnings();
     }
 
+    let qtumWinnings;
     if (calculateQtumWinningsReturn) {
       const hexAmount = calculateQtumWinningsReturn.result['0'];
-      const qtum = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
-      this.setState({
-        qtumWinnings: qtum,
-      });
+      qtumWinnings = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
+      this.setState((prevState, props) => ({
+        qtumWinnings,
+      }));
     }
 
+    let botWinnings;
     if (calculateBotWinningsReturn) {
       const hexAmount = calculateBotWinningsReturn.result['0'];
-      const bot = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
-      this.setState({
-        botWinnings: bot,
-      });
+      botWinnings = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
+      this.setState((prevState, props) => ({
+        botWinnings,
+      }));
     }
+
+    this.pageConfiguration(topic);
   }
 
   componentWillUnmount() {
