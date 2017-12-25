@@ -28,40 +28,6 @@ const OracleType = {
   DECENTRALISED: 'DECENTRALISED',
 };
 
-const PageConfig =
-  [
-    {
-      name: 'BETTING',
-      breadcrumbLabel: 'Betting',
-      blockStartLabel: 'Betting starts at block:',
-      blockEndLabel: 'Betting ends at block:',
-      showAmountInput: true,
-      bottomBtnText: 'Participate',
-    },
-    {
-      name: 'SETTING',
-      breadcrumbLabel: 'Setting',
-      blockStartLabel: 'Betting starts at block:',
-      blockEndLabel: 'Betting ends at block:',
-      showAmountInput: false,
-      bottomBtnText: 'Set Result',
-    },
-    {
-      name: 'VOTING',
-      breadcrumbLabel: 'Voting',
-      blockStartLabel: 'Voting starts at block:',
-      blockEndLabel: 'Voting ends at block:',
-      showAmountInput: true,
-      bottomBtnText: 'Vote',
-    }, {
-      name: 'FINALIZING',
-      breadcrumbLabel: 'Voting', // Finalize state should be transparent to end user
-      blockStartLabel: 'Voting starts at block:',
-      blockEndLabel: 'Voting ends at block:',
-      showAmountInput: false,
-      bottomBtnText: 'Finalize',
-    }];
-
 let allowanceTimer;
 
 class OraclePage extends React.Component {
@@ -386,8 +352,6 @@ class OraclePage extends React.Component {
       const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
       this.onAllowanceReturn(parsedAllowance);
     }
-
-    // TODO: For any error case we will render an Oracle not found page
   }
 
   componentWillUnmount() {
@@ -566,7 +530,7 @@ class OraclePage extends React.Component {
     const { editingToggled, requestReturn } = this.props;
     const { oracle, config } = this.state;
 
-    if (!oracle) {
+    if (!oracle || !config) {
       // Don't render anything if page is loading. In future we could make a loading animation
       return <div></div>;
     }

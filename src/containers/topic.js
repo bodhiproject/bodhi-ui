@@ -12,6 +12,9 @@ import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 
+const QTUM = 'QTUM';
+const BOT = 'BOT';
+
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
@@ -19,6 +22,7 @@ class TopicPage extends React.Component {
     this.state = {
       address: this.props.match.params.address,
       topic: undefined, // Topic object for this page
+      config: undefined,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
@@ -47,7 +51,68 @@ class TopicPage extends React.Component {
     const topic = _.find(allTopics, { address: this.state.address });
 
     if (topic) {
-      this.setState({ topic });
+      let config;
+
+      // Only shows Topic which are in WITHDRAW state
+      if (topic.status === 'WITHDRAW') {
+        const centralizedOracle = _.find(topic.oracles, (item) => item.token === QTUM);
+        const decentralizedOracles = _.orderBy(_.filter(topic.oracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
+
+        config = {
+          name: 'COMPLETED',
+          breadcrumbLabel: 'Completed',
+          cardInfo: {
+            steps: {
+              value: [{
+                title: 'Topic created',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
+              },
+              {
+                title: 'Betting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
+              },
+              {
+                title: 'Result Setting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
+              },
+              ],
+            },
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: true,
+            beforeToggle: {
+              btnText: 'Finalize',
+            },
+          },
+        };
+
+        // Add Steps from all Decentralized Oracles
+        let lastEndBlock;
+        _.each(decentralizedOracles, (item) => {
+          config.cardInfo.steps.value.push({
+            title: 'Voting',
+            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
+          });
+
+          lastEndBlock = item.endBlock;
+        });
+
+        // Add Steps from Withdraw
+        config.cardInfo.steps.value.push({
+          title: 'Withdrawal',
+          description: `Block No. ${(lastEndBlock + 1) || ''} - `,
+        });
+
+        // Highlight current step using current field
+        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
+
+        this.setState({
+          topic,
+          config,
+        });
+      }
     }
   }
 
@@ -72,9 +137,9 @@ class TopicPage extends React.Component {
 
   render() {
     const { requestReturn } = this.props;
-    const { topic } = this.state;
+    const { topic, config } = this.state;
 
-    if (!topic) {
+    if (!topic || !config) {
       // TODO: render no result page
       return <div></div>;
     }
@@ -94,7 +159,6 @@ class TopicPage extends React.Component {
       percent: qtumTotal === 0 ? qtumTotal : _.floor((amount / qtumTotal) * 100),
     }));
 
-
     const botTotal = _.sum(topic.botAmount);
     const botBalance = _.map(topic.botAmount, (amount, idx) => ({
       name: topic.options[idx],
@@ -107,40 +171,42 @@ class TopicPage extends React.Component {
       justify="center"
     >
 
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px" >
+      {config.cardInfo ?
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px" >
+            <CardInfo
+              title={topic.name}
+              config={config.cardInfo}
+            >
+            </CardInfo>
+          </IsoWidgetsWrapper>
+        </Col> : null}
 
-          <CardInfo
-            title={topic.name}
-            timeline={timeline}
-          >
+      {config.cardAction ?
 
-          </CardInfo>
-        </IsoWidgetsWrapper>
-
-      </Col>
-      <Col xl={12} lg={12}>
-        <IsoWidgetsWrapper padding="32px">
-          <CardFinished
-            amount={qtumTotal}
-            voteBalance={qtumBalance}
-            onWithdraw={this.onWithdrawClicked}
-            radioIndex={topic.resultIdx}
-            result={requestReturn}
-          >
-            {qtumBalance.map((entry) => (
-              <ProgressBar
-                key={entry.name}
-                label={entry.name}
-                value={entry.value}
-                percent={entry.percent}
-                barHeight={12}
-                info
-                marginBottom={18}
-              />))}
-          </CardFinished>
-        </IsoWidgetsWrapper>
-      </Col>
+        <Col xl={12} lg={12}>
+          <IsoWidgetsWrapper padding="32px">
+            <CardFinished
+              amount={qtumTotal}
+              voteBalance={qtumBalance}
+              onWithdraw={this.onWithdrawClicked}
+              radioIndex={topic.resultIdx}
+              result={requestReturn}
+            >
+              {qtumBalance.map((entry) => (
+                <ProgressBar
+                  key={entry.name}
+                  label={entry.name}
+                  value={entry.value}
+                  percent={entry.percent}
+                  barHeight={12}
+                  info
+                  marginBottom={18}
+                />))}
+            </CardFinished>
+          </IsoWidgetsWrapper>
+        </Col>
+        : null}
 
     </Row>);
 

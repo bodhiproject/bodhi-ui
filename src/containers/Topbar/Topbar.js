@@ -76,9 +76,6 @@ class DropdownMenuItem extends React.Component {
 }
 
 DropdownMenuItem.propTypes = {
-  // address: PropTypes.string.isRequired,
-  // qtum: PropTypes.number.isRequired,
-  // bot: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
   onCopyClick: PropTypes.func.isRequired,
   walletAddrs: PropTypes.array,
