@@ -84,7 +84,6 @@ export default function appReducer(state = initState, action) {
         });
       }
 
-      console.log('LIST_UNSPENT_RESULT setting walletAddrs', existingAddresses);
       return newState.set('walletAddrs', existingAddresses);
     }
 
@@ -104,7 +103,6 @@ export default function appReducer(state = initState, action) {
         }
       }
 
-      console.log('GET_BOT_BALANCE_RETURN setting walletAddrs', walletAddrs);
       return state.set('walletAddrs', walletAddrs);
     }
 
