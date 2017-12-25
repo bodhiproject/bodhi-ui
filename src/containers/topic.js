@@ -45,17 +45,47 @@ class TopicPage extends React.Component {
       // All other cases, display empty page for short load time
       // In future we can add some loading animation here
     }
+
+    this.calculateWinnings();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getTopicsSuccess: allTopics } = nextProps;
+    const {
+      getTopicsSuccess: allTopics,
+      calculateQtumWinningsReturn,
+      calculateBotWinningsReturn,
+    } = nextProps;
     const topic = _.find(allTopics, { address: this.state.address });
     this.pageConfiguration(topic);
+
+    // Wallet address changed, call calculate winnings again
+    // if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
+
+    // }
+
+    console.log(nextProps);
+    console.log('calculateQtumWinningsReturn', calculateQtumWinningsReturn);
+    console.log('calculateBotWinningsReturn', calculateBotWinningsReturn);
   }
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
     this.props.clearEditingToggled();
+  }
+
+  calculateWinnings() {
+    try {
+      const {
+        selectedWalletAddress,
+        onCalculateQtumWinnings,
+        onCalculateBotWinnings,
+      } = this.props;
+
+      this.props.onCalculateQtumWinnings(this.state.topic.address, selectedWalletAddress);
+      this.props.onCalculateBotWinnings(this.state.topic.address, selectedWalletAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   /** Withdraw button on click handler passed down to CardFinished */
@@ -254,6 +284,11 @@ TopicPage.propTypes = {
   requestReturn: PropTypes.object,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
+  selectedWalletAddress: PropTypes.string,
+  onCalculateQtumWinnings: PropTypes.func,
+  calculateQtumWinningsReturn: PropTypes.object,
+  onCalculateBotWinnings: PropTypes.func,
+  calculateBotWinningsReturn: PropTypes.object,
   onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
@@ -265,20 +300,32 @@ TopicPage.defaultProps = {
   requestReturn: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
+  selectedWalletAddress: undefined,
   onClearRequestReturn: undefined,
   clearEditingToggled: undefined,
+  onCalculateQtumWinnings: undefined,
+  calculateQtumWinningsReturn: undefined,
+  onCalculateBotWinnings: undefined,
+  calculateBotWinningsReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   requestReturn: state.Topic.get('req_return'),
+  calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
+  calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    onCalculateQtumWinnings: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onCalculateQtumWinnings(contractAddress, senderAddress)),
+    onCalculateBotWinnings: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onCalculateBotWinnings(contractAddress, senderAddress)),
     onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),

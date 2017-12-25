@@ -205,7 +205,7 @@ export function* finalizeResultRequestHandler() {
 export function* calculateQtumWinningsRequestHandler() {
   yield takeEvery(actions.CALCULATE_QTUM_WINNINGS, function* onCalculateQtumWinningsRequest(action) {
     const {
-      contractAddress, 
+      contractAddress,
       senderAddress,
     } = action.payload;
 
@@ -237,7 +237,7 @@ export function* calculateQtumWinningsRequestHandler() {
 export function* calculateBotWinningsRequestHandler() {
   yield takeEvery(actions.CALCULATE_BOT_WINNINGS, function* onCalculateBotWinningsRequest(action) {
     const {
-      contractAddress, 
+      contractAddress,
       senderAddress,
     } = action.payload;
 
@@ -346,6 +346,8 @@ export default function* topicSaga() {
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
+    fork(calculateQtumWinningsRequestHandler),
+    fork(calculateBotWinningsRequestHandler),
     fork(withdrawRequestHandler),
   ]);
 }
