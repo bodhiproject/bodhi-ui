@@ -223,7 +223,7 @@ class OraclePage extends React.Component {
             },
             messages: [
               {
-                text: `Result setter ${oracle.resultSetterAddress}`,
+                text: `Result setter ${oracle.resultSetterQAddress}`,
                 type: 'default',
               },
               {
@@ -240,7 +240,7 @@ class OraclePage extends React.Component {
             skipToggle: false,
             beforeToggle: {
               btnText: 'Set Result',
-              // btnDisabled: (oracle.resultSetterAddress !== selectedWalletAddress),
+              btnDisabled: (oracle.resultSetterQAddress !== selectedWalletAddress),
             },
             afterToggle: {
               showAmountInput: false,
@@ -258,7 +258,7 @@ class OraclePage extends React.Component {
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (oracle.resultSetterAddress !== selectedWalletAddress) {
+        if (oracle.resultSetterQAddress !== selectedWalletAddress) {
           config.cardInfo.messages.push({
             text: 'You are not the result setter for this topic and cannot set result.',
             type: 'warn',
