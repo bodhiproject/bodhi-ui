@@ -16,6 +16,8 @@ const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
+const POOL_INTERVAL = 30000;
+const MINIMAL_GAS_FEE = 0.1;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -37,6 +39,7 @@ function shortenAddress(text, maxLength) {
 function DropdownMenuItem({
   address,
   qtum,
+  bot,
   onCopyClick,
 }) {
   const style = {
@@ -46,13 +49,17 @@ function DropdownMenuItem({
     paddingBottom: 16,
     fontSize: 16,
   };
+
   return (
     <Row type="flex" justify="space-between" align="middle" gutter={16} style={style}>
       <Col>
         <span>{address}</span>
       </Col>
       <Col>
-        <Tag>{qtum.toFixed(3)}</Tag>
+        <Tag >{qtum.toFixed(2)}</Tag>
+      </Col>
+      <Col>
+        <Tag>{bot.toFixed(2)}</Tag>
       </Col>
       <Col>
         <CopyToClipboard text={address} onCopy={onCopyClick} >
@@ -68,6 +75,7 @@ function DropdownMenuItem({
 DropdownMenuItem.propTypes = {
   address: PropTypes.string.isRequired,
   qtum: PropTypes.number.isRequired,
+  bot: PropTypes.number.isRequired,
   onCopyClick: PropTypes.func.isRequired,
 };
 
@@ -85,12 +93,47 @@ class Topbar extends React.PureComponent {
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
-    this.getSelectedAddressObject = this.getSelectedAddressObject.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
   }
 
   componentWillMount() {
-    this.props.listUnspent();
+    const { onGetBlockCount, listUnspent } = this.props;
+
+    (function startPoll() {
+      onGetBlockCount();
+      listUnspent();
+      setTimeout(startPoll, POOL_INTERVAL);
+    }());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      onGetBlockCount, getBotBalance, selectedWalletAddress,
+    } = this.props;
+
+    // Call API to retrieve BOT balance if wallet addresses have changed
+    if (!_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
+      _.each(nextProps.walletAddrs, (addressObj) => {
+        const ownerAddress = addressObj.address;
+        let senderAddress;
+
+        // Determine an address that has enough qtum for gas to be a sender
+        if (addressObj.qtum >= MINIMAL_GAS_FEE) {
+          senderAddress = addressObj.address;
+        } else {
+          const objWithQtum = _.find(nextProps.walletAddrs, (item) => item.qtum >= MINIMAL_GAS_FEE);
+
+          if (objWithQtum) {
+            senderAddress = objWithQtum.address;
+          }
+        }
+
+        // Found any address with balance greater than minimal gas fee
+        if (senderAddress) {
+          getBotBalance(ownerAddress, senderAddress);
+        }
+      });
+    }
   }
 
   onAddressDropdownClick({ key, item }) {
@@ -110,17 +153,6 @@ class Topbar extends React.PureComponent {
 
   onCopyClicked(text) {
     message.info(`Copied address ${text}`);
-  }
-
-  /** Return selected address object on Topbar as sender; undefined if not found * */
-  getSelectedAddressObject() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex];
-    }
-
-    return undefined;
   }
 
   handleAddAccountClicked() {
@@ -149,37 +181,20 @@ class Topbar extends React.PureComponent {
 
   render() {
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
-    const { collapsed, walletAddrs, walletAddrsIndex } = this.props;
-    let walletAddresses;
-
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length) { // Limit max length of wallet addresses to not be too long
-    // walletAddrs is already sorted by amount of qtum in reducers
-      const combinedAddresses = [];
-
-      _.each(walletAddrs, (item) => {
-        const foundObj = _.find(combinedAddresses, { address: item.address });
-        if (foundObj) {
-          foundObj.qtum += item.qtum;
-        } else {
-          combinedAddresses.push({
-            address: item.address,
-            qtum: item.qtum,
-          });
-        }
-      });
-
-      walletAddresses = combinedAddresses.slice(0, DROPDOWN_LIST_MAX_LENGTH);
-    }
+    const {
+      collapsed, walletAddrs, blockCount, selectedWalletAddress,
+    } = this.props;
 
     const menu = (
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(walletAddresses, (item, index) => (
+          _.map(walletAddrs, (item, index) => (
             <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
               <DropdownMenuItem
                 address={item.address}
-                qtum={item.qtum}
+                qtum={item.qtum || 0}
+                bot={item.bot || 0}
                 onCopyClick={this.onCopyClicked}
               />
             </Menu.Item>
@@ -194,7 +209,7 @@ class Topbar extends React.PureComponent {
     );
 
 
-    const walletAddrsEle = _.isEmpty(walletAddresses)
+    const walletAddrsEle = _.isEmpty(walletAddrs)
       ? (
         <Link to="#" onClick={this.showModal}>
           <Icon type="plus" />Add address
@@ -202,7 +217,7 @@ class Topbar extends React.PureComponent {
       ) : (
         <Dropdown overlay={menu} placement="bottomRight">
           <a className="ant-dropdown-link" onClick={(evt) => { evt.preventDefault(); }}>
-            {this.getSelectedAddressObject() ? shortenAddress(this.getSelectedAddressObject().address, ADDRESS_TEXT_MAX_LENGTH) : null}
+            {selectedWalletAddress ? shortenAddress(selectedWalletAddress, ADDRESS_TEXT_MAX_LENGTH) : null}
             <Icon type="down" />
           </a>
         </Dropdown>
@@ -232,6 +247,12 @@ class Topbar extends React.PureComponent {
                   <li><Link to="/" >Events</Link></li>
                   <li><Link to="/create-topic" >Create an Event</Link></li>
                   <li>{walletAddrsEle}</li>
+                  <li>
+                    <div className="block-count" style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}>
+                      <div className="label" style={{ fontSize: '10px', lineHeight: 'normal' }}><Icon type="clock-circle-o" style={{ marginRight: '6px' }}></Icon>Block Count</div>
+                      <div style={{ fontSize: '20px', lineHeight: 'normal', marginTop: '2px' }}>{blockCount}</div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -263,30 +284,39 @@ class Topbar extends React.PureComponent {
 Topbar.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  selectedWalletAddress: PropTypes.string,
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
+  onGetBlockCount: PropTypes.func,
+  blockCount: PropTypes.number,
+  getBotBalance: PropTypes.func,
 };
 
 Topbar.defaultProps = {
   walletAddrs: [],
-  walletAddrsIndex: 0,
+  selectedWalletAddress: undefined,
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
+  onGetBlockCount: undefined,
+  blockCount: 0,
+  getBotBalance: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
+  onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+  getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);

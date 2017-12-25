@@ -123,7 +123,7 @@ class OraclePage extends React.Component {
       approving: false,
     };
 
-    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.getRadioButtonViews = this.getRadioButtonViews.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
     this.checkAllowance = this.checkAllowance.bind(this);
@@ -137,9 +137,6 @@ class OraclePage extends React.Component {
   componentWillMount() {
     // TODO: Get current oracle
     this.props.onGetOracles();
-
-    // Get current block count
-    this.props.onGetBlockCount();
   }
 
   componentDidMount() {
@@ -158,70 +155,234 @@ class OraclePage extends React.Component {
       getOraclesSuccess,
       allowanceReturn,
       blockCount,
+      selectedWalletAddress,
     } = nextProps;
 
-    console.log(`blockCount: ${blockCount}`);
+    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
-    if (!_.isEmpty(getOraclesSuccess)) {
-      let oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    if (oracle) {
+      const { token, status, endBlock } = oracle;
+      let config;
 
-      if (oracle) {
-        const { token, status, endBlock } = oracle;
-        let configName;
+      /** Determine what config to use in current card * */
+      if (status === 'VOTING' && token === QTUM) {
+        config = {
+          name: 'BETTING',
+          breadcrumbLabel: 'Betting',
+          cardInfo: {
+            steps: {
+              current: 1,
+              value: [{
+                title: 'Topic created',
+                description: `Block No. ${oracle.blockNum}`,
+              },
+              {
+                title: 'Betting',
+                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+              },
+              {
+                title: 'Result Setting',
+                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+              },
+              ],
+            },
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Bet',
+            },
+            afterToggle: {
+              showAmountInput: true,
+              btnText: 'Confirm',
+            },
+          },
+        };
+      } else if (status === 'WAITRESULT' && token === QTUM) {
+        config = {
+          name: 'SETTING',
+          breadcrumbLabel: 'Setting',
+          cardInfo: {
+            steps: {
+              current: 2,
+              value: [{
+                title: 'Topic created',
+                description: `Block No. ${oracle.blockNum}`,
+              },
+              {
+                title: 'Betting',
+                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+              },
+              {
+                title: 'Result Setting',
+                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+              },
+              ],
+            },
+            messages: [
+              {
+                text: `Result setter ${oracle.resultSetterAddress}`,
+                type: 'default',
+              },
+              {
+                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed for result setting.`,
+                type: 'default',
+              },
+              {
+                text: 'Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those BOT amount will automatically be used to set result afterwards.',
+                type: 'default',
+              },
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Set Result',
+              // btnDisabled: (oracle.resultSetterAddress !== selectedWalletAddress),
+            },
+            afterToggle: {
+              showAmountInput: false,
+              btnText: 'Confirm',
+            },
+          },
+        };
 
-        /** Determine what config to use in current card * */
-        switch (status) {
-          case 'VOTING': {
-            switch (token) {
-              case QTUM: {
-                configName = 'BETTING';
-                break;
-              }
-              case BOT: {
-                configName = 'VOTING';
-                break;
-              }
-              default: {
-                console.warn('Invalid oracle type');
-                oracle = undefined;
-                break;
-              }
-            }
-            break;
-          }
-          case 'WAITRESULT': {
-            switch (token) {
-              case QTUM: {
-                configName = 'SETTING';
-                break;
-              }
-              case BOT: {
-                configName = 'FINALIZING';
-                break;
-              }
-              default: {
-                console.warn('Invalid oracle type');
-                oracle = undefined;
-                break;
-              }
-            }
-            break;
-          }
-          default: {
-            console.warn('Oracle exists but cant determine status.');
-            oracle = undefined;
-            break;
-          }
+        // Add a message to CardInfo to warn that current block has passed set end block
+        if (blockCount > oracle.resultSetEndBlock) {
+          config.cardInfo.messages.push({
+            text: 'Current block number has passed result set end block.',
+            type: 'warn',
+          });
         }
 
-        console.log('oracle', oracle);
-        console.log(`configName: ${configName}`);
+        // Add a message to CardInfo to warn that user is not result setter of current oracle
+        if (oracle.resultSetterAddress !== selectedWalletAddress) {
+          config.cardInfo.messages.push({
+            text: 'You are not the result setter for this topic and cannot set result.',
+            type: 'warn',
+          });
+        }
+      } else if (status === 'VOTING' && token === BOT) {
+        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
+        const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
 
-        this.setState({
-          oracle,
-          config: _.find(PageConfig, { name: configName }),
+        config = {
+          name: 'VOTING',
+          breadcrumbLabel: 'Voting',
+          cardInfo: {
+            steps: {
+              current: 3,
+              value: [{
+                title: 'Topic created',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
+              },
+              {
+                title: 'Betting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
+              },
+              {
+                title: 'Result Setting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+              },
+              {
+                title: 'Voting',
+                description: `Block No. ${oracle.blockNum} - ${oracle.endBlock}`,
+              },
+              ],
+            },
+            messages: [
+              {
+                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
+                type: 'default',
+              }, {
+                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
+                type: 'default',
+              },
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Vote',
+            },
+            afterToggle: {
+              showAmountInput: true,
+              btnText: 'Confirm',
+            },
+          },
+        };
+      } else if (status === 'WAITRESULT' && token === BOT) {
+        const relatedOracles = _.filter(getOraclesSuccess, (item) => {
+          console.log(item.topicAddress, oracle.topicAddress);
+          return item.topicAddress === oracle.topicAddress;
         });
+        const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
+        const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
+
+        config = {
+          name: 'FINALIZING',
+          breadcrumbLabel: 'Voting',
+          cardInfo: {
+            steps: {
+              current: 4,
+              value: [{
+                title: 'Topic created',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
+              },
+              {
+                title: 'Betting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
+              },
+              {
+                title: 'Result Setting',
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+              },
+              ],
+            },
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: true,
+            beforeToggle: {
+              btnText: 'Finalize',
+            },
+          },
+        };
+
+        // Add Steps from all Decentralized Oracles
+        _.each(decentralizedOracles, (item) => {
+          config.cardInfo.steps.value.push({
+            title: 'Voting',
+            description: `Block No. ${item.blockNum} - ${item.endBlock}`,
+          });
+        });
+
+        // Add Step for Finalizing block
+        config.cardInfo.steps.value.push({
+          title: 'Finalizing',
+          description: `Block No. ${oracle.endBlock + 1} - `,
+        });
+
+        if (blockCount > oracle.endBlock) {
+          config.cardInfo.messages.push({
+            text: `This oracles has passed Voting end block ${oracle.endBlock} and needs to be finalized.`,
+            type: 'default',
+          }, {
+            text: 'Finalizing can be done by anybody. Once finalized oracle will enter Completed state and winning withdrawl will start.',
+            type: 'default',
+          });
+        }
+      } else {
+        console.warn('Oracle exists but cant determine status.');
       }
+
+      this.setState({
+        oracle,
+        config,
+      });
     }
 
     if (allowanceReturn) {
@@ -237,19 +398,6 @@ class OraclePage extends React.Component {
     this.props.clearEditingToggled();
 
     clearTimeout(this.allowanceTimer);
-  }
-
-  /** Return selected address on Topbar as sender; empty string if not found * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs)
-      && walletAddrsIndex < walletAddrs.length
-      && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex].address;
-    }
-
-    return '';
   }
 
   onRadioGroupChange(evt) {
@@ -293,8 +441,9 @@ class OraclePage extends React.Component {
 
   checkAllowance() {
     try {
-      const senderAddress = this.getCurrentSenderAddress();
-      this.props.onAllowance(senderAddress, this.state.oracle.topicAddress, senderAddress);
+      const { selectedWalletAddress } = this.props;
+
+      this.props.onAllowance(selectedWalletAddress, this.state.oracle.topicAddress, selectedWalletAddress);
     } catch (err) {
       console.log(err.message);
     }
@@ -338,11 +487,10 @@ class OraclePage extends React.Component {
   }
 
   approve(amount) {
-    const { onApprove } = this.props;
+    const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
-    const senderAddress = this.getCurrentSenderAddress();
 
-    onApprove(oracle.topicAddress, amount, senderAddress);
+    onApprove(oracle.topicAddress, amount, selectedWalletAddress);
 
     this.setState({
       approving: true,
@@ -350,44 +498,37 @@ class OraclePage extends React.Component {
   }
 
   bet(amount) {
-    const { onBet } = this.props;
+    const { onBet, selectedWalletAddress } = this.props;
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
-    const senderAddress = this.getCurrentSenderAddress();
 
-    onBet(oracle.address, selectedIndex, amount, senderAddress);
+    onBet(oracle.address, selectedIndex, amount, selectedWalletAddress);
   }
 
   setResult() {
-    const { onSetResult } = this.props;
+    const { onSetResult, selectedWalletAddress } = this.props;
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
-    const senderAddress = this.getCurrentSenderAddress();
 
-    onSetResult(oracle.address, selectedIndex, senderAddress);
+    onSetResult(oracle.address, selectedIndex, selectedWalletAddress);
   }
 
   vote(amount) {
-    const { onVote } = this.props;
+    const { onVote, selectedWalletAddress } = this.props;
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
-    const senderAddress = this.getCurrentSenderAddress();
 
-    onVote(oracle.address, selectedIndex, amount, senderAddress);
+    onVote(oracle.address, selectedIndex, amount, selectedWalletAddress);
   }
 
   finalizeResult() {
-    const { onFinalizeResult } = this.props;
+    const { onFinalizeResult, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
-    const senderAddress = this.getCurrentSenderAddress();
 
-    onFinalizeResult(oracle.address, senderAddress);
+    onFinalizeResult(oracle.address, selectedWalletAddress);
   }
 
-  getRadioButtonViews() {
-    const { oracle } = this.state;
-    const betBalance = OraclePage.getBetOrVoteArray(oracle);
-
+  getRadioButtonViews(valueArray) {
     return (
       <RadioGroup
         onChange={this.onRadioGroupChange}
@@ -395,7 +536,7 @@ class OraclePage extends React.Component {
         size="large"
         defaultValue={DEFAULT_RADIO_VALUE}
       >
-        {betBalance.map((entry, index) => (
+        {valueArray.map((entry, index) => (
           <Radio value={index + 1} key={`option ${index}`}>
             <ProgressBar
               label={entry.name}
@@ -410,11 +551,8 @@ class OraclePage extends React.Component {
     );
   }
 
-  getProgressBarViews() {
-    const { oracle } = this.state;
-    const betBalance = OraclePage.getBetOrVoteArray(oracle);
-
-    return betBalance.map((entry, index) => (
+  getProgressBarViews(valueArray) {
+    return valueArray.map((entry, index) => (
       <ProgressBar
         key={`option ${index}`}
         label={entry.name}
@@ -436,14 +574,6 @@ class OraclePage extends React.Component {
       return <div></div>;
     }
 
-    const timeline = [{
-      label: config.blockStartLabel,
-      value: oracle.blockNum,
-    }, {
-      label: config.blockEndLabel,
-      value: oracle.endBlock,
-    }];
-
     const totalBalance = _.sum(oracle.amounts);
     const { token } = oracle;
 
@@ -452,33 +582,37 @@ class OraclePage extends React.Component {
 
     const oracleElement = (
       <Row gutter={28} justify="center">
-        <Col xl={12} lg={12}>
-          <IsoWidgetsWrapper padding="32px" >
-            <CardInfo
-              title={oracle.name}
-              timeline={timeline}
-            >
-            </CardInfo>
-          </IsoWidgetsWrapper>
-        </Col>
 
-        <Col xl={12} lg={12}>
-          <IsoWidgetsWrapper padding="32px">
-            <CardVoting
-              amount={totalBalance}
-              config={config}
-              token={token}
-              voteBalance={betBalance}
-              onSubmit={this.onConfirmBtnClicked}
-              radioIndex={this.state.radioValue}
-              result={requestReturn}
-              checkingAllowance={this.state.checkingAllowance}
-              skipToggle={config.name === 'FINALIZING'}
-            >
-              {editingToggled ? (this.getRadioButtonViews()) : (this.getProgressBarViews())}
-            </CardVoting>
-          </IsoWidgetsWrapper>
-        </Col>
+        {config.cardInfo ?
+          <Col xl={12} lg={12}>
+            <IsoWidgetsWrapper padding="32px" >
+              <CardInfo
+                title={oracle.name}
+                config={config.cardInfo}
+              >
+              </CardInfo>
+            </IsoWidgetsWrapper>
+          </Col> : null}
+
+        {config.cardAction ?
+          <Col xl={12} lg={12}>
+            <IsoWidgetsWrapper padding="32px">
+              <CardVoting
+                amount={totalBalance}
+                config={config.cardAction}
+                token={token}
+                voteBalance={betBalance}
+                onSubmit={this.onConfirmBtnClicked}
+                radioIndex={this.state.radioValue}
+                result={requestReturn}
+                checkingAllowance={this.state.checkingAllowance}
+                skipToggle={config.name === 'FINALIZING'}
+              >
+                {editingToggled ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle)) : this.getProgressBarViews(OraclePage.getBetOrVoteArray(oracle))}
+              </CardVoting>
+            </IsoWidgetsWrapper>
+          </Col>
+          : null}
       </Row>
     );
 
@@ -516,11 +650,9 @@ OraclePage.propTypes = {
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
-  onGetBlockCount: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   requestReturn: PropTypes.object,
-  walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  selectedWalletAddress: PropTypes.string,
   blockCount: PropTypes.number,
 };
 
@@ -537,12 +669,9 @@ OraclePage.defaultProps = {
   onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
-  onGetBlockCount: undefined,
   requestReturn: undefined,
   clearEditingToggled: undefined,
-
-  walletAddrs: [],
-  walletAddrsIndex: 0,
+  selectedWalletAddress: undefined,
   blockCount: 0,
 };
 
@@ -552,8 +681,7 @@ const mapStateToProps = (state) => ({
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
-  walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  selectedWalletAddress: state.App.get('selected_wallet_address'),
   blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
 });
 
@@ -571,7 +699,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
-    onGetBlockCount: () => dispatch(appActions.getBlockCount()),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };
 }

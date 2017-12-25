@@ -3,9 +3,9 @@ export default {
 };
 
 const siteConfig = {
-  siteName: 'ISOMORPHIC',
+  siteName: 'Bodhi Prediction Market',
   siteIcon: 'ion-flash',
-  footerText: 'Isomorphic ©2017 Created by RedQ, Inc',
+  footerText: 'Bodhi Prediction Market ©2017 Created by Bodhi.Network',
 };
 
 const themeConfig = {

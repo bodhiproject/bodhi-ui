@@ -1,4 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
+import { Steps, Icon } from 'antd';
+
+const { Step } = Steps;
 
 class CardInfo extends Component {
   constructor(props) {
@@ -9,16 +13,25 @@ class CardInfo extends Component {
   }
 
   render() {
-    const { title, /* description, */ timeline } = this.props;
-
-    const timelineArray = timeline.map((entry) =>
-
-      (<div key={entry.label} className="timeline" style={{ marginBottom: '18px' }}>
-        <h4>{entry.label}</h4>
-        <p>{entry.value}</p>
-      </div>));
+    const { title, config } = this.props;
+    const { steps, messages } = config;
 
     const titleLineHeight = 36;
+
+    const iconStyle = {
+      marginLeft: '6px',
+      marginRight: '12px',
+      lineHeight: '28px',
+    };
+
+    let stepsEle;
+
+    if (steps) {
+      stepsEle = (<Steps direction="vertical" current={steps.current} style={{ marginBottom: '24px' }} size="default">
+        {_.map(steps.value, (item, index) =>
+          <Step title={item.title} description={item.description} key={`step #${index + 1}`} />)}
+      </Steps>);
+    }
 
     return (
       <div style={{ marginBottom: '24px' }}>
@@ -35,7 +48,22 @@ class CardInfo extends Component {
             lineHeight: 2,
           }}
         >
-          {timelineArray}
+
+          {stepsEle}
+
+          <ul>
+            {_.map(messages, (item, index) => {
+              let iconEle = <Icon type="info-circle-o" style={iconStyle} />; // type: default
+
+              if (item.type === 'warn') {
+                iconEle = <Icon type="exclamation-circle-o" style={_.assign({}, iconStyle, { color: 'orange' })} />;
+              }
+
+              return (<li key={`message #${index + 1}`}>
+                <div style={{ display: 'flex' }}>{iconEle}<p style={{ fontSize: '14px' }}>{item.text}</p></div>
+              </li>);
+            })}
+          </ul>
         </div>
       </div>
     );
@@ -43,15 +71,11 @@ class CardInfo extends Component {
 }
 
 CardInfo.propTypes = {
-  title: PropTypes.string,
-  // description: PropTypes.string,
-  timeline: PropTypes.array,
+  title: PropTypes.string.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
 CardInfo.defaultProps = {
-  title: '',
-  // description: '',
-  timeline: [],
 };
 
 export default CardInfo;
