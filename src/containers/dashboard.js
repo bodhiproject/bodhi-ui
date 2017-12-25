@@ -163,9 +163,7 @@ function buildOracleColElement(oracles) {
           label={result}
           percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
           barHeight={12}
-          status="active"
           fontColor="#4A4A4A"
-          info
         />
       ));
     }
@@ -227,8 +225,48 @@ function getFinishedItems(topicEvents) {
     const botTotal = _.sum(topic.botAmount);
 
     const raisedString = `Raised: ${qtumTotal} QTUM, ${botTotal} BOT`;
-    const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : 45000}`;
-    const displayOptions = topic.options;
+    const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : ''}`;
+
+    let optionBalances = _.map(topic.options, (opt, idx) => {
+      const qtumAmount = topic.qtumAmount[idx];
+      const botAmount = topic.botAmount[idx];
+
+      return {
+        name: opt,
+        value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
+        percent: qtumTotal === 0 ? qtumTotal : _.floor((qtumAmount / qtumTotal) * 100),
+        secondaryPercent: botTotal === 0 ? botTotal : _.floor((botAmount / botTotal) * 100),
+      };
+    });
+
+    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
+    if (!_.isEmpty(optionBalances) && optionBalances.length > NUM_SHOW_IN_OPTIONS) {
+      optionBalances = optionBalances.slice(0, NUM_SHOW_IN_OPTIONS);
+    }
+
+    // Constructing opitons elements
+    let optionsEle = null;
+
+    if (!_.isEmpty(optionBalances)) {
+      optionsEle = optionBalances.map((item, index) => (
+        <SingleProgressWidget
+          key={`option${index}`}
+          label={item.name}
+          percent={item.percent}
+          barHeight={12}
+          fontColor="#4A4A4A"
+          barColor={topic.resultIdx === index ? '' : 'grey'}
+          secondaryPercent={item.secondaryPercent}
+          secondaryBarHeight={item.secondaryBarHeight}
+        />
+      ));
+    }
+
+    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
+    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
+      optionsEle.push(<div key="option-placeholder" style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
+    }
 
     const topicEle = (
       <Col xs={colWidth.xs} sm={colWidth.sm} xl={colWidth.xl} key={topic.address} style={{ marginBottom: '24px' }}>
@@ -238,19 +276,7 @@ function getFinishedItems(topicEvents) {
             label={topic.name}
             details={[raisedString, endBlockString]}
           >
-            {displayOptions.slice(0, NUM_SHOW_IN_OPTIONS).map((result, index) => (
-
-              <SingleProgressWidget
-                key={`topic ${index}`}
-                label={result}
-                percent={botTotal === 0 ? botTotal : _.floor((topic.botAmount[index] / botTotal) * 100)}
-                barHeight={12}
-                status="active"
-                fontColor="#4A4A4A"
-                barColor={index !== topic.resultIdx ? 'grey' : ''}
-                info
-              />))
-            }
+            {optionsEle}
           </ReportsWidget>
 
           <BottomButtonWidget pathname={`/topic/${topic.address}`} text="Check out" />

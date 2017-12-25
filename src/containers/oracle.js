@@ -28,40 +28,6 @@ const OracleType = {
   DECENTRALISED: 'DECENTRALISED',
 };
 
-const PageConfig =
-  [
-    {
-      name: 'BETTING',
-      breadcrumbLabel: 'Betting',
-      blockStartLabel: 'Betting starts at block:',
-      blockEndLabel: 'Betting ends at block:',
-      showAmountInput: true,
-      bottomBtnText: 'Participate',
-    },
-    {
-      name: 'SETTING',
-      breadcrumbLabel: 'Setting',
-      blockStartLabel: 'Betting starts at block:',
-      blockEndLabel: 'Betting ends at block:',
-      showAmountInput: false,
-      bottomBtnText: 'Set Result',
-    },
-    {
-      name: 'VOTING',
-      breadcrumbLabel: 'Voting',
-      blockStartLabel: 'Voting starts at block:',
-      blockEndLabel: 'Voting ends at block:',
-      showAmountInput: true,
-      bottomBtnText: 'Vote',
-    }, {
-      name: 'FINALIZING',
-      breadcrumbLabel: 'Voting', // Finalize state should be transparent to end user
-      blockStartLabel: 'Voting starts at block:',
-      blockEndLabel: 'Voting ends at block:',
-      showAmountInput: false,
-      bottomBtnText: 'Finalize',
-    }];
-
 let allowanceTimer;
 
 class OraclePage extends React.Component {
@@ -174,15 +140,15 @@ class OraclePage extends React.Component {
               current: 1,
               value: [{
                 title: 'Topic created',
-                description: `Block No. ${oracle.blockNum}`,
+                description: `Block No. ${oracle.blockNum || ''}`,
               },
               {
                 title: 'Betting',
-                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
               },
               ],
             },
@@ -209,25 +175,25 @@ class OraclePage extends React.Component {
               current: 2,
               value: [{
                 title: 'Topic created',
-                description: `Block No. ${oracle.blockNum}`,
+                description: `Block No. ${oracle.blockNum || ''}`,
               },
               {
                 title: 'Betting',
-                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
               },
               ],
             },
             messages: [
               {
-                text: `Result setter ${oracle.resultSetterAddress}`,
+                text: `Result setter ${oracle.resultSetterQAddress || ''}`,
                 type: 'default',
               },
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed for result setting.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed for result setting.`,
                 type: 'default',
               },
               {
@@ -240,7 +206,7 @@ class OraclePage extends React.Component {
             skipToggle: false,
             beforeToggle: {
               btnText: 'Set Result',
-              // btnDisabled: (oracle.resultSetterAddress !== selectedWalletAddress),
+              btnDisabled: (oracle.resultSetterQAddress !== selectedWalletAddress),
             },
             afterToggle: {
               showAmountInput: false,
@@ -258,7 +224,7 @@ class OraclePage extends React.Component {
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (oracle.resultSetterAddress !== selectedWalletAddress) {
+        if (oracle.resultSetterQAddress !== selectedWalletAddress) {
           config.cardInfo.messages.push({
             text: 'You are not the result setter for this topic and cannot set result.',
             type: 'warn',
@@ -284,17 +250,17 @@ class OraclePage extends React.Component {
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
               },
               {
                 title: 'Voting',
-                description: `Block No. ${oracle.blockNum} - ${oracle.endBlock}`,
+                description: `Block No. ${oracle.blockNum || ''} - ${oracle.endBlock || ''}`,
               },
               ],
             },
             messages: [
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
                 type: 'default',
               }, {
                 text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
@@ -314,10 +280,7 @@ class OraclePage extends React.Component {
           },
         };
       } else if (status === 'WAITRESULT' && token === BOT) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => {
-          console.log(item.topicAddress, oracle.topicAddress);
-          return item.topicAddress === oracle.topicAddress;
-        });
+        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
         const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
 
@@ -337,7 +300,7 @@ class OraclePage extends React.Component {
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
               },
               ],
             },
@@ -356,19 +319,19 @@ class OraclePage extends React.Component {
         _.each(decentralizedOracles, (item) => {
           config.cardInfo.steps.value.push({
             title: 'Voting',
-            description: `Block No. ${item.blockNum} - ${item.endBlock}`,
+            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
           });
         });
 
         // Add Step for Finalizing block
         config.cardInfo.steps.value.push({
           title: 'Finalizing',
-          description: `Block No. ${oracle.endBlock + 1} - `,
+          description: `Block No. ${(oracle.endBlock + 1) || ''} - `,
         });
 
         if (blockCount > oracle.endBlock) {
           config.cardInfo.messages.push({
-            text: `This oracles has passed Voting end block ${oracle.endBlock} and needs to be finalized.`,
+            text: `This oracles has passed Voting end block ${oracle.endBlock || ''} and needs to be finalized.`,
             type: 'default',
           }, {
             text: 'Finalizing can be done by anybody. Once finalized oracle will enter Completed state and winning withdrawl will start.',
@@ -389,8 +352,6 @@ class OraclePage extends React.Component {
       const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
       this.onAllowanceReturn(parsedAllowance);
     }
-
-    // TODO: For any error case we will render an Oracle not found page
   }
 
   componentWillUnmount() {
@@ -569,7 +530,7 @@ class OraclePage extends React.Component {
     const { editingToggled, requestReturn } = this.props;
     const { oracle, config } = this.state;
 
-    if (!oracle) {
+    if (!oracle || !config) {
       // Don't render anything if page is loading. In future we could make a loading animation
       return <div></div>;
     }

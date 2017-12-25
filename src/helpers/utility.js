@@ -1,5 +1,8 @@
 import { Map } from 'immutable';
+import BN from 'bn.js';
 const fetch = require('node-fetch');
+const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
+const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 
 export function clearToken() {
   localStorage.removeItem('id_token');
@@ -75,7 +78,7 @@ export function timeDifference(time) {
  * @return {object}           The response data
  */
 export function request(url, options) {
-  console.log('url:', url, 'options:', options);
+  // console.log('url:', url, 'options:', options);
 
   return fetch(url, options)
     .then(parseJSON)
@@ -135,4 +138,23 @@ export function randomString(size) {
 // Returns a new random alphanumeric string suitable for object ID.
 export function newObjectId(size = 10) {
   return randomString(size);
+}
+
+/**
+ * Convert a BigNumber to ES6 Int (2^53 max == 9 007 199 254 740 992) and divide it by 10^8
+ * If result number is too small (less than 0.01) we return 0
+ * @param  {[type]}
+ * @return {[type]}
+ */
+export function convertBNHexStrToQtum(input) {
+  const bigNumber = new BN(input, 16);
+  const botoshi = new BN(BOTOSHI_TO_BOT);
+
+  const integer = bigNumber.div(botoshi).toNumber();
+  const decimal = bigNumber.mod(botoshi).toNumber();
+  const result = integer + (decimal / BOTOSHI_TO_BOT);
+
+  // if (input !== '0') { console.log(`${input} to ${result}`); }
+
+  return result >= BOT_MIN_VALUE ? result : 0;
 }

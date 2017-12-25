@@ -67,19 +67,31 @@ export default function appReducer(state = initState, action) {
 
           // Make sure address list is not too long
           combinedAddresses = combinedAddresses.slice(0, WALLET_ADDRESS_MAX_COUNT);
-
-          // Initial value for selected_wallet_address
-          newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
         }
       }
 
-      return newState.set('walletAddrs', combinedAddresses);
+      let existingAddresses = state.get('walletAddrs') || [];
+
+      if (_.isEmpty(existingAddresses)) {
+        existingAddresses = combinedAddresses;
+
+        // If initalizing, set initial value for selected_wallet_address here
+        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
+      } else { // Update existing address list if new is different
+        _.each(existingAddresses, (item) => {
+          const newAddressObj = _.find(combinedAddresses, { address: item.address });
+          _.extend(item, newAddressObj);
+        });
+      }
+
+      return newState.set('walletAddrs', existingAddresses);
     }
 
     /** Bot Balance Return - update walletAddrs with returned BOT value * */
     case actions.GET_BOT_BALANCE_RETURN:
     {
       const walletAddrs = state.get('walletAddrs');
+
       if (action && action.value) {
         const ownerAddress = action.value.address;
         const ownerBotBalance = action.value.value;
@@ -91,7 +103,8 @@ export default function appReducer(state = initState, action) {
         }
       }
 
-      return state.set('walletAddrs', walletAddrs); }
+      return state.set('walletAddrs', walletAddrs);
+    }
 
     /** Block Count * */
     case actions.GET_BLOCK_COUNT_RETURN:

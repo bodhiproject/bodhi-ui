@@ -4,7 +4,7 @@ import Progress from '../../../components/uielements/progress';
 export default class SingleProgressWidget extends React.PureComponent {
   render() {
     const {
-      label, percent, barHeight, status, info, fontColor, barColor,
+      label, percent, barHeight, fontColor, barColor, secondaryPercent, secondaryBarHeight,
     } = this.props;
 
     const wrapperStyle = { marginTop: '18px', marginBottom: '18px' };
@@ -23,30 +23,34 @@ export default class SingleProgressWidget extends React.PureComponent {
           className={barColor}
           percent={percent}
           strokeWidth={barHeight}
-          status={status}
-          showInfo={info}
+          status="active"
+          showInfo
         />
+        {typeof secondaryPercent !== 'undefined' ? <Progress
+          className={barColor || 'secondary'}
+          percent={secondaryPercent}
+          strokeWidth={secondaryBarHeight}
+          status="active"
+          showInfo
+        /> : null}
       </div>
     );
   }
 }
 
 SingleProgressWidget.propTypes = {
-  label: PropTypes.string,
-  percent: PropTypes.number,
-  barHeight: PropTypes.number,
-  status: PropTypes.string,
-  info: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  percent: PropTypes.number.isRequired,
+  barHeight: PropTypes.number.isRequired,
   fontColor: PropTypes.string,
   barColor: PropTypes.string,
+  secondaryPercent: PropTypes.number,
+  secondaryBarHeight: PropTypes.number,
 };
 
 SingleProgressWidget.defaultProps = {
-  label: 'Single Progress Label',
-  percent: 100,
-  barHeight: 8,
-  status: 'active',
-  info: false,
   fontColor: '#000',
   barColor: '',
+  secondaryPercent: undefined,
+  secondaryBarHeight: undefined,
 };

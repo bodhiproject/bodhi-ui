@@ -34,6 +34,7 @@ query{
       endBlock,
       resultSetEndBlock,
       resultSetterAddress,
+      resultSetterQAddress
     }
   }
 }
@@ -55,6 +56,7 @@ const ALL_ORACLES = gql`
       blockNum
       resultSetEndBlock
       resultSetterAddress
+      resultSetterQAddress
     }
   }
 `;
@@ -118,6 +120,7 @@ export function queryAllOracles() {
       blockNum: entry.blockNum,
       resultSetEndBlock: entry.resultSetEndBlock,
       resultSetterAddress: entry.resultSetterAddress,
+      resultSetterQAddress: entry.resultSetterQAddress,
     }));
 
     return queryData;

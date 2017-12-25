@@ -1,5 +1,9 @@
+/* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["topic","oracle"] }] */
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
+import _ from 'lodash';
+
 import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
+import { convertBNHexStrToQtum } from '../../helpers/utility';
 import actions from './actions';
 import fakeData from './fakedata';
 
@@ -18,9 +22,11 @@ export function* getTopicsRequestHandler(/* actions */) {
         // Query all topics data using graphQL call
         const result = yield call(queryAllTopics);
 
+        const topics = _.map(result, processTopic);
+
         yield put({
           type: actions.GET_TOPICS_SUCCESS,
-          value: result,
+          value: topics,
         });
       } catch (error) {
         yield put({
@@ -38,9 +44,11 @@ export function* getOraclesRequestHandler(/* actions */) {
       // Query all topics data using graphQL call
       const result = yield call(queryAllOracles);
 
+      const oracles = result.map(processOracle);
+
       yield put({
         type: actions.GET_ORACLES_SUCCESS,
-        value: result,
+        value: oracles,
       });
     } catch (error) {
       yield put({
@@ -49,6 +57,43 @@ export function* getOraclesRequestHandler(/* actions */) {
       });
     }
   });
+}
+
+/**
+ * Return a new Topic object with processed fields for UI
+ * @param  {[type]}
+ * @return {[type]}
+ */
+function processTopic(topic) {
+  if (!topic) {
+    return undefined;
+  }
+
+  const newObj = _.assign({}, topic);
+
+  newObj.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
+  newObj.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
+  newObj.oracles = _.map(topic.oracles, processOracle);
+
+  return newObj;
+}
+
+/**
+ * Return a new Oracle object with processed fields for UI
+ * @param  {[type]}
+ * @return {[type]}
+ */
+function processOracle(oracle) {
+  if (!oracle) {
+    return undefined;
+  }
+
+  const newObj = _.assign({}, oracle);
+
+  // Convert numbers in amounts from BN to int
+  newObj.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
+
+  return newObj;
 }
 
 export default function* dashboardSaga() {
