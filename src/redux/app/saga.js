@@ -1,7 +1,10 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
+import BN from 'bn.js';
 import actions from './actions';
 
 import { request } from '../../helpers/utility';
+
+const BOTOSHI_TO_BOT = 100000000;
 
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
@@ -57,10 +60,14 @@ export function* getBotBalanceRequestHandler() {
       };
 
       const result = yield call(request, 'http://localhost:8080/botbalance', options);
+      const botValue = result && result.balance ? ((new BN(result.balance, 16).toNumber()) / BOTOSHI_TO_BOT) : 0;
 
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
-        value: { result },
+        value: {
+          address: owner,
+          value: botValue,
+        },
       });
     } catch (error) {
       yield put({

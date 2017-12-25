@@ -36,48 +36,62 @@ function shortenAddress(text, maxLength) {
     : text;
 }
 
-function DropdownMenuItem({
-  address,
-  qtum,
-  bot,
-  onCopyClick,
-}) {
-  const style = {
-    paddingLeft: 32,
-    paddingRight: 32,
-    paddingTop: 16,
-    paddingBottom: 16,
-    fontSize: 16,
-  };
+class DropdownMenuItem extends React.Component {
+  render() {
+    const { onCopyClick, walletAddrs, index } = this.props;
 
-  return (
-    <Row type="flex" justify="space-between" align="middle" gutter={16} style={style}>
-      <Col>
-        <span>{address}</span>
-      </Col>
-      <Col>
-        <Tag >{qtum.toFixed(2)}</Tag>
-      </Col>
-      <Col>
-        <Tag>{bot.toFixed(2)}</Tag>
-      </Col>
-      <Col>
-        <CopyToClipboard text={address} onCopy={onCopyClick} >
-          <Button onClick={(evt) => evt.stopPropagation()}>
-            <Icon type="copy" /> Copy
-          </Button>
-        </CopyToClipboard>
-      </Col>
-    </Row>
-  );
+    const address = (walletAddrs && walletAddrs[index] && walletAddrs[index].address) || '';
+    const qtum = (walletAddrs && walletAddrs[index] && walletAddrs[index].qtum) || 0;
+    const bot = (walletAddrs && walletAddrs[index] && walletAddrs[index].bot) || 0;
+
+    const style = {
+      paddingLeft: 32,
+      paddingRight: 32,
+      paddingTop: 16,
+      paddingBottom: 16,
+      fontSize: 16,
+    };
+
+    return (
+      <Row type="flex" justify="space-between" align="middle" gutter={16} style={style}>
+        <Col>
+          <span>{address}</span>
+        </Col>
+        <Col>
+          <Tag >{qtum.toFixed(2)}</Tag>
+        </Col>
+        <Col>
+          <Tag>{bot.toFixed(2)}</Tag>
+        </Col>
+        <Col>
+          <CopyToClipboard text={address} onCopy={onCopyClick} >
+            <Button onClick={(evt) => evt.stopPropagation()}>
+              <Icon type="copy" /> Copy
+            </Button>
+          </CopyToClipboard>
+        </Col>
+      </Row>
+    );
+  }
 }
 
 DropdownMenuItem.propTypes = {
-  address: PropTypes.string.isRequired,
-  qtum: PropTypes.number.isRequired,
-  bot: PropTypes.number.isRequired,
+  // address: PropTypes.string.isRequired,
+  // qtum: PropTypes.number.isRequired,
+  // bot: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
   onCopyClick: PropTypes.func.isRequired,
+  walletAddrs: PropTypes.array,
 };
+
+DropdownMenuItem.defaultProps = {
+  walletAddrs: [],
+};
+
+const DropdownMenuItemWrapper = connect((state) => ({
+  walletAddrs: state.App.get('walletAddrs'),
+}), null)(DropdownMenuItem);
+
 
 class Topbar extends React.PureComponent {
   constructor(props) {
@@ -111,27 +125,14 @@ class Topbar extends React.PureComponent {
       onGetBlockCount, getBotBalance, selectedWalletAddress,
     } = this.props;
 
-    // Call API to retrieve BOT balance if wallet addresses have changed
-    if (!_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
+    // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
+    const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
+
+    if (_.isEmpty(botArray) || !_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
       _.each(nextProps.walletAddrs, (addressObj) => {
         const ownerAddress = addressObj.address;
-        let senderAddress;
-
-        // Determine an address that has enough qtum for gas to be a sender
-        if (addressObj.qtum >= MINIMAL_GAS_FEE) {
-          senderAddress = addressObj.address;
-        } else {
-          const objWithQtum = _.find(nextProps.walletAddrs, (item) => item.qtum >= MINIMAL_GAS_FEE);
-
-          if (objWithQtum) {
-            senderAddress = objWithQtum.address;
-          }
-        }
-
-        // Found any address with balance greater than minimal gas fee
-        if (senderAddress) {
-          getBotBalance(ownerAddress, senderAddress);
-        }
+        const senderAddress = addressObj.address;
+        getBotBalance(ownerAddress, senderAddress);
       });
     }
   }
@@ -189,15 +190,12 @@ class Topbar extends React.PureComponent {
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(walletAddrs, (item, index) => (
-            <Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
-              <DropdownMenuItem
-                address={item.address}
-                qtum={item.qtum || 0}
-                bot={item.bot || 0}
-                onCopyClick={this.onCopyClicked}
-              />
-            </Menu.Item>
+          _.map(walletAddrs, (item, index) => (<Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
+            <DropdownMenuItemWrapper
+              index={index}
+              onCopyClick={this.onCopyClicked}
+            />
+          </Menu.Item>
           ))}
         {/* Add Address button at end of dropdown <Menu.Item
                   key={KEY_ADD_ADDRESS_BTN}
