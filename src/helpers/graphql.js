@@ -21,20 +21,21 @@ query{
     qtumAmount
     botAmount
     oracles{
-      address,
-      topicAddress,
-      status,
-      token,
-      name,
-      optionIdxs,
-      options,
-      amounts,
-      resultIdx,
-      blockNum,
-      endBlock,
-      resultSetEndBlock,
-      resultSetterAddress,
+      address
+      topicAddress
+      status
+      token
+      name
+      optionIdxs
+      options
+      amounts
+      resultIdx
+      blockNum
+      endBlock
+      resultSetEndBlock
+      resultSetterAddress
       resultSetterQAddress
+      consensusThreshold
     }
   }
 }
@@ -57,6 +58,7 @@ const ALL_ORACLES = gql`
       resultSetEndBlock
       resultSetterAddress
       resultSetterQAddress
+      consensusThreshold
     }
   }
 `;
@@ -121,6 +123,7 @@ export function queryAllOracles() {
       resultSetEndBlock: entry.resultSetEndBlock,
       resultSetterAddress: entry.resultSetterAddress,
       resultSetterQAddress: entry.resultSetterQAddress,
+      consensusThreshold: entry.consensusThreshold,
     }));
 
     return queryData;

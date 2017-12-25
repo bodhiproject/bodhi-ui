@@ -92,6 +92,7 @@ function processOracle(oracle) {
 
   // Convert numbers in amounts from BN to int
   newObj.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
+  newObj.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
 
   return newObj;
 }
