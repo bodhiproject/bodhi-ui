@@ -72,8 +72,6 @@ class CardVoting extends Component {
       amount, config, token, result, radioIndex, skipToggle,
     } = this.props;
 
-    let { btnDisabled } = this.state;
-
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.afterToggle && config.afterToggle.showAmountInput;
 
@@ -96,6 +94,8 @@ class CardVoting extends Component {
     // Construct alert elements
     const alertContainerEle = this.buildAlertElements();
 
+    let btnDisabled = true;
+
     // Determine Confirm button disabled status
     if (skipToggle) {
       btnDisabled = false;
@@ -108,6 +108,8 @@ class CardVoting extends Component {
       btnDisabled = !radioIndex;
     }
 
+    btnDisabled = btnDisabled || this.state.btnDisabled; // Combine local check with this.state.btnDisabled
+
     return (
       <div>
         {amountInputEle}
@@ -117,7 +119,7 @@ class CardVoting extends Component {
           type="primary"
           onClick={this.onConfirmBtnClicked}
           size="large"
-          disabled={this.state.btnDisabled}
+          disabled={btnDisabled}
           loading={this.state.btnLoading}
         >
           {this.state.btnText}
