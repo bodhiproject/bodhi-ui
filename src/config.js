@@ -3,9 +3,9 @@ export default {
 };
 
 const siteConfig = {
-  siteName: 'Bodhi Predication Market',
+  siteName: 'Bodhi Prediction Market',
   siteIcon: 'ion-flash',
-  footerText: 'Bodhi Predication Market ©2017 Created by Bodhi.Network',
+  footerText: 'Bodhi Prediction Market ©2017 Created by Bodhi.Network',
 };
 
 const themeConfig = {
