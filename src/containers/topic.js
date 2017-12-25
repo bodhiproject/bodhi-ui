@@ -11,6 +11,7 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
+import { convertBNHexStrToQtum } from '../helpers/utility';
 
 const QTUM = 'QTUM';
 const BOT = 'BOT';
@@ -23,6 +24,8 @@ class TopicPage extends React.Component {
       address: this.props.match.params.address,
       topic: undefined, // Topic object for this page
       config: undefined,
+      qtumWinnings: undefined,
+      botWinnings: undefined,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
@@ -59,13 +62,25 @@ class TopicPage extends React.Component {
     this.pageConfiguration(topic);
 
     // Wallet address changed, call calculate winnings again
-    // if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
+    if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
+      this.calculateWinnings();
+    }
 
-    // }
+    if (calculateQtumWinningsReturn) {
+      const hexAmount = calculateQtumWinningsReturn.result['0'];
+      const qtum = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
+      this.setState({
+        qtumWinnings: qtum,
+      });
+    }
 
-    console.log(nextProps);
-    console.log('calculateQtumWinningsReturn', calculateQtumWinningsReturn);
-    console.log('calculateBotWinningsReturn', calculateBotWinningsReturn);
+    if (calculateBotWinningsReturn) {
+      const hexAmount = calculateBotWinningsReturn.result['0'];
+      const bot = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
+      this.setState({
+        botWinnings: bot,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -81,8 +96,8 @@ class TopicPage extends React.Component {
         onCalculateBotWinnings,
       } = this.props;
 
-      this.props.onCalculateQtumWinnings(this.state.topic.address, selectedWalletAddress);
-      this.props.onCalculateBotWinnings(this.state.topic.address, selectedWalletAddress);
+      this.props.onCalculateQtumWinnings(this.state.address, selectedWalletAddress);
+      this.props.onCalculateBotWinnings(this.state.address, selectedWalletAddress);
     } catch (err) {
       console.log(err.message);
     }
@@ -165,7 +180,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${1} BOT & ${1} QTUM`,
+          text: `You can withdraw ${this.state.botWinnings} BOT & ${this.state.qtumWinnings} QTUM`,
           type: 'default',
         });
 
