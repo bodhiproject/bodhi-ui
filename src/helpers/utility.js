@@ -148,7 +148,13 @@ export function newObjectId(size = 10) {
  */
 export function convertBNHexStrToQtum(input) {
   const bigNumber = new BN(input, 16);
-  const value = bigNumber.toNumber() / BOTOSHI_TO_BOT;
+  const botoshi = new BN(BOTOSHI_TO_BOT);
 
-  return value >= BOT_MIN_VALUE ? value : 0;
+  const integer = bigNumber.div(botoshi).toNumber();
+  const decimal = bigNumber.mod(botoshi).toNumber();
+  const result = integer + (decimal / BOTOSHI_TO_BOT);
+
+  // if (input !== '0') { console.log(`${input} to ${result}`); }
+
+  return result >= BOT_MIN_VALUE ? result : 0;
 }
