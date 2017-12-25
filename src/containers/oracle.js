@@ -174,15 +174,15 @@ class OraclePage extends React.Component {
               current: 1,
               value: [{
                 title: 'Topic created',
-                description: `Block No. ${oracle.blockNum}`,
+                description: `Block No. ${oracle.blockNum || ''}`,
               },
               {
                 title: 'Betting',
-                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
               },
               ],
             },
@@ -209,25 +209,25 @@ class OraclePage extends React.Component {
               current: 2,
               value: [{
                 title: 'Topic created',
-                description: `Block No. ${oracle.blockNum}`,
+                description: `Block No. ${oracle.blockNum || ''}`,
               },
               {
                 title: 'Betting',
-                description: `Block No. ${oracle.blockNum + 1} - ${oracle.endBlock}`,
+                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${oracle.endBlock + 1} - ${oracle.resultSetEndBlock}`,
+                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
               },
               ],
             },
             messages: [
               {
-                text: `Result setter ${oracle.resultSetterQAddress}`,
+                text: `Result setter ${oracle.resultSetterQAddress || ''}`,
                 type: 'default',
               },
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed for result setting.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed for result setting.`,
                 type: 'default',
               },
               {
@@ -284,17 +284,17 @@ class OraclePage extends React.Component {
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
               },
               {
                 title: 'Voting',
-                description: `Block No. ${oracle.blockNum} - ${oracle.endBlock}`,
+                description: `Block No. ${oracle.blockNum || ''} - ${oracle.endBlock || ''}`,
               },
               ],
             },
             messages: [
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || 0}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
                 type: 'default',
               }, {
                 text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
@@ -314,10 +314,7 @@ class OraclePage extends React.Component {
           },
         };
       } else if (status === 'WAITRESULT' && token === BOT) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => {
-          console.log(item.topicAddress, oracle.topicAddress);
-          return item.topicAddress === oracle.topicAddress;
-        });
+        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
         const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
 
@@ -337,7 +334,7 @@ class OraclePage extends React.Component {
               },
               {
                 title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock)}`,
+                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
               },
               ],
             },
@@ -356,19 +353,19 @@ class OraclePage extends React.Component {
         _.each(decentralizedOracles, (item) => {
           config.cardInfo.steps.value.push({
             title: 'Voting',
-            description: `Block No. ${item.blockNum} - ${item.endBlock}`,
+            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
           });
         });
 
         // Add Step for Finalizing block
         config.cardInfo.steps.value.push({
           title: 'Finalizing',
-          description: `Block No. ${oracle.endBlock + 1} - `,
+          description: `Block No. ${(oracle.endBlock + 1) || ''} - `,
         });
 
         if (blockCount > oracle.endBlock) {
           config.cardInfo.messages.push({
-            text: `This oracles has passed Voting end block ${oracle.endBlock} and needs to be finalized.`,
+            text: `This oracles has passed Voting end block ${oracle.endBlock || ''} and needs to be finalized.`,
             type: 'default',
           }, {
             text: 'Finalizing can be done by anybody. Once finalized oracle will enter Completed state and winning withdrawl will start.',
