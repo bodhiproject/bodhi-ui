@@ -61,7 +61,7 @@ class TopicPage extends React.Component {
   /** Withdraw button on click handler passed down to CardFinished */
   onWithdrawClicked(obj) {
     const senderAddress = this.getCurrentSenderAddress();
-    const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
+    const contractAddress = this.state.topic.address;
 
     this.props.onWithdraw(contractAddress, senderAddress);
   }
