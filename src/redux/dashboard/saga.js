@@ -22,8 +22,6 @@ export function* getTopicsRequestHandler(/* actions */) {
         // Query all topics data using graphQL call
         const result = yield call(queryAllTopics);
 
-        console.log('Processing topics', result);
-
         const topics = _.map(result, processTopic);
 
         yield put({
@@ -45,8 +43,6 @@ export function* getOraclesRequestHandler(/* actions */) {
     try {
       // Query all topics data using graphQL call
       const result = yield call(queryAllOracles);
-
-      console.log('Processing oracles');
 
       const oracles = result.map(processOracle);
 

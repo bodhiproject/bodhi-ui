@@ -11,7 +11,7 @@ class ProgressBar extends Component {
 
   render() {
     const {
-      label, value, percent, barHeight, status, info, marginBottom,
+      label, value, percent, barHeight, barColor, marginBottom, secondaryPercent, secondaryBarHeight,
     } = this.props;
 
     const titleStyle = {
@@ -23,11 +23,21 @@ class ProgressBar extends Component {
       <div style={{ marginBottom: `${marginBottom}px` }}>
         <h3 style={titleStyle}>{label}</h3>
         <Progress
+          className={barColor}
           percent={percent}
           strokeWidth={barHeight}
-          status={status}
-          showInfo={info}
+          status="active"
+          showInfo
         />
+
+        {typeof secondaryPercent !== 'undefined' ? <Progress
+          className={barColor || 'secondary'}
+          percent={secondaryPercent}
+          strokeWidth={secondaryBarHeight}
+          status="active"
+          showInfo
+        /> : null}
+
         <p style={{ fontSize: '14px', fontWeight: 400 }}>{value}</p>
       </div>
     );
@@ -35,22 +45,20 @@ class ProgressBar extends Component {
 }
 
 ProgressBar.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  percent: PropTypes.number,
-  barHeight: PropTypes.number,
-  status: PropTypes.string,
-  info: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  percent: PropTypes.number.isRequired,
+  barHeight: PropTypes.number.isRequired,
+  barColor: PropTypes.string,
   marginBottom: PropTypes.number,
+  secondaryPercent: PropTypes.number,
+  secondaryBarHeight: PropTypes.number,
 };
 
 ProgressBar.defaultProps = {
-  label: 'Single Progress Label',
-  value: '',
-  percent: 0,
-  barHeight: 12,
-  info: false,
-  status: 'active',
+  barColor: '',
+  secondaryPercent: undefined,
+  secondaryBarHeight: undefined,
   marginBottom: 0,
 };
 

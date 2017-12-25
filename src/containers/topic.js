@@ -27,6 +27,7 @@ class TopicPage extends React.Component {
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.pageConfiguration = this.pageConfiguration.bind(this);
   }
 
   componentWillMount() {
@@ -36,7 +37,7 @@ class TopicPage extends React.Component {
 
     if (topic) {
       // If we are able to find topic by address from allTopics
-      this.setState({ topic });
+      this.pageConfiguration(topic);
     } else if (_.isEmpty(allTopics)) {
       // Make a request to retrieve all topics
       onGetTopics();
@@ -49,7 +50,34 @@ class TopicPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { getTopicsSuccess: allTopics } = nextProps;
     const topic = _.find(allTopics, { address: this.state.address });
+    this.pageConfiguration(topic);
+  }
 
+  componentWillUnmount() {
+    this.props.onClearRequestReturn();
+    this.props.clearEditingToggled();
+  }
+
+  /** Withdraw button on click handler passed down to CardFinished */
+  onWithdrawClicked(obj) {
+    const senderAddress = this.getCurrentSenderAddress();
+    const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
+
+    this.props.onWithdraw(contractAddress, senderAddress);
+  }
+
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
+  /**
+   * Configure UI elements in this.state.config and set topic object in this.state
+   * @param  {object} topic object
+   * @return {}
+   */
+  pageConfiguration(topic) {
     if (topic) {
       let config;
 
@@ -116,25 +144,6 @@ class TopicPage extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.onClearRequestReturn();
-    this.props.clearEditingToggled();
-  }
-
-  /** Withdraw button on click handler passed down to CardFinished */
-  onWithdrawClicked(obj) {
-    const senderAddress = this.getCurrentSenderAddress();
-    const contractAddress = 'fe99572f3f4fbd3ad266f2578726b24bd0583396';
-
-    this.props.onWithdraw(contractAddress, senderAddress);
-  }
-
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
   render() {
     const { requestReturn } = this.props;
     const { topic, config } = this.state;
@@ -153,18 +162,19 @@ class TopicPage extends React.Component {
     }];
 
     const qtumTotal = _.sum(topic.qtumAmount);
-    const qtumBalance = _.map(topic.qtumAmount, (amount, idx) => ({
-      name: topic.options[idx],
-      value: `${amount} QTUM`,
-      percent: qtumTotal === 0 ? qtumTotal : _.floor((amount / qtumTotal) * 100),
-    }));
-
     const botTotal = _.sum(topic.botAmount);
-    const botBalance = _.map(topic.botAmount, (amount, idx) => ({
-      name: topic.options[idx],
-      value: `${amount} BOT`,
-      percent: botTotal === 0 ? botTotal : _.floor((amount / botTotal) * 100),
-    }));
+
+    const progressValues = _.map(topic.options, (opt, idx) => {
+      const qtumAmount = topic.qtumAmount[idx];
+      const botAmount = topic.botAmount[idx];
+
+      return {
+        name: opt,
+        value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
+        percent: qtumTotal === 0 ? qtumTotal : _.floor((qtumAmount / qtumTotal) * 100),
+        secondaryPercent: botTotal === 0 ? botTotal : _.floor((botAmount / botTotal) * 100),
+      };
+    });
 
     const topicElement = (<Row
       gutter={28}
@@ -188,19 +198,20 @@ class TopicPage extends React.Component {
           <IsoWidgetsWrapper padding="32px">
             <CardFinished
               amount={qtumTotal}
-              voteBalance={qtumBalance}
               onWithdraw={this.onWithdrawClicked}
               radioIndex={topic.resultIdx}
               result={requestReturn}
             >
-              {qtumBalance.map((entry) => (
+              {_.map(progressValues, (entry, index) => (
                 <ProgressBar
-                  key={entry.name}
+                  key={`progress ${index}`}
                   label={entry.name}
                   value={entry.value}
                   percent={entry.percent}
                   barHeight={12}
-                  info
+                  barColor={topic.resultIdx === index ? '' : 'grey'}
+                  secondaryPercent={entry.secondaryPercent}
+                  secondaryBarHeight={10}
                   marginBottom={18}
                 />))}
             </CardFinished>
