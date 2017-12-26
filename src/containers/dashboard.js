@@ -161,15 +161,27 @@ function buildOracleColElement(oracles) {
     let optionsEle = null;
 
     if (!_.isEmpty(displayOptions)) {
-      optionsEle = displayOptions.map((result, index) => (
-        <SingleProgressWidget
-          key={`option${index}`}
-          label={result}
-          percent={threshold === 0 ? threshold : _.round((oracle.amounts[oracle.optionIdxs[index]] / threshold) * 100)}
-          barHeight={12}
-          fontColor="#4A4A4A"
-        />
-      ));
+      if (oracle.token === 'BOT') {
+        optionsEle = displayOptions.map((result, index) => (
+          <SingleProgressWidget
+            key={`option${index}`}
+            label={result}
+            percent={threshold === 0 ? threshold : _.round((oracle.amounts[oracle.optionIdxs[index]] / threshold) * 100)}
+            barHeight={12}
+            fontColor="#4A4A4A"
+          />
+        ));
+      } else {
+        optionsEle = displayOptions.map((result, index) => (
+          <SingleProgressWidget
+            key={`option${index}`}
+            label={result}
+            percent={totalBalance === 0 ? totalBalance : _.round((oracle.amounts[index] / totalBalance) * 100)}
+            barHeight={12}
+            fontColor="#4A4A4A"
+          />
+        ));
+      }
     }
 
     // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
