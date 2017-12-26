@@ -178,3 +178,12 @@ export function decimalToBotoshiHex(decimalNum) {
   const botoshiBN = new BN(BOTOSHI_TO_BOT);
   return bigNumber.mul(botoshiBN).add(decimalsBN).toJSON();
 }
+
+/**
+ * Convert ES6 Int to BigNumber hex string.
+ * @param  {Number} Number to convert (no decimals).
+ * @return {String} The converted number to BigNumber in hex format.
+ */
+export function numToBNHex(number) {
+  return new BN(number).toJSON();
+}
