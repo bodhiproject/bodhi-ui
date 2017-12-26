@@ -91,7 +91,6 @@ class CreateTopic extends React.Component {
     console.log(`hexString is ${hexString.length}`);
 
     if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
-      // form.validateFields(['title']);
       callback();
     } else {
       callback('Event name is too long.');
