@@ -23,21 +23,14 @@ const actions = {
 
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
   SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
-  addWalletAddress: (value) => {
-    console.log(`actions: ${value}`);
-    return {
-      type: actions.ADD_WALLET_ADDRESS,
-      value,
-    };
-  },
-  selectWalletAddress: (value) => {
-    console.log(`selectWalletAddress actions: ${value}`);
-
-    return {
-      type: actions.SELECT_WALLET_ADDRESS,
-      value,
-    };
-  },
+  addWalletAddress: (value) => ({
+    type: actions.ADD_WALLET_ADDRESS,
+    value,
+  }),
+  selectWalletAddress: (value) => ({
+    type: actions.SELECT_WALLET_ADDRESS,
+    value,
+  }),
 
   LIST_UNSPENT: 'LIST_UNSPENT',
   LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',

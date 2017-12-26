@@ -6,8 +6,6 @@ import { endpoint } from '../../config/app';
 
 const { bodhiapi } = endpoint;
 
-console.log(`bodhiapi is ${bodhiapi}`);
-
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {

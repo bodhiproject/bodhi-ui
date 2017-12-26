@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import CreateTopic from '../components/bodhi/createTopic';
@@ -39,13 +39,6 @@ CreateTopicContainer.defaultProps = {
 
 };
 
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
 
 // Wrap the component to inject dispatch and state into it
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTopicContainer);
+export default connect(null, null)(CreateTopicContainer);

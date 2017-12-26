@@ -21,9 +21,6 @@ class CreateTopic extends React.Component {
     super(props);
 
     this.state = {
-      options: [],
-      // bettingEndBlock: 0,
-      // resultSettingEndBlock: 0,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -84,11 +81,7 @@ class CreateTopic extends React.Component {
   }
 
   checkEventName(rule, value, callback) {
-    const { form } = this.props;
-
     const hexString = Web3Utils.toHex(value);
-
-    console.log(`hexString is ${hexString.length}`);
 
     if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
       callback();
@@ -125,8 +118,6 @@ class CreateTopic extends React.Component {
         },
       },
     };
-
-    const optionsEle = _.map(this.state.options, (item) => (<Input />));
 
     let alertElement;
 
@@ -301,7 +292,6 @@ class OptionsInput extends React.Component {
   onValueChanged(evt) {
     const { value } = evt.target;
     const { index } = evt.target.dataset;
-    const { onChange } = this.props;
 
     const newValue = this.state.value;
     newValue[index] = value;
@@ -309,11 +299,10 @@ class OptionsInput extends React.Component {
     this.triggerChange(newValue);
   }
 
-  onAddBtnClicked(evt) {
+  onAddBtnClicked() {
     const numOfOptions = this.state.value.length;
 
     if (numOfOptions < MAX_OPTION_NUMBER) {
-      const newKey = numOfOptions;
       const newValue = this.state.value;
 
       newValue.push('');
