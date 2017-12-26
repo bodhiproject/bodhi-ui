@@ -343,7 +343,8 @@ class OraclePage extends React.Component {
     }
 
     if (allowanceReturn) {
-      const parsedAllowance = parseInt(allowanceReturn.result.executionResult.output, 16);
+      console.log(allowanceReturn);
+      const parsedAllowance = parseInt(allowanceReturn.result.remaining, 16);
       this.onAllowanceReturn(parsedAllowance);
     }
   }
