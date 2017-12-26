@@ -181,7 +181,7 @@ class CardVoting extends Component {
       <div className="cardVoting">
         <div className="header">
           <p style={{ marginBottom: '24px' }}>RAISED:</p>
-          <h3><span>amount</span>
+          <h3><span>{amount}</span>
             <span>{token}</span></h3>
         </div>
         <div className="body">
