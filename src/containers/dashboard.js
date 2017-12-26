@@ -51,6 +51,10 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.tabIndex !== this.props.tabIndex) {
+      this.props.onGetTopics();
+      this.props.onGetOracles();
+    }
   }
 
   render() {
@@ -171,7 +175,9 @@ function buildOracleColElement(oracles) {
     // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
     // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
     if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      optionsEle.push(<div key="option-placeholder" style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
+      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+        optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
+      }
     }
 
     // Constructing Card element on the right
@@ -265,7 +271,9 @@ function getFinishedItems(topicEvents) {
     // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
     // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
     if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      optionsEle.push(<div key="option-placeholder" style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
+      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+        optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
+      }
     }
 
     const topicEle = (
