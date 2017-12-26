@@ -3,6 +3,7 @@ import BN from 'bn.js';
 const fetch = require('node-fetch');
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
+const BOT_DECIMALS = 8;
 
 export function clearToken() {
   localStorage.removeItem('id_token');
@@ -157,4 +158,32 @@ export function convertBNHexStrToQtum(input) {
   // if (input !== '0') { console.log(`${input} to ${result}`); }
 
   return result >= BOT_MIN_VALUE ? result : 0;
+}
+
+/**
+ * Convert ES6 Int to Botoshi (BigNumber format).
+ * @param  {Number} Number to convert to Botoshi in decimal format.
+ * @return {String} The converted decimal to BigNumber in hex format.
+ */
+export function decimalToBotoshiHex(decimalNum) {
+  // Converting to BigNumber drops the decimals so we need to store the decimals as a BN to add it back.
+  let decimalsBN;
+  if (decimalNum.toString().indexOf('.') !== -1) {
+    decimalsBN = new BN(decimalNum.toFixed(BOT_DECIMALS).toString().split('.')[1]);
+  } else {
+    decimalsBN = new BN(0);
+  }
+
+  const bigNumber = new BN(decimalNum);
+  const botoshiBN = new BN(BOTOSHI_TO_BOT);
+  return bigNumber.mul(botoshiBN).add(decimalsBN).toJSON();
+}
+
+/**
+ * Convert ES6 Int to BigNumber hex string.
+ * @param  {Number} Number to convert (no decimals).
+ * @return {String} The converted number to BigNumber in hex format.
+ */
+export function numToBNHex(number) {
+  return new BN(number).toJSON();
 }
