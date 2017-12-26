@@ -26,8 +26,6 @@ class CardFinished extends Component {
       amount, children, result,
     } = this.props;
 
-    const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
     // Build Alert elements based on result
     let alertElement;
 
@@ -66,7 +64,7 @@ class CardFinished extends Component {
       <div className="cardVoting">
         <div className="header">
           <p style={{ marginBottom: '24px' }}>RAISED:</p>
-          <h3><span>{amountStr}</span>
+          <h3><span>{amount.toFixed(2)}</span>
             <span>QTUM</span></h3>
         </div>
         <div className="body">
