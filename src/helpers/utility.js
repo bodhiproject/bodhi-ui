@@ -3,6 +3,7 @@ import BN from 'bn.js';
 const fetch = require('node-fetch');
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
+const BOT_DECIMALS = 8;
 
 export function clearToken() {
   localStorage.removeItem('id_token');
@@ -165,7 +166,15 @@ export function convertBNHexStrToQtum(input) {
  * @return {String} The converted decimal to BigNumber in hex format.
  */
 export function decimalToBotoshiHex(decimalNum) {
+  // Converting to BigNumber drops the decimals so we need to store the decimals as a BN to add it back.
+  let decimalsBN;
+  if (decimalNum.toString().indexOf('.') !== -1) {
+    decimalsBN = new BN(decimalNum.toFixed(BOT_DECIMALS).toString().split('.')[1]);
+  } else {
+    decimalsBN = new BN(0);
+  }
+
   const bigNumber = new BN(decimalNum);
   const botoshiBN = new BN(BOTOSHI_TO_BOT);
-  return bigNumber.mul(botoshiBN).toJSON();
+  return bigNumber.mul(botoshiBN).add(decimalsBN).toJSON();
 }
