@@ -2,11 +2,16 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
+import { endpoint } from '../../config/app';
+
+const { bodhiapi } = endpoint;
+
+console.log(`bodhiapi is ${bodhiapi}`);
 
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {
-      const result = yield call(request, 'http://localhost:8080/listunspent');
+      const result = yield call(request, `${bodhiapi}/listunspent`);
 
       yield put({
         type: actions.LIST_UNSPENT_RESULT,
@@ -24,7 +29,7 @@ export function* listUnspentRequestHandler() {
 export function* getBlockCountRequestHandler() {
   yield takeEvery(actions.GET_BLOCK_COUNT, function* getBlockCountRequest() {
     try {
-      const result = yield call(request, 'http://localhost:8080/getblockcount');
+      const result = yield call(request, `${bodhiapi}/getblockcount`);
 
       yield put({
         type: actions.GET_BLOCK_COUNT_RETURN,
@@ -56,7 +61,7 @@ export function* getBotBalanceRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, 'http://localhost:8080/botbalance', options);
+      const result = yield call(request, `${bodhiapi}/botbalance`, options);
       const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0; // Convert BN hex string from request to BOT number
 
       yield put({

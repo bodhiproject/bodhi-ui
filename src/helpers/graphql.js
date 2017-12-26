@@ -2,9 +2,12 @@ import gql from 'graphql-tag';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { endpoint } from '../config/app';
+
+const { graphql } = endpoint;
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: 'http://localhost:5555/graphql' }),
+  link: new HttpLink({ uri: graphql }),
   cache: new InMemoryCache(),
 });
 
@@ -62,25 +65,6 @@ const ALL_ORACLES = gql`
     }
   }
 `;
-
-// const ORACLES_BY_ADDRESS = gql`
-//   query AllOracles($topicAddress: String) {
-//     allOracles(filter: {
-//       topicAddress: $topicAddress
-//     }) {
-//       topicAddress
-//       token
-//       name
-//       status
-//       options
-//       optionIdxs
-//       resultIdx
-//       amounts
-//       endBlock
-//       blockNum
-//     }
-//   }
-// `;
 
 export function queryAllTopics() {
   return client.query({ query: ALL_TOPICS }).then((res) => {
