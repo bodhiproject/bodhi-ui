@@ -63,7 +63,7 @@ class OraclePage extends React.Component {
     }
 
     return _.map(oracle.optionIdxs, (optIndex, index) => {
-      const optionAmount = oracle.amounts[index] || 0;
+      const optionAmount = oracle.amounts[optIndex] || 0;
 
       return {
         name: oracle.options[optIndex],
