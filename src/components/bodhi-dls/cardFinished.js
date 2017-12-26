@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Button, Alert } from 'antd';
 import { connect } from 'react-redux';
 
-import topicActions from '../../redux/topic/actions';
-
 class CardFinished extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +23,7 @@ class CardFinished extends Component {
 
   render() {
     const {
-      amount, config, children, result,
+      amount, children, result,
     } = this.props;
 
     const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -96,7 +94,6 @@ class CardFinished extends Component {
 
 CardFinished.propTypes = {
   amount: PropTypes.number,
-  config: PropTypes.object,
   children: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.element,
@@ -107,17 +104,8 @@ CardFinished.propTypes = {
 
 CardFinished.defaultProps = {
   amount: 0,
-  config: undefined,
   children: [],
   result: undefined,
 };
 
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CardFinished);
+export default connect(null, null)(CardFinished);

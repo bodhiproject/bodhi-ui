@@ -12,8 +12,6 @@ import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
-import { listUnspent, getBlockCount, bet, setResult, getBetBalances, getVoteBalances, getTotalBets, getTotalVotes,
-  getResult, finished } from '../helpers/blockchain/contract';
 
 const TAB_BETTING = 0;
 const TAB_SETTING = 1;

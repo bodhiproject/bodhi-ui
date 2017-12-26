@@ -81,15 +81,15 @@ class TopicPage extends React.Component {
         onCalculateBotWinnings,
       } = this.props;
 
-      this.props.onCalculateQtumWinnings(this.state.address, selectedWalletAddress);
-      this.props.onCalculateBotWinnings(this.state.address, selectedWalletAddress);
+      onCalculateQtumWinnings(this.state.address, selectedWalletAddress);
+      onCalculateBotWinnings(this.state.address, selectedWalletAddress);
     } catch (err) {
       console.log(err.message);
     }
   }
 
   /** Withdraw button on click handler passed down to CardFinished */
-  onWithdrawClicked(obj) {
+  onWithdrawClicked() {
     const senderAddress = this.getCurrentSenderAddress();
     const contractAddress = this.state.topic.address;
 

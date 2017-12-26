@@ -69,10 +69,9 @@ class CardVoting extends Component {
 
   getAfterToggleView() {
     const {
-      amount, config, token, result, radioIndex, skipToggle,
+      config, token, radioIndex, skipToggle,
     } = this.props;
 
-    const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const showAmountInput = config && config.afterToggle && config.afterToggle.showAmountInput;
 
     // Construct amount input

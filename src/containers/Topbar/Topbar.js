@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
-import { TopbarSearch } from '../../components/topbar';
+// import { TopbarSearch } from '../../components/topbar';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
 
@@ -17,7 +17,6 @@ const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
 const POOL_INTERVAL = 30000;
-const MINIMAL_GAS_FEE = 0.1;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -119,7 +118,7 @@ class Topbar extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetBlockCount, getBotBalance, selectedWalletAddress,
+      onGetBlockCount, getBotBalance,
     } = this.props;
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
@@ -187,7 +186,7 @@ class Topbar extends React.PureComponent {
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(walletAddrs, (item, index) => (<Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
+          _.map(walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH), (item, index) => (<Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
             <DropdownMenuItemWrapper
               index={index}
               onCopyClick={this.onCopyClicked}

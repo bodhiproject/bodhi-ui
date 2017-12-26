@@ -12,7 +12,6 @@ import ProgressBar from '../components/bodhi-dls/progressBar';
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
-import appActions from '../redux/app/actions';
 import topicActions from '../redux/topic/actions';
 
 const RadioGroup = Radio.Group;
@@ -20,15 +19,12 @@ const QTUM = 'QTUM';
 const BOT = 'BOT';
 const DEFAULT_RADIO_VALUE = 0;
 const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
-const SUB_REQ_DELAY = 60 * 1000; // Delay subsequent request by 60 sec
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 const OracleType = {
   CENTRALISED: 'CENTRALISED',
   DECENTRALISED: 'DECENTRALISED',
 };
-
-let allowanceTimer;
 
 class OraclePage extends React.Component {
   /**
@@ -127,7 +123,7 @@ class OraclePage extends React.Component {
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
 
     if (oracle) {
-      const { token, status, endBlock } = oracle;
+      const { token, status } = oracle;
       let config;
 
       /** Determine what config to use in current card * */
@@ -338,8 +334,6 @@ class OraclePage extends React.Component {
             type: 'default',
           });
         }
-      } else {
-        console.warn('Oracle exists but cant determine status.');
       }
 
       this.setState({
