@@ -189,14 +189,6 @@ class TopicPage extends React.Component {
       return <div></div>;
     }
 
-    const timeline = [{
-      label: 'Prediction start block',
-      value: topic.blockNum,
-    }, {
-      label: 'Prediction end block',
-      value: topic.bettingEndBlock || 56000,
-    }];
-
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
 
@@ -207,8 +199,8 @@ class TopicPage extends React.Component {
       return {
         name: opt,
         value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
-        percent: qtumTotal === 0 ? qtumTotal : _.floor((qtumAmount / qtumTotal) * 100),
-        secondaryPercent: botTotal === 0 ? botTotal : _.floor((botAmount / botTotal) * 100),
+        percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
+        secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };
     });
 
