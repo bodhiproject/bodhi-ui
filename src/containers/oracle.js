@@ -64,11 +64,12 @@ class OraclePage extends React.Component {
 
     return _.map(oracle.optionIdxs, (optIndex, index) => {
       const optionAmount = oracle.amounts[optIndex] || 0;
+      const threshold = oracle.consensusThreshold;
 
       return {
         name: oracle.options[optIndex],
         value: `${optionAmount} ${oracle.token}`,
-        percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
+        percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
       };
     });
   }

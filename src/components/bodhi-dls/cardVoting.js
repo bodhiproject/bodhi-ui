@@ -175,13 +175,13 @@ class CardVoting extends Component {
     const {
       amount, token, children, editingToggled, skipToggle,
     } = this.props;
-    const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    // const amountStr = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     return (
       <div className="cardVoting">
         <div className="header">
           <p style={{ marginBottom: '24px' }}>RAISED:</p>
-          <h3><span>{amountStr}</span>
+          <h3><span>amount</span>
             <span>{token}</span></h3>
         </div>
         <div className="body">

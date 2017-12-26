@@ -155,6 +155,8 @@ function buildOracleColElement(oracles) {
       displayOptions = displayOptions.slice(0, NUM_SHOW_IN_OPTIONS);
     }
 
+    const threshold = oracle.consensusThreshold;
+
     // Constructing opitons elements
     let optionsEle = null;
 
@@ -163,7 +165,7 @@ function buildOracleColElement(oracles) {
         <SingleProgressWidget
           key={`option${index}`}
           label={result}
-          percent={totalBalance === 0 ? totalBalance : _.floor((oracle.amounts[index] / totalBalance) * 100)}
+          percent={threshold === 0 ? threshold : _.round((oracle.amounts[oracle.optionIdxs[index]] / threshold) * 100)}
           barHeight={12}
           fontColor="#4A4A4A"
         />
@@ -238,8 +240,8 @@ function getFinishedItems(topicEvents) {
       return {
         name: opt,
         value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
-        percent: qtumTotal === 0 ? qtumTotal : _.floor((qtumAmount / qtumTotal) * 100),
-        secondaryPercent: botTotal === 0 ? botTotal : _.floor((botAmount / botTotal) * 100),
+        percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
+        secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };
     });
 
