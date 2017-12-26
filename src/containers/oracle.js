@@ -13,12 +13,13 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
+import { decimalToBotoshiHex } from '../helpers/utility';
 
 const RadioGroup = Radio.Group;
 const QTUM = 'QTUM';
 const BOT = 'BOT';
 const DEFAULT_RADIO_VALUE = 0;
-const ORACLE_BOT_THRESHOLD = 10000000000; // Botoshi
+const ORACLE_BOT_THRESHOLD = 100;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 const OracleType = {
@@ -445,7 +446,7 @@ class OraclePage extends React.Component {
     const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.topicAddress, amount, selectedWalletAddress);
+    onApprove(oracle.topicAddress, decimalToBotoshiHex(amount), selectedWalletAddress);
 
     this.setState({
       approving: true,
@@ -473,7 +474,7 @@ class OraclePage extends React.Component {
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
-    onVote(oracle.address, selectedIndex, amount, selectedWalletAddress);
+    onVote(oracle.address, selectedIndex, decimalToBotoshiHex(amount), selectedWalletAddress);
   }
 
   finalizeResult() {
