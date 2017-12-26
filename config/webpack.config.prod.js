@@ -128,6 +128,7 @@ module.exports = {
           },
         ],
         include: paths.appSrc,
+        exclude: paths.appSrc + '/modules'
       },
       // ** ADDING/UPDATING LOADERS **
       // The "file" loader handles all assets unless explicitly excluded.
@@ -168,6 +169,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
+        exclude: paths.appSrc + '/modules',
         loader: require.resolve('babel-loader'),
         options: {
           plugins: [['import', { libraryName: 'antd', style: true }]],

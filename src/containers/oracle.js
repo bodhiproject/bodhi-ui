@@ -60,7 +60,7 @@ class OraclePage extends React.Component {
         return {
           name: optionName,
           value: `${optionAmount} ${oracle.token}`,
-          percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+          percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
         };
       });
     }
@@ -71,7 +71,7 @@ class OraclePage extends React.Component {
       return {
         name: oracle.options[optIndex],
         value: `${optionAmount} ${oracle.token}`,
-        percent: totalBalance === 0 ? totalBalance : _.floor((optionAmount / totalBalance) * 100),
+        percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
       };
     });
   }

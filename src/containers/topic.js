@@ -11,7 +11,6 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
-import { convertBNHexStrToQtum } from '../helpers/utility';
 
 const QTUM = 'QTUM';
 const BOT = 'BOT';
@@ -24,8 +23,6 @@ class TopicPage extends React.Component {
       address: this.props.match.params.address,
       topic: undefined, // Topic object for this page
       config: undefined,
-      qtumWinnings: undefined,
-      botWinnings: undefined,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
@@ -65,23 +62,8 @@ class TopicPage extends React.Component {
       this.calculateWinnings();
     }
 
-    let qtumWinnings;
-    if (calculateQtumWinningsReturn) {
-      const hexAmount = calculateQtumWinningsReturn.result['0'];
-      qtumWinnings = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
-      this.setState((prevState, props) => ({
-        qtumWinnings,
-      }));
-    }
-
-    let botWinnings;
-    if (calculateBotWinningsReturn) {
-      const hexAmount = calculateBotWinningsReturn.result['0'];
-      botWinnings = hexAmount ? convertBNHexStrToQtum(hexAmount) : 0;
-      this.setState((prevState, props) => ({
-        botWinnings,
-      }));
-    }
+    topic.qtumWinnings = calculateQtumWinningsReturn;
+    topic.botWinnings = calculateBotWinningsReturn;
 
     this.pageConfiguration(topic);
   }
@@ -183,7 +165,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${this.state.botWinnings} BOT & ${this.state.qtumWinnings} QTUM.`,
+          text: `You can withdraw ${topic.botWinnings || 0} BOT & ${topic.qtumWinnings || 0} QTUM.`,
           type: 'default',
         });
 
@@ -207,14 +189,6 @@ class TopicPage extends React.Component {
       return <div></div>;
     }
 
-    const timeline = [{
-      label: 'Prediction start block',
-      value: topic.blockNum,
-    }, {
-      label: 'Prediction end block',
-      value: topic.bettingEndBlock || 56000,
-    }];
-
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
 
@@ -225,8 +199,8 @@ class TopicPage extends React.Component {
       return {
         name: opt,
         value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
-        percent: qtumTotal === 0 ? qtumTotal : _.floor((qtumAmount / qtumTotal) * 100),
-        secondaryPercent: botTotal === 0 ? botTotal : _.floor((botAmount / botTotal) * 100),
+        percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
+        secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };
     });
 
@@ -304,9 +278,9 @@ TopicPage.propTypes = {
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
   onCalculateQtumWinnings: PropTypes.func,
-  calculateQtumWinningsReturn: PropTypes.object,
+  calculateQtumWinningsReturn: PropTypes.number,
   onCalculateBotWinnings: PropTypes.func,
-  calculateBotWinningsReturn: PropTypes.object,
+  calculateBotWinningsReturn: PropTypes.number,
   onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,

@@ -10,9 +10,11 @@ import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
 
 const FormItem = Form.Item;
+const Web3Utils = require('web3-utils');
 
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
+const MAX_LEN_EVENTNAME_HEX = 640;
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -27,6 +29,7 @@ class CreateTopic extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
+    this.checkEventName = this.checkEventName.bind(this);
   }
 
   componentWillMount() {
@@ -78,6 +81,21 @@ class CreateTopic extends React.Component {
     evt.preventDefault();
 
     this.props.history.push('/');
+  }
+
+  checkEventName(rule, value, callback) {
+    const { form } = this.props;
+
+    const hexString = Web3Utils.toHex(value);
+
+    console.log(`hexString is ${hexString.length}`);
+
+    if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
+      // form.validateFields(['title']);
+      callback();
+    } else {
+      callback('Event name is too long.');
+    }
   }
 
   render() {
@@ -145,7 +163,12 @@ class CreateTopic extends React.Component {
             {getFieldDecorator('title', {
               rules: [{
                 required: true, message: 'Please enter a title.',
-              }],
+              },
+              {
+                validator: this.checkEventName,
+              },
+              ],
+
             })(<Input
               placeholder="e.g. Who will be the next president of the United States?"
             />)}
