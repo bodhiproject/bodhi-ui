@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Alert, Button, Form, Input, message } from 'antd';
+import { Alert, Button, Form, Input, message, InputNumber } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -175,7 +175,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder={`Current block number ${blockCount}`} />)}
+            })(<InputNumber min={blockCount + 1} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -185,7 +185,7 @@ class CreateTopic extends React.Component {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<Input placeholder={`Current block number ${blockCount}`} />)}
+            })(<InputNumber min={(_.isNumber(this.props.form.getFieldValue('bettingEndBlock')) ? this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1} />)}
           </FormItem>
 
           <FormItem
