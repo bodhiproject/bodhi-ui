@@ -165,7 +165,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${topic.botWinnings || 0} BOT & ${topic.qtumWinnings || 0} QTUM.`,
+          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} BOT & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} QTUM.`,
           type: 'default',
         });
 
@@ -198,7 +198,7 @@ class TopicPage extends React.Component {
 
       return {
         name: opt,
-        value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
+        value: `${qtumAmount.toFixed(2)} ${QTUM}, ${botAmount.toFixed(2)} ${BOT}`,
         percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
         secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };

@@ -131,7 +131,7 @@ function buildOracleColElement(oracles) {
   _.each(oracles, (oracle) => {
     const totalBalance = _.sum(oracle.amounts);
 
-    const raisedString = `Raised: ${totalBalance} ${oracle.token}`;
+    const raisedString = `Raised: ${totalBalance.toFixed(2)} ${oracle.token}`;
     const endBlockString = `Ends: ${oracle.endBlock ? oracle.endBlock : '45000'}`;
 
     let displayOptions = [];
@@ -242,7 +242,7 @@ function getFinishedItems(topicEvents) {
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
 
-    const raisedString = `Raised: ${qtumTotal} QTUM, ${botTotal} BOT`;
+    const raisedString = `Raised: ${qtumTotal.toFixed(2)} QTUM, ${botTotal.toFixed(2)} BOT`;
     const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : ''}`;
 
     let optionBalances = _.map(topic.options, (opt, idx) => {
