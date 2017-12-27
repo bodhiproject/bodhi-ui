@@ -23,9 +23,16 @@
       width: 150px;
     }
 
-    .ant-btn-primary{
-      background-color: @purple;
+    .ant-btn-primary {
       margin-right: 24px;
+
+      &:enabled {
+        background-color: @purple;
+      }
+
+      &:disabled {
+        background-color: none;
+      }
     }
   }
 
@@ -43,11 +50,11 @@
     line-height: @inputHeight;
   }
 
-  .ant-input-number{
+  .ant-input-number {
     height: calc(@inputHeight~" - 4px");
     width: 100%;
-    
-    .ant-input-number-input{
+
+    .ant-input-number-input {
       height: calc(@inputHeight~" - 6px");
     }
   }
@@ -65,7 +72,7 @@
     }
   }
 
-  .alert-container{
+  .alert-container {
     margin-bottom: 24px;
   }
 }
