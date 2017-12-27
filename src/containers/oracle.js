@@ -374,7 +374,7 @@ class OraclePage extends React.Component {
       case 'SETTING': {
         this.setState({
           checkingAllowance: true,
-          voteAmount: ORACLE_BOT_THRESHOLD,
+          voteAmount: this.state.oracle.consensusThreshold,
         });
         break;
       }
