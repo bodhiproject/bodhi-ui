@@ -449,6 +449,9 @@ class OraclePage extends React.Component {
         }
       }
 
+      // Reset allowance return and states for the next vote/setResult
+      this.props.clearAllowanceReturn();
+
       this.setState({
         isApproving: false,
         isApproved: true,
@@ -622,6 +625,7 @@ OraclePage.propTypes = {
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
   clearEditingToggled: PropTypes.func,
+  clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
   blockCount: PropTypes.number,
@@ -642,6 +646,7 @@ OraclePage.defaultProps = {
   onClearRequestReturn: undefined,
   requestReturn: undefined,
   clearEditingToggled: undefined,
+  clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
   blockCount: 0,
 };
@@ -671,6 +676,7 @@ function mapDispatchToProps(dispatch) {
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
+    clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
   };
 }
 

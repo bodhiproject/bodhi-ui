@@ -10,6 +10,7 @@ export default function topicReducer(
   state = initState,
   action
 ) {
+  console.log(action);
   switch (action.type) {
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);
@@ -63,6 +64,10 @@ export default function topicReducer(
     /* Clear request return on the page */
     case actions.CLEAR_REQ_RETURN:
       return state.set('req_return', undefined);
+
+    /* Clear allowance return on Oracle page */
+    case actions.CLEAR_ALLOWANCE_RETURN:
+      return state.set('allowance_return', undefined);
 
     default:
       return state;

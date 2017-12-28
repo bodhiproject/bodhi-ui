@@ -1,3 +1,5 @@
+/* eslint no-lonely-if: 0 */ // Disable "Unexpected if as the only statement in an else block"
+
 import React, { Component, PropTypes } from 'react';
 import { Button, InputNumber, Alert } from 'antd';
 import { connect } from 'react-redux';
@@ -24,37 +26,44 @@ class CardVoting extends Component {
 
   componentWillMount() {
     const { config } = this.props;
-
-    const btnText = config && config.beforeToggle && config.beforeToggle.btnText;
-    const btnDisabled = config && config.beforeToggle && config.beforeToggle.btnDisabled;
-
-    this.setState({
-      btnText,
-      btnDisabled,
-    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { editingToggled, isApproving, result } = nextProps;
+    const {
+      editingToggled, isApproving, result, config,
+    } = nextProps;
 
-    // Determine Confirm button disabled status based on request return
-    if (this.props.editingToggled === false && editingToggled === true) {
-      this.setState({
-        btnText: this.props.config.afterToggle.btnText,
-      });
-    } else if (isApproving) {
-      this.setState({
-        btnText: 'Approving BOT transfer... please wait',
-        btnLoading: true,
-      });
-    } else if (result && result.result) {
-      // Disable the button if request went through
-      this.setState({
-        btnText: 'Transaction posted',
-        btnLoading: false,
-        btnDisabled: true,
-      });
+    // Determine button status by config and return
+    let btnText;
+    let btnDisabled = false;
+    let btnLoading = false;
+
+    if (!editingToggled) {
+      // Before toggle state
+      btnText = config && config.beforeToggle && config.beforeToggle.btnText;
+      btnDisabled = config && config.beforeToggle && config.beforeToggle.btnDisabled;
+    } else {
+      // After toggle state
+      btnText = config && config.beforeToggle && config.afterToggle.btnText;
+
+      // Determine Confirm button disabled status based on request return
+      if (isApproving) {
+        btnText = 'Approving BOT transfer... please wait';
+        btnLoading = true;
+        btnDisabled = false;
+      } else if (result && result.result) {
+        // Disable the button if request went through
+        btnText = 'Transaction posted';
+        btnLoading = false;
+        btnDisabled = true;
+      }
     }
+
+    this.setState({
+      btnLoading,
+      btnText,
+      btnDisabled,
+    });
   }
 
   onConfirmBtnClicked() {

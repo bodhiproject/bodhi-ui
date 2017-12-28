@@ -55,6 +55,7 @@ const topicActions = {
 
   ALLOWANCE: 'ALLOWANCE',
   ALLOWANCE_RETURN: 'ALLOWANCE_RETURN',
+  CLEAR_ALLOWANCE_RETURN: 'CLEAR_ALLOWANCE_RETURN',
   onAllowance: (owner, spender, senderAddress) => ({
     type: topicActions.ALLOWANCE,
     payload: {
@@ -63,7 +64,9 @@ const topicActions = {
       senderAddress,
     },
   }),
-
+  clearAllowanceReturn: () => ({
+    type: topicActions.CLEAR_ALLOWANCE_RETURN,
+  }),
   APPROVE: 'APPROVE',
   APPROVE_RETURN: 'APPROVE_RETURN',
   onApprove: (spender, value, senderAddress) => ({
