@@ -92,9 +92,11 @@ export function* allowanceRequestHandler() {
 
       const result = yield call(request, `${bodhiapi}/allowance`, options);
 
+      const value = convertBNHexStrToQtum(result.remaining);
+
       yield put({
         type: actions.ALLOWANCE_RETURN,
-        value: { result },
+        value,
       });
     } catch (error) {
       yield put({

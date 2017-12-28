@@ -35,14 +35,14 @@ class CardVoting extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { editingToggled, checkingAllowance, result } = nextProps;
+    const { editingToggled, isApproving, result } = nextProps;
 
     // Determine Confirm button disabled status based on request return
     if (this.props.editingToggled === false && editingToggled === true) {
       this.setState({
         btnText: this.props.config.afterToggle.btnText,
       });
-    } else if (checkingAllowance) {
+    } else if (isApproving) {
       this.setState({
         btnText: 'Approving BOT transfer... please wait',
         btnLoading: true,
@@ -208,7 +208,7 @@ CardVoting.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   result: PropTypes.object,
   radioIndex: PropTypes.number,
-  checkingAllowance: PropTypes.bool,
+  isApproving: PropTypes.bool,
   skipToggle: PropTypes.bool,
 };
 
@@ -220,7 +220,7 @@ CardVoting.defaultProps = {
   onEditingToggled: undefined,
   result: undefined,
   radioIndex: 0,
-  checkingAllowance: false,
+  isApproving: false,
   skipToggle: false,
 };
 
