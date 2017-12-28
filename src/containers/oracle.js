@@ -99,11 +99,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    // TODO: Get current oracle
     this.props.onGetOracles();
-  }
-
-  componentDidMount() {
   }
 
   componentWillReceiveProps(nextProps) {
