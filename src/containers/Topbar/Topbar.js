@@ -229,7 +229,7 @@ class Topbar extends React.PureComponent {
                 <div className="isoLeft">
                   <div className="logo-container" style={{ margin: '0px' }}>
                     <Link to="/">
-                      <img src="https://res.cloudinary.com/dd1ixvdxn/image/upload/v1513814413/logo_txyg1i.png" style={{ height: '56px', verticalAlign: 'middle' }} alt="bodhi-logo" />
+                      <img src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg" style={{ height: '38px', verticalAlign: 'middle' }} alt="bodhi-logo" />
                     </Link>
                   </div>
                   {/* <div className="isoSearch" style={{ cursor: 'pointer' }}>
