@@ -83,14 +83,14 @@ class OraclePage extends React.Component {
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
-      checkingAllowance: false,
-      approving: false,
+      isApproving: false,
+      isApproved: false,
     };
 
     this.getRadioButtonViews = this.getRadioButtonViews.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
-    this.checkAllowance = this.checkAllowance.bind(this);
+    this.startCheckAllowance = this.startCheckAllowance.bind(this);
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.bet = this.bet.bind(this);
     this.setResult = this.setResult.bind(this);
@@ -99,19 +99,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    // TODO: Get current oracle
     this.props.onGetOracles();
-  }
-
-  componentDidMount() {
-    // Start repeating allowance requests timer
-    const check = function () {
-      if (this.state.checkingAllowance) {
-        this.checkAllowance();
-      }
-      this.allowanceTimer = setTimeout(check, ALLOWANCE_TIMER_INTERVAL);
-    }.bind(this);
-    check();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -344,17 +332,13 @@ class OraclePage extends React.Component {
       });
     }
 
-    if (allowanceReturn) {
-      const parsedAllowance = parseInt(allowanceReturn.result.remaining, 16);
-      this.onAllowanceReturn(parsedAllowance);
-    }
+    // Check allowance return; do nothing if undefined
+    this.onAllowanceReturn(allowanceReturn);
   }
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
     this.props.clearEditingToggled();
-
-    clearTimeout(this.allowanceTimer);
   }
 
   onRadioGroupChange(evt) {
@@ -373,16 +357,20 @@ class OraclePage extends React.Component {
       }
       case 'SETTING': {
         this.setState({
-          checkingAllowance: true,
-          voteAmount: ORACLE_BOT_THRESHOLD,
+          isApproved: false,
+          voteAmount: this.state.oracle.consensusThreshold,
         });
+
+        this.startCheckAllowance();
         break;
       }
       case 'VOTING': {
         this.setState({
-          checkingAllowance: true,
+          isApproved: false,
           voteAmount: amount,
         });
+
+        this.startCheckAllowance();
         break;
       }
       case 'FINALIZING': {
@@ -396,26 +384,57 @@ class OraclePage extends React.Component {
     }
   }
 
-  checkAllowance() {
-    try {
-      const { selectedWalletAddress } = this.props;
+  /**
+ * Send get allowance request and keep repeating itself until this.state.isApproving is false
+ * @return {[type]}
+ */
+  startCheckAllowance() {
+    console.log('startCheckAllowance', new Date());
+    const { selectedWalletAddress, onAllowance } = this.props;
+    const { oracle } = this.state;
 
-      this.props.onAllowance(selectedWalletAddress, this.state.oracle.topicAddress, selectedWalletAddress);
-    } catch (err) {
-      console.log(err.message);
+    const self = this;
+
+    // A function to repeat itself until this.state.isApproving is false
+    function startPollAllowance() {
+      if (self.state.isApproving) {
+        onAllowance(selectedWalletAddress, oracle.topicAddress, selectedWalletAddress);
+        setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
+      }
     }
+
+    // Kick off the first round of onAllowance
+    onAllowance(selectedWalletAddress, oracle.topicAddress, selectedWalletAddress);
+    setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
   }
 
+  /**
+   * Determine next action based on returned allowance result
+   * 1. If allowance is zero, send approve request
+   * 2. If allowance is positive but less than voteAmount, send approve(0) to reset allowance
+   * 3. If allowance is greather than or equal to voteAmount and not isApproved, do action and reset isApproving and isApproved
+   * @param  {number} allowance value
+   * @return {}
+   */
   onAllowanceReturn(allowance) {
+    if (_.isUndefined(allowance) || _.isUndefined(this.state.config)) {
+      return;
+    }
+
     const { voteAmount } = this.state;
     const configName = this.state.config.name;
 
-    if (allowance === 0) { // Need to approved for setResult or vote
-      if (this.state.approving) {
+    if (allowance < voteAmount) { // Need to approved for setResult or vote
+      if (this.state.isApproving) {
         return;
       }
-      this.approve(voteAmount);
-    } else if (allowance >= voteAmount) { // Already approved call setResult or vote
+
+      if (allowance === 0) {
+        this.approve(voteAmount);
+      } else {
+        this.approve(0); // Reset allowance value so it can hit allowance === 0 case
+      }
+    } else if (!this.state.isApproved) { // Already approved call setResult or vote; Use isApproved to make sure this only entered once
       switch (configName) {
         case 'SETTING': {
           this.setResult();
@@ -430,16 +449,14 @@ class OraclePage extends React.Component {
         }
       }
 
+      // Reset allowance return and states for the next vote/setResult
+      this.props.clearAllowanceReturn();
+
       this.setState({
-        checkingAllowance: false,
-        approving: false,
+        isApproving: false,
+        isApproved: true,
         voteAmount: undefined,
       });
-    } else { // The approved amount does not match the amount so reset allowance
-      if (this.state.approving) {
-        return;
-      }
-      this.approve(0);
     }
   }
 
@@ -450,7 +467,7 @@ class OraclePage extends React.Component {
     onApprove(oracle.topicAddress, decimalToBotoshiHex(amount), selectedWalletAddress);
 
     this.setState({
-      approving: true,
+      isApproving: true,
     });
   }
 
@@ -562,7 +579,7 @@ class OraclePage extends React.Component {
                 onSubmit={this.onConfirmBtnClicked}
                 radioIndex={this.state.radioValue}
                 result={requestReturn}
-                checkingAllowance={this.state.checkingAllowance}
+                isApproving={this.state.isApproving}
                 skipToggle={config.name === 'FINALIZING'}
               >
                 {editingToggled ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle)) : this.getProgressBarViews(OraclePage.getBetOrVoteArray(oracle))}
@@ -603,11 +620,12 @@ OraclePage.propTypes = {
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
-  allowanceReturn: PropTypes.object,
+  allowanceReturn: PropTypes.number,
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
   clearEditingToggled: PropTypes.func,
+  clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
   blockCount: PropTypes.number,
@@ -628,6 +646,7 @@ OraclePage.defaultProps = {
   onClearRequestReturn: undefined,
   requestReturn: undefined,
   clearEditingToggled: undefined,
+  clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
   blockCount: 0,
 };
@@ -657,6 +676,7 @@ function mapDispatchToProps(dispatch) {
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
+    clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
   };
 }
 
