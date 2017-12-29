@@ -25,12 +25,24 @@ class CardVoting extends Component {
   }
 
   componentWillMount() {
-    const { config } = this.props;
+    const { config, skipToggle } = this.props;
+
+    let btnText;
+
+    if (skipToggle) {
+      btnText = config && config.afterToggle && config.afterToggle.btnText;
+    } else {
+      btnText = config && config.beforeToggle && config.beforeToggle.btnText;
+    }
+
+    this.setState({
+      btnText,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      editingToggled, isApproving, result, config,
+      editingToggled, isApproving, result, config, skipToggle,
     } = nextProps;
 
     // Determine button status by config and return
@@ -38,7 +50,7 @@ class CardVoting extends Component {
     let btnDisabled = false;
     let btnLoading = false;
 
-    if (!editingToggled) {
+    if (!editingToggled && !skipToggle) {
       // Before toggle state
       btnText = config && config.beforeToggle && config.beforeToggle.btnText;
       btnDisabled = config && config.beforeToggle && config.beforeToggle.btnDisabled;

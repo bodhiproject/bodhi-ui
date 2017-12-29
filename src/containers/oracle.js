@@ -295,7 +295,7 @@ class OraclePage extends React.Component {
           },
           cardAction: {
             skipToggle: true,
-            beforeToggle: {
+            afterToggle: {
               btnText: 'Finalize',
             },
           },
