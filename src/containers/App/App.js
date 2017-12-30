@@ -13,6 +13,7 @@ import { AppLocale } from '../../index';
 import themes from '../../config/themes';
 import { themeConfig /* siteConfig */ } from '../../config';
 import AppHolder from './commonStyle';
+import AppLoad from '../appLoad';
 import './global.css';
 
 const { Content /* Footer */ } = Layout;
@@ -41,6 +42,7 @@ export class App extends React.PureComponent {
                       )}
                   />
                 </Debounce>
+                <AppLoad />
                 <Topbar url={url} />
                 <Layout style={{ flexDirection: 'row', overflowX: 'hidden' }}>
                   <Layout

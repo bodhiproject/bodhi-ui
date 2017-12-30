@@ -1,6 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
+import { querySyncInfo } from '../../helpers/graphql';
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 import { endpoint } from '../../config/app';
 
@@ -78,10 +79,30 @@ export function* getBotBalanceRequestHandler() {
   });
 }
 
+export function* getSyncInfoRequestHandler() {
+  yield takeEvery(actions.GET_SYNC_INFO, function* getSyncInfoRequest(action) {
+    try {
+      // Query all topics data using graphQL call
+      const result = yield call(querySyncInfo);
+
+      yield put({
+        type: actions.GET_SYNC_INFO_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_SYNC_INFO_RETURN,
+        value: error.message,
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBlockCountRequestHandler),
     fork(getBotBalanceRequestHandler),
+    fork(getSyncInfoRequestHandler),
   ]);
 }

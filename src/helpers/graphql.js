@@ -66,6 +66,15 @@ const ALL_ORACLES = gql`
   }
 `;
 
+const SYNC_INFO = gql`
+query{
+  syncInfo{
+    syncBlockNum
+    chainBlockNum
+  }
+}
+`;
+
 export function queryAllTopics() {
   return client.query({ query: ALL_TOPICS }).then((res) => {
     const queryName = 'allTopics';
@@ -111,5 +120,18 @@ export function queryAllOracles() {
     }));
 
     return queryData;
+  });
+}
+
+export function querySyncInfo() {
+  return client.query({
+    query: SYNC_INFO,
+  }).then((res) => {
+    const queryName = 'syncInfo';
+
+    return res.data[queryName].map((entry) => ({
+      syncBlockNum: entry.syncBlockNum,
+      chainBlockNum: entry.chainBlockNum,
+    }));
   });
 }
