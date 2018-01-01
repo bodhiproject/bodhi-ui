@@ -6,12 +6,15 @@ import { Row, Col, Progress } from 'antd';
 import appActions from '../redux/app/actions';
 
 const POOL_INTERVAL = 3000;
+const MIN_BLOCK_COUNT_GAP = 3;
 
 class AppLoad extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      percent: 100,
+    };
   }
 
   componentWillMount() {
@@ -28,16 +31,21 @@ class AppLoad extends React.PureComponent {
 
     console.log(syncInfo);
 
-    this.setState({
+    // this.setState({
 
-    });
+    // });
   }
 
   render() {
     const { percent } = this.state;
 
+    const style = {};
+    if (percent === 100) {
+      style.display = 'none';
+    }
+
     return (
-      <div className="app-load">
+      <div className="app-load" style={style}>
         <div className="app-load-wrapper">
           <div className="app-load-container">
             <Row>
