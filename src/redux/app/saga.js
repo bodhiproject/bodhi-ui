@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
@@ -6,16 +7,42 @@ import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 import { endpoint } from '../../config/app';
 
 const { bodhiapi } = endpoint;
+const DEFAULT_QTUMD_ACCOUNTNAME = '';
 
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {
       const result = yield call(request, `${bodhiapi}/listunspent`);
 
-      yield put({
-        type: actions.LIST_UNSPENT_RESULT,
-        value: { result },
-      });
+      if (_.isEmpty(result)) {
+        // If listunspent return is empty meaning one has no balance in his addresses we will get default qtumd account's address
+        // This is likely to be the case when bodhi-app is first installed
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({
+            accountName: DEFAULT_QTUMD_ACCOUNTNAME,
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        };
+
+        const defaultAddress = yield call(request, `${bodhiapi}/get-account-address`, options);
+
+        yield put({
+          type: actions.LIST_UNSPENT_RESULT,
+          value: {
+            result: [{
+              address: defaultAddress,
+              amount: 0,
+            }],
+          },
+        });
+      } else {
+        // If listunspent returns with a non-empty list
+        yield put({
+          type: actions.LIST_UNSPENT_RESULT,
+          value: { result },
+        });
+      }
     } catch (error) {
       yield put({
         type: actions.LIST_UNSPENT_RESULT,
