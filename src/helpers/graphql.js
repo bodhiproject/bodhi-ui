@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
@@ -128,10 +129,6 @@ export function querySyncInfo() {
     query: SYNC_INFO,
   }).then((res) => {
     const queryName = 'syncInfo';
-
-    return res.data[queryName].map((entry) => ({
-      syncBlockNum: entry.syncBlockNum,
-      chainBlockNum: entry.chainBlockNum,
-    }));
+    return _.pick(res.data[queryName], ['syncBlockNum', 'chainBlockNum']);
   });
 }

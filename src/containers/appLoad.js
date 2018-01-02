@@ -13,7 +13,7 @@ class AppLoad extends React.PureComponent {
     super(props);
 
     this.state = {
-      percent: 100,
+      percent: 0,
     };
   }
 
@@ -31,9 +31,22 @@ class AppLoad extends React.PureComponent {
 
     console.log(syncInfo);
 
-    // this.setState({
+    // Only update if both syncBlockNum or chainBlockNum are defined as number
+    if (syncInfo && _.isNumber(syncInfo.syncBlockNum) && _.isNumber(syncInfo.chainBlockNum)) {
+      let newPercent = _.round((syncInfo.syncBlockNum / syncInfo.chainBlockNum) * 100);
 
-    // });
+      // Make new percent 100 if block gap is less than MIN_BLOCK_COUNT_GAP
+      if ((syncInfo.chainBlockNum - syncInfo.syncBlockNum <= MIN_BLOCK_COUNT_GAP) || newPercent > 100) {
+        newPercent = 100;
+      }
+
+      // Don't go backwards in number
+      if (newPercent >= this.state.percent) {
+        this.setState({
+          percent: newPercent,
+        });
+      }
+    }
   }
 
   render() {
