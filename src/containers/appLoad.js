@@ -5,7 +5,7 @@ import { Row, Col, Progress } from 'antd';
 
 import appActions from '../redux/app/actions';
 
-const POOL_INTERVAL = 3000;
+const POOL_INTERVAL = 10000;
 const MIN_BLOCK_COUNT_GAP = 3;
 
 class AppLoad extends React.PureComponent {
