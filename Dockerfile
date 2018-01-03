@@ -9,3 +9,7 @@ RUN npm install
 RUN yarn install
 
 COPY . .
+
+RUN yarn build
+
+RUN yarn global add serve
