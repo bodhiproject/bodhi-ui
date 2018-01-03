@@ -10,7 +10,6 @@ export default function topicReducer(
   state = initState,
   action
 ) {
-  console.log(action);
   switch (action.type) {
     case actions.EDITING_TOGGLED:
       return state.set('toggled', true);

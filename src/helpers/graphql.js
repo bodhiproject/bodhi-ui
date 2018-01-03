@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
@@ -66,6 +67,15 @@ const ALL_ORACLES = gql`
   }
 `;
 
+const SYNC_INFO = gql`
+query{
+  syncInfo{
+    syncBlockNum
+    chainBlockNum
+  }
+}
+`;
+
 export function queryAllTopics() {
   return client.query({ query: ALL_TOPICS }).then((res) => {
     const queryName = 'allTopics';
@@ -111,5 +121,14 @@ export function queryAllOracles() {
     }));
 
     return queryData;
+  });
+}
+
+export function querySyncInfo() {
+  return client.query({
+    query: SYNC_INFO,
+  }).then((res) => {
+    const queryName = 'syncInfo';
+    return _.pick(res.data[queryName], ['syncBlockNum', 'chainBlockNum']);
   });
 }

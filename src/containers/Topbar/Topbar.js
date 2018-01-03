@@ -16,7 +16,7 @@ const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
-const POOL_INTERVAL = 30000;
+const POOL_INTERVAL = 5000;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
