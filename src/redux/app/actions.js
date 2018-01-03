@@ -53,5 +53,11 @@ const actions = {
       senderAddress,
     },
   }),
+
+  GET_SYNC_INFO: 'GET_SYNC_INFO',
+  GET_SYNC_INFO_RETURN: 'GET_SYNC_INFO_RETURN',
+  getSyncInfo: () => ({
+    type: actions.GET_SYNC_INFO,
+  }),
 };
 export default actions;

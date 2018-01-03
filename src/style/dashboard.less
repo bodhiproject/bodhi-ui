@@ -64,3 +64,34 @@
         text-align: right;
       }
     }
+
+.app-load{
+    content: '';
+    position: absolute;
+    top:0;
+    left:0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,0.85);
+    z-index: 99;
+
+    .app-load-wrapper{
+      position: relative;
+      height: 100%;
+      width: 100%;
+
+      .app-load-container{
+        position: absolute;
+        top: 50%;
+      .transform(translate(-50%,-50%));
+      left: 50%;
+      }
+
+      @size: 180px;
+      .ant-progress-inner{
+        width: @size;
+        height: @size;
+        font-size: 48px;
+      }
+    }
+}

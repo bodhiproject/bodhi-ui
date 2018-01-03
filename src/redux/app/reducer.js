@@ -119,6 +119,9 @@ export default function appReducer(state = initState, action) {
       }
       break;
 
+    case actions.GET_SYNC_INFO_RETURN:
+      return state.set('sync_info_return', action.value);
+
     default:
       return state;
   }
