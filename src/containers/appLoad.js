@@ -21,7 +21,7 @@ class AppLoad extends React.PureComponent {
     const { getSyncInfo } = this.props;
 
     (function startPoll() {
-      console.log('getSyncInfo polling');
+      console.log('startPoll()');
       getSyncInfo();
       setTimeout(startPoll, POOL_INTERVAL);
     }());

@@ -111,6 +111,7 @@ export function* getSyncInfoRequestHandler() {
     try {
       // Query all topics data using graphQL call
       const result = yield call(querySyncInfo);
+      console.log('saga.getSyncInfoRequestHandler()');
 
       yield put({
         type: actions.GET_SYNC_INFO_RETURN,
