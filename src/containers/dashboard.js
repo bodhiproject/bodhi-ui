@@ -24,7 +24,10 @@ const NUM_SHOW_IN_OPTIONS = 3;
 const COL_PER_ROW = { // Specify how many col in each row
   xs: 1,
   sm: 3,
+  md: 3,
+  lg: 4,
   xl: 4,
+  xxl: 4,
 };
 const ROW_GUTTER = {
   xs: 0,
