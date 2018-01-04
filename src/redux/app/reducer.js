@@ -14,6 +14,7 @@ const initState = new Map({
   walletAddrs: [],
   walletAddrsIndex: 0,
   selected_wallet_address: 'wtf',
+  syncProgress: 0,
 });
 
 export default function appReducer(state = initState, action) {
@@ -121,6 +122,11 @@ export default function appReducer(state = initState, action) {
 
     case actions.GET_SYNC_INFO_RETURN:
       return state.set('sync_info_return', action.value);
+
+    case actions.UPDATE_SYNC_PROGRESS: {
+      console.log(`UPDATE_SYNC_PROGRESS ${action.percentage}`);
+      return state.set('syncProgress', action.percentage);
+    }
 
     default:
       return state;
