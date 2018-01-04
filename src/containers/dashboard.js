@@ -53,6 +53,8 @@ class Dashboard extends React.Component {
       this.props.onGetTopics();
       this.props.onGetOracles();
     }
+
+    console.log(`syncProgress: ${nextProps.syncProgress}`);
   }
 
   render() {
@@ -324,6 +326,7 @@ Dashboard.propTypes = {
   // getOraclesError: PropTypes.string,
   onGetOracles: PropTypes.func,
   tabIndex: PropTypes.number,
+  syncProgress: PropTypes.number,
 };
 
 Dashboard.defaultProps = {
@@ -333,6 +336,7 @@ Dashboard.defaultProps = {
   // getOraclesError: '',
   onGetOracles: undefined,
   tabIndex: DEFAULT_TAB_INDEX,
+  syncProgress: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -341,6 +345,7 @@ const mapStateToProps = (state) => ({
   tabIndex: state.Dashboard.get('tabIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  syncProgress: state.App.get('syncProgress'),
 });
 
 function mapDispatchToProps(dispatch) {
