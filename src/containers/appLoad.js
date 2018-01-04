@@ -21,6 +21,7 @@ class AppLoad extends React.PureComponent {
     const { getSyncInfo } = this.props;
 
     (function startPoll() {
+      console.log('getSyncInfo polling');
       getSyncInfo();
       setTimeout(startPoll, POOL_INTERVAL);
     }());
@@ -28,6 +29,8 @@ class AppLoad extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { syncInfo, blockCount } = nextProps;
+    console.log(`syncInfo: ${syncInfo.syncBlockNum}`);
+    console.log(`blockCount: ${blockCount}`);
 
     // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {
