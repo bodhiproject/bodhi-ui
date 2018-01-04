@@ -54,6 +54,7 @@ class Dashboard extends React.Component {
       this.props.onGetOracles();
     }
 
+    // A change in syncProgress will force a render(), but dont need to do anything with the value
     console.log(`syncProgress: ${nextProps.syncProgress}`);
   }
 
