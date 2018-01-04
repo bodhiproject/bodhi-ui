@@ -46,6 +46,8 @@ class AppLoad extends React.PureComponent {
           percent: newPercent,
         });
       }
+
+      this.props.updateSyncProgress(newPercent);
     }
   }
 
@@ -79,12 +81,14 @@ class AppLoad extends React.PureComponent {
 AppLoad.propTypes = {
   syncInfo: PropTypes.object,
   getSyncInfo: PropTypes.func,
+  updateSyncProgress: PropTypes.func,
   blockCount: PropTypes.number,
 };
 
 AppLoad.defaultProps = {
   syncInfo: undefined,
   getSyncInfo: undefined,
+  updateSyncProgress: undefined,
   blockCount: 0,
 };
 
@@ -95,6 +99,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
