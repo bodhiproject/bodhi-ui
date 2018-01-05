@@ -59,5 +59,17 @@ const actions = {
   getSyncInfo: () => ({
     type: actions.GET_SYNC_INFO,
   }),
+
+  UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
+  updateSyncProgress: (percentage) => ({
+    type: actions.UPDATE_SYNC_PROGRESS,
+    percentage,
+  }),
+
+  TOGGLE_SYNCING: 'TOGGLE_SYNCING',
+  toggleSyncing: (isSyncing) => ({
+    type: actions.TOGGLE_SYNCING,
+    isSyncing,
+  }),
 };
 export default actions;

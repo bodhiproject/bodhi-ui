@@ -77,7 +77,10 @@ query{
 `;
 
 export function queryAllTopics() {
-  return client.query({ query: ALL_TOPICS }).then((res) => {
+  return client.query({
+    query: ALL_TOPICS,
+    fetchPolicy: 'network-only',
+  }).then((res) => {
     const queryName = 'allTopics';
     const queryData = res.data[queryName].map((entry) => ({
       address: entry.address,
@@ -100,6 +103,7 @@ export function queryAllTopics() {
 export function queryAllOracles() {
   return client.query({
     query: ALL_ORACLES,
+    fetchPolicy: 'network-only',
   }).then((res) => {
     const queryName = 'allOracles';
     const queryData = res.data[queryName].map((entry) => ({
@@ -127,6 +131,7 @@ export function queryAllOracles() {
 export function querySyncInfo() {
   return client.query({
     query: SYNC_INFO,
+    fetchPolicy: 'network-only',
   }).then((res) => {
     const queryName = 'syncInfo';
     return _.pick(res.data[queryName], ['syncBlockNum', 'chainBlockNum']);

@@ -32,7 +32,6 @@ class AppLoad extends React.PureComponent {
     // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {
       const syncBlockNum = syncInfo.syncBlockNum || blockCount;
-
       let newPercent = _.round((syncBlockNum / syncInfo.chainBlockNum) * 100);
 
       // Make new percent 100 if block gap is less than MIN_BLOCK_COUNT_GAP
@@ -46,6 +45,12 @@ class AppLoad extends React.PureComponent {
           percent: newPercent,
         });
       }
+
+      if (newPercent < 100) {
+        this.props.toggleSyncing(true);
+      }
+
+      this.props.updateSyncProgress(newPercent);
     }
   }
 
@@ -79,12 +84,16 @@ class AppLoad extends React.PureComponent {
 AppLoad.propTypes = {
   syncInfo: PropTypes.object,
   getSyncInfo: PropTypes.func,
+  updateSyncProgress: PropTypes.func,
+  toggleSyncing: PropTypes.func,
   blockCount: PropTypes.number,
 };
 
 AppLoad.defaultProps = {
   syncInfo: undefined,
   getSyncInfo: undefined,
+  updateSyncProgress: undefined,
+  toggleSyncing: undefined,
   blockCount: 0,
 };
 
@@ -95,6 +104,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
+  toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
