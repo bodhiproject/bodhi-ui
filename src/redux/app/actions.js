@@ -61,9 +61,10 @@ const actions = {
   }),
 
   UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
-  updateSyncProgress: (percentage) => ({
+  updateSyncProgress: (percentage, isSyncing) => ({
     type: actions.UPDATE_SYNC_PROGRESS,
-    percentage,
+    percentage, 
+    isSyncing,
   }),
 };
 export default actions;

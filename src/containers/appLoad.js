@@ -46,7 +46,7 @@ class AppLoad extends React.PureComponent {
         });
       }
 
-      this.props.updateSyncProgress(newPercent);
+      this.props.updateSyncProgress(newPercent, newPercent < 100);
     }
   }
 
