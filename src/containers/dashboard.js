@@ -49,16 +49,14 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabIndex !== this.props.tabIndex) {
+    if (nextProps.tabIndex !== this.props.tabIndex || nextProps.syncProgress === 100) {
       this.props.onGetTopics();
       this.props.onGetOracles();
     }
-
-    // A change in syncProgress will force a render(), but dont need to do anything with the value
-    console.log(`syncProgress: ${nextProps.syncProgress}`);
   }
 
   render() {
+    console.log('RENDER');
     const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
 
     // Sorting all topics and oracles by blockNum in descending order now
