@@ -125,9 +125,11 @@ export default function appReducer(state = initState, action) {
       return state.set('sync_info_return', action.value);
 
     case actions.UPDATE_SYNC_PROGRESS: {
-      return state
-        .set('syncProgress', action.percentage)
-        .set('isSyncing', action.isSyncing);
+      return state.set('syncProgress', action.percentage);
+    }
+
+    case actions.TOGGLE_SYNCING: {
+      return state.set('isSyncing', action.isSyncing);
     }
 
     default:

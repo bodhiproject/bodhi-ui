@@ -12,6 +12,7 @@ import SingleProgressWidget from './Widgets/progress/progress-single';
 import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
+import appActions from '../redux/app/actions';
 
 const TAB_BETTING = 0;
 const TAB_SETTING = 1;
@@ -49,9 +50,24 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabIndex !== this.props.tabIndex || nextProps.syncProgress === 100) {
-      this.props.onGetTopics();
-      this.props.onGetOracles();
+    const {
+      onGetTopics,
+      onGetOracles,
+      syncProgress,
+      isSyncing,
+    } = nextProps;
+
+    if (nextProps.tabIndex !== this.props.tabIndex) {
+      onGetOracles();
+      onGetTopics();
+    }
+
+    // Refresh page if sync is complete
+    if (isSyncing && syncProgress === 100) {
+      onGetOracles();
+      onGetTopics();
+
+      this.props.toggleSyncing(false);
     }
   }
 
@@ -325,7 +341,9 @@ Dashboard.propTypes = {
   // getOraclesError: PropTypes.string,
   onGetOracles: PropTypes.func,
   tabIndex: PropTypes.number,
+  toggleSyncing: PropTypes.func,
   syncProgress: PropTypes.number,
+  isSyncing: PropTypes.bool,
 };
 
 Dashboard.defaultProps = {
@@ -335,7 +353,9 @@ Dashboard.defaultProps = {
   // getOraclesError: '',
   onGetOracles: undefined,
   tabIndex: DEFAULT_TAB_INDEX,
+  toggleSyncing: undefined,
   syncProgress: undefined,
+  isSyncing: false,
 };
 
 const mapStateToProps = (state) => ({
@@ -345,12 +365,14 @@ const mapStateToProps = (state) => ({
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   syncProgress: state.App.get('syncProgress'),
+  isSyncing: state.App.get('isSyncing'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
     onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
   };
 }
 

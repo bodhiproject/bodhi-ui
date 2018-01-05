@@ -46,7 +46,11 @@ class AppLoad extends React.PureComponent {
         });
       }
 
-      this.props.updateSyncProgress(newPercent, newPercent < 100);
+      if (newPercent < 100) {
+        this.props.toggleSyncing(true);
+      }
+
+      this.props.updateSyncProgress(newPercent);
     }
   }
 
@@ -81,6 +85,7 @@ AppLoad.propTypes = {
   syncInfo: PropTypes.object,
   getSyncInfo: PropTypes.func,
   updateSyncProgress: PropTypes.func,
+  toggleSyncing: PropTypes.func,
   blockCount: PropTypes.number,
 };
 
@@ -88,6 +93,7 @@ AppLoad.defaultProps = {
   syncInfo: undefined,
   getSyncInfo: undefined,
   updateSyncProgress: undefined,
+  toggleSyncing: undefined,
   blockCount: 0,
 };
 
@@ -99,6 +105,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
   updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
+  toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);

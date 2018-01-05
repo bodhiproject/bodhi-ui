@@ -61,9 +61,14 @@ const actions = {
   }),
 
   UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
-  updateSyncProgress: (percentage, isSyncing) => ({
+  updateSyncProgress: (percentage) => ({
     type: actions.UPDATE_SYNC_PROGRESS,
-    percentage, 
+    percentage,
+  }),
+
+  TOGGLE_SYNCING: 'TOGGLE_SYNCING',
+  toggleSyncing: (isSyncing) => ({
+    type: actions.TOGGLE_SYNCING,
     isSyncing,
   }),
 };
