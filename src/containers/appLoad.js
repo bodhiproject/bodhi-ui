@@ -21,7 +21,6 @@ class AppLoad extends React.PureComponent {
     const { getSyncInfo } = this.props;
 
     (function startPoll() {
-      console.log('startPoll()');
       getSyncInfo();
       setTimeout(startPoll, POOL_INTERVAL);
     }());
@@ -29,13 +28,10 @@ class AppLoad extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { syncInfo, blockCount } = nextProps;
-    console.log(`syncInfo: ${syncInfo.syncBlockNum}`);
-    console.log(`blockCount: ${blockCount}`);
 
     // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {
       const syncBlockNum = syncInfo.syncBlockNum || blockCount;
-
       let newPercent = _.round((syncBlockNum / syncInfo.chainBlockNum) * 100);
 
       // Make new percent 100 if block gap is less than MIN_BLOCK_COUNT_GAP
