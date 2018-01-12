@@ -1,12 +1,12 @@
-import { endpoint } from '../../config/app';
+import { endpoint } from './app';
 
 const { bodhiapi } = endpoint;
 
-module.exports = {
-  Routes: {
-    listUnspent: `${bodhiapi}/list-unspent`,
-    getAccountAddress: `${bodhiapi}/get-account-address`,
-    getBlockCount: `${bodhiapi}/get-block-count`,
-    botBalance: `${bodhiapi}/bot-balance`,
-  },
+const Routes = {
+  listUnspent: `${bodhiapi}/list-unspent`,
+  getAccountAddress: `${bodhiapi}/get-account-address`,
+  getBlockCount: `${bodhiapi}/get-block-count`,
+  botBalance: `${bodhiapi}/bot-balance`,
 };
+
+export default Routes;
