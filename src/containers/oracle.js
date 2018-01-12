@@ -14,35 +14,14 @@ import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 import { decimalToBotoshiHex } from '../helpers/utility';
+import { Token, OracleStatus } from '../constants';
 
 const RadioGroup = Radio.Group;
-const QTUM = 'QTUM';
-const BOT = 'BOT';
 const DEFAULT_RADIO_VALUE = 0;
 const ORACLE_BOT_THRESHOLD = 100;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
-const OracleType = {
-  CENTRALISED: 'CENTRALISED',
-  DECENTRALISED: 'DECENTRALISED',
-};
-
 class OraclePage extends React.Component {
-  /**
-   * Determine OracleType; default DECENTRALISED
-   * @param  {object} oracle Oracle object
-   * @return {string}        OracleType
-   */
-  static getOracleType(oracle) {
-    switch (oracle.token) {
-      case QTUM:
-        return OracleType.CENTRALISED;
-      case BOT:
-      default:
-        return OracleType.DECENTRALISED;
-    }
-  }
-
   /**
  * Get Bet or Vote names and balances from oracle
  * @param  {object} oracle Oracle object
@@ -51,7 +30,7 @@ class OraclePage extends React.Component {
   static getBetOrVoteArray(oracle) {
     const totalBalance = _.sum(oracle.amounts);
 
-    if (OraclePage.getOracleType(oracle) === OracleType.CENTRALISED) {
+    if (oracle.token === Token.Qtum) {
       return _.map(oracle.options, (optionName, index) => {
         const optionAmount = oracle.amounts[index] || 0;
         return {
@@ -117,7 +96,7 @@ class OraclePage extends React.Component {
       let config;
 
       /** Determine what config to use in current card * */
-      if (status === 'VOTING' && token === QTUM) {
+      if (status === 'VOTING' && token === Token.Qtum) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
@@ -152,7 +131,7 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if ((status === 'WAITRESULT' || status === 'OPENRESULTSET') && token === QTUM) {
+      } else if ((status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet) && token === Token.Qtum) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
@@ -192,7 +171,7 @@ class OraclePage extends React.Component {
             skipToggle: false,
             beforeToggle: {
               btnText: 'Set Result',
-              btnDisabled: oracle.status === 'WAITRESULT' && oracle.resultSetterQAddress !== selectedWalletAddress,
+              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress,
             },
             afterToggle: {
               showAmountInput: false,
@@ -216,9 +195,9 @@ class OraclePage extends React.Component {
             type: 'warn',
           });
         }
-      } else if (status === 'VOTING' && token === BOT) {
+      } else if (status === 'VOTING' && token === Token.Bot) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
+        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
 
         config = {
           name: 'VOTING',
@@ -265,10 +244,10 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if (status === 'WAITRESULT' && token === BOT) {
+      } else if (status === OracleStatus.WaitResult && token === Token.Bot) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === QTUM);
-        const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
+        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
+        const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
 
         config = {
           name: 'FINALIZING',
