@@ -12,9 +12,10 @@ const Routes = {
   createTopic: `${bodhiapi}/createtopic`,
   bet: `${bodhiapi}/bet`,
   setResult: `${bodhiapi}/set-result`,
-  vote: `${bodhiapi}/vote`
+  vote: `${bodhiapi}/vote`,
   finalizeResult: `${bodhiapi}/finalize-result`,
   withdraw: `${bodhiapi}/withdraw`,
+  winnings: `${bodhiapi}/winnings`,
 };
 
 export default Routes;

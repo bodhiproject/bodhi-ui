@@ -52,8 +52,8 @@ class TopicPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getTopicsSuccess: allTopics,
-      calculateQtumWinningsReturn,
       calculateBotWinningsReturn,
+      calculateQtumWinningsReturn,
     } = nextProps;
     const topic = _.find(allTopics, { address: this.state.address });
 
@@ -62,8 +62,8 @@ class TopicPage extends React.Component {
       this.calculateWinnings();
     }
 
-    topic.qtumWinnings = calculateQtumWinningsReturn;
     topic.botWinnings = calculateBotWinningsReturn;
+    topic.qtumWinnings = calculateQtumWinningsReturn;
 
     this.pageConfiguration(topic);
   }
@@ -77,12 +77,10 @@ class TopicPage extends React.Component {
     try {
       const {
         selectedWalletAddress,
-        onCalculateQtumWinnings,
-        onCalculateBotWinnings,
+        onCalculateWinnings,
       } = this.props;
 
-      onCalculateQtumWinnings(this.state.address, selectedWalletAddress);
-      onCalculateBotWinnings(this.state.address, selectedWalletAddress);
+      onCalculateWinnings(this.state.address, selectedWalletAddress);
     } catch (err) {
       console.log(err.message);
     }
@@ -277,10 +275,9 @@ TopicPage.propTypes = {
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
-  onCalculateQtumWinnings: PropTypes.func,
-  calculateQtumWinningsReturn: PropTypes.number,
-  onCalculateBotWinnings: PropTypes.func,
+  onCalculateWinnings: PropTypes.func,
   calculateBotWinningsReturn: PropTypes.number,
+  calculateQtumWinningsReturn: PropTypes.number,
   onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
@@ -295,17 +292,16 @@ TopicPage.defaultProps = {
   selectedWalletAddress: undefined,
   onClearRequestReturn: undefined,
   clearEditingToggled: undefined,
-  onCalculateQtumWinnings: undefined,
-  calculateQtumWinningsReturn: undefined,
-  onCalculateBotWinnings: undefined,
+  onCalculateWinnings: undefined,
   calculateBotWinningsReturn: undefined,
+  calculateQtumWinningsReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   requestReturn: state.Topic.get('req_return'),
-  calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
+  calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
@@ -314,10 +310,8 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onCalculateQtumWinnings: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onCalculateQtumWinnings(contractAddress, senderAddress)),
-    onCalculateBotWinnings: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onCalculateBotWinnings(contractAddress, senderAddress)),
+    onCalculateWinnings: (contractAddress, senderAddress) =>
+      dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
     onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),

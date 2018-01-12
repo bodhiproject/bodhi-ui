@@ -205,8 +205,8 @@ export function* finalizeResultRequestHandler() {
   });
 }
 
-export function* calculateQtumWinningsRequestHandler() {
-  yield takeEvery(actions.CALCULATE_QTUM_WINNINGS, function* onCalculateQtumWinningsRequest(action) {
+export function* calculateWinningsRequestHandler() {
+  yield takeEvery(actions.CALCULATE_WINNINGS, function* onCalculateWinningsRequest(action) {
     const {
       contractAddress,
       senderAddress,
@@ -222,51 +222,21 @@ export function* calculateQtumWinningsRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/qtumwinnings`, options);
-
-      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
+      const result = yield call(request, Routes.winnings, options);
+      let value;
+      if (result) {
+        const botWon = convertBNHexStrToQtum(result['0']);
+        const qtumWon = convertBNHexStrToQtum(result['1']);
+        value = [botWon, qtumWon];
+      }
 
       yield put({
-        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
+        type: actions.CALCULATE_WINNINGS_RETURN,
         value,
       });
     } catch (error) {
       yield put({
-        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
-export function* calculateBotWinningsRequestHandler() {
-  yield takeEvery(actions.CALCULATE_BOT_WINNINGS, function* onCalculateBotWinningsRequest(action) {
-    const {
-      contractAddress,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, `${bodhiapi}/botwinnings`, options);
-
-      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
-
-      yield put({
-        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
-        value,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
+        type: actions.CALCULATE_WINNINGS_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -353,8 +323,7 @@ export default function* topicSaga() {
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
-    fork(calculateQtumWinningsRequestHandler),
-    fork(calculateBotWinningsRequestHandler),
+    fork(calculateWinningsRequestHandler),
     fork(withdrawRequestHandler),
   ]);
 }

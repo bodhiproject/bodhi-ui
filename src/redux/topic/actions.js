@@ -100,20 +100,10 @@ const topicActions = {
     },
   }),
 
-  CALCULATE_QTUM_WINNINGS: 'CALCULATE_QTUM_WINNINGS',
-  CALCULATE_QTUM_WINNINGS_RETURN: 'CALCULATE_QTUM_WINNINGS_RETURN',
-  onCalculateQtumWinnings: (contractAddress, senderAddress) => ({
-    type: topicActions.CALCULATE_QTUM_WINNINGS,
-    payload: {
-      contractAddress,
-      senderAddress,
-    },
-  }),
-
-  CALCULATE_BOT_WINNINGS: 'CALCULATE_BOT_WINNINGS',
-  CALCULATE_BOT_WINNINGS_RETURN: 'CALCULATE_BOT_WINNINGS_RETURN',
-  onCalculateBotWinnings: (contractAddress, senderAddress) => ({
-    type: topicActions.CALCULATE_BOT_WINNINGS,
+  CALCULATE_WINNINGS: 'CALCULATE_WINNINGS',
+  CALCULATE_WINNINGS_RETURN: 'CALCULATE_WINNINGS_RETURN',
+  onCalculateWinnings: (contractAddress, senderAddress) => ({
+    type: topicActions.CALCULATE_WINNINGS,
     payload: {
       contractAddress,
       senderAddress,
