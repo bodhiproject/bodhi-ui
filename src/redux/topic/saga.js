@@ -227,7 +227,7 @@ export function* calculateWinningsRequestHandler() {
       if (result) {
         const botWon = convertBNHexStrToQtum(result['0']);
         const qtumWon = convertBNHexStrToQtum(result['1']);
-        value = [botWon, qtumWon];
+        value = { botWon, qtumWon };
       }
 
       yield put({

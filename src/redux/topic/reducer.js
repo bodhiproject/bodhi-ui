@@ -52,8 +52,8 @@ export default function topicReducer(
 
     /* Calculate winnings return */
     case actions.CALCULATE_WINNINGS_RETURN:
-      return state.set('calculate_bot_winnings_return', action.botWon)
-        .set('calculate_qtum_winnings_return', action.qtumWon);
+      return state.set('calculate_bot_winnings_return', action.value.botWon)
+        .set('calculate_qtum_winnings_return', action.value.qtumWon);
 
     /* Withdraw result return */
     case actions.WITHDRAW_RETURN:
