@@ -2,8 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
-import { endpoint } from '../../config/app';
-const { bodhiapi } = endpoint;
+import Routes from '../../config/routes';
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
@@ -26,7 +25,7 @@ export function* betRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/bet`, options);
+      const result = yield call(request, Routes.bet, options);
 
       yield put({
         type: actions.BET_RETURN,
@@ -58,7 +57,7 @@ export function* approveRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/approve`, options);
+      const result = yield call(request, Routes.approve, options);
 
       yield put({
         type: actions.APPROVE_RETURN,
@@ -90,7 +89,7 @@ export function* allowanceRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/allowance`, options);
+      const result = yield call(request, Routes.allowance, options);
 
       const value = convertBNHexStrToQtum(result.remaining);
 
@@ -124,7 +123,7 @@ export function* setResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/setresult`, options);
+      const result = yield call(request, Routes.setResult, options);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
@@ -160,7 +159,7 @@ export function* voteRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/vote`, options);
+      const result = yield call(request, Routes.vote, options);
 
       yield put({
         type: actions.VOTE_RETURN,
@@ -191,7 +190,7 @@ export function* finalizeResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/finalizeresult`, options);
+      const result = yield call(request, Routes.finalizeResult, options);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
@@ -290,7 +289,7 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/withdraw`, options);
+      const result = yield call(request, Routes.withdraw, options);
 
       yield put({
         type: actions.WITHDRAW_RETURN,
@@ -330,7 +329,7 @@ export function* createRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/createtopic`, requestOptions);
+      const result = yield call(request, Routes.createTopic, requestOptions);
 
       yield put({
         type: actions.CREATE_RETURN,
