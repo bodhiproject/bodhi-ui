@@ -152,7 +152,7 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if (status === 'WAITRESULT' && token === QTUM) {
+      } else if ((status === 'WAITRESULT' || status === 'OPENRESULTSET') && token === QTUM) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
@@ -192,7 +192,7 @@ class OraclePage extends React.Component {
             skipToggle: false,
             beforeToggle: {
               btnText: 'Set Result',
-              btnDisabled: (oracle.resultSetterQAddress !== selectedWalletAddress),
+              btnDisabled: oracle.status === 'WAITRESULT' && oracle.resultSetterQAddress !== selectedWalletAddress,
             },
             afterToggle: {
               showAmountInput: false,

@@ -88,7 +88,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_SETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'WAITRESULT' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === QTUM && (oracle.status === 'WAITRESULT' || oracle.status === 'OPENRESULTSET')));
         break;
       }
       case TAB_VOTING: {
