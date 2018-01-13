@@ -11,9 +11,7 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
-
-const QTUM = 'QTUM';
-const BOT = 'BOT';
+import { Token, OracleStatus } from '../constants';
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -112,9 +110,9 @@ class TopicPage extends React.Component {
       let config;
 
       // Only shows Topic which are in WITHDRAW state
-      if (topic.status === 'WITHDRAW') {
-        const centralizedOracle = _.find(topic.oracles, (item) => item.token === QTUM);
-        const decentralizedOracles = _.orderBy(_.filter(topic.oracles, (item) => item.token === BOT), ['blockNum'], ['asc']);
+      if (topic.status === OracleStatus.Withdraw) {
+        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+        const decentralizedOracles = _.orderBy(_.filter(topic.oracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
 
         config = {
           name: 'COMPLETED',
@@ -165,7 +163,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} BOT & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} QTUM.`,
+          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
 
@@ -198,7 +196,7 @@ class TopicPage extends React.Component {
 
       return {
         name: opt,
-        value: `${qtumAmount.toFixed(2)} ${QTUM}, ${botAmount.toFixed(2)} ${BOT}`,
+        value: `${qtumAmount.toFixed(2)} ${Token.Qtum}, ${botAmount.toFixed(2)} ${Token.Bot}`,
         percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
         secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };

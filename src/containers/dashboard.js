@@ -13,14 +13,13 @@ import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
+import { Token, OracleStatus } from '../constants';
 
 const TAB_BETTING = 0;
 const TAB_SETTING = 1;
 const TAB_VOTING = 2;
 const TAB_COMPLETED = 3;
 const DEFAULT_TAB_INDEX = TAB_BETTING;
-const QTUM = 'QTUM';
-const BOT = 'BOT';
 const NUM_SHOW_IN_OPTIONS = 3;
 const COL_PER_ROW = { // Specify how many col in each row
   xs: 1,
@@ -84,19 +83,19 @@ class Dashboard extends React.Component {
     let rowItems;
     switch (tabIndex) {
       case TAB_BETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'VOTING' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, { token: Token.Qtum, status: OracleStatus.Voting }));
         break;
       }
       case TAB_SETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: 'QTUM', status: 'WAITRESULT' }));
+        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Qtum && (oracle.status === OracleStatus.WaitResult || oracle.status === OracleStatus.OpenResultSet)));
         break;
       }
       case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === BOT && oracle.status !== 'WITHDRAW'));
+        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Bot && oracle.status !== OracleStatus.Withdraw));
         break;
       }
       case TAB_COMPLETED: {
-        rowItems = getFinishedItems(_.filter(topicEvents, { status: 'WITHDRAW' }));
+        rowItems = getFinishedItems(_.filter(topicEvents, { status: OracleStatus.Withdraw }));
         break;
       }
       default: {
@@ -156,7 +155,7 @@ function buildOracleColElement(oracles) {
     let displayOptions = [];
 
     // Determine what options showing in progress bars
-    if (oracle.token === 'BOT') {
+    if (oracle.token === Token.Bot) {
       displayOptions = _.filter(oracle.options, (option, index) => {
         // If index of option is in optionsIdx array
         if (oracle.optionIdxs.indexOf(index) >= 0) {
@@ -180,7 +179,7 @@ function buildOracleColElement(oracles) {
     let optionsEle = null;
 
     if (!_.isEmpty(displayOptions)) {
-      if (oracle.token === 'BOT') {
+      if (oracle.token === Token.Bot) {
         optionsEle = displayOptions.map((result, index) => (
           <SingleProgressWidget
             key={`option${index}`}
@@ -230,7 +229,7 @@ function buildOracleColElement(oracles) {
           </ReportsWidget>
           <BottomButtonWidget
             pathname={`/oracle/${oracle.address}`}
-            text={oracle.token === QTUM ? (oracle.status === 'WAITRESULT' ? 'Set Result' : 'Participate') : 'Vote'}
+            text={oracle.token === Token.Qtum ? (oracle.status === OracleStatus.WaitResult ? 'Set Result' : 'Participate') : 'Vote'}
           />
         </IsoWidgetsWrapper>
       </Col>
@@ -261,7 +260,7 @@ function getFinishedItems(topicEvents) {
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
 
-    const raisedString = `Raised: ${qtumTotal.toFixed(2)} QTUM, ${botTotal.toFixed(2)} BOT`;
+    const raisedString = `Raised: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
     const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : ''}`;
 
     let optionBalances = _.map(topic.options, (opt, idx) => {
@@ -270,7 +269,7 @@ function getFinishedItems(topicEvents) {
 
       return {
         name: opt,
-        value: `${qtumAmount} ${QTUM}, ${botAmount} ${BOT}`,
+        value: `${qtumAmount} ${Token.Qtum}, ${botAmount} ${Token.Bot}`,
         percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
         secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
       };

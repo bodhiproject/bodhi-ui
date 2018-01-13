@@ -9,12 +9,12 @@ Yarn
 ## Steps
 1. Installing Packages & Dependencies:
   `yarn`
-  it will download all the necessary packages and dependencies in to node_modules folder.
+  Yarn will download all the necessary packages and dependencies in to node_modules folder.
 2. Run `npm install`
 3. Start the app
   `yarn start`
-  After the compiled process completed successfully, it will show success commands & redirect to the http://localhost:3000/ of your browser where you will find the login screen of the  app.
-4. To create an Optimized Product Build of the isomorphic app. you will need need to do is to run build command in you terminal root directory of the app.
+  After the compiled process completed successfully, it will show success commands & redirect to the http://localhost:3000/ of browser where you will find the login screen of the app.
+4. To create an Optimized Product Build of the app, you need to run a build command in you terminal at app root.
   `yarn build`
 
 # Development
@@ -25,7 +25,7 @@ Yarn
 1. use `which mongo` find mongo install directory, in which you will also find a mongorestore executable.
 
 2. `mongorestore --db <dbname> topics.json`
-  bodhi-ui use "bodhiapi" as <dbname>, if you use another name you need to go to bodhi-graphql/src/db/index.js to update it.
+  bodhi-ui use "bodhiapi" as <dbname>, if you use other name you need to go to bodhi-graphql/src/db/index.js to update it.
   This command will create a table with file name 'topics' in database <dbname>.
 
 ### Exporting
