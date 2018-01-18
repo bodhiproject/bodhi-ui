@@ -219,10 +219,15 @@ class CreateTopic extends React.Component {
               htmlType="submit"
               disabled={createReturn && createReturn.result}
             >Publish</Button>
-            <Button
-              type="default"
-              onClick={this.onCancel}
-            >Cancel</Button>
+            {(createReturn && createReturn.result) ?
+              <Button
+                type="default"
+                onClick={this.onCancel}
+              >Back</Button> : <Button
+                type="default"
+                onClick={this.onCancel}
+              >Cancel</Button>
+            }
           </FormItem>
         </Form>
       </div>
