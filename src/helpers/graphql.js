@@ -15,8 +15,8 @@ const client = new ApolloClient({
 const ALL_TOPICS = gql`
 query{
   allTopics{
+    version
     address
-    creatorAddress
     name
     options
     blockNum
@@ -25,17 +25,18 @@ query{
     qtumAmount
     botAmount
     oracles{
+      version
       address
       topicAddress
       status
       token
-      name
       optionIdxs
-      options
       amounts
       resultIdx
       blockNum
+      betStartBlock
       endBlock
+      resultSetStartBlock
       resultSetEndBlock
       resultSetterAddress
       resultSetterQAddress
@@ -48,17 +49,18 @@ query{
 const ALL_ORACLES = gql`
   query {
     allOracles {
-      token
+      version
       address
       topicAddress
       status
-      name
-      options
+      token
       optionIdxs
-      resultIdx
       amounts
-      endBlock
+      resultIdx
       blockNum
+      betStartBlock
+      endBlock
+      resultSetStartBlock
       resultSetEndBlock
       resultSetterAddress
       resultSetterQAddress
