@@ -2,8 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
-import { endpoint } from '../../config/app';
-const { bodhiapi } = endpoint;
+import Routes from '../../config/routes';
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
@@ -26,7 +25,7 @@ export function* betRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/bet`, options);
+      const result = yield call(request, Routes.bet, options);
 
       yield put({
         type: actions.BET_RETURN,
@@ -58,7 +57,7 @@ export function* approveRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/approve`, options);
+      const result = yield call(request, Routes.approve, options);
 
       yield put({
         type: actions.APPROVE_RETURN,
@@ -90,7 +89,7 @@ export function* allowanceRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/allowance`, options);
+      const result = yield call(request, Routes.allowance, options);
 
       const value = convertBNHexStrToQtum(result.remaining);
 
@@ -124,7 +123,7 @@ export function* setResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/setresult`, options);
+      const result = yield call(request, Routes.setResult, options);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
@@ -160,7 +159,7 @@ export function* voteRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/vote`, options);
+      const result = yield call(request, Routes.vote, options);
 
       yield put({
         type: actions.VOTE_RETURN,
@@ -191,7 +190,7 @@ export function* finalizeResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/finalizeresult`, options);
+      const result = yield call(request, Routes.finalizeResult, options);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
@@ -206,8 +205,8 @@ export function* finalizeResultRequestHandler() {
   });
 }
 
-export function* calculateQtumWinningsRequestHandler() {
-  yield takeEvery(actions.CALCULATE_QTUM_WINNINGS, function* onCalculateQtumWinningsRequest(action) {
+export function* calculateWinningsRequestHandler() {
+  yield takeEvery(actions.CALCULATE_WINNINGS, function* onCalculateWinningsRequest(action) {
     const {
       contractAddress,
       senderAddress,
@@ -223,51 +222,21 @@ export function* calculateQtumWinningsRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/qtumwinnings`, options);
-
-      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
+      const result = yield call(request, Routes.winnings, options);
+      let value;
+      if (result) {
+        const botWon = convertBNHexStrToQtum(result['0']);
+        const qtumWon = convertBNHexStrToQtum(result['1']);
+        value = { botWon, qtumWon };
+      }
 
       yield put({
-        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
+        type: actions.CALCULATE_WINNINGS_RETURN,
         value,
       });
     } catch (error) {
       yield put({
-        type: actions.CALCULATE_QTUM_WINNINGS_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
-export function* calculateBotWinningsRequestHandler() {
-  yield takeEvery(actions.CALCULATE_BOT_WINNINGS, function* onCalculateBotWinningsRequest(action) {
-    const {
-      contractAddress,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, `${bodhiapi}/botwinnings`, options);
-
-      const value = result ? convertBNHexStrToQtum(result['0']) : undefined;
-
-      yield put({
-        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
-        value,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CALCULATE_BOT_WINNINGS_RETURN,
+        type: actions.CALCULATE_WINNINGS_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -290,7 +259,7 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/withdraw`, options);
+      const result = yield call(request, Routes.withdraw, options);
 
       yield put({
         type: actions.WITHDRAW_RETURN,
@@ -330,7 +299,7 @@ export function* createRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/createtopic`, requestOptions);
+      const result = yield call(request, Routes.createTopic, requestOptions);
 
       yield put({
         type: actions.CREATE_RETURN,
@@ -354,8 +323,7 @@ export default function* topicSaga() {
     fork(setResultRequestHandler),
     fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
-    fork(calculateQtumWinningsRequestHandler),
-    fork(calculateBotWinningsRequestHandler),
+    fork(calculateWinningsRequestHandler),
     fork(withdrawRequestHandler),
   ]);
 }

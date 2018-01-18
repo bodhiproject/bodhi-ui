@@ -4,15 +4,14 @@ import actions from './actions';
 
 import { querySyncInfo } from '../../helpers/graphql';
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
-import { endpoint } from '../../config/app';
+import Routes from '../../config/routes';
 
-const { bodhiapi } = endpoint;
 const DEFAULT_QTUMD_ACCOUNTNAME = '';
 
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {
-      const result = yield call(request, `${bodhiapi}/listunspent`);
+      const result = yield call(request, Routes.listUnspent);
 
       if (_.isEmpty(result)) {
         // If listunspent return is empty meaning one has no balance in his addresses we will get default qtumd account's address
@@ -25,7 +24,7 @@ export function* listUnspentRequestHandler() {
           headers: { 'Content-Type': 'application/json' },
         };
 
-        const defaultAddress = yield call(request, `${bodhiapi}/get-account-address`, options);
+        const defaultAddress = yield call(request, Routes.getAccountAddress, options);
 
         yield put({
           type: actions.LIST_UNSPENT_RESULT,
@@ -55,7 +54,7 @@ export function* listUnspentRequestHandler() {
 export function* getBlockCountRequestHandler() {
   yield takeEvery(actions.GET_BLOCK_COUNT, function* getBlockCountRequest() {
     try {
-      const result = yield call(request, `${bodhiapi}/getblockcount`);
+      const result = yield call(request, Routes.getBlockCount);
 
       yield put({
         type: actions.GET_BLOCK_COUNT_RETURN,
@@ -87,7 +86,7 @@ export function* getBotBalanceRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, `${bodhiapi}/botbalance`, options);
+      const result = yield call(request, Routes.botBalance, options);
       const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0; // Convert BN hex string from request to BOT number
 
       yield put({
