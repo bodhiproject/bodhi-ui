@@ -30,6 +30,8 @@ query{
       topicAddress
       status
       token
+      name
+      options
       optionIdxs
       amounts
       resultIdx
@@ -54,6 +56,8 @@ const ALL_ORACLES = gql`
       topicAddress
       status
       token
+      name
+      options
       optionIdxs
       amounts
       resultIdx
