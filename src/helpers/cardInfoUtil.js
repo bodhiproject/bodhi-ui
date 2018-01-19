@@ -43,7 +43,7 @@ class CardInfoUtil {
       },
       {
         title: VOTING,
-        description: `${BLOCK} ${dOracle.blockNum || ''} - ${dOracle.endBlock || ''}`,
+        description: `${BLOCK} ${dOracle.startBlock || ''} - ${dOracle.endBlock || ''}`,
       },
     ];
   }

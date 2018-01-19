@@ -182,23 +182,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 3,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
-              },
-              {
-                title: 'Voting',
-                description: `Block No. ${oracle.blockNum || ''} - ${oracle.endBlock || ''}`,
-              },
-              ],
+              value: CardInfoUtil.getDecentralizedOracleArray(centralizedOracle, oracle),
             },
             messages: [
               {
