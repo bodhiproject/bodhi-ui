@@ -15,6 +15,7 @@ import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 import { decimalToBotoshiHex } from '../helpers/utility';
 import { Token, OracleStatus } from '../constants';
+import CardInfoUtil from '../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
@@ -103,19 +104,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 1,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${oracle.blockNum || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
-              },
-              ],
+              value: CardInfoUtil.getCentralizedOracleArray(oracle),
             },
             messages: [
             ],
@@ -138,19 +127,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 2,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${oracle.blockNum || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
-              },
-              ],
+              value: CardInfoUtil.getCentralizedOracleArray(oracle),
             },
             messages: [
               {
@@ -364,9 +341,9 @@ class OraclePage extends React.Component {
   }
 
   /**
- * Send get allowance request and keep repeating itself until this.state.isApproving is false
- * @return {[type]}
- */
+   * Send get allowance request and keep repeating itself until this.state.isApproving is false
+   * @return {[type]}
+   */
   startCheckAllowance() {
     console.log('startCheckAllowance', new Date());
     const { selectedWalletAddress, onAllowance } = this.props;
