@@ -36,7 +36,7 @@ query{
       amounts
       resultIdx
       blockNum
-      betStartBlock
+      startBlock
       endBlock
       resultSetStartBlock
       resultSetEndBlock
@@ -62,7 +62,7 @@ const ALL_ORACLES = gql`
       amounts
       resultIdx
       blockNum
-      betStartBlock
+      startBlock
       endBlock
       resultSetStartBlock
       resultSetEndBlock
