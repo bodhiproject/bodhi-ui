@@ -13,7 +13,7 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
-import { decimalToBotoshiHex } from '../helpers/utility';
+import { decimalToBotoshi } from '../helpers/utility';
 import { Token, OracleStatus } from '../constants';
 import CardInfoUtil from '../helpers/cardInfoUtil';
 
@@ -420,7 +420,7 @@ class OraclePage extends React.Component {
     const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.topicAddress, decimalToBotoshiHex(amount), selectedWalletAddress);
+    onApprove(oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
 
     this.setState({
       isApproving: true,
@@ -448,7 +448,7 @@ class OraclePage extends React.Component {
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
-    onVote(oracle.address, selectedIndex, decimalToBotoshiHex(amount), selectedWalletAddress);
+    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), selectedWalletAddress);
   }
 
   finalizeResult() {

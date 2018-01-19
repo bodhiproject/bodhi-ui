@@ -160,23 +160,14 @@ export function convertBNHexStrToQtum(input) {
   return result >= BOT_MIN_VALUE ? result : 0;
 }
 
-/**
- * Convert ES6 Int to Botoshi (BigNumber format).
- * @param  {Number} Number to convert to Botoshi in decimal format.
- * @return {String} The converted decimal to BigNumber in hex format.
- */
-export function decimalToBotoshiHex(decimalNum) {
-  // Converting to BigNumber drops the decimals so we need to store the decimals as a BN to add it back.
-  let decimalsBN;
-  if (decimalNum.toString().indexOf('.') !== -1) {
-    decimalsBN = new BN(decimalNum.toFixed(BOT_DECIMALS).toString().split('.')[1]);
-  } else {
-    decimalsBN = new BN(0);
-  }
-
-  const bigNumber = new BN(decimalNum);
-  const botoshiBN = new BN(BOTOSHI_TO_BOT);
-  return bigNumber.mul(botoshiBN).add(decimalsBN).toJSON();
+/*
+* Converts a decimal number to Botoshi expressed as a String.
+* @dev To be able to handle numbers bigger than JS Ints 2^53, we express it as a String.
+* @param {Number} Decimal format number to convert.
+* @return {String} Converted number to Botoshi.
+*/
+export function decimalToBotoshi(decimalNum) {
+  return (decimalNum * BOTOSHI_TO_BOT).toString();
 }
 
 /**
