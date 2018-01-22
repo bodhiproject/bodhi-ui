@@ -7,11 +7,6 @@ import { endpoint } from '../config/app';
 
 const { graphql } = endpoint;
 
-const client = new ApolloClient({
-  link: new HttpLink({ uri: graphql }),
-  cache: new InMemoryCache(),
-});
-
 const FIELDS_TOPIC = `
   version
   address
@@ -63,19 +58,29 @@ const FIELDS_ORACLE = `
   resultSetterQAddress
   consensusThreshold
 `;
+const FIELDS_SYNC_INFO = `
+  syncBlockNum
+  chainBlockNum
+`;
 const FIELD_MAPPINGS = {
   allTopics: FIELDS_TOPIC,
   allOracles: FIELDS_ORACLE,
+  syncInfo: FIELDS_SYNC_INFO,
 };
 const PARSER_MAPPINGS = {
   allTopics: parseTopic,
   allOracles: parseOracle,
+  syncInfo: parseSyncInfo,
 };
 
 class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = {};
+    this.client = new ApolloClient({
+      link: new HttpLink({ uri: graphql }),
+      cache: new InMemoryCache(),
+    });
   }
 
   addFilter(key, value) {
@@ -105,21 +110,18 @@ class GraphRequest {
     return query;
   }
 
-  execute() {
+  async execute() {
     const query = this.build();
-
-    return client.query({
+    const res = await this.client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
-    }).then((res) => {
-      const data = res.data[this.queryName].map((entry) => PARSER_MAPPINGS[this.queryName](entry));
-      return data;
     });
+    return PARSER_MAPPINGS[this.queryName](res.data[this.queryName]);
   }
 }
 
-function parseTopic(entry) {
-  return {
+function parseTopic(data) {
+  return data.map((entry) => ({
     address: entry.address,
     creatorAddress: entry.creatorAddress,
     name: entry.name,
@@ -131,11 +133,11 @@ function parseTopic(entry) {
     botAmount: entry.botAmount,
     oracles: entry.oracles,
     blockNum: entry.blockNum,
-  };
+  }));
 }
 
-function parseOracle(entry) {
-  return {
+function parseOracle(data) {
+  return data.map((entry) => ({
     token: entry.token,
     address: entry.address,
     topicAddress: entry.topicAddress,
@@ -153,7 +155,11 @@ function parseOracle(entry) {
     resultSetterAddress: entry.resultSetterAddress,
     resultSetterQAddress: entry.resultSetterQAddress,
     consensusThreshold: entry.consensusThreshold,
-  };
+  }));
+}
+
+function parseSyncInfo(data) {
+  return _.pick(data, ['syncBlockNum', 'chainBlockNum']);
 }
 
 export default GraphRequest;

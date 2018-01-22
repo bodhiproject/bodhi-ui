@@ -2,7 +2,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
-import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
+import { queryAllTopics, queryAllOracles } from '../../network/graphQuery';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import actions from './actions';
 import fakeData from './fakedata';
