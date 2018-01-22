@@ -97,7 +97,7 @@ class OraclePage extends React.Component {
       let config;
 
       /** Determine what config to use in current card * */
-      if (status === 'VOTING' && token === Token.Qtum) {
+      if (status === OracleStatus.Voting && token === Token.Qtum) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
@@ -166,7 +166,7 @@ class OraclePage extends React.Component {
             type: 'warn',
           });
         }
-      } else if (status === 'VOTING' && token === Token.Bot) {
+      } else if (status === OracleStatus.Voting && token === Token.Bot) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
 
