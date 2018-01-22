@@ -104,7 +104,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 1,
-              value: CardInfoUtil.getCentralizedOracleArray(oracle),
+              value: CardInfoUtil.getCentralizedOracleSteps(oracle),
             },
             messages: [
             ],
@@ -127,7 +127,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 2,
-              value: CardInfoUtil.getCentralizedOracleArray(oracle),
+              value: CardInfoUtil.getCentralizedOracleSteps(oracle),
             },
             messages: [
               {
@@ -182,7 +182,7 @@ class OraclePage extends React.Component {
           cardInfo: {
             steps: {
               current: 3,
-              value: CardInfoUtil.getDecentralizedOracleArray(centralizedOracle, oracle),
+              value: CardInfoUtil.getDecentralizedOracleSteps(centralizedOracle, oracle),
             },
             messages: [
               {

@@ -6,7 +6,7 @@ const VOTING = 'Voting';
 const BLOCK = 'Block:';
 
 class CardInfoUtil {
-  static getCentralizedOracleArray(oracle) {
+  static getCentralizedOracleSteps(oracle) {
     return [
       {
         title: TOPIC_CREATED,
@@ -27,7 +27,7 @@ class CardInfoUtil {
     ];
   }
 
-  static getDecentralizedOracleArray(cOracle, dOracle) {
+  static getDecentralizedOracleSteps(cOracle, dOracle) {
     return [
       {
         title: TOPIC_CREATED,
