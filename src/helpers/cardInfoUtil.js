@@ -67,7 +67,7 @@ class CardInfoUtil {
           description: `${BLOCK} ${item.startBlock || ''} - ${item.endBlock || ''}`,
         });
 
-        if (index === dOracles.length - 1 && isTopicDetail) {
+        if (index === dOracles.length - 1 && !isTopicDetail) {
           value.push({
             title: FINALIZING,
             description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
