@@ -10,7 +10,11 @@ const FINALIZING = 'Finalizing';
 const BLOCK = 'Block:';
 
 class CardInfoUtil {
-  static getSteps(block, cOracle, dOracles) {
+  static getSteps(block, cOracle, dOracles, topic) {
+    if (_.isUndefined(block) && _.isUndefined(cOracle)) {
+      return false;
+    }
+
     let current;
     let lastDOracle;
     if (dOracles) {
@@ -36,6 +40,7 @@ class CardInfoUtil {
       current = null;
     }
 
+    // Init all events with these steps
     const value = [
       {
         title: TOPIC_CREATED,
@@ -56,15 +61,24 @@ class CardInfoUtil {
     ];
 
     if (dOracles) {
-      _.each(dOracles, (item) => {
+      _.each(dOracles, (item, index) => {
         value.push({
           title: 'Voting',
           description: `${BLOCK} ${item.startBlock || ''} - ${item.endBlock || ''}`,
         });
-      });
 
+        if (index === dOracles.length - 1 && _.isUndefined(topic)) {
+          value.push({
+            title: FINALIZING,
+            description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
+          });
+        }
+      });
+    }
+
+    if (topic) {
       value.push({
-        title: FINALIZING,
+        title: 'Withdrawal',
         description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
       });
     }

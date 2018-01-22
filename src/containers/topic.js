@@ -12,6 +12,7 @@ import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 import { Token, OracleStatus } from '../constants';
+import CardInfoUtil from '../helpers/cardInfoUtil';
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -116,21 +117,7 @@ class TopicPage extends React.Component {
           name: 'COMPLETED',
           breadcrumbLabel: 'Completed',
           cardInfo: {
-            steps: {
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(this.props.blockCount, centralizedOracle, decentralizedOracles, topic),
             messages: [
             ],
           },
@@ -141,23 +128,6 @@ class TopicPage extends React.Component {
             },
           },
         };
-
-        // Add Steps from all Decentralized Oracles
-        let lastEndBlock;
-        _.each(decentralizedOracles, (item) => {
-          config.cardInfo.steps.value.push({
-            title: 'Voting',
-            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
-          });
-
-          lastEndBlock = item.endBlock;
-        });
-
-        // Add Steps from Withdraw
-        config.cardInfo.steps.value.push({
-          title: 'Withdrawal',
-          description: `Block No. ${(lastEndBlock + 1) || ''} - `,
-        });
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
@@ -270,6 +240,7 @@ TopicPage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
+  blockCount: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
@@ -285,6 +256,7 @@ TopicPage.defaultProps = {
   getTopicsSuccess: undefined,
   onGetTopics: undefined,
   requestReturn: undefined,
+  blockCount: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
@@ -300,6 +272,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
+  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
