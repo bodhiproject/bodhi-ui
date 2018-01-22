@@ -4,6 +4,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { endpoint } from '../config/app';
+import GraphParser from './graphParser';
 
 const { graphql } = endpoint;
 
@@ -67,11 +68,6 @@ const FIELD_MAPPINGS = {
   allOracles: FIELDS_ORACLE,
   syncInfo: FIELDS_SYNC_INFO,
 };
-const PARSER_MAPPINGS = {
-  allTopics: parseTopic,
-  allOracles: parseOracle,
-  syncInfo: parseSyncInfo,
-};
 
 class GraphRequest {
   constructor(queryName) {
@@ -116,50 +112,8 @@ class GraphRequest {
       query: gql`${query}`,
       fetchPolicy: 'network-only',
     });
-    return PARSER_MAPPINGS[this.queryName](res.data[this.queryName]);
+    return GraphParser.getParser(this.queryName)(res.data[this.queryName]);
   }
-}
-
-function parseTopic(data) {
-  return data.map((entry) => ({
-    address: entry.address,
-    creatorAddress: entry.creatorAddress,
-    name: entry.name,
-    options: entry.options,
-    bettingEndBlock: entry.blockNum,
-    status: entry.status,
-    resultIdx: entry.resultIdx,
-    qtumAmount: entry.qtumAmount,
-    botAmount: entry.botAmount,
-    oracles: entry.oracles,
-    blockNum: entry.blockNum,
-  }));
-}
-
-function parseOracle(data) {
-  return data.map((entry) => ({
-    token: entry.token,
-    address: entry.address,
-    topicAddress: entry.topicAddress,
-    status: entry.status,
-    name: entry.name,
-    options: entry.options,
-    optionIdxs: entry.optionIdxs,
-    resultIdx: entry.resultIdx,
-    amounts: entry.amounts,
-    startBlock: entry.startBlock,
-    endBlock: entry.endBlock,
-    blockNum: entry.blockNum,
-    resultSetStartBlock: entry.resultSetStartBlock,
-    resultSetEndBlock: entry.resultSetEndBlock,
-    resultSetterAddress: entry.resultSetterAddress,
-    resultSetterQAddress: entry.resultSetterQAddress,
-    consensusThreshold: entry.consensusThreshold,
-  }));
-}
-
-function parseSyncInfo(data) {
-  return _.pick(data, ['syncBlockNum', 'chainBlockNum']);
 }
 
 export default GraphRequest;
