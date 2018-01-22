@@ -60,27 +60,29 @@ class CardInfoUtil {
       },
     ];
 
+    // Add all voting steps of each Decentralized Oracle
     if (dOracles) {
       _.each(dOracles, (item, index) => {
         value.push({
           title: 'Voting',
           description: `${BLOCK} ${item.startBlock || ''} - ${item.endBlock || ''}`,
         });
-
-        if (index === dOracles.length - 1 && !isTopicDetail) {
-          value.push({
-            title: FINALIZING,
-            description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
-          });
-        }
       });
     }
 
-    if (isTopicDetail) {
-      value.push({
-        title: 'Withdrawal',
-        description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
-      });
+    // Add either the finalizing or withdrawing step
+    if (lastDOracle) {
+      if (isTopicDetail) {
+        value.push({
+          title: 'Withdrawal',
+          description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
+        });
+      } else {
+        value.push({
+          title: FINALIZING,
+          description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
+        });
+      }
     }
 
     return {
