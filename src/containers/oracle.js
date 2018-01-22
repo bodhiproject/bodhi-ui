@@ -102,10 +102,7 @@ class OraclePage extends React.Component {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
           cardInfo: {
-            steps: {
-              current: 1,
-              value: CardInfoUtil.getCentralizedOracleSteps(oracle),
-            },
+            steps: CardInfoUtil.getSteps(blockCount, oracle),
             messages: [
             ],
           },
@@ -125,10 +122,7 @@ class OraclePage extends React.Component {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
           cardInfo: {
-            steps: {
-              current: 2,
-              value: CardInfoUtil.getCentralizedOracleSteps(oracle),
-            },
+            steps: CardInfoUtil.getSteps(blockCount, oracle),
             messages: [
               {
                 text: `Result setter ${oracle.resultSetterQAddress || ''}`,
@@ -180,10 +174,7 @@ class OraclePage extends React.Component {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: {
-              current: 3,
-              value: CardInfoUtil.getDecentralizedOracleSteps(centralizedOracle, oracle),
-            },
+            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, [oracle]),
             messages: [
               {
                 text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
@@ -214,22 +205,7 @@ class OraclePage extends React.Component {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: {
-              current: 4,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
@@ -240,20 +216,6 @@ class OraclePage extends React.Component {
             },
           },
         };
-
-        // Add Steps from all Decentralized Oracles
-        _.each(decentralizedOracles, (item) => {
-          config.cardInfo.steps.value.push({
-            title: 'Voting',
-            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
-          });
-        });
-
-        // Add Step for Finalizing block
-        config.cardInfo.steps.value.push({
-          title: 'Finalizing',
-          description: `Block No. ${(oracle.endBlock + 1) || ''} - `,
-        });
 
         if (blockCount > oracle.endBlock) {
           config.cardInfo.messages.push({
