@@ -7,14 +7,15 @@ import { endpoint } from '../config/app';
 import GraphParser from './graphParser';
 import { getQueryFields } from './graphFields';
 
+const client = new ApolloClient({
+  link: new HttpLink({ uri: endpoint.graphql }),
+  cache: new InMemoryCache(),
+});
+
 class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = {};
-    this.client = new ApolloClient({
-      link: new HttpLink({ uri: endpoint.graphql }),
-      cache: new InMemoryCache(),
-    });
   }
 
   addFilter(key, value) {
@@ -46,7 +47,7 @@ class GraphRequest {
 
   async execute() {
     const query = this.build();
-    const res = await this.client.query({
+    const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
     });

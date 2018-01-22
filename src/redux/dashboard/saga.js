@@ -11,7 +11,7 @@ import fakeData from './fakedata';
 const isFake = false;
 
 export function* getTopicsRequestHandler(/* actions */) {
-  yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest() {
+  yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest(action) {
     if (isFake) {
       yield put({
         type: actions.GET_TOPICS_SUCCESS,
@@ -21,7 +21,6 @@ export function* getTopicsRequestHandler(/* actions */) {
       try {
         // Query all topics data using graphQL call
         const result = yield call(queryAllTopics);
-
         const topics = _.map(result, processTopic);
 
         yield put({
@@ -43,7 +42,6 @@ export function* getOraclesRequestHandler(/* actions */) {
     try {
       // Query all topics data using graphQL call
       const result = yield call(queryAllOracles);
-
       const oracles = result.map(processOracle);
 
       yield put({

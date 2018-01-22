@@ -371,8 +371,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    onGetTopics: (filters) => dispatch(dashboardActions.getTopics(filters)),
+    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
   };
 }
