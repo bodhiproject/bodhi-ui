@@ -117,7 +117,7 @@ class TopicPage extends React.Component {
           name: 'COMPLETED',
           breadcrumbLabel: 'Completed',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(this.props.blockCount, centralizedOracle, decentralizedOracles, topic),
+            steps: CardInfoUtil.getSteps(this.props.blockCount, centralizedOracle, decentralizedOracles, true),
             messages: [
             ],
           },

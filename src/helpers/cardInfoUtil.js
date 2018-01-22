@@ -10,7 +10,7 @@ const FINALIZING = 'Finalizing';
 const BLOCK = 'Block:';
 
 class CardInfoUtil {
-  static getSteps(block, cOracle, dOracles, topic) {
+  static getSteps(block, cOracle, dOracles, isTopicDetail) {
     if (_.isUndefined(block) && _.isUndefined(cOracle)) {
       return false;
     }
@@ -67,7 +67,7 @@ class CardInfoUtil {
           description: `${BLOCK} ${item.startBlock || ''} - ${item.endBlock || ''}`,
         });
 
-        if (index === dOracles.length - 1 && _.isUndefined(topic)) {
+        if (index === dOracles.length - 1 && isTopicDetail) {
           value.push({
             title: FINALIZING,
             description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
@@ -76,7 +76,7 @@ class CardInfoUtil {
       });
     }
 
-    if (topic) {
+    if (isTopicDetail) {
       value.push({
         title: 'Withdrawal',
         description: `${BLOCK} ${lastDOracle.endBlock || ''}+`,
