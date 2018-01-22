@@ -5,76 +5,14 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { endpoint } from '../config/app';
 import GraphParser from './graphParser';
-
-const { graphql } = endpoint;
-
-const FIELDS_TOPIC = `
-  version
-  address
-  name
-  options
-  blockNum
-  status
-  resultIdx
-  qtumAmount
-  botAmount
-  oracles{
-    version
-    address
-    topicAddress
-    status
-    token
-    name
-    options
-    optionIdxs
-    amounts
-    resultIdx
-    blockNum
-    startBlock
-    endBlock
-    resultSetStartBlock
-    resultSetEndBlock
-    resultSetterAddress
-    resultSetterQAddress
-    consensusThreshold
-  }
-`;
-const FIELDS_ORACLE = `
-  version
-  address
-  topicAddress
-  status
-  token
-  name
-  options
-  optionIdxs
-  amounts
-  resultIdx
-  blockNum
-  startBlock
-  endBlock
-  resultSetStartBlock
-  resultSetEndBlock
-  resultSetterAddress
-  resultSetterQAddress
-  consensusThreshold
-`;
-const FIELDS_SYNC_INFO = `
-  syncBlockNum
-  chainBlockNum
-`;
-const FIELD_MAPPINGS = {
-  allTopics: FIELDS_TOPIC,
-  allOracles: FIELDS_ORACLE,
-  syncInfo: FIELDS_SYNC_INFO,
-};
+import { getQueryFields } from './graphFields';
 
 class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = {};
     this.client = new ApolloClient({
-      link: new HttpLink({ uri: graphql }),
+      link: new HttpLink({ uri: endpoint.graphql }),
       cache: new InMemoryCache(),
     });
   }
@@ -100,8 +38,8 @@ class GraphRequest {
       query = query.concat(`(filter: {${parsedFilters}}) {`);
     }
 
-    query = query.concat(FIELD_MAPPINGS[this.queryName]);
-    query = query.concat('}}');
+    const fields = getQueryFields(this.queryName);
+    query = query.concat(fields).concat('}}');
 
     return query;
   }
