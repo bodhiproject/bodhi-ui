@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
-import { querySyncInfo } from '../../network/graphQuery';
+import { querySyncInfo } from '../../network/graphRequest';
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../config/routes';
 

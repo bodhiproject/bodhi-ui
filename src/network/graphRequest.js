@@ -54,4 +54,22 @@ class GraphRequest {
   }
 }
 
-export default GraphRequest;
+export function queryAllTopics(filters) {
+  const request = new GraphRequest('allTopics');
+  if (filters) {
+    request.setFilters(filters);
+  }
+  return request.execute();
+}
+
+export function queryAllOracles(filters) {
+  const request = new GraphRequest('allOracles');
+  if (filters) {
+    request.setFilters(filters);
+  }
+  return request.execute();
+}
+
+export function querySyncInfo() {
+  return new GraphRequest('syncInfo').execute();
+}
