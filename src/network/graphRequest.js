@@ -32,14 +32,20 @@ class GraphRequest {
     if (_.isEmpty(this.filters)) {
       query = query.concat('{');
     } else {
-      const parsedFilters = Object
-        .keys(this.filters)
-        .map((key) => `${key}: ${JSON.stringify(this.filters[key])}`)
-        .join(',');
+      let filterStr = '';
+
+      _.forEach(this.filters, (obj, index) => {
+        if (!_.isEmpty(filterStr)) {
+          filterStr = filterStr.concat(',');
+        }
+        const str = Object.keys(obj).map((key) => `${key}: ${JSON.stringify(obj[key])}`).join(',');
+        filterStr = filterStr.concat(`{${str}}`);
+      });
+
       query = query.concat(`(
         filter: { 
-          OR [ 
-            ${parsedFilters} 
+          OR: [ 
+            ${filterStr} 
           ]
         }
       ) {`);
@@ -53,6 +59,7 @@ class GraphRequest {
 
   async execute() {
     const query = this.build();
+    console.log(query);
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
