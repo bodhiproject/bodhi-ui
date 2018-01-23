@@ -36,7 +36,13 @@ class GraphRequest {
         .keys(this.filters)
         .map((key) => `${key}: ${JSON.stringify(this.filters[key])}`)
         .join(',');
-      query = query.concat(`(filter: {${parsedFilters}}) {`);
+      query = query.concat(`(
+        filter: { 
+          OR [ 
+            ${parsedFilters} 
+          ]
+        }
+      ) {`);
     }
 
     const fields = getQueryFields(this.queryName);
@@ -55,6 +61,10 @@ class GraphRequest {
   }
 }
 
+/*
+* Queries allTopics from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+*/
 export function queryAllTopics(filters) {
   const request = new GraphRequest('allTopics');
   if (filters) {
@@ -63,6 +73,10 @@ export function queryAllTopics(filters) {
   return request.execute();
 }
 
+/*
+* Queries allOracles from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+*/
 export function queryAllOracles(filters) {
   const request = new GraphRequest('allOracles');
   if (filters) {
@@ -71,6 +85,9 @@ export function queryAllOracles(filters) {
   return request.execute();
 }
 
+/*
+* Queries syncInfo from GraphQL.
+*/
 export function querySyncInfo() {
   return new GraphRequest('syncInfo').execute();
 }
