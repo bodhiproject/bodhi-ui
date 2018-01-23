@@ -21,7 +21,7 @@ const TAB_VOTE = 2;
 const TAB_FINALIZE = 3;
 const TAB_WITHDRAW = 4;
 const DEFAULT_TAB_INDEX = TAB_BET;
-const NUM_SHOW_IN_OPTIONS = 3;
+const MAX_DISPLAY_OPTIONS = 3;
 const COL_PER_ROW = { // Specify how many col in each row
   xs: 1,
   sm: 3,
@@ -205,9 +205,9 @@ function buildOracleColElement(oracles) {
       displayOptions = _.map(oracle.options, _.clone);
     }
 
-    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
-    if (!_.isEmpty(displayOptions) && displayOptions.length > NUM_SHOW_IN_OPTIONS) {
-      displayOptions = displayOptions.slice(0, NUM_SHOW_IN_OPTIONS);
+    // Trim options array to only MAX_DISPLAY_OPTIONS (3) elements
+    if (!_.isEmpty(displayOptions) && displayOptions.length > MAX_DISPLAY_OPTIONS) {
+      displayOptions = displayOptions.slice(0, MAX_DISPLAY_OPTIONS);
     }
 
     const threshold = oracle.consensusThreshold;
@@ -239,10 +239,10 @@ function buildOracleColElement(oracles) {
       }
     }
 
-    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
-    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
-    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+    // Make sure length of options element array is MAX_DISPLAY_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
+    if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
+      for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
         optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
       }
     }
@@ -312,9 +312,9 @@ function getFinishedItems(topicEvents) {
       };
     });
 
-    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
-    if (!_.isEmpty(optionBalances) && optionBalances.length > NUM_SHOW_IN_OPTIONS) {
-      optionBalances = optionBalances.slice(0, NUM_SHOW_IN_OPTIONS);
+    // Trim options array to only MAX_DISPLAY_OPTIONS (3) elements
+    if (!_.isEmpty(optionBalances) && optionBalances.length > MAX_DISPLAY_OPTIONS) {
+      optionBalances = optionBalances.slice(0, MAX_DISPLAY_OPTIONS);
     }
 
     // Constructing opitons elements
@@ -335,10 +335,10 @@ function getFinishedItems(topicEvents) {
       ));
     }
 
-    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
-    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
-    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+    // Make sure length of options element array is MAX_DISPLAY_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
+    if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
+      for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
         optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
       }
     }
