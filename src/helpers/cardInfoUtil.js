@@ -54,19 +54,21 @@ class CardInfoUtil {
         title: ORACLE_RESULT_SETTING,
         description: `${BLOCK} ${cOracle.resultSetStartBlock || ''} - ${cOracle.resultSetEndBlock || ''}`,
       },
-      {
-        title: OPEN_RESULT_SETTING,
-        description: `${BLOCK} ${cOracle.resultSetEndBlock || ''}+`,
-      },
     ];
 
-    // Add all voting steps of each Decentralized Oracle
     if (dOracles) {
+      // Add all voting steps of each Decentralized Oracle
       _.each(dOracles, (item, index) => {
         value.push({
           title: 'Voting',
           description: `${BLOCK} ${item.startBlock || ''} - ${item.endBlock || ''}`,
         });
+      });
+    } else {
+      // Only show open result setting in Centralized Oracle
+      value.push({
+        title: OPEN_RESULT_SETTING,
+        description: `${BLOCK} ${cOracle.resultSetEndBlock || ''}+`,
       });
     }
 
