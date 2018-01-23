@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const ENUMS = {
   status: [
     'CREATED',
@@ -74,7 +76,9 @@ const FIELD_MAPPINGS = {
 };
 
 export function isValidEnum(key, value) {
-  return _.has(ENUMS, key) && _.has(ENUMS[key], value);
+  const isEnum = _.has(ENUMS, key);
+  const isValid = _.includes(ENUMS[key], value);
+  return isEnum && isValid;
 }
 
 export function getQueryFields(queryName) {

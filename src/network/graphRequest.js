@@ -5,7 +5,7 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { endpoint } from '../config/app';
 import GraphParser from './graphParser';
-import { getQueryFields } from './graphDataStruct';
+import { isValidEnum, getQueryFields } from './graphDataStruct';
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: endpoint.graphql }),
@@ -28,13 +28,22 @@ class GraphRequest {
     if (_.isEmpty(this.filters)) {
       query = query.concat('{');
     } else {
+      // Create entire string for OR: [] as objects
       let filterStr = '';
-
       _.forEach(this.filters, (obj, index) => {
         if (!_.isEmpty(filterStr)) {
           filterStr = filterStr.concat(',');
         }
-        const str = Object.keys(obj).map((key) => `${key}: ${JSON.stringify(obj[key])}`).join(',');
+        const str = Object
+          .keys(obj)
+          .map((key) => {
+            if (isValidEnum(key, obj[key])) {
+              // Enums require values without quotes
+              return `${key}: ${obj[key]}`;
+            }
+            return `${key}: ${JSON.stringify(obj[key])}`;
+          })
+          .join(',');
         filterStr = filterStr.concat(`{${str}}`);
       });
 
@@ -55,6 +64,8 @@ class GraphRequest {
 
   async execute() {
     const query = this.build();
+    console.debug(query);
+
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
@@ -86,34 +97,6 @@ export function queryAllOracles(filters) {
   }
   return request.execute();
 }
-
-// export async function queryOracles() {
-//   const query = gql`
-//     query oracles($token: _TokenType) {
-//       allOracles(filter: {
-//         OR: [
-//           { status: WAITRESULT, token: $token }
-//           { status: OPENRESULTSET, token: $token }
-//         ]
-//       }) {
-//         address
-//         status
-//         token
-//         name
-//       }
-//     }
-//   `;
-
-//   const res = await client.query({
-//     query,
-//     fetchPolicy: 'network-only',
-//     variables: {
-//       token: 'QTUM',
-//     },
-//   });
-
-//   console.log(res);
-// }
 
 /*
 * Queries syncInfo from GraphQL.
