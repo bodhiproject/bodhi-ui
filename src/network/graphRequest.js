@@ -5,7 +5,7 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { endpoint } from '../config/app';
 import GraphParser from './graphParser';
-import { getQueryFields } from './graphFields';
+import { getQueryFields } from './graphDataStruct';
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: endpoint.graphql }),
@@ -16,10 +16,6 @@ class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = {};
-  }
-
-  addFilter(key, value) {
-    this.filters.key = value;
   }
 
   setFilters(filters) {
@@ -59,7 +55,6 @@ class GraphRequest {
 
   async execute() {
     const query = this.build();
-    console.log(query);
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
@@ -91,6 +86,34 @@ export function queryAllOracles(filters) {
   }
   return request.execute();
 }
+
+// export async function queryOracles() {
+//   const query = gql`
+//     query oracles($token: _TokenType) {
+//       allOracles(filter: {
+//         OR: [
+//           { status: WAITRESULT, token: $token }
+//           { status: OPENRESULTSET, token: $token }
+//         ]
+//       }) {
+//         address
+//         status
+//         token
+//         name
+//       }
+//     }
+//   `;
+
+//   const res = await client.query({
+//     query,
+//     fetchPolicy: 'network-only',
+//     variables: {
+//       token: 'QTUM',
+//     },
+//   });
+
+//   console.log(res);
+// }
 
 /*
 * Queries syncInfo from GraphQL.
