@@ -222,7 +222,7 @@ class CreateTopic extends React.Component {
             <Button
               type="default"
               onClick={this.onCancel}
-            >Cancel</Button>
+            >{(createReturn && createReturn.result) ? 'Back' : 'Cancel'}</Button>
           </FormItem>
         </Form>
       </div>
