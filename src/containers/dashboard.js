@@ -47,28 +47,23 @@ class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetTopics();
-    this.props.onGetOracles();
+    this.executeGraphRequest(this.props.tabIndex);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetTopics,
-      onGetOracles,
+      tabIndex,
       syncProgress,
       isSyncing,
     } = nextProps;
 
-    if (nextProps.tabIndex !== this.props.tabIndex) {
-      onGetOracles();
-      onGetTopics();
+    if (tabIndex !== this.props.tabIndex) {
+      this.executeGraphRequest(tabIndex);
     }
 
     // Refresh page if sync is complete
     if (isSyncing && syncProgress === 100) {
-      onGetOracles();
-      onGetTopics();
-
+      this.executeGraphRequest(this.props.tabIndex);
       this.props.toggleSyncing(false);
     }
   }
@@ -77,29 +72,29 @@ class Dashboard extends React.Component {
     const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
 
     // Sorting all topics and oracles by blockNum in descending order now
-    const topicEvents = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
-    const allOracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
+    const topics = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
+    const oracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
 
     let rowItems;
     switch (tabIndex) {
       case TAB_BETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: Token.Qtum, status: OracleStatus.Voting }));
+        rowItems = buildOracleColElement(oracles);
         break;
       }
       case TAB_SETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Qtum && (oracle.status === OracleStatus.WaitResult || oracle.status === OracleStatus.OpenResultSet)));
+        rowItems = buildOracleColElement(oracles);
         break;
       }
       case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Bot && oracle.status !== OracleStatus.Withdraw));
+        rowItems = buildOracleColElement(oracles);
         break;
       }
       case TAB_COMPLETED: {
-        rowItems = getFinishedItems(_.filter(topicEvents, { status: OracleStatus.Withdraw }));
+        rowItems = getFinishedItems(topics);
         break;
       }
       default: {
-        throw new RangeError('Invalid tab position');
+        throw new RangeError(`Invalid tab position ${tabIndex}`);
       }
     }
 
@@ -128,6 +123,44 @@ class Dashboard extends React.Component {
         </Row>
       </LayoutContentWrapper>
     );
+  }
+
+  executeGraphRequest(tabIndex) {
+    const {
+      onGetTopics,
+      onGetOracles,
+    } = this.props;
+
+    switch (tabIndex) {
+      case TAB_BETTING: {
+        onGetOracles([
+          { token: Token.Qtum, status: OracleStatus.Voting },
+        ]);
+        break;
+      }
+      case TAB_SETTING: {
+        onGetOracles([
+          { token: Token.Qtum, status: OracleStatus.WaitResult },
+          { token: Token.Qtum, status: OracleStatus.OpenResultSet },
+        ]);
+        break;
+      }
+      case TAB_VOTING: {
+        onGetOracles([
+          { token: Token.Bot, status: OracleStatus.Voting },
+        ]);
+        break;
+      }
+      case TAB_COMPLETED: {
+        onGetTopics([
+          { status: OracleStatus.Withdraw },
+        ]);
+        break;
+      }
+      default: {
+        throw new RangeError(`Invalid tab position ${tabIndex}`);
+      }
+    }
   }
 }
 
