@@ -15,11 +15,12 @@ import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
 import { Token, OracleStatus } from '../constants';
 
-const TAB_BETTING = 0;
-const TAB_SETTING = 1;
-const TAB_VOTING = 2;
-const TAB_COMPLETED = 3;
-const DEFAULT_TAB_INDEX = TAB_BETTING;
+const TAB_BET = 0;
+const TAB_SET = 1;
+const TAB_VOTE = 2;
+const TAB_FINALIZE = 3;
+const TAB_WITHDRAW = 4;
+const DEFAULT_TAB_INDEX = TAB_BET;
 const NUM_SHOW_IN_OPTIONS = 3;
 const COL_PER_ROW = { // Specify how many col in each row
   xs: 1,
@@ -77,19 +78,14 @@ class Dashboard extends React.Component {
 
     let rowItems;
     switch (tabIndex) {
-      case TAB_BETTING: {
+      case TAB_BET:
+      case TAB_SET:
+      case TAB_VOTE:
+      case TAB_FINALIZE: {
         rowItems = buildOracleColElement(oracles);
         break;
       }
-      case TAB_SETTING: {
-        rowItems = buildOracleColElement(oracles);
-        break;
-      }
-      case TAB_VOTING: {
-        rowItems = buildOracleColElement(oracles);
-        break;
-      }
-      case TAB_COMPLETED: {
+      case TAB_WITHDRAW: {
         rowItems = getFinishedItems(topics);
         break;
       }
@@ -105,13 +101,15 @@ class Dashboard extends React.Component {
       >
         <TabBtnGroup
           buttons={[{
-            text: 'Betting',
+            text: 'Bet',
           }, {
-            text: 'Setting',
+            text: 'Set',
           }, {
-            text: 'Voting',
+            text: 'Vote',
           }, {
-            text: 'Completed',
+            text: 'Finalize',
+          }, {
+            text: 'Withdraw',
           }]}
         />
         <Row
@@ -132,26 +130,32 @@ class Dashboard extends React.Component {
     } = this.props;
 
     switch (tabIndex) {
-      case TAB_BETTING: {
+      case TAB_BET: {
         onGetOracles([
           { token: Token.Qtum, status: OracleStatus.Voting },
         ]);
         break;
       }
-      case TAB_SETTING: {
+      case TAB_SET: {
         onGetOracles([
           { token: Token.Qtum, status: OracleStatus.WaitResult },
           { token: Token.Qtum, status: OracleStatus.OpenResultSet },
         ]);
         break;
       }
-      case TAB_VOTING: {
+      case TAB_VOTE: {
         onGetOracles([
           { token: Token.Bot, status: OracleStatus.Voting },
         ]);
         break;
       }
-      case TAB_COMPLETED: {
+      case TAB_FINALIZE: {
+        onGetOracles([
+          { token: Token.Bot, status: OracleStatus.WaitResult },
+        ]);
+        break;
+      }
+      case TAB_WITHDRAW: {
         onGetTopics([
           { status: OracleStatus.Withdraw },
         ]);
