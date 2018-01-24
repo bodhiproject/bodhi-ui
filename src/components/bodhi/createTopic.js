@@ -165,7 +165,7 @@ class CreateTopic extends React.Component {
           >
             {getFieldDecorator('title', {
               rules: [{
-                required: true, message: 'Please enter a title.',
+                required: true, message: 'Cannot be empty.',
               },
               {
                 validator: this.checkEventName,
@@ -182,7 +182,7 @@ class CreateTopic extends React.Component {
             'Betting Start Block',
             {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than or equal to current block number.',
               }],
             },
             blockCount
@@ -193,7 +193,7 @@ class CreateTopic extends React.Component {
             'Betting End Block',
             {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than Betting Start Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
@@ -205,7 +205,7 @@ class CreateTopic extends React.Component {
             'Result Setting Start Block',
             {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than or equal to Betting End Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
@@ -217,7 +217,7 @@ class CreateTopic extends React.Component {
             'Result Setting End Block',
             {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than Result Setting Start Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
