@@ -1,7 +1,9 @@
+const BASE_URL = 'http://localhost:5555';
+
 module.exports = {
   endpoint:
   {
-    bodhiapi: 'http://localhost:8080',
-    graphql: 'http://localhost:5555/graphql',
+    bodhiapi: BASE_URL,
+    graphql: `${BASE_URL}/graphql`,
   },
 };
