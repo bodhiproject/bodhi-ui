@@ -169,12 +169,3 @@ export function convertBNHexStrToQtum(input) {
 export function decimalToBotoshi(decimalNum) {
   return (decimalNum * BOTOSHI_TO_BOT).toString();
 }
-
-/**
- * Convert ES6 Int to BigNumber hex string.
- * @param  {Number} Number to convert (no decimals).
- * @return {String} The converted number to BigNumber in hex format.
- */
-export function numToBNHex(number) {
-  return new BN(number).toJSON();
-}

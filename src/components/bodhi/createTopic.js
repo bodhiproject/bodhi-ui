@@ -8,7 +8,6 @@ import { withRouter } from 'react-router-dom';
 
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
-import { numToBNHex } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const Web3Utils = require('web3-utils');
@@ -70,19 +69,20 @@ class CreateTopic extends React.Component {
           resultSetter: resultSetterAddress,
           title: name,
           options,
+          bettingStartBlock,
           bettingEndBlock,
+          resultSettingStartBlock,
           resultSettingEndBlock,
         } = values;
-
-        const bettingEndBlockHex = numToBNHex(bettingEndBlock);
-        const resultSettingEndBlockHex = numToBNHex(resultSettingEndBlock);
 
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
           options: _.filter(options, (item) => !!item), // Filter out empty strings in options
-          bettingEndBlock: bettingEndBlockHex,
-          resultSettingEndBlock: resultSettingEndBlockHex,
+          bettingStartBlock: bettingStartBlock.toString(),
+          bettingEndBlock: bettingEndBlock.toString(),
+          resultSettingStartBlock: resultSettingStartBlock.toString(),
+          resultSettingEndBlock: resultSettingEndBlock.toString(),
           senderAddress: this.getCurrentSenderAddress(),
         });
       }

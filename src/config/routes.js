@@ -9,7 +9,7 @@ const Routes = {
   approve: `${bodhiapi}/approve`,
   allowance: `${bodhiapi}/allowance`,
   botBalance: `${bodhiapi}/bot-balance`,
-  createTopic: `${bodhiapi}/createtopic`,
+  createTopic: `${bodhiapi}/create-topic`,
   bet: `${bodhiapi}/bet`,
   setResult: `${bodhiapi}/set-result`,
   vote: `${bodhiapi}/vote`,
