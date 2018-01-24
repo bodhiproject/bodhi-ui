@@ -17,6 +17,17 @@ const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+
 class CreateTopic extends React.Component {
   constructor(props) {
     super(props);
@@ -94,21 +105,19 @@ class CreateTopic extends React.Component {
     }
   }
 
+  createNumberField(id, label, args, min) {
+    return (<FormItem
+      {...formItemLayout}
+      label={label}
+    >
+      {this.props.form.getFieldDecorator(id, args)(<InputNumber min={min} />)}
+    </FormItem>);
+  }
+
   render() {
     const { createReturn, blockCount } = this.props;
 
     const { getFieldDecorator } = this.props.form;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 18 },
-      },
-    };
 
     const tailFormItemLayout = {
       wrapperCol: {
@@ -167,26 +176,29 @@ class CreateTopic extends React.Component {
               placeholder="e.g. Who will be the next president of the United States?"
             />)}
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Betting End Block"
-          >
-            {getFieldDecorator('bettingEndBlock', {
+
+          {this.createNumberField(
+            'bettingEndBlock',
+            'Betting End Block',
+            {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<InputNumber min={blockCount + 1} />)}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Result Setting End Block"
-          >
-            {getFieldDecorator('resultSettingEndBlock', {
+            },
+            blockCount + 1
+          )}
+
+          {this.createNumberField(
+            'resultSettingEndBlock',
+            'Result Setting End Block',
+            {
               rules: [{
                 required: true, message: 'Please enter a future block number.',
               }],
-            })(<InputNumber min={(_.isNumber(this.props.form.getFieldValue('bettingEndBlock')) ? this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1} />)}
-          </FormItem>
+            },
+            _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
+              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
+          )}
 
           <FormItem
             {...formItemLayout}
