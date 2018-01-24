@@ -93,29 +93,9 @@ class OraclePage extends React.Component {
       selectedWalletAddress,
     } = nextProps;
 
-    // let oracle;
-    // if (_.isUndefined(oracle) && getOraclesSuccess.length === 1) {
-    //   this.setState({
-    //     oracle: getOraclesSuccess[0],
-    //   }, () => {
-    //     this.props.onGetOracles([
-    //       { topicAddress: oracle.topicAddress },
-    //     ]);
-    //   });
-    // }
-
-    // if (_.isUndefined(dOracles) && getOraclesSuccess.length > 0) {
-    //   _.remove(getOraclesSuccess, {
-    //     address: oracle.address,
-    //   });
-    //   this.setState({
-    //     dOracles: getOraclesSuccess,
-    //   });
-    // }
-
-    console.log(this.state.address);
-    console.log(getOraclesSuccess);
-    const oracle = getOraclesSuccess[0];
+    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
 
     if (oracle) {
       const { token, status } = oracle;
@@ -192,14 +172,11 @@ class OraclePage extends React.Component {
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
-
         config = {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, [oracle]),
+            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
             messages: [
               {
                 text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
@@ -222,10 +199,6 @@ class OraclePage extends React.Component {
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
-
         config = {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
