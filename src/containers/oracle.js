@@ -61,7 +61,6 @@ class OraclePage extends React.Component {
     this.state = {
       address: this.props.match.params.address,
       oracle: undefined,
-      dOracles: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
@@ -94,25 +93,27 @@ class OraclePage extends React.Component {
       selectedWalletAddress,
     } = nextProps;
 
-    let oracle;
-    if (_.isUndefined(oracle) && getOraclesSuccess.length === 1) {
-      this.setState({
-        oracle: getOraclesSuccess[0],
-      }, () => {
-        this.props.onGetOracles([
-          { topicAddress: oracle.topicAddress },
-        ]);
-      });
-    }
+    // let oracle;
+    // if (_.isUndefined(oracle) && getOraclesSuccess.length === 1) {
+    //   this.setState({
+    //     oracle: getOraclesSuccess[0],
+    //   }, () => {
+    //     this.props.onGetOracles([
+    //       { topicAddress: oracle.topicAddress },
+    //     ]);
+    //   });
+    // }
 
-    if (_.isUndefined(dOracles) && getOraclesSuccess.length > 0) {
-      _.remove(getOraclesSuccess, {
-        address: oracle.address,
-      });
-      this.setState({
-        dOracles: getOraclesSuccess,
-      });
-    }
+    // if (_.isUndefined(dOracles) && getOraclesSuccess.length > 0) {
+    //   _.remove(getOraclesSuccess, {
+    //     address: oracle.address,
+    //   });
+    //   this.setState({
+    //     dOracles: getOraclesSuccess,
+    //   });
+    // }
+
+    const oracle = getOraclesSuccess[0];
 
     if (oracle) {
       const { token, status } = oracle;
@@ -188,7 +189,7 @@ class OraclePage extends React.Component {
             type: 'warn',
           });
         }
-      } else if (token === Token.Bot && status === OracleStatus.Voting && dOracles) {
+      } else if (token === Token.Bot && status === OracleStatus.Voting) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
 

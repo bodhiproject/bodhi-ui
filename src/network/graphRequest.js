@@ -15,7 +15,7 @@ const client = new ApolloClient({
 class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
-    this.filters = {};
+    this.filters = undefined;
   }
 
   setFilters(filters) {
@@ -23,13 +23,9 @@ class GraphRequest {
   }
 
   build() {
-    let query = `query {${this.queryName}`;
-
-    if (_.isEmpty(this.filters)) {
-      query = query.concat('{');
-    } else {
+    let filterStr = '';
+    if (this.filters) {
       // Create entire string for OR: [] as objects
-      let filterStr = '';
       _.forEach(this.filters, (obj, index) => {
         if (!_.isEmpty(filterStr)) {
           filterStr = filterStr.concat(',');
@@ -47,17 +43,22 @@ class GraphRequest {
         filterStr = filterStr.concat(`{${str}}`);
       });
 
-      query = query.concat(`(
-        filter: { 
+      filterStr = `
+        (filter: { 
           OR: [ 
             ${filterStr} 
           ]
-        }
-      ) {`);
+        })
+      `;
     }
 
-    const fields = getQueryFields(this.queryName);
-    query = query.concat(fields).concat('}}');
+    const query = `
+      query {
+        ${this.queryName}${filterStr} {
+          ${getQueryFields(this.queryName)}
+        }
+      }
+    `;
 
     return query;
   }
