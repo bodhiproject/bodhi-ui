@@ -57,9 +57,11 @@ class OraclePage extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(props);
     this.state = {
       address: this.props.match.params.address,
       oracle: undefined,
+      dOracles: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
@@ -79,7 +81,9 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetOracles();
+    this.props.onGetOracles([
+      { address: this.state.address },
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,14 +94,32 @@ class OraclePage extends React.Component {
       selectedWalletAddress,
     } = nextProps;
 
-    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    let oracle;
+    if (_.isUndefined(oracle) && getOraclesSuccess.length === 1) {
+      this.setState({
+        oracle: getOraclesSuccess[0],
+      }, () => {
+        this.props.onGetOracles([
+          { topicAddress: oracle.topicAddress },
+        ]);
+      });
+    }
+
+    if (_.isUndefined(dOracles) && getOraclesSuccess.length > 0) {
+      _.remove(getOraclesSuccess, {
+        address: oracle.address,
+      });
+      this.setState({
+        dOracles: getOraclesSuccess,
+      });
+    }
 
     if (oracle) {
       const { token, status } = oracle;
       let config;
 
       /** Determine what config to use in current card * */
-      if (status === OracleStatus.Voting && token === Token.Qtum) {
+      if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
@@ -117,7 +139,7 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if ((status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet) && token === Token.Qtum) {
+      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
@@ -166,7 +188,7 @@ class OraclePage extends React.Component {
             type: 'warn',
           });
         }
-      } else if (status === OracleStatus.Voting && token === Token.Bot) {
+      } else if (token === Token.Bot && status === OracleStatus.Voting && dOracles) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
 
@@ -196,7 +218,7 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if (status === OracleStatus.WaitResult && token === Token.Bot) {
+      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
         const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
         const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
@@ -565,7 +587,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),

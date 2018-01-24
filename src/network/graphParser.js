@@ -12,11 +12,10 @@ class GraphParser {
 
   static parseTopic(data) {
     return data.map((entry) => ({
+      version: entry.version,
       address: entry.address,
-      creatorAddress: entry.creatorAddress,
       name: entry.name,
       options: entry.options,
-      bettingEndBlock: entry.blockNum,
       status: entry.status,
       resultIdx: entry.resultIdx,
       qtumAmount: entry.qtumAmount,
@@ -28,6 +27,7 @@ class GraphParser {
 
   static parseOracle(data) {
     return data.map((entry) => ({
+      version: entry.version,
       token: entry.token,
       address: entry.address,
       topicAddress: entry.topicAddress,
@@ -39,12 +39,12 @@ class GraphParser {
       amounts: entry.amounts,
       startBlock: entry.startBlock,
       endBlock: entry.endBlock,
-      blockNum: entry.blockNum,
       resultSetStartBlock: entry.resultSetStartBlock,
       resultSetEndBlock: entry.resultSetEndBlock,
       resultSetterAddress: entry.resultSetterAddress,
       resultSetterQAddress: entry.resultSetterQAddress,
       consensusThreshold: entry.consensusThreshold,
+      blockNum: entry.blockNum,
     }));
   }
 
