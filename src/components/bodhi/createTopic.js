@@ -105,7 +105,7 @@ class CreateTopic extends React.Component {
     }
   }
 
-  createNumberField(id, label, args, min) {
+  createInputNumberField(id, label, args, min) {
     return (<FormItem
       {...formItemLayout}
       label={label}
@@ -177,7 +177,7 @@ class CreateTopic extends React.Component {
             />)}
           </FormItem>
 
-          {this.createNumberField(
+          {this.createInputNumberField(
             'bettingStartBlock',
             'Betting Start Block',
             {
@@ -188,7 +188,7 @@ class CreateTopic extends React.Component {
             blockCount
           )}
 
-          {this.createNumberField(
+          {this.createInputNumberField(
             'bettingEndBlock',
             'Betting End Block',
             {
@@ -200,7 +200,7 @@ class CreateTopic extends React.Component {
               this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1
           )}
 
-          {this.createNumberField(
+          {this.createInputNumberField(
             'resultSettingStartBlock',
             'Result Setting Start Block',
             {
@@ -212,7 +212,7 @@ class CreateTopic extends React.Component {
               this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
           )}
 
-          {this.createNumberField(
+          {this.createInputNumberField(
             'resultSettingEndBlock',
             'Result Setting End Block',
             {
@@ -226,16 +226,19 @@ class CreateTopic extends React.Component {
 
           <FormItem
             {...formItemLayout}
-            label="Outcomes"
+            label="Results"
           >
             {getFieldDecorator('options', {
               initialValue: ['', ''],
-              rules: [{
-                type: 'array',
-                required: true,
-                message: 'Please enter at least two options.',
-              }],
-            })(<OptionsInput />)}
+              rules: [
+                {
+                  type: 'array',
+                  required: true,
+                  message: 'Please enter at least two options.',
+                },
+              ],
+            })(<OptionsInput />)
+            }
           </FormItem>
           <FormItem
             {...formItemLayout}
