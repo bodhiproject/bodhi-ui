@@ -178,6 +178,17 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           {this.createNumberField(
+            'bettingStartBlock',
+            'Betting Start Block',
+            {
+              rules: [{
+                required: true, message: 'Please enter a future block number.',
+              }],
+            },
+            blockCount
+          )}
+
+          {this.createNumberField(
             'bettingEndBlock',
             'Betting End Block',
             {
@@ -185,7 +196,20 @@ class CreateTopic extends React.Component {
                 required: true, message: 'Please enter a future block number.',
               }],
             },
-            blockCount + 1
+            _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
+              this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1
+          )}
+
+          {this.createNumberField(
+            'resultSettingStartBlock',
+            'Result Setting Start Block',
+            {
+              rules: [{
+                required: true, message: 'Please enter a future block number.',
+              }],
+            },
+            _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
+              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
           )}
 
           {this.createNumberField(
@@ -196,8 +220,8 @@ class CreateTopic extends React.Component {
                 required: true, message: 'Please enter a future block number.',
               }],
             },
-            _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
-              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
+            _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
+              this.props.form.getFieldValue('resultSettingStartBlock') + 1 : blockCount) + 1
           )}
 
           <FormItem
