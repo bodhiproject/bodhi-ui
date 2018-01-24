@@ -265,7 +265,7 @@ function buildOracleColElement(oracles) {
             {optionsEle}
           </ReportsWidget>
           <BottomButtonWidget
-            pathname={`/oracle/${oracle.address}`}
+            pathname={`/oracle/${oracle.topicAddress}/${oracle.address}`}
             text={oracle.token === Token.Qtum ? (oracle.status === OracleStatus.WaitResult ? 'Set Result' : 'Participate') : 'Vote'}
           />
         </IsoWidgetsWrapper>

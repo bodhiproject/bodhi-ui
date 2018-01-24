@@ -57,8 +57,8 @@ class OraclePage extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(props);
     this.state = {
+      topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
       oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
@@ -81,7 +81,7 @@ class OraclePage extends React.Component {
 
   componentWillMount() {
     this.props.onGetOracles([
-      { address: this.state.address },
+      { topicAddress: this.state.topicAddress },
     ]);
   }
 
@@ -113,6 +113,8 @@ class OraclePage extends React.Component {
     //   });
     // }
 
+    console.log(this.state.address);
+    console.log(getOraclesSuccess);
     const oracle = getOraclesSuccess[0];
 
     if (oracle) {
