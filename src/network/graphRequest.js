@@ -33,7 +33,7 @@ class GraphRequest {
         const str = Object
           .keys(obj)
           .map((key) => {
-            if (isValidEnum(key, obj[key])) {
+            if (isValidEnum(key, obj[key]) || !_.isString(obj[key])) {
               // Enums require values without quotes
               return `${key}: ${obj[key]}`;
             }
