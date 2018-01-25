@@ -68,7 +68,7 @@ class CreateTopic extends React.Component {
         // Maps form variables to saga request variables
         const {
           resultSetter: resultSetterAddress,
-          title: name,
+          name,
           results,
           bettingStartBlock,
           bettingEndBlock,
