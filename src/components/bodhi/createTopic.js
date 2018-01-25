@@ -97,6 +97,7 @@ class CreateTopic extends React.Component {
   }
 
   validateTitleLength(rule, value, callback) {
+    // Remove hex prefix for length validation
     const hexString = Web3Utils.toHex(value).slice(2);
     if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
       callback();

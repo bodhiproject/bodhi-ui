@@ -50,6 +50,7 @@ export class DynamicFieldSet extends React.Component {
   }
 
   validateLength(rule, value, callback) {
+    // Remove hex prefix for length validation
     const hexString = Web3Utils.toHex(value).slice(2);
     if (hexString && hexString.length <= MAX_LEN_HEX) {
       callback();
