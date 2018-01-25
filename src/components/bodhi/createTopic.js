@@ -6,6 +6,7 @@ import { Alert, Button, Form, Input, message, InputNumber } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
 
@@ -164,14 +165,14 @@ class CreateTopic extends React.Component {
             label="Title"
           >
             {getFieldDecorator('title', {
-              rules: [{
-                required: true, message: 'Cannot be empty.',
-              },
-              {
-                validator: this.checkEventName,
-              },
+              rules: [
+                {
+                  required: true, message: 'Cannot be empty.',
+                },
+                {
+                  validator: this.checkEventName,
+                },
               ],
-
             })(<Input
               placeholder="e.g. Who will be the next president of the United States?"
             />)}
@@ -228,18 +229,9 @@ class CreateTopic extends React.Component {
             {...formItemLayout}
             label="Results"
           >
-            {getFieldDecorator('options', {
-              initialValue: ['', ''],
-              rules: [
-                {
-                  type: 'array',
-                  required: true,
-                  message: 'Please enter at least two options.',
-                },
-              ],
-            })(<OptionsInput />)
-            }
+            {(<DynamicFieldSet form={this.props.form} />)}
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Result Setter"
@@ -311,6 +303,8 @@ class OptionsInput extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(props);
+
     const value = this.props.value || [];
 
     this.state = {
@@ -380,16 +374,26 @@ class OptionsInput extends React.Component {
   }
 
   render() {
+    const { getFieldDecorator } = this.props.form;
+
     return (
       <div className="options-container">
         {_.map(this.state.value, (value, index) => (
           <div key={`option${index}`} className="options-item" >
-            <Input
+            {getFieldDecorator(`option${index}`, {
+              rules: [{
+                required: true, message: 'Cannot be empty.',
+              },
+              {
+                validator: this.checkEventName,
+              },
+              ],
+            })(<Input
               data-index={index}
               onChange={this.onValueChanged}
-              value={value}
               placeholder={`# ${index + 1} option`}
-            />
+            />)
+            }
             <Button data-index={index} onClick={this.onDeleteBtnClicked} >Delete</Button>
           </div>))}
         <Button onClick={this.onAddBtnClicked}>Add</Button>
