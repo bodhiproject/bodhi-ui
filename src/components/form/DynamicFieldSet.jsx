@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { Form, Input, Icon, Button } from 'antd';
 
 const FormItem = Form.Item;
-let uuid = 0;
+let uuid = 2;
 
 export class DynamicFieldSet extends React.Component {
   constructor(props) {
@@ -19,7 +19,8 @@ export class DynamicFieldSet extends React.Component {
 
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    // We need at least one passenger
+
+    // Need at least two results
     if (keys.length === 2) {
       return;
     }
@@ -32,10 +33,12 @@ export class DynamicFieldSet extends React.Component {
 
   add() {
     const { form } = this.props;
+
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
     const nextKeys = keys.concat(uuid);
     uuid += 1;
+
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({
@@ -52,7 +55,7 @@ export class DynamicFieldSet extends React.Component {
       },
     };
 
-    getFieldDecorator('keys', { initialValue: ['1', '2'] });
+    getFieldDecorator('keys', { initialValue: ['0', '1'] });
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => {
       return (
