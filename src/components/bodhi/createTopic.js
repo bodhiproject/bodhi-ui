@@ -64,7 +64,6 @@ class CreateTopic extends React.Component {
     evt.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log(values);
       if (!err) {
         // Maps form variables to saga request variables
         const {
@@ -166,9 +165,12 @@ class CreateTopic extends React.Component {
             label="Title"
           >
             {getFieldDecorator('title', {
+              validateTrigger: ['onChange', 'onBlur'],
               rules: [
                 {
-                  required: true, message: 'Cannot be empty.',
+                  required: true,
+                  whitespace: true,
+                  message: 'Title cannot be empty.',
                 },
                 {
                   validator: this.checkEventName,
