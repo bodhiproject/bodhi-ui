@@ -8,7 +8,6 @@ import { withRouter } from 'react-router-dom';
 
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
-import { numToBNHex } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const Web3Utils = require('web3-utils');
@@ -16,6 +15,17 @@ const Web3Utils = require('web3-utils');
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -59,19 +69,20 @@ class CreateTopic extends React.Component {
           resultSetter: resultSetterAddress,
           title: name,
           options,
+          bettingStartBlock,
           bettingEndBlock,
+          resultSettingStartBlock,
           resultSettingEndBlock,
         } = values;
-
-        const bettingEndBlockHex = numToBNHex(bettingEndBlock);
-        const resultSettingEndBlockHex = numToBNHex(resultSettingEndBlock);
 
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
           options: _.filter(options, (item) => !!item), // Filter out empty strings in options
-          bettingEndBlock: bettingEndBlockHex,
-          resultSettingEndBlock: resultSettingEndBlockHex,
+          bettingStartBlock: bettingStartBlock.toString(),
+          bettingEndBlock: bettingEndBlock.toString(),
+          resultSettingStartBlock: resultSettingStartBlock.toString(),
+          resultSettingEndBlock: resultSettingEndBlock.toString(),
           senderAddress: this.getCurrentSenderAddress(),
         });
       }
@@ -94,21 +105,19 @@ class CreateTopic extends React.Component {
     }
   }
 
+  createInputNumberField(id, label, args, min) {
+    return (<FormItem
+      {...formItemLayout}
+      label={label}
+    >
+      {this.props.form.getFieldDecorator(id, args)(<InputNumber min={min} />)}
+    </FormItem>);
+  }
+
   render() {
     const { createReturn, blockCount } = this.props;
 
     const { getFieldDecorator } = this.props.form;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 18 },
-      },
-    };
 
     const tailFormItemLayout = {
       wrapperCol: {
@@ -156,7 +165,7 @@ class CreateTopic extends React.Component {
           >
             {getFieldDecorator('title', {
               rules: [{
-                required: true, message: 'Please enter a title.',
+                required: true, message: 'Cannot be empty.',
               },
               {
                 validator: this.checkEventName,
@@ -167,39 +176,69 @@ class CreateTopic extends React.Component {
               placeholder="e.g. Who will be the next president of the United States?"
             />)}
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Betting End Block"
-          >
-            {getFieldDecorator('bettingEndBlock', {
+
+          {this.createInputNumberField(
+            'bettingStartBlock',
+            'Betting Start Block',
+            {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than or equal to current block number.',
               }],
-            })(<InputNumber min={blockCount + 1} />)}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Result Setting End Block"
-          >
-            {getFieldDecorator('resultSettingEndBlock', {
+            },
+            blockCount
+          )}
+
+          {this.createInputNumberField(
+            'bettingEndBlock',
+            'Betting End Block',
+            {
               rules: [{
-                required: true, message: 'Please enter a future block number.',
+                required: true, message: 'Must be greater than Betting Start Block.',
               }],
-            })(<InputNumber min={(_.isNumber(this.props.form.getFieldValue('bettingEndBlock')) ? this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1} />)}
-          </FormItem>
+            },
+            _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
+              this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1
+          )}
+
+          {this.createInputNumberField(
+            'resultSettingStartBlock',
+            'Result Setting Start Block',
+            {
+              rules: [{
+                required: true, message: 'Must be greater than or equal to Betting End Block.',
+              }],
+            },
+            _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
+              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
+          )}
+
+          {this.createInputNumberField(
+            'resultSettingEndBlock',
+            'Result Setting End Block',
+            {
+              rules: [{
+                required: true, message: 'Must be greater than Result Setting Start Block.',
+              }],
+            },
+            _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
+              this.props.form.getFieldValue('resultSettingStartBlock') + 1 : blockCount) + 1
+          )}
 
           <FormItem
             {...formItemLayout}
-            label="Outcomes"
+            label="Results"
           >
             {getFieldDecorator('options', {
               initialValue: ['', ''],
-              rules: [{
-                type: 'array',
-                required: true,
-                message: 'Please enter at least two options.',
-              }],
-            })(<OptionsInput />)}
+              rules: [
+                {
+                  type: 'array',
+                  required: true,
+                  message: 'Please enter at least two options.',
+                },
+              ],
+            })(<OptionsInput />)
+            }
           </FormItem>
           <FormItem
             {...formItemLayout}

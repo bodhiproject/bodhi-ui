@@ -15,12 +15,13 @@ import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
 import { Token, OracleStatus } from '../constants';
 
-const TAB_BETTING = 0;
-const TAB_SETTING = 1;
-const TAB_VOTING = 2;
-const TAB_COMPLETED = 3;
-const DEFAULT_TAB_INDEX = TAB_BETTING;
-const NUM_SHOW_IN_OPTIONS = 3;
+const TAB_BET = 0;
+const TAB_SET = 1;
+const TAB_VOTE = 2;
+const TAB_FINALIZE = 3;
+const TAB_WITHDRAW = 4;
+const DEFAULT_TAB_INDEX = TAB_BET;
+const MAX_DISPLAY_OPTIONS = 3;
 const COL_PER_ROW = { // Specify how many col in each row
   xs: 1,
   sm: 3,
@@ -47,28 +48,23 @@ class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetTopics();
-    this.props.onGetOracles();
+    this.executeGraphRequest(this.props.tabIndex);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetTopics,
-      onGetOracles,
+      tabIndex,
       syncProgress,
       isSyncing,
     } = nextProps;
 
-    if (nextProps.tabIndex !== this.props.tabIndex) {
-      onGetOracles();
-      onGetTopics();
+    if (tabIndex !== this.props.tabIndex) {
+      this.executeGraphRequest(tabIndex);
     }
 
     // Refresh page if sync is complete
     if (isSyncing && syncProgress === 100) {
-      onGetOracles();
-      onGetTopics();
-
+      this.executeGraphRequest(this.props.tabIndex);
       this.props.toggleSyncing(false);
     }
   }
@@ -77,29 +73,24 @@ class Dashboard extends React.Component {
     const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
 
     // Sorting all topics and oracles by blockNum in descending order now
-    const topicEvents = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
-    const allOracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
+    const topics = _.orderBy(getTopicsSuccess, ['blockNum'], ['desc']);
+    const oracles = _.orderBy(getOraclesSuccess, ['blockNum'], ['desc']);
 
     let rowItems;
     switch (tabIndex) {
-      case TAB_BETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, { token: Token.Qtum, status: OracleStatus.Voting }));
+      case TAB_BET:
+      case TAB_SET:
+      case TAB_VOTE:
+      case TAB_FINALIZE: {
+        rowItems = buildOracleColElement(oracles);
         break;
       }
-      case TAB_SETTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Qtum && (oracle.status === OracleStatus.WaitResult || oracle.status === OracleStatus.OpenResultSet)));
-        break;
-      }
-      case TAB_VOTING: {
-        rowItems = buildOracleColElement(_.filter(allOracles, (oracle) => oracle.token === Token.Bot && oracle.status !== OracleStatus.Withdraw));
-        break;
-      }
-      case TAB_COMPLETED: {
-        rowItems = getFinishedItems(_.filter(topicEvents, { status: OracleStatus.Withdraw }));
+      case TAB_WITHDRAW: {
+        rowItems = getFinishedItems(topics);
         break;
       }
       default: {
-        throw new RangeError('Invalid tab position');
+        throw new RangeError(`Invalid tab position ${tabIndex}`);
       }
     }
 
@@ -110,13 +101,15 @@ class Dashboard extends React.Component {
       >
         <TabBtnGroup
           buttons={[{
-            text: 'Betting',
+            text: 'Bet',
           }, {
-            text: 'Setting',
+            text: 'Set',
           }, {
-            text: 'Voting',
+            text: 'Vote',
           }, {
-            text: 'Completed',
+            text: 'Finalize',
+          }, {
+            text: 'Withdraw',
           }]}
         />
         <Row
@@ -128,6 +121,50 @@ class Dashboard extends React.Component {
         </Row>
       </LayoutContentWrapper>
     );
+  }
+
+  executeGraphRequest(tabIndex) {
+    const {
+      onGetTopics,
+      onGetOracles,
+    } = this.props;
+
+    switch (tabIndex) {
+      case TAB_BET: {
+        onGetOracles([
+          { token: Token.Qtum, status: OracleStatus.Voting },
+        ]);
+        break;
+      }
+      case TAB_SET: {
+        onGetOracles([
+          { token: Token.Qtum, status: OracleStatus.WaitResult },
+          { token: Token.Qtum, status: OracleStatus.OpenResultSet },
+        ]);
+        break;
+      }
+      case TAB_VOTE: {
+        onGetOracles([
+          { token: Token.Bot, status: OracleStatus.Voting },
+        ]);
+        break;
+      }
+      case TAB_FINALIZE: {
+        onGetOracles([
+          { token: Token.Bot, status: OracleStatus.WaitResult },
+        ]);
+        break;
+      }
+      case TAB_WITHDRAW: {
+        onGetTopics([
+          { status: OracleStatus.Withdraw },
+        ]);
+        break;
+      }
+      default: {
+        throw new RangeError(`Invalid tab position ${tabIndex}`);
+      }
+    }
   }
 }
 
@@ -168,9 +205,9 @@ function buildOracleColElement(oracles) {
       displayOptions = _.map(oracle.options, _.clone);
     }
 
-    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
-    if (!_.isEmpty(displayOptions) && displayOptions.length > NUM_SHOW_IN_OPTIONS) {
-      displayOptions = displayOptions.slice(0, NUM_SHOW_IN_OPTIONS);
+    // Trim options array to only MAX_DISPLAY_OPTIONS (3) elements
+    if (!_.isEmpty(displayOptions) && displayOptions.length > MAX_DISPLAY_OPTIONS) {
+      displayOptions = displayOptions.slice(0, MAX_DISPLAY_OPTIONS);
     }
 
     const threshold = oracle.consensusThreshold;
@@ -202,10 +239,10 @@ function buildOracleColElement(oracles) {
       }
     }
 
-    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
-    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
-    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+    // Make sure length of options element array is MAX_DISPLAY_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
+    if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
+      for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
         optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}></div>);
       }
     }
@@ -228,7 +265,7 @@ function buildOracleColElement(oracles) {
             {optionsEle}
           </ReportsWidget>
           <BottomButtonWidget
-            pathname={`/oracle/${oracle.address}`}
+            pathname={`/oracle/${oracle.topicAddress}/${oracle.address}`}
             text={oracle.token === Token.Qtum ? (oracle.status === OracleStatus.WaitResult ? 'Set Result' : 'Participate') : 'Vote'}
           />
         </IsoWidgetsWrapper>
@@ -275,9 +312,9 @@ function getFinishedItems(topicEvents) {
       };
     });
 
-    // Trim options array to only NUM_SHOW_IN_OPTIONS (3) elements
-    if (!_.isEmpty(optionBalances) && optionBalances.length > NUM_SHOW_IN_OPTIONS) {
-      optionBalances = optionBalances.slice(0, NUM_SHOW_IN_OPTIONS);
+    // Trim options array to only MAX_DISPLAY_OPTIONS (3) elements
+    if (!_.isEmpty(optionBalances) && optionBalances.length > MAX_DISPLAY_OPTIONS) {
+      optionBalances = optionBalances.slice(0, MAX_DISPLAY_OPTIONS);
     }
 
     // Constructing opitons elements
@@ -298,10 +335,10 @@ function getFinishedItems(topicEvents) {
       ));
     }
 
-    // Make sure length of options element array is NUM_SHOW_IN_OPTIONS (3) so that every card has the same height
-    // Ideally there should a be loop in case NUM_SHOW_IN_OPTIONS is greater than 3
-    if (optionsEle && optionsEle.length < NUM_SHOW_IN_OPTIONS) {
-      for (let i = optionsEle.length; i < NUM_SHOW_IN_OPTIONS; i += 1) {
+    // Make sure length of options element array is MAX_DISPLAY_OPTIONS (3) so that every card has the same height
+    // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
+    if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
+      for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
         optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
       }
     }
@@ -371,8 +408,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
-    onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    onGetTopics: (filters) => dispatch(dashboardActions.getTopics(filters)),
+    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
   };
 }

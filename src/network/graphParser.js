@@ -1,0 +1,56 @@
+import _ from 'lodash';
+
+class GraphParser {
+  static getParser(requestName) {
+    const PARSER_MAPPINGS = {
+      allTopics: this.parseTopic,
+      allOracles: this.parseOracle,
+      syncInfo: this.parseSyncInfo,
+    };
+    return PARSER_MAPPINGS[requestName];
+  }
+
+  static parseTopic(data) {
+    return data.map((entry) => ({
+      version: entry.version,
+      address: entry.address,
+      name: entry.name,
+      options: entry.options,
+      status: entry.status,
+      resultIdx: entry.resultIdx,
+      qtumAmount: entry.qtumAmount,
+      botAmount: entry.botAmount,
+      oracles: entry.oracles,
+      blockNum: entry.blockNum,
+    }));
+  }
+
+  static parseOracle(data) {
+    return data.map((entry) => ({
+      version: entry.version,
+      token: entry.token,
+      address: entry.address,
+      topicAddress: entry.topicAddress,
+      status: entry.status,
+      name: entry.name,
+      options: entry.options,
+      optionIdxs: entry.optionIdxs,
+      resultIdx: entry.resultIdx,
+      amounts: entry.amounts,
+      startBlock: entry.startBlock,
+      endBlock: entry.endBlock,
+      resultSetStartBlock: entry.resultSetStartBlock,
+      resultSetEndBlock: entry.resultSetEndBlock,
+      resultSetterAddress: entry.resultSetterAddress,
+      resultSetterQAddress: entry.resultSetterQAddress,
+      consensusThreshold: entry.consensusThreshold,
+      blockNum: entry.blockNum,
+    }));
+  }
+
+  static parseSyncInfo(data) {
+    return _.pick(data, ['syncBlockNum', 'chainBlockNum']);
+  }
+}
+
+export default GraphParser;

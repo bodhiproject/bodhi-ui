@@ -2,7 +2,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
-import { queryAllTopics, queryAllOracles } from '../../helpers/graphql';
+import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import actions from './actions';
 import fakeData from './fakedata';
@@ -11,7 +11,7 @@ import fakeData from './fakedata';
 const isFake = false;
 
 export function* getTopicsRequestHandler(/* actions */) {
-  yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest() {
+  yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest(action) {
     if (isFake) {
       yield put({
         type: actions.GET_TOPICS_SUCCESS,
@@ -20,8 +20,7 @@ export function* getTopicsRequestHandler(/* actions */) {
     } else {
       try {
         // Query all topics data using graphQL call
-        const result = yield call(queryAllTopics);
-
+        const result = yield call(queryAllTopics, action.filters);
         const topics = _.map(result, processTopic);
 
         yield put({
@@ -39,11 +38,10 @@ export function* getTopicsRequestHandler(/* actions */) {
 }
 
 export function* getOraclesRequestHandler(/* actions */) {
-  yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest() {
+  yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest(action) {
     try {
       // Query all topics data using graphQL call
-      const result = yield call(queryAllOracles);
-
+      const result = yield call(queryAllOracles, action.filters);
       const oracles = result.map(processOracle);
 
       yield put({

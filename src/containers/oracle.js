@@ -13,8 +13,9 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
-import { decimalToBotoshiHex } from '../helpers/utility';
+import { decimalToBotoshi } from '../helpers/utility';
 import { Token, OracleStatus } from '../constants';
+import CardInfoUtil from '../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
@@ -57,6 +58,7 @@ class OraclePage extends React.Component {
     super(props);
 
     this.state = {
+      topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
       oracle: undefined,
       radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
@@ -78,7 +80,9 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetOracles();
+    this.props.onGetOracles([
+      { topicAddress: this.state.topicAddress },
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,33 +94,20 @@ class OraclePage extends React.Component {
     } = nextProps;
 
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
 
     if (oracle) {
       const { token, status } = oracle;
       let config;
 
       /** Determine what config to use in current card * */
-      if (status === 'VOTING' && token === Token.Qtum) {
+      if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
           cardInfo: {
-            steps: {
-              current: 1,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${oracle.blockNum || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(blockCount, oracle),
             messages: [
             ],
           },
@@ -131,27 +122,12 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if ((status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet) && token === Token.Qtum) {
+      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
           cardInfo: {
-            steps: {
-              current: 2,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${oracle.blockNum || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(oracle.blockNum + 1) || ''} - ${oracle.endBlock || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(oracle.endBlock + 1) || ''} - ${oracle.resultSetEndBlock || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(blockCount, oracle),
             messages: [
               {
                 text: `Result setter ${oracle.resultSetterQAddress || ''}`,
@@ -195,34 +171,12 @@ class OraclePage extends React.Component {
             type: 'warn',
           });
         }
-      } else if (status === 'VOTING' && token === Token.Bot) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
-
+      } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: {
-              current: 3,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
-              },
-              {
-                title: 'Voting',
-                description: `Block No. ${oracle.blockNum || ''} - ${oracle.endBlock || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
             messages: [
               {
                 text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
@@ -244,31 +198,12 @@ class OraclePage extends React.Component {
             },
           },
         };
-      } else if (status === OracleStatus.WaitResult && token === Token.Bot) {
-        const relatedOracles = _.filter(getOraclesSuccess, (item) => item.topicAddress === oracle.topicAddress);
-        const centralizedOracle = _.find(relatedOracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(_.filter(relatedOracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
-
+      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: {
-              current: 4,
-              value: [{
-                title: 'Topic created',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum) || ''}`,
-              },
-              {
-                title: 'Betting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.blockNum + 1) || ''} - ${(centralizedOracle && centralizedOracle.endBlock) || ''}`,
-              },
-              {
-                title: 'Result Setting',
-                description: `Block No. ${(centralizedOracle && centralizedOracle.endBlock + 1) || ''} - ${(centralizedOracle && centralizedOracle.resultSetEndBlock) || ''}`,
-              },
-              ],
-            },
+            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
@@ -279,20 +214,6 @@ class OraclePage extends React.Component {
             },
           },
         };
-
-        // Add Steps from all Decentralized Oracles
-        _.each(decentralizedOracles, (item) => {
-          config.cardInfo.steps.value.push({
-            title: 'Voting',
-            description: `Block No. ${item.blockNum || ''} - ${item.endBlock || ''}`,
-          });
-        });
-
-        // Add Step for Finalizing block
-        config.cardInfo.steps.value.push({
-          title: 'Finalizing',
-          description: `Block No. ${(oracle.endBlock + 1) || ''} - `,
-        });
 
         if (blockCount > oracle.endBlock) {
           config.cardInfo.messages.push({
@@ -364,9 +285,9 @@ class OraclePage extends React.Component {
   }
 
   /**
- * Send get allowance request and keep repeating itself until this.state.isApproving is false
- * @return {[type]}
- */
+   * Send get allowance request and keep repeating itself until this.state.isApproving is false
+   * @return {[type]}
+   */
   startCheckAllowance() {
     console.log('startCheckAllowance', new Date());
     const { selectedWalletAddress, onAllowance } = this.props;
@@ -443,7 +364,7 @@ class OraclePage extends React.Component {
     const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.topicAddress, decimalToBotoshiHex(amount), selectedWalletAddress);
+    onApprove(oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
 
     this.setState({
       isApproving: true,
@@ -471,7 +392,7 @@ class OraclePage extends React.Component {
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
-    onVote(oracle.address, selectedIndex, decimalToBotoshiHex(amount), selectedWalletAddress);
+    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), selectedWalletAddress);
   }
 
   finalizeResult() {
@@ -642,7 +563,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetOracles: () => dispatch(dashboardActions.getOracles()),
+    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
