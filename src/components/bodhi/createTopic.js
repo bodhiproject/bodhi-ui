@@ -38,7 +38,7 @@ class CreateTopic extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
-    this.checkEventName = this.checkEventName.bind(this);
+    this.validateTitleLength = this.validateTitleLength.bind(this);
   }
 
   componentWillMount() {
@@ -96,9 +96,8 @@ class CreateTopic extends React.Component {
     this.props.history.push('/');
   }
 
-  checkEventName(rule, value, callback) {
-    const hexString = Web3Utils.toHex(value);
-
+  validateTitleLength(rule, value, callback) {
+    const hexString = Web3Utils.toHex(value).slice(2);
     if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
       callback();
     } else {
@@ -162,18 +161,18 @@ class CreateTopic extends React.Component {
         <Form onSubmit={this.handleSubmit}>
           <FormItem
             {...formItemLayout}
-            label="Title"
+            label="Name"
           >
-            {getFieldDecorator('title', {
+            {getFieldDecorator('name', {
               validateTrigger: ['onChange', 'onBlur'],
               rules: [
                 {
                   required: true,
                   whitespace: true,
-                  message: 'Title cannot be empty.',
+                  message: 'Event name cannot be empty.',
                 },
                 {
-                  validator: this.checkEventName,
+                  validator: this.validateTitleLength,
                 },
               ],
             })(<Input

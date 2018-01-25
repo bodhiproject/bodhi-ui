@@ -2,6 +2,9 @@
 
 import React, { PropTypes } from 'react';
 import { Form, Input, Icon, Button } from 'antd';
+import Web3Utils from 'web3-utils';
+
+const MAX_LEN_HEX = 64;
 
 const FormItem = Form.Item;
 let uuid = 2;
@@ -46,6 +49,15 @@ export class DynamicFieldSet extends React.Component {
     });
   }
 
+  validateLength(rule, value, callback) {
+    const hexString = Web3Utils.toHex(value).slice(2);
+    if (hexString && hexString.length <= MAX_LEN_HEX) {
+      callback();
+    } else {
+      callback('Result name is too long.');
+    }
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const formItemLayoutWithOutLabel = {
@@ -71,6 +83,9 @@ export class DynamicFieldSet extends React.Component {
                 required: true,
                 whitespace: true,
                 message: 'Input the result name or delete this field.',
+              },
+              {
+                validator: this.validateLength,
               },
             ],
           })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
