@@ -64,7 +64,7 @@ export class DynamicFieldSet extends React.Component {
           required={false}
           key={k}
         >
-          {getFieldDecorator(`names[${k}]`, {
+          {getFieldDecorator(`results[${k}]`, {
             validateTrigger: ['onChange', 'onBlur'],
             rules: [{
               required: true,

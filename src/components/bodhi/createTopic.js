@@ -64,12 +64,13 @@ class CreateTopic extends React.Component {
     evt.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log(values);
       if (!err) {
         // Maps form variables to saga request variables
         const {
           resultSetter: resultSetterAddress,
           title: name,
-          options,
+          results,
           bettingStartBlock,
           bettingEndBlock,
           resultSettingStartBlock,
@@ -79,7 +80,7 @@ class CreateTopic extends React.Component {
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
-          options: _.filter(options, (item) => !!item), // Filter out empty strings in options
+          results,
           bettingStartBlock: bettingStartBlock.toString(),
           bettingEndBlock: bettingEndBlock.toString(),
           resultSettingStartBlock: resultSettingStartBlock.toString(),
@@ -298,114 +299,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Form.create()(CreateTopic)));
-
-class OptionsInput extends React.Component {
-  constructor(props) {
-    super(props);
-
-    console.log(props);
-
-    const value = this.props.value || [];
-
-    this.state = {
-      value,
-    };
-
-    this.onValueChanged = this.onValueChanged.bind(this);
-    this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
-    this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
-    this.triggerChange = this.triggerChange.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // Should be a controlled component.
-    if ('value' in nextProps) {
-      const { value } = nextProps;
-
-      this.setState({ value });
-    }
-  }
-
-  onValueChanged(evt) {
-    const { value } = evt.target;
-    const { index } = evt.target.dataset;
-
-    const newValue = this.state.value;
-    newValue[index] = value;
-
-    this.triggerChange(newValue);
-  }
-
-  onAddBtnClicked() {
-    const numOfOptions = this.state.value.length;
-
-    if (numOfOptions < MAX_OPTION_NUMBER) {
-      const newValue = this.state.value;
-
-      newValue.push('');
-
-      this.triggerChange(newValue);
-    } else {
-      message.warning(`Cannot add more than ${MAX_OPTION_NUMBER} options.`);
-    }
-  }
-
-  onDeleteBtnClicked(evt) {
-    const { index } = evt.target.dataset;
-    const numOfOptions = this.state.value.length;
-
-    if (numOfOptions === MIN_OPTION_NUMBER) {
-      message.warning(`Options count cannot be less than ${MIN_OPTION_NUMBER}.`);
-      return;
-    }
-
-    const indexNumber = _.toNumber(index);
-    const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
-
-    this.triggerChange(newValues);
-  }
-
-  triggerChange(changedValue) {
-    const { onChange } = this.props;
-
-    if (onChange) {
-      onChange(changedValue);
-    }
-  }
-
-  render() {
-    const { getFieldDecorator } = this.props.form;
-
-    return (
-      <div className="options-container">
-        {_.map(this.state.value, (value, index) => (
-          <div key={`option${index}`} className="options-item" >
-            {getFieldDecorator(`option${index}`, {
-              rules: [{
-                required: true, message: 'Cannot be empty.',
-              },
-              {
-                validator: this.checkEventName,
-              },
-              ],
-            })(<Input
-              data-index={index}
-              onChange={this.onValueChanged}
-              placeholder={`# ${index + 1} option`}
-            />)
-            }
-            <Button data-index={index} onClick={this.onDeleteBtnClicked} >Delete</Button>
-          </div>))}
-        <Button onClick={this.onAddBtnClicked}>Add</Button>
-      </div>
-    );
-  }
-}
-
-OptionsInput.propTypes = {
-  onChange: PropTypes.func,
-};
-
-OptionsInput.defaultProps = {
-  onChange: undefined,
-};
