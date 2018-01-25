@@ -66,11 +66,13 @@ export class DynamicFieldSet extends React.Component {
         >
           {getFieldDecorator(`results[${k}]`, {
             validateTrigger: ['onChange', 'onBlur'],
-            rules: [{
-              required: true,
-              whitespace: true,
-              message: 'Input the result name or delete this field.',
-            }],
+            rules: [
+              {
+                required: true,
+                whitespace: true,
+                message: 'Input the result name or delete this field.',
+              },
+            ],
           })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
           {keys.length > 2 ? (
             <Icon
