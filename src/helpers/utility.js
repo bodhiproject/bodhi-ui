@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
+const AVG_BLOCK_TIME_MS = 142800; // Currently 2.38 minutes
 
 export function clearToken() {
   localStorage.removeItem('id_token');
@@ -17,6 +18,18 @@ export function getToken() {
     clearToken();
     return new Map();
   }
+}
+
+/*
+* Calculates the estimated date based on current and future blocks by average block time.
+* @param currentBlock {Number} The current block number.
+* @param futureBlock {Number} The future block number.
+* @return {Date} Returns a Date instance of the estimated future date.
+*/
+export function calculateDate(currentBlock, futureBlock) {
+  const currentMS = Date.now();
+  const diffMS = (futureBlock - currentBlock) * AVG_BLOCK_TIME_MS;
+  return new Date(currentMS + diffMS);
 }
 
 export function timeDifference(time) {

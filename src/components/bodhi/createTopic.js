@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
+import { calculateDate } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const Web3Utils = require('web3-utils');
@@ -116,8 +117,9 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount } = this.props;
+    console.log(calculateDate(75347, 76000).toISOString());
 
+    const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     const tailFormItemLayout = {
