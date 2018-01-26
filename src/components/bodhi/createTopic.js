@@ -6,6 +6,7 @@ import { Alert, Button, Form, Input, message, InputNumber } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
 
@@ -37,7 +38,7 @@ class CreateTopic extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
-    this.checkEventName = this.checkEventName.bind(this);
+    this.validateTitleLength = this.validateTitleLength.bind(this);
   }
 
   componentWillMount() {
@@ -67,8 +68,8 @@ class CreateTopic extends React.Component {
         // Maps form variables to saga request variables
         const {
           resultSetter: resultSetterAddress,
-          title: name,
-          options,
+          name,
+          results,
           bettingStartBlock,
           bettingEndBlock,
           resultSettingStartBlock,
@@ -78,7 +79,7 @@ class CreateTopic extends React.Component {
         this.props.onCreateTopic({
           resultSetterAddress,
           name,
-          options: _.filter(options, (item) => !!item), // Filter out empty strings in options
+          results,
           bettingStartBlock: bettingStartBlock.toString(),
           bettingEndBlock: bettingEndBlock.toString(),
           resultSettingStartBlock: resultSettingStartBlock.toString(),
@@ -95,9 +96,9 @@ class CreateTopic extends React.Component {
     this.props.history.push('/');
   }
 
-  checkEventName(rule, value, callback) {
-    const hexString = Web3Utils.toHex(value);
-
+  validateTitleLength(rule, value, callback) {
+    // Remove hex prefix for length validation
+    const hexString = Web3Utils.toHex(value).slice(2);
     if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
       callback();
     } else {
@@ -161,17 +162,20 @@ class CreateTopic extends React.Component {
         <Form onSubmit={this.handleSubmit}>
           <FormItem
             {...formItemLayout}
-            label="Title"
+            label="Name"
           >
-            {getFieldDecorator('title', {
-              rules: [{
-                required: true, message: 'Cannot be empty.',
-              },
-              {
-                validator: this.checkEventName,
-              },
+            {getFieldDecorator('name', {
+              validateTrigger: ['onChange', 'onBlur'],
+              rules: [
+                {
+                  required: true,
+                  whitespace: true,
+                  message: 'Event name cannot be empty.',
+                },
+                {
+                  validator: this.validateTitleLength,
+                },
               ],
-
             })(<Input
               placeholder="e.g. Who will be the next president of the United States?"
             />)}
@@ -228,18 +232,9 @@ class CreateTopic extends React.Component {
             {...formItemLayout}
             label="Results"
           >
-            {getFieldDecorator('options', {
-              initialValue: ['', ''],
-              rules: [
-                {
-                  type: 'array',
-                  required: true,
-                  message: 'Please enter at least two options.',
-                },
-              ],
-            })(<OptionsInput />)
-            }
+            {(<DynamicFieldSet form={this.props.form} />)}
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Result Setter"
@@ -306,102 +301,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Form.create()(CreateTopic)));
-
-class OptionsInput extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const value = this.props.value || [];
-
-    this.state = {
-      value,
-    };
-
-    this.onValueChanged = this.onValueChanged.bind(this);
-    this.onAddBtnClicked = this.onAddBtnClicked.bind(this);
-    this.onDeleteBtnClicked = this.onDeleteBtnClicked.bind(this);
-    this.triggerChange = this.triggerChange.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // Should be a controlled component.
-    if ('value' in nextProps) {
-      const { value } = nextProps;
-
-      this.setState({ value });
-    }
-  }
-
-  onValueChanged(evt) {
-    const { value } = evt.target;
-    const { index } = evt.target.dataset;
-
-    const newValue = this.state.value;
-    newValue[index] = value;
-
-    this.triggerChange(newValue);
-  }
-
-  onAddBtnClicked() {
-    const numOfOptions = this.state.value.length;
-
-    if (numOfOptions < MAX_OPTION_NUMBER) {
-      const newValue = this.state.value;
-
-      newValue.push('');
-
-      this.triggerChange(newValue);
-    } else {
-      message.warning(`Cannot add more than ${MAX_OPTION_NUMBER} options.`);
-    }
-  }
-
-  onDeleteBtnClicked(evt) {
-    const { index } = evt.target.dataset;
-    const numOfOptions = this.state.value.length;
-
-    if (numOfOptions === MIN_OPTION_NUMBER) {
-      message.warning(`Options count cannot be less than ${MIN_OPTION_NUMBER}.`);
-      return;
-    }
-
-    const indexNumber = _.toNumber(index);
-    const newValues = _.filter(this.state.value, (value, idx) => idx !== indexNumber);
-
-    this.triggerChange(newValues);
-  }
-
-  triggerChange(changedValue) {
-    const { onChange } = this.props;
-
-    if (onChange) {
-      onChange(changedValue);
-    }
-  }
-
-  render() {
-    return (
-      <div className="options-container">
-        {_.map(this.state.value, (value, index) => (
-          <div key={`option${index}`} className="options-item" >
-            <Input
-              data-index={index}
-              onChange={this.onValueChanged}
-              value={value}
-              placeholder={`# ${index + 1} option`}
-            />
-            <Button data-index={index} onClick={this.onDeleteBtnClicked} >Delete</Button>
-          </div>))}
-        <Button onClick={this.onAddBtnClicked}>Add</Button>
-      </div>
-    );
-  }
-}
-
-OptionsInput.propTypes = {
-  onChange: PropTypes.func,
-};
-
-OptionsInput.defaultProps = {
-  onChange: undefined,
-};

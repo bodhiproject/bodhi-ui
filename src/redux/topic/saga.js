@@ -279,7 +279,7 @@ export function* createRequestHandler() {
     const {
       resultSetterAddress,
       name,
-      options,
+      results,
       bettingStartBlock,
       bettingEndBlock,
       resultSettingStartBlock,
@@ -293,7 +293,7 @@ export function* createRequestHandler() {
         body: JSON.stringify({
           oracleAddress: resultSetterAddress,
           eventName: name,
-          resultNames: options,
+          resultNames: results,
           bettingStartBlock,
           bettingEndBlock,
           resultSettingStartBlock,
