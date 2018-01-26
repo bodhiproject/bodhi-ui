@@ -21,15 +21,26 @@ export function getToken() {
 }
 
 /*
-* Calculates the estimated date based on current and future blocks by average block time.
+* Calculates the estimated date based on current and future blocks.
 * @param currentBlock {Number} The current block number.
 * @param futureBlock {Number} The future block number.
-* @return {Date} Returns a Date instance of the estimated future date.
+* @return {Date} Returns a Date instance of the estimated future date (in UTC).
 */
 export function calculateDate(currentBlock, futureBlock) {
   const currentMS = Date.now();
   const diffMS = (futureBlock - currentBlock) * AVG_BLOCK_TIME_MS;
   return new Date(currentMS + diffMS);
+}
+
+/*
+* Calculates the estimated block based on current block and future date.
+* @param currentBlock {Number} The current block number.
+* @param futureDate {Date} A date instance (UTC) of the future date to estimate.
+* @return {Date} Returns a number of the estimated future block.
+*/
+export function calculateBlock(currentBlock, futureDate) {
+  const diffMS = futureDate.getMilliseconds() - Date.now();
+  return Math.round(diffMS / AVG_BLOCK_TIME_MS) + currentBlock;
 }
 
 export function timeDifference(time) {
