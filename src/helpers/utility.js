@@ -39,7 +39,7 @@ export function calculateDate(currentBlock, futureBlock) {
 * @return {Date} Returns a number of the estimated future block.
 */
 export function calculateBlock(currentBlock, futureDate) {
-  const diffMS = futureDate.getMilliseconds() - Date.now();
+  const diffMS = futureDate.getTime() - Date.now();
   return Math.round(diffMS / AVG_BLOCK_TIME_MS) + currentBlock;
 }
 

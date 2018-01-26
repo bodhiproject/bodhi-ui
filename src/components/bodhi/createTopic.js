@@ -117,8 +117,6 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    console.log(calculateDate(75347, 76000).toISOString());
-
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
