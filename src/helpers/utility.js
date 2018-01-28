@@ -1,5 +1,7 @@
 import { Map } from 'immutable';
 import BN from 'bn.js';
+import moment from 'moment';
+
 const fetch = require('node-fetch');
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
@@ -35,11 +37,11 @@ export function calculateDate(currentBlock, futureBlock) {
 /*
 * Calculates the estimated block based on current block and future date.
 * @param currentBlock {Number} The current block number.
-* @param futureDate {Date} A date instance (UTC) of the future date to estimate.
-* @return {Date} Returns a number of the estimated future block.
+* @param futureDate {Moment} A moment instance (UTC) of the future date to estimate.
+* @return {Number} Returns a number of the estimated future block.
 */
 export function calculateBlock(currentBlock, futureDate) {
-  const diffMS = futureDate.getTime() - Date.now();
+  const diffMS = futureDate.utc() - moment.utc();
   return Math.round(diffMS / AVG_BLOCK_TIME_MS) + currentBlock;
 }
 

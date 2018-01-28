@@ -29,6 +29,7 @@ class CreateTopic extends React.Component {
     this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
+    this.onCalendarChange = this.onCalendarChange.bind(this);
   }
 
   componentWillMount() {
@@ -96,7 +97,15 @@ class CreateTopic extends React.Component {
     }
   }
 
-  createInputNumberField(formItemLayout, id, label, args, min) {
+  onCalendarChange(date, dateString) {
+    const futureBlock = calculateBlock(this.props.blockCount, date);
+    this.props.form.setFieldsValue({
+      bettingStartBlock: futureBlock,
+    });
+  }
+
+  createInputNumberField(formItemLayout, id, label, args, min, value) {
+    console.log(`value: ${value}`);
     return (
       <FormItem
         {...formItemLayout}
@@ -115,6 +124,7 @@ class CreateTopic extends React.Component {
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
+              onChange={this.onCalendarChange}
             />
           </Col>
         </Row>
@@ -123,6 +133,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
+    console.log('render()');
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
@@ -206,7 +217,8 @@ class CreateTopic extends React.Component {
                 required: true, message: 'Must be greater than or equal to current block number.',
               }],
             },
-            blockCount
+            blockCount,
+            this.state.bettingStartBlock,
           )}
 
           {this.createInputNumberField(
