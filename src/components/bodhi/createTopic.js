@@ -191,7 +191,8 @@ class CreateTopic extends React.Component {
             {getFieldDecorator('resultSetter', {
               rules: [{
                 required: true,
-                message: 'Please enter a valid Qtum address.',
+                whitespace: true,
+                message: 'Result setter cannot be empty.',
               }],
             })(<Input placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM" />)}
           </FormItem>
