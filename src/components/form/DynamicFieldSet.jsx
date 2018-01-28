@@ -2,6 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import { Form, Input, Icon, Button } from 'antd';
+import _ from 'lodash';
 import Web3Utils from 'web3-utils';
 
 const MAX_LEN_HEX = 64;
@@ -50,8 +51,10 @@ export class DynamicFieldSet extends React.Component {
   }
 
   validateLength(rule, value, callback) {
+    let hexString = _.isUndefined(value) ? '' : value;
+
     // Remove hex prefix for length validation
-    const hexString = Web3Utils.toHex(value).slice(2);
+    hexString = Web3Utils.toHex(hexString).slice(2);
     if (hexString && hexString.length <= MAX_LEN_HEX) {
       callback();
     } else {
