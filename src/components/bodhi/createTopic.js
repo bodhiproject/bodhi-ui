@@ -37,7 +37,7 @@ class CreateTopic extends React.Component {
 
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.renderAlertBox = this.renderAlertBox.bind(this);
-    this.createInputNumberField = this.createInputNumberField.bind(this);
+    this.renderInputNumberField = this.renderInputNumberField.bind(this);
     this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
@@ -80,6 +80,11 @@ class CreateTopic extends React.Component {
       },
     };
 
+    console.log(`bet start ${this.props.form.getFieldValue(ID_BETTING_START_BLOCK)}`);
+    console.log(`bet end ${this.props.form.getFieldValue(ID_BETTING_END_BLOCK)}`);
+    console.log(`set start ${this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)}`);
+    console.log(`set end ${this.props.form.getFieldValue(ID_RESULT_SETTING_END_BLOCK)}`);
+
     return (
       <div className="create-topic-container">
         <h3>Create an event</h3>
@@ -105,7 +110,7 @@ class CreateTopic extends React.Component {
             />)}
           </FormItem>
 
-          {this.createInputNumberField(
+          {this.renderInputNumberField(
             formItemLayout,
             ID_BETTING_START_BLOCK,
             'Betting Start Block',
@@ -120,7 +125,7 @@ class CreateTopic extends React.Component {
             this.state.bettingStartBlockDate,
           )}
 
-          {this.createInputNumberField(
+          {this.renderInputNumberField(
             formItemLayout,
             ID_BETTING_END_BLOCK,
             'Betting End Block',
@@ -136,7 +141,7 @@ class CreateTopic extends React.Component {
             this.state.bettingEndBlockDate,
           )}
 
-          {this.createInputNumberField(
+          {this.renderInputNumberField(
             formItemLayout,
             ID_RESULT_SETTING_START_BLOCK,
             'Result Setting Start Block',
@@ -152,7 +157,7 @@ class CreateTopic extends React.Component {
             this.state.resultSettingStartBlockDate,
           )}
 
-          {this.createInputNumberField(
+          {this.renderInputNumberField(
             formItemLayout,
             ID_RESULT_SETTING_END_BLOCK,
             'Result Setting End Block',
@@ -254,7 +259,7 @@ class CreateTopic extends React.Component {
     );
   }
 
-  createInputNumberField(formItemLayout, id, label, args, min, date) {
+  renderInputNumberField(formItemLayout, id, label, args, min, date) {
     const parsedDate = date && date.isValid() ? date : null;
 
     return (
@@ -267,6 +272,7 @@ class CreateTopic extends React.Component {
           <Col span={6}>
             {this.props.form.getFieldDecorator(id, args)(<InputNumber
               min={min}
+              step={1}
               onChange={(e) => this.onBlockNumberChange(id, e)}
             />)}
           </Col>
