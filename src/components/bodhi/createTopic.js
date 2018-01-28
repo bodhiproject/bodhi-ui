@@ -37,7 +37,7 @@ class CreateTopic extends React.Component {
 
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.renderAlertBox = this.renderAlertBox.bind(this);
-    this.renderInputNumberField = this.renderInputNumberField.bind(this);
+    this.renderBlockField = this.renderBlockField.bind(this);
     this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
@@ -80,11 +80,6 @@ class CreateTopic extends React.Component {
       },
     };
 
-    console.log(`bet start ${this.props.form.getFieldValue(ID_BETTING_START_BLOCK)}`);
-    console.log(`bet end ${this.props.form.getFieldValue(ID_BETTING_END_BLOCK)}`);
-    console.log(`set start ${this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)}`);
-    console.log(`set end ${this.props.form.getFieldValue(ID_RESULT_SETTING_END_BLOCK)}`);
-
     return (
       <div className="create-topic-container">
         <h3>Create an event</h3>
@@ -110,68 +105,10 @@ class CreateTopic extends React.Component {
             />)}
           </FormItem>
 
-          {this.renderInputNumberField(
-            formItemLayout,
-            ID_BETTING_START_BLOCK,
-            'Betting Start Block',
-            {
-              validateTrigger: ['onChange', 'onBlur'],
-              rules: [{
-                required: true,
-                message: 'Must be greater than or equal to current block number.',
-              }],
-            },
-            blockCount,
-            this.state.bettingStartBlockDate,
-          )}
-
-          {this.renderInputNumberField(
-            formItemLayout,
-            ID_BETTING_END_BLOCK,
-            'Betting End Block',
-            {
-              validateTrigger: ['onChange', 'onBlur'],
-              rules: [{
-                required: true,
-                message: 'Must be greater than Betting Start Block.',
-              }],
-            },
-            _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_BLOCK)) ?
-              this.props.form.getFieldValue(ID_BETTING_START_BLOCK) + 1 : blockCount + 1,
-            this.state.bettingEndBlockDate,
-          )}
-
-          {this.renderInputNumberField(
-            formItemLayout,
-            ID_RESULT_SETTING_START_BLOCK,
-            'Result Setting Start Block',
-            {
-              validateTrigger: ['onChange', 'onBlur'],
-              rules: [{
-                required: true,
-                message: 'Must be greater than or equal to Betting End Block.',
-              }],
-            },
-            _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_BLOCK)) ?
-              this.props.form.getFieldValue(ID_BETTING_END_BLOCK) : blockCount + 1,
-            this.state.resultSettingStartBlockDate,
-          )}
-
-          {this.renderInputNumberField(
-            formItemLayout,
-            ID_RESULT_SETTING_END_BLOCK,
-            'Result Setting End Block',
-            {
-              validateTrigger: ['onChange', 'onBlur'],
-              rules: [{
-                required: true,
-                message: 'Must be greater than Result Setting Start Block.',
-              }],
-            },
-            _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)) ?
-              this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK) + 1 : blockCount + 1,
-            this.state.resultSettingEndBlockDate,
-          )}
+          {this.renderBlockField(formItemLayout, ID_BETTING_START_BLOCK, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_BETTING_END_BLOCK, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_START_BLOCK, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_END_BLOCK, blockCount)}
 
           <FormItem
             {...formItemLayout}
@@ -259,7 +196,78 @@ class CreateTopic extends React.Component {
     );
   }
 
-  renderInputNumberField(formItemLayout, id, label, args, min, date) {
+  renderBlockField(formItemLayout, id, blockCount) {
+    const {
+      bettingStartBlockDate,
+      bettingEndBlockDate,
+      resultSettingStartBlockDate,
+      resultSettingEndBlockDate,
+    } = this.state;
+
+    let label;
+    let options;
+    let min;
+    let date;
+    switch (id) {
+      case ID_BETTING_START_BLOCK: {
+        label = 'Betting Start Block';
+        options = {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [{
+            required: true,
+            message: 'Must be greater than or equal to current block number.',
+          }],
+        };
+        min = blockCount;
+        date = bettingStartBlockDate;
+        break;
+      }
+      case ID_BETTING_END_BLOCK: {
+        label = 'Betting End Block';
+        options = {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [{
+            required: true,
+            message: 'Must be greater than Betting Start Block.',
+          }],
+        };
+        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_BLOCK)) ?
+          this.props.form.getFieldValue(ID_BETTING_START_BLOCK) + 1 : blockCount + 1;
+        date = bettingEndBlockDate;
+        break;
+      }
+      case ID_RESULT_SETTING_START_BLOCK: {
+        label = 'Result Setting Start Block';
+        options = {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [{
+            required: true,
+            message: 'Must be greater than or equal to Betting End Block.',
+          }],
+        };
+        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_BLOCK)) ?
+          this.props.form.getFieldValue(ID_BETTING_END_BLOCK) : blockCount + 1;
+        date = resultSettingStartBlockDate;
+        break;
+      }
+      case ID_RESULT_SETTING_END_BLOCK: {
+        label = 'Result Setting End Block';
+        options = {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [{
+            required: true,
+            message: 'Must be greater than Result Setting Start Block.',
+          }],
+        };
+        min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)) ?
+          this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK) + 1 : blockCount + 1;
+        date = resultSettingEndBlockDate;
+        break;
+      }
+      default: {
+        throw new Error(`Unhandled id ${id}`);
+      }
+    }
     const parsedDate = date && date.isValid() ? date : null;
 
     return (
@@ -270,7 +278,7 @@ class CreateTopic extends React.Component {
       >
         <Row gutter={8}>
           <Col span={6}>
-            {this.props.form.getFieldDecorator(id, args)(<InputNumber
+            {this.props.form.getFieldDecorator(id, options)(<InputNumber
               min={min}
               step={1}
               onChange={(e) => this.onBlockNumberChange(id, e)}
@@ -323,7 +331,7 @@ class CreateTopic extends React.Component {
         break;
       }
       default: {
-        throw new Error(`Unhandled onBlockNumberChange id ${id}`);
+        throw new Error(`Unhandled id ${id}`);
       }
     }
   }
@@ -369,7 +377,7 @@ class CreateTopic extends React.Component {
         break;
       }
       default: {
-        throw new Error(`Unhandled onCalendarChange id ${id}`);
+        throw new Error(`Unhandled id ${id}`);
       }
     }
   }
