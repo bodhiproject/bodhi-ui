@@ -19,6 +19,9 @@ const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
 
 const ID_BETTING_START_BLOCK = 'bettingStartBlock';
+const ID_BETTING_END_BLOCK = 'bettingEndBlock';
+const ID_RESULT_SETTING_START_BLOCK = 'resultSettingStartBlock';
+const ID_RESULT_SETTING_END_BLOCK = 'resultSettingEndBlock';
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -109,8 +112,26 @@ class CreateTopic extends React.Component {
         });
         break;
       }
-      default: {
+      case ID_BETTING_END_BLOCK: {
+        this.props.form.setFieldsValue({
+          bettingEndBlock: futureBlock,
+        });
         break;
+      }
+      case ID_RESULT_SETTING_START_BLOCK: {
+        this.props.form.setFieldsValue({
+          resultSettingStartBlock: futureBlock,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_END_BLOCK: {
+        this.props.form.setFieldsValue({
+          resultSettingEndBlock: futureBlock,
+        });
+        break;
+      }
+      default: {
+        throw new Error(`Unhandled onCalendarChange id ${id}`);
       }
     }
   }
@@ -232,7 +253,7 @@ class CreateTopic extends React.Component {
 
           {this.createInputNumberField(
             formItemLayout,
-            'bettingEndBlock',
+            ID_BETTING_END_BLOCK,
             'Betting End Block',
             {
               rules: [{
@@ -245,7 +266,7 @@ class CreateTopic extends React.Component {
 
           {this.createInputNumberField(
             formItemLayout,
-            'resultSettingStartBlock',
+            ID_RESULT_SETTING_START_BLOCK,
             'Result Setting Start Block',
             {
               rules: [{
@@ -258,7 +279,7 @@ class CreateTopic extends React.Component {
 
           {this.createInputNumberField(
             formItemLayout,
-            'resultSettingEndBlock',
+            ID_RESULT_SETTING_END_BLOCK,
             'Result Setting End Block',
             {
               rules: [{
