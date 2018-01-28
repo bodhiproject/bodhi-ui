@@ -62,22 +62,23 @@ class AppLoad extends React.PureComponent {
       style.display = 'none';
     }
 
-    return (
-      <div className="app-load" style={style}>
-        <div className="app-load-wrapper">
-          <div className="app-load-container">
-            <Row>
-              <Col xs={10} style={{ textAlign: 'center' }}>
-                <Progress type="circle" percent={percent} width={180} />
-              </Col>
-              <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
-                <p>QTUM blockchain is syncing. <br />Please wait patiently.</p>
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </div>
-    );
+    // return (
+    //   <div className="app-load" style={style}>
+    //     <div className="app-load-wrapper">
+    //       <div className="app-load-container">
+    //         <Row>
+    //           <Col xs={10} style={{ textAlign: 'center' }}>
+    //             <Progress type="circle" percent={percent} width={180} />
+    //           </Col>
+    //           <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
+    //             <p>QTUM blockchain is syncing. <br />Please wait patiently.</p>
+    //           </Col>
+    //         </Row>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
+    return null;
   }
 }
 

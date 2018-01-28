@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Alert, Button, Form, Input, message, InputNumber } from 'antd';
+import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -17,17 +17,6 @@ const Web3Utils = require('web3-utils');
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
-  },
-};
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -107,19 +96,46 @@ class CreateTopic extends React.Component {
     }
   }
 
-  createInputNumberField(id, label, args, min) {
-    return (<FormItem
-      {...formItemLayout}
-      label={label}
-    >
-      {this.props.form.getFieldDecorator(id, args)(<InputNumber min={min} />)}
-    </FormItem>);
+  createInputNumberField(formItemLayout, id, label, args, min) {
+    return (
+      <FormItem
+        {...formItemLayout}
+        label={label}
+        extra="Enter a block number or select a date"
+      >
+        <Row gutter={8}>
+          <Col span={8}>
+            {this.props.form.getFieldDecorator(id, args)(<InputNumber
+              min={min}
+            />)}
+          </Col>
+          <Col span={6}>
+            <DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              placeholder="Select Date & Time"
+              style={{ width: '100%' }}
+            />
+          </Col>
+        </Row>
+      </FormItem>
+    );
   }
 
   render() {
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+    };
     const tailFormItemLayout = {
       wrapperCol: {
         xs: {
@@ -182,6 +198,7 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           {this.createInputNumberField(
+            formItemLayout,
             'bettingStartBlock',
             'Betting Start Block',
             {
@@ -193,6 +210,7 @@ class CreateTopic extends React.Component {
           )}
 
           {this.createInputNumberField(
+            formItemLayout,
             'bettingEndBlock',
             'Betting End Block',
             {
@@ -205,6 +223,7 @@ class CreateTopic extends React.Component {
           )}
 
           {this.createInputNumberField(
+            formItemLayout,
             'resultSettingStartBlock',
             'Result Setting Start Block',
             {
@@ -217,6 +236,7 @@ class CreateTopic extends React.Component {
           )}
 
           {this.createInputNumberField(
+            formItemLayout,
             'resultSettingEndBlock',
             'Result Setting End Block',
             {
