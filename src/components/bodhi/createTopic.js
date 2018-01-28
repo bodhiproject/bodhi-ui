@@ -41,7 +41,6 @@ class CreateTopic extends React.Component {
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
-    this.disabledDates = this.disabledDates.bind(this);
   }
 
   componentWillMount() {
@@ -189,10 +188,6 @@ class CreateTopic extends React.Component {
     }
   }
 
-  disabledDates(current) {
-    return current && current < moment().utc().subtract('1', 'days').endOf('day');
-  }
-
   createInputNumberField(formItemLayout, id, label, args, min, date) {
     const parsedDate = date && date.isValid() ? date : null;
 
@@ -217,7 +212,7 @@ class CreateTopic extends React.Component {
               style={{ width: '100%' }}
               value={parsedDate}
               onChange={(e) => this.onCalendarChange(id, e)}
-              disabledDate={this.disabledDates}
+              disabledDate={(current) => current < moment().utc().subtract('1', 'days').endOf('day')}
             />
           </Col>
         </Row>
