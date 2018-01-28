@@ -275,7 +275,6 @@ class CreateTopic extends React.Component {
     const alertContainer = <div className="alert-container">{alertElement}</div>;
 
     return (
-
       <div className="create-topic-container">
         <h3>Create an event</h3>
         <Form onSubmit={this.handleSubmit}>
@@ -326,8 +325,8 @@ class CreateTopic extends React.Component {
                 message: 'Must be greater than Betting Start Block.',
               }],
             },
-            _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
-              this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1,
+            _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_BLOCK)) ?
+              this.props.form.getFieldValue(ID_BETTING_START_BLOCK) + 1 : blockCount + 1,
             this.state.bettingEndBlockDate,
           )}
 
@@ -342,8 +341,8 @@ class CreateTopic extends React.Component {
                 message: 'Must be greater than or equal to Betting End Block.',
               }],
             },
-            _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
-              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1,
+            _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_BLOCK)) ?
+              this.props.form.getFieldValue(ID_BETTING_END_BLOCK) : blockCount + 1,
             this.state.resultSettingStartBlockDate,
           )}
 
@@ -358,8 +357,8 @@ class CreateTopic extends React.Component {
                 message: 'Must be greater than Result Setting Start Block.',
               }],
             },
-            _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
-              this.props.form.getFieldValue('resultSettingStartBlock') + 1 : blockCount) + 1,
+            _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)) ?
+              this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK) + 1 : blockCount + 1,
             this.state.resultSettingEndBlockDate,
           )}
 
