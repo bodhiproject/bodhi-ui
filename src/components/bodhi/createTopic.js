@@ -5,6 +5,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
@@ -40,6 +41,7 @@ class CreateTopic extends React.Component {
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
+    this.disabledDates = this.disabledDates.bind(this);
   }
 
   componentWillMount() {
@@ -187,6 +189,10 @@ class CreateTopic extends React.Component {
     }
   }
 
+  disabledDates(current) {
+    return current && current < moment().utc().subtract('1', 'days').endOf('day');
+  }
+
   createInputNumberField(formItemLayout, id, label, args, min, date) {
     const parsedDate = date && date.isValid() ? date : null;
 
@@ -209,8 +215,9 @@ class CreateTopic extends React.Component {
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
-              onChange={(e) => this.onCalendarChange(id, e)}
               value={parsedDate}
+              onChange={(e) => this.onCalendarChange(id, e)}
+              disabledDate={this.disabledDates}
             />
           </Col>
         </Row>
@@ -298,8 +305,10 @@ class CreateTopic extends React.Component {
             ID_BETTING_START_BLOCK,
             'Betting Start Block',
             {
+              validateTrigger: ['onChange', 'onBlur'],
               rules: [{
-                required: true, message: 'Must be greater than or equal to current block number.',
+                required: true,
+                message: 'Must be greater than or equal to current block number.',
               }],
             },
             blockCount,
@@ -311,8 +320,10 @@ class CreateTopic extends React.Component {
             ID_BETTING_END_BLOCK,
             'Betting End Block',
             {
+              validateTrigger: ['onChange', 'onBlur'],
               rules: [{
-                required: true, message: 'Must be greater than Betting Start Block.',
+                required: true,
+                message: 'Must be greater than Betting Start Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
@@ -325,8 +336,10 @@ class CreateTopic extends React.Component {
             ID_RESULT_SETTING_START_BLOCK,
             'Result Setting Start Block',
             {
+              validateTrigger: ['onChange', 'onBlur'],
               rules: [{
-                required: true, message: 'Must be greater than or equal to Betting End Block.',
+                required: true,
+                message: 'Must be greater than or equal to Betting End Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
@@ -339,8 +352,10 @@ class CreateTopic extends React.Component {
             ID_RESULT_SETTING_END_BLOCK,
             'Result Setting End Block',
             {
+              validateTrigger: ['onChange', 'onBlur'],
               rules: [{
-                required: true, message: 'Must be greater than Result Setting Start Block.',
+                required: true,
+                message: 'Must be greater than Result Setting Start Block.',
               }],
             },
             _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
