@@ -28,12 +28,17 @@ class CreateTopic extends React.Component {
     super(props);
 
     this.state = {
+      bettingStartBlockDate: undefined,
+      bettingEndBlockDate: undefined,
+      resultSettingStartBlockDate: undefined,
+      resultSettingEndBlockDate: undefined,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
+    this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
   }
 
@@ -102,31 +107,65 @@ class CreateTopic extends React.Component {
     }
   }
 
-  onCalendarChange(id, date, dateString) {
-    const futureBlock = calculateBlock(this.props.blockCount, date);
+  onBlockNumberChange(id, blockNum) {
+    const date = calculateDate(this.props.blockCount, blockNum);
+
+    switch (id) {
+      case ID_BETTING_START_BLOCK: {
+        this.setState({
+          bettingStartBlockDate: date,
+        });
+        break;
+      }
+      case ID_BETTING_END_BLOCK: {
+        this.setState({
+          bettingEndBlockDate: date,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_START_BLOCK: {
+        this.setState({
+          resultSettingStartBlockDate: date,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_END_BLOCK: {
+        this.setState({
+          resultSettingEndBlockDate: date,
+        });
+        break;
+      }
+      default: {
+        throw new Error(`Unhandled onBlockNumberChange id ${id}`);
+      }
+    }
+  }
+
+  onCalendarChange(id, date) {
+    const block = calculateBlock(this.props.blockCount, date);
 
     switch (id) {
       case ID_BETTING_START_BLOCK: {
         this.props.form.setFieldsValue({
-          bettingStartBlock: futureBlock,
+          bettingStartBlock: block,
         });
         break;
       }
       case ID_BETTING_END_BLOCK: {
         this.props.form.setFieldsValue({
-          bettingEndBlock: futureBlock,
+          bettingEndBlock: block,
         });
         break;
       }
       case ID_RESULT_SETTING_START_BLOCK: {
         this.props.form.setFieldsValue({
-          resultSettingStartBlock: futureBlock,
+          resultSettingStartBlock: block,
         });
         break;
       }
       case ID_RESULT_SETTING_END_BLOCK: {
         this.props.form.setFieldsValue({
-          resultSettingEndBlock: futureBlock,
+          resultSettingEndBlock: block,
         });
         break;
       }
@@ -136,7 +175,8 @@ class CreateTopic extends React.Component {
     }
   }
 
-  createInputNumberField(formItemLayout, id, label, args, min, value) {
+  createInputNumberField(formItemLayout, id, label, args, min, date) {
+    const parsedDate = date && date.isValid() ? date : null;
     return (
       <FormItem
         {...formItemLayout}
@@ -147,6 +187,7 @@ class CreateTopic extends React.Component {
           <Col span={8}>
             {this.props.form.getFieldDecorator(id, args)(<InputNumber
               min={min}
+              onChange={(e) => this.onBlockNumberChange(id, e)}
             />)}
           </Col>
           <Col span={8}>
@@ -156,6 +197,7 @@ class CreateTopic extends React.Component {
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
               onChange={(e) => this.onCalendarChange(id, e)}
+              value={parsedDate}
             />
           </Col>
         </Row>
@@ -248,7 +290,7 @@ class CreateTopic extends React.Component {
               }],
             },
             blockCount,
-            this.state.bettingStartBlock,
+            this.state.bettingStartBlockDate,
           )}
 
           {this.createInputNumberField(
@@ -261,7 +303,8 @@ class CreateTopic extends React.Component {
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingStartBlock') ?
-              this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1
+              this.props.form.getFieldValue('bettingStartBlock') + 1 : blockCount) + 1,
+            this.state.bettingEndBlockDate,
           )}
 
           {this.createInputNumberField(
@@ -274,7 +317,8 @@ class CreateTopic extends React.Component {
               }],
             },
             _.isNumber(this.props.form.getFieldValue('bettingEndBlock') ?
-              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1
+              this.props.form.getFieldValue('bettingEndBlock') : blockCount) + 1,
+            this.state.resultSettingStartBlockDate,
           )}
 
           {this.createInputNumberField(
@@ -287,7 +331,8 @@ class CreateTopic extends React.Component {
               }],
             },
             _.isNumber(this.props.form.getFieldValue('resultSettingStartBlock') ?
-              this.props.form.getFieldValue('resultSettingStartBlock') + 1 : blockCount) + 1
+              this.props.form.getFieldValue('resultSettingStartBlock') + 1 : blockCount) + 1,
+            this.state.resultSettingEndBlockDate,
           )}
 
           <FormItem

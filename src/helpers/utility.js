@@ -26,12 +26,12 @@ export function getToken() {
 * Calculates the estimated date based on current and future blocks.
 * @param currentBlock {Number} The current block number.
 * @param futureBlock {Number} The future block number.
-* @return {Date} Returns a Date instance of the estimated future date (in UTC).
+* @return {Moment} Returns a Moment instance of the estimated future date (in UTC).
 */
 export function calculateDate(currentBlock, futureBlock) {
-  const currentMS = Date.now();
+  const currentMS = moment.utc();
   const diffMS = (futureBlock - currentBlock) * AVG_BLOCK_TIME_MS;
-  return new Date(currentMS + diffMS);
+  return moment.utc(currentMS + diffMS);
 }
 
 /*
