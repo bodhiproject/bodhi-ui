@@ -172,7 +172,16 @@ class CreateTopic extends React.Component {
             {...formItemLayout}
             label="Results"
           >
-            {(<DynamicFieldSet form={this.props.form} />)}
+            {getFieldDecorator('results', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Results cannot be empty.',
+                },
+              ],
+            })(<DynamicFieldSet
+              form={this.props.form}
+            />)}
           </FormItem>
 
           <FormItem
@@ -181,7 +190,8 @@ class CreateTopic extends React.Component {
           >
             {getFieldDecorator('resultSetter', {
               rules: [{
-                required: true, message: 'Please enter a valid Qtum address.',
+                required: true,
+                message: 'Please enter a valid Qtum address.',
               }],
             })(<Input placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM" />)}
           </FormItem>
@@ -252,7 +262,7 @@ class CreateTopic extends React.Component {
         extra="Enter a block number or select a date"
       >
         <Row gutter={8}>
-          <Col span={8}>
+          <Col span={6}>
             {this.props.form.getFieldDecorator(id, args)(<InputNumber
               min={min}
               onChange={(e) => this.onBlockNumberChange(id, e)}

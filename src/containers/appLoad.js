@@ -62,6 +62,7 @@ class AppLoad extends React.PureComponent {
       style.display = 'none';
     }
 
+    // TODO: uncomment when testnet API works
     // return (
     //   <div className="app-load" style={style}>
     //     <div className="app-load-wrapper">

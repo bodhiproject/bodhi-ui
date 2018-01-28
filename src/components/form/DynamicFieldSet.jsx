@@ -83,7 +83,7 @@ export class DynamicFieldSet extends React.Component {
               {
                 required: true,
                 whitespace: true,
-                message: 'Input the result name or delete this field.',
+                message: 'Result name cannot be empty.',
               },
               {
                 validator: this.validateLength,
