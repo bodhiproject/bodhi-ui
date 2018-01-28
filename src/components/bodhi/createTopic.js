@@ -261,7 +261,7 @@ class CreateTopic extends React.Component {
           <Col span={8}>
             <DatePicker
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD HH:mm:ss z"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
               defaultValue={parsedDate}
