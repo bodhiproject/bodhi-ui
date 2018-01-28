@@ -35,12 +35,14 @@ class CreateTopic extends React.Component {
       resultSettingEndBlockDate: undefined,
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onCancel = this.onCancel.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
-    this.validateTitleLength = this.validateTitleLength.bind(this);
+    this.renderAlertBox = this.renderAlertBox.bind(this);
+    this.createInputNumberField = this.createInputNumberField.bind(this);
     this.onBlockNumberChange = this.onBlockNumberChange.bind(this);
     this.onCalendarChange = this.onCalendarChange.bind(this);
+    this.validateTitleLength = this.validateTitleLength.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   componentWillMount() {
@@ -77,29 +79,6 @@ class CreateTopic extends React.Component {
         },
       },
     };
-
-    let alertElement;
-
-    if (createReturn) {
-      if (createReturn.result) {
-        alertElement =
-            (<Alert
-              message="Success!"
-              description={`The transaction is broadcasted to blockchain. 
-                You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}`}
-              type="success"
-              closable={false}
-            />);
-      } else if (createReturn.error) {
-        alertElement = (<Alert
-          message="Oops, something went wrong"
-          description={createReturn.error}
-          type="error"
-          closable={false}
-        />);
-      }
-    }
-    const alertContainer = <div className="alert-container">{alertElement}</div>;
 
     return (
       <div className="create-topic-container">
@@ -208,7 +187,7 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
-            {alertContainer}
+            {this.renderAlertBox(createReturn)}
             <Button
               type="primary"
               htmlType="submit"
@@ -233,6 +212,34 @@ class CreateTopic extends React.Component {
       return walletAddrs[walletAddrsIndex].address;
     }
     return '';
+  }
+
+  renderAlertBox(createReturn) {
+    let alertElement;
+    if (createReturn) {
+      if (createReturn.result) {
+        alertElement =
+            (<Alert
+              message="Success!"
+              description={`The transaction is broadcasted to blockchain. 
+                You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}`}
+              type="success"
+              closable={false}
+            />);
+      } else if (createReturn.error) {
+        alertElement = (<Alert
+          message="Oops, something went wrong"
+          description={createReturn.error}
+          type="error"
+          closable={false}
+        />);
+      }
+    }
+    return (
+      <div className="alert-container">
+        {alertElement}
+      </div>
+    );
   }
 
   createInputNumberField(formItemLayout, id, label, args, min, date) {
