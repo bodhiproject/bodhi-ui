@@ -146,24 +146,36 @@ class CreateTopic extends React.Component {
 
     switch (id) {
       case ID_BETTING_START_BLOCK: {
+        this.setState({
+          bettingStartBlockDate: date,
+        });
         this.props.form.setFieldsValue({
           bettingStartBlock: block,
         });
         break;
       }
       case ID_BETTING_END_BLOCK: {
+        this.setState({
+          bettingEndBlockDate: date,
+        });
         this.props.form.setFieldsValue({
           bettingEndBlock: block,
         });
         break;
       }
       case ID_RESULT_SETTING_START_BLOCK: {
+        this.setState({
+          resultSettingStartBlockDate: date,
+        });
         this.props.form.setFieldsValue({
           resultSettingStartBlock: block,
         });
         break;
       }
       case ID_RESULT_SETTING_END_BLOCK: {
+        this.setState({
+          resultSettingEndBlockDate: date,
+        });
         this.props.form.setFieldsValue({
           resultSettingEndBlock: block,
         });
@@ -177,6 +189,7 @@ class CreateTopic extends React.Component {
 
   createInputNumberField(formItemLayout, id, label, args, min, date) {
     const parsedDate = date && date.isValid() ? date : null;
+
     return (
       <FormItem
         {...formItemLayout}
