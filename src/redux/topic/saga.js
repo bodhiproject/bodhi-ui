@@ -277,7 +277,7 @@ export function* withdrawRequestHandler() {
 export function* createRequestHandler() {
   yield takeEvery(actions.CREATE, function* onCreateRequest(action) {
     const {
-      resultSetterAddress,
+      centralizedOracle,
       name,
       results,
       bettingStartBlock,
@@ -291,7 +291,7 @@ export function* createRequestHandler() {
       const requestOptions = {
         method: 'POST',
         body: JSON.stringify({
-          oracleAddress: resultSetterAddress,
+          oracleAddress: centralizedOracle,
           eventName: name,
           resultNames: results,
           bettingStartBlock,

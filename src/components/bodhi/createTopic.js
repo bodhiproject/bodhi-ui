@@ -186,13 +186,14 @@ class CreateTopic extends React.Component {
 
           <FormItem
             {...formItemLayout}
-            label="Result Setter"
+            label="Centralized Oracle"
+            extra="This person will set the result."
           >
-            {getFieldDecorator('resultSetter', {
+            {getFieldDecorator('centralizedOracle', {
               rules: [{
                 required: true,
                 whitespace: true,
-                message: 'Result setter cannot be empty.',
+                message: 'Centralized Oracle cannot be empty.',
               }],
             })(<Input placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM" />)}
           </FormItem>
@@ -386,7 +387,7 @@ class CreateTopic extends React.Component {
       if (!err) {
         // Maps form variables to saga request variables
         const {
-          resultSetter: resultSetterAddress,
+          centralizedOracle,
           name,
           results,
           bettingStartBlock,
@@ -396,7 +397,7 @@ class CreateTopic extends React.Component {
         } = values;
 
         this.props.onCreateTopic({
-          resultSetterAddress,
+          centralizedOracle,
           name,
           results,
           bettingStartBlock: bettingStartBlock.toString(),
