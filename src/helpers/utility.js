@@ -41,7 +41,7 @@ export function calculateDate(currentBlock, futureBlock) {
 * @return {Number} Returns a number of the estimated future block.
 */
 export function calculateBlock(currentBlock, futureDate) {
-  const diffMS = futureDate.utc() - moment.utc();
+  const diffMS = futureDate.utc() - moment().utc();
   return Math.round(diffMS / AVG_BLOCK_TIME_MS) + currentBlock;
 }
 

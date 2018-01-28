@@ -264,9 +264,11 @@ class CreateTopic extends React.Component {
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
+              defaultValue={parsedDate}
               value={parsedDate}
               onChange={(e) => this.onCalendarChange(id, e)}
               disabledDate={(current) => current < moment().utc().subtract('1', 'days').endOf('day')}
+              allowClear={false}
             />
           </Col>
         </Row>
