@@ -51,175 +51,6 @@ class CreateTopic extends React.Component {
     this.props.onClearCreateReturn();
   }
 
-  /** Return selected address on Topbar as sender; empty string if not found * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex].address;
-    }
-
-    return '';
-  }
-
-  handleSubmit(evt) {
-    evt.preventDefault();
-
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        // Maps form variables to saga request variables
-        const {
-          resultSetter: resultSetterAddress,
-          name,
-          results,
-          bettingStartBlock,
-          bettingEndBlock,
-          resultSettingStartBlock,
-          resultSettingEndBlock,
-        } = values;
-
-        this.props.onCreateTopic({
-          resultSetterAddress,
-          name,
-          results,
-          bettingStartBlock: bettingStartBlock.toString(),
-          bettingEndBlock: bettingEndBlock.toString(),
-          resultSettingStartBlock: resultSettingStartBlock.toString(),
-          resultSettingEndBlock: resultSettingEndBlock.toString(),
-          senderAddress: this.getCurrentSenderAddress(),
-        });
-      }
-    });
-  }
-
-  onCancel(evt) {
-    evt.preventDefault();
-
-    this.props.history.push('/');
-  }
-
-  validateTitleLength(rule, value, callback) {
-    // Remove hex prefix for length validation
-    const hexString = Web3Utils.toHex(value).slice(2);
-    if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
-      callback();
-    } else {
-      callback('Event name is too long.');
-    }
-  }
-
-  onBlockNumberChange(id, blockNum) {
-    const date = calculateDate(this.props.blockCount, blockNum);
-
-    switch (id) {
-      case ID_BETTING_START_BLOCK: {
-        this.setState({
-          bettingStartBlockDate: date,
-        });
-        break;
-      }
-      case ID_BETTING_END_BLOCK: {
-        this.setState({
-          bettingEndBlockDate: date,
-        });
-        break;
-      }
-      case ID_RESULT_SETTING_START_BLOCK: {
-        this.setState({
-          resultSettingStartBlockDate: date,
-        });
-        break;
-      }
-      case ID_RESULT_SETTING_END_BLOCK: {
-        this.setState({
-          resultSettingEndBlockDate: date,
-        });
-        break;
-      }
-      default: {
-        throw new Error(`Unhandled onBlockNumberChange id ${id}`);
-      }
-    }
-  }
-
-  onCalendarChange(id, date) {
-    const block = calculateBlock(this.props.blockCount, date);
-
-    switch (id) {
-      case ID_BETTING_START_BLOCK: {
-        this.setState({
-          bettingStartBlockDate: date,
-        });
-        this.props.form.setFieldsValue({
-          bettingStartBlock: block,
-        });
-        break;
-      }
-      case ID_BETTING_END_BLOCK: {
-        this.setState({
-          bettingEndBlockDate: date,
-        });
-        this.props.form.setFieldsValue({
-          bettingEndBlock: block,
-        });
-        break;
-      }
-      case ID_RESULT_SETTING_START_BLOCK: {
-        this.setState({
-          resultSettingStartBlockDate: date,
-        });
-        this.props.form.setFieldsValue({
-          resultSettingStartBlock: block,
-        });
-        break;
-      }
-      case ID_RESULT_SETTING_END_BLOCK: {
-        this.setState({
-          resultSettingEndBlockDate: date,
-        });
-        this.props.form.setFieldsValue({
-          resultSettingEndBlock: block,
-        });
-        break;
-      }
-      default: {
-        throw new Error(`Unhandled onCalendarChange id ${id}`);
-      }
-    }
-  }
-
-  createInputNumberField(formItemLayout, id, label, args, min, date) {
-    const parsedDate = date && date.isValid() ? date : null;
-
-    return (
-      <FormItem
-        {...formItemLayout}
-        label={label}
-        extra="Enter a block number or select a date"
-      >
-        <Row gutter={8}>
-          <Col span={8}>
-            {this.props.form.getFieldDecorator(id, args)(<InputNumber
-              min={min}
-              onChange={(e) => this.onBlockNumberChange(id, e)}
-            />)}
-          </Col>
-          <Col span={8}>
-            <DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="Select Date & Time"
-              style={{ width: '100%' }}
-              value={parsedDate}
-              onChange={(e) => this.onCalendarChange(id, e)}
-              disabledDate={(current) => current < moment().utc().subtract('1', 'days').endOf('day')}
-            />
-          </Col>
-        </Row>
-      </FormItem>
-    );
-  }
-
   render() {
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -254,7 +85,8 @@ class CreateTopic extends React.Component {
         alertElement =
             (<Alert
               message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}`}
+              description={`The transaction is broadcasted to blockchain. 
+                You can view details from below link https://testnet.qtum.org/tx/${createReturn.result.txid}`}
               type="success"
               closable={false}
             />);
@@ -390,6 +222,175 @@ class CreateTopic extends React.Component {
         </Form>
       </div>
     );
+  }
+
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+
+    if (!_.isEmpty(walletAddrs)
+      && walletAddrsIndex < walletAddrs.length
+      && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      return walletAddrs[walletAddrsIndex].address;
+    }
+    return '';
+  }
+
+  createInputNumberField(formItemLayout, id, label, args, min, date) {
+    const parsedDate = date && date.isValid() ? date : null;
+
+    return (
+      <FormItem
+        {...formItemLayout}
+        label={label}
+        extra="Enter a block number or select a date"
+      >
+        <Row gutter={8}>
+          <Col span={8}>
+            {this.props.form.getFieldDecorator(id, args)(<InputNumber
+              min={min}
+              onChange={(e) => this.onBlockNumberChange(id, e)}
+            />)}
+          </Col>
+          <Col span={8}>
+            <DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              placeholder="Select Date & Time"
+              style={{ width: '100%' }}
+              value={parsedDate}
+              onChange={(e) => this.onCalendarChange(id, e)}
+              disabledDate={(current) => current < moment().utc().subtract('1', 'days').endOf('day')}
+            />
+          </Col>
+        </Row>
+      </FormItem>
+    );
+  }
+
+  onBlockNumberChange(id, blockNum) {
+    const date = calculateDate(this.props.blockCount, blockNum);
+
+    switch (id) {
+      case ID_BETTING_START_BLOCK: {
+        this.setState({
+          bettingStartBlockDate: date,
+        });
+        break;
+      }
+      case ID_BETTING_END_BLOCK: {
+        this.setState({
+          bettingEndBlockDate: date,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_START_BLOCK: {
+        this.setState({
+          resultSettingStartBlockDate: date,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_END_BLOCK: {
+        this.setState({
+          resultSettingEndBlockDate: date,
+        });
+        break;
+      }
+      default: {
+        throw new Error(`Unhandled onBlockNumberChange id ${id}`);
+      }
+    }
+  }
+
+  onCalendarChange(id, date) {
+    const block = calculateBlock(this.props.blockCount, date);
+
+    switch (id) {
+      case ID_BETTING_START_BLOCK: {
+        this.setState({
+          bettingStartBlockDate: date,
+        });
+        this.props.form.setFieldsValue({
+          bettingStartBlock: block,
+        });
+        break;
+      }
+      case ID_BETTING_END_BLOCK: {
+        this.setState({
+          bettingEndBlockDate: date,
+        });
+        this.props.form.setFieldsValue({
+          bettingEndBlock: block,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_START_BLOCK: {
+        this.setState({
+          resultSettingStartBlockDate: date,
+        });
+        this.props.form.setFieldsValue({
+          resultSettingStartBlock: block,
+        });
+        break;
+      }
+      case ID_RESULT_SETTING_END_BLOCK: {
+        this.setState({
+          resultSettingEndBlockDate: date,
+        });
+        this.props.form.setFieldsValue({
+          resultSettingEndBlock: block,
+        });
+        break;
+      }
+      default: {
+        throw new Error(`Unhandled onCalendarChange id ${id}`);
+      }
+    }
+  }
+
+  validateTitleLength(rule, value, callback) {
+    // Remove hex prefix for length validation
+    const hexString = Web3Utils.toHex(value).slice(2);
+    if (hexString && hexString.length <= MAX_LEN_EVENTNAME_HEX) {
+      callback();
+    } else {
+      callback('Event name is too long.');
+    }
+  }
+
+  handleSubmit(evt) {
+    evt.preventDefault();
+
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        // Maps form variables to saga request variables
+        const {
+          resultSetter: resultSetterAddress,
+          name,
+          results,
+          bettingStartBlock,
+          bettingEndBlock,
+          resultSettingStartBlock,
+          resultSettingEndBlock,
+        } = values;
+
+        this.props.onCreateTopic({
+          resultSetterAddress,
+          name,
+          results,
+          bettingStartBlock: bettingStartBlock.toString(),
+          bettingEndBlock: bettingEndBlock.toString(),
+          resultSettingStartBlock: resultSettingStartBlock.toString(),
+          resultSettingEndBlock: resultSettingEndBlock.toString(),
+          senderAddress: this.getCurrentSenderAddress(),
+        });
+      }
+    });
+  }
+
+  onCancel(evt) {
+    evt.preventDefault();
+
+    this.props.history.push('/');
   }
 }
 
