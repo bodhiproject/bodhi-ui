@@ -18,6 +18,8 @@ const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
 
+const ID_BETTING_START_BLOCK = 'bettingStartBlock';
+
 class CreateTopic extends React.Component {
   constructor(props) {
     super(props);
@@ -97,15 +99,23 @@ class CreateTopic extends React.Component {
     }
   }
 
-  onCalendarChange(date, dateString) {
+  onCalendarChange(id, date, dateString) {
     const futureBlock = calculateBlock(this.props.blockCount, date);
-    this.props.form.setFieldsValue({
-      bettingStartBlock: futureBlock,
-    });
+
+    switch (id) {
+      case ID_BETTING_START_BLOCK: {
+        this.props.form.setFieldsValue({
+          bettingStartBlock: futureBlock,
+        });
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   createInputNumberField(formItemLayout, id, label, args, min, value) {
-    console.log(`value: ${value}`);
     return (
       <FormItem
         {...formItemLayout}
@@ -118,13 +128,13 @@ class CreateTopic extends React.Component {
               min={min}
             />)}
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
-              onChange={this.onCalendarChange}
+              onChange={(e) => this.onCalendarChange(id, e)}
             />
           </Col>
         </Row>
@@ -133,7 +143,6 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    console.log('render()');
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
@@ -210,7 +219,7 @@ class CreateTopic extends React.Component {
 
           {this.createInputNumberField(
             formItemLayout,
-            'bettingStartBlock',
+            ID_BETTING_START_BLOCK,
             'Betting Start Block',
             {
               rules: [{
