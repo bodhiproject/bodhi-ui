@@ -80,7 +80,7 @@ class Dashboard extends React.Component {
       case TAB_SET:
       case TAB_VOTE:
       case TAB_FINALIZE: {
-        rowItems = this.renderOracles(oracles);
+        rowItems = this.renderOracles(oracles, tabIndex);
         break;
       }
       case TAB_WITHDRAW: {
@@ -176,20 +176,37 @@ class Dashboard extends React.Component {
     }
   }
 
-  renderOracles(oracles) {
+  renderOracles(oracles, tabIndex) {
     // Calculate grid number for Col attribute
     const colWidth = {};
-
     Object.keys(COL_PER_ROW).forEach((key) => {
       colWidth[key] = 24 / COL_PER_ROW[key];
     });
 
     const rowItems = [];
-
     _.each(oracles, (oracle) => {
+      let endBlockString;
+      switch (tabIndex) {
+        case TAB_BET: {
+          endBlockString = `Betting ends @ ${oracle.endBlock}`;
+          break;
+        }
+        case TAB_SET: {
+          endBlockString = `Result setting ends @ ${oracle.resultSetEndBlock}`;
+          break;
+        }
+        case TAB_VOTE:
+        case TAB_FINALIZE: {
+          endBlockString = `Voting ends @ ${oracle.endBlock}`;
+          break;
+        }
+        default: {
+          throw new RangeError(`Invalid tab position ${tabIndex}`);
+        }
+      }
+
       const totalBalance = _.sum(oracle.amounts);
       const raisedString = `Raised: ${totalBalance.toFixed(2)} ${oracle.token}`;
-      const endBlockString = `Ends: ${oracle.endBlock ? oracle.endBlock : '45000'}`;
 
       let displayOptions = [];
       // Determine what options showing in progress bars
@@ -340,7 +357,10 @@ class Dashboard extends React.Component {
       // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
       if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
         for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
-          optionsEle.push(<div key={`option-placeholder-${i}`} style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}></div>);
+          optionsEle.push(<div
+            key={`option-placeholder-${i}`}
+            style={{ height: '72px', marginTop: '18px', marginBottom: '18px' }}
+          ></div>);
         }
       }
 
