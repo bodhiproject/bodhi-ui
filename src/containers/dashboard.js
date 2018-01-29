@@ -142,7 +142,7 @@ class Dashboard extends React.Component {
             { token: Token.Qtum, status: OracleStatus.WaitResult },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
-          { field: 'endBlock', direction: 'ASC' },
+          { field: 'resultSetEndBlock', direction: 'ASC' },
         );
         break;
       }
@@ -165,9 +165,12 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_WITHDRAW: {
-        onGetTopics([
-          { status: OracleStatus.Withdraw },
-        ]);
+        onGetTopics(
+          [
+            { status: OracleStatus.Withdraw },
+          ],
+          { field: 'blockNum', direction: 'ASC' },
+        );
         break;
       }
       default: {
@@ -316,7 +319,7 @@ class Dashboard extends React.Component {
       const botTotal = _.sum(topic.botAmount);
 
       const raisedString = `Raised: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
-      const endBlockString = `Ends: ${topic.endBlock ? topic.endBlock : ''}`;
+      const endBlockString = 'Ended';
 
       let optionBalances = _.map(topic.options, (opt, idx) => {
         const qtumAmount = topic.qtumAmount[idx];
