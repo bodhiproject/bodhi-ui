@@ -140,7 +140,7 @@ class Dashboard extends React.Component {
         onGetOracles([
           { token: Token.Qtum, status: OracleStatus.WaitResult },
           { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-        ]);
+        ], { field: 'blockNum', direction: 'ASC' });
         break;
       }
       case TAB_VOTE: {
@@ -408,8 +408,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: (filters) => dispatch(dashboardActions.getTopics(filters)),
-    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
+    onGetTopics: (filters, orderBy) => dispatch(dashboardActions.getTopics(filters, orderBy)),
+    onGetOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
     toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
   };
 }

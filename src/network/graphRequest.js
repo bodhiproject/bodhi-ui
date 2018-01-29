@@ -101,8 +101,11 @@ class GraphRequest {
 */
 export function queryAllTopics(filters, orderBy) {
   const request = new GraphRequest('allTopics');
-  if (filters) {
+  if (!_.isEmpty(filters)) {
     request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
   }
   return request.execute();
 }
@@ -113,8 +116,12 @@ export function queryAllTopics(filters, orderBy) {
 */
 export function queryAllOracles(filters, orderBy) {
   const request = new GraphRequest('allOracles');
-  if (filters) {
+  if (!_.isEmpty(filters)) {
     request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    console.log(orderBy);
+    request.setOrderBy(orderBy);
   }
   return request.execute();
 }
