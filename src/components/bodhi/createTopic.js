@@ -205,12 +205,14 @@ class CreateTopic extends React.Component {
     } = this.state;
 
     let label;
+    let extra;
     let options;
     let min;
     let date;
     switch (id) {
       case ID_BETTING_START_BLOCK: {
         label = 'Betting Start Block';
+        extra = 'The block when users can bet.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
@@ -224,6 +226,7 @@ class CreateTopic extends React.Component {
       }
       case ID_BETTING_END_BLOCK: {
         label = 'Betting End Block';
+        extra = 'The block when users can no longer bet.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
@@ -238,6 +241,7 @@ class CreateTopic extends React.Component {
       }
       case ID_RESULT_SETTING_START_BLOCK: {
         label = 'Result Setting Start Block';
+        extra = 'The block when the Centralized Oracle can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
@@ -252,6 +256,7 @@ class CreateTopic extends React.Component {
       }
       case ID_RESULT_SETTING_END_BLOCK: {
         label = 'Result Setting End Block';
+        extra = 'The block when anyone can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
@@ -274,7 +279,7 @@ class CreateTopic extends React.Component {
       <FormItem
         {...formItemLayout}
         label={label}
-        extra="Enter a block number or select a date"
+        extra={extra}
       >
         <Row gutter={8}>
           <Col span={6}>
