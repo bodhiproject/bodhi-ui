@@ -27,25 +27,30 @@ class GraphRequest {
     this.orderBy = orderBy;
   }
 
+  formatObject(obj) {
+    const str = Object
+      .keys(obj)
+      .map((key) => {
+        const value = obj[key];
+        if (isValidEnum(key, value) || !_.isString(value)) {
+          // Enums require values without quotes
+          return `${key}: ${value}`;
+        }
+        return `${key}: ${JSON.stringify(value)}`;
+      })
+      .join(', ');
+    return `{ ${str} }`;
+  }
+
   getFilterString() {
     let filterStr = '';
     if (this.filters) {
       // Create entire string for OR: [] as objects
-      _.forEach(this.filters, (obj, index) => {
+      _.forEach(this.filters, (obj) => {
         if (!_.isEmpty(filterStr)) {
-          filterStr = filterStr.concat(',');
+          filterStr = filterStr.concat(', ');
         }
-        const str = Object
-          .keys(obj)
-          .map((key) => {
-            if (isValidEnum(key, obj[key]) || !_.isString(obj[key])) {
-              // Enums require values without quotes
-              return `${key}: ${obj[key]}`;
-            }
-            return `${key}: ${JSON.stringify(obj[key])}`;
-          })
-          .join(',');
-        filterStr = filterStr.concat(`{${str}}`);
+        filterStr = filterStr.concat(this.formatObject(obj));
       });
 
       filterStr = `
@@ -60,7 +65,11 @@ class GraphRequest {
   }
 
   getOrderByString() {
-    return this.orderBy ? `orderBy: ${this.orderBy}` : '';
+    let orderByStr = '';
+    if (this.orderBy) {
+      orderByStr = this.formatObject(this.orderBy);
+    }
+    return _.isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
   }
 
   build() {
