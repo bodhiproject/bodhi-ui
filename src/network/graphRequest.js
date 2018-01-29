@@ -16,13 +16,18 @@ class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = undefined;
+    this.orderBy = undefined;
   }
 
   setFilters(filters) {
     this.filters = filters;
   }
 
-  build() {
+  setOrderBy(orderBy) {
+    this.orderBy = orderBy;
+  }
+
+  getFilterString() {
     let filterStr = '';
     if (this.filters) {
       // Create entire string for OR: [] as objects
@@ -44,17 +49,32 @@ class GraphRequest {
       });
 
       filterStr = `
-        (filter: { 
+        filter: { 
           OR: [ 
             ${filterStr} 
           ]
-        })
+        }
       `;
     }
+    return filterStr;
+  }
+
+  getOrderByString() {
+    return this.orderBy ? `orderBy: ${this.orderBy}` : '';
+  }
+
+  build() {
+    const filterStr = this.getFilterString();
+    const orderByStr = this.getOrderByString();
+    const funcParamOpen = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? '(' : '';
+    const funcParamClose = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? ')' : '';
 
     const query = `
       query {
-        ${this.queryName}${filterStr} {
+        ${this.queryName}${funcParamOpen}
+          ${filterStr}
+          ${orderByStr} 
+        ${funcParamClose} {
           ${getQueryFields(this.queryName)}
         }
       }
@@ -79,7 +99,7 @@ class GraphRequest {
 * Queries allTopics from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 */
-export function queryAllTopics(filters) {
+export function queryAllTopics(filters, orderBy) {
   const request = new GraphRequest('allTopics');
   if (filters) {
     request.setFilters(filters);
@@ -91,7 +111,7 @@ export function queryAllTopics(filters) {
 * Queries allOracles from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 */
-export function queryAllOracles(filters) {
+export function queryAllOracles(filters, orderBy) {
   const request = new GraphRequest('allOracles');
   if (filters) {
     request.setFilters(filters);
