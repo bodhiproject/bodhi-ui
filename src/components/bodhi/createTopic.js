@@ -15,6 +15,7 @@ import { calculateDate, calculateBlock } from '../../helpers/utility';
 const FormItem = Form.Item;
 const Web3Utils = require('web3-utils');
 
+const SPACING_FORM_ITEM = 24;
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
@@ -87,6 +88,7 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Name"
+            style={{ marginBottom: SPACING_FORM_ITEM }}
           >
             {getFieldDecorator('name', {
               validateTrigger: ['onChange', 'onBlur'],
@@ -113,6 +115,7 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Results"
+            style={{ marginBottom: SPACING_FORM_ITEM }}
           >
             {getFieldDecorator('results', {
               rules: [
@@ -280,6 +283,7 @@ class CreateTopic extends React.Component {
         {...formItemLayout}
         label={label}
         extra={extra}
+        style={{ marginBottom: SPACING_FORM_ITEM }}
       >
         <Row gutter={8}>
           <Col span={6}>
