@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
 const ENUMS = {
+  direction: [
+    'ASC',
+    'DESC',
+  ],
+
   status: [
     'CREATED',
     'VOTING',
