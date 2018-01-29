@@ -189,18 +189,26 @@ class Dashboard extends React.Component {
     const rowItems = [];
     _.each(oracles, (oracle) => {
       let endBlockString;
+      let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
           endBlockString = `Betting ends @ ${oracle.endBlock}`;
+          buttonText = 'Place Bet';
           break;
         }
         case TAB_SET: {
           endBlockString = `Result setting ends @ ${oracle.resultSetEndBlock}`;
+          buttonText = 'Set Result';
           break;
         }
-        case TAB_VOTE:
-        case TAB_FINALIZE: {
+        case TAB_VOTE: {
           endBlockString = `Voting ends @ ${oracle.endBlock}`;
+          buttonText = 'Place Vote';
+          break;
+        }
+        case TAB_FINALIZE: {
+          endBlockString = `Voting ended @ ${oracle.endBlock}`;
+          buttonText = 'Finalize Result';
           break;
         }
         default: {
@@ -291,8 +299,7 @@ class Dashboard extends React.Component {
             </ReportsWidget>
             <BottomButtonWidget
               pathname={`/oracle/${oracle.topicAddress}/${oracle.address}`}
-              text={oracle.token === Token.Qtum ? (oracle.status === OracleStatus.WaitResult ?
-                'Set Result' : 'Participate') : 'Vote'}
+              text={buttonText}
             />
           </IsoWidgetsWrapper>
         </Col>
@@ -378,7 +385,10 @@ class Dashboard extends React.Component {
               {optionsEle}
             </ReportsWidget>
 
-            <BottomButtonWidget pathname={`/topic/${topic.address}`} text="Check out" />
+            <BottomButtonWidget
+              pathname={`/topic/${topic.address}`}
+              text="Withdraw"
+            />
           </IsoWidgetsWrapper>
         </Col>
       );
