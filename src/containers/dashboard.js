@@ -54,12 +54,13 @@ class Dashboard extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       tabIndex,
+      sortBy,
       syncProgress,
       isSyncing,
     } = nextProps;
 
-    if (tabIndex !== this.props.tabIndex) {
-      this.executeGraphRequest(tabIndex);
+    if (tabIndex !== this.props.tabIndex || sortBy !== this.props.sortBy) {
+      this.executeGraphRequest(tabIndex, sortBy);
     }
 
     // Refresh page if sync is complete
@@ -120,11 +121,13 @@ class Dashboard extends React.Component {
     );
   }
 
-  executeGraphRequest(tabIndex) {
+  executeGraphRequest(tabIndex, sortBy) {
     const {
       onGetTopics,
       onGetOracles,
     } = this.props;
+
+    const sortDirection = sortBy || 'ASC';
 
     switch (tabIndex) {
       case TAB_BET: {
@@ -132,7 +135,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Qtum, status: OracleStatus.Voting },
           ],
-          { field: 'endBlock', direction: 'ASC' },
+          { field: 'endBlock', direction: sortDirection },
         );
         break;
       }
@@ -142,7 +145,7 @@ class Dashboard extends React.Component {
             { token: Token.Qtum, status: OracleStatus.WaitResult },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
-          { field: 'resultSetEndBlock', direction: 'ASC' },
+          { field: 'resultSetEndBlock', direction: sortDirection },
         );
         break;
       }
@@ -151,7 +154,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Bot, status: OracleStatus.Voting },
           ],
-          { field: 'endBlock', direction: 'ASC' },
+          { field: 'endBlock', direction: sortDirection },
         );
         break;
       }
@@ -160,7 +163,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Bot, status: OracleStatus.WaitResult },
           ],
-          { field: 'endBlock', direction: 'ASC' },
+          { field: 'endBlock', direction: sortDirection },
         );
         break;
       }
@@ -169,7 +172,7 @@ class Dashboard extends React.Component {
           [
             { status: OracleStatus.Withdraw },
           ],
-          { field: 'blockNum', direction: 'ASC' },
+          { field: 'blockNum', direction: sortDirection },
         );
         break;
       }
@@ -414,6 +417,7 @@ Dashboard.propTypes = {
   // getOraclesError: PropTypes.string,
   onGetOracles: PropTypes.func,
   tabIndex: PropTypes.number,
+  sortBy: PropTypes.string,
   toggleSyncing: PropTypes.func,
   syncProgress: PropTypes.number,
   isSyncing: PropTypes.bool,
@@ -426,6 +430,7 @@ Dashboard.defaultProps = {
   // getOraclesError: '',
   onGetOracles: undefined,
   tabIndex: DEFAULT_TAB_INDEX,
+  sortBy: undefined,
   toggleSyncing: undefined,
   syncProgress: undefined,
   isSyncing: false,
@@ -434,9 +439,10 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
-  tabIndex: state.Dashboard.get('tabIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  tabIndex: state.Dashboard.get('tabIndex'),
+  sortBy: state.Dashboard.get('sortBy'),
   syncProgress: state.App.get('syncProgress'),
   isSyncing: state.App.get('isSyncing'),
 });

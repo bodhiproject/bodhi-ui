@@ -129,7 +129,6 @@ export function queryAllOracles(filters, orderBy) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
-    console.log(orderBy);
     request.setOrderBy(orderBy);
   }
   return request.execute();
