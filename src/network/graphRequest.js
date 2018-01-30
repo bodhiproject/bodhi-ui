@@ -107,6 +107,7 @@ class GraphRequest {
 /*
 * Queries allTopics from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
 export function queryAllTopics(filters, orderBy) {
   const request = new GraphRequest('allTopics');
@@ -122,6 +123,7 @@ export function queryAllTopics(filters, orderBy) {
 /*
 * Queries allOracles from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
 export function queryAllOracles(filters, orderBy) {
   const request = new GraphRequest('allOracles');
