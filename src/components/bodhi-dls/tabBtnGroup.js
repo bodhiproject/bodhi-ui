@@ -6,11 +6,9 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import dashboardActions from '../../redux/dashboard/actions';
+import { SortBy } from '../../constants';
 
 const MenuItem = Menu.Item;
-
-const SORT_ASC = 'ASC';
-const SORT_DESC = 'DESC';
 
 class TabBtnGroup extends Component {
   constructor(props) {
@@ -51,17 +49,17 @@ class TabBtnGroup extends Component {
 
     const sortMenu = (
       <Menu onClick={this.onSortOptionSelected}>
-        <MenuItem key={SORT_ASC}>Ascending</MenuItem>
-        <MenuItem key={SORT_DESC}>Descending</MenuItem>
+        <MenuItem key={SortBy.Ascending}>Ascending</MenuItem>
+        <MenuItem key={SortBy.Descending}>Descending</MenuItem>
       </Menu>
     );
 
     let sortButtonText;
     let sortButtonIcon;
-    if (this.state.sortOption === SORT_ASC) {
+    if (this.state.sortOption === SortBy.Ascending) {
       sortButtonText = 'Ascending';
       sortButtonIcon = <Icon type="arrow-up" />;
-    } else if (this.state.sortOption === SORT_DESC) {
+    } else if (this.state.sortOption === SortBy.Descending) {
       sortButtonText = 'Descending';
       sortButtonIcon = <Icon type="arrow-down" />;
     } else {

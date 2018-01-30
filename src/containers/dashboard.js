@@ -13,7 +13,7 @@ import ReportsWidget from './Widgets/report/report-widget';
 import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
-import { Token, OracleStatus } from '../constants';
+import { Token, OracleStatus, SortBy } from '../constants';
 
 const TAB_BET = 0;
 const TAB_SET = 1;
@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
       onGetOracles,
     } = this.props;
 
-    const sortDirection = sortBy || 'ASC';
+    const sortDirection = sortBy || SortBy.Ascending;
 
     switch (tabIndex) {
       case TAB_BET: {
