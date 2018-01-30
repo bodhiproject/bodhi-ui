@@ -34,6 +34,7 @@ class TabBtnGroup extends Component {
     this.setState({
       sortOption: item.key,
     });
+    this.props.sortOrderChanged(item.key);
   }
 
   render() {
@@ -92,13 +93,15 @@ class TabBtnGroup extends Component {
 
 TabBtnGroup.propTypes = {
   buttons: PropTypes.array.isRequired,
-  tabViewChanged: PropTypes.func,
   tabIndex: PropTypes.number,
+  tabViewChanged: PropTypes.func,
+  sortOrderChanged: PropTypes.func,
 };
 
 TabBtnGroup.defaultProps = {
-  tabViewChanged: undefined,
   tabIndex: 0,
+  tabViewChanged: undefined,
+  sortOrderChanged: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -108,6 +111,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     tabViewChanged: (index) => dispatch(dashboardActions.tabViewChanged(index)),
+    sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   };
 }
 
