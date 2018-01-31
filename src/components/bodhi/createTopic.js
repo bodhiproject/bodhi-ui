@@ -20,10 +20,10 @@ const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
 
-const ID_BETTING_START_BLOCK = 'bettingStartBlock';
-const ID_BETTING_END_BLOCK = 'bettingEndBlock';
-const ID_RESULT_SETTING_START_BLOCK = 'resultSettingStartBlock';
-const ID_RESULT_SETTING_END_BLOCK = 'resultSettingEndBlock';
+const ID_BETTING_START_TIME = 'bettingStartTime';
+const ID_BETTING_END_TIME = 'bettingEndTime';
+const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
+const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -107,10 +107,10 @@ class CreateTopic extends React.Component {
             />)}
           </FormItem>
 
-          {this.renderBlockField(formItemLayout, ID_BETTING_START_BLOCK, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_BETTING_END_BLOCK, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_START_BLOCK, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_END_BLOCK, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_BETTING_START_TIME, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_BETTING_END_TIME, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_START_TIME, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_END_TIME, blockCount)}
 
           <FormItem
             {...formItemLayout}
@@ -213,23 +213,23 @@ class CreateTopic extends React.Component {
     let min;
     let date;
     switch (id) {
-      case ID_BETTING_START_BLOCK: {
-        label = 'Betting Start Block';
-        extra = 'The block when users can bet.';
+      case ID_BETTING_START_TIME: {
+        label = 'Betting Start Time';
+        extra = 'The time when users can start betting.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
             required: true,
-            message: 'Must be greater than or equal to current block number.',
+            message: 'Must be greater than or equal to current time.',
           }],
         };
         min = blockCount;
         date = bettingStartBlockDate;
         break;
       }
-      case ID_BETTING_END_BLOCK: {
-        label = 'Betting End Block';
-        extra = 'The block when users can no longer bet.';
+      case ID_BETTING_END_TIME: {
+        label = 'Betting End Time';
+        extra = 'The time when users can no longer bet.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
@@ -237,38 +237,38 @@ class CreateTopic extends React.Component {
             message: 'Must be greater than Betting Start Block.',
           }],
         };
-        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_BLOCK)) ?
-          this.props.form.getFieldValue(ID_BETTING_START_BLOCK) + 1 : blockCount + 1;
+        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_TIME)) ?
+          this.props.form.getFieldValue(ID_BETTING_START_TIME) + 1 : blockCount + 1;
         date = bettingEndBlockDate;
         break;
       }
-      case ID_RESULT_SETTING_START_BLOCK: {
-        label = 'Result Setting Start Block';
-        extra = 'The block when the Centralized Oracle can set the result.';
+      case ID_RESULT_SETTING_START_TIME: {
+        label = 'Result Setting Start Time';
+        extra = 'The time when the Centralized Oracle can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
             required: true,
-            message: 'Must be greater than or equal to Betting End Block.',
+            message: 'Must be greater than or equal to Betting End Time.',
           }],
         };
-        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_BLOCK)) ?
-          this.props.form.getFieldValue(ID_BETTING_END_BLOCK) : blockCount + 1;
+        min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_TIME)) ?
+          this.props.form.getFieldValue(ID_BETTING_END_TIME) : blockCount + 1;
         date = resultSettingStartBlockDate;
         break;
       }
-      case ID_RESULT_SETTING_END_BLOCK: {
-        label = 'Result Setting End Block';
-        extra = 'The block when anyone can set the result.';
+      case ID_RESULT_SETTING_END_TIME: {
+        label = 'Result Setting End Time';
+        extra = 'The time when anyone can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [{
             required: true,
-            message: 'Must be greater than Result Setting Start Block.',
+            message: 'Must be greater than Result Setting Start Time.',
           }],
         };
-        min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK)) ?
-          this.props.form.getFieldValue(ID_RESULT_SETTING_START_BLOCK) + 1 : blockCount + 1;
+        min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME)) ?
+          this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME) + 1 : blockCount + 1;
         date = resultSettingEndBlockDate;
         break;
       }
@@ -315,25 +315,25 @@ class CreateTopic extends React.Component {
     const date = calculateDate(this.props.blockCount, blockNum);
 
     switch (id) {
-      case ID_BETTING_START_BLOCK: {
+      case ID_BETTING_START_TIME: {
         this.setState({
           bettingStartBlockDate: date,
         });
         break;
       }
-      case ID_BETTING_END_BLOCK: {
+      case ID_BETTING_END_TIME: {
         this.setState({
           bettingEndBlockDate: date,
         });
         break;
       }
-      case ID_RESULT_SETTING_START_BLOCK: {
+      case ID_RESULT_SETTING_START_TIME: {
         this.setState({
           resultSettingStartBlockDate: date,
         });
         break;
       }
-      case ID_RESULT_SETTING_END_BLOCK: {
+      case ID_RESULT_SETTING_END_TIME: {
         this.setState({
           resultSettingEndBlockDate: date,
         });
@@ -349,7 +349,7 @@ class CreateTopic extends React.Component {
     const block = calculateBlock(this.props.blockCount, date);
 
     switch (id) {
-      case ID_BETTING_START_BLOCK: {
+      case ID_BETTING_START_TIME: {
         this.setState({
           bettingStartBlockDate: date,
         });
@@ -358,7 +358,7 @@ class CreateTopic extends React.Component {
         });
         break;
       }
-      case ID_BETTING_END_BLOCK: {
+      case ID_BETTING_END_TIME: {
         this.setState({
           bettingEndBlockDate: date,
         });
@@ -367,7 +367,7 @@ class CreateTopic extends React.Component {
         });
         break;
       }
-      case ID_RESULT_SETTING_START_BLOCK: {
+      case ID_RESULT_SETTING_START_TIME: {
         this.setState({
           resultSettingStartBlockDate: date,
         });
@@ -376,7 +376,7 @@ class CreateTopic extends React.Component {
         });
         break;
       }
-      case ID_RESULT_SETTING_END_BLOCK: {
+      case ID_RESULT_SETTING_END_TIME: {
         this.setState({
           resultSettingEndBlockDate: date,
         });
