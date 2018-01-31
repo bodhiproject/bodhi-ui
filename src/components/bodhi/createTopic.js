@@ -420,20 +420,20 @@ class CreateTopic extends React.Component {
           centralizedOracle,
           name,
           results,
-          bettingStartBlock,
-          bettingEndBlock,
-          resultSettingStartBlock,
-          resultSettingEndBlock,
+          bettingStartTime,
+          bettingEndTime,
+          resultSettingStartTime,
+          resultSettingEndTime,
         } = values;
 
         this.props.onCreateTopic({
           centralizedOracle,
           name,
           results,
-          bettingStartBlock: bettingStartBlock.toString(),
-          bettingEndBlock: bettingEndBlock.toString(),
-          resultSettingStartBlock: resultSettingStartBlock.toString(),
-          resultSettingEndBlock: resultSettingEndBlock.toString(),
+          bettingStartTime: bettingStartTime.utc().unix().toString(),
+          bettingEndTime: bettingEndTime.utc().unix().toString(),
+          resultSettingStartTime: resultSettingStartTime.utc().unix().toString(),
+          resultSettingEndTime: resultSettingEndTime.utc().unix().toString(),
           senderAddress: this.getCurrentSenderAddress(),
         });
       }
