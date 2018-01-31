@@ -30,13 +30,9 @@ class CreateTopic extends React.Component {
     super(props);
 
     this.state = {
-      bettingStartTime: undefined,
       bettingStartBlock: undefined,
-      bettingEndTime: undefined,
       bettingEndBlock: undefined,
-      resultSettingStartTime: undefined,
       resultSettingStartBlock: undefined,
-      resultSettingEndTime: undefined,
       resultSettingEndBlock: undefined,
     };
 
@@ -204,21 +200,17 @@ class CreateTopic extends React.Component {
 
   renderBlockField(formItemLayout, id, blockCount) {
     const {
-      bettingStartTime,
       bettingStartBlock,
-      bettingEndTime,
       bettingEndBlock,
-      resultSettingStartTime,
       resultSettingStartBlock,
-      resultSettingEndTime,
       resultSettingEndBlock,
     } = this.state;
+    const blockNumDisabled = true;
 
     let label;
     let extra;
     let options;
     let min;
-    let date;
     let block;
     switch (id) {
       case ID_BETTING_START_TIME: {
@@ -232,7 +224,6 @@ class CreateTopic extends React.Component {
           }],
         };
         min = blockCount;
-        date = bettingStartTime;
         block = bettingStartBlock;
         break;
       }
@@ -248,7 +239,6 @@ class CreateTopic extends React.Component {
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_TIME)) ?
           this.props.form.getFieldValue(ID_BETTING_START_TIME) + 1 : blockCount + 1;
-        date = bettingEndTime;
         block = bettingEndBlock;
         break;
       }
@@ -264,7 +254,6 @@ class CreateTopic extends React.Component {
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_TIME)) ?
           this.props.form.getFieldValue(ID_BETTING_END_TIME) : blockCount + 1;
-        date = resultSettingStartTime;
         block = resultSettingStartBlock;
         break;
       }
@@ -280,7 +269,6 @@ class CreateTopic extends React.Component {
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME)) ?
           this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME) + 1 : blockCount + 1;
-        date = resultSettingEndTime;
         block = resultSettingEndBlock;
         break;
       }
@@ -288,8 +276,6 @@ class CreateTopic extends React.Component {
         throw new Error(`Unhandled id ${id}`);
       }
     }
-    const parsedDate = date && date.isValid() ? date.local() : null;
-    const blockNumDisabled = true;
 
     return (
       <FormItem
@@ -305,8 +291,6 @@ class CreateTopic extends React.Component {
               format="YYYY-MM-DD HH:mm:ss Z"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
-              defaultValue={parsedDate}
-              value={parsedDate}
               onChange={(e) => this.onDatePickerDateSelect(id, e)}
               disabledDate={(current) => current < moment().subtract('1', 'days').endOf('day')}
               allowClear={false}
@@ -321,34 +305,43 @@ class CreateTopic extends React.Component {
   }
 
   onDatePickerDateSelect(id, date) {
-    const block = calculateBlock(this.props.blockCount, date);
+    const localDate = date.local();
+    const block = calculateBlock(this.props.blockCount, localDate);
 
     switch (id) {
       case ID_BETTING_START_TIME: {
         this.setState({
-          bettingStartTime: date,
           bettingStartBlock: block,
+        });
+        this.props.form.setFieldsValue({
+          bettingStartTime: localDate,
         });
         break;
       }
       case ID_BETTING_END_TIME: {
         this.setState({
-          bettingEndTime: date,
           bettingEndBlock: block,
+        });
+        this.props.form.setFieldsValue({
+          bettingEndTime: localDate,
         });
         break;
       }
       case ID_RESULT_SETTING_START_TIME: {
         this.setState({
-          resultSettingStartTime: date,
           resultSettingStartBlock: block,
+        });
+        this.props.form.setFieldsValue({
+          resultSettingStartTime: localDate,
         });
         break;
       }
       case ID_RESULT_SETTING_END_TIME: {
         this.setState({
-          resultSettingEndTime: date,
           resultSettingEndBlock: block,
+        });
+        this.props.form.setFieldsValue({
+          resultSettingEndTime: localDate,
         });
         break;
       }
