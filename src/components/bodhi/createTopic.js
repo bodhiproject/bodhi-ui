@@ -41,6 +41,9 @@ class CreateTopic extends React.Component {
     this.renderBlockField = this.renderBlockField.bind(this);
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
+    this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
+    this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
+    this.validateResultSettingEndTime = this.validateResultSettingEndTime.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
   }
@@ -218,10 +221,12 @@ class CreateTopic extends React.Component {
         extra = 'The time when users can start betting.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
-          rules: [{
-            required: true,
-            message: 'Must be greater than or equal to current time.',
-          }],
+          rules: [
+            {
+              required: true,
+              message: 'Betting Start Time cannot be empty',
+            },
+          ],
         };
         min = blockCount;
         block = bettingStartBlock;
@@ -232,10 +237,15 @@ class CreateTopic extends React.Component {
         extra = 'The time when users can no longer bet.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
-          rules: [{
-            required: true,
-            message: 'Must be greater than Betting Start Block.',
-          }],
+          rules: [
+            {
+              required: true,
+              message: 'Betting End Time cannot be empty',
+            },
+            {
+              validator: this.validateBettingEndTime,
+            },
+          ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_TIME)) ?
           this.props.form.getFieldValue(ID_BETTING_START_TIME) + 1 : blockCount + 1;
@@ -247,10 +257,15 @@ class CreateTopic extends React.Component {
         extra = 'The time when the Centralized Oracle can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
-          rules: [{
-            required: true,
-            message: 'Must be greater than or equal to Betting End Time.',
-          }],
+          rules: [
+            {
+              required: true,
+              message: 'Result Setting Start Time cannot be empty',
+            },
+            {
+              validator: this.validateResultSettingStartTime,
+            },
+          ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_TIME)) ?
           this.props.form.getFieldValue(ID_BETTING_END_TIME) : blockCount + 1;
@@ -262,10 +277,15 @@ class CreateTopic extends React.Component {
         extra = 'The time when anyone can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
-          rules: [{
-            required: true,
-            message: 'Must be greater than Result Setting Start Time.',
-          }],
+          rules: [
+            {
+              required: true,
+              message: 'Result Setting End Time cannot be empty',
+            },
+            {
+              validator: this.validateResultSettingEndTime,
+            },
+          ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME)) ?
           this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME) + 1 : blockCount + 1;
@@ -360,6 +380,33 @@ class CreateTopic extends React.Component {
       callback();
     } else {
       callback('Event name is too long.');
+    }
+  }
+
+  validateBettingEndTime(rule, value, callback) {
+    const bettingStartTime = this.props.form.getFieldValue(ID_BETTING_START_TIME);
+    if (_.isUndefined(bettingStartTime) || value.unix() <= bettingStartTime.unix()) {
+      callback('Must be greater than Betting Start Time');
+    } else {
+      callback();
+    }
+  }
+
+  validateResultSettingStartTime(rule, value, callback) {
+    const bettingEndTime = this.props.form.getFieldValue(ID_BETTING_END_TIME);
+    if (_.isUndefined(bettingEndTime) || value.unix() < bettingEndTime.unix()) {
+      callback('Must be greater than or equal to Betting End Time');
+    } else {
+      callback();
+    }
+  }
+
+  validateResultSettingEndTime(rule, value, callback) {
+    const resultSettingStartTime = this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME);
+    if (_.isUndefined(resultSettingStartTime) || value.unix() <= resultSettingStartTime.unix()) {
+      callback('Must be greater than Result Setting Start Time');
+    } else {
+      callback();
     }
   }
 
