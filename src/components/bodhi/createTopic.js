@@ -277,6 +277,7 @@ class CreateTopic extends React.Component {
       }
     }
     const parsedDate = date && date.isValid() ? date : null;
+    const blockNumDisabled = true;
 
     return (
       <FormItem
@@ -286,15 +287,8 @@ class CreateTopic extends React.Component {
         style={{ marginBottom: SPACING_FORM_ITEM }}
       >
         <Row gutter={8}>
-          <Col span={6}>
-            {this.props.form.getFieldDecorator(id, options)(<InputNumber
-              min={min}
-              step={1}
-              onChange={(e) => this.onBlockNumberChange(id, e)}
-            />)}
-          </Col>
           <Col span={8}>
-            <DatePicker
+            {this.props.form.getFieldDecorator(id, options)(<DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss z"
               placeholder="Select Date & Time"
@@ -302,9 +296,12 @@ class CreateTopic extends React.Component {
               defaultValue={parsedDate}
               value={parsedDate}
               onChange={(e) => this.onCalendarChange(id, e)}
-              disabledDate={(current) => current < moment().utc().subtract('1', 'days').endOf('day')}
+              disabledDate={(current) => current < moment().subtract('1', 'days').endOf('day')}
               allowClear={false}
-            />
+            />)}
+          </Col>
+          <Col span={6}>
+            <InputNumber disabled={blockNumDisabled} />
           </Col>
         </Row>
       </FormItem>
