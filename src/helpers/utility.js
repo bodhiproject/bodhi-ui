@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
-const AVG_BLOCK_TIME_MS = 142800; // Currently 2.38 minutes
+const AVG_BLOCK_TIME_SECONDS = 144.3489932885906;
 
 /**
  * Requests a URL, returning a promise
@@ -51,26 +51,14 @@ function parseJSON(response) {
 }
 
 /*
-* Calculates the estimated date based on current and future blocks.
-* @param currentBlock {Number} The current block number.
-* @param futureBlock {Number} The future block number.
-* @return {Moment} Returns a Moment instance of the estimated future date (in UTC).
-*/
-export function calculateDate(currentBlock, futureBlock) {
-  const currentMS = moment.utc();
-  const diffMS = (futureBlock - currentBlock) * AVG_BLOCK_TIME_MS;
-  return moment.utc(currentMS + diffMS);
-}
-
-/*
 * Calculates the estimated block based on current block and future date.
 * @param currentBlock {Number} The current block number.
 * @param futureDate {Moment} A moment instance (UTC) of the future date to estimate.
 * @return {Number} Returns a number of the estimated future block.
 */
 export function calculateBlock(currentBlock, futureDate) {
-  const diffMS = futureDate.utc() - moment().utc();
-  return Math.round(diffMS / AVG_BLOCK_TIME_MS) + currentBlock;
+  const diffSec = futureDate.unix() - moment().unix();
+  return Math.round(diffSec / AVG_BLOCK_TIME_SECONDS) + currentBlock;
 }
 
 /**

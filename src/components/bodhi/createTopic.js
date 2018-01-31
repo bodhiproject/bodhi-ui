@@ -10,7 +10,7 @@ import moment from 'moment';
 import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
-import { calculateDate, calculateBlock } from '../../helpers/utility';
+import { calculateBlock } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const Web3Utils = require('web3-utils');
@@ -58,7 +58,6 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    console.log('render');
     const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
 
@@ -289,10 +288,9 @@ class CreateTopic extends React.Component {
         throw new Error(`Unhandled id ${id}`);
       }
     }
-    const parsedDate = date && date.isValid() ? date : null;
+    const parsedDate = date && date.isValid() ? date.local() : null;
     const blockNumDisabled = true;
 
-    console.log(block);
     return (
       <FormItem
         {...formItemLayout}
@@ -304,7 +302,7 @@ class CreateTopic extends React.Component {
           <Col span={10}>
             {this.props.form.getFieldDecorator(id, options)(<DatePicker
               showTime
-              format="YYYY-MM-DD HH:mm:ss z"
+              format="YYYY-MM-DD HH:mm:ss Z"
               placeholder="Select Date & Time"
               style={{ width: '100%' }}
               defaultValue={parsedDate}
