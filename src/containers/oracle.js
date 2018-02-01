@@ -134,11 +134,14 @@ class OraclePage extends React.Component {
                 type: 'default',
               },
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed for result setting.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to set the result.`,
                 type: 'default',
               },
               {
-                text: 'Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those BOT amount will automatically be used to set result afterwards.',
+                text: `BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. 
+                  Your BOT needs to be approved before result setting. The approved amount will automatically be used to 
+                  set the result after approval.`,
                 type: 'default',
               },
             ],
@@ -159,7 +162,7 @@ class OraclePage extends React.Component {
         // Add a message to CardInfo to warn that current block has passed set end block
         if (blockTime > oracle.resultSetEndTime) {
           config.cardInfo.messages.push({
-            text: 'Current block number has passed result set end block.',
+            text: 'Current block time has passed the Result Setting End Time.',
             type: 'warn',
           });
         }
@@ -167,7 +170,7 @@ class OraclePage extends React.Component {
         // Add a message to CardInfo to warn that user is not result setter of current oracle
         if (oracle.resultSetterQAddress !== selectedWalletAddress) {
           config.cardInfo.messages.push({
-            text: 'You are not the result setter for this topic and cannot set result.',
+            text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
             type: 'warn',
           });
         }
@@ -179,10 +182,12 @@ class OraclePage extends React.Component {
             steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to reach the Proof of Agreement and become the new result.`,
                 type: 'default',
               }, {
-                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. The amount will automatically be used to Vote afterwards.',
+                text: `BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs 
+                  to be approved before voting. The approved amount will automatically be used to vote afterwards.`,
                 type: 'default',
               },
             ],
@@ -217,10 +222,12 @@ class OraclePage extends React.Component {
 
         if (blockTime > oracle.endTime) {
           config.cardInfo.messages.push({
-            text: 'This oracle has passed the Voting End Time and needs to be finalized.',
+            text: `Current block time has passed the Voting End Time. 
+              The previous result needs to be finalized in order to withdraw.`,
             type: 'default',
           }, {
-            text: 'Finalizing can be done by anyone. Once finalized, winners can withdraw from the Withdraw tab event.',
+            text: `Finalizing can be done by anyone. 
+              Once finalized, winners can withdraw from the event in the Withdraw tab.`,
             type: 'default',
           });
         }
