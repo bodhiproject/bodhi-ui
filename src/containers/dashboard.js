@@ -136,7 +136,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Qtum, status: OracleStatus.Voting },
           ],
-          { field: 'endBlock', direction: sortDirection },
+          { field: 'endTime', direction: sortDirection },
         );
         break;
       }
@@ -146,7 +146,7 @@ class Dashboard extends React.Component {
             { token: Token.Qtum, status: OracleStatus.WaitResult },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
-          { field: 'resultSetEndBlock', direction: sortDirection },
+          { field: 'resultSetEndTime', direction: sortDirection },
         );
         break;
       }
@@ -155,7 +155,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Bot, status: OracleStatus.Voting },
           ],
-          { field: 'endBlock', direction: sortDirection },
+          { field: 'endTime', direction: sortDirection },
         );
         break;
       }
@@ -164,7 +164,7 @@ class Dashboard extends React.Component {
           [
             { token: Token.Bot, status: OracleStatus.WaitResult },
           ],
-          { field: 'endBlock', direction: sortDirection },
+          { field: 'endTime', direction: sortDirection },
         );
         break;
       }
