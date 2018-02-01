@@ -107,9 +107,14 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { onGetBlockCount, listUnspent } = this.props;
+    const {
+      getBlockchainInfo,
+      onGetBlockCount,
+      listUnspent,
+    } = this.props;
 
     (function startPoll() {
+      getBlockchainInfo();
       onGetBlockCount();
       listUnspent();
       setTimeout(startPoll, AppConfig.intervals.topBar);
@@ -118,7 +123,9 @@ class Topbar extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetBlockCount, getBotBalance,
+      getBlockchainInfo,
+      onGetBlockCount,
+      getBotBalance,
     } = this.props;
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
@@ -282,6 +289,7 @@ Topbar.propTypes = {
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
+  getBlockchainInfo: PropTypes.func,
   onGetBlockCount: PropTypes.func,
   blockCount: PropTypes.number,
   getBotBalance: PropTypes.func,
@@ -293,6 +301,7 @@ Topbar.defaultProps = {
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
+  getBlockchainInfo: undefined,
   onGetBlockCount: undefined,
   blockCount: 0,
   getBotBalance: undefined,
@@ -309,6 +318,7 @@ const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
+  getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
   onGetBlockCount: () => dispatch(appActions.getBlockCount()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });

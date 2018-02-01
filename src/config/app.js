@@ -6,6 +6,6 @@ module.exports = {
     graphql: `${BASE_URL}/graphql`,
   },
   intervals: {
-    topBar: 15000, // MS interval for topbar polling
+    topBar: 10000, // MS interval for topbar polling
   },
 };

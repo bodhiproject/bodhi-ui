@@ -38,6 +38,12 @@ const actions = {
     type: actions.LIST_UNSPENT,
   }),
 
+  GET_BLOCKCHAIN_INFO: 'GET_BLOCKCHAIN_INFO',
+  GET_BLOCKCHAIN_INFO_RETURN: 'GET_BLOCKCHAIN_INFO_RETURN',
+  getBlockchainInfo: () => ({
+    type: actions.GET_BLOCKCHAIN_INFO,
+  }),
+
   GET_BLOCK_COUNT: 'GET_BLOCK_COUNT',
   GET_BLOCK_COUNT_RETURN: 'GET_BLOCK_COUNT_RETURN',
   getBlockCount: () => ({
