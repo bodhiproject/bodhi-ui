@@ -7,6 +7,7 @@ const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
 const AVG_BLOCK_TIME_SECONDS = 144.3489932885906;
 const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
+const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
 /**
  * Requests a URL, returning a promise
@@ -98,4 +99,8 @@ export function decimalToBotoshi(decimalNum) {
 */
 export function getLocalDateTimeString(unixSeconds) {
   return moment.unix(unixSeconds).format(FORMAT_DATE_TIME);
+}
+
+export function getShortLocalDateTimeString(unixSeconds) {
+  return moment.unix(unixSeconds).format(FORMAT_SHORT_DATE_TIME);
 }

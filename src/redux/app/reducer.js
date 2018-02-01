@@ -109,6 +109,10 @@ export default function appReducer(state = initState, action) {
         .set('currentBlockHash', action.value.blockHash);
     }
 
+    case actions.GET_BLOCK_RETURN: {
+      return state.set('currentBlockTime', action.value.result.time);
+    }
+
     case actions.TOGGLE_ALL:
       if (state.get('view') !== action.view || action.height !== state.height) {
         const height = action.height ? action.height : state.height;
