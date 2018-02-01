@@ -168,10 +168,15 @@ class OraclePage extends React.Component {
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (oracle.resultSetterQAddress !== selectedWalletAddress) {
+        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress) {
           config.cardInfo.messages.push({
             text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
             type: 'warn',
+          });
+        } else if (status === OracleStatus.OpenResultSet) {
+          config.cardInfo.messages.push({
+            text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
+            type: 'default',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
