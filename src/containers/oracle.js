@@ -89,7 +89,7 @@ class OraclePage extends React.Component {
     const {
       getOraclesSuccess,
       allowanceReturn,
-      blockCount,
+      blockTime,
       selectedWalletAddress,
     } = nextProps;
 
@@ -107,7 +107,7 @@ class OraclePage extends React.Component {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, oracle),
+            steps: CardInfoUtil.getSteps(blockTime, oracle),
             messages: [
             ],
           },
@@ -127,7 +127,7 @@ class OraclePage extends React.Component {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, oracle),
+            steps: CardInfoUtil.getSteps(blockTime, oracle),
             messages: [
               {
                 text: `Result setter ${oracle.resultSetterQAddress || ''}`,
@@ -157,7 +157,7 @@ class OraclePage extends React.Component {
         };
 
         // Add a message to CardInfo to warn that current block has passed set end block
-        if (blockCount > oracle.resultSetEndBlock) {
+        if (blockTime > oracle.resultSetEndTime) {
           config.cardInfo.messages.push({
             text: 'Current block number has passed result set end block.',
             type: 'warn',
@@ -176,13 +176,13 @@ class OraclePage extends React.Component {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
                 text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
                 type: 'default',
               }, {
-                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
+                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. The amount will automatically be used to Vote afterwards.',
                 type: 'default',
               },
             ],
@@ -203,7 +203,7 @@ class OraclePage extends React.Component {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
@@ -215,12 +215,12 @@ class OraclePage extends React.Component {
           },
         };
 
-        if (blockCount > oracle.endBlock) {
+        if (blockTime > oracle.endTime) {
           config.cardInfo.messages.push({
-            text: `This oracles has passed Voting end block ${oracle.endBlock || ''} and needs to be finalized.`,
+            text: 'This oracle has passed the Voting End Time and needs to be finalized.',
             type: 'default',
           }, {
-            text: 'Finalizing can be done by anybody. Once finalized oracle will enter Completed state and winning withdrawl will start.',
+            text: 'Finalizing can be done by anyone. Once finalized, winners can withdraw from the Withdraw tab event.',
             type: 'default',
           });
         }
@@ -528,7 +528,7 @@ OraclePage.propTypes = {
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
-  blockCount: PropTypes.number,
+  blockTime: PropTypes.number,
 };
 
 OraclePage.defaultProps = {
@@ -548,7 +548,7 @@ OraclePage.defaultProps = {
   clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
-  blockCount: 0,
+  blockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -558,7 +558,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  blockCount: state.App.get('currentBlockCount'),
+  blockTime: state.App.get('currentBlockTime'),
 });
 
 function mapDispatchToProps(dispatch) {

@@ -9,6 +9,7 @@ const ORACLE_RESULT_SETTING = 'Oracle Result Setting';
 const OPEN_RESULT_SETTING = 'Open Result Setting';
 const VOTING = 'Voting';
 const FINALIZING = 'Finalizing';
+const WITHDRAWING = 'Withdrawing';
 const BLOCK = 'Block:';
 const RANGE_SEPARATOR = 'to';
 const ANYTIME = 'anytime';
@@ -19,8 +20,8 @@ const POS_ORACLE_RESULT_SETTING = 2;
 const POS_OPEN_RESULT_SETTING = 3;
 
 class CardInfoUtil {
-  static getSteps(block, cOracle, dOracles, isTopicDetail) {
-    if (_.isUndefined(block) && _.isUndefined(cOracle)) {
+  static getSteps(blockTime, cOracle, dOracles, isTopicDetail) {
+    if (_.isUndefined(blockTime) && _.isUndefined(cOracle)) {
       return false;
     }
 
@@ -47,9 +48,9 @@ class CardInfoUtil {
       // Add all voting steps of each DecentralizedOracle
       _.each(dOracles, (item, index) => {
         value.push({
-          title: 'Voting',
+          title: VOTING,
           description: `${getLocalDateTimeString(item.startTime)} 
-            ${RANGE_SEPARATOR} ${getLocalDateTimeString(item.endBlock)}`,
+            ${RANGE_SEPARATOR} ${getLocalDateTimeString(item.endTime)}`,
         });
       });
 
@@ -58,11 +59,11 @@ class CardInfoUtil {
       if (isTopicDetail) {
         // Add withdrawing step for TopicEvent
         value.push({
-          title: 'Withdrawal',
+          title: WITHDRAWING,
           description: `${getLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
-        if (block >= lastDOracle.endBlock) {
+        if (blockTime >= lastDOracle.endTime) {
           // Highlight withdrawal
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
@@ -75,10 +76,10 @@ class CardInfoUtil {
           description: `${getLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
-        if (block >= lastDOracle.startBlock && block < lastDOracle.endBlock) {
+        if (blockTime >= lastDOracle.startTime && blockTime < lastDOracle.endTime) {
           // Highlight last DecentralizedOracle voting
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles;
-        } else if (block >= lastDOracle.endBlock) {
+        } else if (blockTime >= lastDOracle.endTime) {
           // Highlight finalizing
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
@@ -93,14 +94,13 @@ class CardInfoUtil {
       });
 
       // Set step number
-      const currTime = moment().unix();
-      if (currTime < cOracle.startTime) {
+      if (blockTime < cOracle.startTime) {
         current = POS_TOPIC_CREATED;
-      } else if (currTime >= cOracle.startTime && currTime < cOracle.endTime) {
+      } else if (blockTime >= cOracle.startTime && blockTime < cOracle.endTime) {
         current = POS_BETTING;
-      } else if (currTime >= cOracle.resultSetStartTime && currTime < cOracle.resultSetEndTime) {
+      } else if (blockTime >= cOracle.resultSetStartTime && blockTime < cOracle.resultSetEndTime) {
         current = POS_ORACLE_RESULT_SETTING;
-      } else if (currTime >= cOracle.resultSetEndTime) {
+      } else if (blockTime >= cOracle.resultSetEndTime) {
         current = POS_OPEN_RESULT_SETTING;
       } else {
         current = null;
