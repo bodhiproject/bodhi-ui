@@ -195,7 +195,7 @@ class Dashboard extends React.Component {
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endBlockString = `Betting ends @ ${oracle.endBlock}`;
+          endBlockString = `Betting ends @ ${oracle.endTime}`;
           buttonText = 'Place Bet';
           break;
         }
