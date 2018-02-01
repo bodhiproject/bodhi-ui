@@ -44,12 +44,6 @@ const actions = {
     type: actions.GET_BLOCKCHAIN_INFO,
   }),
 
-  GET_BLOCK_COUNT: 'GET_BLOCK_COUNT',
-  GET_BLOCK_COUNT_RETURN: 'GET_BLOCK_COUNT_RETURN',
-  getBlockCount: () => ({
-    type: actions.GET_BLOCK_COUNT,
-  }),
-
   GET_BOT_BALANCE: 'GET_BOT_BALANCE',
   GET_BOT_BALANCE_RETURN: 'GET_BOT_BALANCE_RETURN',
   getBotBalance: (owner, senderAddress) => ({

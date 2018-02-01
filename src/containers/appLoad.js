@@ -99,7 +99,7 @@ AppLoad.defaultProps = {
 
 const mapStateToProps = (state) => ({
   syncInfo: state.App.get('sync_info_return') && state.App.get('sync_info_return').result,
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

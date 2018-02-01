@@ -272,7 +272,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),

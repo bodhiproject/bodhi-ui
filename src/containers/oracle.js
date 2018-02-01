@@ -558,7 +558,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
 });
 
 function mapDispatchToProps(dispatch) {

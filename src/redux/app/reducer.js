@@ -105,12 +105,8 @@ export default function appReducer(state = initState, action) {
     }
 
     case actions.GET_BLOCKCHAIN_INFO_RETURN: {
-      console.log(action.value);
-      return state.set('get_blockchain_info_return', action.value);
+      return state.set('currentBlockCount', action.value.result.blocks);
     }
-
-    case actions.GET_BLOCK_COUNT_RETURN:
-      return state.set('get_block_count_return', action.value);
 
     case actions.TOGGLE_ALL:
       if (state.get('view') !== action.view || action.height !== state.height) {

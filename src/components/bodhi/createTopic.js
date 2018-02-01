@@ -49,7 +49,7 @@ class CreateTopic extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetBlockCount();
+    this.props.getBlockchainInfo();
   }
 
   componentWillUnmount() {
@@ -452,7 +452,7 @@ CreateTopic.propTypes = {
   createReturn: PropTypes.object,
   onCreateTopic: PropTypes.func,
   onClearCreateReturn: PropTypes.func,
-  onGetBlockCount: PropTypes.func,
+  getBlockchainInfo: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   blockCount: PropTypes.number,
@@ -462,7 +462,7 @@ CreateTopic.defaultProps = {
   createReturn: undefined,
   onCreateTopic: undefined,
   onClearCreateReturn: undefined,
-  onGetBlockCount: undefined,
+  getBlockchainInfo: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
@@ -472,14 +472,14 @@ const mapStateToProps = (state) => ({
   createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
     onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
-    onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+    getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
   };
 }
 

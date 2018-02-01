@@ -109,13 +109,11 @@ class Topbar extends React.PureComponent {
   componentWillMount() {
     const {
       getBlockchainInfo,
-      onGetBlockCount,
       listUnspent,
     } = this.props;
 
     (function startPoll() {
       getBlockchainInfo();
-      onGetBlockCount();
       listUnspent();
       setTimeout(startPoll, AppConfig.intervals.topBar);
     }());
@@ -124,7 +122,6 @@ class Topbar extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const {
       getBlockchainInfo,
-      onGetBlockCount,
       getBotBalance,
     } = this.props;
 
@@ -290,7 +287,6 @@ Topbar.propTypes = {
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
   getBlockchainInfo: PropTypes.func,
-  onGetBlockCount: PropTypes.func,
   blockCount: PropTypes.number,
   getBotBalance: PropTypes.func,
 };
@@ -302,7 +298,6 @@ Topbar.defaultProps = {
   selectWalletAddress: undefined,
   listUnspent: undefined,
   getBlockchainInfo: undefined,
-  onGetBlockCount: undefined,
   blockCount: 0,
   getBotBalance: undefined,
 };
@@ -310,7 +305,7 @@ Topbar.defaultProps = {
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
@@ -319,7 +314,6 @@ const mapDispatchToProps = (dispatch) => ({
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
-  onGetBlockCount: () => dispatch(appActions.getBlockCount()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
