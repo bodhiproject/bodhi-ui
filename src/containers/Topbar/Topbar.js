@@ -261,8 +261,7 @@ class Topbar extends React.PureComponent {
                   <li>
                     <div className="block-count" style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}>
                       <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
-                        <Icon type="clock-circle-o" style={{ marginRight: '6px' }} />
-                        Block {blockCount}
+                        Current Block: {blockCount}
                       </div>
                       <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
                         {blockTime ? getShortLocalDateTimeString(blockTime) : ''}
