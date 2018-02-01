@@ -6,7 +6,7 @@ const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
 const AVG_BLOCK_TIME_SECONDS = 144.3489932885906;
-const FORMAT_DATE_TIME = 'MMM D, YYYY @ h:mm:ss a';
+const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 
 /**
  * Requests a URL, returning a promise
