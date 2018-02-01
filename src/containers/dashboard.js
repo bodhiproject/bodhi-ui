@@ -192,26 +192,26 @@ class Dashboard extends React.Component {
 
     const rowItems = [];
     _.each(oracles, (oracle) => {
-      let endBlockString;
+      let endText;
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endBlockString = `Betting ends ${getLocalDateTimeString(oracle.endTime)}`;
+          endText = `Betting ends ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = 'Place Bet';
           break;
         }
         case TAB_SET: {
-          endBlockString = `Result setting ends ${getLocalDateTimeString(oracle.resultSetEndBlock)}`;
+          endText = `Result setting ends ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
           buttonText = 'Set Result';
           break;
         }
         case TAB_VOTE: {
-          endBlockString = `Voting ends ${getLocalDateTimeString(oracle.endBlock)}`;
+          endText = `Voting ends ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = 'Place Vote';
           break;
         }
         case TAB_FINALIZE: {
-          endBlockString = `Voting ended ${getLocalDateTimeString(oracle.endBlock)}`;
+          endText = `Voting ended ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = 'Finalize Result';
           break;
         }
@@ -297,7 +297,7 @@ class Dashboard extends React.Component {
             {/* Report Widget */}
             <ReportsWidget
               label={oracle.name}
-              details={[raisedString, endBlockString]}
+              details={[raisedString, endText]}
             >
               {optionsEle}
             </ReportsWidget>
@@ -330,7 +330,7 @@ class Dashboard extends React.Component {
       const botTotal = _.sum(topic.botAmount);
 
       const raisedString = `Raised: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
-      const endBlockString = 'Ended';
+      const endText = 'Ended';
 
       let optionBalances = _.map(topic.options, (opt, idx) => {
         const qtumAmount = topic.qtumAmount[idx];
@@ -384,7 +384,7 @@ class Dashboard extends React.Component {
             {/* Report Widget */}
             <ReportsWidget
               label={topic.name}
-              details={[raisedString, endBlockString]}
+              details={[raisedString, endText]}
             >
               {optionsEle}
             </ReportsWidget>

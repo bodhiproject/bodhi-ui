@@ -1,9 +1,11 @@
 const BASE_URL = 'http://localhost:5555';
 
 module.exports = {
-  endpoint:
-  {
+  endpoint: {
     bodhiapi: BASE_URL,
     graphql: `${BASE_URL}/graphql`,
+  },
+  intervals: {
+    topBar: 15000, // MS interval for topbar polling
   },
 };

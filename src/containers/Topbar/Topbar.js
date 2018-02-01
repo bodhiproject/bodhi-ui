@@ -10,13 +10,13 @@ import TopbarWrapper from './topbar.style';
 // import { TopbarSearch } from '../../components/topbar';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
+import AppConfig from '../../config/app';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
-const POOL_INTERVAL = 10000;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -112,7 +112,7 @@ class Topbar extends React.PureComponent {
     (function startPoll() {
       onGetBlockCount();
       listUnspent();
-      setTimeout(startPoll, POOL_INTERVAL);
+      setTimeout(startPoll, AppConfig.intervals.topBar);
     }());
   }
 
