@@ -105,7 +105,8 @@ export default function appReducer(state = initState, action) {
     }
 
     case actions.GET_BLOCKCHAIN_INFO_RETURN: {
-      return state.set('currentBlockCount', action.value.result.blocks);
+      return state.set('currentBlockCount', action.value.blockCount)
+        .set('currentBlockHash', action.value.blockHash);
     }
 
     case actions.TOGGLE_ALL:

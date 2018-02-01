@@ -122,8 +122,11 @@ class Topbar extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const {
       getBlockchainInfo,
+      blockHash,
       getBotBalance,
     } = this.props;
+
+    console.log(`blockHash ${blockHash}`);
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
     const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
@@ -288,6 +291,7 @@ Topbar.propTypes = {
   listUnspent: PropTypes.func,
   getBlockchainInfo: PropTypes.func,
   blockCount: PropTypes.number,
+  blockHash: PropTypes.string,
   getBotBalance: PropTypes.func,
 };
 
@@ -299,6 +303,7 @@ Topbar.defaultProps = {
   listUnspent: undefined,
   getBlockchainInfo: undefined,
   blockCount: 0,
+  blockHash: undefined,
   getBotBalance: undefined,
 };
 
@@ -306,6 +311,7 @@ const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   blockCount: state.App.get('currentBlockCount'),
+  blockHash: state.App.get('currentBlockHash'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 

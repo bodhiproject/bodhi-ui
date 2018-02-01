@@ -58,7 +58,10 @@ export function* getBlockchainInfoRequestHandler() {
 
       yield put({
         type: actions.GET_BLOCKCHAIN_INFO_RETURN,
-        value: { result },
+        value: {
+          blockCount: result.blocks,
+          blockHash: result.bestblockhash,
+        },
       });
     } catch (error) {
       yield put({
