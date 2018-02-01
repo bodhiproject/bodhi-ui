@@ -1,19 +1,25 @@
+/* eslint-disable prefer-destructuring */
+
 import React, { Component, PropTypes } from 'react';
-import { Row, Col, Button, Icon } from 'antd';
+import { Row, Col, Select, Button, Menu, Icon, Dropdown } from 'antd';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import dashboardActions from '../../redux/dashboard/actions';
+import { SortBy } from '../../constants';
+
+const MenuItem = Menu.Item;
 
 class TabBtnGroup extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      sortOption: undefined,
     };
 
     this.onTabBtnClicked = this.onTabBtnClicked.bind(this);
-    this.onSortBtnClicked = this.onSortBtnClicked.bind(this);
+    this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
   }
 
   onTabBtnClicked(event) {
@@ -22,13 +28,15 @@ class TabBtnGroup extends Component {
     this.props.tabViewChanged(parseInt(index, 10));
   }
 
-  onSortBtnClicked() {
-
+  onSortOptionSelected(item) {
+    this.setState({
+      sortOption: item.key,
+    });
+    this.props.sortOrderChanged(item.key);
   }
 
   render() {
     const buttonArray = this.props.buttons.map((entry, index) => (
-
       <Button
         key={entry.text}
         type={index === _.toNumber(this.props.tabIndex) ? 'primary' : 'default'}
@@ -38,6 +46,26 @@ class TabBtnGroup extends Component {
         {entry.text}
       </Button>
     ));
+
+    const sortMenu = (
+      <Menu onClick={this.onSortOptionSelected}>
+        <MenuItem key={SortBy.Ascending}>Ascending</MenuItem>
+        <MenuItem key={SortBy.Descending}>Descending</MenuItem>
+      </Menu>
+    );
+
+    let sortButtonText;
+    let sortButtonIcon;
+    if (this.state.sortOption === SortBy.Ascending) {
+      sortButtonText = 'Ascending';
+      sortButtonIcon = <Icon type="arrow-up" />;
+    } else if (this.state.sortOption === SortBy.Descending) {
+      sortButtonText = 'Descending';
+      sortButtonIcon = <Icon type="arrow-down" />;
+    } else {
+      sortButtonText = 'Sort';
+      sortButtonIcon = <Icon type="down-circle-o" />;
+    }
 
     return (
       <div className="tabBtnGroup">
@@ -49,13 +77,11 @@ class TabBtnGroup extends Component {
           </Col>
           <Col xs={4}>
             <div className="controlBtnGroup">
-              <Button
-                type="default"
-                onClick={this.onSortBtnClicked}
-              >
-              Sort
-                <Icon type="down-circle-o" />
-              </Button>
+              <Dropdown overlay={sortMenu}>
+                <Button size="large" style={{ width: 144 }}>
+                  {sortButtonText} {sortButtonIcon}
+                </Button>
+              </Dropdown>
             </div>
           </Col>
         </Row>
@@ -65,13 +91,15 @@ class TabBtnGroup extends Component {
 
 TabBtnGroup.propTypes = {
   buttons: PropTypes.array.isRequired,
-  tabViewChanged: PropTypes.func,
   tabIndex: PropTypes.number,
+  tabViewChanged: PropTypes.func,
+  sortOrderChanged: PropTypes.func,
 };
 
 TabBtnGroup.defaultProps = {
-  tabViewChanged: undefined,
   tabIndex: 0,
+  tabViewChanged: undefined,
+  sortOrderChanged: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -81,6 +109,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     tabViewChanged: (index) => dispatch(dashboardActions.tabViewChanged(index)),
+    sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   };
 }
 

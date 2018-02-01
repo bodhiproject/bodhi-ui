@@ -24,7 +24,7 @@ export default class BottomButtonWidget extends React.PureComponent {
       marginRight: '-24px',
       textAlign: 'center',
       fontSize: '18px',
-      fontWeigh: 500,
+      fontWeight: 500,
       color: '#4A4A4A',
     };
 
