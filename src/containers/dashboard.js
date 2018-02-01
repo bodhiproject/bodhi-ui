@@ -14,6 +14,7 @@ import TabBtnGroup from '../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../redux/dashboard/actions';
 import appActions from '../redux/app/actions';
 import { Token, OracleStatus, SortBy } from '../constants';
+import { getLocalDateTimeString } from '../helpers/utility';
 
 const TAB_BET = 0;
 const TAB_SET = 1;
@@ -195,22 +196,23 @@ class Dashboard extends React.Component {
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endBlockString = `Betting ends @ ${oracle.endTime}`;
+          console.log(oracle.endTime);
+          endBlockString = `Betting ends ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = 'Place Bet';
           break;
         }
         case TAB_SET: {
-          endBlockString = `Result setting ends @ ${oracle.resultSetEndBlock}`;
+          endBlockString = `Result setting ends ${getLocalDateTimeString(oracle.resultSetEndBlock)}`;
           buttonText = 'Set Result';
           break;
         }
         case TAB_VOTE: {
-          endBlockString = `Voting ends @ ${oracle.endBlock}`;
+          endBlockString = `Voting ends ${getLocalDateTimeString(oracle.endBlock)}`;
           buttonText = 'Place Vote';
           break;
         }
         case TAB_FINALIZE: {
-          endBlockString = `Voting ended @ ${oracle.endBlock}`;
+          endBlockString = `Voting ended ${getLocalDateTimeString(oracle.endBlock)}`;
           buttonText = 'Finalize Result';
           break;
         }

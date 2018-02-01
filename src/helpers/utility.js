@@ -6,6 +6,7 @@ const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
 const AVG_BLOCK_TIME_SECONDS = 144.3489932885906;
+const FORMAT_DATE_TIME = 'MMM D, YYYY @ h:mm:ss a';
 
 /**
  * Requests a URL, returning a promise
@@ -88,4 +89,13 @@ export function convertBNHexStrToQtum(input) {
 */
 export function decimalToBotoshi(decimalNum) {
   return (decimalNum * BOTOSHI_TO_BOT).toString();
+}
+
+/*
+* Returns the string formatted date and time based on a unix timestamp.
+* @param dateTime {Moment} A moment instance of the date and time to convert.
+* @return {String} Returns a formatted string.
+*/
+export function getLocalDateTimeString(unixSeconds) {
+  return moment.unix(unixSeconds).format(FORMAT_DATE_TIME);
 }
