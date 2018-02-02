@@ -154,21 +154,18 @@ export function* getSyncInfoRequestHandler() {
 }
 
 // Get the total statistics from the Qtum Insight API
-export function* getInsightStatTotalsRequestHandler() {
-  yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getBlockchainInfoRequest() {
+export function* getInsightTotalsRequestHandler() {
+  yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
-      const result = yield call(request, Routes.getBlockchainInfo);
+      const result = yield call(request, Routes.insightTotals);
 
       yield put({
-        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
-        value: {
-          blockCount: result.blocks,
-          blockHash: result.bestblockhash,
-        },
+        type: actions.GET_INSIGHT_TOTALS_RETURN,
+        value: { result },
       });
     } catch (error) {
       yield put({
-        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
+        type: actions.GET_INSIGHT_TOTALS_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -182,5 +179,6 @@ export default function* topicSaga() {
     fork(getBlockRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoRequestHandler),
+    fork(getInsightTotalsRequestHandler),
   ]);
 }
