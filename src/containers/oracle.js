@@ -19,7 +19,6 @@ import CardInfoUtil from '../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
-const ORACLE_BOT_THRESHOLD = 100;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 class OraclePage extends React.Component {
@@ -42,7 +41,7 @@ class OraclePage extends React.Component {
       });
     }
 
-    return _.map(oracle.optionIdxs, (optIndex, index) => {
+    return _.map(oracle.optionIdxs, (optIndex) => {
       const optionAmount = oracle.amounts[optIndex] || 0;
       const threshold = oracle.consensusThreshold;
 

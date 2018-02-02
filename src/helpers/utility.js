@@ -42,13 +42,23 @@ function checkStatus(response) {
 }
 
 /**
- * Parses the JSON returned by a network request
- *
- * @param  {object} response A response from a network request
- *
- * @return {object}          The parsed JSON from the request
+ * Parses the JSON returned by a network request.
+ * @param response {Object} A response from a network request.
+ * @return {Object} The parsed JSON from the request.
  */
 function parseJSON(response) {
+  if (response.url === 'https://testnet.qtum.org/insight-api/statistics/total') {
+    // response.text()
+    //   .then((res) => {
+    //     const parsed = JSON.parse(res);
+    //     console.log(parsed);
+    //     return parsed;
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    return response.text();
+  }
   return response.json();
 }
 

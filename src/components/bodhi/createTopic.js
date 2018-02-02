@@ -50,6 +50,7 @@ class CreateTopic extends React.Component {
 
   componentWillMount() {
     this.props.getBlockchainInfo();
+    this.props.getInsightTotals();
   }
 
   componentWillUnmount() {
@@ -57,8 +58,13 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount } = this.props;
+    const { createReturn, blockCount, insightTotals } = this.props;
     const { getFieldDecorator } = this.props.form;
+
+    console.log(insightTotals);
+    if (insightTotals) {
+      console.log(insightTotals.time_between_blocks);
+    }
 
     const formItemLayout = {
       labelCol: {
@@ -453,6 +459,7 @@ CreateTopic.propTypes = {
   onCreateTopic: PropTypes.func,
   onClearCreateReturn: PropTypes.func,
   getBlockchainInfo: PropTypes.func,
+  getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   blockCount: PropTypes.number,
@@ -463,6 +470,7 @@ CreateTopic.defaultProps = {
   onCreateTopic: undefined,
   onClearCreateReturn: undefined,
   getBlockchainInfo: undefined,
+  getInsightTotals: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
@@ -473,6 +481,7 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('currentBlockCount'),
+  insightTotals: state.App.get('insightTotals'),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -480,6 +489,7 @@ function mapDispatchToProps(dispatch) {
     onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
     onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
     getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
+    getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
 }
 

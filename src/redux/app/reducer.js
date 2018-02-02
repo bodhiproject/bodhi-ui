@@ -134,7 +134,8 @@ export default function appReducer(state = initState, action) {
       return state.set('isSyncing', action.isSyncing);
     }
 
-    case actions.GET_INSIGHT_TOTALS: {
+    case actions.GET_INSIGHT_TOTALS_RETURN: {
+      console.log(action);
       return state.set('insightTotals', action.value);
     }
 

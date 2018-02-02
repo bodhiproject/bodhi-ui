@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import actions from './actions';
+import fetch from 'node-fetch';
 
+import actions from './actions';
 import { querySyncInfo } from '../../network/graphRequest';
 import { request, convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../config/routes';
@@ -158,6 +159,7 @@ export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
       const result = yield call(request, Routes.insightTotals);
+      console.log(result);
 
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,

@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
-import { Token, OracleStatus } from '../constants';
 import { getLocalDateTimeString } from './utility';
 
 const TOPIC_CREATED = 'Topic Created';
@@ -46,7 +44,7 @@ class CardInfoUtil {
     let current;
     if (dOracles) { // DecentralizedOracle and Topic detail
       // Add all voting steps of each DecentralizedOracle
-      _.each(dOracles, (item, index) => {
+      _.each(dOracles, (item) => {
         value.push({
           title: VOTING,
           description: `${getLocalDateTimeString(item.startTime)} 

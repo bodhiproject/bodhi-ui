@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:5555';
-const BASE_INSIGHT_DEV = 'https://testnet.qtum.org';
-const BASE_INSIGHT_PROD = 'https://explorer.qtum.org';
+const BASE_INSIGHT_DEV = 'https://testnet.qtum.org/insight-api';
+const BASE_INSIGHT_PROD = 'https://explorer.qtum.org/insight-api';
 
 module.exports = {
   endpoint: {
