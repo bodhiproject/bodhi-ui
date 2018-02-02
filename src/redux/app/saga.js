@@ -153,6 +153,28 @@ export function* getSyncInfoRequestHandler() {
   });
 }
 
+// Get the total statistics from the Qtum Insight API
+export function* getInsightStatTotalsRequestHandler() {
+  yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getBlockchainInfoRequest() {
+    try {
+      const result = yield call(request, Routes.getBlockchainInfo);
+
+      yield put({
+        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
+        value: {
+          blockCount: result.blocks,
+          blockHash: result.bestblockhash,
+        },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
