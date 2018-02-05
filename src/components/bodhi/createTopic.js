@@ -19,6 +19,7 @@ const SPACING_FORM_ITEM = 24;
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
+const MAX_LEN_RESULT_HEX = 64;
 const WIDTH_RESULT_FIELD = '60%';
 
 const ID_BETTING_START_TIME = 'bettingStartTime';
@@ -50,6 +51,7 @@ class CreateTopic extends React.Component {
     this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
     this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
     this.validateResultSettingEndTime = this.validateResultSettingEndTime.bind(this);
+    this.validateResultLength = this.validateResultLength.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
   }
@@ -362,7 +364,7 @@ class CreateTopic extends React.Component {
               message: 'Result name cannot be empty.',
             },
             {
-              validator: this.validateLength,
+              validator: this.validateResultLength,
             },
           ],
         })(<Input
@@ -498,6 +500,18 @@ class CreateTopic extends React.Component {
       callback('Must be greater than Result Setting Start Time');
     } else {
       callback();
+    }
+  }
+
+  validateResultLength(rule, value, callback) {
+    let hexString = _.isUndefined(value) ? '' : value;
+
+    // Remove hex prefix for length validation
+    hexString = Web3Utils.toHex(hexString).slice(2);
+    if (hexString && hexString.length <= MAX_LEN_RESULT_HEX) {
+      callback();
+    } else {
+      callback('Result name is too long.');
     }
   }
 
