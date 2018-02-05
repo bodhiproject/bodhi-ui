@@ -6,14 +6,15 @@ import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import Web3Utils from 'web3-utils';
 
 import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
 import { calculateBlock } from '../../helpers/utility';
+import { defaults } from '../../config/app';
 
 const FormItem = Form.Item;
-const Web3Utils = require('web3-utils');
 
 const SPACING_FORM_ITEM = 24;
 const MIN_OPTION_NUMBER = 2;
@@ -58,12 +59,8 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount, averageBlockTime } = this.props;
+    const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
-
-    if (averageBlockTime) {
-      console.log(averageBlockTime);
-    }
 
     const formItemLayout = {
       labelCol: {
@@ -330,8 +327,13 @@ class CreateTopic extends React.Component {
   }
 
   onDatePickerDateSelect(id, date) {
+    const {
+      blockCount,
+      averageBlockTime,
+    } = this.props;
+
     const localDate = date.local();
-    const block = calculateBlock(this.props.blockCount, localDate);
+    const block = calculateBlock(blockCount, localDate, averageBlockTime);
 
     switch (id) {
       case ID_BETTING_START_TIME: {
@@ -474,7 +476,7 @@ CreateTopic.defaultProps = {
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
-  averageBlockTime: undefined,
+  averageBlockTime: defaults.averageBlockTime,
 };
 
 const mapStateToProps = (state) => ({

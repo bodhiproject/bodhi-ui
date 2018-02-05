@@ -4,7 +4,6 @@ import moment from 'moment';
 const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
 const BOT_DECIMALS = 8;
-const AVG_BLOCK_TIME_SECONDS = 144.3489932885906;
 const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
@@ -12,11 +11,12 @@ const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 * Calculates the estimated block based on current block and future date.
 * @param currentBlock {Number} The current block number.
 * @param futureDate {Moment} A moment instance (UTC) of the future date to estimate.
+* @param averageBlockTime {Number} The average block time in seconds.
 * @return {Number} Returns a number of the estimated future block.
 */
-export function calculateBlock(currentBlock, futureDate) {
+export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
   const diffSec = futureDate.unix() - moment().unix();
-  return Math.round(diffSec / AVG_BLOCK_TIME_SECONDS) + currentBlock;
+  return Math.round(diffSec / averageBlockTime) + currentBlock;
 }
 
 /**

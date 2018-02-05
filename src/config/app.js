@@ -11,4 +11,7 @@ module.exports = {
   intervals: {
     topBar: 10000, // MS interval for topbar polling
   },
+  defaults: {
+    averageBlockTime: 142.01324503311258,
+  },
 };
