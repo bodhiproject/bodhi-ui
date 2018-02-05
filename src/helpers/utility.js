@@ -43,7 +43,11 @@ function parseResponse(response) {
         throw new Error(err);
       });
   }
-  return response.json();
+  return response.json()
+    .then((res) => res.result)
+    .catch((err) => {
+      throw new Error(err);
+    });
 }
 
 /*
