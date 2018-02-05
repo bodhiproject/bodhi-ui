@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker } from 'antd';
+import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -25,6 +25,8 @@ const ID_BETTING_END_TIME = 'bettingEndTime';
 const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
 const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
 
+let resultUuid = 2;
+
 class CreateTopic extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,10 @@ class CreateTopic extends React.Component {
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.renderAlertBox = this.renderAlertBox.bind(this);
     this.renderBlockField = this.renderBlockField.bind(this);
+    this.renderResultsFields = this.renderResultsFields.bind(this);
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
+    this.onAddResultField = this.onAddResultField.bind(this);
+    this.onRemoveResultField = this.onRemoveResultField.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
     this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
@@ -58,17 +63,19 @@ class CreateTopic extends React.Component {
 
   render() {
     const { createReturn, blockCount } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
 
+    const labelCol = {
+      xs: { span: 24 },
+      sm: { span: 6 },
+    };
+    const contentCol = {
+      xs: { span: 24 },
+      sm: { span: 18 },
+    };
     const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 18 },
-      },
+      labelCol,
+      contentCol,
     };
     const tailFormItemLayout = {
       wrapperCol: {
@@ -82,6 +89,7 @@ class CreateTopic extends React.Component {
         },
       },
     };
+    const keys = getFieldValue('keys');
 
     return (
       <div className="create-topic-container">
@@ -119,16 +127,14 @@ class CreateTopic extends React.Component {
             label="Results"
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
-            {getFieldDecorator('results', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Results cannot be empty.',
-                },
-              ],
-            })(<DynamicFieldSet
-              form={this.props.form}
-            />)}
+            {this.renderResultsFields(contentCol)}
+            <FormItem {...contentCol}>
+              {keys && keys.length < 10 ? (
+                <Button type="dashed" onClick={this.onAddResultField} style={{ width: '80%' }}>
+                  <Icon type="plus" />Add Result
+                </Button>
+              ) : null}
+            </FormItem>
           </FormItem>
 
           <FormItem
@@ -324,6 +330,46 @@ class CreateTopic extends React.Component {
     );
   }
 
+  renderResultsFields(widthSpan) {
+    const {
+      getFieldDecorator,
+      getFieldValue,
+    } = this.props.form;
+
+    getFieldDecorator('keys', { initialValue: ['0', '1'] });
+    const keys = getFieldValue('keys');
+    const formItems = keys.map((k, index) => (
+      <FormItem
+        {...widthSpan}
+        required={false}
+        key={k}
+      >
+        {getFieldDecorator(`results[${k}]`, {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [
+            {
+              required: true,
+              whitespace: true,
+              message: 'Result name cannot be empty.',
+            },
+            {
+              validator: this.validateLength,
+            },
+          ],
+        })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
+        {keys.length > 2 ? (
+          <Icon
+            className="dynamic-delete-button"
+            type="minus-circle-o"
+            disabled={keys.length === 1}
+            onClick={() => this.onRemoveResultField(k)}
+          />
+        ) : null}
+      </FormItem>));
+
+    return formItems;
+  }
+
   onDatePickerDateSelect(id, date) {
     const localDate = date.local();
     const block = calculateBlock(this.props.blockCount, localDate);
@@ -371,60 +417,36 @@ class CreateTopic extends React.Component {
     }
   }
 
-  renderDynamicResultsFields() {
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 28 },
-        sm: { span: 18 },
-      },
-    };
-    
-    getFieldDecorator('keys', { initialValue: ['0', '1'] });
-    const keys = getFieldValue('keys');
-    const formItems = keys.map((k, index) => {
-      return (
-        <FormItem
-          {...formItemLayoutWithOutLabel}
-          required={false}
-          key={k}
-        >
-          {getFieldDecorator(`results[${k}]`, {
-            validateTrigger: ['onChange', 'onBlur'],
-            rules: [
-              {
-                required: true,
-                whitespace: true,
-                message: 'Result name cannot be empty.',
-              },
-              {
-                validator: this.validateLength,
-              },
-            ],
-          })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
-          {keys.length > 2 ? (
-            <Icon
-              className="dynamic-delete-button"
-              type="minus-circle-o"
-              disabled={keys.length === 1}
-              onClick={() => this.remove(k)}
-            />
-          ) : null}
-        </FormItem>
-      );
-    });
+  onAddResultField() {
+    const { getFieldValue, setFieldsValue } = this.props.form;
 
-    return (
-      <Form>
-        {formItems}
-        <FormItem {...formItemLayoutWithOutLabel}>
-          {keys.length < 10 ? (
-            <Button type="dashed" onClick={this.add} style={{ width: '80%' }}>
-              <Icon type="plus" />Add Result
-            </Button>
-          ) : null}
-        </FormItem>
-      </Form>
-    );
+    // can use data-binding to get
+    const keys = getFieldValue('keys');
+    const nextKeys = keys.concat(resultUuid);
+    resultUuid += 1;
+
+    // can use data-binding to set
+    // important! notify form to detect changes
+    setFieldsValue({
+      keys: nextKeys,
+    });
+  }
+
+  onRemoveResultField(k) {
+    const { getFieldValue, setFieldsValue } = this.props.form;
+
+    // can use data-binding to get
+    const keys = getFieldValue('keys');
+
+    // Need at least two results
+    if (keys.length === 2) {
+      return;
+    }
+
+    // can use data-binding to set
+    setFieldsValue({
+      keys: keys.filter((key) => key !== k),
+    });
   }
 
   validateTitleLength(rule, value, callback) {
