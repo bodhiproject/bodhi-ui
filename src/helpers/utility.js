@@ -10,54 +10,38 @@ const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
 /**
- * Requests a URL, returning a promise
- *
- * @param  {string} url       The URL we want to request
- * @param  {object} [options] The options we want to pass to "fetch"
- *
- * @return {object}           The response data
+ * Executes an HTTP request.
+ * @param url {String} The URL we want to request.
+ * @param options {Object} The fetch options.
+ * @return {Object} The response data as a Promise.
  */
 export function request(url, options) {
   console.log('url:', url, 'options:', options);
 
   return fetch(url, options)
-    .then(parseJSON)
-    .then(checkStatus);
+    .then(checkStatusCode)
+    .then(parseResponse);
 }
 
-/**
- * Returns resolved Promise if Http response contains result; otherwise returns rejected upon error.
- *
- * @param  {object} response   JSON response from a HTTP request
- *
- * @return {object|undefined} Returns either the response, or throws an error
- */
-function checkStatus(response) {
-  // We can rely on checking error object so dont check HTTP status code here.
-  if (response.error) {
-    throw new Error(response.error);
-  } else {
-    return response.result;
+function checkStatusCode(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
   }
+  return Promise.reject(new Error(response.statusText));
 }
 
 /**
- * Parses the JSON returned by a network request.
+ * Parses the HTTP response returned by a network request.
  * @param response {Object} A response from a network request.
  * @return {Object} The parsed JSON from the request.
  */
-function parseJSON(response) {
+function parseResponse(response) {
   if (response.url === 'https://testnet.qtum.org/insight-api/statistics/total') {
-    // response.text()
-    //   .then((res) => {
-    //     const parsed = JSON.parse(res);
-    //     console.log(parsed);
-    //     return parsed;
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    return response.text();
+    return response.text()
+      .then((res) => JSON.parse(res))
+      .catch((err) => {
+        throw new Error(err);
+      });
   }
   return response.json();
 }

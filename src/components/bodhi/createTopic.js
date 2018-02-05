@@ -58,13 +58,8 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount, insightTotals } = this.props;
+    const { createReturn, blockCount } = this.props;
     const { getFieldDecorator } = this.props.form;
-
-    console.log(insightTotals);
-    if (insightTotals) {
-      console.log(insightTotals.time_between_blocks);
-    }
 
     const formItemLayout = {
       labelCol: {
@@ -481,7 +476,6 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('currentBlockCount'),
-  insightTotals: state.App.get('insightTotals'),
 });
 
 function mapDispatchToProps(dispatch) {

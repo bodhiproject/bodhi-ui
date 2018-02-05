@@ -159,7 +159,6 @@ export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
       const result = yield call(request, Routes.insightTotals);
-      console.log(result);
 
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
