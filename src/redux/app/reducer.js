@@ -137,8 +137,7 @@ export default function appReducer(state = initState, action) {
     }
 
     case actions.GET_INSIGHT_TOTALS_RETURN: {
-      console.log(action);
-      return state.set('insightTotals', action.value);
+      return state.set('averageBlockTime', action.value.result.time_between_blocks);
     }
 
     default:

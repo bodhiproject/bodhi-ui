@@ -58,8 +58,12 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount } = this.props;
+    const { createReturn, blockCount, averageBlockTime } = this.props;
     const { getFieldDecorator } = this.props.form;
+
+    if (averageBlockTime) {
+      console.log(averageBlockTime);
+    }
 
     const formItemLayout = {
       labelCol: {
@@ -458,6 +462,7 @@ CreateTopic.propTypes = {
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   blockCount: PropTypes.number,
+  averageBlockTime: PropTypes.number,
 };
 
 CreateTopic.defaultProps = {
@@ -469,6 +474,7 @@ CreateTopic.defaultProps = {
   walletAddrs: [],
   walletAddrsIndex: 0,
   blockCount: 0,
+  averageBlockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -476,6 +482,7 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   blockCount: state.App.get('currentBlockCount'),
+  averageBlockTime: state.App.get('averageBlockTime'),
 });
 
 function mapDispatchToProps(dispatch) {
