@@ -69,13 +69,13 @@ class CreateTopic extends React.Component {
       xs: { span: 24 },
       sm: { span: 6 },
     };
-    const contentCol = {
+    const wrapperCol = {
       xs: { span: 24 },
       sm: { span: 18 },
     };
     const formItemLayout = {
       labelCol,
-      contentCol,
+      wrapperCol,
     };
     const tailFormItemLayout = {
       wrapperCol: {
@@ -127,8 +127,8 @@ class CreateTopic extends React.Component {
             label="Results"
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
-            {this.renderResultsFields(contentCol)}
-            <FormItem {...contentCol}>
+            {this.renderResultsFields(wrapperCol)}
+            <FormItem {...wrapperCol}>
               {keys && keys.length < 10 ? (
                 <Button type="dashed" onClick={this.onAddResultField} style={{ width: '80%' }}>
                   <Icon type="plus" />Add Result
