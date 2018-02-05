@@ -103,6 +103,7 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Name"
+            required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
             {getFieldDecorator('name', {
@@ -151,6 +152,7 @@ class CreateTopic extends React.Component {
             {...formItemLayout}
             label="Centralized Oracle"
             extra="This person will set the result."
+            required={required}
           >
             {getFieldDecorator('centralizedOracle', {
               rules: [{
@@ -433,14 +435,10 @@ class CreateTopic extends React.Component {
 
   onAddResultField() {
     const { getFieldValue, setFieldsValue } = this.props.form;
-
-    // can use data-binding to get
     const keys = getFieldValue('keys');
     const nextKeys = keys.concat(resultUuid);
     resultUuid += 1;
 
-    // can use data-binding to set
-    // important! notify form to detect changes
     setFieldsValue({
       keys: nextKeys,
     });
@@ -448,16 +446,12 @@ class CreateTopic extends React.Component {
 
   onRemoveResultField(k) {
     const { getFieldValue, setFieldsValue } = this.props.form;
-
-    // can use data-binding to get
     const keys = getFieldValue('keys');
 
-    // Need at least two results
     if (keys.length === 2) {
       return;
     }
 
-    // can use data-binding to set
     setFieldsValue({
       keys: keys.filter((key) => key !== k),
     });
