@@ -19,6 +19,7 @@ const SPACING_FORM_ITEM = 24;
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
+const WIDTH_RESULT_FIELD = '60%';
 
 const ID_BETTING_START_TIME = 'bettingStartTime';
 const ID_BETTING_END_TIME = 'bettingEndTime';
@@ -89,8 +90,11 @@ class CreateTopic extends React.Component {
         },
       },
     };
-    const keys = getFieldValue('keys');
-
+    let keys = getFieldValue('keys');
+    if (_.isUndefined(keys)) {
+      keys = ['0', '1'];
+    }
+    const required = true;
     return (
       <div className="create-topic-container">
         <h3>Create an event</h3>
@@ -125,12 +129,17 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Results"
+            required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
             {this.renderResultsFields(wrapperCol)}
             <FormItem {...wrapperCol}>
-              {keys && keys.length < 10 ? (
-                <Button type="dashed" onClick={this.onAddResultField} style={{ width: '80%' }}>
+              {keys.length < 10 ? (
+                <Button
+                  type="dashed"
+                  onClick={this.onAddResultField}
+                  style={{ width: WIDTH_RESULT_FIELD, marginBottom: '32px' }}
+                >
                   <Icon type="plus" />Add Result
                 </Button>
               ) : null}
@@ -330,7 +339,7 @@ class CreateTopic extends React.Component {
     );
   }
 
-  renderResultsFields(widthSpan) {
+  renderResultsFields(wrapperCol) {
     const {
       getFieldDecorator,
       getFieldValue,
@@ -340,9 +349,9 @@ class CreateTopic extends React.Component {
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => (
       <FormItem
-        {...widthSpan}
-        required={false}
+        {...wrapperCol}
         key={k}
+        style={{ height: '96px' }}
       >
         {getFieldDecorator(`results[${k}]`, {
           validateTrigger: ['onChange', 'onBlur'],
@@ -356,13 +365,17 @@ class CreateTopic extends React.Component {
               validator: this.validateLength,
             },
           ],
-        })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
+        })(<Input
+          placeholder={`Result #${index + 1}`}
+          style={{ width: WIDTH_RESULT_FIELD, marginRight: '8px' }}
+        />)}
         {keys.length > 2 ? (
           <Icon
             className="dynamic-delete-button"
-            type="minus-circle-o"
+            type="close-circle-o"
             disabled={keys.length === 1}
             onClick={() => this.onRemoveResultField(k)}
+            style={{ fontSize: 16 }}
           />
         ) : null}
       </FormItem>));
