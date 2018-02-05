@@ -371,6 +371,62 @@ class CreateTopic extends React.Component {
     }
   }
 
+  renderDynamicResultsFields() {
+    const formItemLayoutWithOutLabel = {
+      wrapperCol: {
+        xs: { span: 28 },
+        sm: { span: 18 },
+      },
+    };
+    
+    getFieldDecorator('keys', { initialValue: ['0', '1'] });
+    const keys = getFieldValue('keys');
+    const formItems = keys.map((k, index) => {
+      return (
+        <FormItem
+          {...formItemLayoutWithOutLabel}
+          required={false}
+          key={k}
+        >
+          {getFieldDecorator(`results[${k}]`, {
+            validateTrigger: ['onChange', 'onBlur'],
+            rules: [
+              {
+                required: true,
+                whitespace: true,
+                message: 'Result name cannot be empty.',
+              },
+              {
+                validator: this.validateLength,
+              },
+            ],
+          })(<Input placeholder={`Result #${index + 1}`} style={{ width: '80%', marginRight: 8 }} />)}
+          {keys.length > 2 ? (
+            <Icon
+              className="dynamic-delete-button"
+              type="minus-circle-o"
+              disabled={keys.length === 1}
+              onClick={() => this.remove(k)}
+            />
+          ) : null}
+        </FormItem>
+      );
+    });
+
+    return (
+      <Form>
+        {formItems}
+        <FormItem {...formItemLayoutWithOutLabel}>
+          {keys.length < 10 ? (
+            <Button type="dashed" onClick={this.add} style={{ width: '80%' }}>
+              <Icon type="plus" />Add Result
+            </Button>
+          ) : null}
+        </FormItem>
+      </Form>
+    );
+  }
+
   validateTitleLength(rule, value, callback) {
     let hexString = _.isUndefined(value) ? '' : value;
 
