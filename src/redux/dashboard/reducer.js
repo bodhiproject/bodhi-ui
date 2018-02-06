@@ -16,12 +16,14 @@ export default function authReducer(
       return state.set('success', true).set('value', action.value);
     case actions.GET_TOPICS_ERROR:
       return state.set('success', false).set('value', action.value);
-    case actions.TAB_VIEW_CHANGED:
-      return state.set('tabIndex', action.value);
     case actions.GET_ORACLES_SUCCESS:
       return state.set('allOraclesSuccess', true).set('allOraclesValue', action.value);
     case actions.GET_ORACLES_ERROR:
       return state.set('allOraclesSuccess', false).set('allOraclesValue', action.value);
+    case actions.TAB_VIEW_CHANGED:
+      return state.set('tabIndex', action.value);
+    case actions.SORT_ORDER_CHANGED:
+      return state.set('sortBy', action.sortBy);
     default:
       return state;
   }

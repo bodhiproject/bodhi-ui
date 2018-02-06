@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+
 import { endpoint } from '../config/app';
 import GraphParser from './graphParser';
 import { isValidEnum, getQueryFields } from './graphDataStruct';
@@ -16,45 +17,74 @@ class GraphRequest {
   constructor(queryName) {
     this.queryName = queryName;
     this.filters = undefined;
+    this.orderBy = undefined;
   }
 
   setFilters(filters) {
     this.filters = filters;
   }
 
-  build() {
+  setOrderBy(orderBy) {
+    this.orderBy = orderBy;
+  }
+
+  formatObject(obj) {
+    const str = Object
+      .keys(obj)
+      .map((key) => {
+        const value = obj[key];
+        if (isValidEnum(key, value) || !_.isString(value)) {
+          // Enums require values without quotes
+          return `${key}: ${value}`;
+        }
+        return `${key}: ${JSON.stringify(value)}`;
+      })
+      .join(', ');
+    return `{ ${str} }`;
+  }
+
+  getFilterString() {
     let filterStr = '';
     if (this.filters) {
       // Create entire string for OR: [] as objects
-      _.forEach(this.filters, (obj, index) => {
+      _.forEach(this.filters, (obj) => {
         if (!_.isEmpty(filterStr)) {
-          filterStr = filterStr.concat(',');
+          filterStr = filterStr.concat(', ');
         }
-        const str = Object
-          .keys(obj)
-          .map((key) => {
-            if (isValidEnum(key, obj[key]) || !_.isString(obj[key])) {
-              // Enums require values without quotes
-              return `${key}: ${obj[key]}`;
-            }
-            return `${key}: ${JSON.stringify(obj[key])}`;
-          })
-          .join(',');
-        filterStr = filterStr.concat(`{${str}}`);
+        filterStr = filterStr.concat(this.formatObject(obj));
       });
 
       filterStr = `
-        (filter: { 
+        filter: { 
           OR: [ 
             ${filterStr} 
           ]
-        })
+        }
       `;
     }
+    return filterStr;
+  }
+
+  getOrderByString() {
+    let orderByStr = '';
+    if (this.orderBy) {
+      orderByStr = this.formatObject(this.orderBy);
+    }
+    return _.isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
+  }
+
+  build() {
+    const filterStr = this.getFilterString();
+    const orderByStr = this.getOrderByString();
+    const funcParamOpen = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? '(' : '';
+    const funcParamClose = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? ')' : '';
 
     const query = `
       query {
-        ${this.queryName}${filterStr} {
+        ${this.queryName}${funcParamOpen}
+          ${filterStr}
+          ${orderByStr} 
+        ${funcParamClose} {
           ${getQueryFields(this.queryName)}
         }
       }
@@ -78,11 +108,15 @@ class GraphRequest {
 /*
 * Queries allTopics from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
-export function queryAllTopics(filters) {
+export function queryAllTopics(filters, orderBy) {
   const request = new GraphRequest('allTopics');
-  if (filters) {
+  if (!_.isEmpty(filters)) {
     request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
   }
   return request.execute();
 }
@@ -90,11 +124,15 @@ export function queryAllTopics(filters) {
 /*
 * Queries allOracles from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllOracles(filters) {
+export function queryAllOracles(filters, orderBy) {
   const request = new GraphRequest('allOracles');
-  if (filters) {
+  if (!_.isEmpty(filters)) {
     request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
   }
   return request.execute();
 }

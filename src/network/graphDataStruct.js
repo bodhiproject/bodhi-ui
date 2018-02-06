@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
 const ENUMS = {
+  direction: [
+    'ASC',
+    'DESC',
+  ],
+
   status: [
     'CREATED',
     'VOTING',
@@ -39,10 +44,10 @@ const FIELD_MAPPINGS = {
       amounts
       resultIdx
       blockNum
-      startBlock
-      endBlock
-      resultSetStartBlock
-      resultSetEndBlock
+      startTime
+      endTime
+      resultSetStartTime
+      resultSetEndTime
       resultSetterAddress
       resultSetterQAddress
       consensusThreshold
@@ -60,10 +65,10 @@ const FIELD_MAPPINGS = {
     amounts
     resultIdx
     blockNum
-    startBlock
-    endBlock
-    resultSetStartBlock
-    resultSetEndBlock
+    startTime
+    endTime
+    resultSetStartTime
+    resultSetEndTime
     resultSetterAddress
     resultSetterQAddress
     consensusThreshold

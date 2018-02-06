@@ -20,7 +20,7 @@ export function* getTopicsRequestHandler(/* actions */) {
     } else {
       try {
         // Query all topics data using graphQL call
-        const result = yield call(queryAllTopics, action.filters);
+        const result = yield call(queryAllTopics, action.filters, action.orderBy);
         const topics = _.map(result, processTopic);
 
         yield put({
@@ -41,7 +41,7 @@ export function* getOraclesRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest(action) {
     try {
       // Query all topics data using graphQL call
-      const result = yield call(queryAllOracles, action.filters);
+      const result = yield call(queryAllOracles, action.filters, action.orderBy);
       const oracles = result.map(processOracle);
 
       yield put({

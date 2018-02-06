@@ -3,6 +3,7 @@ module.exports = {
     Qtum: 'QTUM',
     Bot: 'BOT',
   },
+
   /* Oracle status matching graphql _OracleStatusType */
   OracleStatus: {
     Created: 'CREATED',
@@ -11,5 +12,10 @@ module.exports = {
     OpenResultSet: 'OPENRESULTSET',
     Pending: 'PENDING',
     Withdraw: 'WITHDRAW',
+  },
+
+  SortBy: {
+    Ascending: 'ASC',
+    Descending: 'DESC',
   },
 };

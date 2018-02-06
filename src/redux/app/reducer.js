@@ -21,14 +21,12 @@ const initState = new Map({
 export default function appReducer(state = initState, action) {
   switch (action.type) {
     /** Wallet Addresses * */
-    case actions.ADD_WALLET_ADDRESS:
-    {
+    case actions.ADD_WALLET_ADDRESS: {
       const addresses = state.get('walletAddrs');
       addresses.push({ address: action.value, qtum: 0 });
       return state.set('walletAddrs', addresses);
     }
-    case actions.SELECT_WALLET_ADDRESS:
-    {
+    case actions.SELECT_WALLET_ADDRESS: {
       const walletAddrsIndex = action.value;
       const walletAddrs = state.get('walletAddrs');
 
@@ -41,8 +39,7 @@ export default function appReducer(state = initState, action) {
     }
 
     /** List Unspent Return * */
-    case actions.LIST_UNSPENT_RESULT:
-    {
+    case actions.LIST_UNSPENT_RESULT: {
       let result = [];
       let newState = state;
       let combinedAddresses = [];
@@ -90,8 +87,7 @@ export default function appReducer(state = initState, action) {
     }
 
     /** Bot Balance Return - update walletAddrs with returned BOT value * */
-    case actions.GET_BOT_BALANCE_RETURN:
-    {
+    case actions.GET_BOT_BALANCE_RETURN: {
       const walletAddrs = state.get('walletAddrs');
 
       if (action && action.value) {
@@ -108,9 +104,15 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddrs', walletAddrs);
     }
 
-    /** Block Count * */
-    case actions.GET_BLOCK_COUNT_RETURN:
-      return state.set('get_block_count_return', action.value);
+    case actions.GET_BLOCKCHAIN_INFO_RETURN: {
+      return state.set('currentBlockCount', action.value.blockCount)
+        .set('currentBlockHash', action.value.blockHash);
+    }
+
+    case actions.GET_BLOCK_RETURN: {
+      return state.set('currentBlockTime', action.value.result.time);
+    }
+
     case actions.TOGGLE_ALL:
       if (state.get('view') !== action.view || action.height !== state.height) {
         const height = action.height ? action.height : state.height;

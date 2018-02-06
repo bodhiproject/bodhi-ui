@@ -51,18 +51,47 @@ export function* listUnspentRequestHandler() {
   });
 }
 
-export function* getBlockCountRequestHandler() {
-  yield takeEvery(actions.GET_BLOCK_COUNT, function* getBlockCountRequest() {
+export function* getBlockchainInfoRequestHandler() {
+  yield takeEvery(actions.GET_BLOCKCHAIN_INFO, function* getBlockchainInfoRequest() {
     try {
-      const result = yield call(request, Routes.getBlockCount);
+      const result = yield call(request, Routes.getBlockchainInfo);
 
       yield put({
-        type: actions.GET_BLOCK_COUNT_RETURN,
+        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
+        value: {
+          blockCount: result.blocks,
+          blockHash: result.bestblockhash,
+        },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
+export function* getBlockRequestHandler() {
+  yield takeEvery(actions.GET_BLOCK, function* getBlockRequest(action) {
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          blockHash: action.blockHash,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, Routes.getBlock, options);
+
+      yield put({
+        type: actions.GET_BLOCK_RETURN,
         value: { result },
       });
     } catch (error) {
       yield put({
-        type: actions.GET_BLOCK_COUNT_RETURN,
+        type: actions.GET_BLOCK_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -127,7 +156,8 @@ export function* getSyncInfoRequestHandler() {
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
-    fork(getBlockCountRequestHandler),
+    fork(getBlockchainInfoRequestHandler),
+    fork(getBlockRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoRequestHandler),
   ]);

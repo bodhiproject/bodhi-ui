@@ -38,10 +38,17 @@ const actions = {
     type: actions.LIST_UNSPENT,
   }),
 
-  GET_BLOCK_COUNT: 'GET_BLOCK_COUNT',
-  GET_BLOCK_COUNT_RETURN: 'GET_BLOCK_COUNT_RETURN',
-  getBlockCount: () => ({
-    type: actions.GET_BLOCK_COUNT,
+  GET_BLOCKCHAIN_INFO: 'GET_BLOCKCHAIN_INFO',
+  GET_BLOCKCHAIN_INFO_RETURN: 'GET_BLOCKCHAIN_INFO_RETURN',
+  getBlockchainInfo: () => ({
+    type: actions.GET_BLOCKCHAIN_INFO,
+  }),
+
+  GET_BLOCK: 'GET_BLOCK',
+  GET_BLOCK_RETURN: 'GET_BLOCK_RETURN',
+  getBlock: (blockHash) => ({
+    type: actions.GET_BLOCK,
+    blockHash,
   }),
 
   GET_BOT_BALANCE: 'GET_BOT_BALANCE',

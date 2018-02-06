@@ -4,19 +4,21 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import moment from 'moment';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
 // import { TopbarSearch } from '../../components/topbar';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
+import AppConfig from '../../config/app';
+import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
-const POOL_INTERVAL = 10000;
 
 /**
  * Utility func to convert address into format of  "Qjsb ... 3dkb"
@@ -107,19 +109,28 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { onGetBlockCount, listUnspent } = this.props;
+    const {
+      getBlockchainInfo,
+      listUnspent,
+    } = this.props;
 
     (function startPoll() {
-      onGetBlockCount();
+      getBlockchainInfo();
       listUnspent();
-      setTimeout(startPoll, POOL_INTERVAL);
+      setTimeout(startPoll, AppConfig.intervals.topBar);
     }());
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      onGetBlockCount, getBotBalance,
+      getBlock,
+      blockHash,
+      getBotBalance,
     } = this.props;
+
+    if (nextProps.blockHash !== blockHash) {
+      getBlock(nextProps.blockHash);
+    }
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
     const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
@@ -179,29 +190,31 @@ class Topbar extends React.PureComponent {
   render() {
     const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
     const {
-      collapsed, walletAddrs, blockCount, selectedWalletAddress,
+      collapsed,
+      walletAddrs,
+      blockCount,
+      blockTime,
+      selectedWalletAddress,
     } = this.props;
 
     const menu = (
       <Menu onClick={this.onAddressDropdownClick}>
         {
           // Build dropdown list using walletAddrs array
-          _.map(walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH), (item, index) => (<Menu.Item key={item.address} index={index} style={{ padding: 0, borderBottom: '1px solid #eee' }}>
-            <DropdownMenuItemWrapper
+          _.map(walletAddrs.slice(0, DROPDOWN_LIST_MAX_LENGTH), (item, index) => (
+            <Menu.Item
+              key={item.address}
               index={index}
-              onCopyClick={this.onCopyClicked}
-            />
-          </Menu.Item>
+              style={{ padding: 0, borderBottom: '1px solid #eee' }}
+            >
+              <DropdownMenuItemWrapper
+                index={index}
+                onCopyClick={this.onCopyClicked}
+              />
+            </Menu.Item>
           ))}
-        {/* Add Address button at end of dropdown <Menu.Item
-                  key={KEY_ADD_ADDRESS_BTN}
-                  style={{
-                    padding: '14px 0px', borderBottom: '1px solid #eee', fontSize: '16px', textAlign: 'center',
-                  }}
-                >Add address</Menu.Item> */}
       </Menu>
     );
-
 
     const walletAddrsEle = _.isEmpty(walletAddrs)
       ? (
@@ -229,7 +242,11 @@ class Topbar extends React.PureComponent {
                 <div className="isoLeft">
                   <div className="logo-container" style={{ margin: '0px' }}>
                     <Link to="/">
-                      <img src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg" style={{ height: '38px', verticalAlign: 'middle' }} alt="bodhi-logo" />
+                      <img
+                        src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
+                        style={{ height: '38px', verticalAlign: 'middle' }}
+                        alt="bodhi-logo"
+                      />
                     </Link>
                   </div>
                   {/* <div className="isoSearch" style={{ cursor: 'pointer' }}>
@@ -243,8 +260,12 @@ class Topbar extends React.PureComponent {
                   <li>{walletAddrsEle}</li>
                   <li>
                     <div className="block-count" style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}>
-                      <div className="label" style={{ fontSize: '10px', lineHeight: 'normal' }}><Icon type="clock-circle-o" style={{ marginRight: '6px' }}></Icon>Block Count</div>
-                      <div style={{ fontSize: '20px', lineHeight: 'normal', marginTop: '2px' }}>{blockCount}</div>
+                      <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
+                        Current Block: {blockCount}
+                      </div>
+                      <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
+                        {blockTime ? getShortLocalDateTimeString(blockTime) : ''}
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -282,8 +303,11 @@ Topbar.propTypes = {
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
-  onGetBlockCount: PropTypes.func,
+  getBlockchainInfo: PropTypes.func,
+  getBlock: PropTypes.func,
   blockCount: PropTypes.number,
+  blockHash: PropTypes.string,
+  blockTime: PropTypes.number,
   getBotBalance: PropTypes.func,
 };
 
@@ -293,15 +317,20 @@ Topbar.defaultProps = {
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
-  onGetBlockCount: undefined,
+  getBlockchainInfo: undefined,
+  getBlock: undefined,
   blockCount: 0,
+  blockHash: undefined,
+  blockTime: undefined,
   getBotBalance: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockCount: state.App.get('currentBlockCount'),
+  blockHash: state.App.get('currentBlockHash'),
+  blockTime: state.App.get('currentBlockTime'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
 });
 
@@ -309,7 +338,8 @@ const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
-  onGetBlockCount: () => dispatch(appActions.getBlockCount()),
+  getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
+  getBlock: (blockHash) => dispatch(appActions.getBlock(blockHash)),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 

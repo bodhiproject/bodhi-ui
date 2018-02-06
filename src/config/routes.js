@@ -5,7 +5,8 @@ const { bodhiapi } = endpoint;
 const Routes = {
   listUnspent: `${bodhiapi}/list-unspent`,
   getAccountAddress: `${bodhiapi}/get-account-address`,
-  getBlockCount: `${bodhiapi}/get-block-count`,
+  getBlockchainInfo: `${bodhiapi}/get-blockchain-info`,
+  getBlock: `${bodhiapi}/get-block`,
   approve: `${bodhiapi}/approve`,
   allowance: `${bodhiapi}/allowance`,
   botBalance: `${bodhiapi}/bot-balance`,

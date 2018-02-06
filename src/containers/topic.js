@@ -117,7 +117,7 @@ class TopicPage extends React.Component {
           name: 'COMPLETED',
           breadcrumbLabel: 'Completed',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(this.props.blockCount, centralizedOracle, decentralizedOracles, true),
+            steps: CardInfoUtil.getSteps(this.props.blockTime, centralizedOracle, decentralizedOracles, true),
             messages: [
             ],
           },
@@ -131,7 +131,8 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
+          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
 
@@ -240,7 +241,7 @@ TopicPage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
-  blockCount: PropTypes.number,
+  blockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
@@ -256,7 +257,7 @@ TopicPage.defaultProps = {
   getTopicsSuccess: undefined,
   onGetTopics: undefined,
   requestReturn: undefined,
-  blockCount: undefined,
+  blockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
@@ -272,7 +273,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockTime: state.App.get('currentBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),

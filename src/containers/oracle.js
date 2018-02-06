@@ -89,7 +89,7 @@ class OraclePage extends React.Component {
     const {
       getOraclesSuccess,
       allowanceReturn,
-      blockCount,
+      blockTime,
       selectedWalletAddress,
     } = nextProps;
 
@@ -107,7 +107,7 @@ class OraclePage extends React.Component {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, oracle),
+            steps: CardInfoUtil.getSteps(blockTime, oracle),
             messages: [
             ],
           },
@@ -127,18 +127,21 @@ class OraclePage extends React.Component {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, oracle),
+            steps: CardInfoUtil.getSteps(blockTime, oracle),
             messages: [
               {
                 text: `Result setter ${oracle.resultSetterQAddress || ''}`,
                 type: 'default',
               },
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed for result setting.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to set the result.`,
                 type: 'default',
               },
               {
-                text: 'Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those BOT amount will automatically be used to set result afterwards.',
+                text: `BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. 
+                  Your BOT needs to be approved before result setting. The approved amount will automatically be used to 
+                  set the result after approval.`,
                 type: 'default',
               },
             ],
@@ -157,18 +160,23 @@ class OraclePage extends React.Component {
         };
 
         // Add a message to CardInfo to warn that current block has passed set end block
-        if (blockCount > oracle.resultSetEndBlock) {
+        if (blockTime > oracle.resultSetEndTime) {
           config.cardInfo.messages.push({
-            text: 'Current block number has passed result set end block.',
+            text: 'Current block time has passed the Result Setting End Time.',
             type: 'warn',
           });
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (oracle.resultSetterQAddress !== selectedWalletAddress) {
+        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress) {
           config.cardInfo.messages.push({
-            text: 'You are not the result setter for this topic and cannot set result.',
+            text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
             type: 'warn',
+          });
+        } else if (status === OracleStatus.OpenResultSet) {
+          config.cardInfo.messages.push({
+            text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
+            type: 'default',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
@@ -176,13 +184,15 @@ class OraclePage extends React.Component {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT needed to fulfill current voting challenge.`,
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to reach the Proof of Agreement and become the new result.`,
                 type: 'default',
               }, {
-                text: 'BOT tokens are needed for Voting. Please don\'t leave this screen upon clicking Confirm, you will need to wait for BOT token to get approved. Those amount will automatically be used to Vote afterwards.',
+                text: `BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs 
+                  to be approved before voting. The approved amount will automatically be used to vote afterwards.`,
                 type: 'default',
               },
             ],
@@ -203,7 +213,7 @@ class OraclePage extends React.Component {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockCount, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
@@ -215,12 +225,14 @@ class OraclePage extends React.Component {
           },
         };
 
-        if (blockCount > oracle.endBlock) {
+        if (blockTime > oracle.endTime) {
           config.cardInfo.messages.push({
-            text: `This oracles has passed Voting end block ${oracle.endBlock || ''} and needs to be finalized.`,
+            text: `Current block time has passed the Voting End Time. 
+              The previous result needs to be finalized in order to withdraw.`,
             type: 'default',
           }, {
-            text: 'Finalizing can be done by anybody. Once finalized oracle will enter Completed state and winning withdrawl will start.',
+            text: `Finalizing can be done by anyone. 
+              Once finalized, winners can withdraw from the event in the Withdraw tab.`,
             type: 'default',
           });
         }
@@ -528,7 +540,7 @@ OraclePage.propTypes = {
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
-  blockCount: PropTypes.number,
+  blockTime: PropTypes.number,
 };
 
 OraclePage.defaultProps = {
@@ -548,7 +560,7 @@ OraclePage.defaultProps = {
   clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
-  blockCount: 0,
+  blockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -558,7 +570,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  blockCount: state.App.get('get_block_count_return') && state.App.get('get_block_count_return').result,
+  blockTime: state.App.get('currentBlockTime'),
 });
 
 function mapDispatchToProps(dispatch) {
