@@ -27,15 +27,8 @@ function checkStatusCode(response) {
  * @return {Object} The parsed JSON from the request.
  */
 function parseResponse(response) {
-  if (response.url === 'https://testnet.qtum.org/insight-api/statistics/total') {
-    return response.text()
-      .then((res) => JSON.parse(res))
-      .catch((err) => {
-        throw new Error(err);
-      });
-  }
   return response.json()
-    .then((res) => res.result)
+    .then((res) => res.result || res)
     .catch((err) => {
       throw new Error(err);
     });
