@@ -2,12 +2,11 @@
 
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker } from 'antd';
+import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-import { DynamicFieldSet } from '../form/DynamicFieldSet';
 import topicActions from '../../redux/topic/actions';
 import appActions from '../../redux/app/actions';
 import { calculateBlock } from '../../helpers/utility';
@@ -19,11 +18,15 @@ const SPACING_FORM_ITEM = 24;
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
+const MAX_LEN_RESULT_HEX = 64;
+const WIDTH_RESULT_FIELD = '60%';
 
 const ID_BETTING_START_TIME = 'bettingStartTime';
 const ID_BETTING_END_TIME = 'bettingEndTime';
 const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
 const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
+
+let resultUuid = 2;
 
 class CreateTopic extends React.Component {
   constructor(props) {
@@ -39,11 +42,15 @@ class CreateTopic extends React.Component {
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.renderAlertBox = this.renderAlertBox.bind(this);
     this.renderBlockField = this.renderBlockField.bind(this);
+    this.renderResultsFields = this.renderResultsFields.bind(this);
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
+    this.onAddResultField = this.onAddResultField.bind(this);
+    this.onRemoveResultField = this.onRemoveResultField.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
     this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
     this.validateResultSettingEndTime = this.validateResultSettingEndTime.bind(this);
+    this.validateResultLength = this.validateResultLength.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
   }
@@ -58,17 +65,19 @@ class CreateTopic extends React.Component {
 
   render() {
     const { createReturn, blockCount } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
 
+    const labelCol = {
+      xs: { span: 24 },
+      sm: { span: 6 },
+    };
+    const wrapperCol = {
+      xs: { span: 24 },
+      sm: { span: 18 },
+    };
     const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 18 },
-      },
+      labelCol,
+      wrapperCol,
     };
     const tailFormItemLayout = {
       wrapperCol: {
@@ -82,7 +91,11 @@ class CreateTopic extends React.Component {
         },
       },
     };
-
+    let keys = getFieldValue('keys');
+    if (_.isUndefined(keys)) {
+      keys = ['0', '1'];
+    }
+    const required = true;
     return (
       <div className="create-topic-container">
         <h3>Create an event</h3>
@@ -90,6 +103,7 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Name"
+            required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
             {getFieldDecorator('name', {
@@ -117,24 +131,28 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label="Results"
+            required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
-            {getFieldDecorator('results', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Results cannot be empty.',
-                },
-              ],
-            })(<DynamicFieldSet
-              form={this.props.form}
-            />)}
+            {this.renderResultsFields(wrapperCol)}
+            <FormItem {...wrapperCol}>
+              {keys.length < 10 ? (
+                <Button
+                  type="dashed"
+                  onClick={this.onAddResultField}
+                  style={{ width: WIDTH_RESULT_FIELD, marginBottom: '32px' }}
+                >
+                  <Icon type="plus" />Add Result
+                </Button>
+              ) : null}
+            </FormItem>
           </FormItem>
 
           <FormItem
             {...formItemLayout}
             label="Centralized Oracle"
             extra="This person will set the result."
+            required={required}
           >
             {getFieldDecorator('centralizedOracle', {
               rules: [{
@@ -324,6 +342,50 @@ class CreateTopic extends React.Component {
     );
   }
 
+  renderResultsFields(wrapperCol) {
+    const {
+      getFieldDecorator,
+      getFieldValue,
+    } = this.props.form;
+
+    getFieldDecorator('keys', { initialValue: ['0', '1'] });
+    const keys = getFieldValue('keys');
+    const formItems = keys.map((k, index) => (
+      <FormItem
+        {...wrapperCol}
+        key={k}
+        style={{ height: '96px' }}
+      >
+        {getFieldDecorator(`results[${k}]`, {
+          validateTrigger: ['onChange', 'onBlur'],
+          rules: [
+            {
+              required: true,
+              whitespace: true,
+              message: 'Result name cannot be empty.',
+            },
+            {
+              validator: this.validateResultLength,
+            },
+          ],
+        })(<Input
+          placeholder={`Result #${index + 1}`}
+          style={{ width: WIDTH_RESULT_FIELD, marginRight: '8px' }}
+        />)}
+        {keys.length > 2 ? (
+          <Icon
+            className="dynamic-delete-button"
+            type="close-circle-o"
+            disabled={keys.length === 1}
+            onClick={() => this.onRemoveResultField(k)}
+            style={{ fontSize: 16 }}
+          />
+        ) : null}
+      </FormItem>));
+
+    return formItems;
+  }
+
   onDatePickerDateSelect(id, date) {
     const localDate = date.local();
     const block = calculateBlock(this.props.blockCount, localDate);
@@ -371,6 +433,30 @@ class CreateTopic extends React.Component {
     }
   }
 
+  onAddResultField() {
+    const { getFieldValue, setFieldsValue } = this.props.form;
+    const keys = getFieldValue('keys');
+    const nextKeys = keys.concat(resultUuid);
+    resultUuid += 1;
+
+    setFieldsValue({
+      keys: nextKeys,
+    });
+  }
+
+  onRemoveResultField(k) {
+    const { getFieldValue, setFieldsValue } = this.props.form;
+    const keys = getFieldValue('keys');
+
+    if (keys.length === 2) {
+      return;
+    }
+
+    setFieldsValue({
+      keys: keys.filter((key) => key !== k),
+    });
+  }
+
   validateTitleLength(rule, value, callback) {
     let hexString = _.isUndefined(value) ? '' : value;
 
@@ -407,6 +493,18 @@ class CreateTopic extends React.Component {
       callback('Must be greater than Result Setting Start Time');
     } else {
       callback();
+    }
+  }
+
+  validateResultLength(rule, value, callback) {
+    let hexString = _.isUndefined(value) ? '' : value;
+
+    // Remove hex prefix for length validation
+    hexString = Web3Utils.toHex(hexString).slice(2);
+    if (hexString && hexString.length <= MAX_LEN_RESULT_HEX) {
+      callback();
+    } else {
+      callback('Result name is too long.');
     }
   }
 
