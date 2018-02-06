@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import actions from './actions';
+import fetch from 'node-fetch';
 
+import actions from './actions';
+import { request } from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphRequest';
-import { request, convertBNHexStrToQtum } from '../../helpers/utility';
+import { convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../config/routes';
 
 const DEFAULT_QTUMD_ACCOUNTNAME = '';
@@ -153,6 +155,25 @@ export function* getSyncInfoRequestHandler() {
   });
 }
 
+// Get the total statistics from the Qtum Insight API
+export function* getInsightTotalsRequestHandler() {
+  yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
+    try {
+      const result = yield call(request, Routes.insightTotals);
+
+      yield put({
+        type: actions.GET_INSIGHT_TOTALS_RETURN,
+        value: { result },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.GET_INSIGHT_TOTALS_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
@@ -160,5 +181,6 @@ export default function* topicSaga() {
     fork(getBlockRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoRequestHandler),
+    fork(getInsightTotalsRequestHandler),
   ]);
 }

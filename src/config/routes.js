@@ -1,22 +1,24 @@
 import { endpoint } from './app';
 
-const { bodhiapi } = endpoint;
+const BODHI_API = endpoint.bodhiapi;
+const INSIGHT_API = endpoint.insight;
 
 const Routes = {
-  listUnspent: `${bodhiapi}/list-unspent`,
-  getAccountAddress: `${bodhiapi}/get-account-address`,
-  getBlockchainInfo: `${bodhiapi}/get-blockchain-info`,
-  getBlock: `${bodhiapi}/get-block`,
-  approve: `${bodhiapi}/approve`,
-  allowance: `${bodhiapi}/allowance`,
-  botBalance: `${bodhiapi}/bot-balance`,
-  createTopic: `${bodhiapi}/create-topic`,
-  bet: `${bodhiapi}/bet`,
-  setResult: `${bodhiapi}/set-result`,
-  vote: `${bodhiapi}/vote`,
-  finalizeResult: `${bodhiapi}/finalize-result`,
-  withdraw: `${bodhiapi}/withdraw`,
-  winnings: `${bodhiapi}/winnings`,
+  listUnspent: `${BODHI_API}/list-unspent`,
+  getAccountAddress: `${BODHI_API}/get-account-address`,
+  getBlockchainInfo: `${BODHI_API}/get-blockchain-info`,
+  getBlock: `${BODHI_API}/get-block`,
+  approve: `${BODHI_API}/approve`,
+  allowance: `${BODHI_API}/allowance`,
+  botBalance: `${BODHI_API}/bot-balance`,
+  createTopic: `${BODHI_API}/create-topic`,
+  bet: `${BODHI_API}/bet`,
+  setResult: `${BODHI_API}/set-result`,
+  vote: `${BODHI_API}/vote`,
+  finalizeResult: `${BODHI_API}/finalize-result`,
+  withdraw: `${BODHI_API}/withdraw`,
+  winnings: `${BODHI_API}/winnings`,
+  insightTotals: `${INSIGHT_API}/statistics/total`,
 };
 
 export default Routes;

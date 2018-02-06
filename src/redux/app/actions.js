@@ -78,5 +78,11 @@ const actions = {
     type: actions.TOGGLE_SYNCING,
     isSyncing,
   }),
+
+  GET_INSIGHT_TOTALS: 'GET_INSIGHT_TOTALS',
+  GET_INSIGHT_TOTALS_RETURN: 'GET_INSIGHT_TOTALS_RETURN',
+  getInsightTotals: () => ({
+    type: actions.GET_INSIGHT_TOTALS,
+  }),
 };
 export default actions;

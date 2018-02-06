@@ -30,11 +30,12 @@ export default function appReducer(state = initState, action) {
       const walletAddrsIndex = action.value;
       const walletAddrs = state.get('walletAddrs');
 
-      if (!_.isEmpty(walletAddrs) && walletAddrsIndex < walletAddrs.length && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      if (!_.isEmpty(walletAddrs)
+        && walletAddrsIndex < walletAddrs.length
+        && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
         const newState = state.set('walletAddrsIndex', walletAddrsIndex);
         return newState.set('selected_wallet_address', walletAddrs[walletAddrsIndex].address);
       }
-
       break;
     }
 
@@ -75,7 +76,8 @@ export default function appReducer(state = initState, action) {
         existingAddresses = combinedAddresses;
 
         // If initalizing, set initial value for selected_wallet_address here
-        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')] && result[state.get('walletAddrsIndex')].address);
+        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')]
+          && result[state.get('walletAddrsIndex')].address);
       } else { // Update existing address list if new is different
         _.each(existingAddresses, (item) => {
           const newAddressObj = _.find(combinedAddresses, { address: item.address });
@@ -132,6 +134,10 @@ export default function appReducer(state = initState, action) {
 
     case actions.TOGGLE_SYNCING: {
       return state.set('isSyncing', action.isSyncing);
+    }
+
+    case actions.GET_INSIGHT_TOTALS_RETURN: {
+      return state.set('averageBlockTime', action.value.result.time_between_blocks);
     }
 
     default:
