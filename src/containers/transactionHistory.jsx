@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row, Radio, Input, Table, Collapse } from 'antd';
+import { Col, Row, Radio, Input, Table, Collapse, Button } from 'antd';
 import moment from 'moment';
+import _ from 'lodash';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 
@@ -102,6 +103,16 @@ class TransactionHistory extends React.PureComponent {
   }
 
   renderBalances() {
+    const data = [{
+      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+    }, {
+      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+    }, {
+      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+    }, {
+      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+    }];
+
     return (
       <Collapse
         defaultActiveKey={['1']}
@@ -111,13 +122,40 @@ class TransactionHistory extends React.PureComponent {
           key="1"
           header="QTUM"
         >
-          <p>entry</p>
+          {this.renderBalanceRow(data)}
         </Collapse.Panel>
-        <Collapse.Panel header="BOT" key="2">
-          <p>listings</p>
+        <Collapse.Panel
+          key="2"
+          header="BOT"
+        >
+          {this.renderBalanceRow(data)}
         </Collapse.Panel>
       </Collapse>
     );
+  }
+
+  renderBalanceRow(items) {
+    const rows = [];
+    _.each(items, (item) => {
+      rows.push(<div>
+        <Row gutter={16} style={{ width: '100%', padding: '16px' }}>
+          <Col span={10}>
+            qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy
+          </Col>
+          <Col span={6}>
+            123456789.1234567890
+          </Col>
+          <Col span={2} offset={4}>
+            <Button>Deposit</Button>
+          </Col>
+          <Col span={2}>
+            <Button>Withdraw</Button>
+          </Col>
+        </Row>
+      </div>);
+    });
+
+    return rows;
   }
 
   renderHistory() {

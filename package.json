@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "antd": "^2.12.2",
+    "antd": "^2.13.11",
     "antd-local-icon": "^0.1.3",
     "apollo-cache-inmemory": "^1.1.3",
     "apollo-client": "^2.1.0",
