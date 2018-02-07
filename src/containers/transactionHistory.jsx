@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row, Radio, Input, Table } from 'antd';
+import moment from 'moment';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 
@@ -94,6 +95,11 @@ class TransactionHistory extends React.PureComponent {
       dataIndex: 'amount',
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.amount - b.amount,
+    }, {
+      title: 'Date',
+      dataIndex: 'date',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => moment(a.date).isBefore(b.date),
     }, {
       title: 'User',
       dataIndex: 'user',
