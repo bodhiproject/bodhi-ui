@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row, Radio, Input, Table } from 'antd';
+import { Col, Row, Radio, Input, Table, Collapse } from 'antd';
 import moment from 'moment';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
@@ -60,7 +60,7 @@ class TransactionHistory extends React.PureComponent {
             {this.renderSearch()}
           </Col>
         </Row>
-        <Row>
+        <Row style={{ marginTop: '32px' }}>
           {content}
         </Row>
       </LayoutContentWrapper>
@@ -102,7 +102,22 @@ class TransactionHistory extends React.PureComponent {
   }
 
   renderBalances() {
-    return null;
+    return (
+      <Collapse
+        defaultActiveKey={['1']}
+        onChange={null}
+      >
+        <Collapse.Panel
+          key="1"
+          header="QTUM"
+        >
+          <p>entry</p>
+        </Collapse.Panel>
+        <Collapse.Panel header="BOT" key="2">
+          <p>listings</p>
+        </Collapse.Panel>
+      </Collapse>
+    );
   }
 
   renderHistory() {
@@ -166,9 +181,6 @@ class TransactionHistory extends React.PureComponent {
       <Table
         columns={columns}
         dataSource={data}
-        style={{
-          marginTop: '32px',
-        }}
       />
     );
   }
