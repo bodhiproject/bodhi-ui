@@ -9,7 +9,7 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
-const TAB_BALANCE = 0;
+const TAB_BALANCES = 0;
 const TAB_HISTORY = 1;
 
 class TransactionHistory extends React.PureComponent {
@@ -17,7 +17,7 @@ class TransactionHistory extends React.PureComponent {
     super(props);
 
     this.state = {
-      currentTab: TAB_BALANCE,
+      currentTab: TAB_BALANCES,
     };
 
     this.renderRadioGroup = this.renderRadioGroup.bind(this);
@@ -38,7 +38,7 @@ class TransactionHistory extends React.PureComponent {
 
     let content;
     switch (currentTab) {
-      case TAB_BALANCE: {
+      case TAB_BALANCES: {
         content = this.renderBalances();
         break;
       }
@@ -71,7 +71,7 @@ class TransactionHistory extends React.PureComponent {
   renderRadioGroup() {
     const radioButtonStyle = {
       height: '40px',
-      width: '200px',
+      width: '176px',
       lineHeight: '40px',
       fontSize: 14,
       fontWeight: 'bold',
@@ -80,9 +80,9 @@ class TransactionHistory extends React.PureComponent {
 
     return (
       <div>
-        <RadioGroup defaultValue={TAB_BALANCE} size="large" onChange={this.onRadioGroupChange}>
-          <RadioButton value={TAB_BALANCE} style={radioButtonStyle}>Balance</RadioButton>
-          <RadioButton value={TAB_HISTORY} style={radioButtonStyle}>Transaction History</RadioButton>
+        <RadioGroup defaultValue={TAB_BALANCES} size="large" onChange={this.onRadioGroupChange}>
+          <RadioButton value={TAB_BALANCES} style={radioButtonStyle}>Balances</RadioButton>
+          <RadioButton value={TAB_HISTORY} style={radioButtonStyle}>History</RadioButton>
         </RadioGroup>
       </div>
     );
