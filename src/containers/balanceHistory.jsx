@@ -23,6 +23,7 @@ class BalanceHistory extends React.PureComponent {
     this.renderRadioGroup = this.renderRadioGroup.bind(this);
     this.renderSearch = this.renderSearch.bind(this);
     this.renderBalances = this.renderBalances.bind(this);
+    this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderHistory = this.renderHistory.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
   }
@@ -113,24 +114,45 @@ class BalanceHistory extends React.PureComponent {
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     }];
 
+    const header = (
+      <Row gutter={16} style={{ width: '100%', padding: '16px' }}>
+        <Col span={10}>
+          qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy
+        </Col>
+        <Col span={6}>
+          123456789.1234567890
+        </Col>
+        <Col span={2} offset={4}>
+          <Button>Deposit</Button>
+        </Col>
+        <Col span={2}>
+          <Button>Withdraw</Button>
+        </Col>
+      </Row>
+    );
+
     return (
-      <Collapse
-        defaultActiveKey={['1']}
-        onChange={null}
-      >
-        <Collapse.Panel
-          key="1"
-          header="QTUM"
-        >
+      <Collapse defaultActiveKey={['1', '2']}>
+        <Collapse.Panel key="1" header={this.renderHeaderRow('QTUM', 123456789.123456789)}>
           {this.renderBalanceRow(data)}
         </Collapse.Panel>
-        <Collapse.Panel
-          key="2"
-          header="BOT"
-        >
+        <Collapse.Panel key="2" header={this.renderHeaderRow('BOT', 123456789.123456789)}>
           {this.renderBalanceRow(data)}
         </Collapse.Panel>
       </Collapse>
+    );
+  }
+
+  renderHeaderRow(name, amount) {
+    return (
+      <Row gutter={16} style={{ width: '100%', padding: '4px' }}>
+        <Col span={9}>
+          <p style={{ fontWeight: 'bold', fontSize: 18 }}>{name}</p>
+        </Col>
+        <Col span={6}>
+          <p style={{ fontWeight: 'bold', fontSize: 18, marginLeft: '28px' }}>{amount}</p>
+        </Col>
+      </Row>
     );
   }
 
