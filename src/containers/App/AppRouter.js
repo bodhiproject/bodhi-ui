@@ -36,6 +36,11 @@ class AppRouter extends React.Component {
           path={`${url}/create-topic`}
           component={asyncComponent(() => import('../createTopic'))}
         />
+        <Route
+          exact
+          path={`${url}/history`}
+          component={asyncComponent(() => import('../transactionHistory'))}
+        />
       </Switch>
     );
   }
