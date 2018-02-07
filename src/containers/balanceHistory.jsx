@@ -114,23 +114,6 @@ class BalanceHistory extends React.PureComponent {
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     }];
 
-    const header = (
-      <Row gutter={16} style={{ width: '100%', padding: '16px' }}>
-        <Col span={10}>
-          qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy
-        </Col>
-        <Col span={6}>
-          123456789.1234567890
-        </Col>
-        <Col span={2} offset={4}>
-          <Button>Deposit</Button>
-        </Col>
-        <Col span={2}>
-          <Button>Withdraw</Button>
-        </Col>
-      </Row>
-    );
-
     return (
       <Collapse defaultActiveKey={['1', '2']}>
         <Collapse.Panel key="1" header={this.renderHeaderRow('QTUM', 123456789.123456789)}>
