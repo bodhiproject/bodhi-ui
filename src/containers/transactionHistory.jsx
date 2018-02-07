@@ -7,18 +7,23 @@ import LayoutContentWrapper from '../components/utility/layoutWrapper';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-// const { Search } = Input.Search;
+
+const TAB_BALANCE = 0;
+const TAB_HISTORY = 1;
 
 class TransactionHistory extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
+      currentTab: TAB_BALANCE,
     };
 
     this.renderRadioGroup = this.renderRadioGroup.bind(this);
     this.renderSearch = this.renderSearch.bind(this);
-    this.renderTable = this.renderTable.bind(this);
+    this.renderBalances = this.renderBalances.bind(this);
+    this.renderHistory = this.renderHistory.bind(this);
+    this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
   }
 
   componentWillMount() {
@@ -28,6 +33,23 @@ class TransactionHistory extends React.PureComponent {
   }
 
   render() {
+    const { currentTab } = this.state;
+
+    let content;
+    switch (currentTab) {
+      case TAB_BALANCE: {
+        content = this.renderBalances();
+        break;
+      }
+      case TAB_HISTORY: {
+        content = this.renderHistory();
+        break;
+      }
+      default: {
+        throw new RangeError(`Invalid tab index ${currentTab}`);
+      }
+    }
+
     return (
       <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
         <Row gutter={16} style={{ width: '100%' }}>
@@ -39,7 +61,7 @@ class TransactionHistory extends React.PureComponent {
           </Col>
         </Row>
         <Row>
-          {this.renderTable()}
+          {content}
         </Row>
       </LayoutContentWrapper>
     );
@@ -47,9 +69,9 @@ class TransactionHistory extends React.PureComponent {
 
   renderRadioGroup() {
     const radioButtonStyle = {
-      height: '50px',
-      width: '216px',
-      'line-height': '50px',
+      height: '40px',
+      width: '200px',
+      lineHeight: '40px',
       fontSize: 14,
       fontWeight: 'bold',
       textAlign: 'center',
@@ -57,9 +79,9 @@ class TransactionHistory extends React.PureComponent {
 
     return (
       <div>
-        <RadioGroup defaultValue="balance" size="large">
-          <RadioButton value="balance" style={radioButtonStyle}>Balance</RadioButton>
-          <RadioButton value="history" style={radioButtonStyle}>Transaction History</RadioButton>
+        <RadioGroup defaultValue={TAB_BALANCE} size="large" onChange={this.onRadioGroupChange}>
+          <RadioButton value={TAB_BALANCE} style={radioButtonStyle}>Balance</RadioButton>
+          <RadioButton value={TAB_HISTORY} style={radioButtonStyle}>Transaction History</RadioButton>
         </RadioGroup>
       </div>
     );
@@ -75,29 +97,36 @@ class TransactionHistory extends React.PureComponent {
           width: '100%',
           height: '40px',
         }}
-        enterButton
       />
     );
   }
 
-  renderTable() {
+  renderBalances() {
+    return null;
+  }
+
+  renderHistory() {
     const columns = [{
       title: 'Status',
       dataIndex: 'status',
+      width: 120,
       sorter: (a, b) => a.status < b.status ? -1 : 1,
     }, {
       title: 'Coin',
       dataIndex: 'coin',
+      width: 120,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.coin < b.coin ? -1 : 1,
     }, {
       title: 'Amount',
       dataIndex: 'amount',
+      width: 240,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.amount - b.amount,
     }, {
       title: 'Date',
       dataIndex: 'date',
+      width: 240,
       defaultSortOrder: 'descend',
       sorter: (a, b) => moment(a.date).isBefore(b.date),
     }, {
@@ -132,18 +161,22 @@ class TransactionHistory extends React.PureComponent {
       amount: 4444,
       user: 'user4',
     }];
-    const bordered = true;
 
     return (
       <Table
         columns={columns}
         dataSource={data}
-        bordered={bordered}
         style={{
           marginTop: '32px',
         }}
       />
     );
+  }
+
+  onRadioGroupChange(e) {
+    this.setState({
+      currentTab: e.target.value,
+    });
   }
 }
 
