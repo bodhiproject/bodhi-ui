@@ -12,7 +12,7 @@ const RadioButton = Radio.Button;
 const TAB_BALANCES = 0;
 const TAB_HISTORY = 1;
 
-class TransactionHistory extends React.PureComponent {
+class BalanceHistory extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -71,7 +71,7 @@ class TransactionHistory extends React.PureComponent {
   renderRadioGroup() {
     const radioButtonStyle = {
       height: '40px',
-      width: '176px',
+      width: '160px',
       lineHeight: '40px',
       fontSize: 14,
       fontWeight: 'bold',
@@ -230,10 +230,10 @@ class TransactionHistory extends React.PureComponent {
   }
 }
 
-TransactionHistory.propTypes = {
+BalanceHistory.propTypes = {
 };
 
-TransactionHistory.defaultProps = {
+BalanceHistory.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
@@ -242,4 +242,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(BalanceHistory);
