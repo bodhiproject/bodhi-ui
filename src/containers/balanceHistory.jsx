@@ -145,12 +145,21 @@ class BalanceHistory extends React.PureComponent {
 
   renderHeaderRow(name, amount) {
     return (
-      <Row gutter={16} style={{ width: '100%', padding: '4px' }}>
+      <Row
+        gutter={16}
+        style={{
+          width: '100%',
+          paddingLeft: '4px',
+          paddingRight: '4px',
+          marginTop: '8px',
+          paddingBottom: '8px',
+        }}
+      >
         <Col span={9}>
-          <p style={{ fontWeight: 'bold', fontSize: 18 }}>{name}</p>
+          <p style={{ fontWeight: 'bold' }}>{name}</p>
         </Col>
         <Col span={6}>
-          <p style={{ fontWeight: 'bold', fontSize: 18, marginLeft: '28px' }}>{amount}</p>
+          <p style={{ fontWeight: 'bold', marginLeft: '29px' }}>{amount}</p>
         </Col>
       </Row>
     );
