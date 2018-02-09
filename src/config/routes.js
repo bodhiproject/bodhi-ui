@@ -6,7 +6,6 @@ const INSIGHT_API = endpoint.insight;
 const Routes = {
   listUnspent: `${BODHI_API}/list-unspent`,
   getAccountAddress: `${BODHI_API}/get-account-address`,
-  getBlockchainInfo: `${BODHI_API}/get-blockchain-info`,
   approve: `${BODHI_API}/approve`,
   allowance: `${BODHI_API}/allowance`,
   botBalance: `${BODHI_API}/bot-balance`,

@@ -53,27 +53,6 @@ export function* listUnspentRequestHandler() {
   });
 }
 
-export function* getBlockchainInfoRequestHandler() {
-  yield takeEvery(actions.GET_BLOCKCHAIN_INFO, function* getBlockchainInfoRequest() {
-    try {
-      const result = yield call(request, Routes.getBlockchainInfo);
-
-      yield put({
-        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
-        value: {
-          blockCount: result.blocks,
-          blockHash: result.bestblockhash,
-        },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.GET_BLOCKCHAIN_INFO_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* getBotBalanceRequestHandler() {
   yield takeEvery(actions.GET_BOT_BALANCE, function* getBotBalanceRequest(action) {
     try {
@@ -150,7 +129,6 @@ export function* getInsightTotalsRequestHandler() {
 export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
-    fork(getBlockchainInfoRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoRequestHandler),
     fork(getInsightTotalsRequestHandler),

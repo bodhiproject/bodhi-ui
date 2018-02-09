@@ -38,12 +38,6 @@ const actions = {
     type: actions.LIST_UNSPENT,
   }),
 
-  GET_BLOCKCHAIN_INFO: 'GET_BLOCKCHAIN_INFO',
-  GET_BLOCKCHAIN_INFO_RETURN: 'GET_BLOCKCHAIN_INFO_RETURN',
-  getBlockchainInfo: () => ({
-    type: actions.GET_BLOCKCHAIN_INFO,
-  }),
-
   GET_BOT_BALANCE: 'GET_BOT_BALANCE',
   GET_BOT_BALANCE_RETURN: 'GET_BOT_BALANCE_RETURN',
   getBotBalance: (owner, senderAddress) => ({

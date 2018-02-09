@@ -29,15 +29,16 @@ class AppLoad extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { syncInfo, blockCount } = nextProps;
+    const { syncInfo } = nextProps;
 
     // Only update if both syncBlockNum or chainBlockNum are defined as number
-    if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {
-      const syncBlockNum = syncInfo.syncBlockNum || blockCount;
-      let newPercent = _.round((syncBlockNum / syncInfo.chainBlockNum) * 100);
+    if (syncInfo && _.isNumber(syncInfo.syncBlockNum) && _.isNumber(syncInfo.chainBlockNum)) {
+      const { syncBlockNum, chainBlockNum } = syncInfo;
+
+      let newPercent = _.round((syncBlockNum / chainBlockNum) * 100);
 
       // Make new percent 100 if block gap is less than MIN_BLOCK_COUNT_GAP
-      if ((syncInfo.chainBlockNum - syncBlockNum <= MIN_BLOCK_COUNT_GAP) || newPercent > 100) {
+      if ((chainBlockNum - syncBlockNum <= MIN_BLOCK_COUNT_GAP) || newPercent > 100) {
         newPercent = 100;
       }
 
@@ -88,7 +89,6 @@ AppLoad.propTypes = {
   getSyncInfo: PropTypes.func,
   updateSyncProgress: PropTypes.func,
   toggleSyncing: PropTypes.func,
-  blockCount: PropTypes.number,
 };
 
 AppLoad.defaultProps = {
@@ -96,12 +96,10 @@ AppLoad.defaultProps = {
   getSyncInfo: undefined,
   updateSyncProgress: undefined,
   toggleSyncing: undefined,
-  blockCount: 0,
 };
 
 const mapStateToProps = (state) => ({
   syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
-  blockCount: state.App.get('currentBlockCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
