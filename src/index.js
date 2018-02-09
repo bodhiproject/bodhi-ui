@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { LocaleProvider } from 'antd';
 import { IntlProvider } from 'react-intl';
-import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 import themes from './config/themes';
 import DashApp from './dashApp';
 import AppLocale from './languageProvider';
@@ -35,5 +35,9 @@ if (module.hot) {
     ReactDOM.render(<NextApp />, document.getElementById('root'));
   });
 }
-registerServiceWorker();
+
+// Unregister the service worker since we don't want to cache.
+// Necessary for existing users who previously have registered a service worker.
+unregister();
+
 export { AppLocale };
