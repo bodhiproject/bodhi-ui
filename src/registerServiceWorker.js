@@ -15,8 +15,6 @@ export default function register() {
       navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
-          console.debug('Registered service worker', registration);
-
           const reg = registration;
           reg.onupdatefound = () => {
             const installingWorker = registration.installing;
@@ -47,7 +45,6 @@ export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((registration) => {
       registration.unregister();
-      console.debug('Unregistered service worker');
     });
   }
 }
