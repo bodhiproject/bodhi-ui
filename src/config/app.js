@@ -8,8 +8,9 @@ module.exports = {
     graphql: `${BASE_URL}/graphql`,
     insight: BASE_INSIGHT_DEV,
   },
-  intervals: {
-    topBar: 10000, // MS interval for topbar polling
+  intervals: { // in MS
+    syncInfo: 10000,
+    listUnspent: 10000,
   },
   defaults: {
     averageBlockTime: 142.01324503311258,

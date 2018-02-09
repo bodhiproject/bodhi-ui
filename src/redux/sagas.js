@@ -6,5 +6,6 @@ export default function* rootSaga() {
   yield all([
     appSagas(),
     dashboardSagas(),
-    topicSagas()]);
+    topicSagas(),
+  ]);
 }

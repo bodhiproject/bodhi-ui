@@ -76,6 +76,7 @@ const FIELD_MAPPINGS = {
 
   syncInfo: `
     syncBlockNum
+    syncBlockTime
     chainBlockNum
   `,
 };

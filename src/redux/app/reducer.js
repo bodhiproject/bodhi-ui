@@ -20,12 +20,12 @@ const initState = new Map({
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    /** Wallet Addresses * */
     case actions.ADD_WALLET_ADDRESS: {
       const addresses = state.get('walletAddrs');
       addresses.push({ address: action.value, qtum: 0 });
       return state.set('walletAddrs', addresses);
     }
+
     case actions.SELECT_WALLET_ADDRESS: {
       const walletAddrsIndex = action.value;
       const walletAddrs = state.get('walletAddrs');
@@ -39,7 +39,6 @@ export default function appReducer(state = initState, action) {
       break;
     }
 
-    /** List Unspent Return * */
     case actions.LIST_UNSPENT_RESULT: {
       let result = [];
       let newState = state;
@@ -106,15 +105,6 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddrs', walletAddrs);
     }
 
-    case actions.GET_BLOCKCHAIN_INFO_RETURN: {
-      return state.set('currentBlockCount', action.value.blockCount)
-        .set('currentBlockHash', action.value.blockHash);
-    }
-
-    case actions.GET_BLOCK_RETURN: {
-      return state.set('currentBlockTime', action.value.result.time);
-    }
-
     case actions.TOGGLE_ALL:
       if (state.get('view') !== action.view || action.height !== state.height) {
         const height = action.height ? action.height : state.height;
@@ -126,7 +116,7 @@ export default function appReducer(state = initState, action) {
       break;
 
     case actions.GET_SYNC_INFO_RETURN:
-      return state.set('sync_info_return', action.value);
+      return state.set('syncInfo', action.value);
 
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);

@@ -88,13 +88,14 @@ class OraclePage extends React.Component {
     const {
       getOraclesSuccess,
       allowanceReturn,
-      blockTime,
+      syncInfo,
       selectedWalletAddress,
     } = nextProps;
 
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
+    const blockTime = syncInfo.syncBlockTime;
 
     if (oracle) {
       const { token, status } = oracle;
@@ -175,7 +176,7 @@ class OraclePage extends React.Component {
         } else if (status === OracleStatus.OpenResultSet) {
           config.cardInfo.messages.push({
             text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
-            type: 'default',
+            type: 'warn',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
@@ -539,7 +540,7 @@ OraclePage.propTypes = {
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
-  blockTime: PropTypes.number,
+  syncInfo: PropTypes.object,
 };
 
 OraclePage.defaultProps = {
@@ -559,7 +560,7 @@ OraclePage.defaultProps = {
   clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
-  blockTime: undefined,
+  syncInfo: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -569,7 +570,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  blockTime: state.App.get('currentBlockTime'),
+  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
 });
 
 function mapDispatchToProps(dispatch) {
