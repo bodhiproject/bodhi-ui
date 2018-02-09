@@ -151,7 +151,6 @@ export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBlockchainInfoRequestHandler),
-    fork(getBlockRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoRequestHandler),
     fork(getInsightTotalsRequestHandler),

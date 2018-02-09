@@ -176,7 +176,7 @@ class OraclePage extends React.Component {
         } else if (status === OracleStatus.OpenResultSet) {
           config.cardInfo.messages.push({
             text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
-            type: 'default',
+            type: 'warn',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
