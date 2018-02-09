@@ -8,7 +8,6 @@ import moment from 'moment';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
-// import { TopbarSearch } from '../../components/topbar';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
 import AppConfig from '../../config/app';
@@ -243,7 +242,6 @@ class Topbar extends React.PureComponent {
 
   renderBlockInfo() {
     const { syncInfo } = this.props;
-    console.log(syncInfo);
 
     const blockNum = syncInfo && syncInfo.syncBlockNum ? syncInfo.syncBlockNum : '';
     const blockTime = syncInfo && syncInfo.syncBlockTime ? getShortLocalDateTimeString(syncInfo.syncBlockTime) : '';
