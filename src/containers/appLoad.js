@@ -31,8 +31,6 @@ class AppLoad extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const { syncInfo, blockCount } = nextProps;
 
-    console.log(syncInfo);
-
     // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {
       const syncBlockNum = syncInfo.syncBlockNum || blockCount;

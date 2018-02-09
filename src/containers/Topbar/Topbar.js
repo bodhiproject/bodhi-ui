@@ -101,6 +101,7 @@ class Topbar extends React.PureComponent {
     };
 
     this.showModal = this.showModal.bind(this);
+    this.renderBlockInfo = this.renderBlockInfo.bind(this);
     this.handleAddAccountClicked = this.handleAddAccountClicked.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
@@ -142,49 +143,6 @@ class Topbar extends React.PureComponent {
         getBotBalance(ownerAddress, senderAddress);
       });
     }
-  }
-
-  onAddressDropdownClick({ key, item }) {
-    if (key === KEY_ADD_ADDRESS_BTN) {
-      this.showModal();
-    } else {
-      message.info(`Primary wallet address set to "${key}".`);
-      this.props.selectWalletAddress(item.props.index);
-    }
-  }
-
-  onAddressInputChange(e) {
-    this.setState({
-      addressInput: e.target.value,
-    });
-  }
-
-  onCopyClicked(text) {
-    message.info(`Copied address ${text}`);
-  }
-
-  handleAddAccountClicked() {
-    // Push this.state.addressInput to state.App
-    this.props.addWalletAddress(this.state.addressInput);
-
-    // Clear input fields
-    this.setState({
-      visible: false,
-      addressInput: '',
-    });
-  }
-
-  showModal() {
-    this.setState({
-      visible: true,
-    });
-  }
-
-  handleCancel() {
-    this.setState({
-      visible: false,
-      addressInput: '',
-    });
   }
 
   render() {
@@ -249,25 +207,13 @@ class Topbar extends React.PureComponent {
                       />
                     </Link>
                   </div>
-                  {/* <div className="isoSearch" style={{ cursor: 'pointer' }}>
-                                      <TopbarSearch customizedTheme={customizedTheme} />
-                                    </div> */}
                 </div>
 
                 <ul className="isoRight">
                   <li><Link to="/" >Events</Link></li>
                   <li><Link to="/create-topic" >Create an Event</Link></li>
                   <li>{walletAddrsEle}</li>
-                  <li>
-                    <div className="block-count" style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}>
-                      <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
-                        Current Block: {blockCount}
-                      </div>
-                      <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
-                        {blockTime ? getShortLocalDateTimeString(blockTime) : ''}
-                      </div>
-                    </div>
-                  </li>
+                  <li>{this.renderBlockInfo()}</li>
                 </ul>
               </div>
             </div>
@@ -294,6 +240,71 @@ class Topbar extends React.PureComponent {
       </TopbarWrapper>
     );
   }
+
+  renderBlockInfo() {
+    const { syncInfo } = this.props;
+    console.log(syncInfo);
+
+    const blockNum = syncInfo && syncInfo.syncBlockNum ? syncInfo.syncBlockNum : '';
+    const blockTime = syncInfo && syncInfo.syncBlockTime ? getShortLocalDateTimeString(syncInfo.syncBlockTime) : '';
+
+    return (
+      <div
+        className="block-count"
+        style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}
+      >
+        <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
+          Current Block: {blockNum}
+        </div>
+        <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
+          {blockTime}
+        </div>
+      </div>
+    );
+  }
+
+  onAddressDropdownClick({ key, item }) {
+    if (key === KEY_ADD_ADDRESS_BTN) {
+      this.showModal();
+    } else {
+      message.info(`Primary wallet address set to "${key}".`);
+      this.props.selectWalletAddress(item.props.index);
+    }
+  }
+
+  onAddressInputChange(e) {
+    this.setState({
+      addressInput: e.target.value,
+    });
+  }
+
+  onCopyClicked(text) {
+    message.info(`Copied address ${text}`);
+  }
+
+  handleAddAccountClicked() {
+    // Push this.state.addressInput to state.App
+    this.props.addWalletAddress(this.state.addressInput);
+
+    // Clear input fields
+    this.setState({
+      visible: false,
+      addressInput: '',
+    });
+  }
+
+  showModal() {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  handleCancel() {
+    this.setState({
+      visible: false,
+      addressInput: '',
+    });
+  }
 }
 
 Topbar.propTypes = {
@@ -303,6 +314,7 @@ Topbar.propTypes = {
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
+  syncInfo: PropTypes.object,
   getBlockchainInfo: PropTypes.func,
   getBlock: PropTypes.func,
   blockCount: PropTypes.number,
@@ -317,6 +329,7 @@ Topbar.defaultProps = {
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
+  syncInfo: undefined,
   getBlockchainInfo: undefined,
   getBlock: undefined,
   blockCount: 0,
@@ -328,6 +341,7 @@ Topbar.defaultProps = {
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
+  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
   blockCount: state.App.get('currentBlockCount'),
   blockHash: state.App.get('currentBlockHash'),
   blockTime: state.App.get('currentBlockTime'),
