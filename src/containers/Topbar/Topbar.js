@@ -109,28 +109,18 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const {
-      getBlockchainInfo,
-      listUnspent,
-    } = this.props;
+    const { listUnspent } = this.props;
 
-    (function startPoll() {
-      getBlockchainInfo();
+    // Start listUnspent long polling
+    function pollListUnspent() {
       listUnspent();
-      setTimeout(startPoll, AppConfig.intervals.topBar);
-    }());
+      setTimeout(pollListUnspent, AppConfig.intervals.listUnspent);
+    }
+    pollListUnspent();
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      getBlock,
-      blockHash,
-      getBotBalance,
-    } = this.props;
-
-    if (nextProps.blockHash !== blockHash) {
-      getBlock(nextProps.blockHash);
-    }
+    const { getBotBalance } = this.props;
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
     const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
@@ -149,8 +139,6 @@ class Topbar extends React.PureComponent {
     const {
       collapsed,
       walletAddrs,
-      blockCount,
-      blockTime,
       selectedWalletAddress,
     } = this.props;
 
@@ -312,13 +300,8 @@ Topbar.propTypes = {
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
-  syncInfo: PropTypes.object,
-  getBlockchainInfo: PropTypes.func,
-  getBlock: PropTypes.func,
-  blockCount: PropTypes.number,
-  blockHash: PropTypes.string,
-  blockTime: PropTypes.number,
   getBotBalance: PropTypes.func,
+  syncInfo: PropTypes.object,
 };
 
 Topbar.defaultProps = {
@@ -327,31 +310,21 @@ Topbar.defaultProps = {
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
   listUnspent: undefined,
-  syncInfo: undefined,
-  getBlockchainInfo: undefined,
-  getBlock: undefined,
-  blockCount: 0,
-  blockHash: undefined,
-  blockTime: undefined,
   getBotBalance: undefined,
+  syncInfo: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
-  blockCount: state.App.get('currentBlockCount'),
-  blockHash: state.App.get('currentBlockHash'),
-  blockTime: state.App.get('currentBlockTime'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
   listUnspent: () => dispatch(appActions.listUnspent()),
-  getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
-  getBlock: (blockHash) => dispatch(appActions.getBlock(blockHash)),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 

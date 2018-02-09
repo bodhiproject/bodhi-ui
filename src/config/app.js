@@ -10,7 +10,7 @@ module.exports = {
   },
   intervals: { // in MS
     syncInfo: 10000,
-    topBar: 10000,
+    listUnspent: 10000,
   },
   defaults: {
     averageBlockTime: 142.01324503311258,
