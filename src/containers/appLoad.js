@@ -4,8 +4,8 @@ import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
 import appActions from '../redux/app/actions';
+import AppConfig from '../config/app';
 
-const POOL_INTERVAL = 10000;
 const MIN_BLOCK_COUNT_GAP = 3;
 
 class AppLoad extends React.PureComponent {
@@ -20,14 +20,18 @@ class AppLoad extends React.PureComponent {
   componentWillMount() {
     const { getSyncInfo } = this.props;
 
-    (function startPoll() {
+    // Start syncInfo long polling
+    function pollSyncInfo() {
       getSyncInfo();
-      setTimeout(startPoll, POOL_INTERVAL);
-    }());
+      setTimeout(pollSyncInfo, AppConfig.intervals.syncInfo);
+    }
+    pollSyncInfo();
   }
 
   componentWillReceiveProps(nextProps) {
     const { syncInfo, blockCount } = nextProps;
+
+    console.log(syncInfo);
 
     // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (syncInfo && _.isNumber(syncInfo.chainBlockNum)) {

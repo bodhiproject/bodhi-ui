@@ -139,7 +139,6 @@ export function* getBotBalanceRequestHandler() {
 export function* getSyncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* getSyncInfoRequest(action) {
     try {
-      // Query all topics data using graphQL call
       const result = yield call(querySyncInfo);
 
       yield put({
