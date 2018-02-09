@@ -74,32 +74,6 @@ export function* getBlockchainInfoRequestHandler() {
   });
 }
 
-export function* getBlockRequestHandler() {
-  yield takeEvery(actions.GET_BLOCK, function* getBlockRequest(action) {
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          blockHash: action.blockHash,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.getBlock, options);
-
-      yield put({
-        type: actions.GET_BLOCK_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.GET_BLOCK_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* getBotBalanceRequestHandler() {
   yield takeEvery(actions.GET_BOT_BALANCE, function* getBotBalanceRequest(action) {
     try {
