@@ -49,7 +49,11 @@ class GraphParser {
   }
 
   static parseSyncInfo(data) {
-    return _.pick(data, ['syncBlockNum', 'chainBlockNum']);
+    return _.pick(data, [
+      'syncBlockNum',
+      'syncBlockTime',
+      'chainBlockNum',
+    ]);
   }
 }
 
