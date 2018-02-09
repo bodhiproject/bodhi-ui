@@ -57,7 +57,6 @@ class CreateTopic extends React.Component {
   }
 
   componentWillMount() {
-    this.props.getBlockchainInfo();
     this.props.getInsightTotals();
   }
 
@@ -66,7 +65,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn, blockCount } = this.props;
+    const { createReturn } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const labelCol = {
@@ -125,10 +124,10 @@ class CreateTopic extends React.Component {
             />)}
           </FormItem>
 
-          {this.renderBlockField(formItemLayout, ID_BETTING_START_TIME, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_BETTING_END_TIME, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_START_TIME, blockCount)}
-          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_END_TIME, blockCount)}
+          {this.renderBlockField(formItemLayout, ID_BETTING_START_TIME)}
+          {this.renderBlockField(formItemLayout, ID_BETTING_END_TIME)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_START_TIME)}
+          {this.renderBlockField(formItemLayout, ID_RESULT_SETTING_END_TIME)}
 
           <FormItem
             {...formItemLayout}
@@ -221,7 +220,8 @@ class CreateTopic extends React.Component {
     );
   }
 
-  renderBlockField(formItemLayout, id, blockCount) {
+  renderBlockField(formItemLayout, id) {
+    const { syncInfo } = this.props;
     const {
       bettingStartBlock,
       bettingEndBlock,
@@ -229,6 +229,7 @@ class CreateTopic extends React.Component {
       resultSettingEndBlock,
     } = this.state;
     const blockNumDisabled = true;
+    const blockCount = syncInfo.chainBlockNum;
 
     let label;
     let extra;
@@ -390,10 +391,11 @@ class CreateTopic extends React.Component {
 
   onDatePickerDateSelect(id, date) {
     const {
-      blockCount,
+      syncInfo,
       averageBlockTime,
     } = this.props;
 
+    const blockCount = syncInfo.chainBlockNum;
     const localDate = date.local();
     const block = calculateBlock(blockCount, localDate, averageBlockTime);
 
@@ -557,11 +559,10 @@ CreateTopic.propTypes = {
   createReturn: PropTypes.object,
   onCreateTopic: PropTypes.func,
   onClearCreateReturn: PropTypes.func,
-  getBlockchainInfo: PropTypes.func,
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-  blockCount: PropTypes.number,
+  syncInfo: PropTypes.object,
   averageBlockTime: PropTypes.number,
 };
 
@@ -569,11 +570,10 @@ CreateTopic.defaultProps = {
   createReturn: undefined,
   onCreateTopic: undefined,
   onClearCreateReturn: undefined,
-  getBlockchainInfo: undefined,
   getInsightTotals: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
-  blockCount: 0,
+  syncInfo: undefined,
   averageBlockTime: defaults.averageBlockTime,
 };
 
@@ -581,7 +581,7 @@ const mapStateToProps = (state) => ({
   createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-  blockCount: state.App.get('currentBlockCount'),
+  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
   averageBlockTime: state.App.get('averageBlockTime'),
 });
 
@@ -589,7 +589,6 @@ function mapDispatchToProps(dispatch) {
   return {
     onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
     onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
-    getBlockchainInfo: () => dispatch(appActions.getBlockchainInfo()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
 }
