@@ -1,17 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row, Radio, Input } from 'antd';
-import Typography from 'material-ui/Typography';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
-import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 import _ from 'lodash';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
+import BalanceList from '../components/material-ui/balanceList';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -110,78 +104,10 @@ class BalanceHistory extends React.PureComponent {
   }
 
   renderBalances() {
-    // const { classes } = this.props;
-    const expanded = true;
-    const data = [{
-      id: '0',
-      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-      amount: 12345,
-    }, {
-      id: '1',
-      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-      amount: 12345,
-    }, {
-      id: '2',
-      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-      amount: 12345,
-    }, {
-      id: '3',
-      address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-      amount: 12345,
-    }];
-
     return (
       <div>
-        <Paper style={{ marginBottom: '4px' }}>
-          <ExpansionPanel defaultExpanded={expanded}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>QTUM</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Table>
-                <TableBody>
-                  {data.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.address}</TableCell>
-                      <TableCell numeric>{item.amount}</TableCell>
-                      <TableCell width="50px">
-                        <Button size="small" variant="raised">Deposit</Button>
-                      </TableCell>
-                      <TableCell width="50px">
-                        <Button size="small" variant="raised">Withdraw</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </Paper>
-        <Paper>
-          <ExpansionPanel defaultExpanded={expanded}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>BOT</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Table>
-                <TableBody>
-                  {data.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.address}</TableCell>
-                      <TableCell numeric>{item.amount}</TableCell>
-                      <TableCell width="50px">
-                        <Button size="small" variant="raised">Deposit</Button>
-                      </TableCell>
-                      <TableCell width="50px">
-                        <Button size="small" variant="raised">Withdraw</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </Paper>
+        <BalanceList header="QTUM" />
+        <BalanceList header="BOT" />
       </div>
     );
   }
@@ -244,10 +170,11 @@ class BalanceHistory extends React.PureComponent {
     }];
 
     return (
-      <Table
+      /* <Table
         columns={columns}
         dataSource={data}
-      />
+      /> */
+      null
     );
   }
 
