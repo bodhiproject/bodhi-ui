@@ -1,6 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row, Radio, Input, Table, Collapse, Button } from 'antd';
+import { Col, Row, Radio, Input } from 'antd';
+import Typography from 'material-ui/Typography';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import Button from 'material-ui/Button';
+import Paper from 'material-ui/Paper';
+import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -23,7 +30,6 @@ class BalanceHistory extends React.PureComponent {
     this.renderRadioGroup = this.renderRadioGroup.bind(this);
     this.renderSearch = this.renderSearch.bind(this);
     this.renderBalances = this.renderBalances.bind(this);
-    this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderHistory = this.renderHistory.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
   }
@@ -104,72 +110,80 @@ class BalanceHistory extends React.PureComponent {
   }
 
   renderBalances() {
+    // const { classes } = this.props;
+    const expanded = true;
     const data = [{
+      id: '0',
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+      amount: 12345,
     }, {
+      id: '1',
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+      amount: 12345,
     }, {
+      id: '2',
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+      amount: 12345,
     }, {
+      id: '3',
       address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+      amount: 12345,
     }];
 
     return (
-      <Collapse defaultActiveKey={['1', '2']}>
-        <Collapse.Panel key="1" header={this.renderHeaderRow('QTUM', 123456789.123456789)}>
-          {this.renderBalanceRow(data)}
-        </Collapse.Panel>
-        <Collapse.Panel key="2" header={this.renderHeaderRow('BOT', 123456789.123456789)}>
-          {this.renderBalanceRow(data)}
-        </Collapse.Panel>
-      </Collapse>
+      <div>
+        <Paper style={{ marginBottom: '4px' }}>
+          <ExpansionPanel defaultExpanded={expanded}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>QTUM</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Table>
+                <TableBody>
+                  {data.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.address}</TableCell>
+                      <TableCell numeric>{item.amount}</TableCell>
+                      <TableCell width="50px">
+                        <Button size="small" variant="raised">Deposit</Button>
+                      </TableCell>
+                      <TableCell width="50px">
+                        <Button size="small" variant="raised">Withdraw</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Paper>
+        <Paper>
+          <ExpansionPanel defaultExpanded={expanded}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>BOT</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Table>
+                <TableBody>
+                  {data.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.address}</TableCell>
+                      <TableCell numeric>{item.amount}</TableCell>
+                      <TableCell width="50px">
+                        <Button size="small" variant="raised">Deposit</Button>
+                      </TableCell>
+                      <TableCell width="50px">
+                        <Button size="small" variant="raised">Withdraw</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Paper>
+      </div>
     );
-  }
-
-  renderHeaderRow(name, amount) {
-    return (
-      <Row
-        gutter={16}
-        style={{
-          width: '100%',
-          paddingLeft: '4px',
-          paddingRight: '4px',
-          marginTop: '8px',
-          paddingBottom: '8px',
-        }}
-      >
-        <Col span={9}>
-          <p style={{ fontWeight: 'bold' }}>{name}</p>
-        </Col>
-        <Col span={6}>
-          <p style={{ fontWeight: 'bold', marginLeft: '29px' }}>{amount}</p>
-        </Col>
-      </Row>
-    );
-  }
-
-  renderBalanceRow(items) {
-    const rows = [];
-    _.each(items, (item) => {
-      rows.push(<div>
-        <Row gutter={16} style={{ width: '100%', padding: '16px' }}>
-          <Col span={10}>
-            qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy
-          </Col>
-          <Col span={6}>
-            123456789.1234567890
-          </Col>
-          <Col span={2} offset={4}>
-            <Button>Deposit</Button>
-          </Col>
-          <Col span={2}>
-            <Button>Withdraw</Button>
-          </Col>
-        </Row>
-      </div>);
-    });
-
-    return rows;
   }
 
   renderHistory() {
