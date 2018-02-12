@@ -1,6 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
@@ -12,7 +12,9 @@ import Button from 'material-ui/Button';
 const styles = (theme) => ({
   root: {
     width: '100%',
+    height: '100%',
     marginBottom: 4,
+    overflow: 'hidden',
   },
   panelSummary: {
     background: '#F9F9F9',

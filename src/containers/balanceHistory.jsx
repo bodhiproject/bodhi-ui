@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import BalanceList from '../components/material-ui/balanceList';
+import TransactionHistory from '../components/material-ui/transactionHistory';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -113,69 +114,7 @@ class BalanceHistory extends React.PureComponent {
   }
 
   renderHistory() {
-    const columns = [{
-      title: 'Status',
-      dataIndex: 'status',
-      width: 120,
-      sorter: (a, b) => a.status < b.status ? -1 : 1,
-    }, {
-      title: 'Coin',
-      dataIndex: 'coin',
-      width: 120,
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.coin < b.coin ? -1 : 1,
-    }, {
-      title: 'Amount',
-      dataIndex: 'amount',
-      width: 240,
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.amount - b.amount,
-    }, {
-      title: 'Date',
-      dataIndex: 'date',
-      width: 240,
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => moment(a.date).isBefore(b.date),
-    }, {
-      title: 'User',
-      dataIndex: 'user',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.user < b.user ? -1 : 1,
-    }];
-
-    const data = [{
-      key: '1',
-      status: 'Pending',
-      coin: 'QTUM',
-      amount: 1111,
-      user: 'user1',
-    }, {
-      key: '2',
-      status: 'Completed',
-      coin: 'QTUM',
-      amount: 2222,
-      user: 'user2',
-    }, {
-      key: '3',
-      status: 'Pending',
-      coin: 'BOT',
-      amount: 3333,
-      user: 'user3',
-    }, {
-      key: '4',
-      status: 'Completed',
-      coin: 'BOT',
-      amount: 4444,
-      user: 'user4',
-    }];
-
-    return (
-      /* <Table
-        columns={columns}
-        dataSource={data}
-      /> */
-      null
-    );
+    return <TransactionHistory />;
   }
 
   onRadioGroupChange(e) {
