@@ -85,7 +85,12 @@ class BalanceHistory extends React.PureComponent {
 
     return (
       <div>
-        <RadioGroup defaultValue={TAB_BALANCES} size="large" onChange={this.onRadioGroupChange}>
+        <RadioGroup
+          defaultValue={TAB_BALANCES}
+          size="large"
+          onChange={this.onRadioGroupChange}
+          style={{ height: 40 }}
+        >
           <RadioButton value={TAB_BALANCES} style={radioButtonStyle}>Balances</RadioButton>
           <RadioButton value={TAB_HISTORY} style={radioButtonStyle}>History</RadioButton>
         </RadioGroup>
