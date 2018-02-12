@@ -19,7 +19,7 @@ const styles = (theme) => ({
     background: '#F9F9F9',
   },
   header: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   cellAddress: {

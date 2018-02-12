@@ -9,12 +9,14 @@ import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 
 const styles = (theme) => ({
   root: {
+    width: '100%',
     background: '#ffffff',
     borderRadius: 8,
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 16,
     paddingRight: 16,
+    fontSize: 14,
   },
 });
 
