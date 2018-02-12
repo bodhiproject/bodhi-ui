@@ -7,6 +7,8 @@ import Paper from 'material-ui/Paper';
 import Table, { TableHead, TableBody, TableRow, TableCell, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 
+import { SortBy } from '../../constants';
+
 const ID_STATUS = 'status';
 const ID_COIN = 'coin';
 const ID_AMOUNT = 'amount';
@@ -88,7 +90,7 @@ class TransactionHistory extends React.Component {
         date: 'Sep 1, 2018 12:00:00',
         user: 'user4',
       }],
-      order: 'desc',
+      order: SortBy.Descending.toLowerCase(),
       orderBy: ID_STATUS,
     };
 
@@ -151,13 +153,13 @@ class TransactionHistory extends React.Component {
 
   handleSortClick(event, property) {
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
-    const data = order === 'desc'
+    const data = order === SortBy.Descending.toLowerCase()
       ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
       : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
