@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 import Table, { TableHead, TableBody, TableRow, TableCell, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 
-import { SortBy } from '../../constants';
+import { SortBy } from '../../../constants';
 
 const ID_STATUS = 'status';
 const ID_COIN = 'coin';

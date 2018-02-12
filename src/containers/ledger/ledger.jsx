@@ -5,9 +5,9 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import LayoutContentWrapper from '../../components/utility/layoutWrapper';
-import SearchField from '../../components/material-ui/searchField';
-import BalanceList from '../../components/material-ui/balanceList';
-import TransactionHistory from '../../components/material-ui/transactionHistory';
+import SearchField from '../../components/material-ui/ledger/searchField';
+import BalanceList from '../../components/material-ui/ledger/balanceList';
+import TransactionHistory from '../../components/material-ui/ledger/transactionHistory';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
