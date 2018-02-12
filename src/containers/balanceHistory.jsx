@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import LayoutContentWrapper from '../components/utility/layoutWrapper';
+import SearchField from '../components/material-ui/searchField';
 import BalanceList from '../components/material-ui/balanceList';
 import TransactionHistory from '../components/material-ui/transactionHistory';
 
@@ -23,9 +24,6 @@ class BalanceHistory extends React.PureComponent {
     };
 
     this.renderRadioGroup = this.renderRadioGroup.bind(this);
-    this.renderSearch = this.renderSearch.bind(this);
-    this.renderBalances = this.renderBalances.bind(this);
-    this.renderHistory = this.renderHistory.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
   }
 
@@ -41,11 +39,16 @@ class BalanceHistory extends React.PureComponent {
     let content;
     switch (currentTab) {
       case TAB_BALANCES: {
-        content = this.renderBalances();
+        content = (
+          <div>
+            <BalanceList header="QTUM" />
+            <BalanceList header="BOT" />
+          </div>
+        );
         break;
       }
       case TAB_HISTORY: {
-        content = this.renderHistory();
+        content = <TransactionHistory />;
         break;
       }
       default: {
@@ -60,7 +63,7 @@ class BalanceHistory extends React.PureComponent {
             {this.renderRadioGroup()}
           </Col>
           <Col span={6} offset={6}>
-            {this.renderSearch()}
+            <SearchField />
           </Col>
         </Row>
         <Row style={{ marginTop: '32px' }}>
@@ -88,33 +91,6 @@ class BalanceHistory extends React.PureComponent {
         </RadioGroup>
       </div>
     );
-  }
-
-  renderSearch() {
-    return (
-      <Input.Search
-        size="large"
-        placeholder="Search"
-        onSearch={(value) => console.log(value)}
-        style={{
-          width: '100%',
-          height: '40px',
-        }}
-      />
-    );
-  }
-
-  renderBalances() {
-    return (
-      <div>
-        <BalanceList header="QTUM" />
-        <BalanceList header="BOT" />
-      </div>
-    );
-  }
-
-  renderHistory() {
-    return <TransactionHistory />;
   }
 
   onRadioGroupChange(e) {
