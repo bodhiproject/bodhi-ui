@@ -12,8 +12,7 @@ import Button from 'material-ui/Button';
 const styles = (theme) => ({
   root: {
     width: '100%',
-    height: '100%',
-    marginBottom: 4,
+    marginTop: theme.spacing.unit,
     overflow: 'hidden',
   },
   panelSummary: {
@@ -23,15 +22,20 @@ const styles = (theme) => ({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cellAddress: {
+    width: '40%',
+  },
+  cellAmount: {
+    width: '50%',
+  },
+  cellButton: {
+    width: '10%',
+  },
   button: {
-    borderRadius: 4,
+    borderRadius: 8,
+    margin: theme.spacing.unit,
   },
 });
-
-const buttonColStyle = {
-  width: 50,
-};
-const expanded = true;
 
 class BalanceList extends React.Component {
   constructor(props, context) {
@@ -65,9 +69,7 @@ class BalanceList extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const {
-      header,
-    } = this.state;
+    const { header } = this.state;
 
     return (
       <Paper className={classes.root} margin={4}>
@@ -76,25 +78,24 @@ class BalanceList extends React.Component {
             <Typography className={classes.header}>{header}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Table className={classes.table}>
+            <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell style={buttonColStyle}></TableCell>
-                  <TableCell style={buttonColStyle}></TableCell>
+                  <TableCell className={classes.cellAddress} variant="head">Address</TableCell>
+                  <TableCell className={classes.cellAmount} variant="head">Amount</TableCell>
+                  <TableCell className={classes.cellButton} variant="head"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {this.state.data.map((item) => (
                   <TableRow key={item.id} hover>
-                    <TableCell>{item.address}</TableCell>
-                    <TableCell>{item.amount}</TableCell>
-                    <TableCell style={buttonColStyle}>
-                      <Button className={classes.button} size="small" variant="raised">Deposit</Button>
-                    </TableCell>
-                    <TableCell style={buttonColStyle}>
-                      <Button className={classes.button} size="small" variant="raised">Withdraw</Button>
+                    <TableCell className={classes.cellAddress} variant="body">{item.address}</TableCell>
+                    <TableCell className={classes.cellAmount} variant="body">{item.amount}</TableCell>
+                    <TableCell className={classes.cellButton} variant="body">
+                      <div style={{ display: 'flex' }}>
+                        <Button className={classes.button} size="small" color="primary">Deposit</Button>
+                        <Button className={classes.button} size="small" color="secondary">Withdraw</Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -109,11 +110,10 @@ class BalanceList extends React.Component {
 
 BalanceList.propTypes = {
   classes: PropTypes.object.isRequired,
-  header: PropTypes.string,
+  header: PropTypes.string.isRequired,
 };
 
 BalanceList.defaultProps = {
-  header: undefined,
 };
 
 export default withStyles(styles)(BalanceList);

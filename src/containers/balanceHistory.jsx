@@ -66,7 +66,7 @@ class BalanceHistory extends React.PureComponent {
             <SearchField />
           </Col>
         </Row>
-        <Row style={{ marginTop: '32px' }}>
+        <Row style={{ marginTop: 32, marginBottom: 32 }}>
           {content}
         </Row>
       </LayoutContentWrapper>
