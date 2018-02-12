@@ -4,28 +4,55 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
+import Table, { TableHead, TableBody, TableRow, TableCell, TableSortLabel } from 'material-ui/Table';
+import Tooltip from 'material-ui/Tooltip';
+
+const ID_STATUS = 'status';
+const ID_COIN = 'coin';
+const ID_AMOUNT = 'amount';
+const ID_DATE = 'date';
+const ID_USER = 'user';
 
 const styles = (theme) => ({
   root: {
     width: '100%',
-    marginBottom: 4,
   },
-  panelSummary: {
-    background: '#F9F9F9',
+  headerCell: {
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  header: {
+  headerLabel: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  button: {
-    borderRadius: 4,
-  },
 });
 
-const buttonColStyle = {
-  width: 50,
-};
+const headerRow = [{
+  id: ID_STATUS,
+  label: 'Status',
+  numeric: false,
+  disablePadding: false,
+}, {
+  id: ID_COIN,
+  label: 'Coin',
+  numeric: false,
+  disablePadding: false,
+}, {
+  id: ID_AMOUNT,
+  label: 'Amount',
+  numeric: false,
+  disablePadding: false,
+}, {
+  id: ID_DATE,
+  label: 'Date',
+  numeric: false,
+  disablePadding: false,
+}, {
+  id: ID_USER,
+  label: 'User',
+  numeric: false,
+  disablePadding: false,
+}];
 
 class TransactionHistory extends React.Component {
   constructor(props, context) {
@@ -61,26 +88,49 @@ class TransactionHistory extends React.Component {
         date: 'Sep 1, 2018 12:00:00',
         user: 'user4',
       }],
+      order: 'desc',
+      orderBy: ID_STATUS,
     };
+
+    this.createSortHandler = this.createSortHandler.bind(this);
+    this.handleSortClick = this.handleSortClick.bind(this);
   }
 
   render() {
     const { classes } = this.props;
+    const { data, order, orderBy } = this.state;
 
     return (
-      <Paper className={classes.root} margin={4}>
-        <Table className={classes.table}>
+      <Paper className={classes.root}>
+        <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell>Coin</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>User</TableCell>
-            </TableRow>
+            {headerRow.map((item) => (
+              <TableCell
+                className={classes.headerCell}
+                key={item.id}
+                numeric={item.numeric}
+                padding={item.disablePadding ? 'none' : 'default'}
+                sortDirection={orderBy === item.id ? order : false}
+              >
+                <Tooltip
+                  title="Sort"
+                  placement={item.numeric ? 'bottom-end' : 'bottom-start'}
+                  enterDelay={300}
+                >
+                  <TableSortLabel
+                    className={classes.headerLabel}
+                    active={orderBy === item.id}
+                    direction={order}
+                    onClick={this.createSortHandler(item.id)}
+                  >
+                    {item.label}
+                  </TableSortLabel>
+                </Tooltip>
+              </TableCell>
+            ))}
           </TableHead>
           <TableBody>
-            {this.state.data.map((item) => (
+            {data.map((item) => (
               <TableRow key={item.id} hover>
                 <TableCell>{item.status}</TableCell>
                 <TableCell>{item.coin}</TableCell>
@@ -93,6 +143,29 @@ class TransactionHistory extends React.Component {
         </Table>
       </Paper>
     );
+  }
+
+  createSortHandler = (property) => (event) => {
+    this.handleSortClick(event, property);
+  };
+
+  handleSortClick(event, property) {
+    const orderBy = property;
+    let order = 'desc';
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc';
+    }
+
+    const data = order === 'desc'
+      ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+    this.setState({
+      data,
+      order,
+      orderBy,
+    });
   }
 }
 
