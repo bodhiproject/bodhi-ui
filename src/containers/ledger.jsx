@@ -15,7 +15,7 @@ const RadioButton = Radio.Button;
 const TAB_BALANCES = 0;
 const TAB_HISTORY = 1;
 
-class BalanceHistory extends React.PureComponent {
+class Ledger extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -105,10 +105,10 @@ class BalanceHistory extends React.PureComponent {
   }
 }
 
-BalanceHistory.propTypes = {
+Ledger.propTypes = {
 };
 
-BalanceHistory.defaultProps = {
+Ledger.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
@@ -117,4 +117,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BalanceHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(Ledger);
