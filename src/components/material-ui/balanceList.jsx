@@ -72,7 +72,7 @@ class BalanceList extends React.Component {
     const { header } = this.state;
 
     return (
-      <Paper className={classes.root} margin={4}>
+      <Paper className={classes.root}>
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary className={classes.panelSummary} expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.header}>{header}</Typography>
