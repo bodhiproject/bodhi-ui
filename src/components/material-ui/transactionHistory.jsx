@@ -22,9 +22,10 @@ const styles = (theme) => ({
   headerCell: {
     paddingTop: 16,
     paddingBottom: 16,
+    background: '#F9F9F9',
   },
   headerLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
