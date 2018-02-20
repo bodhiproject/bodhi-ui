@@ -22,37 +22,6 @@ const DEFAULT_RADIO_VALUE = 0;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 class OraclePage extends React.Component {
-  /**
- * Get Bet or Vote names and balances from oracle
- * @param  {object} oracle Oracle object
- * @return {array}         {name, value, percent}
- */
-  static getBetOrVoteArray(oracle) {
-    const totalBalance = _.sum(oracle.amounts);
-
-    if (oracle.token === Token.Qtum) {
-      return _.map(oracle.options, (optionName, index) => {
-        const optionAmount = oracle.amounts[index] || 0;
-        return {
-          name: optionName,
-          value: `${optionAmount} ${oracle.token}`,
-          percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
-        };
-      });
-    }
-
-    return _.map(oracle.optionIdxs, (optIndex) => {
-      const optionAmount = oracle.amounts[optIndex] || 0;
-      const threshold = oracle.consensusThreshold;
-
-      return {
-        name: oracle.options[optIndex],
-        value: `${optionAmount} ${oracle.token}`,
-        percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
-      };
-    });
-  }
-
   constructor(props) {
     super(props);
 
@@ -252,6 +221,105 @@ class OraclePage extends React.Component {
     this.props.clearEditingToggled();
   }
 
+  render() {
+    const { editingToggled, requestReturn } = this.props;
+    const { oracle, config } = this.state;
+
+    if (!oracle || !config) {
+      // Don't render anything if page is loading. In future we could make a loading animation
+      return <div></div>;
+    }
+
+    const totalBalance = _.sum(oracle.amounts);
+    const { token } = oracle;
+
+    const betBalance = OraclePage.getBetOrVoteArray(oracle);
+    const breadcrumbLabel = config && config.breadcrumbLabel;
+
+    const oracleElement = (
+      <Row gutter={28} justify="center">
+
+        {config.cardInfo ?
+          <Col xl={12} lg={12}>
+            <IsoWidgetsWrapper padding="32px" >
+              <CardInfo
+                title={oracle.name}
+                config={config.cardInfo}
+              >
+              </CardInfo>
+            </IsoWidgetsWrapper>
+          </Col> : null}
+
+        {config.cardAction ?
+          <Col xl={12} lg={12}>
+            <IsoWidgetsWrapper padding="32px">
+              <CardVoting
+                amount={totalBalance}
+                config={config.cardAction}
+                token={token}
+                voteBalance={betBalance}
+                onSubmit={this.onConfirmBtnClicked}
+                radioIndex={this.state.radioValue}
+                result={requestReturn}
+                isApproving={this.state.isApproving}
+                skipToggle={config.name === 'FINALIZING'}
+              >
+                {editingToggled
+                  ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle))
+                  : this.getProgressBarViews(OraclePage.getBetOrVoteArray(oracle))}
+              </CardVoting>
+            </IsoWidgetsWrapper>
+          </Col>
+          : null}
+      </Row>
+    );
+
+    return (
+      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
+        <Row style={{ width: '100%', height: '48px' }}>
+          <Breadcrumb style={{ fontSize: '16px' }}>
+            <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>{breadcrumbLabel}</Breadcrumb.Item>
+          </Breadcrumb>
+        </Row>
+        <Row style={{ width: '100%' }}>
+          {oracleElement}
+        </Row>
+      </LayoutContentWrapper>
+    );
+  }
+
+  /**
+   * Get Bet or Vote names and balances from oracle
+   * @param {object} oracle Oracle object
+   * @return {array} {name, value, percent}
+   */
+  static getBetOrVoteArray(oracle) {
+    const totalBalance = _.sum(oracle.amounts);
+
+    if (oracle.token === Token.Qtum) {
+      return _.map(oracle.options, (optionName, index) => {
+        const optionAmount = oracle.amounts[index] || 0;
+        return {
+          name: optionName,
+          value: `${optionAmount} ${oracle.token}`,
+          percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
+        };
+      });
+    }
+
+    return _.map(oracle.optionIdxs, (optIndex) => {
+      const optionAmount = oracle.amounts[optIndex] || 0;
+      const threshold = oracle.consensusThreshold;
+
+      return {
+        name: oracle.options[optIndex],
+        value: `${optionAmount} ${oracle.token}`,
+        percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
+      };
+    });
+  }
+
   onRadioGroupChange(evt) {
     this.setState({
       radioValue: evt.target.value,
@@ -323,7 +391,8 @@ class OraclePage extends React.Component {
    * Determine next action based on returned allowance result
    * 1. If allowance is zero, send approve request
    * 2. If allowance is positive but less than voteAmount, send approve(0) to reset allowance
-   * 3. If allowance is greather than or equal to voteAmount and not isApproved, do action and reset isApproving and isApproved
+   * 3. If allowance is greather than or equal to voteAmount and not isApproved, 
+   *    do action and reset isApproving and isApproved
    * @param  {number} allowance value
    * @return {}
    */
@@ -335,7 +404,8 @@ class OraclePage extends React.Component {
     const { voteAmount } = this.state;
     const configName = this.state.config.name;
 
-    if (allowance < voteAmount) { // Need to approved for setResult or vote
+    if (allowance < voteAmount) {
+      // Need to approved for setResult or vote
       if (this.state.isApproving) {
         return;
       }
@@ -343,9 +413,11 @@ class OraclePage extends React.Component {
       if (allowance === 0) {
         this.approve(voteAmount);
       } else {
-        this.approve(0); // Reset allowance value so it can hit allowance === 0 case
+        // Reset allowance value so it can hit allowance === 0 case
+        this.approve(0);
       }
-    } else if (!this.state.isApproved) { // Already approved call setResult or vote; Use isApproved to make sure this only entered once
+    } else if (!this.state.isApproved) {
+      // Already approved. Call setResult or vote. Use isApproved to make sure this only entered once.
       switch (configName) {
         case 'SETTING': {
           this.setResult();
@@ -448,72 +520,6 @@ class OraclePage extends React.Component {
         marginBottom={18}
       />
     ));
-  }
-
-  render() {
-    const { editingToggled, requestReturn } = this.props;
-    const { oracle, config } = this.state;
-
-    if (!oracle || !config) {
-      // Don't render anything if page is loading. In future we could make a loading animation
-      return <div></div>;
-    }
-
-    const totalBalance = _.sum(oracle.amounts);
-    const { token } = oracle;
-
-    const betBalance = OraclePage.getBetOrVoteArray(oracle);
-    const breadcrumbLabel = config && config.breadcrumbLabel;
-
-    const oracleElement = (
-      <Row gutter={28} justify="center">
-
-        {config.cardInfo ?
-          <Col xl={12} lg={12}>
-            <IsoWidgetsWrapper padding="32px" >
-              <CardInfo
-                title={oracle.name}
-                config={config.cardInfo}
-              >
-              </CardInfo>
-            </IsoWidgetsWrapper>
-          </Col> : null}
-
-        {config.cardAction ?
-          <Col xl={12} lg={12}>
-            <IsoWidgetsWrapper padding="32px">
-              <CardVoting
-                amount={totalBalance}
-                config={config.cardAction}
-                token={token}
-                voteBalance={betBalance}
-                onSubmit={this.onConfirmBtnClicked}
-                radioIndex={this.state.radioValue}
-                result={requestReturn}
-                isApproving={this.state.isApproving}
-                skipToggle={config.name === 'FINALIZING'}
-              >
-                {editingToggled ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle)) : this.getProgressBarViews(OraclePage.getBetOrVoteArray(oracle))}
-              </CardVoting>
-            </IsoWidgetsWrapper>
-          </Col>
-          : null}
-      </Row>
-    );
-
-    return (
-      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
-        <Row style={{ width: '100%', height: '48px' }}>
-          <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{breadcrumbLabel}</Breadcrumb.Item>
-          </Breadcrumb>
-        </Row>
-        <Row style={{ width: '100%' }}>
-          {oracleElement}
-        </Row>
-      </LayoutContentWrapper>
-    );
   }
 }
 

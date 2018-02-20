@@ -72,88 +72,6 @@ class TopicPage extends React.Component {
     this.props.clearEditingToggled();
   }
 
-  calculateWinnings() {
-    try {
-      const {
-        selectedWalletAddress,
-        onCalculateWinnings,
-      } = this.props;
-
-      onCalculateWinnings(this.state.address, selectedWalletAddress);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  /** Withdraw button on click handler passed down to CardFinished */
-  onWithdrawClicked() {
-    const senderAddress = this.getCurrentSenderAddress();
-    const contractAddress = this.state.topic.address;
-
-    this.props.onWithdraw(contractAddress, senderAddress);
-  }
-
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
-  /**
-   * Configure UI elements in this.state.config and set topic object in this.state
-   * @param  {object} topic object
-   * @return {}
-   */
-  pageConfiguration(topic) {
-    const { syncBlockTime } = this.props;
-
-    if (topic) {
-      let config;
-
-      // Only shows Topic which are in WITHDRAW state
-      if (topic.status === OracleStatus.Withdraw) {
-        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(_.filter(topic.oracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
-
-        config = {
-          name: 'COMPLETED',
-          breadcrumbLabel: 'Completed',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(
-              syncBlockTime,
-              centralizedOracle,
-              decentralizedOracles,
-              true,
-            ),
-            messages: [
-            ],
-          },
-          cardAction: {
-            skipToggle: true,
-            beforeToggle: {
-              btnText: 'Finalize',
-            },
-          },
-        };
-
-        // Add withdrawal amount
-        config.cardInfo.messages.push({
-          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
-            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
-          type: 'default',
-        });
-
-        // Highlight current step using current field
-        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
-
-        this.setState({
-          topic,
-          config,
-        });
-      }
-    }
-  }
-
   render() {
     const { requestReturn } = this.props;
     const { topic, config } = this.state;
@@ -236,6 +154,92 @@ class TopicPage extends React.Component {
         </Row>
       </LayoutContentWrapper>
     );
+  }
+
+  calculateWinnings() {
+    try {
+      const {
+        selectedWalletAddress,
+        onCalculateWinnings,
+      } = this.props;
+
+      onCalculateWinnings(this.state.address, selectedWalletAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  /** Withdraw button on click handler passed down to CardFinished */
+  onWithdrawClicked() {
+    const senderAddress = this.getCurrentSenderAddress();
+    const contractAddress = this.state.topic.address;
+
+    this.props.onWithdraw(contractAddress, senderAddress);
+  }
+
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
+  /**
+   * Configure UI elements in this.state.config and set topic object in this.state
+   * @param  {object} topic object
+   * @return {}
+   */
+  pageConfiguration(topic) {
+    const { syncBlockTime } = this.props;
+
+    if (topic) {
+      let config;
+
+      // Only shows Topic which are in WITHDRAW state
+      if (topic.status === OracleStatus.Withdraw) {
+        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+        const decentralizedOracles = _.orderBy(
+          _.filter(topic.oracles, (item) => item.token === Token.Bot),
+          ['blockNum'],
+          ['asc'],
+        );
+
+        config = {
+          name: 'COMPLETED',
+          breadcrumbLabel: 'Completed',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(
+              syncBlockTime,
+              centralizedOracle,
+              decentralizedOracles,
+              true,
+            ),
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: true,
+            beforeToggle: {
+              btnText: 'Finalize',
+            },
+          },
+        };
+
+        // Add withdrawal amount
+        config.cardInfo.messages.push({
+          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
+          type: 'default',
+        });
+
+        // Highlight current step using current field
+        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
+
+        this.setState({
+          topic,
+          config,
+        });
+      }
+    }
   }
 }
 
