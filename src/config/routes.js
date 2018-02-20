@@ -1,6 +1,6 @@
 import { endpoint } from './app';
 
-const BODHI_API = endpoint.bodhiapi;
+const BODHI_API = endpoint.api;
 const INSIGHT_API = endpoint.insight;
 
 const Routes = {

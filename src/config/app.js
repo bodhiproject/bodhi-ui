@@ -6,7 +6,7 @@ const BASE_INSIGHT_PROD = 'https://explorer.qtum.org/insight-api';
 
 module.exports = {
   endpoint: {
-    bodhiapi: HTTP_ROUTE,
+    api: HTTP_ROUTE,
     graphHttp: `${HTTP_ROUTE}/graphql`,
     graphWs: WS_ROUTE,
     insight: BASE_INSIGHT_DEV,
