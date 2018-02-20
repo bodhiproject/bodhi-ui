@@ -1,4 +1,4 @@
-import { endpoint } from './app';
+import { endpoint } from '../config/app';
 
 const BODHI_API = endpoint.api;
 const INSIGHT_API = endpoint.insight;

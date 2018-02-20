@@ -6,7 +6,7 @@ import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphRequest';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
-import Routes from '../../config/routes';
+import Routes from '../../network/routes';
 
 const DEFAULT_QTUMD_ACCOUNTNAME = '';
 
