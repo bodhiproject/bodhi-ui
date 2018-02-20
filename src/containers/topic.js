@@ -105,6 +105,8 @@ class TopicPage extends React.Component {
    * @return {}
    */
   pageConfiguration(topic) {
+    const { syncBlockTime } = this.props;
+
     if (topic) {
       let config;
 
@@ -118,7 +120,7 @@ class TopicPage extends React.Component {
           breadcrumbLabel: 'Completed',
           cardInfo: {
             steps: CardInfoUtil.getSteps(
-              this.props.syncInfo.syncBlockTime,
+              syncBlockTime,
               centralizedOracle,
               decentralizedOracles,
               true,
@@ -246,7 +248,7 @@ TopicPage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
-  syncInfo: PropTypes.object,
+  syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
@@ -262,7 +264,7 @@ TopicPage.defaultProps = {
   getTopicsSuccess: undefined,
   onGetTopics: undefined,
   requestReturn: undefined,
-  syncInfo: undefined,
+  syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
@@ -278,7 +280,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
+  syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),

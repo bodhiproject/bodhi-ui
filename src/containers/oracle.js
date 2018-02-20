@@ -88,14 +88,13 @@ class OraclePage extends React.Component {
     const {
       getOraclesSuccess,
       allowanceReturn,
-      syncInfo,
+      syncBlockTime,
       selectedWalletAddress,
     } = nextProps;
 
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
-    const blockTime = syncInfo.syncBlockTime;
 
     if (oracle) {
       const { token, status } = oracle;
@@ -107,7 +106,7 @@ class OraclePage extends React.Component {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockTime, oracle),
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
             ],
           },
@@ -127,7 +126,7 @@ class OraclePage extends React.Component {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockTime, oracle),
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
               {
                 text: `Result setter ${oracle.resultSetterQAddress || ''}`,
@@ -160,7 +159,7 @@ class OraclePage extends React.Component {
         };
 
         // Add a message to CardInfo to warn that current block has passed set end block
-        if (blockTime > oracle.resultSetEndTime) {
+        if (syncBlockTime > oracle.resultSetEndTime) {
           config.cardInfo.messages.push({
             text: 'Current block time has passed the Result Setting End Time.',
             type: 'warn',
@@ -184,7 +183,7 @@ class OraclePage extends React.Component {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
                 text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
@@ -213,7 +212,7 @@ class OraclePage extends React.Component {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
           cardInfo: {
-            steps: CardInfoUtil.getSteps(blockTime, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
@@ -225,7 +224,7 @@ class OraclePage extends React.Component {
           },
         };
 
-        if (blockTime > oracle.endTime) {
+        if (syncBlockTime > oracle.endTime) {
           config.cardInfo.messages.push({
             text: `Current block time has passed the Voting End Time. 
               The previous result needs to be finalized in order to withdraw.`,
@@ -540,7 +539,7 @@ OraclePage.propTypes = {
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   selectedWalletAddress: PropTypes.string,
-  syncInfo: PropTypes.object,
+  syncBlockTime: PropTypes.number,
 };
 
 OraclePage.defaultProps = {
@@ -560,7 +559,7 @@ OraclePage.defaultProps = {
   clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
   selectedWalletAddress: undefined,
-  syncInfo: undefined,
+  syncBlockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -570,7 +569,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
+  syncBlockTime: state.App.get('syncBlockTime'),
 });
 
 function mapDispatchToProps(dispatch) {
