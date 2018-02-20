@@ -5,6 +5,9 @@ import { IntlProvider } from 'react-intl';
 import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
 import { ThemeProvider } from 'styled-components';
+import { ApolloProvider } from 'react-apollo';
+
+import graphClient from '../../network/graphClient';
 import authAction from '../../redux/auth/actions';
 import appActions from '../../redux/app/actions';
 import Topbar from '../Topbar/Topbar';
@@ -32,40 +35,42 @@ export class App extends React.PureComponent {
           messages={currentAppLocale.messages}
         >
           <ThemeProvider theme={themes[themeConfig.theme]}>
-            <AppHolder>
-              <Layout style={{ height: '100vh' }}>
-                <Debounce time="1000" handler="onResize">
-                  <WindowResizeListener
-                    onResize={(windowSize) =>
-                      this.props.toggleAll(
-                        windowSize.windowWidth,
-                        windowSize.windowHeight
-                      )}
-                  />
-                </Debounce>
-                <AppLoad />
-                <Topbar url={url} />
-                <Layout style={{ flexDirection: 'row', overflowX: 'hidden' }}>
-                  <Layout
-                    className="isoContentMainLayout"
-                    style={{
-                      height: '100vh',
-                    }}
-                  >
-                    <Content
-                      className="isomorphicContent"
+            <ApolloProvider client={graphClient}>
+              <AppHolder>
+                <Layout style={{ height: '100vh' }}>
+                  <Debounce time="1000" handler="onResize">
+                    <WindowResizeListener
+                      onResize={(windowSize) =>
+                        this.props.toggleAll(
+                          windowSize.windowWidth,
+                          windowSize.windowHeight
+                        )}
+                    />
+                  </Debounce>
+                  <AppLoad />
+                  <Topbar url={url} />
+                  <Layout style={{ flexDirection: 'row', overflowX: 'hidden' }}>
+                    <Layout
+                      className="isoContentMainLayout"
                       style={{
-                        flexShrink: '0',
-                        background: '#f9f9f9',
+                        height: '100vh',
                       }}
                     >
-                      <AppRouter url={url} />
-                    </Content>
+                      <Content
+                        className="isomorphicContent"
+                        style={{
+                          flexShrink: '0',
+                          background: '#f9f9f9',
+                        }}
+                      >
+                        <AppRouter url={url} />
+                      </Content>
+                    </Layout>
                   </Layout>
+                  <CornerClock />
                 </Layout>
-                <CornerClock />
-              </Layout>
-            </AppHolder>
+              </AppHolder>
+            </ApolloProvider>
           </ThemeProvider>
         </IntlProvider>
       </LocaleProvider>
