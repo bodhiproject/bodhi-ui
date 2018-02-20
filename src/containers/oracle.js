@@ -391,7 +391,7 @@ class OraclePage extends React.Component {
    * Determine next action based on returned allowance result
    * 1. If allowance is zero, send approve request
    * 2. If allowance is positive but less than voteAmount, send approve(0) to reset allowance
-   * 3. If allowance is greather than or equal to voteAmount and not isApproved, 
+   * 3. If allowance is greather than or equal to voteAmount and not isApproved,
    *    do action and reset isApproving and isApproved
    * @param  {number} allowance value
    * @return {}
