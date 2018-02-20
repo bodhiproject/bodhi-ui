@@ -8,3 +8,5 @@ const client = new ApolloClient({
   link: new HttpLink({ uri: endpoint.graphql }),
   cache: new InMemoryCache(),
 });
+
+export default client;

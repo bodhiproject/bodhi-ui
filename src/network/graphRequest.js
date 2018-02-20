@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
 
+import client from './graphClient';
 import GraphParser from './graphParser';
 import { isValidEnum, getQueryFields } from './graphDataStruct';
 
