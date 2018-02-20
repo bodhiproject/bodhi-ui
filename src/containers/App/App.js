@@ -20,7 +20,7 @@ import AppHolder from './commonStyle';
 import AppLoad from '../appLoad';
 import './global.css';
 
-const { Content /* Footer */ } = Layout;
+const { Content } = Layout;
 const { logout } = authAction;
 const { toggleAll } = appActions;
 
@@ -30,10 +30,7 @@ export class App extends React.PureComponent {
     const currentAppLocale = AppLocale.en;
     return (
       <LocaleProvider locale={currentAppLocale.antd}>
-        <IntlProvider
-          locale={currentAppLocale.locale}
-          messages={currentAppLocale.messages}
-        >
+        <IntlProvider locale={currentAppLocale.locale} messages={currentAppLocale.messages}>
           <ThemeProvider theme={themes[themeConfig.theme]}>
             <ApolloProvider client={graphClient}>
               <AppHolder>
