@@ -135,3 +135,20 @@ export function queryAllOracles(filters, orderBy) {
 export function querySyncInfo() {
   return new GraphRequest('syncInfo').execute();
 }
+
+export function subscribeSyncInfo() {
+  const query = gql`
+    subscription onNewSyncInfo {
+      syncInfo {
+        ${getQueryFields('syncInfo')}
+      }
+    }
+  `;
+
+  client.subscribe({
+    query,
+    variables: {},
+  }).subscribe((response) => {
+    console.log(response);
+  });
+}
