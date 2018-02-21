@@ -8,6 +8,7 @@ import { ThemeProvider } from 'styled-components';
 import authAction from '../../redux/auth/actions';
 import appActions from '../../redux/app/actions';
 import Topbar from '../Topbar/Topbar';
+import CornerClock from '../CornerClock/CornerClock';
 import AppRouter from './AppRouter';
 import { AppLocale } from '../../index';
 import themes from '../../config/themes';
@@ -71,6 +72,7 @@ export class App extends React.PureComponent {
                                         </Footer> */}
                   </Layout>
                 </Layout>
+                <CornerClock />
               </Layout>
             </AppHolder>
           </ThemeProvider>

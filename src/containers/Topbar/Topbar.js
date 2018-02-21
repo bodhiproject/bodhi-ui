@@ -11,7 +11,6 @@ import TopbarWrapper from './topbar.style';
 import { getCurrentTheme } from '../ThemeSwitcher/config';
 import { themeConfig } from '../../config';
 import AppConfig from '../../config/app';
-import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
@@ -100,7 +99,6 @@ class Topbar extends React.PureComponent {
     };
 
     this.showModal = this.showModal.bind(this);
-    this.renderBlockInfo = this.renderBlockInfo.bind(this);
     this.handleAddAccountClicked = this.handleAddAccountClicked.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
@@ -200,7 +198,6 @@ class Topbar extends React.PureComponent {
                   <li><Link to="/" >Events</Link></li>
                   <li><Link to="/create-topic" >Create an Event</Link></li>
                   <li>{walletAddrsEle}</li>
-                  <li>{this.renderBlockInfo()}</li>
                 </ul>
               </div>
             </div>
@@ -225,27 +222,6 @@ class Topbar extends React.PureComponent {
           </Form>
         </Modal>
       </TopbarWrapper>
-    );
-  }
-
-  renderBlockInfo() {
-    const { syncInfo } = this.props;
-
-    const blockNum = syncInfo && syncInfo.syncBlockNum ? syncInfo.syncBlockNum : '';
-    const blockTime = syncInfo && syncInfo.syncBlockTime ? getShortLocalDateTimeString(syncInfo.syncBlockTime) : '';
-
-    return (
-      <div
-        className="block-count"
-        style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}
-      >
-        <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
-          Current Block: {blockNum}
-        </div>
-        <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
-          {blockTime}
-        </div>
-      </div>
     );
   }
 
@@ -301,7 +277,6 @@ Topbar.propTypes = {
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
-  syncInfo: PropTypes.object,
 };
 
 Topbar.defaultProps = {
@@ -311,14 +286,12 @@ Topbar.defaultProps = {
   selectWalletAddress: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
-  syncInfo: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
 });
 
 const mapDispatchToProps = (dispatch) => ({
