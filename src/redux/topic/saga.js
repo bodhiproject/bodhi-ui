@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createTopic, createBetTx, createApproveTx, createSetResultTx, createVoteTx, createFinalizeResultTx, 
+import { createTopic, createBetTx, createApproveTx, createSetResultTx, createVoteTx, createFinalizeResultTx,
   createWithdrawTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
@@ -41,8 +41,18 @@ export function* createRequestHandler() {
       const tx = yield call(request, Routes.createTopic, requestOptions);
 
       // Transaction mutation
-      const mutation = yield call(createTopic, Config.defaults.version, centralizedOracle, name, results,
-        bettingStartTime, bettingEndTime, resultSettingStartTime, resultSettingEndTime, senderAddress);
+      const mutation = yield call(
+        createTopic,
+        Config.defaults.version,
+        centralizedOracle,
+        name,
+        results,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+        senderAddress
+      );
 
       yield put({
         type: actions.CREATE_RETURN,
@@ -191,8 +201,14 @@ export function* setResultRequestHandler() {
       const tx = yield call(request, Routes.setResult, options);
 
       // Transaction mutation
-      const mutation = yield call(createSetResultTx, Config.defaults.version, contractAddress, consensusThreshold,
-        resultIndex, senderAddress);
+      const mutation = yield call(
+        createSetResultTx,
+        Config.defaults.version,
+        contractAddress,
+        consensusThreshold,
+        resultIndex,
+        senderAddress
+      );
 
       yield put({
         type: actions.SET_RESULT_RETURN,
@@ -231,8 +247,14 @@ export function* voteRequestHandler() {
       const tx = yield call(request, Routes.vote, options);
 
       // Transaction mutation
-      const mutation = yield call(createVoteTx, Config.defaults.version, contractAddress, resultIndex, botAmount,
-        senderAddress);
+      const mutation = yield call(
+        createVoteTx,
+        Config.defaults.version,
+        contractAddress,
+        resultIndex,
+        botAmount,
+        senderAddress
+      );
 
       yield put({
         type: actions.VOTE_RETURN,

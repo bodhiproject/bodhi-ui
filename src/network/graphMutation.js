@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 
+import client from './graphClient';
 import { TYPE, getMutation } from './graphDataStruct';
 import GraphParser from './graphParser';
 

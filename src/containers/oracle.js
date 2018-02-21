@@ -598,7 +598,7 @@ function mapDispatchToProps(dispatch) {
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
-    onApprove: (contractAddress, spender, value, senderAddress) => 
+    onApprove: (contractAddress, spender, value, senderAddress) =>
       dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
     onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) =>

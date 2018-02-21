@@ -7,8 +7,7 @@ import { WindowResizeListener } from 'react-window-resize-listener';
 import { ThemeProvider } from 'styled-components';
 import { ApolloProvider } from 'react-apollo';
 
-import graphClient from '../../network/graphClient';
-import authAction from '../../redux/auth/actions';
+import apolloClient from '../../network/graphClient';
 import appActions from '../../redux/app/actions';
 import Topbar from '../Topbar/Topbar';
 import CornerClock from '../CornerClock/CornerClock';
@@ -21,7 +20,6 @@ import AppLoad from '../appLoad';
 import './global.css';
 
 const { Content } = Layout;
-const { logout } = authAction;
 const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
@@ -32,7 +30,7 @@ export class App extends React.PureComponent {
       <LocaleProvider locale={currentAppLocale.antd}>
         <IntlProvider locale={currentAppLocale.locale} messages={currentAppLocale.messages}>
           <ThemeProvider theme={themes[themeConfig.theme]}>
-            <ApolloProvider client={graphClient}>
+            <ApolloProvider client={apolloClient}>
               <AppHolder>
                 <Layout style={{ height: '100vh' }}>
                   <Debounce time="1000" handler="onResize">
@@ -80,9 +78,4 @@ App.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-export default connect(
-  (state) => ({
-    auth: state.Auth,
-  }),
-  { logout, toggleAll }
-)(App);
+export default connect((state) => ({ auth: state.Auth }), { toggleAll })(App);
