@@ -44,3 +44,16 @@ export function createTopicTransaction(version, senderAddress, name, options, re
   const mutation = new GraphMutation(getMutation('createTopicTransaction'), args, 'allTopics');
   return mutation.execute();
 }
+
+export function betTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
+  const args = {
+    version,
+    senderAddress,
+    oracleAddress,
+    optionIdx,
+    amount,
+  };
+
+  const mutation = new GraphMutation(getMutation('createBet'), args, 'transaction');
+  return mutation.execute();
+}

@@ -82,8 +82,8 @@ const FIELD_MAPPINGS = {
 };
 
 const MUTATIONS = {
-  createTopicTransaction: `
-    CreateTopicTransaction(
+  createTopic: `
+    CreateTopic(
       $version: Int!, 
       $senderAddress: String!,
       $name: String!,
@@ -114,6 +114,30 @@ const MUTATIONS = {
         bettingEndTime
         resultSettingStartTime
         resultSettingEndTime
+      }
+    }
+  `,
+
+  createBet: `
+    CreateBet(
+      $version: Int!
+      $senderAddress: String!
+      $oracleAddress: String!
+      $optionIdx: Int!
+      $amount: String!
+    ) {
+      createBet(
+        version: $version,
+        senderAddress: $senderAddress,
+        oracleAddress: $oracleAddress,
+        optionIdx: $optionIdx,
+        amount: $amount
+      ) {
+        version
+        senderAddress
+        oracleAddress
+        optionIdx
+        amount
       }
     }
   `,
