@@ -122,6 +122,42 @@ const MUTATIONS = {
     }
   `,
 
+  createOracle: `
+    CreateOracle(
+      $version: Int!,
+      $name: String!,
+      $options: [String!]!,
+      $resultSetterAddress: String!,
+      $bettingStartTime: String!,
+      $bettingEndTime: String!,
+      $resultSettingStartTime: String!,
+      $resultSettingEndTime: String!
+      $senderAddress: String!
+    ) {
+      createOracle(
+        version: $version,
+        name: $name,
+        options: $options,
+        resultSetterAddress: $resultSetterAddress,
+        bettingStartTime: $bettingStartTime,
+        bettingEndTime: $bettingEndTime,
+        resultSettingStartTime: $resultSettingStartTime,
+        resultSettingEndTime: $resultSettingEndTime
+        senderAddress: $senderAddress,
+      ) {
+        version
+        name
+        options
+        resultSetterAddress
+        bettingStartTime
+        bettingEndTime
+        resultSettingStartTime
+        resultSettingEndTime
+        senderAddress
+      }
+    }
+  `,
+
   createBet: `
     CreateBet(
       $version: Int!,

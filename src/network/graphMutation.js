@@ -42,9 +42,9 @@ export function createTopic(
 ) {
   const args = {
     version,
-    resultSetterAddress: centralizedOracle,
     name,
     options: results,
+    resultSetterAddress: centralizedOracle,
     bettingStartTime,
     bettingEndTime,
     resultSettingStartTime,
@@ -53,6 +53,32 @@ export function createTopic(
   };
 
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
+}
+
+export function createOracle(
+  version,
+  centralizedOracle,
+  name,
+  results,
+  bettingStartTime,
+  bettingEndTime,
+  resultSettingStartTime,
+  resultSettingEndTime,
+  senderAddress
+) {
+  const args = {
+    version,
+    name,
+    options: results,
+    resultSetterAddress: centralizedOracle,
+    bettingStartTime,
+    bettingEndTime,
+    resultSettingStartTime,
+    resultSettingEndTime,
+    senderAddress,
+  };
+
+  return new GraphMutation('createOracle', args, TYPE.oracle).execute();
 }
 
 export function createBetTx(version, oracleAddress, optionIdx, amount, senderAddress) {
