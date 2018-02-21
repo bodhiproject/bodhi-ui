@@ -1,8 +1,7 @@
 import gql from 'graphql-tag';
 
-import { getMutation } from './graphDataStruct';
-import GraphParser from './graphParser';
 import { TYPE, getMutation } from './graphDataStruct';
+import GraphParser from './graphParser';
 
 class GraphMutation {
   constructor(mutationName, args, type) {
@@ -21,16 +20,25 @@ class GraphMutation {
     console.debug(mutation);
 
     const res = await client.mutate({
-      mutation: mutation,
-      variables: args,
+      mutation,
+      variables: this.args,
       fetchPolicy: 'network-only',
     });
     return GraphParser.getParser(this.type)(res.data[this.mutationName]);
   }
 }
 
-export function createTopic(version, senderAddress, name, options, resultSetterAddress, bettingStartTime, 
-  bettingEndTime, resultSettingStartTime, resultSettingEndTime) {
+export function createTopic(
+  version,
+  senderAddress,
+  name,
+  options,
+  resultSetterAddress,
+  bettingStartTime,
+  bettingEndTime,
+  resultSettingStartTime,
+  resultSettingEndTime
+) {
   const args = {
     version,
     senderAddress,
@@ -46,7 +54,7 @@ export function createTopic(version, senderAddress, name, options, resultSetterA
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function betTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
+export function createBetTx(version, senderAddress, oracleAddress, optionIdx, amount) {
   const args = {
     version,
     senderAddress,
@@ -58,7 +66,7 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 
-export function approveTransaction(version, senderAddress, oracleAddress, amount) {
+export function createApproveTx(version, senderAddress, oracleAddress, amount) {
   const args = {
     version,
     senderAddress,

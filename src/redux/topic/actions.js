@@ -69,12 +69,13 @@ const topicActions = {
   }),
   APPROVE: 'APPROVE',
   APPROVE_RETURN: 'APPROVE_RETURN',
-  onApprove: (spender, value, senderAddress) => ({
+  onApprove: (spender, value, senderAddress, contractAddress) => ({
     type: topicActions.APPROVE,
     payload: {
       spender,
       value,
       senderAddress,
+      contractAddress,
     },
   }),
 

@@ -462,7 +462,7 @@ class OraclePage extends React.Component {
     const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
+    onApprove(oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress, oracle.address);
 
     this.setState({
       isApproving: true,
@@ -598,7 +598,8 @@ function mapDispatchToProps(dispatch) {
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
-    onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
+    onApprove: (spender, value, senderAddress, contractAddress) => 
+      dispatch(topicActions.onApprove(spender, value, senderAddress, contractAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
     onSetResult: (contractAddress, resultIndex, senderAddress) =>
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
