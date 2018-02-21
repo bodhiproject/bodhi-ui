@@ -81,7 +81,7 @@ export function* betRequestHandler() {
       const tx = yield call(request, Routes.bet, options);
 
       // Transaction mutation
-      const mutation = yield call(createBetTx, Config.defaults.version, senderAddress, contractAddress, index, amount);
+      const mutation = yield call(createBetTx, Config.defaults.version, contractAddress, index, amount, senderAddress);
 
       yield put({
         type: actions.BET_RETURN,
@@ -119,7 +119,7 @@ export function* approveRequestHandler() {
       const tx = yield call(request, Routes.approve, options);
 
       // Transaction mutation
-      const mutation = yield call(createApproveTx, Config.defaults.version, senderAddress, contractAddress, value);
+      const mutation = yield call(createApproveTx, Config.defaults.version, contractAddress, value, senderAddress);
 
       yield put({
         type: actions.APPROVE_RETURN,
@@ -191,8 +191,8 @@ export function* setResultRequestHandler() {
       const tx = yield call(request, Routes.setResult, options);
 
       // Transaction mutation
-      const mutation = yield call(createSetResultTx, Config.defaults.version, senderAddress, contractAddress,
-        consensusThreshold, resultIndex);
+      const mutation = yield call(createSetResultTx, Config.defaults.version, contractAddress, consensusThreshold,
+        resultIndex, senderAddress);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
@@ -231,8 +231,8 @@ export function* voteRequestHandler() {
       const tx = yield call(request, Routes.vote, options);
 
       // Transaction mutation
-      const mutation = yield call(createVoteTx, Config.defaults.version, senderAddress, contractAddress,
-        resultIndex, botAmount);
+      const mutation = yield call(createVoteTx, Config.defaults.version, contractAddress, resultIndex, botAmount,
+        senderAddress);
 
       yield put({
         type: actions.VOTE_RETURN,
@@ -267,7 +267,7 @@ export function* finalizeResultRequestHandler() {
       const tx = yield call(request, Routes.finalizeResult, options);
 
       // Transaction mutation
-      const mutation = yield call(createFinalizeResultTx, Config.defaults.version, senderAddress, contractAddress);
+      const mutation = yield call(createFinalizeResultTx, Config.defaults.version, contractAddress, senderAddress);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
@@ -340,7 +340,7 @@ export function* withdrawRequestHandler() {
       const tx = yield call(request, Routes.withdraw, options);
 
       // Transaction mutation
-      const mutation = yield call(createWithdrawTx, Config.defaults.version, senderAddress, contractAddress);
+      const mutation = yield call(createWithdrawTx, Config.defaults.version, contractAddress, senderAddress);
 
       yield put({
         type: actions.WITHDRAW_RETURN,

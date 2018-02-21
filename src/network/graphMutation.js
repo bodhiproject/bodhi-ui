@@ -54,7 +54,7 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createBetTx(version, senderAddress, oracleAddress, optionIdx, amount) {
+export function createBetTx(version, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
     senderAddress,
@@ -66,7 +66,7 @@ export function createBetTx(version, senderAddress, oracleAddress, optionIdx, am
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 
-export function createApproveTx(version, senderAddress, oracleAddress, amount) {
+export function createApproveTx(version, oracleAddress, amount, senderAddress) {
   const args = {
     version,
     senderAddress,
@@ -77,7 +77,7 @@ export function createApproveTx(version, senderAddress, oracleAddress, amount) {
   return new GraphMutation('approve', args, TYPE.transaction).execute();
 }
 
-export function createSetResultTx(version, senderAddress, oracleAddress, consensusThreshold, resultIdx) {
+export function createSetResultTx(version, oracleAddress, consensusThreshold, resultIdx, senderAddress) {
   const args = {
     version,
     senderAddress,
@@ -89,7 +89,7 @@ export function createSetResultTx(version, senderAddress, oracleAddress, consens
   return new GraphMutation('setResult', args, TYPE.transaction).execute();
 }
 
-export function createVoteTx(version, senderAddress, oracleAddress, optionIdx, amount) {
+export function createVoteTx(version, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
     senderAddress,
@@ -101,7 +101,7 @@ export function createVoteTx(version, senderAddress, oracleAddress, optionIdx, a
   return new GraphMutation('createVote', args, TYPE.transaction).execute();
 }
 
-export function createFinalizeResultTx(version, senderAddress, oracleAddress) {
+export function createFinalizeResultTx(version, oracleAddress, senderAddress) {
   const args = {
     version,
     senderAddress,
@@ -111,7 +111,7 @@ export function createFinalizeResultTx(version, senderAddress, oracleAddress) {
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
 }
 
-export function createWithdrawTx(version, senderAddress, topicAddress) {
+export function createWithdrawTx(version, topicAddress, senderAddress) {
   const args = {
     version,
     senderAddress,
