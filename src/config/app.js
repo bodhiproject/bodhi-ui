@@ -1,6 +1,6 @@
-const HOSTNAME = '127.0.0.1';
-const HTTP_ROUTE = `http://${HOSTNAME}:5555`;
-const WS_ROUTE = `ws://${HOSTNAME}:5555`;
+const AUTHORITY = '127.0.0.1:5555';
+const HTTP_ROUTE = `http://${AUTHORITY}`;
+const WS_ROUTE = `ws://${AUTHORITY}`;
 const BASE_INSIGHT_DEV = 'https://testnet.qtum.org/insight-api';
 const BASE_INSIGHT_PROD = 'https://explorer.qtum.org/insight-api';
 

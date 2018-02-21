@@ -14,7 +14,7 @@ import CornerClock from '../CornerClock/CornerClock';
 import AppRouter from './AppRouter';
 import { AppLocale } from '../../index';
 import themes from '../../config/themes';
-import { themeConfig /* siteConfig */ } from '../../config';
+import { themeConfig } from '../../config';
 import AppHolder from './commonStyle';
 import AppLoad from '../appLoad';
 import './global.css';
@@ -26,6 +26,7 @@ export class App extends React.PureComponent {
   render() {
     const { url } = this.props.match;
     const currentAppLocale = AppLocale.en;
+
     return (
       <LocaleProvider locale={currentAppLocale.antd}>
         <IntlProvider locale={currentAppLocale.locale} messages={currentAppLocale.messages}>
