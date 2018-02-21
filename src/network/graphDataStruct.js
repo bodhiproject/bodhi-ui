@@ -81,6 +81,44 @@ const FIELD_MAPPINGS = {
   `,
 };
 
+const MUTATIONS = {
+  createTopicTransaction: `
+    CreateTopicTransaction(
+      $version: Int!, 
+      $senderAddress: String!,
+      $name: String!,
+      $options: [String!]!,
+      $resultSetterAddress: String!,
+      $bettingStartTime: String!,
+      $bettingEndTime: String!,
+      $resultSettingStartTime: String!,
+      $resultSettingEndTime: String!
+    ) {
+      createTopic(
+        version: $version,
+        senderAddress: $senderAddress,
+        name: $name,
+        options: $options,
+        resultSetterAddress: $resultSetterAddress,
+        bettingStartTime: $bettingStartTime,
+        bettingEndTime: $bettingEndTime,
+        resultSettingStartTime: $resultSettingStartTime,
+        resultSettingEndTime: $resultSettingEndTime
+      ) {
+        version
+        senderAddress
+        name
+        options
+        resultSetterAddress
+        bettingStartTime
+        bettingEndTime
+        resultSettingStartTime
+        resultSettingEndTime
+      }
+    }
+  `,
+};
+
 export function isValidEnum(key, value) {
   const isEnum = _.has(ENUMS, key);
   const isValid = _.includes(ENUMS[key], value);
@@ -89,4 +127,8 @@ export function isValidEnum(key, value) {
 
 export function getQueryFields(queryName) {
   return FIELD_MAPPINGS[queryName];
+}
+
+export function getMutation(mutationName) {
+  return MUTATIONS[mutationName];
 }
