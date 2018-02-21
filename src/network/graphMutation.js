@@ -81,3 +81,14 @@ export function finalizeResultTransaction(version, senderAddress, oracleAddress)
   const mutation = new GraphMutation(getMutation('finalizeResultTransaction'), args, 'transaction');
   return mutation.execute();
 }
+
+export function withdrawTransaction(version, senderAddress, topicAddress) {
+  const args = {
+    version,
+    senderAddress,
+    topicAddress,
+  };
+
+  const mutation = new GraphMutation(getMutation('withdrawTransaction'), args, 'transaction');
+  return mutation.execute();
+}

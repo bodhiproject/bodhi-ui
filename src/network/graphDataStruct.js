@@ -183,6 +183,24 @@ const MUTATIONS = {
       }
     }
   `,
+
+  withdrawTransaction: `
+    Withdraw(
+      $version: Int!,
+      $senderAddress: String!,
+      $topicAddress: String!
+    ) {
+      withdraw(
+        version: $version,
+        senderAddress: $senderAddress,
+        topicAddress: $topicAddress
+      ) {
+        version
+        senderAddress
+        topicAddress
+      }
+    }
+  `,
 };
 
 export function isValidEnum(key, value) {
