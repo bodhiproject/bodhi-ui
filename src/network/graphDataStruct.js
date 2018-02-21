@@ -142,6 +142,30 @@ const MUTATIONS = {
     }
   `,
 
+  setResultTransaction: `
+    SetResult(
+      $version: Int!,
+      $senderAddress: String!,
+      $oracleAddress: String!,
+      $consensusThreshold: String!,
+      $resultIdx: Int!
+    ) {
+      setResult(
+        version: $version,
+        senderAddress: $senderAddress,
+        oracleAddress: $oracleAddress,
+        consensusThreshold: $consensusThreshold,
+        resultIdx: $resultIdx
+      ) {
+        version
+        senderAddress
+        oracleAddress
+        consensusThreshold
+        resultIdx
+      }
+    }
+  `,
+
   voteTransaction: `
     CreateVote(
       $version: Int!,

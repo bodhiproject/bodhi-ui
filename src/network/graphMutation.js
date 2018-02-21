@@ -58,6 +58,19 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
   return mutation.execute();
 }
 
+export function setResultTransaction(version, senderAddress, oracleAddress, consensusThreshold, resultIdx) {
+  const args = {
+    version,
+    senderAddress,
+    oracleAddress,
+    consensusThreshold,
+    resultIdx,
+  };
+
+  const mutation = new GraphMutation(getMutation('setResultTransaction'), args, 'transaction');
+  return mutation.execute();
+}
+
 export function voteTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
   const args = {
     version,
