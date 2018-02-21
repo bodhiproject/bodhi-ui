@@ -2,7 +2,8 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createBetTx, createApproveTx, createSetResultTx, createVoteTx } from '../../network/graphMutation';
+import { createBetTx, createApproveTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } 
+  from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
 import Routes from '../../network/routes';
@@ -245,7 +246,8 @@ export function* voteRequestHandler() {
 export function* finalizeResultRequestHandler() {
   yield takeEvery(actions.FINALIZE_RESULT, function* onFinalizeResultRequest(action) {
     const {
-      contractAddress, senderAddress,
+      contractAddress,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -258,11 +260,14 @@ export function* finalizeResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.finalizeResult, options);
+      const tx = yield call(request, Routes.finalizeResult, options);
+
+      // Transaction mutation
+      const mutation = yield call(createFinalizeResultTx, Config.defaults.version, senderAddress, contractAddress);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -314,7 +319,8 @@ export function* calculateWinningsRequestHandler() {
 export function* withdrawRequestHandler() {
   yield takeEvery(actions.WITHDRAW, function* onWithdrawResultRequest(action) {
     const {
-      contractAddress, senderAddress,
+      contractAddress,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -327,11 +333,14 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.withdraw, options);
+      const tx = yield call(request, Routes.withdraw, options);
+
+      // Transaction mutation
+      const mutation = yield call(createWithdrawTx, Config.defaults.version, senderAddress, contractAddress);
 
       yield put({
         type: actions.WITHDRAW_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({

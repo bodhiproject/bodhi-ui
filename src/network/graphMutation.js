@@ -101,7 +101,7 @@ export function createVoteTx(version, senderAddress, oracleAddress, optionIdx, a
   return new GraphMutation('createVote', args, TYPE.transaction).execute();
 }
 
-export function finalizeResultTransaction(version, senderAddress, oracleAddress) {
+export function createFinalizeResultTx(version, senderAddress, oracleAddress) {
   const args = {
     version,
     senderAddress,
@@ -111,7 +111,7 @@ export function finalizeResultTransaction(version, senderAddress, oracleAddress)
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
 }
 
-export function withdrawTransaction(version, senderAddress, topicAddress) {
+export function createWithdrawTx(version, senderAddress, topicAddress) {
   const args = {
     version,
     senderAddress,
