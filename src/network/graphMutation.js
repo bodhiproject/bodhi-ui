@@ -27,7 +27,7 @@ class GraphMutation {
   }
 }
 
-export function createTopicTransaction(version, senderAddress, name, options, resultSetterAddress, bettingStartTime,
+export function createTopic(version, senderAddress, name, options, resultSetterAddress, bettingStartTime, 
   bettingEndTime, resultSettingStartTime, resultSettingEndTime) {
   const args = {
     version,
@@ -55,6 +55,18 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
   };
 
   const mutation = new GraphMutation(getMutation('betTransaction'), args, 'transaction');
+  return mutation.execute();
+}
+
+export function approveTransaction(version, senderAddress, oracleAddress, amount) {
+  const args = {
+    version,
+    senderAddress,
+    oracleAddress,
+    amount,
+  };
+
+  const mutation = new GraphMutation(getMutation('approveTransaction'), args, 'transaction');
   return mutation.execute();
 }
 

@@ -142,6 +142,27 @@ const MUTATIONS = {
     }
   `,
 
+  approveTransaction: `
+    Approve(
+      $version: Int!,
+      $senderAddress: String!,
+      $oracleAddress: String!,
+      $amount: String!
+    ) {
+      approve(
+        version: $version,
+        senderAddress: $senderAddress,
+        oracleAddress: $oracleAddress,
+        amount: $amount
+      ) {
+        version
+        senderAddress
+        oracleAddress
+        amount
+      }
+    }
+  `,
+
   setResultTransaction: `
     SetResult(
       $version: Int!,
