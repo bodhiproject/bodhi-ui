@@ -2,8 +2,8 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createBetTx, createApproveTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } 
-  from '../../network/graphMutation';
+import { createTopic, createBetTx, createApproveTx, createSetResultTx, createVoteTx, createFinalizeResultTx, 
+  createWithdrawTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
 import Routes from '../../network/routes';
@@ -38,11 +38,15 @@ export function* createRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.createTopic, requestOptions);
+      const tx = yield call(request, Routes.createTopic, requestOptions);
+
+      // Transaction mutation
+      const mutation = yield call(createTopic, Config.defaults.version, centralizedOracle, name, results,
+        bettingStartTime, bettingEndTime, resultSettingStartTime, resultSettingEndTime, senderAddress);
 
       yield put({
         type: actions.CREATE_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({

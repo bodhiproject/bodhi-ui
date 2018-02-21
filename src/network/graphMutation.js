@@ -30,25 +30,25 @@ class GraphMutation {
 
 export function createTopic(
   version,
-  senderAddress,
+  centralizedOracle,
   name,
-  options,
-  resultSetterAddress,
+  results,
   bettingStartTime,
   bettingEndTime,
   resultSettingStartTime,
-  resultSettingEndTime
+  resultSettingEndTime,
+  senderAddress
 ) {
   const args = {
     version,
-    senderAddress,
+    resultSetterAddress: centralizedOracle,
     name,
-    options,
-    resultSetterAddress,
+    options: results,
     bettingStartTime,
     bettingEndTime,
     resultSettingStartTime,
     resultSettingEndTime,
+    senderAddress,
   };
 
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
