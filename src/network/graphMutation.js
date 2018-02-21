@@ -41,7 +41,7 @@ export function createTopicTransaction(version, senderAddress, name, options, re
     resultSettingEndTime,
   };
 
-  const mutation = new GraphMutation(getMutation('createTopicTransaction'), args, 'allTopics');
+  const mutation = new GraphMutation(getMutation('createTopic'), args, 'allTopics');
   return mutation.execute();
 }
 
@@ -54,7 +54,7 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
     amount,
   };
 
-  const mutation = new GraphMutation(getMutation('createBet'), args, 'transaction');
+  const mutation = new GraphMutation(getMutation('betTransaction'), args, 'transaction');
   return mutation.execute();
 }
 
@@ -67,6 +67,17 @@ export function voteTransaction(version, senderAddress, oracleAddress, optionIdx
     amount,
   };
 
-  const mutation = new GraphMutation(getMutation('createVote'), args, 'transaction');
+  const mutation = new GraphMutation(getMutation('voteTransaction'), args, 'transaction');
+  return mutation.execute();
+}
+
+export function finalizeResultTransaction(version, senderAddress, oracleAddress) {
+  const args = {
+    version,
+    senderAddress,
+    oracleAddress,
+  };
+
+  const mutation = new GraphMutation(getMutation('finalizeResultTransaction'), args, 'transaction');
   return mutation.execute();
 }

@@ -118,7 +118,7 @@ const MUTATIONS = {
     }
   `,
 
-  createBet: `
+  betTransaction: `
     CreateBet(
       $version: Int!,
       $senderAddress: String!,
@@ -142,7 +142,7 @@ const MUTATIONS = {
     }
   `,
 
-  createVote: `
+  voteTransaction: `
     CreateVote(
       $version: Int!,
       $senderAddress: String!,
@@ -162,6 +162,24 @@ const MUTATIONS = {
         oracleAddress
         optionIdx
         amount
+      }
+    }
+  `,
+
+  finalizeResultTransaction: `
+    FinalizeResult(
+      $version: Int!,
+      $senderAddress: String!,
+      $oracleAddress: String!
+    ) {
+      finalizeResult(
+        version: $version,
+        senderAddress: $senderAddress,
+        oracleAddress: $oracleAddress
+      ) {
+        version
+        senderAddress
+        oracleAddress
       }
     }
   `,
