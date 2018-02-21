@@ -77,7 +77,7 @@ export function createApproveTx(version, senderAddress, oracleAddress, amount) {
   return new GraphMutation('approve', args, TYPE.transaction).execute();
 }
 
-export function setResultTransaction(version, senderAddress, oracleAddress, consensusThreshold, resultIdx) {
+export function createSetResultTx(version, senderAddress, oracleAddress, consensusThreshold, resultIdx) {
   const args = {
     version,
     senderAddress,

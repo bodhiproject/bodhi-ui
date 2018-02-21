@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createBetTx, createApproveTx } from '../../network/graphMutation';
+import { createBetTx, createApproveTx, createSetResultTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
 import Routes from '../../network/routes';
@@ -94,10 +94,10 @@ export function* betRequestHandler() {
 export function* approveRequestHandler() {
   yield takeEvery(actions.APPROVE, function* onApproveRequest(action) {
     const {
+      contractAddress,
       spender,
       value,
       senderAddress,
-      contractAddress,
     } = action.payload;
 
     try {
@@ -166,7 +166,10 @@ export function* allowanceRequestHandler() {
 export function* setResultRequestHandler() {
   yield takeEvery(actions.SET_RESULT, function* onSetResultRequest(action) {
     const {
-      contractAddress, resultIndex, senderAddress,
+      contractAddress,
+      resultIndex,
+      consensusThreshold,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -180,11 +183,15 @@ export function* setResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.setResult, options);
+      const tx = yield call(request, Routes.setResult, options);
+
+      // Transaction mutation
+      const mutation = yield call(createSetResultTx, Config.defaults.version, senderAddress, contractAddress,
+        consensusThreshold, resultIndex);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({

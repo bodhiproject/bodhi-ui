@@ -69,23 +69,24 @@ const topicActions = {
   }),
   APPROVE: 'APPROVE',
   APPROVE_RETURN: 'APPROVE_RETURN',
-  onApprove: (spender, value, senderAddress, contractAddress) => ({
+  onApprove: (contractAddress, spender, value, senderAddress) => ({
     type: topicActions.APPROVE,
     payload: {
+      contractAddress,
       spender,
       value,
       senderAddress,
-      contractAddress,
     },
   }),
 
   SET_RESULT: 'SET_RESULT',
   SET_RESULT_RETURN: 'SET_RESULT_RETURN',
-  onSetResult: (contractAddress, resultIndex, senderAddress) => ({
+  onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) => ({
     type: topicActions.SET_RESULT,
     payload: {
       contractAddress,
       resultIndex,
+      consensusThreshold,
       senderAddress,
     },
   }),
