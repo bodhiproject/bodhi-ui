@@ -3,9 +3,9 @@ import _ from 'lodash';
 class GraphParser {
   static getParser(requestName) {
     const PARSER_MAPPINGS = {
-      allTopics: this.parseTopic,
-      allOracles: this.parseOracle,
-      syncInfo: this.parseSyncInfo,
+      Topic: this.parseTopic,
+      Oracle: this.parseOracle,
+      SyncInfo: this.parseSyncInfo,
     };
     return PARSER_MAPPINGS[requestName];
   }

@@ -1,28 +1,14 @@
 import _ from 'lodash';
 
-const ENUMS = {
-  direction: [
-    'ASC',
-    'DESC',
-  ],
-
-  status: [
-    'CREATED',
-    'VOTING',
-    'WAITRESULT',
-    'OPENRESULTSET',
-    'PENDING',
-    'WITHDRAW',
-  ],
-
-  token: [
-    'QTUM',
-    'BOT',
-  ],
+export const TYPE = {
+  topic: 'Topic',
+  oracle: 'Oracle',
+  syncInfo: 'SyncInfo',
+  transaction: 'Transaction',
 };
 
-const FIELD_MAPPINGS = {
-  allTopics: `
+const TYPE_DEF = {
+  Topic: `
     version
     address
     name
@@ -53,7 +39,7 @@ const FIELD_MAPPINGS = {
       consensusThreshold
     }`,
 
-  allOracles: `
+  Oracle: `
     version
     address
     topicAddress
@@ -74,7 +60,7 @@ const FIELD_MAPPINGS = {
     consensusThreshold
   `,
 
-  syncInfo: `
+  SyncInfo: `
     syncBlockNum
     syncBlockTime
     chainBlockNum
@@ -118,7 +104,7 @@ const MUTATIONS = {
     }
   `,
 
-  betTransaction: `
+  createBet: `
     CreateBet(
       $version: Int!,
       $senderAddress: String!,
@@ -142,7 +128,7 @@ const MUTATIONS = {
     }
   `,
 
-  approveTransaction: `
+  approve: `
     Approve(
       $version: Int!,
       $senderAddress: String!,
@@ -163,7 +149,7 @@ const MUTATIONS = {
     }
   `,
 
-  setResultTransaction: `
+  setResult: `
     SetResult(
       $version: Int!,
       $senderAddress: String!,
@@ -187,7 +173,7 @@ const MUTATIONS = {
     }
   `,
 
-  voteTransaction: `
+  createVote: `
     CreateVote(
       $version: Int!,
       $senderAddress: String!,
@@ -211,7 +197,7 @@ const MUTATIONS = {
     }
   `,
 
-  finalizeResultTransaction: `
+  finalizeResult: `
     FinalizeResult(
       $version: Int!,
       $senderAddress: String!,
@@ -229,7 +215,7 @@ const MUTATIONS = {
     }
   `,
 
-  withdrawTransaction: `
+  withdraw: `
     Withdraw(
       $version: Int!,
       $senderAddress: String!,
@@ -248,14 +234,35 @@ const MUTATIONS = {
   `,
 };
 
+const ENUMS = {
+  direction: [
+    'ASC',
+    'DESC',
+  ],
+
+  status: [
+    'CREATED',
+    'VOTING',
+    'WAITRESULT',
+    'OPENRESULTSET',
+    'PENDING',
+    'WITHDRAW',
+  ],
+
+  token: [
+    'QTUM',
+    'BOT',
+  ],
+};
+
 export function isValidEnum(key, value) {
   const isEnum = _.has(ENUMS, key);
   const isValid = _.includes(ENUMS[key], value);
   return isEnum && isValid;
 }
 
-export function getQueryFields(queryName) {
-  return FIELD_MAPPINGS[queryName];
+export function getTypeDef(queryName) {
+  return TYPE_DEF[queryName];
 }
 
 export function getMutation(mutationName) {

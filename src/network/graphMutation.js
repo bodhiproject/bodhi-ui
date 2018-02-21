@@ -2,16 +2,18 @@ import gql from 'graphql-tag';
 
 import { getMutation } from './graphDataStruct';
 import GraphParser from './graphParser';
+import { TYPE, getMutation } from './graphDataStruct';
 
 class GraphMutation {
-  constructor(mutation, args, queryName) {
-    this.mutation = mutation;
+  constructor(mutationName, args, type) {
+    this.mutationName = mutationName;
     this.args = args;
-    this.queryName = queryName;
+    this.type = type;
   }
 
   build() {
-    return gql`mutation ${this.mutation}`;
+    const mutation = getMutation(this.mutationName);
+    return gql`mutation ${mutation}`;
   }
 
   async execute() {
@@ -23,7 +25,7 @@ class GraphMutation {
       variables: args,
       fetchPolicy: 'network-only',
     });
-    return GraphParser.getParser(this.queryName)(res.data[this.queryName]);
+    return GraphParser.getParser(this.type)(res.data[this.mutationName]);
   }
 }
 
@@ -41,8 +43,7 @@ export function createTopic(version, senderAddress, name, options, resultSetterA
     resultSettingEndTime,
   };
 
-  const mutation = new GraphMutation(getMutation('createTopic'), args, 'allTopics');
-  return mutation.execute();
+  return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
 export function betTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
@@ -54,8 +55,7 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
     amount,
   };
 
-  const mutation = new GraphMutation(getMutation('betTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 
 export function approveTransaction(version, senderAddress, oracleAddress, amount) {
@@ -66,8 +66,7 @@ export function approveTransaction(version, senderAddress, oracleAddress, amount
     amount,
   };
 
-  const mutation = new GraphMutation(getMutation('approveTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('approve', args, TYPE.transaction).execute();
 }
 
 export function setResultTransaction(version, senderAddress, oracleAddress, consensusThreshold, resultIdx) {
@@ -79,8 +78,7 @@ export function setResultTransaction(version, senderAddress, oracleAddress, cons
     resultIdx,
   };
 
-  const mutation = new GraphMutation(getMutation('setResultTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('setResult', args, TYPE.transaction).execute();
 }
 
 export function voteTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
@@ -92,8 +90,7 @@ export function voteTransaction(version, senderAddress, oracleAddress, optionIdx
     amount,
   };
 
-  const mutation = new GraphMutation(getMutation('voteTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('createVote', args, TYPE.transaction).execute();
 }
 
 export function finalizeResultTransaction(version, senderAddress, oracleAddress) {
@@ -103,8 +100,7 @@ export function finalizeResultTransaction(version, senderAddress, oracleAddress)
     oracleAddress,
   };
 
-  const mutation = new GraphMutation(getMutation('finalizeResultTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
 }
 
 export function withdrawTransaction(version, senderAddress, topicAddress) {
@@ -114,6 +110,5 @@ export function withdrawTransaction(version, senderAddress, topicAddress) {
     topicAddress,
   };
 
-  const mutation = new GraphMutation(getMutation('withdrawTransaction'), args, 'transaction');
-  return mutation.execute();
+  return new GraphMutation('withdraw', args, TYPE.transaction).execute();
 }
