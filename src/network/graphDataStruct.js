@@ -65,6 +65,24 @@ const TYPE_DEF = {
     syncBlockTime
     chainBlockNum
   `,
+
+  Transaction: `
+    version
+    type
+    txid
+    txStatus
+    senderAddress
+    senderQAddress
+    entityId
+    optionIdx
+    token
+    amount
+    gasUsed
+    blockNum
+    blockTime
+    createTime
+    createBlockNum
+  `,
 };
 
 const MUTATIONS = {
