@@ -12,7 +12,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new WebSocketLink({
-  uri: endpoint.graphWs,
+  uri: endpoint.graphSubs,
   options: {
     reconnect: true,
   },

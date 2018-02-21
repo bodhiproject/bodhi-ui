@@ -8,7 +8,7 @@ module.exports = {
   endpoint: {
     api: HTTP_ROUTE,
     graphHttp: `${HTTP_ROUTE}/graphql`,
-    graphWs: `${WS_ROUTE}/subscriptions`,
+    graphSubs: `${WS_ROUTE}/subscriptions`,
     insight: BASE_INSIGHT_DEV,
   },
   intervals: { // in MS
