@@ -57,3 +57,16 @@ export function betTransaction(version, senderAddress, oracleAddress, optionIdx,
   const mutation = new GraphMutation(getMutation('createBet'), args, 'transaction');
   return mutation.execute();
 }
+
+export function voteTransaction(version, senderAddress, oracleAddress, optionIdx, amount) {
+  const args = {
+    version,
+    senderAddress,
+    oracleAddress,
+    optionIdx,
+    amount,
+  };
+
+  const mutation = new GraphMutation(getMutation('createVote'), args, 'transaction');
+  return mutation.execute();
+}

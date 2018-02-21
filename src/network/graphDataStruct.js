@@ -120,13 +120,37 @@ const MUTATIONS = {
 
   createBet: `
     CreateBet(
-      $version: Int!
-      $senderAddress: String!
-      $oracleAddress: String!
-      $optionIdx: Int!
+      $version: Int!,
+      $senderAddress: String!,
+      $oracleAddress: String!,
+      $optionIdx: Int!,
       $amount: String!
     ) {
       createBet(
+        version: $version,
+        senderAddress: $senderAddress,
+        oracleAddress: $oracleAddress,
+        optionIdx: $optionIdx,
+        amount: $amount
+      ) {
+        version
+        senderAddress
+        oracleAddress
+        optionIdx
+        amount
+      }
+    }
+  `,
+
+  createVote: `
+    CreateVote(
+      $version: Int!,
+      $senderAddress: String!,
+      $oracleAddress: String!,
+      $optionIdx: Int!,
+      $amount: String!
+    ) {
+      createVote(
         version: $version,
         senderAddress: $senderAddress,
         oracleAddress: $oracleAddress,
