@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createBetTx, createApproveTx, createSetResultTx } from '../../network/graphMutation';
+import { createBetTx, createApproveTx, createSetResultTx, createVoteTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
 import Routes from '../../network/routes';
@@ -223,11 +223,15 @@ export function* voteRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.vote, options);
+      const tx = yield call(request, Routes.vote, options);
+
+      // Transaction mutation
+      const mutation = yield call(createVoteTx, Config.defaults.version, senderAddress, contractAddress,
+        resultIndex, botAmount);
 
       yield put({
         type: actions.VOTE_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
