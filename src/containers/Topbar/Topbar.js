@@ -107,23 +107,22 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { listUnspent } = this.props;
-
-    // Start listUnspent long polling
-    function pollListUnspent() {
-      listUnspent();
-      setTimeout(pollListUnspent, AppConfig.intervals.listUnspent);
-    }
-    pollListUnspent();
+    this.props.listUnspent();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getBotBalance } = this.props;
+    const { nextWalletAddrs, nextSyncBlockNum } = nextProps;
+    const { walletAddrs, syncBlockNum, listUnspent, getBotBalance } = this.props;
+
+    // Update page on new block
+    if (nextSyncBlockNum !== syncBlockNum) {
+      listUnspent();
+    }
 
     // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
-    const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
+    const botArray = _.filter(walletAddrs, (item) => !!item.bot);
 
-    if (_.isEmpty(botArray) || !_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
+    if (_.isEmpty(botArray) || !_.isEqual(walletAddrs, nextWalletAddrs)) {
       _.each(nextProps.walletAddrs, (addressObj) => {
         const ownerAddress = addressObj.address;
         const senderAddress = addressObj.address;
@@ -277,6 +276,7 @@ Topbar.propTypes = {
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
+  syncBlockNum: PropTypes.number,
 };
 
 Topbar.defaultProps = {
@@ -286,12 +286,14 @@ Topbar.defaultProps = {
   selectWalletAddress: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
+  syncBlockNum: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  syncBlockNum: state.App.get('syncBlockNum'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
