@@ -39,6 +39,8 @@ class OraclePage extends React.Component {
     this.getRadioButtonViews = this.getRadioButtonViews.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
+    this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
+    this.constructCardInfo = this.constructCardInfo.bind(this);
     this.startCheckAllowance = this.startCheckAllowance.bind(this);
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.bet = this.bet.bind(this);
@@ -48,9 +50,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.props.onGetOracles([
-      { topicAddress: this.state.topicAddress },
-    ]);
+    this.executeOraclesRequest();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,156 +61,12 @@ class OraclePage extends React.Component {
       selectedWalletAddress,
     } = nextProps;
 
-    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
-    const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
-
-    if (oracle) {
-      const { token, status } = oracle;
-      let config;
-
-      /** Determine what config to use in current card * */
-      if (token === Token.Qtum && status === OracleStatus.Voting) {
-        config = {
-          name: 'BETTING',
-          breadcrumbLabel: 'Betting',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
-            messages: [
-            ],
-          },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Bet',
-            },
-            afterToggle: {
-              showAmountInput: true,
-              btnText: 'Confirm',
-            },
-          },
-        };
-      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
-        config = {
-          name: 'SETTING',
-          breadcrumbLabel: 'Setting',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
-            messages: [
-              {
-                text: `Result setter ${oracle.resultSetterQAddress || ''}`,
-                type: 'default',
-              },
-              {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
-                  needed to set the result.`,
-                type: 'default',
-              },
-              {
-                text: `BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. 
-                  Your BOT needs to be approved before result setting. The approved amount will automatically be used to 
-                  set the result after approval.`,
-                type: 'default',
-              },
-            ],
-          },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Set Result',
-              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress,
-            },
-            afterToggle: {
-              showAmountInput: false,
-              btnText: 'Confirm',
-            },
-          },
-        };
-
-        // Add a message to CardInfo to warn that current block has passed set end block
-        if (syncBlockTime > oracle.resultSetEndTime) {
-          config.cardInfo.messages.push({
-            text: 'Current block time has passed the Result Setting End Time.',
-            type: 'warn',
-          });
-        }
-
-        // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress) {
-          config.cardInfo.messages.push({
-            text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
-            type: 'warn',
-          });
-        } else if (status === OracleStatus.OpenResultSet) {
-          config.cardInfo.messages.push({
-            text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
-            type: 'warn',
-          });
-        }
-      } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        config = {
-          name: 'VOTING',
-          breadcrumbLabel: 'Voting',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
-            messages: [
-              {
-                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
-                  needed to reach the Proof of Agreement and become the new result.`,
-                type: 'default',
-              }, {
-                text: `BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs 
-                  to be approved before voting. The approved amount will automatically be used to vote afterwards.`,
-                type: 'default',
-              },
-            ],
-          },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Vote',
-            },
-            afterToggle: {
-              showAmountInput: true,
-              btnText: 'Confirm',
-            },
-          },
-        };
-      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        config = {
-          name: 'FINALIZING',
-          breadcrumbLabel: 'Voting',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
-            messages: [
-            ],
-          },
-          cardAction: {
-            skipToggle: true,
-            afterToggle: {
-              btnText: 'Finalize',
-            },
-          },
-        };
-
-        if (syncBlockTime > oracle.endTime) {
-          config.cardInfo.messages.push({
-            text: `Current block time has passed the Voting End Time. 
-              The previous result needs to be finalized in order to withdraw.`,
-            type: 'default',
-          }, {
-            text: `Finalizing can be done by anyone. 
-              Once finalized, winners can withdraw from the event in the Withdraw tab.`,
-            type: 'default',
-          });
-        }
-      }
-
-      this.setState({
-        oracle,
-        config,
-      });
+    // Update page on new block
+    if (syncBlockTime !== this.props.syncBlockTime) {
+      this.executeOraclesRequest();
     }
+
+    this.constructCardInfo(getOraclesSuccess, syncBlockTime, selectedWalletAddress);
 
     // Check allowance return; do nothing if undefined
     this.onAllowanceReturn(allowanceReturn);
@@ -360,6 +216,165 @@ class OraclePage extends React.Component {
         // TODO: oracle not found page
         break;
       }
+    }
+  }
+
+  executeOraclesRequest() {
+    this.props.getOracles([
+      { topicAddress: this.state.topicAddress },
+    ]);
+  }
+
+  constructCardInfo(getOraclesSuccess, syncBlockTime, selectedWalletAddress) {
+    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
+    const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
+
+    if (oracle) {
+      const { token, status } = oracle;
+      let config;
+
+      /** Determine what config to use in current card * */
+      if (token === Token.Qtum && status === OracleStatus.Voting) {
+        config = {
+          name: 'BETTING',
+          breadcrumbLabel: 'Betting',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Bet',
+            },
+            afterToggle: {
+              showAmountInput: true,
+              btnText: 'Confirm',
+            },
+          },
+        };
+      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
+        config = {
+          name: 'SETTING',
+          breadcrumbLabel: 'Setting',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+            messages: [
+              {
+                text: `Result setter ${oracle.resultSetterQAddress || ''}`,
+                type: 'default',
+              },
+              {
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to set the result.`,
+                type: 'default',
+              },
+              {
+                text: `BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. 
+                  Your BOT needs to be approved before result setting. The approved amount will automatically be used to 
+                  set the result after approval.`,
+                type: 'default',
+              },
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Set Result',
+              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress,
+            },
+            afterToggle: {
+              showAmountInput: false,
+              btnText: 'Confirm',
+            },
+          },
+        };
+
+        // Add a message to CardInfo to warn that current block has passed set end block
+        if (syncBlockTime > oracle.resultSetEndTime) {
+          config.cardInfo.messages.push({
+            text: 'Current block time has passed the Result Setting End Time.',
+            type: 'warn',
+          });
+        }
+
+        // Add a message to CardInfo to warn that user is not result setter of current oracle
+        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress) {
+          config.cardInfo.messages.push({
+            text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
+            type: 'warn',
+          });
+        } else if (status === OracleStatus.OpenResultSet) {
+          config.cardInfo.messages.push({
+            text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
+            type: 'warn',
+          });
+        }
+      } else if (token === Token.Bot && status === OracleStatus.Voting) {
+        config = {
+          name: 'VOTING',
+          breadcrumbLabel: 'Voting',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+            messages: [
+              {
+                text: `Consensus Threshold ${oracle.consensusThreshold || ''}. This value indicates the amount of BOT 
+                  needed to reach the Proof of Agreement and become the new result.`,
+                type: 'default',
+              }, {
+                text: `BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs 
+                  to be approved before voting. The approved amount will automatically be used to vote afterwards.`,
+                type: 'default',
+              },
+            ],
+          },
+          cardAction: {
+            skipToggle: false,
+            beforeToggle: {
+              btnText: 'Vote',
+            },
+            afterToggle: {
+              showAmountInput: true,
+              btnText: 'Confirm',
+            },
+          },
+        };
+      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
+        config = {
+          name: 'FINALIZING',
+          breadcrumbLabel: 'Voting',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: true,
+            afterToggle: {
+              btnText: 'Finalize',
+            },
+          },
+        };
+
+        if (syncBlockTime > oracle.endTime) {
+          config.cardInfo.messages.push({
+            text: `Current block time has passed the Voting End Time. 
+              The previous result needs to be finalized in order to withdraw.`,
+            type: 'default',
+          }, {
+            text: `Finalizing can be done by anyone. 
+              Once finalized, winners can withdraw from the event in the Withdraw tab.`,
+            type: 'default',
+          });
+        }
+      }
+
+      this.setState({
+        oracle,
+        config,
+      });
     }
   }
 
@@ -524,13 +539,12 @@ class OraclePage extends React.Component {
 }
 
 OraclePage.propTypes = {
-  onGetOracles: PropTypes.func,
+  getOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  // getOraclesError: PropTypes.string,
   editingToggled: PropTypes.bool,
   match: PropTypes.object.isRequired,
   onBet: PropTypes.func,
@@ -549,9 +563,8 @@ OraclePage.propTypes = {
 };
 
 OraclePage.defaultProps = {
-  onGetOracles: undefined,
+  getOracles: undefined,
   getOraclesSuccess: [],
-  // getOraclesError: '',
   editingToggled: false,
   onBet: undefined,
   onVote: undefined,
@@ -570,7 +583,6 @@ OraclePage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  // getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
@@ -580,7 +592,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
+    getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
@@ -597,5 +609,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-// Wrap the component to inject dispatch and state into it
 export default connect(mapStateToProps, mapDispatchToProps)(OraclePage);
