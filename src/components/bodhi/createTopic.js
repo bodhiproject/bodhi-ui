@@ -357,7 +357,6 @@ class CreateTopic extends React.Component {
       <FormItem
         {...wrapperCol}
         key={k}
-        style={{ height: '96px' }}
       >
         {getFieldDecorator(`results[${k}]`, {
           validateTrigger: ['onChange', 'onBlur'],
