@@ -225,30 +225,6 @@ class Topbar extends React.PureComponent {
     );
   }
 
-<<<<<<< HEAD
-=======
-  renderBlockInfo() {
-    const { syncBlockNum, syncBlockTime } = this.props;
-
-    const blockNum = syncBlockNum;
-    const blockTime = syncBlockTime ? getShortLocalDateTimeString(syncBlockTime) : '';
-
-    return (
-      <div
-        className="block-count"
-        style={{ color: 'white', paddingTop: '16px', textAlign: 'right' }}
-      >
-        <div style={{ fontSize: '14px', lineHeight: 'normal' }}>
-          Current Block: {blockNum}
-        </div>
-        <div style={{ fontSize: '14px', lineHeight: 'normal', marginTop: '4px' }}>
-          {blockTime}
-        </div>
-      </div>
-    );
-  }
-
->>>>>>> Refactor sync info returns to separate state vars
   onAddressDropdownClick({ key, item }) {
     if (key === KEY_ADD_ADDRESS_BTN) {
       this.showModal();

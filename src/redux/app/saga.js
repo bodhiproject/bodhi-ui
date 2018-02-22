@@ -1,12 +1,10 @@
 import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import fetch from 'node-fetch';
-import { subscribe, unsubscribe } from 'redux-graphql-subscriptions';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphRequest';
-import subscriptions, { channels } from '../../network/graphSubscription';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
@@ -91,29 +89,6 @@ export function* getBotBalanceRequestHandler() {
   });
 }
 
-export function* subscribeSyncInfo() {
-  yield takeEvery(actions.SUBSCRIBE_SYNC_INFO, function* subscribeSyncInfoRequest(action) {
-    subscribe({ 
-      query: subscriptions.ON_SYNC_INFO,
-      variables: {
-        channel: channels.ON_SYNC_INFO,
-      },
-      success: (result) => {
-        yield put({
-          type: actions.SUBSCRIBE_SYNC_INFO_RETURN,
-          value: { result },
-        });
-      },
-      error: (err) => {
-        yield put({
-          type: actions.SUBSCRIBE_SYNC_INFO_RETURN,
-          value: error.message,
-        });
-      },
-    );
-  });
-}
-
 export function* getSyncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* getSyncInfoRequest(action) {
     try {
@@ -155,7 +130,6 @@ export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBotBalanceRequestHandler),
-    fork(subscribeSyncInfo),
     fork(getSyncInfoRequestHandler),
     fork(getInsightTotalsRequestHandler),
   ]);
