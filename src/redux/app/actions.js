@@ -53,7 +53,7 @@ const actions = {
   }),
 
   LIST_UNSPENT: 'LIST_UNSPENT',
-  LIST_UNSPENT_RESULT: 'LIST_UNStPENT_RESULT',
+  LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
   listUnspent: () => ({
     type: actions.LIST_UNSPENT,
   }),
