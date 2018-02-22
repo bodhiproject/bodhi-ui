@@ -12,8 +12,7 @@ module.exports = {
     insight: BASE_INSIGHT_DEV,
   },
   intervals: { // in MS
-    syncInfo: 10000,
-    listUnspent: 10000,
+    syncInfo: 20000,
   },
   defaults: {
     averageBlockTime: 142.01324503311258,

@@ -107,27 +107,37 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    this.props.listUnspent();
+    const {
+      listUnspent,
+      getBotBalance,
+      walletAddrs,
+    } = this.props;
+
+    listUnspent();
+    if (!_.isEmpty(walletAddrs)) {
+      _.each(walletAddrs, (address) => {
+        getBotBalance(address.address, address.address);
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { nextWalletAddrs, nextSyncBlockNum } = nextProps;
-    const { walletAddrs, syncBlockNum, listUnspent, getBotBalance } = this.props;
+    const {
+      walletAddrs,
+      syncBlockNum,
+      listUnspent,
+      getBotBalance,
+    } = this.props;
 
     // Update page on new block
-    if (nextSyncBlockNum !== syncBlockNum) {
+    if (nextProps.syncBlockNum !== syncBlockNum) {
       listUnspent();
-    }
 
-    // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
-    const botArray = _.filter(walletAddrs, (item) => !!item.bot);
-
-    if (_.isEmpty(botArray) || !_.isEqual(walletAddrs, nextWalletAddrs)) {
-      _.each(nextProps.walletAddrs, (addressObj) => {
-        const ownerAddress = addressObj.address;
-        const senderAddress = addressObj.address;
-        getBotBalance(ownerAddress, senderAddress);
-      });
+      if (nextProps.walletAddrs) {
+        _.each(nextProps.walletAddrs, (address) => {
+          getBotBalance(address.address, address.address);
+        });
+      }
     }
   }
 

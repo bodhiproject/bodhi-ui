@@ -16,8 +16,9 @@ export function* listUnspentRequestHandler() {
       const result = yield call(request, Routes.listUnspent);
 
       if (_.isEmpty(result)) {
-        // If listunspent return is empty meaning one has no balance in his addresses we will get default qtumd account's address
-        // This is likely to be the case when bodhi-app is first installed
+        // If listunspent return is empty meaning one has no balance in his addresses
+        // we will get default qtumd account's address
+        // This is likely to be the case when first installed
         const options = {
           method: 'POST',
           body: JSON.stringify({
@@ -29,7 +30,7 @@ export function* listUnspentRequestHandler() {
         const defaultAddress = yield call(request, Routes.getAccountAddress, options);
 
         yield put({
-          type: actions.LIST_UNSPENT_RESULT,
+          type: actions.LIST_UNSPENT_RETURN,
           value: {
             result: [{
               address: defaultAddress,
@@ -40,13 +41,13 @@ export function* listUnspentRequestHandler() {
       } else {
         // If listunspent returns with a non-empty list
         yield put({
-          type: actions.LIST_UNSPENT_RESULT,
+          type: actions.LIST_UNSPENT_RETURN,
           value: { result },
         });
       }
     } catch (error) {
       yield put({
-        type: actions.LIST_UNSPENT_RESULT,
+        type: actions.LIST_UNSPENT_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -71,7 +72,8 @@ export function* getBotBalanceRequestHandler() {
       };
 
       const result = yield call(request, Routes.botBalance, options);
-      const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0; // Convert BN hex string from request to BOT number
+      // Convert BN hex string from request to BOT number
+      const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0;
 
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
