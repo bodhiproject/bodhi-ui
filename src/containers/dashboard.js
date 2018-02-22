@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Icon } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -82,11 +82,21 @@ class Dashboard extends React.Component {
       case TAB_SET:
       case TAB_VOTE:
       case TAB_FINALIZE: {
-        rowItems = this.renderOracles(oracles, tabIndex);
+        if (oracles.length) {
+          rowItems = this.renderOracles(oracles, tabIndex);
+        } else {
+          rowItems = this.renderEmptyList();
+        }
+
         break;
       }
       case TAB_WITHDRAW: {
-        rowItems = this.renderTopics(topics);
+        if (topics.length) {
+          rowItems = this.renderTopics(topics);
+        } else {
+          rowItems = this.renderEmptyList();
+        }
+
         break;
       }
       default: {
@@ -181,6 +191,15 @@ class Dashboard extends React.Component {
         throw new RangeError(`Invalid tab position ${tabIndex}`);
       }
     }
+  }
+
+  renderEmptyList() {
+    return (
+      <div className="event-empty">
+        <p><Icon className="event-empty-icon" type="calendar" /></p>
+        <p>No Event at Current Status</p>
+      </div>
+    );
   }
 
   renderOracles(oracles, tabIndex) {
