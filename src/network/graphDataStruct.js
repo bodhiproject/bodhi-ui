@@ -182,27 +182,6 @@ const MUTATIONS = {
     }
   `,
 
-  approve: `
-    Approve(
-      $version: Int!,
-      $senderAddress: String!,
-      $oracleAddress: String!,
-      $amount: String!
-    ) {
-      approve(
-        version: $version,
-        senderAddress: $senderAddress,
-        oracleAddress: $oracleAddress,
-        amount: $amount
-      ) {
-        version
-        senderAddress
-        oracleAddress
-        amount
-      }
-    }
-  `,
-
   setResult: `
     SetResult(
       $version: Int!,

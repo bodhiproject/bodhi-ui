@@ -93,17 +93,6 @@ export function createBetTx(version, oracleAddress, optionIdx, amount, senderAdd
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 
-export function createApproveTx(version, oracleAddress, amount, senderAddress) {
-  const args = {
-    version,
-    senderAddress,
-    oracleAddress,
-    amount,
-  };
-
-  return new GraphMutation('approve', args, TYPE.transaction).execute();
-}
-
 export function createSetResultTx(version, oracleAddress, consensusThreshold, resultIdx, senderAddress) {
   const args = {
     version,
