@@ -45,7 +45,7 @@ export class App extends React.PureComponent {
                 </Debounce>
                 <AppLoad />
                 <Topbar url={url} />
-                <Layout style={{ flexDirection: 'row', overflowX: 'hidden' }}>
+                <Layout style={{ flexDirection: 'row', overflow: 'hidden' }}>
                   <Layout
                     className="isoContentMainLayout"
                     style={{
