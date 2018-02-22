@@ -1,21 +1,17 @@
 import gql from 'graphql-tag';
 
-import client from './graphClient';
 import { getQueryFields } from './graphDataStruct';
 
-export function subscribeSyncInfo() {
-  const query = gql`
-    subscription onNewSyncInfo {
-      syncInfo {
+export default subscriptions = {
+  ON_SYNC_INFO: gql`
+    subscription onSyncInfo {
+      OnSyncInfo {
         ${getQueryFields('syncInfo')}
       }
     }
-  `;
+  `,
+};
 
-  client.subscribe({
-    query,
-    variables: {},
-  }).subscribe((response) => {
-    console.log(response);
-  });
-}
+export const channels = {
+	ON_SYNC_INFO: 'OnSyncInfo',
+};

@@ -32,6 +32,12 @@ const actions = {
     value,
   }),
 
+  SUBSCRIBE_SYNC_INFO: 'SUBSCRIBE_SYNC_INFO',
+  SUBSCRIBE_SYNC_INFO_RETURN: 'SUBSCRIBE_SYNC_INFO_RETURN',
+  subscribeSyncInfo: () => ({
+    type: actions.SUBSCRIBE_SYNC_INFO,
+  }),
+
   LIST_UNSPENT: 'LIST_UNSPENT',
   LIST_UNSPENT_RESULT: 'LIST_UNSPENT_RESULT',
   listUnspent: () => ({
