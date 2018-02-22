@@ -4,9 +4,11 @@ import enMessages from '../locales/en_US.json';
 
 const EnLang = {
   messages: {
+    'cornerclock.online': 'Online',
+    'cornerclock.offline': 'Offline',
+    'cornerclock.block': 'Current Block',
     'topbar.events': 'Events',
     'topbar.create': 'Create an Event',
-    'topbar.block': 'Current Block',
     'dashboard.Bet': 'Bet',
     'dashboard.Set': 'Set',
     'dashboard.Vote': 'Vote',
