@@ -1,97 +1,111 @@
-    .cancel-ant-layout-header {
-      margin-left: -50px;
-      margin-right: -50px;
+.cancel-ant-layout-header {
+  margin-left: -50px;
+  margin-right: -50px;
+}
+
+.horizontalWrapper {
+  margin-left: auto;
+  margin-right: auto;
+
+  @media @phone {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media @tablet-strict {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  @media @desktop-strict {
+    max-width: 940px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  @media @xl {
+    max-width: 80%;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  @media @xxl {
+    max-width: 65%;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+.tabBtnGroup {
+  width: 100%;
+  padding-bottom: 40px;
+
+  button {
+    height: 44px;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 16px;
+
+    &.ant-btn-primary {
+      color: white;
     }
 
-    .horizontalWrapper {
-
-      margin-left: auto;
-      margin-right: auto;
-
-      @media @phone {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-      @media @tablet-strict {
-        padding-left: 24px;
-        padding-right: 24px;
-      }
-
-      @media @desktop-strict {
-        max-width: 940px;
-        padding-left: 0px;
-        padding-right: 0px;
-      }
-
-      @media @xl {
-        max-width: 80%;
-        padding-left: 0px;
-        padding-right: 0px;
-      }
-
-      @media @xxl {
-        max-width: 65%;
-        padding-left: 0px;
-        padding-right: 0px;
-      }
+    &.ant-btn-default {
+      color: @fontColorGrey;
     }
+  }
 
-    .tabBtnGroup {
-      width: 100%;
-      padding-bottom: 40px;
-
-      button {
-        height: 44px;
-        padding: 12px 16px;
-        text-align: center;
-        font-size: 16px;
-
-        &.ant-btn-primary {
-          color: white;
-        }
-
-        &.ant-btn-default {
-          color: @fontColorGrey;
-        }
-      }
-
-      .viewBtnGroup {
-        button {
-          margin-right: 24px;
-        }
-      }
-      .controlBtnGroup {
-        text-align: right;
-      }
+  .viewBtnGroup {
+    button {
+      margin-right: 24px;
     }
+  }
+  .controlBtnGroup {
+    text-align: right;
+  }
+}
+
+.event-empty {
+  width: 300px;
+  position: relative;
+  left: 50%;
+  margin-left: -150px;
+  top: 15vh;
+  text-align: center;
+
+  .event-empty-icon {
+    font-size: 100px;
+    opacity: 0.1;
+    margin-bottom: 10px;
+  }
+}
 
 .app-load{
-    content: '';
-    position: absolute;
-    top:0;
-    left:0;
+  content: '';
+  position: absolute;
+  top:0;
+  left:0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255,255,255,0.85);
+  z-index: 99;
+
+  .app-load-wrapper{
+    position: relative;
     height: 100%;
     width: 100%;
-    background-color: rgba(255,255,255,0.85);
-    z-index: 99;
 
-    .app-load-wrapper{
-      position: relative;
-      height: 100%;
-      width: 100%;
-
-      .app-load-container{
-        position: absolute;
-        top: 50%;
-      .transform(translate(-50%,-50%));
-      left: 50%;
-      }
-
-      @size: 180px;
-      .ant-progress-inner{
-        width: @size;
-        height: @size;
-        font-size: 48px;
-      }
+    .app-load-container{
+      position: absolute;
+      top: 50%;
+    .transform(translate(-50%,-50%));
+    left: 50%;
     }
+
+    @size: 180px;
+    .ant-progress-inner{
+      width: @size;
+      height: @size;
+      font-size: 48px;
+    }
+  }
 }
