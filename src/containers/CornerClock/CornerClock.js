@@ -9,7 +9,6 @@ class CornerClock extends React.PureComponent {
 
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.renderNetworkConnection = this.renderNetworkConnection.bind(this);
-    this.render = this.render.bind(this);
   }
 
   componentDidMount() {
