@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import topicActions from '../../../redux/topic/actions';
 import appActions from '../../../redux/app/actions';
@@ -99,11 +100,11 @@ class CreateTopic extends React.Component {
     const required = true;
     return (
       <div className="create-topic-container">
-        <h3>Create an event</h3>
+        <h3><FormattedMessage id="create.title" /></h3>
         <Form onSubmit={this.handleSubmit}>
           <FormItem
             {...formItemLayout}
-            label="Name"
+            label={<FormattedMessage id="create.name" />}
             required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
@@ -131,7 +132,7 @@ class CreateTopic extends React.Component {
 
           <FormItem
             {...formItemLayout}
-            label="Results"
+            label={<FormattedMessage id="create.results" />}
             required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
@@ -143,7 +144,7 @@ class CreateTopic extends React.Component {
                   onClick={this.onAddResultField}
                   style={{ width: WIDTH_RESULT_FIELD, marginBottom: '32px' }}
                 >
-                  <Icon type="plus" />Add Result
+                  <Icon type="plus" /><FormattedMessage id="create.addresult" />
                 </Button>
               ) : null}
             </FormItem>
@@ -151,7 +152,7 @@ class CreateTopic extends React.Component {
 
           <FormItem
             {...formItemLayout}
-            label="Centralized Oracle"
+            label={this.props.intl.formatMessage({ id: 'create.resultsetter' })}
             extra="This person will set the result."
             required={required}
           >
@@ -237,7 +238,7 @@ class CreateTopic extends React.Component {
     let block;
     switch (id) {
       case ID_BETTING_START_TIME: {
-        label = 'Betting Start Time';
+        label = this.props.intl.formatMessage({ id: 'create.betstartblock' });
         extra = 'The time when users can start betting.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
@@ -253,7 +254,7 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_BETTING_END_TIME: {
-        label = 'Betting End Time';
+        label = this.props.intl.formatMessage({ id: 'create.betendblock' });
         extra = 'The time when users can no longer bet.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
@@ -273,7 +274,7 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_RESULT_SETTING_START_TIME: {
-        label = 'Result Setting Start Time';
+        label = this.props.intl.formatMessage({ id: 'create.resultsetstartblock' });
         extra = 'The time when the Centralized Oracle can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
@@ -293,7 +294,7 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_RESULT_SETTING_END_TIME: {
-        label = 'Result Setting End Time';
+        label = this.props.intl.formatMessage({ id: 'create.resultsetendblock' });
         extra = 'The time when anyone can set the result.';
         options = {
           validateTrigger: ['onChange', 'onBlur'],
@@ -561,6 +562,8 @@ CreateTopic.propTypes = {
   walletAddrsIndex: PropTypes.number,
   chainBlockNum: PropTypes.number,
   averageBlockTime: PropTypes.number,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
 CreateTopic.defaultProps = {
@@ -590,4 +593,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Form.create()(CreateTopic)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Form.create()(injectIntl(CreateTopic))));

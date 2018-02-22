@@ -18,7 +18,6 @@ export class App extends React.PureComponent {
   render() {
     const { classes } = this.props;
     const { url } = this.props.match;
-
     return (
       <div className={classes.root}>
         <Reboot />

@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import { Row, Col, Select, Button, Menu, Icon, Dropdown } from 'antd';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import dashboardActions from '../../redux/dashboard/actions';
 import { SortBy } from '../../constants';
@@ -43,27 +44,27 @@ class TabBtnGroup extends Component {
         onClick={this.onTabBtnClicked}
         data-index={index}
       >
-        {entry.text}
+        <FormattedMessage id={`dashboard.${entry.text}`} />
       </Button>
     ));
 
     const sortMenu = (
       <Menu onClick={this.onSortOptionSelected}>
-        <MenuItem key={SortBy.Ascending}>Ascending</MenuItem>
-        <MenuItem key={SortBy.Descending}>Descending</MenuItem>
+        <MenuItem key={SortBy.Ascending}><FormattedMessage id="sort.asc" /></MenuItem>
+        <MenuItem key={SortBy.Descending}><FormattedMessage id="sort.desc" /></MenuItem>
       </Menu>
     );
 
     let sortButtonText;
     let sortButtonIcon;
     if (this.state.sortOption === SortBy.Ascending) {
-      sortButtonText = 'Ascending';
+      sortButtonText = this.props.intl.formatMessage({ id: 'sort.asc' });
       sortButtonIcon = <Icon type="arrow-up" />;
     } else if (this.state.sortOption === SortBy.Descending) {
-      sortButtonText = 'Descending';
+      sortButtonText = this.props.intl.formatMessage({ id: 'sort.desc' });
       sortButtonIcon = <Icon type="arrow-down" />;
     } else {
-      sortButtonText = 'Sort';
+      sortButtonText = this.props.intl.formatMessage({ id: 'sort.default' });
       sortButtonIcon = <Icon type="down-circle-o" />;
     }
 
@@ -94,6 +95,8 @@ TabBtnGroup.propTypes = {
   tabIndex: PropTypes.number,
   tabViewChanged: PropTypes.func,
   sortOrderChanged: PropTypes.func,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
 TabBtnGroup.defaultProps = {
@@ -113,4 +116,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabBtnGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(TabBtnGroup));

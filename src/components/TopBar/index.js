@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './styles';
@@ -55,10 +56,10 @@ class DropdownMenuItem extends React.Component {
           <span>{address}</span>
         </Col>
         <Col>
-          <Tag >{qtum.toFixed(2)}</Tag>
+          <Tag >{qtum.toFixed(2)} QTUM</Tag>
         </Col>
         <Col>
-          <Tag>{bot.toFixed(2)}</Tag>
+          <Tag>{bot.toFixed(2)} BOT</Tag>
         </Col>
         <Col>
           <CopyToClipboard text={address} onCopy={onCopyClick} >
@@ -200,8 +201,8 @@ class Topbar extends React.PureComponent {
                 </div>
 
                 <ul className="isoRight">
-                  <li><Link to="/" >Events</Link></li>
-                  <li><Link to="/create-topic" >Create an Event</Link></li>
+                  <li><Link to="/" ><FormattedMessage id="topbar.events" /></Link></li>
+                  <li><Link to="/create-topic" ><FormattedMessage id="topbar.create" /></Link></li>
                   <li>{walletAddrsEle}</li>
                 </ul>
               </div>
