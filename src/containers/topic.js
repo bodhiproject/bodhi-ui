@@ -20,7 +20,7 @@ class TopicPage extends React.Component {
 
     this.state = {
       address: this.props.match.params.address,
-      topic: undefined, // Topic object for this page
+      topic: undefined,
       config: undefined,
     };
 
@@ -30,37 +30,29 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const { getTopicsSuccess: allTopics, onGetTopics } = this.props;
-
-    const topic = _.find(allTopics, { address: this.state.address });
-
-    if (topic) {
-      // If we are able to find topic by address from allTopics
-      this.pageConfiguration(topic);
-    } else if (_.isEmpty(allTopics)) {
-      // Make a request to retrieve all topics
-      onGetTopics();
-    } else {
-      // All other cases, display empty page for short load time
-      // In future we can add some loading animation here
-    }
-
+    this.executeTopicsRequest();
     this.calculateWinnings();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      getTopicsSuccess: allTopics,
+      getTopicsSuccess,
       calculateBotWinningsReturn,
       calculateQtumWinningsReturn,
+      syncBlockTime,
     } = nextProps;
-    const topic = _.find(allTopics, { address: this.state.address });
+
+    // Update page on new block
+    if (syncBlockTime !== this.props.syncBlockTime) {
+      this.executeTopicsRequest();
+    }
 
     // Wallet address changed, call calculate winnings again
     if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
       this.calculateWinnings();
     }
 
+    const topic = _.find(getTopicsSuccess, { address: this.state.address });
     topic.botWinnings = calculateBotWinningsReturn;
     topic.qtumWinnings = calculateQtumWinningsReturn;
 
@@ -156,6 +148,12 @@ class TopicPage extends React.Component {
     );
   }
 
+  executeTopicsRequest() {
+    this.props.getTopics([
+      { address: this.state.address },
+    ]);
+  }
+
   calculateWinnings() {
     try {
       const {
@@ -244,7 +242,7 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
-  onGetTopics: PropTypes.func,
+  getTopics: PropTypes.func,
   getTopicsSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
@@ -265,8 +263,8 @@ TopicPage.propTypes = {
 };
 
 TopicPage.defaultProps = {
+  getTopics: undefined,
   getTopicsSuccess: undefined,
-  onGetTopics: undefined,
   requestReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
@@ -292,7 +290,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    getTopics: () => dispatch(dashboardActions.getTopics()),
     onCalculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
     onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
@@ -301,5 +299,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-// Wrap the component to inject dispatch and state into it
 export default connect(mapStateToProps, mapDispatchToProps)(TopicPage);
