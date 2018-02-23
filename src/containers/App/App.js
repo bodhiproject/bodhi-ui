@@ -11,7 +11,6 @@ import CornerClock from '../CornerClock/CornerClock';
 import AppRouter from './AppRouter';
 import AppLoad from '../appLoad';
 
-const { logout } = authAction;
 const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
@@ -46,9 +45,4 @@ App.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-export default connect(
-  (state) => ({
-    auth: state.Auth,
-  }),
-  { logout, toggleAll }
-)(App);
+export default connect((state) => ({ auth: state.Auth }), { toggleAll })(App);

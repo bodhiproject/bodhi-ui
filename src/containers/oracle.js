@@ -462,7 +462,7 @@ class OraclePage extends React.Component {
     const { onApprove, selectedWalletAddress } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
+    onApprove(oracle.address, oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
 
     this.setState({
       isApproving: true,
@@ -482,7 +482,7 @@ class OraclePage extends React.Component {
     const { oracle, radioValue } = this.state;
     const selectedIndex = oracle.optionIdxs[radioValue - 1];
 
-    onSetResult(oracle.address, selectedIndex, selectedWalletAddress);
+    onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, selectedWalletAddress);
   }
 
   vote(amount) {
@@ -598,10 +598,11 @@ function mapDispatchToProps(dispatch) {
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
-    onApprove: (spender, value, senderAddress) => dispatch(topicActions.onApprove(spender, value, senderAddress)),
+    onApprove: (contractAddress, spender, value, senderAddress) =>
+      dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
-    onSetResult: (contractAddress, resultIndex, senderAddress) =>
-      dispatch(topicActions.onSetResult(contractAddress, resultIndex, senderAddress)),
+    onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) =>
+      dispatch(topicActions.onSetResult(contractAddress, resultIndex, consensusThreshold, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),

@@ -3,11 +3,12 @@ import gql from 'graphql-tag';
 
 import client from './graphClient';
 import GraphParser from './graphParser';
-import { isValidEnum, getQueryFields } from './graphDataStruct';
+import { TYPE, isValidEnum, getTypeDef } from './graphDataStruct';
 
 class GraphRequest {
-  constructor(queryName) {
+  constructor(queryName, type) {
     this.queryName = queryName;
+    this.type = type;
     this.filters = undefined;
     this.orderBy = undefined;
   }
@@ -77,7 +78,7 @@ class GraphRequest {
           ${filterStr}
           ${orderByStr} 
         ${funcParamClose} {
-          ${getQueryFields(this.queryName)}
+          ${getTypeDef(this.type)}
         }
       }
     `;
@@ -93,7 +94,7 @@ class GraphRequest {
       query: gql`${query}`,
       fetchPolicy: 'network-only',
     });
-    return GraphParser.getParser(this.queryName)(res.data[this.queryName]);
+    return GraphParser.getParser(this.type)(res.data[this.queryName]);
   }
 }
 
@@ -103,7 +104,7 @@ class GraphRequest {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
 export function queryAllTopics(filters, orderBy) {
-  const request = new GraphRequest('allTopics');
+  const request = new GraphRequest('allTopics', TYPE.topic);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -119,7 +120,7 @@ export function queryAllTopics(filters, orderBy) {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
 export function queryAllOracles(filters, orderBy) {
-  const request = new GraphRequest('allOracles');
+  const request = new GraphRequest('allOracles', TYPE.oracle);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -133,5 +134,5 @@ export function queryAllOracles(filters, orderBy) {
 * Queries syncInfo from GraphQL.
 */
 export function querySyncInfo() {
-  return new GraphRequest('syncInfo').execute();
+  return new GraphRequest('syncInfo', TYPE.syncInfo).execute();
 }

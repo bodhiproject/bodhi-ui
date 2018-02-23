@@ -3,9 +3,10 @@ import _ from 'lodash';
 class GraphParser {
   static getParser(requestName) {
     const PARSER_MAPPINGS = {
-      allTopics: this.parseTopic,
-      allOracles: this.parseOracle,
-      syncInfo: this.parseSyncInfo,
+      Topic: this.parseTopic,
+      Oracle: this.parseOracle,
+      SyncInfo: this.parseSyncInfo,
+      Transaction: this.parseTransaction,
     };
     return PARSER_MAPPINGS[requestName];
   }
@@ -54,6 +55,26 @@ class GraphParser {
       'syncBlockTime',
       'chainBlockNum',
     ]);
+  }
+
+  static parseTransaction(data) {
+    return data.map((entry) => ({
+      version: entry.version,
+      type: entry.type,
+      txid: entry.txid,
+      txStatus: entry.txStatus,
+      senderAddress: entry.senderAddress,
+      senderQAddress: entry.senderQAddress,
+      entityId: entry.entityId,
+      optionIdx: entry.optionIdx,
+      token: entry.token,
+      amount: entry.amount,
+      gasUsed: entry.gasUsed,
+      blockNum: entry.blockNum,
+      blockTime: entry.blockTime,
+      createBlockNum: entry.createBlockNum,
+      createBlockTime: entry.createBlockTime,
+    }));
   }
 }
 
