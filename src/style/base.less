@@ -1,15 +1,15 @@
-/* * * * * * * * * * * * * * *
-ALL VARIABLE & MIXING
-* * * * * * * * * * * * * * */
-// @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400,500,700');
 
-// @isoFontFamily: 'Roboto', sans-serif;
-// @isoFontSize: 14px;
+/****** Variables & mixins *****/
+
+@fontFamily: 'Roboto', sans-serif;
+@fontSize: 16px;
 
 @primaryColor: #585AFA;
 @fontColorGrey: #4A4A4A;
 
 /****** Media screen size *****/
+
 @sm-min: 576px;
 @md-min: 768px;
 @lg-min: 992px;
@@ -31,12 +31,13 @@ ALL VARIABLE & MIXING
 @xl-strict:  ~"only screen and (min-width: @{xl-min}) and (max-width: @{xl-max})";
 @xxl:            ~"only screen and (min-width: @{xxl-min})";
 
-// Basic font size
+/****** Basic global styles *****/
+
 body{
-	font-size: 16px;
+  font-family: @fontFamily;
+	font-size: @fontSize;
 }
 
-// Remove <a> underline
 a, a:hover{
 	text-decoration: none;
 }

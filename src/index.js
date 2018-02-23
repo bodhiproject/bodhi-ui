@@ -2,19 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './containers/App/App';
-import Router from './router';
+import AppProvider from './appProvider';
 import { unregister } from './registerServiceWorker';
 
 ReactDOM.render(
-  <Router />,
+  <AppProvider />,
   document.getElementById('root')
 );
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./router.js', () => {
-    const Next = Router.default;
-    ReactDOM.render(<Next />, document.getElementById('root'));
+  module.hot.accept('./appProvider.js', () => {
+    const NextAppProvider = AppProvider.default;
+    ReactDOM.render(<NextAppProvider />, document.getElementById('root'));
   });
 }
 
