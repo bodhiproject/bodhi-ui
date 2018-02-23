@@ -39,7 +39,7 @@ export default function appReducer(state = initState, action) {
       break;
     }
 
-    case actions.LIST_UNSPENT_RESULT: {
+    case actions.LIST_UNSPENT_RETURN: {
       let result = [];
       let newState = state;
       let combinedAddresses = [];
@@ -87,7 +87,6 @@ export default function appReducer(state = initState, action) {
       return newState.set('walletAddrs', existingAddresses);
     }
 
-    /** Bot Balance Return - update walletAddrs with returned BOT value * */
     case actions.GET_BOT_BALANCE_RETURN: {
       const walletAddrs = state.get('walletAddrs');
 
@@ -116,7 +115,9 @@ export default function appReducer(state = initState, action) {
       break;
 
     case actions.GET_SYNC_INFO_RETURN:
-      return state.set('syncInfo', action.value);
+      return state.set('chainBlockNum', action.value.result.chainBlockNum)
+        .set('syncBlockNum', action.value.result.syncBlockNum)
+        .set('syncBlockTime', action.value.result.syncBlockTime);
 
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);

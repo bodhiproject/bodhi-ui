@@ -221,7 +221,7 @@ class CreateTopic extends React.Component {
   }
 
   renderBlockField(formItemLayout, id) {
-    const { syncInfo } = this.props;
+    const { chainBlockNum } = this.props;
     const {
       bettingStartBlock,
       bettingEndBlock,
@@ -229,7 +229,6 @@ class CreateTopic extends React.Component {
       resultSettingEndBlock,
     } = this.state;
     const blockNumDisabled = true;
-    const blockCount = syncInfo.chainBlockNum;
 
     let label;
     let extra;
@@ -249,7 +248,7 @@ class CreateTopic extends React.Component {
             },
           ],
         };
-        min = blockCount;
+        min = chainBlockNum;
         block = bettingStartBlock;
         break;
       }
@@ -269,7 +268,7 @@ class CreateTopic extends React.Component {
           ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_START_TIME)) ?
-          this.props.form.getFieldValue(ID_BETTING_START_TIME) + 1 : blockCount + 1;
+          this.props.form.getFieldValue(ID_BETTING_START_TIME) + 1 : chainBlockNum + 1;
         block = bettingEndBlock;
         break;
       }
@@ -289,7 +288,7 @@ class CreateTopic extends React.Component {
           ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_BETTING_END_TIME)) ?
-          this.props.form.getFieldValue(ID_BETTING_END_TIME) : blockCount + 1;
+          this.props.form.getFieldValue(ID_BETTING_END_TIME) : chainBlockNum + 1;
         block = resultSettingStartBlock;
         break;
       }
@@ -309,7 +308,7 @@ class CreateTopic extends React.Component {
           ],
         };
         min = _.isNumber(this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME)) ?
-          this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME) + 1 : blockCount + 1;
+          this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME) + 1 : chainBlockNum + 1;
         block = resultSettingEndBlock;
         break;
       }
@@ -390,13 +389,12 @@ class CreateTopic extends React.Component {
 
   onDatePickerDateSelect(id, date) {
     const {
-      syncInfo,
+      chainBlockNum,
       averageBlockTime,
     } = this.props;
 
-    const blockCount = syncInfo.chainBlockNum;
     const localDate = date.local();
-    const block = calculateBlock(blockCount, localDate, averageBlockTime);
+    const block = calculateBlock(chainBlockNum, localDate, averageBlockTime);
 
     switch (id) {
       case ID_BETTING_START_TIME: {
@@ -561,7 +559,7 @@ CreateTopic.propTypes = {
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
-  syncInfo: PropTypes.object,
+  chainBlockNum: PropTypes.number,
   averageBlockTime: PropTypes.number,
 };
 
@@ -572,7 +570,7 @@ CreateTopic.defaultProps = {
   getInsightTotals: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
-  syncInfo: undefined,
+  chainBlockNum: undefined,
   averageBlockTime: defaults.averageBlockTime,
 };
 
@@ -580,7 +578,7 @@ const mapStateToProps = (state) => ({
   createReturn: state.Topic.get('create_return'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
+  chainBlockNum: state.App.get('chainBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
 });
 

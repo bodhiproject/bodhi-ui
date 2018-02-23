@@ -20,7 +20,7 @@ class TopicPage extends React.Component {
 
     this.state = {
       address: this.props.match.params.address,
-      topic: undefined, // Topic object for this page
+      topic: undefined,
       config: undefined,
     };
 
@@ -30,37 +30,29 @@ class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const { getTopicsSuccess: allTopics, onGetTopics } = this.props;
-
-    const topic = _.find(allTopics, { address: this.state.address });
-
-    if (topic) {
-      // If we are able to find topic by address from allTopics
-      this.pageConfiguration(topic);
-    } else if (_.isEmpty(allTopics)) {
-      // Make a request to retrieve all topics
-      onGetTopics();
-    } else {
-      // All other cases, display empty page for short load time
-      // In future we can add some loading animation here
-    }
-
+    this.executeTopicsRequest();
     this.calculateWinnings();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      getTopicsSuccess: allTopics,
+      getTopicsSuccess,
       calculateBotWinningsReturn,
       calculateQtumWinningsReturn,
+      syncBlockTime,
     } = nextProps;
-    const topic = _.find(allTopics, { address: this.state.address });
+
+    // Update page on new block
+    if (syncBlockTime !== this.props.syncBlockTime) {
+      this.executeTopicsRequest();
+    }
 
     // Wallet address changed, call calculate winnings again
     if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
       this.calculateWinnings();
     }
 
+    const topic = _.find(getTopicsSuccess, { address: this.state.address });
     topic.botWinnings = calculateBotWinningsReturn;
     topic.qtumWinnings = calculateQtumWinningsReturn;
 
@@ -70,86 +62,6 @@ class TopicPage extends React.Component {
   componentWillUnmount() {
     this.props.onClearRequestReturn();
     this.props.clearEditingToggled();
-  }
-
-  calculateWinnings() {
-    try {
-      const {
-        selectedWalletAddress,
-        onCalculateWinnings,
-      } = this.props;
-
-      onCalculateWinnings(this.state.address, selectedWalletAddress);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  /** Withdraw button on click handler passed down to CardFinished */
-  onWithdrawClicked() {
-    const senderAddress = this.getCurrentSenderAddress();
-    const contractAddress = this.state.topic.address;
-
-    this.props.onWithdraw(contractAddress, senderAddress);
-  }
-
-  /** Return selected address on Topbar as sender * */
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-    return walletAddrs[walletAddrsIndex].address;
-  }
-
-  /**
-   * Configure UI elements in this.state.config and set topic object in this.state
-   * @param  {object} topic object
-   * @return {}
-   */
-  pageConfiguration(topic) {
-    if (topic) {
-      let config;
-
-      // Only shows Topic which are in WITHDRAW state
-      if (topic.status === OracleStatus.Withdraw) {
-        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(_.filter(topic.oracles, (item) => item.token === Token.Bot), ['blockNum'], ['asc']);
-
-        config = {
-          name: 'COMPLETED',
-          breadcrumbLabel: 'Completed',
-          cardInfo: {
-            steps: CardInfoUtil.getSteps(
-              this.props.syncInfo.syncBlockTime,
-              centralizedOracle,
-              decentralizedOracles,
-              true,
-            ),
-            messages: [
-            ],
-          },
-          cardAction: {
-            skipToggle: true,
-            beforeToggle: {
-              btnText: 'Finalize',
-            },
-          },
-        };
-
-        // Add withdrawal amount
-        config.cardInfo.messages.push({
-          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
-            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
-          type: 'default',
-        });
-
-        // Highlight current step using current field
-        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
-
-        this.setState({
-          topic,
-          config,
-        });
-      }
-    }
   }
 
   render() {
@@ -235,10 +147,102 @@ class TopicPage extends React.Component {
       </LayoutContentWrapper>
     );
   }
+
+  executeTopicsRequest() {
+    this.props.getTopics([
+      { address: this.state.address },
+    ]);
+  }
+
+  calculateWinnings() {
+    try {
+      const {
+        selectedWalletAddress,
+        onCalculateWinnings,
+      } = this.props;
+
+      onCalculateWinnings(this.state.address, selectedWalletAddress);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  /** Withdraw button on click handler passed down to CardFinished */
+  onWithdrawClicked() {
+    const senderAddress = this.getCurrentSenderAddress();
+    const contractAddress = this.state.topic.address;
+
+    this.props.onWithdraw(contractAddress, senderAddress);
+  }
+
+  /** Return selected address on Topbar as sender * */
+  getCurrentSenderAddress() {
+    const { walletAddrs, walletAddrsIndex } = this.props;
+    return walletAddrs[walletAddrsIndex].address;
+  }
+
+  /**
+   * Configure UI elements in this.state.config and set topic object in this.state
+   * @param  {object} topic object
+   * @return {}
+   */
+  pageConfiguration(topic) {
+    const { syncBlockTime } = this.props;
+
+    if (topic) {
+      let config;
+
+      // Only shows Topic which are in WITHDRAW state
+      if (topic.status === OracleStatus.Withdraw) {
+        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+        const decentralizedOracles = _.orderBy(
+          _.filter(topic.oracles, (item) => item.token === Token.Bot),
+          ['blockNum'],
+          ['asc'],
+        );
+
+        config = {
+          name: 'COMPLETED',
+          breadcrumbLabel: 'Completed',
+          cardInfo: {
+            steps: CardInfoUtil.getSteps(
+              syncBlockTime,
+              centralizedOracle,
+              decentralizedOracles,
+              true,
+            ),
+            messages: [
+            ],
+          },
+          cardAction: {
+            skipToggle: true,
+            beforeToggle: {
+              btnText: 'Finalize',
+            },
+          },
+        };
+
+        // Add withdrawal amount
+        config.cardInfo.messages.push({
+          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
+          type: 'default',
+        });
+
+        // Highlight current step using current field
+        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
+
+        this.setState({
+          topic,
+          config,
+        });
+      }
+    }
+  }
 }
 
 TopicPage.propTypes = {
-  onGetTopics: PropTypes.func,
+  getTopics: PropTypes.func,
   getTopicsSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
@@ -246,7 +250,7 @@ TopicPage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
-  syncInfo: PropTypes.object,
+  syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
@@ -259,10 +263,10 @@ TopicPage.propTypes = {
 };
 
 TopicPage.defaultProps = {
+  getTopics: undefined,
   getTopicsSuccess: undefined,
-  onGetTopics: undefined,
   requestReturn: undefined,
-  syncInfo: undefined,
+  syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
@@ -278,7 +282,7 @@ const mapStateToProps = (state) => ({
   requestReturn: state.Topic.get('req_return'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
+  syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
@@ -286,7 +290,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: () => dispatch(dashboardActions.getTopics()),
+    getTopics: () => dispatch(dashboardActions.getTopics()),
     onCalculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
     onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
@@ -295,5 +299,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-// Wrap the component to inject dispatch and state into it
 export default connect(mapStateToProps, mapDispatchToProps)(TopicPage);

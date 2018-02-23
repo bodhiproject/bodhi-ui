@@ -107,28 +107,37 @@ class Topbar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { listUnspent } = this.props;
+    const {
+      listUnspent,
+      getBotBalance,
+      walletAddrs,
+    } = this.props;
 
-    // Start listUnspent long polling
-    function pollListUnspent() {
-      listUnspent();
-      setTimeout(pollListUnspent, AppConfig.intervals.listUnspent);
+    listUnspent();
+    if (!_.isEmpty(walletAddrs)) {
+      _.each(walletAddrs, (address) => {
+        getBotBalance(address.address, address.address);
+      });
     }
-    pollListUnspent();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getBotBalance } = this.props;
+    const {
+      walletAddrs,
+      syncBlockNum,
+      listUnspent,
+      getBotBalance,
+    } = this.props;
 
-    // Call API to retrieve BOT balance if BOTs does not exist or wallet addresses have changed
-    const botArray = _.filter(this.props.walletAddrs, (item) => !!item.bot);
+    // Update page on new block
+    if (nextProps.syncBlockNum !== syncBlockNum) {
+      listUnspent();
 
-    if (_.isEmpty(botArray) || !_.isEqual(this.props.walletAddrs, nextProps.walletAddrs)) {
-      _.each(nextProps.walletAddrs, (addressObj) => {
-        const ownerAddress = addressObj.address;
-        const senderAddress = addressObj.address;
-        getBotBalance(ownerAddress, senderAddress);
-      });
+      if (nextProps.walletAddrs) {
+        _.each(nextProps.walletAddrs, (address) => {
+          getBotBalance(address.address, address.address);
+        });
+      }
     }
   }
 
@@ -277,6 +286,7 @@ Topbar.propTypes = {
   selectWalletAddress: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
+  syncBlockNum: PropTypes.number,
 };
 
 Topbar.defaultProps = {
@@ -286,12 +296,14 @@ Topbar.defaultProps = {
   selectWalletAddress: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
+  syncBlockNum: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  syncBlockNum: state.App.get('syncBlockNum'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

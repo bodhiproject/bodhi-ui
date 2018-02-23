@@ -58,9 +58,12 @@ class Dashboard extends React.Component {
       sortBy,
       syncProgress,
       isSyncing,
+      syncBlockNum,
     } = nextProps;
 
-    if (tabIndex !== this.props.tabIndex || sortBy !== this.props.sortBy) {
+    if (tabIndex !== this.props.tabIndex
+      || sortBy !== this.props.sortBy
+      || syncBlockNum !== this.props.syncBlockNum) {
       this.executeGraphRequest(tabIndex, sortBy);
     }
 
@@ -134,15 +137,15 @@ class Dashboard extends React.Component {
 
   executeGraphRequest(tabIndex, sortBy) {
     const {
-      onGetTopics,
-      onGetOracles,
+      getTopics,
+      getOracles,
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
 
     switch (tabIndex) {
       case TAB_BET: {
-        onGetOracles(
+        getOracles(
           [
             { token: Token.Qtum, status: OracleStatus.Voting },
           ],
@@ -151,7 +154,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_SET: {
-        onGetOracles(
+        getOracles(
           [
             { token: Token.Qtum, status: OracleStatus.WaitResult },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
@@ -161,7 +164,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_VOTE: {
-        onGetOracles(
+        getOracles(
           [
             { token: Token.Bot, status: OracleStatus.Voting },
           ],
@@ -170,7 +173,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_FINALIZE: {
-        onGetOracles(
+        getOracles(
           [
             { token: Token.Bot, status: OracleStatus.WaitResult },
           ],
@@ -179,7 +182,7 @@ class Dashboard extends React.Component {
         break;
       }
       case TAB_WITHDRAW: {
-        onGetTopics(
+        getTopics(
           [
             { status: OracleStatus.Withdraw },
           ],
@@ -423,37 +426,37 @@ class Dashboard extends React.Component {
 }
 
 Dashboard.propTypes = {
+  getTopics: PropTypes.func,
   getTopicsSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  onGetTopics: PropTypes.func,
+  getOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  // getOraclesError: PropTypes.string,
-  onGetOracles: PropTypes.func,
   tabIndex: PropTypes.number,
   sortBy: PropTypes.string,
   toggleSyncing: PropTypes.func,
   syncProgress: PropTypes.number,
   isSyncing: PropTypes.bool,
+  syncBlockNum: PropTypes.number,
 };
 
 Dashboard.defaultProps = {
+  getTopics: undefined,
   getTopicsSuccess: [],
-  onGetTopics: undefined,
+  getOracles: undefined,
   getOraclesSuccess: [],
-  // getOraclesError: '',
-  onGetOracles: undefined,
   tabIndex: DEFAULT_TAB_INDEX,
   sortBy: undefined,
   toggleSyncing: undefined,
   syncProgress: undefined,
   isSyncing: false,
+  syncBlockNum: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -465,15 +468,15 @@ const mapStateToProps = (state) => ({
   sortBy: state.Dashboard.get('sortBy'),
   syncProgress: state.App.get('syncProgress'),
   isSyncing: state.App.get('isSyncing'),
+  syncBlockNum: state.App.get('syncBlockNum'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onGetTopics: (filters, orderBy) => dispatch(dashboardActions.getTopics(filters, orderBy)),
-    onGetOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
+    getTopics: (filters, orderBy) => dispatch(dashboardActions.getTopics(filters, orderBy)),
+    getOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
     toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
   };
 }
 
-// Wrap the component to inject dispatch and state into it
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

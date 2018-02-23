@@ -28,10 +28,10 @@ class CornerClock extends React.PureComponent {
   }
 
   render() {
-    const { syncInfo } = this.props;
+    const { syncBlockNum, syncBlockTime } = this.props;
 
-    const blockNum = syncInfo && syncInfo.syncBlockNum ? syncInfo.syncBlockNum : '';
-    const blockTime = syncInfo && syncInfo.syncBlockTime ? getShortLocalDateTimeString(syncInfo.syncBlockTime) : '';
+    const blockNum = syncBlockNum;
+    const blockTime = syncBlockTime ? getShortLocalDateTimeString(syncBlockTime) : '';
 
     return (
       <Card className="corner-block-wrapper">
@@ -63,16 +63,19 @@ class CornerClock extends React.PureComponent {
 }
 
 CornerClock.propTypes = {
-  syncInfo: PropTypes.object,
+  syncBlockNum: PropTypes.number,
+  syncBlockTime: PropTypes.number,
 };
 
 CornerClock.defaultProps = {
-  syncInfo: undefined,
+  syncBlockNum: undefined,
+  syncBlockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  syncInfo: state.App.get('syncInfo') && state.App.get('syncInfo').result,
+  syncBlockNum: state.App.get('syncBlockNum'),
+  syncBlockTime: state.App.get('syncBlockTime'),
 });
 
 export default connect(mapStateToProps)(CornerClock);

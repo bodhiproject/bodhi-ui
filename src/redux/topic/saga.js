@@ -3,7 +3,7 @@ import actions from './actions';
 
 import { request } from '../../network/httpRequest';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
-import Routes from '../../config/routes';
+import Routes from '../../network/routes';
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
