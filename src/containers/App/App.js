@@ -4,7 +4,6 @@ import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
 import Reboot from 'material-ui/Reboot';
 
-import authAction from '../../redux/auth/actions';
 import appActions from '../../redux/app/actions';
 import Topbar from '../Topbar/Topbar';
 import CornerClock from '../CornerClock/CornerClock';
