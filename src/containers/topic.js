@@ -134,7 +134,7 @@ class TopicPage extends React.Component {
     </Row>);
 
     return (
-      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh' }}>
+      <LayoutContentWrapper style={{ minHeight: '100vh' }}>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
             <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>

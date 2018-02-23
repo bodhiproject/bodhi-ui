@@ -185,7 +185,7 @@ class Topbar extends React.PureComponent {
           className={collapsed ? 'collapsed' : ''}
         >
           <div className="cancel-ant-layout-header">
-            <div className="horizontalWrapper">
+            <div>
               <div className="topbarWrapper">
                 <div className="isoLeft">
                   <div className="logo-container" style={{ margin: '0px' }}>
