@@ -2,8 +2,82 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
+import { createTopic, createOracle, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx,
+  createWithdrawTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
+
 import Routes from '../../network/routes';
+import Config from '../../config/app';
+
+export function* createRequestHandler() {
+  yield takeEvery(actions.CREATE, function* onCreateRequest(action) {
+    const {
+      centralizedOracle,
+      name,
+      results,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress,
+    } = action.payload;
+
+    try {
+      const requestOptions = {
+        method: 'POST',
+        body: JSON.stringify({
+          oracleAddress: centralizedOracle,
+          eventName: name,
+          resultNames: results,
+          bettingStartTime,
+          bettingEndTime,
+          resultSettingStartTime,
+          resultSettingEndTime,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const tx = yield call(request, Routes.createTopic, requestOptions);
+
+      // Transaction mutations
+      const topicMutation = yield call(
+        createTopic,
+        Config.defaults.version,
+        centralizedOracle,
+        name,
+        results,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+        senderAddress
+      );
+      const oracleMutation = yield call(
+        createOracle,
+        Config.defaults.version,
+        centralizedOracle,
+        name,
+        results,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+        senderAddress
+      );
+
+      yield put({
+        type: actions.CREATE_RETURN,
+        value: { tx },
+      });
+    } catch (error) {
+      yield put({
+        type: actions.CREATE_RETURN,
+        value: { error: error.message ? error.message : '' },
+      });
+    }
+  });
+}
 
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
@@ -26,11 +100,14 @@ export function* betRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.bet, options);
+      const tx = yield call(request, Routes.bet, options);
+
+      // Transaction mutation
+      const mutation = yield call(createBetTx, Config.defaults.version, contractAddress, index, amount, senderAddress);
 
       yield put({
         type: actions.BET_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -44,7 +121,10 @@ export function* betRequestHandler() {
 export function* approveRequestHandler() {
   yield takeEvery(actions.APPROVE, function* onApproveRequest(action) {
     const {
-      spender, value, senderAddress,
+      contractAddress,
+      spender,
+      value,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -58,11 +138,11 @@ export function* approveRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.approve, options);
+      const tx = yield call(request, Routes.approve, options);
 
       yield put({
         type: actions.APPROVE_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -110,7 +190,10 @@ export function* allowanceRequestHandler() {
 export function* setResultRequestHandler() {
   yield takeEvery(actions.SET_RESULT, function* onSetResultRequest(action) {
     const {
-      contractAddress, resultIndex, senderAddress,
+      contractAddress,
+      resultIndex,
+      consensusThreshold,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -124,11 +207,21 @@ export function* setResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.setResult, options);
+      const tx = yield call(request, Routes.setResult, options);
+
+      // Transaction mutation
+      const mutation = yield call(
+        createSetResultTx,
+        Config.defaults.version,
+        contractAddress,
+        consensusThreshold,
+        resultIndex,
+        senderAddress
+      );
 
       yield put({
         type: actions.SET_RESULT_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -160,11 +253,21 @@ export function* voteRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.vote, options);
+      const tx = yield call(request, Routes.vote, options);
+
+      // Transaction mutation
+      const mutation = yield call(
+        createVoteTx,
+        Config.defaults.version,
+        contractAddress,
+        resultIndex,
+        botAmount,
+        senderAddress
+      );
 
       yield put({
         type: actions.VOTE_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -178,7 +281,8 @@ export function* voteRequestHandler() {
 export function* finalizeResultRequestHandler() {
   yield takeEvery(actions.FINALIZE_RESULT, function* onFinalizeResultRequest(action) {
     const {
-      contractAddress, senderAddress,
+      contractAddress,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -191,11 +295,14 @@ export function* finalizeResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.finalizeResult, options);
+      const tx = yield call(request, Routes.finalizeResult, options);
+
+      // Transaction mutation
+      const mutation = yield call(createFinalizeResultTx, Config.defaults.version, contractAddress, senderAddress);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
@@ -247,7 +354,8 @@ export function* calculateWinningsRequestHandler() {
 export function* withdrawRequestHandler() {
   yield takeEvery(actions.WITHDRAW, function* onWithdrawResultRequest(action) {
     const {
-      contractAddress, senderAddress,
+      contractAddress,
+      senderAddress,
     } = action.payload;
 
     try {
@@ -260,59 +368,18 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.withdraw, options);
+      const tx = yield call(request, Routes.withdraw, options);
+
+      // Transaction mutation
+      const mutation = yield call(createWithdrawTx, Config.defaults.version, contractAddress, senderAddress);
 
       yield put({
         type: actions.WITHDRAW_RETURN,
-        value: { result },
+        value: { tx },
       });
     } catch (error) {
       yield put({
         type: actions.WITHDRAW_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
-export function* createRequestHandler() {
-  yield takeEvery(actions.CREATE, function* onCreateRequest(action) {
-    const {
-      centralizedOracle,
-      name,
-      results,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const requestOptions = {
-        method: 'POST',
-        body: JSON.stringify({
-          oracleAddress: centralizedOracle,
-          eventName: name,
-          resultNames: results,
-          bettingStartTime,
-          bettingEndTime,
-          resultSettingStartTime,
-          resultSettingEndTime,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.createTopic, requestOptions);
-
-      yield put({
-        type: actions.CREATE_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CREATE_RETURN,
         value: { error: error.message ? error.message : '' },
       });
     }
@@ -321,8 +388,8 @@ export function* createRequestHandler() {
 
 export default function* topicSaga() {
   yield all([
-    fork(betRequestHandler),
     fork(createRequestHandler),
+    fork(betRequestHandler),
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
     fork(setResultRequestHandler),
