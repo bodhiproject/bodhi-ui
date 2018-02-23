@@ -4,7 +4,6 @@ import { LocaleProvider } from 'antd';
 import { IntlProvider } from 'react-intl';
 import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
-import { ThemeProvider } from 'styled-components';
 import { ApolloProvider } from 'react-apollo';
 import Reboot from 'material-ui/Reboot';
 
@@ -14,18 +13,17 @@ import appActions from '../../redux/app/actions';
 import Topbar from '../Topbar/Topbar';
 import CornerClock from '../CornerClock/CornerClock';
 import AppRouter from './AppRouter';
-import { AppLocale } from '../../index';
-import themes from '../../config/themes';
-import { themeConfig /* siteConfig */ } from '../../config';
+import AppLocale from '../../languageProvider';
 import AppLoad from '../appLoad';
 
 const { logout } = authAction;
 const { toggleAll } = appActions;
+const currentAppLocale = AppLocale.en;
 
 export class App extends React.PureComponent {
   render() {
     const { url } = this.props.match;
-    const currentAppLocale = AppLocale.en;
+
     return (
       <LocaleProvider locale={currentAppLocale.antd}>
         <IntlProvider locale={currentAppLocale.locale} messages={currentAppLocale.messages}>

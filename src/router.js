@@ -1,22 +1,22 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 
 import App from './containers/App/App';
+import { store, history } from './redux/store';
 
-const PublicRoutes = ({ history }) => (
-  <ConnectedRouter history={history}>
-    <div>
+import '../src/style/styles.less';
+
+const Router = () => (
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
       <Route
         path="/"
         component={App}
       />
-    </div>
-  </ConnectedRouter>
+    </ConnectedRouter>
+  </Provider>
 );
 
-PublicRoutes.propTypes = {
-  history: PropTypes.object.isRequired,
-};
-
-export default PublicRoutes;
+export default Router;
