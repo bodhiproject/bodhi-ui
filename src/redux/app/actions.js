@@ -1,7 +1,3 @@
-import { subscribe, unsubscribe } from 'redux-graphql-subscriptions';
-
-import subscriptions, { channels } from '../../network/graphSubscription';
-
 export function getView(width) {
   let newView = 'MobileView';
   if (width > 1220) {
@@ -34,22 +30,6 @@ const actions = {
   selectWalletAddress: (value) => ({
     type: actions.SELECT_WALLET_ADDRESS,
     value,
-  }),
-
-  SUBSCRIBE_SYNC_INFO_RETURN: 'SUBSCRIBE_SYNC_INFO_RETURN',
-  subscribeSyncInfo: () => subscribe({
-    query: subscriptions.ON_SYNC_INFO,
-    variables: {
-      channel: channels.ON_SYNC_INFO,
-    },
-    success: (result) => ({
-      type: actions.SUBSCRIBE_SYNC_INFO_RETURN,
-      value: { result },
-    }),
-    error: (error) => ({
-      type: actions.SUBSCRIBE_SYNC_INFO_RETURN,
-      value: error.message,
-    }),
   }),
 
   LIST_UNSPENT: 'LIST_UNSPENT',
