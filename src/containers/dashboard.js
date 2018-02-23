@@ -109,7 +109,6 @@ class Dashboard extends React.Component {
 
     return (
       <LayoutContentWrapper
-        className="horizontalWrapper"
         style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}
       >
         <TabBtnGroup

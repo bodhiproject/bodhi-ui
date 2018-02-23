@@ -8,8 +8,6 @@ import moment from 'moment';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './topbar.style';
-import { getCurrentTheme } from '../ThemeSwitcher/config';
-import { themeConfig } from '../../config';
 import AppConfig from '../../config/app';
 
 const FormItem = Form.Item;
@@ -142,7 +140,6 @@ class Topbar extends React.PureComponent {
   }
 
   render() {
-    const customizedTheme = getCurrentTheme('topbarTheme', themeConfig.theme);
     const {
       collapsed,
       walletAddrs,
@@ -185,11 +182,10 @@ class Topbar extends React.PureComponent {
     return (
       <TopbarWrapper>
         <Header
-          style={{ background: customizedTheme.backgroundColor }}
           className={collapsed ? 'collapsed' : ''}
         >
           <div className="cancel-ant-layout-header">
-            <div className="horizontalWrapper">
+            <div>
               <div className="topbarWrapper">
                 <div className="isoLeft">
                   <div className="logo-container" style={{ margin: '0px' }}>

@@ -24,7 +24,7 @@ class CreateTopicContainer extends React.Component {
 
   render() {
     return (
-      <LayoutContentWrapper className="horizontalWrapper" style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
+      <LayoutContentWrapper style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
         <CreateTopic onSubmit={this.onSubmit} />
       </LayoutContentWrapper>
     );

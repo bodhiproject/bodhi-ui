@@ -1,7 +1,7 @@
 /* eslint-disable react/no-did-mount-set-state */
 
 import React from 'react';
-import Nprogress from 'nprogress';
+import NProgress from 'nprogress';
 import ReactPlaceholder from 'react-placeholder';
 import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
@@ -10,18 +10,21 @@ export default function asyncComponent(importComponent) {
   class AsyncFunc extends React.Component {
     constructor(props) {
       super(props);
+
+      NProgress.configure({ showSpinner: false });
+
       this.state = {
         component: null,
       };
     }
     componentWillMount() {
-      Nprogress.start();
+      NProgress.start();
     }
 
     async componentDidMount() {
       this.mounted = true;
       const { default: Component } = await importComponent();
-      Nprogress.done();
+      NProgress.done();
       if (this.mounted) {
         this.setState({
           component: <Component {...this.props} />,

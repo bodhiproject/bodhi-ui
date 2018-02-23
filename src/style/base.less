@@ -1,15 +1,15 @@
-/* * * * * * * * * * * * * * *
-ALL VARIABLE & MIXING
-* * * * * * * * * * * * * * */
-// @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400,500,700');
 
-// @isoFontFamily: 'Roboto', sans-serif;
-// @isoFontSize: 14px;
+/****** Variables & mixins *****/
+
+@fontFamily: 'Lato', sans-serif;
+@fontSize: 16px;
 
 @primaryColor: #585AFA;
 @fontColorGrey: #4A4A4A;
 
 /****** Media screen size *****/
+
 @sm-min: 576px;
 @md-min: 768px;
 @lg-min: 992px;
@@ -31,13 +31,46 @@ ALL VARIABLE & MIXING
 @xl-strict:  ~"only screen and (min-width: @{xl-min}) and (max-width: @{xl-max})";
 @xxl:            ~"only screen and (min-width: @{xxl-min})";
 
-// Basic font size
+/****** Basic global styles *****/
+
 body{
-	font-size: 16px;
+  font-family: @fontFamily;
+  font-size: @fontSize;
 }
 
-// Remove <a> underline
 a, a:hover{
 	text-decoration: none;
 }
 
+.container {
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media @phone {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media @tablet-strict {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  @media @desktop-strict {
+    max-width: 940px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  @media @xl {
+    max-width: 80%;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  @media @xxl {
+    max-width: 65%;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}

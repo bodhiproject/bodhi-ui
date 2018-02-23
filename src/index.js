@@ -1,43 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { LocaleProvider } from 'antd';
-import { IntlProvider } from 'react-intl';
-import { unregister } from './registerServiceWorker';
-import themes from './config/themes';
-import DashApp from './dashApp';
-import AppLocale from './languageProvider';
-import { themeConfig } from './config';
-import DashAppHolder from './dashAppStyle';
 
-const currentAppLocale = AppLocale.en;
+import App from './containers/App/App';
+import AppProvider from './appProvider';
+import { unregister } from './registerServiceWorker';
 
 ReactDOM.render(
-  <LocaleProvider locale={currentAppLocale.antd}>
-    <IntlProvider
-      locale={currentAppLocale.locale}
-      messages={currentAppLocale.messages}
-    >
-      <ThemeProvider theme={themes[themeConfig.theme]}>
-        <DashAppHolder>
-          <DashApp />
-        </DashAppHolder>
-      </ThemeProvider>
-    </IntlProvider>
-  </LocaleProvider>,
+  <AppProvider />,
   document.getElementById('root')
 );
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./dashApp.js', () => {
-    const NextApp = DashApp.default;
-    ReactDOM.render(<NextApp />, document.getElementById('root'));
+  module.hot.accept('./appProvider.js', () => {
+    const NextAppProvider = AppProvider.default;
+    ReactDOM.render(<NextAppProvider />, document.getElementById('root'));
   });
 }
 
 // Unregister the service worker since we don't want to cache.
 // Necessary for existing users who previously have registered a service worker.
 unregister();
-
-export { AppLocale };
