@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 

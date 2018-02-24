@@ -91,8 +91,8 @@ export function* getBotBalanceRequestHandler() {
   });
 }
 
-export function* getSyncInfoHandler() {
-  yield takeEvery(actions.GET_SYNC_INFO, function* getSyncInfo(action) {
+export function* syncInfoRequestHandler() {
+  yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
     try {
       const result = yield call(querySyncInfo);
 
@@ -148,7 +148,7 @@ export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBotBalanceRequestHandler),
-    fork(getSyncInfoHandler),
+    fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
   ]);
