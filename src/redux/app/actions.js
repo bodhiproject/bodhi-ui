@@ -52,9 +52,9 @@ const actions = {
   getSyncInfo: () => ({
     type: actions.GET_SYNC_INFO,
   }),
-  ON_NEW_SYNC_INFO: 'ON_NEW_SYNC_INFO',
-  onNewSyncInfo: (syncInfo) => ({
-    type: actions.ON_NEW_SYNC_INFO,
+  ON_SYNC_INFO: 'ON_SYNC_INFO',
+  onSyncInfo: (syncInfo) => ({
+    type: actions.ON_SYNC_INFO,
     syncInfo,
   }),
   SYNC_INFO_RETURN: 'SYNC_INFO_RETURN',
