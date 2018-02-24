@@ -49,10 +49,15 @@ const actions = {
   }),
 
   GET_SYNC_INFO: 'GET_SYNC_INFO',
-  GET_SYNC_INFO_RETURN: 'GET_SYNC_INFO_RETURN',
   getSyncInfo: () => ({
     type: actions.GET_SYNC_INFO,
   }),
+  ON_NEW_SYNC_INFO: 'ON_NEW_SYNC_INFO',
+  onNewSyncInfo: (syncInfo) => ({
+    type: actions.ON_NEW_SYNC_INFO,
+    syncInfo,
+  }),
+  SYNC_INFO_RETURN: 'SYNC_INFO_RETURN',
 
   UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
   updateSyncProgress: (percentage) => ({

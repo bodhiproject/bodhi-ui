@@ -24,13 +24,7 @@ class AppLoad extends React.PureComponent {
   componentWillMount() {
     const { getSyncInfo } = this.props;
 
-    // Start syncInfo long polling
-    function pollSyncInfo() {
-      getSyncInfo();
-      setTimeout(pollSyncInfo, AppConfig.intervals.syncInfo);
-    }
-    pollSyncInfo();
-
+    getSyncInfo();
     this.subscribeSyncInfo();
   }
 
@@ -91,11 +85,20 @@ class AppLoad extends React.PureComponent {
   }
 
   subscribeSyncInfo() {
-    this.props.client.subscribe({
+    const { client } = this.props;
+    const { syncBlockNum } = this.state;
+
+    console.log('Subscribe: syncInfo');
+    const observable = client.subscribe({
       query: graphSubscriptions.ON_SYNC_INFO,
     }).subscribe({
       next(data) {
-        console.log('subscribed', data);
+        console.log('syncBlockNum', state.syncBlockNum);
+        console.log('sub syncBlockNum', data.data.OnSyncInfo.syncBlockNum);
+        if (data.data.OnSyncInfo.syncBlockNum !== syncBlockNum) {
+          // TODO: call action to set syncInfo data
+          console.log('subscribed', data.data.OnSyncInfo);
+        }
       },
       error(err) {
         console.error('err', err);
