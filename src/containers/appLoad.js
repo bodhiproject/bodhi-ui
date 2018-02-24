@@ -6,7 +6,7 @@ import { Row, Col, Progress } from 'antd';
 
 import appActions from '../redux/app/actions';
 import AppConfig from '../config/app';
-import graphSubscriptions from '../network/graphSubscription';
+import getSubscription, { channels } from '../network/graphSubscription';
 
 const MIN_BLOCK_COUNT_GAP = 3;
 
@@ -87,9 +87,9 @@ class AppLoad extends React.PureComponent {
   subscribeSyncInfo() {
     const { client, onSyncInfo } = this.props;
 
-    console.log('Subscribe: syncInfo');
+    console.log('Subscribe: onSyncInfo');
     client.subscribe({
-      query: graphSubscriptions.ON_SYNC_INFO,
+      query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next(data) {
         onSyncInfo(data.data.OnSyncInfo);
