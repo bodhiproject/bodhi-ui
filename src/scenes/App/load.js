@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
+import gql from 'graphql-tag';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
@@ -85,23 +86,17 @@ class AppLoad extends React.PureComponent {
   }
 
   subscribeSyncInfo() {
-    const { client } = this.props;
-    const { syncBlockNum } = this.state;
+    const { client, onSyncInfo } = this.props;
 
     console.log('Subscribe: syncInfo');
-    const observable = client.subscribe({
+    client.subscribe({
       query: graphSubscriptions.ON_SYNC_INFO,
     }).subscribe({
       next(data) {
-        console.log('syncBlockNum', state.syncBlockNum);
-        console.log('sub syncBlockNum', data.data.OnSyncInfo.syncBlockNum);
-        if (data.data.OnSyncInfo.syncBlockNum !== syncBlockNum) {
-          // TODO: call action to set syncInfo data
-          console.log('subscribed', data.data.OnSyncInfo);
-        }
+        onSyncInfo(data.data.OnSyncInfo);
       },
       error(err) {
-        console.error('err', err);
+        onSyncInfo({ error: err.message });
       },
     });
   }
@@ -112,6 +107,7 @@ AppLoad.propTypes = {
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
   getSyncInfo: PropTypes.func,
+  onSyncInfo: PropTypes.func,
   updateSyncProgress: PropTypes.func,
   toggleSyncing: PropTypes.func,
 };
@@ -121,6 +117,7 @@ AppLoad.defaultProps = {
   chainBlockNum: undefined,
   syncBlockNum: undefined,
   getSyncInfo: undefined,
+  onSyncInfo: undefined,
   updateSyncProgress: undefined,
   toggleSyncing: undefined,
 };
@@ -132,6 +129,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
   toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
 });

@@ -103,18 +103,18 @@ export function* getSyncInfoHandler() {
     } catch (error) {
       yield put({
         type: actions.SYNC_INFO_RETURN,
-        error,
+        error: error.message,
       });
     }
   });
 }
 
-export function* onNewSyncInfoHandler() {
-  yield takeEvery(actions.ON_NEW_SYNC_INFO, function* onNewSyncInfo(action) {
-    if (action.error) {
+export function* onSyncInfoHandler() {
+  yield takeEvery(actions.ON_SYNC_INFO, function* onSyncInfo(action) {
+    if (action.syncInfo.error) {
       yield put({
         type: actions.SYNC_INFO_RETURN,
-        error: action.error,
+        error: action.syncInfo.error,
       });
     } else {
       yield put({
@@ -149,7 +149,7 @@ export default function* topicSaga() {
     fork(listUnspentRequestHandler),
     fork(getBotBalanceRequestHandler),
     fork(getSyncInfoHandler),
-    fork(onNewSyncInfoHandler),
+    fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
   ]);
 }
