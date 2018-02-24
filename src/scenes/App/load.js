@@ -87,7 +87,7 @@ class AppLoad extends React.PureComponent {
   subscribeSyncInfo() {
     const { client, onSyncInfo } = this.props;
 
-    console.log('Subscribe: onSyncInfo');
+    console.log('Subscribe: OnSyncInfo');
     client.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
