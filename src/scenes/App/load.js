@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
@@ -13,6 +14,7 @@ class AppLoad extends React.PureComponent {
     super(props);
 
     this.state = {
+      client: props.client,
       percent: 0,
     };
   }
@@ -59,6 +61,8 @@ class AppLoad extends React.PureComponent {
   }
 
   render() {
+    console.log(this.state.client);
+
     const { percent } = this.state;
 
     const style = {};
@@ -86,6 +90,7 @@ class AppLoad extends React.PureComponent {
 }
 
 AppLoad.propTypes = {
+  client: PropTypes.object,
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
   getSyncInfo: PropTypes.func,
@@ -94,6 +99,7 @@ AppLoad.propTypes = {
 };
 
 AppLoad.defaultProps = {
+  client: undefined,
   chainBlockNum: undefined,
   syncBlockNum: undefined,
   getSyncInfo: undefined,
@@ -112,4 +118,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
+export default compose(
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps),
+)(AppLoad);
