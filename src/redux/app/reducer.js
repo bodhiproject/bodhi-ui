@@ -114,10 +114,14 @@ export default function appReducer(state = initState, action) {
       }
       break;
 
-    case actions.GET_SYNC_INFO_RETURN:
-      return state.set('chainBlockNum', action.value.result.chainBlockNum)
-        .set('syncBlockNum', action.value.result.syncBlockNum)
-        .set('syncBlockTime', action.value.result.syncBlockTime);
+    case actions.SYNC_INFO_RETURN: {
+      if (action.error) {
+        return state.set('syncInfoError', action.error);
+      }
+      return state.set('chainBlockNum', action.syncInfo.chainBlockNum)
+        .set('syncBlockNum', action.syncInfo.syncBlockNum)
+        .set('syncBlockTime', action.syncInfo.syncBlockTime);
+    }
 
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);
