@@ -15,7 +15,7 @@ import { store, history } from './redux/store';
 
 import '../src/style/styles.less';
 
-const currentAppLocale = AppLocale.en;
+const currentAppLocale = AppLocale.zh;
 
 const AppProvider = () => (
   <MuiThemeProvider theme={bodhiTheme}>
