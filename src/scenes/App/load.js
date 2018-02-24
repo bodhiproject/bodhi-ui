@@ -6,6 +6,7 @@ import { Row, Col, Progress } from 'antd';
 
 import appActions from '../../redux/app/actions';
 import AppConfig from '../../config/app';
+import graphSubscriptions from '../../network/graphSubscription';
 
 const MIN_BLOCK_COUNT_GAP = 3;
 
@@ -14,9 +15,10 @@ class AppLoad extends React.PureComponent {
     super(props);
 
     this.state = {
-      client: props.client,
       percent: 0,
     };
+
+    this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
   }
 
   componentWillMount() {
@@ -28,6 +30,8 @@ class AppLoad extends React.PureComponent {
       setTimeout(pollSyncInfo, AppConfig.intervals.syncInfo);
     }
     pollSyncInfo();
+
+    this.subscribeSyncInfo();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,8 +65,6 @@ class AppLoad extends React.PureComponent {
   }
 
   render() {
-    console.log(this.state.client);
-
     const { percent } = this.state;
 
     const style = {};
@@ -86,6 +88,19 @@ class AppLoad extends React.PureComponent {
         </div>
       </div>
     );
+  }
+
+  subscribeSyncInfo() {
+    this.props.client.subscribe({
+      query: graphSubscriptions.ON_SYNC_INFO,
+    }).subscribe({
+      next(data) {
+        console.log('subscribed', data);
+      },
+      error(err) {
+        console.error('err', err);
+      },
+    });
   }
 }
 

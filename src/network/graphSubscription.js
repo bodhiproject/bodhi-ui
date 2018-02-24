@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 
-import { getQueryFields } from './graphDataStruct';
+import { getTypeDef } from './graphDataStruct';
 
 const subscriptions = {
   ON_SYNC_INFO: gql`
-    subscription onSyncInfo {
+    subscription OnSyncInfo {
       OnSyncInfo {
-        ${getQueryFields('syncInfo')}
+        ${getTypeDef('SyncInfo')}
       }
     }
   `,
