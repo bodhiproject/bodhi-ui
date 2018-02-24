@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
-import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { compose, withApollo } from 'react-apollo';
+import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
+import _ from 'lodash';
 import moment from 'moment';
 
 import appActions from '../../redux/app/actions';
@@ -92,6 +93,7 @@ class Topbar extends React.PureComponent {
     super(props);
 
     this.state = {
+      client: props.client,
       visible: false,
       addressInput: '',
     };
@@ -140,6 +142,8 @@ class Topbar extends React.PureComponent {
   }
 
   render() {
+    console.log(this.state.client);
+
     const {
       collapsed,
       walletAddrs,
@@ -275,6 +279,7 @@ class Topbar extends React.PureComponent {
 }
 
 Topbar.propTypes = {
+  client: PropTypes.object,
   collapsed: PropTypes.bool.isRequired,
   walletAddrs: PropTypes.array,
   selectedWalletAddress: PropTypes.string,
@@ -286,6 +291,7 @@ Topbar.propTypes = {
 };
 
 Topbar.defaultProps = {
+  client: undefined,
   walletAddrs: [],
   selectedWalletAddress: undefined,
   addWalletAddress: undefined,
@@ -309,4 +315,7 @@ const mapDispatchToProps = (dispatch) => ({
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Topbar);
+export default compose(
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps),
+)(Topbar);
