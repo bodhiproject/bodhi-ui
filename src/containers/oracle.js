@@ -5,6 +5,26 @@ import { Row, Col, Breadcrumb, Radio } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import Paper from 'material-ui/Paper';
+import Grid from 'material-ui/Grid';
+import TextField from 'material-ui/TextField';
+import Select from 'material-ui/Select';
+import Button from 'material-ui/Button';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import ExpansionPanel, {
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  ExpansionPanelActions,
+} from 'material-ui/ExpansionPanel';
+import AttachMoneyIcon from 'material-ui-icons/AttachMoney';
+import AccountBalanceWalletIcon from 'material-ui-icons/AccountBalanceWallet';
+import Typography from 'material-ui/Typography';
+import { LinearProgress } from 'material-ui/Progress';
+import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
 
 import CardInfo from '../components/bodhi-dls/cardInfo';
 import CardVoting from '../components/bodhi-dls/cardVoting';
@@ -14,6 +34,7 @@ import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
 import { decimalToBotoshi } from '../helpers/utility';
 import { Token, OracleStatus } from '../constants';
+import styles from './oracle.style';
 import CardInfoUtil from '../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
@@ -77,7 +98,7 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { editingToggled, requestReturn } = this.props;
+    const { editingToggled, requestReturn, classes } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
@@ -142,6 +163,339 @@ class OraclePage extends React.Component {
         </Row>
       </div>
     );
+
+    /*
+    return (
+      <Paper className={classes.predictionDetailPaper}>
+        <Grid container spacing={0}>
+          <Grid item spacing={0} xs={12} md={8} className={classes.predictionDetailContainerGrid}>
+            <Typography variant="display1" className={classes.predictionDetailTitle}>
+              {oracle.name}
+            </Typography>
+            <Grid item xs={12} lg={9}>
+              <ExpansionPanel>
+                <ExpansionPanelSummary>
+                  <div className={classes.predictionItemWrapper}>
+                    <div className={classes.predictionItemNum}>1</div>
+                    <Typography variant="title">
+                      Bloomberg
+                    </Typography>
+                    <div className={classes.predictionItemProgress}>
+                      <LinearProgress color="secondary" variant="determinate" value={60} />
+                      <div className={classes.predictionItemProgressNum}>61%</div>
+                    </div>
+                    <Typography variant="body1">
+                      134,545,059 QTUM
+                    </Typography>
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AttachMoneyIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="amount" shrink>
+                        AMOUNT
+                      </InputLabel>
+                      <Input
+                        id="vote-amount"
+                        value={this.state.voteAmount}
+                        type="number"
+                        placeholder="0.00"
+                        className={classes.predictionItemInput}
+                        endAdornment={<InputAdornment position="end">QTUM</InputAdornment>}
+                      />
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin', 'last')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AccountBalanceWalletIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="address" shrink>
+                        ADDRESS
+                      </InputLabel>
+                      <Select
+                        native
+                        value={this.state.address}
+                        inputProps={{
+                          id: 'address',
+                        }}
+                      >
+                        <option value={10}>qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={20}>aSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={30}>bSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel>
+                <ExpansionPanelSummary>
+                  <div className={classes.predictionItemWrapper}>
+                    <div className={classes.predictionItemNum}>2</div>
+                    <Typography variant="title">
+                      Sanders
+                    </Typography>
+                    <div className={classes.predictionItemProgress}>
+                      <LinearProgress color="secondary" variant="determinate" value={36} />
+                      <div className={classes.predictionItemProgressNum}>36%</div>
+                    </div>
+                    <Typography variant="body1">
+                      134,545,059 QTUM
+                    </Typography>
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AttachMoneyIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="amount" shrink>
+                        AMOUNT
+                      </InputLabel>
+                      <Input
+                        id="vote-amount"
+                        value={this.state.voteAmount}
+                        type="number"
+                        placeholder="0.00"
+                        className={classes.predictionItemInput}
+                        endAdornment={<InputAdornment position="end">QTUM</InputAdornment>}
+                      />
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin', 'last')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AccountBalanceWalletIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="address" shrink>
+                        ADDRESS
+                      </InputLabel>
+                      <Select
+                        native
+                        value={this.state.address}
+                        inputProps={{
+                          id: 'address',
+                        }}
+                      >
+                        <option value={10}>qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={20}>aSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={30}>bSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel>
+                <ExpansionPanelSummary>
+                  <div className={classes.predictionItemWrapper}>
+                    <div className={classes.predictionItemNum}>3</div>
+                    <Typography variant="title">
+                      Trump
+                    </Typography>
+                    <div className={classes.predictionItemProgress}>
+                      <LinearProgress color="secondary" variant="determinate" value={10} />
+                      <div className={classes.predictionItemProgressNum}>13%</div>
+                    </div>
+                    <Typography variant="body1">
+                      134,545,059 QTUM
+                    </Typography>
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AttachMoneyIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="amount" shrink>
+                        AMOUNT
+                      </InputLabel>
+                      <Input
+                        id="vote-amount"
+                        value={this.state.voteAmount}
+                        type="number"
+                        placeholder="0.00"
+                        className={classes.predictionItemInput}
+                        endAdornment={<InputAdornment position="end">QTUM</InputAdornment>}
+                      />
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin', 'last')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AccountBalanceWalletIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="address" shrink>
+                        ADDRESS
+                      </InputLabel>
+                      <Select
+                        native
+                        value={this.state.address}
+                        inputProps={{
+                          id: 'address',
+                        }}
+                      >
+                        <option value={10}>qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={20}>aSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={30}>bSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel>
+                <ExpansionPanelSummary>
+                  <div className={classes.predictionItemWrapper}>
+                    <div className={classes.predictionItemNum}>4</div>
+                    <Typography variant="title">
+                      Trump
+                    </Typography>
+                    <div className={classes.predictionItemProgress}>
+                      <LinearProgress color="secondary" variant="determinate" value={1} />
+                      <div className={classes.predictionItemProgressNum}>1%</div>
+                    </div>
+                    <Typography variant="body1">
+                      134,545,059 QTUM
+                    </Typography>
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AttachMoneyIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="amount" shrink>
+                        AMOUNT
+                      </InputLabel>
+                      <Input
+                        id="vote-amount"
+                        value={this.state.voteAmount}
+                        type="number"
+                        placeholder="0.00"
+                        className={classes.predictionItemInput}
+                        endAdornment={<InputAdornment position="end">QTUM</InputAdornment>}
+                      />
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                  <div className={classNames(classes.predictionItemWrapper, 'noMargin', 'last')}>
+                    <div className={classes.predictionItemIcon}>
+                      <AccountBalanceWalletIcon />
+                    </div>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="address" shrink>
+                        ADDRESS
+                      </InputLabel>
+                      <Select
+                        native
+                        value={this.state.address}
+                        inputProps={{
+                          id: 'address',
+                        }}
+                      >
+                        <option value={10}>qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={20}>aSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                        <option value={30}>bSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS</option>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <Button variant="raised" fullWidth size="large" color="primary" aria-label="add" className={classes.predictButton}>
+                Predict
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid item spacing={0} xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
+            <Grid item xs={6} md={12} className={classes.predictionDetailInfoWrapper}>
+              <Typography variant="body1">
+                ENDING DATE
+              </Typography>
+              <Typography variant="title" className={classes.predictionDetailInfo}>
+                01/02/2018 15:00
+              </Typography>
+              <Typography variant="body2" color="secondary">
+                01d 22d  56s Left
+              </Typography>
+            </Grid>
+            <Grid item xs={6} md={12} className={classes.predictionDetailInfoWrapper}>
+              <Typography variant="body1">
+                FUNDING
+              </Typography>
+              <Typography variant="title" className={classes.predictionDetailInfo}>
+                398,841,00 QTUM
+              </Typography>
+            </Grid>
+            <Grid item xs={6} md={12} className={classes.predictionDetailInfoWrapper}>
+              <Typography variant="body1">
+                RESULT SETTER
+              </Typography>
+              <Typography variant="title" className={classes.predictionDetailInfo}>
+                qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS
+              </Typography>
+            </Grid>
+            <Grid item xs={6} md={12} className={classes.predictionDetailInfoWrapper}>
+              <Typography variant="body1">
+                CREATOR
+              </Typography>
+              <Typography variant="title" className={classes.predictionDetailInfo}>
+                qSzPLfPsHP6ChX2jxEyy8637JiBXtn5piS
+              </Typography>
+            </Grid>
+
+            <Stepper activeStep={1} orientation="vertical" className={classes.predictionStepper}>
+              <Step key="labellabel">
+                <StepLabel className={classes.predictionStepLabel}>
+                  <Typography variant="title">
+                    Created
+                  </Typography>
+                  <Typography variant="caption">
+                    02/01/2018 10:40:52
+                  </Typography>
+                </StepLabel>
+              </Step>
+              <Step key="labellabel">
+                <StepLabel className={classes.predictionStepLabel}>
+                  <Typography variant="title">
+                    Predicting
+                  </Typography>
+                </StepLabel>
+              </Step>
+              <Step key="labellabel">
+                <StepLabel className={classes.predictionStepLabel}>
+                  <Typography variant="title">
+                    Result Setting
+                  </Typography>
+                  <Typography variant="caption">
+                    02/01/2018 10:40:52
+                  </Typography>
+                </StepLabel>
+              </Step>
+              <Step key="labellabel">
+                <StepLabel className={classes.predictionStepLabel}>
+                  <Typography variant="title">
+                    Predicting
+                  </Typography>
+                </StepLabel>
+              </Step>
+            </Stepper>
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+    */
   }
 
   /**
@@ -546,6 +900,7 @@ OraclePage.propTypes = {
   ]),
   editingToggled: PropTypes.bool,
   match: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   onBet: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
@@ -609,4 +964,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OraclePage);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(OraclePage));

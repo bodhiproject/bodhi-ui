@@ -4,25 +4,29 @@ import { createMuiTheme } from 'material-ui/styles';
 
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
+// TODO (LIV): TOO MANY FONT SIZES, TALK TO THE DESIGNERS
 const fontSizeTitleLg = 36;
+const fontSizeTitleMd = 32;
 const fontSizeTitleSm = 24;
 const fontSizeTextLg = 20;
+const fontSizeTextMd = 18;
 const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
 
+const progressHeight = 12;
+const iconSize = 24;
+
 const white = '#FFFFFF';
 
 // neon blue
 const primaryColor = '#585AFA';
-const primaryColorLight = '#C4C5FD';
-const primaryColorDark = '#4244BB';
 
 // neo teal
-const secondaryColor = '#22F5F2';
-const secondaryColorLight = '#23DAE0';
+const secondaryColor = '#23DAE0';
+const secondaryColorLight = '#22F5F2';
 const secondaryColorDark = '#11A5A9';
 
 const textColorDark = '#333333';
@@ -34,10 +38,10 @@ const borderColor = '#ECECEC';
 const borderRadius = 4;
 
 const spaceUnit = 8;
-const paddingXs = spaceUnit * 2;
-const paddingSm = spaceUnit * 3;
-const paddingMd = spaceUnit * 5;
-const paddingLg = spaceUnit * 7;
+const paddingXs = spaceUnit * 2; // 16
+const paddingSm = spaceUnit * 3; // 24
+const paddingMd = spaceUnit * 5; // 40
+const paddingLg = spaceUnit * 7; // 56
 
 const px = function (value) {
   return value.toString().concat('px');
@@ -49,9 +53,9 @@ const bodhiTheme = createMuiTheme({
   /* material variables */
   palette: {
     primary: {
-      light: primaryColorLight,
+      light: primaryColor,
       main: primaryColor,
-      dark: primaryColorDark,
+      dark: primaryColor,
       contrastText: white,
     },
     secondary: {
@@ -63,13 +67,24 @@ const bodhiTheme = createMuiTheme({
     background: {
       paper: white,
       default: backgroundColor,
+      grey: borderColor, // additional var
+    },
+    text: {
+      primary: textColorDark,
+      secondary: textColorGrey,
+      disabled: textColorLight,
+      hint: textColorLight,
     },
     divider: borderColor,
   },
   typography: {
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
-    // large title (i.e. title on prediction title)
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 700,
+    fontWeightBold: 700, // additional var
+    // large headline (i.e. title on prediction title)
     display1: {
       fontSize: px(fontSizeTitleLg),
       fontWeight: 400,
@@ -77,18 +92,60 @@ const bodhiTheme = createMuiTheme({
       marginLeft: '0',
       color: textColorDark,
     },
+    // large text (i.e. title on prediction title)
+    title: {
+      fontSize: px(fontSizeTextMd),
+      fontWeight: 700,
+      lineHeight: lineHeightLg,
+      color: textColorDark,
+    },
+    body1: {
+      fontSize: px(fontSizeMeta),
+      fontWeight: 400,
+      lineHeight: lineHeightLg,
+      color: textColorGrey,
+    },
+    body2: {
+      fontSize: px(fontSizeTextSm),
+      fontWeight: 400,
+      lineHeight: lineHeightLg,
+      color: textColorGrey,
+    },
   },
-  /* override component */
+  /* override component globally */
   overrides: {
-    MuiPaper: {
+    MuiLinearProgress: {
       root: {
-        boxShadow: 'none !important',
-        borderRadius: px(borderRadius),
+        height: px(progressHeight),
+        borderRadius: px(progressHeight),
+        backgroundColor: borderColor.concat(' !important'),
+      },
+    },
+    MuiSelect: {
+      select: {
+        '&:focus': {
+          backgroundColor: 'transparent',
+        },
+      },
+    },
+    MuiButton: {
+      root: {
+        borderRadius: px(paddingLg),
+        textTransform: 'none',
+      },
+      sizeLarge: {
+        fontSize: px(fontSizeTextLg),
+        fontWeight: 700,
+        minHeight: px(paddingLg),
       },
     },
   },
   /* additional variables */
   padding: {
+    unit: {
+      value: spaceUnit,
+      px: px(spaceUnit),
+    },
     xs: {
       value: paddingXs,
       px: px(paddingXs),
@@ -106,7 +163,19 @@ const bodhiTheme = createMuiTheme({
       px: px(paddingLg),
     },
   },
+  sizes: {
+    icon: px(iconSize),
+    font: {
+      titleLg: px(fontSizeTitleLg),
+      titleMd: px(fontSizeTitleMd),
+      titleSm: px(fontSizeTitleSm),
+      textLg: px(fontSizeTextLg),
+      textSm: px(fontSizeTextSm),
+      meta: px(fontSizeMeta),
+    },
+  },
   border: 'solid 1px '.concat(borderColor),
+  borderRadius: px(borderRadius),
 });
 
 export default bodhiTheme;
