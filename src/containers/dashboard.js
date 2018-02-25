@@ -5,7 +5,6 @@ import { Row, Col, Icon } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import BottomButtonWidget from './Widgets/bottom-button';
 import SingleProgressWidget from './Widgets/progress/progress-single';
@@ -108,9 +107,7 @@ class Dashboard extends React.Component {
     }
 
     return (
-      <LayoutContentWrapper
-        style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}
-      >
+      <div>
         <TabBtnGroup
           buttons={[{
             text: 'Bet',
@@ -130,7 +127,7 @@ class Dashboard extends React.Component {
         >
           {rowItems}
         </Row>
-      </LayoutContentWrapper>
+      </div>
     );
   }
 

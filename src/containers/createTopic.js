@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import CreateTopic from '../components/bodhi/createTopic';
-import LayoutContentWrapper from '../components/utility/layoutWrapper';
 
 class CreateTopicContainer extends React.Component {
   constructor(props) {
@@ -24,9 +23,7 @@ class CreateTopicContainer extends React.Component {
 
   render() {
     return (
-      <LayoutContentWrapper style={{ minHeight: '100vh', paddingTop: '50px', paddingBottom: '50px' }}>
-        <CreateTopic onSubmit={this.onSubmit} />
-      </LayoutContentWrapper>
+      <CreateTopic onSubmit={this.onSubmit} />
     );
   }
 }

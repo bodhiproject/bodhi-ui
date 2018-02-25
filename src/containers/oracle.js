@@ -9,7 +9,6 @@ import _ from 'lodash';
 import CardInfo from '../components/bodhi-dls/cardInfo';
 import CardVoting from '../components/bodhi-dls/cardVoting';
 import ProgressBar from '../components/bodhi-dls/progressBar';
-import LayoutContentWrapper from '../components/utility/layoutWrapper';
 import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
 import dashboardActions from '../redux/dashboard/actions';
 import topicActions from '../redux/topic/actions';
@@ -131,7 +130,7 @@ class OraclePage extends React.Component {
     );
 
     return (
-      <LayoutContentWrapper style={{ minHeight: '100vh' }}>
+      <div>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
             <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
@@ -141,7 +140,7 @@ class OraclePage extends React.Component {
         <Row style={{ width: '100%' }}>
           {oracleElement}
         </Row>
-      </LayoutContentWrapper>
+      </div>
     );
   }
 

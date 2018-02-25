@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400,500,700');
+
+/****** REMOVE AFTER REORG *****/
+
+@fontSize: 16px;
+@fontColorGrey: #4A4A4A;
+
+/****** Variables & mixins *****/
+
+@fontFamily: 'Lato', sans-serif;
+
+@fontSizeTitleLg: 36px;
+@fontSizeTitleSm: 24px;
+@fontSizeTextLg: 20px;
+@fontSizeTextSm: 16px;
+@fontSizeMeta: 14px;
+
+@primaryColor: #585AFA;
+@primaryColorTurquoise: #23DAE0;
+@primaryColorTeal: #11A5A9;
+
+@textColorDark: #333333;
+@textColorGrey: #666666;
+@textColorLight: #9B9B9B;
+
+@containerPaddingXs: 16px;
+@containerPaddingSm: 24px;
+@containerPaddingMd: 40px;
+@containerPaddingLg: 60px;
+
+@backgroundColor: #F9F9F9;
+@borderColor: #ECECEC;
+@border: solid 1px @borderColor;
+
+/****** Media screen size *****/
+
+@sm-min: 576px;
+@md-min: 768px;
+@lg-min: 960px;
+@xl-min: 1280px;
+@xxl-min: 1920px;
+
+@xs-max: (@sm-min - 1); // 575px
+@sm-max: (@md-min - 1); // 767px
+@md-max: (@lg-min - 1); // 991px
+@lg-max: (@xl-min - 1); // 1199px
+@xl-max: (@xxl-min - 1); // 1599px
+
+@phone:          ~"only screen and (max-width: @{sm-max})";
+@tablet:         ~"only screen and (min-width: @{md-min})";
+@tablet-strict:  ~"only screen and (min-width: @{md-min}) and (max-width: @{md-max})";
+@desktop:        ~"only screen and (min-width: @{lg-min})";
+@desktop-strict: ~"only screen and (min-width: @{lg-min}) and (max-width: @{lg-max})";
+@xl:          ~"only screen and (min-width: @{xl-min})";
+@xl-strict:  ~"only screen and (min-width: @{xl-min}) and (max-width: @{xl-max})";
+@xxl:            ~"only screen and (min-width: @{xxl-min})";
