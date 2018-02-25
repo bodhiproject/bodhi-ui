@@ -1,23 +1,26 @@
 import React, { PropTypes } from 'react';
+import Reboot from 'material-ui/Reboot';
 import { connect } from 'react-redux';
 import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
-import Reboot from 'material-ui/Reboot';
+import { withStyles } from 'material-ui/styles';
 
-import appActions from '../../redux/app/actions';
-import Topbar from '../Topbar/Topbar';
-import CornerClock from '../CornerClock/CornerClock';
 import AppRouter from './AppRouter';
 import AppLoad from '../appLoad';
+import appActions from '../../redux/app/actions';
+import CornerClock from '../CornerClock/CornerClock';
+import styles from './app.style';
+import Topbar from '../Topbar/Topbar';
 
 const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
   render() {
+    const { classes } = this.props;
     const { url } = this.props.match;
 
     return (
-      <div className="root">
+      <div className={classes.root}>
         <Reboot />
         <Debounce time="1000" handler="onResize">
           <WindowResizeListener
@@ -30,7 +33,7 @@ export class App extends React.PureComponent {
         </Debounce>
         <AppLoad />
         <Topbar url={url} />
-        <div className="container">
+        <div className={classes.container}>
           <AppRouter url={url} />
         </div>
         <CornerClock />
@@ -42,6 +45,7 @@ export class App extends React.PureComponent {
 App.propTypes = {
   toggleAll: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default connect((state) => ({ auth: state.Auth }), { toggleAll })(App);
+export default connect((state) => ({ auth: state.Auth }), { toggleAll })(withStyles(styles)(App));
