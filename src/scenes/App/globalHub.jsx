@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
 import appActions from '../redux/app/actions';
+import getSubscription, { channels } from '../network/graphSubscription';
 
 class GlobalHub extends React.PureComponent {
   constructor(props) {
@@ -11,14 +13,20 @@ class GlobalHub extends React.PureComponent {
 
     this.state = {
     };
+
+    this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
   }
 
   componentWillMount() {
     const {
+      getSyncInfo,
       listUnspent,
       getBotBalance,
       walletAddrs,
     } = this.props;
+
+    getSyncInfo();
+    this.subscribeSyncInfo();
 
     listUnspent();
     if (!_.isEmpty(walletAddrs)) {
@@ -51,18 +59,40 @@ class GlobalHub extends React.PureComponent {
   render() {
     return null;
   }
+
+  subscribeSyncInfo() {
+    const { client, onSyncInfo } = this.props;
+
+    console.log('Subscribe: OnSyncInfo');
+    client.subscribe({
+      query: getSubscription(channels.ON_SYNC_INFO),
+    }).subscribe({
+      next(data) {
+        onSyncInfo(data.data.OnSyncInfo);
+      },
+      error(err) {
+        onSyncInfo({ error: err.message });
+      },
+    });
+  }
 }
 
 GlobalHub.propTypes = {
+  client: PropTypes.object,
   syncBlockNum: PropTypes.number,
   walletAddrs: PropTypes.array,
+  getSyncInfo: PropTypes.func,
+  onSyncInfo: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
 };
 
 GlobalHub.defaultProps = {
+  client: undefined,
   syncBlockNum: undefined,
   walletAddrs: [],
+  getSyncInfo: undefined,
+  onSyncInfo: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
 };
@@ -73,11 +103,14 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    listUnspent: () => dispatch(appActions.listUnspent()),
-    getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
-  };
-}
+const mapDispatchToProps = (dispatch) => ({
+  getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
+  listUnspent: () => dispatch(appActions.listUnspent()),
+  getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(GlobalHub);
+export default compose(
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps),
+)(GlobalHub);
