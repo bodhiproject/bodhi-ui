@@ -89,41 +89,6 @@ class Topbar extends React.PureComponent {
     this.onCopyClicked = this.onCopyClicked.bind(this);
   }
 
-  componentWillMount() {
-    const {
-      listUnspent,
-      getBotBalance,
-      walletAddrs,
-    } = this.props;
-
-    listUnspent();
-    if (!_.isEmpty(walletAddrs)) {
-      _.each(walletAddrs, (address) => {
-        getBotBalance(address.address, address.address);
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {
-      walletAddrs,
-      syncBlockNum,
-      listUnspent,
-      getBotBalance,
-    } = this.props;
-
-    // Update page on new block
-    if (nextProps.syncBlockNum !== syncBlockNum) {
-      listUnspent();
-
-      if (nextProps.walletAddrs) {
-        _.each(nextProps.walletAddrs, (address) => {
-          getBotBalance(address.address, address.address);
-        });
-      }
-    }
-  }
-
   render() {
     const {
       collapsed,
@@ -266,9 +231,6 @@ Topbar.propTypes = {
   selectedWalletAddress: PropTypes.string,
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
-  listUnspent: PropTypes.func,
-  getBotBalance: PropTypes.func,
-  syncBlockNum: PropTypes.number,
   handler: PropTypes.func,
 };
 
@@ -277,24 +239,17 @@ Topbar.defaultProps = {
   selectedWalletAddress: undefined,
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
-  listUnspent: undefined,
-  getBotBalance: undefined,
-  syncBlockNum: undefined,
   handler: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  syncBlockNum: state.App.get('syncBlockNum'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
-  listUnspent: () => dispatch(appActions.listUnspent()),
-  getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Topbar));
