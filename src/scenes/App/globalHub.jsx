@@ -68,7 +68,7 @@ class GlobalHub extends React.PureComponent {
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next(data) {
-        console.log(data.data.onSyncInfo);
+        console.debug('onSyncInfo', data.data.onSyncInfo);
         onSyncInfo(data.data.onSyncInfo);
       },
       error(err) {
