@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import { getTypeDef } from './graphDataStruct';
 
 const subscriptions = {
-  OnSyncInfo: `
+  onSyncInfo: `
     subscription OnSyncInfo {
-      OnSyncInfo {
+      onSyncInfo {
         ${getTypeDef('SyncInfo')}
       }
     }
@@ -18,5 +18,5 @@ function getSubscription(name) {
 
 export default getSubscription;
 export const channels = {
-  ON_SYNC_INFO: 'OnSyncInfo',
+  ON_SYNC_INFO: 'onSyncInfo',
 };

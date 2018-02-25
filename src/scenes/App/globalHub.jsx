@@ -63,12 +63,13 @@ class GlobalHub extends React.PureComponent {
   subscribeSyncInfo() {
     const { client, onSyncInfo } = this.props;
 
-    console.log('Subscribe: OnSyncInfo');
+    console.log('Subscribe: onSyncInfo');
     client.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next(data) {
-        onSyncInfo(data.data.OnSyncInfo);
+        console.log(data.data.onSyncInfo);
+        onSyncInfo(data.data.onSyncInfo);
       },
       error(err) {
         onSyncInfo({ error: err.message });
