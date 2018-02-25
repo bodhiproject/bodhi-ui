@@ -60,3 +60,20 @@ export function getLocalDateTimeString(unixSeconds) {
 export function getShortLocalDateTimeString(unixSeconds) {
   return moment.unix(unixSeconds).format(FORMAT_SHORT_DATE_TIME);
 }
+
+/**
+ * Shortens address string by only showing the first and last couple characters.
+ * @param text {String} Origin address
+ * @param maxLength {Number} Length of output string, including 3 dots
+ * @return {String} Address in format "Qjsb ... 3dkb", or empty string if input is undefined or empty
+ */
+export function shortenAddress(text, maxLength) {
+  if (!text) {
+    return '';
+  }
+
+  const cutoffLength = (maxLength - 3) / 2;
+  return text.length > maxLength
+    ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
+    : text;
+}

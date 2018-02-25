@@ -10,29 +10,13 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './styles';
 import AppConfig from '../../config/app';
+import { shortenAddress } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
-
-/**
- * Utility func to convert address into format of  "Qjsb ... 3dkb"
- * @param  {string} text      Origin address
- * @param  {number} maxLength Length of output string, including 3 dots
- * @return {string} string in format "Qjsb ... 3dkb", or empty string "" if input is undefined or empty
- */
-function shortenAddress(text, maxLength) {
-  if (!text) {
-    return '';
-  }
-
-  const cutoffLength = (maxLength - 3) / 2;
-  return text.length > maxLength
-    ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
-    : text;
-}
 
 class DropdownMenuItem extends React.Component {
   render() {
