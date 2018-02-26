@@ -4,6 +4,7 @@ import actions from './actions';
 import { createTopic, createBetTx } from '../../../network/graphMutation';
 import Config from '../../../config/app';
 
+// Sends createTopic mutation
 export function* createTopicRequestHandler() {
   yield takeEvery(actions.CREATE_TOPIC, function* createTopicRequest(action) {
     try {
@@ -33,8 +34,9 @@ export function* createTopicRequestHandler() {
   });
 }
 
-export function* betRequestHandler() {
-  yield takeEvery(actions.CREATE_BET, function* betRequest(action) {
+// Sends createBet mutation
+export function* createBetRequestHandler() {
+  yield takeEvery(actions.CREATE_BET, function* createBetRequest(action) {
     try {
       const tx = yield call(
         createBetTx,
@@ -61,6 +63,6 @@ export function* betRequestHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(createTopicRequestHandler),
-    fork(betRequestHandler),
+    fork(createBetRequestHandler),
   ]);
 }

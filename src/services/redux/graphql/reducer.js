@@ -8,7 +8,6 @@ const initState = new Map({
 export default function graphqlReducer(state = initState, action) {
   switch (action.type) {
     case actions.CREATE_TOPIC_RETURN: {
-      console.log('createdTopic', action);
       return state.set('createdTopic', action.value);
     }
     case actions.CREATE_BET_RETURN: {
