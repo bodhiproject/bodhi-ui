@@ -22,7 +22,7 @@ export function* createTopicRequestHandler() {
 
       yield put({
         type: actions.CREATE_TOPIC_RETURN,
-        result: tx,
+        value: tx,
       });
     } catch (err) {
       yield put({
