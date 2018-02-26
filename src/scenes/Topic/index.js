@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
