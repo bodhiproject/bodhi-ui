@@ -1,11 +1,11 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
-import { request } from '../../network/httpRequest';
-import { convertBNHexStrToQtum } from '../../helpers/utility';
+import { request } from '../../../network/httpRequest';
+import { convertBNHexStrToQtum } from '../../../helpers/utility';
 
-import Routes from '../../network/routes';
-import Config from '../../config/app';
+import Routes from '../../../network/routes';
+import Config from '../../../config/app';
 
 export function* createRequestHandler() {
   yield takeEvery(actions.CREATE, function* onCreateRequest(action) {

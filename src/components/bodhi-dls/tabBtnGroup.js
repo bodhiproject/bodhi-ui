@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import dashboardActions from '../../redux/dashboard/actions';
+import dashboardActions from '../../services/redux/dashboard/actions';
 import { SortBy } from '../../constants';
 
 const MenuItem = Menu.Item;

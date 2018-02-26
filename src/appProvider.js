@@ -11,7 +11,7 @@ import App from './scenes/App/index';
 import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
-import { store, history } from './redux/store';
+import { store, history } from './services/redux/store';
 
 import '../src/style/styles.less';
 

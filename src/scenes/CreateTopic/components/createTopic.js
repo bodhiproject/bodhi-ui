@@ -9,8 +9,8 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import topicActions from '../../../redux/topic/actions';
-import appActions from '../../../redux/app/actions';
+import topicActions from '../../../services/redux/topic/actions';
+import appActions from '../../../services/redux/app/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
 
