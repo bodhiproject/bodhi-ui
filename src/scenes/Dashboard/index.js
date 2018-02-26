@@ -215,22 +215,22 @@ class Dashboard extends React.Component {
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endText = `Betting ends ${getLocalDateTimeString(oracle.endTime)}`;
+          endText = `${this.props.intl.formatMessage({ id: 'dashboard.betend' })} ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.placebet' });
           break;
         }
         case TAB_SET: {
-          endText = `Result setting ends ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
+          endText = `${this.props.intl.formatMessage({ id: 'dashboard.resultsetend' })} ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.setresult' });
           break;
         }
         case TAB_VOTE: {
-          endText = `Voting ends ${getLocalDateTimeString(oracle.endTime)}`;
+          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteend' })} ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.vote' });
           break;
         }
         case TAB_FINALIZE: {
-          endText = `Voting ended ${getLocalDateTimeString(oracle.endTime)}`;
+          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteended' })} ${getLocalDateTimeString(oracle.endTime)}`;
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.final' });
           break;
         }
@@ -240,7 +240,7 @@ class Dashboard extends React.Component {
       }
 
       const totalBalance = _.sum(oracle.amounts);
-      const raisedString = `Raised: ${totalBalance.toFixed(2)} ${oracle.token}`;
+      const raisedString = `${this.props.intl.formatMessage({ id: 'str.raise' })}: ${totalBalance.toFixed(2)} ${oracle.token}`;
 
       let displayOptions = [];
       // Determine what options showing in progress bars
@@ -348,8 +348,8 @@ class Dashboard extends React.Component {
       const qtumTotal = _.sum(topic.qtumAmount);
       const botTotal = _.sum(topic.botAmount);
 
-      const raisedString = `Raised: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
-      const endText = 'Ended';
+      const raisedString = `${this.props.intl.formatMessage({ id: 'str.raise' })}: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
+      const endText = this.props.intl.formatMessage({ id: 'str.end' });
 
       let optionBalances = _.map(topic.options, (opt, idx) => {
         const qtumAmount = topic.qtumAmount[idx];

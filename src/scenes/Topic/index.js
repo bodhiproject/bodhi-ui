@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+
 
 import CardInfo from '../../components/bodhi-dls/cardInfo';
 import CardFinished from '../../components/bodhi-dls/cardFinished';
@@ -224,7 +225,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `You can withdraw ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+          text: `${this.props.intl.formatMessage({ id: 'cardfinish.withdraw' })} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
             & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
@@ -260,6 +261,8 @@ TopicPage.propTypes = {
   onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
 TopicPage.defaultProps = {
@@ -299,4 +302,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopicPage);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(TopicPage));

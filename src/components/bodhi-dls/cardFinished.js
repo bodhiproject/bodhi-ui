@@ -64,12 +64,12 @@ class CardFinished extends Component {
     return (
       <div className="cardVoting">
         <div className="header">
-          <p style={{ marginBottom: '24px' }}>RAISED:</p>
+          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.RAISE" />:</p>
           <h3><span>{amount.toFixed(2)}</span>
             <span>QTUM</span></h3>
         </div>
         <div className="body">
-          <p style={{ marginBottom: '24px' }}>OUTCOMES</p>
+          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.outcome" /></p>
           {children}
         </div>
         <div className="action">
@@ -83,7 +83,6 @@ class CardFinished extends Component {
           >
             <FormattedMessage id="cardinfo.withdraw" />
           </Button>
-
 
         </div>
       </div>

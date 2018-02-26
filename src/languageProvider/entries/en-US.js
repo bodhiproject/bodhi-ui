@@ -14,6 +14,11 @@ const EnLang = {
     'dashboard.Vote': 'Vote',
     'dashboard.Finalize': 'Finalize',
     'dashboard.Withdraw': 'Withdraw',
+    'dashboard.betend': 'Betting ends',
+    'dashboard.resultsetend': 'Result setting ends',
+    'dashboard.voteend': 'Voting ends',
+    'dashboard.voteended': 'Voting ended',
+
     'sort.asc': 'Ascending',
     'sort.desc': 'Descending',
     'sort.default': 'Sort',
@@ -73,7 +78,26 @@ const EnLang = {
     'topbar.voting': 'Voting',
     'topbar.finalize': 'Finalizing',
     'topbar.completed': 'Completed',
-
+    'oracle.resultsetter': 'Result setter',
+    'oracle.consensus': 'Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.',
+    'oracle.resultsetnote': `BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. 
+    Your BOT needs to be approved before result setting. The approved amount will automatically be used to 
+    set the result after approval.`,
+    'oracle.pass': 'Current block time has passed the Result Setting End Time.',
+    'oracle.notcen': 'You are not the Centralized Oracle for this Topic and cannot set the result.',
+    'oracle.openres': 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
+    'oracle.voting-1': 'Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result.',
+    'oracle.votenote': `BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs 
+    to be approved before voting. The approved amount will automatically be used to vote afterwards.`,
+    'oracle.passvote': `Current block time has passed the Voting End Time. 
+    The previous result needs to be finalized in order to withdraw.`,
+    'oracle.finalize': `Finalizing can be done by anyone. 
+    Once finalized, winners can withdraw from the event in the Withdraw tab.`,
+    'cardfinish.withdraw': 'You can withdraw',
+    'str.raise': 'Raised',
+    'str.RAISE': 'RAISED',
+    'str.end': 'Ended',
+    'str.outcome': 'OUTCOMES',
   },
   antd: antdEn,
   locale: 'en-US',
