@@ -15,18 +15,6 @@ const topicActions = {
     type: topicActions.CLEAR_REQ_RETURN,
   }),
 
-  BET: 'BET',
-  BET_RETURN: 'BET_RETURN',
-  onBet: (contractAddress, index, amount, senderAddress) => ({
-    type: topicActions.BET,
-    payload: {
-      contractAddress,
-      index,
-      amount,
-      senderAddress,
-    },
-  }),
-
   VOTE: 'VOTE',
   VOTE_RETURN: 'VOTE_RETURN',
   onVote: (contractAddress, resultIndex, botAmount, senderAddress) => ({

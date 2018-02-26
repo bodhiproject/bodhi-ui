@@ -5,6 +5,18 @@ const graphqlActions = {
     type: graphqlActions.CREATE_TOPIC,
     params,
   }),
+
+  CREATE_BET: 'CREATE_BET',
+  CREATE_BET_RETURN: 'CREATE_BET_RETURN',
+  createBet: (contractAddress, index, amount, senderAddress) => ({
+    type: graphqlActions.CREATE_BET,
+    params: {
+      contractAddress,
+      index,
+      amount,
+      senderAddress,
+    },
+  }),
 };
 
 export default graphqlActions;

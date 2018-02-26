@@ -7,42 +7,6 @@ import { convertBNHexStrToQtum } from '../../../helpers/utility';
 import Routes from '../../../network/routes';
 import Config from '../../../config/app';
 
-export function* betRequestHandler() {
-  yield takeEvery(actions.BET, function* onBetRequest(action) {
-    const {
-      contractAddress,
-      index,
-      amount,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          index,
-          amount,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.bet, options);
-
-      yield put({
-        type: actions.BET_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.BET_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* approveRequestHandler() {
   yield takeEvery(actions.APPROVE, function* onApproveRequest(action) {
     const {
@@ -287,7 +251,6 @@ export function* withdrawRequestHandler() {
 
 export default function* topicSaga() {
   yield all([
-    fork(betRequestHandler),
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
     fork(setResultRequestHandler),

@@ -11,6 +11,10 @@ export default function graphqlReducer(state = initState, action) {
       console.log('createdTopic', action);
       return state.set('createdTopic', action.value);
     }
+    case actions.CREATE_BET_RETURN: {
+      console.log('createBetReturn', action);
+      return state.set('createBetReturn', action.value);
+    }
     default: {
       return state;
     }

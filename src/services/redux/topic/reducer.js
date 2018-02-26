@@ -18,10 +18,6 @@ export default function topicReducer(
     case actions.CLEAR_EDITING_TOGGLED:
       return state.set('toggled', false);
 
-    /* Bet return */
-    case actions.BET_RETURN:
-      return state.set('req_return', action.value);
-
     /* Create return */
     case actions.CREATE_RETURN:
       return state.set('create_return', action.value);

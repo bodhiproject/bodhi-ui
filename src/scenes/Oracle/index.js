@@ -19,6 +19,7 @@ import PredictionInfo from './components/PredictionInfo/index';
 import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
 import dashboardActions from '../../services/redux/dashboard/actions';
 import topicActions from '../../services/redux/topic/actions';
+import graphqlActions from '../../services/redux/graphql/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
@@ -464,11 +465,11 @@ class OraclePage extends React.Component {
   }
 
   bet(amount) {
-    const { onBet } = this.props;
+    const { createBet } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
@@ -504,7 +505,7 @@ OraclePage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  onBet: PropTypes.func,
+  createBet: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
@@ -524,7 +525,7 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesSuccess: [],
-  onBet: undefined,
+  createBet: undefined,
   onVote: undefined,
   onApprove: undefined,
   onAllowance: undefined,
@@ -552,8 +553,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    onBet: (contractAddress, index, amount, senderAddress) =>
-      dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
+    createBet: (contractAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBet(contractAddress, index, amount, senderAddress)),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (contractAddress, spender, value, senderAddress) =>
