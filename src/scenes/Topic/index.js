@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 
 import CardInfo from '../../components/bodhi-dls/cardInfo';
@@ -136,8 +137,8 @@ class TopicPage extends React.Component {
       <div>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Completed</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topbar.event" /></Link></Breadcrumb.Item>
+            <Breadcrumb.Item><FormattedMessage id="topbar.completed" /></Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>

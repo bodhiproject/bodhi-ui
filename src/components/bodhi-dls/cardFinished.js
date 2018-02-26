@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Button, Alert } from 'antd';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 class CardFinished extends Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class CardFinished extends Component {
             size="large"
             disabled={confirmBtnDisabled}
           >
-              Withdraw
+            <FormattedMessage id="cardinfo.withdraw" />
           </Button>
 
 

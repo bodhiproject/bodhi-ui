@@ -1,13 +1,15 @@
 import _ from 'lodash';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { getLocalDateTimeString } from './utility';
 
-const TOPIC_CREATED = 'Topic Created';
-const BETTING = 'Betting';
-const ORACLE_RESULT_SETTING = 'Oracle Result Setting';
-const OPEN_RESULT_SETTING = 'Open Result Setting';
-const VOTING = 'Voting';
-const FINALIZING = 'Finalizing';
-const WITHDRAWING = 'Withdrawing';
+const TOPIC_CREATED = <FormattedMessage id="cardinfo.topic" />;
+const BETTING = <FormattedMessage id="cardinfo.betting" />;
+const ORACLE_RESULT_SETTING = <FormattedMessage id="cardinfo.orresultset" />;
+const OPEN_RESULT_SETTING = <FormattedMessage id="cardinfo.opresultset" />;
+const VOTING = <FormattedMessage id="cardinfo.vote" />;
+const FINALIZING = <FormattedMessage id="cardinfo.final" />;
+const WITHDRAWING = <FormattedMessage id="cardinfo.withdraw" />;
 const BLOCK = 'Block:';
 const RANGE_SEPARATOR = 'to';
 const ANYTIME = 'anytime';

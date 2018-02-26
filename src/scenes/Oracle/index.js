@@ -10,6 +10,8 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+
 
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
@@ -255,7 +257,7 @@ class OraclePage extends React.Component {
       if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
-          breadcrumbLabel: 'Betting',
+          breadcrumbLabel: <FormattedMessage id="topbar.betting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
@@ -263,14 +265,14 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: 'Bet',
+            btnText: <FormattedMessage id="cardinfo.bet" />,
             showAmountInput: true,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
-          breadcrumbLabel: 'Setting',
+          breadcrumbLabel: <FormattedMessage id="topbar.setting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
@@ -293,7 +295,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: 'Set Result',
+            btnText: <FormattedMessage id="cardinfo.setresult" />,
             btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             showAmountInput: false,
           },
@@ -322,7 +324,7 @@ class OraclePage extends React.Component {
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
-          breadcrumbLabel: 'Voting',
+          breadcrumbLabel: <FormattedMessage id="topbar.voting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
@@ -339,7 +341,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: 'Vote',
+            btnText: <FormattedMessage id="cardinfo.vote" />,
             showAmountInput: true,
           },
         };
@@ -354,7 +356,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: true,
-            btnText: 'Finalize',
+            btnText: <FormattedMessage id="cardinfo.finalize" />,
             showAmountInput: false,
           },
         };
