@@ -67,18 +67,6 @@ const topicActions = {
     },
   }),
 
-  SET_RESULT: 'SET_RESULT',
-  SET_RESULT_RETURN: 'SET_RESULT_RETURN',
-  onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) => ({
-    type: topicActions.SET_RESULT,
-    payload: {
-      contractAddress,
-      resultIndex,
-      consensusThreshold,
-      senderAddress,
-    },
-  }),
-
   FINALIZE_RESULT: 'FINALIZE_RESULT',
   FINALIZE_RESULT_RETURN: 'FINALIZE_RESULT_RETURN',
   CLEAR_FINALIZE_RESULT_RETURN: 'CLEAR_FINALIZE_RESULT_RETURN',

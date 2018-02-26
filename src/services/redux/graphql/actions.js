@@ -17,6 +17,19 @@ const graphqlActions = {
       senderAddress,
     },
   }),
+
+  CREATE_SET_RESULT: 'CREATE_SET_RESULT',
+  CREATE_SET_RESULT_RETURN: 'CREATE_SET_RESULT_RETURN',
+  createSetResult: (topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
+    type: graphqlActions.CREATE_SET_RESULT,
+    params: {
+      topicAddress,
+      oracleAddress,
+      index,
+      consensusThreshold,
+      senderAddress,
+    },
+  }),
 };
 
 export default graphqlActions;

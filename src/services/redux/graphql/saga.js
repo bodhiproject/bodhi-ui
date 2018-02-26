@@ -1,7 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
-import { createTopic, createBetTx } from '../../../network/graphMutation';
+import { createTopic, createBetTx, createSetResultTx } from '../../../network/graphMutation';
 import Config from '../../../config/app';
 
 // Sends createTopic mutation
@@ -60,9 +60,39 @@ export function* createBetRequestHandler() {
   });
 }
 
+// Sends setResult mutation
+export function* createSetResultRequestHandler() {
+  yield takeEvery(actions.CREATE_SET_RESULT, function* createSetResultRequest(action) {
+    try {
+      console.log(action.params.index);
+
+      const tx = yield call(
+        createSetResultTx,
+        Config.defaults.version,
+        action.params.topicAddress,
+        action.params.oracleAddress,
+        action.params.index,
+        action.params.consensusThreshold,
+        action.params.senderAddress,
+      );
+
+      yield put({
+        type: actions.CREATE_SET_RESULT_RETURN,
+        value: tx,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.CREATE_SET_RESULT_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
 export default function* graphqlSaga() {
   yield all([
     fork(createTopicRequestHandler),
     fork(createBetRequestHandler),
+    fork(createSetResultRequestHandler),
   ]);
 }

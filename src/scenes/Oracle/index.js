@@ -176,12 +176,7 @@ class OraclePage extends React.Component {
         break;
       }
       case 'SETTING': {
-        this.setState({
-          isApproved: false,
-          voteAmount: this.state.oracle.consensusThreshold,
-        });
-
-        this.startCheckAllowance();
+        this.setResult();
         break;
       }
       case 'VOTING': {
@@ -473,11 +468,17 @@ class OraclePage extends React.Component {
   }
 
   setResult() {
-    const { onSetResult } = this.props;
+    const { createSetResult } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, this.getCurrentWalletAddr());
+    createSetResult(
+      oracle.topicAddress,
+      oracle.address,
+      selectedIndex,
+      oracle.consensusThreshold,
+      this.getCurrentWalletAddr(),
+    );
   }
 
   vote(amount) {
@@ -506,13 +507,13 @@ OraclePage.propTypes = {
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   createBet: PropTypes.func,
+  createSetResult: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
   allowanceReturn: PropTypes.number,
   clearAllowanceReturn: PropTypes.func,
   onClearRequestReturn: PropTypes.func,
-  onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
@@ -526,11 +527,11 @@ OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesSuccess: [],
   createBet: undefined,
+  createSetResult: undefined,
   onVote: undefined,
   onApprove: undefined,
   onAllowance: undefined,
   allowanceReturn: undefined,
-  onSetResult: undefined,
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
   requestReturn: undefined,
@@ -555,13 +556,19 @@ function mapDispatchToProps(dispatch) {
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     createBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBet(contractAddress, index, amount, senderAddress)),
+    createSetResult: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+      dispatch(graphqlActions.createSetResult(
+        topicAddress,
+        oracleAddress,
+        resultIndex,
+        consensusThreshold,
+        senderAddress
+      )),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (contractAddress, spender, value, senderAddress) =>
       dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
-    onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) =>
-      dispatch(topicActions.onSetResult(contractAddress, resultIndex, consensusThreshold, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),

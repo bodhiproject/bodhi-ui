@@ -122,59 +122,23 @@ const MUTATIONS = {
     }
   `,
 
-  createOracle: `
-    CreateOracle(
-      $version: Int!,
-      $name: String!,
-      $options: [String!]!,
-      $resultSetterAddress: String!,
-      $bettingStartTime: String!,
-      $bettingEndTime: String!,
-      $resultSettingStartTime: String!,
-      $resultSettingEndTime: String!
-      $senderAddress: String!
-    ) {
-      createOracle(
-        version: $version,
-        name: $name,
-        options: $options,
-        resultSetterAddress: $resultSetterAddress,
-        bettingStartTime: $bettingStartTime,
-        bettingEndTime: $bettingEndTime,
-        resultSettingStartTime: $resultSettingStartTime,
-        resultSettingEndTime: $resultSettingEndTime
-        senderAddress: $senderAddress,
-      ) {
-        version
-        name
-        options
-        resultSetterAddress
-        bettingStartTime
-        bettingEndTime
-        resultSettingStartTime
-        resultSettingEndTime
-        senderAddress
-      }
-    }
-  `,
-
   createBet: `
     CreateBet(
       $version: Int!,
-      $entityId: String!,
+      $oracleAddress: String!,
       $optionIdx: Int!,
       $amount: String!,
       $senderAddress: String!
     ) {
       createBet(
         version: $version,
-        entityId: $entityId,
+        oracleAddress: $oracleAddress,
         optionIdx: $optionIdx,
         amount: $amount,
         senderAddress: $senderAddress
       ) {
         version
-        entityId
+        oracleAddress
         optionIdx
         amount
         senderAddress
@@ -185,23 +149,26 @@ const MUTATIONS = {
   setResult: `
     SetResult(
       $version: Int!,
-      $senderAddress: String!,
+      $topicAddress: String!,
       $oracleAddress: String!,
-      $consensusThreshold: String!,
-      $resultIdx: Int!
+      $optionIdx: Int!,
+      $amount: String!,
+      $senderAddress: String!
     ) {
       setResult(
         version: $version,
-        senderAddress: $senderAddress,
+        topicAddress: $topicAddress,
         oracleAddress: $oracleAddress,
-        consensusThreshold: $consensusThreshold,
-        resultIdx: $resultIdx
+        optionIdx: $optionIdx,
+        amount: $amount,
+        senderAddress: $senderAddress
       ) {
         version
-        senderAddress
+        topicAddress
         oracleAddress
-        consensusThreshold
-        resultIdx
+        amount
+        optionIdx
+        senderAddress
       }
     }
   `,
@@ -209,23 +176,23 @@ const MUTATIONS = {
   createVote: `
     CreateVote(
       $version: Int!,
-      $senderAddress: String!,
       $oracleAddress: String!,
       $optionIdx: Int!,
-      $amount: String!
+      $amount: String!,
+      $senderAddress: String!
     ) {
       createVote(
         version: $version,
-        senderAddress: $senderAddress,
         oracleAddress: $oracleAddress,
         optionIdx: $optionIdx,
-        amount: $amount
+        amount: $amount,
+        senderAddress: $senderAddress
       ) {
         version
-        senderAddress
         oracleAddress
         optionIdx
         amount
+        senderAddress
       }
     }
   `,
@@ -233,17 +200,17 @@ const MUTATIONS = {
   finalizeResult: `
     FinalizeResult(
       $version: Int!,
-      $senderAddress: String!,
-      $oracleAddress: String!
+      $oracleAddress: String!,
+      $senderAddress: String!
     ) {
       finalizeResult(
         version: $version,
-        senderAddress: $senderAddress,
-        oracleAddress: $oracleAddress
+        oracleAddress: $oracleAddress,
+        senderAddress: $senderAddress
       ) {
         version
-        senderAddress
         oracleAddress
+        senderAddress
       }
     }
   `,
@@ -251,17 +218,17 @@ const MUTATIONS = {
   withdraw: `
     Withdraw(
       $version: Int!,
-      $senderAddress: String!,
-      $topicAddress: String!
+      $topicAddress: String!,
+      $senderAddress: String!
     ) {
       withdraw(
         version: $version,
-        senderAddress: $senderAddress,
-        topicAddress: $topicAddress
+        topicAddress: $topicAddress,
+        senderAddress: $senderAddress
       ) {
         version
-        senderAddress
         topicAddress
+        senderAddress
       }
     }
   `,
