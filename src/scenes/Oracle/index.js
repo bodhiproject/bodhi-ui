@@ -91,6 +91,9 @@ class OraclePage extends React.Component {
     const { editingToggled, requestReturn, classes } = this.props;
     const { oracle, config } = this.state;
 
+    console.log('hey');
+    console.log(oracle);
+
     if (!oracle || !config) {
       // Don't render anything if page is loading. In future we could make a loading animation
       return <div></div>;
@@ -141,24 +144,9 @@ class OraclePage extends React.Component {
     );
 
     return (
-      <div>
-        <Row style={{ width: '100%', height: '48px' }}>
-          <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/">Event</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{breadcrumbLabel}</Breadcrumb.Item>
-          </Breadcrumb>
-        </Row>
-        <Row style={{ width: '100%' }}>
-          {oracleElement}
-        </Row>
-      </div>
-    );
-
-    /*
-    return (
       <Paper className={classes.predictionDetailPaper}>
         <Grid container spacing={0}>
-          <Grid item spacing={0} xs={12} md={8} className={classes.predictionDetailContainerGrid}>
+          <Grid item xs={12} md={8} className={classes.predictionDetailContainerGrid}>
             <Typography variant="display1" className={classes.predictionDetailTitle}>
               {oracle.name}
             </Typography>
@@ -172,17 +160,13 @@ class OraclePage extends React.Component {
               </Button>
             </Grid>
           </Grid>
-          <Grid item spacing={0} xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
-            <PredictionInfo />
-            <PredictionInfo />
-            <PredictionInfo />
-            <PredictionInfo />
-            <StepperVertRight />
+          <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
+            <PredictionInfo oracle={oracle} className={classes.predictionDetailInfo} />
+            <StepperVertRight steps={config.cardInfo.steps} />
           </Grid>
         </Grid>
       </Paper>
     );
-    */
   }
 
   /**

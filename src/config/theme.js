@@ -139,6 +139,15 @@ const bodhiTheme = createMuiTheme({
         minHeight: px(paddingLg),
       },
     },
+    // TODO (LIVIA): USE A VARIENT INSTEAD OF OVERRIDE
+    MuiStepConnector: {
+      vertical: {
+        padding: '0',
+      },
+      lineVertical: {
+        minHeight: '40px',
+      },
+    },
   },
   /* additional variables */
   padding: {
