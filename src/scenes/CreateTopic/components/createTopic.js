@@ -8,10 +8,10 @@ import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 
-import topicActions from '../../redux/topic/actions';
-import appActions from '../../redux/app/actions';
-import { calculateBlock } from '../../helpers/utility';
-import { defaults } from '../../config/app';
+import topicActions from '../../../redux/topic/actions';
+import appActions from '../../../redux/app/actions';
+import { calculateBlock } from '../../../helpers/utility';
+import { defaults } from '../../../config/app';
 
 const FormItem = Form.Item;
 

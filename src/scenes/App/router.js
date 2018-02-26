@@ -18,23 +18,23 @@ class AppRouter extends React.Component {
           path={`${url}/`}
           component={asyncComponent(() => {
             console.log('{url}/');
-            return import('../dashboard');
+            return import('../Dashboard/index');
           })}
         />
         <Route
           exact
           path={`${url}/oracle/:topicAddress/:address`}
-          component={asyncComponent(() => import('../oracle'))}
+          component={asyncComponent(() => import('../Oracle/index'))}
         />
         <Route
           exact
           path={`${url}/topic/:address`}
-          component={asyncComponent(() => import('../topic'))}
+          component={asyncComponent(() => import('../Topic/index'))}
         />
         <Route
           exact
           path={`${url}/create-topic`}
-          component={asyncComponent(() => import('../createTopic'))}
+          component={asyncComponent(() => import('../CreateTopic/index'))}
         />
       </Switch>
     );

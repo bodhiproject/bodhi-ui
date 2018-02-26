@@ -7,7 +7,7 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 
-import App from './containers/App/App';
+import App from './scenes/App/index';
 import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';

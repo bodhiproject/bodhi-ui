@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
-import appActions from '../redux/app/actions';
-import AppConfig from '../config/app';
+import appActions from '../../redux/app/actions';
+import AppConfig from '../../config/app';
 
 const MIN_BLOCK_COUNT_GAP = 3;
 

@@ -26,16 +26,16 @@ import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import CardInfo from '../components/bodhi-dls/cardInfo';
-import CardVoting from '../components/bodhi-dls/cardVoting';
-import ProgressBar from '../components/bodhi-dls/progressBar';
-import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
-import dashboardActions from '../redux/dashboard/actions';
-import topicActions from '../redux/topic/actions';
-import { decimalToBotoshi } from '../helpers/utility';
-import { Token, OracleStatus } from '../constants';
-import styles from './oracle.style';
-import CardInfoUtil from '../helpers/cardInfoUtil';
+import CardInfo from '../../components/bodhi-dls/cardInfo';
+import CardVoting from '../../components/bodhi-dls/cardVoting';
+import ProgressBar from '../../components/bodhi-dls/progressBar';
+import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
+import dashboardActions from '../../redux/dashboard/actions';
+import topicActions from '../../redux/topic/actions';
+import { decimalToBotoshi } from '../../helpers/utility';
+import { Token, OracleStatus } from '../../constants';
+import styles from './styles';
+import CardInfoUtil from '../../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;

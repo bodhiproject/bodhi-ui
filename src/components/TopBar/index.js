@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
 
 import appActions from '../../redux/app/actions';
-import TopbarWrapper from './topbar.style';
+import TopbarWrapper from './styles';
 import AppConfig from '../../config/app';
 
 const FormItem = Form.Item;

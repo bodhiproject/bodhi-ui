@@ -1,4 +1,4 @@
-const styles = theme => ({
+const styles = (theme) => ({
   predictionDetailPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,

@@ -5,12 +5,12 @@ import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
 import { withStyles } from 'material-ui/styles';
 
-import AppRouter from './AppRouter';
-import AppLoad from '../appLoad';
+import AppRouter from './router';
+import AppLoad from './load';
 import appActions from '../../redux/app/actions';
-import CornerClock from '../CornerClock/CornerClock';
-import styles from './app.style';
-import Topbar from '../Topbar/Topbar';
+import BottomBar from '../../components/BottomBar/index';
+import styles from './styles';
+import TopBar from '../../components/TopBar/index';
 
 const { toggleAll } = appActions;
 
@@ -32,11 +32,11 @@ export class App extends React.PureComponent {
           />
         </Debounce>
         <AppLoad />
-        <Topbar url={url} />
+        <TopBar url={url} />
         <div className={classes.container}>
           <AppRouter url={url} />
         </div>
-        <CornerClock />
+        <BottomBar />
       </div>
     );
   }
