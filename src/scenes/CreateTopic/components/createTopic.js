@@ -540,7 +540,6 @@ class CreateTopic extends React.Component {
           resultSettingEndTime,
         } = values;
 
-        console.log('submit button clicked');
         this.props.createTopic({
           centralizedOracle,
           name,

@@ -7,7 +7,6 @@ import Config from '../../../config/app';
 export function* createTopicRequestHandler() {
   yield takeEvery(actions.CREATE_TOPIC, function* createTopicRequest(action) {
     try {
-      console.log('createTopicRequest going');
       const tx = yield call(
         createTopic,
         Config.defaults.version,

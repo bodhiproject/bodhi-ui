@@ -13,7 +13,7 @@ class GraphMutation {
 
   build() {
     const mutation = getMutation(this.mutationName);
-    return gql`mutation ${mutation}`;
+    return `mutation ${mutation}`;
   }
 
   async execute() {
@@ -21,11 +21,11 @@ class GraphMutation {
     console.debug(mutation);
 
     const res = await client.mutate({
-      mutation,
+      mutation: gql`${mutation}`,
       variables: this.args,
       fetchPolicy: 'network-only',
     });
-    return GraphParser.getParser(this.type)(res.data[this.mutationName]);
+    return res;
   }
 }
 
