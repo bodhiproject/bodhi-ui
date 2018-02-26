@@ -7,17 +7,18 @@ import Config from '../../../config/app';
 export function* createTopicRequestHandler() {
   yield takeEvery(actions.CREATE_TOPIC, function* createTopicRequest(action) {
     try {
+      console.log('createTopicRequest going');
       const tx = yield call(
         createTopic,
         Config.defaults.version,
-        action.centralizedOracle,
-        action.name,
-        action.results,
-        action.bettingStartTime,
-        action.bettingEndTime,
-        action.resultSettingStartTime,
-        action.resultSettingEndTime,
-        action.senderAddress
+        action.params.centralizedOracle,
+        action.params.name,
+        action.params.results,
+        action.params.bettingStartTime,
+        action.params.bettingEndTime,
+        action.params.resultSettingStartTime,
+        action.params.resultSettingEndTime,
+        action.params.senderAddress
       );
 
       yield put({

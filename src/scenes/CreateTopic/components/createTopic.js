@@ -9,6 +9,7 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
+import graphqlActions from '../../../services/redux/graphql/actions';
 import topicActions from '../../../services/redux/topic/actions';
 import appActions from '../../../services/redux/app/actions';
 import { calculateBlock } from '../../../helpers/utility';
@@ -66,7 +67,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createReturn } = this.props;
+    const { createdTopic } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const labelCol = {
@@ -166,16 +167,25 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
-            {this.renderAlertBox(createReturn)}
+            {this.renderAlertBox(createdTopic)}
             <Button
               type="primary"
               htmlType="submit"
+<<<<<<< HEAD
               disabled={createReturn && createReturn.result}
             ><FormattedMessage id="create.publish" /></Button>
             <Button
               type="default"
               onClick={this.onCancel}
             >{(createReturn && createReturn.result) ? <FormattedMessage id="create.back" /> : <FormattedMessage id="create.cancel" />}</Button>
+=======
+              disabled={createdTopic && createdTopic.result}
+            >Publish</Button>
+            <Button
+              type="default"
+              onClick={this.onCancel}
+            >{(createdTopic && createdTopic.result) ? 'Back' : 'Cancel'}</Button>
+>>>>>>> Fix missing logic to hook up graphql redux
           </FormItem>
         </Form>
       </div>
@@ -193,10 +203,10 @@ class CreateTopic extends React.Component {
     return '';
   }
 
-  renderAlertBox(createReturn) {
+  renderAlertBox(createdTopic) {
     let alertElement;
-    if (createReturn) {
-      if (createReturn.result) {
+    if (createdTopic) {
+      if (createdTopic.result) {
         alertElement =
             (<Alert
               message="Success!"
@@ -204,10 +214,10 @@ class CreateTopic extends React.Component {
               type="success"
               closable={false}
             />);
-      } else if (createReturn.error) {
+      } else if (createdTopic.error) {
         alertElement = (<Alert
           message={this.props.intl.formatMessage({ id: 'create.alertfail' })}
-          description={createReturn.error}
+          description={createdTopic.error}
           type="error"
           closable={false}
         />);
@@ -530,7 +540,8 @@ class CreateTopic extends React.Component {
           resultSettingEndTime,
         } = values;
 
-        this.props.onCreateTopic({
+        console.log('submit button clicked');
+        this.props.createTopic({
           centralizedOracle,
           name,
           results,
@@ -553,8 +564,8 @@ class CreateTopic extends React.Component {
 
 CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
-  createReturn: PropTypes.object,
-  onCreateTopic: PropTypes.func,
+  createTopic: PropTypes.func,
+  createdTopic: PropTypes.object,
   onClearCreateReturn: PropTypes.func,
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
@@ -566,8 +577,8 @@ CreateTopic.propTypes = {
 };
 
 CreateTopic.defaultProps = {
-  createReturn: undefined,
-  onCreateTopic: undefined,
+  createTopic: undefined,
+  createdTopic: undefined,
   onClearCreateReturn: undefined,
   getInsightTotals: undefined,
   walletAddrs: [],
@@ -577,7 +588,7 @@ CreateTopic.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  createReturn: state.Topic.get('create_return'),
+  createdTopic: state.Topic.get('createdTopic'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   chainBlockNum: state.App.get('chainBlockNum'),
@@ -586,7 +597,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
+    createTopic: (params) => dispatch(graphqlActions.createTopic(params)),
     onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
