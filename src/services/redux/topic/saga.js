@@ -7,50 +7,6 @@ import { convertBNHexStrToQtum } from '../../../helpers/utility';
 import Routes from '../../../network/routes';
 import Config from '../../../config/app';
 
-export function* createRequestHandler() {
-  yield takeEvery(actions.CREATE, function* onCreateRequest(action) {
-    const {
-      centralizedOracle,
-      name,
-      results,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const requestOptions = {
-        method: 'POST',
-        body: JSON.stringify({
-          oracleAddress: centralizedOracle,
-          eventName: name,
-          resultNames: results,
-          bettingStartTime,
-          bettingEndTime,
-          resultSettingStartTime,
-          resultSettingEndTime,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.createTopic, requestOptions);
-
-      yield put({
-        type: actions.CREATE_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CREATE_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* betRequestHandler() {
   yield takeEvery(actions.BET, function* onBetRequest(action) {
     const {
@@ -331,7 +287,6 @@ export function* withdrawRequestHandler() {
 
 export default function* topicSaga() {
   yield all([
-    fork(createRequestHandler),
     fork(betRequestHandler),
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
