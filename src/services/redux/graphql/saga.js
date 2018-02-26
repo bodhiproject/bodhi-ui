@@ -33,7 +33,6 @@ export function* createTopicRequestHandler() {
   });
 }
 
-
 export function* betRequestHandler() {
   yield takeEvery(actions.CREATE_BET, function* betRequest(action) {
     try {

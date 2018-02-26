@@ -84,10 +84,10 @@ export function createOracle(
 export function createBetTx(version, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
-    senderAddress,
-    oracleAddress,
+    entityId: oracleAddress,
     optionIdx,
     amount,
+    senderAddress,
   };
 
   return new GraphMutation('createBet', args, TYPE.transaction).execute();

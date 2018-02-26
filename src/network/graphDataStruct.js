@@ -161,20 +161,20 @@ const MUTATIONS = {
   createBet: `
     CreateBet(
       $version: Int!,
-      $oracleAddress: String!,
+      $entityId: String!,
       $optionIdx: Int!,
       $amount: String!,
       $senderAddress: String!
     ) {
       createBet(
         version: $version,
-        oracleAddress: $oracleAddress,
+        entityId: $entityId,
         optionIdx: $optionIdx,
         amount: $amount,
         senderAddress: $senderAddress
       ) {
         version
-        oracleAddress
+        entityId
         optionIdx
         amount
         senderAddress
