@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Card, Icon } from 'antd';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
-class CornerClock extends React.PureComponent {
+class BottomBar extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -62,12 +62,12 @@ class CornerClock extends React.PureComponent {
   }
 }
 
-CornerClock.propTypes = {
+BottomBar.propTypes = {
   syncBlockNum: PropTypes.number,
   syncBlockTime: PropTypes.number,
 };
 
-CornerClock.defaultProps = {
+BottomBar.defaultProps = {
   syncBlockNum: undefined,
   syncBlockTime: undefined,
 };
@@ -78,4 +78,4 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
-export default connect(mapStateToProps)(CornerClock);
+export default connect(mapStateToProps)(BottomBar);

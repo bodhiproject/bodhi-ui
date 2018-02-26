@@ -5,16 +5,27 @@ import { Row, Col, Breadcrumb, Radio } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import Paper from 'material-ui/Paper';
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Typography from 'material-ui/Typography';
+import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
 
-import CardInfo from '../components/bodhi-dls/cardInfo';
-import CardVoting from '../components/bodhi-dls/cardVoting';
-import ProgressBar from '../components/bodhi-dls/progressBar';
-import IsoWidgetsWrapper from './Widgets/widgets-wrapper';
-import dashboardActions from '../redux/dashboard/actions';
-import topicActions from '../redux/topic/actions';
-import { decimalToBotoshi } from '../helpers/utility';
-import { Token, OracleStatus } from '../constants';
-import CardInfoUtil from '../helpers/cardInfoUtil';
+import CardInfo from '../../components/bodhi-dls/cardInfo';
+import CardVoting from '../../components/bodhi-dls/cardVoting';
+import ProgressBar from '../../components/bodhi-dls/progressBar';
+import StepperVertRight from '../../components/StepperVertRight/index';
+import PredictionOption from './components/PredictionOption/index';
+import PredictionInfo from './components/PredictionInfo/index';
+import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
+import dashboardActions from '../../redux/dashboard/actions';
+import topicActions from '../../redux/topic/actions';
+import { decimalToBotoshi } from '../../helpers/utility';
+import { Token, OracleStatus } from '../../constants';
+import styles from './styles';
+import CardInfoUtil from '../../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_RADIO_VALUE = 0;
@@ -77,7 +88,7 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { editingToggled, requestReturn } = this.props;
+    const { editingToggled, requestReturn, classes } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
@@ -142,6 +153,36 @@ class OraclePage extends React.Component {
         </Row>
       </div>
     );
+
+    /*
+    return (
+      <Paper className={classes.predictionDetailPaper}>
+        <Grid container spacing={0}>
+          <Grid item spacing={0} xs={12} md={8} className={classes.predictionDetailContainerGrid}>
+            <Typography variant="display1" className={classes.predictionDetailTitle}>
+              {oracle.name}
+            </Typography>
+            <Grid item xs={12} lg={9}>
+              <PredictionOption />
+              <PredictionOption />
+              <PredictionOption />
+              <PredictionOption />
+              <Button variant="raised" fullWidth size="large" color="primary" aria-label="add" className={classes.predictButton}>
+                Predict
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid item spacing={0} xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
+            <PredictionInfo />
+            <PredictionInfo />
+            <PredictionInfo />
+            <PredictionInfo />
+            <StepperVertRight />
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+    */
   }
 
   /**
@@ -546,6 +587,7 @@ OraclePage.propTypes = {
   ]),
   editingToggled: PropTypes.bool,
   match: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   onBet: PropTypes.func,
   onVote: PropTypes.func,
   onApprove: PropTypes.func,
@@ -609,4 +651,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OraclePage);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(OraclePage));

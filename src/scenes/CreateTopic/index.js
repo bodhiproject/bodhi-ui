@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import CreateTopic from '../components/bodhi/createTopic';
+import CreateTopic from './components/createTopic';
 
 class CreateTopicContainer extends React.Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Progress from '../uielements/progress';
+import Progress from '../Progress/index';
 
 class ProgressBar extends Component {
   constructor(props) {

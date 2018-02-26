@@ -1,10 +1,8 @@
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     background: theme.palette.background.default,
   },
   container: {
-    minHeight: '100vh',
-
     [theme.breakpoints.up('xs')]: {
       margin: theme.padding.sm.px,
     },
@@ -13,14 +11,10 @@ const styles = theme => ({
       margin: theme.padding.md.px,
     },
 
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       margin: '0 auto',
       marginTop: theme.padding.md.px,
       marginBottom: theme.padding.md.px,
-      maxWidth: (theme.breakpoints.values.md - (theme.padding.md.value * 2)),
-    },
-
-    [theme.breakpoints.up('lg')]: {
       maxWidth: (theme.breakpoints.values.lg - (theme.padding.md.value * 2)),
     },
 

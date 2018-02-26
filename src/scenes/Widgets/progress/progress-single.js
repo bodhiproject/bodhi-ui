@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Progress from '../../../components/uielements/progress';
+import Progress from '../../../components/Progress/index';
 
 export default class SingleProgressWidget extends React.PureComponent {
   render() {
