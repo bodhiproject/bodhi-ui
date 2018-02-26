@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
 import appActions from '../redux/app/actions';
 import AppConfig from '../config/app';
+import getSubscription, { channels } from '../network/graphSubscription';
 
 const MIN_BLOCK_COUNT_GAP = 3;
 
@@ -15,17 +17,15 @@ class AppLoad extends React.PureComponent {
     this.state = {
       percent: 0,
     };
+
+    this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
   }
 
   componentWillMount() {
     const { getSyncInfo } = this.props;
 
-    // Start syncInfo long polling
-    function pollSyncInfo() {
-      getSyncInfo();
-      setTimeout(pollSyncInfo, AppConfig.intervals.syncInfo);
-    }
-    pollSyncInfo();
+    getSyncInfo();
+    this.subscribeSyncInfo();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,20 +83,40 @@ class AppLoad extends React.PureComponent {
       </div>
     );
   }
+
+  subscribeSyncInfo() {
+    const { client, onSyncInfo } = this.props;
+
+    console.log('Subscribe: OnSyncInfo');
+    client.subscribe({
+      query: getSubscription(channels.ON_SYNC_INFO),
+    }).subscribe({
+      next(data) {
+        onSyncInfo(data.data.OnSyncInfo);
+      },
+      error(err) {
+        onSyncInfo({ error: err.message });
+      },
+    });
+  }
 }
 
 AppLoad.propTypes = {
+  client: PropTypes.object,
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
   getSyncInfo: PropTypes.func,
+  onSyncInfo: PropTypes.func,
   updateSyncProgress: PropTypes.func,
   toggleSyncing: PropTypes.func,
 };
 
 AppLoad.defaultProps = {
+  client: undefined,
   chainBlockNum: undefined,
   syncBlockNum: undefined,
   getSyncInfo: undefined,
+  onSyncInfo: undefined,
   updateSyncProgress: undefined,
   toggleSyncing: undefined,
 };
@@ -108,8 +128,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
   toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
+export default compose(
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps),
+)(AppLoad);
