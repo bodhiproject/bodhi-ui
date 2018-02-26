@@ -140,7 +140,6 @@ class OraclePage extends React.Component {
       </Row>
     );
 
-    /*
     return (
       <div>
         <Row style={{ width: '100%', height: '48px' }}>
@@ -154,8 +153,8 @@ class OraclePage extends React.Component {
         </Row>
       </div>
     );
-    */
 
+    /*
     return (
       <Paper className={classes.predictionDetailPaper}>
         <Grid container spacing={0}>
@@ -183,6 +182,7 @@ class OraclePage extends React.Component {
         </Grid>
       </Paper>
     );
+    */
   }
 
   /**
