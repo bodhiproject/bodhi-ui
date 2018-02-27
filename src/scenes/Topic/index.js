@@ -173,7 +173,7 @@ class TopicPage extends React.Component {
     const senderAddress = this.getCurrentSenderAddress();
     const contractAddress = this.state.topic.address;
 
-    this.props.onWithdraw(contractAddress, senderAddress);
+    this.props.createWithdrawTx(contractAddress, senderAddress);
   }
 
   /** Return selected address on Topbar as sender * */
@@ -249,6 +249,7 @@ TopicPage.propTypes = {
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
+  createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
@@ -258,7 +259,6 @@ TopicPage.propTypes = {
   onCalculateWinnings: PropTypes.func,
   calculateBotWinningsReturn: PropTypes.number,
   calculateQtumWinningsReturn: PropTypes.number,
-  onWithdraw: PropTypes.func.isRequired,
   onClearRequestReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
@@ -296,7 +296,8 @@ function mapDispatchToProps(dispatch) {
     getTopics: () => dispatch(dashboardActions.getTopics()),
     onCalculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
-    onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
+    createWithdrawTx: (topicAddress, senderAddress) =>
+      dispatch(topicActions.createWithdrawTx(topicAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };

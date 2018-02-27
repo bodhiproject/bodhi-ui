@@ -64,16 +64,6 @@ const topicActions = {
       senderAddress,
     },
   }),
-
-  WITHDRAW: 'WITHDRAW',
-  WITHDRAW_RETURN: 'WITHDRAW_RETURN',
-  onWithdraw: (contractAddress, senderAddress) => ({
-    type: topicActions.WITHDRAW,
-    payload: {
-      contractAddress,
-      senderAddress,
-    },
-  }),
 };
 
 export default topicActions;

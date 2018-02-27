@@ -114,43 +114,10 @@ export function* calculateWinningsRequestHandler() {
   });
 }
 
-export function* withdrawRequestHandler() {
-  yield takeEvery(actions.WITHDRAW, function* onWithdrawResultRequest(action) {
-    const {
-      contractAddress,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.withdraw, options);
-
-      yield put({
-        type: actions.WITHDRAW_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.WITHDRAW_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export default function* topicSaga() {
   yield all([
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
     fork(calculateWinningsRequestHandler),
-    fork(withdrawRequestHandler),
   ]);
 }

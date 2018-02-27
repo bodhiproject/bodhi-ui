@@ -1,7 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
-import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx }
+import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../../network/graphMutation';
 import Config from '../../../config/app';
 import { decimalToBotoshi } from '../../../helpers/utility';
@@ -146,6 +146,30 @@ export function* createFinalizeResultTxHandler() {
   });
 }
 
+// Send withdraw mutation
+export function* createWithdrawTxHandler() {
+  yield takeEvery(actions.CREATE_WITHDRAW_TX, function* createWithdrawTxRequest(action) {
+    try {
+      const tx = yield call(
+        createWithdrawTx,
+        Config.defaults.version,
+        action.params.topicAddress,
+        action.params.senderAddress,
+      );
+
+      yield put({
+        type: actions.CREATE_WITHDRAW_TX_RETURN,
+        value: tx,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.CREATE_WITHDRAW_TX_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
 export default function* graphqlSaga() {
   yield all([
     fork(createTopicTxHandler),
@@ -153,5 +177,6 @@ export default function* graphqlSaga() {
     fork(createSetResultTxHandler),
     fork(createVoteTxHandler),
     fork(createFinalizeResultTxHandler),
+    fork(createWithdrawTxHandler),
   ]);
 }

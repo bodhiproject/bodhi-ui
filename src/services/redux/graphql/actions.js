@@ -71,6 +71,16 @@ const graphqlActions = {
       senderAddress,
     },
   }),
+
+  CREATE_WITHDRAW_TX: 'CREATE_WITHDRAW_TX',
+  CREATE_WITHDRAW_TX_RETURN: 'CREATE_WITHDRAW_TX_RETURN',
+  createWithdrawTx: (topicAddress, senderAddress) => ({
+    type: graphqlActions.CREATE_WITHDRAW_TX,
+    params: {
+      topicAddress,
+      senderAddress,
+    },
+  }),
 };
 
 export default graphqlActions;
