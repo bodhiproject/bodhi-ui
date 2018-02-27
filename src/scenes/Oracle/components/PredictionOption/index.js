@@ -46,8 +46,6 @@ class PredictionOption extends React.PureComponent {
       showAmountInput,
     } = this.props;
 
-    console.log(skipExpansion);
-
     return (
       <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) && !skipExpansion}>
         <div
@@ -158,7 +156,7 @@ class PredictionOption extends React.PureComponent {
       onAmountChange,
     } = this.props;
 
-    onAmountChange(event.target.value);
+    onAmountChange(parseFloat(event.target.value));
   }
 
   handleAddrChange(event) {
