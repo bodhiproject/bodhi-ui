@@ -1,9 +1,27 @@
 const graphqlActions = {
   CREATE_TOPIC: 'CREATE_TOPIC',
   CREATE_TOPIC_RETURN: 'CREATE_TOPIC_RETURN',
-  createTopic: (params) => ({
+  createTopic: (
+    name,
+    results,
+    centralizedOracle,
+    bettingStartTime,
+    bettingEndTime,
+    resultSettingStartTime,
+    resultSettingEndTime,
+    senderAddress,
+  ) => ({
     type: graphqlActions.CREATE_TOPIC,
-    params,
+    params: {
+      name,
+      results,
+      centralizedOracle,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress,
+    },
   }),
 
   CREATE_BET: 'CREATE_BET',

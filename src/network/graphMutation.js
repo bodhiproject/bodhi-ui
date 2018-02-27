@@ -31,9 +31,9 @@ class GraphMutation {
 
 export function createTopic(
   version,
-  centralizedOracle,
   name,
   results,
+  centralizedOracle,
   bettingStartTime,
   bettingEndTime,
   resultSettingStartTime,

@@ -12,9 +12,9 @@ export function* createTopicRequestHandler() {
       const tx = yield call(
         createTopic,
         Config.defaults.version,
-        action.params.centralizedOracle,
         action.params.name,
         action.params.results,
+        action.params.centralizedOracle,
         action.params.bettingStartTime,
         action.params.bettingEndTime,
         action.params.resultSettingStartTime,

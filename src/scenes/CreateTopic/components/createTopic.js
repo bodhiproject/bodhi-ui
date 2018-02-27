@@ -529,27 +529,26 @@ class CreateTopic extends React.Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // Maps form variables to saga request variables
         const {
-          centralizedOracle,
           name,
           results,
+          centralizedOracle,
           bettingStartTime,
           bettingEndTime,
           resultSettingStartTime,
           resultSettingEndTime,
         } = values;
 
-        this.props.createTopic({
-          centralizedOracle,
+        this.props.createTopic(
           name,
           results,
-          bettingStartTime: bettingStartTime.utc().unix().toString(),
-          bettingEndTime: bettingEndTime.utc().unix().toString(),
-          resultSettingStartTime: resultSettingStartTime.utc().unix().toString(),
-          resultSettingEndTime: resultSettingEndTime.utc().unix().toString(),
-          senderAddress: this.getCurrentSenderAddress(),
-        });
+          centralizedOracle,
+          bettingStartTime.utc().unix().toString(),
+          bettingEndTime.utc().unix().toString(),
+          resultSettingStartTime.utc().unix().toString(),
+          resultSettingEndTime.utc().unix().toString(),
+          this.getCurrentSenderAddress()
+        );
       }
     });
   }
@@ -596,7 +595,25 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    createTopic: (params) => dispatch(graphqlActions.createTopic(params)),
+    createTopic: (
+      name,
+      results,
+      centralizedOracle,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress
+    ) => dispatch(graphqlActions.createTopic(
+      name,
+      results,
+      centralizedOracle,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress
+    )),
     onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
