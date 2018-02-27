@@ -47,8 +47,6 @@ class OraclePage extends React.Component {
       currentOptionIdx: -1,
     };
 
-    this.getRadioButtonViews = this.getRadioButtonViews.bind(this);
-    this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
     this.constructCardInfo = this.constructCardInfo.bind(this);
@@ -87,24 +85,19 @@ class OraclePage extends React.Component {
 
   componentWillUnmount() {
     this.props.onClearRequestReturn();
-    this.props.clearEditingToggled();
   }
 
   render() {
-    const { editingToggled, requestReturn, classes } = this.props;
+    const { requestReturn, classes } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
-      // Don't render anything if page is loading. In future we could make a loading animation
+      // Don't render anything if page is loading.
+      // In future we could make a loading animation
       return <div></div>;
     }
 
-    const totalBalance = _.sum(oracle.amounts);
-    const { token } = oracle;
-
-    const betBalance = OraclePage.getBetOrVoteArray(oracle);
-    const breadcrumbLabel = config && config.breadcrumbLabel;
-
+    /*
     const oracleElement = (
       <Row gutter={28} justify="center">
 
@@ -142,6 +135,7 @@ class OraclePage extends React.Component {
           : null}
       </Row>
     );
+    */
 
     const predictionOptions = OraclePage.getBetOrVoteArray(oracle);
 
@@ -273,12 +267,6 @@ class OraclePage extends React.Component {
         value: `${optionAmount} ${oracle.token}`,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
       };
-    });
-  }
-
-  onRadioGroupChange(evt) {
-    this.setState({
-      currentOptionIdx: evt.target.value,
     });
   }
 
@@ -560,43 +548,6 @@ class OraclePage extends React.Component {
 
     onFinalizeResult(oracle.address, this.getCurrentWalletAddr());
   }
-
-  getRadioButtonViews(valueArray) {
-    return (
-      <RadioGroup
-        onChange={this.onRadioGroupChange}
-        value={this.state.currentOptionIdx}
-        size="large"
-        defaultValue={DEFAULT_RADIO_VALUE}
-      >
-        {valueArray.map((entry, index) => (
-          <Radio value={index + 1} key={`option ${index}`}>
-            <ProgressBar
-              label={entry.name}
-              value={entry.value}
-              percent={entry.percent}
-              barHeight={12}
-              info
-            />
-          </Radio>))
-        }
-      </RadioGroup>
-    );
-  }
-
-  getProgressBarViews(valueArray) {
-    return valueArray.map((entry, index) => (
-      <ProgressBar
-        key={`option ${index}`}
-        label={entry.name}
-        value={entry.value}
-        percent={entry.percent}
-        barHeight={12}
-        info
-        marginBottom={18}
-      />
-    ));
-  }
 }
 
 OraclePage.propTypes = {
@@ -606,7 +557,6 @@ OraclePage.propTypes = {
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
-  editingToggled: PropTypes.bool,
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   onBet: PropTypes.func,
@@ -617,7 +567,6 @@ OraclePage.propTypes = {
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
-  clearEditingToggled: PropTypes.func,
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
@@ -628,7 +577,6 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesSuccess: [],
-  editingToggled: false,
   onBet: undefined,
   onVote: undefined,
   onApprove: undefined,
@@ -638,7 +586,6 @@ OraclePage.defaultProps = {
   onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
   requestReturn: undefined,
-  clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
@@ -649,7 +596,6 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
@@ -670,7 +616,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(topicActions.onSetResult(contractAddress, resultIndex, consensusThreshold, senderAddress)),
     onFinalizeResult: (contractAddress, senderAddress) =>
       dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
-    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
     clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
   };
 }
