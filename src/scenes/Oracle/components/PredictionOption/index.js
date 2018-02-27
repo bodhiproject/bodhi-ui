@@ -6,17 +6,16 @@ import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelActions,
 } from 'material-ui/ExpansionPanel';
-import Typography from 'material-ui/Typography';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import AttachMoneyIcon from 'material-ui-icons/AttachMoney';
 import AccountBalanceWalletIcon from 'material-ui-icons/AccountBalanceWallet';
 import Select from 'material-ui/Select';
+import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
-import appActions from '../../../../redux/app/actions';
 import styles from './styles';
 
 class PredictionOption extends React.PureComponent {

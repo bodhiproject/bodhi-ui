@@ -7,15 +7,13 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
+import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import CardInfo from '../../components/bodhi-dls/cardInfo';
-import CardVoting from '../../components/bodhi-dls/cardVoting';
-import ProgressBar from '../../components/bodhi-dls/progressBar';
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
@@ -49,7 +47,7 @@ class OraclePage extends React.Component {
 
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
-    this.constructCardInfo = this.constructCardInfo.bind(this);
+    this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
     this.startCheckAllowance = this.startCheckAllowance.bind(this);
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
@@ -77,7 +75,7 @@ class OraclePage extends React.Component {
       this.executeOraclesRequest();
     }
 
-    this.constructCardInfo(getOraclesSuccess, syncBlockTime);
+    this.constructOracleAndConfig(getOraclesSuccess, syncBlockTime);
 
     // Check allowance return; do nothing if undefined
     this.onAllowanceReturn(allowanceReturn);
@@ -101,30 +99,30 @@ class OraclePage extends React.Component {
     const oracleElement = (
       <Row gutter={28} justify="center">
 
-        {config.cardInfo ?
+        {config.predictionInfo ?
           <Col xl={12} lg={12}>
             <IsoWidgetsWrapper padding="32px" >
               <CardInfo
                 title={oracle.name}
-                config={config.cardInfo}
+                config={config.predictionInfo}
               >
               </CardInfo>
             </IsoWidgetsWrapper>
           </Col> : null}
 
-        {config.cardAction ?
+        {config.predictionAction ?
           <Col xl={12} lg={12}>
             <IsoWidgetsWrapper padding="32px">
               <CardVoting
                 amount={totalBalance}
-                config={config.cardAction}
+                config={config.predictionAction}
                 token={token}
                 voteBalance={betBalance}
                 onSubmit={this.handleConfirmClick}
                 radioIndex={this.state.currentOptionIdx}
                 result={requestReturn}
                 isApproving={this.state.isApproving}
-                skipToggle={config.name === 'FINALIZING'}
+                skipExpansion={config.name === 'FINALIZING'}
               >
                 {editingToggled
                   ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle))
@@ -170,16 +168,21 @@ class OraclePage extends React.Component {
                 size="large"
                 color="primary"
                 aria-label="add"
+                disabled={config.predictionAction.btnDisabled || this.state.currentOptionIdx === -1}
                 onClick={this.handleConfirmClick}
                 className={classes.predictButton}
               >
-                Predict
+                {
+                  this.state.isApproving ?
+                    <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                    config.predictionAction.btnText
+                }
               </Button>
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
             <PredictionInfo oracle={oracle} className={classes.predictionDetailInfo} />
-            <StepperVertRight steps={config.cardInfo.steps} />
+            <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
       </Paper>
@@ -276,7 +279,7 @@ class OraclePage extends React.Component {
     ]);
   }
 
-  constructCardInfo(getOraclesSuccess, syncBlockTime) {
+  constructOracleAndConfig(getOraclesSuccess, syncBlockTime) {
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
@@ -290,27 +293,22 @@ class OraclePage extends React.Component {
         config = {
           name: 'BETTING',
           breadcrumbLabel: 'Betting',
-          cardInfo: {
+          predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
             ],
           },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Bet',
-            },
-            afterToggle: {
-              showAmountInput: true,
-              btnText: 'Confirm',
-            },
+          predictionAction: {
+            skipExpansion: false,
+            btnText: 'Bet',
+            showAmountInput: true,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: 'Setting',
-          cardInfo: {
+          predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
               {
@@ -330,22 +328,17 @@ class OraclePage extends React.Component {
               },
             ],
           },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Set Result',
-              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
-            },
-            afterToggle: {
-              showAmountInput: false,
-              btnText: 'Confirm',
-            },
+          predictionAction: {
+            skipExpansion: false,
+            btnText: 'Set Result',
+            btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
+            showAmountInput: false,
           },
         };
 
         // Add a message to CardInfo to warn that current block has passed set end block
         if (syncBlockTime > oracle.resultSetEndTime) {
-          config.cardInfo.messages.push({
+          config.predictionInfo.messages.push({
             text: 'Current block time has passed the Result Setting End Time.',
             type: 'warn',
           });
@@ -353,12 +346,12 @@ class OraclePage extends React.Component {
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
         if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
-          config.cardInfo.messages.push({
+          config.predictionInfo.messages.push({
             text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
             type: 'warn',
           });
         } else if (status === OracleStatus.OpenResultSet) {
-          config.cardInfo.messages.push({
+          config.predictionInfo.messages.push({
             text: 'The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.',
             type: 'warn',
           });
@@ -367,7 +360,7 @@ class OraclePage extends React.Component {
         config = {
           name: 'VOTING',
           breadcrumbLabel: 'Voting',
-          cardInfo: {
+          predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
@@ -381,36 +374,30 @@ class OraclePage extends React.Component {
               },
             ],
           },
-          cardAction: {
-            skipToggle: false,
-            beforeToggle: {
-              btnText: 'Vote',
-            },
-            afterToggle: {
-              showAmountInput: true,
-              btnText: 'Confirm',
-            },
+          predictionAction: {
+            skipExpansion: false,
+            btnText: 'Vote',
+            showAmountInput: true,
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
-          cardInfo: {
+          predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
             ],
           },
-          cardAction: {
-            skipToggle: true,
-            afterToggle: {
-              btnText: 'Finalize',
-            },
+          predictionAction: {
+            skipExpansion: true,
+            btnText: 'Finalize',
+            showAmountInput: false,
           },
         };
 
         if (syncBlockTime > oracle.endTime) {
-          config.cardInfo.messages.push({
+          config.predictionInfo.messages.push({
             text: `Current block time has passed the Voting End Time. 
               The previous result needs to be finalized in order to withdraw.`,
             type: 'default',
@@ -564,10 +551,10 @@ OraclePage.propTypes = {
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
   allowanceReturn: PropTypes.number,
+  clearAllowanceReturn: PropTypes.func,
   onClearRequestReturn: PropTypes.func,
   onSetResult: PropTypes.func,
   onFinalizeResult: PropTypes.func,
-  clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
@@ -604,9 +591,9 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
+    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onBet: (contractAddress, index, amount, senderAddress) =>
       dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
     onApprove: (contractAddress, spender, value, senderAddress) =>
