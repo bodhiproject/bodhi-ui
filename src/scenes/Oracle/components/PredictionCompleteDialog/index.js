@@ -9,21 +9,23 @@ import Dialog, {
 
 class PredictionCompleteDialog extends React.PureComponent {
   render() {
-    const { requestReturn } = this.props;
+    const { txReturn } = this.props;
 
     return (
       <Dialog
-        open={Boolean(requestReturn)}
+        open={Boolean(txReturn)}
         onClose={this.handleAlertClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{requestReturn && requestReturn.result ? 'Success!' : 'Oops, something went wrong'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {txReturn && txReturn.txid ? 'Success!' : 'Oops, something went wrong'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {requestReturn && requestReturn.result ?
-              'The transaction is broadcasted to blockchain. You can view details at https://testnet.qtum.org/tx/'.concat(requestReturn && requestReturn.result.txid).concat('!') :
-              requestReturn && requestReturn.error
+            {txReturn && txReturn.txid
+              ? `Transaction sent. Waiting for confirmations.\nhttps://testnet.qtum.org/tx/${txReturn.txid}`
+              : txReturn && txReturn.error
             }
           </DialogContentText>
         </DialogContent>
@@ -42,11 +44,11 @@ class PredictionCompleteDialog extends React.PureComponent {
 }
 
 PredictionCompleteDialog.propTypes = {
-  requestReturn: PropTypes.object,
+  txReturn: PropTypes.object,
 };
 
 PredictionCompleteDialog.defaultProps = {
-  requestReturn: undefined,
+  txReturn: undefined,
 };
 
 export default PredictionCompleteDialog;

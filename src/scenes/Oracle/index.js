@@ -142,7 +142,7 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <PredictionCompleteDialog requestReturn={this.props.requestReturn} />
+        <PredictionCompleteDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
