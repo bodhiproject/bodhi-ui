@@ -60,7 +60,7 @@ class PredictionOption extends React.PureComponent {
           <ExpansionPanel expanded={optionIdx === currentOptionIdx && !skipExpansion} onChange={this.handleExpansionChange}>
             <ExpansionPanelSummary>
               <div className={classes.predictionOptionWrapper}>
-                <div className={classes.predictionOptionNum}>{optionIdx}</div>
+                <div className={classes.predictionOptionNum}>{optionIdx + 1}</div>
                 <Typography variant="title">
                   {name}
                 </Typography>
