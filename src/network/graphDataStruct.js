@@ -184,6 +184,7 @@ const MUTATIONS = {
   createVote: `
     CreateVote(
       $version: Int!,
+      $topicAddress: String!,
       $oracleAddress: String!,
       $optionIdx: Int!,
       $amount: String!,
@@ -191,12 +192,18 @@ const MUTATIONS = {
     ) {
       createVote(
         version: $version,
+        topicAddress: $topicAddress,
         oracleAddress: $oracleAddress,
         optionIdx: $optionIdx,
         amount: $amount,
         senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
+        type
+        status
+        topicAddress
         oracleAddress
         optionIdx
         amount
