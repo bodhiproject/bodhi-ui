@@ -1,8 +1,6 @@
 const styles = (theme) => ({
   root: {
     background: theme.palette.background.default,
-    width: '100vw',
-    overflowX: 'hidden',
   },
   container: {
     [theme.breakpoints.up('xs')]: {
