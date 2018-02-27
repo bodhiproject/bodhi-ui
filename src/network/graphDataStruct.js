@@ -71,6 +71,7 @@ const TYPE_DEF = {
     blockNum
     gasUsed
     createdTime
+    version
     type
     status
     senderAddress
@@ -135,7 +136,12 @@ const MUTATIONS = {
         amount: $amount,
         senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
+        type
+        status
+        topicAddress
         oracleAddress
         optionIdx
         amount

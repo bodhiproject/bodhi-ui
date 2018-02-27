@@ -42,10 +42,7 @@ class TopicPage extends React.Component {
       calculateBotWinningsReturn,
       calculateQtumWinningsReturn,
       syncBlockTime,
-      txReturn,
     } = nextProps;
-
-    console.log(txReturn);
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
@@ -286,7 +283,7 @@ TopicPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  txReturn: state.Topic.get('txReturn'),
+  txReturn: state.Graphql.get('txReturn'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),

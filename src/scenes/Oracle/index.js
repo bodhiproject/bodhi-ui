@@ -434,7 +434,7 @@ const mapStateToProps = (state) => ({
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   syncBlockTime: state.App.get('syncBlockTime'),
-  txReturn: state.Topic.get('txReturn'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
