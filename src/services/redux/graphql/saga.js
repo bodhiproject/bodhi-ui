@@ -48,7 +48,6 @@ export function* createBetTxHandler() {
         action.params.amount,
         action.params.senderAddress,
       );
-      console.log(tx);
 
       yield put({
         type: actions.CREATE_BET_TX_RETURN,

@@ -251,7 +251,6 @@ TopicPage.propTypes = {
     PropTypes.bool, // No result
   ]),
   createWithdrawTx: PropTypes.func.isRequired,
-  txReturn: PropTypes.object,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
@@ -264,12 +263,12 @@ TopicPage.propTypes = {
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
+  txReturn: PropTypes.object,
 };
 
 TopicPage.defaultProps = {
   getTopics: undefined,
   getTopicsSuccess: undefined,
-  txReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -279,17 +278,18 @@ TopicPage.defaultProps = {
   onCalculateWinnings: undefined,
   calculateBotWinningsReturn: undefined,
   calculateQtumWinningsReturn: undefined,
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  txReturn: state.Graphql.get('txReturn'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

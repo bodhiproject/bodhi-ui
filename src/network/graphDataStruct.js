@@ -167,11 +167,15 @@ const MUTATIONS = {
         amount: $amount,
         senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
+        type
+        status
         topicAddress
         oracleAddress
-        amount
         optionIdx
+        amount
         senderAddress
       }
     }
