@@ -16,7 +16,6 @@ import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
 const defaultidx = localStorage.getItem('localindex') || 0;
-console.log(localStorage.getItem('localindex'));
 const locales = [AppLocale.en, AppLocale.zh];
 let currentAppLocale;
 class AppProvider extends React.Component {
