@@ -53,4 +53,7 @@ class AppProvider extends React.Component {
   }
 }
 
+// AppProvider.propTypes = {
+//   handler: PropTypes.func.isRequired,
+// };
 export default AppProvider;
