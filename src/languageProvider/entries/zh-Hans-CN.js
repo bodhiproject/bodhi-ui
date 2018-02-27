@@ -92,6 +92,7 @@ const ZhLan = {
     'str.RAISE': '筹集到',
     'str.end': '已结束',
     'str.outcome': '结果',
+    'language.select': 'English',
 
   },
   antd: antdZh,

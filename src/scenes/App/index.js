@@ -31,7 +31,7 @@ export class App extends React.PureComponent {
           />
         </Debounce>
         <AppLoad />
-        <TopBar url={url} />
+        <TopBar url={url} handler={this.props.handler} />
         <div className={classes.container}>
           <AppRouter url={url} />
         </div>
@@ -45,6 +45,7 @@ App.propTypes = {
   toggleAll: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  handler: PropTypes.func.isRequired,
 };
 
 export default connect((state) => ({ auth: state.Auth }), { toggleAll })(withStyles(styles)(App));

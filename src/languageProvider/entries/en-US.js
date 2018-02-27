@@ -98,6 +98,8 @@ const EnLang = {
     'str.RAISE': 'RAISED',
     'str.end': 'Ended',
     'str.outcome': 'OUTCOMES',
+    'language.select': '中文',
+
   },
   antd: antdEn,
   locale: 'en-US',

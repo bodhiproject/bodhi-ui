@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Card, Icon } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 class BottomBar extends React.PureComponent {
@@ -79,4 +79,4 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
-export default connect(mapStateToProps)(BottomBar);
+export default injectIntl(connect(mapStateToProps)(BottomBar));

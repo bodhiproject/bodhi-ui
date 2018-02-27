@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Layout, Menu, Dropdown, Icon, message, Button, Modal, Form, Input, Row, Col, Tag } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './styles';
@@ -204,6 +204,7 @@ class Topbar extends React.PureComponent {
                   <li><Link to="/" ><FormattedMessage id="topbar.events" /></Link></li>
                   <li><Link to="/create-topic" ><FormattedMessage id="topbar.create" /></Link></li>
                   <li>{walletAddrsEle}</li>
+                  <li><Button onClick={this.props.handler}><FormattedMessage id="language.select" /></Button></li>
                 </ul>
               </div>
             </div>
@@ -284,6 +285,7 @@ Topbar.propTypes = {
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
   syncBlockNum: PropTypes.number,
+  handler: PropTypes.func,
 };
 
 Topbar.defaultProps = {
@@ -294,6 +296,7 @@ Topbar.defaultProps = {
   listUnspent: undefined,
   getBotBalance: undefined,
   syncBlockNum: undefined,
+  handler: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -310,4 +313,4 @@ const mapDispatchToProps = (dispatch) => ({
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Topbar);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Topbar));
