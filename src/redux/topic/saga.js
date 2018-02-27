@@ -2,8 +2,6 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { createTopic, createOracle, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx,
-  createWithdrawTx } from '../../network/graphMutation';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 
 import Routes from '../../network/routes';
@@ -38,37 +36,11 @@ export function* createRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.createTopic, requestOptions);
-
-      // Transaction mutations
-      const topicMutation = yield call(
-        createTopic,
-        Config.defaults.version,
-        centralizedOracle,
-        name,
-        results,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
-        senderAddress
-      );
-      const oracleMutation = yield call(
-        createOracle,
-        Config.defaults.version,
-        centralizedOracle,
-        name,
-        results,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
-        senderAddress
-      );
+      const result = yield call(request, Routes.createTopic, requestOptions);
 
       yield put({
         type: actions.CREATE_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -100,14 +72,11 @@ export function* betRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.bet, options);
-
-      // Transaction mutation
-      const mutation = yield call(createBetTx, Config.defaults.version, contractAddress, index, amount, senderAddress);
+      const result = yield call(request, Routes.bet, options);
 
       yield put({
         type: actions.BET_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -138,11 +107,11 @@ export function* approveRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.approve, options);
+      const result = yield call(request, Routes.approve, options);
 
       yield put({
         type: actions.APPROVE_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -207,21 +176,11 @@ export function* setResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.setResult, options);
-
-      // Transaction mutation
-      const mutation = yield call(
-        createSetResultTx,
-        Config.defaults.version,
-        contractAddress,
-        consensusThreshold,
-        resultIndex,
-        senderAddress
-      );
+      const result = yield call(request, Routes.setResult, options);
 
       yield put({
         type: actions.SET_RESULT_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -253,21 +212,11 @@ export function* voteRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.vote, options);
-
-      // Transaction mutation
-      const mutation = yield call(
-        createVoteTx,
-        Config.defaults.version,
-        contractAddress,
-        resultIndex,
-        botAmount,
-        senderAddress
-      );
+      const result = yield call(request, Routes.vote, options);
 
       yield put({
         type: actions.VOTE_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -295,14 +244,11 @@ export function* finalizeResultRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.finalizeResult, options);
-
-      // Transaction mutation
-      const mutation = yield call(createFinalizeResultTx, Config.defaults.version, contractAddress, senderAddress);
+      const result = yield call(request, Routes.finalizeResult, options);
 
       yield put({
         type: actions.FINALIZE_RESULT_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
@@ -368,14 +314,11 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const tx = yield call(request, Routes.withdraw, options);
-
-      // Transaction mutation
-      const mutation = yield call(createWithdrawTx, Config.defaults.version, contractAddress, senderAddress);
+      const result = yield call(request, Routes.withdraw, options);
 
       yield put({
         type: actions.WITHDRAW_RETURN,
-        value: { tx },
+        value: { result },
       });
     } catch (error) {
       yield put({
