@@ -7,13 +7,13 @@ import Dialog, {
   DialogTitle,
 } from 'material-ui/Dialog';
 
-class PredictionAlert extends React.PureComponent {
+class PredictionCompleteDialog extends React.PureComponent {
   render() {
     const { requestReturn } = this.props;
 
     return (
       <Dialog
-        open={requestReturn}
+        open={Boolean(requestReturn)}
         onClose={this.handleAlertClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -41,8 +41,12 @@ class PredictionAlert extends React.PureComponent {
   }
 }
 
-PredictionAlert.propTypes = {
-  requestReturn: PropTypes.object.isRequired,
+PredictionCompleteDialog.propTypes = {
+  requestReturn: PropTypes.object,
 };
 
-export default PredictionAlert;
+PredictionCompleteDialog.defaultProps = {
+  requestReturn: undefined,
+};
+
+export default PredictionCompleteDialog;

@@ -2,13 +2,11 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
-import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
@@ -16,7 +14,7 @@ import classNames from 'classnames';
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
-import PredictionAlert from './components/PredictionAlert/index';
+import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
 import dashboardActions from '../../redux/dashboard/actions';
 import topicActions from '../../redux/topic/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
@@ -104,6 +102,7 @@ class OraclePage extends React.Component {
             <Grid item xs={12} lg={9}>
               {predictionOptions.map((item, index) => (
                 <PredictionOption
+                  key={index}
                   isLast={index === predictionOptions.length - 1}
                   currentOptionIdx={this.state.currentOptionIdx}
                   optionIdx={index}
@@ -148,7 +147,7 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <PredictionAlert requestReturn={this.props.requestReturn} />
+        <PredictionCompleteDialog requestReturn={this.props.requestReturn} />
       </Paper>
     );
   }
@@ -203,7 +202,7 @@ class OraclePage extends React.Component {
   }
 
   getCurrentWalletAddr() {
-    return this.props.walletAddrs[this.state.currentWalletIdx];
+    return this.props.walletAddrs[this.state.currentWalletIdx].address;
   }
 
   /**
@@ -472,7 +471,7 @@ class OraclePage extends React.Component {
   bet(amount) {
     const { onBet } = this.props;
     const { oracle, currentOptionIdx } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     onBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
@@ -480,7 +479,7 @@ class OraclePage extends React.Component {
   setResult() {
     const { onSetResult } = this.props;
     const { oracle, currentOptionIdx } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, this.getCurrentWalletAddr());
   }
@@ -488,7 +487,7 @@ class OraclePage extends React.Component {
   vote(amount) {
     const { onVote } = this.props;
     const { oracle, currentOptionIdx } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), this.getCurrentWalletAddr());
   }

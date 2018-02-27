@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpansionPanel, {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  ExpansionPanelActions,
 } from 'material-ui/ExpansionPanel';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import AttachMoneyIcon from 'material-ui-icons/AttachMoney';
 import AccountBalanceWalletIcon from 'material-ui-icons/AccountBalanceWallet';
@@ -134,7 +132,7 @@ class PredictionOption extends React.PureComponent {
             }}
           >
             {walletAddrs.map((item, index) => (
-              <option value={index}>{item.address}</option>
+              <option key={item.address} value={index}>{item.address}</option>
             ))}
           </Select>
         </FormControl>
@@ -176,7 +174,7 @@ PredictionOption.propTypes = {
   name: PropTypes.string.isRequired,
   amount: PropTypes.string.isRequired,
   percent: PropTypes.number.isRequired,
-  voteAmount: PropTypes.number.isRequired,
+  voteAmount: PropTypes.number,
   token: PropTypes.string.isRequired,
   onOptionChange: PropTypes.func.isRequired,
   onAmountChange: PropTypes.func.isRequired,
@@ -185,6 +183,10 @@ PredictionOption.propTypes = {
   currentWalletIdx: PropTypes.number.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
+};
+
+PredictionOption.defaultProps = {
+  voteAmount: 0,
 };
 
 export default withStyles(styles, { withTheme: true })(PredictionOption);

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import moment from 'moment';
@@ -14,7 +15,7 @@ class PredictionInfo extends React.PureComponent {
       <div className={classes.predictionInfoWrapper}>
         {this.renderInfoBlock(
           'ENDING DATE',
-          moment.unix(oracle.endTime).format('MM/DD/YYYY hh:mmA'),
+          moment.unix(oracle.endTime).format('M/D/YYYY hh:mmA'),
           this.getEndingCountDown()
         )}
         {this.renderInfoBlock('FUNDING', this.getTotalFundWithToken())}
@@ -47,29 +48,24 @@ class PredictionInfo extends React.PureComponent {
   getTotalFundWithToken() {
     const { oracle } = this.props;
 
-    let totalAmount = 0;
-    for (let i = 0; i < oracle.amounts.length; i++) {
-      totalAmount += oracle.amounts[i];
-    }
+    const totalAmount = _.sum(oracle.amounts);
 
-    return parseFloat(totalAmount.toFixed(5)).toString().concat(' ').concat(oracle.token);
+    return `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`;
   }
 
   getEndingCountDown() {
     const { oracle } = this.props;
 
-    const nowunix = Math.round(new Date().getTime() / 1000);
+    const nowunix = moment().unix();
     const unixdiff = oracle.endTime - nowunix;
 
-    if (nowunix > oracle.endTime) {
+    if (unixdiff < 0) {
       return 'ENDED';
     }
 
-    const daydiff = Math.floor(unixdiff / (24 * 60 * 60)).toString();
-    const hourdiff = Math.floor((unixdiff - (daydiff * 24 * 60 * 60)) / (60 * 60)).toString();
-    const minutediff = Math.floor((unixdiff - (daydiff * 24 * 60 * 60) - (hourdiff * 60 * 60)) / 60).toString();
+    const dur = moment.duration(unixdiff * 1000);
 
-    return daydiff.concat('d ').concat(hourdiff).concat('h ').concat(minutediff).concat('m Left');
+    return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left.`;
   }
 }
 

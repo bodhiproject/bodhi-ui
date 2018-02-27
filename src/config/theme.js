@@ -148,6 +148,11 @@ const bodhiTheme = createMuiTheme({
         minHeight: '40px',
       },
     },
+    MuiDialogContentText: {
+      root: {
+        wordWrap: 'break-word',
+      },
+    },
   },
   /* additional variables */
   padding: {
