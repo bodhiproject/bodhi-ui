@@ -67,21 +67,19 @@ const TYPE_DEF = {
   `,
 
   Transaction: `
-    version
-    type
     txid
-    txStatus
+    blockNum
+    gasUsed
+    createdTime
+    type
+    status
     senderAddress
     senderQAddress
-    entityId
+    topicAddress
+    oracleAddress
     optionIdx
     token
     amount
-    gasUsed
-    blockNum
-    blockTime
-    createTime
-    createBlockNum
   `,
 };
 
