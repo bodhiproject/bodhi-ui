@@ -18,6 +18,9 @@ export default function graphqlReducer(state = initState, action) {
       console.log('txReturn', action.value);
       return state.set('txReturn', action.value);
     }
+    case actions.CLEAR_TX_RETURN: {
+      return state.set('txReturn', undefined);
+    }
     default: {
       return state;
     }

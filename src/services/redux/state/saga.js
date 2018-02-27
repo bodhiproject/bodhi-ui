@@ -45,7 +45,7 @@ export function* calculateWinningsRequestHandler() {
   });
 }
 
-export default function* topicSaga() {
+export default function* stateSaga() {
   yield all([
     fork(calculateWinningsRequestHandler),
   ]);

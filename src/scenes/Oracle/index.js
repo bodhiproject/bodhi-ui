@@ -18,7 +18,7 @@ import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
 import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
 import dashboardActions from '../../services/redux/dashboard/actions';
-import topicActions from '../../services/redux/topic/actions';
+import stateActions from '../../services/redux/state/actions';
 import graphqlActions from '../../services/redux/graphql/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
@@ -72,7 +72,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.onClearRequestReturn();
+    this.props.clearTxReturn();
   }
 
   render() {
@@ -409,6 +409,7 @@ OraclePage.propTypes = {
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
+  clearTxReturn: PropTypes.func,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -424,6 +425,7 @@ OraclePage.defaultProps = {
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
   txReturn: undefined,
+  clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -454,7 +456,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

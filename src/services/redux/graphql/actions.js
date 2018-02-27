@@ -81,6 +81,11 @@ const graphqlActions = {
       senderAddress,
     },
   }),
+
+  CLEAR_TX_RETURN: 'CLEAR_TX_RETURN',
+  clearTxReturn: () => ({
+    type: graphqlActions.CLEAR_TX_RETURN,
+  }),
 };
 
 export default graphqlActions;

@@ -10,7 +10,7 @@ import Web3Utils from 'web3-utils';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import graphqlActions from '../../../services/redux/graphql/actions';
-import topicActions from '../../../services/redux/topic/actions';
+import stateActions from '../../../services/redux/state/actions';
 import appActions from '../../../services/redux/app/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
@@ -586,7 +586,7 @@ CreateTopic.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  createdTopic: state.Topic.get('createdTopic'),
+  createdTopic: state.Graphql.get('createdTopic'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   chainBlockNum: state.App.get('chainBlockNum'),
@@ -614,7 +614,7 @@ function mapDispatchToProps(dispatch) {
       resultSettingEndTime,
       senderAddress
     )),
-    onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
+    onClearCreateReturn: () => dispatch(stateActions.onClearCreateReturn()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
 }

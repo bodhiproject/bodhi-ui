@@ -11,7 +11,7 @@ import CardFinished from '../../components/bodhi-dls/cardFinished';
 import ProgressBar from '../../components/bodhi-dls/progressBar';
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import dashboardActions from '../../services/redux/dashboard/actions';
-import topicActions from '../../services/redux/topic/actions';
+import stateActions from '../../services/redux/state/actions';
 import graphqlActions from '../../services/redux/graphql/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
@@ -62,7 +62,7 @@ class TopicPage extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.onClearRequestReturn();
+    this.props.clearTxReturn();
     this.props.clearEditingToggled();
   }
 
@@ -259,7 +259,7 @@ TopicPage.propTypes = {
   onCalculateWinnings: PropTypes.func,
   calculateBotWinningsReturn: PropTypes.number,
   calculateQtumWinningsReturn: PropTypes.number,
-  onClearRequestReturn: PropTypes.func,
+  clearTxReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -273,7 +273,7 @@ TopicPage.defaultProps = {
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
-  onClearRequestReturn: undefined,
+  clearTxReturn: undefined,
   clearEditingToggled: undefined,
   onCalculateWinnings: undefined,
   calculateBotWinningsReturn: undefined,
@@ -283,8 +283,8 @@ TopicPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
-  calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
+  calculateBotWinningsReturn: state.State.get('calculate_bot_winnings_return'),
+  calculateQtumWinningsReturn: state.State.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
@@ -296,11 +296,11 @@ function mapDispatchToProps(dispatch) {
   return {
     getTopics: () => dispatch(dashboardActions.getTopics()),
     onCalculateWinnings: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
+      dispatch(stateActions.onCalculateWinnings(contractAddress, senderAddress)),
     createWithdrawTx: (topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+    clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
   };
 }
 
