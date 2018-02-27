@@ -199,7 +199,11 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
+<<<<<<< HEAD
       const result = yield call(request, Routes.withdraw, options);
+=======
+      const tx = yield call(request, Routes.withdraw, options);
+>>>>>>> Remove mutation calls on existing sagas
 
       yield put({
         type: actions.WITHDRAW_RETURN,
