@@ -25,7 +25,7 @@ export function* createTopicTxHandler() {
 
       yield put({
         type: actions.CREATE_TOPIC_TX_RETURN,
-        value: tx,
+        value: tx.data.createTopic,
       });
     } catch (err) {
       yield put({
@@ -51,7 +51,7 @@ export function* createBetTxHandler() {
 
       yield put({
         type: actions.CREATE_BET_TX_RETURN,
-        value: tx,
+        value: tx.data.createBet,
       });
     } catch (err) {
       yield put({
@@ -81,7 +81,7 @@ export function* createSetResultTxHandler() {
 
       yield put({
         type: actions.CREATE_SET_RESULT_TX_RETURN,
-        value: tx,
+        value: tx.data.setResult,
       });
     } catch (err) {
       yield put({
@@ -111,7 +111,7 @@ export function* createVoteTxHandler() {
 
       yield put({
         type: actions.CREATE_VOTE_TX_RETURN,
-        value: tx,
+        value: tx.data.createVote,
       });
     } catch (err) {
       yield put({
@@ -135,7 +135,7 @@ export function* createFinalizeResultTxHandler() {
 
       yield put({
         type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
-        value: tx,
+        value: tx.data.finalizeResult,
       });
     } catch (err) {
       yield put({
@@ -159,7 +159,7 @@ export function* createWithdrawTxHandler() {
 
       yield put({
         type: actions.CREATE_WITHDRAW_TX_RETURN,
-        value: tx,
+        value: tx.data.withdraw,
       });
     } catch (err) {
       yield put({

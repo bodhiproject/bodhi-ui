@@ -42,7 +42,10 @@ class TopicPage extends React.Component {
       calculateBotWinningsReturn,
       calculateQtumWinningsReturn,
       syncBlockTime,
+      txReturn,
     } = nextProps;
+
+    console.log(txReturn);
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
@@ -69,8 +72,6 @@ class TopicPage extends React.Component {
   render() {
     const { txReturn } = this.props;
     const { topic, config } = this.state;
-
-    console.log(txReturn);
 
     if (!topic || !config) {
       // TODO: render no result page
