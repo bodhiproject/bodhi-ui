@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import AppProvider from './appProvider';
 import { unregister } from './registerServiceWorker';
 

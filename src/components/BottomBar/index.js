@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Card, Icon } from 'antd';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 class BottomBar extends React.PureComponent {
@@ -37,7 +38,7 @@ class BottomBar extends React.PureComponent {
       <Card className="corner-block-wrapper">
         {this.renderNetworkConnection()}
         <h2>{blockNum}</h2>
-        <p>Current Block</p>
+        <p><FormattedMessage id="cornerclock.block" /></p>
         <p>{blockTime}</p>
       </Card>
     );
@@ -47,7 +48,7 @@ class BottomBar extends React.PureComponent {
     if (navigator.onLine) {
       return (
         <p>
-          <span>Online</span>
+          <span><FormattedMessage id="cornerclock.online" /></span>
           <Icon className="corner-network-icon online" type="check-circle" />
         </p>
       );
@@ -55,7 +56,7 @@ class BottomBar extends React.PureComponent {
 
     return (
       <p>
-        <span>Offline</span>
+        <span><FormattedMessage id="cornerclock.offline" /></span>
         <Icon className="corner-network-icon offline" type="close-circle" />
       </p>
     );
@@ -78,4 +79,4 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
-export default connect(mapStateToProps)(BottomBar);
+export default injectIntl(connect(mapStateToProps)(BottomBar));
