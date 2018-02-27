@@ -162,6 +162,7 @@ class OraclePage extends React.Component {
                   amount={item.value}
                   percent={item.percent}
                   voteAmount={this.state.voteAmount}
+                  token={oracle.token}
                   walletAddrs={this.props.walletAddrs}
                   currentWalletIdx={this.state.currentWalletIdx}
                   onOptionChange={this.handleOptionChange}
@@ -175,7 +176,7 @@ class OraclePage extends React.Component {
                 size="large"
                 color="primary"
                 aria-label="add"
-                onClick={this.submitForm()}
+                onClick={this.handleConfirmClick}
                 className={classes.predictButton}
               >
                 Predict
@@ -452,13 +453,13 @@ class OraclePage extends React.Component {
     // A function to repeat itself until this.state.isApproving is false
     function startPollAllowance() {
       if (self.state.isApproving) {
-        onAllowance(this.getCurrentWalletAddr(), oracle.topicAddress, this.getCurrentWalletAddr());
+        onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
         setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
       }
     }
 
     // Kick off the first round of onAllowance
-    onAllowance(this.getCurrentWalletAddr(), oracle.topicAddress, this.getCurrentWalletAddr());
+    onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
     setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
   }
 

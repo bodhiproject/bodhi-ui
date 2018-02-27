@@ -38,6 +38,7 @@ class PredictionOption extends React.PureComponent {
       amount,
       percent,
       voteAmount,
+      token,
       walletAddrs,
       currentWalletIdx,
     } = this.props;
@@ -83,7 +84,7 @@ class PredictionOption extends React.PureComponent {
                     placeholder="0.00"
                     className={classes.predictionOptionInput}
                     onChange={this.handleAmountChange}
-                    endAdornment={<InputAdornment position="end">QTUM</InputAdornment>}
+                    endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
                   />
                 </FormControl>
               </div>
@@ -153,6 +154,7 @@ PredictionOption.propTypes = {
   amount: PropTypes.string.isRequired,
   percent: PropTypes.number.isRequired,
   voteAmount: PropTypes.number.isRequired,
+  token: PropTypes.string.isRequired,
   onOptionChange: PropTypes.func.isRequired,
   onAmountChange: PropTypes.func.isRequired,
   onWalletChange: PropTypes.func.isRequired,
