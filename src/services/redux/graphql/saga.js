@@ -3,6 +3,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 import { createTopic, createBetTx, createSetResultTx } from '../../../network/graphMutation';
 import Config from '../../../config/app';
+import { decimalToBotoshi } from '../../../helpers/utility';
 
 // Sends createTopic mutation
 export function* createTopicRequestHandler() {
@@ -64,7 +65,8 @@ export function* createBetRequestHandler() {
 export function* createSetResultRequestHandler() {
   yield takeEvery(actions.CREATE_SET_RESULT, function* createSetResultRequest(action) {
     try {
-      console.log(action.params.index);
+      // Convert consensus threshold amount to Botoshi
+      const botoshi = decimalToBotoshi(action.params.consensusThreshold);
 
       const tx = yield call(
         createSetResultTx,
@@ -72,7 +74,7 @@ export function* createSetResultRequestHandler() {
         action.params.topicAddress,
         action.params.oracleAddress,
         action.params.index,
-        action.params.consensusThreshold,
+        botoshi,
         action.params.senderAddress,
       );
 
