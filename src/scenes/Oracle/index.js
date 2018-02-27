@@ -1,7 +1,6 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
-import { Row, Col, Breadcrumb, Radio } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -17,16 +16,14 @@ import classNames from 'classnames';
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
-import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
+import PredictionAlert from './components/PredictionAlert/index';
 import dashboardActions from '../../redux/dashboard/actions';
 import topicActions from '../../redux/topic/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
-import styles from './styles';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
+import styles from './styles';
 
-const RadioGroup = Radio.Group;
-const DEFAULT_RADIO_VALUE = -1;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 class OraclePage extends React.Component {
@@ -86,7 +83,7 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { requestReturn, classes } = this.props;
+    const { classes } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
@@ -94,46 +91,6 @@ class OraclePage extends React.Component {
       // In future we could make a loading animation
       return <div></div>;
     }
-
-    /*
-    const oracleElement = (
-      <Row gutter={28} justify="center">
-
-        {config.predictionInfo ?
-          <Col xl={12} lg={12}>
-            <IsoWidgetsWrapper padding="32px" >
-              <CardInfo
-                title={oracle.name}
-                config={config.predictionInfo}
-              >
-              </CardInfo>
-            </IsoWidgetsWrapper>
-          </Col> : null}
-
-        {config.predictionAction ?
-          <Col xl={12} lg={12}>
-            <IsoWidgetsWrapper padding="32px">
-              <CardVoting
-                amount={totalBalance}
-                config={config.predictionAction}
-                token={token}
-                voteBalance={betBalance}
-                onSubmit={this.handleConfirmClick}
-                radioIndex={this.state.currentOptionIdx}
-                result={requestReturn}
-                isApproving={this.state.isApproving}
-                skipExpansion={config.name === 'FINALIZING'}
-              >
-                {editingToggled
-                  ? this.getRadioButtonViews(OraclePage.getBetOrVoteArray(oracle))
-                  : this.getProgressBarViews(OraclePage.getBetOrVoteArray(oracle))}
-              </CardVoting>
-            </IsoWidgetsWrapper>
-          </Col>
-          : null}
-      </Row>
-    );
-    */
 
     const predictionOptions = OraclePage.getBetOrVoteArray(oracle);
 
@@ -168,7 +125,11 @@ class OraclePage extends React.Component {
                 size="large"
                 color="primary"
                 aria-label="add"
-                disabled={config.predictionAction.btnDisabled || this.state.currentOptionIdx === -1}
+                disabled={
+                  config.predictionAction.btnDisabled ||
+                  this.state.currentOptionIdx === -1 ||
+                  this.state.isApproving
+                }
                 onClick={this.handleConfirmClick}
                 className={classes.predictButton}
               >
@@ -185,6 +146,7 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
+        <PredictionAlert requestReturn={this.props.requestReturn} />
       </Paper>
     );
   }
