@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import moment from 'moment';
@@ -14,12 +15,12 @@ class PredictionInfo extends React.PureComponent {
     return (
       <div className={classes.predictionInfoWrapper}>
         {this.renderInfoBlock(
-          'ENDING DATE',
+          this.props.intl.formatMessage({ id: 'predictinfo.enddate' }),
           moment.unix(oracle.endTime).format('M/D/YYYY hh:mmA'),
           this.getEndingCountDown()
         )}
-        {this.renderInfoBlock('FUNDING', this.getTotalFundWithToken())}
-        {this.renderInfoBlock('RESULT SETTER', oracle.resultSetterQAddress)}
+        {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.fund' }), this.getTotalFundWithToken())}
+        {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.resultsetter' }), oracle.resultSetterQAddress)}
       </div>
     );
   }
@@ -72,6 +73,8 @@ class PredictionInfo extends React.PureComponent {
 PredictionInfo.propTypes = {
   classes: PropTypes.object.isRequired,
   oracle: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(PredictionInfo);
+export default withStyles(styles, { withTheme: true })(injectIntl(PredictionInfo));
