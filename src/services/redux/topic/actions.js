@@ -55,17 +55,6 @@ const topicActions = {
     },
   }),
 
-  FINALIZE_RESULT: 'FINALIZE_RESULT',
-  FINALIZE_RESULT_RETURN: 'FINALIZE_RESULT_RETURN',
-  CLEAR_FINALIZE_RESULT_RETURN: 'CLEAR_FINALIZE_RESULT_RETURN',
-  onFinalizeResult: (contractAddress, senderAddress) => ({
-    type: topicActions.FINALIZE_RESULT,
-    payload: {
-      contractAddress,
-      senderAddress,
-    },
-  }),
-
   CALCULATE_WINNINGS: 'CALCULATE_WINNINGS',
   CALCULATE_WINNINGS_RETURN: 'CALCULATE_WINNINGS_RETURN',
   onCalculateWinnings: (contractAddress, senderAddress) => ({

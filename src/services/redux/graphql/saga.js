@@ -1,7 +1,8 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
-import { createTopic, createBetTx, createSetResultTx, createVoteTx } from '../../../network/graphMutation';
+import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx }
+  from '../../../network/graphMutation';
 import Config from '../../../config/app';
 import { decimalToBotoshi } from '../../../helpers/utility';
 
@@ -121,11 +122,36 @@ export function* createVoteTxHandler() {
   });
 }
 
+// Send finalizeResult mutation
+export function* createFinalizeResultTxHandler() {
+  yield takeEvery(actions.CREATE_FINALIZE_RESULT_TX, function* createFinalizeResultTxRequest(action) {
+    try {
+      const tx = yield call(
+        createFinalizeResultTx,
+        Config.defaults.version,
+        action.params.oracleAddress,
+        action.params.senderAddress,
+      );
+
+      yield put({
+        type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
+        value: tx,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
 export default function* graphqlSaga() {
   yield all([
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),
     fork(createVoteTxHandler),
+    fork(createFinalizeResultTxHandler),
   ]);
 }

@@ -76,38 +76,6 @@ export function* allowanceRequestHandler() {
   });
 }
 
-export function* finalizeResultRequestHandler() {
-  yield takeEvery(actions.FINALIZE_RESULT, function* onFinalizeResultRequest(action) {
-    const {
-      contractAddress,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.finalizeResult, options);
-
-      yield put({
-        type: actions.FINALIZE_RESULT_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.FINALIZE_RESULT_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* calculateWinningsRequestHandler() {
   yield takeEvery(actions.CALCULATE_WINNINGS, function* onCalculateWinningsRequest(action) {
     const {
@@ -163,11 +131,7 @@ export function* withdrawRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-<<<<<<< HEAD
       const result = yield call(request, Routes.withdraw, options);
-=======
-      const tx = yield call(request, Routes.withdraw, options);
->>>>>>> Remove mutation calls on existing sagas
 
       yield put({
         type: actions.WITHDRAW_RETURN,
@@ -186,7 +150,6 @@ export default function* topicSaga() {
   yield all([
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
-    fork(finalizeResultRequestHandler),
     fork(calculateWinningsRequestHandler),
     fork(withdrawRequestHandler),
   ]);

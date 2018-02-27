@@ -61,6 +61,16 @@ const graphqlActions = {
       senderAddress,
     },
   }),
+
+  CREATE_FINALIZE_RESULT_TX: 'CREATE_FINALIZE_RESULT_TX',
+  CREATE_FINALIZE_RESULT_TX_RETURN: 'CREATE_FINALIZE_RESULT_TX_RETURN',
+  createFinalizeResultTx: (oracleAddress, senderAddress) => ({
+    type: graphqlActions.CREATE_FINALIZE_RESULT_TX,
+    params: {
+      oracleAddress,
+      senderAddress,
+    },
+  }),
 };
 
 export default graphqlActions;

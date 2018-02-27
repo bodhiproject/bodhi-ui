@@ -180,12 +180,7 @@ class OraclePage extends React.Component {
         break;
       }
       case 'VOTING': {
-        this.setState({
-          isApproved: false,
-          voteAmount: amount,
-        });
-
-        this.startCheckAllowance();
+        this.vote(amount);
         break;
       }
       case 'FINALIZING': {
@@ -490,10 +485,10 @@ class OraclePage extends React.Component {
   }
 
   finalizeResult() {
-    const { onFinalizeResult } = this.props;
+    const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    onFinalizeResult(oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -509,12 +504,12 @@ OraclePage.propTypes = {
   createBetTx: PropTypes.func,
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
+  createFinalizeResultTx: PropTypes.func,
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
   allowanceReturn: PropTypes.number,
   clearAllowanceReturn: PropTypes.func,
   onClearRequestReturn: PropTypes.func,
-  onFinalizeResult: PropTypes.func,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
@@ -529,10 +524,10 @@ OraclePage.defaultProps = {
   createBetTx: undefined,
   createSetResultTx: undefined,
   createVoteTx: undefined,
+  createFinalizeResultTx: undefined,
   onApprove: undefined,
   onAllowance: undefined,
   allowanceReturn: undefined,
-  onFinalizeResult: undefined,
   onClearRequestReturn: undefined,
   requestReturn: undefined,
   clearAllowanceReturn: undefined,
@@ -565,12 +560,12 @@ function mapDispatchToProps(dispatch) {
       )),
     createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(topicActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    createFinalizeResultTx: (oracleAddress, senderAddress) =>
+      dispatch(topicActions.createFinalizeResultTx(oracleAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onApprove: (contractAddress, spender, value, senderAddress) =>
       dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
-    onFinalizeResult: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
     clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
   };
 }
