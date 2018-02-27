@@ -114,6 +114,8 @@ class OraclePage extends React.Component {
                   token={oracle.token}
                   walletAddrs={this.props.walletAddrs}
                   currentWalletIdx={this.state.currentWalletIdx}
+                  skipExpansion={config.predictionAction.skipExpansion}
+                  showAmountInput={config.predictionAction.showAmountInput}
                   onOptionChange={this.handleOptionChange}
                   onAmountChange={this.handleAmountChange}
                   onWalletChange={this.handleWalletChange}

@@ -22,6 +22,8 @@ class PredictionOption extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.renderAmountInput = this.renderAmountInput.bind(this);
+    this.renderAddrSelect = this.renderAddrSelect.bind(this);
     this.handleExpansionChange = this.handleExpansionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleAddrChange = this.handleAddrChange.bind(this);
@@ -40,10 +42,14 @@ class PredictionOption extends React.PureComponent {
       token,
       walletAddrs,
       currentWalletIdx,
+      skipExpansion,
+      showAmountInput,
     } = this.props;
 
+    console.log(skipExpansion);
+
     return (
-      <Collapse in={optionIdx === currentOptionIdx || currentOptionIdx === -1}>
+      <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) && !skipExpansion}>
         <div
           className={classNames(
             classes.predictionOptionCollapse,
@@ -51,7 +57,7 @@ class PredictionOption extends React.PureComponent {
             optionIdx === 0 || optionIdx === currentOptionIdx ? 'first' : ''
           )}
         >
-          <ExpansionPanel expanded={optionIdx === currentOptionIdx} onChange={this.handleExpansionChange}>
+          <ExpansionPanel expanded={optionIdx === currentOptionIdx && !skipExpansion} onChange={this.handleExpansionChange}>
             <ExpansionPanelSummary>
               <div className={classes.predictionOptionWrapper}>
                 <div className={classes.predictionOptionNum}>{optionIdx}</div>
@@ -67,55 +73,75 @@ class PredictionOption extends React.PureComponent {
                 </Typography>
               </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <div className={classNames(classes.predictionOptionWrapper, 'noMargin')}>
-                <div className={classes.predictionOptionIcon}>
-                  <AttachMoneyIcon />
-                </div>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="amount" shrink>
-                    AMOUNT
-                  </InputLabel>
-                  <Input
-                    id="vote-amount"
-                    value={voteAmount}
-                    type="number"
-                    placeholder="0.00"
-                    className={classes.predictionOptionInput}
-                    onChange={this.handleAmountChange}
-                    endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
-                  />
-                </FormControl>
-              </div>
-            </ExpansionPanelDetails>
-            <ExpansionPanelDetails>
-              <div className={classNames(classes.predictionOptionWrapper, 'noMargin', 'last')}>
-                <div className={classes.predictionOptionIcon}>
-                  <AccountBalanceWalletIcon />
-                </div>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="address" shrink>
-                    ADDRESS
-                  </InputLabel>
-                  <Select
-                    native
-                    value={currentWalletIdx}
-                    onChange={this.handleAddrChange}
-                    inputProps={{
-                      id: 'address',
-                    }}
-                  >
-                    {walletAddrs.map((item, index) => (
-                      <option value={index}>{item.address}</option>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            </ExpansionPanelDetails>
+            { showAmountInput ? this.renderAmountInput() : null }
+            { showAmountInput ? this.renderAddrSelect() : null }
           </ExpansionPanel>
         </div>
       </Collapse>
     );
+  }
+
+  renderAmountInput() {
+    const {
+      classes,
+      voteAmount,
+      token,
+    } = this.props;
+
+    return (<ExpansionPanelDetails>
+      <div className={classNames(classes.predictionOptionWrapper, 'noMargin')}>
+        <div className={classes.predictionOptionIcon}>
+          <AttachMoneyIcon />
+        </div>
+        <FormControl fullWidth>
+          <InputLabel htmlFor="amount" shrink>
+            AMOUNT
+          </InputLabel>
+          <Input
+            id="vote-amount"
+            value={voteAmount}
+            type="number"
+            placeholder="0.00"
+            className={classes.predictionOptionInput}
+            onChange={this.handleAmountChange}
+            endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
+          />
+        </FormControl>
+      </div>
+    </ExpansionPanelDetails>);
+  }
+
+  renderAddrSelect() {
+    const {
+      classes,
+      walletAddrs,
+      currentWalletIdx,
+    } = this.props;
+
+    return (<ExpansionPanelDetails>
+      <div className={classNames(classes.predictionOptionWrapper, 'noMargin', 'last')}>
+        <div className={classes.predictionOptionIcon}>
+          <AccountBalanceWalletIcon />
+        </div>
+        <FormControl fullWidth>
+          <InputLabel htmlFor="address" shrink>
+            ADDRESS
+          </InputLabel>
+          <Select
+            native
+            value={currentWalletIdx}
+            onChange={this.handleAddrChange}
+            inputProps={{
+              id: 'address',
+            }}
+          >
+            {walletAddrs.map((item, index) => (
+              <option value={index}>{item.address}</option>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+    </ExpansionPanelDetails>);
   }
 
   handleExpansionChange(event, expanded) {
@@ -159,6 +185,8 @@ PredictionOption.propTypes = {
   onWalletChange: PropTypes.func.isRequired,
   walletAddrs: PropTypes.array.isRequired,
   currentWalletIdx: PropTypes.number.isRequired,
+  skipExpansion: PropTypes.bool.isRequired,
+  showAmountInput: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(PredictionOption);
