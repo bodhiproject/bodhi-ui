@@ -15,18 +15,6 @@ const topicActions = {
     type: topicActions.CLEAR_REQ_RETURN,
   }),
 
-  VOTE: 'VOTE',
-  VOTE_RETURN: 'VOTE_RETURN',
-  onVote: (contractAddress, resultIndex, botAmount, senderAddress) => ({
-    type: topicActions.VOTE,
-    payload: {
-      contractAddress,
-      resultIndex,
-      botAmount,
-      senderAddress,
-    },
-  }),
-
   CREATE: 'CREATE',
   CREATE_RETURN: 'CREATE_RETURN',
   CLEAR_CREATE_RETURN: 'CLEAR_CREATE_RETURN',

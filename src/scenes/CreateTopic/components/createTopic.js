@@ -539,7 +539,7 @@ class CreateTopic extends React.Component {
           resultSettingEndTime,
         } = values;
 
-        this.props.createTopic(
+        this.props.createTopicTx(
           name,
           results,
           centralizedOracle,
@@ -562,7 +562,7 @@ class CreateTopic extends React.Component {
 
 CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
-  createTopic: PropTypes.func,
+  createTopicTx: PropTypes.func,
   createdTopic: PropTypes.object,
   onClearCreateReturn: PropTypes.func,
   getInsightTotals: PropTypes.func,
@@ -575,7 +575,7 @@ CreateTopic.propTypes = {
 };
 
 CreateTopic.defaultProps = {
-  createTopic: undefined,
+  createTopicTx: undefined,
   createdTopic: undefined,
   onClearCreateReturn: undefined,
   getInsightTotals: undefined,
@@ -595,7 +595,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    createTopic: (
+    createTopicTx: (
       name,
       results,
       centralizedOracle,
@@ -604,7 +604,7 @@ function mapDispatchToProps(dispatch) {
       resultSettingStartTime,
       resultSettingEndTime,
       senderAddress
-    ) => dispatch(graphqlActions.createTopic(
+    ) => dispatch(graphqlActions.createTopicTx(
       name,
       results,
       centralizedOracle,

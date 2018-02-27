@@ -76,42 +76,6 @@ export function* allowanceRequestHandler() {
   });
 }
 
-export function* voteRequestHandler() {
-  yield takeEvery(actions.VOTE, function* onVoteRequest(action) {
-    const {
-      contractAddress,
-      resultIndex,
-      botAmount,
-      senderAddress,
-    } = action.payload;
-
-    try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          resultIndex,
-          botAmount,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.vote, options);
-
-      yield put({
-        type: actions.VOTE_RETURN,
-        value: { result },
-      });
-    } catch (error) {
-      yield put({
-        type: actions.VOTE_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
-    }
-  });
-}
-
 export function* finalizeResultRequestHandler() {
   yield takeEvery(actions.FINALIZE_RESULT, function* onFinalizeResultRequest(action) {
     const {
@@ -222,7 +186,6 @@ export default function* topicSaga() {
   yield all([
     fork(approveRequestHandler),
     fork(allowanceRequestHandler),
-    fork(voteRequestHandler),
     fork(finalizeResultRequestHandler),
     fork(calculateWinningsRequestHandler),
     fork(withdrawRequestHandler),

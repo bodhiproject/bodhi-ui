@@ -80,13 +80,14 @@ export function createSetResultTx(version, topicAddress, oracleAddress, optionId
   return new GraphMutation('setResult', args, TYPE.transaction).execute();
 }
 
-export function createVoteTx(version, oracleAddress, optionIdx, amount, senderAddress) {
+export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
-    senderAddress,
+    topicAddress,
     oracleAddress,
     optionIdx,
     amount,
+    senderAddress,
   };
 
   return new GraphMutation('createVote', args, TYPE.transaction).execute();

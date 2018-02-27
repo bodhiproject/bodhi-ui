@@ -1,7 +1,7 @@
 const graphqlActions = {
-  CREATE_TOPIC: 'CREATE_TOPIC',
-  CREATE_TOPIC_RETURN: 'CREATE_TOPIC_RETURN',
-  createTopic: (
+  CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
+  CREATE_TOPIC_TX_RETURN: 'CREATE_TOPIC_TX_RETURN',
+  createTopicTx: (
     name,
     results,
     centralizedOracle,
@@ -11,7 +11,7 @@ const graphqlActions = {
     resultSettingEndTime,
     senderAddress,
   ) => ({
-    type: graphqlActions.CREATE_TOPIC,
+    type: graphqlActions.CREATE_TOPIC_TX,
     params: {
       name,
       results,
@@ -24,10 +24,10 @@ const graphqlActions = {
     },
   }),
 
-  CREATE_BET: 'CREATE_BET',
-  CREATE_BET_RETURN: 'CREATE_BET_RETURN',
-  createBet: (contractAddress, index, amount, senderAddress) => ({
-    type: graphqlActions.CREATE_BET,
+  CREATE_BET_TX: 'CREATE_BET_TX',
+  CREATE_BET_TX_RETURN: 'CREATE_BET_TX_RETURN',
+  createBetTx: (contractAddress, index, amount, senderAddress) => ({
+    type: graphqlActions.CREATE_BET_TX,
     params: {
       contractAddress,
       index,
@@ -36,15 +36,28 @@ const graphqlActions = {
     },
   }),
 
-  CREATE_SET_RESULT: 'CREATE_SET_RESULT',
-  CREATE_SET_RESULT_RETURN: 'CREATE_SET_RESULT_RETURN',
-  createSetResult: (topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
-    type: graphqlActions.CREATE_SET_RESULT,
+  CREATE_SET_RESULT_TX: 'CREATE_SET_RESULT_TX',
+  CREATE_SET_RESULT_TX_RETURN: 'CREATE_SET_RESULT_TX_RETURN',
+  createSetResultTx: (topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
+    type: graphqlActions.CREATE_SET_RESULT_TX,
     params: {
       topicAddress,
       oracleAddress,
       index,
       consensusThreshold,
+      senderAddress,
+    },
+  }),
+
+  CREATE_VOTE_TX: 'CREATE_VOTE_TX',
+  CREATE_VOTE_TX_RETURN: 'CREATE_VOTE_TX_RETURN',
+  createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) => ({
+    type: graphqlActions.CREATE_VOTE_TX,
+    params: {
+      topicAddress,
+      oracleAddress,
+      resultIndex,
+      botAmount,
       senderAddress,
     },
   }),

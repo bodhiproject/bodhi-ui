@@ -460,19 +460,19 @@ class OraclePage extends React.Component {
   }
 
   bet(amount) {
-    const { createBet } = this.props;
+    const { createBetTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
-    const { createSetResult } = this.props;
+    const { createSetResultTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createSetResult(
+    createSetResultTx(
       oracle.topicAddress,
       oracle.address,
       selectedIndex,
@@ -482,11 +482,11 @@ class OraclePage extends React.Component {
   }
 
   vote(amount) {
-    const { onVote } = this.props;
+    const { createVoteTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), this.getCurrentWalletAddr());
+    createVoteTx(oracle.topicAddress, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   finalizeResult() {
@@ -506,9 +506,9 @@ OraclePage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  createBet: PropTypes.func,
-  createSetResult: PropTypes.func,
-  onVote: PropTypes.func,
+  createBetTx: PropTypes.func,
+  createSetResultTx: PropTypes.func,
+  createVoteTx: PropTypes.func,
   onApprove: PropTypes.func,
   onAllowance: PropTypes.func,
   allowanceReturn: PropTypes.number,
@@ -526,9 +526,9 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesSuccess: [],
-  createBet: undefined,
-  createSetResult: undefined,
-  onVote: undefined,
+  createBetTx: undefined,
+  createSetResultTx: undefined,
+  createVoteTx: undefined,
   onApprove: undefined,
   onAllowance: undefined,
   allowanceReturn: undefined,
@@ -553,19 +553,19 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    createBet: (contractAddress, index, amount, senderAddress) =>
-      dispatch(graphqlActions.createBet(contractAddress, index, amount, senderAddress)),
-    createSetResult: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
-      dispatch(graphqlActions.createSetResult(
+    createBetTx: (contractAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBetTx(contractAddress, index, amount, senderAddress)),
+    createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+      dispatch(graphqlActions.createSetResultTx(
         topicAddress,
         oracleAddress,
         resultIndex,
         consensusThreshold,
         senderAddress
       )),
-    onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
+    createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(topicActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     onApprove: (contractAddress, spender, value, senderAddress) =>
       dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
     onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),

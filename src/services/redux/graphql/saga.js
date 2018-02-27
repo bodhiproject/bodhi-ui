@@ -1,13 +1,13 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
-import { createTopic, createBetTx, createSetResultTx } from '../../../network/graphMutation';
+import { createTopic, createBetTx, createSetResultTx, createVoteTx } from '../../../network/graphMutation';
 import Config from '../../../config/app';
 import { decimalToBotoshi } from '../../../helpers/utility';
 
 // Sends createTopic mutation
-export function* createTopicRequestHandler() {
-  yield takeEvery(actions.CREATE_TOPIC, function* createTopicRequest(action) {
+export function* createTopicTxHandler() {
+  yield takeEvery(actions.CREATE_TOPIC_TX, function* createTopicTxRequest(action) {
     try {
       const tx = yield call(
         createTopic,
@@ -23,12 +23,12 @@ export function* createTopicRequestHandler() {
       );
 
       yield put({
-        type: actions.CREATE_TOPIC_RETURN,
+        type: actions.CREATE_TOPIC_TX_RETURN,
         value: tx,
       });
     } catch (err) {
       yield put({
-        type: actions.CREATE_TOPIC_RETURN,
+        type: actions.CREATE_TOPIC_TX_RETURN,
         error: err.message,
       });
     }
@@ -36,8 +36,8 @@ export function* createTopicRequestHandler() {
 }
 
 // Sends createBet mutation
-export function* createBetRequestHandler() {
-  yield takeEvery(actions.CREATE_BET, function* createBetRequest(action) {
+export function* createBetTxHandler() {
+  yield takeEvery(actions.CREATE_BET_TX, function* createBetTxRequest(action) {
     try {
       const tx = yield call(
         createBetTx,
@@ -49,12 +49,12 @@ export function* createBetRequestHandler() {
       );
 
       yield put({
-        type: actions.CREATE_BET_RETURN,
+        type: actions.CREATE_BET_TX_RETURN,
         value: tx,
       });
     } catch (err) {
       yield put({
-        type: actions.CREATE_BET_RETURN,
+        type: actions.CREATE_BET_TX_RETURN,
         error: err.message,
       });
     }
@@ -62,8 +62,8 @@ export function* createBetRequestHandler() {
 }
 
 // Sends setResult mutation
-export function* createSetResultRequestHandler() {
-  yield takeEvery(actions.CREATE_SET_RESULT, function* createSetResultRequest(action) {
+export function* createSetResultTxHandler() {
+  yield takeEvery(actions.CREATE_SET_RESULT_TX, function* createSetResultTxRequest(action) {
     try {
       // Convert consensus threshold amount to Botoshi
       const botoshi = decimalToBotoshi(action.params.consensusThreshold);
@@ -79,12 +79,42 @@ export function* createSetResultRequestHandler() {
       );
 
       yield put({
-        type: actions.CREATE_SET_RESULT_RETURN,
+        type: actions.CREATE_SET_RESULT_TX_RETURN,
         value: tx,
       });
     } catch (err) {
       yield put({
-        type: actions.CREATE_SET_RESULT_RETURN,
+        type: actions.CREATE_SET_RESULT_TX_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
+// Sends vote mutation
+export function* createVoteTxHandler() {
+  yield takeEvery(actions.CREATE_VOTE_TX, function* createVoteTxRequest(action) {
+    try {
+      // Convert vote amount to Botoshi
+      const botoshi = decimalToBotoshi(action.params.botAmount);
+
+      const tx = yield call(
+        createVoteTx,
+        Config.defaults.version,
+        action.params.topicAddress,
+        action.params.oracleAddress,
+        action.params.resultIndex,
+        botoshi,
+        action.params.senderAddress,
+      );
+
+      yield put({
+        type: actions.CREATE_VOTE_TX_RETURN,
+        value: tx,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.CREATE_VOTE_TX_RETURN,
         error: err.message,
       });
     }
@@ -93,8 +123,9 @@ export function* createSetResultRequestHandler() {
 
 export default function* graphqlSaga() {
   yield all([
-    fork(createTopicRequestHandler),
-    fork(createBetRequestHandler),
-    fork(createSetResultRequestHandler),
+    fork(createTopicTxHandler),
+    fork(createBetTxHandler),
+    fork(createSetResultTxHandler),
+    fork(createVoteTxHandler),
   ]);
 }

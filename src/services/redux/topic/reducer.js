@@ -32,14 +32,6 @@ export default function topicReducer(
     case actions.ALLOWANCE_RETURN:
       return state.set('allowance_return', action.value);
 
-    /* Set result return */
-    case actions.SET_RESULT_RETURN:
-      return state.set('req_return', action.value);
-
-    /* Vote return */
-    case actions.VOTE_RETURN:
-      return state.set('req_return', action.value);
-
     /* Finalize result return, not captured by view files at this moment */
     case actions.FINALIZE_RESULT_RETURN:
       return state.set('req_return', action.value);
