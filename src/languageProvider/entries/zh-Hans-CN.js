@@ -71,6 +71,9 @@ const ZhLan = {
     'cardinfo.setresult': '设置结果',
     'cardinfo.confirm': '确认',
     'cardinfo.finalize': '结束',
+    'cardinfo.blocks': '区块数',
+    'cardinfo.sep': '到',
+    'cardinfo.any': '任意时间',
     'topbar.event': '事件',
     'topbar.betting': '投注',
     'topbar.setting': '设置',
@@ -93,7 +96,6 @@ const ZhLan = {
     'str.end': '已结束',
     'str.outcome': '结果',
     'language.select': 'English',
-
   },
   antd: antdZh,
   locale: 'zh-Hans-CN',

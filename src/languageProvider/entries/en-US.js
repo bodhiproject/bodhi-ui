@@ -18,7 +18,6 @@ const EnLang = {
     'dashboard.resultsetend': 'Result setting ends',
     'dashboard.voteend': 'Voting ends',
     'dashboard.voteended': 'Voting ended',
-
     'sort.asc': 'Ascending',
     'sort.desc': 'Descending',
     'sort.default': 'Sort',
@@ -72,6 +71,9 @@ const EnLang = {
     'cardinfo.setresult': 'Set Result',
     'cardinfo.confirm': 'Confirm',
     'cardinfo.finalize': 'Finalize',
+    'cardinfo.blocks': 'Blocks',
+    'cardinfo.sep': 'to',
+    'cardinfo.any': 'anytime',
     'topbar.event': 'Event',
     'topbar.betting': 'Betting',
     'topbar.setting': 'Setting',
@@ -99,7 +101,6 @@ const EnLang = {
     'str.end': 'Ended',
     'str.outcome': 'OUTCOMES',
     'language.select': '中文',
-
   },
   antd: antdEn,
   locale: 'en-US',
