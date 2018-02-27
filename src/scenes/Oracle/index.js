@@ -44,7 +44,6 @@ class OraclePage extends React.Component {
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -77,7 +76,7 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, txReturn } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
@@ -409,7 +408,7 @@ OraclePage.propTypes = {
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
-  requestReturn: PropTypes.object,
+  txReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -424,7 +423,7 @@ OraclePage.defaultProps = {
   createSetResultTx: undefined,
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
-  onClearRequestReturn: undefined,
+  txReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -434,8 +433,8 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  requestReturn: state.Topic.get('req_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
+  txReturn: state.Topic.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

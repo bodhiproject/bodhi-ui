@@ -224,7 +224,10 @@ const MUTATIONS = {
         topicAddress: $topicAddress,
         senderAddress: $senderAddress
       ) {
-        version
+        txid
+        createdTime
+        type
+        status
         topicAddress
         senderAddress
       }

@@ -67,8 +67,10 @@ class TopicPage extends React.Component {
   }
 
   render() {
-    const { requestReturn } = this.props;
+    const { txReturn } = this.props;
     const { topic, config } = this.state;
+
+    console.log(txReturn);
 
     if (!topic || !config) {
       // TODO: render no result page
@@ -114,7 +116,7 @@ class TopicPage extends React.Component {
               amount={qtumTotal}
               onWithdraw={this.onWithdrawClicked}
               radioIndex={topic.resultIdx}
-              result={requestReturn}
+              result={txReturn}
             >
               {_.map(progressValues, (entry, index) => (
                 <ProgressBar
@@ -251,8 +253,8 @@ TopicPage.propTypes = {
     PropTypes.bool, // No result
   ]),
   createWithdrawTx: PropTypes.func.isRequired,
+  txReturn: PropTypes.object,
   match: PropTypes.object.isRequired,
-  requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -269,7 +271,7 @@ TopicPage.propTypes = {
 TopicPage.defaultProps = {
   getTopics: undefined,
   getTopicsSuccess: undefined,
-  requestReturn: undefined,
+  txReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -283,7 +285,7 @@ TopicPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  requestReturn: state.Topic.get('req_return'),
+  txReturn: state.Topic.get('txReturn'),
   calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
