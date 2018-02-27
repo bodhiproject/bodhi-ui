@@ -1,6 +1,7 @@
 const styles = (theme) => ({
   predictionOptionCollapse: {
     padding: ('0 ').concat(theme.padding.unit.px),
+    paddingTop: '1px',
     '&.first': {
       paddingTop: theme.padding.unit.px,
     },
