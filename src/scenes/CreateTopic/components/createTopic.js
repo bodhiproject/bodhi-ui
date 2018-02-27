@@ -67,7 +67,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { createdTopic } = this.props;
+    const { txReturn } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const labelCol = {
@@ -167,25 +167,22 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
-            {this.renderAlertBox(createdTopic)}
+            {this.renderAlertBox(txReturn)}
             <Button
               type="primary"
               htmlType="submit"
-<<<<<<< HEAD
-              disabled={createReturn && createReturn.result}
-            ><FormattedMessage id="create.publish" /></Button>
+              disabled={txReturn && txReturn.txid}
+            >
+              <FormattedMessage id="create.publish" />
+            </Button>
             <Button
               type="default"
               onClick={this.onCancel}
-            >{(createReturn && createReturn.result) ? <FormattedMessage id="create.back" /> : <FormattedMessage id="create.cancel" />}</Button>
-=======
-              disabled={createdTopic && createdTopic.result}
-            >Publish</Button>
-            <Button
-              type="default"
-              onClick={this.onCancel}
-            >{(createdTopic && createdTopic.result) ? 'Back' : 'Cancel'}</Button>
->>>>>>> Fix missing logic to hook up graphql redux
+            >
+              {(txReturn && txReturn.txid)
+                ? <FormattedMessage id="create.back" />
+                : <FormattedMessage id="create.cancel" />}
+            </Button>
           </FormItem>
         </Form>
       </div>
@@ -203,10 +200,10 @@ class CreateTopic extends React.Component {
     return '';
   }
 
-  renderAlertBox(createdTopic) {
+  renderAlertBox(txReturn) {
     let alertElement;
-    if (createdTopic) {
-      if (createdTopic.result) {
+    if (txReturn) {
+      if (txReturn.txid) {
         alertElement =
             (<Alert
               message="Success!"
@@ -214,10 +211,10 @@ class CreateTopic extends React.Component {
               type="success"
               closable={false}
             />);
-      } else if (createdTopic.error) {
+      } else if (txReturn.error) {
         alertElement = (<Alert
           message={this.props.intl.formatMessage({ id: 'create.alertfail' })}
-          description={createdTopic.error}
+          description={txReturn.error}
           type="error"
           closable={false}
         />);
@@ -563,7 +560,7 @@ class CreateTopic extends React.Component {
 CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
   createTopicTx: PropTypes.func,
-  createdTopic: PropTypes.object,
+  txReturn: PropTypes.object,
   onClearCreateReturn: PropTypes.func,
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
@@ -576,7 +573,7 @@ CreateTopic.propTypes = {
 
 CreateTopic.defaultProps = {
   createTopicTx: undefined,
-  createdTopic: undefined,
+  txReturn: undefined,
   onClearCreateReturn: undefined,
   getInsightTotals: undefined,
   walletAddrs: [],
@@ -586,7 +583,7 @@ CreateTopic.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  createdTopic: state.Graphql.get('createdTopic'),
+  txReturn: state.Graphql.get('txReturn'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   chainBlockNum: state.App.get('chainBlockNum'),

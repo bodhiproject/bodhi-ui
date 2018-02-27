@@ -108,15 +108,12 @@ const MUTATIONS = {
         resultSettingStartTime: $resultSettingStartTime,
         resultSettingEndTime: $resultSettingEndTime
       ) {
+        txid
+        createdTime
         version
+        type
+        status
         senderAddress
-        name
-        options
-        resultSetterAddress
-        bettingStartTime
-        bettingEndTime
-        resultSettingStartTime
-        resultSettingEndTime
       }
     }
   `,
