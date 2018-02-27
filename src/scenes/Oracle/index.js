@@ -28,7 +28,7 @@ import styles from './styles';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
 const RadioGroup = Radio.Group;
-const DEFAULT_RADIO_VALUE = 0;
+const DEFAULT_RADIO_VALUE = -1;
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 class OraclePage extends React.Component {
@@ -39,20 +39,24 @@ class OraclePage extends React.Component {
       topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
       oracle: undefined,
-      radioValue: DEFAULT_RADIO_VALUE, // Selected index of optionsIdx[]
       config: undefined,
       voteAmount: undefined,
       isApproving: false,
       isApproved: false,
+      currentWalletIdx: this.props.walletAddrsIndex,
+      currentOptionIdx: -1,
     };
 
     this.getRadioButtonViews = this.getRadioButtonViews.bind(this);
     this.onRadioGroupChange = this.onRadioGroupChange.bind(this);
-    this.onConfirmBtnClicked = this.onConfirmBtnClicked.bind(this);
+    this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
     this.constructCardInfo = this.constructCardInfo.bind(this);
     this.startCheckAllowance = this.startCheckAllowance.bind(this);
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleAmountChange = this.handleAmountChange.bind(this);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
     this.bet = this.bet.bind(this);
     this.setResult = this.setResult.bind(this);
     this.vote = this.vote.bind(this);
@@ -68,7 +72,6 @@ class OraclePage extends React.Component {
       getOraclesSuccess,
       allowanceReturn,
       syncBlockTime,
-      selectedWalletAddress,
     } = nextProps;
 
     // Update page on new block
@@ -76,7 +79,7 @@ class OraclePage extends React.Component {
       this.executeOraclesRequest();
     }
 
-    this.constructCardInfo(getOraclesSuccess, syncBlockTime, selectedWalletAddress);
+    this.constructCardInfo(getOraclesSuccess, syncBlockTime);
 
     // Check allowance return; do nothing if undefined
     this.onAllowanceReturn(allowanceReturn);
@@ -90,9 +93,6 @@ class OraclePage extends React.Component {
   render() {
     const { editingToggled, requestReturn, classes } = this.props;
     const { oracle, config } = this.state;
-
-    console.log('hey');
-    console.log(oracle);
 
     if (!oracle || !config) {
       // Don't render anything if page is loading. In future we could make a loading animation
@@ -127,8 +127,8 @@ class OraclePage extends React.Component {
                 config={config.cardAction}
                 token={token}
                 voteBalance={betBalance}
-                onSubmit={this.onConfirmBtnClicked}
-                radioIndex={this.state.radioValue}
+                onSubmit={this.handleConfirmClick}
+                radioIndex={this.state.currentOptionIdx}
                 result={requestReturn}
                 isApproving={this.state.isApproving}
                 skipToggle={config.name === 'FINALIZING'}
@@ -143,6 +143,8 @@ class OraclePage extends React.Component {
       </Row>
     );
 
+    const predictionOptions = OraclePage.getBetOrVoteArray(oracle);
+
     return (
       <Paper className={classes.predictionDetailPaper}>
         <Grid container spacing={0}>
@@ -151,11 +153,31 @@ class OraclePage extends React.Component {
               {oracle.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              <PredictionOption />
-              <PredictionOption />
-              <PredictionOption />
-              <PredictionOption />
-              <Button variant="raised" fullWidth size="large" color="primary" aria-label="add" className={classes.predictButton}>
+              {predictionOptions.map((item, index) => (
+                <PredictionOption
+                  isLast={index === predictionOptions.length - 1}
+                  currentOptionIdx={this.state.currentOptionIdx}
+                  optionIdx={index}
+                  name={item.name}
+                  amount={item.value}
+                  percent={item.percent}
+                  voteAmount={this.state.voteAmount}
+                  walletAddrs={this.props.walletAddrs}
+                  currentWalletIdx={this.state.currentWalletIdx}
+                  onOptionChange={this.handleOptionChange}
+                  onAmountChange={this.handleAmountChange}
+                  onWalletChange={this.handleWalletChange}
+                />
+              ))}
+              <Button
+                variant="raised"
+                fullWidth
+                size="large"
+                color="primary"
+                aria-label="add"
+                onClick={this.submitForm()}
+                className={classes.predictButton}
+              >
                 Predict
               </Button>
             </Grid>
@@ -169,45 +191,20 @@ class OraclePage extends React.Component {
     );
   }
 
-  /**
-   * Get Bet or Vote names and balances from oracle
-   * @param {object} oracle Oracle object
-   * @return {array} {name, value, percent}
-   */
-  static getBetOrVoteArray(oracle) {
-    const totalBalance = _.sum(oracle.amounts);
-
-    if (oracle.token === Token.Qtum) {
-      return _.map(oracle.options, (optionName, index) => {
-        const optionAmount = oracle.amounts[index] || 0;
-        return {
-          name: optionName,
-          value: `${optionAmount} ${oracle.token}`,
-          percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
-        };
-      });
-    }
-
-    return _.map(oracle.optionIdxs, (optIndex) => {
-      const optionAmount = oracle.amounts[optIndex] || 0;
-      const threshold = oracle.consensusThreshold;
-
-      return {
-        name: oracle.options[optIndex],
-        value: `${optionAmount} ${oracle.token}`,
-        percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
-      };
-    });
+  handleOptionChange(idx) {
+    this.setState({ currentOptionIdx: idx });
   }
 
-  onRadioGroupChange(evt) {
-    this.setState({
-      radioValue: evt.target.value,
-    });
+  handleAmountChange(amount) {
+    this.setState({ voteAmount: amount });
   }
 
-  onConfirmBtnClicked(obj) {
-    const { amount } = obj;
+  handleWalletChange(idx) {
+    this.setState({ currentWalletIdx: idx });
+  }
+
+  handleConfirmClick() {
+    const amount = this.state.voteAmount;
 
     switch (this.state.config.name) {
       case 'BETTING': {
@@ -243,13 +240,54 @@ class OraclePage extends React.Component {
     }
   }
 
+  getCurrentWalletAddr() {
+    return this.props.walletAddrs[this.state.currentWalletIdx];
+  }
+
+  /**
+   * Get Bet or Vote names and balances from oracle
+   * @param {object} oracle Oracle object
+   * @return {array} {name, value, percent}
+   */
+  static getBetOrVoteArray(oracle) {
+    const totalBalance = _.sum(oracle.amounts);
+
+    if (oracle.token === Token.Qtum) {
+      return _.map(oracle.options, (optionName, index) => {
+        const optionAmount = oracle.amounts[index] || 0;
+        return {
+          name: optionName,
+          value: `${optionAmount} ${oracle.token}`,
+          percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
+        };
+      });
+    }
+
+    return _.map(oracle.optionIdxs, (optIndex) => {
+      const optionAmount = oracle.amounts[optIndex] || 0;
+      const threshold = oracle.consensusThreshold;
+
+      return {
+        name: oracle.options[optIndex],
+        value: `${optionAmount} ${oracle.token}`,
+        percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
+      };
+    });
+  }
+
+  onRadioGroupChange(evt) {
+    this.setState({
+      currentOptionIdx: evt.target.value,
+    });
+  }
+
   executeOraclesRequest() {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
     ]);
   }
 
-  constructCardInfo(getOraclesSuccess, syncBlockTime, selectedWalletAddress) {
+  constructCardInfo(getOraclesSuccess, syncBlockTime) {
     const oracle = _.find(getOraclesSuccess, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
@@ -307,7 +345,7 @@ class OraclePage extends React.Component {
             skipToggle: false,
             beforeToggle: {
               btnText: 'Set Result',
-              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress,
+              btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             },
             afterToggle: {
               showAmountInput: false,
@@ -325,7 +363,7 @@ class OraclePage extends React.Component {
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== selectedWalletAddress) {
+        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
           config.cardInfo.messages.push({
             text: 'You are not the Centralized Oracle for this Topic and cannot set the result.',
             type: 'warn',
@@ -407,22 +445,20 @@ class OraclePage extends React.Component {
    * @return {[type]}
    */
   startCheckAllowance() {
-    console.log('startCheckAllowance', new Date());
-    const { selectedWalletAddress, onAllowance } = this.props;
     const { oracle } = this.state;
-
+    const { onAllowance } = this.props;
     const self = this;
 
     // A function to repeat itself until this.state.isApproving is false
     function startPollAllowance() {
       if (self.state.isApproving) {
-        onAllowance(selectedWalletAddress, oracle.topicAddress, selectedWalletAddress);
+        onAllowance(this.getCurrentWalletAddr(), oracle.topicAddress, this.getCurrentWalletAddr());
         setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
       }
     }
 
     // Kick off the first round of onAllowance
-    onAllowance(selectedWalletAddress, oracle.topicAddress, selectedWalletAddress);
+    onAllowance(this.getCurrentWalletAddr(), oracle.topicAddress, this.getCurrentWalletAddr());
     setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
   }
 
@@ -483,10 +519,10 @@ class OraclePage extends React.Component {
   }
 
   approve(amount) {
-    const { onApprove, selectedWalletAddress } = this.props;
+    const { onApprove } = this.props;
     const { oracle } = this.state;
 
-    onApprove(oracle.address, oracle.topicAddress, decimalToBotoshi(amount), selectedWalletAddress);
+    onApprove(oracle.address, oracle.topicAddress, decimalToBotoshi(amount), this.getCurrentWalletAddr());
 
     this.setState({
       isApproving: true,
@@ -494,41 +530,41 @@ class OraclePage extends React.Component {
   }
 
   bet(amount) {
-    const { onBet, selectedWalletAddress } = this.props;
-    const { oracle, radioValue } = this.state;
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const { onBet } = this.props;
+    const { oracle, currentOptionIdx } = this.state;
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
 
-    onBet(oracle.address, selectedIndex, amount, selectedWalletAddress);
+    onBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
-    const { onSetResult, selectedWalletAddress } = this.props;
-    const { oracle, radioValue } = this.state;
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const { onSetResult } = this.props;
+    const { oracle, currentOptionIdx } = this.state;
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
 
-    onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, selectedWalletAddress);
+    onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, this.getCurrentWalletAddr());
   }
 
   vote(amount) {
-    const { onVote, selectedWalletAddress } = this.props;
-    const { oracle, radioValue } = this.state;
-    const selectedIndex = oracle.optionIdxs[radioValue - 1];
+    const { onVote } = this.props;
+    const { oracle, currentOptionIdx } = this.state;
+    const selectedIndex = oracle.optionIdxs[currentOptionIdx - 1];
 
-    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), selectedWalletAddress);
+    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), this.getCurrentWalletAddr());
   }
 
   finalizeResult() {
-    const { onFinalizeResult, selectedWalletAddress } = this.props;
+    const { onFinalizeResult } = this.props;
     const { oracle } = this.state;
 
-    onFinalizeResult(oracle.address, selectedWalletAddress);
+    onFinalizeResult(oracle.address, this.getCurrentWalletAddr());
   }
 
   getRadioButtonViews(valueArray) {
     return (
       <RadioGroup
         onChange={this.onRadioGroupChange}
-        value={this.state.radioValue}
+        value={this.state.currentOptionIdx}
         size="large"
         defaultValue={DEFAULT_RADIO_VALUE}
       >
@@ -583,8 +619,9 @@ OraclePage.propTypes = {
   clearEditingToggled: PropTypes.func,
   clearAllowanceReturn: PropTypes.func,
   requestReturn: PropTypes.object,
-  selectedWalletAddress: PropTypes.string,
   syncBlockTime: PropTypes.number,
+  walletAddrs: PropTypes.array,
+  walletAddrsIndex: PropTypes.number,
 };
 
 OraclePage.defaultProps = {
@@ -602,16 +639,18 @@ OraclePage.defaultProps = {
   requestReturn: undefined,
   clearEditingToggled: undefined,
   clearAllowanceReturn: undefined,
-  selectedWalletAddress: undefined,
   syncBlockTime: undefined,
+  walletAddrs: [],
+  walletAddrsIndex: 1,
 };
 
 const mapStateToProps = (state) => ({
+  walletAddrs: state.App.get('walletAddrs'),
+  walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   editingToggled: state.Topic.get('toggled'),
   requestReturn: state.Topic.get('req_return'),
   allowanceReturn: state.Topic.get('allowance_return'),
-  selectedWalletAddress: state.App.get('selected_wallet_address'),
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 

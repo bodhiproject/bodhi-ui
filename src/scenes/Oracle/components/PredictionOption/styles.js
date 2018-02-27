@@ -1,4 +1,13 @@
 const styles = (theme) => ({
+  predictionOptionCollapse: {
+    padding: ('0 ').concat(theme.padding.unit.px),
+    '&.first': {
+      paddingTop: theme.padding.unit.px,
+    },
+    '&.last': {
+      paddingBottom: theme.padding.unit.px,
+    },
+  },
   predictionOptionWrapper: {
     width: '100%',
     display: 'block',

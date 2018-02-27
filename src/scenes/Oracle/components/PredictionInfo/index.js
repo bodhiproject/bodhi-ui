@@ -38,7 +38,7 @@ class PredictionInfo extends React.PureComponent {
           highlight ? (
             <Typography variant="body2" color="secondary">
               {highlight}
-            </Typography>) : ''
+            </Typography>) : null
         }
       </Grid>
     );
@@ -52,16 +52,16 @@ class PredictionInfo extends React.PureComponent {
       totalAmount += oracle.amounts[i];
     }
 
-    return totalAmount.toString().concat(' ').concat(oracle.token);
+    return parseFloat(totalAmount.toFixed(5)).toString().concat(' ').concat(oracle.token);
   }
 
   getEndingCountDown() {
     const { oracle } = this.props;
 
     const nowunix = Math.round(new Date().getTime() / 1000);
-    const unixdiff = nowunix - oracle.endTime;
+    const unixdiff = oracle.endTime - nowunix;
 
-    if (nowunix < oracle.endTime) {
+    if (nowunix > oracle.endTime) {
       return 'ENDED';
     }
 
