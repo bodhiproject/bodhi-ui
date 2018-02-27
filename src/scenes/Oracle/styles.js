@@ -5,6 +5,7 @@ const styles = (theme) => ({
   },
   predictionDetailContainerGrid: {
     padding: theme.padding.lg.px,
+    overflowX: 'hidden',
     '&.right': {
       borderLeft: theme.border,
       textAlign: 'right',

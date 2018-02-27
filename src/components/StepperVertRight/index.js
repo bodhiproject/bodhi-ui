@@ -7,44 +7,24 @@ import styles from './styles';
 
 class StepperVertRight extends React.PureComponent {
   render() {
-    const { classes } = this.props;
+    const { classes, steps } = this.props;
+
+    // TODO (LIVIA): CHECK STEPS DATA STRUCUTURE
 
     return (
-      <Stepper activeStep={1} orientation="vertical" className={classes.stepperVertRightWrapper}>
-        <Step key="labellabel">
-          <StepLabel className={classes.stepperVertRightLabel}>
-            <Typography variant="title">
-              Created
-            </Typography>
-            <Typography variant="caption">
-              02/01/2018 10:40:52
-            </Typography>
-          </StepLabel>
-        </Step>
-        <Step key="labellabel">
-          <StepLabel className={classes.stepperVertRightLabel}>
-            <Typography variant="title">
-              Predicting
-            </Typography>
-          </StepLabel>
-        </Step>
-        <Step key="labellabel">
-          <StepLabel className={classes.stepperVertRightLabel}>
-            <Typography variant="title">
-              Result Setting
-            </Typography>
-            <Typography variant="caption">
-              02/01/2018 10:40:52
-            </Typography>
-          </StepLabel>
-        </Step>
-        <Step key="labellabel">
-          <StepLabel className={classes.stepperVertRightLabel}>
-            <Typography variant="title">
-              Predicting
-            </Typography>
-          </StepLabel>
-        </Step>
+      <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
+        {steps.value.map((item, index) => (
+          <Step key={item.title}>
+            <StepLabel className={classes.stepperVertRightLabel}>
+              <Typography variant="title">
+                {item.title}
+              </Typography>
+              <Typography variant="caption">
+                {item.description}
+              </Typography>
+            </StepLabel>
+          </Step>
+        ))}
       </Stepper>
     );
   }
@@ -52,6 +32,7 @@ class StepperVertRight extends React.PureComponent {
 
 StepperVertRight.propTypes = {
   classes: PropTypes.object.isRequired,
+  steps: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(StepperVertRight);

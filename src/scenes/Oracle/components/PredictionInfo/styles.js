@@ -1,5 +1,8 @@
 const styles = (theme) => ({
   predictionInfoWrapper: {
+    paddingBottom: theme.padding.md.px,
+  },
+  predictionInfoBlock: {
     marginBottom: '36px',
   },
   predictionInfo: {
