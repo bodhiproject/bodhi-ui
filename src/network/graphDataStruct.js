@@ -223,7 +223,11 @@ const MUTATIONS = {
         oracleAddress: $oracleAddress,
         senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
+        type
+        status
         oracleAddress
         senderAddress
       }
