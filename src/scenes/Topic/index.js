@@ -12,6 +12,7 @@ import ProgressBar from '../../components/bodhi-dls/progressBar';
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import dashboardActions from '../../services/redux/dashboard/actions';
 import topicActions from '../../services/redux/topic/actions';
+import graphqlActions from '../../services/redux/graphql/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
@@ -297,7 +298,7 @@ function mapDispatchToProps(dispatch) {
     onCalculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
     createWithdrawTx: (topicAddress, senderAddress) =>
-      dispatch(topicActions.createWithdrawTx(topicAddress, senderAddress)),
+      dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
     clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
   };

@@ -29,32 +29,6 @@ const topicActions = {
     type: topicActions.CLEAR_CREATE_RETURN,
   }),
 
-  ALLOWANCE: 'ALLOWANCE',
-  ALLOWANCE_RETURN: 'ALLOWANCE_RETURN',
-  CLEAR_ALLOWANCE_RETURN: 'CLEAR_ALLOWANCE_RETURN',
-  onAllowance: (owner, spender, senderAddress) => ({
-    type: topicActions.ALLOWANCE,
-    payload: {
-      owner,
-      spender,
-      senderAddress,
-    },
-  }),
-  clearAllowanceReturn: () => ({
-    type: topicActions.CLEAR_ALLOWANCE_RETURN,
-  }),
-  APPROVE: 'APPROVE',
-  APPROVE_RETURN: 'APPROVE_RETURN',
-  onApprove: (contractAddress, spender, value, senderAddress) => ({
-    type: topicActions.APPROVE,
-    payload: {
-      contractAddress,
-      spender,
-      value,
-      senderAddress,
-    },
-  }),
-
   CALCULATE_WINNINGS: 'CALCULATE_WINNINGS',
   CALCULATE_WINNINGS_RETURN: 'CALCULATE_WINNINGS_RETURN',
   onCalculateWinnings: (contractAddress, senderAddress) => ({

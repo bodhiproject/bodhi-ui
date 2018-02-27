@@ -37,8 +37,6 @@ class OraclePage extends React.Component {
       oracle: undefined,
       config: undefined,
       voteAmount: undefined,
-      isApproving: false,
-      isApproved: false,
       currentWalletIdx: this.props.walletAddrsIndex,
       currentOptionIdx: -1,
     };
@@ -46,7 +44,6 @@ class OraclePage extends React.Component {
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.startCheckAllowance = this.startCheckAllowance.bind(this);
     this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -64,7 +61,6 @@ class OraclePage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesSuccess,
-      allowanceReturn,
       syncBlockTime,
     } = nextProps;
 
@@ -74,9 +70,6 @@ class OraclePage extends React.Component {
     }
 
     this.constructOracleAndConfig(getOraclesSuccess, syncBlockTime);
-
-    // Check allowance return; do nothing if undefined
-    this.onAllowanceReturn(allowanceReturn);
   }
 
   componentWillUnmount() {
@@ -365,95 +358,6 @@ class OraclePage extends React.Component {
     }
   }
 
-  /**
-   * Send get allowance request and keep repeating itself until this.state.isApproving is false
-   * @return {[type]}
-   */
-  startCheckAllowance() {
-    const { oracle } = this.state;
-    const { onAllowance } = this.props;
-    const self = this;
-
-    // A function to repeat itself until this.state.isApproving is false
-    function startPollAllowance() {
-      if (self.state.isApproving) {
-        onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
-        setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
-      }
-    }
-
-    // Kick off the first round of onAllowance
-    onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
-    setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
-  }
-
-  /**
-   * Determine next action based on returned allowance result
-   * 1. If allowance is zero, send approve request
-   * 2. If allowance is positive but less than voteAmount, send approve(0) to reset allowance
-   * 3. If allowance is greather than or equal to voteAmount and not isApproved,
-   *    do action and reset isApproving and isApproved
-   * @param  {number} allowance value
-   * @return {}
-   */
-  onAllowanceReturn(allowance) {
-    if (_.isUndefined(allowance) || _.isUndefined(this.state.config)) {
-      return;
-    }
-
-    const { voteAmount } = this.state;
-    const configName = this.state.config.name;
-
-    if (allowance < voteAmount) {
-      // Need to approved for setResult or vote
-      if (this.state.isApproving) {
-        return;
-      }
-
-      if (allowance === 0) {
-        this.approve(voteAmount);
-      } else {
-        // Reset allowance value so it can hit allowance === 0 case
-        this.approve(0);
-      }
-    } else if (!this.state.isApproved) {
-      // Already approved. Call setResult or vote. Use isApproved to make sure this only entered once.
-      switch (configName) {
-        case 'SETTING': {
-          this.setResult();
-          break;
-        }
-        case 'VOTING': {
-          this.vote(voteAmount);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-
-      // Reset allowance return and states for the next vote/setResult
-      this.props.clearAllowanceReturn();
-
-      this.setState({
-        isApproving: false,
-        isApproved: true,
-        voteAmount: undefined,
-      });
-    }
-  }
-
-  approve(amount) {
-    const { onApprove } = this.props;
-    const { oracle } = this.state;
-
-    onApprove(oracle.address, oracle.topicAddress, decimalToBotoshi(amount), this.getCurrentWalletAddr());
-
-    this.setState({
-      isApproving: true,
-    });
-  }
-
   bet(amount) {
     const { createBetTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
@@ -505,11 +409,6 @@ OraclePage.propTypes = {
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
-  onApprove: PropTypes.func,
-  onAllowance: PropTypes.func,
-  allowanceReturn: PropTypes.number,
-  clearAllowanceReturn: PropTypes.func,
-  onClearRequestReturn: PropTypes.func,
   requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
@@ -525,12 +424,7 @@ OraclePage.defaultProps = {
   createSetResultTx: undefined,
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
-  onApprove: undefined,
-  onAllowance: undefined,
-  allowanceReturn: undefined,
   onClearRequestReturn: undefined,
-  requestReturn: undefined,
-  clearAllowanceReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -541,7 +435,6 @@ const mapStateToProps = (state) => ({
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   requestReturn: state.Topic.get('req_return'),
-  allowanceReturn: state.Topic.get('allowance_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
@@ -559,14 +452,10 @@ function mapDispatchToProps(dispatch) {
         senderAddress
       )),
     createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(topicActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+      dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (oracleAddress, senderAddress) =>
-      dispatch(topicActions.createFinalizeResultTx(oracleAddress, senderAddress)),
+      dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
     onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    onApprove: (contractAddress, spender, value, senderAddress) =>
-      dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
-    onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
-    clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
   };
 }
 

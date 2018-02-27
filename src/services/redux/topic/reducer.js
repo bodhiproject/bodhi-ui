@@ -18,36 +18,14 @@ export default function topicReducer(
     case actions.CLEAR_EDITING_TOGGLED:
       return state.set('toggled', false);
 
-    /* Create return */
-    case actions.CREATE_RETURN:
-      return state.set('create_return', action.value);
-    case actions.CLEAR_CREATE_RETURN:
-      return state.set('create_return', undefined);
-
-    /* Approve return, not captured by view files at this moment */
-    case actions.APPROVE_RETURN:
-      return state.set('approve_return', action.value);
-
-    /* Allowance return */
-    case actions.ALLOWANCE_RETURN:
-      return state.set('allowance_return', action.value);
-
     /* Calculate winnings return */
     case actions.CALCULATE_WINNINGS_RETURN:
       return state.set('calculate_bot_winnings_return', action.value.botWon)
         .set('calculate_qtum_winnings_return', action.value.qtumWon);
 
-    /* Withdraw result return */
-    case actions.WITHDRAW_RETURN:
-      return state.set('req_return', action.value);
-
     /* Clear request return on the page */
     case actions.CLEAR_REQ_RETURN:
       return state.set('req_return', undefined);
-
-    /* Clear allowance return on Oracle page */
-    case actions.CLEAR_ALLOWANCE_RETURN:
-      return state.set('allowance_return', undefined);
 
     default:
       return state;
