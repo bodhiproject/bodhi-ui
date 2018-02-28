@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
-import appActions from '../redux/app/actions';
-import getSubscription, { channels } from '../network/graphSubscription';
+import appActions from '../../redux/app/actions';
+import getSubscription, { channels } from '../../network/graphSubscription';
 
 class GlobalHub extends React.PureComponent {
   constructor(props) {
