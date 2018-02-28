@@ -57,7 +57,7 @@ class Dashboard extends React.Component {
       tabIndex,
       sortBy,
       syncProgress,
-      isSyncing,
+      initSyncing,
       syncBlockNum,
     } = nextProps;
 
@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
     }
 
     // Refresh page if sync is complete
-    if (isSyncing && syncProgress === 100) {
+    if (!initSyncing && syncProgress === 100) {
       this.executeGraphRequest(this.props.tabIndex);
       this.props.toggleSyncing(false);
     }
@@ -439,7 +439,7 @@ Dashboard.propTypes = {
   sortBy: PropTypes.string,
   toggleSyncing: PropTypes.func,
   syncProgress: PropTypes.number,
-  isSyncing: PropTypes.bool,
+  initSyncing: PropTypes.bool,
   syncBlockNum: PropTypes.number,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -454,7 +454,7 @@ Dashboard.defaultProps = {
   sortBy: undefined,
   toggleSyncing: undefined,
   syncProgress: undefined,
-  isSyncing: false,
+  initSyncing: false,
   syncBlockNum: undefined,
 };
 
@@ -466,7 +466,7 @@ const mapStateToProps = (state) => ({
   tabIndex: state.Dashboard.get('tabIndex'),
   sortBy: state.Dashboard.get('sortBy'),
   syncProgress: state.App.get('syncProgress'),
-  isSyncing: state.App.get('isSyncing'),
+  initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
 });
 
@@ -474,7 +474,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getTopics: (filters, orderBy) => dispatch(dashboardActions.getTopics(filters, orderBy)),
     getOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
-    toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
+    toggleSyncing: (initSyncing) => dispatch(appActions.toggleSyncing(initSyncing)),
   };
 }
 

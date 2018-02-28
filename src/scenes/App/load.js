@@ -7,7 +7,7 @@ import appActions from '../../redux/app/actions';
 import AppConfig from '../../config/app';
 import getSubscription, { channels } from '../../network/graphSubscription';
 
-const MIN_BLOCK_COUNT_GAP = 3;
+const MIN_BLOCK_COUNT_GAP = 1;
 
 class AppLoad extends React.PureComponent {
   constructor(props) {
@@ -24,7 +24,6 @@ class AppLoad extends React.PureComponent {
       syncBlockNum,
     } = nextProps;
 
-    // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (_.isNumber(syncBlockNum) && _.isNumber(chainBlockNum)) {
       let newPercent = _.round((syncBlockNum / chainBlockNum) * 100);
 
@@ -40,13 +39,11 @@ class AppLoad extends React.PureComponent {
         });
       }
 
-      if (newPercent < 100) {
-        this.props.toggleSyncing(true);
-      }
-
-      this.props.updateSyncProgress(newPercent);
+      // Update initial sync flag
+      const isSyncing = newPercent < 100;
+      this.props.toggleInitialSync(isSyncing);
     } else {
-      this.props.toggleSyncing(true);
+      this.props.toggleInitialSync(true);
     }
   }
 
@@ -80,15 +77,13 @@ class AppLoad extends React.PureComponent {
 AppLoad.propTypes = {
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
-  updateSyncProgress: PropTypes.func,
-  toggleSyncing: PropTypes.func,
+  toggleInitialSync: PropTypes.func,
 };
 
 AppLoad.defaultProps = {
   chainBlockNum: undefined,
   syncBlockNum: undefined,
-  updateSyncProgress: undefined,
-  toggleSyncing: undefined,
+  toggleInitialSync: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -97,8 +92,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
-  toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
+  toggleInitialSync: (isSyncing) => dispatch(appActions.toggleInitialSync(isSyncing)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);

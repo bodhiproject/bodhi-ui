@@ -65,9 +65,9 @@ const actions = {
     percentage,
   }),
 
-  TOGGLE_SYNCING: 'TOGGLE_SYNCING',
-  toggleSyncing: (isSyncing) => ({
-    type: actions.TOGGLE_SYNCING,
+  TOGGLE_INITIAL_SYNC: 'TOGGLE_INITIAL_SYNC',
+  toggleInitialSync: (isSyncing) => ({
+    type: actions.TOGGLE_INITIAL_SYNC,
     isSyncing,
   }),
 
