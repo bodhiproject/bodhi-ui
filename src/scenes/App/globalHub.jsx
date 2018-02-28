@@ -8,6 +8,8 @@ import appActions from '../../redux/app/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
 
+let syncInfoInterval;
+
 class GlobalHub extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -23,13 +25,13 @@ class GlobalHub extends React.PureComponent {
   componentWillMount() {
     const { walletAddrs } = this.props;
 
-    // Subscribe to syncInfo subscription
-    // This returns only after the initial sync is done, and every new block that is returned
-    this.subscribeSyncInfo();
-
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     this.pollSyncInfo();
+
+    // Subscribe to syncInfo subscription
+    // This returns only after the initial sync is done, and every new block that is returned
+    this.subscribeSyncInfo();
 
     // Get unspent outputs and bot balances for all the wallet addresses
     this.updateBalances(walletAddrs);
@@ -37,6 +39,12 @@ class GlobalHub extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { initSyncing, syncBlockNum } = this.props;
+
+    // Disable the syncInfo polling since we will get new syncInfo from the subscription
+    if (initSyncing && !nextProps.initSyncing) {
+      console.debug('Disable syncInfo polling');
+      clearInterval(syncInfoInterval);
+    }
 
     // Update balances after init sync and on new block
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
@@ -70,7 +78,8 @@ class GlobalHub extends React.PureComponent {
     const { getSyncInfo } = this.props;
 
     getSyncInfo();
-    setTimeout(this.pollSyncInfo, AppConfig.intervals.syncInfo);
+    console.debug('Starting syncInfo polling');
+    syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
   }
 
   updateBalances(walletAddresses) {
