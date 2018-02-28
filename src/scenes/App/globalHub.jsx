@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import appActions from '../../redux/app/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
+import AppConfig from '../../config/app';
 
 class GlobalHub extends React.PureComponent {
   constructor(props) {
@@ -15,44 +16,31 @@ class GlobalHub extends React.PureComponent {
     };
 
     this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
+    this.pollSyncInfo = this.pollSyncInfo.bind(this);
+    this.updateBalances = this.updateBalances.bind(this);
   }
 
   componentWillMount() {
-    const {
-      getSyncInfo,
-      listUnspent,
-      getBotBalance,
-      walletAddrs,
-    } = this.props;
+    const { walletAddrs } = this.props;
 
-    getSyncInfo();
+    // Subscribe to syncInfo subscription
+    // This returns only after the initial sync is done, and every new block that is returned
     this.subscribeSyncInfo();
 
-    listUnspent();
-    if (!_.isEmpty(walletAddrs)) {
-      _.each(walletAddrs, (address) => {
-        getBotBalance(address.address, address.address);
-      });
-    }
+    // Start syncInfo long polling
+    // We use this to update the percentage of the loading screen
+    this.pollSyncInfo();
+
+    // Get unspent outputs and bot balances for all the wallet addresses
+    this.updateBalances(walletAddrs);
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      walletAddrs,
-      syncBlockNum,
-      listUnspent,
-      getBotBalance,
-    } = this.props;
+    const { syncBlockNum } = this.props;
 
-    // Update page on new block
+    // Update on new block
     if (nextProps.syncBlockNum !== syncBlockNum) {
-      listUnspent();
-
-      if (nextProps.walletAddrs) {
-        _.each(nextProps.walletAddrs, (address) => {
-          getBotBalance(address.address, address.address);
-        });
-      }
+      this.updateBalances(nextProps.walletAddrs);
     }
   }
 
@@ -75,6 +63,25 @@ class GlobalHub extends React.PureComponent {
         onSyncInfo({ error: err.message });
       },
     });
+  }
+
+  pollSyncInfo() {
+    const { getSyncInfo } = this.props;
+
+    getSyncInfo();
+    setTimeout(this.pollSyncInfo, AppConfig.intervals.syncInfo);
+  }
+
+  updateBalances(walletAddresses) {
+    const { listUnspent, getBotBalance } = this.props;
+
+    listUnspent();
+
+    if (!_.isEmpty(walletAddresses)) {
+      _.each(walletAddresses, (address) => {
+        getBotBalance(address.address, address.address);
+      });
+    }
   }
 }
 
