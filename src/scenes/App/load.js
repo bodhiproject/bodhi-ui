@@ -64,8 +64,8 @@ class AppLoad extends React.PureComponent {
               <Col xs={10} style={{ textAlign: 'center' }}>
                 <Progress type="circle" percent={percent} width={180} />
               </Col>
-              <Col xs={14} style={{ fontSize: '20px', paddingTop: '24px', paddingRight: '24px' }}>
-                <p>QTUM blockchain is syncing. <br />Please wait patiently.</p>
+              <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
+                <p>Blockchain syncing. Please wait.</p>
               </Col>
             </Row>
           </div>
