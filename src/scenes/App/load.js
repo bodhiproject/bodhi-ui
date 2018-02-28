@@ -23,6 +23,7 @@ class AppLoad extends React.PureComponent {
       chainBlockNum,
       syncBlockNum,
     } = nextProps;
+    const { toggleInitialSync } = this.props;
 
     if (_.isNumber(syncBlockNum) && _.isNumber(chainBlockNum)) {
       let newPercent = _.round((syncBlockNum / chainBlockNum) * 100);
@@ -41,9 +42,9 @@ class AppLoad extends React.PureComponent {
 
       // Update initial sync flag
       const isSyncing = newPercent < 100;
-      this.props.toggleInitialSync(isSyncing);
+      toggleInitialSync(isSyncing);
     } else {
-      this.props.toggleInitialSync(true);
+      toggleInitialSync(true);
     }
   }
 

@@ -73,20 +73,27 @@ class GlobalHub extends React.PureComponent {
   }
 
   updateBalances(walletAddresses) {
-    const { listUnspent, getBotBalance } = this.props;
+    const {
+      initSyncing,
+      listUnspent,
+      getBotBalance,
+    } = this.props;
 
-    listUnspent();
+    if (!initSyncing) {
+      listUnspent();
 
-    if (!_.isEmpty(walletAddresses)) {
-      _.each(walletAddresses, (address) => {
-        getBotBalance(address.address, address.address);
-      });
+      if (!_.isEmpty(walletAddresses)) {
+        _.each(walletAddresses, (address) => {
+          getBotBalance(address.address, address.address);
+        });
+      }
     }
   }
 }
 
 GlobalHub.propTypes = {
   client: PropTypes.object,
+  initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
   walletAddrs: PropTypes.array,
   getSyncInfo: PropTypes.func,
@@ -107,6 +114,7 @@ GlobalHub.defaultProps = {
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
+  initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddrs: state.App.get('walletAddrs'),
 });
