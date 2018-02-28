@@ -7,7 +7,7 @@ import { withStyles } from 'material-ui/styles';
 
 import AppRouter from './router';
 import AppLoad from './load';
-import appActions from '../../services/redux/app/actions';
+import appActions from '../../redux/app/actions';
 import BottomBar from '../../components/BottomBar/index';
 import styles from './styles';
 import TopBar from '../../components/TopBar/index';

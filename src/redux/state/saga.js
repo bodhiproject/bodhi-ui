@@ -1,11 +1,10 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
-import { request } from '../../../network/httpRequest';
-import { convertBNHexStrToQtum } from '../../../helpers/utility';
-
-import Routes from '../../../network/routes';
-import Config from '../../../config/app';
+import { request } from '../../network/httpRequest';
+import { convertBNHexStrToQtum } from '../../helpers/utility';
+import Routes from '../../network/routes';
+import Config from '../../config/app';
 
 export function* calculateWinningsRequestHandler() {
   yield takeEvery(actions.CALCULATE_WINNINGS, function* onCalculateWinningsRequest(action) {

@@ -3,10 +3,10 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import fetch from 'node-fetch';
 
 import actions from './actions';
-import { request } from '../../../network/httpRequest';
-import { querySyncInfo } from '../../../network/graphRequest';
-import { convertBNHexStrToQtum } from '../../../helpers/utility';
-import Routes from '../../../network/routes';
+import { request } from '../../network/httpRequest';
+import { querySyncInfo } from '../../network/graphRequest';
+import { convertBNHexStrToQtum } from '../../helpers/utility';
+import Routes from '../../network/routes';
 
 const DEFAULT_QTUMD_ACCOUNTNAME = '';
 

@@ -2,9 +2,9 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
-  from '../../../network/graphMutation';
-import Config from '../../../config/app';
-import { decimalToBotoshi } from '../../../helpers/utility';
+  from '../../network/graphMutation';
+import Config from '../../config/app';
+import { decimalToBotoshi } from '../../helpers/utility';
 
 // Sends createTopic mutation
 export function* createTopicTxHandler() {

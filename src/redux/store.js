@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import reducers from './reducers';
 import rootSaga from './sagas';
-import { endpoint } from '../../config/app';
+import { endpoint } from '../config/app';
 
 const history = createHistory();
 const sagaMiddleware = createSagaMiddleware();
