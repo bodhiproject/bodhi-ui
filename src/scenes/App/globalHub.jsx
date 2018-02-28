@@ -36,10 +36,11 @@ class GlobalHub extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { syncBlockNum } = this.props;
+    const { initSyncing, syncBlockNum } = this.props;
 
-    // Update on new block
-    if (nextProps.syncBlockNum !== syncBlockNum) {
+    // Update balances after init sync and on new block
+    if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
+      || (initSyncing && !nextProps.initSyncing)) {
       this.updateBalances(nextProps.walletAddrs);
     }
   }
@@ -79,14 +80,12 @@ class GlobalHub extends React.PureComponent {
       getBotBalance,
     } = this.props;
 
-    if (!initSyncing) {
-      listUnspent();
+    listUnspent();
 
-      if (!_.isEmpty(walletAddresses)) {
-        _.each(walletAddresses, (address) => {
-          getBotBalance(address.address, address.address);
-        });
-      }
+    if (!_.isEmpty(walletAddresses)) {
+      _.each(walletAddresses, (address) => {
+        getBotBalance(address.address, address.address);
+      });
     }
   }
 }
