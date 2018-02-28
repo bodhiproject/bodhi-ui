@@ -207,7 +207,8 @@ class CreateTopic extends React.Component {
         alertElement =
             (<Alert
               message="Success!"
-              description={`${this.props.intl.formatMessage({ id: 'create.alertsuc' })}https://testnet.qtum.org/tx/${createReturn.result.txid}`}
+              description={`${this.props.intl.formatMessage({ id: 'create.alertsuc' })}
+                https://testnet.qtum.org/tx/${txReturn.txid}`}
               type="success"
               closable={false}
             />);
