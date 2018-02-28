@@ -56,13 +56,12 @@ class Dashboard extends React.Component {
     const {
       tabIndex,
       sortBy,
-      initSyncing,
       syncBlockNum,
     } = nextProps;
 
     if (tabIndex !== this.props.tabIndex
       || sortBy !== this.props.sortBy
-      || (!initSyncing && syncBlockNum !== this.props.syncBlockNum)) {
+      || syncBlockNum !== this.props.syncBlockNum) {
       this.executeGraphRequest(tabIndex, sortBy);
     }
   }
@@ -430,7 +429,6 @@ Dashboard.propTypes = {
   ]),
   tabIndex: PropTypes.number,
   sortBy: PropTypes.string,
-  initSyncing: PropTypes.bool,
   syncBlockNum: PropTypes.number,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -443,7 +441,6 @@ Dashboard.defaultProps = {
   getOraclesSuccess: [],
   tabIndex: DEFAULT_TAB_INDEX,
   sortBy: undefined,
-  initSyncing: false,
   syncBlockNum: undefined,
 };
 
@@ -454,7 +451,6 @@ const mapStateToProps = (state) => ({
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   tabIndex: state.Dashboard.get('tabIndex'),
   sortBy: state.Dashboard.get('sortBy'),
-  initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
 });
 
