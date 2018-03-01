@@ -120,7 +120,7 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('chainBlockNum', action.syncInfo.chainBlockNum)
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
-        .set('syncBlockTime', action.syncInfo.syncBlockTime);
+        .set('syncBlockTime', Number(action.syncInfo.syncBlockTime));
     }
 
     case actions.UPDATE_SYNC_PROGRESS: {
