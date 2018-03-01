@@ -67,21 +67,20 @@ const TYPE_DEF = {
   `,
 
   Transaction: `
+    txid
+    blockNum
+    gasUsed
+    createdTime
     version
     type
-    txid
-    txStatus
+    status
     senderAddress
     senderQAddress
-    entityId
+    topicAddress
+    oracleAddress
     optionIdx
     token
     amount
-    gasUsed
-    blockNum
-    blockTime
-    createTime
-    createBlockNum
   `,
 };
 
@@ -109,50 +108,11 @@ const MUTATIONS = {
         resultSettingStartTime: $resultSettingStartTime,
         resultSettingEndTime: $resultSettingEndTime
       ) {
+        txid
+        createdTime
         version
-        senderAddress
-        name
-        options
-        resultSetterAddress
-        bettingStartTime
-        bettingEndTime
-        resultSettingStartTime
-        resultSettingEndTime
-      }
-    }
-  `,
-
-  createOracle: `
-    CreateOracle(
-      $version: Int!,
-      $name: String!,
-      $options: [String!]!,
-      $resultSetterAddress: String!,
-      $bettingStartTime: String!,
-      $bettingEndTime: String!,
-      $resultSettingStartTime: String!,
-      $resultSettingEndTime: String!
-      $senderAddress: String!
-    ) {
-      createOracle(
-        version: $version,
-        name: $name,
-        options: $options,
-        resultSetterAddress: $resultSetterAddress,
-        bettingStartTime: $bettingStartTime,
-        bettingEndTime: $bettingEndTime,
-        resultSettingStartTime: $resultSettingStartTime,
-        resultSettingEndTime: $resultSettingEndTime
-        senderAddress: $senderAddress,
-      ) {
-        version
-        name
-        options
-        resultSetterAddress
-        bettingStartTime
-        bettingEndTime
-        resultSettingStartTime
-        resultSettingEndTime
+        type
+        status
         senderAddress
       }
     }
@@ -161,23 +121,28 @@ const MUTATIONS = {
   createBet: `
     CreateBet(
       $version: Int!,
-      $senderAddress: String!,
       $oracleAddress: String!,
       $optionIdx: Int!,
-      $amount: String!
+      $amount: String!,
+      $senderAddress: String!
     ) {
       createBet(
         version: $version,
-        senderAddress: $senderAddress,
         oracleAddress: $oracleAddress,
         optionIdx: $optionIdx,
-        amount: $amount
+        amount: $amount,
+        senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
-        senderAddress
+        type
+        status
+        topicAddress
         oracleAddress
         optionIdx
         amount
+        senderAddress
       }
     }
   `,
@@ -185,23 +150,30 @@ const MUTATIONS = {
   setResult: `
     SetResult(
       $version: Int!,
-      $senderAddress: String!,
+      $topicAddress: String!,
       $oracleAddress: String!,
-      $consensusThreshold: String!,
-      $resultIdx: Int!
+      $optionIdx: Int!,
+      $amount: String!,
+      $senderAddress: String!
     ) {
       setResult(
         version: $version,
-        senderAddress: $senderAddress,
+        topicAddress: $topicAddress,
         oracleAddress: $oracleAddress,
-        consensusThreshold: $consensusThreshold,
-        resultIdx: $resultIdx
+        optionIdx: $optionIdx,
+        amount: $amount,
+        senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
-        senderAddress
+        type
+        status
+        topicAddress
         oracleAddress
-        consensusThreshold
-        resultIdx
+        optionIdx
+        amount
+        senderAddress
       }
     }
   `,
@@ -209,23 +181,30 @@ const MUTATIONS = {
   createVote: `
     CreateVote(
       $version: Int!,
-      $senderAddress: String!,
+      $topicAddress: String!,
       $oracleAddress: String!,
       $optionIdx: Int!,
-      $amount: String!
+      $amount: String!,
+      $senderAddress: String!
     ) {
       createVote(
         version: $version,
-        senderAddress: $senderAddress,
+        topicAddress: $topicAddress,
         oracleAddress: $oracleAddress,
         optionIdx: $optionIdx,
-        amount: $amount
+        amount: $amount,
+        senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
-        senderAddress
+        type
+        status
+        topicAddress
         oracleAddress
         optionIdx
         amount
+        senderAddress
       }
     }
   `,
@@ -233,17 +212,21 @@ const MUTATIONS = {
   finalizeResult: `
     FinalizeResult(
       $version: Int!,
-      $senderAddress: String!,
-      $oracleAddress: String!
+      $oracleAddress: String!,
+      $senderAddress: String!
     ) {
       finalizeResult(
         version: $version,
-        senderAddress: $senderAddress,
-        oracleAddress: $oracleAddress
+        oracleAddress: $oracleAddress,
+        senderAddress: $senderAddress
       ) {
+        txid
+        createdTime
         version
-        senderAddress
+        type
+        status
         oracleAddress
+        senderAddress
       }
     }
   `,
@@ -251,17 +234,20 @@ const MUTATIONS = {
   withdraw: `
     Withdraw(
       $version: Int!,
-      $senderAddress: String!,
-      $topicAddress: String!
+      $topicAddress: String!,
+      $senderAddress: String!
     ) {
       withdraw(
         version: $version,
-        senderAddress: $senderAddress,
-        topicAddress: $topicAddress
+        topicAddress: $topicAddress,
+        senderAddress: $senderAddress
       ) {
-        version
-        senderAddress
+        txid
+        createdTime
+        type
+        status
         topicAddress
+        senderAddress
       }
     }
   `,

@@ -18,7 +18,8 @@ import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
 import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
 import dashboardActions from '../../redux/dashboard/actions';
-import topicActions from '../../redux/topic/actions';
+import stateActions from '../../redux/state/actions';
+import graphqlActions from '../../redux/graphql/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
@@ -36,8 +37,6 @@ class OraclePage extends React.Component {
       oracle: undefined,
       config: undefined,
       voteAmount: undefined,
-      isApproving: false,
-      isApproved: false,
       currentWalletIdx: this.props.walletAddrsIndex,
       currentOptionIdx: -1,
     };
@@ -45,8 +44,6 @@ class OraclePage extends React.Component {
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.startCheckAllowance = this.startCheckAllowance.bind(this);
-    this.onAllowanceReturn = this.onAllowanceReturn.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -63,7 +60,6 @@ class OraclePage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesSuccess,
-      allowanceReturn,
       syncBlockTime,
     } = nextProps;
 
@@ -73,17 +69,14 @@ class OraclePage extends React.Component {
     }
 
     this.constructOracleAndConfig(getOraclesSuccess, syncBlockTime);
-
-    // Check allowance return; do nothing if undefined
-    this.onAllowanceReturn(allowanceReturn);
   }
 
   componentWillUnmount() {
-    this.props.onClearRequestReturn();
+    this.props.clearTxReturn();
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, txReturn } = this.props;
     const { oracle, config } = this.state;
 
     if (!oracle || !config) {
@@ -149,7 +142,7 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <PredictionCompleteDialog requestReturn={this.props.requestReturn} />
+        <PredictionCompleteDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
@@ -175,21 +168,11 @@ class OraclePage extends React.Component {
         break;
       }
       case 'SETTING': {
-        this.setState({
-          isApproved: false,
-          voteAmount: this.state.oracle.consensusThreshold,
-        });
-
-        this.startCheckAllowance();
+        this.setResult();
         break;
       }
       case 'VOTING': {
-        this.setState({
-          isApproved: false,
-          voteAmount: amount,
-        });
-
-        this.startCheckAllowance();
+        this.vote(amount);
         break;
       }
       case 'FINALIZING': {
@@ -374,124 +357,41 @@ class OraclePage extends React.Component {
     }
   }
 
-  /**
-   * Send get allowance request and keep repeating itself until this.state.isApproving is false
-   * @return {[type]}
-   */
-  startCheckAllowance() {
-    const { oracle } = this.state;
-    const { onAllowance } = this.props;
-    const self = this;
-
-    // A function to repeat itself until this.state.isApproving is false
-    function startPollAllowance() {
-      if (self.state.isApproving) {
-        onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
-        setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
-      }
-    }
-
-    // Kick off the first round of onAllowance
-    onAllowance(self.getCurrentWalletAddr(), oracle.topicAddress, self.getCurrentWalletAddr());
-    setTimeout(startPollAllowance, ALLOWANCE_TIMER_INTERVAL);
-  }
-
-  /**
-   * Determine next action based on returned allowance result
-   * 1. If allowance is zero, send approve request
-   * 2. If allowance is positive but less than voteAmount, send approve(0) to reset allowance
-   * 3. If allowance is greather than or equal to voteAmount and not isApproved,
-   *    do action and reset isApproving and isApproved
-   * @param  {number} allowance value
-   * @return {}
-   */
-  onAllowanceReturn(allowance) {
-    if (_.isUndefined(allowance) || _.isUndefined(this.state.config)) {
-      return;
-    }
-
-    const { voteAmount } = this.state;
-    const configName = this.state.config.name;
-
-    if (allowance < voteAmount) {
-      // Need to approved for setResult or vote
-      if (this.state.isApproving) {
-        return;
-      }
-
-      if (allowance === 0) {
-        this.approve(voteAmount);
-      } else {
-        // Reset allowance value so it can hit allowance === 0 case
-        this.approve(0);
-      }
-    } else if (!this.state.isApproved) {
-      // Already approved. Call setResult or vote. Use isApproved to make sure this only entered once.
-      switch (configName) {
-        case 'SETTING': {
-          this.setResult();
-          break;
-        }
-        case 'VOTING': {
-          this.vote(voteAmount);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-
-      // Reset allowance return and states for the next vote/setResult
-      this.props.clearAllowanceReturn();
-
-      this.setState({
-        isApproving: false,
-        isApproved: true,
-        voteAmount: undefined,
-      });
-    }
-  }
-
-  approve(amount) {
-    const { onApprove } = this.props;
-    const { oracle } = this.state;
-
-    onApprove(oracle.address, oracle.topicAddress, decimalToBotoshi(amount), this.getCurrentWalletAddr());
-
-    this.setState({
-      isApproving: true,
-    });
-  }
-
   bet(amount) {
-    const { onBet } = this.props;
+    const { createBetTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onBet(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
-    const { onSetResult } = this.props;
+    const { createSetResultTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onSetResult(oracle.address, selectedIndex, oracle.consensusThreshold, this.getCurrentWalletAddr());
+    createSetResultTx(
+      oracle.topicAddress,
+      oracle.address,
+      selectedIndex,
+      oracle.consensusThreshold,
+      this.getCurrentWalletAddr(),
+    );
   }
 
   vote(amount) {
-    const { onVote } = this.props;
+    const { createVoteTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    onVote(oracle.address, selectedIndex, decimalToBotoshi(amount), this.getCurrentWalletAddr());
+    createVoteTx(oracle.topicAddress, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   finalizeResult() {
-    const { onFinalizeResult } = this.props;
+    const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    onFinalizeResult(oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -504,16 +404,12 @@ OraclePage.propTypes = {
   ]),
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  onBet: PropTypes.func,
-  onVote: PropTypes.func,
-  onApprove: PropTypes.func,
-  onAllowance: PropTypes.func,
-  allowanceReturn: PropTypes.number,
-  clearAllowanceReturn: PropTypes.func,
-  onClearRequestReturn: PropTypes.func,
-  onSetResult: PropTypes.func,
-  onFinalizeResult: PropTypes.func,
-  requestReturn: PropTypes.object,
+  createBetTx: PropTypes.func,
+  createSetResultTx: PropTypes.func,
+  createVoteTx: PropTypes.func,
+  createFinalizeResultTx: PropTypes.func,
+  txReturn: PropTypes.object,
+  clearTxReturn: PropTypes.func,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -524,16 +420,12 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesSuccess: [],
-  onBet: undefined,
-  onVote: undefined,
-  onApprove: undefined,
-  onAllowance: undefined,
-  allowanceReturn: undefined,
-  onSetResult: undefined,
-  onFinalizeResult: undefined,
-  onClearRequestReturn: undefined,
-  requestReturn: undefined,
-  clearAllowanceReturn: undefined,
+  createBetTx: undefined,
+  createSetResultTx: undefined,
+  createVoteTx: undefined,
+  createFinalizeResultTx: undefined,
+  txReturn: undefined,
+  clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -543,27 +435,28 @@ const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  requestReturn: state.Topic.get('req_return'),
-  allowanceReturn: state.Topic.get('allowance_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    onBet: (contractAddress, index, amount, senderAddress) =>
-      dispatch(topicActions.onBet(contractAddress, index, amount, senderAddress)),
-    onVote: (contractAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(topicActions.onVote(contractAddress, resultIndex, botAmount, senderAddress)),
-    onApprove: (contractAddress, spender, value, senderAddress) =>
-      dispatch(topicActions.onApprove(contractAddress, spender, value, senderAddress)),
-    onAllowance: (owner, spender, senderAddress) => dispatch(topicActions.onAllowance(owner, spender, senderAddress)),
-    onSetResult: (contractAddress, resultIndex, consensusThreshold, senderAddress) =>
-      dispatch(topicActions.onSetResult(contractAddress, resultIndex, consensusThreshold, senderAddress)),
-    onFinalizeResult: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onFinalizeResult(contractAddress, senderAddress)),
-    clearAllowanceReturn: () => dispatch(topicActions.clearAllowanceReturn()),
+    createBetTx: (contractAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBetTx(contractAddress, index, amount, senderAddress)),
+    createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+      dispatch(graphqlActions.createSetResultTx(
+        topicAddress,
+        oracleAddress,
+        resultIndex,
+        consensusThreshold,
+        senderAddress
+      )),
+    createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    createFinalizeResultTx: (oracleAddress, senderAddress) =>
+      dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

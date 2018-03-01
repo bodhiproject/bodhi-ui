@@ -9,7 +9,8 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import topicActions from '../../../redux/topic/actions';
+import graphqlActions from '../../../redux/graphql/actions';
+import stateActions from '../../../redux/state/actions';
 import appActions from '../../../redux/app/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
@@ -62,11 +63,11 @@ class CreateTopic extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.onClearCreateReturn();
+    this.props.clearTxReturn();
   }
 
   render() {
-    const { createReturn } = this.props;
+    const { txReturn } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const labelCol = {
@@ -166,16 +167,22 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
-            {this.renderAlertBox(createReturn)}
+            {this.renderAlertBox(txReturn)}
             <Button
               type="primary"
               htmlType="submit"
-              disabled={createReturn && createReturn.result}
-            ><FormattedMessage id="create.publish" /></Button>
+              disabled={txReturn && txReturn.txid}
+            >
+              <FormattedMessage id="create.publish" />
+            </Button>
             <Button
               type="default"
               onClick={this.onCancel}
-            >{(createReturn && createReturn.result) ? <FormattedMessage id="create.back" /> : <FormattedMessage id="create.cancel" />}</Button>
+            >
+              {(txReturn && txReturn.txid)
+                ? <FormattedMessage id="create.back" />
+                : <FormattedMessage id="create.cancel" />}
+            </Button>
           </FormItem>
         </Form>
       </div>
@@ -193,21 +200,22 @@ class CreateTopic extends React.Component {
     return '';
   }
 
-  renderAlertBox(createReturn) {
+  renderAlertBox(txReturn) {
     let alertElement;
-    if (createReturn) {
-      if (createReturn.result) {
+    if (txReturn) {
+      if (txReturn.txid) {
         alertElement =
             (<Alert
               message="Success!"
-              description={`${this.props.intl.formatMessage({ id: 'create.alertsuc' })}https://testnet.qtum.org/tx/${createReturn.result.txid}`}
+              description={`${this.props.intl.formatMessage({ id: 'create.alertsuc' })}
+                https://testnet.qtum.org/tx/${txReturn.txid}`}
               type="success"
               closable={false}
             />);
-      } else if (createReturn.error) {
+      } else if (txReturn.error) {
         alertElement = (<Alert
           message={this.props.intl.formatMessage({ id: 'create.alertfail' })}
-          description={createReturn.error}
+          description={txReturn.error}
           type="error"
           closable={false}
         />);
@@ -519,27 +527,26 @@ class CreateTopic extends React.Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // Maps form variables to saga request variables
         const {
-          centralizedOracle,
           name,
           results,
+          centralizedOracle,
           bettingStartTime,
           bettingEndTime,
           resultSettingStartTime,
           resultSettingEndTime,
         } = values;
 
-        this.props.onCreateTopic({
-          centralizedOracle,
+        this.props.createTopicTx(
           name,
           results,
-          bettingStartTime: bettingStartTime.utc().unix().toString(),
-          bettingEndTime: bettingEndTime.utc().unix().toString(),
-          resultSettingStartTime: resultSettingStartTime.utc().unix().toString(),
-          resultSettingEndTime: resultSettingEndTime.utc().unix().toString(),
-          senderAddress: this.getCurrentSenderAddress(),
-        });
+          centralizedOracle,
+          bettingStartTime.utc().unix().toString(),
+          bettingEndTime.utc().unix().toString(),
+          resultSettingStartTime.utc().unix().toString(),
+          resultSettingEndTime.utc().unix().toString(),
+          this.getCurrentSenderAddress()
+        );
       }
     });
   }
@@ -553,9 +560,9 @@ class CreateTopic extends React.Component {
 
 CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
-  createReturn: PropTypes.object,
-  onCreateTopic: PropTypes.func,
-  onClearCreateReturn: PropTypes.func,
+  createTopicTx: PropTypes.func,
+  txReturn: PropTypes.object,
+  clearTxReturn: PropTypes.func,
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -566,9 +573,9 @@ CreateTopic.propTypes = {
 };
 
 CreateTopic.defaultProps = {
-  createReturn: undefined,
-  onCreateTopic: undefined,
-  onClearCreateReturn: undefined,
+  createTopicTx: undefined,
+  txReturn: undefined,
+  clearTxReturn: undefined,
   getInsightTotals: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -577,7 +584,7 @@ CreateTopic.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  createReturn: state.Topic.get('create_return'),
+  txReturn: state.Graphql.get('txReturn'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   chainBlockNum: state.App.get('chainBlockNum'),
@@ -586,8 +593,26 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreateTopic: (params) => dispatch(topicActions.onCreate(params)),
-    onClearCreateReturn: () => dispatch(topicActions.onClearCreateReturn()),
+    createTopicTx: (
+      name,
+      results,
+      centralizedOracle,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress
+    ) => dispatch(graphqlActions.createTopicTx(
+      name,
+      results,
+      centralizedOracle,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      senderAddress
+    )),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
 }
