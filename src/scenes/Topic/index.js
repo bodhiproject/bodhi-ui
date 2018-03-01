@@ -32,7 +32,7 @@ class TopicPage extends React.Component {
 
   componentWillMount() {
     this.executeTopicsRequest();
-    this.calculateWinnings();
+    this.calculateWinnings(this.props.selectedWalletAddress);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,6 +41,7 @@ class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       syncBlockTime,
+      selectedWalletAddress,
     } = nextProps;
 
     // Update page on new block
@@ -49,15 +50,12 @@ class TopicPage extends React.Component {
     }
 
     // Wallet address changed, call calculate winnings again
-    if (this.props.selectedWalletAddress !== nextProps.selectedWalletAddress) {
-      this.calculateWinnings();
+    if (this.props.selectedWalletAddress !== selectedWalletAddress) {
+      this.calculateWinnings(selectedWalletAddress);
     }
 
     const topic = _.find(getTopicsReturn, { address: this.state.address });
-    topic.botWinnings = botWinnings;
-    topic.qtumWinnings = qtumWinnings;
-
-    this.pageConfiguration(topic);
+    this.pageConfiguration(topic, botWinnings, qtumWinnings);
   }
 
   componentWillUnmount() {
@@ -106,7 +104,6 @@ class TopicPage extends React.Component {
         </Col> : null}
 
       {config.cardAction ?
-
         <Col xl={12} lg={12}>
           <IsoWidgetsWrapper padding="32px">
             <CardFinished
@@ -131,7 +128,6 @@ class TopicPage extends React.Component {
           </IsoWidgetsWrapper>
         </Col>
         : null}
-
     </Row>);
 
     return (
@@ -155,17 +151,10 @@ class TopicPage extends React.Component {
     ]);
   }
 
-  calculateWinnings() {
-    try {
-      const {
-        selectedWalletAddress,
-        calculateWinnings,
-      } = this.props;
+  calculateWinnings(walletAddress) {
+    const { calculateWinnings } = this.props;
 
-      calculateWinnings(this.state.address, selectedWalletAddress);
-    } catch (err) {
-      console.log(err.message);
-    }
+    calculateWinnings(this.state.address, walletAddress);
   }
 
   /** Withdraw button on click handler passed down to CardFinished */
@@ -182,15 +171,8 @@ class TopicPage extends React.Component {
     return walletAddrs[walletAddrsIndex].address;
   }
 
-  /**
-   * Configure UI elements in this.state.config and set topic object in this.state
-   * @param  {object} topic object
-   * @return {}
-   */
-  pageConfiguration(topic) {
+  pageConfiguration(topic, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
-
-    console.log(topic);
 
     if (topic) {
       let config;
@@ -228,8 +210,8 @@ class TopicPage extends React.Component {
         // Add withdrawal amount
         config.cardInfo.messages.push({
           text: `${this.props.intl.formatMessage({ id: 'cardfinish.withdraw' })} 
-            ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
-            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
+            ${(botWinnings && botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+            & ${(qtumWinnings && qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
 
@@ -280,14 +262,14 @@ TopicPage.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  botWinnings: state.State.get('botWinnings'),
-  qtumWinnings: state.State.get('qtumWinnings'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   txReturn: state.Graphql.get('txReturn'),
+  botWinnings: state.Topic.get('botWinnings'),
+  qtumWinnings: state.Topic.get('qtumWinnings'),
 });
 
 function mapDispatchToProps(dispatch) {
