@@ -94,7 +94,7 @@ Run `run build:langs`
 
 look at the terminal see the strings you don't translate and open the corresponding file to translate it.
 
-The language file is in ./src/languageProvider/locales
+The language file is in `./src/languageProvider/locales`
 
 
 
