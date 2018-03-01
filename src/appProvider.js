@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ConnectedRouter } from 'react-router-redux';
-import { IntlProvider, FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import { LocaleProvider } from 'antd';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
@@ -17,7 +17,6 @@ import '../src/style/styles.less';
 
 const defaultidx = localStorage.getItem('localindex') || 0;
 const locales = [AppLocale.en, AppLocale.zh];
-let currentAppLocale;
 class AppProvider extends React.Component {
   constructor(props) {
     super(props);
