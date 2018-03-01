@@ -10,8 +10,8 @@ import CardFinished from '../../components/bodhi-dls/cardFinished';
 import ProgressBar from '../../components/bodhi-dls/progressBar';
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import topicActions from '../../redux/Topic/actions';
-import graphqlActions from '../../redux/graphql/actions';
-import stateActions from '../../redux/state/actions';
+import graphqlActions from '../../redux/Graphql/actions';
+import stateActions from '../../redux/State/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 

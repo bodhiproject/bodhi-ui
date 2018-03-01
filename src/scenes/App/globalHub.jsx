@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/App/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
 

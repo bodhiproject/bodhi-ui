@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/App/actions';
 import AppConfig from '../../config/app';
 import getSubscription, { channels } from '../../network/graphSubscription';
 

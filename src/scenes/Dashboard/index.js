@@ -11,8 +11,8 @@ import BottomButtonWidget from '../Widgets/bottom-button';
 import SingleProgressWidget from '../Widgets/progress/progress-single';
 import ReportsWidget from '../Widgets/report/report-widget';
 import TabBtnGroup from '../../components/bodhi-dls/tabBtnGroup';
-import appActions from '../../redux/app/actions';
-import graphqlActions from '../../redux/graphql/actions';
+import appActions from '../../redux/App/actions';
+import graphqlActions from '../../redux/Graphql/actions';
 import { Token, OracleStatus, SortBy } from '../../constants';
 import { getLocalDateTimeString } from '../../helpers/utility';
 
