@@ -10,7 +10,7 @@ export default function topicReducer(state = initState, action) {
   if (action.error) {
     return state.set('requestError', action.error);
   }
-  
+
   switch (action.type) {
     case actions.CALCULATE_WINNINGS_RETURN: {
       return state.set('botWinnings', action.value.botWon)
