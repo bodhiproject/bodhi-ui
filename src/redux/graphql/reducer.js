@@ -6,7 +6,7 @@ const initState = new Map({
 });
 
 export default function graphqlReducer(state = initState, action) {
-  // Catch all errors
+  // Catch all request errors
   if (action.error) {
     return state.set('requestError', action.error);
   }
