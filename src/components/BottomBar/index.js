@@ -1,7 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Icon } from 'antd';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import Paper from 'material-ui/Paper';
+import Grid from 'material-ui/Grid';
+import CheckCircleIcon from 'material-ui-icons/CheckCircle';
+import RemoveCircleIcon from 'material-ui-icons/RemoveCircle';
+import Typography from 'material-ui/Typography';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
+
+import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 class BottomBar extends React.PureComponent {
@@ -9,6 +17,7 @@ class BottomBar extends React.PureComponent {
     super(props);
 
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
+    this.renderBlockInfo = this.renderBlockInfo.bind(this);
     this.renderNetworkConnection = this.renderNetworkConnection.bind(this);
   }
 
@@ -29,41 +38,62 @@ class BottomBar extends React.PureComponent {
   }
 
   render() {
-    const { syncBlockNum, syncBlockTime } = this.props;
+    const { classes, syncBlockNum, syncBlockTime } = this.props;
+
+    return (
+      syncBlockTime && syncBlockTime ?
+        <Paper className={classes.bottomBarWrapper}>
+          <Grid container>
+            {this.renderNetworkConnection()}
+            {this.renderBlockInfo()}
+          </Grid>
+        </Paper> : null
+    );
+  }
+
+  renderBlockInfo() {
+    const { classes, syncBlockNum, syncBlockTime } = this.props;
 
     const blockNum = syncBlockNum;
     const blockTime = syncBlockTime ? getShortLocalDateTimeString(syncBlockTime) : '';
 
     return (
-      <Card className="corner-block-wrapper">
-        {this.renderNetworkConnection()}
-        <h2>{blockNum}</h2>
-        <p><FormattedMessage id="cornerclock.block" /></p>
-        <p>{blockTime}</p>
-      </Card>
+      <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
+        <Typography varient="body1">
+          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottombar.blockNum" />: {blockNum}</span>
+          <FormattedMessage id="bottombar.blockTime" />: {blockTime}
+        </Typography>
+      </Grid>
     );
   }
 
   renderNetworkConnection() {
+    const { classes } = this.props;
+
     if (navigator.onLine) {
       return (
-        <p>
-          <span><FormattedMessage id="cornerclock.online" /></span>
-          <Icon className="corner-network-icon online" type="check-circle" />
-        </p>
+        <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
+          <Typography varient="body1">
+            <CheckCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'online')} />
+            <span><FormattedMessage id="bottombar.online" /></span>
+          </Typography>
+        </Grid>
       );
     }
 
     return (
-      <p>
-        <span><FormattedMessage id="cornerclock.offline" /></span>
-        <Icon className="corner-network-icon offline" type="close-circle" />
-      </p>
+      <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
+        <Typography varient="body1">
+          <RemoveCircleIcon fontSize className={classes.bottomBarNetworkIcon} />
+          <span><FormattedMessage id="bottombar.offline" /></span>
+        </Typography>
+      </Grid>
     );
   }
 }
 
 BottomBar.propTypes = {
+  classes: PropTypes.object.isRequired,
   syncBlockNum: PropTypes.number,
   syncBlockTime: PropTypes.number,
 };
@@ -79,4 +109,4 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
-export default injectIntl(connect(mapStateToProps)(BottomBar));
+export default injectIntl(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(BottomBar)));
