@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics } from '../../network/graphRequest';
+import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../network/graphMutation';
 import Config from '../../config/app';
@@ -13,9 +13,7 @@ export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
     try {
       const result = yield call(queryAllTopics, action.filters, action.orderBy);
-      console.log(result);
       const topics = _.map(result, processTopic);
-      console.log(topics);
 
       yield put({
         type: actions.GET_TOPICS_RETURN,
@@ -40,6 +38,25 @@ function processTopic(topic) {
   newTopic.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
   newTopic.oracles = _.map(topic.oracles, processOracle);
   return newTopic;
+}
+
+export function* getOraclesHandler() {
+  yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
+    try {
+      const result = yield call(queryAllOracles, action.filters, action.orderBy);
+      const oracles = _.map(result, processOracle);
+
+      yield put({
+        type: actions.GET_ORACLES_RETURN,
+        value: oracles,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_ORACLES_RETURN,
+        error: err.message,
+      });
+    }
+  });
 }
 
 function processOracle(oracle) {
@@ -220,6 +237,7 @@ export function* createWithdrawTxHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
+    fork(getOraclesHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),

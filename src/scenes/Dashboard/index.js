@@ -11,7 +11,6 @@ import BottomButtonWidget from '../Widgets/bottom-button';
 import SingleProgressWidget from '../Widgets/progress/progress-single';
 import ReportsWidget from '../Widgets/report/report-widget';
 import TabBtnGroup from '../../components/bodhi-dls/tabBtnGroup';
-import dashboardActions from '../../redux/dashboard/actions';
 import appActions from '../../redux/app/actions';
 import graphqlActions from '../../redux/graphql/actions';
 import { Token, OracleStatus, SortBy } from '../../constants';
@@ -68,9 +67,9 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { tabIndex, getTopicsReturn, getOraclesSuccess } = this.props;
+    const { tabIndex, getTopicsReturn, getOraclesReturn } = this.props;
     const topics = getTopicsReturn;
-    const oracles = getOraclesSuccess;
+    const oracles = getOraclesReturn;
 
     let rowItems;
     switch (tabIndex) {
@@ -419,11 +418,7 @@ Dashboard.propTypes = {
   getTopics: PropTypes.func,
   getTopicsReturn: PropTypes.array,
   getOracles: PropTypes.func,
-  getOraclesSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
+  getOraclesReturn: PropTypes.array,
   tabIndex: PropTypes.number,
   sortBy: PropTypes.string,
   syncBlockNum: PropTypes.number,
@@ -435,7 +430,7 @@ Dashboard.defaultProps = {
   getTopics: undefined,
   getTopicsReturn: [],
   getOracles: undefined,
-  getOraclesSuccess: [],
+  getOraclesReturn: [],
   tabIndex: DEFAULT_TAB_INDEX,
   sortBy: undefined,
   syncBlockNum: undefined,
@@ -443,8 +438,7 @@ Dashboard.defaultProps = {
 
 const mapStateToProps = (state) => ({
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
-  getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   tabIndex: state.Dashboard.get('tabIndex'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
@@ -453,9 +447,8 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
-    getOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
+    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
   };
 }
 
-// Wrap the component to inject dispatch and state into it
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Dashboard));

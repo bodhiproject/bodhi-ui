@@ -7,6 +7,14 @@ const graphqlActions = {
     orderBy,
   }),
 
+  GET_ORACLES: 'GET_ORACLES',
+  GET_ORACLES_RETURN: 'GET_ORACLES_RETURN',
+  getOracles: (filters, orderBy) => ({
+    type: graphqlActions.GET_ORACLES,
+    filters,
+    orderBy,
+  }),
+
   CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
   CREATE_TOPIC_TX_RETURN: 'CREATE_TOPIC_TX_RETURN',
   createTopicTx: (

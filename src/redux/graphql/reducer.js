@@ -14,7 +14,9 @@ export default function graphqlReducer(state = initState, action) {
   switch (action.type) {
     case actions.GET_TOPICS_RETURN: {
       return state.set('getTopicsReturn', action.value);
-      // return state.set('success', true).set('value', action.value);
+    }
+    case actions.GET_ORACLES_RETURN: {
+      return state.set('getOraclesReturn', action.value);
     }
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:
