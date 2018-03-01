@@ -10,29 +10,13 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import appActions from '../../redux/app/actions';
 import TopbarWrapper from './styles';
 import AppConfig from '../../config/app';
+import { shortenAddress } from '../../helpers/utility';
 
 const FormItem = Form.Item;
 const { Header } = Layout;
 const DROPDOWN_LIST_MAX_LENGTH = 8;
 const ADDRESS_TEXT_MAX_LENGTH = 11;
 const KEY_ADD_ADDRESS_BTN = 'add_address';
-
-/**
- * Utility func to convert address into format of  "Qjsb ... 3dkb"
- * @param  {string} text      Origin address
- * @param  {number} maxLength Length of output string, including 3 dots
- * @return {string} string in format "Qjsb ... 3dkb", or empty string "" if input is undefined or empty
- */
-function shortenAddress(text, maxLength) {
-  if (!text) {
-    return '';
-  }
-
-  const cutoffLength = (maxLength - 3) / 2;
-  return text.length > maxLength
-    ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
-    : text;
-}
 
 class DropdownMenuItem extends React.Component {
   render() {
@@ -103,41 +87,6 @@ class Topbar extends React.PureComponent {
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressDropdownClick = this.onAddressDropdownClick.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
-  }
-
-  componentWillMount() {
-    const {
-      listUnspent,
-      getBotBalance,
-      walletAddrs,
-    } = this.props;
-
-    listUnspent();
-    if (!_.isEmpty(walletAddrs)) {
-      _.each(walletAddrs, (address) => {
-        getBotBalance(address.address, address.address);
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {
-      walletAddrs,
-      syncBlockNum,
-      listUnspent,
-      getBotBalance,
-    } = this.props;
-
-    // Update page on new block
-    if (nextProps.syncBlockNum !== syncBlockNum) {
-      listUnspent();
-
-      if (nextProps.walletAddrs) {
-        _.each(nextProps.walletAddrs, (address) => {
-          getBotBalance(address.address, address.address);
-        });
-      }
-    }
   }
 
   render() {
@@ -282,9 +231,6 @@ Topbar.propTypes = {
   selectedWalletAddress: PropTypes.string,
   addWalletAddress: PropTypes.func,
   selectWalletAddress: PropTypes.func,
-  listUnspent: PropTypes.func,
-  getBotBalance: PropTypes.func,
-  syncBlockNum: PropTypes.number,
   handler: PropTypes.func,
 };
 
@@ -293,24 +239,17 @@ Topbar.defaultProps = {
   selectedWalletAddress: undefined,
   addWalletAddress: undefined,
   selectWalletAddress: undefined,
-  listUnspent: undefined,
-  getBotBalance: undefined,
-  syncBlockNum: undefined,
   handler: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
-  syncBlockNum: state.App.get('syncBlockNum'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addWalletAddress: (value) => dispatch(appActions.addWalletAddress(value)),
   selectWalletAddress: (value) => dispatch(appActions.selectWalletAddress(value)),
-  listUnspent: () => dispatch(appActions.listUnspent()),
-  getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
 });
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Topbar));

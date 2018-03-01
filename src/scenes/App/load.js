@@ -5,8 +5,9 @@ import { Row, Col, Progress } from 'antd';
 
 import appActions from '../../redux/app/actions';
 import AppConfig from '../../config/app';
+import getSubscription, { channels } from '../../network/graphSubscription';
 
-const MIN_BLOCK_COUNT_GAP = 3;
+const MIN_BLOCK_COUNT_GAP = 1;
 
 class AppLoad extends React.PureComponent {
   constructor(props) {
@@ -17,24 +18,13 @@ class AppLoad extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
-    const { getSyncInfo } = this.props;
-
-    // Start syncInfo long polling
-    function pollSyncInfo() {
-      getSyncInfo();
-      setTimeout(pollSyncInfo, AppConfig.intervals.syncInfo);
-    }
-    pollSyncInfo();
-  }
-
   componentWillReceiveProps(nextProps) {
     const {
       chainBlockNum,
       syncBlockNum,
     } = nextProps;
+    const { toggleInitialSync } = this.props;
 
-    // Only update if both syncBlockNum or chainBlockNum are defined as number
     if (_.isNumber(syncBlockNum) && _.isNumber(chainBlockNum)) {
       let newPercent = _.round((syncBlockNum / chainBlockNum) * 100);
 
@@ -50,11 +40,11 @@ class AppLoad extends React.PureComponent {
         });
       }
 
-      if (newPercent < 100) {
-        this.props.toggleSyncing(true);
-      }
-
-      this.props.updateSyncProgress(newPercent);
+      // Update initial sync flag
+      const isSyncing = newPercent < 100;
+      toggleInitialSync(isSyncing);
+    } else {
+      toggleInitialSync(true);
     }
   }
 
@@ -75,7 +65,7 @@ class AppLoad extends React.PureComponent {
                 <Progress type="circle" percent={percent} width={180} />
               </Col>
               <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
-                <p>QTUM blockchain is syncing. <br />Please wait patiently.</p>
+                <p>Blockchain syncing. Please wait.</p>
               </Col>
             </Row>
           </div>
@@ -88,17 +78,13 @@ class AppLoad extends React.PureComponent {
 AppLoad.propTypes = {
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
-  getSyncInfo: PropTypes.func,
-  updateSyncProgress: PropTypes.func,
-  toggleSyncing: PropTypes.func,
+  toggleInitialSync: PropTypes.func,
 };
 
 AppLoad.defaultProps = {
   chainBlockNum: undefined,
   syncBlockNum: undefined,
-  getSyncInfo: undefined,
-  updateSyncProgress: undefined,
-  toggleSyncing: undefined,
+  toggleInitialSync: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -107,9 +93,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getSyncInfo: () => dispatch(appActions.getSyncInfo()),
-  updateSyncProgress: (percentage) => dispatch(appActions.updateSyncProgress(percentage)),
-  toggleSyncing: (isSyncing) => dispatch(appActions.toggleSyncing(isSyncing)),
+  toggleInitialSync: (isSyncing) => dispatch(appActions.toggleInitialSync(isSyncing)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);

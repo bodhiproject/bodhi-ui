@@ -91,19 +91,35 @@ export function* getBotBalanceRequestHandler() {
   });
 }
 
-export function* getSyncInfoRequestHandler() {
-  yield takeEvery(actions.GET_SYNC_INFO, function* getSyncInfoRequest(action) {
+export function* syncInfoRequestHandler() {
+  yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
     try {
       const result = yield call(querySyncInfo);
 
       yield put({
-        type: actions.GET_SYNC_INFO_RETURN,
-        value: { result },
+        type: actions.SYNC_INFO_RETURN,
+        syncInfo: result,
       });
     } catch (error) {
       yield put({
-        type: actions.GET_SYNC_INFO_RETURN,
-        value: error.message,
+        type: actions.SYNC_INFO_RETURN,
+        error: error.message,
+      });
+    }
+  });
+}
+
+export function* onSyncInfoHandler() {
+  yield takeEvery(actions.ON_SYNC_INFO, function* onSyncInfo(action) {
+    if (action.syncInfo.error) {
+      yield put({
+        type: actions.SYNC_INFO_RETURN,
+        error: action.syncInfo.error,
+      });
+    } else {
+      yield put({
+        type: actions.SYNC_INFO_RETURN,
+        syncInfo: action.syncInfo,
       });
     }
   });
@@ -132,7 +148,8 @@ export default function* topicSaga() {
   yield all([
     fork(listUnspentRequestHandler),
     fork(getBotBalanceRequestHandler),
-    fork(getSyncInfoRequestHandler),
+    fork(syncInfoRequestHandler),
+    fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
   ]);
 }

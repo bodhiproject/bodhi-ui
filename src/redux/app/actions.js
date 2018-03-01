@@ -49,10 +49,15 @@ const actions = {
   }),
 
   GET_SYNC_INFO: 'GET_SYNC_INFO',
-  GET_SYNC_INFO_RETURN: 'GET_SYNC_INFO_RETURN',
   getSyncInfo: () => ({
     type: actions.GET_SYNC_INFO,
   }),
+  ON_SYNC_INFO: 'ON_SYNC_INFO',
+  onSyncInfo: (syncInfo) => ({
+    type: actions.ON_SYNC_INFO,
+    syncInfo,
+  }),
+  SYNC_INFO_RETURN: 'SYNC_INFO_RETURN',
 
   UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
   updateSyncProgress: (percentage) => ({
@@ -60,9 +65,9 @@ const actions = {
     percentage,
   }),
 
-  TOGGLE_SYNCING: 'TOGGLE_SYNCING',
-  toggleSyncing: (isSyncing) => ({
-    type: actions.TOGGLE_SYNCING,
+  TOGGLE_INITIAL_SYNC: 'TOGGLE_INITIAL_SYNC',
+  toggleInitialSync: (isSyncing) => ({
+    type: actions.TOGGLE_INITIAL_SYNC,
     isSyncing,
   }),
 
