@@ -4,9 +4,10 @@ import zhMessages from '../locales/zh-Hans.json';
 
 const ZhLan = {
   messages: {
-    'cornerclock.online': '在线',
-    'cornerclock.offline': '离线',
-    'cornerclock.block': '当前区块数',
+    'bottomBar.online': '在线',
+    'bottomBar.offline': '离线',
+    'bottomBar.blockNum': '当前区块数',
+    'bottomBar.blockTime': '当前区块时间',
     'topbar.events': '事件',
     'topbar.create': '创建事件',
     'dashboard.Bet': '下注',
