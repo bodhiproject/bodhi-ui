@@ -13,6 +13,7 @@ import ReportsWidget from '../Widgets/report/report-widget';
 import TabBtnGroup from '../../components/bodhi-dls/tabBtnGroup';
 import dashboardActions from '../../redux/dashboard/actions';
 import appActions from '../../redux/app/actions';
+import graphqlActions from '../../redux/graphql/actions';
 import { Token, OracleStatus, SortBy } from '../../constants';
 import { getLocalDateTimeString } from '../../helpers/utility';
 
@@ -67,8 +68,8 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { tabIndex, getTopicsSuccess, getOraclesSuccess } = this.props;
-    const topics = getTopicsSuccess;
+    const { tabIndex, getTopicsReturn, getOraclesSuccess } = this.props;
+    const topics = getTopicsReturn;
     const oracles = getOraclesSuccess;
 
     let rowItems;
@@ -416,11 +417,7 @@ class Dashboard extends React.Component {
 
 Dashboard.propTypes = {
   getTopics: PropTypes.func,
-  getTopicsSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
+  getTopicsReturn: PropTypes.array,
   getOracles: PropTypes.func,
   getOraclesSuccess: PropTypes.oneOfType([
     PropTypes.array, // Result array
@@ -436,7 +433,7 @@ Dashboard.propTypes = {
 
 Dashboard.defaultProps = {
   getTopics: undefined,
-  getTopicsSuccess: [],
+  getTopicsReturn: [],
   getOracles: undefined,
   getOraclesSuccess: [],
   tabIndex: DEFAULT_TAB_INDEX,
@@ -445,8 +442,7 @@ Dashboard.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  getTopicsError: !state.Dashboard.get('success') && state.Dashboard.get('value'),
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   getOraclesError: !state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   tabIndex: state.Dashboard.get('tabIndex'),
@@ -456,7 +452,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: (filters, orderBy) => dispatch(dashboardActions.getTopics(filters, orderBy)),
+    getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
     getOracles: (filters, orderBy) => dispatch(dashboardActions.getOracles(filters, orderBy)),
   };
 }

@@ -5,37 +5,6 @@ import _ from 'lodash';
 import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import actions from './actions';
-import fakeData from './fakedata';
-
-/** @type {Boolean} [ Use ./fakedata if true; othwerwise read from DB. ] */
-const isFake = false;
-
-export function* getTopicsRequestHandler(/* actions */) {
-  yield takeEvery(actions.GET_TOPICS_REQUEST, function* onGetTopicsRequest(action) {
-    if (isFake) {
-      yield put({
-        type: actions.GET_TOPICS_SUCCESS,
-        value: fakeData,
-      });
-    } else {
-      try {
-        // Query all topics data using graphQL call
-        const result = yield call(queryAllTopics, action.filters, action.orderBy);
-        const topics = _.map(result, processTopic);
-
-        yield put({
-          type: actions.GET_TOPICS_SUCCESS,
-          value: topics,
-        });
-      } catch (error) {
-        yield put({
-          type: actions.GET_TOPICS_ERROR,
-          value: error.message,
-        });
-      }
-    }
-  });
-}
 
 export function* getOraclesRequestHandler(/* actions */) {
   yield takeEvery(actions.GET_ORACLES_REQUEST, function* onGetOraclesRequest(action) {
@@ -55,25 +24,6 @@ export function* getOraclesRequestHandler(/* actions */) {
       });
     }
   });
-}
-
-/**
- * Return a new Topic object with processed fields for UI
- * @param  {[type]}
- * @return {[type]}
- */
-function processTopic(topic) {
-  if (!topic) {
-    return undefined;
-  }
-
-  const newObj = _.assign({}, topic);
-
-  newObj.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
-  newObj.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
-  newObj.oracles = _.map(topic.oracles, processOracle);
-
-  return newObj;
 }
 
 /**
@@ -97,7 +47,6 @@ function processOracle(oracle) {
 
 export default function* dashboardSaga() {
   yield all([
-    fork(getTopicsRequestHandler),
     fork(getOraclesRequestHandler),
   ]);
 }

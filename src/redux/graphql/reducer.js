@@ -6,7 +6,16 @@ const initState = new Map({
 });
 
 export default function graphqlReducer(state = initState, action) {
+  // Catch all errors
+  if (action.error) {
+    return state.set('requestError', action.error);
+  }
+
   switch (action.type) {
+    case actions.GET_TOPICS_RETURN: {
+      return state.set('getTopicsReturn', action.value);
+      // return state.set('success', true).set('value', action.value);
+    }
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:
     case actions.CREATE_SET_RESULT_TX_RETURN:

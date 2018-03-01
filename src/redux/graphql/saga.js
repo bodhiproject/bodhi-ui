@@ -1,10 +1,57 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
+import _ from 'lodash';
 
 import actions from './actions';
+import { queryAllTopics } from '../../network/graphRequest';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../network/graphMutation';
 import Config from '../../config/app';
-import { decimalToBotoshi } from '../../helpers/utility';
+import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
+
+// Send allTopics query
+export function* getTopicsHandler() {
+  yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
+    try {
+      const result = yield call(queryAllTopics, action.filters, action.orderBy);
+      console.log(result);
+      const topics = _.map(result, processTopic);
+      console.log(topics);
+
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: topics,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
+function processTopic(topic) {
+  if (!topic) {
+    return undefined;
+  }
+
+  const newTopic = _.assign({}, topic);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
+  newTopic.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
+  newTopic.oracles = _.map(topic.oracles, processOracle);
+  return newTopic;
+}
+
+function processOracle(oracle) {
+  if (!oracle) {
+    return undefined;
+  }
+
+  const newOracle = _.assign({}, oracle);
+  newOracle.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
+  newOracle.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
+  return newOracle;
+}
 
 // Sends createTopic mutation
 export function* createTopicTxHandler() {
@@ -172,6 +219,7 @@ export function* createWithdrawTxHandler() {
 
 export default function* graphqlSaga() {
   yield all([
+    fork(getTopicsHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),

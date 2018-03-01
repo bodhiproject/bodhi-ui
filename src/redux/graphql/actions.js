@@ -1,4 +1,12 @@
 const graphqlActions = {
+  GET_TOPICS: 'GET_TOPICS',
+  GET_TOPICS_RETURN: 'GET_TOPICS_RETURN',
+  getTopics: (filters, orderBy) => ({
+    type: graphqlActions.GET_TOPICS,
+    filters,
+    orderBy,
+  }),
+
   CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
   CREATE_TOPIC_TX_RETURN: 'CREATE_TOPIC_TX_RETURN',
   createTopicTx: (
