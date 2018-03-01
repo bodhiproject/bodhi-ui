@@ -11,7 +11,8 @@ import CardFinished from '../../components/bodhi-dls/cardFinished';
 import ProgressBar from '../../components/bodhi-dls/progressBar';
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import dashboardActions from '../../redux/dashboard/actions';
-import topicActions from '../../redux/topic/actions';
+import stateActions from '../../redux/state/actions';
+import graphqlActions from '../../redux/graphql/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
@@ -61,12 +62,12 @@ class TopicPage extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.onClearRequestReturn();
+    this.props.clearTxReturn();
     this.props.clearEditingToggled();
   }
 
   render() {
-    const { requestReturn } = this.props;
+    const { txReturn } = this.props;
     const { topic, config } = this.state;
 
     if (!topic || !config) {
@@ -113,7 +114,7 @@ class TopicPage extends React.Component {
               amount={qtumTotal}
               onWithdraw={this.onWithdrawClicked}
               radioIndex={topic.resultIdx}
-              result={requestReturn}
+              result={txReturn}
             >
               {_.map(progressValues, (entry, index) => (
                 <ProgressBar
@@ -173,7 +174,7 @@ class TopicPage extends React.Component {
     const senderAddress = this.getCurrentSenderAddress();
     const contractAddress = this.state.topic.address;
 
-    this.props.onWithdraw(contractAddress, senderAddress);
+    this.props.createWithdrawTx(contractAddress, senderAddress);
   }
 
   /** Return selected address on Topbar as sender * */
@@ -249,8 +250,8 @@ TopicPage.propTypes = {
     PropTypes.string, // error message
     PropTypes.bool, // No result
   ]),
+  createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  requestReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -258,47 +259,48 @@ TopicPage.propTypes = {
   onCalculateWinnings: PropTypes.func,
   calculateBotWinningsReturn: PropTypes.number,
   calculateQtumWinningsReturn: PropTypes.number,
-  onWithdraw: PropTypes.func.isRequired,
-  onClearRequestReturn: PropTypes.func,
+  clearTxReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
+  txReturn: PropTypes.object,
 };
 
 TopicPage.defaultProps = {
   getTopics: undefined,
   getTopicsSuccess: undefined,
-  requestReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
-  onClearRequestReturn: undefined,
+  clearTxReturn: undefined,
   clearEditingToggled: undefined,
   onCalculateWinnings: undefined,
   calculateBotWinningsReturn: undefined,
   calculateQtumWinningsReturn: undefined,
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
-  requestReturn: state.Topic.get('req_return'),
-  calculateBotWinningsReturn: state.Topic.get('calculate_bot_winnings_return'),
-  calculateQtumWinningsReturn: state.Topic.get('calculate_qtum_winnings_return'),
+  calculateBotWinningsReturn: state.State.get('calculate_bot_winnings_return'),
+  calculateQtumWinningsReturn: state.State.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     getTopics: () => dispatch(dashboardActions.getTopics()),
     onCalculateWinnings: (contractAddress, senderAddress) =>
-      dispatch(topicActions.onCalculateWinnings(contractAddress, senderAddress)),
-    onWithdraw: (contractAddress, senderAddress) => dispatch(topicActions.onWithdraw(contractAddress, senderAddress)),
-    onClearRequestReturn: () => dispatch(topicActions.onClearRequestReturn()),
-    clearEditingToggled: () => dispatch(topicActions.clearEditingToggled()),
+      dispatch(stateActions.onCalculateWinnings(contractAddress, senderAddress)),
+    createWithdrawTx: (topicAddress, senderAddress) =>
+      dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+    clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
   };
 }
 

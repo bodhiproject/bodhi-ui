@@ -24,21 +24,22 @@ class CardFinished extends Component {
 
   render() {
     const {
-      amount, children, result,
+      amount,
+      children,
+      result,
     } = this.props;
 
     // Build Alert elements based on result
     let alertElement;
 
     if (result) {
-      if (result.result) {
-        alertElement =
-            (<Alert
-              message="Success!"
-              description={`The transaction is broadcasted to blockchain. You can view details from below link https://testnet.qtum.org/tx/${result.result.txid}`}
-              type="success"
-              closable={false}
-            />);
+      if (result.txid) {
+        alertElement = (<Alert
+          message="Success!"
+          description={`Transaction sent! Waiting for confirmations.\nhttps://testnet.qtum.org/tx/${result.txid}`}
+          type="success"
+          closable={false}
+        />);
       } else if (result.error) {
         alertElement = (<Alert
           message="Oops, something went wrong"

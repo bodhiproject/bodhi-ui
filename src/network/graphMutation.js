@@ -13,7 +13,7 @@ class GraphMutation {
 
   build() {
     const mutation = getMutation(this.mutationName);
-    return gql`mutation ${mutation}`;
+    return `mutation ${mutation}`;
   }
 
   async execute() {
@@ -21,19 +21,19 @@ class GraphMutation {
     console.debug(mutation);
 
     const res = await client.mutate({
-      mutation,
+      mutation: gql`${mutation}`,
       variables: this.args,
       fetchPolicy: 'network-only',
     });
-    return GraphParser.getParser(this.type)(res.data[this.mutationName]);
+    return res;
   }
 }
 
 export function createTopic(
   version,
-  centralizedOracle,
   name,
   results,
+  centralizedOracle,
   bettingStartTime,
   bettingEndTime,
   resultSettingStartTime,
@@ -55,63 +55,39 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createOracle(
-  version,
-  centralizedOracle,
-  name,
-  results,
-  bettingStartTime,
-  bettingEndTime,
-  resultSettingStartTime,
-  resultSettingEndTime,
-  senderAddress
-) {
-  const args = {
-    version,
-    name,
-    options: results,
-    resultSetterAddress: centralizedOracle,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    senderAddress,
-  };
-
-  return new GraphMutation('createOracle', args, TYPE.oracle).execute();
-}
-
 export function createBetTx(version, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
-    senderAddress,
     oracleAddress,
     optionIdx,
     amount,
+    senderAddress,
   };
 
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 
-export function createSetResultTx(version, oracleAddress, consensusThreshold, resultIdx, senderAddress) {
+export function createSetResultTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
-    senderAddress,
+    topicAddress,
     oracleAddress,
-    consensusThreshold,
-    resultIdx,
+    optionIdx,
+    amount,
+    senderAddress,
   };
 
   return new GraphMutation('setResult', args, TYPE.transaction).execute();
 }
 
-export function createVoteTx(version, oracleAddress, optionIdx, amount, senderAddress) {
+export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
-    senderAddress,
+    topicAddress,
     oracleAddress,
     optionIdx,
     amount,
+    senderAddress,
   };
 
   return new GraphMutation('createVote', args, TYPE.transaction).execute();

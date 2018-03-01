@@ -15,7 +15,7 @@ const initState = new Map({
   walletAddrsIndex: 0,
   selected_wallet_address: 'wtf',
   syncProgress: 0,
-  isSyncing: false,
+  initSyncing: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -114,17 +114,21 @@ export default function appReducer(state = initState, action) {
       }
       break;
 
-    case actions.GET_SYNC_INFO_RETURN:
-      return state.set('chainBlockNum', action.value.result.chainBlockNum)
-        .set('syncBlockNum', action.value.result.syncBlockNum)
-        .set('syncBlockTime', action.value.result.syncBlockTime);
+    case actions.SYNC_INFO_RETURN: {
+      if (action.error) {
+        return state.set('syncInfoError', action.error);
+      }
+      return state.set('chainBlockNum', action.syncInfo.chainBlockNum)
+        .set('syncBlockNum', action.syncInfo.syncBlockNum)
+        .set('syncBlockTime', Number(action.syncInfo.syncBlockTime));
+    }
 
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);
     }
 
-    case actions.TOGGLE_SYNCING: {
-      return state.set('isSyncing', action.isSyncing);
+    case actions.TOGGLE_INITIAL_SYNC: {
+      return state.set('initSyncing', action.isSyncing);
     }
 
     case actions.GET_INSIGHT_TOTALS_RETURN: {
