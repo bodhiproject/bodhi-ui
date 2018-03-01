@@ -38,7 +38,7 @@ class TopicPage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      getTopicsSuccess,
+      getTopicsReturn,
       calculateBotWinningsReturn,
       calculateQtumWinningsReturn,
       syncBlockTime,
@@ -54,7 +54,7 @@ class TopicPage extends React.Component {
       this.calculateWinnings();
     }
 
-    const topic = _.find(getTopicsSuccess, { address: this.state.address });
+    const topic = _.find(getTopicsReturn, { address: this.state.address });
     topic.botWinnings = calculateBotWinningsReturn;
     topic.qtumWinnings = calculateQtumWinningsReturn;
 
@@ -245,11 +245,7 @@ class TopicPage extends React.Component {
 
 TopicPage.propTypes = {
   getTopics: PropTypes.func,
-  getTopicsSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
+  getTopicsReturn: PropTypes.array,
   createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
@@ -268,7 +264,7 @@ TopicPage.propTypes = {
 
 TopicPage.defaultProps = {
   getTopics: undefined,
-  getTopicsSuccess: undefined,
+  getTopicsReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -282,25 +278,25 @@ TopicPage.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  getTopicsSuccess: state.Dashboard.get('success') && state.Dashboard.get('value'),
   calculateBotWinningsReturn: state.State.get('calculate_bot_winnings_return'),
   calculateQtumWinningsReturn: state.State.get('calculate_qtum_winnings_return'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selected_wallet_address'),
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: () => dispatch(dashboardActions.getTopics()),
-    onCalculateWinnings: (contractAddress, senderAddress) =>
-      dispatch(stateActions.onCalculateWinnings(contractAddress, senderAddress)),
+    getTopics: () => dispatch(graphqlActions.getTopics()),
     createWithdrawTx: (topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
+    onCalculateWinnings: (contractAddress, senderAddress) =>
+      dispatch(stateActions.onCalculateWinnings(contractAddress, senderAddress)),
   };
 }
 
