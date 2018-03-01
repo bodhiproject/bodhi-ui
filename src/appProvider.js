@@ -35,18 +35,20 @@ class AppProvider extends React.Component {
   render() {
     return (
       <MuiThemeProvider theme={bodhiTheme}>
-        <IntlProvider locale={locales[this.state.locale].locale} messages={locales[this.state.locale].messages}>
-          <ApolloProvider client={graphClient}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <Route
-                  path="/"
-                  render={(props) => (<App match={props.match} handler={this.handler} />)}
-                />
-              </ConnectedRouter>
-            </Provider>
-          </ApolloProvider>
-        </IntlProvider>
+        <LocaleProvider locale={locales[this.state.locale].antd}>
+          <IntlProvider locale={locales[this.state.locale].locale} messages={locales[this.state.locale].messages}>
+            <ApolloProvider client={graphClient}>
+              <Provider store={store}>
+                <ConnectedRouter history={history}>
+                  <Route
+                    path="/"
+                    render={(props) => (<App match={props.match} handler={this.handler} />)}
+                  />
+                </ConnectedRouter>
+              </Provider>
+            </ApolloProvider>
+          </IntlProvider>
+        </LocaleProvider>
       </MuiThemeProvider>
     );
   }
