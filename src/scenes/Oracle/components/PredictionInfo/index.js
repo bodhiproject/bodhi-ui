@@ -15,12 +15,12 @@ class PredictionInfo extends React.PureComponent {
     return (
       <div className={classes.predictionInfoWrapper}>
         {this.renderInfoBlock(
-          this.props.intl.formatMessage({ id: 'predictinfo.enddate' }),
+          <FormattedMessage id="predictinfo.enddate" defaultMessage="ENDING DATE" />,
           moment.unix(oracle.endTime).format('M/D/YYYY hh:mmA'),
           this.getEndingCountDown()
         )}
-        {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.fund' }), this.getTotalFundWithToken())}
-        {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.resultsetter' }), oracle.resultSetterQAddress)}
+        {this.renderInfoBlock(<FormattedMessage id="predictinfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
+        {this.renderInfoBlock(<FormattedMessage id="predictinfo.resultsetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
       </div>
     );
   }
@@ -73,8 +73,6 @@ class PredictionInfo extends React.PureComponent {
 PredictionInfo.propTypes = {
   classes: PropTypes.object.isRequired,
   oracle: PropTypes.object.isRequired,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(injectIntl(PredictionInfo));
