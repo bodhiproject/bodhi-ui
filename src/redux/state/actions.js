@@ -3,6 +3,7 @@ const stateActions = {
   editingToggled: () => ({
     type: stateActions.EDITING_TOGGLED,
   }),
+
   CLEAR_EDITING_TOGGLED: 'CLEAR_EDITING_TOGGLED',
   clearEditingToggled: () => ({
     type: stateActions.CLEAR_EDITING_TOGGLED,

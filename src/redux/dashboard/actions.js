@@ -1,7 +1,7 @@
 const dashboardActions = {
-  TAB_VIEW_CHANGED: 'TAB_VIEW_CHANGED',
-  tabViewChanged: (value) => ({
-    type: dashboardActions.TAB_VIEW_CHANGED,
+  TAB_INDEX_CHANGED: 'TAB_INDEX_CHANGED',
+  tabIndexChanged: (value) => ({
+    type: dashboardActions.TAB_INDEX_CHANGED,
     value,
   }),
 
@@ -11,4 +11,5 @@ const dashboardActions = {
     sortBy,
   }),
 };
+
 export default dashboardActions;
