@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-
 import CardInfo from '../../components/bodhi-dls/cardInfo';
 import CardFinished from '../../components/bodhi-dls/cardFinished';
 import ProgressBar from '../../components/bodhi-dls/progressBar';
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
-import dashboardActions from '../../redux/dashboard/actions';
-import stateActions from '../../redux/state/actions';
+import topicActions from '../../redux/Topic/actions';
 import graphqlActions from '../../redux/graphql/actions';
+import stateActions from '../../redux/state/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
@@ -39,8 +38,8 @@ class TopicPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getTopicsReturn,
-      calculateBotWinningsReturn,
-      calculateQtumWinningsReturn,
+      botWinnings,
+      qtumWinnings,
       syncBlockTime,
     } = nextProps;
 
@@ -55,8 +54,8 @@ class TopicPage extends React.Component {
     }
 
     const topic = _.find(getTopicsReturn, { address: this.state.address });
-    topic.botWinnings = calculateBotWinningsReturn;
-    topic.qtumWinnings = calculateQtumWinningsReturn;
+    topic.botWinnings = botWinnings;
+    topic.qtumWinnings = qtumWinnings;
 
     this.pageConfiguration(topic);
   }
@@ -160,10 +159,10 @@ class TopicPage extends React.Component {
     try {
       const {
         selectedWalletAddress,
-        onCalculateWinnings,
+        calculateWinnings,
       } = this.props;
 
-      onCalculateWinnings(this.state.address, selectedWalletAddress);
+      calculateWinnings(this.state.address, selectedWalletAddress);
     } catch (err) {
       console.log(err.message);
     }
@@ -190,6 +189,8 @@ class TopicPage extends React.Component {
    */
   pageConfiguration(topic) {
     const { syncBlockTime } = this.props;
+
+    console.log(topic);
 
     if (topic) {
       let config;
@@ -226,7 +227,8 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `${this.props.intl.formatMessage({ id: 'cardfinish.withdraw' })} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+          text: `${this.props.intl.formatMessage({ id: 'cardfinish.withdraw' })} 
+            ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
             & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
@@ -252,9 +254,9 @@ TopicPage.propTypes = {
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   selectedWalletAddress: PropTypes.string,
-  onCalculateWinnings: PropTypes.func,
-  calculateBotWinningsReturn: PropTypes.number,
-  calculateQtumWinningsReturn: PropTypes.number,
+  calculateWinnings: PropTypes.func,
+  botWinnings: PropTypes.number,
+  qtumWinnings: PropTypes.number,
   clearTxReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
@@ -271,15 +273,15 @@ TopicPage.defaultProps = {
   selectedWalletAddress: undefined,
   clearTxReturn: undefined,
   clearEditingToggled: undefined,
-  onCalculateWinnings: undefined,
-  calculateBotWinningsReturn: undefined,
-  calculateQtumWinningsReturn: undefined,
+  calculateWinnings: undefined,
+  botWinnings: undefined,
+  qtumWinnings: undefined,
   txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  calculateBotWinningsReturn: state.State.get('calculate_bot_winnings_return'),
-  calculateQtumWinningsReturn: state.State.get('calculate_qtum_winnings_return'),
+  botWinnings: state.State.get('botWinnings'),
+  qtumWinnings: state.State.get('qtumWinnings'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
@@ -290,13 +292,13 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    calculateWinnings: (contractAddress, senderAddress) =>
+      dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
     getTopics: () => dispatch(graphqlActions.getTopics()),
     createWithdrawTx: (topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
-    onCalculateWinnings: (contractAddress, senderAddress) =>
-      dispatch(stateActions.onCalculateWinnings(contractAddress, senderAddress)),
   };
 }
 

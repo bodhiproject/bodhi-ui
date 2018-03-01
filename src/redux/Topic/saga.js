@@ -4,23 +4,24 @@ import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../network/routes';
-import Config from '../../config/app';
 
-export function* calculateWinningsRequestHandler() {
-  yield takeEvery(actions.CALCULATE_WINNINGS, function* onCalculateWinningsRequest(action) {
-    const {
-      contractAddress,
-      senderAddress,
-    } = action.payload;
-
+export function* calculateWinningsHandler() {
+  yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
     try {
+      const {
+        contractAddress,
+        senderAddress,
+      } = action.params;
+
       const options = {
         method: 'POST',
         body: JSON.stringify({
           contractAddress,
           senderAddress,
         }),
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       };
 
       const result = yield call(request, Routes.winnings, options);
@@ -35,17 +36,17 @@ export function* calculateWinningsRequestHandler() {
         type: actions.CALCULATE_WINNINGS_RETURN,
         value,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
-        value: { error: error.message ? error.message : '' },
+        error: err.message,
       });
     }
   });
 }
 
-export default function* stateSaga() {
+export default function* topicSaga() {
   yield all([
-    fork(calculateWinningsRequestHandler),
+    fork(calculateWinningsHandler),
   ]);
 }
