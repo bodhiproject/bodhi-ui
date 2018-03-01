@@ -106,6 +106,7 @@
     "promise": "8.0.1",
     "react-dev-utils": "^3.1.0",
     "react-error-overlay": "^1.0.6",
+    "react-intl-translations-manager": "^5.0.1",
     "redux-mock-store": "^1.2.3",
     "script-ext-html-webpack-plugin": "^1.8.3",
     "style-loader": "0.18.2",
@@ -122,8 +123,8 @@
     "test": "node scripts/test.js --env=jsdom",
     "lint:fix": "eslint --fix --",
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
-    "build:lang": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
-    "build:langs": "npm run extract-messages && npm run build:lang"
+    "manage:translations": "node ./scripts/translationRunner.js",
+    "build:langs": "npm run extract-messages && npm run manage:translations"
   },
   "jest": {
     "collectCoverageFrom": [
