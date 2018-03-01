@@ -265,7 +265,7 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-  selectedWalletAddress: state.App.get('selected_wallet_address'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   txReturn: state.Graphql.get('txReturn'),
   botWinnings: state.Topic.get('botWinnings'),

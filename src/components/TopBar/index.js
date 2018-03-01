@@ -244,7 +244,7 @@ Topbar.defaultProps = {
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  selectedWalletAddress: state.App.get('selected_wallet_address'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

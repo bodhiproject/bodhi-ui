@@ -5,10 +5,9 @@ import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
 import appActions from '../../redux/App/actions';
-import graphqlActions from '../../redux/Graphql/actions';
+import dashboardActions from '../../redux/Dashboard/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
-import { Token, OracleStatus, SortBy } from '../../constants';
 
 let syncInfoInterval;
 
@@ -22,7 +21,6 @@ class GlobalHub extends React.PureComponent {
     this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
     this.pollSyncInfo = this.pollSyncInfo.bind(this);
     this.updateBalances = this.updateBalances.bind(this);
-    this.getActionableItemCount = this.getActionableItemCount.bind(this);
   }
 
   componentWillMount() {
@@ -41,7 +39,12 @@ class GlobalHub extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { initSyncing, syncBlockNum } = this.props;
+    const {
+      initSyncing,
+      syncBlockNum,
+      getActionableItemCount,
+      selectedWalletAddress,
+    } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     if (initSyncing && !nextProps.initSyncing) {
@@ -52,8 +55,15 @@ class GlobalHub extends React.PureComponent {
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
       || (initSyncing && !nextProps.initSyncing)) {
       this.updateBalances(nextProps.walletAddrs);
-      this.getActionableItemCount();
+
+      // Gets the actionable items for the My Activities badge
+      if (!_.isEmpty(nextProps.selectedWalletAddress)) {
+        getActionableItemCount(nextProps.selectedWalletAddress);
+      }
     }
+
+    // TODO: use nextProps.actionableItemCount in TopBar for My Activities badge
+    console.log('action count', nextProps.actionableItemCount);
   }
 
   render() {
@@ -97,21 +107,6 @@ class GlobalHub extends React.PureComponent {
       });
     }
   }
-
-  getActionableItemCount() {
-    const {
-      getTopics,
-      getOracles,
-    } = this.props;
-
-    getTopics([
-      { status: OracleStatus.Withdraw },
-    ]);
-    getOracles([
-      { token: Token.Qtum, status: OracleStatus.WaitResult },
-      { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-    ]);
-  }
 }
 
 GlobalHub.propTypes = {
@@ -119,24 +114,26 @@ GlobalHub.propTypes = {
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
   walletAddrs: PropTypes.array,
+  selectedWalletAddress: PropTypes.string,
   getSyncInfo: PropTypes.func,
   onSyncInfo: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
-  getTopics: PropTypes.func,
-  getOracles: PropTypes.func,
+  getActionableItemCount: PropTypes.func,
+  actionableItemCount: PropTypes.number,
 };
 
 GlobalHub.defaultProps = {
   client: undefined,
   syncBlockNum: undefined,
   walletAddrs: [],
+  selectedWalletAddress: undefined,
   getSyncInfo: undefined,
   onSyncInfo: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
-  getTopics: undefined,
-  getOracles: undefined,
+  getActionableItemCount: undefined,
+  actionableItemCount: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -144,8 +141,8 @@ const mapStateToProps = (state) => ({
   initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddrs: state.App.get('walletAddrs'),
-  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  actionableItemCount: state.Dashboard.get('actionableItemCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -153,8 +150,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
-  getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
-  getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+  getActionableItemCount: (walletAddress) => dispatch(dashboardActions.getActionableItemCount(walletAddress)),
 });
 
 export default compose(
