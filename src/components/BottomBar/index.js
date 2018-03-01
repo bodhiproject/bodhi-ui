@@ -41,13 +41,12 @@ class BottomBar extends React.PureComponent {
     const { classes, syncBlockNum, syncBlockTime } = this.props;
 
     return (
-      syncBlockTime && syncBlockTime ?
-        <Paper className={classes.bottomBarWrapper}>
-          <Grid container>
-            {this.renderNetworkConnection()}
-            {this.renderBlockInfo()}
-          </Grid>
-        </Paper> : null
+      <Paper className={classes.bottomBarWrapper}>
+        <Grid container>
+          {this.renderNetworkConnection()}
+          {syncBlockTime && syncBlockTime ? this.renderBlockInfo() : null}
+        </Grid>
+      </Paper>
     );
   }
 
@@ -59,9 +58,9 @@ class BottomBar extends React.PureComponent {
 
     return (
       <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
-        <Typography varient="body1">
-          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottombar.blockNum" />: {blockNum}</span>
-          <FormattedMessage id="bottombar.blockTime" />: {blockTime}
+        <Typography variant="body1">
+          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" />: {blockNum}</span>
+          <FormattedMessage id="bottomBar.blockTime" />: {blockTime}
         </Typography>
       </Grid>
     );
@@ -73,19 +72,19 @@ class BottomBar extends React.PureComponent {
     if (navigator.onLine) {
       return (
         <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
-          <Typography varient="body1">
+          <Typography variant="body1">
             <CheckCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'online')} />
-            <span><FormattedMessage id="bottombar.online" /></span>
+            <span><FormattedMessage id="bottomBar.online" /></span>
           </Typography>
         </Grid>
       );
     }
 
     return (
-      <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
-        <Typography varient="body1">
-          <RemoveCircleIcon fontSize className={classes.bottomBarNetworkIcon} />
-          <span><FormattedMessage id="bottombar.offline" /></span>
+      <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
+        <Typography variant="body1">
+          <RemoveCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'offline')} />
+          <span><FormattedMessage id="bottomBar.offline" /></span>
         </Typography>
       </Grid>
     );

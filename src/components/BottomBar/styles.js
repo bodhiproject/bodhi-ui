@@ -9,7 +9,10 @@ const styles = (theme) => ({
   bottomBarNetworkIcon: {
     marginRight: '4px',
     '&.online': {
-      color: theme.palette.primary.main,
+      color: theme.palette.secondary.main,
+    },
+    '&.offline': {
+      color: 'red',
     },
   },
   bottomBarBlockInfoWrapper: {
