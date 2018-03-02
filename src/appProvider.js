@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ConnectedRouter } from 'react-router-redux';
-import { IntlProvider, FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import { LocaleProvider } from 'antd';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
@@ -17,7 +17,6 @@ import '../src/style/styles.less';
 
 const defaultidx = localStorage.getItem('localindex') || 0;
 const locales = [AppLocale.en, AppLocale.zh];
-let currentAppLocale;
 class AppProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -35,18 +34,20 @@ class AppProvider extends React.Component {
   render() {
     return (
       <MuiThemeProvider theme={bodhiTheme}>
-        <IntlProvider locale={locales[this.state.locale].locale} messages={locales[this.state.locale].messages}>
-          <ApolloProvider client={graphClient}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <Route
-                  path="/"
-                  render={(props) => (<App match={props.match} handler={this.handler} />)}
-                />
-              </ConnectedRouter>
-            </Provider>
-          </ApolloProvider>
-        </IntlProvider>
+        <LocaleProvider locale={locales[this.state.locale].antd}>
+          <IntlProvider locale={locales[this.state.locale].locale} messages={locales[this.state.locale].messages}>
+            <ApolloProvider client={graphClient}>
+              <Provider store={store}>
+                <ConnectedRouter history={history}>
+                  <Route
+                    path="/"
+                    render={(props) => (<App match={props.match} handler={this.handler} />)}
+                  />
+                </ConnectedRouter>
+              </Provider>
+            </ApolloProvider>
+          </IntlProvider>
+        </LocaleProvider>
       </MuiThemeProvider>
     );
   }
