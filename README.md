@@ -92,7 +92,7 @@ Then put `this.props.intl.formatMessage(messages.betstartblockmsg)` at the place
 
 Run `run build:langs`
 
-look at the terminal see the strings you don't translate and open the corresponding file to translate it.
+update the translated string in the corresponding language file
 
 The language file is in `./src/languageProvider/locales`
 
