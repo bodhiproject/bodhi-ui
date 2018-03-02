@@ -215,7 +215,7 @@ export function* createWithdrawTxHandler() {
     try {
       const tx = yield call(
         createWithdrawTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.senderAddress,
       );
