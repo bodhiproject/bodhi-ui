@@ -69,9 +69,10 @@ const graphqlActions = {
 
   CREATE_VOTE_TX: 'CREATE_VOTE_TX',
   CREATE_VOTE_TX_RETURN: 'CREATE_VOTE_TX_RETURN',
-  createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) => ({
+  createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) => ({
     type: graphqlActions.CREATE_VOTE_TX,
     params: {
+      version,
       topicAddress,
       oracleAddress,
       resultIndex,

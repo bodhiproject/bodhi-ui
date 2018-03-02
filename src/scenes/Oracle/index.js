@@ -383,7 +383,14 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createVoteTx(oracle.topicAddress, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createVoteTx(
+      oracle.version,
+      oracle.topicAddress,
+      oracle.address,
+      selectedIndex,
+      amount,
+      this.getCurrentWalletAddr()
+    );
   }
 
   finalizeResult() {
@@ -448,8 +455,8 @@ function mapDispatchToProps(dispatch) {
         consensusThreshold,
         senderAddress
       )),
-    createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),

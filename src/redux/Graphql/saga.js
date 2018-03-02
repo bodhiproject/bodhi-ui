@@ -164,7 +164,7 @@ export function* createVoteTxHandler() {
 
       const tx = yield call(
         createVoteTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.oracleAddress,
         action.params.resultIndex,
