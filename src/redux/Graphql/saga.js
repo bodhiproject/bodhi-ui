@@ -134,7 +134,7 @@ export function* createSetResultTxHandler() {
 
       const tx = yield call(
         createSetResultTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.oracleAddress,
         action.params.index,

@@ -55,9 +55,10 @@ const graphqlActions = {
 
   CREATE_SET_RESULT_TX: 'CREATE_SET_RESULT_TX',
   CREATE_SET_RESULT_TX_RETURN: 'CREATE_SET_RESULT_TX_RETURN',
-  createSetResultTx: (topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
+  createSetResultTx: (version, topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
     type: graphqlActions.CREATE_SET_RESULT_TX,
     params: {
+      version,
       topicAddress,
       oracleAddress,
       index,

@@ -369,6 +369,7 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
+      oracle.version,
       oracle.topicAddress,
       oracle.address,
       selectedIndex,
@@ -438,8 +439,9 @@ function mapDispatchToProps(dispatch) {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     createBetTx: (version, contractAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
-    createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+    createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
       dispatch(graphqlActions.createSetResultTx(
+        version,
         topicAddress,
         oracleAddress,
         resultIndex,
