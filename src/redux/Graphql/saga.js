@@ -191,7 +191,7 @@ export function* createFinalizeResultTxHandler() {
     try {
       const tx = yield call(
         createFinalizeResultTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.oracleAddress,
         action.params.senderAddress,
       );
