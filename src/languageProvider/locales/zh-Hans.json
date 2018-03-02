@@ -1,4 +1,8 @@
 {
+  "bottomBar.blockNum": "当前区块数",
+  "bottomBar.blockTime": "当前区块时间",
+  "bottomBar.offline": "离线",
+  "bottomBar.online": "在线",
   "bottombutton.final": "最终设定",
   "bottombutton.placebet": "下注",
   "bottombutton.setresult": "设置结果",

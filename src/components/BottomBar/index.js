@@ -59,8 +59,8 @@ class BottomBar extends React.PureComponent {
     return (
       <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
         <Typography variant="body1">
-          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block" />: {blockNum}</span>
-          <FormattedMessage id="bottomBar.blockTime" />: {blockTime}
+          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />: {blockNum}</span>
+          <FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime}
         </Typography>
       </Grid>
     );
