@@ -30,7 +30,6 @@ class GraphMutation {
 }
 
 export function createTopic(
-  version,
   name,
   results,
   centralizedOracle,
@@ -41,7 +40,6 @@ export function createTopic(
   senderAddress
 ) {
   const args = {
-    version,
     name,
     options: results,
     resultSetterAddress: centralizedOracle,

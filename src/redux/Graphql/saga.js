@@ -76,7 +76,6 @@ export function* createTopicTxHandler() {
     try {
       const tx = yield call(
         createTopic,
-        Config.defaults.version,
         action.params.name,
         action.params.results,
         action.params.centralizedOracle,
