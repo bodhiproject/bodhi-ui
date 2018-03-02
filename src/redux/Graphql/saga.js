@@ -105,7 +105,7 @@ export function* createBetTxHandler() {
     try {
       const tx = yield call(
         createBetTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.contractAddress,
         action.params.index,
         action.params.amount,

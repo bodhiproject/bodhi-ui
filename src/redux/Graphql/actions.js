@@ -42,9 +42,10 @@ const graphqlActions = {
 
   CREATE_BET_TX: 'CREATE_BET_TX',
   CREATE_BET_TX_RETURN: 'CREATE_BET_TX_RETURN',
-  createBetTx: (contractAddress, index, amount, senderAddress) => ({
+  createBetTx: (version, contractAddress, index, amount, senderAddress) => ({
     type: graphqlActions.CREATE_BET_TX,
     params: {
+      version,
       contractAddress,
       index,
       amount,
