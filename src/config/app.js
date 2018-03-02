@@ -16,6 +16,5 @@ module.exports = {
   },
   defaults: {
     averageBlockTime: 142.01324503311258,
-    version: 0, // TODO: remove and fetch from API or have GraphQL return this
   },
 };
