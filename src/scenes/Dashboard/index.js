@@ -85,6 +85,22 @@ const messages = defineMessages({
     id: 'str.end',
     defaultMessage: 'Ended',
   },
+  pbet: {
+    id: 'bottombutton.placebet',
+    defaultMessage: 'Place Bet',
+  },
+  pset: {
+    id: 'bottombutton.setresult',
+    defaultMessage: 'Set Result',
+  },
+  pvote: {
+    id: 'bottombutton.vote',
+    defaultMessage: 'Place Vote',
+  },
+  pfinal: {
+    id: 'bottombutton.final',
+    defaultMessage: 'Finalize Result',
+  },
 });
 
 class Dashboard extends React.Component {
@@ -243,22 +259,22 @@ class Dashboard extends React.Component {
       switch (tabIndex) {
         case TAB_BET: {
           endText = `${this.props.intl.formatMessage(messages.betend)} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = <FormattedMessage id="bottombutton.placebet" defaultMessage="Place Bet" />;
+          buttonText = this.props.intl.formatMessage(messages.pbet);
           break;
         }
         case TAB_SET: {
           endText = `${this.props.intl.formatMessage(messages.resultsetend)} ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
-          buttonText = <FormattedMessage id="bottombutton.setresult" defaultMessage="Set Result" />;
+          buttonText = this.props.intl.formatMessage(messages.pset);
           break;
         }
         case TAB_VOTE: {
           endText = `${this.props.intl.formatMessage(messages.voteend)} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = <FormattedMessage id="bottombutton.vote" defaultMessage="Place Vote" />;
+          buttonText = this.props.intl.formatMessage(messages.pvote);
           break;
         }
         case TAB_FINALIZE: {
           endText = `${this.props.intl.formatMessage(messages.voteended)} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = <FormattedMessage id="bottombutton.final" defaultMessage="Finalize Result" />;
+          buttonText = this.props.intl.formatMessage(messages.pfinal);
           break;
         }
         default: {
