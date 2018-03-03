@@ -26,23 +26,23 @@ const mockTotals = [
 const mockRows = [
   {
     address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    qtum: 12345,
-    bot: 12345,
+    qtum: 1234567890,
+    bot: 1234567890,
   },
   {
     address: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
-    qtum: 12345,
-    bot: 12345,
+    qtum: 1234567890,
+    bot: 1234567890,
   },
   {
     address: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
-    qtum: 12345,
-    bot: 12345,
+    qtum: 1234567890,
+    bot: 1234567890,
   },
   {
     address: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
-    qtum: 12345,
-    bot: 12345,
+    qtum: 1234567890,
+    bot: 1234567890,
   },
 ];
 
