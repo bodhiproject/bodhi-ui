@@ -91,11 +91,29 @@ class NavBar extends React.PureComponent {
   }
 
   getTotalQTUM() {
-    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.qtum).toFixed(2);
+    const {
+      walletAddrs,
+    } = this.props;
+
+    let total = 0;
+    if (walletAddrs && walletAddrs.length) {
+      total = _.sumBy(this.props.walletAddrs, (wallet) => wallet.qtum ? wallet.qtum : 0);
+    }
+
+    return total.toFixed(2);
   }
 
   getTotalBOT() {
-    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.bot).toFixed(2);
+    const {
+      walletAddrs,
+    } = this.props;
+
+    let total = 0;
+    if (walletAddrs && walletAddrs.length) {
+      total = _.sumBy(this.props.walletAddrs, (wallet) => wallet.bot ? wallet.bot : 0);
+    }
+
+    return total.toFixed(2);
   }
 }
 
