@@ -8,10 +8,8 @@ const styles = (theme) => ({
     padding: theme.padding.lg.px,
     overflowX: 'hidden',
   },
-  title: {
-    marginBottom: theme.padding.sm.px,
-  },
   table: {
+    marginTop: theme.padding.sm.px,
     border: theme.border,
   },
   tableHeader: {
@@ -22,27 +20,13 @@ const styles = (theme) => ({
     fontWeight: theme.typography.fontWeightBold,
   },
   tableRow: {
-    height: 42,
-    padding: theme.padding.unit.px,
+    paddingTop: theme.padding.xs.px,
+    paddingBottom: theme.padding.sm.px,
     background: theme.palette.background.paper,
     borderBottom: theme.border,
   },
-  tableRowCopyButton: {
-    color: theme.palette.primary.main,
-  },
-  tableRowCopyButtonIcon: {
-    width: 12,
-    height: 12,
-    marginRight: theme.padding.unit.px,
-  },
-  tableRowCopyButtonText: {
-    color: theme.palette.primary.main,
-  },
-  tableRowActionButton: {
-    minHeight: 24,
-    fontSize: 12,
-    marginRight: theme.padding.unit.px,
-    borderRadius: 2,
+  tableRowCell: {
+    padding: 0,
   },
 });
 

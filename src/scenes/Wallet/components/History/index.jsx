@@ -71,7 +71,7 @@ class WalletHistory extends React.Component {
     return (
       <Paper className={classes.rootPaper}>
         <Grid container spacing={0} className={classes.containerGrid}>
-          <Typography variant="title" className={classes.title}>
+          <Typography variant="title">
             <FormattedMessage id="walletHistory.transactionHistory" />
           </Typography>
           <Table className={classes.table}>
@@ -131,25 +131,39 @@ class WalletHistory extends React.Component {
     return data.map((item) => (
       <TableRow key={item.address} className={classes.tableRow}>
         <TableCell>
-          <Typography variant="body1">{getShortLocalDateTimeString(item.time)}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {getShortLocalDateTimeString(item.time)}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.from}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.from}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.to}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.to}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.token}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.token}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.amount}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.amount}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.fee}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.fee}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{item.status}</Typography>
+          <Typography variant="body1" className={classes.tableRowCell}>
+            {item.status}
+          </Typography>
         </TableCell>
       </TableRow>
     ));
