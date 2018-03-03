@@ -5,7 +5,70 @@ import actions from './actions';
 import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../network/graphMutation';
-import { decimalToBotoshi } from '../../helpers/utility';
+import Config from '../../config/app';
+import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
+
+// Send allTopics query
+export function* getTopicsHandler() {
+  yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
+    try {
+      const result = yield call(queryAllTopics, action.filters, action.orderBy);
+      const topics = _.map(result, processTopic);
+
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: topics,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
+function processTopic(topic) {
+  if (!topic) {
+    return undefined;
+  }
+
+  const newTopic = _.assign({}, topic);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
+  newTopic.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
+  newTopic.oracles = _.map(topic.oracles, processOracle);
+  return newTopic;
+}
+
+export function* getOraclesHandler() {
+  yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
+    try {
+      const result = yield call(queryAllOracles, action.filters, action.orderBy);
+      const oracles = _.map(result, processOracle);
+
+      yield put({
+        type: actions.GET_ORACLES_RETURN,
+        value: oracles,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_ORACLES_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
+function processOracle(oracle) {
+  if (!oracle) {
+    return undefined;
+  }
+
+  const newOracle = _.assign({}, oracle);
+  newOracle.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
+  newOracle.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
+  return newOracle;
+}
 
 // Sends createTopic mutation
 export function* createTopicTxHandler() {
