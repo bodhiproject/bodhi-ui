@@ -8,7 +8,7 @@ const ZhLan = {
     'bottomBar.offline': '离线',
     'bottomBar.blockNum': '当前区块数',
     'bottomBar.blockTime': '当前区块时间',
-    'navBar.activities': '交易及账户',
+    'navBar.activities': '账户及交易',
     'dashboard.create': '创建事件',
     'dashboard.Bet': '下注',
     'dashboard.Set': '设置',

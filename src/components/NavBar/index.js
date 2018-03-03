@@ -55,7 +55,7 @@ class NavBar extends React.PureComponent {
           <div className={classes.navBarRightWrapper}>
             <Button className={classes.navBarWalletButton}>
               <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
-              {this.getTotalQTUM()} QTUM / {this.getTotalBOT()} BOT
+              {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
             </Button>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" />
@@ -91,11 +91,11 @@ class NavBar extends React.PureComponent {
   }
 
   getTotalQTUM() {
-    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.qtum);
+    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.qtum).toFixed(2);
   }
 
   getTotalBOT() {
-    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.bot);
+    return _.sumBy(this.props.walletAddrs, (wallet) => wallet.bot).toFixed(2);
   }
 }
 
