@@ -28,15 +28,13 @@ const styles = (theme) => ({
     background: theme.palette.background.grey,
   },
   tableRow: {
+    height: 42,
+    padding: theme.padding.unit.px,
     background: theme.palette.background.paper,
     borderBottom: theme.border,
     '&.dark': {
       background: theme.palette.background.grey,
     },
-  },
-  tableRowCell: {
-    paddingTop: theme.padding.sm.px,
-    paddingBottom: theme.padding.sm.px,
   },
   tableRowCopyButton: {
     color: theme.palette.primary.main,

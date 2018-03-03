@@ -103,7 +103,7 @@ class MyWallet extends React.Component {
 
                 return (<TableRow key={item.address} className={className}>
                   <TableCell className={classes.tableRowCell}>
-                    <Typography variant="body1" className={classes.tableRowAddressText}>{item.address}</Typography>
+                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.address}</Typography>
                   </TableCell>
                   <TableCell>
                     <Button size="small" className={classes.tableRowCopyButton}>
@@ -111,8 +111,12 @@ class MyWallet extends React.Component {
                       <FormattedMessage id="myWallet.copy" />
                     </Button>
                   </TableCell>
-                  <TableCell numeric>{item.qtum}</TableCell>
-                  <TableCell numeric>{item.bot}</TableCell>
+                  <TableCell numeric>
+                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.qtum}</Typography>
+                  </TableCell>
+                  <TableCell numeric>
+                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.bot}</Typography>
+                  </TableCell>
                   <TableCell>
                     <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
                       <FormattedMessage id="myWallet.deposit" />
