@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Select, Button, Menu, Icon, Dropdown } from 'antd';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -52,9 +53,11 @@ class TopActions extends Component {
       <div className="tabBtnGroup">
         <Row>
           <Col xs={20}>
-            <Button type="primary" size="large">
-              + <FormattedMessage id="topbar.create" />
-            </Button>
+            <Link to="/create-topic" >
+              <Button type="primary" size="large">
+                + <FormattedMessage id="topbar.create" />
+              </Button>
+            </Link>
           </Col>
           <Col xs={4}>
             <div className="controlBtnGroup">
