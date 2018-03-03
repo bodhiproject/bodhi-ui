@@ -75,23 +75,23 @@ class MyWallet extends React.Component {
             <TableHead>
               <TableRow className={classes.tableHeader}>
                 <TableCell>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
+                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.address" />
                   </Typography>
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell numeric>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
+                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.qtum" />
                   </Typography>
                 </TableCell>
                 <TableCell numeric>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
+                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.bot" />
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
+                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.actions" />
                   </Typography>
                 </TableCell>
@@ -112,10 +112,10 @@ class MyWallet extends React.Component {
                   <TableCell numeric>{item.qtum}</TableCell>
                   <TableCell numeric>{item.bot}</TableCell>
                   <TableCell>
-                    <Button variant="raised" size="small" className={classes.tableRowActionButton}>
+                    <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
                       <FormattedMessage id="myWallet.deposit" />
                     </Button>
-                    <Button variant="raised" size="small" className={classes.tableRowActionButton}>
+                    <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
                       <FormattedMessage id="myWallet.withdraw" />
                     </Button>
                   </TableCell>

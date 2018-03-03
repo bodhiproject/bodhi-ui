@@ -100,6 +100,11 @@ const bodhiTheme = createMuiTheme({
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
+    headerTable: {
+      fontSize: px(fontSizeMeta),
+      fontWeight: 700,
+      color: textColorGrey,
+    },
     body1: {
       fontSize: px(fontSizeMeta),
       fontWeight: 400,

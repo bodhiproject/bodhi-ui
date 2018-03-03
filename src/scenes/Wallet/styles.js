@@ -29,9 +29,6 @@ const styles = (theme) => ({
   tableHeader: {
     background: theme.palette.background.grey,
   },
-  tableHeaderItemText: {
-    fontWeight: theme.typography.fontWeightBold,
-  },
   tableRowCell: {
     paddingTop: theme.padding.sm.px,
     paddingBottom: theme.padding.sm.px,
@@ -43,7 +40,9 @@ const styles = (theme) => ({
     marginRight: theme.padding.unit.px,
   },
   tableRowActionButton: {
-    marginRight: theme.padding.xs.px,
+    minHeight: 24,
+    fontSize: 12,
+    marginRight: theme.padding.unit.px,
     borderRadius: 2,
   },
 });
