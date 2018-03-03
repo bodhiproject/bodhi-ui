@@ -6,10 +6,6 @@ const styles = (theme) => ({
   containerGrid: {
     padding: theme.padding.lg.px,
     overflowX: 'hidden',
-    '&.right': {
-      borderLeft: theme.border,
-      textAlign: 'right',
-    },
   },
   myBalanceTitle: {
     marginBottom: theme.padding.md.px,
@@ -31,12 +27,12 @@ const styles = (theme) => ({
     height: 40,
     background: theme.palette.background.grey,
   },
-  tableRowLight: {
+  tableRow: {
+    background: theme.palette.background.paper,
     borderBottom: theme.border,
-  },
-  tableRowDark: {
-    background: theme.palette.background.grey,
-    borderBottom: theme.border,
+    '&.dark': {
+      background: theme.palette.background.grey,
+    },
   },
   tableRowCell: {
     paddingTop: theme.padding.sm.px,

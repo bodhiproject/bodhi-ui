@@ -99,7 +99,7 @@ class MyWallet extends React.Component {
             </TableHead>
             <TableBody>
               {mockRows.map((item, index) => {
-                const className = index % 2 === 0 ? classes.tableRowLight : classes.tableRowDark;
+                const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
 
                 return (<TableRow key={item.address} className={className}>
                   <TableCell className={classes.tableRowCell}>
