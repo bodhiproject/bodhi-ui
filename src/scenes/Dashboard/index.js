@@ -10,7 +10,6 @@ import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import BottomButtonWidget from '../Widgets/bottom-button';
 import SingleProgressWidget from '../Widgets/progress/progress-single';
 import ReportsWidget from '../Widgets/report/report-widget';
-import TabBtnGroup from '../../components/bodhi-dls/tabBtnGroup';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import { Token, OracleStatus, SortBy } from '../../constants';
@@ -101,19 +100,6 @@ class Dashboard extends React.Component {
 
     return (
       <div>
-        <TabBtnGroup
-          buttons={[{
-            text: 'Bet',
-          }, {
-            text: 'Set',
-          }, {
-            text: 'Vote',
-          }, {
-            text: 'Finalize',
-          }, {
-            text: 'Withdraw',
-          }]}
-        />
         <Row
           gutter={28}
           justify="center"

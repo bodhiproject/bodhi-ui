@@ -21,10 +21,10 @@ class AppProvider extends React.Component {
   constructor(props) {
     super(props);
     this.state = { locale: defaultidx };
-    this.handler = this.handler.bind(this);
+    this.langHandler = this.langHandler.bind(this);
   }
 
-  handler() {
+  langHandler() {
     this.setState({
       locale: (this.state.locale + 1) % 2,
     });
@@ -41,7 +41,7 @@ class AppProvider extends React.Component {
                 <ConnectedRouter history={history}>
                   <Route
                     path="/"
-                    render={(props) => (<App match={props.match} handler={this.handler} />)}
+                    render={(props) => (<App match={props.match} langHandler={this.langHandler} />)}
                   />
                 </ConnectedRouter>
               </Provider>

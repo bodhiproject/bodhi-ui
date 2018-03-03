@@ -61,9 +61,6 @@ class GlobalHub extends React.PureComponent {
         getActionableItemCount(nextProps.selectedWalletAddress);
       }
     }
-
-    // TODO: use nextProps.actionableItemCount in TopBar for My Activities badge
-    console.log('action count', nextProps.actionableItemCount);
   }
 
   render() {
@@ -120,7 +117,6 @@ GlobalHub.propTypes = {
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
   getActionableItemCount: PropTypes.func,
-  actionableItemCount: PropTypes.number,
 };
 
 GlobalHub.defaultProps = {
@@ -133,7 +129,6 @@ GlobalHub.defaultProps = {
   listUnspent: undefined,
   getBotBalance: undefined,
   getActionableItemCount: undefined,
-  actionableItemCount: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -142,7 +137,6 @@ const mapStateToProps = (state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddrs: state.App.get('walletAddrs'),
   selectedWalletAddress: state.App.get('selectedWalletAddress'),
-  actionableItemCount: state.Dashboard.get('actionableItemCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
