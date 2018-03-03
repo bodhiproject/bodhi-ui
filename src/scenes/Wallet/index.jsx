@@ -98,8 +98,10 @@ class MyWallet extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockRows.map((item) => (
-                <TableRow key={item.address}>
+              {mockRows.map((item, index) => {
+                const className = index % 2 === 0 ? classes.tableRowLight : classes.tableRowDark;
+
+                return (<TableRow key={item.address} className={className}>
                   <TableCell className={classes.tableRowCell}>
                     <Typography variant="body1" className={classes.tableRowAddressText}>{item.address}</Typography>
                   </TableCell>
@@ -119,8 +121,8 @@ class MyWallet extends React.Component {
                       <FormattedMessage id="myWallet.withdraw" />
                     </Button>
                   </TableCell>
-                </TableRow>
-              ))}
+                </TableRow>);
+              })}
             </TableBody>
           </Table>
         </Grid>

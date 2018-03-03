@@ -24,10 +24,19 @@ const styles = (theme) => ({
     marginBottom: theme.padding.unit.px,
   },
   table: {
+    border: theme.border,
     marginTop: theme.padding.md.px,
   },
   tableHeader: {
+    height: 40,
     background: theme.palette.background.grey,
+  },
+  tableRowLight: {
+    borderBottom: theme.border,
+  },
+  tableRowDark: {
+    background: theme.palette.background.grey,
+    borderBottom: theme.border,
   },
   tableRowCell: {
     paddingTop: theme.padding.sm.px,
