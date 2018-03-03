@@ -122,12 +122,12 @@ class WalletHistory extends React.Component {
       {
         id: 'amount',
         name: 'walletHistory.amount',
-        numeric: true,
+        numeric: false,
       },
       {
         id: 'fee',
-        name: 'walletHistory.transactionFee',
-        numeric: true,
+        name: 'walletHistory.fee',
+        numeric: false,
       },
       {
         id: 'status',
@@ -146,7 +146,6 @@ class WalletHistory extends React.Component {
             <TableCell
               key={column.id}
               numeric={column.numeric}
-              padding="none"
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip

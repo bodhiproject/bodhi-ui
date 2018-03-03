@@ -2,7 +2,7 @@ const styles = (theme) => ({
   rootPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
-    background: theme.palette.background.grey,
+    background: theme.palette.background.default,
   },
   containerGrid: {
     padding: theme.padding.lg.px,
@@ -26,7 +26,6 @@ const styles = (theme) => ({
     borderBottom: theme.border,
   },
   tableRowCell: {
-    padding: 0,
   },
 });
 
