@@ -31,6 +31,7 @@ class NavEventsButtons extends Component {
       <div>{
         this.props.buttons.map((entry, index) => (
           <Button
+            href={window.location.pathname === '/' ? null : '/'}
             key={entry.text}
             data-index={index}
             onClick={this.onBtnClicked}
