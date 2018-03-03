@@ -46,7 +46,7 @@ const mockRows = [
   },
 ];
 
-class MyBalances extends React.Component {
+class WalletHistory extends React.Component {
   constructor(props) {
     super(props);
 
@@ -137,11 +137,11 @@ class MyBalances extends React.Component {
   }
 }
 
-MyBalances.propTypes = {
+WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-MyBalances.defaultProps = {
+WalletHistory.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
@@ -152,4 +152,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(MyBalances)));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(WalletHistory)));

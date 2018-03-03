@@ -2,7 +2,7 @@ const styles = (theme) => ({
   rootPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
-    background: theme.palette.background.paper,
+    background: theme.palette.background.grey,
   },
   containerGrid: {
     padding: theme.padding.lg.px,
