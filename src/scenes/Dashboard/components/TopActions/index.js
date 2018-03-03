@@ -1,17 +1,16 @@
-/* eslint-disable prefer-destructuring */
-
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Select, Button, Menu, Icon, Dropdown } from 'antd';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import dashboardActions from '../../redux/Dashboard/actions';
-import { SortBy } from '../../constants';
+import dashboardActions from '../../../../redux/Dashboard/actions';
+import { SortBy } from '../../../../constants';
 
 const MenuItem = Menu.Item;
 
-class TabBtnGroup extends Component {
+class TopActions extends Component {
   constructor(props) {
     super(props);
 
@@ -19,14 +18,7 @@ class TabBtnGroup extends Component {
       sortOption: undefined,
     };
 
-    this.onTabBtnClicked = this.onTabBtnClicked.bind(this);
     this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
-  }
-
-  onTabBtnClicked(event) {
-    const { index } = event.target.dataset;
-
-    this.props.tabIndexChanged(parseInt(index, 10));
   }
 
   onSortOptionSelected(item) {
@@ -37,17 +29,6 @@ class TabBtnGroup extends Component {
   }
 
   render() {
-    const buttonArray = this.props.buttons.map((entry, index) => (
-      <Button
-        key={entry.text}
-        type={index === _.toNumber(this.props.tabIndex) ? 'primary' : 'default'}
-        onClick={this.onTabBtnClicked}
-        data-index={index}
-      >
-        <FormattedMessage id={`dashboard.${entry.text}`} />
-      </Button>
-    ));
-
     const sortMenu = (
       <Menu onClick={this.onSortOptionSelected}>
         <MenuItem key={SortBy.Ascending}><FormattedMessage id="sort.asc" /></MenuItem>
@@ -72,9 +53,11 @@ class TabBtnGroup extends Component {
       <div className="tabBtnGroup">
         <Row>
           <Col xs={20}>
-            <div className="viewBtnGroup">
-              {buttonArray}
-            </div>
+            <Link to="/create-topic" >
+              <Button type="primary" size="large">
+                + <FormattedMessage id="dashboard.create" />
+              </Button>
+            </Link>
           </Col>
           <Col xs={4}>
             <div className="controlBtnGroup">
@@ -90,30 +73,22 @@ class TabBtnGroup extends Component {
   }
 }
 
-TabBtnGroup.propTypes = {
-  buttons: PropTypes.array.isRequired,
-  tabIndex: PropTypes.number,
-  tabIndexChanged: PropTypes.func,
+TopActions.propTypes = {
   sortOrderChanged: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
 
-TabBtnGroup.defaultProps = {
-  tabIndex: 0,
-  tabIndexChanged: undefined,
+TopActions.defaultProps = {
   sortOrderChanged: undefined,
 };
 
-const mapStateToProps = (state) => ({
-  tabIndex: state.Dashboard.get('tabIndex'),
-});
+const mapStateToProps = (state) => ({});
 
 function mapDispatchToProps(dispatch) {
   return {
-    tabIndexChanged: (index) => dispatch(dashboardActions.tabIndexChanged(index)),
     sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(TabBtnGroup));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(TopActions));

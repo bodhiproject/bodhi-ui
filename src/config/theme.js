@@ -23,6 +23,7 @@ const white = '#FFFFFF';
 
 // neon blue
 const primaryColor = '#585AFA';
+const primaryColorDark = '#4244BB';
 
 // neo teal
 const secondaryColor = '#23DAE0';
@@ -55,7 +56,7 @@ const bodhiTheme = createMuiTheme({
     primary: {
       light: primaryColor,
       main: primaryColor,
-      dark: primaryColor,
+      dark: primaryColorDark,
       contrastText: white,
     },
     secondary: {

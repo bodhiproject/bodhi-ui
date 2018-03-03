@@ -11,7 +11,7 @@ import AppLoad from './load';
 import GlobalHub from './globalHub';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
-import TopBar from '../../components/TopBar/index';
+import NavBar from '../../components/NavBar/index';
 
 const { toggleAll } = appActions;
 
@@ -33,7 +33,7 @@ export class App extends React.PureComponent {
         </Debounce>
         <GlobalHub />
         <AppLoad />
-        <TopBar url={url} handler={this.props.handler} />
+        <NavBar url={url} langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />
         </div>
@@ -47,7 +47,7 @@ App.propTypes = {
   toggleAll: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  handler: PropTypes.func.isRequired,
+  langHandler: PropTypes.func.isRequired,
 };
 
 export default connect((state) => ({ auth: state.Auth }), { toggleAll })(withStyles(styles)(App));
