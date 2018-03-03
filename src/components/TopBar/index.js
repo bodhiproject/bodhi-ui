@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/App/actions';
 import TopbarWrapper from './styles';
 import AppConfig from '../../config/app';
 import { shortenAddress } from '../../helpers/utility';
@@ -244,7 +244,7 @@ Topbar.defaultProps = {
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  selectedWalletAddress: state.App.get('selected_wallet_address'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

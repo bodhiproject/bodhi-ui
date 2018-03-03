@@ -9,9 +9,9 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import graphqlActions from '../../../redux/graphql/actions';
-import stateActions from '../../../redux/state/actions';
-import appActions from '../../../redux/app/actions';
+import graphqlActions from '../../../redux/Graphql/actions';
+import stateActions from '../../../redux/State/actions';
+import appActions from '../../../redux/App/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
 

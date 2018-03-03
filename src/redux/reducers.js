@@ -1,11 +1,13 @@
-import App from './app/reducer';
-import Dashboard from './dashboard/reducer';
-import State from './state/reducer';
-import Graphql from './graphql/reducer';
+import App from './App/reducer';
+import Dashboard from './Dashboard/reducer';
+import Graphql from './Graphql/reducer';
+import State from './State/reducer';
+import Topic from './Topic/reducer';
 
 export default {
   App,
   Dashboard,
-  State,
   Graphql,
+  State,
+  Topic,
 };

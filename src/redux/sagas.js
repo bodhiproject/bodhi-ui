@@ -1,14 +1,14 @@
 import { all } from 'redux-saga/effects';
-import appSagas from './app/saga';
-import dashboardSagas from './dashboard/saga';
-import stateSagas from './state/saga';
-import graphqlSagas from './graphql/saga';
+import appSagas from './App/saga';
+import dashboardSagas from './Dashboard/saga';
+import graphqlSagas from './Graphql/saga';
+import topicSagas from './Topic/saga';
 
 export default function* rootSaga() {
   yield all([
     appSagas(),
     dashboardSagas(),
-    stateSagas(),
     graphqlSagas(),
+    topicSagas(),
   ]);
 }

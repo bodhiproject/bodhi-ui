@@ -14,10 +14,6 @@ export default function stateReducer(state = initState, action) {
     case actions.CLEAR_EDITING_TOGGLED: {
       return state.set('toggled', false);
     }
-    case actions.CALCULATE_WINNINGS_RETURN: {
-      return state.set('calculate_bot_winnings_return', action.value.botWon)
-        .set('calculate_qtum_winnings_return', action.value.qtumWon);
-    }
     default: {
       return state;
     }

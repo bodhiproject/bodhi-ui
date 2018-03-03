@@ -12,14 +12,12 @@ import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
 import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
-import dashboardActions from '../../redux/dashboard/actions';
-import stateActions from '../../redux/state/actions';
-import graphqlActions from '../../redux/graphql/actions';
+import stateActions from '../../redux/State/actions';
+import graphqlActions from '../../redux/Graphql/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
@@ -59,7 +57,7 @@ class OraclePage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      getOraclesSuccess,
+      getOraclesReturn,
       syncBlockTime,
     } = nextProps;
 
@@ -68,7 +66,7 @@ class OraclePage extends React.Component {
       this.executeOraclesRequest();
     }
 
-    this.constructOracleAndConfig(getOraclesSuccess, syncBlockTime);
+    this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
   }
 
   componentWillUnmount() {
@@ -224,13 +222,13 @@ class OraclePage extends React.Component {
   executeOraclesRequest() {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
-    ]);
+    ], undefined);
   }
 
-  constructOracleAndConfig(getOraclesSuccess, syncBlockTime) {
-    const oracle = _.find(getOraclesSuccess, { address: this.state.address });
-    const centralizedOracle = _.find(getOraclesSuccess, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(getOraclesSuccess, { token: Token.Bot }), ['blockNum'], ['asc']);
+  constructOracleAndConfig(getOraclesReturn, syncBlockTime) {
+    const oracle = _.find(getOraclesReturn, { address: this.state.address });
+    const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
 
     if (oracle) {
       const { token, status } = oracle;
@@ -396,14 +394,10 @@ class OraclePage extends React.Component {
 }
 
 OraclePage.propTypes = {
-  getOracles: PropTypes.func,
-  getOraclesSuccess: PropTypes.oneOfType([
-    PropTypes.array, // Result array
-    PropTypes.string, // error message
-    PropTypes.bool, // No result
-  ]),
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  getOracles: PropTypes.func,
+  getOraclesReturn: PropTypes.array,
   createBetTx: PropTypes.func,
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
@@ -419,7 +413,7 @@ OraclePage.propTypes = {
 
 OraclePage.defaultProps = {
   getOracles: undefined,
-  getOraclesSuccess: [],
+  getOraclesReturn: [],
   createBetTx: undefined,
   createSetResultTx: undefined,
   createVoteTx: undefined,
@@ -434,14 +428,14 @@ OraclePage.defaultProps = {
 const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
-  getOraclesSuccess: state.Dashboard.get('allOraclesSuccess') && state.Dashboard.get('allOraclesValue'),
   syncBlockTime: state.App.get('syncBlockTime'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    getOracles: (filters) => dispatch(dashboardActions.getOracles(filters)),
+    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     createBetTx: (contractAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBetTx(contractAddress, index, amount, senderAddress)),
     createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>

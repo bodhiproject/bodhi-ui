@@ -2,29 +2,27 @@ import { Map } from 'immutable';
 import actions from './actions';
 
 const initState = new Map({
-  type: 'get_topics',
-  success: true,
   value: undefined,
 });
 
-export default function authReducer(
-  state = initState,
-  action
-) {
+export default function dashboardReducer(state = initState, action) {
+  // Catch all request errors
+  if (action.error) {
+    return state.set('requestError', action.error);
+  }
+
   switch (action.type) {
-    case actions.GET_TOPICS_SUCCESS:
-      return state.set('success', true).set('value', action.value);
-    case actions.GET_TOPICS_ERROR:
-      return state.set('success', false).set('value', action.value);
-    case actions.GET_ORACLES_SUCCESS:
-      return state.set('allOraclesSuccess', true).set('allOraclesValue', action.value);
-    case actions.GET_ORACLES_ERROR:
-      return state.set('allOraclesSuccess', false).set('allOraclesValue', action.value);
-    case actions.TAB_VIEW_CHANGED:
+    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
+      return state.set('actionableItemCount', action.value);
+    }
+    case actions.TAB_INDEX_CHANGED: {
       return state.set('tabIndex', action.value);
-    case actions.SORT_ORDER_CHANGED:
+    }
+    case actions.SORT_ORDER_CHANGED: {
       return state.set('sortBy', action.sortBy);
-    default:
+    }
+    default: {
       return state;
+    }
   }
 }

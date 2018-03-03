@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
-import dashboardActions from '../../redux/dashboard/actions';
+import dashboardActions from '../../redux/Dashboard/actions';
 import { SortBy } from '../../constants';
 
 const MenuItem = Menu.Item;
@@ -26,7 +26,7 @@ class TabBtnGroup extends Component {
   onTabBtnClicked(event) {
     const { index } = event.target.dataset;
 
-    this.props.tabViewChanged(parseInt(index, 10));
+    this.props.tabIndexChanged(parseInt(index, 10));
   }
 
   onSortOptionSelected(item) {
@@ -93,7 +93,7 @@ class TabBtnGroup extends Component {
 TabBtnGroup.propTypes = {
   buttons: PropTypes.array.isRequired,
   tabIndex: PropTypes.number,
-  tabViewChanged: PropTypes.func,
+  tabIndexChanged: PropTypes.func,
   sortOrderChanged: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -101,7 +101,7 @@ TabBtnGroup.propTypes = {
 
 TabBtnGroup.defaultProps = {
   tabIndex: 0,
-  tabViewChanged: undefined,
+  tabIndexChanged: undefined,
   sortOrderChanged: undefined,
 };
 
@@ -111,7 +111,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    tabViewChanged: (index) => dispatch(dashboardActions.tabViewChanged(index)),
+    tabIndexChanged: (index) => dispatch(dashboardActions.tabIndexChanged(index)),
     sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   };
 }

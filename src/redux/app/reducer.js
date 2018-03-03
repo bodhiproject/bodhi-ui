@@ -13,7 +13,7 @@ const initState = new Map({
   current: preKeys,
   walletAddrs: [],
   walletAddrsIndex: 0,
-  selected_wallet_address: 'wtf',
+  selectedWalletAddress: '',
   syncProgress: 0,
   initSyncing: false,
 });
@@ -25,7 +25,6 @@ export default function appReducer(state = initState, action) {
       addresses.push({ address: action.value, qtum: 0 });
       return state.set('walletAddrs', addresses);
     }
-
     case actions.SELECT_WALLET_ADDRESS: {
       const walletAddrsIndex = action.value;
       const walletAddrs = state.get('walletAddrs');
@@ -34,11 +33,10 @@ export default function appReducer(state = initState, action) {
         && walletAddrsIndex < walletAddrs.length
         && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
         const newState = state.set('walletAddrsIndex', walletAddrsIndex);
-        return newState.set('selected_wallet_address', walletAddrs[walletAddrsIndex].address);
+        return newState.set('selectedWalletAddress', walletAddrs[walletAddrsIndex].address);
       }
-      break;
+      return state;
     }
-
     case actions.LIST_UNSPENT_RETURN: {
       let result = [];
       let newState = state;
@@ -74,8 +72,8 @@ export default function appReducer(state = initState, action) {
       if (_.isEmpty(existingAddresses)) {
         existingAddresses = combinedAddresses;
 
-        // If initalizing, set initial value for selected_wallet_address here
-        newState = state.set('selected_wallet_address', result[state.get('walletAddrsIndex')]
+        // If initalizing, set initial value for selectedWalletAddress here
+        newState = state.set('selectedWalletAddress', result[state.get('walletAddrsIndex')]
           && result[state.get('walletAddrsIndex')].address);
       } else { // Update existing address list if new is different
         _.each(existingAddresses, (item) => {
@@ -86,7 +84,6 @@ export default function appReducer(state = initState, action) {
 
       return newState.set('walletAddrs', existingAddresses);
     }
-
     case actions.GET_BOT_BALANCE_RETURN: {
       const walletAddrs = state.get('walletAddrs');
 
@@ -103,8 +100,7 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddrs', walletAddrs);
     }
-
-    case actions.TOGGLE_ALL:
+    case actions.TOGGLE_ALL: {
       if (state.get('view') !== action.view || action.height !== state.height) {
         const height = action.height ? action.height : state.height;
         return state
@@ -112,8 +108,8 @@ export default function appReducer(state = initState, action) {
           .set('view', action.view)
           .set('height', height);
       }
-      break;
-
+      return state;
+    }
     case actions.SYNC_INFO_RETURN: {
       if (action.error) {
         return state.set('syncInfoError', action.error);
@@ -122,21 +118,17 @@ export default function appReducer(state = initState, action) {
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
         .set('syncBlockTime', Number(action.syncInfo.syncBlockTime));
     }
-
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);
     }
-
     case actions.TOGGLE_INITIAL_SYNC: {
       return state.set('initSyncing', action.isSyncing);
     }
-
     case actions.GET_INSIGHT_TOTALS_RETURN: {
       return state.set('averageBlockTime', action.value.result.time_between_blocks);
     }
-
-    default:
+    default: {
       return state;
+    }
   }
-  return state;
 }

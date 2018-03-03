@@ -9,7 +9,7 @@ import styles from './styles';
 import AppRouter from './router';
 import AppLoad from './load';
 import GlobalHub from './globalHub';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import TopBar from '../../components/TopBar/index';
 

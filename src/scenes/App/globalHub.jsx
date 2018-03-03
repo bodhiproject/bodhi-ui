@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/App/actions';
+import dashboardActions from '../../redux/Dashboard/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
 
@@ -38,7 +39,12 @@ class GlobalHub extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { initSyncing, syncBlockNum } = this.props;
+    const {
+      initSyncing,
+      syncBlockNum,
+      getActionableItemCount,
+      selectedWalletAddress,
+    } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     if (initSyncing && !nextProps.initSyncing) {
@@ -49,7 +55,15 @@ class GlobalHub extends React.PureComponent {
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
       || (initSyncing && !nextProps.initSyncing)) {
       this.updateBalances(nextProps.walletAddrs);
+
+      // Gets the actionable items for the My Activities badge
+      if (!_.isEmpty(nextProps.selectedWalletAddress)) {
+        getActionableItemCount(nextProps.selectedWalletAddress);
+      }
     }
+
+    // TODO: use nextProps.actionableItemCount in TopBar for My Activities badge
+    console.log('action count', nextProps.actionableItemCount);
   }
 
   render() {
@@ -100,20 +114,26 @@ GlobalHub.propTypes = {
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
   walletAddrs: PropTypes.array,
+  selectedWalletAddress: PropTypes.string,
   getSyncInfo: PropTypes.func,
   onSyncInfo: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
+  getActionableItemCount: PropTypes.func,
+  actionableItemCount: PropTypes.number,
 };
 
 GlobalHub.defaultProps = {
   client: undefined,
   syncBlockNum: undefined,
   walletAddrs: [],
+  selectedWalletAddress: undefined,
   getSyncInfo: undefined,
   onSyncInfo: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
+  getActionableItemCount: undefined,
+  actionableItemCount: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -121,6 +141,8 @@ const mapStateToProps = (state) => ({
   initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddrs: state.App.get('walletAddrs'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  actionableItemCount: state.Dashboard.get('actionableItemCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -128,6 +150,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
+  getActionableItemCount: (walletAddress) => dispatch(dashboardActions.getActionableItemCount(walletAddress)),
 });
 
 export default compose(
