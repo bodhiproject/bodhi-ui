@@ -12,6 +12,7 @@ import SingleProgressWidget from '../Widgets/progress/progress-single';
 import ReportsWidget from '../Widgets/report/report-widget';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
+import TopActions from './components/TopActions/index';
 import { Token, OracleStatus, SortBy } from '../../constants';
 import { getLocalDateTimeString } from '../../helpers/utility';
 
@@ -100,6 +101,7 @@ class Dashboard extends React.Component {
 
     return (
       <div>
+        <TopActions />
         <Row
           gutter={28}
           justify="center"
