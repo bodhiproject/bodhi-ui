@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import MyBalances from './components/Balances/index';
@@ -16,8 +15,6 @@ class MyWallet extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-
     return (
       <div>
         <MyBalances />
@@ -28,7 +25,6 @@ class MyWallet extends React.Component {
 }
 
 MyWallet.propTypes = {
-  classes: PropTypes.object.isRequired,
 };
 
 MyWallet.defaultProps = {
