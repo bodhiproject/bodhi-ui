@@ -66,8 +66,8 @@ class MyWallet extends React.Component {
           <Grid container classname={classes.totalsContainerGrid}>
             {mockTotals.map((item) => (
               <Grid item key={item.token} className={classes.totalsItemGrid}>
-                <Typography variant="display1" className={classes.totalsItemAmount}>{item.amount}</Typography>
-                <Typography variant="body2">{item.token}</Typography>
+                <Typography className={classes.totalsItemAmount}>{item.amount}</Typography>
+                <Typography variant="body1">{item.token}</Typography>
               </Grid>
             ))}
           </Grid>
@@ -102,8 +102,8 @@ class MyWallet extends React.Component {
                 const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
 
                 return (<TableRow key={item.address} className={className}>
-                  <TableCell className={classes.tableRowCell}>
-                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.address}</Typography>
+                  <TableCell>
+                    <Typography variant="headerTable">{item.address}</Typography>
                   </TableCell>
                   <TableCell>
                     <Button size="small" className={classes.tableRowCopyButton}>
@@ -112,10 +112,10 @@ class MyWallet extends React.Component {
                     </Button>
                   </TableCell>
                   <TableCell numeric>
-                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.qtum}</Typography>
+                    <Typography variant="headerTable">{item.qtum}</Typography>
                   </TableCell>
                   <TableCell numeric>
-                    <Typography variant="headerTable" className={classes.tableRowAddressText}>{item.bot}</Typography>
+                    <Typography variant="headerTable">{item.bot}</Typography>
                   </TableCell>
                   <TableCell>
                     <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>

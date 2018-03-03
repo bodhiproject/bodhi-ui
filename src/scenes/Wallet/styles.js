@@ -8,7 +8,7 @@ const styles = (theme) => ({
     overflowX: 'hidden',
   },
   myBalanceTitle: {
-    marginBottom: theme.padding.md.px,
+    marginBottom: theme.padding.xs.px,
   },
   totalsContainerGrid: {
     marginBottom: theme.padding.lg.px,
@@ -17,7 +17,8 @@ const styles = (theme) => ({
     marginRight: theme.padding.md.px,
   },
   totalsItemAmount: {
-    marginBottom: theme.padding.unit.px,
+    fontSize: theme.sizes.font.titleMd,
+    marginBottom: 2,
   },
   table: {
     border: theme.border,
