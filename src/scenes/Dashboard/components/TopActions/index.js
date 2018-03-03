@@ -39,7 +39,7 @@ class TopActions extends Component {
     let sortButtonText;
     let sortButtonIcon;
     if (this.state.sortOption === SortBy.Ascending) {
-      sortButtonText = <FormattedMessage id="sort.asc" efaultMessage="Ascending" />;
+      sortButtonText = <FormattedMessage id="sort.asc" defaultMessage="Ascending" />;
       sortButtonIcon = <Icon type="arrow-up" />;
     } else if (this.state.sortOption === SortBy.Descending) {
       sortButtonText = <FormattedMessage id="sort.desc" defaultMessage="Descending" />;

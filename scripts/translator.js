@@ -41,5 +41,5 @@ mkdirpSync(outputLanguageDataDir);
 
 defaultMessages = sortObjectKeys(defaultMessages);
 cnNew = sortObjectKeys(cnNew);
-fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(defaultMessages, null, 2)}`);
-fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnNew, null, 2)}`);
+fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(defaultMessages, null, 2)}\n`);
+fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnNew, null, 2)}\n`);

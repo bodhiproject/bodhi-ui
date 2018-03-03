@@ -11,7 +11,7 @@
     "apollo-link-ws": "^1.0.6",
     "apollo-utilities": "^1.0.8",
     "clone": "^2.1.1",
-    "fs": "0.0.1-security",
+    "file-system": "^2.2.2",
     "globalize": "^1.2.3",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.6.0",

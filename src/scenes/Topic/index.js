@@ -16,7 +16,7 @@ import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
 
-const pagemessage = defineMessages({
+const pageMessage = defineMessages({
   withdraw: {
     id: 'cardfinish.withdraw',
     defaultMessage: 'You can withdraw',
@@ -216,7 +216,7 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `${this.props.intl.formatMessage(pagemessage.withdraw)} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+          text: `${this.props.intl.formatMessage(pageMessage.withdraw)} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
             & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
