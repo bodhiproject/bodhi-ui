@@ -10,39 +10,47 @@ import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import moment from 'moment';
 
 import styles from './styles';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
-const mockTotals = [
-  {
-    token: 'QTUM',
-    amount: 12345,
-  },
-  {
-    token: 'BOT',
-    amount: 67890,
-  },
-];
 const mockRows = [
   {
-    address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    qtum: 1234567890,
-    bot: 1234567890,
+    time: moment(),
+    from: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    token: 'QTUM',
+    amount: 12345,
+    fee: 1,
+    status: 'Pending',
   },
   {
-    address: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
-    qtum: 1234567890,
-    bot: 1234567890,
+    time: moment(),
+    from: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    token: 'QTUM',
+    amount: 12345,
+    fee: 1,
+    status: 'Pending',
   },
   {
-    address: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
-    qtum: 1234567890,
-    bot: 1234567890,
+    time: moment(),
+    from: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    token: 'QTUM',
+    amount: 12345,
+    fee: 1,
+    status: 'Pending',
   },
   {
-    address: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
-    qtum: 1234567890,
-    bot: 1234567890,
+    time: moment(),
+    from: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
+    token: 'QTUM',
+    amount: 12345,
+    fee: 1,
+    status: 'Pending',
   },
 ];
 
@@ -52,6 +60,9 @@ class WalletHistory extends React.Component {
 
     this.state = {
     };
+
+    this.getHeaderColumns = this.getHeaderColumns.bind(this);
+    this.getRowColumns = this.getRowColumns.bind(this);
   }
 
   render() {
@@ -60,80 +71,88 @@ class WalletHistory extends React.Component {
     return (
       <Paper className={classes.rootPaper}>
         <Grid container spacing={0} className={classes.containerGrid}>
-          <Typography variant="title" className={classes.myBalanceTitle}>
-            <FormattedMessage id="myWallet.myBalance" />
+          <Typography variant="title" className={classes.title}>
+            <FormattedMessage id="walletHistory.transactionHistory" />
           </Typography>
-          <Grid container classname={classes.totalsContainerGrid}>
-            {mockTotals.map((item) => (
-              <Grid item key={item.token} className={classes.totalsItemGrid}>
-                <Typography className={classes.totalsItemAmount}>{item.amount}</Typography>
-                <Typography variant="body1">{item.token}</Typography>
-              </Grid>
-            ))}
-          </Grid>
           <Table className={classes.table}>
             <TableHead>
               <TableRow className={classes.tableHeader}>
-                <TableCell>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id="myWallet.address" />
-                  </Typography>
-                </TableCell>
-                <TableCell></TableCell>
-                <TableCell numeric>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id="myWallet.qtum" />
-                  </Typography>
-                </TableCell>
-                <TableCell numeric>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id="myWallet.bot" />
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id="myWallet.actions" />
-                  </Typography>
-                </TableCell>
+                {this.getHeaderColumns()}
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockRows.map((item, index) => {
-                const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
-
-                return (<TableRow key={item.address} className={className}>
-                  <TableCell>
-                    <Typography variant="body1">{item.address}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Button size="small" className={classes.tableRowCopyButton}>
-                      <ContentCopy className={classes.tableRowCopyButtonIcon} />
-                      <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                        <FormattedMessage id="myWallet.copy" />
-                      </Typography>
-                    </Button>
-                  </TableCell>
-                  <TableCell numeric>
-                    <Typography variant="body1">{item.qtum}</Typography>
-                  </TableCell>
-                  <TableCell numeric>
-                    <Typography variant="body1">{item.bot}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
-                      <FormattedMessage id="myWallet.deposit" />
-                    </Button>
-                    <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
-                      <FormattedMessage id="myWallet.withdraw" />
-                    </Button>
-                  </TableCell>
-                </TableRow>);
-              })}
+              {this.getRowColumns(mockRows)}
             </TableBody>
           </Table>
         </Grid>
       </Paper>
     );
+  }
+
+  getHeaderColumns() {
+    const { classes } = this.props;
+
+    const headerCols = [
+      {
+        id: 'walletHistory.time',
+      },
+      {
+        id: 'walletHistory.from',
+      },
+      {
+        id: 'walletHistory.to',
+      },
+      {
+        id: 'walletHistory.token',
+      },
+      {
+        id: 'walletHistory.amount',
+      },
+      {
+        id: 'walletHistory.transactionFee',
+      },
+      {
+        id: 'walletHistory.status',
+      },
+    ];
+
+    return headerCols.map((item) => (
+      <TableCell>
+        <Typography variant="body1" className={classes.tableHeaderItemText}>
+          <FormattedMessage id={item.id} />
+        </Typography>
+      </TableCell>
+    ));
+  }
+
+  getRowColumns(data) {
+    const { classes } = this.props;
+
+    return data.map((item) => (
+      <TableRow key={item.address} className={classes.tableRow}>
+        <TableCell>
+          <Typography variant="body1">{getShortLocalDateTimeString(item.time)}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.from}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.to}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.token}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.amount}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.fee}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body1">{item.status}</Typography>
+        </TableCell>
+      </TableRow>
+    ));
   }
 }
 

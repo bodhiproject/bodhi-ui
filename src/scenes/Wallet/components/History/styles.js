@@ -8,25 +8,14 @@ const styles = (theme) => ({
     padding: theme.padding.lg.px,
     overflowX: 'hidden',
   },
-  myBalanceTitle: {
-    marginBottom: theme.padding.xs.px,
-  },
-  totalsContainerGrid: {
-    marginBottom: theme.padding.lg.px,
-  },
-  totalsItemGrid: {
-    marginRight: theme.padding.md.px,
-  },
-  totalsItemAmount: {
-    fontSize: theme.sizes.font.titleMd,
-    marginBottom: 2,
+  title: {
+    marginBottom: theme.padding.sm.px,
   },
   table: {
     border: theme.border,
-    marginTop: theme.padding.md.px,
   },
   tableHeader: {
-    height: 40,
+    height: 42,
     background: theme.palette.background.grey,
   },
   tableHeaderItemText: {
@@ -37,9 +26,6 @@ const styles = (theme) => ({
     padding: theme.padding.unit.px,
     background: theme.palette.background.paper,
     borderBottom: theme.border,
-    '&.dark': {
-      background: theme.palette.background.grey,
-    },
   },
   tableRowCopyButton: {
     color: theme.palette.primary.main,
