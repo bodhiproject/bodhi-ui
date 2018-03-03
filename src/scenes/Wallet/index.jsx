@@ -75,23 +75,23 @@ class MyWallet extends React.Component {
             <TableHead>
               <TableRow className={classes.tableHeader}>
                 <TableCell>
-                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
+                  <Typography variant="body1" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.address" />
                   </Typography>
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell numeric>
-                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
+                  <Typography variant="body1" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.qtum" />
                   </Typography>
                 </TableCell>
                 <TableCell numeric>
-                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
+                  <Typography variant="body1" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.bot" />
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="headerTable" className={classes.tableHeaderItemText}>
+                  <Typography variant="body1" className={classes.tableHeaderItemText}>
                     <FormattedMessage id="myWallet.actions" />
                   </Typography>
                 </TableCell>
@@ -103,19 +103,21 @@ class MyWallet extends React.Component {
 
                 return (<TableRow key={item.address} className={className}>
                   <TableCell>
-                    <Typography variant="headerTable">{item.address}</Typography>
+                    <Typography variant="body1">{item.address}</Typography>
                   </TableCell>
                   <TableCell>
                     <Button size="small" className={classes.tableRowCopyButton}>
                       <ContentCopy className={classes.tableRowCopyButtonIcon} />
-                      <FormattedMessage id="myWallet.copy" />
+                      <Typography variant="body1" className={classes.tableRowCopyButtonText}>
+                        <FormattedMessage id="myWallet.copy" />
+                      </Typography>
                     </Button>
                   </TableCell>
                   <TableCell numeric>
-                    <Typography variant="headerTable">{item.qtum}</Typography>
+                    <Typography variant="body1">{item.qtum}</Typography>
                   </TableCell>
                   <TableCell numeric>
-                    <Typography variant="headerTable">{item.bot}</Typography>
+                    <Typography variant="body1">{item.bot}</Typography>
                   </TableCell>
                   <TableCell>
                     <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>

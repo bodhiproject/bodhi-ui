@@ -28,6 +28,9 @@ const styles = (theme) => ({
     height: 40,
     background: theme.palette.background.grey,
   },
+  tableHeaderItemText: {
+    fontWeight: theme.typography.fontWeightBold,
+  },
   tableRow: {
     height: 42,
     padding: theme.padding.unit.px,
@@ -41,7 +44,12 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
   },
   tableRowCopyButtonIcon: {
+    width: 12,
+    height: 12,
     marginRight: theme.padding.unit.px,
+  },
+  tableRowCopyButtonText: {
+    color: theme.palette.primary.main,
   },
   tableRowActionButton: {
     minHeight: 24,
