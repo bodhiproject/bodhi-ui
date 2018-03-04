@@ -201,9 +201,11 @@ class MyBalances extends React.PureComponent {
       order = 'asc';
     }
 
-    const data = order === 'desc'
-      ? this.props.walletAddrs.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.props.walletAddrs.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    if (order === 'desc') {
+      this.props.walletAddrs.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
+    } else {
+      this.props.walletAddrs.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    }
 
     this.setState({
       order,
