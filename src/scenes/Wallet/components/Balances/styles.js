@@ -12,7 +12,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.xs.px,
   },
   totalsContainerGrid: {
-    marginBottom: theme.padding.lg.px,
+    marginBottom: theme.padding.sm.px,
   },
   totalsItemGrid: {
     marginRight: theme.padding.md.px,
@@ -23,7 +23,6 @@ const styles = (theme) => ({
   },
   table: {
     border: theme.border,
-    marginTop: theme.padding.md.px,
   },
   tableHeader: {
     height: 40,
