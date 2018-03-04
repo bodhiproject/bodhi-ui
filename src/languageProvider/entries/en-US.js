@@ -103,6 +103,7 @@ const EnLang = {
     'str.RAISE': 'RAISED',
     'str.end': 'Ended',
     'str.outcome': 'OUTCOMES',
+    'str.sort': 'Sort',
     'language.select': '中文',
     'myBalances.myBalance': 'My Balance',
     'myBalances.address': 'Address',

@@ -14,6 +14,7 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import _ from 'lodash';
 
 import styles from './styles';
+import Config from '../../../../config/app';
 
 const mockData = [
   {
@@ -170,8 +171,9 @@ class MyBalances extends React.Component {
         sortDirection={orderBy === column.id ? order : false}
       >
         <Tooltip
-          title="Sort"
-          enterDelay={300}
+          title={<FormattedMessage id="str.sort" />}
+          enterDelay={Config.intervals.tooltipDelay}
+          placement={column.numeric ? 'bottom-end' : 'bottom-start'}
         >
           <TableSortLabel
             active={orderBy === column.id}

@@ -12,6 +12,7 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
+import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 const mockData = [
@@ -122,12 +123,12 @@ class WalletHistory extends React.Component {
       {
         id: 'amount',
         name: 'walletHistory.amount',
-        numeric: false,
+        numeric: true,
       },
       {
         id: 'fee',
         name: 'walletHistory.fee',
-        numeric: false,
+        numeric: true,
       },
       {
         id: 'status',
@@ -149,8 +150,9 @@ class WalletHistory extends React.Component {
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip
-                title="Sort"
-                enterDelay={300}
+                title={<FormattedMessage id="str.sort" />}
+                enterDelay={Config.intervals.tooltipDelay}
+                placement={column.numeric ? 'bottom-end' : 'bottom-start'}
               >
                 <TableSortLabel
                   active={orderBy === column.id}
@@ -215,12 +217,12 @@ class WalletHistory extends React.Component {
                 {item.token}
               </Typography>
             </TableCell>
-            <TableCell>
+            <TableCell numeric>
               <Typography variant="body1" className={classes.tableRowCell}>
                 {item.amount}
               </Typography>
             </TableCell>
-            <TableCell>
+            <TableCell numeric>
               <Typography variant="body1" className={classes.tableRowCell}>
                 {item.fee}
               </Typography>
