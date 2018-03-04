@@ -113,6 +113,7 @@ const EnLang = {
     'myBalances.actions': 'Actions',
     'myBalances.deposit': 'Deposit',
     'myBalances.withdraw': 'Withdraw',
+    'myBalances.addressCopied': 'Address copied',
     'walletHistory.transactionHistory': 'Transaction History',
     'walletHistory.time': 'Time',
     'walletHistory.from': 'From',

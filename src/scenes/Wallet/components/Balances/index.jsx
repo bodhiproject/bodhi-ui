@@ -7,6 +7,9 @@ import Typography from 'material-ui/Typography';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import Button from 'material-ui/Button';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from 'material-ui-icons/Close';
 import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
@@ -24,6 +27,7 @@ class MyBalances extends React.PureComponent {
     this.state = {
       order: 'asc',
       orderBy: 'address',
+      snackbarVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -31,7 +35,9 @@ class MyBalances extends React.PureComponent {
     this.getSortableCell = this.getSortableCell.bind(this);
     this.getNonSortableCell = this.getNonSortableCell.bind(this);
     this.getTableBody = this.getTableBody.bind(this);
+    this.getSnackbar = this.getSnackbar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
+    this.onSnackbarClosed = this.onSnackbarClosed.bind(this);
   }
 
   render() {
@@ -48,6 +54,7 @@ class MyBalances extends React.PureComponent {
             {this.getTableHeader()}
             {this.getTableBody(walletAddrs)}
           </Table>
+          {this.getSnackbar()}
         </Grid>
       </Paper>
     );
@@ -206,6 +213,7 @@ class MyBalances extends React.PureComponent {
         {data.map((item, index) => {
           const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
 
+          const open = true;
           return (<TableRow key={item.address} className={className}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
@@ -240,9 +248,39 @@ class MyBalances extends React.PureComponent {
     );
   }
 
+  getSnackbar() {
+    const { snackbarVisible } = this.state;
+
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        open={snackbarVisible}
+        autoHideDuration={Config.intervals.snackbarLong}
+        onClose={this.onSnackbarClosed}
+        message={<FormattedMessage id="myBalances.addressCopied" default="Address copied" />}
+        action={[
+          <IconButton
+            key="close"
+            color="inherit"
+            onClick={this.onSnackbarClosed}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />
+    );
+  }
+
   onCopyClicked(text) {
-    console.log(`Copied address: ${text}`);
-    // TODO: show snackbar
+    this.setState({
+      snackbarVisible: true,
+    });
+  }
+
+  onSnackbarClosed() {
+    this.setState({
+      snackbarVisible: false,
+    });
   }
 }
 
