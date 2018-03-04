@@ -176,7 +176,6 @@ class MyBalances extends React.PureComponent {
 
   getNonSortableCell(column) {
     const { classes } = this.props;
-    const { order, orderBy } = this.state;
 
     return (
       <TableCell
@@ -220,7 +219,6 @@ class MyBalances extends React.PureComponent {
         {data.map((item, index) => {
           const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
 
-          const open = true;
           return (<TableRow key={item.address} className={className}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
