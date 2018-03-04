@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Icon } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import BottomButtonWidget from '../Widgets/bottom-button';
@@ -39,6 +39,69 @@ const ROW_GUTTER = {
   xl: 32,
   xxl: 32,
 };
+
+const messages = defineMessages({
+  Bet: {
+    id: 'dashboard.Bet',
+    defaultMessage: 'Bet',
+  },
+  Set: {
+    id: 'dashboard.Set',
+    defaultMessage: 'Set',
+  },
+  Vote: {
+    id: 'dashboard.Vote',
+    defaultMessage: 'Vote',
+  },
+  Finalize: {
+    id: 'dashboard.Finalize',
+    defaultMessage: 'Finalize',
+  },
+  Withdraw: {
+    id: 'dashboard.Withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  betend: {
+    id: 'dashboard.betend',
+    defaultMessage: 'Betting ends',
+  },
+  resultsetend: {
+    id: 'dashboard.resultsetend',
+    defaultMessage: 'Result setting ends',
+  },
+  voteend: {
+    id: 'dashboard.voteend',
+    defaultMessage: 'Voting ends',
+  },
+  voteended: {
+    id: 'dashboard.voteended',
+    defaultMessage: 'Voting ended',
+  },
+  raise: {
+    id: 'str.raise',
+    defaultMessage: 'Raised',
+  },
+  end: {
+    id: 'str.end',
+    defaultMessage: 'Ended',
+  },
+  pbet: {
+    id: 'bottombutton.placebet',
+    defaultMessage: 'Place Bet',
+  },
+  pset: {
+    id: 'bottombutton.setresult',
+    defaultMessage: 'Set Result',
+  },
+  pvote: {
+    id: 'bottombutton.vote',
+    defaultMessage: 'Place Vote',
+  },
+  pfinal: {
+    id: 'bottombutton.final',
+    defaultMessage: 'Finalize Result',
+  },
+});
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -195,23 +258,23 @@ class Dashboard extends React.Component {
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.betend' })} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.placebet' });
+          endText = `${this.props.intl.formatMessage(messages.betend)} ${getLocalDateTimeString(oracle.endTime)}`;
+          buttonText = this.props.intl.formatMessage(messages.pbet);
           break;
         }
         case TAB_SET: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.resultsetend' })} ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.setresult' });
+          endText = `${this.props.intl.formatMessage(messages.resultsetend)} ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
+          buttonText = this.props.intl.formatMessage(messages.pset);
           break;
         }
         case TAB_VOTE: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteend' })} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.vote' });
+          endText = `${this.props.intl.formatMessage(messages.voteend)} ${getLocalDateTimeString(oracle.endTime)}`;
+          buttonText = this.props.intl.formatMessage(messages.pvote);
           break;
         }
         case TAB_FINALIZE: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteended' })} ${getLocalDateTimeString(oracle.endTime)}`;
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.final' });
+          endText = `${this.props.intl.formatMessage(messages.voteended)} ${getLocalDateTimeString(oracle.endTime)}`;
+          buttonText = this.props.intl.formatMessage(messages.pfinal);
           break;
         }
         default: {
@@ -220,7 +283,7 @@ class Dashboard extends React.Component {
       }
 
       const totalBalance = _.sum(oracle.amounts);
-      const raisedString = `${this.props.intl.formatMessage({ id: 'str.raise' })}: ${totalBalance.toFixed(2)} ${oracle.token}`;
+      const raisedString = `${this.props.intl.formatMessage(messages.raise)}: ${totalBalance.toFixed(2)} ${oracle.token}`;
 
       let displayOptions = [];
       // Determine what options showing in progress bars
@@ -328,8 +391,8 @@ class Dashboard extends React.Component {
       const qtumTotal = _.sum(topic.qtumAmount);
       const botTotal = _.sum(topic.botAmount);
 
-      const raisedString = `${this.props.intl.formatMessage({ id: 'str.raise' })}: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
-      const endText = this.props.intl.formatMessage({ id: 'str.end' });
+      const raisedString = `${this.props.intl.formatMessage(messages.raise)}: ${qtumTotal.toFixed(2)} ${Token.Qtum}, ${botTotal.toFixed(2)} ${Token.Bot}`;
+      const endText = this.props.intl.formatMessage(messages.end);
 
       let optionBalances = _.map(topic.options, (opt, idx) => {
         const qtumAmount = topic.qtumAmount[idx];
@@ -390,7 +453,7 @@ class Dashboard extends React.Component {
 
             <BottomButtonWidget
               pathname={`/topic/${topic.address}`}
-              text={this.props.intl.formatMessage({ id: 'bottombutton.withdraw' })}
+              text={<FormattedMessage id="bottombutton.withdraw" defaultMessage="Withdraw" />}
             />
           </IsoWidgetsWrapper>
         </Col>

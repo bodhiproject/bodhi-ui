@@ -59,8 +59,8 @@ class BottomBar extends React.PureComponent {
     return (
       <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
         <Typography variant="body1">
-          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" />: {blockNum}</span>
-          <FormattedMessage id="bottomBar.blockTime" />: {blockTime}
+          <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />: {blockNum}</span>
+          <FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime}
         </Typography>
       </Grid>
     );
@@ -74,7 +74,7 @@ class BottomBar extends React.PureComponent {
         <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
           <Typography variant="body1">
             <CheckCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'online')} />
-            <span><FormattedMessage id="bottomBar.online" /></span>
+            <span><FormattedMessage id="bottomBar.online" defaultMessage="Online" /></span>
           </Typography>
         </Grid>
       );
@@ -84,7 +84,7 @@ class BottomBar extends React.PureComponent {
       <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
         <Typography variant="body1">
           <RemoveCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'offline')} />
-          <span><FormattedMessage id="bottomBar.offline" /></span>
+          <span><FormattedMessage id="bottomBar.offline" defaultMessage="Offline" /></span>
         </Typography>
       </Grid>
     );

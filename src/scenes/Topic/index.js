@@ -3,7 +3,7 @@ import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import CardInfo from '../../components/bodhi-dls/cardInfo';
 import CardFinished from '../../components/bodhi-dls/cardFinished';
@@ -15,6 +15,13 @@ import stateActions from '../../redux/State/actions';
 import { Token, OracleStatus } from '../../constants';
 import CardInfoUtil from '../../helpers/cardInfoUtil';
 
+
+const pageMessage = defineMessages({
+  withdraw: {
+    id: 'cardfinish.withdraw',
+    defaultMessage: 'You can withdraw',
+  },
+});
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
@@ -134,8 +141,8 @@ class TopicPage extends React.Component {
       <div>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topbar.event" /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item><FormattedMessage id="topbar.completed" /></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topbar.event" defaultMessage="Event" /></Link></Breadcrumb.Item>
+            <Breadcrumb.Item><FormattedMessage id="topbar.completed" defaultMessage="Completed" /></Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
@@ -209,9 +216,8 @@ class TopicPage extends React.Component {
 
         // Add withdrawal amount
         config.cardInfo.messages.push({
-          text: `${this.props.intl.formatMessage({ id: 'cardfinish.withdraw' })} 
-            ${(botWinnings && botWinnings.toFixed(2)) || 0} ${Token.Bot} 
-            & ${(qtumWinnings && qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
+          text: `${this.props.intl.formatMessage(pageMessage.withdraw)} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
+            & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
 

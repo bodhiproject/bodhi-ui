@@ -1,0 +1,8 @@
+{
+  "presets": ["react-app","es2015"],
+  "plugins": [
+      [ "react-intl", {
+          "messagesDir": "build/messages"
+      }]
+  ]
+}

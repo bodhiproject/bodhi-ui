@@ -31,21 +31,21 @@ class TopActions extends Component {
   render() {
     const sortMenu = (
       <Menu onClick={this.onSortOptionSelected}>
-        <MenuItem key={SortBy.Ascending}><FormattedMessage id="sort.asc" /></MenuItem>
-        <MenuItem key={SortBy.Descending}><FormattedMessage id="sort.desc" /></MenuItem>
+        <MenuItem key={SortBy.Ascending}><FormattedMessage id="sort.asc" defaultMessage="Ascending" /></MenuItem>
+        <MenuItem key={SortBy.Descending}><FormattedMessage id="sort.desc" defaultMessage="Descending" /></MenuItem>
       </Menu>
     );
 
     let sortButtonText;
     let sortButtonIcon;
     if (this.state.sortOption === SortBy.Ascending) {
-      sortButtonText = this.props.intl.formatMessage({ id: 'sort.asc' });
+      sortButtonText = <FormattedMessage id="sort.asc" defaultMessage="Ascending" />;
       sortButtonIcon = <Icon type="arrow-up" />;
     } else if (this.state.sortOption === SortBy.Descending) {
-      sortButtonText = this.props.intl.formatMessage({ id: 'sort.desc' });
+      sortButtonText = <FormattedMessage id="sort.desc" defaultMessage="Descending" />;
       sortButtonIcon = <Icon type="arrow-down" />;
     } else {
-      sortButtonText = this.props.intl.formatMessage({ id: 'sort.default' });
+      sortButtonText = <FormattedMessage id="sort.default" defaultMessage="Sort" />;
       sortButtonIcon = <Icon type="down-circle-o" />;
     }
 
@@ -55,7 +55,7 @@ class TopActions extends Component {
           <Col xs={20}>
             <Link to="/create-topic" >
               <Button type="primary" size="large">
-                + <FormattedMessage id="dashboard.create" />
+                + <FormattedMessage id="create.title" defaultMessage="Create an event" />
               </Button>
             </Link>
           </Col>
@@ -75,8 +75,6 @@ class TopActions extends Component {
 
 TopActions.propTypes = {
   sortOrderChanged: PropTypes.func,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
 };
 
 TopActions.defaultProps = {
