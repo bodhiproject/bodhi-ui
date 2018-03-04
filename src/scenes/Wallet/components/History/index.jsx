@@ -87,7 +87,7 @@ class WalletHistory extends React.Component {
       <Paper className={classes.rootPaper}>
         <Grid container spacing={0} className={classes.containerGrid}>
           <Typography variant="title">
-            <FormattedMessage id="walletHistory.transactionHistory" />
+            <FormattedMessage id="walletHistory.transactionHistory" default="Transaction History" />
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
@@ -106,36 +106,43 @@ class WalletHistory extends React.Component {
       {
         id: 'time',
         name: 'walletHistory.time',
+        nameDefault: 'Time',
         numeric: false,
       },
       {
         id: 'from',
         name: 'walletHistory.from',
+        nameDefault: 'From',
         numeric: false,
       },
       {
         id: 'to',
         name: 'walletHistory.to',
+        nameDefault: 'To',
         numeric: false,
       },
       {
         id: 'token',
         name: 'walletHistory.token',
+        nameDefault: 'Token',
         numeric: false,
       },
       {
         id: 'amount',
         name: 'walletHistory.amount',
+        nameDefault: 'Amount',
         numeric: true,
       },
       {
         id: 'fee',
         name: 'walletHistory.fee',
+        nameDefault: 'Fee',
         numeric: true,
       },
       {
         id: 'status',
         name: 'walletHistory.status',
+        nameDefault: 'Status',
         numeric: false,
       },
     ];
@@ -150,7 +157,7 @@ class WalletHistory extends React.Component {
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip
-                title={<FormattedMessage id="str.sort" />}
+                title={<FormattedMessage id="str.sort" default="Sort" />}
                 enterDelay={Config.intervals.tooltipDelay}
                 placement={column.numeric ? 'bottom-end' : 'bottom-start'}
               >
@@ -160,7 +167,7 @@ class WalletHistory extends React.Component {
                   onClick={this.createSortHandler(column.id)}
                 >
                   <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id={column.name} />
+                    <FormattedMessage id={column.name} default={column.nameDefault} />
                   </Typography>
                 </TableSortLabel>
               </Tooltip>
