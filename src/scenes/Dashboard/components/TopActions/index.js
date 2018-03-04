@@ -55,7 +55,7 @@ class TopActions extends Component {
           <Col xs={20}>
             <Link to="/create-topic" >
               <Button type="primary" size="large">
-                + <FormattedMessage id="dashboard.create" />
+                + <FormattedMessage id="create.title" defaultMessage="Create an event" />
               </Button>
             </Link>
           </Col>

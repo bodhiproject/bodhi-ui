@@ -63,6 +63,7 @@
   "dashboard.voteend": "Voting ends",
   "dashboard.voteended": "Voting ended",
   "language.select": "中文",
+  "navBar.activities": "My Activities",
   "oracle.consensus": "Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.",
   "oracle.finalize": "Finalizing can be done by anyone. Once finalized, winners can withdraw from the event in the Withdraw tab.",
   "oracle.notcen": "You are not the Centralized Oracle for this Topic and cannot set the result.",

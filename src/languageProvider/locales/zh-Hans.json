@@ -63,6 +63,7 @@
   "dashboard.voteend": "投票结束于",
   "dashboard.voteended": "投票已结束",
   "language.select": "English",
+  "navBar.activities": "账户及交易",
   "oracle.consensus": "共识阈值 {value}。这个值表示需要用于设置结果的BOT。",
   "oracle.finalize": "任何人都可以结束。 一旦结束，赢家可以在提现标签页从对应事件提现。",
   "oracle.notcen": "您不是此话题的中心化Oracle，您不能设置结果",
