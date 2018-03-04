@@ -47,7 +47,7 @@ class MyBalances extends React.PureComponent {
       <Paper className={classes.rootPaper}>
         <Grid container spacing={0} className={classes.containerGrid}>
           <Typography variant="title" className={classes.myBalanceTitle}>
-            <FormattedMessage id="myBalances.myBalance" />
+            <FormattedMessage id="myBalances.myBalance" default="My Balance" />
           </Typography>
           {this.getTotalsGrid(walletAddrs)}
           <Table className={classes.table}>
@@ -69,12 +69,14 @@ class MyBalances extends React.PureComponent {
     const items = [
       {
         id: 'qtum',
-        name: 'myBalances.qtum',
+        name: 'str.qtum',
+        nameDefault: 'QTUM',
         total: totalQtum,
       },
       {
         id: 'bot',
-        name: 'myBalances.bot',
+        name: 'str.bot',
+        nameDefault: 'BOT',
         total: totalBot,
       },
     ];
@@ -85,7 +87,7 @@ class MyBalances extends React.PureComponent {
           <Grid item key={item.id} className={classes.totalsItemGrid}>
             <Typography className={classes.totalsItemAmount}>{item.total.toFixed(2)}</Typography>
             <Typography variant="body1">
-              <FormattedMessage id={item.name} />
+              <FormattedMessage id={item.name} default={item.nameDefault} />
             </Typography>
           </Grid>
         ))}
@@ -100,30 +102,35 @@ class MyBalances extends React.PureComponent {
       {
         id: 'address',
         name: 'myBalances.address',
+        nameDefault: 'Address',
         numeric: false,
         sortable: true,
       },
       {
         id: 'copyButton',
         name: 'myBalances.copy',
+        nameDefault: 'Copy',
         numeric: false,
         sortable: false,
       },
       {
         id: 'qtum',
-        name: 'myBalances.qtum',
+        name: 'str.qtum',
+        nameDefault: 'QTUM',
         numeric: true,
         sortable: true,
       },
       {
         id: 'bot',
-        name: 'myBalances.bot',
+        name: 'str.bot',
+        nameDefault: 'BOT',
         numeric: true,
         sortable: true,
       },
       {
         id: 'actions',
         name: 'myBalances.actions',
+        nameDefault: 'Actions',
         numeric: false,
         sortable: false,
       },
@@ -149,7 +156,7 @@ class MyBalances extends React.PureComponent {
         sortDirection={orderBy === column.id ? order : false}
       >
         <Tooltip
-          title={<FormattedMessage id="str.sort" />}
+          title={<FormattedMessage id="str.sort" default="Sort" />}
           enterDelay={Config.intervals.tooltipDelay}
           placement={column.numeric ? 'bottom-end' : 'bottom-start'}
         >
@@ -159,7 +166,7 @@ class MyBalances extends React.PureComponent {
             onClick={this.createSortHandler(column.id)}
           >
             <Typography variant="body1" className={classes.tableHeaderItemText}>
-              <FormattedMessage id={column.name} />
+              <FormattedMessage id={column.name} default={column.nameDefault} />
             </Typography>
           </TableSortLabel>
         </Tooltip>
@@ -177,7 +184,7 @@ class MyBalances extends React.PureComponent {
         numeric={column.numeric}
       >
         <Typography variant="body1" className={classes.tableHeaderItemText}>
-          <FormattedMessage id={column.name} />
+          <FormattedMessage id={column.name} default={column.nameDefault} />
         </Typography>
       </TableCell>
     );
@@ -223,7 +230,7 @@ class MyBalances extends React.PureComponent {
                 <Button size="small" className={classes.tableRowCopyButton}>
                   <ContentCopy className={classes.tableRowCopyButtonIcon} />
                   <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                    <FormattedMessage id="myBalances.copy" />
+                    <FormattedMessage id="myBalances.copy" default="Copy" />
                   </Typography>
                 </Button>
               </CopyToClipboard>
@@ -236,10 +243,10 @@ class MyBalances extends React.PureComponent {
             </TableCell>
             <TableCell>
               <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
-                <FormattedMessage id="myBalances.deposit" />
+                <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
               <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
-                <FormattedMessage id="myBalances.withdraw" />
+                <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
               </Button>
             </TableCell>
           </TableRow>);
