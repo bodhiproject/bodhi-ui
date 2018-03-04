@@ -50,6 +50,8 @@ class MyBalances extends React.Component {
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
     this.getTableHeader = this.getTableHeader.bind(this);
+    this.getSortableCell = this.getSortableCell.bind(this);
+    this.getNonSortableCell = this.getNonSortableCell.bind(this);
     this.getTableBody = this.getTableBody.bind(this);
   }
 
@@ -114,63 +116,90 @@ class MyBalances extends React.Component {
 
   getTableHeader() {
     const { classes } = this.props;
-    const { order, orderBy } = this.state;
 
     const cols = [
       {
         id: 'address',
         name: 'myBalances.address',
         numeric: false,
+        sortable: true,
       },
       {
         id: 'copyButton',
         name: 'myBalances.copy',
         numeric: false,
+        sortable: false,
       },
       {
         id: 'qtum',
         name: 'myBalances.qtum',
         numeric: true,
+        sortable: true,
       },
       {
         id: 'bot',
         name: 'myBalances.bot',
         numeric: true,
+        sortable: true,
       },
       {
         id: 'actions',
         name: 'myBalances.actions',
         numeric: false,
+        sortable: false,
       },
     ];
 
     return (
       <TableHead>
         <TableRow className={classes.tableHeader}>
-          {cols.map((column) => (
-            <TableCell
-              key={column.id}
-              numeric={column.numeric}
-              sortDirection={orderBy === column.id ? order : false}
-            >
-              <Tooltip
-                title="Sort"
-                enterDelay={300}
-              >
-                <TableSortLabel
-                  active={orderBy === column.id}
-                  direction={order}
-                  onClick={this.createSortHandler(column.id)}
-                >
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id={column.name} />
-                  </Typography>
-                </TableSortLabel>
-              </Tooltip>
-            </TableCell>
-          ))}
+          {cols.map((column) => column.sortable ? this.getSortableCell(column) : this.getNonSortableCell(column))}
         </TableRow>
       </TableHead>
+    );
+  }
+
+  getSortableCell(column) {
+    const { classes } = this.props;
+    const { order, orderBy } = this.state;
+
+    return (
+      <TableCell
+        key={column.id}
+        numeric={column.numeric}
+        sortDirection={orderBy === column.id ? order : false}
+      >
+        <Tooltip
+          title="Sort"
+          enterDelay={300}
+        >
+          <TableSortLabel
+            active={orderBy === column.id}
+            direction={order}
+            onClick={this.createSortHandler(column.id)}
+          >
+            <Typography variant="body1" className={classes.tableHeaderItemText}>
+              <FormattedMessage id={column.name} />
+            </Typography>
+          </TableSortLabel>
+        </Tooltip>
+      </TableCell>
+    );
+  }
+
+  getNonSortableCell(column) {
+    const { classes } = this.props;
+    const { order, orderBy } = this.state;
+
+    return (
+      <TableCell
+        key={column.id}
+        numeric={column.numeric}
+      >
+        <Typography variant="body1" className={classes.tableHeaderItemText}>
+          <FormattedMessage id={column.name} />
+        </Typography>
+      </TableCell>
     );
   }
 
