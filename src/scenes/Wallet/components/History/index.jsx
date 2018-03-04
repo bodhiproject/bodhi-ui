@@ -7,8 +7,7 @@ import Typography from 'material-ui/Typography';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
@@ -17,6 +16,7 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 const mockData = [
   {
+    txid: 1,
     time: moment(),
     from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
@@ -26,6 +26,7 @@ const mockData = [
     status: 'Pending',
   },
   {
+    txid: 2,
     time: moment(),
     from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     to: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
@@ -35,6 +36,7 @@ const mockData = [
     status: 'Pending',
   },
   {
+    txid: 3,
     time: moment(),
     from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     to: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
@@ -44,6 +46,7 @@ const mockData = [
     status: 'Pending',
   },
   {
+    txid: 4,
     time: moment(),
     from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
     to: 'qW254UF54ApahzucGAmMsG559zZwNYU4Hx',
@@ -138,10 +141,7 @@ class WalletHistory extends React.Component {
     ];
 
     return (
-      <TableHead
-        order={order}
-        orderBy={orderBy}
-      >
+      <TableHead>
         <TableRow className={classes.tableHeader}>
           {headerCols.map((column) => (
             <TableCell
@@ -196,7 +196,7 @@ class WalletHistory extends React.Component {
     return (
       <TableBody>
         {data.map((item) => (
-          <TableRow key={item.address} className={classes.tableRow}>
+          <TableRow key={item.txid} className={classes.tableRow}>
             <TableCell>
               <Typography variant="body1" className={classes.tableRowCell}>
                 {getShortLocalDateTimeString(item.time)}

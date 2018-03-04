@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import MyBalances from './components/Balances/index';
 import WalletHistory from './components/History/index';
@@ -12,6 +11,12 @@ class MyWallet extends React.Component {
 
     this.state = {
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { walletAddrs } = this.props;
+    console.log('addrs', walletAddrs);
+    console.log('next addrs', nextProps.walletAddrs);
   }
 
   render() {
@@ -25,12 +30,15 @@ class MyWallet extends React.Component {
 }
 
 MyWallet.propTypes = {
+  walletAddrs: PropTypes.array,
 };
 
 MyWallet.defaultProps = {
+  walletAddrs: [],
 };
 
 const mapStateToProps = (state) => ({
+  walletAddrs: state.App.get('walletAddrs'),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -38,4 +46,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(MyWallet));
+export default connect(mapStateToProps, mapDispatchToProps)(MyWallet);

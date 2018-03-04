@@ -10,43 +10,19 @@ import Button from 'material-ui/Button';
 import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import styles from './styles';
 import Config from '../../../../config/app';
 
-const mockData = [
-  {
-    address: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    qtum: 100,
-    bot: 200,
-  },
-  {
-    address: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
-    qtum: 526,
-    bot: 835,
-  },
-  {
-    address: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
-    qtum: 867,
-    bot: 263,
-  },
-  {
-    address: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
-    qtum: 362,
-    bot: 953,
-  },
-];
-
-class MyBalances extends React.Component {
+class MyBalances extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       order: 'asc',
       orderBy: 'address',
-      data: [],
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -56,15 +32,8 @@ class MyBalances extends React.Component {
     this.getTableBody = this.getTableBody.bind(this);
   }
 
-  componentWillMount() {
-    this.setState({
-      data: mockData,
-    });
-  }
-
   render() {
-    const { classes } = this.props;
-    const { data } = this.state;
+    const { classes, walletAddrs } = this.props;
 
     return (
       <Paper className={classes.rootPaper}>
@@ -72,10 +41,10 @@ class MyBalances extends React.Component {
           <Typography variant="title" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" />
           </Typography>
-          {this.getTotalsGrid(data)}
+          {this.getTotalsGrid(walletAddrs)}
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableBody(data)}
+            {this.getTableBody(walletAddrs)}
           </Table>
         </Grid>
       </Paper>
@@ -102,10 +71,10 @@ class MyBalances extends React.Component {
     ];
 
     return (
-      <Grid container classname={classes.totalsContainerGrid}>
+      <Grid container className={classes.totalsContainerGrid}>
         {items.map((item) => (
           <Grid item key={item.id} className={classes.totalsItemGrid}>
-            <Typography className={classes.totalsItemAmount}>{item.total}</Typography>
+            <Typography className={classes.totalsItemAmount}>{item.total.toFixed(2)}</Typography>
             <Typography variant="body1">
               <FormattedMessage id={item.name} />
             </Typography>
@@ -218,10 +187,13 @@ class MyBalances extends React.Component {
     }
 
     const data = order === 'desc'
-      ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      ? this.props.walletAddrs.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      : this.props.walletAddrs.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    this.setState({ data, order, orderBy });
+    this.setState({
+      order,
+      orderBy,
+    });
   }
 
   getTableBody(data) {
@@ -267,12 +239,15 @@ class MyBalances extends React.Component {
 
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
+  walletAddrs: PropTypes.array,
 };
 
 MyBalances.defaultProps = {
+  walletAddrs: [],
 };
 
 const mapStateToProps = (state) => ({
+  walletAddrs: state.App.get('walletAddrs'),
 });
 
 function mapDispatchToProps(dispatch) {
