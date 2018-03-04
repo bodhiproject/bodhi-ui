@@ -13,12 +13,6 @@ class MyWallet extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { walletAddrs } = this.props;
-    console.log('addrs', walletAddrs);
-    console.log('next addrs', nextProps.walletAddrs);
-  }
-
   render() {
     return (
       <div>
@@ -30,15 +24,12 @@ class MyWallet extends React.Component {
 }
 
 MyWallet.propTypes = {
-  walletAddrs: PropTypes.array,
 };
 
 MyWallet.defaultProps = {
-  walletAddrs: [],
 };
 
 const mapStateToProps = (state) => ({
-  walletAddrs: state.App.get('walletAddrs'),
 });
 
 function mapDispatchToProps(dispatch) {
