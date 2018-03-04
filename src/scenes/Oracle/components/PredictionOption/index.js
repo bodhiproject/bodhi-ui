@@ -45,7 +45,7 @@ class PredictionOption extends React.PureComponent {
     } = this.props;
 
     return (
-      <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) && !skipExpansion}>
+      <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
         <div
           className={classNames(
             classes.predictionOptionCollapse,
@@ -53,7 +53,7 @@ class PredictionOption extends React.PureComponent {
             optionIdx === 0 || optionIdx === currentOptionIdx ? 'first' : ''
           )}
         >
-          <ExpansionPanel expanded={optionIdx === currentOptionIdx && !skipExpansion} onChange={this.handleExpansionChange}>
+          <ExpansionPanel expanded={optionIdx === currentOptionIdx || skipExpansion} onChange={this.handleExpansionChange}>
             <ExpansionPanelSummary>
               <div className={classes.predictionOptionWrapper}>
                 <div className={classes.predictionOptionNum}>{optionIdx + 1}</div>

@@ -120,9 +120,10 @@ class OraclePage extends React.Component {
                 color="primary"
                 aria-label="add"
                 disabled={
-                  config.predictionAction.btnDisabled ||
+                  (config.predictionAction.btnDisabled ||
                   this.state.currentOptionIdx === -1 ||
-                  this.state.isApproving
+                  this.state.isApproving) &&
+                  !config.predictionAction.skipExpansion
                 }
                 onClick={this.handleConfirmClick}
                 className={classes.predictButton}
