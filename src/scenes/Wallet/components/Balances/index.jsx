@@ -11,6 +11,7 @@ import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
 import styles from './styles';
@@ -30,6 +31,7 @@ class MyBalances extends React.PureComponent {
     this.getSortableCell = this.getSortableCell.bind(this);
     this.getNonSortableCell = this.getNonSortableCell.bind(this);
     this.getTableBody = this.getTableBody.bind(this);
+    this.onCopyClicked = this.onCopyClicked.bind(this);
   }
 
   render() {
@@ -209,12 +211,14 @@ class MyBalances extends React.PureComponent {
               <Typography variant="body1">{item.address}</Typography>
             </TableCell>
             <TableCell>
-              <Button size="small" className={classes.tableRowCopyButton}>
-                <ContentCopy className={classes.tableRowCopyButtonIcon} />
-                <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                  <FormattedMessage id="myBalances.copy" />
-                </Typography>
-              </Button>
+              <CopyToClipboard text={item.address} onCopy={this.onCopyClicked}>
+                <Button size="small" className={classes.tableRowCopyButton}>
+                  <ContentCopy className={classes.tableRowCopyButtonIcon} />
+                  <Typography variant="body1" className={classes.tableRowCopyButtonText}>
+                    <FormattedMessage id="myBalances.copy" />
+                  </Typography>
+                </Button>
+              </CopyToClipboard>
             </TableCell>
             <TableCell numeric>
               <Typography variant="body1">{item.qtum}</Typography>
@@ -234,6 +238,11 @@ class MyBalances extends React.PureComponent {
         })}
       </TableBody>
     );
+  }
+
+  onCopyClicked(text) {
+    console.log(`Copied address: ${text}`);
+    // TODO: show snackbar
   }
 }
 
