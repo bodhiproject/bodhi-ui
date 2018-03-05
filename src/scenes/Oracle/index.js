@@ -129,7 +129,6 @@ class OraclePage extends React.Component {
                 fullWidth
                 size="large"
                 color="primary"
-                aria-label="add"
                 disabled={
                   (config.predictionAction.btnDisabled ||
                   this.state.currentOptionIdx === -1 ||

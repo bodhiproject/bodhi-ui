@@ -2,19 +2,23 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
+import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
 
-import appActions from '../../redux/App/actions';
-import AppConfig from '../../config/app';
-import getSubscription, { channels } from '../../network/graphSubscription';
+import appActions from '../../../../redux/App/actions';
+import AppConfig from '../../../../config/app';
+import getSubscription, { channels } from '../../../../network/graphSubscription';
+import styles from './styles';
 
 const MIN_BLOCK_COUNT_GAP = 1;
 
-class AppLoad extends React.PureComponent {
+class Loader extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       percent: 0,
+      hideLoader: false,
     };
   }
 
@@ -43,31 +47,40 @@ class AppLoad extends React.PureComponent {
       // Update initial sync flag
       const isSyncing = newPercent < 100;
       toggleInitialSync(isSyncing);
+
+      if (newPercent === 100) {
+        const self = this;
+        setTimeout(() => {
+          self.setState({ hideLoader: true });
+        }, 1000);
+      }
     } else {
       toggleInitialSync(true);
     }
   }
 
   render() {
-    const { percent } = this.state;
-
-    const style = {};
-    if (percent === 100 || !AppConfig.debug.showAppLoad) {
-      style.display = 'none';
-    }
+    const { percent, hideLoader } = this.state;
+    const { classes } = this.props;
 
     return (
-      <div className="app-load" style={style}>
-        <div className="app-load-wrapper">
-          <div className="app-load-container">
-            <Row>
-              <Col xs={10} style={{ textAlign: 'center' }}>
-                <Progress type="circle" percent={percent} width={180} />
-              </Col>
-              <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
-                <p>Blockchain syncing. Please wait.</p>
-              </Col>
-            </Row>
+      <div
+        className={classes.loaderBg}
+        style={
+          {
+            opacity: percent === 100 ? 0 : 1,
+            display: !AppConfig.debug.showAppLoad || hideLoader ? 'none' : 'block',
+          }
+        }
+      >
+        <div className={classes.loaderWrapper}>
+          <div className={classes.loaderLogoWrapper}>
+            <img className={classes.loaderGif} src="/images/loader.gif" alt="Loading..." />
+          </div>
+          <div className={classes.loaderInfoWrapper}>
+            <Typography variant="display1" className={classes.loaderPercent}>{percent}</Typography>%
+            <p>Blockchain syncing.</p>
+            <p>Please wait.</p>
           </div>
         </div>
       </div>
@@ -75,13 +88,14 @@ class AppLoad extends React.PureComponent {
   }
 }
 
-AppLoad.propTypes = {
+Loader.propTypes = {
+  classes: PropTypes.object.isRequired,
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
   toggleInitialSync: PropTypes.func,
 };
 
-AppLoad.defaultProps = {
+Loader.defaultProps = {
   chainBlockNum: undefined,
   syncBlockNum: undefined,
   toggleInitialSync: undefined,
@@ -96,4 +110,4 @@ const mapDispatchToProps = (dispatch) => ({
   toggleInitialSync: (isSyncing) => dispatch(appActions.toggleInitialSync(isSyncing)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Loader));

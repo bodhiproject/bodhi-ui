@@ -47,7 +47,7 @@ const styles = (theme) => ({
     color: theme.palette.text.primary,
     position: 'absolute',
     left: 0,
-    top: 0,
+    top: '-7px',
   },
   predictionOptionProgress: {
     position: 'relative',

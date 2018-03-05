@@ -85,7 +85,7 @@
   "predictinfo.fund": "FUNDING",
   "predictinfo.resultsetter": "RESULT SETTER",
   "sort.asc": "Ascending",
-  "sort.default": "Sort",
+  "sort.label": "Sort By",
   "sort.desc": "Descending",
   "str.bot": "BOT",
   "str.end": "Ended",

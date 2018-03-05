@@ -78,7 +78,7 @@
   "predictinfo.fund": "资金",
   "predictinfo.resultsetter": "结果设定者",
   "sort.asc": "升序",
-  "sort.default": "排序",
+  "sort.label": "排序",
   "sort.desc": "降序",
   "str.RAISE": "筹集到",
   "str.end": "已结束",

@@ -88,7 +88,7 @@ class PredictionOption extends React.PureComponent {
     return (<ExpansionPanelDetails>
       <div className={classNames(classes.predictionOptionWrapper, 'noMargin')}>
         <div className={classes.predictionOptionIcon}>
-          <AttachMoneyIcon />
+          <i className="icon iconfont icon-coin"></i>
         </div>
         <FormControl fullWidth>
           <InputLabel htmlFor="amount" shrink>
@@ -118,7 +118,7 @@ class PredictionOption extends React.PureComponent {
     return (<ExpansionPanelDetails>
       <div className={classNames(classes.predictionOptionWrapper, 'noMargin', 'last')}>
         <div className={classes.predictionOptionIcon}>
-          <AccountBalanceWalletIcon />
+          <i className="icon iconfont icon-wallet"></i>
         </div>
         <FormControl fullWidth>
           <InputLabel htmlFor="address" shrink>
