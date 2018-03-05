@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { getTypeDef } from './graphDataStruct';
+import { getTypeDef } from './graphSchema';
 
 const subscriptions = {
   onSyncInfo: `

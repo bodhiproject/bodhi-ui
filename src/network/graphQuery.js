@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 
 import client from './graphClient';
 import GraphParser from './graphParser';
-import { TYPE, isValidEnum, getTypeDef } from './graphDataStruct';
+import { TYPE, isValidEnum, getTypeDef } from './graphSchema';
 
 class GraphQuery {
   constructor(queryName, type) {
