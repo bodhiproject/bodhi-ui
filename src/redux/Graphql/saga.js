@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles } from '../../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../network/graphMutation';
 import Config from '../../config/app';
