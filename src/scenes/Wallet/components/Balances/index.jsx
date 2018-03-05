@@ -19,6 +19,7 @@ import _ from 'lodash';
 
 import styles from './styles';
 import Config from '../../../../config/app';
+import SendModal from '../SendModal/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -57,6 +58,7 @@ class MyBalances extends React.PureComponent {
             {this.getTableBody(walletAddrs)}
           </Table>
           {this.getAddrCopiedSnackBar()}
+          <SendModal />
         </Grid>
       </Paper>
     );
@@ -249,7 +251,6 @@ class MyBalances extends React.PureComponent {
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}
-                onClick={}
               >
                 <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
@@ -302,7 +303,7 @@ class MyBalances extends React.PureComponent {
   }
 
   onWithdrawClicked() {
-    
+
   }
 
   onAddrCopiedSnackbarClosed() {
