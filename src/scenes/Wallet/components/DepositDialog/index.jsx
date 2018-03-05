@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
+import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -12,47 +12,28 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 
 class DepositDialog extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dialogVisible: true,
-    };
-
-    this.handleClose = this.handleClose.bind(this);
-  }
-
   render() {
-    const { classes } = this.props;
+    const {
+      classes,
+      dialogVisible,
+      walletAddress,
+      onClose,
+    } = this.props;
 
     return (
       <Dialog
-        open={this.state.dialogVisible}
-        onClose={this.handleClose}
+        open={dialogVisible}
+        onClose={onClose}
       >
         <DialogTitle>
-          Deposit
+          <FormattedMessage id="depositDialog.title" default="QTUM/BOT Deposit Address" />
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send
-            updates occationally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-          />
+          <DialogContentText>{walletAddress}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={this.handleClose} color="primary">
-            Subscribe
+            <FormattedMessage id="str.close" default="Close" />
           </Button>
         </DialogActions>
       </Dialog>
@@ -60,14 +41,17 @@ class DepositDialog extends React.Component {
   }
 
   handleClose() {
-    this.setState({
-      dialogVisible: false,
-    });
   }
 }
 
 DepositDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  dialogVisible: PropTypes.bool.isRequired,
+  walletAddress: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
+
+DepositDialog.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({

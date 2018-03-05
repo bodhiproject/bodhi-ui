@@ -29,6 +29,8 @@ class MyBalances extends React.PureComponent {
       order: 'asc',
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
+      selectedAddress: undefined,
+      depositDialogVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -39,12 +41,14 @@ class MyBalances extends React.PureComponent {
     this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
     this.onDepositClicked = this.onDepositClicked.bind(this);
+    this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
   render() {
     const { classes, walletAddrs } = this.props;
+    const { selectedAddress, depositDialogVisible } = this.state;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -58,7 +62,11 @@ class MyBalances extends React.PureComponent {
             {this.getTableBody(walletAddrs)}
           </Table>
           {this.getAddrCopiedSnackBar()}
-          <DepositDialog />
+          <DepositDialog
+            dialogVisible={depositDialogVisible}
+            walletAddress={selectedAddress}
+            onClose={this.handleDepositDialogClose}
+          />
         </Grid>
       </Paper>
     );
@@ -251,6 +259,8 @@ class MyBalances extends React.PureComponent {
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}
+                onClick={this.onDepositClicked}
+                data-address={item.address}
               >
                 <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
@@ -298,9 +308,19 @@ class MyBalances extends React.PureComponent {
     });
   }
 
-  onDepositClicked() {
-
+  onDepositClicked(event) {
+    this.setState({
+      selectedAddress: event.currentTarget.getAttribute('data-address'),
+      depositDialogVisible: true,
+    });
   }
+
+  handleDepositDialogClose = (value) => {
+    this.setState({
+      selectedAddress: undefined,
+      depositDialogVisible: false,
+    });
+  };
 
   onWithdrawClicked() {
 
