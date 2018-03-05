@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
-import { querySyncInfo } from '../../network/graphRequest';
+import { querySyncInfo } from '../../network/graphQuery';
 import { convertBNHexStrToQtum } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
