@@ -84,8 +84,8 @@ class WalletHistory extends React.Component {
     const { data } = this.state;
 
     return (
-      <Paper className={classes.rootPaper}>
-        <Grid container spacing={0} className={classes.containerGrid}>
+      <Paper className={classes.txHistoryPaper}>
+        <Grid container spacing={0} className={classes.txHistoryGridContainer}>
           <Typography variant="title">
             <FormattedMessage id="walletHistory.transactionHistory" default="Transaction History" />
           </Typography>

@@ -1,10 +1,10 @@
 const styles = (theme) => ({
-  rootPaper: {
+  txHistoryPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.default,
   },
-  containerGrid: {
+  txHistoryGridContainer: {
     minWidth: theme.sizes.table.minWidth,
     padding: theme.padding.lg.px,
     overflowX: 'scroll',
