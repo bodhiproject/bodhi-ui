@@ -60,7 +60,7 @@ class Loader extends React.PureComponent {
   }
 
   render() {
-    const { percent } = this.state;
+    const { percent, hideLoader } = this.state;
     const { classes } = this.props;
 
     return (
@@ -69,7 +69,7 @@ class Loader extends React.PureComponent {
         style={
           {
             opacity: percent === 100 ? 0 : 1,
-            display: !AppConfig.debug.showAppLoad || this.state.hideLoader ? 'none' : 'block',
+            display: !AppConfig.debug.showAppLoad || hideLoader ? 'none' : 'block',
           }
         }
       >
