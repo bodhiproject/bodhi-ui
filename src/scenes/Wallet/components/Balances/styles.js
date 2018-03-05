@@ -1,10 +1,10 @@
 const styles = (theme) => ({
-  rootPaper: {
+  myBalancePaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.paper,
   },
-  containerGrid: {
+  myBalanceGridContainer: {
     padding: theme.padding.lg.px,
     overflowX: 'hidden',
   },

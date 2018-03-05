@@ -44,8 +44,8 @@ class MyBalances extends React.PureComponent {
     const { classes, walletAddrs } = this.props;
 
     return (
-      <Paper className={classes.rootPaper}>
-        <Grid container spacing={0} className={classes.containerGrid}>
+      <Paper className={classes.myBalancePaper}>
+        <Grid container spacing={0} className={classes.myBalanceGridContainer}>
           <Typography variant="title" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" default="My Balance" />
           </Typography>

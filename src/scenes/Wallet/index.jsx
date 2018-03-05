@@ -6,13 +6,6 @@ import MyBalances from './components/Balances/index';
 import WalletHistory from './components/History/index';
 
 class MyWallet extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-    };
-  }
-
   render() {
     return (
       <div>
@@ -22,12 +15,6 @@ class MyWallet extends React.Component {
     );
   }
 }
-
-MyWallet.propTypes = {
-};
-
-MyWallet.defaultProps = {
-};
 
 const mapStateToProps = (state) => ({
 });

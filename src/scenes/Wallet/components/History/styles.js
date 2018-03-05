@@ -25,8 +25,6 @@ const styles = (theme) => ({
     background: theme.palette.background.paper,
     borderBottom: theme.border,
   },
-  tableRowCell: {
-  },
 });
 
 export default styles;
