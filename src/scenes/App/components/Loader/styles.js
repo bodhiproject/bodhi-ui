@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   loaderBg: {
-    background: theme.palette.background.default,
+    background: 'white',
     position: 'fixed',
     top: 0,
     right: 0,
