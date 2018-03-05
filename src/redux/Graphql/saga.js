@@ -257,6 +257,7 @@ export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
     fork(getOraclesHandler),
+    fork(getTransactionsHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),
