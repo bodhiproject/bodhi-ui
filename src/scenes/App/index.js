@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Reboot from 'material-ui/Reboot';
 import { connect } from 'react-redux';
 import { Debounce } from 'react-throttle';

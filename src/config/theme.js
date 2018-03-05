@@ -93,6 +93,13 @@ const bodhiTheme = createMuiTheme({
       marginLeft: '0',
       color: textColorDark,
     },
+    headline: {
+      fontSize: px(fontSizeTitleSm),
+      fontWeight: 400,
+      lineHeight: lineHeightLg,
+      marginLeft: '0',
+      color: textColorDark,
+    },
     // large text (i.e. title on prediction title)
     title: {
       fontSize: px(fontSizeTextMd),
@@ -185,6 +192,7 @@ const bodhiTheme = createMuiTheme({
       titleMd: px(fontSizeTitleMd),
       titleSm: px(fontSizeTitleSm),
       textLg: px(fontSizeTextLg),
+      textMd: px(fontSizeTextMd),
       textSm: px(fontSizeTextSm),
       meta: px(fontSizeMeta),
     },

@@ -22,6 +22,10 @@ class NavEventsButtons extends Component {
     if (index) {
       this.props.tabIndexChanged(parseInt(index, 10));
     }
+
+    if (window.location.pathname !== '/') {
+      window.location.assign('/');
+    }
   }
 
   render() {
@@ -31,7 +35,6 @@ class NavEventsButtons extends Component {
       <div>{
         this.props.buttons.map((entry, index) => (
           <Button
-            href={window.location.pathname === '/' ? null : '/'}
             key={entry.text}
             data-index={index}
             onClick={this.onBtnClicked}

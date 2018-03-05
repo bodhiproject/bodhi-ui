@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
@@ -130,9 +131,10 @@ class OraclePage extends React.Component {
                 color="primary"
                 aria-label="add"
                 disabled={
-                  config.predictionAction.btnDisabled ||
+                  (config.predictionAction.btnDisabled ||
                   this.state.currentOptionIdx === -1 ||
-                  this.state.isApproving
+                  this.state.isApproving) &&
+                  !config.predictionAction.skipExpansion
                 }
                 onClick={this.handleConfirmClick}
                 className={classes.predictButton}
