@@ -17,4 +17,9 @@ module.exports = {
   defaults: {
     averageBlockTime: 142.01324503311258,
   },
+  debug: {
+    // Set to false if in test environment and Insight API is down
+    // and loading screen is blocking the view.
+    showAppLoad: true,
+  },
 };

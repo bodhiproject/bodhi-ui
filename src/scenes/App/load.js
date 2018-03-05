@@ -52,7 +52,7 @@ class AppLoad extends React.PureComponent {
     const { percent } = this.state;
 
     const style = {};
-    if (percent === 100) {
+    if (percent === 100 || !AppConfig.debug.showAppLoad) {
       style.display = 'none';
     }
 
