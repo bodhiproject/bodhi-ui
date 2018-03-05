@@ -19,7 +19,7 @@ import _ from 'lodash';
 
 import styles from './styles';
 import Config from '../../../../config/app';
-import SendModal from '../SendModal/index';
+import DepositDialog from '../DepositDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -58,7 +58,7 @@ class MyBalances extends React.PureComponent {
             {this.getTableBody(walletAddrs)}
           </Table>
           {this.getAddrCopiedSnackBar()}
-          <SendModal />
+          <DepositDialog />
         </Grid>
       </Paper>
     );
