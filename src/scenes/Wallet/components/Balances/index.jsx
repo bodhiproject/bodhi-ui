@@ -27,7 +27,7 @@ class MyBalances extends React.PureComponent {
     this.state = {
       order: 'asc',
       orderBy: 'address',
-      snackbarVisible: false,
+      addrCopiedSnackbarVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -35,9 +35,9 @@ class MyBalances extends React.PureComponent {
     this.getSortableCell = this.getSortableCell.bind(this);
     this.getNonSortableCell = this.getNonSortableCell.bind(this);
     this.getTableBody = this.getTableBody.bind(this);
-    this.getSnackbar = this.getSnackbar.bind(this);
+    this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
-    this.onSnackbarClosed = this.onSnackbarClosed.bind(this);
+    this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
   render() {
@@ -54,7 +54,7 @@ class MyBalances extends React.PureComponent {
             {this.getTableHeader()}
             {this.getTableBody(walletAddrs)}
           </Table>
-          {this.getSnackbar()}
+          {this.getAddrCopiedSnackBar()}
         </Grid>
       </Paper>
     );
@@ -255,21 +255,21 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  getSnackbar() {
-    const { snackbarVisible } = this.state;
+  getAddrCopiedSnackBar() {
+    const { addrCopiedSnackbarVisible } = this.state;
 
     return (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        open={snackbarVisible}
+        open={addrCopiedSnackbarVisible}
         autoHideDuration={Config.intervals.snackbarLong}
-        onClose={this.onSnackbarClosed}
+        onClose={this.onAddrCopiedSnackbarClosed}
         message={<FormattedMessage id="myBalances.addressCopied" default="Address copied" />}
         action={[
           <IconButton
             key="close"
             color="inherit"
-            onClick={this.onSnackbarClosed}
+            onClick={this.onAddrCopiedSnackbarClosed}
           >
             <CloseIcon />
           </IconButton>,
@@ -280,13 +280,13 @@ class MyBalances extends React.PureComponent {
 
   onCopyClicked(text) {
     this.setState({
-      snackbarVisible: true,
+      addrCopiedSnackbarVisible: true,
     });
   }
 
-  onSnackbarClosed() {
+  onAddrCopiedSnackbarClosed() {
     this.setState({
-      snackbarVisible: false,
+      addrCopiedSnackbarVisible: false,
     });
   }
 }

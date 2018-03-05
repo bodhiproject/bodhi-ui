@@ -3,29 +3,26 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   container: {
-    paddingTop: '100px',
-    paddingLeft: theme.padding.md.px,
-    paddingRight: theme.padding.md.px,
-    paddingBottom: theme.padding.md.px,
+    padding: `100px ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
 
-    // [theme.breakpoints.up('xs')]: {
-    //   margin: theme.padding.sm.px,
-    // },
+    [theme.breakpoints.up('xs')]: {
+      margin: theme.padding.sm.px,
+    },
 
-    // [theme.breakpoints.up('sm')]: {
-    //   margin: theme.padding.md.px,
-    // },
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.padding.md.px,
+    },
 
-    // [theme.breakpoints.up('lg')]: {
-    //   margin: '0 auto',
-    //   marginTop: theme.padding.md.px,
-    //   marginBottom: theme.padding.md.px,
-    //   maxWidth: (theme.breakpoints.values.lg - (theme.padding.md.value * 2)),
-    // },
+    [theme.breakpoints.up('lg')]: {
+      margin: '0 auto',
+      marginTop: theme.padding.md.px,
+      marginBottom: theme.padding.md.px,
+      maxWidth: (theme.breakpoints.values.lg - (theme.padding.md.value * 2)),
+    },
 
-    // [theme.breakpoints.up('xl')]: {
-    //   maxWidth: (theme.breakpoints.values.xl - (theme.padding.md.value * 2)),
-    // },
+    [theme.breakpoints.up('xl')]: {
+      maxWidth: (theme.breakpoints.values.xl - (theme.padding.md.value * 2)),
+    },
   },
 });
 
