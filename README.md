@@ -75,20 +75,20 @@ There are 2 ways to achieve responsive layout
 ## Localization
 
 for most of the text, use 
-`<FormattedMessage id="cardinfo.withdraw" defaultMessage="Withdraw" />`   
+`<FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />`   
 put the default text inside defaultMessage,
 
 for String inside placeholder or previous method can not handle, define messages in the top of the file using `defindMessages`
 
 ```
 const messages = defineMessages({
-  betstartblockmsg: {
-    id: 'create.betstartblockmsg',
+  betStartblockMsg: {
+    id: 'create.betStartblockMsg',
     defaultMessage: 'Betting Start Time cannot be empty',
   }
 });
 ```
-Then put `this.props.intl.formatMessage(messages.betstartblockmsg)` at the place where you want to put the text
+Then put `this.props.intl.formatMessage(messages.betStartblockMsg)` at the place where you want to put the text
 
 Run `run build:langs`
 

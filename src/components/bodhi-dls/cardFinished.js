@@ -82,7 +82,7 @@ class CardFinished extends Component {
             size="large"
             disabled={confirmBtnDisabled}
           >
-            <FormattedMessage id="cardinfo.withdraw" defaultMessage="Withdraw" />
+            <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />
           </Button>
 
         </div>

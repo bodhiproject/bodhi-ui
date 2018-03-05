@@ -17,12 +17,12 @@ class PredictionInfo extends React.PureComponent {
     return (
       <div className={classes.predictionInfoWrapper}>
         {this.renderInfoBlock(
-          <FormattedMessage id="predictinfo.enddate" defaultMessage="ENDING DATE" />,
+          <FormattedMessage id="predictInfo.endDate" defaultMessage="ENDING DATE" />,
           getLocalDateTimeString(oracle.endTime),
           getEndTimeCountDownString(oracle.endTime)
         )}
-        {this.renderInfoBlock(<FormattedMessage id="predictinfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
-        {this.renderInfoBlock(<FormattedMessage id="predictinfo.resultsetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
+        {this.renderInfoBlock(<FormattedMessage id="predictInfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
+        {this.renderInfoBlock(<FormattedMessage id="predictInfo.resultSetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
       </div>
     );
   }

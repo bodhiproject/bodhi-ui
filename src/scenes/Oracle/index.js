@@ -28,8 +28,8 @@ import styles from './styles';
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
 const messages = defineMessages({
-  resultsetter: {
-    id: 'oracle.resultsetter',
+  resultSetter: {
+    id: 'oracle.resultSetter',
     defaultMessage: 'Result setter',
   },
   consensus: {
@@ -260,7 +260,7 @@ class OraclePage extends React.Component {
       if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.betting" defaultMessage="Betting" />,
+          breadcrumbLabel: <FormattedMessage id="topBar.betting" defaultMessage="Betting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
@@ -268,19 +268,19 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.bet" defaultMessage="Bet" />,
+            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
             showAmountInput: true,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.setting" defaultMessage="Setting" />,
+          breadcrumbLabel: <FormattedMessage id="topBar.setting" defaultMessage="Setting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
               {
-                text: `${this.props.intl.formatMessage(messages.resultsetter)} ${oracle.resultSetterQAddress || ''}`,
+                text: `${this.props.intl.formatMessage(messages.resultSetter)} ${oracle.resultSetterQAddress || ''}`,
                 type: 'default',
               },
               {
@@ -288,14 +288,14 @@ class OraclePage extends React.Component {
                 type: 'default',
               },
               {
-                text: <FormattedMessage id="oracle.resultsetnote" defaultMessage="BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before result setting. The approved amount will automatically be used to set the result after approval." />,
+                text: <FormattedMessage id="oracle.resultSetnote" defaultMessage="BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before result setting. The approved amount will automatically be used to set the result after approval." />,
                 type: 'default',
               },
             ],
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.setresult" defaultMessage="Set Result" />,
+            btnText: <FormattedMessage id="cardInfo.setResult" defaultMessage="Set Result" />,
             btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             showAmountInput: false,
           },
@@ -317,14 +317,14 @@ class OraclePage extends React.Component {
           });
         } else if (status === OracleStatus.OpenResultSet) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.openres" defaultMessage="The Centralized Oracle has not set the result yet, but you may set the result by staking BOT." />,
+            text: <FormattedMessage id="oracle.openRes" defaultMessage="The Centralized Oracle has not set the result yet, but you may set the result by staking BOT." />,
             type: 'warn',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.voting" defaultMessage="Voting" />,
+          breadcrumbLabel: <FormattedMessage id="topBar.voting" defaultMessage="Voting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
@@ -332,14 +332,14 @@ class OraclePage extends React.Component {
                 text: <FormattedMessage id="oracle.voting-1" value={oracle.consensusThreshold || ''} defaultMessage="Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result." />,
                 type: 'default',
               }, {
-                text: <FormattedMessage id="oracle.votenote" defaultMessage="BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards." />,
+                text: <FormattedMessage id="oracle.voteNote" defaultMessage="BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards." />,
                 type: 'default',
               },
             ],
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.vote" defaultMessage="Voting" />,
+            btnText: <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />,
             showAmountInput: true,
           },
         };
@@ -354,14 +354,14 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: true,
-            btnText: <FormattedMessage id="cardinfo.finalize" defaultMessage="Finalize" />,
+            btnText: <FormattedMessage id="cardInfo.finalize" defaultMessage="Finalize" />,
             showAmountInput: false,
           },
         };
 
         if (syncBlockTime > oracle.endTime) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.passvote" defaultMessage="Current block time has passed the Voting End Time. The previous result needs to be finalized in order to withdraw." />,
+            text: <FormattedMessage id="oracle.passVote" defaultMessage="Current block time has passed the Voting End Time. The previous result needs to be finalized in order to withdraw." />,
             type: 'default',
           }, {
             text: <FormattedMessage id="oracle.finalize" defaultMessage="Finalizing can be done by anyone. Once finalized, winners can withdraw from the event in the Withdraw tab." />,
