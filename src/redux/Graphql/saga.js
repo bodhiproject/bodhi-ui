@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
+import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
 import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
   from '../../network/graphMutation';
 import Config from '../../config/app';
@@ -40,6 +40,7 @@ function processTopic(topic) {
   return newTopic;
 }
 
+// Send allOracles query
 export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
     try {
@@ -68,6 +69,25 @@ function processOracle(oracle) {
   newOracle.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
   newOracle.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
   return newOracle;
+}
+
+// Send allTransactions query
+export function* getTransactionsHandler() {
+  yield takeEvery(actions.GET_TRANSACTIONS, function* getTransactionsRequest(action) {
+    try {
+      const txs = yield call(queryAllTransactions, action.filters, action.orderBy);
+
+      yield put({
+        type: actions.GET_TRANSACTIONS_RETURN,
+        value: txs,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_TRANSACTIONS_RETURN,
+        error: err.message,
+      });
+    }
+  });
 }
 
 // Sends createTopic mutation
@@ -237,6 +257,7 @@ export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
     fork(getOraclesHandler),
+    fork(getTransactionsHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 import client from './graphClient';
-import { TYPE, getMutation } from './graphDataStruct';
+import { TYPE, getMutation } from './graphSchema';
 import GraphParser from './graphParser';
 
 class GraphMutation {

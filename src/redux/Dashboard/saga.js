@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
 import { Token, OracleStatus } from '../../constants';
-import { queryAllTopics, queryAllOracles } from '../../network/graphRequest';
+import { queryAllTopics, queryAllOracles } from '../../network/graphQuery';
 
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {

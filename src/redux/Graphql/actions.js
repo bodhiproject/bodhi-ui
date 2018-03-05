@@ -15,6 +15,14 @@ const graphqlActions = {
     orderBy,
   }),
 
+  GET_TRANSACTIONS: 'GET_TRANSACTIONS',
+  GET_TRANSACTIONS_RETURN: 'GET_TRANSACTIONS_RETURN',
+  getTransactions: (filters, orderBy) => ({
+    type: graphqlActions.GET_TRANSACTIONS,
+    filters,
+    orderBy,
+  }),
+
   CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
   CREATE_TOPIC_TX_RETURN: 'CREATE_TOPIC_TX_RETURN',
   createTopicTx: (

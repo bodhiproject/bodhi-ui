@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 
 import client from './graphClient';
 import GraphParser from './graphParser';
-import { TYPE, isValidEnum, getTypeDef } from './graphDataStruct';
+import { TYPE, isValidEnum, getTypeDef } from './graphSchema';
 
-class GraphRequest {
+class GraphQuery {
   constructor(queryName, type) {
     this.queryName = queryName;
     this.type = type;
@@ -104,7 +104,7 @@ class GraphRequest {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
 export function queryAllTopics(filters, orderBy) {
-  const request = new GraphRequest('allTopics', TYPE.topic);
+  const request = new GraphQuery('allTopics', TYPE.topic);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -120,7 +120,23 @@ export function queryAllTopics(filters, orderBy) {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
 export function queryAllOracles(filters, orderBy) {
-  const request = new GraphRequest('allOracles', TYPE.oracle);
+  const request = new GraphQuery('allOracles', TYPE.oracle);
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  return request.execute();
+}
+
+/*
+* Queries allTransactions from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+*/
+export function queryAllTransactions(filters, orderBy) {
+  const request = new GraphQuery('allTransactions', TYPE.transaction);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -134,5 +150,5 @@ export function queryAllOracles(filters, orderBy) {
 * Queries syncInfo from GraphQL.
 */
 export function querySyncInfo() {
-  return new GraphRequest('syncInfo', TYPE.syncInfo).execute();
+  return new GraphQuery('syncInfo', TYPE.syncInfo).execute();
 }
