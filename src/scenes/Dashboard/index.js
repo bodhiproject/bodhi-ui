@@ -96,7 +96,6 @@ class Dashboard extends React.Component {
 
   componentWillMount() {
     this.executeGraphRequest(this.props.tabIndex);
-    this.props.getTransactions();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,12 +118,9 @@ class Dashboard extends React.Component {
       tabIndex,
       getTopicsReturn,
       getOraclesReturn,
-      getTransactionsReturn,
     } = this.props;
     const topics = getTopicsReturn;
     const oracles = getOraclesReturn;
-    const transactions = getTransactionsReturn;
-    console.log(transactions);
 
     let rowItems;
     switch (tabIndex) {
@@ -317,8 +313,6 @@ Dashboard.propTypes = {
   getTopicsReturn: PropTypes.array,
   getOracles: PropTypes.func,
   getOraclesReturn: PropTypes.array,
-  getTransactions: PropTypes.func,
-  getTransactionsReturn: PropTypes.array,
   tabIndex: PropTypes.number,
   sortBy: PropTypes.string,
   syncBlockNum: PropTypes.number,
@@ -331,8 +325,6 @@ Dashboard.defaultProps = {
   getTopicsReturn: [],
   getOracles: undefined,
   getOraclesReturn: [],
-  getTransactions: undefined,
-  getTransactionsReturn: [],
   tabIndex: DEFAULT_TAB_INDEX,
   sortBy: undefined,
   syncBlockNum: undefined,
@@ -341,7 +333,6 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   tabIndex: state.Dashboard.get('tabIndex'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
@@ -351,7 +342,6 @@ function mapDispatchToProps(dispatch) {
   return {
     getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   };
 }
 
