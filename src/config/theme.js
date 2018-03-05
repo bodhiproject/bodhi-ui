@@ -96,7 +96,7 @@ const bodhiTheme = createMuiTheme({
     headline: {
       fontSize: px(fontSizeTitleSm),
       fontWeight: 400,
-      lineHeight: lineHeightSm,
+      lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
     },

@@ -6,6 +6,7 @@ import Typography from 'material-ui/Typography';
 import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 
+import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
 import styles from './styles';
 
 class PredictionInfo extends React.PureComponent {
@@ -16,8 +17,8 @@ class PredictionInfo extends React.PureComponent {
       <div className={classes.predictionInfoWrapper}>
         {this.renderInfoBlock(
           this.props.intl.formatMessage({ id: 'predictinfo.enddate' }),
-          moment.unix(oracle.endTime).format('M/D/YYYY hh:mmA'),
-          this.getEndingCountDown()
+          getLocalDateTimeString(oracle.endTime),
+          getEndTimeCountDownString(oracle.endTime)
         )}
         {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.fund' }), this.getTotalFundWithToken())}
         {this.renderInfoBlock(this.props.intl.formatMessage({ id: 'predictinfo.resultsetter' }), oracle.resultSetterQAddress)}
@@ -52,21 +53,6 @@ class PredictionInfo extends React.PureComponent {
     const totalAmount = _.sum(oracle.amounts);
 
     return `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`;
-  }
-
-  getEndingCountDown() {
-    const { oracle } = this.props;
-
-    const nowunix = moment().unix();
-    const unixdiff = oracle.endTime - nowunix;
-
-    if (unixdiff < 0) {
-      return 'ENDED';
-    }
-
-    const dur = moment.duration(unixdiff * 1000);
-
-    return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left.`;
   }
 }
 

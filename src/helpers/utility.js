@@ -71,7 +71,7 @@ export function getEndTimeCountDownString(unixSeconds) {
 
   const dur = moment.duration(unixdiff * 1000);
 
-  return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left.`;
+  return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left`;
 }
 
 /**
