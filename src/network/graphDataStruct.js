@@ -75,7 +75,6 @@ const TYPE_DEF = {
     type
     status
     senderAddress
-    senderQAddress
     topicAddress
     oracleAddress
     optionIdx
