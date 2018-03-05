@@ -53,10 +53,12 @@ class NavBar extends React.PureComponent {
             }]}
           />
           <div className={classes.navBarRightWrapper}>
-            <Button className={classes.navBarWalletButton}>
-              <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
-              {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
-            </Button>
+            <Link to="/my-wallet" >
+              <Button className={classes.navBarWalletButton}>
+                <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
+                {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
+              </Button>
+            </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" />
             </Button>

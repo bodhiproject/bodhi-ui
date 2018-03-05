@@ -13,6 +13,9 @@ module.exports = {
   },
   intervals: { // in MS
     syncInfo: 20000,
+    tooltipDelay: 300,
+    snackbarLong: 5000,
+    snackbarShort: 2000,
   },
   defaults: {
     averageBlockTime: 142.01324503311258,
