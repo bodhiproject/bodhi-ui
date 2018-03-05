@@ -63,18 +63,13 @@ class Loader extends React.PureComponent {
     const { percent } = this.state;
     const { classes } = this.props;
 
-    const style = {};
-    if (percent === 100 || !AppConfig.debug.showAppLoad) {
-      style.display = 'none';
-    }
-
     return (
       <div
         className={classes.loaderBg}
         style={
           {
             opacity: percent === 100 ? 0 : 1,
-            display: this.state.hideLoader ? 'none' : 'block',
+            display: !AppConfig.debug.showAppLoad || this.state.hideLoader ? 'none' : 'block',
           }
         }
       >
