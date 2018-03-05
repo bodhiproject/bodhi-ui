@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Reboot from 'material-ui/Reboot';
 import { connect } from 'react-redux';
 import { Debounce } from 'react-throttle';
@@ -32,6 +33,7 @@ export class App extends React.PureComponent {
           />
         </Debounce>
         <GlobalHub />
+        <AppLoad />
         <NavBar url={url} langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />

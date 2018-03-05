@@ -113,7 +113,12 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { tabIndex, getTopicsReturn, getOraclesReturn } = this.props;
+    const {
+      theme,
+      tabIndex,
+      getTopicsReturn,
+      getOraclesReturn,
+    } = this.props;
     const topics = getTopicsReturn;
     const oracles = getOraclesReturn;
 
@@ -148,7 +153,7 @@ class Dashboard extends React.Component {
     return (
       <div>
         <TopActions />
-        <Grid container spacing={24}>
+        <Grid container spacing={theme.padding.sm.value}>
           {rowItems}
         </Grid>
       </div>
@@ -303,6 +308,7 @@ class Dashboard extends React.Component {
 
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   getTopics: PropTypes.func,
   getTopicsReturn: PropTypes.array,
   getOracles: PropTypes.func,

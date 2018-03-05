@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Row, Col, Select, Button, Menu, Icon, Dropdown } from 'antd';
 import _ from 'lodash';

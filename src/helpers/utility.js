@@ -62,14 +62,14 @@ export function getShortLocalDateTimeString(unixSeconds) {
 }
 
 export function getEndTimeCountDownString(unixSeconds) {
-  const nowunix = moment().unix();
-  const unixdiff = unixSeconds - nowunix;
+  const nowUnix = moment().unix();
+  const unixDiff = unixSeconds - nowUnix;
 
-  if (unixdiff < 0) {
+  if (unixDiff <= 0) {
     return 'Ended';
   }
 
-  const dur = moment.duration(unixdiff * 1000);
+  const dur = moment.duration(unixDiff * 1000);
 
   return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left`;
 }
