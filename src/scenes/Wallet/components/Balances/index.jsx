@@ -37,6 +37,8 @@ class MyBalances extends React.PureComponent {
     this.getTableBody = this.getTableBody.bind(this);
     this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
+    this.onDepositClicked = this.onDepositClicked.bind(this);
+    this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
@@ -242,10 +244,21 @@ class MyBalances extends React.PureComponent {
               <Typography variant="body1">{item.bot}</Typography>
             </TableCell>
             <TableCell>
-              <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
+              <Button
+                variant="raised"
+                color="primary"
+                size="small"
+                className={classes.tableRowActionButton}
+                onClick={}
+              >
                 <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
-              <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
+              <Button
+                variant="raised"
+                color="primary"
+                size="small"
+                className={classes.tableRowActionButton}
+              >
                 <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
               </Button>
             </TableCell>
@@ -282,6 +295,14 @@ class MyBalances extends React.PureComponent {
     this.setState({
       addrCopiedSnackbarVisible: true,
     });
+  }
+
+  onDepositClicked() {
+
+  }
+
+  onWithdrawClicked() {
+    
   }
 
   onAddrCopiedSnackbarClosed() {
