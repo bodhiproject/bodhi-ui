@@ -30,6 +30,8 @@ class MyBalances extends React.PureComponent {
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
       selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
       depositDialogVisible: false,
     };
 
@@ -48,7 +50,12 @@ class MyBalances extends React.PureComponent {
 
   render() {
     const { classes, walletAddrs } = this.props;
-    const { selectedAddress, depositDialogVisible } = this.state;
+    const {
+      selectedAddress,
+      selectedAddressQtum,
+      selectedAddressBot,
+      depositDialogVisible,
+    } = this.state;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -64,8 +71,10 @@ class MyBalances extends React.PureComponent {
           {this.getAddrCopiedSnackBar()}
           <DepositDialog
             dialogVisible={depositDialogVisible}
-            walletAddress={selectedAddress}
             onClose={this.handleDepositDialogClose}
+            walletAddress={selectedAddress}
+            qtumAmount={selectedAddressQtum}
+            botAmount={selectedAddressBot}
           />
         </Grid>
       </Paper>
@@ -261,6 +270,8 @@ class MyBalances extends React.PureComponent {
                 className={classes.tableRowActionButton}
                 onClick={this.onDepositClicked}
                 data-address={item.address}
+                data-qtum={item.qtum}
+                data-bot={item.bot}
               >
                 <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
@@ -311,6 +322,8 @@ class MyBalances extends React.PureComponent {
   onDepositClicked(event) {
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
+      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
       depositDialogVisible: true,
     });
   }

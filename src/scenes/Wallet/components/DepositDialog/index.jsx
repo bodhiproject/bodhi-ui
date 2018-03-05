@@ -17,8 +17,14 @@ class DepositDialog extends React.Component {
       classes,
       dialogVisible,
       walletAddress,
+      qtumAmount,
+      botAmount,
       onClose,
     } = this.props;
+
+    if (!walletAddress) {
+      return null;
+    }
 
     return (
       <Dialog
@@ -26,32 +32,40 @@ class DepositDialog extends React.Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="depositDialog.title" default="QTUM/BOT Deposit Address" />
+          <Typography variant="title">
+            <FormattedMessage id="depositDialog.title" default="QTUM/BOT Deposit Address" />
+          </Typography>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>{walletAddress}</DialogContentText>
+          <DialogContentText>
+            <Typography variant="body1">{walletAddress}</Typography>
+            <Typography variant="body1">{`QTUM: ${qtumAmount}`}</Typography>
+            <Typography variant="body1">{`BOT: ${botAmount}`}</Typography>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose} color="primary">
+          <Button onClick={onClose} color="primary">
             <FormattedMessage id="str.close" default="Close" />
           </Button>
         </DialogActions>
       </Dialog>
     );
   }
-
-  handleClose() {
-  }
 }
 
 DepositDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   dialogVisible: PropTypes.bool.isRequired,
-  walletAddress: PropTypes.string.isRequired,
+  walletAddress: PropTypes.string,
+  qtumAmount: PropTypes.number,
+  botAmount: PropTypes.number,
   onClose: PropTypes.func.isRequired,
 };
 
 DepositDialog.defaultProps = {
+  walletAddress: undefined,
+  qtumAmount: 0,
+  botAmount: 0,
 };
 
 const mapStateToProps = (state) => ({
