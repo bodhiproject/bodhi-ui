@@ -61,6 +61,19 @@ export function getShortLocalDateTimeString(unixSeconds) {
   return moment.unix(unixSeconds).format(FORMAT_SHORT_DATE_TIME);
 }
 
+export function getEndTimeCountDownString(unixSeconds) {
+  const nowunix = moment().unix();
+  const unixdiff = unixSeconds - nowunix;
+
+  if (unixdiff < 0) {
+    return 'Ended';
+  }
+
+  const dur = moment.duration(unixdiff * 1000);
+
+  return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left.`;
+}
+
 /**
  * Shortens address string by only showing the first and last couple characters.
  * @param text {String} Origin address

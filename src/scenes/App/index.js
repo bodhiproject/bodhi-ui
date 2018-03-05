@@ -32,7 +32,6 @@ export class App extends React.PureComponent {
           />
         </Debounce>
         <GlobalHub />
-        <AppLoad />
         <NavBar url={url} langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />

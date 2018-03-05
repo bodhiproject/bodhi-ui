@@ -1,10 +1,13 @@
 /* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Icon } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
 
 import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
 import BottomButtonWidget from '../Widgets/bottom-button';
@@ -15,6 +18,7 @@ import graphqlActions from '../../redux/Graphql/actions';
 import TopActions from './components/TopActions/index';
 import { Token, OracleStatus, SortBy } from '../../constants';
 import { getLocalDateTimeString } from '../../helpers/utility';
+import DashboardCard from './components/DashboardCard/index';
 
 const TAB_BET = 0;
 const TAB_SET = 1;
@@ -102,12 +106,9 @@ class Dashboard extends React.Component {
     return (
       <div>
         <TopActions />
-        <Row
-          gutter={28}
-          justify="center"
-        >
+        <Grid container>
           {rowItems}
-        </Row>
+        </Grid>
       </div>
     );
   }
@@ -183,34 +184,28 @@ class Dashboard extends React.Component {
   }
 
   renderOracles(oracles, tabIndex) {
-    // Calculate grid number for Col attribute
-    const colWidth = {};
-    Object.keys(COL_PER_ROW).forEach((key) => {
-      colWidth[key] = 24 / COL_PER_ROW[key];
-    });
-
     const rowItems = [];
     _.each(oracles, (oracle) => {
-      let endText;
+      let endTime;
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.betend' })} ${getLocalDateTimeString(oracle.endTime)}`;
+          endTime = getLocalDateTimeString(oracle.endTime);
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.placebet' });
           break;
         }
         case TAB_SET: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.resultsetend' })} ${getLocalDateTimeString(oracle.resultSetEndTime)}`;
+          endTime = getLocalDateTimeString(oracle.resultSetEndTime);
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.setresult' });
           break;
         }
         case TAB_VOTE: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteend' })} ${getLocalDateTimeString(oracle.endTime)}`;
+          endTime = getLocalDateTimeString(oracle.endTime);
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.vote' });
           break;
         }
         case TAB_FINALIZE: {
-          endText = `${this.props.intl.formatMessage({ id: 'dashboard.voteended' })} ${getLocalDateTimeString(oracle.endTime)}`;
+          endTime = getLocalDateTimeString(oracle.endTime);
           buttonText = this.props.intl.formatMessage({ id: 'bottombutton.final' });
           break;
         }
@@ -219,93 +214,17 @@ class Dashboard extends React.Component {
         }
       }
 
-      const totalBalance = _.sum(oracle.amounts);
-      const raisedString = `${this.props.intl.formatMessage({ id: 'str.raise' })}: ${totalBalance.toFixed(2)} ${oracle.token}`;
-
-      let displayOptions = [];
-      // Determine what options showing in progress bars
-      if (oracle.token === Token.Bot) {
-        displayOptions = _.filter(oracle.options, (option, index) => {
-          // If index of option is in optionsIdx array
-          if (oracle.optionIdxs.indexOf(index) >= 0) {
-            return option;
-          }
-
-          return false;
-        });
-      } else {
-        displayOptions = _.map(oracle.options, _.clone);
-      }
-
-      // Trim options array to only MAX_DISPLAY_OPTIONS (3) elements
-      if (!_.isEmpty(displayOptions) && displayOptions.length > MAX_DISPLAY_OPTIONS) {
-        displayOptions = displayOptions.slice(0, MAX_DISPLAY_OPTIONS);
-      }
-
-      const threshold = oracle.consensusThreshold;
-
-      // Constructing opitons elements
-      let optionsEle = null;
-
-      if (!_.isEmpty(displayOptions)) {
-        if (oracle.token === Token.Bot) {
-          optionsEle = displayOptions.map((result, index) => (
-            <SingleProgressWidget
-              key={`option${index}`}
-              label={result}
-              percent={threshold === 0 ?
-                threshold : _.round((oracle.amounts[oracle.optionIdxs[index]] / threshold) * 100)}
-              barHeight={12}
-              fontColor="#4A4A4A"
-            />
-          ));
-        } else {
-          optionsEle = displayOptions.map((result, index) => (
-            <SingleProgressWidget
-              key={`option${index}`}
-              label={result}
-              percent={totalBalance === 0 ? totalBalance : _.round((oracle.amounts[index] / totalBalance) * 100)}
-              barHeight={12}
-              fontColor="#4A4A4A"
-            />
-          ));
-        }
-      }
-
-      // Make sure length of options element array is MAX_DISPLAY_OPTIONS (3) so that every card has the same height
-      // Ideally there should a be loop in case MAX_DISPLAY_OPTIONS is greater than 3
-      if (optionsEle && optionsEle.length < MAX_DISPLAY_OPTIONS) {
-        for (let i = optionsEle.length; i < MAX_DISPLAY_OPTIONS; i += 1) {
-          optionsEle.push(<div
-            key={`option-placeholder-${i}`}
-            style={{ height: '48px', marginTop: '18px', marginBottom: '18px' }}
-          ></div>);
-        }
-      }
+      const totalQTUM = _.sum(oracle.amounts);
 
       // Constructing Card element on the right
       const oracleEle = (
-        <Col
-          xs={colWidth.xs}
-          sm={colWidth.sm}
-          xl={colWidth.xl}
-          key={oracle.address}
-          style={{ marginBottom: '24px' }}
-        >
-          <IsoWidgetsWrapper>
-            {/* Report Widget */}
-            <ReportsWidget
-              label={oracle.name}
-              details={[raisedString, endText]}
-            >
-              {optionsEle}
-            </ReportsWidget>
-            <BottomButtonWidget
-              pathname={`/oracle/${oracle.topicAddress}/${oracle.address}`}
-              text={buttonText}
-            />
-          </IsoWidgetsWrapper>
-        </Col>
+        <DashboardCard
+          name={oracle.name}
+          topicAddress={oracle.topicAddress}
+          oracleAddress={oracle.address}
+          totalQTUM={totalAmount}
+          buttonText={buttonText}
+        />
       );
 
       rowItems.push(oracleEle);
