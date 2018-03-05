@@ -23,6 +23,6 @@ module.exports = {
   debug: {
     // Set to false if in test environment and Insight API is down
     // and loading screen is blocking the view.
-    showAppLoad: false,
+    showAppLoad: true,
   },
 };
