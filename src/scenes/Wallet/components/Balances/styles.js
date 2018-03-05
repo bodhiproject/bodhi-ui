@@ -5,8 +5,9 @@ const styles = (theme) => ({
     background: theme.palette.background.paper,
   },
   myBalanceGridContainer: {
+    minWidth: theme.sizes.table.minWidth,
     padding: theme.padding.lg.px,
-    overflowX: 'hidden',
+    overflowX: 'scroll',
   },
   myBalanceTitle: {
     marginBottom: theme.padding.xs.px,
@@ -25,7 +26,7 @@ const styles = (theme) => ({
     border: theme.border,
   },
   tableHeader: {
-    height: 40,
+    height: theme.sizes.table.headerHeight,
     background: theme.palette.background.grey,
   },
   tableHeaderItemText: {

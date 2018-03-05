@@ -5,15 +5,16 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   containerGrid: {
+    minWidth: theme.sizes.table.minWidth,
     padding: theme.padding.lg.px,
-    overflowX: 'hidden',
+    overflowX: 'scroll',
   },
   table: {
     marginTop: theme.padding.sm.px,
     border: theme.border,
   },
   tableHeader: {
-    height: 42,
+    height: theme.sizes.table.headerHeight,
     background: theme.palette.background.grey,
   },
   tableHeaderItemText: {
