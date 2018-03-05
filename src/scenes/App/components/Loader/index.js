@@ -2,10 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
+import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
 
-import appActions from '../../redux/App/actions';
-import AppConfig from '../../config/app';
-import getSubscription, { channels } from '../../network/graphSubscription';
+import appActions from '../../../../redux/App/actions';
+import AppConfig from '../../../../config/app';
+import getSubscription, { channels } from '../../../../network/graphSubscription';
 import styles from './styles';
 
 const MIN_BLOCK_COUNT_GAP = 1;
@@ -16,6 +18,7 @@ class Loader extends React.PureComponent {
 
     this.state = {
       percent: 0,
+      hideLoader: false,
     };
   }
 
@@ -44,6 +47,13 @@ class Loader extends React.PureComponent {
       // Update initial sync flag
       const isSyncing = newPercent < 100;
       toggleInitialSync(isSyncing);
+
+      if (newPercent === 100) {
+        const self = this;
+        setTimeout(() => {
+          self.setState({ hideLoader: true });
+        }, 1000);
+      }
     } else {
       toggleInitialSync(true);
     }
@@ -59,17 +69,23 @@ class Loader extends React.PureComponent {
     }
 
     return (
-      <div className={classes.loaderWrapper}>
-        <div className="app-load-wrapper">
-          <div className="app-load-container">
-            <Row>
-              <Col xs={10} style={{ textAlign: 'center' }}>
-                <Progress type="circle" percent={percent} width={180} />
-              </Col>
-              <Col xs={14} style={{ fontSize: '28px', paddingTop: '24px', paddingRight: '24px' }}>
-                <p>Blockchain syncing. Please wait.</p>
-              </Col>
-            </Row>
+      <div
+        className={classes.loaderBg}
+        style={
+          {
+            opacity: percent === 100 ? 0 : 1,
+            display: this.state.hideLoader ? 'none' : 'block',
+          }
+        }
+      >
+        <div className={classes.loaderWrapper}>
+          <div className={classes.loaderLogoWrapper}>
+            <img className={classes.loaderGif} src="/images/loader.gif" alt="Loading..." />
+          </div>
+          <div className={classes.loaderInfoWrapper}>
+            <Typography variant="display1" className={classes.loaderPercent}>{percent}</Typography>%
+            <p>Blockchain syncing.</p>
+            <p>Please wait.</p>
           </div>
         </div>
       </div>
@@ -99,4 +115,4 @@ const mapDispatchToProps = (dispatch) => ({
   toggleInitialSync: (isSyncing) => dispatch(appActions.toggleInitialSync(isSyncing)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Loader);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Loader));

@@ -6,13 +6,13 @@ import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
 import { withStyles } from 'material-ui/styles';
 
-import styles from './styles';
 import AppRouter from './router';
 import Loader from './components/Loader/index';
 import GlobalHub from './globalHub';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
+import styles from './styles';
 
 const { toggleAll } = appActions;
 
