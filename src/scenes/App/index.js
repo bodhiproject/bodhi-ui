@@ -8,7 +8,7 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 import AppRouter from './router';
-import AppLoad from './load';
+import Loader from './components/Loader/index';
 import GlobalHub from './globalHub';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
@@ -33,7 +33,7 @@ export class App extends React.PureComponent {
           />
         </Debounce>
         <GlobalHub />
-        <AppLoad />
+        <Loader />
         <NavBar url={url} langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />

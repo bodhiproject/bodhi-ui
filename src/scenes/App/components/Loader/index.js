@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
@@ -11,7 +10,7 @@ import styles from './styles';
 
 const MIN_BLOCK_COUNT_GAP = 1;
 
-class AppLoad extends React.PureComponent {
+class Loader extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -78,14 +77,14 @@ class AppLoad extends React.PureComponent {
   }
 }
 
-AppLoad.propTypes = {
+Loader.propTypes = {
   classes: PropTypes.object.isRequired,
   chainBlockNum: PropTypes.number,
   syncBlockNum: PropTypes.number,
   toggleInitialSync: PropTypes.func,
 };
 
-AppLoad.defaultProps = {
+Loader.defaultProps = {
   chainBlockNum: undefined,
   syncBlockNum: undefined,
   toggleInitialSync: undefined,
@@ -100,4 +99,4 @@ const mapDispatchToProps = (dispatch) => ({
   toggleInitialSync: (isSyncing) => dispatch(appActions.toggleInitialSync(isSyncing)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLoad);
+export default connect(mapStateToProps, mapDispatchToProps)(Loader);
