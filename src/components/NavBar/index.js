@@ -53,10 +53,12 @@ class NavBar extends React.PureComponent {
             }]}
           />
           <div className={classes.navBarRightWrapper}>
-            <Button className={classes.navBarWalletButton}>
-              <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
-              {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
-            </Button>
+            <Link to="/my-wallet" >
+              <Button className={classes.navBarWalletButton}>
+                <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
+                {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
+              </Button>
+            </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" />
             </Button>
@@ -77,7 +79,7 @@ class NavBar extends React.PureComponent {
       return (
         <Badge badgeContent={actionableItemCount} color="secondary">
           <Button className={classes.navBarRightButton}>
-            <FormattedMessage id="navBar.activities" />
+            <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Button>
         </Badge>
       );
@@ -85,7 +87,7 @@ class NavBar extends React.PureComponent {
 
     return (
       <Button className={classes.navBarRightButton}>
-        <FormattedMessage id="navBar.activities" />
+        <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </Button>
     );
   }

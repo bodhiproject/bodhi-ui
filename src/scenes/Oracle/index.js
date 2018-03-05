@@ -10,7 +10,7 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
@@ -25,6 +25,16 @@ import styles from './styles';
 
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
 
+const messages = defineMessages({
+  resultsetter: {
+    id: 'oracle.resultsetter',
+    defaultMessage: 'Result setter',
+  },
+  consensus: {
+    id: 'oracle.consensus',
+    defaultMessage: 'Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.',
+  },
+});
 class OraclePage extends React.Component {
   constructor(props) {
     super(props);
@@ -239,7 +249,7 @@ class OraclePage extends React.Component {
       if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.betting" />,
+          breadcrumbLabel: <FormattedMessage id="topbar.betting" defaultMessage="Betting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
@@ -247,34 +257,34 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.bet" />,
+            btnText: <FormattedMessage id="cardinfo.bet" defaultMessage="Bet" />,
             showAmountInput: true,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.setting" />,
+          breadcrumbLabel: <FormattedMessage id="topbar.setting" defaultMessage="Setting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
               {
-                text: `${this.props.intl.formatMessage({ id: 'oracle.resultsetter' })} ${oracle.resultSetterQAddress || ''}`,
+                text: `${this.props.intl.formatMessage(messages.resultsetter)} ${oracle.resultSetterQAddress || ''}`,
                 type: 'default',
               },
               {
-                text: `${this.props.intl.formatMessage({ id: 'oracle.consensus' }, { value: oracle.consensusThreshold || '' })}`,
+                text: `${this.props.intl.formatMessage(messages.consensus, { value: oracle.consensusThreshold || '' })}`,
                 type: 'default',
               },
               {
-                text: <FormattedMessage id="oracle.resultsetnote" />,
+                text: <FormattedMessage id="oracle.resultsetnote" defaultMessage="BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before result setting. The approved amount will automatically be used to set the result after approval." />,
                 type: 'default',
               },
             ],
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.setresult" />,
+            btnText: <FormattedMessage id="cardinfo.setresult" defaultMessage="Set Result" />,
             btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             showAmountInput: false,
           },
@@ -283,7 +293,7 @@ class OraclePage extends React.Component {
         // Add a message to CardInfo to warn that current block has passed set end block
         if (syncBlockTime > oracle.resultSetEndTime) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.pass" />,
+            text: <FormattedMessage id="oracle.pass" defaultMessage="Current block time has passed the Result Setting End Time." />,
             type: 'warn',
           });
         }
@@ -291,34 +301,34 @@ class OraclePage extends React.Component {
         // Add a message to CardInfo to warn that user is not result setter of current oracle
         if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.notcen" />,
+            text: <FormattedMessage id="oracle.notcen" defaultMessage="You are not the Centralized Oracle for this Topic and cannot set the result." />,
             type: 'warn',
           });
         } else if (status === OracleStatus.OpenResultSet) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.openres" />,
+            text: <FormattedMessage id="oracle.openres" defaultMessage="The Centralized Oracle has not set the result yet, but you may set the result by staking BOT." />,
             type: 'warn',
           });
         }
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
-          breadcrumbLabel: <FormattedMessage id="topbar.voting" />,
+          breadcrumbLabel: <FormattedMessage id="topbar.voting" defaultMessage="Voting" />,
           predictionInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
-                text: <FormattedMessage id="oracle.voting-1" value={oracle.consensusThreshold || ''} />,
+                text: <FormattedMessage id="oracle.voting-1" value={oracle.consensusThreshold || ''} defaultMessage="Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result." />,
                 type: 'default',
               }, {
-                text: <FormattedMessage id="oracle.votenote" />,
+                text: <FormattedMessage id="oracle.votenote" defaultMessage="BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards." />,
                 type: 'default',
               },
             ],
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardinfo.vote" />,
+            btnText: <FormattedMessage id="cardinfo.vote" defaultMessage="Voting" />,
             showAmountInput: true,
           },
         };
@@ -333,17 +343,17 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: true,
-            btnText: <FormattedMessage id="cardinfo.finalize" />,
+            btnText: <FormattedMessage id="cardinfo.finalize" defaultMessage="Finalize" />,
             showAmountInput: false,
           },
         };
 
         if (syncBlockTime > oracle.endTime) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.passvote" />,
+            text: <FormattedMessage id="oracle.passvote" defaultMessage="Current block time has passed the Voting End Time. The previous result needs to be finalized in order to withdraw." />,
             type: 'default',
           }, {
-            text: <FormattedMessage id="oracle.finalize" />,
+            text: <FormattedMessage id="oracle.finalize" defaultMessage="Finalizing can be done by anyone. Once finalized, winners can withdraw from the event in the Withdraw tab." />,
             type: 'default',
           });
         }
@@ -361,7 +371,7 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBetTx(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.version, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
@@ -370,6 +380,7 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
+      oracle.version,
       oracle.topicAddress,
       oracle.address,
       selectedIndex,
@@ -383,14 +394,21 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createVoteTx(oracle.topicAddress, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createVoteTx(
+      oracle.version,
+      oracle.topicAddress,
+      oracle.address,
+      selectedIndex,
+      amount,
+      this.getCurrentWalletAddr()
+    );
   }
 
   finalizeResult() {
     const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    createFinalizeResultTx(oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.version, oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -437,20 +455,21 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    createBetTx: (contractAddress, index, amount, senderAddress) =>
-      dispatch(graphqlActions.createBetTx(contractAddress, index, amount, senderAddress)),
-    createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+    createBetTx: (version, contractAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
+    createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
       dispatch(graphqlActions.createSetResultTx(
+        version,
         topicAddress,
         oracleAddress,
         resultIndex,
         consensusThreshold,
         senderAddress
       )),
-    createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-    createFinalizeResultTx: (oracleAddress, senderAddress) =>
-      dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
+    createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    createFinalizeResultTx: (version, oracleAddress, senderAddress) =>
+      dispatch(graphqlActions.createFinalizeResultTx(version, oracleAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }

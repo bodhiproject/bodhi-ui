@@ -196,6 +196,10 @@ const bodhiTheme = createMuiTheme({
       textSm: px(fontSizeTextSm),
       meta: px(fontSizeMeta),
     },
+    table: {
+      minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
+      headerHeight: 40,
+    },
   },
   border: 'solid 1px '.concat(borderColor),
   borderRadius: px(borderRadius),

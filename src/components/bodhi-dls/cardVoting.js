@@ -200,12 +200,12 @@ class CardVoting extends Component {
     return (
       <div className="cardVoting">
         <div className="header">
-          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.RAISE" />:</p>
+          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.RAISE" defaultMessage="RAISED" />:</p>
           <h3><span>{amount.toFixed(2)}</span>
             <span>{token}</span></h3>
         </div>
         <div className="body">
-          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.outcome" /></p>
+          <p style={{ marginBottom: '24px' }}><FormattedMessage id="str.outcome" defaultMessage="OUTCOMES" /></p>
           {children}
         </div>
         <div className="action">

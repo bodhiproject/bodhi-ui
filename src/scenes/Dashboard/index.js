@@ -4,12 +4,12 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import EventIcon from 'material-ui-icons/Event';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import graphqlActions from '../../redux/Graphql/actions';
 import TopActions from './components/TopActions/index';
@@ -23,6 +23,69 @@ const TAB_VOTE = 2;
 const TAB_FINALIZE = 3;
 const TAB_WITHDRAW = 4;
 const DEFAULT_TAB_INDEX = TAB_BET;
+
+const messages = defineMessages({
+  Bet: {
+    id: 'dashboard.Bet',
+    defaultMessage: 'Bet',
+  },
+  Set: {
+    id: 'dashboard.Set',
+    defaultMessage: 'Set',
+  },
+  Vote: {
+    id: 'dashboard.Vote',
+    defaultMessage: 'Vote',
+  },
+  Finalize: {
+    id: 'dashboard.Finalize',
+    defaultMessage: 'Finalize',
+  },
+  Withdraw: {
+    id: 'dashboard.Withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  betend: {
+    id: 'dashboard.betend',
+    defaultMessage: 'Betting ends',
+  },
+  resultsetend: {
+    id: 'dashboard.resultsetend',
+    defaultMessage: 'Result setting ends',
+  },
+  voteend: {
+    id: 'dashboard.voteend',
+    defaultMessage: 'Voting ends',
+  },
+  voteended: {
+    id: 'dashboard.voteended',
+    defaultMessage: 'Voting ended',
+  },
+  raise: {
+    id: 'str.raise',
+    defaultMessage: 'Raised',
+  },
+  end: {
+    id: 'str.end',
+    defaultMessage: 'Ended',
+  },
+  pbet: {
+    id: 'bottombutton.placebet',
+    defaultMessage: 'Place Bet',
+  },
+  pset: {
+    id: 'bottombutton.setresult',
+    defaultMessage: 'Set Result',
+  },
+  pvote: {
+    id: 'bottombutton.vote',
+    defaultMessage: 'Place Vote',
+  },
+  pfinal: {
+    id: 'bottombutton.final',
+    defaultMessage: 'Finalize Result',
+  },
+});
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -172,19 +235,19 @@ class Dashboard extends React.Component {
       let buttonText;
       switch (tabIndex) {
         case TAB_BET: {
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.placebet' });
+          buttonText = this.props.intl.formatMessage(messages.pbet);
           break;
         }
         case TAB_SET: {
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.setresult' });
+          buttonText = this.props.intl.formatMessage(messages.pset);
           break;
         }
         case TAB_VOTE: {
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.vote' });
+          buttonText = this.props.intl.formatMessage(messages.pvote);
           break;
         }
         case TAB_FINALIZE: {
-          buttonText = this.props.intl.formatMessage({ id: 'bottombutton.final' });
+          buttonText = this.props.intl.formatMessage(messages.pfinal);
           break;
         }
         default: {

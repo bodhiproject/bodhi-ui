@@ -87,7 +87,6 @@ const TYPE_DEF = {
 const MUTATIONS = {
   createTopic: `
     CreateTopic(
-      $version: Int!, 
       $senderAddress: String!,
       $name: String!,
       $options: [String!]!,
@@ -98,7 +97,6 @@ const MUTATIONS = {
       $resultSettingEndTime: String!
     ) {
       createTopic(
-        version: $version,
         senderAddress: $senderAddress,
         name: $name,
         options: $options,
