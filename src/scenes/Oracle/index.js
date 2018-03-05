@@ -370,7 +370,7 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBetTx(oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.version, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
   }
 
   setResult() {
@@ -379,6 +379,7 @@ class OraclePage extends React.Component {
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
+      oracle.version,
       oracle.topicAddress,
       oracle.address,
       selectedIndex,
@@ -392,14 +393,21 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createVoteTx(oracle.topicAddress, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createVoteTx(
+      oracle.version,
+      oracle.topicAddress,
+      oracle.address,
+      selectedIndex,
+      amount,
+      this.getCurrentWalletAddr()
+    );
   }
 
   finalizeResult() {
     const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    createFinalizeResultTx(oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.version, oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -446,20 +454,21 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    createBetTx: (contractAddress, index, amount, senderAddress) =>
-      dispatch(graphqlActions.createBetTx(contractAddress, index, amount, senderAddress)),
-    createSetResultTx: (topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+    createBetTx: (version, contractAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
+    createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
       dispatch(graphqlActions.createSetResultTx(
+        version,
         topicAddress,
         oracleAddress,
         resultIndex,
         consensusThreshold,
         senderAddress
       )),
-    createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(graphqlActions.createVoteTx(topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-    createFinalizeResultTx: (oracleAddress, senderAddress) =>
-      dispatch(graphqlActions.createFinalizeResultTx(oracleAddress, senderAddress)),
+    createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+      dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+    createFinalizeResultTx: (version, oracleAddress, senderAddress) =>
+      dispatch(graphqlActions.createFinalizeResultTx(version, oracleAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }

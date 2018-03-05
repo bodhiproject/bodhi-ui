@@ -166,10 +166,9 @@ class TopicPage extends React.Component {
 
   /** Withdraw button on click handler passed down to CardFinished */
   onWithdrawClicked() {
-    const senderAddress = this.getCurrentSenderAddress();
-    const contractAddress = this.state.topic.address;
+    const { topic } = this.state;
 
-    this.props.createWithdrawTx(contractAddress, senderAddress);
+    this.props.createWithdrawTx(topic.version, topic.address, this.getCurrentSenderAddress());
   }
 
   /** Return selected address on Topbar as sender * */
@@ -283,8 +282,8 @@ function mapDispatchToProps(dispatch) {
     calculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
     getTopics: () => dispatch(graphqlActions.getTopics()),
-    createWithdrawTx: (topicAddress, senderAddress) =>
-      dispatch(graphqlActions.createWithdrawTx(topicAddress, senderAddress)),
+    createWithdrawTx: (version, topicAddress, senderAddress) =>
+      dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
   };

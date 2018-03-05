@@ -42,9 +42,10 @@ const graphqlActions = {
 
   CREATE_BET_TX: 'CREATE_BET_TX',
   CREATE_BET_TX_RETURN: 'CREATE_BET_TX_RETURN',
-  createBetTx: (contractAddress, index, amount, senderAddress) => ({
+  createBetTx: (version, contractAddress, index, amount, senderAddress) => ({
     type: graphqlActions.CREATE_BET_TX,
     params: {
+      version,
       contractAddress,
       index,
       amount,
@@ -54,9 +55,10 @@ const graphqlActions = {
 
   CREATE_SET_RESULT_TX: 'CREATE_SET_RESULT_TX',
   CREATE_SET_RESULT_TX_RETURN: 'CREATE_SET_RESULT_TX_RETURN',
-  createSetResultTx: (topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
+  createSetResultTx: (version, topicAddress, oracleAddress, index, consensusThreshold, senderAddress) => ({
     type: graphqlActions.CREATE_SET_RESULT_TX,
     params: {
+      version,
       topicAddress,
       oracleAddress,
       index,
@@ -67,9 +69,10 @@ const graphqlActions = {
 
   CREATE_VOTE_TX: 'CREATE_VOTE_TX',
   CREATE_VOTE_TX_RETURN: 'CREATE_VOTE_TX_RETURN',
-  createVoteTx: (topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) => ({
+  createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) => ({
     type: graphqlActions.CREATE_VOTE_TX,
     params: {
+      version,
       topicAddress,
       oracleAddress,
       resultIndex,
@@ -80,9 +83,10 @@ const graphqlActions = {
 
   CREATE_FINALIZE_RESULT_TX: 'CREATE_FINALIZE_RESULT_TX',
   CREATE_FINALIZE_RESULT_TX_RETURN: 'CREATE_FINALIZE_RESULT_TX_RETURN',
-  createFinalizeResultTx: (oracleAddress, senderAddress) => ({
+  createFinalizeResultTx: (version, oracleAddress, senderAddress) => ({
     type: graphqlActions.CREATE_FINALIZE_RESULT_TX,
     params: {
+      version,
       oracleAddress,
       senderAddress,
     },
@@ -90,9 +94,10 @@ const graphqlActions = {
 
   CREATE_WITHDRAW_TX: 'CREATE_WITHDRAW_TX',
   CREATE_WITHDRAW_TX_RETURN: 'CREATE_WITHDRAW_TX_RETURN',
-  createWithdrawTx: (topicAddress, senderAddress) => ({
+  createWithdrawTx: (version, topicAddress, senderAddress) => ({
     type: graphqlActions.CREATE_WITHDRAW_TX,
     params: {
+      version,
       topicAddress,
       senderAddress,
     },

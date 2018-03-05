@@ -76,7 +76,6 @@ export function* createTopicTxHandler() {
     try {
       const tx = yield call(
         createTopic,
-        Config.defaults.version,
         action.params.name,
         action.params.results,
         action.params.centralizedOracle,
@@ -106,7 +105,7 @@ export function* createBetTxHandler() {
     try {
       const tx = yield call(
         createBetTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.contractAddress,
         action.params.index,
         action.params.amount,
@@ -135,7 +134,7 @@ export function* createSetResultTxHandler() {
 
       const tx = yield call(
         createSetResultTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.oracleAddress,
         action.params.index,
@@ -165,7 +164,7 @@ export function* createVoteTxHandler() {
 
       const tx = yield call(
         createVoteTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.oracleAddress,
         action.params.resultIndex,
@@ -192,7 +191,7 @@ export function* createFinalizeResultTxHandler() {
     try {
       const tx = yield call(
         createFinalizeResultTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.oracleAddress,
         action.params.senderAddress,
       );
@@ -216,7 +215,7 @@ export function* createWithdrawTxHandler() {
     try {
       const tx = yield call(
         createWithdrawTx,
-        Config.defaults.version,
+        action.params.version,
         action.params.topicAddress,
         action.params.senderAddress,
       );
