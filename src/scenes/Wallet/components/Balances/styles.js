@@ -1,13 +1,13 @@
 const styles = (theme) => ({
   myBalancePaper: {
+    minWidth: theme.sizes.table.minWidth,
+    overflowX: 'scroll',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.paper,
   },
   myBalanceGridContainer: {
-    minWidth: theme.sizes.table.minWidth,
-    padding: theme.padding.lg.px,
-    overflowX: 'scroll',
+    padding: theme.padding.md.px,
   },
   myBalanceTitle: {
     marginBottom: theme.padding.xs.px,
