@@ -248,6 +248,33 @@ const MUTATIONS = {
       }
     }
   `,
+
+  transfer: `
+    Transfer(
+      $version: Int!,
+      $senderAddress: String!,
+      $receiverAddress: String!,
+      $token: _TokenType!,
+      $amount: Int!
+    ) {
+      transfer(
+        version: $version,
+        senderAddress: $senderAddress,
+        receiverAddress: $receiverAddress,
+        token: $token,
+        amount: $amount
+      ) {
+        txid
+        createdTime
+        type
+        status
+        senderAddress
+        receiverAddress
+        token
+        amount
+      }
+    }
+  `,
 };
 
 const ENUMS = {
