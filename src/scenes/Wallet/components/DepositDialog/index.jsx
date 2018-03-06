@@ -5,7 +5,6 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
-import Slide from 'material-ui/transitions/Slide';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -33,7 +32,6 @@ class DepositDialog extends React.Component {
       <Dialog
         open={dialogVisible}
         onClose={onClose}
-        transition={(props) => <Slide direction="up" {...props} />}
       >
         <DialogTitle>
           <Typography variant="title">

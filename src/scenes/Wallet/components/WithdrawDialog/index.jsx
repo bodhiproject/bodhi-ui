@@ -7,7 +7,6 @@ import TextField from 'material-ui/TextField';
 import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
-import Slide from 'material-ui/transitions/Slide';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -15,6 +14,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
 import styles from './styles';
+import graphqlActions from '../../../../redux/Graphql/actions';
 
 const ID_QTUM = 'QTUM';
 const ID_BOT = 'BOT';
@@ -52,11 +52,16 @@ class WithdrawDialog extends React.Component {
     this.onSendClicked = this.onSendClicked.bind(this);
   }
 
+  componentWillUnmount() {
+    this.props.clearTxReturn();
+  }
+
   render() {
     const {
       dialogVisible,
       walletAddress,
       onClose,
+      txReturn,
     } = this.props;
 
     if (!walletAddress) {
@@ -65,9 +70,8 @@ class WithdrawDialog extends React.Component {
 
     return (
       <Dialog
-        open={dialogVisible}
+        open={dialogVisible || txReturn}
         onClose={onClose}
-        transition={(props) => <Slide direction="up" {...props} />}
       >
         <DialogTitle>
           <Typography variant="title">
@@ -196,7 +200,10 @@ class WithdrawDialog extends React.Component {
   }
 
   onSendClicked() {
-    console.log(this.state.toAddress);
+    const { walletAddress, createTransferTx } = this.props;
+    const { toAddress, withdrawAmount, selectedToken } = this.state;
+
+    createTransferTx(walletAddress, toAddress, withdrawAmount, selectedToken);
   }
 }
 
@@ -207,6 +214,9 @@ WithdrawDialog.propTypes = {
   qtumAmount: PropTypes.number,
   botAmount: PropTypes.number,
   onClose: PropTypes.func.isRequired,
+  createTransferTx: PropTypes.func,
+  txReturn: PropTypes.object,
+  clearTxReturn: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -215,13 +225,20 @@ WithdrawDialog.defaultProps = {
   walletAddress: undefined,
   qtumAmount: 0,
   botAmount: 0,
+  createTransferTx: undefined,
+  txReturn: undefined,
+  clearTxReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    createTransferTx: (senderAddress, receiverAddress, token, amount) =>
+      dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 
