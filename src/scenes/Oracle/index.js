@@ -371,7 +371,7 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBetTx(oracle.version, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.version, oracle.address, selectedIndex, amount.toString(), this.getCurrentWalletAddr());
   }
 
   setResult() {
