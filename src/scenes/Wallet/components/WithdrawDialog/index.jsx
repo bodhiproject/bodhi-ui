@@ -69,15 +69,11 @@ class WithdrawDialog extends React.Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <Typography variant="title">
-            <FormattedMessage id="withdrawDialog.title" default="Withdraw QTUM/BOT" />
-          </Typography>
+          <FormattedMessage id="withdrawDialog.title" default="Withdraw QTUM/BOT" />
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {this.getFromToFields()}
-            {this.getAmountFields()}
-          </DialogContentText>
+          {this.getFromToFields()}
+          {this.getAmountFields()}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>
@@ -157,7 +153,7 @@ class WithdrawDialog extends React.Component {
             type="number"
             className={classes.amountInput}
             onChange={this.onAmountChange}
-            error={withdrawAmount < 0}
+            error={withdrawAmount < 0 || _.isEmpty(withdrawAmount)}
             required
           />
           <Select
@@ -207,8 +203,8 @@ WithdrawDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   dialogVisible: PropTypes.bool.isRequired,
   walletAddress: PropTypes.string,
-  qtumAmount: PropTypes.number,
-  botAmount: PropTypes.number,
+  qtumAmount: PropTypes.string,
+  botAmount: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onWithdraw: PropTypes.func.isRequired,
   createTransferTx: PropTypes.func,
@@ -218,8 +214,8 @@ WithdrawDialog.propTypes = {
 
 WithdrawDialog.defaultProps = {
   walletAddress: undefined,
-  qtumAmount: 0,
-  botAmount: 0,
+  qtumAmount: undefined,
+  botAmount: undefined,
   createTransferTx: undefined,
 };
 
