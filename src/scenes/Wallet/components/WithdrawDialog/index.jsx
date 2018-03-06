@@ -14,7 +14,20 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import styles from './styles';
 
+const ID_QTUM = 'qtum';
+const ID_BOT = 'bot';
+
 class WithdrawDialog extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedToken: ID_QTUM,
+    };
+
+    this.onTokenChange = this.onTokenChange.bind(this);
+  }
+
   render() {
     const {
       classes,
@@ -25,6 +38,7 @@ class WithdrawDialog extends React.Component {
       onClose,
       onCopyClicked,
     } = this.props;
+    const { selectedToken } = this.state;
 
     if (!walletAddress) {
       return null;
@@ -54,11 +68,12 @@ class WithdrawDialog extends React.Component {
                 className={classes.amountInput}
               />
               <Select
-                value={1}
-                inputProps={{ name: 'age', id: 'age-simple' }}
+                value={selectedToken}
+                onChange={this.onTokenChange}
+                inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
               >
-                <MenuItem value={1}>QTUM</MenuItem>
-                <MenuItem value={2}>BOT</MenuItem>
+                <MenuItem value={ID_QTUM}>QTUM</MenuItem>
+                <MenuItem value={ID_BOT}>BOT</MenuItem>
               </Select>
             </div>
             <Typography variant="body1" className={classes.qtumAmount}>{`QTUM: ${qtumAmount}`}</Typography>
@@ -76,6 +91,10 @@ class WithdrawDialog extends React.Component {
         </DialogActions>
       </Dialog>
     );
+  }
+
+  onTokenChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 }
 
