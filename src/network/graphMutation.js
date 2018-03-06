@@ -5,15 +5,26 @@ import { TYPE, getMutation } from './graphSchema';
 import GraphParser from './graphParser';
 
 class GraphMutation {
-  constructor(mutationName, args, type) {
+  constructor(mutationName, args) {
     this.mutationName = mutationName;
     this.args = args;
-    this.type = type;
   }
 
   build() {
-    const mutation = getMutation(this.mutationName);
-    return `mutation ${mutation}`;
+    const schema = getMutation(this.mutationName);
+
+    const mutation = `
+      mutation ${this.mutationName}(
+        ${schema.definition}
+      ) {
+        ${this.mutationName}(
+          ${schema.mapping}
+        ) {
+          ${schema.return}
+        }
+    `;
+
+    return mutation;
   }
 
   async execute() {
