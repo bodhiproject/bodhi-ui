@@ -203,7 +203,7 @@ class WithdrawDialog extends React.Component {
     const { walletAddress, createTransferTx } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
-    createTransferTx(walletAddress, toAddress, withdrawAmount, selectedToken);
+    createTransferTx(walletAddress, toAddress, selectedToken, withdrawAmount);
   }
 }
 

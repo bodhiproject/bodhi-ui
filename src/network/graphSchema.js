@@ -255,14 +255,14 @@ const MUTATIONS = {
       $senderAddress: String!
       $receiverAddress: String!
       $token: _TokenType!
-      $amount: Int!
+      $amount: String!
     `,
-    mapping: `
-      senderAddress: $senderAddress
-      receiverAddress: $receiverAddress
-      token: $token
-      amount: $amount
-    `,
+    mapping: [
+      'senderAddress',
+      'receiverAddress',
+      'token',
+      'amount',
+    ],
     return: `
       txid
       createdTime
@@ -274,7 +274,7 @@ const MUTATIONS = {
       token
       amount
     `,
-  }
+  },
 };
 
 const ENUMS = {
