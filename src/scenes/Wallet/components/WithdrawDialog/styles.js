@@ -1,19 +1,13 @@
 const styles = (theme) => ({
-  depositAddress: {
-    color: theme.palette.primary.main,
-    padding: theme.padding.xs.px,
-    marginBottom: theme.padding.xs.px,
-    border: theme.border,
-    borderRadius: theme.borderRadius,
-  },
-  qtumAmount: {
+  destLabel: {
     marginBottom: theme.padding.unit.px,
   },
-  botAmount: {
+  fromAddress: {
+    color: theme.palette.primary.main,
     marginBottom: theme.padding.sm.px,
   },
-  withdrawInputContainer: {
-    display: 'inline-block',
+  toAddress: {
+    marginBottom: theme.padding.md.px,
   },
   amountInput: {
     width: 300,
