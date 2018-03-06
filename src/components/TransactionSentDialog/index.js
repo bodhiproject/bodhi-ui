@@ -43,14 +43,14 @@ class TransactionSentDialog extends React.PureComponent {
   render() {
     const { classes, txReturn } = this.props;
 
-    let text;
+    let contentText;
     if (txReturn) {
-      text = txReturn && txReturn.txid ? this.getSuccessText() : this.getErrorText();
+      contentText = txReturn && txReturn.txid ? this.getSuccessText() : this.getErrorText();
     } else {
-      text = {
+      contentText = {
         title: '',
-        body1: '',
-        body2: '',
+        bodyPrimary: '',
+        bodySecondary: '',
       };
     }
 
@@ -58,14 +58,12 @@ class TransactionSentDialog extends React.PureComponent {
       <Dialog
         open={Boolean(txReturn)}
         onClose={this.handleAlertClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{text.title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <Typography variant="body1" className={classes.bodyText1}>{text.body1}</Typography>
-            <Typography variant="body1">{text.body2}</Typography>
+            <Typography variant="body1" className={classes.bodyText1}>{contentText.bodyPrimary}</Typography>
+            <Typography variant="body1">{contentText.bodySecondary}</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -81,8 +79,8 @@ class TransactionSentDialog extends React.PureComponent {
     const { intl, txReturn } = this.props;
     return {
       title: intl.formatMessage(messages.successMsg),
-      body1: `${intl.formatMessage(messages.waitingMsg)}`,
-      body2: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
+      bodyPrimary: `${intl.formatMessage(messages.waitingMsg)}`,
+      bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
     };
   }
 
@@ -90,8 +88,8 @@ class TransactionSentDialog extends React.PureComponent {
     const { intl, txReturn } = this.props;
     return {
       title: intl.formatMessage(messages.failureMsg),
-      body1: txReturn.error,
-      body2: '',
+      bodyPrimary: txReturn.error,
+      bodySecondary: '',
     };
   }
 

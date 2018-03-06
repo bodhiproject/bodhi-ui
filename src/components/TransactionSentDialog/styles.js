@@ -1,5 +1,5 @@
 const styles = (theme) => ({
-  bodyText1: {
+  bodyPrimary: {
     marginBottom: theme.padding.sm.px,
   },
 });
