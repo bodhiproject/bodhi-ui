@@ -18,6 +18,10 @@ const ID_QTUM = 'qtum';
 const ID_BOT = 'bot';
 
 const messages = defineMessages({
+  amount: {
+    id: 'str.amount',
+    defaultMessage: 'Amount',
+  },
   youCanWithdraw: {
     id: 'withdrawDialog.youCanWithdraw',
     defaultMessage: 'You can withdraw up to:',
@@ -84,7 +88,7 @@ class WithdrawDialog extends React.Component {
 
     return (
       <div>
-        <Typography variant="body1" className={classes.destLabel}>
+        <Typography variant="body1" className={classes.fromLabel}>
           <FormattedMessage id="str.from" default="From" />
         </Typography>
         <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
@@ -131,13 +135,12 @@ class WithdrawDialog extends React.Component {
 
     return (
       <div>
-        <div className={classes.withdrawInputContainer}>
+        <div className={classes.inputContainer}>
           <TextField
             margin="dense"
             id="amount"
-            label="Amount"
+            label={this.props.intl.formatMessage(messages.amount)}
             type="number"
-            fullWidth
             className={classes.amountInput}
           />
           <Select

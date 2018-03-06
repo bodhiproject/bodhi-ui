@@ -1,5 +1,5 @@
 const styles = (theme) => ({
-  destLabel: {
+  fromLabel: {
     marginBottom: theme.padding.unit.px,
   },
   fromAddress: {
@@ -8,6 +8,9 @@ const styles = (theme) => ({
   },
   toAddress: {
     marginBottom: theme.padding.md.px,
+  },
+  inputContainer: {
+    display: 'inline-block',
   },
   amountInput: {
     width: 300,
