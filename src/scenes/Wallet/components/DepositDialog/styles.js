@@ -4,6 +4,7 @@ const styles = (theme) => ({
     padding: theme.padding.xs.px,
     marginBottom: theme.padding.xs.px,
     border: theme.border,
+    borderRadius: theme.borderRadius,
   },
 });
 
