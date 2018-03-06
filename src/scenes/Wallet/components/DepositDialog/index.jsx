@@ -41,7 +41,7 @@ class DepositDialog extends React.Component {
         <DialogContent>
           <DialogContentText>
             <Typography variant="title" className={classes.depositAddress}>{walletAddress}</Typography>
-            <Typography variant="body1">{`QTUM: ${qtumAmount}`}</Typography>
+            <Typography variant="body1" className={classes.qtumAmount}>{`QTUM: ${qtumAmount}`}</Typography>
             <Typography variant="body1">{`BOT: ${botAmount}`}</Typography>
           </DialogContentText>
         </DialogContent>

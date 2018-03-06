@@ -6,6 +6,9 @@ const styles = (theme) => ({
     border: theme.border,
     borderRadius: theme.borderRadius,
   },
+  qtumAmount: {
+    marginBottom: theme.padding.unit.px,
+  },
 });
 
 export default styles;
