@@ -110,3 +110,14 @@ export function createWithdrawTx(version, topicAddress, senderAddress) {
 
   return new GraphMutation('withdraw', args, TYPE.transaction).execute();
 }
+
+export function createTransferTx(senderAddress, receiverAddress, token, amount) {
+  const args = {
+    senderAddress,
+    receiverAddress,
+    token,
+    amount,
+  };
+
+  return new GraphMutation('transfer', args, TYPE.transaction).execute();
+}
