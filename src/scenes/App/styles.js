@@ -13,14 +13,10 @@ const styles = (theme) => ({
       margin: theme.padding.md.px,
     },
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('xl')]: {
       margin: '0 auto',
       marginTop: theme.padding.md.px,
       marginBottom: theme.padding.md.px,
-      maxWidth: (theme.breakpoints.values.lg - (theme.padding.md.value * 2)),
-    },
-
-    [theme.breakpoints.up('xl')]: {
       maxWidth: (theme.breakpoints.values.xl - (theme.padding.md.value * 2)),
     },
   },
