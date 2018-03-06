@@ -72,6 +72,7 @@ class MyBalances extends React.PureComponent {
           <DepositDialog
             dialogVisible={depositDialogVisible}
             onClose={this.handleDepositDialogClose}
+            onCopyClicked={this.onCopyClicked}
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}

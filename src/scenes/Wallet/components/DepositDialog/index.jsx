@@ -8,6 +8,7 @@ import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } 
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import styles from './styles';
 
@@ -20,6 +21,7 @@ class DepositDialog extends React.Component {
       qtumAmount,
       botAmount,
       onClose,
+      onCopyClicked,
     } = this.props;
 
     if (!walletAddress) {
@@ -38,15 +40,20 @@ class DepositDialog extends React.Component {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Typography variant="body1">{walletAddress}</Typography>
+            <Typography variant="title" className={classes.depositAddress}>{walletAddress}</Typography>
             <Typography variant="body1">{`QTUM: ${qtumAmount}`}</Typography>
             <Typography variant="body1">{`BOT: ${botAmount}`}</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary">
+          <Button onClick={onClose}>
             <FormattedMessage id="str.close" default="Close" />
           </Button>
+          <CopyToClipboard text={walletAddress} onCopy={onCopyClicked}>
+            <Button color="primary">
+              <FormattedMessage id="str.copy" default="Copy" />
+            </Button>
+          </CopyToClipboard>
         </DialogActions>
       </Dialog>
     );
@@ -60,6 +67,7 @@ DepositDialog.propTypes = {
   qtumAmount: PropTypes.number,
   botAmount: PropTypes.number,
   onClose: PropTypes.func.isRequired,
+  onCopyClicked: PropTypes.func.isRequired,
 };
 
 DepositDialog.defaultProps = {
