@@ -11,13 +11,18 @@ import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import _ from 'lodash';
 
 import styles from './styles';
 
-const ID_QTUM = 'qtum';
-const ID_BOT = 'bot';
+const ID_QTUM = 'QTUM';
+const ID_BOT = 'BOT';
 
 const messages = defineMessages({
+  to: {
+    id: 'str.to',
+    defaultMessage: 'To',
+  },
   amount: {
     id: 'str.amount',
     defaultMessage: 'Amount',
@@ -33,12 +38,17 @@ class WithdrawDialog extends React.Component {
     super(props);
 
     this.state = {
+      toAddress: '',
+      withdrawAmount: 0,
       selectedToken: ID_QTUM,
     };
 
     this.getFromToFields = this.getFromToFields.bind(this);
     this.getAmountFields = this.getAmountFields.bind(this);
+    this.onToAddressChange = this.onToAddressChange.bind(this);
+    this.onAmountChange = this.onAmountChange.bind(this);
     this.onTokenChange = this.onTokenChange.bind(this);
+    this.onSendClicked = this.onSendClicked.bind(this);
   }
 
   render() {
@@ -72,7 +82,7 @@ class WithdrawDialog extends React.Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" default="Close" />
           </Button>
-          <Button color="primary">
+          <Button color="primary" onClick={this.onSendClicked}>
             <FormattedMessage id="withdrawDialog.send" default="Send" />
           </Button>
         </DialogActions>
@@ -84,6 +94,7 @@ class WithdrawDialog extends React.Component {
     const {
       classes,
       walletAddress,
+      intl,
     } = this.props;
 
     return (
@@ -92,16 +103,16 @@ class WithdrawDialog extends React.Component {
           <FormattedMessage id="str.from" default="From" />
         </Typography>
         <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
-        <Typography variant="body1">
-          <FormattedMessage id="str.to" default="To" />
-        </Typography>
         <TextField
           autoFocus
           margin="dense"
           id="toAddress"
+          label={intl.formatMessage(messages.to)}
           type="string"
           fullWidth
           className={classes.toAddress}
+          onChange={this.onToAddressChange}
+          required
         />
       </div>
     );
@@ -114,7 +125,7 @@ class WithdrawDialog extends React.Component {
       qtumAmount,
       botAmount,
     } = this.props;
-    const { selectedToken } = this.state;
+    const { withdrawAmount, selectedToken } = this.state;
 
     let withdrawLimit;
     switch (selectedToken) {
@@ -139,9 +150,12 @@ class WithdrawDialog extends React.Component {
           <TextField
             margin="dense"
             id="amount"
-            label={this.props.intl.formatMessage(messages.amount)}
+            label={intl.formatMessage(messages.amount)}
             type="number"
             className={classes.amountInput}
+            onChange={this.onAmountChange}
+            error={withdrawAmount < 0}
+            required
           />
           <Select
             value={selectedToken}
@@ -159,8 +173,26 @@ class WithdrawDialog extends React.Component {
     );
   }
 
+  onToAddressChange(event) {
+    this.setState({
+      toAddress: event.target.value,
+    });
+  }
+
+  onAmountChange(event) {
+    this.setState({
+      withdrawAmount: event.target.value,
+    });
+  }
+
   onTokenChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  onSendClicked() {
+    console.log(this.state.toAddress);
   }
 }
 

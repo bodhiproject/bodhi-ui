@@ -113,7 +113,7 @@ const graphqlActions = {
 
   CREATE_TRANSFER_TX: 'CREATE_TRANSFER_TX',
   CREATE_TRANSFER_TX_RETURN: 'CREATE_TRANSFER_TX_RETURN',
-  createWithdrawTx: (senderAddress, receiverAddress, token, amount) => ({
+  createTransferTx: (senderAddress, receiverAddress, token, amount) => ({
     type: graphqlActions.CREATE_TRANSFER_TX,
     params: {
       senderAddress,

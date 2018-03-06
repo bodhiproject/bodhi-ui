@@ -10,7 +10,7 @@ import {
   createVoteTx,
   createFinalizeResultTx,
   createWithdrawTx,
-  createTransferTx
+  createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
 import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
