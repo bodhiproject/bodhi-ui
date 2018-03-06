@@ -85,26 +85,16 @@ const TYPE_DEF = {
 
 const MUTATIONS = {
   createTopic: {
-    definition: `
-      $senderAddress: String!
-      $name: String!
-      $options: [String!]!
-      $resultSetterAddress: String!
-      $bettingStartTime: String!
-      $bettingEndTime: String!
-      $resultSettingStartTime: String!
-      $resultSettingEndTime: String!
-    `,
-    mapping: `
-      senderAddress: $senderAddress
-      name: $name
-      options: $options
-      resultSetterAddress: $resultSetterAddress
-      bettingStartTime: $bettingStartTime
-      bettingEndTime: $bettingEndTime
-      resultSettingStartTime: $resultSettingStartTime
-      resultSettingEndTime: $resultSettingEndTime
-    `,
+    mapping: [
+      'senderAddress',
+      'name',
+      'options',
+      'resultSetterAddress',
+      'bettingStartTime',
+      'bettingEndTime',
+      'resultSettingStartTime',
+      'resultSettingEndTime',
+    ],
     return: `
       txid
       createdTime
@@ -116,20 +106,13 @@ const MUTATIONS = {
   },
 
   createBet: {
-    definition: `
-      $version: Int!
-      $oracleAddress: String!
-      $optionIdx: Int!
-      $amount: String!
-      $senderAddress: String!
-    `,
-    mapping: `
-      version: $version
-      oracleAddress: $oracleAddress
-      optionIdx: $optionIdx
-      amount: $amount
-      senderAddress: $senderAddress
-    `,
+    mapping: [
+      'version',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
     return: `
       txid
       createdTime
@@ -145,22 +128,14 @@ const MUTATIONS = {
   },
 
   setResult: {
-    definition: `
-      $version: Int!
-      $topicAddress: String!
-      $oracleAddress: String!
-      $optionIdx: Int!
-      $amount: String!
-      $senderAddress: String!
-    `,
-    mapping: `
-      version: $version,
-      topicAddress: $topicAddress,
-      oracleAddress: $oracleAddress,
-      optionIdx: $optionIdx,
-      amount: $amount,
-      senderAddress: $senderAddress
-    `,
+    mapping: [
+      'version',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
     return: `
       txid
       createdTime
@@ -176,22 +151,14 @@ const MUTATIONS = {
   },
 
   createVote: {
-    definition: `
-      $version: Int!
-      $topicAddress: String!
-      $oracleAddress: String!
-      $optionIdx: Int!
-      $amount: String!
-      $senderAddress: String!
-    `,
-    mapping: `
-      version: $version
-      topicAddress: $topicAddress
-      oracleAddress: $oracleAddress
-      optionIdx: $optionIdx
-      amount: $amount
-      senderAddress: $senderAddress
-    `,
+    mapping: [
+      'version',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
     return: `
       txid
       createdTime
@@ -207,16 +174,11 @@ const MUTATIONS = {
   },
 
   finalizeResult: {
-    definition: `
-      $version: Int!
-      $oracleAddress: String!
-      $senderAddress: String!
-    `,
-    mapping: `
-      version: $version
-      oracleAddress: $oracleAddress
-      senderAddress: $senderAddress
-    `,
+    mapping: [
+      'version',
+      'oracleAddress',
+      'senderAddress',
+    ],
     return: `
       txid
       createdTime
@@ -229,16 +191,11 @@ const MUTATIONS = {
   },
 
   withdraw: {
-    definition: `
-      $version: Int!
-      $topicAddress: String!
-      $senderAddress: String!
-    `,
-    mapping: `
-      version: $version
-      topicAddress: $topicAddress
-      senderAddress: $senderAddress
-    `,
+    mapping: [
+      'version',
+      'topicAddress',
+      'senderAddress',
+    ],
     return: `
       txid
       createdTime
@@ -251,12 +208,6 @@ const MUTATIONS = {
   },
 
   transfer: {
-    definition: `
-      $senderAddress: String!
-      $receiverAddress: String!
-      $token: _TokenType!
-      $amount: String!
-    `,
     mapping: [
       'senderAddress',
       'receiverAddress',
