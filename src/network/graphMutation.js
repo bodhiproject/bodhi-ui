@@ -1,19 +1,44 @@
 import gql from 'graphql-tag';
+import _ from 'lodash';
 
 import client from './graphClient';
-import { TYPE, getMutation } from './graphSchema';
+import { TYPE, getMutation, isValidEnum } from './graphSchema';
 import GraphParser from './graphParser';
 
 class GraphMutation {
-  constructor(mutationName, args, type) {
+  constructor(mutationName, args) {
     this.mutationName = mutationName;
+    this.schema = getMutation(mutationName);
     this.args = args;
-    this.type = type;
+  }
+
+  constructMapping() {
+    let mappingStr = '';
+    _.each(this.schema.mapping, (key) => {
+      const value = this.args[key];
+      if (isValidEnum(key, value) || !_.isString(value)) {
+        // Enums require values without quotes
+        mappingStr = mappingStr.concat(`${key}: ${value}\n`);
+      } else {
+        mappingStr = mappingStr.concat(`${key}: ${JSON.stringify(value)}\n`);
+      }
+    });
+
+    return mappingStr;
   }
 
   build() {
-    const mutation = getMutation(this.mutationName);
-    return `mutation ${mutation}`;
+    const mutation = `
+      mutation {
+        ${this.mutationName}(
+          ${this.constructMapping()}
+        ) {
+          ${this.schema.return}
+        }
+      }
+    `;
+
+    return mutation;
   }
 
   async execute() {
@@ -22,7 +47,6 @@ class GraphMutation {
 
     const res = await client.mutate({
       mutation: gql`${mutation}`,
-      variables: this.args,
       fetchPolicy: 'network-only',
     });
     return res;
@@ -109,4 +133,15 @@ export function createWithdrawTx(version, topicAddress, senderAddress) {
   };
 
   return new GraphMutation('withdraw', args, TYPE.transaction).execute();
+}
+
+export function createTransferTx(senderAddress, receiverAddress, token, amount) {
+  const args = {
+    senderAddress,
+    receiverAddress,
+    token,
+    amount,
+  };
+
+  return new GraphMutation('transfer', args, TYPE.transaction).execute();
 }

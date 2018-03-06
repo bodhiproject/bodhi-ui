@@ -19,6 +19,9 @@ import _ from 'lodash';
 
 import styles from './styles';
 import Config from '../../../../config/app';
+import DepositDialog from '../DepositDialog/index';
+import WithdrawDialog from '../WithdrawDialog/index';
+import TransactionSentDialog from '../../../../components/TransactionSentDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -28,6 +31,11 @@ class MyBalances extends React.PureComponent {
       order: 'asc',
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
+      selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
+      depositDialogVisible: false,
+      withdrawDialogVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -37,11 +45,22 @@ class MyBalances extends React.PureComponent {
     this.getTableBody = this.getTableBody.bind(this);
     this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
+    this.onDepositClicked = this.onDepositClicked.bind(this);
+    this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
+    this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
+    this.onWithdraw = this.onWithdraw.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
   render() {
     const { classes, walletAddrs } = this.props;
+    const {
+      selectedAddress,
+      selectedAddressQtum,
+      selectedAddressBot,
+      depositDialogVisible,
+      withdrawDialogVisible,
+    } = this.state;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -55,6 +74,23 @@ class MyBalances extends React.PureComponent {
             {this.getTableBody(walletAddrs)}
           </Table>
           {this.getAddrCopiedSnackBar()}
+          <DepositDialog
+            dialogVisible={depositDialogVisible}
+            onClose={this.handleDepositDialogClose}
+            onCopyClicked={this.onCopyClicked}
+            walletAddress={selectedAddress}
+            qtumAmount={selectedAddressQtum}
+            botAmount={selectedAddressBot}
+          />
+          <WithdrawDialog
+            dialogVisible={withdrawDialogVisible}
+            onClose={this.handleWithdrawDialogClose}
+            onWithdraw={this.onWithdraw}
+            walletAddress={selectedAddress}
+            qtumAmount={selectedAddressQtum}
+            botAmount={selectedAddressBot}
+          />
+          <TransactionSentDialog txReturn={this.props.txReturn} />
         </Grid>
       </Paper>
     );
@@ -108,7 +144,7 @@ class MyBalances extends React.PureComponent {
       },
       {
         id: 'copyButton',
-        name: 'myBalances.copy',
+        name: 'str.copy',
         nameDefault: 'Copy',
         numeric: false,
         sortable: false,
@@ -230,7 +266,7 @@ class MyBalances extends React.PureComponent {
                 <Button size="small" className={classes.tableRowCopyButton}>
                   <ContentCopy className={classes.tableRowCopyButtonIcon} />
                   <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                    <FormattedMessage id="myBalances.copy" default="Copy" />
+                    <FormattedMessage id="str.copy" default="Copy" />
                   </Typography>
                 </Button>
               </CopyToClipboard>
@@ -242,10 +278,28 @@ class MyBalances extends React.PureComponent {
               <Typography variant="body1">{item.bot}</Typography>
             </TableCell>
             <TableCell>
-              <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
+              <Button
+                variant="raised"
+                color="primary"
+                size="small"
+                className={classes.tableRowActionButton}
+                onClick={this.onDepositClicked}
+                data-address={item.address}
+                data-qtum={item.qtum}
+                data-bot={item.bot}
+              >
                 <FormattedMessage id="myBalances.deposit" default="Deposit" />
               </Button>
-              <Button variant="raised" color="primary" size="small" className={classes.tableRowActionButton}>
+              <Button
+                variant="raised"
+                color="primary"
+                size="small"
+                className={classes.tableRowActionButton}
+                onClick={this.onWithdrawClicked}
+                data-address={item.address}
+                data-qtum={item.qtum}
+                data-bot={item.bot}
+              >
                 <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
               </Button>
             </TableCell>
@@ -284,6 +338,48 @@ class MyBalances extends React.PureComponent {
     });
   }
 
+  onDepositClicked(event) {
+    this.setState({
+      selectedAddress: event.currentTarget.getAttribute('data-address'),
+      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      depositDialogVisible: true,
+    });
+  }
+
+  handleDepositDialogClose = (value) => {
+    this.setState({
+      selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
+      depositDialogVisible: false,
+    });
+  };
+
+  onWithdrawClicked(event) {
+    this.setState({
+      selectedAddress: event.currentTarget.getAttribute('data-address'),
+      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      withdrawDialogVisible: true,
+    });
+  }
+
+  handleWithdrawDialogClose = (value) => {
+    this.setState({
+      selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
+      withdrawDialogVisible: false,
+    });
+  };
+
+  onWithdraw() {
+    this.setState({
+      withdrawDialogVisible: false,
+    });
+  }
+
   onAddrCopiedSnackbarClosed() {
     this.setState({
       addrCopiedSnackbarVisible: false,
@@ -294,14 +390,17 @@ class MyBalances extends React.PureComponent {
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
   walletAddrs: PropTypes.array,
+  txReturn: PropTypes.object,
 };
 
 MyBalances.defaultProps = {
   walletAddrs: [],
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

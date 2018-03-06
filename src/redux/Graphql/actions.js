@@ -111,6 +111,18 @@ const graphqlActions = {
     },
   }),
 
+  CREATE_TRANSFER_TX: 'CREATE_TRANSFER_TX',
+  CREATE_TRANSFER_TX_RETURN: 'CREATE_TRANSFER_TX_RETURN',
+  createTransferTx: (senderAddress, receiverAddress, token, amount) => ({
+    type: graphqlActions.CREATE_TRANSFER_TX,
+    params: {
+      senderAddress,
+      receiverAddress,
+      token,
+      amount,
+    },
+  }),
+
   CLEAR_TX_RETURN: 'CLEAR_TX_RETURN',
   clearTxReturn: () => ({
     type: graphqlActions.CLEAR_TX_RETURN,

@@ -84,170 +84,148 @@ const TYPE_DEF = {
 };
 
 const MUTATIONS = {
-  createTopic: `
-    CreateTopic(
-      $senderAddress: String!,
-      $name: String!,
-      $options: [String!]!,
-      $resultSetterAddress: String!,
-      $bettingStartTime: String!,
-      $bettingEndTime: String!,
-      $resultSettingStartTime: String!,
-      $resultSettingEndTime: String!
-    ) {
-      createTopic(
-        senderAddress: $senderAddress,
-        name: $name,
-        options: $options,
-        resultSetterAddress: $resultSetterAddress,
-        bettingStartTime: $bettingStartTime,
-        bettingEndTime: $bettingEndTime,
-        resultSettingStartTime: $resultSettingStartTime,
-        resultSettingEndTime: $resultSettingEndTime
-      ) {
-        txid
-        createdTime
-        version
-        type
-        status
-        senderAddress
-      }
-    }
-  `,
+  createTopic: {
+    mapping: [
+      'senderAddress',
+      'name',
+      'options',
+      'resultSetterAddress',
+      'bettingStartTime',
+      'bettingEndTime',
+      'resultSettingStartTime',
+      'resultSettingEndTime',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+    `,
+  },
 
-  createBet: `
-    CreateBet(
-      $version: Int!,
-      $oracleAddress: String!,
-      $optionIdx: Int!,
-      $amount: String!,
-      $senderAddress: String!
-    ) {
-      createBet(
-        version: $version,
-        oracleAddress: $oracleAddress,
-        optionIdx: $optionIdx,
-        amount: $amount,
-        senderAddress: $senderAddress
-      ) {
-        txid
-        createdTime
-        version
-        type
-        status
-        topicAddress
-        oracleAddress
-        optionIdx
-        amount
-        senderAddress
-      }
-    }
-  `,
+  createBet: {
+    mapping: [
+      'version',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+    `,
+  },
 
-  setResult: `
-    SetResult(
-      $version: Int!,
-      $topicAddress: String!,
-      $oracleAddress: String!,
-      $optionIdx: Int!,
-      $amount: String!,
-      $senderAddress: String!
-    ) {
-      setResult(
-        version: $version,
-        topicAddress: $topicAddress,
-        oracleAddress: $oracleAddress,
-        optionIdx: $optionIdx,
-        amount: $amount,
-        senderAddress: $senderAddress
-      ) {
-        txid
-        createdTime
-        version
-        type
-        status
-        topicAddress
-        oracleAddress
-        optionIdx
-        amount
-        senderAddress
-      }
-    }
-  `,
+  setResult: {
+    mapping: [
+      'version',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+    `,
+  },
 
-  createVote: `
-    CreateVote(
-      $version: Int!,
-      $topicAddress: String!,
-      $oracleAddress: String!,
-      $optionIdx: Int!,
-      $amount: String!,
-      $senderAddress: String!
-    ) {
-      createVote(
-        version: $version,
-        topicAddress: $topicAddress,
-        oracleAddress: $oracleAddress,
-        optionIdx: $optionIdx,
-        amount: $amount,
-        senderAddress: $senderAddress
-      ) {
-        txid
-        createdTime
-        version
-        type
-        status
-        topicAddress
-        oracleAddress
-        optionIdx
-        amount
-        senderAddress
-      }
-    }
-  `,
+  createVote: {
+    mapping: [
+      'version',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+    `,
+  },
 
-  finalizeResult: `
-    FinalizeResult(
-      $version: Int!,
-      $oracleAddress: String!,
-      $senderAddress: String!
-    ) {
-      finalizeResult(
-        version: $version,
-        oracleAddress: $oracleAddress,
-        senderAddress: $senderAddress
-      ) {
-        txid
-        createdTime
-        version
-        type
-        status
-        oracleAddress
-        senderAddress
-      }
-    }
-  `,
+  finalizeResult: {
+    mapping: [
+      'version',
+      'oracleAddress',
+      'senderAddress',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      oracleAddress
+      senderAddress
+    `,
+  },
 
-  withdraw: `
-    Withdraw(
-      $version: Int!,
-      $topicAddress: String!,
-      $senderAddress: String!
-    ) {
-      withdraw(
-        version: $version,
-        topicAddress: $topicAddress,
-        senderAddress: $senderAddress
-      ) {
-        txid
-        createdTime
-        type
-        status
-        topicAddress
-        senderAddress
-      }
-    }
-  `,
+  withdraw: {
+    mapping: [
+      'version',
+      'topicAddress',
+      'senderAddress',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      senderAddress
+    `,
+  },
+
+  transfer: {
+    mapping: [
+      'senderAddress',
+      'receiverAddress',
+      'token',
+      'amount',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
+  },
 };
 
 const ENUMS = {

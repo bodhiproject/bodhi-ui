@@ -1,13 +1,13 @@
 const styles = (theme) => ({
   txHistoryPaper: {
+    minWidth: theme.sizes.table.minWidth,
+    overflowX: 'scroll',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
-    background: theme.palette.background.default,
+    background: theme.palette.background.paper,
   },
   txHistoryGridContainer: {
-    minWidth: theme.sizes.table.minWidth,
-    padding: theme.padding.lg.px,
-    overflowX: 'scroll',
+    padding: theme.padding.md.px,
   },
   table: {
     marginTop: theme.padding.sm.px,

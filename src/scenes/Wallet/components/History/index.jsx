@@ -111,13 +111,13 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'from',
-        name: 'walletHistory.from',
+        name: 'str.from',
         nameDefault: 'From',
         numeric: false,
       },
       {
         id: 'to',
-        name: 'walletHistory.to',
+        name: 'str.to',
         nameDefault: 'To',
         numeric: false,
       },
@@ -129,7 +129,7 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'amount',
-        name: 'walletHistory.amount',
+        name: 'str.amount',
         nameDefault: 'Amount',
         numeric: true,
       },

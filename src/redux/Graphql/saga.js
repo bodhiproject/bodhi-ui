@@ -3,8 +3,15 @@ import _ from 'lodash';
 
 import actions from './actions';
 import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
-import { createTopic, createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx }
-  from '../../network/graphMutation';
+import {
+  createTopic,
+  createBetTx,
+  createSetResultTx,
+  createVoteTx,
+  createFinalizeResultTx,
+  createWithdrawTx,
+  createTransferTx,
+} from '../../network/graphMutation';
 import Config from '../../config/app';
 import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
 
@@ -253,6 +260,31 @@ export function* createWithdrawTxHandler() {
   });
 }
 
+// Send transfer mutation
+export function* createTransferTxHandler() {
+  yield takeEvery(actions.CREATE_TRANSFER_TX, function* createTransferTxRequest(action) {
+    try {
+      const tx = yield call(
+        createTransferTx,
+        action.params.senderAddress,
+        action.params.receiverAddress,
+        action.params.token,
+        action.params.amount,
+      );
+
+      yield put({
+        type: actions.CREATE_TRANSFER_TX_RETURN,
+        value: tx.data.transfer,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.CREATE_TRANSFER_TX_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
+
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
@@ -264,5 +296,6 @@ export default function* graphqlSaga() {
     fork(createVoteTxHandler),
     fork(createFinalizeResultTxHandler),
     fork(createWithdrawTxHandler),
+    fork(createTransferTxHandler),
   ]);
 }

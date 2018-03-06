@@ -16,7 +16,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
-import PredictionCompleteDialog from './components/PredictionCompleteDialog/index';
+import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import stateActions from '../../redux/State/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import { decimalToBotoshi } from '../../helpers/utility';
@@ -151,7 +151,7 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <PredictionCompleteDialog txReturn={this.props.txReturn} />
+        <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
@@ -371,7 +371,7 @@ class OraclePage extends React.Component {
     const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBetTx(oracle.version, oracle.address, selectedIndex, amount, this.getCurrentWalletAddr());
+    createBetTx(oracle.version, oracle.address, selectedIndex, amount.toString(), this.getCurrentWalletAddr());
   }
 
   setResult() {
