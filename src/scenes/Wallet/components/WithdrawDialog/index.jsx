@@ -52,12 +52,6 @@ class WithdrawDialog extends React.Component {
     this.onSendClicked = this.onSendClicked.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.txReturn) {
-      this.props.onWithdraw();
-    }
-  }
-
   render() {
     const {
       dialogVisible,
@@ -205,6 +199,7 @@ class WithdrawDialog extends React.Component {
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
     createTransferTx(walletAddress, toAddress, selectedToken, withdrawAmount);
+    this.props.onWithdraw();
   }
 }
 
@@ -217,7 +212,6 @@ WithdrawDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onWithdraw: PropTypes.func.isRequired,
   createTransferTx: PropTypes.func,
-  txReturn: PropTypes.object,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -227,11 +221,9 @@ WithdrawDialog.defaultProps = {
   qtumAmount: 0,
   botAmount: 0,
   createTransferTx: undefined,
-  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

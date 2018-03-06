@@ -21,7 +21,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
-import graphqlActions from '../../../../redux/Graphql/actions';
+import TransactionSentDialog from '../../../../components/TransactionSentDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -48,7 +48,7 @@ class MyBalances extends React.PureComponent {
     this.onDepositClicked = this.onDepositClicked.bind(this);
     this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.handleWithdrawTxReturn = this.handleWithdrawTxReturn.bind(this);
+    this.onWithdraw = this.onWithdraw.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
@@ -85,11 +85,12 @@ class MyBalances extends React.PureComponent {
           <WithdrawDialog
             dialogVisible={withdrawDialogVisible}
             onClose={this.handleWithdrawDialogClose}
-            onWithdraw={this.handleWithdrawTxReturn}
+            onWithdraw={this.onWithdraw}
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
           />
+          <TransactionSentDialog txReturn={this.props.txReturn} />
         </Grid>
       </Paper>
     );
@@ -373,8 +374,7 @@ class MyBalances extends React.PureComponent {
     });
   };
 
-  handleWithdrawTxReturn() {
-    this.props.clearTxReturn();
+  onWithdraw() {
     this.setState({
       withdrawDialogVisible: false,
     });
@@ -390,21 +390,21 @@ class MyBalances extends React.PureComponent {
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
   walletAddrs: PropTypes.array,
-  clearTxReturn: PropTypes.func,
+  txReturn: PropTypes.object,
 };
 
 MyBalances.defaultProps = {
   walletAddrs: [],
-  clearTxReturn: undefined,
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 
