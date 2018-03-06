@@ -7,6 +7,7 @@ import TextField from 'material-ui/TextField';
 import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
+import Slide from 'material-ui/transitions/Slide';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -66,6 +67,7 @@ class WithdrawDialog extends React.Component {
       <Dialog
         open={dialogVisible}
         onClose={onClose}
+        transition={(props) => <Slide direction="up" {...props} />}
       >
         <DialogTitle>
           <Typography variant="title">
@@ -96,6 +98,7 @@ class WithdrawDialog extends React.Component {
       walletAddress,
       intl,
     } = this.props;
+    const { toAddress } = this.state;
 
     return (
       <div>
@@ -112,6 +115,7 @@ class WithdrawDialog extends React.Component {
           fullWidth
           className={classes.toAddress}
           onChange={this.onToAddressChange}
+          error={_.isEmpty(toAddress)}
           required
         />
       </div>
