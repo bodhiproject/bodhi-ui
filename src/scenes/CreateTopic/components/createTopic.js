@@ -32,28 +32,28 @@ const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
 let resultUuid = 2;
 
 const messages = defineMessages({
-  betStartblockMsg: {
-    id: 'create.betStartblockMsg',
+  betStartBlockMsg: {
+    id: 'create.betStartBlockMsg',
     defaultMessage: 'Betting Start Time cannot be empty',
   },
-  betEndblocksMsg: {
-    id: 'create.betEndblocksMsg',
+  betEndBlocksMsg: {
+    id: 'create.betEndBlocksMsg',
     defaultMessage: 'Betting End Time cannot be empty',
   },
-  resultSetstartBlockmsg: {
-    id: 'create.resultSetstartBlockmsg',
+  resultSetStartBlockMsg: {
+    id: 'create.resultSetStartBlockMsg',
     defaultMessage: 'Result Setting Start Time cannot be empty',
   },
-  resultSetendBlockmsg: {
-    id: 'create.resultSetendBlockmsg',
+  resultSetEndBlockMsg: {
+    id: 'create.resultSetEndBlockMsg',
     defaultMessage: 'Result Setting End Time cannot be empty',
   },
   resultsMsg: {
     id: 'create.resultsMsg',
     defaultMessage: 'Result name cannot be empty.',
   },
-  evtNotempty: {
-    id: 'create.evtNotempty',
+  evtNotEmpty: {
+    id: 'create.evtNotEmpty',
     defaultMessage: 'Event name cannot be empty.',
   },
   namePlaceholder: {
@@ -76,16 +76,16 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
-  validBetend: {
-    id: 'create.validBetend',
+  validBetEnd: {
+    id: 'create.validBetEnd',
     defaultMessage: 'Must be greater than Betting Start Time',
   },
-  validResultsetStart: {
-    id: 'create.validResultsetStart',
+  validResultSetStart: {
+    id: 'create.validResultSetStart',
     defaultMessage: 'Must be greater than or equal to Betting End Time',
   },
-  validResultsetEnd: {
-    id: 'create.validResultsetEnd',
+  validResultSetEnd: {
+    id: 'create.validResultSetEnd',
     defaultMessage: 'Must be greater than Result Setting Start Time',
   },
   resultToolong: {
@@ -186,7 +186,7 @@ class CreateTopic extends React.Component {
                 {
                   required: true,
                   whitespace: true,
-                  message: this.props.intl.formatMessage(messages.evtNotempty),
+                  message: this.props.intl.formatMessage(messages.evtNotEmpty),
                 },
                 {
                   validator: this.validateTitleLength,
@@ -225,7 +225,7 @@ class CreateTopic extends React.Component {
           <FormItem
             {...formItemLayout}
             label={<FormattedMessage id="create.resultSetter" defaultMessage="Centralized Oracle" />}
-            extra={<FormattedMessage id="create.resultSetterextra" defaultMessage="This person will set the result." />}
+            extra={<FormattedMessage id="create.resultSetterExtra" defaultMessage="This person will set the result." />}
             required={required}
           >
             {getFieldDecorator('centralizedOracle', {
@@ -316,14 +316,14 @@ class CreateTopic extends React.Component {
     let block;
     switch (id) {
       case ID_BETTING_START_TIME: {
-        label = <FormattedMessage id="create.betStartblock" defaultMessage="BETTING START BLOCK" />;
-        extra = <FormattedMessage id="create.betStartblockExtra" defaultMessage="The time when users can start betting." />;
+        label = <FormattedMessage id="create.betStartBlock" defaultMessage="BETTING START BLOCK" />;
+        extra = <FormattedMessage id="create.betStartBlockExtra" defaultMessage="The time when users can start betting." />;
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [
             {
               required: true,
-              message: this.props.intl.formatMessage(messages.betStartblockMsg),
+              message: this.props.intl.formatMessage(messages.betStartBlockMsg),
             },
           ],
         };
@@ -332,14 +332,14 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_BETTING_END_TIME: {
-        label = <FormattedMessage id="create.betEndblock" defaultMessage="Betting End Block" />;
-        extra = <FormattedMessage id="create.betEndblocksExtra" defaultMessage="The time when users can no longer bet." />;
+        label = <FormattedMessage id="create.betEndBlock" defaultMessage="Betting End Block" />;
+        extra = <FormattedMessage id="create.betEndBlocksExtra" defaultMessage="The time when users can no longer bet." />;
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [
             {
               required: true,
-              message: this.props.intl.formatMessage(messages.betEndblocksMsg),
+              message: this.props.intl.formatMessage(messages.betEndBlocksMsg),
             },
             {
               validator: this.validateBettingEndTime,
@@ -352,14 +352,14 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_RESULT_SETTING_START_TIME: {
-        label = <FormattedMessage id="create.resultSetstartBlock" defaultMessage="Result Setting Start Block" />;
-        extra = <FormattedMessage id="create.resultSetstartBlockextra" defaultMessage="The time when the Centralized Oracle can set the result." />;
+        label = <FormattedMessage id="create.resultSetStartBlock" defaultMessage="Result Setting Start Block" />;
+        extra = <FormattedMessage id="create.resultSetStartBlockExtra" defaultMessage="The time when the Centralized Oracle can set the result." />;
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [
             {
               required: true,
-              message: this.props.intl.formatMessage(messages.resultSetstartBlockmsg),
+              message: this.props.intl.formatMessage(messages.resultSetStartBlockMsg),
             },
             {
               validator: this.validateResultSettingStartTime,
@@ -372,14 +372,14 @@ class CreateTopic extends React.Component {
         break;
       }
       case ID_RESULT_SETTING_END_TIME: {
-        label = <FormattedMessage id="create.resultSetendBlock" defaultMessage="Result Setting End Block" />;
-        extra = <FormattedMessage id="create.resultSetendBlockextra" defaultMessage="The time when anyone can set the result." />;
+        label = <FormattedMessage id="create.resultSetEndBlock" defaultMessage="Result Setting End Block" />;
+        extra = <FormattedMessage id="create.resultSetEndBlockExtra" defaultMessage="The time when anyone can set the result." />;
         options = {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [
             {
               required: true,
-              message: this.props.intl.formatMessage(messages.resultSetendBlockmsg),
+              message: this.props.intl.formatMessage(messages.resultSetEndBlockMsg),
             },
             {
               validator: this.validateResultSettingEndTime,
@@ -557,7 +557,7 @@ class CreateTopic extends React.Component {
   validateBettingEndTime(rule, value, callback) {
     const bettingStartTime = this.props.form.getFieldValue(ID_BETTING_START_TIME);
     if (_.isUndefined(bettingStartTime) || value.unix() <= bettingStartTime.unix()) {
-      callback(this.props.intl.formatMessage(messages.validBetend));
+      callback(this.props.intl.formatMessage(messages.validBetEnd));
     } else {
       callback();
     }
@@ -566,7 +566,7 @@ class CreateTopic extends React.Component {
   validateResultSettingStartTime(rule, value, callback) {
     const bettingEndTime = this.props.form.getFieldValue(ID_BETTING_END_TIME);
     if (_.isUndefined(bettingEndTime) || value.unix() < bettingEndTime.unix()) {
-      callback(this.props.intl.formatMessage(messages.validResultsetStart));
+      callback(this.props.intl.formatMessage(messages.validResultSetStart));
     } else {
       callback();
     }
@@ -575,7 +575,7 @@ class CreateTopic extends React.Component {
   validateResultSettingEndTime(rule, value, callback) {
     const resultSettingStartTime = this.props.form.getFieldValue(ID_RESULT_SETTING_START_TIME);
     if (_.isUndefined(resultSettingStartTime) || value.unix() <= resultSettingStartTime.unix()) {
-      callback(this.props.intl.formatMessage(messages.validResultsetEnd));
+      callback(this.props.intl.formatMessage(messages.validResultSetEnd));
     } else {
       callback();
     }

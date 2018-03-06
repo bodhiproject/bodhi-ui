@@ -82,13 +82,13 @@ for String inside placeholder or previous method can not handle, define messages
 
 ```
 const messages = defineMessages({
-  betStartblockMsg: {
-    id: 'create.betStartblockMsg',
+  betStartBlockMsg: {
+    id: 'create.betStartBlockMsg',
     defaultMessage: 'Betting Start Time cannot be empty',
   }
 });
 ```
-Then put `this.props.intl.formatMessage(messages.betStartblockMsg)` at the place where you want to put the text
+Then put `this.props.intl.formatMessage(messages.betStartBlockMsg)` at the place where you want to put the text
 
 Run `run build:langs`
 

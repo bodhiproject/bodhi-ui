@@ -5,8 +5,8 @@ import { getLocalDateTimeString } from './utility';
 
 const TOPIC_CREATED = <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />;
 const BETTING = <FormattedMessage id="cardInfo.betting" defaultMessage="Betting" />;
-const ORACLE_RESULT_SETTING = <FormattedMessage id="cardInfo.orResultset" defaultMessage="Oracle Result Setting" />;
-const OPEN_RESULT_SETTING = <FormattedMessage id="cardInfo.opResultset" defaultMessage="Open Result Setting" />;
+const ORACLE_RESULT_SETTING = <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />;
+const OPEN_RESULT_SETTING = <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />;
 const VOTING = <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />;
 const FINALIZING = <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />;
 const WITHDRAWING = <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />;

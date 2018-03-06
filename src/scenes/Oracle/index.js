@@ -288,7 +288,7 @@ class OraclePage extends React.Component {
                 type: 'default',
               },
               {
-                text: <FormattedMessage id="oracle.resultSetnote" defaultMessage="BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before result setting. The approved amount will automatically be used to set the result after approval." />,
+                text: <FormattedMessage id="oracle.resultSetNote" defaultMessage="BOT tokens are needed for result setting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before result setting. The approved amount will automatically be used to set the result after approval." />,
                 type: 'default',
               },
             ],
@@ -312,7 +312,7 @@ class OraclePage extends React.Component {
         // Add a message to CardInfo to warn that user is not result setter of current oracle
         if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
           config.predictionInfo.messages.push({
-            text: <FormattedMessage id="oracle.notcen" defaultMessage="You are not the Centralized Oracle for this Topic and cannot set the result." />,
+            text: <FormattedMessage id="oracle.notCen" defaultMessage="You are not the Centralized Oracle for this Topic and cannot set the result." />,
             type: 'warn',
           });
         } else if (status === OracleStatus.OpenResultSet) {
