@@ -296,5 +296,6 @@ export default function* graphqlSaga() {
     fork(createVoteTxHandler),
     fork(createFinalizeResultTxHandler),
     fork(createWithdrawTxHandler),
+    fork(createTransferTxHandler),
   ]);
 }
