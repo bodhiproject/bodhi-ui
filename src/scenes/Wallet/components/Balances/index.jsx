@@ -20,6 +20,7 @@ import _ from 'lodash';
 import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
+import WithdrawDialog from '../WithdrawDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -33,6 +34,7 @@ class MyBalances extends React.PureComponent {
       selectedAddressQtum: undefined,
       selectedAddressBot: undefined,
       depositDialogVisible: false,
+      withdrawDialogVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -55,6 +57,7 @@ class MyBalances extends React.PureComponent {
       selectedAddressQtum,
       selectedAddressBot,
       depositDialogVisible,
+      withdrawDialogVisible,
     } = this.state;
 
     return (
@@ -73,6 +76,13 @@ class MyBalances extends React.PureComponent {
             dialogVisible={depositDialogVisible}
             onClose={this.handleDepositDialogClose}
             onCopyClicked={this.onCopyClicked}
+            walletAddress={selectedAddress}
+            qtumAmount={selectedAddressQtum}
+            botAmount={selectedAddressBot}
+          />
+          <WithdrawDialog
+            dialogVisible={withdrawDialogVisible}
+            onClose={this.handleWithdrawDialogClose}
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
@@ -130,7 +140,7 @@ class MyBalances extends React.PureComponent {
       },
       {
         id: 'copyButton',
-        name: 'myBalances.copy',
+        name: 'str.copy',
         nameDefault: 'Copy',
         numeric: false,
         sortable: false,
@@ -252,7 +262,7 @@ class MyBalances extends React.PureComponent {
                 <Button size="small" className={classes.tableRowCopyButton}>
                   <ContentCopy className={classes.tableRowCopyButtonIcon} />
                   <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                    <FormattedMessage id="myBalances.copy" default="Copy" />
+                    <FormattedMessage id="str.copy" default="Copy" />
                   </Typography>
                 </Button>
               </CopyToClipboard>
@@ -281,6 +291,10 @@ class MyBalances extends React.PureComponent {
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}
+                onClick={this.onWithdrawClicked}
+                data-address={item.address}
+                data-qtum={item.qtum}
+                data-bot={item.bot}
               >
                 <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
               </Button>
@@ -332,13 +346,29 @@ class MyBalances extends React.PureComponent {
   handleDepositDialogClose = (value) => {
     this.setState({
       selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
       depositDialogVisible: false,
     });
   };
 
-  onWithdrawClicked() {
-
+  onWithdrawClicked(event) {
+    this.setState({
+      selectedAddress: event.currentTarget.getAttribute('data-address'),
+      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      withdrawDialogVisible: true,
+    });
   }
+
+  handleWithdrawDialogClose = (value) => {
+    this.setState({
+      selectedAddress: undefined,
+      selectedAddressQtum: undefined,
+      selectedAddressBot: undefined,
+      withdrawDialogVisible: false,
+    });
+  };
 
   onAddrCopiedSnackbarClosed() {
     this.setState({

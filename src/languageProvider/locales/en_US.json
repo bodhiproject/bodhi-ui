@@ -66,7 +66,6 @@
   "language.select": "中文",
   "myBalances.myBalance": "My Balance",
   "myBalances.address": "Address",
-  "myBalances.copy": "Copy",
   "myBalances.actions": "Actions",
   "myBalances.deposit": "Deposit",
   "myBalances.withdraw": "Withdraw",
@@ -111,5 +110,7 @@
   "walletHistory.token": "Token",
   "walletHistory.amount": "Amount",
   "walletHistory.fee": "Fee",
-  "walletHistory.status": "Status"
+  "walletHistory.status": "Status",
+  "withdrawDialog.title": "Withdraw QTUM/BOT",
+  "withdrawDialog.youCanWithdraw": "You can withdraw up to:"
 }
