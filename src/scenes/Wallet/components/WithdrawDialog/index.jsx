@@ -52,8 +52,10 @@ class WithdrawDialog extends React.Component {
     this.onSendClicked = this.onSendClicked.bind(this);
   }
 
-  componentWillUnmount() {
-    this.props.clearTxReturn();
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.txReturn) {
+      this.props.onWithdraw();
+    }
   }
 
   render() {
@@ -61,7 +63,6 @@ class WithdrawDialog extends React.Component {
       dialogVisible,
       walletAddress,
       onClose,
-      txReturn,
     } = this.props;
 
     if (!walletAddress) {
@@ -70,7 +71,7 @@ class WithdrawDialog extends React.Component {
 
     return (
       <Dialog
-        open={dialogVisible || txReturn}
+        open={dialogVisible}
         onClose={onClose}
       >
         <DialogTitle>
@@ -214,9 +215,9 @@ WithdrawDialog.propTypes = {
   qtumAmount: PropTypes.number,
   botAmount: PropTypes.number,
   onClose: PropTypes.func.isRequired,
+  onWithdraw: PropTypes.func.isRequired,
   createTransferTx: PropTypes.func,
   txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -227,7 +228,6 @@ WithdrawDialog.defaultProps = {
   botAmount: 0,
   createTransferTx: undefined,
   txReturn: undefined,
-  clearTxReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -238,7 +238,6 @@ function mapDispatchToProps(dispatch) {
   return {
     createTransferTx: (senderAddress, receiverAddress, token, amount) =>
       dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

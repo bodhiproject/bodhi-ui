@@ -2,7 +2,7 @@ const styles = (theme) => ({
   txHistoryPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
-    background: theme.palette.background.default,
+    background: theme.palette.background.paper,
   },
   txHistoryGridContainer: {
     minWidth: theme.sizes.table.minWidth,

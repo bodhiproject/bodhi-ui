@@ -21,6 +21,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
+import graphqlActions from '../../../../redux/Graphql/actions';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -47,6 +48,7 @@ class MyBalances extends React.PureComponent {
     this.onDepositClicked = this.onDepositClicked.bind(this);
     this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
+    this.handleWithdrawTxReturn = this.handleWithdrawTxReturn.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
@@ -83,6 +85,7 @@ class MyBalances extends React.PureComponent {
           <WithdrawDialog
             dialogVisible={withdrawDialogVisible}
             onClose={this.handleWithdrawDialogClose}
+            onWithdraw={this.handleWithdrawTxReturn}
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
@@ -370,6 +373,13 @@ class MyBalances extends React.PureComponent {
     });
   };
 
+  handleWithdrawTxReturn() {
+    this.props.clearTxReturn();
+    this.setState({
+      withdrawDialogVisible: false,
+    });
+  }
+
   onAddrCopiedSnackbarClosed() {
     this.setState({
       addrCopiedSnackbarVisible: false,
@@ -380,10 +390,12 @@ class MyBalances extends React.PureComponent {
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
   walletAddrs: PropTypes.array,
+  clearTxReturn: PropTypes.func,
 };
 
 MyBalances.defaultProps = {
   walletAddrs: [],
+  clearTxReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -392,6 +404,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 
