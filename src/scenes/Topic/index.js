@@ -18,7 +18,7 @@ import CardInfoUtil from '../../helpers/cardInfoUtil';
 
 const pageMessage = defineMessages({
   withdraw: {
-    id: 'cardfinish.withdraw',
+    id: 'cardFinish.withdraw',
     defaultMessage: 'You can withdraw',
   },
 });
@@ -141,8 +141,8 @@ class TopicPage extends React.Component {
       <div>
         <Row style={{ width: '100%', height: '48px' }}>
           <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topbar.event" defaultMessage="Event" /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item><FormattedMessage id="topbar.completed" defaultMessage="Completed" /></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topBar.event" defaultMessage="Event" /></Link></Breadcrumb.Item>
+            <Breadcrumb.Item><FormattedMessage id="topBar.completed" defaultMessage="Completed" /></Breadcrumb.Item>
           </Breadcrumb>
         </Row>
         <Row style={{ width: '100%' }}>
