@@ -88,8 +88,8 @@ const messages = defineMessages({
     id: 'create.validResultSetEnd',
     defaultMessage: 'Must be greater than Result Setting Start Time',
   },
-  resultToolong: {
-    id: 'create.resultToolong',
+  resultTooLong: {
+    id: 'create.resultTooLong',
     defaultMessage: 'Result name is too long.',
   },
   alertSuc: {
@@ -589,7 +589,7 @@ class CreateTopic extends React.Component {
     if (hexString && hexString.length <= MAX_LEN_RESULT_HEX) {
       callback();
     } else {
-      callback(this.props.intl.formatMessage(messages.resultToolong));
+      callback(this.props.intl.formatMessage(messages.resultTooLong));
     }
   }
 

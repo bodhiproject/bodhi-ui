@@ -19,19 +19,19 @@ import styles from './styles';
 
 const messages = defineMessages({
   pbet: {
-    id: 'bottombutton.placebet',
+    id: 'bottomButtonText.placeBet',
     defaultMessage: 'Place Bet',
   },
   pset: {
-    id: 'bottombutton.setresult',
+    id: 'bottomButtonText.setResult',
     defaultMessage: 'Set Result',
   },
   pvote: {
-    id: 'bottombutton.vote',
+    id: 'bottomButtonText.vote',
     defaultMessage: 'Place Vote',
   },
   pfinal: {
-    id: 'bottombutton.final',
+    id: 'bottomButtonText.final',
     defaultMessage: 'Finalize Result',
   },
 });
@@ -223,7 +223,7 @@ class EventCardsGrid extends React.Component {
           url={`/topic/${topic.address}`}
           totalQTUM={totalQTUM}
           totalBOT={totalBOT}
-          buttonText={this.props.intl.formatMessage({ id: 'bottombutton.withdraw' })}
+          buttonText={this.props.intl.formatMessage({ id: 'bottomButtonText.withdraw' })}
         />
       );
 
