@@ -9,6 +9,7 @@ import Grid from 'material-ui/Grid';
 import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -36,6 +37,7 @@ const messages = defineMessages({
     defaultMessage: 'Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.',
   },
 });
+
 class OraclePage extends React.Component {
   constructor(props) {
     super(props);
@@ -45,14 +47,15 @@ class OraclePage extends React.Component {
       address: this.props.match.params.address,
       oracle: undefined,
       config: undefined,
-      voteAmount: undefined,
+      voteAmount: 0,
       currentWalletIdx: this.props.walletAddrsIndex,
       currentOptionIdx: -1,
     };
 
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
+    this.executeOraclesAndTxsRequest = this.executeOraclesAndTxsRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
+    this.constructTransactions = this.constructTransactions.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -63,21 +66,23 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.executeOraclesRequest();
+    this.executeOraclesAndTxsRequest();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesReturn,
+      getTransactionsReturn,
       syncBlockTime,
     } = nextProps;
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
-      this.executeOraclesRequest();
+      this.executeOraclesAndTxsRequest();
     }
 
     this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
+    this.constructTransactions(getTransactionsReturn, syncBlockTime);
   }
 
   componentWillUnmount() {
@@ -132,6 +137,7 @@ class OraclePage extends React.Component {
                 disabled={
                   (config.predictionAction.btnDisabled ||
                   this.state.currentOptionIdx === -1 ||
+                  ((this.state.voteAmount === 0 || Number.isNaN(this.state.voteAmount)) && config.predictionAction.showAmountInput) ||
                   this.state.isApproving) &&
                   !config.predictionAction.skipExpansion
                 }
@@ -144,6 +150,29 @@ class OraclePage extends React.Component {
                     config.predictionAction.btnText
                 }
               </Button>
+              <Typography variant="headline">
+                TRANSACTIONS
+              </Typography>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell numeric>Type</TableCell>
+                    <TableCell numeric>Description</TableCell>
+                    <TableCell numeric>Amount</TableCell>
+                    <TableCell numeric>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow selected>
+                    <TableCell>123123</TableCell>
+                    <TableCell numeric>123123</TableCell>
+                    <TableCell numeric>123123</TableCell>
+                    <TableCell numeric>123123</TableCell>
+                    <TableCell numeric>12312</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
@@ -161,6 +190,7 @@ class OraclePage extends React.Component {
   }
 
   handleAmountChange(amount) {
+    console.log(amount);
     this.setState({ voteAmount: amount });
   }
 
@@ -230,8 +260,11 @@ class OraclePage extends React.Component {
     });
   }
 
-  executeOraclesRequest() {
+  executeOraclesAndTxsRequest() {
     this.props.getOracles([
+      { topicAddress: this.state.topicAddress },
+    ], undefined);
+    this.props.getTransactions([
       { topicAddress: this.state.topicAddress },
     ], undefined);
   }
@@ -366,6 +399,11 @@ class OraclePage extends React.Component {
     }
   }
 
+  constructTransactions(getTransactionsReturn, syncBlockTime) {
+    console.log('getTransactionsReturn');
+    console.log(getTransactionsReturn);
+  }
+
   bet(amount) {
     const { createBetTx } = this.props;
     const { oracle, currentOptionIdx } = this.state;
@@ -417,6 +455,8 @@ OraclePage.propTypes = {
   classes: PropTypes.object.isRequired,
   getOracles: PropTypes.func,
   getOraclesReturn: PropTypes.array,
+  getTransactions: PropTypes.func,
+  getTransactionsReturn: PropTypes.array,
   createBetTx: PropTypes.func,
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
@@ -433,6 +473,8 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesReturn: [],
+  getTransactions: undefined,
+  getTransactionsReturn: [],
   createBetTx: undefined,
   createSetResultTx: undefined,
   createVoteTx: undefined,
@@ -449,12 +491,14 @@ const mapStateToProps = (state) => ({
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   syncBlockTime: state.App.get('syncBlockTime'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createBetTx: (version, contractAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
     createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
