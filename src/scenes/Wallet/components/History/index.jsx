@@ -36,7 +36,7 @@ class WalletHistory extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, getTransactionsReturn } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -46,7 +46,7 @@ class WalletHistory extends React.Component {
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows(data)}
+            {this.getTableRows(getTransactionsReturn)}
           </Table>
         </Grid>
       </Paper>
@@ -185,12 +185,15 @@ class WalletHistory extends React.Component {
 WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
   getTransactions: PropTypes.func.isRequired,
+  getTransactionsReturn: PropTypes.array,
 };
 
 WalletHistory.defaultProps = {
+  getTransactionsReturn: [],
 };
 
 const mapStateToProps = (state) => ({
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
