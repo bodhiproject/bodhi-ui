@@ -241,6 +241,20 @@ const ENUMS = {
     'OPENRESULTSET',
     'PENDING',
     'WITHDRAW',
+    'SUCCESS',
+    'FAIL',
+  ],
+
+  type: [
+    'CREATEEVENT',
+    'BET',
+    'APPROVESETRESULT',
+    'SETRESULT',
+    'APPROVEVOTE',
+    'VOTE',
+    'FINALIZERESULT',
+    'WITHDRAW',
+    'TRANSFER',
   ],
 
   token: [
