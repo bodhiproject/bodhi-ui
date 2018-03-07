@@ -200,7 +200,7 @@ class EventHistory extends React.Component {
               {transaction.status}
             </TableCell>
             <TableCell>
-              {transaction.topic ?
+              {transaction.topic && transaction.topic.address ?
                 <Link to={this.getEventURL(transaction.topic.address, transaction.oracleAddress)} className={classes.viewEventLink}>
                   <FormattedMessage id="eventHistory.viewEvent" default="View Event" />
                 </Link> : null
