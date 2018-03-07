@@ -1,5 +1,5 @@
 const styles = (theme) => ({
-  dashboardCardSection: {
+  eventCardSection: {
     position: 'relative',
     padding: theme.padding.sm.px,
     '&.top': {
@@ -17,13 +17,13 @@ const styles = (theme) => ({
   dashboardTime: {
     color: theme.palette.text.hint,
   },
-  dashboardCardName: {
+  eventCardName: {
     marginBottom: theme.padding.xs.px,
   },
   dashBoardCardIcon: {
     marginRight: theme.padding.unit.px,
   },
-  dashboardCardInfo: {
+  eventCardInfo: {
     position: 'absolute',
     bottom: theme.padding.sm.px,
     color: theme.palette.text.primary,

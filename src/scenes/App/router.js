@@ -16,10 +16,12 @@ class AppRouter extends React.Component {
         <Route
           exact
           path={`${url}/`}
-          component={asyncComponent(() => {
-            console.log('{url}/');
-            return import('../Dashboard/index');
-          })}
+          component={asyncComponent(() => import('../Dashboard/index'))}
+        />
+        <Route
+          exact
+          path={`${url}/bot-court`}
+          component={asyncComponent(() => import('../Dashboard/vote'))}
         />
         <Route
           exact
@@ -40,6 +42,11 @@ class AppRouter extends React.Component {
           exact
           path={`${url}/my-wallet`}
           component={asyncComponent(() => import('../Wallet/index'))}
+        />
+        <Route
+          exact
+          path={`${url}/activities`}
+          component={asyncComponent(() => import('../Activities/index'))}
         />
       </Switch>
     );

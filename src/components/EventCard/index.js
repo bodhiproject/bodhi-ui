@@ -11,9 +11,9 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
-import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
+import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
-class DashboardCard extends React.PureComponent {
+class EventCard extends React.PureComponent {
   render() {
     const {
       classes,
@@ -29,14 +29,14 @@ class DashboardCard extends React.PureComponent {
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
           <Card>
-            <div className={classNames(classes.dashboardCardSection, 'top')}>
-              <Typography variant="headline" className={classes.dashboardCardName}>
+            <div className={classNames(classes.eventCardSection, 'top')}>
+              <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
                 {endTime !== undefined ? `Ends: ${getLocalDateTimeString(endTime)}` : null}
               </div>
-              <div className={classes.dashboardCardInfo}>
+              <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-coin')}></i>
                   {`Rasied ${parseFloat(totalQTUM.toFixed(2))} QTUM`}
@@ -49,7 +49,7 @@ class DashboardCard extends React.PureComponent {
               </div>
             </div>
             <Divider />
-            <div className={classNames(classes.dashboardCardSection, 'button')}>
+            <div className={classNames(classes.eventCardSection, 'button')}>
               {buttonText}
             </div>
           </Card>
@@ -59,7 +59,7 @@ class DashboardCard extends React.PureComponent {
   }
 }
 
-DashboardCard.propTypes = {
+EventCard.propTypes = {
   classes: PropTypes.object.isRequired,
   url: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -69,9 +69,9 @@ DashboardCard.propTypes = {
   buttonText: PropTypes.string.isRequired,
 };
 
-DashboardCard.defaultProps = {
+EventCard.defaultProps = {
   totalBOT: undefined,
   endTime: undefined,
 };
 
-export default withStyles(styles, { withTheme: true })(injectIntl(DashboardCard));
+export default withStyles(styles, { withTheme: true })(injectIntl(EventCard));

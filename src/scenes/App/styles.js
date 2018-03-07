@@ -3,7 +3,7 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   container: {
-    padding: `100px ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
+    padding: `${theme.sizes.navHeight} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
 
     [theme.breakpoints.up('xs')]: {
       margin: theme.padding.sm.px,
