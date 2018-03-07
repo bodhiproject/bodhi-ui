@@ -43,7 +43,7 @@ class WalletHistory extends React.Component {
       <Paper className={classes.txHistoryPaper}>
         <Grid container spacing={0} className={classes.txHistoryGridContainer}>
           <Typography variant="title">
-            <FormattedMessage id="walletHistory.transactionHistory" default="Transaction History" />
+            <FormattedMessage id="walletHistory.transferHistory" default="Transaction History" />
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}

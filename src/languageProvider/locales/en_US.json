@@ -70,6 +70,7 @@
   "dashboard.resultSetend": "Result setting ends",
   "dashboard.voteEnd": "Voting ends",
   "dashboard.voteEnded": "Voting ended",
+  "eventHistory.viewEvent": "View Event",
   "language.select": "中文",
   "navBar.activities": "My Activities",
   "oracle.consensus": "Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.",
@@ -105,5 +106,8 @@
   "transactionSentDialog.failureMsg": "Oops, something went wrong",
   "transactionSentDialog.successMsg": "Success",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
-  "withdrawDialog.youCanWithdraw": "You can withdraw up to:"
+  "walletHistory.transferHistory": "Transfer History",
+  "withdrawDialog.title": "Withdraw QTUM/BOT",
+  "withdrawDialog.youCanWithdraw": "You can withdraw up to:",
+  "withdrawDialog.send": "Send"
 }
