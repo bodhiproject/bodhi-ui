@@ -117,6 +117,7 @@
   "transactionSentDialog.failureMsg": "Oops, something went wrong",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
   "walletHistory.transactionHistory": "Transaction History",
+  "eventHistory.viewEvent": "View Event",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:",
   "withdrawDialog.send": "Send"

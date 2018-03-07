@@ -45,6 +45,7 @@ const paddingMd = spaceUnit * 5; // 40
 const paddingLg = spaceUnit * 7; // 56
 
 const navHeight = 70;
+const tableHeaderHeight = 40;
 
 const px = function (value) {
   return value.toString().concat('px');
@@ -178,6 +179,27 @@ const bodhiTheme = createMuiTheme({
         textTransform: 'none !important',
       },
     },
+    MuiTable: {
+      root: {
+        background: white,
+        border: 'solid 1px '.concat(borderColor),
+      },
+    },
+    MuiTableRow: {
+      typeHead: {
+        height: tableHeaderHeight,
+        background: borderColor,
+      },
+    },
+    MuiTableCell: {
+      typeBody: {
+        color: textColorGrey,
+      },
+      typeHead: {
+        fontWeight: 700,
+        fontSize: px(fontSizeMeta),
+      },
+    },
   },
   /* additional variables */
   padding: {
@@ -215,7 +237,7 @@ const bodhiTheme = createMuiTheme({
     },
     table: {
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
-      headerHeight: 40,
+      headerHeight: tableHeaderHeight,
     },
     navHeight: px(navHeight),
   },

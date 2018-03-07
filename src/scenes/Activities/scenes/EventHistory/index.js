@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
@@ -48,30 +49,25 @@ class EventHistory extends React.Component {
       this.executeTxsRequest();
     }
 
-    console.log(getTransactionsReturn);
-
     this.setState({ transactions: getTransactionsReturn });
   }
 
   render() {
-    const { classes } = this.props;
     const { transactions } = this.state;
 
     return (
-      <Paper className={classes.txHistoryPaper}>
-        <Grid container spacing={0} className={classes.txHistoryGridContainer}>
-          {
-            transactions.length ?
-              (<Table className={classes.table}>
-                {this.getTableHeader()}
-                {this.getTableRows(this.state.transactions)}
-              </Table>) :
-              (<Typography variant="body1">
-                You do not have any transactions right now.
-              </Typography>)
-          }
-        </Grid>
-      </Paper>
+      <Grid container spacing={0}>
+        {
+          transactions.length ?
+            (<Table>
+              {this.getTableHeader()}
+              {this.getTableRows(this.state.transactions)}
+            </Table>) :
+            (<Typography variant="body1">
+              You do not have any transactions right now.
+            </Typography>)
+        }
+      </Grid>
     );
   }
 
@@ -80,7 +76,6 @@ class EventHistory extends React.Component {
   }
 
   getTableHeader() {
-    const { classes } = this.props;
     const { order, orderBy } = this.state;
 
     const headerCols = [
@@ -136,7 +131,7 @@ class EventHistory extends React.Component {
 
     return (
       <TableHead>
-        <TableRow className={classes.tableHeader}>
+        <TableRow>
           {headerCols.map((column) => (
             <TableCell
               key={column.id}
@@ -153,9 +148,7 @@ class EventHistory extends React.Component {
                   direction={order}
                   onClick={this.createSortHandler(column.id)}
                 >
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id={column.name} default={column.nameDefault} />
-                  </Typography>
+                  <FormattedMessage id={column.name} default={column.nameDefault} />
                 </TableSortLabel>
               </Tooltip>
             </TableCell>
@@ -170,49 +163,33 @@ class EventHistory extends React.Component {
 
     return (
       <TableBody>
-        {transactions.map((transaction) => (
+        {_.map(transactions, (transaction, index) => (
           transaction.topic ?
-            <TableRow key={transaction.txid} className={classes.tableRow}>
+            <TableRow key={transaction.txid} selected={index % 2 === 1}>
               <TableCell>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {getShortLocalDateTimeString(transaction.createdTime)}
-                </Typography>
+                {getShortLocalDateTimeString(transaction.createdTime)}
               </TableCell>
               <TableCell>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.type}
-                </Typography>
+                {transaction.type}
               </TableCell>
               <TableCell>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.topic ? transaction.topic.name : null}
-                </Typography>
+                {transaction.topic ? transaction.topic.name : null}
               </TableCell>
               <TableCell>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.token}
-                </Typography>
+                {transaction.token}
               </TableCell>
               <TableCell numeric>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.amount}
-                </Typography>
+                {transaction.amount}
               </TableCell>
               <TableCell numeric>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.fee}
-                </Typography>
+                {transaction.fee}
               </TableCell>
               <TableCell>
-                <Typography variant="body1" className={classes.tableRowCell}>
-                  {transaction.status}
-                </Typography>
+                {transaction.status}
               </TableCell>
               <TableCell>
-                <Link to="/">
-                  <Typography variant="body1" className={classes.tableRowCell}>
-                    {transaction.status}
-                  </Typography>
+                <Link to={this.getEventURL(transaction.topic.address, transaction.oracleAddress)} className={classes.viewEventLink}>
+                  <FormattedMessage id="eventHistory.viewEvent" default="View Event" />
                 </Link>
               </TableCell>
             </TableRow> : null
@@ -238,6 +215,11 @@ class EventHistory extends React.Component {
       : this.state.transactions.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
     this.setState({ transactions, order, orderBy });
+  }
+
+  getEventURL(topicAddress, oracleAddress) {
+    // TODO: NEED TO REROUTE TO TOPIC PAGE IS ITS IN WITHDRAW STATUS
+    return `/oracle/${topicAddress}/${oracleAddress}`;
   }
 }
 
