@@ -34,7 +34,7 @@ export function decimalToSatoshi(number) {
  * @param  {[type]}
  * @return {[type]}
  */
-export function convertBNHexStrToQtum(input) {
+export function satoshiToDecimal(input) {
   const bigNumber = new BN(input, 16);
   const botoshi = new BN(SATOSHI_CONVERSION);
 

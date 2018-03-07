@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphQuery';
-import { convertBNHexStrToQtum } from '../../helpers/utility';
+import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
 const DEFAULT_QTUMD_ACCOUNTNAME = '';
@@ -73,7 +73,7 @@ export function* getBotBalanceRequestHandler() {
 
       const result = yield call(request, Routes.botBalance, options);
       // Convert BN hex string from request to BOT number
-      const botValue = result && result.balance ? convertBNHexStrToQtum(result.balance) : 0;
+      const botValue = result && result.balance ? satoshiToDecimal(result.balance) : 0;
 
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,

@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { convertBNHexStrToQtum, decimalToSatoshi } from '../../helpers/utility';
+import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -41,8 +41,8 @@ function processTopic(topic) {
   }
 
   const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
-  newTopic.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
+  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
   newTopic.oracles = _.map(topic.oracles, processOracle);
   return newTopic;
 }
@@ -73,8 +73,8 @@ function processOracle(oracle) {
   }
 
   const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
-  newOracle.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
+  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
+  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
 
