@@ -41,6 +41,11 @@ class AppRouter extends React.Component {
           path={`${url}/my-wallet`}
           component={asyncComponent(() => import('../Wallet/index'))}
         />
+        <Route
+          exact
+          path={`${url}/activities`}
+          component={asyncComponent(() => import('../Activities/index'))}
+        />
       </Switch>
     );
   }

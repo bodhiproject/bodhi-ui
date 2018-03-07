@@ -161,6 +161,12 @@ const bodhiTheme = createMuiTheme({
         wordWrap: 'break-word',
       },
     },
+    MuiTab: {
+      label: {
+        fontSize: fontSizeTextSm,
+        textTransform: 'none !important',
+      },
+    },
   },
   /* additional variables */
   padding: {
