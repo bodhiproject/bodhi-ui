@@ -14,6 +14,18 @@ module.exports = {
     Withdraw: 'WITHDRAW',
   },
 
+  TransactionType: {
+    CreateEvent: 'CREATEEVENT',
+    Bet: 'BET',
+    ApproveSetResult: 'APPROVESETRESULT',
+    SetResult: 'SETRESULT',
+    ApproveVote: 'APPROVEVOTE',
+    Vote: 'VOTE',
+    FinalizeResult: 'FINALIZERESULT',
+    Withdraw: 'WITHDRAW',
+    Transfer: 'TRANSFER',
+  },
+
   SortBy: {
     Ascending: 'ASC',
     Descending: 'DESC',
