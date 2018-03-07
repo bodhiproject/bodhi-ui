@@ -72,7 +72,6 @@ export function* getBotBalanceRequestHandler() {
       };
 
       const result = yield call(request, Routes.botBalance, options);
-      // Convert BN hex string from request to BOT number
       const botValue = result && result.balance ? satoshiHexToDecimal(result.balance) : 0;
 
       yield put({

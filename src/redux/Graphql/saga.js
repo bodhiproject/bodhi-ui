@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { satoshiHexToDecimal, decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal, satoshiHexToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token } from '../../constants';
 
 // Send allTopics query

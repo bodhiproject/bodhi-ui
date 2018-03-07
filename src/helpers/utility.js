@@ -42,6 +42,16 @@ export function satoshiToDecimal(number) {
 }
 
 /**
+ * Converts Satoshi/Botoshi hex string to a decimal number.
+ * @param hexNumber {String} The Satoshi/Botoshi hex string to convert.
+ * @return {Number} The converted decimal number.
+ */
+export function satoshiHexToDecimal(hexNumber) {
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  return new BigNumber(hexNumber, 16).dividedBy(conversionBN).toNumber();
+}
+
+/**
  * Converts the gas number to QTUM cost.
  * @param gas {Number} The gas number to convert.
  * @return {Number} The gas amount represented as QTUM.
@@ -53,25 +63,6 @@ export function gasToQtum(gas) {
 
   const gasCostBN = new BigNumber(GAS_COST);
   return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
-}
-
-/**
- * Convert a BigNumber to ES6 Int (2^53 max == 9 007 199 254 740 992) and divide it by 10^8
- * If result number is too small (less than 0.01) we return 0
- * @param  {[type]}
- * @return {[type]}
- */
-export function satoshiHexToDecimal(input) {
-  const bigNumber = new BN(input, 16);
-  const botoshi = new BN(SATOSHI_CONVERSION);
-
-  const integer = bigNumber.div(botoshi).toNumber();
-  const decimal = bigNumber.mod(botoshi).toNumber();
-  const result = integer + (decimal / SATOSHI_CONVERSION);
-
-  // if (input !== '0') { console.log(`${input} to ${result}`); }
-
-  return result >= BOT_MIN_VALUE ? result : 0;
 }
 
 /*

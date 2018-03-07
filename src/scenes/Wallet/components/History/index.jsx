@@ -38,7 +38,6 @@ class WalletHistory extends React.Component {
 
   render() {
     const { classes, getTransactionsReturn } = this.props;
-    console.log(getTransactionsReturn);
 
     return (
       <Paper className={classes.txHistoryPaper}>
