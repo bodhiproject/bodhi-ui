@@ -50,11 +50,12 @@ const graphqlActions = {
 
   CREATE_BET_TX: 'CREATE_BET_TX',
   CREATE_BET_TX_RETURN: 'CREATE_BET_TX_RETURN',
-  createBetTx: (version, contractAddress, index, amount, senderAddress) => ({
+  createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) => ({
     type: graphqlActions.CREATE_BET_TX,
     params: {
       version,
-      contractAddress,
+      topicAddress,
+      oracleAddress,
       index,
       amount,
       senderAddress,
