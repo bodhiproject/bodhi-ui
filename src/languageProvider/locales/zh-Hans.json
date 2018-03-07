@@ -106,6 +106,7 @@
   "str.token": "币种",
   "str.fee": "费用",
   "str.status": "状态",
+  "str.emptyTxHistory": "目前没有交易历史.",
   "topbar.betting": "投注",
   "topbar.completed": "完成",
   "topbar.create": "创建事件",

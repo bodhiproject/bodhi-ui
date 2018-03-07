@@ -16,6 +16,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { TransactionType } from '../../../../constants';
 
 class EventHistory extends React.Component {
   constructor(props) {
@@ -64,7 +65,7 @@ class EventHistory extends React.Component {
               {this.getTableRows(this.state.transactions)}
             </Table>) :
             (<Typography variant="body1">
-              You do not have any transactions right now.
+              <FormattedMessage id="str.emptyTxHistory" default="You do not have any transactions right now." />
             </Typography>)
         }
       </Grid>
@@ -72,7 +73,19 @@ class EventHistory extends React.Component {
   }
 
   executeTxsRequest() {
-    this.props.getTransactions([], undefined);
+    this.props.getTransactions(
+      [
+        { type: TransactionType.CreateEvent },
+        { type: TransactionType.Bet },
+        { type: TransactionType.ApproveSetResult },
+        { type: TransactionType.SetResult },
+        { type: TransactionType.ApproveVote },
+        { type: TransactionType.Vote },
+        { type: TransactionType.FinalizeResult },
+        { type: TransactionType.Withdraw },
+      ],
+      undefined
+    );
   }
 
   getTableHeader() {
@@ -164,35 +177,36 @@ class EventHistory extends React.Component {
     return (
       <TableBody>
         {_.map(transactions, (transaction, index) => (
-          transaction.topic ?
-            <TableRow key={transaction.txid} selected={index % 2 === 1}>
-              <TableCell>
-                {getShortLocalDateTimeString(transaction.createdTime)}
-              </TableCell>
-              <TableCell>
-                {transaction.type}
-              </TableCell>
-              <TableCell>
-                {transaction.topic ? transaction.topic.name : null}
-              </TableCell>
-              <TableCell>
-                {transaction.token}
-              </TableCell>
-              <TableCell numeric>
-                {transaction.amount}
-              </TableCell>
-              <TableCell numeric>
-                {transaction.fee}
-              </TableCell>
-              <TableCell>
-                {transaction.status}
-              </TableCell>
-              <TableCell>
+          <TableRow key={transaction.txid} selected={index % 2 === 1}>
+            <TableCell>
+              {getShortLocalDateTimeString(transaction.createdTime)}
+            </TableCell>
+            <TableCell>
+              {transaction.type}
+            </TableCell>
+            <TableCell>
+              {transaction.topic ? transaction.topic.name : null}
+            </TableCell>
+            <TableCell>
+              {transaction.token}
+            </TableCell>
+            <TableCell numeric>
+              {transaction.amount}
+            </TableCell>
+            <TableCell numeric>
+              {transaction.fee}
+            </TableCell>
+            <TableCell>
+              {transaction.status}
+            </TableCell>
+            <TableCell>
+              {transaction.topic ?
                 <Link to={this.getEventURL(transaction.topic.address, transaction.oracleAddress)} className={classes.viewEventLink}>
                   <FormattedMessage id="eventHistory.viewEvent" default="View Event" />
-                </Link>
-              </TableCell>
-            </TableRow> : null
+                </Link> : null
+              }
+            </TableCell>
+          </TableRow>
         ))}
       </TableBody>
     );
@@ -218,6 +232,10 @@ class EventHistory extends React.Component {
   }
 
   getEventURL(topicAddress, oracleAddress) {
+    if (!oracleAddress) {
+      return `/topic/${topicAddress}`;
+    }
+
     // TODO: NEED TO REROUTE TO TOPIC PAGE IS ITS IN WITHDRAW STATUS
     return `/oracle/${topicAddress}/${oracleAddress}`;
   }

@@ -106,6 +106,7 @@
   "str.token": "Token",
   "str.fee": "Fee",
   "str.status": "Status",
+  "str.emptyTxHistory": "You do not have any transactions right now.",
   "topbar.betting": "Betting",
   "topbar.completed": "Completed",
   "topbar.create": "Create an Event",
