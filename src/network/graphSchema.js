@@ -91,7 +91,6 @@ const TYPE_DEF = {
 const MUTATIONS = {
   createTopic: {
     mapping: [
-      'senderAddress',
       'name',
       'options',
       'resultSetterAddress',
@@ -99,6 +98,7 @@ const MUTATIONS = {
       'bettingEndTime',
       'resultSettingStartTime',
       'resultSettingEndTime',
+      'senderAddress',
     ],
     return: `
       txid

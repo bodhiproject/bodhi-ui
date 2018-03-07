@@ -16,7 +16,7 @@ class GraphMutation {
     let mappingStr = '';
     _.each(this.schema.mapping, (key) => {
       const value = this.args[key];
-      if (isValidEnum(key, value) || !_.isString(value)) {
+      if (isValidEnum(key, value) || _.isFinite(value)) {
         // Enums require values without quotes
         mappingStr = mappingStr.concat(`${key}: ${value}\n`);
       } else {
