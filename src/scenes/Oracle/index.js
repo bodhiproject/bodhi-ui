@@ -16,6 +16,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
+import PredictionTxHistory from './components/PredictionTxHistory/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import stateActions from '../../redux/State/actions';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -36,6 +37,7 @@ const messages = defineMessages({
     defaultMessage: 'Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.',
   },
 });
+
 class OraclePage extends React.Component {
   constructor(props) {
     super(props);
@@ -44,14 +46,15 @@ class OraclePage extends React.Component {
       topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
       oracle: undefined,
+      transactions: [],
       config: undefined,
-      voteAmount: undefined,
+      voteAmount: 0,
       currentWalletIdx: this.props.walletAddrsIndex,
       currentOptionIdx: -1,
     };
 
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.executeOraclesRequest = this.executeOraclesRequest.bind(this);
+    this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -63,21 +66,23 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.executeOraclesRequest();
+    this.executeOracleAndTxsRequest();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       getOraclesReturn,
+      getTransactionsReturn,
       syncBlockTime,
     } = nextProps;
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
-      this.executeOraclesRequest();
+      this.executeOracleAndTxsRequest();
     }
 
     this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
+    this.setState({ transactions: getTransactionsReturn });
   }
 
   componentWillUnmount() {
@@ -86,7 +91,7 @@ class OraclePage extends React.Component {
 
   render() {
     const { classes, txReturn } = this.props;
-    const { oracle, config } = this.state;
+    const { oracle, transactions, config } = this.state;
 
     if (!oracle || !config) {
       // Don't render anything if page is loading.
@@ -132,6 +137,7 @@ class OraclePage extends React.Component {
                 disabled={
                   (config.predictionAction.btnDisabled ||
                   this.state.currentOptionIdx === -1 ||
+                  ((this.state.voteAmount === 0 || Number.isNaN(this.state.voteAmount)) && config.predictionAction.showAmountInput) ||
                   this.state.isApproving) &&
                   !config.predictionAction.skipExpansion
                 }
@@ -144,6 +150,7 @@ class OraclePage extends React.Component {
                     config.predictionAction.btnText
                 }
               </Button>
+              <PredictionTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
@@ -230,9 +237,13 @@ class OraclePage extends React.Component {
     });
   }
 
-  executeOraclesRequest() {
+  executeOracleAndTxsRequest() {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
+    ], undefined);
+    // TODO (LIVIA): NEED TO TXS FOR THE ENTIRE TOPIC
+    this.props.getTransactions([
+      { oracleAddress: this.state.address },
     ], undefined);
   }
 
@@ -417,6 +428,8 @@ OraclePage.propTypes = {
   classes: PropTypes.object.isRequired,
   getOracles: PropTypes.func,
   getOraclesReturn: PropTypes.array,
+  getTransactions: PropTypes.func,
+  getTransactionsReturn: PropTypes.array,
   createBetTx: PropTypes.func,
   createSetResultTx: PropTypes.func,
   createVoteTx: PropTypes.func,
@@ -433,6 +446,8 @@ OraclePage.propTypes = {
 OraclePage.defaultProps = {
   getOracles: undefined,
   getOraclesReturn: [],
+  getTransactions: undefined,
+  getTransactionsReturn: [],
   createBetTx: undefined,
   createSetResultTx: undefined,
   createVoteTx: undefined,
@@ -449,12 +464,14 @@ const mapStateToProps = (state) => ({
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   syncBlockTime: state.App.get('syncBlockTime'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createBetTx: (version, contractAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
     createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
