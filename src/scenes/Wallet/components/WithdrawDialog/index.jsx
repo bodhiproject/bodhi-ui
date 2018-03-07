@@ -15,9 +15,8 @@ import _ from 'lodash';
 
 import styles from './styles';
 import graphqlActions from '../../../../redux/Graphql/actions';
-
-const ID_QTUM = 'QTUM';
-const ID_BOT = 'BOT';
+import { Token } from '../../../../constants';
+import { decimalToSatoshi } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   to: {
@@ -41,7 +40,7 @@ class WithdrawDialog extends React.Component {
     this.state = {
       toAddress: '',
       withdrawAmount: 0,
-      selectedToken: ID_QTUM,
+      selectedToken: Token.Qtum,
     };
 
     this.getFromToFields = this.getFromToFields.bind(this);
@@ -128,11 +127,11 @@ class WithdrawDialog extends React.Component {
 
     let withdrawLimit;
     switch (selectedToken) {
-      case ID_QTUM: {
+      case Token.Qtum: {
         withdrawLimit = qtumAmount;
         break;
       }
-      case ID_BOT: {
+      case Token.Bot: {
         withdrawLimit = botAmount;
         break;
       }
@@ -161,8 +160,8 @@ class WithdrawDialog extends React.Component {
             onChange={this.onTokenChange}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
-            <MenuItem value={ID_QTUM}>QTUM</MenuItem>
-            <MenuItem value={ID_BOT}>BOT</MenuItem>
+            <MenuItem value={Token.Qtum}>QTUM</MenuItem>
+            <MenuItem value={Token.Bot}>BOT</MenuItem>
           </Select>
         </div>
         <Typography variant="body1">
@@ -194,7 +193,12 @@ class WithdrawDialog extends React.Component {
     const { walletAddress, createTransferTx } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
-    createTransferTx(walletAddress, toAddress, selectedToken, withdrawAmount);
+    let amount = withdrawAmount;
+    if (selectedToken === Token.Bot) {
+      amount = decimalToSatoshi(withdrawAmount);
+    }
+
+    createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
   }
 }
