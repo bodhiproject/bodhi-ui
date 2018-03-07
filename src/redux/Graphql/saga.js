@@ -220,6 +220,7 @@ export function* createFinalizeResultTxHandler() {
       const tx = yield call(
         createFinalizeResultTx,
         action.params.version,
+        action.params.topicAddress,,
         action.params.oracleAddress,
         action.params.senderAddress,
       );

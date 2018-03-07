@@ -92,10 +92,11 @@ const graphqlActions = {
 
   CREATE_FINALIZE_RESULT_TX: 'CREATE_FINALIZE_RESULT_TX',
   CREATE_FINALIZE_RESULT_TX_RETURN: 'CREATE_FINALIZE_RESULT_TX_RETURN',
-  createFinalizeResultTx: (version, oracleAddress, senderAddress) => ({
+  createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) => ({
     type: graphqlActions.CREATE_FINALIZE_RESULT_TX,
     params: {
       version,
+      topicAddress,
       oracleAddress,
       senderAddress,
     },

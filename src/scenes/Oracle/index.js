@@ -426,7 +426,7 @@ class OraclePage extends React.Component {
     const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    createFinalizeResultTx(oracle.version, oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -492,8 +492,8 @@ function mapDispatchToProps(dispatch) {
       )),
     createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-    createFinalizeResultTx: (version, oracleAddress, senderAddress) =>
-      dispatch(graphqlActions.createFinalizeResultTx(version, oracleAddress, senderAddress)),
+    createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
+      dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
