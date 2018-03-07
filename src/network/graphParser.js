@@ -73,6 +73,7 @@ class GraphParser {
       optionIdx: entry.optionIdx,
       token: entry.token,
       amount: entry.amount,
+      topic: entry.topic,
     }));
   }
 }

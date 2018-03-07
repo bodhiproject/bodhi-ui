@@ -81,6 +81,10 @@ const TYPE_DEF = {
     optionIdx
     token
     amount
+    topic {
+      address
+      name
+    }
   `,
 };
 
