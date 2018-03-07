@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
+import { convertBNHexStrToQtum, decimalToSatoshi } from '../../helpers/utility';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -158,7 +158,7 @@ export function* createSetResultTxHandler() {
   yield takeEvery(actions.CREATE_SET_RESULT_TX, function* createSetResultTxRequest(action) {
     try {
       // Convert consensus threshold amount to Botoshi
-      const botoshi = decimalToBotoshi(action.params.consensusThreshold);
+      const botoshi = decimalToSatoshi(action.params.consensusThreshold);
 
       const tx = yield call(
         createSetResultTx,
@@ -188,7 +188,7 @@ export function* createVoteTxHandler() {
   yield takeEvery(actions.CREATE_VOTE_TX, function* createVoteTxRequest(action) {
     try {
       // Convert vote amount to Botoshi
-      const botoshi = decimalToBotoshi(action.params.botAmount);
+      const botoshi = decimalToSatoshi(action.params.botAmount);
 
       const tx = yield call(
         createVoteTx,

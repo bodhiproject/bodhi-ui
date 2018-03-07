@@ -1,9 +1,8 @@
 import BN from 'bn.js';
 import moment from 'moment';
 
-const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
-const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
-const BOT_DECIMALS = 8;
+const SATOSHI_CONVERSION = 10 ** 8;
+const BOT_MIN_VALUE = 0.01;
 const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
@@ -20,6 +19,16 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
 }
 
 /**
+ * Converts a decimal number to Satoshi/Botoshi 10^8.
+ * @param number {String/Number} The decimal number to convert.
+ * @return {String} The converted number.
+ */
+export function decimalToSatoshi(number) {
+  const conversionBN = new BN(SATOSHI_CONVERSION);
+  return new BN(number).mul(conversionBN).toString(10);
+}
+
+/**
  * Convert a BigNumber to ES6 Int (2^53 max == 9 007 199 254 740 992) and divide it by 10^8
  * If result number is too small (less than 0.01) we return 0
  * @param  {[type]}
@@ -27,25 +36,15 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
  */
 export function convertBNHexStrToQtum(input) {
   const bigNumber = new BN(input, 16);
-  const botoshi = new BN(BOTOSHI_TO_BOT);
+  const botoshi = new BN(SATOSHI_CONVERSION);
 
   const integer = bigNumber.div(botoshi).toNumber();
   const decimal = bigNumber.mod(botoshi).toNumber();
-  const result = integer + (decimal / BOTOSHI_TO_BOT);
+  const result = integer + (decimal / SATOSHI_CONVERSION);
 
   // if (input !== '0') { console.log(`${input} to ${result}`); }
 
   return result >= BOT_MIN_VALUE ? result : 0;
-}
-
-/*
-* Converts a decimal number to Botoshi expressed as a String.
-* @dev To be able to handle numbers bigger than JS Ints 2^53, we express it as a String.
-* @param {Number} Decimal format number to convert.
-* @return {String} Converted number to Botoshi.
-*/
-export function decimalToBotoshi(decimalNum) {
-  return (decimalNum * BOTOSHI_TO_BOT).toString();
 }
 
 /*

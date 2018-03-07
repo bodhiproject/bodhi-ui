@@ -13,7 +13,7 @@ import moment from 'moment';
 import styles from './styles';
 import { TransactionType } from '../../../../constants';
 import Config from '../../../../config/app';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
 class WalletHistory extends React.Component {
