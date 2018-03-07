@@ -3,10 +3,30 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import { EventStatus } from '../../constants';
 import styles from './styles';
+
+const messages = defineMessages({
+  set: {
+    id: 'activitiesTab.Set',
+    defaultMessage: 'Result Setting',
+  },
+  finalize: {
+    id: 'activitiesTab.Finalize',
+    defaultMessage: 'Finalize',
+  },
+  withdraw: {
+    id: 'activitiesTab.Withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  history: {
+    id: 'activitiesTab.History',
+    defaultMessage: 'Activities History',
+  },
+});
 
 class Activities extends React.Component {
   constructor(props) {
@@ -26,10 +46,10 @@ class Activities extends React.Component {
     return (
       <div>
         <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label="Result Setting" />
-          <Tab label="Finalize" />
-          <Tab label="Withdraw" />
-          <Tab label="Activities History" />
+          <Tab label={this.props.intl.formatMessage(messages.set)} />
+          <Tab label={this.props.intl.formatMessage(messages.finalize)} />
+          <Tab label={this.props.intl.formatMessage(messages.withdraw)} />
+          <Tab label={this.props.intl.formatMessage(messages.history)} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
@@ -48,6 +68,8 @@ class Activities extends React.Component {
 
 Activities.propTypes = {
   classes: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(Activities);
+export default injectIntl(withStyles(styles, { withTheme: true })(Activities));

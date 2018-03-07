@@ -36,6 +36,7 @@ const messages = defineMessages({
     defaultMessage: 'Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.',
   },
 });
+
 class OraclePage extends React.Component {
   constructor(props) {
     super(props);

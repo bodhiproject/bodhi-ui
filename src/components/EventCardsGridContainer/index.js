@@ -18,50 +18,6 @@ import EventsEmptyBg from '../EventsEmptyBg/index';
 import styles from './styles';
 
 const messages = defineMessages({
-  Bet: {
-    id: 'dashboard.Bet',
-    defaultMessage: 'Bet',
-  },
-  Set: {
-    id: 'dashboard.Set',
-    defaultMessage: 'Set',
-  },
-  Vote: {
-    id: 'dashboard.Vote',
-    defaultMessage: 'Vote',
-  },
-  Finalize: {
-    id: 'dashboard.Finalize',
-    defaultMessage: 'Finalize',
-  },
-  Withdraw: {
-    id: 'dashboard.Withdraw',
-    defaultMessage: 'Withdraw',
-  },
-  betend: {
-    id: 'dashboard.betend',
-    defaultMessage: 'Betting ends',
-  },
-  resultsetend: {
-    id: 'dashboard.resultsetend',
-    defaultMessage: 'Result setting ends',
-  },
-  voteend: {
-    id: 'dashboard.voteend',
-    defaultMessage: 'Voting ends',
-  },
-  voteended: {
-    id: 'dashboard.voteended',
-    defaultMessage: 'Voting ended',
-  },
-  raise: {
-    id: 'str.raise',
-    defaultMessage: 'Raised',
-  },
-  end: {
-    id: 'str.end',
-    defaultMessage: 'Ended',
-  },
   pbet: {
     id: 'bottombutton.placebet',
     defaultMessage: 'Place Bet',
