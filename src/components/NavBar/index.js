@@ -7,7 +7,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Badge from 'material-ui/Badge';
 import Button from 'material-ui/Button';
 import AccountBalanceWalletIcon from 'material-ui-icons/AccountBalanceWallet';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 
 import NavEventsButtons from './components/NavEventsButtons/index';
@@ -48,7 +48,7 @@ class NavBar extends React.PureComponent {
               </Button>
             </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
-              <FormattedMessage id="language.select" />
+              <FormattedMessage id="language.select" defaultMessage="中文" />
             </Button>
             {this.renderActivitiesButtonWithBadge()}
           </div>

@@ -18,21 +18,25 @@ import EventsEmptyBg from '../EventsEmptyBg/index';
 import styles from './styles';
 
 const messages = defineMessages({
-  pbet: {
+  pBet: {
     id: 'bottomButtonText.placeBet',
     defaultMessage: 'Place Bet',
   },
-  pset: {
+  pSet: {
     id: 'bottomButtonText.setResult',
     defaultMessage: 'Set Result',
   },
-  pvote: {
+  pVote: {
     id: 'bottomButtonText.vote',
     defaultMessage: 'Place Vote',
   },
-  pfinal: {
+  pFinal: {
     id: 'bottomButtonText.final',
     defaultMessage: 'Finalize Result',
+  },
+  pWithdraw: {
+    id: 'bottomButtonText.withdraw',
+    defaultMessage: 'Withdraw',
   },
 });
 
@@ -168,19 +172,19 @@ class EventCardsGrid extends React.Component {
       let buttonText;
       switch (eventStatusIndex) {
         case EventStatus.Bet: {
-          buttonText = this.props.intl.formatMessage(messages.pbet);
+          buttonText = this.props.intl.formatMessage(messages.pBet);
           break;
         }
         case EventStatus.Set: {
-          buttonText = this.props.intl.formatMessage(messages.pset);
+          buttonText = this.props.intl.formatMessage(messages.pSet);
           break;
         }
         case EventStatus.Vote: {
-          buttonText = this.props.intl.formatMessage(messages.pvote);
+          buttonText = this.props.intl.formatMessage(messages.pVote);
           break;
         }
         case EventStatus.Finalize: {
-          buttonText = this.props.intl.formatMessage(messages.pfinal);
+          buttonText = this.props.intl.formatMessage(messages.pFinal);
           break;
         }
         default: {
@@ -223,7 +227,7 @@ class EventCardsGrid extends React.Component {
           url={`/topic/${topic.address}`}
           totalQTUM={totalQTUM}
           totalBOT={totalBOT}
-          buttonText={this.props.intl.formatMessage({ id: 'bottomButtonText.withdraw' })}
+          buttonText={this.props.intl.formatMessage(messages.pWithdraw)}
         />
       );
 
