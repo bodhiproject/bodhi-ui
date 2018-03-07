@@ -232,7 +232,11 @@ class EventHistory extends React.Component {
   }
 
   getEventURL(topicAddress, oracleAddress) {
-    if (!oracleAddress) {
+    if (_.isEmpty(topicAddress)) {
+      return null;
+    }
+
+    if (_.isEmpty(oracleAddress)) {
       return `/topic/${topicAddress}`;
     }
 
