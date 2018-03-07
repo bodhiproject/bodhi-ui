@@ -113,6 +113,7 @@ const MUTATIONS = {
   createBet: {
     mapping: [
       'version',
+      'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
@@ -181,6 +182,7 @@ const MUTATIONS = {
   finalizeResult: {
     mapping: [
       'version',
+      'topicAddress',
       'oracleAddress',
       'senderAddress',
     ],

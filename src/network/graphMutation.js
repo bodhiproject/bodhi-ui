@@ -119,9 +119,9 @@ export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, am
 export function createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress) {
   const args = {
     version,
-    senderAddress,
     topicAddress,
     oracleAddress,
+    senderAddress,
   };
 
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
