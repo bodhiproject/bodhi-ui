@@ -31,7 +31,7 @@ class PredictionTxHistory extends React.PureComponent {
               </TableHead>
               <TableBody>
                 {_.map(transactions, (transaction, index) => (
-                  <TableRow key={transaction.txid} selected={index % 2 === 0}>
+                  <TableRow key={transaction.txid} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
                     <TableCell padding="dense">{transaction.type}</TableCell>
                     <TableCell padding="dense">{`#${transaction.optionIdx} ${options[transaction.optionIdx - 1]}`}</TableCell>

@@ -165,7 +165,7 @@ class MyBalances extends React.PureComponent {
       },
       {
         id: 'actions',
-        name: 'myBalances.actions',
+        name: 'str.actions',
         nameDefault: 'Actions',
         numeric: false,
         sortable: false,

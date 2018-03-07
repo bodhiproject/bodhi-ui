@@ -6,6 +6,7 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
+import EventHistory from './scenes/EventHistory/index';
 import { EventStatus } from '../../constants';
 import styles from './styles';
 
@@ -55,7 +56,7 @@ class Activities extends React.Component {
           {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
           {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
           {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === 3 && <div>Activities history</div>}
+          {tabIdx === 3 && <EventHistory />}
         </div>
       </div>
     );

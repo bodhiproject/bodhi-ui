@@ -68,7 +68,6 @@ class WalletHistory extends React.Component {
     };
 
     this.getTableHeader = this.getTableHeader.bind(this);
-    this.getTableRows = this.getTableRows.bind(this);
     this.createSortHandler = this.createSortHandler.bind(this);
     this.handleSorting = this.handleSorting.bind(this);
   }
@@ -99,13 +98,12 @@ class WalletHistory extends React.Component {
   }
 
   getTableHeader() {
-    const { classes } = this.props;
     const { order, orderBy } = this.state;
 
     const headerCols = [
       {
         id: 'time',
-        name: 'walletHistory.time',
+        name: 'str.time',
         nameDefault: 'Time',
         numeric: false,
       },
@@ -123,7 +121,7 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'token',
-        name: 'walletHistory.token',
+        name: 'str.token',
         nameDefault: 'Token',
         numeric: false,
       },
@@ -135,13 +133,13 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'fee',
-        name: 'walletHistory.fee',
+        name: 'str.fee',
         nameDefault: 'Fee',
         numeric: true,
       },
       {
         id: 'status',
-        name: 'walletHistory.status',
+        name: 'str.status',
         nameDefault: 'Status',
         numeric: false,
       },
@@ -149,7 +147,7 @@ class WalletHistory extends React.Component {
 
     return (
       <TableHead>
-        <TableRow className={classes.tableHeader}>
+        <TableRow>
           {headerCols.map((column) => (
             <TableCell
               key={column.id}
@@ -166,9 +164,7 @@ class WalletHistory extends React.Component {
                   direction={order}
                   onClick={this.createSortHandler(column.id)}
                 >
-                  <Typography variant="body1" className={classes.tableHeaderItemText}>
-                    <FormattedMessage id={column.name} default={column.nameDefault} />
-                  </Typography>
+                  <FormattedMessage id={column.name} default={column.nameDefault} />
                 </TableSortLabel>
               </Tooltip>
             </TableCell>
@@ -198,46 +194,30 @@ class WalletHistory extends React.Component {
   }
 
   getTableRows(data) {
-    const { classes } = this.props;
-
     return (
       <TableBody>
         {data.map((item) => (
-          <TableRow key={item.txid} className={classes.tableRow}>
+          <TableRow key={item.txid}>
             <TableCell>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {getShortLocalDateTimeString(item.time)}
-              </Typography>
+              {getShortLocalDateTimeString(item.time)}
             </TableCell>
             <TableCell>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.from}
-              </Typography>
+              {item.from}
             </TableCell>
             <TableCell>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.to}
-              </Typography>
+              {item.to}
             </TableCell>
             <TableCell>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.token}
-              </Typography>
+              {item.token}
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.amount}
-              </Typography>
+              {item.amount}
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.fee}
-              </Typography>
+              {item.fee}
             </TableCell>
             <TableCell>
-              <Typography variant="body1" className={classes.tableRowCell}>
-                {item.status}
-              </Typography>
+              {item.status}
             </TableCell>
           </TableRow>
         ))}
