@@ -26,6 +26,12 @@ module.exports = {
     Transfer: 'TRANSFER',
   },
 
+  TransactionStatus: {
+    Pending: 'PENDING',
+    Success: 'SUCCESS',
+    Fail: 'FAIL',
+  },
+
   SortBy: {
     Ascending: 'ASC',
     Descending: 'DESC',
