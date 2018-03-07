@@ -133,7 +133,8 @@ export function* createBetTxHandler() {
       const tx = yield call(
         createBetTx,
         action.params.version,
-        action.params.contractAddress,
+        action.params.topicAddress,
+        action.params.oracleAddress,
         action.params.index,
         action.params.amount,
         action.params.senderAddress,
@@ -219,6 +220,7 @@ export function* createFinalizeResultTxHandler() {
       const tx = yield call(
         createFinalizeResultTx,
         action.params.version,
+        action.params.topicAddress,
         action.params.oracleAddress,
         action.params.senderAddress,
       );

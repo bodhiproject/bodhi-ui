@@ -379,10 +379,17 @@ class OraclePage extends React.Component {
 
   bet(amount) {
     const { createBetTx } = this.props;
-    const { oracle, currentOptionIdx } = this.state;
+    const { topicAddress, oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
-    createBetTx(oracle.version, oracle.address, selectedIndex, amount.toString(), this.getCurrentWalletAddr());
+    createBetTx(
+      oracle.version,
+      topicAddress,
+      oracle.address,
+      selectedIndex,
+      amount.toString(),
+      this.getCurrentWalletAddr()
+    );
   }
 
   setResult() {
@@ -419,7 +426,7 @@ class OraclePage extends React.Component {
     const { createFinalizeResultTx } = this.props;
     const { oracle } = this.state;
 
-    createFinalizeResultTx(oracle.version, oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, this.getCurrentWalletAddr());
   }
 }
 
@@ -472,8 +479,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
-    createBetTx: (version, contractAddress, index, amount, senderAddress) =>
-      dispatch(graphqlActions.createBetTx(version, contractAddress, index, amount, senderAddress)),
+    createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
+      dispatch(graphqlActions.createBetTx(version, topicAddress, oracleAddress, index, amount, senderAddress)),
     createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
       dispatch(graphqlActions.createSetResultTx(
         version,
@@ -485,8 +492,8 @@ function mapDispatchToProps(dispatch) {
       )),
     createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-    createFinalizeResultTx: (version, oracleAddress, senderAddress) =>
-      dispatch(graphqlActions.createFinalizeResultTx(version, oracleAddress, senderAddress)),
+    createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
+      dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }

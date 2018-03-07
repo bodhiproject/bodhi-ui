@@ -77,9 +77,10 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createBetTx(version, oracleAddress, optionIdx, amount, senderAddress) {
+export function createBetTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,
+    topicAddress,
     oracleAddress,
     optionIdx,
     amount,
@@ -115,11 +116,12 @@ export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, am
   return new GraphMutation('createVote', args, TYPE.transaction).execute();
 }
 
-export function createFinalizeResultTx(version, oracleAddress, senderAddress) {
+export function createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress) {
   const args = {
     version,
-    senderAddress,
+    topicAddress,
     oracleAddress,
+    senderAddress,
   };
 
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
