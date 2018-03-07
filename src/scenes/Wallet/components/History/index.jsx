@@ -105,7 +105,7 @@ class WalletHistory extends React.Component {
     const headerCols = [
       {
         id: 'time',
-        name: 'walletHistory.time',
+        name: 'str.time',
         nameDefault: 'Time',
         numeric: false,
       },
@@ -123,7 +123,7 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'token',
-        name: 'walletHistory.token',
+        name: 'str.token',
         nameDefault: 'Token',
         numeric: false,
       },
@@ -135,13 +135,13 @@ class WalletHistory extends React.Component {
       },
       {
         id: 'fee',
-        name: 'walletHistory.fee',
+        name: 'str.fee',
         nameDefault: 'Fee',
         numeric: true,
       },
       {
         id: 'status',
-        name: 'walletHistory.status',
+        name: 'str.status',
         nameDefault: 'Status',
         numeric: false,
       },
