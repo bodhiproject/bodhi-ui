@@ -59,21 +59,20 @@ class GraphParser {
 
   static parseTransaction(data) {
     return data.map((entry) => ({
-      version: entry.version,
       type: entry.type,
       txid: entry.txid,
-      txStatus: entry.txStatus,
+      status: entry.status,
+      createdTime: entry.createdTime,
+      blockNum: entry.blockNum,
+      blockTime: entry.blockTime,
+      gasUsed: entry.gasUsed,
+      version: entry.version,
       senderAddress: entry.senderAddress,
-      senderQAddress: entry.senderQAddress,
-      entityId: entry.entityId,
+      topicAddress: entry.topicAddress,
+      oracleAddress: entry.oracleAddress,
       optionIdx: entry.optionIdx,
       token: entry.token,
       amount: entry.amount,
-      gasUsed: entry.gasUsed,
-      blockNum: entry.blockNum,
-      blockTime: entry.blockTime,
-      createBlockNum: entry.createBlockNum,
-      createBlockTime: entry.createBlockTime,
     }));
   }
 }
