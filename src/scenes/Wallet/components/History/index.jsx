@@ -13,6 +13,7 @@ import moment from 'moment';
 import styles from './styles';
 import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import graphqlActions from '../../../../redux/Graphql/actions';
 
 const mockData = [
   {
@@ -73,6 +74,10 @@ class WalletHistory extends React.Component {
   }
 
   componentWillMount() {
+    this.props.getTransactions([
+      { type: TransactionType.Transfer },
+    ]);
+
     this.setState({
       data: mockData,
     });
@@ -228,6 +233,7 @@ class WalletHistory extends React.Component {
 
 WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
+  getTransactions: PropTypes.func.isRequired,
 };
 
 WalletHistory.defaultProps = {
@@ -238,6 +244,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   };
 }
 
