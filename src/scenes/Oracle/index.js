@@ -9,7 +9,6 @@ import Grid from 'material-ui/Grid';
 import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -17,6 +16,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
+import PredictionTxHistory from './components/PredictionTxHistory/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import stateActions from '../../redux/State/actions';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -46,6 +46,7 @@ class OraclePage extends React.Component {
       topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
       oracle: undefined,
+      transactions: [],
       config: undefined,
       voteAmount: 0,
       currentWalletIdx: this.props.walletAddrsIndex,
@@ -53,9 +54,8 @@ class OraclePage extends React.Component {
     };
 
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.executeOraclesAndTxsRequest = this.executeOraclesAndTxsRequest.bind(this);
+    this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.constructTransactions = this.constructTransactions.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -66,7 +66,7 @@ class OraclePage extends React.Component {
   }
 
   componentWillMount() {
-    this.executeOraclesAndTxsRequest();
+    this.executeOracleAndTxsRequest();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,11 +78,11 @@ class OraclePage extends React.Component {
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
-      this.executeOraclesAndTxsRequest();
+      this.executeOracleAndTxsRequest();
     }
 
     this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
-    this.constructTransactions(getTransactionsReturn, syncBlockTime);
+    this.setState({ transactions: getTransactionsReturn });
   }
 
   componentWillUnmount() {
@@ -91,7 +91,7 @@ class OraclePage extends React.Component {
 
   render() {
     const { classes, txReturn } = this.props;
-    const { oracle, config } = this.state;
+    const { oracle, transactions, config } = this.state;
 
     if (!oracle || !config) {
       // Don't render anything if page is loading.
@@ -150,29 +150,7 @@ class OraclePage extends React.Component {
                     config.predictionAction.btnText
                 }
               </Button>
-              <Typography variant="headline">
-                TRANSACTIONS
-              </Typography>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell numeric>Type</TableCell>
-                    <TableCell numeric>Description</TableCell>
-                    <TableCell numeric>Amount</TableCell>
-                    <TableCell numeric>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow selected>
-                    <TableCell>123123</TableCell>
-                    <TableCell numeric>123123</TableCell>
-                    <TableCell numeric>123123</TableCell>
-                    <TableCell numeric>123123</TableCell>
-                    <TableCell numeric>12312</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+              <PredictionTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
@@ -190,7 +168,6 @@ class OraclePage extends React.Component {
   }
 
   handleAmountChange(amount) {
-    console.log(amount);
     this.setState({ voteAmount: amount });
   }
 
@@ -260,12 +237,13 @@ class OraclePage extends React.Component {
     });
   }
 
-  executeOraclesAndTxsRequest() {
+  executeOracleAndTxsRequest() {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
     ], undefined);
+    // TODO (LIVIA): NEED TO TXS FOR THE ENTIRE TOPIC
     this.props.getTransactions([
-      { topicAddress: this.state.topicAddress },
+      { oracleAddress: this.state.address },
     ], undefined);
   }
 
@@ -397,11 +375,6 @@ class OraclePage extends React.Component {
         config,
       });
     }
-  }
-
-  constructTransactions(getTransactionsReturn, syncBlockTime) {
-    console.log('getTransactionsReturn');
-    console.log(getTransactionsReturn);
   }
 
   bet(amount) {
