@@ -24,16 +24,35 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
 /**
  * Converts a decimal number to Satoshi/Botoshi 10^8.
  * @param number {String/Number} The decimal number to convert.
- * @return {String} The converted number.
+ * @return {String} The converted Satoshi/Botoshi number.
  */
 export function decimalToSatoshi(number) {
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
   return new BigNumber(number).multipliedBy(conversionBN).toString(10);
 }
 
+/**
+ * Converts Satoshi/Botoshi to a decimal number.
+ * @param number {String} The Satoshi/Botoshi string to convert.
+ * @return {String} The converted decimal number.
+ */
 export function satoshiToDecimal(number) {
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
   return new BigNumber(number).dividedBy(conversionBN).toString(10);
+}
+
+/**
+ * Converts the gas number to QTUM cost.
+ * @param gas {Number} The gas number to convert.
+ * @return {Number} The gas amount represented as QTUM.
+ */
+export function gasToQtum(gas) {
+  if (!gas || !_.isFinite(gas)) {
+    return undefined;
+  }
+
+  const gasCostBN = new BigNumber(GAS_COST);
+  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /**
@@ -53,15 +72,6 @@ export function satoshiHexToDecimal(input) {
   // if (input !== '0') { console.log(`${input} to ${result}`); }
 
   return result >= BOT_MIN_VALUE ? result : 0;
-}
-
-export function gasToQtum(gas) {
-  if (!gas || !_.isFinite(gas)) {
-    return undefined;
-  }
-
-  const gasCostBN = new BigNumber(GAS_COST);
-  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /*
