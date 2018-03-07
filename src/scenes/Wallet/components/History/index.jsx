@@ -157,10 +157,10 @@ class WalletHistory extends React.Component {
         {data.map((item) => (
           <TableRow key={item.txid}>
             <TableCell>
-              {getShortLocalDateTimeString(item.time)}
+              {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
             </TableCell>
             <TableCell>
-              {item.from}
+              {item.senderAddress}
             </TableCell>
             <TableCell>
               {item.to}

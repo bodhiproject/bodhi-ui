@@ -1,9 +1,11 @@
 import BN from 'bn.js';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
+import _ from 'lodash';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
+const GAS_COST = 0.0000004;
 const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
@@ -31,8 +33,7 @@ export function decimalToSatoshi(number) {
 
 export function satoshiToDecimal(number) {
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  const divided = new BigNumber(number).dividedBy(conversionBN);
-  return new BigNumber(number).div(conversionBN).toString(10);
+  return new BigNumber(number).dividedBy(conversionBN).toString(10);
 }
 
 /**
@@ -52,6 +53,15 @@ export function satoshiHexToDecimal(input) {
   // if (input !== '0') { console.log(`${input} to ${result}`); }
 
   return result >= BOT_MIN_VALUE ? result : 0;
+}
+
+export function gasToQtum(gas) {
+  if (!gas || !_.isFinite(gas)) {
+    return undefined;
+  }
+
+  const gasCostBN = new BigNumber(GAS_COST);
+  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /*

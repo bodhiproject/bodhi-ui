@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { satoshiHexToDecimal, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
+import { satoshiHexToDecimal, decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token } from '../../constants';
 
 // Send allTopics query
@@ -107,6 +107,7 @@ function processTransaction(tx) {
   const newTx = _.assign({}, tx);
   if (tx.token && tx.token === Token.Bot) {
     newTx.amount = satoshiToDecimal(tx.amount);
+    newTx.fee = gasToQtum(tx.gasUsed);
   }
   return newTx;
 }
