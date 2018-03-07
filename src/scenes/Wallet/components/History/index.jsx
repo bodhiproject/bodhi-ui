@@ -15,49 +15,6 @@ import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
-const mockData = [
-  {
-    txid: 1,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
-    token: 'QTUM',
-    amount: 1,
-    fee: 0.1,
-    status: 'Pending',
-  },
-  {
-    txid: 2,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
-    token: 'QTUM',
-    amount: 2,
-    fee: 0.2,
-    status: 'Pending',
-  },
-  {
-    txid: 3,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
-    token: 'QTUM',
-    amount: 3,
-    fee: 0.3,
-    status: 'Pending',
-  },
-  {
-    txid: 4,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qW254UF54ApahzucGAmMsG559zZwNYU4Hx',
-    token: 'QTUM',
-    amount: 4,
-    fee: 0.4,
-    status: 'Pending',
-  },
-];
-
 class WalletHistory extends React.Component {
   constructor(props) {
     super(props);
@@ -65,7 +22,6 @@ class WalletHistory extends React.Component {
     this.state = {
       order: 'asc',
       orderBy: 'time',
-      data: [],
     };
 
     this.getTableHeader = this.getTableHeader.bind(this);
@@ -77,15 +33,10 @@ class WalletHistory extends React.Component {
     this.props.getTransactions([
       { type: TransactionType.Transfer },
     ]);
-
-    this.setState({
-      data: mockData,
-    });
   }
 
   render() {
     const { classes } = this.props;
-    const { data } = this.state;
 
     return (
       <Paper className={classes.txHistoryPaper}>
