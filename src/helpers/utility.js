@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 
 const SATOSHI_CONVERSION = 10 ** 8;
@@ -24,8 +25,14 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
  * @return {String} The converted number.
  */
 export function decimalToSatoshi(number) {
-  const conversionBN = new BN(SATOSHI_CONVERSION);
-  return new BN(number).mul(conversionBN).toString(10);
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  return new BigNumber(number).multipliedBy(conversionBN).toString(10);
+}
+
+export function satoshiToDecimal(number) {
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  const divided = new BigNumber(number).dividedBy(conversionBN);
+  return new BigNumber(number).div(conversionBN).toString(10);
 }
 
 /**
@@ -34,7 +41,7 @@ export function decimalToSatoshi(number) {
  * @param  {[type]}
  * @return {[type]}
  */
-export function satoshiToDecimal(input) {
+export function satoshiHexToDecimal(input) {
   const bigNumber = new BN(input, 16);
   const botoshi = new BN(SATOSHI_CONVERSION);
 

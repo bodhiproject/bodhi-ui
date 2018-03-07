@@ -13,7 +13,8 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
+import { satoshiHexToDecimal, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
+import { Token } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -41,8 +42,8 @@ function processTopic(topic) {
   }
 
   const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
-  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiHexToDecimal);
+  newTopic.botAmount = _.map(topic.botAmount, satoshiHexToDecimal);
   newTopic.oracles = _.map(topic.oracles, processOracle);
   return newTopic;
 }
@@ -73,8 +74,8 @@ function processOracle(oracle) {
   }
 
   const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
-  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
+  newOracle.amounts = _.map(oracle.amounts, satoshiHexToDecimal);
+  newOracle.consensusThreshold = satoshiHexToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
 
@@ -82,7 +83,8 @@ function processOracle(oracle) {
 export function* getTransactionsHandler() {
   yield takeEvery(actions.GET_TRANSACTIONS, function* getTransactionsRequest(action) {
     try {
-      const txs = yield call(queryAllTransactions, action.filters, action.orderBy);
+      const result = yield call(queryAllTransactions, action.filters, action.orderBy);
+      const txs = _.map(result, processTransaction);
 
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
@@ -95,6 +97,18 @@ export function* getTransactionsHandler() {
       });
     }
   });
+}
+
+function processTransaction(tx) {
+  if (!tx) {
+    return undefined;
+  }
+
+  const newTx = _.assign({}, tx);
+  if (tx.token && tx.token === Token.Bot) {
+    newTx.amount = satoshiToDecimal(tx.amount);
+  }
+  return newTx;
 }
 
 // Sends createTopic mutation
