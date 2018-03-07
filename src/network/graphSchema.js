@@ -241,6 +241,8 @@ const ENUMS = {
     'OPENRESULTSET',
     'PENDING',
     'WITHDRAW',
+    'SUCCESS',
+    'FAIL',
   ],
 
   type: [
