@@ -243,6 +243,18 @@ const ENUMS = {
     'WITHDRAW',
   ],
 
+  type: [
+    'CREATEEVENT',
+    'BET',
+    'APPROVESETRESULT',
+    'SETRESULT',
+    'APPROVEVOTE',
+    'VOTE',
+    'FINALIZERESULT',
+    'WITHDRAW',
+    'TRANSFER',
+  ],
+
   token: [
     'QTUM',
     'BOT',
