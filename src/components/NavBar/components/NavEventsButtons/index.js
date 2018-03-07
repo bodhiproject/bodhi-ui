@@ -7,6 +7,7 @@ import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
 import dashboardActions from '../../../../redux/Dashboard/actions';
+import { EventStatus } from '../../../../constants';
 import styles from './styles';
 
 class NavEventsButtons extends Component {
@@ -32,25 +33,34 @@ class NavEventsButtons extends Component {
     const { classes } = this.props;
 
     return (
-      <div>{
-        this.props.buttons.map((entry, index) => (
-          <Button
-            key={entry.text}
-            data-index={index}
-            onClick={this.onBtnClicked}
-            className={classNames(classes.navEventsButton, index === _.toNumber(this.props.tabIndex) ? 'selected' : '')}
-          >
-            <FormattedMessage id={`dashboard.${entry.text}`} />
-          </Button>
-        ))
-      }</div>
+      <div>
+        <Button
+          data-index={EventStatus.Bet}
+          onClick={this.onBtnClicked}
+          className={classNames(
+            classes.navEventsButton,
+            _.toNumber(this.props.tabIndex) === EventStatus.Bet && window.location.pathname === '/' ? 'selected' : ''
+          )}
+        >
+          QTUM Prediction
+        </Button>
+        <Button
+          data-index={EventStatus.Vote}
+          onClick={this.onBtnClicked}
+          className={classNames(
+            classes.navEventsButton,
+            _.toNumber(this.props.tabIndex) === EventStatus.Vote && window.location.pathname === '/' ? 'selected' : ''
+          )}
+        >
+          BOT Court
+        </Button>
+      </div>
     );
   }
 }
 
 NavEventsButtons.propTypes = {
   classes: PropTypes.object.isRequired,
-  buttons: PropTypes.array.isRequired,
   tabIndex: PropTypes.number,
   tabIndexChanged: PropTypes.func,
 };

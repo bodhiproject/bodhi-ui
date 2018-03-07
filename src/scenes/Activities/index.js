@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 
+import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
+import { EventStatus } from '../../constants';
 import styles from './styles';
 
 class Activities extends React.Component {
@@ -27,18 +27,21 @@ class Activities extends React.Component {
       <div>
         <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
           <Tab label="Result Setting" />
+          <Tab label="Finalize" />
           <Tab label="Withdraw" />
           <Tab label="Activities History" />
         </Tabs>
-        {tabIdx === 0 && <div>Result Setting</div>}
-        {tabIdx === 1 && <div>Withdraw</div>}
-        {tabIdx === 2 && <div>Activities history</div>}
+        <div className={classes.activitiesTabContainer}>
+          {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
+          {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
+          {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {tabIdx === 3 && <div>Activities history</div>}
+        </div>
       </div>
     );
   }
 
   handleTabChange(event, value) {
-    console.log(value);
     this.setState({ tabIdx: value });
   }
 }
@@ -47,12 +50,4 @@ Activities.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Activities)));
+export default withStyles(styles, { withTheme: true })(Activities);

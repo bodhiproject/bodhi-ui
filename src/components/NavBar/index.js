@@ -39,19 +39,7 @@ class NavBar extends React.PureComponent {
               className={classes.navBarLogo}
             />
           </Link>
-          <NavEventsButtons
-            buttons={[{
-              text: 'Bet',
-            }, {
-              text: 'Set',
-            }, {
-              text: 'Vote',
-            }, {
-              text: 'Finalize',
-            }, {
-              text: 'Withdraw',
-            }]}
-          />
+          <NavEventsButtons />
           <div className={classes.navBarRightWrapper}>
             <Link to="/my-wallet">
               <Button className={classes.navBarWalletButton}>
@@ -59,11 +47,9 @@ class NavBar extends React.PureComponent {
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </Link>
-            <Link to="/activities">
-              <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
-                <FormattedMessage id="language.select" />
-              </Button>
-            </Link>
+            <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
+              <FormattedMessage id="language.select" />
+            </Button>
             {this.renderActivitiesButtonWithBadge()}
           </div>
         </Toolbar>
@@ -80,9 +66,11 @@ class NavBar extends React.PureComponent {
     if (actionableItemCount) {
       return (
         <Badge badgeContent={actionableItemCount} color="secondary">
-          <Button className={classes.navBarRightButton}>
-            <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-          </Button>
+          <Link to="/activities">
+            <Button className={classes.navBarRightButton}>
+              <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+            </Button>
+          </Link>
         </Badge>
       );
     }

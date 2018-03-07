@@ -44,6 +44,8 @@ const paddingSm = spaceUnit * 3; // 24
 const paddingMd = spaceUnit * 5; // 40
 const paddingLg = spaceUnit * 7; // 56
 
+const navHeight = 70;
+
 const px = function (value) {
   return value.toString().concat('px');
 };
@@ -162,6 +164,10 @@ const bodhiTheme = createMuiTheme({
       },
     },
     MuiTab: {
+      root: {
+        marginTop: px(spaceUnit),
+        marginBottom: px(spaceUnit),
+      },
       label: {
         fontSize: fontSizeTextSm,
         textTransform: 'none !important',
@@ -206,6 +212,7 @@ const bodhiTheme = createMuiTheme({
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
       headerHeight: 40,
     },
+    navHeight: px(navHeight),
   },
   border: 'solid 1px '.concat(borderColor),
   borderRadius: px(borderRadius),

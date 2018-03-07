@@ -4,6 +4,15 @@ module.exports = {
     Bot: 'BOT',
   },
 
+  EventStatus: {
+    Bet: 0,
+    Set: 1,
+    Vote: 2,
+    Finalize: 3,
+    Withdraw: 4,
+    Default: 0,
+  },
+
   /* Oracle status matching graphql _OracleStatusType */
   OracleStatus: {
     Created: 'CREATED',
