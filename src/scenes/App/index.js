@@ -20,6 +20,7 @@ export class App extends React.PureComponent {
   render() {
     const { classes } = this.props;
     const { url } = this.props.match;
+
     return (
       <div className={classes.root}>
         <Reboot />
@@ -34,7 +35,7 @@ export class App extends React.PureComponent {
         </Debounce>
         <GlobalHub />
         <Loader />
-        <NavBar url={url} langHandler={this.props.langHandler} />
+        <NavBar langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />
         </div>

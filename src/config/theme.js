@@ -163,6 +163,11 @@ const bodhiTheme = createMuiTheme({
         wordWrap: 'break-word',
       },
     },
+    MuiTabs: {
+      root: {
+        zIndex: 999,
+      },
+    },
     MuiTab: {
       root: {
         marginTop: px(spaceUnit),

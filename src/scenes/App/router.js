@@ -20,6 +20,11 @@ class AppRouter extends React.Component {
         />
         <Route
           exact
+          path={`${url}/bot-court`}
+          component={asyncComponent(() => import('../Dashboard/vote'))}
+        />
+        <Route
+          exact
           path={`${url}/oracle/:topicAddress/:address`}
           component={asyncComponent(() => import('../Oracle/index'))}
         />

@@ -19,7 +19,7 @@ class Dashboard extends React.Component {
       <div>
         <TopActions />
         <EventCardsGridContainer
-          eventStatusIndex={EventStatus.Bet}
+          eventStatusIndex={EventStatus.Vote}
           sortBy={sortBy}
         />
       </div>
