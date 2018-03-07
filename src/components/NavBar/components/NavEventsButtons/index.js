@@ -13,8 +13,6 @@ import styles from './styles';
 class NavEventsButtons extends Component {
   render() {
     const { classes } = this.props;
-    console.log('this.props');
-    console.log(this.props);
 
     return (
       <div>

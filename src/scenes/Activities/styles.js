@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   activitiesTabWrapper: {
-    background: 'white',
+    background: theme.palette.background.paper,
     position: 'fixed',
     top: theme.sizes.navHeight,
     left: 0,
