@@ -39,6 +39,7 @@ class OraclePage extends React.Component {
       currentOptionIdx: -1,
     };
 
+    this.isActionButtonDisabled = this.isActionButtonDisabled.bind(this);
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
@@ -119,13 +120,7 @@ class OraclePage extends React.Component {
                 fullWidth
                 size="large"
                 color="primary"
-                disabled={
-                  (config.predictionAction.btnDisabled
-                    || this.state.currentOptionIdx === -1
-                    || ((this.state.voteAmount === 0 || Number.isNaN(this.state.voteAmount)) && config.predictionAction.showAmountInput)
-                    || this.state.isApproving)
-                  && !config.predictionAction.skipExpansion
-                }
+                disabled={this.isActionButtonDisabled}
                 onClick={this.handleConfirmClick}
                 className={classes.eventActionButton}
               >
@@ -180,26 +175,25 @@ class OraclePage extends React.Component {
       address,
     } = this.state;
 
+    // Not within correct times or not the result setter
     if (config.predictionAction.btnDisabled) {
       return true;
     }
 
-    const pendingTxs = _.filter(transactions, (tx) => { oracleAddress: address, status: TransactionStatus.Pending });
+    // Already have a pending tx for this Oracle
+    const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
     if (pendingTxs > 0) {
       return true;
     }
 
+    // Did not select an option
     if (currentOptionIdx === -1) {
       return true;
     }
 
+    // Did not enter an amount
     if ((voteAmount === 0 || Number.isNaN(voteAmount)) && config.predictionAction.showAmountInput) {
       return true;
-    }
-
-    // TODO: replace with if has pending Transaction
-    if (isApproving) && !config.predictionAction.skipExpansion) {
-
     }
 
     return false;
