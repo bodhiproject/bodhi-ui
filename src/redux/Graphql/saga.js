@@ -28,9 +28,10 @@ export function* getTopicsHandler() {
         value: topics,
       });
     } catch (err) {
+      console.error(err);
       yield put({
         type: actions.GET_TOPICS_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -61,8 +62,9 @@ export function* getOraclesHandler() {
       });
     } catch (err) {
       yield put({
+        console.error(err);
         type: actions.GET_ORACLES_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -91,9 +93,10 @@ export function* getTransactionsHandler() {
         value: txs,
       });
     } catch (err) {
+      console.error(err);
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -134,9 +137,10 @@ export function* getActionableItemCountHandler() {
         value: count,
       });
     } catch (err) {
+      console.log(err);
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        error: err.message,
+        value: 0,
       });
     }
   });
