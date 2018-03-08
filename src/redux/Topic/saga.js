@@ -30,6 +30,8 @@ export function* calculateWinningsHandler() {
         const botWon = satoshiHexToDecimal(result['0']);
         const qtumWon = satoshiHexToDecimal(result['1']);
         value = { botWon, qtumWon };
+      } else {
+        value = { botWon: 0, qtumWon: 0 };
       }
 
       yield put({
@@ -39,7 +41,7 @@ export function* calculateWinningsHandler() {
     } catch (err) {
       yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
-        error: err.message,
+        value: { botWon: 0, qtumWon: 0 },
       });
     }
   });

@@ -124,7 +124,7 @@ NavBar.defaultProps = {
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  actionableItemCount: state.Dashboard.get('actionableItemCount'),
+  actionableItemCount: state.Graphql.get('actionableItemCount'),
 });
 
 const mapDispatchToProps = (dispatch) => ({});

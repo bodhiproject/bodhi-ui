@@ -48,11 +48,19 @@ class TransactionSentDialog extends React.PureComponent {
   }
 
   render() {
-    const { intl, classes, txReturn } = this.props;
+    const {
+      intl,
+      classes,
+      txReturn,
+    } = this.props;
 
     let contentText;
     if (txReturn) {
-      contentText = txReturn && txReturn.txid ? this.getSuccessText() : this.getErrorText();
+      if (txReturn.txid) {
+        contentText = this.getSuccessText();
+      } else {
+        contentText = this.getErrorText();
+      }
     } else {
       contentText = {
         title: '',
@@ -64,14 +72,12 @@ class TransactionSentDialog extends React.PureComponent {
     return (
       <Dialog
         open={Boolean(txReturn)}
-        onClose={this.handleAlertClose}
+        onClose={this.onOkClicked}
       >
-        <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
+        <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <Typography variant="body1" className={classes.bodyText1}>{contentText.bodyPrimary}</Typography>
-            <Typography variant="body1">{contentText.bodySecondary}</Typography>
-          </DialogContentText>
+          <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
+          <Typography variant="body1">{contentText.bodySecondary}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onOkClicked}>

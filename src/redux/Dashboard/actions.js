@@ -1,11 +1,4 @@
 const dashboardActions = {
-  GET_ACTIONABLE_ITEM_COUNT: 'GET_ACTIONABLE_ITEM_COUNT',
-  GET_ACTIONABLE_ITEM_COUNT_RETURN: 'GET_ACTIONABLE_ITEM_COUNT_RETURN',
-  getActionableItemCount: (walletAddress) => ({
-    type: dashboardActions.GET_ACTIONABLE_ITEM_COUNT,
-    walletAddress,
-  }),
-
   TAB_INDEX_CHANGED: 'TAB_INDEX_CHANGED',
   tabIndexChanged: (value) => ({
     type: dashboardActions.TAB_INDEX_CHANGED,

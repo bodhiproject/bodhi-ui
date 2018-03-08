@@ -67,7 +67,6 @@ class TopicPage extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.clearTxReturn();
     this.props.clearEditingToggled();
   }
 
@@ -245,7 +244,6 @@ TopicPage.propTypes = {
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
   qtumWinnings: PropTypes.number,
-  clearTxReturn: PropTypes.func,
   clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -259,7 +257,6 @@ TopicPage.defaultProps = {
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
-  clearTxReturn: undefined,
   clearEditingToggled: undefined,
   calculateWinnings: undefined,
   botWinnings: undefined,
@@ -285,7 +282,6 @@ function mapDispatchToProps(dispatch) {
     getTopics: () => dispatch(graphqlActions.getTopics()),
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
   };
 }

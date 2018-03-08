@@ -23,6 +23,13 @@ const graphqlActions = {
     orderBy,
   }),
 
+  GET_ACTIONABLE_ITEM_COUNT: 'GET_ACTIONABLE_ITEM_COUNT',
+  GET_ACTIONABLE_ITEM_COUNT_RETURN: 'GET_ACTIONABLE_ITEM_COUNT_RETURN',
+  getActionableItemCount: (walletAddress) => ({
+    type: graphqlActions.GET_ACTIONABLE_ITEM_COUNT,
+    walletAddress,
+  }),
+
   CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
   CREATE_TOPIC_TX_RETURN: 'CREATE_TOPIC_TX_RETURN',
   createTopicTx: (

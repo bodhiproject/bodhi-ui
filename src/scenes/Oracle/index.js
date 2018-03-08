@@ -17,7 +17,6 @@ import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
 import PredictionTxHistory from './components/PredictionTxHistory/index';
-import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import stateActions from '../../redux/State/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import { Token, OracleStatus } from '../../constants';
@@ -83,10 +82,6 @@ class OraclePage extends React.Component {
 
     this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
     this.setState({ transactions: getTransactionsReturn });
-  }
-
-  componentWillUnmount() {
-    this.props.clearTxReturn();
   }
 
   render() {
@@ -158,7 +153,6 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
@@ -339,7 +333,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />,
+            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
             showAmountInput: true,
           },
         };
@@ -442,7 +436,6 @@ OraclePage.propTypes = {
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -460,7 +453,6 @@ OraclePage.defaultProps = {
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
   txReturn: undefined,
-  clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -494,7 +486,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

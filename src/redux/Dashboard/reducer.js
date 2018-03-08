@@ -6,15 +6,7 @@ const initState = new Map({
 });
 
 export default function dashboardReducer(state = initState, action) {
-  // Catch all request errors
-  if (action.error) {
-    return state.set('requestError', action.error);
-  }
-
   switch (action.type) {
-    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
-      return state.set('actionableItemCount', action.value);
-    }
     case actions.TAB_INDEX_CHANGED: {
       return state.set('tabIndex', action.value);
     }
