@@ -21,7 +21,6 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
-import TransactionSentDialog from '../../../../components/TransactionSentDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -90,7 +89,6 @@ class MyBalances extends React.PureComponent {
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
           />
-          <TransactionSentDialog txReturn={this.props.txReturn} />
         </Grid>
       </Paper>
     );
@@ -387,17 +385,14 @@ class MyBalances extends React.PureComponent {
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
   walletAddrs: PropTypes.array,
-  txReturn: PropTypes.object,
 };
 
 MyBalances.defaultProps = {
   walletAddrs: [],
-  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletAddrs: state.App.get('walletAddrs'),
-  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

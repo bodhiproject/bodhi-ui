@@ -15,7 +15,6 @@ import stateActions from '../../../redux/State/actions';
 import appActions from '../../../redux/App/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
-import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 
 const FormItem = Form.Item;
 
@@ -268,7 +267,6 @@ class CreateTopic extends React.Component {
             </Button>
           </FormItem>
         </Form>
-        <TransactionSentDialog txReturn={txReturn} />
       </div>
     );
   }

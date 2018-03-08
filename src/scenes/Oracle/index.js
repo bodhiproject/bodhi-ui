@@ -17,7 +17,6 @@ import StepperVertRight from '../../components/StepperVertRight/index';
 import PredictionOption from './components/PredictionOption/index';
 import PredictionInfo from './components/PredictionInfo/index';
 import PredictionTxHistory from './components/PredictionTxHistory/index';
-import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import stateActions from '../../redux/State/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import { Token, OracleStatus } from '../../constants';
@@ -158,7 +157,6 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.predictionInfo.steps} />
           </Grid>
         </Grid>
-        <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
