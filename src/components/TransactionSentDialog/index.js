@@ -67,7 +67,7 @@ class TransactionSentDialog extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleAlertClose} color="primary">
+          <Button color="primary">
             OK
           </Button>
         </DialogActions>
@@ -91,10 +91,6 @@ class TransactionSentDialog extends React.PureComponent {
       bodyPrimary: txReturn.error,
       bodySecondary: '',
     };
-  }
-
-  handleAlertClose() {
-    window.location.reload();
   }
 }
 
