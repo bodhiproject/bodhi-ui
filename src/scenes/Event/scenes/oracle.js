@@ -132,11 +132,11 @@ class OraclePage extends React.Component {
                 size="large"
                 color="primary"
                 disabled={
-                  (config.predictionAction.btnDisabled ||
-                  this.state.currentOptionIdx === -1 ||
-                  ((this.state.voteAmount === 0 || Number.isNaN(this.state.voteAmount)) && config.predictionAction.showAmountInput) ||
-                  this.state.isApproving) &&
-                  !config.predictionAction.skipExpansion
+                  (config.predictionAction.btnDisabled
+                    || this.state.currentOptionIdx === -1
+                    || ((this.state.voteAmount === 0 || Number.isNaN(this.state.voteAmount)) && config.predictionAction.showAmountInput)
+                    || this.state.isApproving)
+                  && !config.predictionAction.skipExpansion
                 }
                 onClick={this.handleConfirmClick}
                 className={classes.eventActionButton}
@@ -181,6 +181,34 @@ class OraclePage extends React.Component {
         content: oracle.resultSetterQAddress,
       },
     ];
+  }
+
+  isActionButtonDisabled() {
+    const {
+      currentOptionIdx,
+      voteAmount,
+      config,
+      isApproving,
+    } = this.state;
+
+    // if (config.predictionAction.btnDisabled) {
+    //   return true;
+    // }
+
+    // if (currentOptionIdx === -1) {
+    //   return true;
+    // }
+
+    // if ((voteAmount === 0 || Number.isNaN(voteAmount)) && config.predictionAction.showAmountInput) {
+    //   return true;
+    // }
+
+    // // TODO: replace with if has pending Transaction
+    // if (isApproving) && !config.predictionAction.skipExpansion) {
+
+    // }
+
+    return false;
   }
 
   handleOptionChange(idx) {
