@@ -156,8 +156,19 @@ class TopicPage extends React.Component {
   }
 
   renderWithdrawContainer() {
-    const { classes, txReturn, walletAddrs } = this.props;
+    const {
+      classes,
+      txReturn,
+      walletAddrs,
+      botWinnings,
+      qtumWinnings,
+    } = this.props;
     const { topic, transactions, config } = this.state;
+
+    const resultBetAmount = topic.qtumAmount[topic.resultIdx];
+    const resultVoteAmount = topic.botAmount[topic.resultIdx];
+    const qtumReturnRate = resultBetAmount ? ((qtumWinnings - resultBetAmount) / resultBetAmount) * 100 : 0;
+    const botReturnRate = resultVoteAmount ? ((botWinnings - resultVoteAmount) / resultVoteAmount) * 100 : 0;
 
     return (
       <Paper className={classes.withdrawPaper}>
@@ -169,43 +180,52 @@ class TopicPage extends React.Component {
             {this.props.intl.formatMessage(pageMessage.winning)}
           </Typography>
           <Typography className={classes.withdrawWinningOption}>
-            Bloomberg
+            {topic.options[topic.resultIdx]}
           </Typography>
-          <Typography variant="caption">
-            {this.props.intl.formatMessage(pageMessage.youBet)}
-            8.99 QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
-            9.99 BOT.
-          </Typography>
-        </div>
-        <div className={classes.withdrawContainerSection}>
-          <div className={classes.withdrawContainerSectionIcon}>
-            <i className="icon iconfont icon-coin"></i>
-          </div>
-          <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {this.props.intl.formatMessage(pageMessage.reward)}
-          </Typography>
-          <div>
-            <div className={classes.withdrawRewardWrapper}>
-              <Typography variant="display1">
-                + 19.9 <span className={classes.withdrawToken}>QTUM</span>
-              </Typography>
+          {
+            resultBetAmount || resultVoteAmount ?
               <Typography variant="caption">
-                {this.props.intl.formatMessage(pageMessage.returnRate)}
-                50%
-              </Typography>
-            </div>
-            <div className={classes.withdrawRewardDivider} />
-            <div className={classes.withdrawRewardWrapper}>
-              <Typography variant="display1">
-                + 10.00 <span className={classes.withdrawToken}>BOT</span>
-              </Typography>
+                {this.props.intl.formatMessage(pageMessage.youBet)}
+                {resultBetAmount} QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
+                {resultVoteAmount} BOT.
+              </Typography> :
               <Typography variant="caption">
-                {this.props.intl.formatMessage(pageMessage.returnRate)}
-                50%
+                You did not bet or vote on the winning outcome.
               </Typography>
-            </div>
-          </div>
+          }
         </div>
+        {
+          botWinnings || qtumWinnings || true ?
+            <div className={classes.withdrawContainerSection}>
+              <div className={classes.withdrawContainerSectionIcon}>
+                <i className="icon iconfont icon-coin"></i>
+              </div>
+              <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
+                {this.props.intl.formatMessage(pageMessage.reward)}
+              </Typography>
+              <div>
+                <div className={classes.withdrawRewardWrapper}>
+                  <Typography variant="display1">
+                    +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
+                  </Typography>
+                  <Typography variant="caption">
+                    {this.props.intl.formatMessage(pageMessage.returnRate)}
+                    {qtumReturnRate}%
+                  </Typography>
+                </div>
+                <div className={classes.withdrawRewardDivider} />
+                <div className={classes.withdrawRewardWrapper}>
+                  <Typography variant="display1">
+                    +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
+                  </Typography>
+                  <Typography variant="caption">
+                    {this.props.intl.formatMessage(pageMessage.returnRate)}
+                    {botReturnRate}%
+                  </Typography>
+                </div>
+              </div>
+            </div> : null
+        }
         <div className={classNames(classes.withdrawContainerSection, 'last')}>
           <div className={classes.withdrawContainerSectionIcon}>
             <i className="icon iconfont icon-ic_wallet"></i>
@@ -248,21 +268,24 @@ class TopicPage extends React.Component {
 
   renderOptions() {
     const { classes } = this.props;
-    const { topic } = this.state;
+    const { topic, botWinnings, qtumWinnings } = this.state;
 
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
           <div className={classNames(classes.withdrawContainerSection, 'option')}>
             <div className={classes.eventOptionNum}>{index + 1}</div>
-            <Typography variant="title" className={classes.withdrawWinningOptionSmall}>
+            <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
               {option}
             </Typography>
-            <Typography variant="caption">
-              {this.props.intl.formatMessage(pageMessage.youBet)}
-              8.99 QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
-              9.99 BOT.
-            </Typography>
+            {
+              topic.qtumAmount[index] || topic.botAmount[index] ?
+                <Typography variant="caption">
+                  {this.props.intl.formatMessage(pageMessage.youBet)}
+                  {topic.qtumAmount[index]} QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
+                  {topic.botAmount[index]} BOT.
+                </Typography> : null
+            }
           </div>
         ))}
       </div>
@@ -322,12 +345,8 @@ class TopicPage extends React.Component {
     const { calculateWinnings } = this.props;
 
     calculateWinnings(this.state.address, walletAddress);
-
-    console.log(this.state.botWinnings);
-    console.log(this.state.qtumWinnings);
   }
 
-  /** Withdraw button on click handler passed down to CardFinished */
   onWithdrawClicked() {
     const { topic } = this.state;
 
