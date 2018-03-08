@@ -66,7 +66,7 @@ class MyBalances extends React.PureComponent {
       <Paper className={classes.myBalancePaper}>
         <Grid container spacing={0} className={classes.myBalanceGridContainer}>
           <Typography variant="title" className={classes.myBalanceTitle}>
-            <FormattedMessage id="myBalances.myBalance" default="My Balance" />
+            <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
           {this.getTotalsGrid(walletAddrs)}
           <Table>
@@ -192,7 +192,7 @@ class MyBalances extends React.PureComponent {
         sortDirection={orderBy === column.id ? order : false}
       >
         <Tooltip
-          title={<FormattedMessage id="str.sort" default="Sort" />}
+          title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
           enterDelay={Config.intervals.tooltipDelay}
           placement={column.numeric ? 'bottom-end' : 'bottom-start'}
         >
@@ -264,7 +264,7 @@ class MyBalances extends React.PureComponent {
                 <Button size="small" className={classes.tableRowCopyButton}>
                   <ContentCopy className={classes.tableRowCopyButtonIcon} />
                   <Typography variant="body1" className={classes.tableRowCopyButtonText}>
-                    <FormattedMessage id="str.copy" default="Copy" />
+                    <FormattedMessage id="str.copy" defaultMessage="Copy" />
                   </Typography>
                 </Button>
               </CopyToClipboard>
@@ -286,7 +286,7 @@ class MyBalances extends React.PureComponent {
                 data-qtum={item.qtum}
                 data-bot={item.bot}
               >
-                <FormattedMessage id="myBalances.deposit" default="Deposit" />
+                <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
               <Button
                 variant="raised"
@@ -298,7 +298,7 @@ class MyBalances extends React.PureComponent {
                 data-qtum={item.qtum}
                 data-bot={item.bot}
               >
-                <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
+                <FormattedMessage id="myBalances.withdraw" defaultMessage="Withdraw" />
               </Button>
             </TableCell>
           </TableRow>))}
@@ -315,7 +315,7 @@ class MyBalances extends React.PureComponent {
         open={addrCopiedSnackbarVisible}
         autoHideDuration={Config.intervals.snackbarLong}
         onClose={this.onAddrCopiedSnackbarClosed}
-        message={<FormattedMessage id="myBalances.addressCopied" default="Address copied" />}
+        message={<FormattedMessage id="myBalances.addressCopied" defaultMessage="Address copied" />}
         action={[
           <IconButton
             key="close"

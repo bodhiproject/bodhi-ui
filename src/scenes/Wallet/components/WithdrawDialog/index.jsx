@@ -68,7 +68,7 @@ class WithdrawDialog extends React.Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="withdrawDialog.title" default="Withdraw QTUM/BOT" />
+          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw QTUM/BOT" />
         </DialogTitle>
         <DialogContent>
           {this.getFromToFields()}
@@ -76,10 +76,10 @@ class WithdrawDialog extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>
-            <FormattedMessage id="str.close" default="Close" />
+            <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
           <Button color="primary" onClick={this.onSendClicked}>
-            <FormattedMessage id="withdrawDialog.send" default="Send" />
+            <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
       </Dialog>
@@ -97,7 +97,7 @@ class WithdrawDialog extends React.Component {
     return (
       <div>
         <Typography variant="body1" className={classes.fromLabel}>
-          <FormattedMessage id="str.from" default="From" />
+          <FormattedMessage id="str.from" defaultMessage="From" />
         </Typography>
         <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
         <TextField
