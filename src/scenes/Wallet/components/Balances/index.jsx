@@ -69,7 +69,7 @@ class MyBalances extends React.PureComponent {
             <FormattedMessage id="myBalances.myBalance" default="My Balance" />
           </Typography>
           {this.getTotalsGrid(walletAddrs)}
-          <Table className={classes.table}>
+          <Table>
             {this.getTableHeader()}
             {this.getTableBody(walletAddrs)}
           </Table>
@@ -137,7 +137,7 @@ class MyBalances extends React.PureComponent {
     const cols = [
       {
         id: 'address',
-        name: 'myBalances.address',
+        name: 'str.address',
         nameDefault: 'Address',
         numeric: false,
         sortable: true,
@@ -174,7 +174,7 @@ class MyBalances extends React.PureComponent {
 
     return (
       <TableHead>
-        <TableRow className={classes.tableHeader}>
+        <TableRow>
           {cols.map((column) => column.sortable ? this.getSortableCell(column) : this.getNonSortableCell(column))}
         </TableRow>
       </TableHead>
@@ -254,10 +254,8 @@ class MyBalances extends React.PureComponent {
 
     return (
       <TableBody>
-        {data.map((item, index) => {
-          const className = index % 2 === 0 ? classes.tableRow : classNames(classes.tableRow, 'dark');
-
-          return (<TableRow key={item.address} className={className}>
+        {data.map((item, index) =>
+          (<TableRow key={item.address} selected={index % 2 !== 0}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
             </TableCell>
@@ -303,8 +301,7 @@ class MyBalances extends React.PureComponent {
                 <FormattedMessage id="myBalances.withdraw" default="Withdraw" />
               </Button>
             </TableCell>
-          </TableRow>);
-        })}
+          </TableRow>))}
       </TableBody>
     );
   }

@@ -22,24 +22,8 @@ const styles = (theme) => ({
     fontSize: theme.sizes.font.titleMd,
     marginBottom: 2,
   },
-  table: {
-    border: theme.border,
-  },
-  tableHeader: {
-    height: theme.sizes.table.headerHeight,
-    background: theme.palette.background.grey,
-  },
   tableHeaderItemText: {
     fontWeight: theme.typography.fontWeightBold,
-  },
-  tableRow: {
-    height: 42,
-    padding: theme.padding.unit.px,
-    background: theme.palette.background.paper,
-    borderBottom: theme.border,
-    '&.dark': {
-      background: theme.palette.background.grey,
-    },
   },
   tableRowCopyButton: {
     color: theme.palette.primary.main,

@@ -13,7 +13,8 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { convertBNHexStrToQtum, decimalToBotoshi } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal, satoshiHexToDecimal, gasToQtum } from '../../helpers/utility';
+import { Token } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -41,8 +42,8 @@ function processTopic(topic) {
   }
 
   const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, convertBNHexStrToQtum);
-  newTopic.botAmount = _.map(topic.botAmount, convertBNHexStrToQtum);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiHexToDecimal);
+  newTopic.botAmount = _.map(topic.botAmount, satoshiHexToDecimal);
   newTopic.oracles = _.map(topic.oracles, processOracle);
   return newTopic;
 }
@@ -73,8 +74,8 @@ function processOracle(oracle) {
   }
 
   const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, convertBNHexStrToQtum);
-  newOracle.consensusThreshold = convertBNHexStrToQtum(oracle.consensusThreshold);
+  newOracle.amounts = _.map(oracle.amounts, satoshiHexToDecimal);
+  newOracle.consensusThreshold = satoshiHexToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
 
@@ -82,7 +83,8 @@ function processOracle(oracle) {
 export function* getTransactionsHandler() {
   yield takeEvery(actions.GET_TRANSACTIONS, function* getTransactionsRequest(action) {
     try {
-      const txs = yield call(queryAllTransactions, action.filters, action.orderBy);
+      const result = yield call(queryAllTransactions, action.filters, action.orderBy);
+      const txs = _.map(result, processTransaction);
 
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
@@ -95,6 +97,19 @@ export function* getTransactionsHandler() {
       });
     }
   });
+}
+
+function processTransaction(tx) {
+  if (!tx) {
+    return undefined;
+  }
+
+  const newTx = _.assign({}, tx);
+  if (tx.token && tx.token === Token.Bot) {
+    newTx.amount = satoshiToDecimal(tx.amount);
+    newTx.fee = gasToQtum(tx.gasUsed);
+  }
+  return newTx;
 }
 
 // Sends createTopic mutation
@@ -158,7 +173,7 @@ export function* createSetResultTxHandler() {
   yield takeEvery(actions.CREATE_SET_RESULT_TX, function* createSetResultTxRequest(action) {
     try {
       // Convert consensus threshold amount to Botoshi
-      const botoshi = decimalToBotoshi(action.params.consensusThreshold);
+      const botoshi = decimalToSatoshi(action.params.consensusThreshold);
 
       const tx = yield call(
         createSetResultTx,
@@ -188,7 +203,7 @@ export function* createVoteTxHandler() {
   yield takeEvery(actions.CREATE_VOTE_TX, function* createVoteTxRequest(action) {
     try {
       // Convert vote amount to Botoshi
-      const botoshi = decimalToBotoshi(action.params.botAmount);
+      const botoshi = decimalToSatoshi(action.params.botAmount);
 
       const tx = yield call(
         createVoteTx,

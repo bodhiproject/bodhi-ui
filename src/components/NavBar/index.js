@@ -89,7 +89,7 @@ class NavBar extends React.PureComponent {
 
     let total = 0;
     if (walletAddrs && walletAddrs.length) {
-      total = _.sumBy(this.props.walletAddrs, (wallet) => wallet.qtum ? wallet.qtum : 0);
+      total = _.sumBy(walletAddrs, (wallet) => wallet.qtum ? wallet.qtum : 0);
     }
 
     return total.toFixed(2);
@@ -102,7 +102,7 @@ class NavBar extends React.PureComponent {
 
     let total = 0;
     if (walletAddrs && walletAddrs.length) {
-      total = _.sumBy(this.props.walletAddrs, (wallet) => wallet.bot ? wallet.bot : 0);
+      total = _.sumBy(walletAddrs, (wallet) => wallet.bot ? wallet.bot : 0);
     }
 
     return total.toFixed(2);

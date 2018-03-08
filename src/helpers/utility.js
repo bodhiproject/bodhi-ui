@@ -1,9 +1,11 @@
 import BN from 'bn.js';
+import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
+import _ from 'lodash';
 
-const BOTOSHI_TO_BOT = 100000000; // Both qtum and bot's conversion rate is 10^8 : 1
-const BOT_MIN_VALUE = 0.01; // Both qtum and bot's conversion rate is 10^8 : 1
-const BOT_DECIMALS = 8;
+const SATOSHI_CONVERSION = 10 ** 8;
+const BOT_MIN_VALUE = 0.01;
+const GAS_COST = 0.0000004;
 const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
 
@@ -20,32 +22,47 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
 }
 
 /**
- * Convert a BigNumber to ES6 Int (2^53 max == 9 007 199 254 740 992) and divide it by 10^8
- * If result number is too small (less than 0.01) we return 0
- * @param  {[type]}
- * @return {[type]}
+ * Converts a decimal number to Satoshi/Botoshi 10^8.
+ * @param number {String/Number} The decimal number to convert.
+ * @return {String} The converted Satoshi/Botoshi number.
  */
-export function convertBNHexStrToQtum(input) {
-  const bigNumber = new BN(input, 16);
-  const botoshi = new BN(BOTOSHI_TO_BOT);
-
-  const integer = bigNumber.div(botoshi).toNumber();
-  const decimal = bigNumber.mod(botoshi).toNumber();
-  const result = integer + (decimal / BOTOSHI_TO_BOT);
-
-  // if (input !== '0') { console.log(`${input} to ${result}`); }
-
-  return result >= BOT_MIN_VALUE ? result : 0;
+export function decimalToSatoshi(number) {
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  return new BigNumber(number).multipliedBy(conversionBN).toString(10);
 }
 
-/*
-* Converts a decimal number to Botoshi expressed as a String.
-* @dev To be able to handle numbers bigger than JS Ints 2^53, we express it as a String.
-* @param {Number} Decimal format number to convert.
-* @return {String} Converted number to Botoshi.
-*/
-export function decimalToBotoshi(decimalNum) {
-  return (decimalNum * BOTOSHI_TO_BOT).toString();
+/**
+ * Converts Satoshi/Botoshi to a decimal number.
+ * @param number {String} The Satoshi/Botoshi string to convert.
+ * @return {String} The converted decimal number.
+ */
+export function satoshiToDecimal(number) {
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  return new BigNumber(number).dividedBy(conversionBN).toString(10);
+}
+
+/**
+ * Converts Satoshi/Botoshi hex string to a decimal number.
+ * @param hexNumber {String} The Satoshi/Botoshi hex string to convert.
+ * @return {Number} The converted decimal number.
+ */
+export function satoshiHexToDecimal(hexNumber) {
+  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
+  return new BigNumber(hexNumber, 16).dividedBy(conversionBN).toNumber();
+}
+
+/**
+ * Converts the gas number to QTUM cost.
+ * @param gas {Number} The gas number to convert.
+ * @return {Number} The gas amount represented as QTUM.
+ */
+export function gasToQtum(gas) {
+  if (!gas || !_.isFinite(gas)) {
+    return undefined;
+  }
+
+  const gasCostBN = new BigNumber(GAS_COST);
+  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /*

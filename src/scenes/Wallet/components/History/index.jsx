@@ -11,51 +11,10 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
+import { TransactionType } from '../../../../constants';
 import Config from '../../../../config/app';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
-
-const mockData = [
-  {
-    txid: 1,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8',
-    token: 'QTUM',
-    amount: 1,
-    fee: 0.1,
-    status: 'Pending',
-  },
-  {
-    txid: 2,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3',
-    token: 'QTUM',
-    amount: 2,
-    fee: 0.2,
-    status: 'Pending',
-  },
-  {
-    txid: 3,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qbyAYsQQf7U4seauDv9cYjwfiNrR9fJz3R',
-    token: 'QTUM',
-    amount: 3,
-    fee: 0.3,
-    status: 'Pending',
-  },
-  {
-    txid: 4,
-    time: moment(),
-    from: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-    to: 'qW254UF54ApahzucGAmMsG559zZwNYU4Hx',
-    token: 'QTUM',
-    amount: 4,
-    fee: 0.4,
-    status: 'Pending',
-  },
-];
+import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpers/utility';
+import graphqlActions from '../../../../redux/Graphql/actions';
 
 class WalletHistory extends React.Component {
   constructor(props) {
@@ -64,7 +23,6 @@ class WalletHistory extends React.Component {
     this.state = {
       order: 'asc',
       orderBy: 'time',
-      data: [],
     };
 
     this.getTableHeader = this.getTableHeader.bind(this);
@@ -73,24 +31,23 @@ class WalletHistory extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({
-      data: mockData,
-    });
+    this.props.getTransactions([
+      { type: TransactionType.Transfer },
+    ]);
   }
 
   render() {
-    const { classes } = this.props;
-    const { data } = this.state;
+    const { classes, getTransactionsReturn } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
         <Grid container spacing={0} className={classes.txHistoryGridContainer}>
           <Typography variant="title">
-            <FormattedMessage id="walletHistory.transactionHistory" default="Transaction History" />
+            <FormattedMessage id="walletHistory.transferHistory" default="Transaction History" />
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows(data)}
+            {this.getTableRows(getTransactionsReturn)}
           </Table>
         </Grid>
       </Paper>
@@ -179,6 +136,8 @@ class WalletHistory extends React.Component {
   };
 
   handleSorting(event, property) {
+    const { getTransactionsReturn } = this.props;
+
     const orderBy = property;
     let order = 'desc';
 
@@ -187,22 +146,25 @@ class WalletHistory extends React.Component {
     }
 
     const data = order === 'desc'
-      ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      ? getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      : getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    this.setState({ data, order, orderBy });
+    this.setState({
+      order,
+      orderBy,
+    });
   }
 
   getTableRows(data) {
     return (
       <TableBody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <TableRow key={item.txid}>
             <TableCell>
-              {getShortLocalDateTimeString(item.time)}
+              {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
             </TableCell>
             <TableCell>
-              {item.from}
+              {item.senderAddress}
             </TableCell>
             <TableCell>
               {item.to}
@@ -228,16 +190,21 @@ class WalletHistory extends React.Component {
 
 WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
+  getTransactions: PropTypes.func.isRequired,
+  getTransactionsReturn: PropTypes.array,
 };
 
 WalletHistory.defaultProps = {
+  getTransactionsReturn: [],
 };
 
 const mapStateToProps = (state) => ({
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   };
 }
 
