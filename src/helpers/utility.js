@@ -30,7 +30,7 @@ export function decimalToSatoshi(number) {
   if (!number) {
     return number;
   }
-  
+
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
   return new BigNumber(number).multipliedBy(conversionBN).toString(10);
 }
