@@ -87,9 +87,12 @@
   "oracle.resultSetter": "Result setter",
   "oracle.voteNote": "BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards.",
   "oracle.voting-1": "Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result.",
-  "predictInfo.endDate": "ENDING DATE",
-  "predictInfo.fund": "FUNDING",
-  "predictInfo.resultSetter": "RESULT SETTER",
+  "eventInfo.endDate": "ENDING DATE",
+  "eventInfo.fund": "FUNDING",
+  "eventInfo.resultSetter": "RESULT SETTER",
+  "eventInfo.predictionFund": "PREDICTION FUNDING",
+  "eventInfo.voteVolumn": "VOTING VOLUMN",
+  "eventInfo.creator": "CREATOR",
   "sort.asc": "Ascending",
   "sort.desc": "Descending",
   "sort.label": "Sort By",
@@ -124,5 +127,11 @@
   "walletHistory.transferHistory": "Transfer History",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:",
-  "withdrawDialog.send": "Send"
+  "withdrawDialog.send": "Send",
+  "withdrawDetail.winningOutcome": "WINNING OUTCOME",
+  "withdrawDetail.reward": "REWARD",
+  "withdrawDetail.withdrawTo": "WITHDRAW TO",
+  "withdrawDetail.returnRate": "Return rate: ",
+  "withdrawDetail.youBet": "You bet ",
+  "withdrawDetail.youVote": "You voted "
 }

@@ -1,7 +1,6 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { PropTypes } from 'react';
-import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -13,7 +12,11 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormControl } from 'material-ui/Form';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import Select from 'material-ui/Select';
 
+import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import CardInfo from '../../../components/bodhi-dls/cardInfo';
 import CardFinished from '../../../components/bodhi-dls/cardFinished';
@@ -27,12 +30,37 @@ import graphqlActions from '../../../redux/Graphql/actions';
 import stateActions from '../../../redux/State/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
+
 import styles from './styles';
 
 const pageMessage = defineMessages({
   withdraw: {
     id: 'cardFinish.withdraw',
     defaultMessage: 'You can withdraw',
+  },
+  winning: {
+    id: 'withdrawDetail.winningOutcome',
+    defaultMessage: 'WINNING OUTCOME',
+  },
+  reward: {
+    id: 'withdrawDetail.reward',
+    defaultMessage: 'REWARD',
+  },
+  withdrawTo: {
+    id: 'withdrawDetail.withdrawTo',
+    defaultMessage: 'WITHDRAW TO',
+  },
+  returnRate: {
+    id: 'withdrawDetail.returnRate',
+    defaultMessage: 'Return rate: ',
+  },
+  youBet: {
+    id: 'withdrawDetail.youBet',
+    defaultMessage: 'You bet ',
+  },
+  youVote: {
+    id: 'withdrawDetail.youVote',
+    defaultMessage: 'You bet ',
   },
 });
 
@@ -45,6 +73,7 @@ class TopicPage extends React.Component {
       topic: undefined,
       config: undefined,
       transactions: [],
+      currentWalletIdx: this.props.walletAddrsIndex,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
@@ -52,6 +81,9 @@ class TopicPage extends React.Component {
     this.executeTopicsRequest = this.executeTopicsRequest.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
+    this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
+    this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
+    this.renderOptions = this.renderOptions.bind(this);
   }
 
   componentWillMount() {
@@ -108,32 +140,165 @@ class TopicPage extends React.Component {
               {topic.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              <Button
-                variant="raised"
-                fullWidth
-                size="large"
-                color="primary"
-                disabled={this.state.isApproving}
-                onClick={this.onWithdrawClicked}
-                className={classes.eventActionButton}
-              >
-                {
-                  this.state.isApproving ?
-                    <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                    'Withdraw'
-                }
-              </Button>
+              {this.renderWithdrawContainer()}
+              {this.renderOptions()}
               <EventTxHistory transactions={transactions} options={topic.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-            <EventInfo oracle={topic} className={classes.eventDetailInfo} />
+            <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
             <StepperVertRight steps={config.topicInfo.steps} />
           </Grid>
         </Grid>
         <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
+  }
+
+  renderWithdrawContainer() {
+    const { classes, txReturn, walletAddrs } = this.props;
+    const { topic, transactions, config } = this.state;
+
+    return (
+      <Paper className={classes.withdrawPaper}>
+        <div className={classes.withdrawContainerSection}>
+          <div className={classes.withdrawContainerSectionIcon}>
+            <i className="icon iconfont icon-ic_reward"></i>
+          </div>
+          <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
+            {this.props.intl.formatMessage(pageMessage.winning)}
+          </Typography>
+          <Typography className={classes.withdrawWinningOption}>
+            Bloomberg
+          </Typography>
+          <Typography variant="caption">
+            {this.props.intl.formatMessage(pageMessage.youBet)}
+            8.99 QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
+            9.99 BOT.
+          </Typography>
+        </div>
+        <div className={classes.withdrawContainerSection}>
+          <div className={classes.withdrawContainerSectionIcon}>
+            <i className="icon iconfont icon-coin"></i>
+          </div>
+          <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
+            {this.props.intl.formatMessage(pageMessage.reward)}
+          </Typography>
+          <div>
+            <div className={classes.withdrawRewardWrapper}>
+              <Typography variant="display1">
+                + 19.9 <span className={classes.withdrawToken}>QTUM</span>
+              </Typography>
+              <Typography variant="caption">
+                {this.props.intl.formatMessage(pageMessage.returnRate)}
+                50%
+              </Typography>
+            </div>
+            <div className={classes.withdrawRewardDivider} />
+            <div className={classes.withdrawRewardWrapper}>
+              <Typography variant="display1">
+                + 10.00 <span className={classes.withdrawToken}>BOT</span>
+              </Typography>
+              <Typography variant="caption">
+                {this.props.intl.formatMessage(pageMessage.returnRate)}
+                50%
+              </Typography>
+            </div>
+          </div>
+        </div>
+        <div className={classNames(classes.withdrawContainerSection, 'last')}>
+          <div className={classes.withdrawContainerSectionIcon}>
+            <i className="icon iconfont icon-ic_wallet"></i>
+          </div>
+          <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
+            {this.props.intl.formatMessage(pageMessage.withdrawTo)}
+          </Typography>
+          <Select
+            native
+            fullWidth
+            value={0}
+            onChange={this.handleAddrChange}
+            inputProps={{
+              id: 'address',
+            }}
+          >
+            {walletAddrs.map((item, index) => (
+              <option key={item.address} value={index}>{item.address}</option>
+            ))}
+          </Select>
+        </div>
+        <Button
+          variant="raised"
+          fullWidth
+          size="large"
+          color="primary"
+          disabled={this.state.isApproving}
+          onClick={this.onWithdrawClicked}
+          className={classes.eventActionButton}
+        >
+          {
+            this.state.isApproving ?
+              <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+              'Withdraw'
+          }
+        </Button>
+      </Paper>
+    );
+  }
+
+  renderOptions() {
+    const { classes } = this.props;
+    const { topic } = this.state;
+
+    return (
+      <div className={classes.withdrawOptionsWrapper}>
+        {_.map(topic.options, (option, index) => (
+          <div className={classNames(classes.withdrawContainerSection, 'option')}>
+            <div className={classes.eventOptionNum}>{index + 1}</div>
+            <Typography variant="title" className={classes.withdrawWinningOptionSmall}>
+              {option}
+            </Typography>
+            <Typography variant="caption">
+              {this.props.intl.formatMessage(pageMessage.youBet)}
+              8.99 QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
+              9.99 BOT.
+            </Typography>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  getEventInfoObjs() {
+    const { topic } = this.state;
+
+    if (_.isEmpty(topic)) {
+      return [];
+    }
+
+    const qtumTotal = _.sum(topic.qtumAmount);
+    const botTotal = _.sum(topic.botAmount);
+
+    let resultSetterQAddress;
+    _.map(topic.oracles, (oracle) => {
+      const setterAddress = oracle.resultSetterQAddress;
+      if (setterAddress) {
+        resultSetterQAddress = setterAddress;
+      }
+    });
+
+    return [
+      {
+        label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="PREDICTION FUNDING" />,
+        content: `${qtumTotal} QTUM`,
+      }, {
+        label: <FormattedMessage id="eventInfo.voteVolumn" defaultMessage="VOTING VOLUME" />,
+        content: `${botTotal} BOT`,
+      }, {
+        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
+        content: resultSetterQAddress,
+      },
+    ];
   }
 
   handleWalletChange(idx) {
@@ -157,6 +322,9 @@ class TopicPage extends React.Component {
     const { calculateWinnings } = this.props;
 
     calculateWinnings(this.state.address, walletAddress);
+
+    console.log(this.state.botWinnings);
+    console.log(this.state.qtumWinnings);
   }
 
   /** Withdraw button on click handler passed down to CardFinished */

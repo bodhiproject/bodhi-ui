@@ -122,6 +122,10 @@ const bodhiTheme = createMuiTheme({
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
+    caption: {
+      fontSize: px(fontSizeMeta),
+      color: textColorLight,
+    },
   },
   /* override component globally */
   overrides: {

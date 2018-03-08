@@ -13,6 +13,7 @@ import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
+import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
@@ -62,6 +63,7 @@ class OraclePage extends React.Component {
     this.setResult = this.setResult.bind(this);
     this.vote = this.vote.bind(this);
     this.finalizeResult = this.finalizeResult.bind(this);
+    this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
   }
 
   componentWillMount() {
@@ -153,13 +155,37 @@ class OraclePage extends React.Component {
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-            <EventInfo oracle={oracle} className={classes.eventDetailInfo} />
+            <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
             <StepperVertRight steps={config.eventInfo.steps} />
           </Grid>
         </Grid>
         <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
+  }
+
+  getEventInfoObjs() {
+    const { oracle } = this.state;
+
+    if (_.isEmpty(oracle)) {
+      return [];
+    }
+
+    const totalAmount = _.sum(oracle.amounts);
+
+    return [
+      {
+        label: <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
+        content: getLocalDateTimeString(oracle.endTime),
+        highlight: getEndTimeCountDownString(oracle.endTime),
+      }, {
+        label: <FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />,
+        content: `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`,
+      }, {
+        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
+        content: oracle.resultSetterQAddress,
+      },
+    ];
   }
 
   handleOptionChange(idx) {
@@ -462,7 +488,7 @@ OraclePage.defaultProps = {
   clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
-  walletAddrsIndex: 1,
+  walletAddrsIndex: 0,
 };
 
 const mapStateToProps = (state) => ({

@@ -7,59 +7,45 @@ import Typography from 'material-ui/Typography';
 import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 
-import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
 import styles from './styles';
 
 class EventInfo extends React.PureComponent {
   render() {
-    const { classes, oracle } = this.props;
+    const { classes, infoObjs } = this.props;
+
+    if (!infoObjs || infoObjs.length === 0) {
+      return null;
+    }
 
     return (
       <div className={classes.eventInfoWrapper}>
-        {this.renderInfoBlock(
-          <FormattedMessage id="predictInfo.endDate" defaultMessage="ENDING DATE" />,
-          getLocalDateTimeString(oracle.endTime),
-          getEndTimeCountDownString(oracle.endTime)
-        )}
-        {this.renderInfoBlock(<FormattedMessage id="predictInfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
-        {this.renderInfoBlock(<FormattedMessage id="predictInfo.resultSetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
+        {
+          _.map(infoObjs, (infoObj, index) => (
+            infoObj.label && infoObj.content ?
+              <Grid key={`info${index}`} item xs={6} md={12} className={classes.eventInfoBlock}>
+                <Typography variant="body1">
+                  {infoObj.label}
+                </Typography>
+                <Typography variant="title" className={classes.eventInfo}>
+                  {infoObj.content}
+                </Typography>
+                {
+                  infoObj.highlight ? (
+                    <Typography variant="body2" color="secondary">
+                      {infoObj.highlight}
+                    </Typography>) : null
+                }
+              </Grid> : null
+          ))
+        }
       </div>
     );
-  }
-
-  renderInfoBlock(label, content, highlight) {
-    const { classes } = this.props;
-
-    return (
-      <Grid item xs={6} md={12} className={classes.eventInfoBlock}>
-        <Typography variant="body1">
-          {label}
-        </Typography>
-        <Typography variant="title" className={classes.eventInfo}>
-          {content}
-        </Typography>
-        {
-          highlight ? (
-            <Typography variant="body2" color="secondary">
-              {highlight}
-            </Typography>) : null
-        }
-      </Grid>
-    );
-  }
-
-  getTotalFundWithToken() {
-    const { oracle } = this.props;
-
-    const totalAmount = _.sum(oracle.amounts);
-
-    return `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`;
   }
 }
 
 EventInfo.propTypes = {
   classes: PropTypes.object.isRequired,
-  oracle: PropTypes.object.isRequired,
+  infoObjs: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(injectIntl(EventInfo));
