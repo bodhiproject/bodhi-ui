@@ -6,19 +6,20 @@ import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
 import { withStyles } from 'material-ui/styles';
 
+import styles from './styles';
 import AppRouter from './router';
-import Loader from './components/Loader/index';
 import GlobalHub from './globalHub';
+import Loader from './components/Loader/index';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
-import styles from './styles';
+import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 
 const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
   render() {
-    const { classes } = this.props;
+    const { classes, txReturn } = this.props;
     const { url } = this.props.match;
 
     return (
@@ -38,6 +39,7 @@ export class App extends React.PureComponent {
         <NavBar langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />
+          <TransactionSentDialog txReturn={txReturn} />
         </div>
         <BottomBar />
       </div>
@@ -50,6 +52,21 @@ App.propTypes = {
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   langHandler: PropTypes.func.isRequired,
+  txReturn: PropTypes.object,
 };
 
-export default connect((state) => ({ auth: state.Auth }), { toggleAll })(withStyles(styles)(App));
+App.defaultProps = {
+  txReturn: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  txReturn: state.Graphql.get('txReturn'),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleAll: () => dispatch(appActions.toggleAll()),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App));

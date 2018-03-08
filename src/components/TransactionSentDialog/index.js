@@ -48,7 +48,12 @@ class TransactionSentDialog extends React.PureComponent {
   }
 
   render() {
-    const { intl, classes, txReturn, requestError } = this.props;
+    const {
+      intl,
+      classes,
+      txReturn,
+      requestError,
+    } = this.props;
 
     let contentText;
     if (txReturn) {
@@ -65,7 +70,7 @@ class TransactionSentDialog extends React.PureComponent {
 
     return (
       <Dialog
-        open={Boolean(txReturn)}
+        open={txReturn || requestError}
         onClose={this.handleAlertClose}
       >
         <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
