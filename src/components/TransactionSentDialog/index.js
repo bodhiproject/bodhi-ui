@@ -48,11 +48,13 @@ class TransactionSentDialog extends React.PureComponent {
   }
 
   render() {
-    const { intl, classes, txReturn } = this.props;
+    const { intl, classes, txReturn, requestError } = this.props;
 
     let contentText;
     if (txReturn) {
-      contentText = txReturn && txReturn.txid ? this.getSuccessText() : this.getErrorText();
+      contentText = this.getSuccessText();
+    } else if (requestError) {
+      contentText = this.getErrorText();
     } else {
       contentText = {
         title: '',
@@ -92,10 +94,10 @@ class TransactionSentDialog extends React.PureComponent {
   }
 
   getErrorText() {
-    const { intl, txReturn } = this.props;
+    const { intl, requestError } = this.props;
     return {
       title: intl.formatMessage(messages.failureMsg),
-      bodyPrimary: txReturn.error,
+      bodyPrimary: requestError.msg,
       bodySecondary: '',
     };
   }
@@ -109,12 +111,14 @@ TransactionSentDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   txReturn: PropTypes.object,
   clearTxReturn: PropTypes.func.isRequired,
+  requestError: PropTypes.object,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
 
 TransactionSentDialog.defaultProps = {
   txReturn: undefined,
+  requestError: undefined,
 };
 
 const mapStateToProps = (state) => ({
