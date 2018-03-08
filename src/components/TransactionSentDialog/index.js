@@ -76,10 +76,8 @@ class TransactionSentDialog extends React.PureComponent {
       >
         <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Typography variant="body1" className={classes.bodyText1}>{contentText.bodyPrimary}</Typography>
-            <Typography variant="body1">{contentText.bodySecondary}</Typography>
-          </DialogContentText>
+          <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
+          <Typography variant="body1">{contentText.bodySecondary}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onOkClicked}>
