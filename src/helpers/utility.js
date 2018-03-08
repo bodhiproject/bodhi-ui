@@ -33,12 +33,19 @@ export function decimalToSatoshi(number) {
 
 /**
  * Converts Satoshi/Botoshi to a decimal number.
- * @param number {String} The Satoshi/Botoshi string to convert.
+ * @param number {String} The Satoshi/Botoshi string (or hex string) to convert.
  * @return {String} The converted decimal number.
  */
 export function satoshiToDecimal(number) {
+  let bn;
+  if (_.isNaN(Number(number))) {
+    bn = new BigNumber(number, 16);
+  } else {
+    bn = new BigNumber(number);
+  }
+
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return new BigNumber(number).dividedBy(conversionBN).toString(10);
+  return bn.dividedBy(conversionBN).toString(10);
 }
 
 /**
