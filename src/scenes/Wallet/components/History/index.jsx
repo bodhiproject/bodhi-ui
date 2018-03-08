@@ -136,6 +136,8 @@ class WalletHistory extends React.Component {
   };
 
   handleSorting(event, property) {
+    const { getTransactionsReturn } = this.props;
+
     const orderBy = property;
     let order = 'desc';
 
@@ -144,10 +146,13 @@ class WalletHistory extends React.Component {
     }
 
     const data = order === 'desc'
-      ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      ? getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      : getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    this.setState({ data, order, orderBy });
+    this.setState({
+      order,
+      orderBy,
+    });
   }
 
   getTableRows(data) {
