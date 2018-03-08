@@ -25,15 +25,24 @@ class WalletHistory extends React.Component {
       orderBy: 'time',
     };
 
+    this.getTransactions = this.getTransactions.bind(this);
     this.getTableHeader = this.getTableHeader.bind(this);
     this.createSortHandler = this.createSortHandler.bind(this);
     this.handleSorting = this.handleSorting.bind(this);
   }
 
   componentWillMount() {
-    this.props.getTransactions([
-      { type: TransactionType.Transfer },
-    ]);
+    this.getTransactions();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      txReturn,
+    } = this.props;
+
+    if (txReturn && !nextProps.txReturn) {
+      this.getTransactions();
+    }
   }
 
   render() {
@@ -52,6 +61,12 @@ class WalletHistory extends React.Component {
         </Grid>
       </Paper>
     );
+  }
+
+  getTransactions() {
+    this.props.getTransactions([
+      { type: TransactionType.Transfer },
+    ]);
   }
 
   getTableHeader() {
@@ -192,14 +207,17 @@ WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
   getTransactions: PropTypes.func.isRequired,
   getTransactionsReturn: PropTypes.array,
+  txReturn: PropTypes.object,
 };
 
 WalletHistory.defaultProps = {
   getTransactionsReturn: [],
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
