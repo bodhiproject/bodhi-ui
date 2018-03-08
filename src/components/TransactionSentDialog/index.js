@@ -74,9 +74,9 @@ class TransactionSentDialog extends React.PureComponent {
         open={Boolean(txReturn)}
         onClose={this.onOkClicked}
       >
-        <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
+        <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText>
             <Typography variant="body1" className={classes.bodyText1}>{contentText.bodyPrimary}</Typography>
             <Typography variant="body1">{contentText.bodySecondary}</Typography>
           </DialogContentText>
