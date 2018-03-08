@@ -255,7 +255,7 @@ class MyBalances extends React.PureComponent {
     return (
       <TableBody>
         {data.map((item, index) =>
-          (<TableRow key={item.address} selected={index % 2 !== 0} className={classes.tableRow}>
+          (<TableRow key={item.address} selected={index % 2 !== 0}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
             </TableCell>

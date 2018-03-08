@@ -194,6 +194,7 @@ const bodhiTheme = createMuiTheme({
     MuiTableCell: {
       typeBody: {
         color: textColorGrey,
+        padding: px(spaceUnit),
       },
       typeHead: {
         fontWeight: 700,

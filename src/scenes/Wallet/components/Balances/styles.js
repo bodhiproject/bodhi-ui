@@ -25,10 +25,6 @@ const styles = (theme) => ({
   tableHeaderItemText: {
     fontWeight: theme.typography.fontWeightBold,
   },
-  tableRow: {
-    height: 42,
-    padding: theme.padding.unit.px,
-  },
   tableRowCopyButton: {
     color: theme.palette.primary.main,
   },
