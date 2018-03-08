@@ -134,10 +134,6 @@ class CreateTopic extends React.Component {
     this.props.getInsightTotals();
   }
 
-  componentWillUnmount() {
-    this.props.clearTxReturn();
-  }
-
   componentWillReceiveProps(nextProps) {
     const {
       txReturn,
@@ -619,7 +615,6 @@ CreateTopic.propTypes = {
   form: PropTypes.object.isRequired,
   createTopicTx: PropTypes.func,
   txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func,
   getInsightTotals: PropTypes.func,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -632,7 +627,6 @@ CreateTopic.propTypes = {
 CreateTopic.defaultProps = {
   createTopicTx: undefined,
   txReturn: undefined,
-  clearTxReturn: undefined,
   getInsightTotals: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -669,7 +663,6 @@ function mapDispatchToProps(dispatch) {
       resultSettingEndTime,
       senderAddress
     )),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   };
 }

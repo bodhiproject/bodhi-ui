@@ -39,9 +39,9 @@ export class App extends React.PureComponent {
         <NavBar langHandler={this.props.langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} />
-          <TransactionSentDialog txReturn={txReturn} />
         </div>
         <BottomBar />
+        <TransactionSentDialog txReturn={txReturn} />
       </div>
     );
   }

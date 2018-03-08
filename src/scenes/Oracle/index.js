@@ -84,10 +84,6 @@ class OraclePage extends React.Component {
     this.setState({ transactions: getTransactionsReturn });
   }
 
-  componentWillUnmount() {
-    this.props.clearTxReturn();
-  }
-
   render() {
     const { classes, txReturn } = this.props;
     const { oracle, transactions, config } = this.state;
@@ -440,7 +436,6 @@ OraclePage.propTypes = {
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -458,7 +453,6 @@ OraclePage.defaultProps = {
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
   txReturn: undefined,
-  clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 1,
@@ -492,7 +486,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

@@ -71,8 +71,8 @@ class TransactionSentDialog extends React.PureComponent {
 
     return (
       <Dialog
-        open={txReturn}
-        onClose={this.handleAlertClose}
+        open={Boolean(txReturn)}
+        onClose={this.onOkClicked}
       >
         <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
         <DialogContent>
