@@ -19,7 +19,6 @@ import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
-import stateActions from '../../../redux/State/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';

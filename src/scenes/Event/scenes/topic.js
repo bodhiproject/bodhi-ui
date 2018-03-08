@@ -18,16 +18,11 @@ import Select from 'material-ui/Select';
 
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
-import CardInfo from '../../../components/bodhi-dls/cardInfo';
-import CardFinished from '../../../components/bodhi-dls/cardFinished';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
-import ProgressBar from '../../../components/bodhi-dls/progressBar';
-import IsoWidgetsWrapper from '../../Widgets/widgets-wrapper';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import stateActions from '../../../redux/State/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 
