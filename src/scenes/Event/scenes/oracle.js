@@ -21,7 +21,7 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
-import { Token, OracleStatus } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
 
@@ -176,25 +176,31 @@ class OraclePage extends React.Component {
       currentOptionIdx,
       voteAmount,
       config,
-      isApproving,
+      transactions,
+      address,
     } = this.state;
 
-    // if (config.predictionAction.btnDisabled) {
-    //   return true;
-    // }
+    if (config.predictionAction.btnDisabled) {
+      return true;
+    }
 
-    // if (currentOptionIdx === -1) {
-    //   return true;
-    // }
+    const pendingTxs = _.filter(transactions, (tx) => { oracleAddress: address, status: TransactionStatus.Pending });
+    if (pendingTxs > 0) {
+      return true;
+    }
 
-    // if ((voteAmount === 0 || Number.isNaN(voteAmount)) && config.predictionAction.showAmountInput) {
-    //   return true;
-    // }
+    if (currentOptionIdx === -1) {
+      return true;
+    }
 
-    // // TODO: replace with if has pending Transaction
-    // if (isApproving) && !config.predictionAction.skipExpansion) {
+    if ((voteAmount === 0 || Number.isNaN(voteAmount)) && config.predictionAction.showAmountInput) {
+      return true;
+    }
 
-    // }
+    // TODO: replace with if has pending Transaction
+    if (isApproving) && !config.predictionAction.skipExpansion) {
+
+    }
 
     return false;
   }
