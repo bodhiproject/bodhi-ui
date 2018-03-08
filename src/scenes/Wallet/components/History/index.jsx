@@ -158,7 +158,7 @@ class WalletHistory extends React.Component {
   getTableRows(data) {
     return (
       <TableBody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <TableRow key={item.txid}>
             <TableCell>
               {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
