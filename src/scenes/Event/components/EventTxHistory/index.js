@@ -9,7 +9,7 @@ import { withStyles } from 'material-ui/styles';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 import styles from './styles';
 
-class PredictionTxHistory extends React.PureComponent {
+class EventTxHistory extends React.PureComponent {
   render() {
     const { classes, transactions, options } = this.props;
 
@@ -50,10 +50,10 @@ class PredictionTxHistory extends React.PureComponent {
   }
 }
 
-PredictionTxHistory.propTypes = {
+EventTxHistory.propTypes = {
   classes: PropTypes.object.isRequired,
   transactions: PropTypes.array.isRequired,
   options: PropTypes.array.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(injectIntl(PredictionTxHistory));
+export default withStyles(styles, { withTheme: true })(injectIntl(EventTxHistory));

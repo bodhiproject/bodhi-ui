@@ -1,20 +1,33 @@
+/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+
 import React, { PropTypes } from 'react';
 import { Row, Col, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import Paper from 'material-ui/Paper';
+import Grid from 'material-ui/Grid';
+import { CircularProgress } from 'material-ui/Progress';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
+import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
-import CardInfo from '../../components/bodhi-dls/cardInfo';
-import CardFinished from '../../components/bodhi-dls/cardFinished';
-import ProgressBar from '../../components/bodhi-dls/progressBar';
-import IsoWidgetsWrapper from '../Widgets/widgets-wrapper';
-import topicActions from '../../redux/Topic/actions';
-import graphqlActions from '../../redux/Graphql/actions';
-import stateActions from '../../redux/State/actions';
-import { Token, OracleStatus } from '../../constants';
-import CardInfoUtil from '../../helpers/cardInfoUtil';
-
+import StepperVertRight from '../../../components/StepperVertRight/index';
+import CardInfo from '../../../components/bodhi-dls/cardInfo';
+import CardFinished from '../../../components/bodhi-dls/cardFinished';
+import EventInfo from '../components/EventInfo/index';
+import EventTxHistory from '../components/EventTxHistory/index';
+import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
+import ProgressBar from '../../../components/bodhi-dls/progressBar';
+import IsoWidgetsWrapper from '../../Widgets/widgets-wrapper';
+import topicActions from '../../../redux/Topic/actions';
+import graphqlActions from '../../../redux/Graphql/actions';
+import stateActions from '../../../redux/State/actions';
+import { Token, OracleStatus } from '../../../constants';
+import CardInfoUtil from '../../../helpers/cardInfoUtil';
+import styles from './styles';
 
 const pageMessage = defineMessages({
   withdraw: {
@@ -22,6 +35,7 @@ const pageMessage = defineMessages({
     defaultMessage: 'You can withdraw',
   },
 });
+
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
@@ -30,11 +44,14 @@ class TopicPage extends React.Component {
       address: this.props.match.params.address,
       topic: undefined,
       config: undefined,
+      transactions: [],
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
-    this.pageConfiguration = this.pageConfiguration.bind(this);
+    this.executeTopicsRequest = this.executeTopicsRequest.bind(this);
+    this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
   }
 
   componentWillMount() {
@@ -45,6 +62,7 @@ class TopicPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       getTopicsReturn,
+      getTransactionsReturn,
       botWinnings,
       qtumWinnings,
       syncBlockTime,
@@ -62,17 +80,17 @@ class TopicPage extends React.Component {
     }
 
     const topic = _.find(getTopicsReturn, { address: this.state.address });
-    this.pageConfiguration(topic, botWinnings, qtumWinnings);
+    this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
+    this.setState({ transactions: getTransactionsReturn });
   }
 
   componentWillUnmount() {
     this.props.clearTxReturn();
-    this.props.clearEditingToggled();
   }
 
   render() {
-    const { txReturn } = this.props;
-    const { topic, config } = this.state;
+    const { classes, txReturn } = this.props;
+    const { topic, transactions, config } = this.state;
 
     if (!topic || !config) {
       // TODO: render no result page
@@ -82,80 +100,57 @@ class TopicPage extends React.Component {
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
 
-    const progressValues = _.map(topic.options, (opt, idx) => {
-      const qtumAmount = topic.qtumAmount[idx];
-      const botAmount = topic.botAmount[idx];
-
-      return {
-        name: opt,
-        value: `${qtumAmount.toFixed(2)} ${Token.Qtum}, ${botAmount.toFixed(2)} ${Token.Bot}`,
-        percent: qtumTotal === 0 ? qtumTotal : _.round((qtumAmount / qtumTotal) * 100),
-        secondaryPercent: botTotal === 0 ? botTotal : _.round((botAmount / botTotal) * 100),
-      };
-    });
-
-    const topicElement = (<Row
-      gutter={28}
-      justify="center"
-    >
-
-      {config.cardInfo ?
-        <Col xl={12} lg={12}>
-          <IsoWidgetsWrapper padding="32px" >
-            <CardInfo
-              title={topic.name}
-              config={config.cardInfo}
-            >
-            </CardInfo>
-          </IsoWidgetsWrapper>
-        </Col> : null}
-
-      {config.cardAction ?
-        <Col xl={12} lg={12}>
-          <IsoWidgetsWrapper padding="32px">
-            <CardFinished
-              amount={qtumTotal}
-              onWithdraw={this.onWithdrawClicked}
-              radioIndex={topic.resultIdx}
-              result={txReturn}
-            >
-              {_.map(progressValues, (entry, index) => (
-                <ProgressBar
-                  key={`progress ${index}`}
-                  label={entry.name}
-                  value={entry.value}
-                  percent={entry.percent}
-                  barHeight={12}
-                  barColor={topic.resultIdx === index ? '' : 'grey'}
-                  secondaryPercent={entry.secondaryPercent}
-                  secondaryBarHeight={10}
-                  marginBottom={18}
-                />))}
-            </CardFinished>
-          </IsoWidgetsWrapper>
-        </Col>
-        : null}
-    </Row>);
-
     return (
-      <div>
-        <Row style={{ width: '100%', height: '48px' }}>
-          <Breadcrumb style={{ fontSize: '16px' }}>
-            <Breadcrumb.Item><Link to="/"><FormattedMessage id="topBar.event" defaultMessage="Event" /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item><FormattedMessage id="topBar.completed" defaultMessage="Completed" /></Breadcrumb.Item>
-          </Breadcrumb>
-        </Row>
-        <Row style={{ width: '100%' }}>
-          {topicElement}
-        </Row>
-      </div>
+      <Paper className={classes.eventDetailPaper}>
+        <Grid container spacing={0}>
+          <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
+            <Typography variant="display1" className={classes.eventDetailTitle}>
+              {topic.name}
+            </Typography>
+            <Grid item xs={12} lg={9}>
+              <Button
+                variant="raised"
+                fullWidth
+                size="large"
+                color="primary"
+                disabled={this.state.isApproving}
+                onClick={this.onWithdrawClicked}
+                className={classes.eventActionButton}
+              >
+                {
+                  this.state.isApproving ?
+                    <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                    'Withdraw'
+                }
+              </Button>
+              <EventTxHistory transactions={transactions} options={topic.options} />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <EventInfo oracle={topic} className={classes.eventDetailInfo} />
+            <StepperVertRight steps={config.topicInfo.steps} />
+          </Grid>
+        </Grid>
+        <TransactionSentDialog txReturn={this.props.txReturn} />
+      </Paper>
     );
+  }
+
+  handleWalletChange(idx) {
+    this.setState({ currentWalletIdx: idx });
+  }
+
+  getCurrentWalletAddr() {
+    return this.props.walletAddrs[this.state.currentWalletIdx].address;
   }
 
   executeTopicsRequest() {
     this.props.getTopics([
       { address: this.state.address },
     ]);
+    this.props.getTransactions([
+      { topicAddress: this.state.address },
+    ], undefined);
   }
 
   calculateWinnings(walletAddress) {
@@ -177,7 +172,7 @@ class TopicPage extends React.Component {
     return walletAddrs[walletAddrsIndex].address;
   }
 
-  pageConfiguration(topic, botWinnings, qtumWinnings) {
+  constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
 
     if (topic) {
@@ -195,7 +190,7 @@ class TopicPage extends React.Component {
         config = {
           name: 'COMPLETED',
           breadcrumbLabel: 'Completed',
-          cardInfo: {
+          topicInfo: {
             steps: CardInfoUtil.getSteps(
               syncBlockTime,
               centralizedOracle,
@@ -214,14 +209,14 @@ class TopicPage extends React.Component {
         };
 
         // Add withdrawal amount
-        config.cardInfo.messages.push({
+        config.topicInfo.messages.push({
           text: `${this.props.intl.formatMessage(pageMessage.withdraw)} ${(topic.botWinnings && topic.botWinnings.toFixed(2)) || 0} ${Token.Bot} 
             & ${(topic.qtumWinnings && topic.qtumWinnings.toFixed(2)) || 0} ${Token.Qtum}.`,
           type: 'default',
         });
 
         // Highlight current step using current field
-        config.cardInfo.steps.current = config.cardInfo.steps.value.length - 1;
+        config.topicInfo.steps.current = config.topicInfo.steps.value.length - 1;
 
         this.setState({
           topic,
@@ -233,8 +228,11 @@ class TopicPage extends React.Component {
 }
 
 TopicPage.propTypes = {
+  classes: PropTypes.object.isRequired,
   getTopics: PropTypes.func,
   getTopicsReturn: PropTypes.array,
+  getTransactions: PropTypes.func,
+  getTransactionsReturn: PropTypes.array,
   createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
@@ -245,7 +243,6 @@ TopicPage.propTypes = {
   botWinnings: PropTypes.number,
   qtumWinnings: PropTypes.number,
   clearTxReturn: PropTypes.func,
-  clearEditingToggled: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
   txReturn: PropTypes.object,
@@ -254,12 +251,13 @@ TopicPage.propTypes = {
 TopicPage.defaultProps = {
   getTopics: undefined,
   getTopicsReturn: undefined,
+  getTransactions: undefined,
+  getTransactionsReturn: [],
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: undefined,
   clearTxReturn: undefined,
-  clearEditingToggled: undefined,
   calculateWinnings: undefined,
   botWinnings: undefined,
   qtumWinnings: undefined,
@@ -272,6 +270,7 @@ const mapStateToProps = (state) => ({
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   selectedWalletAddress: state.App.get('selectedWalletAddress'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
@@ -282,11 +281,11 @@ function mapDispatchToProps(dispatch) {
     calculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
     getTopics: () => dispatch(graphqlActions.getTopics()),
+    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-    clearEditingToggled: () => dispatch(stateActions.clearEditingToggled()),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(TopicPage));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(TopicPage)));

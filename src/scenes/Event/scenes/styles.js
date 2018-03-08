@@ -1,9 +1,9 @@
 const styles = (theme) => ({
-  predictionDetailPaper: {
+  eventDetailPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
   },
-  predictionDetailContainerGrid: {
+  eventDetailContainerGrid: {
     padding: theme.padding.lg.px,
     overflowX: 'hidden',
     '&.right': {
@@ -11,10 +11,10 @@ const styles = (theme) => ({
       textAlign: 'right',
     },
   },
-  predictionDetailTitle: {
+  eventDetailTitle: {
     marginBottom: theme.padding.md.px,
   },
-  predictButton: {
+  eventActionButton: {
     marginTop: theme.padding.md.px,
   },
 });

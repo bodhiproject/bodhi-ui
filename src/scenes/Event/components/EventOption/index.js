@@ -17,7 +17,7 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 
-class PredictionOption extends React.PureComponent {
+class EventOption extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -49,21 +49,21 @@ class PredictionOption extends React.PureComponent {
       <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
         <div
           className={classNames(
-            classes.predictionOptionCollapse,
+            classes.eventOptionCollapse,
             isLast || optionIdx === currentOptionIdx ? 'last' : '',
             optionIdx === 0 || optionIdx === currentOptionIdx ? 'first' : ''
           )}
         >
           <ExpansionPanel expanded={optionIdx === currentOptionIdx || skipExpansion} onChange={this.handleExpansionChange}>
             <ExpansionPanelSummary>
-              <div className={classes.predictionOptionWrapper}>
-                <div className={classes.predictionOptionNum}>{optionIdx + 1}</div>
+              <div className={classes.eventOptionWrapper}>
+                <div className={classes.eventOptionNum}>{optionIdx + 1}</div>
                 <Typography variant="title">
                   {name}
                 </Typography>
-                <div className={classes.predictionOptionProgress}>
+                <div className={classes.eventOptionProgress}>
                   <LinearProgress color="secondary" variant="determinate" value={percent} />
-                  <div className={classes.predictionOptionProgressNum}>{percent}%</div>
+                  <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
                   {amount}
@@ -86,8 +86,8 @@ class PredictionOption extends React.PureComponent {
     } = this.props;
 
     return (<ExpansionPanelDetails>
-      <div className={classNames(classes.predictionOptionWrapper, 'noMargin')}>
-        <div className={classes.predictionOptionIcon}>
+      <div className={classNames(classes.eventOptionWrapper, 'noMargin')}>
+        <div className={classes.eventOptionIcon}>
           <i className="icon iconfont icon-coin"></i>
         </div>
         <FormControl fullWidth>
@@ -99,7 +99,7 @@ class PredictionOption extends React.PureComponent {
             value={voteAmount}
             type="number"
             placeholder="0.00"
-            className={classes.predictionOptionInput}
+            className={classes.eventOptionInput}
             onChange={this.handleAmountChange}
             endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
           />
@@ -116,8 +116,8 @@ class PredictionOption extends React.PureComponent {
     } = this.props;
 
     return (<ExpansionPanelDetails>
-      <div className={classNames(classes.predictionOptionWrapper, 'noMargin', 'last')}>
-        <div className={classes.predictionOptionIcon}>
+      <div className={classNames(classes.eventOptionWrapper, 'noMargin', 'last')}>
+        <div className={classes.eventOptionIcon}>
           <i className="icon iconfont icon-wallet"></i>
         </div>
         <FormControl fullWidth>
@@ -167,7 +167,7 @@ class PredictionOption extends React.PureComponent {
   }
 }
 
-PredictionOption.propTypes = {
+EventOption.propTypes = {
   classes: PropTypes.object.isRequired,
   isLast: PropTypes.bool.isRequired,
   currentOptionIdx: PropTypes.number.isRequired,
@@ -186,8 +186,8 @@ PredictionOption.propTypes = {
   showAmountInput: PropTypes.bool.isRequired,
 };
 
-PredictionOption.defaultProps = {
+EventOption.defaultProps = {
   voteAmount: 0,
 };
 
-export default withStyles(styles, { withTheme: true })(PredictionOption);
+export default withStyles(styles, { withTheme: true })(EventOption);

@@ -1,5 +1,5 @@
 const styles = (theme) => ({
-  predictionOptionCollapse: {
+  eventOptionCollapse: {
     padding: ('0 ').concat(theme.padding.unit.px),
     paddingTop: '1px',
     '&.first': {
@@ -9,7 +9,7 @@ const styles = (theme) => ({
       paddingBottom: theme.padding.unit.px,
     },
   },
-  predictionOptionWrapper: {
+  eventOptionWrapper: {
     width: '100%',
     display: 'block',
     position: 'relative',
@@ -24,7 +24,7 @@ const styles = (theme) => ({
       marginBottom: theme.padding.xs.px,
     },
   },
-  predictionOptionNum: {
+  eventOptionNum: {
     background: theme.palette.background.grey,
     height: theme.sizes.icon,
     width: theme.sizes.icon,
@@ -39,7 +39,7 @@ const styles = (theme) => ({
     left: 0,
     top: 0,
   },
-  predictionOptionIcon: {
+  eventOptionIcon: {
     height: theme.sizes.icon,
     width: theme.sizes.icon,
     lineHeight: 1,
@@ -49,13 +49,13 @@ const styles = (theme) => ({
     left: 0,
     top: '-7px',
   },
-  predictionOptionProgress: {
+  eventOptionProgress: {
     position: 'relative',
     paddingRight: '50px',
     marginTop: theme.padding.unit.px,
     marginBottom: theme.padding.unit.px,
   },
-  predictionOptionProgressNum: {
+  eventOptionProgressNum: {
     width: '50px',
     lineHeight: 1,
     textAlign: 'right',
@@ -65,7 +65,7 @@ const styles = (theme) => ({
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
   },
-  predictionOptionInput: {
+  eventOptionInput: {
     fontSize: theme.sizes.font.titleMd,
   },
 });

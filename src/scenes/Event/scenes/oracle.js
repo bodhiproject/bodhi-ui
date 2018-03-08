@@ -13,15 +13,15 @@ import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
-import StepperVertRight from '../../components/StepperVertRight/index';
-import PredictionOption from './components/PredictionOption/index';
-import PredictionInfo from './components/PredictionInfo/index';
-import PredictionTxHistory from './components/PredictionTxHistory/index';
-import TransactionSentDialog from '../../components/TransactionSentDialog/index';
-import stateActions from '../../redux/State/actions';
-import graphqlActions from '../../redux/Graphql/actions';
-import { Token, OracleStatus } from '../../constants';
-import CardInfoUtil from '../../helpers/cardInfoUtil';
+import StepperVertRight from '../../../components/StepperVertRight/index';
+import EventOption from '../components/EventOption/index';
+import EventInfo from '../components/EventInfo/index';
+import EventTxHistory from '../components/EventTxHistory/index';
+import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
+import stateActions from '../../../redux/State/actions';
+import graphqlActions from '../../../redux/Graphql/actions';
+import { Token, OracleStatus } from '../../../constants';
+import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
 
 const ALLOWANCE_TIMER_INTERVAL = 10 * 1000;
@@ -98,20 +98,20 @@ class OraclePage extends React.Component {
       return <div></div>;
     }
 
-    const predictionOptions = OraclePage.getBetOrVoteArray(oracle);
+    const eventOptions = OraclePage.getBetOrVoteArray(oracle);
 
     return (
-      <Paper className={classes.predictionDetailPaper}>
+      <Paper className={classes.eventDetailPaper}>
         <Grid container spacing={0}>
-          <Grid item xs={12} md={8} className={classes.predictionDetailContainerGrid}>
-            <Typography variant="display1" className={classes.predictionDetailTitle}>
+          <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
+            <Typography variant="display1" className={classes.eventDetailTitle}>
               {oracle.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              {predictionOptions.map((item, index) => (
-                <PredictionOption
+              {eventOptions.map((item, index) => (
+                <EventOption
                   key={index}
-                  isLast={index === predictionOptions.length - 1}
+                  isLast={index === eventOptions.length - 1}
                   currentOptionIdx={this.state.currentOptionIdx}
                   optionIdx={index}
                   name={item.name}
@@ -141,7 +141,7 @@ class OraclePage extends React.Component {
                   !config.predictionAction.skipExpansion
                 }
                 onClick={this.handleConfirmClick}
-                className={classes.predictButton}
+                className={classes.eventActionButton}
               >
                 {
                   this.state.isApproving ?
@@ -149,12 +149,12 @@ class OraclePage extends React.Component {
                     config.predictionAction.btnText
                 }
               </Button>
-              <PredictionTxHistory transactions={transactions} options={oracle.options} />
+              <EventTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4} className={classNames(classes.predictionDetailContainerGrid, 'right')}>
-            <PredictionInfo oracle={oracle} className={classes.predictionDetailInfo} />
-            <StepperVertRight steps={config.predictionInfo.steps} />
+          <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <EventInfo oracle={oracle} className={classes.eventDetailInfo} />
+            <StepperVertRight steps={config.eventInfo.steps} />
           </Grid>
         </Grid>
         <TransactionSentDialog txReturn={this.props.txReturn} />
@@ -260,7 +260,7 @@ class OraclePage extends React.Component {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="topBar.betting" defaultMessage="Betting" />,
-          predictionInfo: {
+          eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
             ],
@@ -275,7 +275,7 @@ class OraclePage extends React.Component {
         config = {
           name: 'SETTING',
           breadcrumbLabel: <FormattedMessage id="topBar.setting" defaultMessage="Setting" />,
-          predictionInfo: {
+          eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
             messages: [
               {
@@ -302,7 +302,7 @@ class OraclePage extends React.Component {
 
         // Add a message to CardInfo to warn that current block has passed set end block
         if (syncBlockTime > oracle.resultSetEndTime) {
-          config.predictionInfo.messages.push({
+          config.eventInfo.messages.push({
             text: <FormattedMessage id="oracle.pass" defaultMessage="Current block time has passed the Result Setting End Time." />,
             type: 'warn',
           });
@@ -310,12 +310,12 @@ class OraclePage extends React.Component {
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
         if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
-          config.predictionInfo.messages.push({
+          config.eventInfo.messages.push({
             text: <FormattedMessage id="oracle.notCen" defaultMessage="You are not the Centralized Oracle for this Topic and cannot set the result." />,
             type: 'warn',
           });
         } else if (status === OracleStatus.OpenResultSet) {
-          config.predictionInfo.messages.push({
+          config.eventInfo.messages.push({
             text: <FormattedMessage id="oracle.openRes" defaultMessage="The Centralized Oracle has not set the result yet, but you may set the result by staking BOT." />,
             type: 'warn',
           });
@@ -324,7 +324,7 @@ class OraclePage extends React.Component {
         config = {
           name: 'VOTING',
           breadcrumbLabel: <FormattedMessage id="topBar.voting" defaultMessage="Voting" />,
-          predictionInfo: {
+          eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
               {
@@ -346,7 +346,7 @@ class OraclePage extends React.Component {
         config = {
           name: 'FINALIZING',
           breadcrumbLabel: 'Voting',
-          predictionInfo: {
+          eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
             messages: [
             ],
@@ -359,7 +359,7 @@ class OraclePage extends React.Component {
         };
 
         if (syncBlockTime > oracle.endTime) {
-          config.predictionInfo.messages.push({
+          config.eventInfo.messages.push({
             text: <FormattedMessage id="oracle.passVote" defaultMessage="Current block time has passed the Voting End Time. The previous result needs to be finalized in order to withdraw." />,
             type: 'default',
           }, {
