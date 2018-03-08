@@ -27,6 +27,10 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
  * @return {String} The converted Satoshi/Botoshi number.
  */
 export function decimalToSatoshi(number) {
+  if (!number) {
+    return number;
+  }
+  
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
   return new BigNumber(number).multipliedBy(conversionBN).toString(10);
 }
