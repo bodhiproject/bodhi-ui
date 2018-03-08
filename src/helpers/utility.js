@@ -37,6 +37,10 @@ export function decimalToSatoshi(number) {
  * @return {String} The converted decimal number.
  */
 export function satoshiToDecimal(number) {
+  if (!number) {
+    return number;
+  }
+
   let bn;
   if (_.isNaN(Number(number))) {
     bn = new BigNumber(number, 16);
