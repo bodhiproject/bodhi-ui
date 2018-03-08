@@ -73,10 +73,11 @@ class OraclePage extends React.Component {
       getOraclesReturn,
       getTransactionsReturn,
       syncBlockTime,
+      txReturn,
     } = nextProps;
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
       this.executeOracleAndTxsRequest();
     }
 
