@@ -77,7 +77,7 @@ function processOracle(oracle) {
 
   const newOracle = _.assign({}, oracle);
   newOracle.amounts = _.map(oracle.amounts, satoshiHexToDecimal);
-  newOracle.consensusThreshold = satoshiHexToDecimal(oracle.consensusThreshold);
+  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
 
