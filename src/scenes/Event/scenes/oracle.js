@@ -18,7 +18,6 @@ import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
-import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
@@ -74,19 +73,16 @@ class OraclePage extends React.Component {
       getOraclesReturn,
       getTransactionsReturn,
       syncBlockTime,
+      txReturn,
     } = nextProps;
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
       this.executeOracleAndTxsRequest();
     }
 
     this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
     this.setState({ transactions: getTransactionsReturn });
-  }
-
-  componentWillUnmount() {
-    this.props.clearTxReturn();
   }
 
   render() {
@@ -158,7 +154,6 @@ class OraclePage extends React.Component {
             <StepperVertRight steps={config.eventInfo.steps} />
           </Grid>
         </Grid>
-        <TransactionSentDialog txReturn={this.props.txReturn} />
       </Paper>
     );
   }
@@ -319,7 +314,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.setResult" defaultMessage="Set Result" />,
+            btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
             btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             showAmountInput: false,
           },
@@ -363,7 +358,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />,
+            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
             showAmountInput: true,
           },
         };
@@ -466,7 +461,6 @@ OraclePage.propTypes = {
   createVoteTx: PropTypes.func,
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func,
   syncBlockTime: PropTypes.number,
   walletAddrs: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
@@ -484,7 +478,6 @@ OraclePage.defaultProps = {
   createVoteTx: undefined,
   createFinalizeResultTx: undefined,
   txReturn: undefined,
-  clearTxReturn: undefined,
   syncBlockTime: undefined,
   walletAddrs: [],
   walletAddrsIndex: 0,
@@ -518,7 +511,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   };
 }
 

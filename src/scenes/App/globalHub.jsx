@@ -5,7 +5,7 @@ import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
 
 import appActions from '../../redux/App/actions';
-import dashboardActions from '../../redux/Dashboard/actions';
+import graphqlActions from '../../redux/Graphql/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
 
@@ -144,7 +144,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
-  getActionableItemCount: (walletAddress) => dispatch(dashboardActions.getActionableItemCount(walletAddress)),
+  getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),
 });
 
 export default compose(

@@ -14,7 +14,7 @@ import {
 } from '../../network/graphMutation';
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, satoshiHexToDecimal, gasToQtum } from '../../helpers/utility';
-import { Token } from '../../constants';
+import { Token, OracleStatus } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -28,9 +28,10 @@ export function* getTopicsHandler() {
         value: topics,
       });
     } catch (err) {
+      console.error(err);
       yield put({
         type: actions.GET_TOPICS_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -60,9 +61,10 @@ export function* getOraclesHandler() {
         value: oracles,
       });
     } catch (err) {
+      console.error(err);
       yield put({
         type: actions.GET_ORACLES_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -75,7 +77,7 @@ function processOracle(oracle) {
 
   const newOracle = _.assign({}, oracle);
   newOracle.amounts = _.map(oracle.amounts, satoshiHexToDecimal);
-  newOracle.consensusThreshold = satoshiHexToDecimal(oracle.consensusThreshold);
+  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
 
@@ -91,9 +93,10 @@ export function* getTransactionsHandler() {
         value: txs,
       });
     } catch (err) {
+      console.error(err);
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
-        error: err.message,
+        value: [],
       });
     }
   });
@@ -110,6 +113,37 @@ function processTransaction(tx) {
     newTx.fee = gasToQtum(tx.gasUsed);
   }
   return newTx;
+}
+
+// Gets the number of actionable items; setResult, finalize, withdraw
+export function* getActionableItemCountHandler() {
+  yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
+    try {
+      const topicFilters = [
+        { status: OracleStatus.Withdraw },
+      ];
+      let result = yield call(queryAllTopics, topicFilters);
+      let count = result.length;
+
+      const oracleFilters = [
+        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
+        { token: Token.Qtum, status: OracleStatus.OpenResultSet },
+      ];
+      result = yield call(queryAllOracles, oracleFilters);
+      count += result.length;
+
+      yield put({
+        type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
+        value: count,
+      });
+    } catch (err) {
+      console.log(err);
+      yield put({
+        type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
+        value: 0,
+      });
+    }
+  });
 }
 
 // Sends createTopic mutation
@@ -307,6 +341,7 @@ export default function* graphqlSaga() {
     fork(getTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
+    fork(getActionableItemCountHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),

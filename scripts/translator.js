@@ -11,24 +11,34 @@ let cnMessages = JSON.parse(fs.readFileSync('./src/languageProvider/locales/zh-H
 // Aggregates the default messages that were extracted from the app's
 // React components via the React Intl Babel plugin. The result
 // is a flat collection of `id: message` pairs for the app's default locale.
-let cnNew = {};
 let defaultMessages = globSync(filePattern)
   .map((filename) => fs.readFileSync(filename, 'utf8'))
   .map((file) => JSON.parse(file))
   .reduce((collection, descriptors) => {
     descriptors.forEach(({ id, defaultMessage }) => {
       collection[id] = defaultMessage;
-      cnNew[id] = defaultMessage;
-      if(prevmessages.hasOwnProperty(id)){
-        if(collection[id]!==prevmessages[id]){
-          cnNew[id] = defaultMessage;
-        }else{
-          cnNew[id] = cnMessages[id];
-        }
-      }
     });
     return collection;
   }, {});
+
+function update(obj){
+  Object.keys(obj).forEach((key) => {
+    if(prevmessages.hasOwnProperty(key)){
+      if(obj[key]!==prevmessages[key]){
+        cnMessages[key] = obj[key];
+        prevmessages[key] = obj[key];
+      }
+    } else{
+      cnMessages[key] = obj[key];
+      prevmessages[key] = obj[key];
+    }
+  });
+  Object.keys(prevmessages).forEach((key) => {
+    if(!cnMessages.hasOwnProperty(key)){
+      cnMessages[key] = prevmessages[key];
+    }
+  });
+}  
 
 function sortObjectKeys(obj){
   return Object.keys(obj).sort().reduce((acc,key)=>{
@@ -38,8 +48,8 @@ function sortObjectKeys(obj){
 }
 
 mkdirpSync(outputLanguageDataDir);
-
-defaultMessages = sortObjectKeys(defaultMessages);
-cnNew = sortObjectKeys(cnNew);
-fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(defaultMessages, null, 2)}\n`);
-fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnNew, null, 2)}\n`);
+update(defaultMessages);
+prevmessages = sortObjectKeys(prevmessages);
+cnMessages = sortObjectKeys(cnMessages);
+fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(prevmessages, null, 2)}\n`);
+fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnMessages, null, 2)}\n`);

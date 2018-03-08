@@ -25,15 +25,24 @@ class WalletHistory extends React.Component {
       orderBy: 'time',
     };
 
+    this.getTransactions = this.getTransactions.bind(this);
     this.getTableHeader = this.getTableHeader.bind(this);
     this.createSortHandler = this.createSortHandler.bind(this);
     this.handleSorting = this.handleSorting.bind(this);
   }
 
   componentWillMount() {
-    this.props.getTransactions([
-      { type: TransactionType.Transfer },
-    ]);
+    this.getTransactions();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      txReturn,
+    } = this.props;
+
+    if (txReturn && !nextProps.txReturn) {
+      this.getTransactions();
+    }
   }
 
   render() {
@@ -43,7 +52,7 @@ class WalletHistory extends React.Component {
       <Paper className={classes.txHistoryPaper}>
         <Grid container spacing={0} className={classes.txHistoryGridContainer}>
           <Typography variant="title">
-            <FormattedMessage id="walletHistory.transferHistory" default="Transaction History" />
+            <FormattedMessage id="walletHistory.transferHistory" defaultMessage="Transfer History" />
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
@@ -52,6 +61,12 @@ class WalletHistory extends React.Component {
         </Grid>
       </Paper>
     );
+  }
+
+  getTransactions() {
+    this.props.getTransactions([
+      { type: TransactionType.Transfer },
+    ]);
   }
 
   getTableHeader() {
@@ -112,7 +127,7 @@ class WalletHistory extends React.Component {
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip
-                title={<FormattedMessage id="str.sort" default="Sort" />}
+                title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
                 enterDelay={Config.intervals.tooltipDelay}
                 placement={column.numeric ? 'bottom-end' : 'bottom-start'}
               >
@@ -192,14 +207,17 @@ WalletHistory.propTypes = {
   classes: PropTypes.object.isRequired,
   getTransactions: PropTypes.func.isRequired,
   getTransactionsReturn: PropTypes.array,
+  txReturn: PropTypes.object,
 };
 
 WalletHistory.defaultProps = {
   getTransactionsReturn: [],
+  txReturn: undefined,
 };
 
 const mapStateToProps = (state) => ({
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {

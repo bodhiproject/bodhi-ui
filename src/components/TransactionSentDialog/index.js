@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Dialog, {
@@ -12,6 +13,7 @@ import { withStyles } from 'material-ui/styles';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
+import graphqlActions from '../../redux/Graphql/actions';
 
 const messages = defineMessages({
   successMsg: {
@@ -30,6 +32,10 @@ const messages = defineMessages({
     id: 'str.transactionId',
     defaultMessage: 'Transaction ID',
   },
+  ok: {
+    id: 'str.ok',
+    defaultMessage: 'OK',
+  },
 });
 
 class TransactionSentDialog extends React.PureComponent {
@@ -38,14 +44,23 @@ class TransactionSentDialog extends React.PureComponent {
 
     this.getSuccessText = this.getSuccessText.bind(this);
     this.getErrorText = this.getErrorText.bind(this);
+    this.onOkClicked = this.onOkClicked.bind(this);
   }
 
   render() {
-    const { classes, txReturn } = this.props;
+    const {
+      intl,
+      classes,
+      txReturn,
+    } = this.props;
 
     let contentText;
     if (txReturn) {
-      contentText = txReturn && txReturn.txid ? this.getSuccessText() : this.getErrorText();
+      if (txReturn.txid) {
+        contentText = this.getSuccessText();
+      } else {
+        contentText = this.getErrorText();
+      }
     } else {
       contentText = {
         title: '',
@@ -57,18 +72,16 @@ class TransactionSentDialog extends React.PureComponent {
     return (
       <Dialog
         open={Boolean(txReturn)}
-        onClose={this.handleAlertClose}
+        onClose={this.onOkClicked}
       >
-        <DialogTitle id="alert-dialog-title">{contentText.title}</DialogTitle>
+        <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <Typography variant="body1" className={classes.bodyText1}>{contentText.bodyPrimary}</Typography>
-            <Typography variant="body1">{contentText.bodySecondary}</Typography>
-          </DialogContentText>
+          <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
+          <Typography variant="body1">{contentText.bodySecondary}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleAlertClose} color="primary">
-            OK
+          <Button color="primary" onClick={this.onOkClicked}>
+            {intl.formatMessage(messages.ok)}
           </Button>
         </DialogActions>
       </Dialog>
@@ -93,14 +106,15 @@ class TransactionSentDialog extends React.PureComponent {
     };
   }
 
-  handleAlertClose() {
-    window.location.reload();
+  onOkClicked() {
+    this.props.clearTxReturn();
   }
 }
 
 TransactionSentDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   txReturn: PropTypes.object,
+  clearTxReturn: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -109,4 +123,13 @@ TransactionSentDialog.defaultProps = {
   txReturn: undefined,
 };
 
-export default injectIntl(withStyles(styles, { withTheme: true })(TransactionSentDialog));
+const mapStateToProps = (state) => ({
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+  };
+}
+
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(TransactionSentDialog)));

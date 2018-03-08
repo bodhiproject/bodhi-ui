@@ -8,7 +8,7 @@ const initState = new Map({
 export default function graphqlReducer(state = initState, action) {
   // Catch all request errors
   if (action.error) {
-    return state.set('requestError', action.error);
+    return state.set('txReturn', { error: action.error });
   }
 
   switch (action.type) {
@@ -20,6 +20,9 @@ export default function graphqlReducer(state = initState, action) {
     }
     case actions.GET_TRANSACTIONS_RETURN: {
       return state.set('getTransactionsReturn', action.value);
+    }
+    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
+      return state.set('actionableItemCount', action.value);
     }
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:

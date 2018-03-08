@@ -34,7 +34,7 @@ class DepositDialog extends React.Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="depositDialog.title" default="QTUM/BOT Deposit Address" />
+          <FormattedMessage id="depositDialog.title" defaultMessage="QTUM/BOT Deposit Address" />
         </DialogTitle>
         <DialogContent>
           <Typography variant="title" className={classes.depositAddress}>
@@ -49,11 +49,11 @@ class DepositDialog extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>
-            <FormattedMessage id="str.close" default="Close" />
+            <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
           <CopyToClipboard text={walletAddress} onCopy={onCopyClicked}>
             <Button color="primary">
-              <FormattedMessage id="str.copy" default="Copy" />
+              <FormattedMessage id="str.copy" defaultMessage="Copy" />
             </Button>
           </CopyToClipboard>
         </DialogActions>
