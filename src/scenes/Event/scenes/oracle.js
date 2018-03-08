@@ -12,6 +12,7 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import moment from 'moment';
 
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
@@ -273,7 +274,7 @@ class OraclePage extends React.Component {
     ], undefined);
     // TODO (LIVIA): NEED TO TXS FOR THE ENTIRE TOPIC
     this.props.getTransactions([
-      { oracleAddress: this.state.address },
+      { topicAddress: this.state.topicAddress },
     ], undefined);
   }
 
