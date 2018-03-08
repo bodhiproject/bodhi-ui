@@ -1,19 +1,21 @@
 /* eslint react/prop-types: 0 */ // --> OFF
 
-import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import graphqlActions from '../../../redux/Graphql/actions';
 import stateActions from '../../../redux/State/actions';
 import appActions from '../../../redux/App/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';
+import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 
 const FormItem = Form.Item;
 
@@ -114,7 +116,6 @@ class CreateTopic extends React.Component {
     };
 
     this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
-    this.renderAlertBox = this.renderAlertBox.bind(this);
     this.renderBlockField = this.renderBlockField.bind(this);
     this.renderResultsFields = this.renderResultsFields.bind(this);
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
@@ -127,6 +128,7 @@ class CreateTopic extends React.Component {
     this.validateResultLength = this.validateResultLength.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.navigateToDashboard = this.navigateToDashboard.bind(this);
   }
 
   componentWillMount() {
@@ -135,6 +137,16 @@ class CreateTopic extends React.Component {
 
   componentWillUnmount() {
     this.props.clearTxReturn();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      txReturn,
+    } = this.props;
+
+    if (txReturn && !nextProps.txReturn) {
+      this.navigateToDashboard();
+    }
   }
 
   render() {
@@ -169,6 +181,7 @@ class CreateTopic extends React.Component {
     if (_.isUndefined(keys)) {
       keys = ['0', '1'];
     }
+
     const required = true;
     return (
       <div className="create-topic-container">
@@ -238,7 +251,6 @@ class CreateTopic extends React.Component {
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
-            {this.renderAlertBox(txReturn)}
             <Button
               type="primary"
               htmlType="submit"
@@ -256,6 +268,7 @@ class CreateTopic extends React.Component {
             </Button>
           </FormItem>
         </Form>
+        <TransactionSentDialog txReturn={txReturn} />
       </div>
     );
   }
@@ -269,34 +282,6 @@ class CreateTopic extends React.Component {
       return walletAddrs[walletAddrsIndex].address;
     }
     return '';
-  }
-
-  renderAlertBox(txReturn) {
-    let alertElement;
-    if (txReturn) {
-      if (txReturn.txid) {
-        alertElement =
-            (<Alert
-              message="Success!"
-              description={`${this.props.intl.formatMessage(messages.alertSuc)}
-                https://testnet.qtum.org/tx/${txReturn.txid}`}
-              type="success"
-              closable={false}
-            />);
-      } else if (txReturn.error) {
-        alertElement = (<Alert
-          message={this.props.intl.formatMessage(messages.alertFail)}
-          description={txReturn.error}
-          type="error"
-          closable={false}
-        />);
-      }
-    }
-    return (
-      <div className="alert-container">
-        {alertElement}
-      </div>
-    );
   }
 
   renderBlockField(formItemLayout, id) {
@@ -624,7 +609,10 @@ class CreateTopic extends React.Component {
 
   onCancel(evt) {
     evt.preventDefault();
+    this.navigateToDashboard();
+  }
 
+  navigateToDashboard() {
     this.props.history.push('/');
   }
 }

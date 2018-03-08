@@ -49,10 +49,11 @@ class TopicPage extends React.Component {
       qtumWinnings,
       syncBlockTime,
       selectedWalletAddress,
+      txReturn,
     } = nextProps;
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
       this.executeTopicsRequest();
     }
 
