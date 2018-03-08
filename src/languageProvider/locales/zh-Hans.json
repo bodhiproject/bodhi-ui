@@ -98,7 +98,7 @@
   "transactionSentDialog.failureMsg": "哎呀，出错了",
   "transactionSentDialog.successMsg": "成功",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
-  "walletHistory.transferHistory": "Transaction History",
+  "walletHistory.transferHistory": "Transfer History",
   "withdrawDialog.send": "Send",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "最多可取出："
