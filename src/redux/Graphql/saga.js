@@ -14,7 +14,7 @@ import {
 } from '../../network/graphMutation';
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, satoshiHexToDecimal, gasToQtum } from '../../helpers/utility';
-import { Token } from '../../constants';
+import { Token, OracleStatus } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -110,6 +110,36 @@ function processTransaction(tx) {
     newTx.fee = gasToQtum(tx.gasUsed);
   }
   return newTx;
+}
+
+// Gets the number of actionable items; setResult, finalize, withdraw
+export function* getActionableItemCountHandler() {
+  yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
+    try {
+      const topicFilters = [
+        { status: OracleStatus.Withdraw },
+      ];
+      let result = yield call(queryAllTopics, topicFilters);
+      let count = result.length;
+
+      const oracleFilters = [
+        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
+        { token: Token.Qtum, status: OracleStatus.OpenResultSet },
+      ];
+      result = yield call(queryAllOracles, oracleFilters);
+      count += result.length;
+
+      yield put({
+        type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
+        value: count,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
+        error: err.message,
+      });
+    }
+  });
 }
 
 // Sends createTopic mutation
@@ -307,6 +337,7 @@ export default function* graphqlSaga() {
     fork(getTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
+    fork(getActionableItemCountHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
     fork(createSetResultTxHandler),

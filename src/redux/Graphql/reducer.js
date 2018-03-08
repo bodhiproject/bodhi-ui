@@ -21,6 +21,9 @@ export default function graphqlReducer(state = initState, action) {
     case actions.GET_TRANSACTIONS_RETURN: {
       return state.set('getTransactionsReturn', action.value);
     }
+    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
+      return state.set('actionableItemCount', action.value);
+    }
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:
     case actions.CREATE_SET_RESULT_TX_RETURN:
