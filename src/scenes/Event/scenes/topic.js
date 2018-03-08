@@ -206,7 +206,7 @@ class TopicPage extends React.Component {
                   </Typography>
                   <Typography variant="caption">
                     {this.props.intl.formatMessage(pageMessage.returnRate)}
-                    {qtumReturnRate}%
+                    {qtumReturnRate.toFixed(2)}%
                   </Typography>
                 </div>
                 <div className={classes.withdrawRewardDivider} />
@@ -216,7 +216,7 @@ class TopicPage extends React.Component {
                   </Typography>
                   <Typography variant="caption">
                     {this.props.intl.formatMessage(pageMessage.returnRate)}
-                    {botReturnRate}%
+                    {botReturnRate.toFixed(2)}%
                   </Typography>
                 </div>
               </div>
