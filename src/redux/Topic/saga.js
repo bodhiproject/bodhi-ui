@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import actions from './actions';
 
 import { request } from '../../network/httpRequest';
-import { satoshiHexToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
 export function* calculateWinningsHandler() {
@@ -27,8 +27,8 @@ export function* calculateWinningsHandler() {
       const result = yield call(request, Routes.winnings, options);
       let value;
       if (result) {
-        const botWon = satoshiHexToDecimal(result['0']);
-        const qtumWon = satoshiHexToDecimal(result['1']);
+        const botWon = satoshiToDecimal(result['0']);
+        const qtumWon = satoshiToDecimal(result['1']);
         value = { botWon, qtumWon };
       } else {
         value = { botWon: 0, qtumWon: 0 };

@@ -45,17 +45,7 @@ export function satoshiToDecimal(number) {
   }
 
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return bn.dividedBy(conversionBN).toString(10);
-}
-
-/**
- * Converts Satoshi/Botoshi hex string to a decimal number.
- * @param hexNumber {String} The Satoshi/Botoshi hex string to convert.
- * @return {Number} The converted decimal number.
- */
-export function satoshiHexToDecimal(hexNumber) {
-  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return new BigNumber(hexNumber, 16).dividedBy(conversionBN).toNumber();
+  return bn.dividedBy(conversionBN).toNumber();
 }
 
 /**
