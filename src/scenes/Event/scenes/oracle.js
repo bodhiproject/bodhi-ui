@@ -272,7 +272,7 @@ class OraclePage extends React.Component {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
     ], undefined);
-    // TODO (LIVIA): NEED TO TXS FOR THE ENTIRE TOPIC
+    
     this.props.getTransactions([
       { topicAddress: this.state.topicAddress },
     ], undefined);
