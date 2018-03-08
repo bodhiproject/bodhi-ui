@@ -8,7 +8,7 @@ const initState = new Map({
 export default function graphqlReducer(state = initState, action) {
   // Catch all request errors
   if (action.error) {
-    return state.set('requestError', { msg: action.error });
+    return state.set('txReturn', { error: action.error });
   }
 
   switch (action.type) {
