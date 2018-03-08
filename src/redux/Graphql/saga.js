@@ -61,8 +61,8 @@ export function* getOraclesHandler() {
         value: oracles,
       });
     } catch (err) {
+      console.error(err);
       yield put({
-        console.error(err);
         type: actions.GET_ORACLES_RETURN,
         value: [],
       });
