@@ -283,12 +283,12 @@ class OraclePage extends React.Component {
     const oracle = _.find(getOraclesReturn, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
+    const currBlockTime = moment.unix(syncBlockTime);
 
     if (oracle) {
       const { token, status } = oracle;
       let config;
 
-      /** Determine what config to use in current card * */
       if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
@@ -299,6 +299,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+            btnDisabled: currBlockTime.isBefore(moment.unix(oracle.startTime)),
             showAmountInput: true,
           },
         };
@@ -312,8 +313,9 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
-            btnDisabled: oracle.status === OracleStatus.WaitResult
-              && oracle.resultSetterQAddress !== lastUsedAddress,
+            btnDisabled: (oracle.status === OracleStatus.WaitResult
+              && oracle.resultSetterQAddress !== lastUsedAddress)
+              || currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime)),
             showAmountInput: false,
           },
         };
