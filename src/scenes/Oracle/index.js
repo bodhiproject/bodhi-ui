@@ -333,7 +333,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />,
+            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
             showAmountInput: true,
           },
         };
