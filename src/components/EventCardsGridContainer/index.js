@@ -18,23 +18,23 @@ import EventsEmptyBg from '../EventsEmptyBg/index';
 import styles from './styles';
 
 const messages = defineMessages({
-  pBet: {
+  placeBet: {
     id: 'bottomButtonText.placeBet',
     defaultMessage: 'Place Bet',
   },
-  pSet: {
-    id: 'bottomButtonText.setResult',
+  setResult: {
+    id: 'str.setResult',
     defaultMessage: 'Set Result',
   },
-  pVote: {
+  vote: {
     id: 'bottomButtonText.vote',
     defaultMessage: 'Place Vote',
   },
-  pFinal: {
+  finalizeResult: {
     id: 'bottomButtonText.final',
     defaultMessage: 'Finalize Result',
   },
-  pWithdraw: {
+  withdraw: {
     id: 'bottomButtonText.withdraw',
     defaultMessage: 'Withdraw',
   },
@@ -172,19 +172,19 @@ class EventCardsGrid extends React.Component {
       let buttonText;
       switch (eventStatusIndex) {
         case EventStatus.Bet: {
-          buttonText = this.props.intl.formatMessage(messages.pBet);
+          buttonText = this.props.intl.formatMessage(messages.placeBet);
           break;
         }
         case EventStatus.Set: {
-          buttonText = this.props.intl.formatMessage(messages.pSet);
+          buttonText = this.props.intl.formatMessage(messages.setResult);
           break;
         }
         case EventStatus.Vote: {
-          buttonText = this.props.intl.formatMessage(messages.pVote);
+          buttonText = this.props.intl.formatMessage(messages.vote);
           break;
         }
         case EventStatus.Finalize: {
-          buttonText = this.props.intl.formatMessage(messages.pFinal);
+          buttonText = this.props.intl.formatMessage(messages.finalizeResult);
           break;
         }
         default: {
@@ -227,7 +227,7 @@ class EventCardsGrid extends React.Component {
           url={`/topic/${topic.address}`}
           totalQTUM={totalQTUM}
           totalBOT={totalBOT}
-          buttonText={this.props.intl.formatMessage(messages.pWithdraw)}
+          buttonText={this.props.intl.formatMessage(messages.withdraw)}
         />
       );
 
