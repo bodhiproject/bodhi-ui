@@ -16,11 +16,11 @@ const messages = defineMessages({
     defaultMessage: 'Result Setting',
   },
   finalize: {
-    id: 'activitiesTab.Finalize',
+    id: 'str.finalize',
     defaultMessage: 'Finalize',
   },
   withdraw: {
-    id: 'activitiesTab.Withdraw',
+    id: 'str.withdraw',
     defaultMessage: 'Withdraw',
   },
   history: {

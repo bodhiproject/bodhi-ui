@@ -272,7 +272,7 @@ class OraclePage extends React.Component {
     this.props.getOracles([
       { topicAddress: this.state.topicAddress },
     ], undefined);
-    
+
     this.props.getTransactions([
       { topicAddress: this.state.topicAddress },
     ], undefined);
@@ -293,7 +293,7 @@ class OraclePage extends React.Component {
       if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="topBar.betting" defaultMessage="Betting" />,
+          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
           eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
           },
@@ -307,7 +307,7 @@ class OraclePage extends React.Component {
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
-          breadcrumbLabel: <FormattedMessage id="topBar.setting" defaultMessage="Setting" />,
+          breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
           eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
           },
@@ -323,7 +323,7 @@ class OraclePage extends React.Component {
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
-          breadcrumbLabel: <FormattedMessage id="topBar.voting" defaultMessage="Voting" />,
+          breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
           eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
           },
@@ -336,13 +336,13 @@ class OraclePage extends React.Component {
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = {
           name: 'FINALIZING',
-          breadcrumbLabel: 'Voting',
+          breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
           eventInfo: {
             steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
           },
           predictionAction: {
             skipExpansion: true,
-            btnText: <FormattedMessage id="cardInfo.finalize" defaultMessage="Finalize" />,
+            btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
             showAmountInput: false,
           },
         };

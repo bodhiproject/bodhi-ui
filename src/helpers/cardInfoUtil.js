@@ -4,12 +4,12 @@ import { FormattedMessage } from 'react-intl';
 import { getLocalDateTimeString } from './utility';
 
 const TOPIC_CREATED = <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />;
-const BETTING = <FormattedMessage id="cardInfo.betting" defaultMessage="Betting" />;
+const BETTING = <FormattedMessage id="str.betting" defaultMessage="Betting" />;
 const ORACLE_RESULT_SETTING = <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />;
 const OPEN_RESULT_SETTING = <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />;
-const VOTING = <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />;
-const FINALIZING = <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />;
-const WITHDRAWING = <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />;
+const VOTING = <FormattedMessage id="str.voting" defaultMessage="Voting" />;
+const FINALIZING = <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />;
+const WITHDRAWING = <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />;
 const BLOCK = 'Block:';
 const RANGE_SEPARATOR = 'to';
 const ANYTIME = 'anytime';
