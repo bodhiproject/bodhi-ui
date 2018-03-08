@@ -137,7 +137,7 @@ class MyBalances extends React.PureComponent {
     const cols = [
       {
         id: 'address',
-        name: 'myBalances.address',
+        name: 'str.address',
         nameDefault: 'Address',
         numeric: false,
         sortable: true,
