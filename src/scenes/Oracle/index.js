@@ -294,7 +294,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.setResult" defaultMessage="Set Result" />,
+            btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
             btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
             showAmountInput: false,
           },

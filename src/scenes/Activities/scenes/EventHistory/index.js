@@ -65,7 +65,7 @@ class EventHistory extends React.Component {
               {this.getTableRows(this.state.transactions)}
             </Table>) :
             (<Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" default="You do not have any transactions right now." />
+              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
             </Typography>)
         }
       </Grid>
@@ -152,7 +152,7 @@ class EventHistory extends React.Component {
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip
-                title={<FormattedMessage id="str.sort" default="Sort" />}
+                title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
                 enterDelay={Config.intervals.tooltipDelay}
                 placement={column.numeric ? 'bottom-end' : 'bottom-start'}
               >
@@ -202,7 +202,7 @@ class EventHistory extends React.Component {
             <TableCell>
               {transaction.topic && transaction.topic.address ?
                 <Link to={this.getEventURL(transaction.topic.address, transaction.oracleAddress)} className={classes.viewEventLink}>
-                  <FormattedMessage id="eventHistory.viewEvent" default="View Event" />
+                  <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
                 </Link> : null
               }
             </TableCell>

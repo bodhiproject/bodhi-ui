@@ -43,7 +43,7 @@ class WalletHistory extends React.Component {
       <Paper className={classes.txHistoryPaper}>
         <Grid container spacing={0} className={classes.txHistoryGridContainer}>
           <Typography variant="title">
-            <FormattedMessage id="walletHistory.transferHistory" default="Transaction History" />
+            <FormattedMessage id="walletHistory.transferHistory" defaultMessage="Transfer History" />
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
@@ -112,7 +112,7 @@ class WalletHistory extends React.Component {
               sortDirection={orderBy === column.id ? order : false}
             >
               <Tooltip
-                title={<FormattedMessage id="str.sort" default="Sort" />}
+                title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
                 enterDelay={Config.intervals.tooltipDelay}
                 placement={column.numeric ? 'bottom-end' : 'bottom-start'}
               >
