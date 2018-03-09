@@ -6,8 +6,8 @@ import _ from 'lodash';
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
 const GAS_COST = 0.0000004;
-const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
-const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
+const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
+const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';
 
 /*
 * Calculates the estimated block based on current block and future date.

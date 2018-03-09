@@ -6,7 +6,7 @@ import { LocaleProvider } from 'antd';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
-
+import moment from 'moment';
 import App from './scenes/App/index';
 import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
@@ -22,13 +22,16 @@ class AppProvider extends React.Component {
     super(props);
     this.state = { locale: defaultidx };
     this.langHandler = this.langHandler.bind(this);
+    moment.locale(locales[this.state.locale].momentlocale);
   }
 
   langHandler() {
     this.setState({
       locale: (this.state.locale + 1) % 2,
+    }, () => {
+      moment.locale(locales[this.state.locale].momentlocale);
+      localStorage.setItem('localindex', this.state.locale);
     });
-    localStorage.setItem('localindex', (this.state.locale + 1) % 2);
   }
 
   render() {
