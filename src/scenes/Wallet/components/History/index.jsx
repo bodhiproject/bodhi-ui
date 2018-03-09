@@ -182,7 +182,7 @@ class WalletHistory extends React.Component {
               {item.senderAddress}
             </TableCell>
             <TableCell>
-              {item.to}
+              {item.receiverAddress}
             </TableCell>
             <TableCell>
               {item.token}
