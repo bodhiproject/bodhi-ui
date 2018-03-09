@@ -25,7 +25,7 @@ class NavBar extends React.PureComponent {
   render() {
     const {
       classes,
-      walletAddrs,
+      walletAddresses,
       actionableItemCount,
     } = this.props;
 
@@ -84,12 +84,12 @@ class NavBar extends React.PureComponent {
 
   getTotalQTUM() {
     const {
-      walletAddrs,
+      walletAddresses,
     } = this.props;
 
     let total = 0;
-    if (walletAddrs && walletAddrs.length) {
-      total = _.sumBy(walletAddrs, (wallet) => wallet.qtum ? wallet.qtum : 0);
+    if (walletAddresses && walletAddresses.length) {
+      total = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
     }
 
     return total.toFixed(2);
@@ -97,12 +97,12 @@ class NavBar extends React.PureComponent {
 
   getTotalBOT() {
     const {
-      walletAddrs,
+      walletAddresses,
     } = this.props;
 
     let total = 0;
-    if (walletAddrs && walletAddrs.length) {
-      total = _.sumBy(walletAddrs, (wallet) => wallet.bot ? wallet.bot : 0);
+    if (walletAddresses && walletAddresses.length) {
+      total = _.sumBy(walletAddresses, (wallet) => wallet.bot ? wallet.bot : 0);
     }
 
     return total.toFixed(2);
@@ -111,13 +111,13 @@ class NavBar extends React.PureComponent {
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
   actionableItemCount: PropTypes.number,
   langHandler: PropTypes.func,
 };
 
 NavBar.defaultProps = {
-  walletAddrs: [],
+  walletAddresses: [],
   actionableItemCount: undefined,
   langHandler: undefined,
 };
