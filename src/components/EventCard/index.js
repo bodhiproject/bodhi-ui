@@ -38,12 +38,12 @@ class EventCard extends React.PureComponent {
               </div>
               <div className={classes.eventCardInfo}>
                 <div>
-                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-coin')}></i>
+                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
                   {`Rasied ${parseFloat(totalQTUM.toFixed(2))} QTUM`}
                   {totalBOT !== undefined ? `, ${parseFloat(totalBOT.toFixed(2))} BOT` : null}
                 </div>
                 <div>
-                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-clock')}></i>
+                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
                   {endTime !== undefined ? `${getEndTimeCountDownString(endTime)}` : 'Ended'}
                 </div>
               </div>

@@ -88,7 +88,7 @@ class EventOption extends React.PureComponent {
     return (<ExpansionPanelDetails>
       <div className={classNames(classes.eventOptionWrapper, 'noMargin')}>
         <div className={classes.eventOptionIcon}>
-          <i className="icon iconfont icon-token"></i>
+          <i className="icon iconfont icon-ic_token"></i>
         </div>
         <FormControl fullWidth>
           <InputLabel htmlFor="amount" shrink>
