@@ -37,7 +37,6 @@ export function* listUnspentRequestHandler() {
       } else {
         // listunspent returned with a non-empty array
         const utxosAndAddresses = processListUnspent(result);
-        console.log(utxosAndAddresses);
 
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
@@ -57,7 +56,8 @@ function processListUnspent(utxos) {
   const trimmedUtxos = _.map(utxos, (output) =>
     _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
 
-  const addresses = [];
+  let addresses = [];
+
   // Combine utxos with same address
   _.each(trimmedUtxos, (output) => {
     const currentAddr = output.address;
@@ -75,6 +75,9 @@ function processListUnspent(utxos) {
       });
     }
   });
+
+  // Sort
+  addresses = _.orderBy(addresses, ['qtum'], ['desc']);
 
   return {
     utxos: trimmedUtxos,

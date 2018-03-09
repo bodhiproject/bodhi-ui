@@ -38,6 +38,8 @@ export default function appReducer(state = initState, action) {
       return state;
     }
     case actions.LIST_UNSPENT_RETURN: {
+      console.log(action.value);
+
       let result = [];
       let newState = state;
       let combinedAddresses = [];
