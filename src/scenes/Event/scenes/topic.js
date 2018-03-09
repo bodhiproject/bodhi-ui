@@ -194,7 +194,7 @@ class TopicPage extends React.Component {
           botWinnings || qtumWinnings || true ?
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
-                <i className="icon iconfont icon-coin"></i>
+                <i className="icon iconfont icon-ic_token"></i>
               </div>
               <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
                 {this.props.intl.formatMessage(pageMessage.reward)}
