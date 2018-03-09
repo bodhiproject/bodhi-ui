@@ -11,7 +11,6 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 
 import graphqlActions from '../../../redux/Graphql/actions';
-import stateActions from '../../../redux/State/actions';
 import appActions from '../../../redux/App/actions';
 import { calculateBlock } from '../../../helpers/utility';
 import { defaults } from '../../../config/app';

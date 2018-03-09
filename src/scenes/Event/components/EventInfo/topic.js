@@ -10,19 +10,19 @@ import { withStyles } from 'material-ui/styles';
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
 import styles from './styles';
 
-class PredictionInfo extends React.PureComponent {
+class EventInfo extends React.PureComponent {
   render() {
     const { classes, oracle } = this.props;
 
     return (
-      <div className={classes.predictionInfoWrapper}>
+      <div className={classes.eventInfoWrapper}>
         {this.renderInfoBlock(
-          <FormattedMessage id="predictInfo.endDate" defaultMessage="ENDING DATE" />,
+          <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
           getLocalDateTimeString(oracle.endTime),
           getEndTimeCountDownString(oracle.endTime)
         )}
-        {this.renderInfoBlock(<FormattedMessage id="predictInfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
-        {this.renderInfoBlock(<FormattedMessage id="predictInfo.resultSetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
+        {this.renderInfoBlock(<FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
+        {this.renderInfoBlock(<FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}
       </div>
     );
   }
@@ -31,11 +31,11 @@ class PredictionInfo extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Grid item xs={6} md={12} className={classes.predictionInfoBlock}>
+      <Grid item xs={6} md={12} className={classes.eventInfoBlock}>
         <Typography variant="body1">
           {label}
         </Typography>
-        <Typography variant="title" className={classes.predictionInfo}>
+        <Typography variant="title" className={classes.eventInfo}>
           {content}
         </Typography>
         {
@@ -57,9 +57,9 @@ class PredictionInfo extends React.PureComponent {
   }
 }
 
-PredictionInfo.propTypes = {
+EventInfo.propTypes = {
   classes: PropTypes.object.isRequired,
-  oracle: PropTypes.object.isRequired,
+  topic: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(injectIntl(PredictionInfo));
+export default withStyles(styles, { withTheme: true })(injectIntl(EventInfo));

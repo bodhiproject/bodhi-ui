@@ -1,11 +1,11 @@
 const styles = (theme) => ({
-  predictionInfoWrapper: {
+  eventInfoWrapper: {
     paddingBottom: theme.padding.md.px,
   },
-  predictionInfoBlock: {
+  eventInfoBlock: {
     marginBottom: '36px',
   },
-  predictionInfo: {
+  eventInfo: {
     marginTop: theme.padding.unit.px,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',

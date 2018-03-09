@@ -73,9 +73,12 @@
   "oracle.resultSetter": "结果设定者",
   "oracle.voteNote": "BOT用于投票。请不要离开此屏幕直到点击确定。 您的BOT在投票前需要被允许，被许可的数额将会自动用于投票。",
   "oracle.voting-1": "共识阈值 {value}。这个值表示需要达成共识和用于成为新结果所需的BOT.",
-  "predictInfo.endDate": "截止日期",
-  "predictInfo.fund": "资金",
-  "predictInfo.resultSetter": "结果设定者",
+  "eventInfo.endDate": "截止日期",
+  "eventInfo.fund": "资金",
+  "eventInfo.resultSetter": "结果设定者",
+  "eventInfo.predictionFund": "预测总金额",
+  "eventInfo.voteVolumn": "仲裁总金额",
+  "eventInfo.creator": "创建者",
   "sort.asc": "升序",
   "sort.desc": "降序",
   "sort.label": "排序",
@@ -108,8 +111,15 @@
   "transactionSentDialog.failureMsg": "哎呀，出错了",
   "transactionSentDialog.successMsg": "成功",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
+  "withdrawDialog.youCanWithdraw": "最多可取出：",
+  "withdrawDetail.winningOutcome": "胜出选项",
+  "withdrawDetail.reward": "回报",
+  "withdrawDetail.withdrawTo": "提现到",
+  "withdrawDetail.returnRate": "回报率：",
+  "withdrawDetail.youBet": "你下注了",
+  "withdrawDetail.youVote": "你投票了",
   "walletHistory.transferHistory": "Transfer History",
   "withdrawDialog.send": "Send",
-  "withdrawDialog.title": "Withdraw QTUM/BOT",
-  "withdrawDialog.youCanWithdraw": "最多可取出："
+  "withdrawDialog.title": "Withdraw QTUM/BOT"
 }
+
