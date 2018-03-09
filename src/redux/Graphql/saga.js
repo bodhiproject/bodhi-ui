@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { decimalToSatoshi, satoshiToDecimal, satoshiHexToDecimal, gasToQtum } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token, OracleStatus } from '../../constants';
 
 // Send allTopics query
@@ -43,8 +43,8 @@ function processTopic(topic) {
   }
 
   const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiHexToDecimal);
-  newTopic.botAmount = _.map(topic.botAmount, satoshiHexToDecimal);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
+  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
   newTopic.oracles = _.map(topic.oracles, processOracle);
   return newTopic;
 }
@@ -76,7 +76,7 @@ function processOracle(oracle) {
   }
 
   const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, satoshiHexToDecimal);
+  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
   newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
