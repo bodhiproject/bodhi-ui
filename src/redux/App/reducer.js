@@ -26,16 +26,7 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddresses', addresses);
     }
     case actions.SELECT_WALLET_ADDRESS: {
-      const walletAddrsIndex = action.value;
-      const walletAddresses = state.get('walletAddresses');
-
-      if (!_.isEmpty(walletAddresses)
-        && walletAddrsIndex < walletAddresses.length
-        && !_.isUndefined(walletAddresses[walletAddrsIndex])) {
-        const newState = state.set('walletAddrsIndex', walletAddrsIndex);
-        return newState.set('selectedWalletAddress', walletAddresses[walletAddrsIndex].address);
-      }
-      return state;
+      return state.set('selectedWalletAddress', action.address);
     }
     case actions.LIST_UNSPENT_RETURN: {
       const newAddresses = action.value.addresses;
@@ -48,7 +39,7 @@ export default function appReducer(state = initState, action) {
         const index = _.findIndex(newAddresses, { address: addressObj.address });
         if (index !== -1) {
           // Set the bot balance of the old address to the new one
-          newAddresses.splice(index, 1, { 
+          newAddresses.splice(index, 1, {
             address: addressObj.address,
             qtum: newAddresses[index].qtum,
             bot: addressObj.bot,
@@ -63,7 +54,7 @@ export default function appReducer(state = initState, action) {
         }
       });
 
-      return newState.set('walletAddresses', newAddresses).set('utxos', action.value.utxos);
+      return state.set('walletAddresses', newAddresses).set('utxos', action.value.utxos);
 
       // if (_.isEmpty(existingAddresses)) {
       //   existingAddresses = combinedAddresses;

@@ -22,14 +22,15 @@ const appActions = {
   },
 
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
-  SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
   addWalletAddress: (value) => ({
     type: appActions.ADD_WALLET_ADDRESS,
     value,
   }),
-  selectWalletAddress: (value) => ({
+
+  SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
+  selectWalletAddress: (address) => ({
     type: appActions.SELECT_WALLET_ADDRESS,
-    value,
+    address,
   }),
 
   LIST_UNSPENT: 'LIST_UNSPENT',
