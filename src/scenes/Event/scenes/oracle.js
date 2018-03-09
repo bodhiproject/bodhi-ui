@@ -11,7 +11,7 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import moment from 'moment';
 
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
@@ -252,6 +252,7 @@ class OraclePage extends React.Component {
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
+    const { locale, messages: localeMessages } = this.props.intl;
 
     if (oracle) {
       const { token, status } = oracle;
@@ -262,7 +263,7 @@ class OraclePage extends React.Component {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
           eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
           },
           predictionAction: {
             skipExpansion: false,
@@ -275,7 +276,7 @@ class OraclePage extends React.Component {
           name: 'SETTING',
           breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
           eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
           },
           predictionAction: {
             skipExpansion: false,
@@ -288,7 +289,7 @@ class OraclePage extends React.Component {
           name: 'VOTING',
           breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
           eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
           },
           predictionAction: {
             skipExpansion: false,
@@ -301,7 +302,7 @@ class OraclePage extends React.Component {
           name: 'FINALIZING',
           breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
           eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
           },
           predictionAction: {
             skipExpansion: true,
@@ -550,6 +551,8 @@ OraclePage.propTypes = {
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
   setLastUsedAddress: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/no-typos
+  intl: intlShape.isRequired,
 };
 
 OraclePage.defaultProps = {

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Row, Col, Progress } from 'antd';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
-
+import { FormattedMessage } from 'react-intl';
 import appActions from '../../../../redux/App/actions';
 import AppConfig from '../../../../config/app';
 import getSubscription, { channels } from '../../../../network/graphSubscription';
@@ -79,8 +79,8 @@ class Loader extends React.PureComponent {
           </div>
           <div className={classes.loaderInfoWrapper}>
             <Typography variant="display1" className={classes.loaderPercent}>{percent}</Typography>%
-            <p>Blockchain syncing.</p>
-            <p>Please wait.</p>
+            <p><FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing." /></p>
+            <p><FormattedMessage id="str.wait" defaultMessage="Please wait." /></p>
           </div>
         </div>
       </div>

@@ -332,6 +332,7 @@ class TopicPage extends React.Component {
 
   constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
+    const { locale, messages: localeMessages } = this.props.intl;
 
     if (topic) {
       let config;
@@ -351,6 +352,8 @@ class TopicPage extends React.Component {
             centralizedOracle,
             decentralizedOracles,
             true,
+            locale,
+            localeMessages
           ),
         };
 
