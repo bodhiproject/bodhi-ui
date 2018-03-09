@@ -2,12 +2,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import EventIcon from 'material-ui-icons/Event';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
