@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
@@ -87,7 +87,6 @@ class GlobalHub extends React.PureComponent {
 
   fetchSyncInfo = () => {
     const { getSyncInfo, syncPercent } = this.props;
-
     getSyncInfo(syncPercent);
   };
 
