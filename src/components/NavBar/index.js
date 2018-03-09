@@ -65,13 +65,13 @@ class NavBar extends React.PureComponent {
 
     if (actionableItemCount) {
       return (
-        <Badge badgeContent={actionableItemCount} color="secondary">
-          <Link to="/activities">
+        <Link to="/activities">
+          <Badge badgeContent={actionableItemCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
-          </Link>
-        </Badge>
+          </Badge>
+        </Link>
       );
     }
 
