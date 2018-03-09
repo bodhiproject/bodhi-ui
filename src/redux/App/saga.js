@@ -28,19 +28,20 @@ export function* listUnspentRequestHandler() {
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
           value: {
-            result: [{
-              address: defaultAddress,
-              amount: 0,
-            }],
+            utxos: [],
+            addresses: [
+              { address: defaultAddress, qtum: 0 },
+            ],
           },
         });
       } else {
         // listunspent returned with a non-empty array
-        const utxos = processListUnspent(result);
+        const utxosAndAddresses = processListUnspent(result);
+        console.log(utxosAndAddresses);
 
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
-          value: { result },
+          value: utxosAndAddresses,
         });
       }
     } catch (error) {
@@ -56,18 +57,22 @@ function processListUnspent(utxos) {
   const trimmedUtxos = _.map(utxos, (output) =>
     _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
 
-  const addresses = {};
+  const addresses = [];
   // Combine utxos with same address
   _.each(trimmedUtxos, (output) => {
     const currentAddr = output.address;
-    if (addresses[currentAddr]) {
-      // Add utxo amount to existing qtum amount
-      addresses[currentAddr].qtum += output.amount;
+    const index = _.findIndex(addresses, { address: currentAddr });
+
+    if (index !== -1) {
+      // Found existing entry with same address
+      const newQtum = addresses[index].qtum + output.amount;
+      addresses.splice(index, 1, { address: currentAddr, qtum: newQtum });
     } else {
-      // Create new mapping for address and store qtum amount
-      addresses[currentAddr] = {
+      // Not found, insert new entry
+      addresses.push({
+        address: currentAddr,
         qtum: output.amount,
-      };
+      });
     }
   });
 
