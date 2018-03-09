@@ -82,6 +82,31 @@ function processListUnspent(utxos) {
   };
 }
 
+function processListUnspent(utxos) {
+  const trimmedUtxos = _.map(utxos, (output) =>
+    _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
+
+  const addresses = {};
+  // Combine utxos with same address
+  _.each(trimmedUtxos, (output) => {
+    const currentAddr = output.address;
+    if (addresses[currentAddr]) {
+      // Add utxo amount to existing qtum amount
+      addresses[currentAddr].qtum += output.amount;
+    } else {
+      // Create new mapping for address and store qtum amount
+      addresses[currentAddr] = {
+        qtum: output.amount,
+      };
+    }
+  });
+
+  return {
+    utxos: trimmedUtxos,
+    addresses,
+  };
+}
+
 export function* getBotBalanceRequestHandler() {
   yield takeEvery(actions.GET_BOT_BALANCE, function* getBotBalanceRequest(action) {
     try {
