@@ -36,11 +36,11 @@ export function* listUnspentRequestHandler() {
         });
       } else {
         // listunspent returned with a non-empty array
-        const utxosAndAddresses = processListUnspent(result);
+        const addresses = processListUnspent(result);
 
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
-          value: utxosAndAddresses,
+          value: addresses,
         });
       }
     } catch (error) {

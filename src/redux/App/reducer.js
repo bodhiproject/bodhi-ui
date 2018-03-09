@@ -11,6 +11,7 @@ const initState = new Map({
   view: getView(window.innerWidth),
   height: window.innerHeight,
   current: preKeys,
+  walletAddresses: [],
   walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: '',
@@ -38,53 +39,47 @@ export default function appReducer(state = initState, action) {
       return state;
     }
     case actions.LIST_UNSPENT_RETURN: {
-      console.log(action.value);
+      const newAddresses = action.value.addresses;
 
-      let result = [];
-      let newState = state;
-      let combinedAddresses = [];
-
-      if (action.value.result) {
-        result = _.orderBy(_.map(action.value.result, (item) => ({
-          address: item.address,
-          qtum: item.amount,
-        })), ['qtum'], ['desc']);
-
-        // Sum qtum balance of same addresses
-        if (!_.isEmpty(result)) {
-          _.each(result, (item) => {
-            const foundObj = _.find(combinedAddresses, { address: item.address });
-            if (foundObj) {
-              foundObj.qtum += item.qtum;
-            } else {
-              combinedAddresses.push({
-                address: item.address,
-                qtum: item.qtum,
-              });
-            }
+      // Update the bot balance of the existing addresses or add in existing addresses but with 0 qtum balance.
+      // This is for good UX so the user won't wonder why their old address which they did a sendtoaddress
+      // is no longer on the list of addresses.
+      const existingAddresses = state.get('walletAddresses');
+      _.each(existingAddresses, (addressObj) => {
+        const index = _.findIndex(newAddresses, { address: addressObj.address });
+        if (index !== -1) {
+          // Set the bot balance of the old address to the new one
+          newAddresses.splice(index, 1, { 
+            address: addressObj.address,
+            qtum: newAddresses[index].qtum,
+            bot: addressObj.bot,
           });
-
-          // Make sure address list is not too long
-          combinedAddresses = combinedAddresses.slice(0, WALLET_ADDRESS_MAX_COUNT);
+        } else {
+          // Add the address to the list of new addresses, but with 0 qtum balance since no unspents match it
+          newAddresses.push({
+            address: addressObj.address,
+            qtum: 0,
+            bot: addressObj.bot,
+          });
         }
-      }
+      });
 
-      let existingAddresses = state.get('walletAddrs') || [];
+      return newState.set('walletAddresses', newAddresses).set('utxos', action.value.utxos);
 
-      if (_.isEmpty(existingAddresses)) {
-        existingAddresses = combinedAddresses;
+      // if (_.isEmpty(existingAddresses)) {
+      //   existingAddresses = combinedAddresses;
 
-        // If initalizing, set initial value for selectedWalletAddress here
-        newState = state.set('selectedWalletAddress', result[state.get('walletAddrsIndex')]
-          && result[state.get('walletAddrsIndex')].address);
-      } else { // Update existing address list if new is different
-        _.each(existingAddresses, (item) => {
-          const newAddressObj = _.find(combinedAddresses, { address: item.address });
-          _.extend(item, newAddressObj);
-        });
-      }
+      //   // If initalizing, set initial value for selectedWalletAddress here
+      //   newState = state.set('selectedWalletAddress', result[state.get('walletAddrsIndex')]
+      //     && result[state.get('walletAddrsIndex')].address);
+      // } else { // Update existing address list if new is different
+      //   _.each(existingAddresses, (item) => {
+      //     const newAddressObj = _.find(combinedAddresses, { address: item.address });
+      //     _.extend(item, newAddressObj);
+      //   });
+      // }
 
-      return newState.set('walletAddrs', existingAddresses);
+      // return newState.set('walletAddrs', existingAddresses);
     }
     case actions.GET_BOT_BALANCE_RETURN: {
       const walletAddrs = state.get('walletAddrs');
