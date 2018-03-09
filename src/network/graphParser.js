@@ -68,6 +68,7 @@ class GraphParser {
       gasUsed: entry.gasUsed,
       version: entry.version,
       senderAddress: entry.senderAddress,
+      receiverAddress: entry.receiverAddress,
       topicAddress: entry.topicAddress,
       oracleAddress: entry.oracleAddress,
       optionIdx: entry.optionIdx,
