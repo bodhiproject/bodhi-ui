@@ -6,9 +6,9 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Badge from 'material-ui/Badge';
 import Button from 'material-ui/Button';
-import AccountBalanceWalletIcon from 'material-ui-icons/AccountBalanceWallet';
 import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
 
 import NavEventsButtons from './components/NavEventsButtons/index';
 import styles from './styles';
@@ -43,7 +43,7 @@ class NavBar extends React.PureComponent {
           <div className={classes.navBarRightWrapper}>
             <Link to="/my-wallet">
               <Button className={classes.navBarWalletButton}>
-                <AccountBalanceWalletIcon fontSize className={classes.navBarWalletIcon} />
+                <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </Link>
