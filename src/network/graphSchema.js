@@ -76,6 +76,7 @@ const TYPE_DEF = {
     gasUsed
     version
     senderAddress
+    receiverAddress
     topicAddress
     oracleAddress
     optionIdx
