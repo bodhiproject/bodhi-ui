@@ -8,21 +8,17 @@ import { querySyncInfo } from '../../network/graphQuery';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
-const DEFAULT_QTUMD_ACCOUNTNAME = '';
-
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {
       const result = yield call(request, Routes.listUnspent);
 
       if (_.isEmpty(result)) {
-        // If listunspent return is empty meaning one has no balance in his addresses
-        // we will get default qtumd account's address
-        // This is likely to be the case when first installed
+        // listunspent returned empty. Use the default qtum address.
         const options = {
           method: 'POST',
           body: JSON.stringify({
-            accountName: DEFAULT_QTUMD_ACCOUNTNAME,
+            accountName: '',
           }),
           headers: { 'Content-Type': 'application/json' },
         };
@@ -39,7 +35,9 @@ export function* listUnspentRequestHandler() {
           },
         });
       } else {
-        // If listunspent returns with a non-empty list
+        // listunspent returned with a non-empty array
+        const utxos = processListUnspent(result);
+
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
           value: { result },
@@ -52,6 +50,31 @@ export function* listUnspentRequestHandler() {
       });
     }
   });
+}
+
+function processListUnspent(utxos) {
+  const trimmedUtxos = _.map(utxos, (output) =>
+    _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
+
+  const addresses = {};
+  // Combine utxos with same address
+  _.each(trimmedUtxos, (output) => {
+    const currentAddr = output.address;
+    if (addresses[currentAddr]) {
+      // Add utxo amount to existing qtum amount
+      addresses[currentAddr].qtum += output.amount;
+    } else {
+      // Create new mapping for address and store qtum amount
+      addresses[currentAddr] = {
+        qtum: output.amount,
+      };
+    }
+  });
+
+  return {
+    utxos: trimmedUtxos,
+    addresses,
+  };
 }
 
 export function* getBotBalanceRequestHandler() {
