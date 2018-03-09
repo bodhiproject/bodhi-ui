@@ -267,12 +267,12 @@ class CreateTopic extends React.Component {
   }
 
   getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
+    const { walletAddresses, walletAddrsIndex } = this.props;
 
-    if (!_.isEmpty(walletAddrs)
-      && walletAddrsIndex < walletAddrs.length
-      && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex].address;
+    if (!_.isEmpty(walletAddresses)
+      && walletAddrsIndex < walletAddresses.length
+      && !_.isUndefined(walletAddresses[walletAddrsIndex])) {
+      return walletAddresses[walletAddrsIndex].address;
     }
     return '';
   }
@@ -615,7 +615,7 @@ CreateTopic.propTypes = {
   createTopicTx: PropTypes.func,
   txReturn: PropTypes.object,
   getInsightTotals: PropTypes.func,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   chainBlockNum: PropTypes.number,
   averageBlockTime: PropTypes.number,
@@ -627,7 +627,7 @@ CreateTopic.defaultProps = {
   createTopicTx: undefined,
   txReturn: undefined,
   getInsightTotals: undefined,
-  walletAddrs: [],
+  walletAddresses: [],
   walletAddrsIndex: 0,
   chainBlockNum: undefined,
   averageBlockTime: defaults.averageBlockTime,
@@ -635,7 +635,7 @@ CreateTopic.defaultProps = {
 
 const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   chainBlockNum: state.App.get('chainBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),

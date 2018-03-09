@@ -52,7 +52,7 @@ class MyBalances extends React.PureComponent {
   }
 
   render() {
-    const { classes, walletAddrs } = this.props;
+    const { classes, walletAddresses } = this.props;
     const {
       selectedAddress,
       selectedAddressQtum,
@@ -67,10 +67,10 @@ class MyBalances extends React.PureComponent {
           <Typography variant="title" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
-          {this.getTotalsGrid(walletAddrs)}
+          {this.getTotalsGrid(walletAddresses)}
           <Table>
             {this.getTableHeader()}
-            {this.getTableBody(walletAddrs)}
+            {this.getTableBody(walletAddresses)}
           </Table>
           {this.getAddrCopiedSnackBar()}
           <DepositDialog
@@ -236,9 +236,9 @@ class MyBalances extends React.PureComponent {
     }
 
     if (order === 'desc') {
-      this.props.walletAddrs.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
+      this.props.walletAddresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
     } else {
-      this.props.walletAddrs.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      this.props.walletAddresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
     }
 
     this.setState({
@@ -384,15 +384,15 @@ class MyBalances extends React.PureComponent {
 
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
 };
 
 MyBalances.defaultProps = {
-  walletAddrs: [],
+  walletAddresses: [],
 };
 
 const mapStateToProps = (state) => ({
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
 });
 
 function mapDispatchToProps(dispatch) {

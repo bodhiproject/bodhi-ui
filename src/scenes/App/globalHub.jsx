@@ -24,7 +24,7 @@ class GlobalHub extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { walletAddrs } = this.props;
+    const { walletAddresses } = this.props;
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
@@ -35,7 +35,7 @@ class GlobalHub extends React.PureComponent {
     this.subscribeSyncInfo();
 
     // Get unspent outputs and bot balances for all the wallet addresses
-    this.updateBalances(walletAddrs);
+    this.updateBalances(walletAddresses);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,7 +54,7 @@ class GlobalHub extends React.PureComponent {
     // Update balances after init sync and on new block
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
       || (initSyncing && !nextProps.initSyncing)) {
-      this.updateBalances(nextProps.walletAddrs);
+      this.updateBalances(nextProps.walletAddresses);
 
       // Gets the actionable items for the My Activities badge
       if (!_.isEmpty(nextProps.selectedWalletAddress)) {
@@ -110,7 +110,7 @@ GlobalHub.propTypes = {
   client: PropTypes.object,
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
   selectedWalletAddress: PropTypes.string,
   getSyncInfo: PropTypes.func,
   onSyncInfo: PropTypes.func,
@@ -122,7 +122,7 @@ GlobalHub.propTypes = {
 GlobalHub.defaultProps = {
   client: undefined,
   syncBlockNum: undefined,
-  walletAddrs: [],
+  walletAddresses: [],
   selectedWalletAddress: undefined,
   getSyncInfo: undefined,
   onSyncInfo: undefined,
@@ -135,7 +135,7 @@ const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
   selectedWalletAddress: state.App.get('selectedWalletAddress'),
 });
 

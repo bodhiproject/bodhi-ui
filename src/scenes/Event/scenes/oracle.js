@@ -116,7 +116,7 @@ class OraclePage extends React.Component {
                   percent={item.percent}
                   voteAmount={this.state.voteAmount}
                   token={oracle.token}
-                  walletAddrs={this.props.walletAddrs}
+                  walletAddresses={this.props.walletAddresses}
                   currentWalletIdx={this.state.currentWalletIdx}
                   skipExpansion={config.predictionAction.skipExpansion}
                   showAmountInput={config.predictionAction.showAmountInput}
@@ -222,7 +222,7 @@ class OraclePage extends React.Component {
   }
 
   getCurrentWalletAddr() {
-    return this.props.walletAddrs[this.state.currentWalletIdx].address;
+    return this.props.walletAddresses[this.state.currentWalletIdx].address;
   }
 
   /**
@@ -462,7 +462,7 @@ OraclePage.propTypes = {
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
@@ -479,12 +479,12 @@ OraclePage.defaultProps = {
   createFinalizeResultTx: undefined,
   txReturn: undefined,
   syncBlockTime: undefined,
-  walletAddrs: [],
+  walletAddresses: [],
   walletAddrsIndex: 0,
 };
 
 const mapStateToProps = (state) => ({
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   syncBlockTime: state.App.get('syncBlockTime'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),

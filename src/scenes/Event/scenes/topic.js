@@ -154,7 +154,7 @@ class TopicPage extends React.Component {
     const {
       classes,
       txReturn,
-      walletAddrs,
+      walletAddresses,
       botWinnings,
       qtumWinnings,
     } = this.props;
@@ -238,7 +238,7 @@ class TopicPage extends React.Component {
               id: 'address',
             }}
           >
-            {walletAddrs.map((item, index) => (
+            {walletAddresses.map((item, index) => (
               <option key={item.address} value={index}>{item.address}</option>
             ))}
           </Select>
@@ -365,7 +365,7 @@ class TopicPage extends React.Component {
   }
 
   calculateWinnings() {
-    if (this.props.walletAddrs.length) {
+    if (this.props.walletAddresses.length) {
       this.props.calculateWinnings(
         this.state.address,
         this.getSelectedAddress()
@@ -379,7 +379,7 @@ class TopicPage extends React.Component {
   }
 
   getSelectedAddress() {
-    return this.props.walletAddrs[this.state.currentWalletIdx].address;
+    return this.props.walletAddresses[this.state.currentWalletIdx].address;
   }
 
   onWithdrawClicked() {
@@ -402,7 +402,7 @@ TopicPage.propTypes = {
   createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
-  walletAddrs: PropTypes.array,
+  walletAddresses: PropTypes.array,
   walletAddrsIndex: PropTypes.number,
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
@@ -419,7 +419,7 @@ TopicPage.defaultProps = {
   getTransactions: undefined,
   getTransactionsReturn: [],
   syncBlockTime: undefined,
-  walletAddrs: [],
+  walletAddresses: [],
   walletAddrsIndex: 0,
   clearTxReturn: undefined,
   calculateWinnings: undefined,
@@ -430,7 +430,7 @@ TopicPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
   walletAddrsIndex: state.App.get('walletAddrsIndex'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),

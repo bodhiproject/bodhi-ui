@@ -12,7 +12,6 @@ const initState = new Map({
   height: window.innerHeight,
   current: preKeys,
   walletAddresses: [],
-  walletAddrs: [],
   walletAddrsIndex: 0,
   selectedWalletAddress: '',
   syncProgress: 0,
@@ -22,19 +21,19 @@ const initState = new Map({
 export default function appReducer(state = initState, action) {
   switch (action.type) {
     case actions.ADD_WALLET_ADDRESS: {
-      const addresses = state.get('walletAddrs');
+      const addresses = state.get('walletAddresses');
       addresses.push({ address: action.value, qtum: 0 });
-      return state.set('walletAddrs', addresses);
+      return state.set('walletAddresses', addresses);
     }
     case actions.SELECT_WALLET_ADDRESS: {
       const walletAddrsIndex = action.value;
-      const walletAddrs = state.get('walletAddrs');
+      const walletAddresses = state.get('walletAddresses');
 
-      if (!_.isEmpty(walletAddrs)
-        && walletAddrsIndex < walletAddrs.length
-        && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
+      if (!_.isEmpty(walletAddresses)
+        && walletAddrsIndex < walletAddresses.length
+        && !_.isUndefined(walletAddresses[walletAddrsIndex])) {
         const newState = state.set('walletAddrsIndex', walletAddrsIndex);
-        return newState.set('selectedWalletAddress', walletAddrs[walletAddrsIndex].address);
+        return newState.set('selectedWalletAddress', walletAddresses[walletAddrsIndex].address);
       }
       return state;
     }
@@ -82,20 +81,20 @@ export default function appReducer(state = initState, action) {
       // return newState.set('walletAddrs', existingAddresses);
     }
     case actions.GET_BOT_BALANCE_RETURN: {
-      const walletAddrs = state.get('walletAddrs');
+      const walletAddresses = state.get('walletAddresses');
 
       if (action && action.value) {
         const ownerAddress = action.value.address;
         const ownerBotBalance = action.value.value;
 
-        const ownerObj = _.find(walletAddrs, (item) => item.address === ownerAddress);
+        const ownerObj = _.find(walletAddresses, (item) => item.address === ownerAddress);
 
         if (ownerObj) {
           ownerObj.bot = ownerBotBalance;
         }
       }
 
-      return state.set('walletAddrs', walletAddrs);
+      return state.set('walletAddresses', walletAddresses);
     }
     case actions.TOGGLE_ALL: {
       if (state.get('view') !== action.view || action.height !== state.height) {

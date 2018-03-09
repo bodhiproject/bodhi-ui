@@ -37,7 +37,7 @@ class EventOption extends React.PureComponent {
       percent,
       voteAmount,
       token,
-      walletAddrs,
+      walletAddresses,
       currentWalletIdx,
       skipExpansion,
       showAmountInput,
@@ -109,7 +109,7 @@ class EventOption extends React.PureComponent {
   renderAddrSelect() {
     const {
       classes,
-      walletAddrs,
+      walletAddresses,
       currentWalletIdx,
     } = this.props;
 
@@ -130,7 +130,7 @@ class EventOption extends React.PureComponent {
               id: 'address',
             }}
           >
-            {walletAddrs.map((item, index) => (
+            {walletAddresses.map((item, index) => (
               <option key={item.address} value={index}>{item.address}</option>
             ))}
           </Select>
@@ -178,7 +178,7 @@ EventOption.propTypes = {
   onOptionChange: PropTypes.func.isRequired,
   onAmountChange: PropTypes.func.isRequired,
   onWalletChange: PropTypes.func.isRequired,
-  walletAddrs: PropTypes.array.isRequired,
+  walletAddresses: PropTypes.array.isRequired,
   currentWalletIdx: PropTypes.number.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
