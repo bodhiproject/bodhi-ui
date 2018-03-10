@@ -220,7 +220,15 @@ class OraclePage extends React.Component {
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
-    const oracle = _.find(getOraclesReturn, { address: this.state.address });
+    const { address, txid, unconfirmed } = this.state;
+
+    let oracle;
+    if (!unconfirmed) {
+      oracle = _.find(getOraclesReturn, { address });
+    } else {
+      oracle = _.find(getOraclesReturn, { txid });
+    }
+
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
@@ -228,7 +236,22 @@ class OraclePage extends React.Component {
     if (oracle) {
       const { token, status } = oracle;
 
-      if (token === Token.Qtum && status === OracleStatus.Voting) {
+      if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
+        config = {
+          name: 'BETTING',
+          breadcrumbLabel: <FormattedMessage id="topBar.betting" defaultMessage="Betting" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+            messages: [
+            ],
+          },
+          predictionAction: {
+            skipExpansion: false,
+            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+            showAmountInput: true,
+          },
+        };
+      } else if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
