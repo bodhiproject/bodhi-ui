@@ -84,8 +84,13 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes, lastUsedAddress } = this.props;
-    const { oracle, config, transactions } = this.state;
+    const { classes, txReturn, lastUsedAddress } = this.props;
+    const {
+      oracle,
+      config,
+      transactions,
+      unconfirmed,
+    } = this.state;
 
     if (!oracle || !config) {
       return null;
@@ -122,29 +127,42 @@ class OraclePage extends React.Component {
                   onWalletChange={this.handleWalletChange}
                 />
               ))}
-              <Button
-                variant="raised"
-                fullWidth
-                size="large"
-                color="primary"
-                disabled={actionButtonConfig.disabled}
-                onClick={this.handleConfirmClick}
-                className={classes.eventActionButton}
-              >
-                {
-                  this.state.isApproving ?
-                    <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                    config.predictionAction.btnText
-                }
-              </Button>
-              {
-                actionButtonConfig.message
-                  ? <Typography variant="body1" className={classes.buttonDisabledText}>
-                    {actionButtonConfig.message}
+              {!unconfirmed
+                ? (
+                  <div>
+                    <Button
+                      variant="raised"
+                      fullWidth
+                      size="large"
+                      color="primary"
+                      disabled={actionButtonConfig.disabled}
+                      onClick={this.handleConfirmClick}
+                      className={classes.eventActionButton}
+                    >
+                      {
+                        this.state.isApproving ?
+                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                          config.predictionAction.btnText
+                      }
+                    </Button>
+                    {
+                      actionButtonConfig.message
+                        ? <Typography variant="body1" className={classes.buttonDisabledText}>
+                          {actionButtonConfig.message}
+                        </Typography>
+                        : null
+                    }
+                    <EventTxHistory transactions={transactions} options={oracle.options} />
+                  </div>
+                ) : (
+                  <Typography variant="body1" className={classes.eventUnconfirmedText}>
+                    <FormattedMessage
+                      id="oracle.eventUnconfirmed"
+                      defaultMessage="This created Event has not been confirmed yet."
+                    />
                   </Typography>
-                  : null
+                )
               }
-              <EventTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
@@ -220,6 +238,7 @@ class OraclePage extends React.Component {
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
+    const { lastUsedAddress } = this.props;
     const { address, txid, unconfirmed } = this.state;
 
     let oracle;
