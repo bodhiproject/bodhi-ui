@@ -112,14 +112,6 @@ class EventOption extends React.PureComponent {
       selectedWalletAddress,
     } = this.props;
 
-    // Add the unselected item to the front
-    // const addresses = walletAddresses;
-    // addresses.unshift({
-    //   address: '',
-    //   qtum: 0,
-    //   bot: 0,
-    // });
-
     return (<ExpansionPanelDetails>
       <div className={classNames(classes.eventOptionWrapper, 'noMargin', 'last')}>
         <div className={classes.eventOptionIcon}>

@@ -54,22 +54,15 @@ export default function appReducer(state = initState, action) {
         }
       });
 
-      return state.set('walletAddresses', newAddresses).set('utxos', action.value.utxos);
+      // Set a default selected address if there was none selected before
+      let selectedWalletAddress = state.get('selectedWalletAddress');
+      if (_.isEmpty(selectedWalletAddress) && !_.isEmpty(newAddresses)) {
+        selectedWalletAddress = newAddresses[0].address;
+      }
 
-      // if (_.isEmpty(existingAddresses)) {
-      //   existingAddresses = combinedAddresses;
-
-      //   // If initalizing, set initial value for selectedWalletAddress here
-      //   newState = state.set('selectedWalletAddress', result[state.get('walletAddrsIndex')]
-      //     && result[state.get('walletAddrsIndex')].address);
-      // } else { // Update existing address list if new is different
-      //   _.each(existingAddresses, (item) => {
-      //     const newAddressObj = _.find(combinedAddresses, { address: item.address });
-      //     _.extend(item, newAddressObj);
-      //   });
-      // }
-
-      // return newState.set('walletAddrs', existingAddresses);
+      return state.set('walletAddresses', newAddresses)
+        .set('utxos', action.value.utxos)
+        .set('selectedWalletAddress', selectedWalletAddress);
     }
     case actions.GET_BOT_BALANCE_RETURN: {
       const walletAddresses = state.get('walletAddresses');

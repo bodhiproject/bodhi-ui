@@ -89,6 +89,7 @@ class OraclePage extends React.Component {
     const { classes, txReturn, selectedWalletAddress } = this.props;
     const { oracle, transactions, config } = this.state;
 
+    // TODO: is this necessary?
     if (!oracle || !config) {
       // Don't render anything if page is loading.
       // In future we could make a loading animation
@@ -195,31 +196,29 @@ class OraclePage extends React.Component {
   }
 
   handleConfirmClick() {
-    console.log(this.props.selectedWalletAddress);
-    // const amount = this.state.voteAmount;
+    const amount = this.state.voteAmount;
 
-    // switch (this.state.config.name) {
-    //   case 'BETTING': {
-    //     this.bet(amount);
-    //     break;
-    //   }
-    //   case 'SETTING': {
-    //     this.setResult();
-    //     break;
-    //   }
-    //   case 'VOTING': {
-    //     this.vote(amount);
-    //     break;
-    //   }
-    //   case 'FINALIZING': {
-    //     this.finalizeResult();
-    //     break;
-    //   }
-    //   default: {
-    //     // TODO: oracle not found page
-    //     break;
-    //   }
-    // }
+    switch (this.state.config.name) {
+      case 'BETTING': {
+        this.bet(amount);
+        break;
+      }
+      case 'SETTING': {
+        this.setResult();
+        break;
+      }
+      case 'VOTING': {
+        this.vote(amount);
+        break;
+      }
+      case 'FINALIZING': {
+        this.finalizeResult();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   /**
@@ -467,7 +466,7 @@ OraclePage.propTypes = {
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
-  walletAddresses: PropTypes.array,
+  walletAddresses: PropTypes.array.isRequired,
   selectedWalletAddress: PropTypes.string.isRequired,
   selectWalletAddress: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-typos
@@ -485,7 +484,6 @@ OraclePage.defaultProps = {
   createFinalizeResultTx: undefined,
   txReturn: undefined,
   syncBlockTime: undefined,
-  walletAddresses: [],
 };
 
 const mapStateToProps = (state) => ({
