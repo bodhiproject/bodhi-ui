@@ -29,10 +29,14 @@ class OraclePage extends React.Component {
   constructor(props) {
     super(props);
 
+    const { topicAddress, address, txid } = this.props.match.params;
+    const unconfirmed = topicAddress === 'null' && address === 'null' && txid;
+
     this.state = {
-      topicAddress: this.props.match.params.topicAddress,
-      address: this.props.match.params.address,
-      txid: this.props.match.params.txid,
+      topicAddress,
+      address,
+      txid,
+      unconfirmed,
       oracle: undefined,
       transactions: [],
       voteAmount: 0,
@@ -191,9 +195,14 @@ class OraclePage extends React.Component {
   }
 
   executeOracleAndTxsRequest() {
-    const { topicAddress, address, txid } = this.state;
+    const {
+      topicAddress,
+      address,
+      txid,
+      unconfirmed,
+    } = this.state;
 
-    if (topicAddress === 'null' && address === 'null' && txid) {
+    if (unconfirmed) {
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
       this.props.getOracles([
         { txid, status: OracleStatus.Created },
