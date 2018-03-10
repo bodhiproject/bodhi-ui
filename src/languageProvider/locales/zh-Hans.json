@@ -49,7 +49,7 @@
   "create.validBetEnd": "必须大于投注起始时间",
   "create.validResultSetEnd": "必须大于结果设置起始时间",
   "create.validResultSetStart": "必须大于或等于投注结束时间",
-  "depositDialog.title": "QTUM/BOT Deposit Address",
+  "depositDialog.title": "QTUM/BOT 充值地址",
   "eventHistory.viewEvent": "View Event",
   "eventInfo.creator": "创建者",
   "eventInfo.endDate": "截止日期",
