@@ -197,7 +197,7 @@ class EventCardsGrid extends React.Component {
         <EventCard
           key={oracle.txid}
           name={oracle.name}
-          url={`/oracle/${oracle.topicAddress}/${oracle.address}`}
+          url={`/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`}
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
           totalQTUM={totalQTUM}
           buttonText={buttonText}

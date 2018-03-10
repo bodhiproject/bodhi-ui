@@ -27,7 +27,7 @@ class AppRouter extends React.Component {
         />
         <Route
           exact
-          path={`${url}/oracle/:topicAddress/:address`}
+          path={`${url}/oracle/:topicAddress/:address/:txid`}
           component={asyncComponent(() => import('../Event/scenes/oracle'), langHandler)}
         />
         <Route

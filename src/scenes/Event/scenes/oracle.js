@@ -32,6 +32,7 @@ class OraclePage extends React.Component {
     this.state = {
       topicAddress: this.props.match.params.topicAddress,
       address: this.props.match.params.address,
+      txid: this.props.match.params.txid,
       oracle: undefined,
       transactions: [],
       voteAmount: 0,
@@ -190,13 +191,23 @@ class OraclePage extends React.Component {
   }
 
   executeOracleAndTxsRequest() {
-    this.props.getOracles([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
+    const { topicAddress, address, txid } = this.state;
+
+    if (topicAddress === 'null' && address === 'null' && txid) {
+      // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
+      this.props.getOracles([
+        { txid, status: OracleStatus.Created },
+      ]);
+    } else {
+      // Find real Oracle based on topicAddress
+      this.props.getOracles([
+        { topicAddress },
+      ]);
+    }
 
     this.props.getTransactions([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
+      { topicAddress },
+    ]);
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
