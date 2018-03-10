@@ -12,7 +12,6 @@ const initState = new Map({
   height: window.innerHeight,
   current: preKeys,
   walletAddresses: [],
-  walletAddrsIndex: 0,
   selectedWalletAddress: '',
   syncProgress: 0,
   initSyncing: false,
