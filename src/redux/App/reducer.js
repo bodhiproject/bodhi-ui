@@ -13,6 +13,7 @@ const initState = new Map({
   current: preKeys,
   walletAddresses: [],
   selectedWalletAddress: '',
+  updatingBalances: false,
   syncProgress: 0,
   initSyncing: false,
 });
@@ -69,7 +70,8 @@ export default function appReducer(state = initState, action) {
 
       return state.set('walletAddresses', newAddresses)
         .set('utxos', action.value.utxos)
-        .set('selectedWalletAddress', selectedWalletAddress);
+        .set('selectedWalletAddress', selectedWalletAddress)
+        .set('updatingBalances', true);
     }
     case actions.GET_BOT_BALANCE_RETURN: {
       if (action.error) {
@@ -86,6 +88,9 @@ export default function appReducer(state = initState, action) {
       }
 
       return state.set('walletAddresses', walletAddresses);
+    }
+    case actions.DISABLE_UPDATING_BALANCES: {
+      return state.set('updatingBalances', false);
     }
     case actions.TOGGLE_ALL: {
       if (state.get('view') !== action.view || action.height !== state.height) {
