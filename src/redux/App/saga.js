@@ -56,7 +56,7 @@ function processListUnspent(utxos) {
   const trimmedUtxos = _.map(utxos, (output) =>
     _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
 
-  let addresses = [];
+  const addresses = [];
 
   // Combine utxos with same address
   _.each(trimmedUtxos, (output) => {
