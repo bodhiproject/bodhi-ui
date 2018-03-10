@@ -28,6 +28,11 @@ export default function appReducer(state = initState, action) {
       return state.set('selectedWalletAddress', action.address);
     }
     case actions.LIST_UNSPENT_RETURN: {
+      if (action.error) {
+        console.error('Error fetching listunspent');
+        return state;
+      }
+
       let newAddresses = action.value.addresses;
 
       // Update the bot balance of the existing addresses or add in existing addresses but with 0 qtum balance.
@@ -67,6 +72,11 @@ export default function appReducer(state = initState, action) {
         .set('selectedWalletAddress', selectedWalletAddress);
     }
     case actions.GET_BOT_BALANCE_RETURN: {
+      if (action.error) {
+        console.error('Error fetching bot-balance');
+        return state;
+      }
+
       const walletAddresses = state.get('walletAddresses');
 
       if (action && action.value) {

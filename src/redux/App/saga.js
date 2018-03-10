@@ -46,7 +46,7 @@ export function* listUnspentRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.LIST_UNSPENT_RETURN,
-        value: { error: error.message ? error.message : '' },
+        error: error.message,
       });
     }
   });
@@ -112,7 +112,7 @@ export function* getBotBalanceRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
-        value: { error: error.message ? error.message : '' },
+        error: error.message,
       });
     }
   });
