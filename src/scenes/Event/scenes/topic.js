@@ -20,6 +20,7 @@ import EventTxHistory from '../components/EventTxHistory/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
+import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 

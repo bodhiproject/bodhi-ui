@@ -178,7 +178,7 @@ EventOption.propTypes = {
   onAmountChange: PropTypes.func.isRequired,
   onWalletChange: PropTypes.func.isRequired,
   walletAddresses: PropTypes.array.isRequired,
-  selectedWalletAddress: PropTypes.number.isRequired,
+  selectedWalletAddress: PropTypes.string.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
 };
