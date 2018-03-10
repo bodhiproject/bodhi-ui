@@ -78,16 +78,11 @@ export default function appReducer(state = initState, action) {
       }
 
       const walletAddresses = state.get('walletAddresses');
+      const { address, botAmount } = action.value;
 
-      if (action && action.value) {
-        const ownerAddress = action.value.address;
-        const ownerBotBalance = action.value.value;
-
-        const ownerObj = _.find(walletAddresses, (item) => item.address === ownerAddress);
-
-        if (ownerObj) {
-          ownerObj.bot = ownerBotBalance;
-        }
+      const ownerObj = _.find(walletAddresses, (item) => item.address === address);
+      if (ownerObj) {
+        ownerObj.bot = botAmount;
       }
 
       return state.set('walletAddresses', walletAddresses);

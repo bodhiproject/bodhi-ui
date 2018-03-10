@@ -106,7 +106,7 @@ export function* getBotBalanceRequestHandler() {
         type: actions.GET_BOT_BALANCE_RETURN,
         value: {
           address: owner,
-          value: botValue,
+          botAmount: botValue,
         },
       });
     } catch (error) {
