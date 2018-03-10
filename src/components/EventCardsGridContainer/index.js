@@ -195,7 +195,7 @@ class EventCardsGrid extends React.Component {
       // Constructing Card element on the right
       const oracleEle = (
         <EventCard
-          key={oracle.address}
+          key={oracle.txid}
           name={oracle.name}
           url={`/oracle/${oracle.topicAddress}/${oracle.address}`}
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
@@ -220,7 +220,7 @@ class EventCardsGrid extends React.Component {
       // Constructing Card element on the right
       const topicEle = (
         <EventCard
-          key={topic.address}
+          key={topic.txid}
           name={topic.name}
           url={`/topic/${topic.address}`}
           totalQTUM={totalQTUM}

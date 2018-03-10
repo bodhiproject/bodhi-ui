@@ -13,6 +13,7 @@ class GraphParser {
 
   static parseTopic(data) {
     return data.map((entry) => ({
+      txid: entry.txid,
       version: entry.version,
       address: entry.address,
       name: entry.name,
@@ -28,6 +29,7 @@ class GraphParser {
 
   static parseOracle(data) {
     return data.map((entry) => ({
+      txid: entry.txid,
       version: entry.version,
       token: entry.token,
       address: entry.address,
