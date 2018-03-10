@@ -76,9 +76,6 @@ function processListUnspent(utxos) {
     }
   });
 
-  // Sort
-  addresses = _.orderBy(addresses, ['qtum'], ['desc']);
-
   return {
     utxos: trimmedUtxos,
     addresses,

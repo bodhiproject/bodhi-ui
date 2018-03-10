@@ -28,7 +28,7 @@ export default function appReducer(state = initState, action) {
       return state.set('selectedWalletAddress', action.address);
     }
     case actions.LIST_UNSPENT_RETURN: {
-      const newAddresses = action.value.addresses;
+      let newAddresses = action.value.addresses;
 
       // Update the bot balance of the existing addresses or add in existing addresses but with 0 qtum balance.
       // This is for good UX so the user won't wonder why their old address which they did a sendtoaddress
@@ -52,6 +52,9 @@ export default function appReducer(state = initState, action) {
           });
         }
       });
+
+      // Sort
+      newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
 
       // Set a default selected address if there was none selected before
       let selectedWalletAddress = state.get('selectedWalletAddress');
