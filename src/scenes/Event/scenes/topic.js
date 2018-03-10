@@ -61,11 +61,9 @@ class TopicPage extends React.Component {
       topic: undefined,
       config: undefined,
       transactions: [],
-      currentWalletIdx: this.props.walletAddrsIndex ? this.props.walletAddrsIndex : 0,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.getSelectedAddress = this.getSelectedAddress.bind(this);
     this.executeTopicAndTxsRequest = this.executeTopicAndTxsRequest.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -97,11 +95,12 @@ class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       syncBlockTime,
+      selectedWalletAddress,
     } = nextProps;
 
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockTime !== this.props.syncBlockTime || selectedWalletAddress !== this.props.selectedWalletAddress) {
       this.executeTopicAndTxsRequest();
       this.calculateWinnings();
     }
@@ -119,6 +118,7 @@ class TopicPage extends React.Component {
     const { classes, txReturn } = this.props;
     const { topic, transactions, config } = this.state;
 
+    // TODO: is this necessary?
     if (!topic || !config) {
       // TODO: render no result page
       return <div></div>;
@@ -326,7 +326,7 @@ class TopicPage extends React.Component {
     ]);
     this.props.getTransactions([
       { topicAddress: this.state.address },
-    ], undefined);
+    ]);
   }
 
   constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
@@ -365,30 +365,26 @@ class TopicPage extends React.Component {
   }
 
   calculateWinnings() {
-    if (this.props.walletAddresses.length) {
-      this.props.calculateWinnings(
-        this.state.address,
-        this.getSelectedAddress()
-      );
-    }
+    const { calculateWinnings, selectedWalletAddress } = this.props;
+
+    calculateWinnings(
+      this.state.address,
+      selectedWalletAddress,
+    );
   }
 
-  handleWalletChange(idx) {
-    this.setState({ currentWalletIdx: idx });
-    this.calculateWinnings();
-  }
-
-  getSelectedAddress() {
-    return this.props.walletAddresses[this.state.currentWalletIdx].address;
+  handleWalletChange(address) {
+    this.props.selectWalletAddress(address);
   }
 
   onWithdrawClicked() {
+    const { createWithdrawTx, selectedWalletAddress } = this.props;
     const { topic } = this.state;
 
-    this.props.createWithdrawTx(
+    createWithdrawTx(
       topic.version,
       topic.address,
-      this.getSelectedAddress()
+      selectedWalletAddress,
     );
   }
 }
@@ -402,8 +398,9 @@ TopicPage.propTypes = {
   createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
-  walletAddresses: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  walletAddresses: PropTypes.array.isRequired,
+  selectedWalletAddress: PropTypes.string.isRequired,
+  selectWalletAddress: PropTypes.func.isRequired,
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
   qtumWinnings: PropTypes.number,
@@ -419,8 +416,6 @@ TopicPage.defaultProps = {
   getTransactions: undefined,
   getTransactionsReturn: [],
   syncBlockTime: undefined,
-  walletAddresses: [],
-  walletAddrsIndex: 0,
   clearTxReturn: undefined,
   calculateWinnings: undefined,
   botWinnings: undefined,
@@ -431,7 +426,7 @@ TopicPage.defaultProps = {
 const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  selectedWalletAddress: state.App.get('selectedWalletAddress'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
@@ -448,6 +443,7 @@ function mapDispatchToProps(dispatch) {
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+    selectWalletAddress: (address) => dispatch(appActions.selectWalletAddress(address)),
   };
 }
 
