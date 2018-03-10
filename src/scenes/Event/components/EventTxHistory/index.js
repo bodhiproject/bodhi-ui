@@ -34,7 +34,7 @@ class EventTxHistory extends React.PureComponent {
                   <TableRow key={transaction.txid} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
                     <TableCell padding="dense">{transaction.type}</TableCell>
-                    <TableCell padding="dense">{`#${transaction.optionIdx} ${options[transaction.optionIdx - 1]}`}</TableCell>
+                    <TableCell padding="dense">{`#${transaction.optionIdx + 1} ${options[transaction.optionIdx]}`}</TableCell>
                     <TableCell padding="dense">{`${transaction.amount} ${transaction.token}`}</TableCell>
                     <TableCell padding="dense">{transaction.status}</TableCell>
                   </TableRow>
