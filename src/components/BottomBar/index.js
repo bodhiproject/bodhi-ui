@@ -5,7 +5,7 @@ import Grid from 'material-ui/Grid';
 import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 import RemoveCircleIcon from 'material-ui-icons/RemoveCircle';
 import Typography from 'material-ui/Typography';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
