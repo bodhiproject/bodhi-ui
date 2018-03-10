@@ -55,11 +55,11 @@ class GlobalHub extends React.PureComponent {
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
       || (initSyncing && !nextProps.initSyncing)) {
       this.updateBalances(nextProps.walletAddresses);
+    }
 
-      // Gets the actionable items for the My Activities badge
-      if (nextProps.selectedWalletAddress !== selectedWalletAddress) {
-        getActionableItemCount(nextProps.selectedWalletAddress);
-      }
+    // Gets the actionable items for the My Activities badge
+    if (nextProps.selectedWalletAddress !== selectedWalletAddress) {
+      getActionableItemCount(nextProps.selectedWalletAddress);
     }
   }
 
@@ -116,7 +116,7 @@ GlobalHub.propTypes = {
   onSyncInfo: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
-  getActionableItemCount: PropTypes.func,
+  getActionableItemCount: PropTypes.func.isRequired,
 };
 
 GlobalHub.defaultProps = {
@@ -127,7 +127,6 @@ GlobalHub.defaultProps = {
   onSyncInfo: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
-  getActionableItemCount: undefined,
 };
 
 const mapStateToProps = (state) => ({

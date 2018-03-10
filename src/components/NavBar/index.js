@@ -111,13 +111,12 @@ class NavBar extends React.PureComponent {
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  walletAddresses: PropTypes.array,
+  walletAddresses: PropTypes.array.isRequired,
   actionableItemCount: PropTypes.number,
   langHandler: PropTypes.func,
 };
 
 NavBar.defaultProps = {
-  walletAddresses: [],
   actionableItemCount: undefined,
   langHandler: undefined,
 };
