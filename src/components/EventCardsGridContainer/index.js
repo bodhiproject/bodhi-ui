@@ -115,6 +115,7 @@ class EventCardsGrid extends React.Component {
         getOracles(
           [
             { token: Token.Qtum, status: OracleStatus.Voting },
+            { token: Token.Qtum, status: OracleStatus.Created },
           ],
           { field: 'endTime', direction: sortDirection },
         );
