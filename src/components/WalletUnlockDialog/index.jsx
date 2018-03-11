@@ -15,6 +15,13 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import styles from './styles';
 import graphqlActions from '../../redux/Graphql/actions';
 
+const messages = defineMessages({
+  walletPassphrase: {
+    id: 'walletUnlockDialog.walletPassphrase',
+    defaultMessage: 'Wallet Passphrase',
+  },
+});
+
 class WalletUnlockDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -27,69 +34,52 @@ class WalletUnlockDialog extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.onUnlockClicked = this.onUnlockClicked.bind(this);
   }
 
   render() {
     const {
       intl,
       classes,
-      txReturn,
     } = this.props;
-
-    let contentText;
-    if (txReturn) {
-      if (txReturn.txid) {
-        contentText = this.getSuccessText();
-      } else {
-        contentText = this.getErrorText();
-      }
-    } else {
-      contentText = {
-        title: '',
-        bodyPrimary: '',
-        bodySecondary: '',
-      };
-    }
 
     return (
       <Dialog
         open={Boolean(txReturn)}
         onClose={this.onOkClicked}
       >
-        <DialogTitle>{contentText.title}</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="messages.unlockWallet" defaultMessage="Unlock Wallet" />
+        </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
-          <Typography variant="body1">{contentText.bodySecondary}</Typography>
+          <Typography variant="body1" className={classes.bodyPrimary}>
+            <FormattedMessage
+              id="messages.walletPassphraseRequired"
+              defaultMessage="This action requires you to unlock this wallet. Please enter your wallet passphrase."
+            />
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="passphrase"
+            label={intl.formatMessage(messages.walletPassphrase)}
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.onOkClicked}>
-            {intl.formatMessage(messages.ok)}
+          <Button>
+            <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
+          </Button>
+          <Button color="primary" onClick={this.onUnlockClicked}>
+            <FormattedMessage id="walletUnlockDialog.unlock" defaultMessage="Unlock" />
           </Button>
         </DialogActions>
       </Dialog>
     );
   }
 
-  getSuccessText() {
-    const { intl, txReturn } = this.props;
-    return {
-      title: intl.formatMessage(messages.successMsg),
-      bodyPrimary: `${intl.formatMessage(messages.waitingMsg)}`,
-      bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
-    };
-  }
-
-  getErrorText() {
-    const { intl, txReturn } = this.props;
-    return {
-      title: intl.formatMessage(messages.failureMsg),
-      bodyPrimary: txReturn.error,
-      bodySecondary: '',
-    };
-  }
-
-  onOkClicked() {
-    this.props.clearTxReturn();
+  onUnlockClicked() {
   }
 }
 
