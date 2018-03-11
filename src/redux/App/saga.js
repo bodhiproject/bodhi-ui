@@ -112,7 +112,7 @@ export function* unlockWalletRequestHandler() {
   });
 }
 
-export default function* topicSaga() {
+export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
