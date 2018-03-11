@@ -14,12 +14,17 @@ import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import moment from 'moment';
 
-import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
+import {
+  getLocalDateTimeString,
+  getEndTimeCountDownString,
+  doesUserNeedToUnlockWallet,
+} from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
+import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
@@ -185,6 +190,12 @@ class OraclePage extends React.Component {
 
   handleConfirmClick() {
     const { config, voteAmount } = this.state;
+    const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
+
+    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+      return;
+    }
 
     switch (config.name) {
       case 'BETTING': {
@@ -560,8 +571,10 @@ OraclePage.propTypes = {
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
   setLastUsedAddress: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
+  walletEncrypted: PropTypes.bool.isRequired,
+  walletUnlockedUntil: PropTypes.number.isRequired,
+  toggleWalletUnlockDialog: PropTypes.func.isRequired,
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
 };
 
 OraclePage.defaultProps = {
@@ -580,6 +593,8 @@ OraclePage.defaultProps = {
 const mapStateToProps = (state) => ({
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockTime: state.App.get('syncBlockTime'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -588,6 +603,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
