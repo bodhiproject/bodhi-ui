@@ -50,6 +50,12 @@ const appActions = {
     isVisible,
   }),
 
+  CHECK_WALLET_ENCRYPTED: 'CHECK_WALLET_ENCRYPTED',
+  CHECK_WALLET_ENCRYPTED_RETURN: 'CHECK_WALLET_ENCRYPTED_RETURN',
+  checkWalletEncrypted: () => ({
+    type: appActions.CHECK_WALLET_ENCRYPTED,
+  }),
+
   UNLOCK_WALLET: 'UNLOCK_WALLET',
   UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
   unlockWallet: (passphrase, timeout) => ({

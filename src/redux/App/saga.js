@@ -59,6 +59,26 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
+// Checks if the wallet is encrypted
+export function* getWalletInfoRequestHandler() {
+  yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
+    try {
+      const result = yield call(request, Routes.getWalletInfo);
+      const isEncrypted = 'unlocked_until' in result.result;
+
+      yield put({
+        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+        value: isEncrypted,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+        error: error.message,
+      });
+    }
+  });
+}
+
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
   yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest() {

@@ -19,6 +19,7 @@ const initState = new Map({
   syncBlockTime: 0,
   initSyncing: false,
   walletUnlockDialogVisibility: false,
+  walletEncrypted: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -87,6 +88,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
+    }
+    case actions.CHECK_WALLET_ENCRYPTED_RETURN: {
+      return state.set('walletEncrypted', action.value);
     }
     case actions.UNLOCK_WALLET_RETURN: {
       return state.set('walletUnlockedUntil', action.value);
