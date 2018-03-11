@@ -21,7 +21,6 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
-import WalletUnlockDialog from '../../../../components/WalletUnlockDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -91,9 +90,6 @@ class MyBalances extends React.PureComponent {
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
-          />
-          <WalletUnlockDialog
-            dialogVisible={unlockVisible}
           />
         </Grid>
       </Paper>

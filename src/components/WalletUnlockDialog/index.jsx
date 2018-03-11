@@ -26,7 +26,7 @@ const messages = defineMessages({
 class WalletUnlockDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    dialogVisible: PropTypes.bool.isRequired,
+    walletUnlockDialogVisibility: PropTypes.bool.isRequired,
     // eslint-disable-next-line react/no-typos
     intl: intlShape.isRequired,
   };
@@ -44,12 +44,12 @@ class WalletUnlockDialog extends React.Component {
     const {
       intl,
       classes,
-      dialogVisible,
+      walletUnlockDialogVisibility,
     } = this.props;
 
     return (
       <Dialog
-        open={dialogVisible}
+        open={walletUnlockDialogVisibility}
         onClose={this.onOkClicked}
       >
         <DialogTitle>

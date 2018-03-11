@@ -43,5 +43,11 @@ const appActions = {
   getInsightTotals: () => ({
     type: appActions.GET_INSIGHT_TOTALS,
   }),
+
+  TOGGLE_WALLET_UNLOCK_DIALOG: 'TOGGLE_WALLET_UNLOCK_DIALOG',
+  toggleWalletUnlockDialog: (isVisible) => ({
+    type: appActions.TOGGLE_WALLET_UNLOCK_DIALOG,
+    isVisible,
+  }),
 };
 export default appActions;

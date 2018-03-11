@@ -18,6 +18,7 @@ const initState = new Map({
   syncBlockNum: 0,
   syncBlockTime: 0,
   initSyncing: false,
+  walletUnlockDialogVisibility: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -83,6 +84,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_INSIGHT_TOTALS_RETURN: {
       return state.set('averageBlockTime', action.value.result.time_between_blocks);
+    }
+    case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
+      return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
     default: {
       return state;
