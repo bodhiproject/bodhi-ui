@@ -14,7 +14,7 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import graphqlActions from '../../redux/Graphql/actions';
+import appActions from '../../redux/App/actions';
 
 const messages = defineMessages({
   walletPassphrase: {
@@ -27,6 +27,7 @@ class WalletUnlockDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletUnlockDialogVisibility: PropTypes.bool.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-typos
     intl: intlShape.isRequired,
   };
@@ -37,6 +38,7 @@ class WalletUnlockDialog extends React.Component {
   constructor(props) {
     super(props);
 
+    this.onCancelClicked = this.onCancelClicked.bind(this);
     this.onUnlockClicked = this.onUnlockClicked.bind(this);
   }
 
@@ -71,7 +73,7 @@ class WalletUnlockDialog extends React.Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button>
+          <Button onClick={this.onCancelClicked}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.onUnlockClicked}>
@@ -82,7 +84,12 @@ class WalletUnlockDialog extends React.Component {
     );
   }
 
+  onCancelClicked() {
+    this.props.toggleWalletUnlockDialog(false);
+  }
+
   onUnlockClicked() {
+    this.props.toggleWalletUnlockDialog(false);
   }
 }
 
@@ -91,6 +98,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   };
 }
 
