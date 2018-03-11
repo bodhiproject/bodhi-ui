@@ -10,7 +10,7 @@ const styles = (theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    paddingLeft: theme.padding.lg.px,
+    paddingLeft: theme.padding.md.px,
     fontSize: theme.typography.fontSize,
   },
 });
