@@ -81,7 +81,7 @@ export function* getWalletInfoRequestHandler() {
 
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
-  yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest() {
+  yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
     try {
       const timeoutSec = action.timeout * 60;
       const options = {

@@ -20,6 +20,7 @@ const initState = new Map({
   initSyncing: false,
   walletUnlockDialogVisibility: false,
   walletEncrypted: false,
+  walletUnlockedUntil: 0,
 });
 
 export default function appReducer(state = initState, action) {
