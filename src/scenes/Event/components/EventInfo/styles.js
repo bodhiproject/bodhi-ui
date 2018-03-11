@@ -11,6 +11,7 @@ const styles = (theme) => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     paddingLeft: theme.padding.lg.px,
+    fontSize: theme.typography.fontSize,
   },
 });
 
