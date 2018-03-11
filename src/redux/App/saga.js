@@ -117,6 +117,7 @@ export default function* appSaga() {
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
+    fork(getWalletInfoRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
 }
