@@ -49,5 +49,13 @@ const appActions = {
     type: appActions.TOGGLE_WALLET_UNLOCK_DIALOG,
     isVisible,
   }),
+
+  UNLOCK_WALLET: 'UNLOCK_WALLET',
+  UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
+  unlockWallet: (passphrase, timeout) => ({
+    type: appActions.UNLOCK_WALLET,
+    passphrase,
+    timeout,
+  }),
 };
 export default appActions;

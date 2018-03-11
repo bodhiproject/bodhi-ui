@@ -59,10 +59,44 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
+// Unlocks your encrypted wallet with the passphrase
+export function* unlockWalletRequestHandler() {
+  yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest() {
+    try {
+      const timeoutSec = action.timeout * 60;
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          passphrase: action.passphrase,
+          timeout: timeoutSec,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+      // Unlock the wallet
+      yield call(request, Routes.unlockWallet, options);
+
+      // Get the unlocked_until timestamp
+      const result = yield call(request, Routes.getWalletInfo);
+      const unlockedUntil = result.result.unlocked_until;
+
+      yield put({
+        type: actions.UNLOCK_WALLET_RETURN,
+        value: unlockedUntil,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.UNLOCK_WALLET_RETURN,
+        error: error.message,
+      });
+    }
+  });
+}
+
 export default function* topicSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
+    fork(unlockWalletRequestHandler),
   ]);
 }

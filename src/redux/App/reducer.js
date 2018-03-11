@@ -88,6 +88,9 @@ export default function appReducer(state = initState, action) {
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
+    case actions.UNLOCK_WALLET_RETURN: {
+      return state.set('walletUnlockedUntil', action.value);
+    }
     default: {
       return state;
     }
