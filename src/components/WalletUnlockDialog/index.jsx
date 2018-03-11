@@ -38,6 +38,10 @@ class WalletUnlockDialog extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      unlockMinutes: 1,
+    };
+
     this.onCancelClicked = this.onCancelClicked.bind(this);
     this.onUnlockClicked = this.onUnlockClicked.bind(this);
   }
@@ -48,6 +52,7 @@ class WalletUnlockDialog extends React.Component {
       classes,
       walletUnlockDialogVisibility,
     } = this.props;
+    const { unlockMinutes } = this.state;
 
     return (
       <Dialog
@@ -55,12 +60,12 @@ class WalletUnlockDialog extends React.Component {
         onClose={this.onOkClicked}
       >
         <DialogTitle>
-          <FormattedMessage id="messages.unlockWallet" defaultMessage="Unlock Wallet" />
+          <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>
             <FormattedMessage
-              id="messages.walletPassphraseRequired"
+              id="walletUnlockDialog.walletPassphraseRequired"
               defaultMessage="This action requires you to unlock this wallet. Please enter your wallet passphrase."
             />
           </Typography>
@@ -71,6 +76,25 @@ class WalletUnlockDialog extends React.Component {
             label={intl.formatMessage(messages.walletPassphrase)}
             fullWidth
           />
+          <div className={classes.unlockMinutesContainer}>
+            <FormattedMessage
+              id="walletUnlockDialog.keepWalletUnlocked"
+              defaultMessage="Keep wallet unlocked for"
+            />
+            <TextField
+              id="unlockMinutes"
+              value={unlockMinutes}
+              onChange={this.handleUnlockMinutesChange('unlockMinutes')}
+              type="number"
+              InputLabelProps={{ shrink: true }}
+              margin="normal"
+              className={classes.unlockMinutesInput}
+            />
+            <FormattedMessage
+              id="str.minutes"
+              defaultMessage="Minutes"
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.onCancelClicked}>
@@ -83,6 +107,12 @@ class WalletUnlockDialog extends React.Component {
       </Dialog>
     );
   }
+
+  handleUnlockMinutesChange = (name) => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
 
   onCancelClicked() {
     this.props.toggleWalletUnlockDialog(false);
