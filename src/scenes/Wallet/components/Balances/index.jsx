@@ -21,6 +21,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
+import WalletUnlockDialog from '../../../../components/WalletUnlockDialog/index';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -61,6 +62,8 @@ class MyBalances extends React.PureComponent {
       withdrawDialogVisible,
     } = this.state;
 
+    const unlockVisible = true;
+
     return (
       <Paper className={classes.myBalancePaper}>
         <Grid container spacing={0} className={classes.myBalanceGridContainer}>
@@ -88,6 +91,9 @@ class MyBalances extends React.PureComponent {
             walletAddress={selectedAddress}
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
+          />
+          <WalletUnlockDialog
+            dialogVisible={unlockVisible}
           />
         </Grid>
       </Paper>

@@ -9,8 +9,9 @@ import Dialog, {
   DialogContentText,
   DialogTitle,
 } from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -25,6 +26,7 @@ const messages = defineMessages({
 class WalletUnlockDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    dialogVisible: PropTypes.bool.isRequired,
     // eslint-disable-next-line react/no-typos
     intl: intlShape.isRequired,
   };
@@ -42,11 +44,12 @@ class WalletUnlockDialog extends React.Component {
     const {
       intl,
       classes,
+      dialogVisible,
     } = this.props;
 
     return (
       <Dialog
-        open={Boolean(txReturn)}
+        open={dialogVisible}
         onClose={this.onOkClicked}
       >
         <DialogTitle>
