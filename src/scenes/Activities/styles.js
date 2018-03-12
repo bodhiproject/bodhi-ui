@@ -8,9 +8,6 @@ const styles = (theme) => ({
   },
   activitiesTabContainer: {
     marginTop: theme.sizes.navHeight,
-    '&.hidden': {
-      display: 'none',
-    },
   },
 });
 
