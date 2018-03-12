@@ -91,6 +91,8 @@ const styles = (theme) => ({
   },
   buttonDisabledText: {
     color: theme.palette.text.secondary,
+    marginTop: theme.padding.unit.px,
+    textAlign: 'center',
   },
 });
 

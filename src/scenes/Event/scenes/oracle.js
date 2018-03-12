@@ -180,7 +180,6 @@ class OraclePage extends React.Component {
   }
 
   handleOptionChange(idx) {
-    console.log(idx);
     this.setState({ currentOptionIdx: idx });
   }
 
