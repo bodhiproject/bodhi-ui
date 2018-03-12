@@ -9,6 +9,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 
+import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import { calculateBlock } from '../../helpers/utility';
@@ -131,6 +132,7 @@ class CreateTopic extends React.Component {
       bettingEndBlock: undefined,
       resultSettingStartBlock: undefined,
       resultSettingEndBlock: undefined,
+      selectAddressDialogVisibility: false,
     };
 
     this.renderBlockField = this.renderBlockField.bind(this);
@@ -139,6 +141,7 @@ class CreateTopic extends React.Component {
     this.onAddResultField = this.onAddResultField.bind(this);
     this.onRemoveResultField = this.onRemoveResultField.bind(this);
     this.onSelectAddress = this.onSelectAddress.bind(this);
+    this.onSelectAddressDialogClosed = this.onSelectAddressDialogClosed.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
     this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
@@ -164,7 +167,7 @@ class CreateTopic extends React.Component {
   }
 
   render() {
-    const { txReturn } = this.props;
+    const { txReturn, walletAddresses } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const labelCol = {
@@ -285,6 +288,11 @@ class CreateTopic extends React.Component {
             </Button>
           </FormItem>
         </Form>
+        <SelectAddressDialog
+          dialogVisible={this.state.selectAddressDialogVisibility}
+          walletAddresses={walletAddresses}
+          onClosed={this.onSelectAddressDialogClosed}
+        />
       </div>
     );
   }
@@ -533,7 +541,18 @@ class CreateTopic extends React.Component {
   }
 
   onSelectAddress() {
-    console.log('hello');
+    this.setState({
+      selectAddressDialogVisibility: true,
+    });
+  }
+
+  onSelectAddressDialogClosed(address) {
+    this.setState({
+      selectAddressDialogVisibility: false,
+    });
+    this.props.form.setFieldsValue({
+      centralizedOracle: address,
+    });
   }
 
   validateTitleLength(rule, value, callback) {

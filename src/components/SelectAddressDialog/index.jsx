@@ -6,40 +6,40 @@ import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography';
 
+import styles from './styles';
+
 class SelectAddressDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
-    onClose: PropTypes.func,
-    selectedValue: PropTypes.string,
+    walletAddresses: PropTypes.array.isRequired,
+    onClosed: PropTypes.func.isRequired,
   };
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props;
+    const {
+      classes,
+      dialogVisible,
+      walletAddresses,
+    } = this.props;
 
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
-        <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
+      <Dialog
+        open={dialogVisible}
+        onClose={this.handleClose}
+      >
+        <DialogTitle>Select Centralized Oracle</DialogTitle>
         <div>
           <List>
-            {emails.map(email => (
-              <ListItem button onClick={() => this.handleListItemClick(email)} key={email}>
-                <ListItemAvatar>
-                  <Avatar className={classes.avatar}>
-                    <PersonIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={email} />
+            {walletAddresses.map((item) => (
+              <ListItem
+                button
+                onClick={() => this.handleListItemClick(item.address)}
+                key={item.address}
+              >
+                <ListItemText primary={item.address} />
               </ListItem>
             ))}
-            <ListItem button onClick={() => this.handleListItemClick('addAccount')}>
-              <ListItemAvatar>
-                <Avatar>
-                  <AddIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="add account" />
-            </ListItem>
           </List>
         </div>
       </Dialog>
@@ -47,12 +47,12 @@ class SelectAddressDialog extends React.Component {
   }
 
   handleClose = () => {
-    this.props.onClose(this.props.selectedValue);
+    this.props.onClosed('');
   };
 
-  handleListItemClick = value => {
-    this.props.onClose(value);
+  handleListItemClick = (value) => {
+    this.props.onClosed(value);
   };
 }
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(SelectAddressDialog)));
+export default withStyles(styles, { withTheme: true })(SelectAddressDialog);
