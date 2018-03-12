@@ -66,7 +66,7 @@ class EventCard extends React.PureComponent {
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
-                {endTime !== undefined ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)} ` : null}
+                {endTime !== undefined ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}` : null}
               </div>
               {unconfirmed ?
                 <Typography variant="body1">
@@ -80,7 +80,7 @@ class EventCard extends React.PureComponent {
               <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
-                  {`${this.props.intl.formatMessage(cardMessages.raise)} ${parseFloat(totalQTUM.toFixed(2))} QTUM `}
+                  {`${this.props.intl.formatMessage(cardMessages.raise)} ${parseFloat(totalQTUM.toFixed(2))} QTUM`}
                   {totalBOT !== undefined ? `, ${parseFloat(totalBOT.toFixed(2))} BOT` : null}
                 </div>
                 <div>
