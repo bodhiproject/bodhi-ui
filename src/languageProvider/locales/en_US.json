@@ -57,7 +57,7 @@
   "oracle.betStartTimeDisabledText": "The betting start time has not started yet.",
   "oracle.consensus": "Consensus Threshold {value}. This value indicates the amount of BOT needed to set the result.",
   "oracle.enterAmountDisabledText": "You have not entered a valid amount.",
-  "oracle.eventUnconfirmed": "This created Event has not been confirmed yet.",
+  "oracle.eventUnconfirmed": "This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.",
   "oracle.finalize": "Finalizing can be done by anyone. Once finalized, winners can withdraw from the event in the Withdraw tab.",
   "oracle.notCen": "You are not the Centralized Oracle for this Topic and cannot set the result.",
   "oracle.openRes": "The Centralized Oracle has not set the result yet, but you may set the result by staking BOT.",

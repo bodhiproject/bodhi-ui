@@ -159,7 +159,7 @@ class OraclePage extends React.Component {
                   <Typography variant="body1" className={classes.eventUnconfirmedText}>
                     <FormattedMessage
                       id="oracle.eventUnconfirmed"
-                      defaultMessage="This created Event has not been confirmed yet."
+                      defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain."
                     />
                   </Typography>
                 )
