@@ -25,7 +25,7 @@ export default function appReducer(state = initState, action) {
       addresses.push({ address: action.value, qtum: 0 });
       return state.set('walletAddresses', addresses);
     }
-    case actions.SELECT_WALLET_ADDRESS: {
+    case actions.SET_LAST_USED_ADDRESS: {
       return state.set('lastUsedAddress', action.address);
     }
     case actions.LIST_UNSPENT_RETURN: {

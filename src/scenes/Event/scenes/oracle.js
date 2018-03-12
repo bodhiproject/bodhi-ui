@@ -192,7 +192,7 @@ class OraclePage extends React.Component {
   }
 
   handleWalletChange(address) {
-    this.props.selectWalletAddress(address);
+    this.props.setLastUsedAddress(address);
   }
 
   handleConfirmClick() {
@@ -468,7 +468,7 @@ OraclePage.propTypes = {
   syncBlockTime: PropTypes.number,
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
-  selectWalletAddress: PropTypes.func.isRequired,
+  setLastUsedAddress: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -514,7 +514,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
-    selectWalletAddress: (address) => dispatch(appActions.selectWalletAddress(address)),
+    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   };
 }
 

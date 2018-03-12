@@ -375,7 +375,7 @@ class TopicPage extends React.Component {
   }
 
   handleWalletChange(address) {
-    this.props.selectWalletAddress(address);
+    this.props.setLastUsedAddress(address);
   }
 
   onWithdrawClicked() {
@@ -401,7 +401,7 @@ TopicPage.propTypes = {
   syncBlockTime: PropTypes.number,
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
-  selectWalletAddress: PropTypes.func.isRequired,
+  setLastUsedAddress: PropTypes.func.isRequired,
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
   qtumWinnings: PropTypes.number,
@@ -444,7 +444,7 @@ function mapDispatchToProps(dispatch) {
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-    selectWalletAddress: (address) => dispatch(appActions.selectWalletAddress(address)),
+    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   };
 }
 

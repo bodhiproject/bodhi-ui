@@ -27,9 +27,9 @@ const appActions = {
     value,
   }),
 
-  SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
-  selectWalletAddress: (address) => ({
-    type: appActions.SELECT_WALLET_ADDRESS,
+  SET_LAST_USED_ADDRESS: 'SET_LAST_USED_ADDRESS',
+  setLastUsedAddress: (address) => ({
+    type: appActions.SET_LAST_USED_ADDRESS,
     address,
   }),
 
