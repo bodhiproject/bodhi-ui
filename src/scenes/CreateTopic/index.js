@@ -103,6 +103,27 @@ const messages = defineMessages({
 });
 
 class CreateTopic extends React.Component {
+  static propTypes = {
+    form: PropTypes.object.isRequired,
+    createTopicTx: PropTypes.func,
+    txReturn: PropTypes.object,
+    getInsightTotals: PropTypes.func,
+    walletAddresses: PropTypes.array.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    chainBlockNum: PropTypes.number,
+    averageBlockTime: PropTypes.number,
+    // eslint-disable-next-line react/no-typos
+    intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    createTopicTx: undefined,
+    txReturn: undefined,
+    getInsightTotals: undefined,
+    chainBlockNum: undefined,
+    averageBlockTime: defaults.averageBlockTime,
+  };
+
   constructor(props) {
     super(props);
 
@@ -600,28 +621,9 @@ class CreateTopic extends React.Component {
   }
 }
 
-CreateTopic.propTypes = {
-  form: PropTypes.object.isRequired,
-  createTopicTx: PropTypes.func,
-  txReturn: PropTypes.object,
-  getInsightTotals: PropTypes.func,
-  lastUsedAddress: PropTypes.string.isRequired,
-  chainBlockNum: PropTypes.number,
-  averageBlockTime: PropTypes.number,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-CreateTopic.defaultProps = {
-  createTopicTx: undefined,
-  txReturn: undefined,
-  getInsightTotals: undefined,
-  chainBlockNum: undefined,
-  averageBlockTime: defaults.averageBlockTime,
-};
-
 const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
+  walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
   chainBlockNum: state.App.get('chainBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
