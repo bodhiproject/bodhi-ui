@@ -62,21 +62,18 @@ class EventCardsGrid extends React.Component {
       eventStatusIndex,
       getTopicsReturn,
       getOraclesReturn,
-      handleEventCountUpdate,
     } = this.props;
 
     const topics = getTopicsReturn;
     const oracles = getOraclesReturn;
 
     let rowItems;
-    let rowItemCount;
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        rowItemCount = oracles.length;
-        if (rowItemCount) {
+        if (oracles.length) {
           rowItems = this.renderOracles(oracles, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
@@ -85,8 +82,7 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        rowItemCount = topics.length;
-        if (rowItemCount) {
+        if (topics.length) {
           rowItems = this.renderTopics(topics);
         } else {
           rowItems = <EventsEmptyBg />;
@@ -97,10 +93,6 @@ class EventCardsGrid extends React.Component {
       default: {
         throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
       }
-    }
-
-    if (handleEventCountUpdate !== undefined) {
-      handleEventCountUpdate(eventStatusIndex, rowItemCount);
     }
 
     return (
@@ -252,7 +244,6 @@ EventCardsGrid.propTypes = {
   eventStatusIndex: PropTypes.number.isRequired,
   sortBy: PropTypes.string,
   syncBlockNum: PropTypes.number,
-  handleEventCountUpdate: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -264,7 +255,6 @@ EventCardsGrid.defaultProps = {
   getOraclesReturn: [],
   sortBy: SortBy.Ascending,
   syncBlockNum: undefined,
-  handleEventCountUpdate: undefined,
 };
 
 const mapStateToProps = (state) => ({
