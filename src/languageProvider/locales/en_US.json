@@ -92,6 +92,7 @@
   "str.finalizing": "Finalizing",
   "str.from": "From",
   "str.name": "Name",
+  "str.notEnoughQtum": "Not enough QTUM",
   "str.ok": "OK",
   "str.outcome": "OUTCOMES",
   "str.pendingTransactionDisabledMsg": "You already have a pending transaction for this Event.",

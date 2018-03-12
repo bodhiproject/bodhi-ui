@@ -267,7 +267,7 @@ class OraclePage extends React.Component {
   }
 
   getActionButtonConfig() {
-    const { syncBlockTime } = this.props;
+    const { syncBlockTime, walletAddresses } = this.props;
     const {
       address,
       oracle,
@@ -341,12 +341,24 @@ class OraclePage extends React.Component {
     }
 
     // Did not enter an amount
-    if (status === OracleStatus.Voting && (voteAmount === 0 || Number.isNaN(voteAmount))) {
+    if (status === OracleStatus.Voting && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
       return {
         disabled: true,
         message: <FormattedMessage
           id="oracle.enterAmountDisabledText"
           defaultMessage="You have not entered a valid amount."
+        />,
+      };
+    }
+
+    // Trying to bet more qtum than you have
+    const totalQtum = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
+    if (token === Token.Qtum && status === OracleStatus.Voting && voteAmount > totalQtum) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="str.notEnoughQtum"
+          defaultMessage="Not enough QTUM"
         />,
       };
     }
