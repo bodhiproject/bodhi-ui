@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+/* eslint react/no-array-index-key: 0, no-nested-ternary: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -62,18 +62,21 @@ class EventCardsGrid extends React.Component {
       eventStatusIndex,
       getTopicsReturn,
       getOraclesReturn,
+      handleEventCountUpdate,
     } = this.props;
 
     const topics = getTopicsReturn;
     const oracles = getOraclesReturn;
 
     let rowItems;
+    let rowItemCount;
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        if (oracles.length) {
+        rowItemCount = oracles.length;
+        if (rowItemCount) {
           rowItems = this.renderOracles(oracles, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
@@ -82,7 +85,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        if (topics.length) {
+        rowItemCount = topics.length;
+        if (rowItemCount) {
           rowItems = this.renderTopics(topics);
         } else {
           rowItems = <EventsEmptyBg />;
@@ -93,6 +97,10 @@ class EventCardsGrid extends React.Component {
       default: {
         throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
       }
+    }
+
+    if (handleEventCountUpdate !== undefined) {
+      handleEventCountUpdate(eventStatusIndex, rowItemCount);
     }
 
     return (
@@ -244,6 +252,7 @@ EventCardsGrid.propTypes = {
   eventStatusIndex: PropTypes.number.isRequired,
   sortBy: PropTypes.string,
   syncBlockNum: PropTypes.number,
+  handleEventCountUpdate: PropTypes.func,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -255,6 +264,7 @@ EventCardsGrid.defaultProps = {
   getOraclesReturn: [],
   sortBy: SortBy.Ascending,
   syncBlockNum: undefined,
+  handleEventCountUpdate: undefined,
 };
 
 const mapStateToProps = (state) => ({

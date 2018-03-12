@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import classNames from 'classnames';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
@@ -29,37 +30,69 @@ const messages = defineMessages({
   },
 });
 
+const EventSetIdx = EventStatus.Set;
+const EventFinalizeIdx = EventStatus.Finalize;
+const EventWithdrawIdx = EventStatus.Withdraw;
+
 class Activities extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       tabIdx: 0,
+      tabCount: {
+        EventSetIdx: 0,
+        EventFinalizeIdx: 0,
+        EventWithdrawIdx: 0,
+      },
     };
 
     this.handleTabChange = this.handleTabChange.bind(this);
+    this.handleEventCountUpdate = this.handleEventCountUpdate.bind(this);
   }
 
   render() {
     const { classes } = this.props;
-    const { tabIdx } = this.state;
+    const { tabIdx, tabCount } = this.state;
 
     return (
       <div>
         <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.props.intl.formatMessage(messages.set)} />
-          <Tab label={this.props.intl.formatMessage(messages.finalize)} />
-          <Tab label={this.props.intl.formatMessage(messages.withdraw)} />
+          <Tab label={`${this.props.intl.formatMessage(messages.set)} (${tabCount[EventSetIdx]})`} />
+          <Tab label={`${this.props.intl.formatMessage(messages.finalize)} (${tabCount[EventFinalizeIdx]})`} />
+          <Tab label={`${this.props.intl.formatMessage(messages.withdraw)} (${tabCount[EventWithdrawIdx]})`} />
           <Tab label={this.props.intl.formatMessage(messages.history)} />
         </Tabs>
-        <div className={classes.activitiesTabContainer}>
-          {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === 3 && <EventHistory />}
+        <div className={classNames(classes.activitiesTabContainer, tabIdx !== 0 ? 'hidden' : '')}>
+          <EventCardsGridContainer
+            eventStatusIndex={EventStatus.Set}
+            handleEventCountUpdate={this.handleEventCountUpdate}
+          />
+        </div>
+        <div className={classNames(classes.activitiesTabContainer, tabIdx !== 1 ? 'hidden' : '')}>
+          <EventCardsGridContainer
+            eventStatusIndex={EventStatus.Finalize}
+            handleEventCountUpdate={this.handleEventCountUpdate}
+          />
+        </div>
+        <div className={classNames(classes.activitiesTabContainer, tabIdx !== 2 ? 'hidden' : '')}>
+          <EventCardsGridContainer
+            eventStatusIndex={EventStatus.Withdraw}
+            handleEventCountUpdate={this.handleEventCountUpdate}
+          />
+        </div>
+        <div className={classNames(classes.activitiesTabContainer, tabIdx !== 3 ? 'hidden' : '')}>
+          <EventHistory />
         </div>
       </div>
     );
+  }
+
+  handleEventCountUpdate(index, value) {
+    const { tabCount } = this.state;
+
+    tabCount[index] = value;
+    this.setState({ tabCount });
   }
 
   handleTabChange(event, value) {
