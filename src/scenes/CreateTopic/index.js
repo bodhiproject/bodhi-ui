@@ -1,5 +1,3 @@
-/* eslint react/prop-types: 0 */ // --> OFF
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker, Icon } from 'antd';
@@ -104,6 +102,7 @@ const messages = defineMessages({
 
 class CreateTopic extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     createTopicTx: PropTypes.func,
     txReturn: PropTypes.object,
@@ -112,8 +111,7 @@ class CreateTopic extends React.Component {
     lastUsedAddress: PropTypes.string.isRequired,
     chainBlockNum: PropTypes.number,
     averageBlockTime: PropTypes.number,
-    // eslint-disable-next-line react/no-typos
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
