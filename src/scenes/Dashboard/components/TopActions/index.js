@@ -56,8 +56,8 @@ class TopActions extends Component {
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
               <Select disableUnderline value={this.state.sortOption} onChange={this.onSortOptionSelected}>
-                <MenuItem value={SortBy.Ascending}><FormattedMessage id="sort.asc" defaultMessage="Ascending" /></MenuItem>
-                <MenuItem value={SortBy.Descending}><FormattedMessage id="sort.desc" defaultMessage="Descending" /></MenuItem>
+                <MenuItem value={SortBy.Ascending}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
+                <MenuItem value={SortBy.Descending}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
               </Select>
             </FormControl>
           </Card>
