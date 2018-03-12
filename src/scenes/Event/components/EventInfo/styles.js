@@ -7,10 +7,9 @@ const styles = (theme) => ({
   },
   eventInfo: {
     marginTop: theme.padding.unit.px,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    paddingLeft: theme.padding.lg.px,
+    wordWrap: 'break-word',
+    paddingLeft: theme.padding.md.px,
+    fontSize: theme.typography.fontSize,
   },
 });
 
