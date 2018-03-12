@@ -24,6 +24,7 @@ import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
+import { i18nToUpperCase } from '../../../helpers/i18nToUpperCase';
 
 class OraclePage extends React.Component {
   constructor(props) {
@@ -42,7 +43,6 @@ class OraclePage extends React.Component {
       voteAmount: 0,
       currentOptionIdx: -1,
     };
-
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
     this.getEventOptionsInfo = this.getEventOptionsInfo.bind(this);
@@ -462,17 +462,22 @@ class OraclePage extends React.Component {
   getEventInfoObjs() {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
-
     return [
       {
-        label: <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
+        label: <FormattedMessage id="eventInfo.endDate" defaultMessage="Ending Date" >
+          {(txt) => i18nToUpperCase(txt)}
+        </FormattedMessage>,
         content: getLocalDateTimeString(oracle.endTime),
         highlight: getEndTimeCountDownString(oracle.endTime),
       }, {
-        label: <FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />,
+        label: <FormattedMessage id="eventInfo.fund" defaultMessage="Funding" >
+          {(txt) => i18nToUpperCase(txt)}
+        </FormattedMessage>,
         content: `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`,
       }, {
-        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
+        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="Result Setter" >
+          {(txt) => i18nToUpperCase(txt)}
+        </FormattedMessage>,
         content: oracle.resultSetterQAddress,
       },
     ];

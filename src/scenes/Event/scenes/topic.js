@@ -23,13 +23,14 @@ import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
+import { i18nToUpperCase } from '../../../helpers/i18nToUpperCase';
 
 import styles from './styles';
 
 const pageMessage = defineMessages({
   winning: {
     id: 'withdrawDetail.winningOutcome',
-    defaultMessage: 'WINNING OUTCOME',
+    defaultMessage: 'Winning Outcome',
   },
   reward: {
     id: 'withdrawDetail.reward',
@@ -174,7 +175,7 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {this.props.intl.formatMessage(pageMessage.winning)}
+            {this.props.intl.formatMessage(pageMessage.winning).toUpperCase()}
           </Typography>
           <Typography className={classes.withdrawWinningOption}>
             {topic.options[topic.resultIdx]}
@@ -309,13 +310,13 @@ class TopicPage extends React.Component {
 
     return [
       {
-        label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="PREDICTION FUNDING" />,
+        label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="Prediction Fund" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: `${qtumTotal} QTUM`,
       }, {
-        label: <FormattedMessage id="eventInfo.voteVolumn" defaultMessage="VOTING VOLUME" />,
+        label: <FormattedMessage id="eventInfo.voteVolumn" defaultMessage="Votting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: `${botTotal} BOT`,
       }, {
-        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
+        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: resultSetterQAddress,
       },
     ];
