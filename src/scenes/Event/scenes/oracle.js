@@ -86,6 +86,7 @@ class OraclePage extends React.Component {
     }
 
     const eventOptions = OraclePage.getBetOrVoteArray(oracle);
+    const actionButtonDisabled = this.isActionButtonDisabled();
 
     return (
       <Paper className={classes.eventDetailPaper}>
@@ -120,7 +121,7 @@ class OraclePage extends React.Component {
                 fullWidth
                 size="large"
                 color="primary"
-                disabled={this.isActionButtonDisabled}
+                disabled={actionButtonDisabled}
                 onClick={this.handleConfirmClick}
                 className={classes.eventActionButton}
               >
@@ -187,12 +188,12 @@ class OraclePage extends React.Component {
     }
 
     // Did not select an option
-    if (currentOptionIdx === -1) {
+    if (!config.predictionAction.skipExpansion && currentOptionIdx === -1) {
       return true;
     }
 
     // Did not enter an amount
-    if ((voteAmount === 0 || Number.isNaN(voteAmount)) && config.predictionAction.showAmountInput) {
+    if (config.predictionAction.showAmountInput && (voteAmount === 0 || Number.isNaN(voteAmount))) {
       return true;
     }
 
