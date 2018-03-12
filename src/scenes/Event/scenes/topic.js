@@ -50,7 +50,7 @@ const pageMessage = defineMessages({
   },
   youVote: {
     id: 'withdrawDetail.youVote',
-    defaultMessage: 'You bet ',
+    defaultMessage: 'You vote ',
   },
 });
 
