@@ -23,7 +23,7 @@ import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
-import { i18nToUpperCase } from '../../../helpers/i18nToUpperCase';
+import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 import styles from './styles';
 

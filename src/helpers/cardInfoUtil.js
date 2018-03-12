@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { FormattedMessage, IntlProvider, defineMessages } from 'react-intl';
 import { getLocalDateTimeString } from './utility';
+import { getIntlProvider } from './i18nUtil';
 
 const TOPIC_CREATED = <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />;
 const BETTING = <FormattedMessage id="str.betting" defaultMessage="Betting" />;
@@ -37,8 +38,7 @@ class CardInfoUtil {
     if (_.isUndefined(blockTime) && _.isUndefined(cOracle)) {
       return false;
     }
-    const intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
-    const { intl } = intlProvider.getChildContext();
+    const intl = getIntlProvider(locale, localeMessages);
 
     const BLOCK = `${intl.formatMessage(messages.block)}:`;
     const RANGE_SEPARATOR = intl.formatMessage(messages.to);

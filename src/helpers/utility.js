@@ -6,6 +6,7 @@ import React from 'react';
 import { FormattedMessage, DefaultMessage, IntlProvider, defineMessages } from 'react-intl';
 
 import AppLocale from '../languageProvider';
+import { getIntlProvider } from './i18nUtil';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
@@ -111,8 +112,8 @@ export function getShortLocalDateTimeString(unixSeconds) {
 export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
   const nowUnix = moment().unix();
   const unixDiff = unixSeconds - nowUnix;
-  const intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
-  const { intl } = intlProvider.getChildContext();
+
+  const intl = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
     return intl.formatMessage(messages.end);
   }

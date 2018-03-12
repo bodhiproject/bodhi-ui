@@ -24,7 +24,7 @@ import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
-import { i18nToUpperCase } from '../../../helpers/i18nToUpperCase';
+import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 class OraclePage extends React.Component {
   constructor(props) {
