@@ -217,6 +217,7 @@ class EventCardsGrid extends React.Component {
     _.each(topicEvents, (topic) => {
       const totalQTUM = _.sum(topic.qtumAmount);
       const totalBOT = _.sum(topic.botAmount);
+      const unconfirmed = false;
 
       // Constructing Card element on the right
       const topicEle = (
@@ -227,6 +228,7 @@ class EventCardsGrid extends React.Component {
           totalQTUM={totalQTUM}
           totalBOT={totalBOT}
           buttonText={this.props.intl.formatMessage(messages.withdraw)}
+          unconfirmed={unconfirmed}
         />
       );
 
