@@ -22,14 +22,15 @@ const appActions = {
   },
 
   ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
-  SELECT_WALLET_ADDRESS: 'SELECT_WALLET_ADDRESS',
   addWalletAddress: (value) => ({
     type: appActions.ADD_WALLET_ADDRESS,
     value,
   }),
-  selectWalletAddress: (value) => ({
-    type: appActions.SELECT_WALLET_ADDRESS,
-    value,
+
+  SET_LAST_USED_ADDRESS: 'SET_LAST_USED_ADDRESS',
+  setLastUsedAddress: (address) => ({
+    type: appActions.SET_LAST_USED_ADDRESS,
+    address,
   }),
 
   LIST_UNSPENT: 'LIST_UNSPENT',
@@ -46,6 +47,11 @@ const appActions = {
       owner,
       senderAddress,
     },
+  }),
+
+  DISABLE_UPDATING_BALANCES: 'DISABLE_UPDATING_BALANCES',
+  disableUpdatingBalances: () => ({
+    type: appActions.DISABLE_UPDATING_BALANCES,
   }),
 
   GET_SYNC_INFO: 'GET_SYNC_INFO',

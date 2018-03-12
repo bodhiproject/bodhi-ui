@@ -113,7 +113,6 @@ class CreateTopic extends React.Component {
       resultSettingEndBlock: undefined,
     };
 
-    this.getCurrentSenderAddress = this.getCurrentSenderAddress.bind(this);
     this.renderBlockField = this.renderBlockField.bind(this);
     this.renderResultsFields = this.renderResultsFields.bind(this);
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
@@ -264,17 +263,6 @@ class CreateTopic extends React.Component {
         </Form>
       </div>
     );
-  }
-
-  getCurrentSenderAddress() {
-    const { walletAddrs, walletAddrsIndex } = this.props;
-
-    if (!_.isEmpty(walletAddrs)
-      && walletAddrsIndex < walletAddrs.length
-      && !_.isUndefined(walletAddrs[walletAddrsIndex])) {
-      return walletAddrs[walletAddrsIndex].address;
-    }
-    return '';
   }
 
   renderBlockField(formItemLayout, id) {
@@ -572,9 +560,11 @@ class CreateTopic extends React.Component {
   }
 
   handleSubmit(evt) {
+    const { form, lastUsedAddress } = this.props;
+
     evt.preventDefault();
 
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const {
           name,
@@ -594,7 +584,7 @@ class CreateTopic extends React.Component {
           bettingEndTime.utc().unix().toString(),
           resultSettingStartTime.utc().unix().toString(),
           resultSettingEndTime.utc().unix().toString(),
-          this.getCurrentSenderAddress()
+          lastUsedAddress,
         );
       }
     });
@@ -615,8 +605,7 @@ CreateTopic.propTypes = {
   createTopicTx: PropTypes.func,
   txReturn: PropTypes.object,
   getInsightTotals: PropTypes.func,
-  walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  lastUsedAddress: PropTypes.string.isRequired,
   chainBlockNum: PropTypes.number,
   averageBlockTime: PropTypes.number,
   // eslint-disable-next-line react/no-typos
@@ -627,16 +616,13 @@ CreateTopic.defaultProps = {
   createTopicTx: undefined,
   txReturn: undefined,
   getInsightTotals: undefined,
-  walletAddrs: [],
-  walletAddrsIndex: 0,
   chainBlockNum: undefined,
   averageBlockTime: defaults.averageBlockTime,
 };
 
 const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
-  walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   chainBlockNum: state.App.get('chainBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
 });

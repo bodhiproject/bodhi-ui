@@ -20,6 +20,7 @@ import EventTxHistory from '../components/EventTxHistory/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
+import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 
@@ -61,11 +62,9 @@ class TopicPage extends React.Component {
       topic: undefined,
       config: undefined,
       transactions: [],
-      currentWalletIdx: this.props.walletAddrsIndex ? this.props.walletAddrsIndex : 0,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.getSelectedAddress = this.getSelectedAddress.bind(this);
     this.executeTopicAndTxsRequest = this.executeTopicAndTxsRequest.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -97,11 +96,12 @@ class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       syncBlockTime,
+      lastUsedAddress,
     } = nextProps;
 
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockTime !== this.props.syncBlockTime || lastUsedAddress !== this.props.lastUsedAddress) {
       this.executeTopicAndTxsRequest();
       this.calculateWinnings();
     }
@@ -119,6 +119,7 @@ class TopicPage extends React.Component {
     const { classes, txReturn } = this.props;
     const { topic, transactions, config } = this.state;
 
+    // TODO: is this necessary?
     if (!topic || !config) {
       // TODO: render no result page
       return <div></div>;
@@ -154,7 +155,7 @@ class TopicPage extends React.Component {
     const {
       classes,
       txReturn,
-      walletAddrs,
+      walletAddresses,
       botWinnings,
       qtumWinnings,
     } = this.props;
@@ -238,7 +239,7 @@ class TopicPage extends React.Component {
               id: 'address',
             }}
           >
-            {walletAddrs.map((item, index) => (
+            {walletAddresses.map((item, index) => (
               <option key={item.address} value={index}>{item.address}</option>
             ))}
           </Select>
@@ -326,7 +327,7 @@ class TopicPage extends React.Component {
     ]);
     this.props.getTransactions([
       { topicAddress: this.state.address },
-    ], undefined);
+    ]);
   }
 
   constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
@@ -365,30 +366,26 @@ class TopicPage extends React.Component {
   }
 
   calculateWinnings() {
-    if (this.props.walletAddrs.length) {
-      this.props.calculateWinnings(
-        this.state.address,
-        this.getSelectedAddress()
-      );
-    }
+    const { calculateWinnings, lastUsedAddress } = this.props;
+
+    calculateWinnings(
+      this.state.address,
+      lastUsedAddress,
+    );
   }
 
-  handleWalletChange(idx) {
-    this.setState({ currentWalletIdx: idx });
-    this.calculateWinnings();
-  }
-
-  getSelectedAddress() {
-    return this.props.walletAddrs[this.state.currentWalletIdx].address;
+  handleWalletChange(address) {
+    this.props.setLastUsedAddress(address);
   }
 
   onWithdrawClicked() {
+    const { createWithdrawTx, lastUsedAddress } = this.props;
     const { topic } = this.state;
 
-    this.props.createWithdrawTx(
+    createWithdrawTx(
       topic.version,
       topic.address,
-      this.getSelectedAddress()
+      lastUsedAddress,
     );
   }
 }
@@ -402,8 +399,9 @@ TopicPage.propTypes = {
   createWithdrawTx: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
-  walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  walletAddresses: PropTypes.array.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
+  setLastUsedAddress: PropTypes.func.isRequired,
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
   qtumWinnings: PropTypes.number,
@@ -419,8 +417,6 @@ TopicPage.defaultProps = {
   getTransactions: undefined,
   getTransactionsReturn: [],
   syncBlockTime: undefined,
-  walletAddrs: [],
-  walletAddrsIndex: 0,
   clearTxReturn: undefined,
   calculateWinnings: undefined,
   botWinnings: undefined,
@@ -430,8 +426,8 @@ TopicPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
-  walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
@@ -448,6 +444,7 @@ function mapDispatchToProps(dispatch) {
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   };
 }
 

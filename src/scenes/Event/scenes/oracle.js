@@ -19,6 +19,7 @@ import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import graphqlActions from '../../../redux/Graphql/actions';
+import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
@@ -47,7 +48,6 @@ class OraclePage extends React.Component {
       transactions: [],
       config: undefined,
       voteAmount: 0,
-      currentWalletIdx: this.props.walletAddrsIndex,
       currentOptionIdx: -1,
     };
 
@@ -86,9 +86,10 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn } = this.props;
+    const { classes, txReturn, lastUsedAddress } = this.props;
     const { oracle, transactions, config } = this.state;
 
+    // TODO: is this necessary?
     if (!oracle || !config) {
       // Don't render anything if page is loading.
       // In future we could make a loading animation
@@ -116,8 +117,8 @@ class OraclePage extends React.Component {
                   percent={item.percent}
                   voteAmount={this.state.voteAmount}
                   token={oracle.token}
-                  walletAddrs={this.props.walletAddrs}
-                  currentWalletIdx={this.state.currentWalletIdx}
+                  walletAddresses={this.props.walletAddresses}
+                  lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
                   showAmountInput={config.predictionAction.showAmountInput}
                   onOptionChange={this.handleOptionChange}
@@ -190,8 +191,8 @@ class OraclePage extends React.Component {
     this.setState({ voteAmount: amount });
   }
 
-  handleWalletChange(idx) {
-    this.setState({ currentWalletIdx: idx });
+  handleWalletChange(address) {
+    this.props.setLastUsedAddress(address);
   }
 
   handleConfirmClick() {
@@ -215,14 +216,9 @@ class OraclePage extends React.Component {
         break;
       }
       default: {
-        // TODO: oracle not found page
         break;
       }
     }
-  }
-
-  getCurrentWalletAddr() {
-    return this.props.walletAddrs[this.state.currentWalletIdx].address;
   }
 
   /**
@@ -267,6 +263,8 @@ class OraclePage extends React.Component {
   }
 
   constructOracleAndConfig(getOraclesReturn, syncBlockTime) {
+    const { lastUsedAddress } = this.props;
+
     const oracle = _.find(getOraclesReturn, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
@@ -315,7 +313,8 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
-            btnDisabled: oracle.status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr(),
+            btnDisabled: oracle.status === OracleStatus.WaitResult
+              && oracle.resultSetterQAddress !== lastUsedAddress,
             showAmountInput: false,
           },
         };
@@ -329,7 +328,7 @@ class OraclePage extends React.Component {
         }
 
         // Add a message to CardInfo to warn that user is not result setter of current oracle
-        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== this.getCurrentWalletAddr()) {
+        if (status === OracleStatus.WaitResult && oracle.resultSetterQAddress !== lastUsedAddress) {
           config.eventInfo.messages.push({
             text: <FormattedMessage id="oracle.notCen" defaultMessage="You are not the Centralized Oracle for this Topic and cannot set the result." />,
             type: 'warn',
@@ -398,7 +397,12 @@ class OraclePage extends React.Component {
 
   bet(amount) {
     const { createBetTx } = this.props;
-    const { topicAddress, oracle, currentOptionIdx } = this.state;
+    const {
+      topicAddress,
+      oracle,
+      currentOptionIdx,
+      lastUsedAddress,
+    } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createBetTx(
@@ -407,13 +411,13 @@ class OraclePage extends React.Component {
       oracle.address,
       selectedIndex,
       amount.toString(),
-      this.getCurrentWalletAddr()
+      lastUsedAddress,
     );
   }
 
   setResult() {
     const { createSetResultTx } = this.props;
-    const { oracle, currentOptionIdx } = this.state;
+    const { oracle, currentOptionIdx, lastUsedAddress } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
@@ -422,13 +426,13 @@ class OraclePage extends React.Component {
       oracle.address,
       selectedIndex,
       oracle.consensusThreshold,
-      this.getCurrentWalletAddr(),
+      lastUsedAddress,
     );
   }
 
   vote(amount) {
     const { createVoteTx } = this.props;
-    const { oracle, currentOptionIdx } = this.state;
+    const { oracle, currentOptionIdx, lastUsedAddress } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createVoteTx(
@@ -437,15 +441,15 @@ class OraclePage extends React.Component {
       oracle.address,
       selectedIndex,
       amount,
-      this.getCurrentWalletAddr()
+      lastUsedAddress,
     );
   }
 
   finalizeResult() {
     const { createFinalizeResultTx } = this.props;
-    const { oracle } = this.state;
+    const { oracle, lastUsedAddress } = this.state;
 
-    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, this.getCurrentWalletAddr());
+    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
   }
 }
 
@@ -462,8 +466,9 @@ OraclePage.propTypes = {
   createFinalizeResultTx: PropTypes.func,
   txReturn: PropTypes.object,
   syncBlockTime: PropTypes.number,
-  walletAddrs: PropTypes.array,
-  walletAddrsIndex: PropTypes.number,
+  walletAddresses: PropTypes.array.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
+  setLastUsedAddress: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
@@ -479,13 +484,11 @@ OraclePage.defaultProps = {
   createFinalizeResultTx: undefined,
   txReturn: undefined,
   syncBlockTime: undefined,
-  walletAddrs: [],
-  walletAddrsIndex: 0,
 };
 
 const mapStateToProps = (state) => ({
-  walletAddrs: state.App.get('walletAddrs'),
-  walletAddrsIndex: state.App.get('walletAddrsIndex'),
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   syncBlockTime: state.App.get('syncBlockTime'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -511,6 +514,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
     createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
       dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
+    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   };
 }
 

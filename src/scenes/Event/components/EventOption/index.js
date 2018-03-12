@@ -37,8 +37,7 @@ class EventOption extends React.PureComponent {
       percent,
       voteAmount,
       token,
-      walletAddrs,
-      currentWalletIdx,
+      walletAddresses,
       skipExpansion,
       showAmountInput,
     } = this.props;
@@ -109,8 +108,8 @@ class EventOption extends React.PureComponent {
   renderAddrSelect() {
     const {
       classes,
-      walletAddrs,
-      currentWalletIdx,
+      walletAddresses,
+      lastUsedAddress,
     } = this.props;
 
     return (<ExpansionPanelDetails>
@@ -124,14 +123,14 @@ class EventOption extends React.PureComponent {
           </InputLabel>
           <Select
             native
-            value={currentWalletIdx}
+            value={lastUsedAddress}
             onChange={this.handleAddrChange}
             inputProps={{
               id: 'address',
             }}
           >
-            {walletAddrs.map((item, index) => (
-              <option key={item.address} value={index}>{item.address}</option>
+            {walletAddresses.map((item, index) => (
+              <option key={item.address} value={item.address}>{item.address}</option>
             ))}
           </Select>
         </FormControl>
@@ -178,8 +177,8 @@ EventOption.propTypes = {
   onOptionChange: PropTypes.func.isRequired,
   onAmountChange: PropTypes.func.isRequired,
   onWalletChange: PropTypes.func.isRequired,
-  walletAddrs: PropTypes.array.isRequired,
-  currentWalletIdx: PropTypes.number.isRequired,
+  walletAddresses: PropTypes.array.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
 };

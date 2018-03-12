@@ -52,7 +52,7 @@ class MyBalances extends React.PureComponent {
   }
 
   render() {
-    const { classes, walletAddrs } = this.props;
+    const { classes } = this.props;
     const {
       selectedAddress,
       selectedAddressQtum,
@@ -67,10 +67,10 @@ class MyBalances extends React.PureComponent {
           <Typography variant="title" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
-          {this.getTotalsGrid(walletAddrs)}
+          {this.getTotalsGrid()}
           <Table>
             {this.getTableHeader()}
-            {this.getTableBody(walletAddrs)}
+            {this.getTableBody()}
           </Table>
           {this.getAddrCopiedSnackBar()}
           <DepositDialog
@@ -94,11 +94,15 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  getTotalsGrid(data) {
-    const { classes } = this.props;
+  getTotalsGrid() {
+    const { classes, walletAddresses } = this.props;
 
-    const totalQtum = _.sumBy(data, (address) => address.qtum ? address.qtum : 0);
-    const totalBot = _.sumBy(data, (address) => address.bot ? address.bot : 0);
+    let totalQtum = 0;
+    let totalBot = 0;
+    if (walletAddresses && walletAddresses.length) {
+      totalQtum = _.sumBy(walletAddresses, (address) => address.qtum ? address.qtum : 0);
+      totalBot = _.sumBy(walletAddresses, (address) => address.bot ? address.bot : 0);
+    }
 
     const items = [
       {
@@ -236,9 +240,9 @@ class MyBalances extends React.PureComponent {
     }
 
     if (order === 'desc') {
-      this.props.walletAddrs.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
+      this.props.walletAddresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
     } else {
-      this.props.walletAddrs.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      this.props.walletAddresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
     }
 
     this.setState({
@@ -247,12 +251,12 @@ class MyBalances extends React.PureComponent {
     });
   }
 
-  getTableBody(data) {
-    const { classes } = this.props;
+  getTableBody() {
+    const { classes, walletAddresses } = this.props;
 
     return (
       <TableBody>
-        {data.map((item, index) =>
+        {walletAddresses.map((item, index) =>
           (<TableRow key={item.address} selected={index % 2 !== 0}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
@@ -384,15 +388,11 @@ class MyBalances extends React.PureComponent {
 
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
-  walletAddrs: PropTypes.array,
-};
-
-MyBalances.defaultProps = {
-  walletAddrs: [],
+  walletAddresses: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  walletAddrs: state.App.get('walletAddrs'),
+  walletAddresses: state.App.get('walletAddresses'),
 });
 
 function mapDispatchToProps(dispatch) {

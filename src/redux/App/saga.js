@@ -8,21 +8,17 @@ import { querySyncInfo } from '../../network/graphQuery';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
-const DEFAULT_QTUMD_ACCOUNTNAME = '';
-
 export function* listUnspentRequestHandler() {
   yield takeEvery(actions.LIST_UNSPENT, function* listUnspentRequest() {
     try {
       const result = yield call(request, Routes.listUnspent);
 
       if (_.isEmpty(result)) {
-        // If listunspent return is empty meaning one has no balance in his addresses
-        // we will get default qtumd account's address
-        // This is likely to be the case when first installed
+        // listunspent returned empty. Use the default qtum address.
         const options = {
           method: 'POST',
           body: JSON.stringify({
-            accountName: DEFAULT_QTUMD_ACCOUNTNAME,
+            accountName: '',
           }),
           headers: { 'Content-Type': 'application/json' },
         };
@@ -32,26 +28,58 @@ export function* listUnspentRequestHandler() {
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
           value: {
-            result: [{
-              address: defaultAddress,
-              amount: 0,
-            }],
+            utxos: [],
+            addresses: [
+              { address: defaultAddress, qtum: 0 },
+            ],
           },
         });
       } else {
-        // If listunspent returns with a non-empty list
+        // listunspent returned with a non-empty array
+        const addresses = processListUnspent(result);
+
         yield put({
           type: actions.LIST_UNSPENT_RETURN,
-          value: { result },
+          value: addresses,
         });
       }
     } catch (error) {
       yield put({
         type: actions.LIST_UNSPENT_RETURN,
-        value: { error: error.message ? error.message : '' },
+        error: error.message,
       });
     }
   });
+}
+
+function processListUnspent(utxos) {
+  const trimmedUtxos = _.map(utxos, (output) =>
+    _.pick(output, ['address', 'amount', 'txid', 'vout', 'confirmations', 'spendable']));
+
+  const addresses = [];
+
+  // Combine utxos with same address
+  _.each(trimmedUtxos, (output) => {
+    const currentAddr = output.address;
+    const index = _.findIndex(addresses, { address: currentAddr });
+
+    if (index !== -1) {
+      // Found existing entry with same address
+      const newQtum = addresses[index].qtum + output.amount;
+      addresses.splice(index, 1, { address: currentAddr, qtum: newQtum });
+    } else {
+      // Not found, insert new entry
+      addresses.push({
+        address: currentAddr,
+        qtum: output.amount,
+      });
+    }
+  });
+
+  return {
+    utxos: trimmedUtxos,
+    addresses,
+  };
 }
 
 export function* getBotBalanceRequestHandler() {
@@ -78,13 +106,13 @@ export function* getBotBalanceRequestHandler() {
         type: actions.GET_BOT_BALANCE_RETURN,
         value: {
           address: owner,
-          value: botValue,
+          botAmount: botValue,
         },
       });
     } catch (error) {
       yield put({
         type: actions.GET_BOT_BALANCE_RETURN,
-        value: { error: error.message ? error.message : '' },
+        error: error.message,
       });
     }
   });

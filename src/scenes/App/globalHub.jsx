@@ -20,11 +20,12 @@ class GlobalHub extends React.PureComponent {
 
     this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
     this.pollSyncInfo = this.pollSyncInfo.bind(this);
-    this.updateBalances = this.updateBalances.bind(this);
+    this.updateQtumBalances = this.updateQtumBalances.bind(this);
+    this.updateBotBalances = this.updateBotBalances.bind(this);
   }
 
   componentWillMount() {
-    const { walletAddrs } = this.props;
+    const { walletAddresses } = this.props;
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
@@ -35,7 +36,7 @@ class GlobalHub extends React.PureComponent {
     this.subscribeSyncInfo();
 
     // Get unspent outputs and bot balances for all the wallet addresses
-    this.updateBalances(walletAddrs);
+    this.updateQtumBalances(walletAddresses);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -43,7 +44,9 @@ class GlobalHub extends React.PureComponent {
       initSyncing,
       syncBlockNum,
       getActionableItemCount,
-      selectedWalletAddress,
+      walletAddresses,
+      lastUsedAddress,
+      disableUpdatingBalances,
     } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
@@ -54,12 +57,17 @@ class GlobalHub extends React.PureComponent {
     // Update balances after init sync and on new block
     if ((!nextProps.initSyncing && nextProps.syncBlockNum !== syncBlockNum)
       || (initSyncing && !nextProps.initSyncing)) {
-      this.updateBalances(nextProps.walletAddrs);
+      this.updateQtumBalances(nextProps.walletAddresses);
+    }
 
-      // Gets the actionable items for the My Activities badge
-      if (!_.isEmpty(nextProps.selectedWalletAddress)) {
-        getActionableItemCount(nextProps.selectedWalletAddress);
-      }
+    if (nextProps.updatingBalances) {
+      this.updateBotBalances(nextProps.walletAddresses);
+      disableUpdatingBalances();
+    }
+
+    // Gets the actionable items for the My Activities badge
+    if (nextProps.lastUsedAddress !== lastUsedAddress) {
+      getActionableItemCount(nextProps.lastUsedAddress);
     }
   }
 
@@ -89,7 +97,7 @@ class GlobalHub extends React.PureComponent {
     syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
   }
 
-  updateBalances(walletAddresses) {
+  updateQtumBalances(walletAddresses) {
     const {
       initSyncing,
       listUnspent,
@@ -97,12 +105,14 @@ class GlobalHub extends React.PureComponent {
     } = this.props;
 
     listUnspent();
+  }
 
-    if (!_.isEmpty(walletAddresses)) {
-      _.each(walletAddresses, (item) => {
-        getBotBalance(item.address, item.address);
-      });
-    }
+  updateBotBalances(nextWalletAddresses) {
+    const { walletAddresses, getBotBalance } = this.props;
+
+    _.each(walletAddresses, (item) => {
+      getBotBalance(item.address, item.address);
+    });
   }
 }
 
@@ -110,33 +120,34 @@ GlobalHub.propTypes = {
   client: PropTypes.object,
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
-  walletAddrs: PropTypes.array,
-  selectedWalletAddress: PropTypes.string,
+  walletAddresses: PropTypes.array,
+  lastUsedAddress: PropTypes.string.isRequired,
+  updatingBalances: PropTypes.bool.isRequired,
+  disableUpdatingBalances: PropTypes.func.isRequired,
   getSyncInfo: PropTypes.func,
   onSyncInfo: PropTypes.func,
   listUnspent: PropTypes.func,
   getBotBalance: PropTypes.func,
-  getActionableItemCount: PropTypes.func,
+  getActionableItemCount: PropTypes.func.isRequired,
 };
 
 GlobalHub.defaultProps = {
   client: undefined,
   syncBlockNum: undefined,
-  walletAddrs: [],
-  selectedWalletAddress: undefined,
+  walletAddresses: [],
   getSyncInfo: undefined,
   onSyncInfo: undefined,
   listUnspent: undefined,
   getBotBalance: undefined,
-  getActionableItemCount: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
-  walletAddrs: state.App.get('walletAddrs'),
-  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+  updatingBalances: state.App.get('updatingBalances'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -144,6 +155,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   listUnspent: () => dispatch(appActions.listUnspent()),
   getBotBalance: (owner, senderAddress) => dispatch(appActions.getBotBalance(owner, senderAddress)),
+  disableUpdatingBalances: () => dispatch(appActions.disableUpdatingBalances()),
   getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),
 });
 
