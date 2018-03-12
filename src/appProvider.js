@@ -15,17 +15,17 @@ import { store, history } from './redux/store';
 
 import '../src/style/styles.less';
 
-const defaultidx = localStorage.getItem('localindex') || 0;
 const locales = [AppLocale.en, AppLocale.zh];
 class AppProvider extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { locale: defaultidx };
-    this.langHandler = this.langHandler.bind(this);
+  state = {
+    locale: localStorage.getItem('localindex') || 0,
+  }
+
+  componentDidMount() {
     moment.locale(locales[this.state.locale].momentlocale);
   }
 
-  langHandler() {
+  langHandler = () => {
     this.setState({
       locale: (this.state.locale + 1) % 2,
     }, () => {

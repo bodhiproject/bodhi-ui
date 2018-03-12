@@ -16,7 +16,7 @@ import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers
 
 const cardMessages = defineMessages({
   raise: {
-    id: 'str.raise',
+    id: 'str.raised',
     defaultMessage: 'Raised',
   },
   ends: {

@@ -121,7 +121,7 @@
   "str.outcome": "OUTCOMES",
   "str.pendingTransactionDisabledMsg": "You already have a pending transaction for this Event.",
   "str.qtum": "QTUM",
-  "str.raise": "Raised",
+  "str.raised": "Raised",
   "str.setResult": "Set Result",
   "str.setting": "Setting",
   "str.sort": "Sort",

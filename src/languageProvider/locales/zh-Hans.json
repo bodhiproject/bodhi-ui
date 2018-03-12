@@ -127,7 +127,7 @@
   "str.outcome": "结果",
   "str.pendingTransactionDisabledMsg": "You already have a pending transaction for this Event.",
   "str.qtum": "QTUM",
-  "str.raise": "筹集到",
+  "str.raised": "筹集到",
   "str.setResult": "设置结果",
   "str.setting": "设置",
   "str.sort": "排序",
