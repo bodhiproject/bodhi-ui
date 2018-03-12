@@ -76,9 +76,11 @@ class NavBar extends React.PureComponent {
     }
 
     return (
-      <Button className={classes.navBarRightButton}>
-        <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-      </Button>
+      <Link to="/activities">
+        <Button className={classes.navBarRightButton}>
+          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+        </Button>
+      </Link>
     );
   }
 
