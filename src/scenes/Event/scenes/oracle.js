@@ -11,7 +11,7 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
@@ -24,33 +24,6 @@ import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
-
-const messages = defineMessages({
-  pendingTransactionDisabledMsg: {
-    id: 'str.pendingTransactionDisabledMsg',
-    defaultMessage: 'You already have a pending transaction for this Event.',
-  },
-  selectResultDisabledText: {
-    id: 'oracle.selectResultDisabledText',
-    defaultMessage: 'You have not selected a result.',
-  },
-  enterAmountDisabledText: {
-    id: 'oracle.enterAmountDisabledText',
-    defaultMessage: 'You have not entered a valid amount.',
-  },
-  betStartTimeDisabledText: {
-    id: 'oracle.betStartTimeDisabledText',
-    defaultMessage: 'The betting start time has not started yet.',
-  },
-  setStartTimeDisabledText: {
-    id: 'oracle.setStartTimeDisabledText',
-    defaultMessage: 'The result setting start time has not started yet.',
-  },
-  cOracleDisabledText: {
-    id: 'oracle.cOracleDisabledText',
-    defaultMessage: 'You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
-  },
-});
 
 class OraclePage extends React.Component {
   constructor(props) {
@@ -296,7 +269,7 @@ class OraclePage extends React.Component {
   }
 
   getActionButtonConfig() {
-    const { intl, syncBlockTime } = this.props;
+    const { syncBlockTime } = this.props;
     const {
       address,
       oracle,
@@ -312,7 +285,10 @@ class OraclePage extends React.Component {
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.pendingTransactionDisabledMsg),
+        message: <FormattedMessage
+          id="str.pendingTransactionDisabledMsg"
+          defaultMessage="You already have a pending transaction for this Event."
+        />,
       };
     }
 
@@ -322,7 +298,10 @@ class OraclePage extends React.Component {
       && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.betStartTimeDisabledText),
+        message: <FormattedMessage
+          id="oracle.betStartTimeDisabledText"
+          defaultMessage="The betting start time has not started yet."
+        />,
       };
     }
 
@@ -332,7 +311,10 @@ class OraclePage extends React.Component {
       && currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime))) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.setStartTimeDisabledText),
+        message: <FormattedMessage
+          id="oracle.setStartTimeDisabledText"
+          defaultMessage="The result setting start time has not started yet."
+        />,
       };
     }
 
@@ -340,7 +322,10 @@ class OraclePage extends React.Component {
     if (status === OracleStatus.WaitResult && resultSetterQAddress !== this.getCurrentWalletAddr()) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.cOracleDisabledText),
+        message: <FormattedMessage
+          id="oracle.cOracleDisabledText"
+          defaultMessage="You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
+        />,
       };
     }
 
@@ -348,7 +333,10 @@ class OraclePage extends React.Component {
     if (!(token === Token.Bot && status === OracleStatus.WaitResult) && currentOptionIdx === -1) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.selectResultDisabledText),
+        message: <FormattedMessage
+          id="oracle.selectResultDisabledText"
+          defaultMessage="You have not selected a result."
+        />,
       };
     }
 
@@ -356,7 +344,10 @@ class OraclePage extends React.Component {
     if (status === OracleStatus.Voting && (voteAmount === 0 || Number.isNaN(voteAmount))) {
       return {
         disabled: true,
-        message: intl.formatMessage(messages.enterAmountDisabledText),
+        message: <FormattedMessage
+          id="oracle.enterAmountDisabledText"
+          defaultMessage="You have not entered a valid amount."
+        />,
       };
     }
 
