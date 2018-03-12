@@ -319,7 +319,9 @@ class OraclePage extends React.Component {
     }
 
     // User is not the result setter
-    if (status === OracleStatus.WaitResult && resultSetterQAddress !== this.getCurrentWalletAddr()) {
+    if (token === Token.Qtum
+      && status === OracleStatus.WaitResult
+      && resultSetterQAddress !== this.getCurrentWalletAddr()) {
       return {
         disabled: true,
         message: <FormattedMessage
