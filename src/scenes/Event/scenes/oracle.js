@@ -362,7 +362,8 @@ class OraclePage extends React.Component {
     }
 
     // Not enough bot for setting the result or voting
-    const currentBot = walletAddresses[lastUsedAddress] && walletAddresses[lastUsedAddress].bot;
+    const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0;
     if ((token === Token.Qtum
       && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
       && currentBot < oracle.consensusThreshold)
