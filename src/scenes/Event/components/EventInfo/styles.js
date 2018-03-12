@@ -7,7 +7,7 @@ const styles = (theme) => ({
   },
   eventInfo: {
     marginTop: theme.padding.unit.px,
-    'word-wrap': 'break-word',
+    wordWrap: 'break-word',
     paddingLeft: theme.padding.md.px,
     fontSize: theme.typography.fontSize,
   },
