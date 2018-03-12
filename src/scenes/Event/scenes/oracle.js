@@ -267,7 +267,7 @@ class OraclePage extends React.Component {
   }
 
   getActionButtonConfig() {
-    const { syncBlockTime, walletAddresses } = this.props;
+    const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
     const {
       address,
       oracle,
@@ -317,9 +317,7 @@ class OraclePage extends React.Component {
     }
 
     // User is not the result setter
-    if (token === Token.Qtum
-      && status === OracleStatus.WaitResult
-      && resultSetterQAddress !== this.getCurrentWalletAddr()) {
+    if (token === Token.Qtum && status === OracleStatus.WaitResult && resultSetterQAddress !== lastUsedAddress) {
       return {
         disabled: true,
         message: <FormattedMessage
@@ -359,6 +357,21 @@ class OraclePage extends React.Component {
         message: <FormattedMessage
           id="str.notEnoughQtum"
           defaultMessage="Not enough QTUM"
+        />,
+      };
+    }
+
+    // Not enough bot for setting the result or voting
+    const currentBot = walletAddresses[lastUsedAddress] && walletAddresses[lastUsedAddress].bot;
+    if ((token === Token.Qtum
+      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
+      && currentBot < oracle.consensusThreshold)
+      || (token === Token.Bot && status === OracleStatus.Voting && currentBot < voteAmount)) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="str.notEnoughBot"
+          defaultMessage="Not enough BOT"
         />,
       };
     }
@@ -415,12 +428,11 @@ class OraclePage extends React.Component {
   }
 
   bet(amount) {
-    const { createBetTx } = this.props;
+    const { createBetTx, lastUsedAddress } = this.props;
     const {
       topicAddress,
       oracle,
       currentOptionIdx,
-      lastUsedAddress,
     } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
@@ -435,8 +447,8 @@ class OraclePage extends React.Component {
   }
 
   setResult() {
-    const { createSetResultTx } = this.props;
-    const { oracle, currentOptionIdx, lastUsedAddress } = this.state;
+    const { createSetResultTx, lastUsedAddress } = this.props;
+    const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
@@ -450,8 +462,8 @@ class OraclePage extends React.Component {
   }
 
   vote(amount) {
-    const { createVoteTx } = this.props;
-    const { oracle, currentOptionIdx, lastUsedAddress } = this.state;
+    const { createVoteTx, lastUsedAddress } = this.props;
+    const { oracle, currentOptionIdx } = this.state;
     const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createVoteTx(
@@ -465,8 +477,8 @@ class OraclePage extends React.Component {
   }
 
   finalizeResult() {
-    const { createFinalizeResultTx } = this.props;
-    const { oracle, lastUsedAddress } = this.state;
+    const { createFinalizeResultTx, lastUsedAddress } = this.props;
+    const { oracle } = this.state;
 
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
   }

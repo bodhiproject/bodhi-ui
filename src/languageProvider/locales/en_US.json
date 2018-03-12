@@ -92,6 +92,7 @@
   "str.finalizing": "Finalizing",
   "str.from": "From",
   "str.name": "Name",
+  "str.notEnoughBot": "Not enough BOT",
   "str.notEnoughQtum": "Not enough QTUM",
   "str.ok": "OK",
   "str.outcome": "OUTCOMES",
