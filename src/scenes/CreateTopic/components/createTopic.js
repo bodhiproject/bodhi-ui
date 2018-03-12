@@ -560,7 +560,7 @@ class CreateTopic extends React.Component {
   }
 
   handleSubmit(evt) {
-    const { form, selectedWalletAddress } = this.props;
+    const { form, lastUsedAddress } = this.props;
 
     evt.preventDefault();
 
@@ -584,7 +584,7 @@ class CreateTopic extends React.Component {
           bettingEndTime.utc().unix().toString(),
           resultSettingStartTime.utc().unix().toString(),
           resultSettingEndTime.utc().unix().toString(),
-          selectedWalletAddress,
+          lastUsedAddress,
         );
       }
     });
@@ -605,7 +605,7 @@ CreateTopic.propTypes = {
   createTopicTx: PropTypes.func,
   txReturn: PropTypes.object,
   getInsightTotals: PropTypes.func,
-  selectedWalletAddress: PropTypes.string.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
   chainBlockNum: PropTypes.number,
   averageBlockTime: PropTypes.number,
   // eslint-disable-next-line react/no-typos
@@ -622,7 +622,7 @@ CreateTopic.defaultProps = {
 
 const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
-  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   chainBlockNum: state.App.get('chainBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
 });

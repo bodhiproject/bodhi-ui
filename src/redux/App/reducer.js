@@ -12,7 +12,7 @@ const initState = new Map({
   height: window.innerHeight,
   current: preKeys,
   walletAddresses: [],
-  selectedWalletAddress: '',
+  lastUsedAddress: '',
   updatingBalances: false,
   syncProgress: 0,
   initSyncing: false,
@@ -26,7 +26,7 @@ export default function appReducer(state = initState, action) {
       return state.set('walletAddresses', addresses);
     }
     case actions.SELECT_WALLET_ADDRESS: {
-      return state.set('selectedWalletAddress', action.address);
+      return state.set('lastUsedAddress', action.address);
     }
     case actions.LIST_UNSPENT_RETURN: {
       if (action.error) {
@@ -63,14 +63,14 @@ export default function appReducer(state = initState, action) {
       newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
 
       // Set a default selected address if there was none selected before
-      let selectedWalletAddress = state.get('selectedWalletAddress');
-      if (_.isEmpty(selectedWalletAddress) && !_.isEmpty(newAddresses)) {
-        selectedWalletAddress = newAddresses[0].address;
+      let lastUsedAddress = state.get('lastUsedAddress');
+      if (_.isEmpty(lastUsedAddress) && !_.isEmpty(newAddresses)) {
+        lastUsedAddress = newAddresses[0].address;
       }
 
       return state.set('walletAddresses', newAddresses)
         .set('utxos', action.value.utxos)
-        .set('selectedWalletAddress', selectedWalletAddress)
+        .set('lastUsedAddress', lastUsedAddress)
         .set('updatingBalances', true);
     }
     case actions.GET_BOT_BALANCE_RETURN: {

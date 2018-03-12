@@ -96,12 +96,12 @@ class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       syncBlockTime,
-      selectedWalletAddress,
+      lastUsedAddress,
     } = nextProps;
 
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime || selectedWalletAddress !== this.props.selectedWalletAddress) {
+    if (syncBlockTime !== this.props.syncBlockTime || lastUsedAddress !== this.props.lastUsedAddress) {
       this.executeTopicAndTxsRequest();
       this.calculateWinnings();
     }
@@ -366,11 +366,11 @@ class TopicPage extends React.Component {
   }
 
   calculateWinnings() {
-    const { calculateWinnings, selectedWalletAddress } = this.props;
+    const { calculateWinnings, lastUsedAddress } = this.props;
 
     calculateWinnings(
       this.state.address,
-      selectedWalletAddress,
+      lastUsedAddress,
     );
   }
 
@@ -379,13 +379,13 @@ class TopicPage extends React.Component {
   }
 
   onWithdrawClicked() {
-    const { createWithdrawTx, selectedWalletAddress } = this.props;
+    const { createWithdrawTx, lastUsedAddress } = this.props;
     const { topic } = this.state;
 
     createWithdrawTx(
       topic.version,
       topic.address,
-      selectedWalletAddress,
+      lastUsedAddress,
     );
   }
 }
@@ -400,7 +400,7 @@ TopicPage.propTypes = {
   match: PropTypes.object.isRequired,
   syncBlockTime: PropTypes.number,
   walletAddresses: PropTypes.array.isRequired,
-  selectedWalletAddress: PropTypes.string.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
   selectWalletAddress: PropTypes.func.isRequired,
   calculateWinnings: PropTypes.func,
   botWinnings: PropTypes.number,
@@ -427,7 +427,7 @@ TopicPage.defaultProps = {
 const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),

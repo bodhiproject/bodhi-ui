@@ -45,7 +45,7 @@ class GlobalHub extends React.PureComponent {
       syncBlockNum,
       getActionableItemCount,
       walletAddresses,
-      selectedWalletAddress,
+      lastUsedAddress,
       disableUpdatingBalances,
     } = this.props;
 
@@ -66,8 +66,8 @@ class GlobalHub extends React.PureComponent {
     }
 
     // Gets the actionable items for the My Activities badge
-    if (nextProps.selectedWalletAddress !== selectedWalletAddress) {
-      getActionableItemCount(nextProps.selectedWalletAddress);
+    if (nextProps.lastUsedAddress !== lastUsedAddress) {
+      getActionableItemCount(nextProps.lastUsedAddress);
     }
   }
 
@@ -121,7 +121,7 @@ GlobalHub.propTypes = {
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
   walletAddresses: PropTypes.array,
-  selectedWalletAddress: PropTypes.string.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
   updatingBalances: PropTypes.bool.isRequired,
   disableUpdatingBalances: PropTypes.func.isRequired,
   getSyncInfo: PropTypes.func,
@@ -146,7 +146,7 @@ const mapStateToProps = (state) => ({
   initSyncing: state.App.get('initSyncing'),
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddresses: state.App.get('walletAddresses'),
-  selectedWalletAddress: state.App.get('selectedWalletAddress'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   updatingBalances: state.App.get('updatingBalances'),
 });
 

@@ -109,7 +109,7 @@ class EventOption extends React.PureComponent {
     const {
       classes,
       walletAddresses,
-      selectedWalletAddress,
+      lastUsedAddress,
     } = this.props;
 
     return (<ExpansionPanelDetails>
@@ -123,7 +123,7 @@ class EventOption extends React.PureComponent {
           </InputLabel>
           <Select
             native
-            value={selectedWalletAddress}
+            value={lastUsedAddress}
             onChange={this.handleAddrChange}
             inputProps={{
               id: 'address',
@@ -178,7 +178,7 @@ EventOption.propTypes = {
   onAmountChange: PropTypes.func.isRequired,
   onWalletChange: PropTypes.func.isRequired,
   walletAddresses: PropTypes.array.isRequired,
-  selectedWalletAddress: PropTypes.string.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
 };
