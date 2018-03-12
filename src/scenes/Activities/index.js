@@ -35,21 +35,15 @@ class Activities extends React.Component {
 
     this.state = {
       tabIdx: 0,
-      tabCount: {
-        [EventStatus.Set]: 0,
-        [EventStatus.Finalize]: 0,
-        [EventStatus.Withdraw]: 0,
-      },
     };
 
     this.getTabLabel = this.getTabLabel.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleEventCountUpdate = this.handleEventCountUpdate.bind(this);
   }
 
   render() {
     const { classes, actionableItemCount } = this.props;
-    const { tabIdx, tabCount } = this.state;
+    const { tabIdx } = this.state;
 
     return (
       <div>
@@ -87,13 +81,6 @@ class Activities extends React.Component {
       default:
         return null;
     }
-  }
-
-  handleEventCountUpdate(index, value) {
-    const { tabCount } = this.state;
-
-    tabCount[index] = value;
-    this.setState({ tabCount });
   }
 
   handleTabChange(event, value) {
