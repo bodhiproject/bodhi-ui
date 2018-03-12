@@ -25,6 +25,33 @@ import { Token, OracleStatus, TransactionStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
 
+const messages = defineMessages({
+  pendingTransactionDisabledMsg: {
+    id: 'str.pendingTransactionDisabledMsg',
+    defaultMessage: 'You already have a pending transaction for this Event.',
+  },
+  selectResultDisabledText: {
+    id: 'oracle.selectResultDisabledText',
+    defaultMessage: 'You have not selected a result.',
+  },
+  enterAmountDisabledText: {
+    id: 'oracle.enterAmountDisabledText',
+    defaultMessage: 'You have not entered a valid amount.',
+  },
+  betStartTimeDisabledText: {
+    id: 'oracle.betStartTimeDisabledText',
+    defaultMessage: 'The betting start time has not started yet.',
+  },
+  setStartTimeDisabledText: {
+    id: 'oracle.setStartTimeDisabledText',
+    defaultMessage: 'The result setting start time has not started yet.',
+  },
+  cOracleDisabledText: {
+    id: 'oracle.cOracleDisabledText',
+    defaultMessage: 'You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
+  },
+});
+
 class OraclePage extends React.Component {
   constructor(props) {
     super(props);
@@ -34,15 +61,15 @@ class OraclePage extends React.Component {
       address: this.props.match.params.address,
       oracle: undefined,
       transactions: [],
-      config: undefined,
       voteAmount: 0,
       currentOptionIdx: -1,
     };
 
-    this.isActionButtonDisabled = this.isActionButtonDisabled.bind(this);
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
     this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
+    this.getEventOptionsInfo = this.getEventOptionsInfo.bind(this);
     this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
+    this.getActionButtonConfig = this.getActionButtonConfig.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -70,23 +97,25 @@ class OraclePage extends React.Component {
       this.executeOracleAndTxsRequest();
     }
 
-    this.constructOracleAndConfig(getOraclesReturn, syncBlockTime);
+    // Construct page config
+    if (getOraclesReturn) {
+      this.constructOracleAndConfig(syncBlockTime, getOraclesReturn);
+    }
+
     this.setState({ transactions: getTransactionsReturn });
   }
 
   render() {
-    const { classes, txReturn, lastUsedAddress } = this.props;
+    const { classes, lastUsedAddress } = this.props;
     const { oracle, transactions, config } = this.state;
 
     // TODO: is this necessary?
     if (!oracle || !config) {
-      // Don't render anything if page is loading.
-      // In future we could make a loading animation
-      return <div></div>;
+      return null;
     }
 
-    const eventOptions = OraclePage.getBetOrVoteArray(oracle);
-    const actionButtonDisabled = this.isActionButtonDisabled();
+    const eventOptions = this.getEventOptionsInfo();
+    const actionButtonConfig = this.getActionButtonConfig();
 
     return (
       <Paper className={classes.eventDetailPaper}>
@@ -121,7 +150,7 @@ class OraclePage extends React.Component {
                 fullWidth
                 size="large"
                 color="primary"
-                disabled={actionButtonDisabled}
+                disabled={actionButtonConfig.disabled}
                 onClick={this.handleConfirmClick}
                 className={classes.eventActionButton}
               >
@@ -131,6 +160,13 @@ class OraclePage extends React.Component {
                     config.predictionAction.btnText
                 }
               </Button>
+              {
+                actionButtonConfig.message
+                  ? <Typography variant="body1" className={classes.buttonDisabledText}>
+                    {actionButtonConfig.message}
+                  </Typography>
+                  : null
+              }
               <EventTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
@@ -143,64 +179,8 @@ class OraclePage extends React.Component {
     );
   }
 
-  getEventInfoObjs() {
-    const { oracle } = this.state;
-
-    if (_.isEmpty(oracle)) {
-      return [];
-    }
-
-    const totalAmount = _.sum(oracle.amounts);
-
-    return [
-      {
-        label: <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
-        content: getLocalDateTimeString(oracle.endTime),
-        highlight: getEndTimeCountDownString(oracle.endTime),
-      }, {
-        label: <FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />,
-        content: `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`,
-      }, {
-        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
-        content: oracle.resultSetterQAddress,
-      },
-    ];
-  }
-
-  isActionButtonDisabled() {
-    const {
-      currentOptionIdx,
-      voteAmount,
-      config,
-      transactions,
-      address,
-    } = this.state;
-
-    // Not within correct times or not the result setter
-    if (config.predictionAction.btnDisabled) {
-      return true;
-    }
-
-    // Already have a pending tx for this Oracle
-    const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
-    if (pendingTxs > 0) {
-      return true;
-    }
-
-    // Did not select an option
-    if (!config.predictionAction.skipExpansion && currentOptionIdx === -1) {
-      return true;
-    }
-
-    // Did not enter an amount
-    if (config.predictionAction.showAmountInput && (voteAmount === 0 || Number.isNaN(voteAmount))) {
-      return true;
-    }
-
-    return false;
-  }
-
   handleOptionChange(idx) {
+    console.log(idx);
     this.setState({ currentOptionIdx: idx });
   }
 
@@ -213,11 +193,11 @@ class OraclePage extends React.Component {
   }
 
   handleConfirmClick() {
-    const amount = this.state.voteAmount;
+    const { config, voteAmount } = this.state;
 
-    switch (this.state.config.name) {
+    switch (config.name) {
       case 'BETTING': {
-        this.bet(amount);
+        this.bet(voteAmount);
         break;
       }
       case 'SETTING': {
@@ -225,7 +205,7 @@ class OraclePage extends React.Component {
         break;
       }
       case 'VOTING': {
-        this.vote(amount);
+        this.vote(voteAmount);
         break;
       }
       case 'FINALIZING': {
@@ -238,12 +218,156 @@ class OraclePage extends React.Component {
     }
   }
 
-  /**
-   * Get Bet or Vote names and balances from oracle
-   * @param {object} oracle Oracle object
-   * @return {array} {name, value, percent}
-   */
-  static getBetOrVoteArray(oracle) {
+  executeOracleAndTxsRequest() {
+    this.props.getOracles([
+      { topicAddress: this.state.topicAddress },
+    ], undefined);
+
+    this.props.getTransactions([
+      { topicAddress: this.state.topicAddress },
+    ], undefined);
+  }
+
+    
+  constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
+    const oracle = _.find(getOraclesReturn, { address: this.state.address });
+    const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
+    let config;
+
+    if (oracle) {
+      const { token, status } = oracle;
+
+      if (token === Token.Qtum && status === OracleStatus.Voting) {
+        config = {
+          name: 'BETTING',
+          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+          },
+          predictionAction: {
+            skipExpansion: false,
+            showAmountInput: true,
+            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+          },
+        };
+      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
+        config = {
+          name: 'SETTING',
+          breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
+          },
+          predictionAction: {
+            skipExpansion: false,
+            showAmountInput: false,
+            btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
+          },
+        };
+      } else if (token === Token.Bot && status === OracleStatus.Voting) {
+        config = {
+          name: 'VOTING',
+          breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+          },
+          predictionAction: {
+            skipExpansion: false,
+            showAmountInput: true,
+            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
+          },
+        };
+      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
+        config = {
+          name: 'FINALIZING',
+          breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
+          },
+          predictionAction: {
+            skipExpansion: true,
+            showAmountInput: false,
+            btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
+          },
+        };
+      }
+    }
+
+    this.setState({ oracle, config });
+  }
+
+  getActionButtonConfig() {
+    const { intl, syncBlockTime } = this.props;
+    const {
+      address,
+      oracle,
+      transactions,
+      currentOptionIdx,
+      voteAmount,
+    } = this.state;
+    const { token, status, resultSetterQAddress } = oracle;
+    const currBlockTime = moment.unix(syncBlockTime);
+
+    // Already have a pending tx for this Oracle
+    const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
+    if (pendingTxs.length > 0) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.pendingTransactionDisabledMsg),
+      };
+    }
+
+    // Has not reached betting start time
+    if (token === Token.Qtum
+      && status === OracleStatus.Voting
+      && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.betStartTimeDisabledText),
+      };
+    }
+
+    // Has not reached result setting start time
+    if (token === Token.Qtum
+      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
+      && currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime))) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.setStartTimeDisabledText),
+      };
+    }
+
+    // User is not the result setter
+    if (status === OracleStatus.WaitResult && resultSetterQAddress !== this.getCurrentWalletAddr()) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.cOracleDisabledText),
+      };
+    }
+
+    // Did not select a result
+    if (!(token === Token.Bot && status === OracleStatus.WaitResult) && currentOptionIdx === -1) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.selectResultDisabledText),
+      };
+    }
+
+    // Did not enter an amount
+    if (status === OracleStatus.Voting && (voteAmount === 0 || Number.isNaN(voteAmount))) {
+      return {
+        disabled: true,
+        message: intl.formatMessage(messages.enterAmountDisabledText),
+      };
+    }
+
+    return {
+      disabled: false,
+    };
+  }
+
+  getEventOptionsInfo() {
+    const { oracle } = this.state;
     const totalBalance = _.sum(oracle.amounts);
 
     if (oracle.token === Token.Qtum) {
@@ -269,91 +393,23 @@ class OraclePage extends React.Component {
     });
   }
 
-  executeOracleAndTxsRequest() {
-    this.props.getOracles([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
+  getEventInfoObjs() {
+    const { oracle } = this.state;
+    const totalAmount = _.sum(oracle.amounts);
 
-    this.props.getTransactions([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
-  }
-
-  constructOracleAndConfig(getOraclesReturn, syncBlockTime) {
-    const { lastUsedAddress } = this.props;
-
-    const oracle = _.find(getOraclesReturn, { address: this.state.address });
-    const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
-    const currBlockTime = moment.unix(syncBlockTime);
-
-    if (oracle) {
-      const { token, status } = oracle;
-      let config;
-
-      if (token === Token.Qtum && status === OracleStatus.Voting) {
-        config = {
-          name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
-            btnDisabled: currBlockTime.isBefore(moment.unix(oracle.startTime)),
-            showAmountInput: true,
-          },
-        };
-      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
-        config = {
-          name: 'SETTING',
-          breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
-            btnDisabled: (oracle.status === OracleStatus.WaitResult
-              && oracle.resultSetterQAddress !== lastUsedAddress)
-              || currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime)),
-            showAmountInput: false,
-          },
-        };
-      } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        config = {
-          name: 'VOTING',
-          breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
-            showAmountInput: true,
-          },
-        };
-      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        config = {
-          name: 'FINALIZING',
-          breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles),
-          },
-          predictionAction: {
-            skipExpansion: true,
-            btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
-            showAmountInput: false,
-          },
-        };
-      }
-
-      this.setState({
-        oracle,
-        config,
-      });
-    }
+    return [
+      {
+        label: <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
+        content: getLocalDateTimeString(oracle.endTime),
+        highlight: getEndTimeCountDownString(oracle.endTime),
+      }, {
+        label: <FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />,
+        content: `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`,
+      }, {
+        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />,
+        content: oracle.resultSetterQAddress,
+      },
+    ];
   }
 
   bet(amount) {
@@ -430,8 +486,6 @@ OraclePage.propTypes = {
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
   setLastUsedAddress: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
 };
 
 OraclePage.defaultProps = {

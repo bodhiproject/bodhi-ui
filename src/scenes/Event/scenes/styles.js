@@ -89,6 +89,9 @@ const styles = (theme) => ({
   withdrawWinningOptionSmall: {
     color: theme.palette.primary.main,
   },
+  buttonDisabledText: {
+    color: theme.palette.text.secondary,
+  },
 });
 
 export default styles;
