@@ -7,9 +7,7 @@ const styles = (theme) => ({
   },
   eventInfo: {
     marginTop: theme.padding.unit.px,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
+    'word-wrap': 'break-word',
     paddingLeft: theme.padding.md.px,
     fontSize: theme.typography.fontSize,
   },
