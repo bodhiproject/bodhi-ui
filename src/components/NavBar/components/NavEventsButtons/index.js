@@ -24,7 +24,7 @@ class NavEventsButtons extends Component {
               'selected'
             )}
           >
-            <FormattedMessage id="navbar.qtumPredict" defaultMessage="QTUM Prediction" />
+            <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
           </Button>
         </Link>
         <Link to="/bot-court">
