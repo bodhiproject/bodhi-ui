@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import { Row, Col, Alert, Button, Form, Input, message, InputNumber, DatePicker, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -137,6 +138,7 @@ class CreateTopic extends React.Component {
     this.onDatePickerDateSelect = this.onDatePickerDateSelect.bind(this);
     this.onAddResultField = this.onAddResultField.bind(this);
     this.onRemoveResultField = this.onRemoveResultField.bind(this);
+    this.onSelectAddress = this.onSelectAddress.bind(this);
     this.validateTitleLength = this.validateTitleLength.bind(this);
     this.validateBettingEndTime = this.validateBettingEndTime.bind(this);
     this.validateResultSettingStartTime = this.validateResultSettingStartTime.bind(this);
@@ -259,7 +261,10 @@ class CreateTopic extends React.Component {
                 whitespace: true,
                 message: this.props.intl.formatMessage(messages.COnotEmpty),
               }],
-            })(<Input placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM" />)}
+            })(<Input
+              placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM"
+              addonAfter={<Icon type="plus" onClick={this.onSelectAddress} />}
+            />)}
           </FormItem>
 
           <FormItem {...tailFormItemLayout} className="submit-controller">
@@ -525,6 +530,10 @@ class CreateTopic extends React.Component {
     setFieldsValue({
       keys: keys.filter((key) => key !== k),
     });
+  }
+
+  onSelectAddress() {
+    console.log('hello');
   }
 
   validateTitleLength(rule, value, callback) {
