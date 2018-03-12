@@ -80,9 +80,8 @@ class OraclePage extends React.Component {
 
   render() {
     const { classes, lastUsedAddress } = this.props;
-    const { oracle, transactions, config } = this.state;
+    const { oracle, config, transactions } = this.state;
 
-    // TODO: is this necessary?
     if (!oracle || !config) {
       return null;
     }
@@ -200,7 +199,6 @@ class OraclePage extends React.Component {
     ], undefined);
   }
 
-    
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
     const oracle = _.find(getOraclesReturn, { address: this.state.address });
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
