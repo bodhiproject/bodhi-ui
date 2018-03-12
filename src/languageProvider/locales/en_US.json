@@ -109,6 +109,7 @@
   "str.token": "Token",
   "str.transactionId": "Transaction ID",
   "str.type": "Type",
+  "str.unconfirmed": "Unconfirmed",
   "str.vote": "Vote",
   "str.voting": "Voting",
   "str.withdraw": "Withdraw",

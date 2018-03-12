@@ -20,6 +20,9 @@ const styles = (theme) => ({
   eventCardName: {
     marginBottom: theme.padding.xs.px,
   },
+  unconfirmedChip: {
+    marginTop: theme.padding.unit.px,
+  },
   dashBoardCardIcon: {
     marginRight: theme.padding.unit.px,
   },

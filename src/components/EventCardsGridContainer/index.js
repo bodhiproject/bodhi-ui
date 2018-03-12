@@ -201,6 +201,7 @@ class EventCardsGrid extends React.Component {
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
           totalQTUM={totalQTUM}
           buttonText={buttonText}
+          unconfirmed={!oracle.topicAddress && !oracle.address}
         />
       );
 

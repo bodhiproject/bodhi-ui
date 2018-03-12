@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import Card from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
+import Chip from 'material-ui/Chip';
 import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
@@ -14,6 +15,22 @@ import styles from './styles';
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
 class EventCard extends React.PureComponent {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    url: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    totalQTUM: PropTypes.number.isRequired,
+    totalBOT: PropTypes.number,
+    endTime: PropTypes.string,
+    buttonText: PropTypes.string.isRequired,
+    unconfirmed: PropTypes.bool.isRequired,
+  };
+
+  static defaultProps = {
+    totalBOT: undefined,
+    endTime: undefined,
+  };
+
   render() {
     const {
       classes,
@@ -23,6 +40,7 @@ class EventCard extends React.PureComponent {
       totalBOT,
       endTime,
       buttonText,
+      unconfirmed,
     } = this.props;
 
     return (
@@ -36,6 +54,15 @@ class EventCard extends React.PureComponent {
               <div className={classes.dashboardTime}>
                 {endTime !== undefined ? `Ends: ${getLocalDateTimeString(endTime)}` : null}
               </div>
+              {unconfirmed ?
+                <Typography variant="body1">
+                  <Chip
+                    label={<FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />}
+                    className={classes.unconfirmedChip}
+                  />
+                </Typography>
+                : null
+              }
               <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
@@ -58,20 +85,5 @@ class EventCard extends React.PureComponent {
     );
   }
 }
-
-EventCard.propTypes = {
-  classes: PropTypes.object.isRequired,
-  url: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  totalQTUM: PropTypes.number.isRequired,
-  totalBOT: PropTypes.number,
-  endTime: PropTypes.string,
-  buttonText: PropTypes.string.isRequired,
-};
-
-EventCard.defaultProps = {
-  totalBOT: undefined,
-  endTime: undefined,
-};
 
 export default withStyles(styles, { withTheme: true })(injectIntl(EventCard));
