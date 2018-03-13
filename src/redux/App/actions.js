@@ -21,32 +21,10 @@ const appActions = {
     };
   },
 
-  ADD_WALLET_ADDRESS: 'ADD_WALLET_ADDRESS',
-  addWalletAddress: (value) => ({
-    type: appActions.ADD_WALLET_ADDRESS,
-    value,
-  }),
-
   SET_LAST_USED_ADDRESS: 'SET_LAST_USED_ADDRESS',
   setLastUsedAddress: (address) => ({
     type: appActions.SET_LAST_USED_ADDRESS,
     address,
-  }),
-
-  LIST_UNSPENT: 'LIST_UNSPENT',
-  LIST_UNSPENT_RETURN: 'LIST_UNSPENT_RETURN',
-  listUnspent: () => ({
-    type: appActions.LIST_UNSPENT,
-  }),
-
-  GET_BOT_BALANCE: 'GET_BOT_BALANCE',
-  GET_BOT_BALANCE_RETURN: 'GET_BOT_BALANCE_RETURN',
-  getBotBalance: (owner, senderAddress) => ({
-    type: appActions.GET_BOT_BALANCE,
-    payload: {
-      owner,
-      senderAddress,
-    },
   }),
 
   GET_SYNC_INFO: 'GET_SYNC_INFO',
@@ -59,18 +37,6 @@ const appActions = {
     syncInfo,
   }),
   SYNC_INFO_RETURN: 'SYNC_INFO_RETURN',
-
-  UPDATE_SYNC_PROGRESS: 'UPDATE_SYNC_PROGRESS',
-  updateSyncProgress: (percentage) => ({
-    type: appActions.UPDATE_SYNC_PROGRESS,
-    percentage,
-  }),
-
-  TOGGLE_INITIAL_SYNC: 'TOGGLE_INITIAL_SYNC',
-  toggleInitialSync: (isSyncing) => ({
-    type: appActions.TOGGLE_INITIAL_SYNC,
-    isSyncing,
-  }),
 
   GET_INSIGHT_TOTALS: 'GET_INSIGHT_TOTALS',
   GET_INSIGHT_TOTALS_RETURN: 'GET_INSIGHT_TOTALS_RETURN',
