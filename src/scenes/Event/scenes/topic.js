@@ -19,11 +19,12 @@ import styles from './styles';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
+import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
-import { Token, OracleStatus } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -91,6 +92,7 @@ class TopicPage extends React.Component {
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
     this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
+    this.getActionButtonConfig = this.getActionButtonConfig.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
     this.onAddressChange = this.onAddressChange.bind(this);
   }
@@ -140,6 +142,7 @@ class TopicPage extends React.Component {
 
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
+    const actionButtonConfig = this.getActionButtonConfig();
 
     return (
       <Paper className={classes.eventDetailPaper}>
@@ -149,7 +152,8 @@ class TopicPage extends React.Component {
               {topic.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              {this.renderWithdrawContainer()}
+              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
+              {this.renderWithdrawContainer(actionButtonConfig)}
               {this.renderOptions()}
               <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
             </Grid>
@@ -164,7 +168,7 @@ class TopicPage extends React.Component {
     );
   }
 
-  renderWithdrawContainer() {
+  renderWithdrawContainer(actionButtonConfig) {
     const {
       intl,
       classes,
@@ -267,7 +271,7 @@ class TopicPage extends React.Component {
           fullWidth
           size="large"
           color="primary"
-          disabled={this.state.isApproving}
+          disabled={actionButtonConfig.disabled}
           onClick={this.onWithdrawClicked}
           className={classes.eventActionButton}
         >
@@ -279,6 +283,28 @@ class TopicPage extends React.Component {
         </Button>
       </Paper>
     );
+  }
+
+  getActionButtonConfig() {
+    const { getTransactionsReturn } = this.props;
+    const { address } = this.state;
+
+    // Already have a pending tx for this Topic
+    const pendingTxs = _.filter(getTransactionsReturn, { topicAddress: address, status: TransactionStatus.Pending });
+    if (pendingTxs.length > 0) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="str.pendingTransactionDisabledMsg"
+          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
+        />,
+        warningTypeClass: EventWarningType.Highlight,
+      };
+    }
+
+    return {
+      disabled: false,
+    };
   }
 
   renderOptions() {
