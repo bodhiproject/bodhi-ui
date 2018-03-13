@@ -13,7 +13,7 @@ import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
@@ -76,7 +76,7 @@ class EventOption extends React.PureComponent {
                   {isPrevResult ?
                     <FormattedMessage
                       id="oracle.optionIsPrevResult"
-                      defaultMessage="This option was set as result in previous rounds"
+                      defaultMessage="This option was set as the result in the previous round"
                     /> : amount
                   }
                 </Typography>
