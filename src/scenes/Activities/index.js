@@ -16,11 +16,11 @@ const messages = defineMessages({
     defaultMessage: 'Result Setting',
   },
   finalize: {
-    id: 'str.finalize',
+    id: 'activitiesTab.Finalize',
     defaultMessage: 'Finalize',
   },
   withdraw: {
-    id: 'str.withdraw',
+    id: 'activitiesTab.Withdraw',
     defaultMessage: 'Withdraw',
   },
   history: {
@@ -37,19 +37,20 @@ class Activities extends React.Component {
       tabIdx: 0,
     };
 
+    this.getTabLabel = this.getTabLabel.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, actionableItemCount } = this.props;
     const { tabIdx } = this.state;
 
     return (
       <div>
         <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.props.intl.formatMessage(messages.set)} />
-          <Tab label={this.props.intl.formatMessage(messages.finalize)} />
-          <Tab label={this.props.intl.formatMessage(messages.withdraw)} />
+          <Tab label={this.getTabLabel(EventStatus.Set)} />
+          <Tab label={this.getTabLabel(EventStatus.Finalize)} />
+          <Tab label={this.getTabLabel(EventStatus.Withdraw)} />
           <Tab label={this.props.intl.formatMessage(messages.history)} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
@@ -62,6 +63,26 @@ class Activities extends React.Component {
     );
   }
 
+  getTabLabel(eventStatusIndex) {
+    const { actionableItemCount, intl } = this.props;
+
+    let countLabel = '';
+    if (actionableItemCount && actionableItemCount.countByStatus[eventStatusIndex]) {
+      countLabel = ` (${actionableItemCount.countByStatus[eventStatusIndex]})`;
+    }
+
+    switch (eventStatusIndex) {
+      case EventStatus.Set:
+        return `${intl.formatMessage(messages.set)}${countLabel}`;
+      case EventStatus.Finalize:
+        return `${intl.formatMessage(messages.finalize)}${countLabel}`;
+      case EventStatus.Withdraw:
+        return `${intl.formatMessage(messages.withdraw)}${countLabel}`;
+      default:
+        return null;
+    }
+  }
+
   handleTabChange(event, value) {
     this.setState({ tabIdx: value });
   }
@@ -69,8 +90,20 @@ class Activities extends React.Component {
 
 Activities.propTypes = {
   classes: PropTypes.object.isRequired,
+  actionableItemCount: PropTypes.object,
   // eslint-disable-next-line react/no-typos
   intl: intlShape.isRequired,
 };
 
-export default injectIntl(withStyles(styles, { withTheme: true })(Activities));
+Activities.defaultProps = {
+  actionableItemCount: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  ...state.App.toJS(),
+  actionableItemCount: state.Graphql.get('actionableItemCount'),
+});
+
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(Activities)));

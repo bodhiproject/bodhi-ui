@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -11,7 +10,7 @@ import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-i
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import { EventStatus } from '../../constants';
+import NavEventsButtons from './components/NavEventsButtons/index';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
@@ -28,11 +27,10 @@ class NavBar extends React.PureComponent {
       classes,
       walletAddresses,
       actionableItemCount,
-      match,
     } = this.props;
 
     return (
-      <AppBar position="fixed" className={classes.navBar}>
+      <AppBar position="fixed">
         <Toolbar className={classes.navBarWrapper}>
           <Link to="/">
             <img
@@ -41,37 +39,13 @@ class NavBar extends React.PureComponent {
               className={classes.navBarLogo}
             />
           </Link>
-          <Link to="/" className={classes.navBarLink}>
-            <Button
-              data-index={EventStatus.Bet}
-              className={classNames(
-                classes.navEventsButton,
-                match.path === '/' ? 'selected' : '',
-              )}
-            >
-              QTUM Prediction
-            </Button>
-            { this.renderCurrentTabArrow('/') }
-          </Link>
-          <Link to="/bot-court" className={classes.navBarLink}>
-            <Button
-              data-index={EventStatus.Vote}
-              className={classNames(
-                classes.navEventsButton,
-                match.path === '/bot-court' ? 'selected' : '',
-              )}
-            >
-              BOT Court
-            </Button>
-            { this.renderCurrentTabArrow('/bot-court') }
-          </Link>
+          <NavEventsButtons />
           <div className={classes.navBarRightWrapper}>
-            <Link to="/my-wallet" className={classes.navBarLink}>
+            <Link to="/my-wallet">
               <Button className={classes.navBarWalletButton}>
                 <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
-              { this.renderCurrentTabArrow('/my-wallet') }
             </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
@@ -83,56 +57,29 @@ class NavBar extends React.PureComponent {
     );
   }
 
-  renderCurrentTabArrow(currentPath) {
-    const {
-      classes,
-      match,
-    } = this.props;
-
-    if (this.props.match.path === currentPath) {
-      return (
-        <img
-          src="/images/nav-arrow.png"
-          alt="nav-arrow"
-          className={
-            classNames(
-              classes.navArrow,
-              currentPath === '/my-wallet' || currentPath === '/activities' ? 'right' : ''
-            )
-          }
-        />
-      );
-    }
-
-    return null;
-  }
-
   renderActivitiesButtonWithBadge() {
     const {
       classes,
-      match,
       actionableItemCount,
     } = this.props;
 
-    if (actionableItemCount) {
+    if (actionableItemCount && actionableItemCount.totalCount) {
       return (
         <Link to="/activities" className={classes.navBarLink}>
-          <Badge badgeContent={actionableItemCount} color="secondary">
+          <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
           </Badge>
-          { this.renderCurrentTabArrow('/activities') }
         </Link>
       );
     }
 
     return (
-      <Link to="/activities" className={classes.navBarLink}>
+      <Link to="/activities">
         <Button className={classes.navBarRightButton}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
-        { this.renderCurrentTabArrow('/activities') }
       </Link>
     );
   }
@@ -165,10 +112,9 @@ class NavBar extends React.PureComponent {
 }
 
 NavBar.propTypes = {
-  match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   walletAddresses: PropTypes.array.isRequired,
-  actionableItemCount: PropTypes.number,
+  actionableItemCount: PropTypes.object,
   langHandler: PropTypes.func,
 };
 

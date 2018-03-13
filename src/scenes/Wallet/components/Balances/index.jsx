@@ -300,7 +300,7 @@ class MyBalances extends React.PureComponent {
                 data-qtum={item.qtum}
                 data-bot={item.bot}
               >
-                <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
+                <FormattedMessage id="myBalances.withdraw" defaultMessage="Withdraw" />
               </Button>
             </TableCell>
           </TableRow>))}
