@@ -115,6 +115,7 @@ class EventCardsGrid extends React.Component {
         getOracles(
           [
             { token: Token.Qtum, status: OracleStatus.Voting },
+            { token: Token.Qtum, status: OracleStatus.Created },
           ],
           { field: 'endTime', direction: sortDirection },
         );
@@ -194,12 +195,13 @@ class EventCardsGrid extends React.Component {
       // Constructing Card element on the right
       const oracleEle = (
         <EventCard
-          key={oracle.address}
+          key={oracle.txid}
           name={oracle.name}
-          url={`/oracle/${oracle.topicAddress}/${oracle.address}`}
+          url={`/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`}
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
           totalQTUM={totalQTUM}
           buttonText={buttonText}
+          unconfirmed={!oracle.topicAddress && !oracle.address}
         />
       );
 
@@ -215,16 +217,18 @@ class EventCardsGrid extends React.Component {
     _.each(topicEvents, (topic) => {
       const totalQTUM = _.sum(topic.qtumAmount);
       const totalBOT = _.sum(topic.botAmount);
+      const unconfirmed = false;
 
       // Constructing Card element on the right
       const topicEle = (
         <EventCard
-          key={topic.address}
+          key={topic.txid}
           name={topic.name}
           url={`/topic/${topic.address}`}
           totalQTUM={totalQTUM}
           totalBOT={totalBOT}
           buttonText={this.props.intl.formatMessage(messages.withdraw)}
+          unconfirmed={unconfirmed}
         />
       );
 

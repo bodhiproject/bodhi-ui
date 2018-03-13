@@ -14,7 +14,6 @@ module.exports = {
     Default: 0,
   },
 
-  /* Oracle status matching graphql _OracleStatusType */
   OracleStatus: {
     Created: 'CREATED',
     Voting: 'VOTING',

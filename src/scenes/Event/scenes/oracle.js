@@ -29,9 +29,14 @@ class OraclePage extends React.Component {
   constructor(props) {
     super(props);
 
+    const { topicAddress, address, txid } = this.props.match.params;
+    const unconfirmed = topicAddress === 'null' && address === 'null' && txid;
+
     this.state = {
-      topicAddress: this.props.match.params.topicAddress,
-      address: this.props.match.params.address,
+      topicAddress,
+      address,
+      txid,
+      unconfirmed,
       oracle: undefined,
       transactions: [],
       voteAmount: 0,
@@ -79,8 +84,13 @@ class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes, lastUsedAddress } = this.props;
-    const { oracle, config, transactions } = this.state;
+    const { classes, txReturn, lastUsedAddress } = this.props;
+    const {
+      oracle,
+      config,
+      transactions,
+      unconfirmed,
+    } = this.state;
 
     if (!oracle || !config) {
       return null;
@@ -111,35 +121,49 @@ class OraclePage extends React.Component {
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
+                  unconfirmedEvent={unconfirmed}
                   showAmountInput={config.predictionAction.showAmountInput}
                   onOptionChange={this.handleOptionChange}
                   onAmountChange={this.handleAmountChange}
                   onWalletChange={this.handleWalletChange}
                 />
               ))}
-              <Button
-                variant="raised"
-                fullWidth
-                size="large"
-                color="primary"
-                disabled={actionButtonConfig.disabled}
-                onClick={this.handleConfirmClick}
-                className={classes.eventActionButton}
-              >
-                {
-                  this.state.isApproving ?
-                    <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                    config.predictionAction.btnText
-                }
-              </Button>
-              {
-                actionButtonConfig.message
-                  ? <Typography variant="body1" className={classes.buttonDisabledText}>
-                    {actionButtonConfig.message}
+              {!unconfirmed
+                ? (
+                  <div>
+                    <Button
+                      variant="raised"
+                      fullWidth
+                      size="large"
+                      color="primary"
+                      disabled={actionButtonConfig.disabled}
+                      onClick={this.handleConfirmClick}
+                      className={classes.eventActionButton}
+                    >
+                      {
+                        this.state.isApproving ?
+                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                          config.predictionAction.btnText
+                      }
+                    </Button>
+                    {
+                      actionButtonConfig.message
+                        ? <Typography variant="body1" className={classes.buttonDisabledText}>
+                          {actionButtonConfig.message}
+                        </Typography>
+                        : null
+                    }
+                    <EventTxHistory transactions={transactions} options={oracle.options} />
+                  </div>
+                ) : (
+                  <Typography variant="body1" className={classes.eventUnconfirmedText}>
+                    <FormattedMessage
+                      id="oracle.eventUnconfirmed"
+                      defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain."
+                    />
                   </Typography>
-                  : null
+                )
               }
-              <EventTxHistory transactions={transactions} options={oracle.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
@@ -190,17 +214,41 @@ class OraclePage extends React.Component {
   }
 
   executeOracleAndTxsRequest() {
-    this.props.getOracles([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
+    const {
+      topicAddress,
+      address,
+      txid,
+      unconfirmed,
+    } = this.state;
+
+    if (unconfirmed) {
+      // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
+      this.props.getOracles([
+        { txid, status: OracleStatus.Created },
+      ]);
+    } else {
+      // Find real Oracle based on topicAddress
+      this.props.getOracles([
+        { topicAddress },
+      ]);
+    }
 
     this.props.getTransactions([
-      { topicAddress: this.state.topicAddress },
-    ], undefined);
+      { topicAddress },
+    ]);
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
-    const oracle = _.find(getOraclesReturn, { address: this.state.address });
+    const { lastUsedAddress } = this.props;
+    const { address, txid, unconfirmed } = this.state;
+
+    let oracle;
+    if (!unconfirmed) {
+      oracle = _.find(getOraclesReturn, { address });
+    } else {
+      oracle = _.find(getOraclesReturn, { txid });
+    }
+
     const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
@@ -208,7 +256,8 @@ class OraclePage extends React.Component {
     if (oracle) {
       const { token, status } = oracle;
 
-      if (token === Token.Qtum && status === OracleStatus.Voting) {
+      if ((token === Token.Qtum && status === OracleStatus.Voting)
+        || (token === Token.Qtum && status === OracleStatus.Created && unconfirmed)) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,

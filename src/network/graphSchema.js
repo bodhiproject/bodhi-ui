@@ -9,6 +9,7 @@ export const TYPE = {
 
 const TYPE_DEF = {
   Topic: `
+    txid
     version
     address
     name
@@ -40,6 +41,7 @@ const TYPE_DEF = {
     }`,
 
   Oracle: `
+    txid
     version
     address
     topicAddress

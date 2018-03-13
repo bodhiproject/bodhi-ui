@@ -39,6 +39,7 @@ class EventOption extends React.PureComponent {
       token,
       walletAddresses,
       skipExpansion,
+      unconfirmedEvent,
       showAmountInput,
     } = this.props;
 
@@ -51,7 +52,11 @@ class EventOption extends React.PureComponent {
             optionIdx === 0 || optionIdx === currentOptionIdx ? 'first' : ''
           )}
         >
-          <ExpansionPanel expanded={optionIdx === currentOptionIdx || skipExpansion} onChange={this.handleExpansionChange}>
+          <ExpansionPanel
+            expanded={optionIdx === currentOptionIdx || skipExpansion}
+            onChange={this.handleExpansionChange}
+            disabled={unconfirmedEvent}
+          >
             <ExpansionPanelSummary>
               <div className={classes.eventOptionWrapper}>
                 <div className={classes.eventOptionNum}>{optionIdx + 1}</div>
@@ -180,6 +185,7 @@ EventOption.propTypes = {
   walletAddresses: PropTypes.array.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
   skipExpansion: PropTypes.bool.isRequired,
+  unconfirmedEvent: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
 };
 

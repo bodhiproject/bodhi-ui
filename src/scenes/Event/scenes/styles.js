@@ -94,6 +94,9 @@ const styles = (theme) => ({
     marginTop: theme.padding.unit.px,
     textAlign: 'center',
   },
+  eventUnconfirmedText: {
+    marginTop: theme.padding.sm.px,
+  },
 });
 
 export default styles;
