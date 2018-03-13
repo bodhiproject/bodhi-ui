@@ -14,7 +14,7 @@ import {
 } from '../../network/graphMutation';
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
-import { Token, OracleStatus, EventStatus } from '../../constants';
+import { Token, OracleStatus } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -118,51 +118,29 @@ function processTransaction(tx) {
 // Gets the number of actionable items; setResult, finalize, withdraw
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
-    let totalCount = 0;
-    const countByStatus = {
-      [EventStatus.Set]: 0,
-      [EventStatus.Finalize]: 0,
-      [EventStatus.Withdraw]: 0,
-    };
-
     try {
       const topicFilters = [
         { status: OracleStatus.Withdraw },
       ];
       let result = yield call(queryAllTopics, topicFilters);
-      countByStatus[EventStatus.Withdraw] = result.length;
-      totalCount += result.length;
+      let count = result.length;
 
-      const oracleSetFilters = [
+      const oracleFilters = [
         { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
-      result = yield call(queryAllOracles, oracleSetFilters);
-      countByStatus[EventStatus.Set] = result.length;
-      totalCount += result.length;
-
-      const oracleFinalizeFilters = [
-        { token: Token.Bot, status: OracleStatus.WaitResult },
-      ];
-      result = yield call(queryAllOracles, oracleFinalizeFilters);
-      countByStatus[EventStatus.Finalize] = result.length;
-      totalCount += result.length;
+      result = yield call(queryAllOracles, oracleFilters);
+      count += result.length;
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        value: {
-          totalCount,
-          countByStatus,
-        },
+        value: count,
       });
     } catch (err) {
       console.log(err);
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        value: {
-          totalCount,
-          countByStatus,
-        },
+        value: 0,
       });
     }
   });

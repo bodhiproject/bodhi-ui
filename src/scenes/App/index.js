@@ -36,9 +36,8 @@ export class App extends React.PureComponent {
         </Debounce>
         <GlobalHub />
         <Loader />
-        <NavBar langHandler={this.props.langHandler} />
         <div className={classes.container}>
-          <AppRouter url={url} />
+          <AppRouter url={url} langHandler={this.props.langHandler} />
         </div>
         <BottomBar />
         <TransactionSentDialog txReturn={txReturn} />

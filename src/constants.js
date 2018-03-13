@@ -4,7 +4,6 @@ module.exports = {
     Bot: 'BOT',
   },
 
-  /* Event status for UI */
   EventStatus: {
     Bet: 0,
     Set: 1,

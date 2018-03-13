@@ -89,6 +89,11 @@ const styles = (theme) => ({
   withdrawWinningOptionSmall: {
     color: theme.palette.primary.main,
   },
+  buttonDisabledText: {
+    color: theme.palette.text.secondary,
+    marginTop: theme.padding.unit.px,
+    textAlign: 'center',
+  },
 });
 
 export default styles;
