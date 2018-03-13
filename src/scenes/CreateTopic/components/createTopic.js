@@ -210,7 +210,7 @@ class CreateTopic extends React.Component {
 
           <FormItem
             {...formItemLayout}
-            label={<FormattedMessage id="create.results" defaultMessage="RESULTS" />}
+            label={<FormattedMessage id="create.results" defaultMessage="Results" />}
             required={required}
             style={{ marginBottom: SPACING_FORM_ITEM }}
           >
@@ -282,7 +282,7 @@ class CreateTopic extends React.Component {
     let block;
     switch (id) {
       case ID_BETTING_START_TIME: {
-        label = <FormattedMessage id="create.betStartBlock" defaultMessage="BETTING START BLOCK" />;
+        label = <FormattedMessage id="create.betStartBlock" defaultMessage="Betting Start Block" />;
         extra = <FormattedMessage id="create.betStartBlockExtra" defaultMessage="The time when users can start betting." />;
         options = {
           validateTrigger: ['onChange', 'onBlur'],

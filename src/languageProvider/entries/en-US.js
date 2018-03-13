@@ -9,5 +9,6 @@ const EnLang = {
   antd: antdEn,
   locale: 'en-US',
   data: appLocaleData,
+  momentlocale: 'en',
 };
 export default EnLang;

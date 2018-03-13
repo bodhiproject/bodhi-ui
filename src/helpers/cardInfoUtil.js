@@ -1,29 +1,48 @@
 import _ from 'lodash';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, IntlProvider, defineMessages } from 'react-intl';
 import { getLocalDateTimeString } from './utility';
+import { getIntlProvider } from './i18nUtil';
 
 const TOPIC_CREATED = <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />;
 const BETTING = <FormattedMessage id="str.betting" defaultMessage="Betting" />;
 const ORACLE_RESULT_SETTING = <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />;
 const OPEN_RESULT_SETTING = <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />;
-const VOTING = <FormattedMessage id="str.voting" defaultMessage="Voting" />;
-const FINALIZING = <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />;
-const WITHDRAWING = <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />;
-const BLOCK = 'Block:';
-const RANGE_SEPARATOR = 'to';
-const ANYTIME = 'anytime';
+const VOTING = <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />;
+const FINALIZING = <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />;
+const WITHDRAWING = <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />;
+
 
 const POS_TOPIC_CREATED = 0;
 const POS_BETTING = 1;
 const POS_ORACLE_RESULT_SETTING = 2;
 const POS_OPEN_RESULT_SETTING = 3;
 
+const messages = defineMessages({
+  block: {
+    id: 'str.block',
+    defaultMessage: 'Block',
+  },
+  to: {
+    id: 'cardInfo.to',
+    defaultMessage: 'To',
+  },
+  anytime: {
+    id: 'str.anytime',
+    defaultMessage: 'anytime',
+  },
+});
+
 class CardInfoUtil {
-  static getSteps(blockTime, cOracle, dOracles, isTopicDetail) {
+  static getSteps(blockTime, cOracle, dOracles, isTopicDetail, locale, localeMessages) {
     if (_.isUndefined(blockTime) && _.isUndefined(cOracle)) {
       return false;
     }
+    const intl = getIntlProvider(locale, localeMessages);
+
+    const BLOCK = `${intl.formatMessage(messages.block)}:`;
+    const RANGE_SEPARATOR = intl.formatMessage(messages.to);
+    const ANYTIME = intl.formatMessage(messages.anytime);
 
     // Init all events with these steps
     const value = [

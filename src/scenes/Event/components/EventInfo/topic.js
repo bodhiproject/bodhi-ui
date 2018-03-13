@@ -13,13 +13,14 @@ import styles from './styles';
 class EventInfo extends React.PureComponent {
   render() {
     const { classes, oracle } = this.props;
+    const { locale, messages: localeMessages } = this.props.intl;
 
     return (
       <div className={classes.eventInfoWrapper}>
         {this.renderInfoBlock(
           <FormattedMessage id="eventInfo.endDate" defaultMessage="ENDING DATE" />,
           getLocalDateTimeString(oracle.endTime),
-          getEndTimeCountDownString(oracle.endTime)
+          getEndTimeCountDownString(oracle.endTime, locale, localeMessages)
         )}
         {this.renderInfoBlock(<FormattedMessage id="eventInfo.fund" defaultMessage="FUNDING" />, this.getTotalFundWithToken())}
         {this.renderInfoBlock(<FormattedMessage id="eventInfo.resultSetter" defaultMessage="RESULT SETTER" />, oracle.resultSetterQAddress)}

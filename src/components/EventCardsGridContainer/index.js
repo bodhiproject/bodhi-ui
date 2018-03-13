@@ -66,7 +66,6 @@ class EventCardsGrid extends React.Component {
 
     const topics = getTopicsReturn;
     const oracles = getOraclesReturn;
-
     let rowItems;
     switch (eventStatusIndex) {
       case EventStatus.Bet:
@@ -109,7 +108,6 @@ class EventCardsGrid extends React.Component {
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
-
     switch (eventStatusIndex) {
       case EventStatus.Bet: {
         getOracles(

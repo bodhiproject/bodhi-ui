@@ -2,13 +2,39 @@ import BN from 'bn.js';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
+import React from 'react';
+import { FormattedMessage, DefaultMessage, IntlProvider, defineMessages } from 'react-intl';
+
+import AppLocale from '../languageProvider';
+import { getIntlProvider } from './i18nUtil';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
 const GAS_COST = 0.0000004;
-const FORMAT_DATE_TIME = 'MMM D, YYYY h:mm:ss a';
-const FORMAT_SHORT_DATE_TIME = 'M/D/YY h:mm:ss a';
-
+const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
+const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';
+const messages = defineMessages({
+  end: {
+    id: 'str.end',
+    defaultMessage: 'Ended',
+  },
+  day: {
+    id: 'str.d',
+    defaultMessage: 'd',
+  },
+  hour: {
+    id: 'str.h',
+    defaultMessage: 'h',
+  },
+  minute: {
+    id: 'str.m',
+    defaultMessage: 'm',
+  },
+  left: {
+    id: 'str.left',
+    defaultMessage: 'Left',
+  },
+});
 /*
 * Calculates the estimated block based on current block and future date.
 * @param currentBlock {Number} The current block number.
@@ -83,17 +109,17 @@ export function getShortLocalDateTimeString(unixSeconds) {
   return moment.unix(unixSeconds).format(FORMAT_SHORT_DATE_TIME);
 }
 
-export function getEndTimeCountDownString(unixSeconds) {
+export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
   const nowUnix = moment().unix();
   const unixDiff = unixSeconds - nowUnix;
 
+  const intl = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
-    return 'Ended';
+    return intl.formatMessage(messages.end);
   }
 
   const dur = moment.duration(unixDiff * 1000);
-
-  return `${dur.days()}d ${dur.hours()}h ${dur.minutes()}m Left`;
+  return `${dur.days()}${intl.formatMessage(messages.day)} ${dur.hours()}${intl.formatMessage(messages.hour)} ${dur.minutes()}${intl.formatMessage(messages.minute)} ${intl.formatMessage(messages.left)}`;
 }
 
 /**

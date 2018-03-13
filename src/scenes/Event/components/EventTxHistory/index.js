@@ -16,7 +16,7 @@ class EventTxHistory extends React.PureComponent {
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
-          TRANSACTIONS
+          <FormattedMessage id="str.transaction" defaultMessage="TRANSACTIONS" />
         </Typography> {
           transactions.length && options.length ?
             (<Table>
@@ -42,7 +42,7 @@ class EventTxHistory extends React.PureComponent {
               </TableBody>
             </Table>) :
             <Typography variant="body1">
-              You do not have any transactions right now.
+              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
             </Typography>
         }
       </div>

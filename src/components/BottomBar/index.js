@@ -39,7 +39,6 @@ class BottomBar extends React.PureComponent {
 
   render() {
     const { classes, syncBlockNum, syncBlockTime } = this.props;
-
     return (
       <Paper className={classes.bottomBarWrapper}>
         <Grid container>
