@@ -13,6 +13,7 @@ import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
@@ -42,6 +43,7 @@ class EventOption extends React.PureComponent {
       skipExpansion,
       unconfirmedEvent,
       showAmountInput,
+      isPrevResult,
     } = this.props;
 
     return (
@@ -56,7 +58,7 @@ class EventOption extends React.PureComponent {
           <ExpansionPanel
             expanded={optionIdx === currentOptionIdx || skipExpansion}
             onChange={this.handleExpansionChange}
-            disabled={unconfirmedEvent}
+            disabled={unconfirmedEvent || isPrevResult}
           >
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
@@ -71,7 +73,12 @@ class EventOption extends React.PureComponent {
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
-                  {amount}
+                  {isPrevResult ?
+                    <FormattedMessage
+                      id="oracle.optionIsPrevResult"
+                      defaultMessage="This option was set as the result in the previous round"
+                    /> : amount
+                  }
                 </Typography>
               </div>
             </ExpansionPanelSummary>
@@ -190,6 +197,7 @@ EventOption.propTypes = {
   skipExpansion: PropTypes.bool.isRequired,
   unconfirmedEvent: PropTypes.bool.isRequired,
   showAmountInput: PropTypes.bool.isRequired,
+  isPrevResult: PropTypes.bool.isRequired,
 };
 
 EventOption.defaultProps = {
