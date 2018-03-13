@@ -55,6 +55,40 @@ const pageMessage = defineMessages({
 });
 
 class TopicPage extends React.Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    getTopics: PropTypes.func.isRequired,
+    getTopicsReturn: PropTypes.array,
+    getTransactions: PropTypes.func.isRequired,
+    getTransactionsReturn: PropTypes.array,
+    getBetAndVoteBalances: PropTypes.func.isRequired,
+    betBalances: PropTypes.array,
+    voteBalances: PropTypes.array,
+    calculateWinnings: PropTypes.func.isRequired,
+    botWinnings: PropTypes.number,
+    qtumWinnings: PropTypes.number,
+    createWithdrawTx: PropTypes.func.isRequired,
+    txReturn: PropTypes.object,
+    clearTxReturn: PropTypes.func.isRequired,
+    syncBlockTime: PropTypes.number,
+    walletAddresses: PropTypes.array.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    setLastUsedAddress: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    syncBlockTime: undefined,
+    getTopicsReturn: undefined,
+    getTransactionsReturn: [],
+    txReturn: undefined,
+    betBalances: [],
+    voteBalances: [],
+    botWinnings: 0,
+    qtumWinnings: 0,
+  };
+
   constructor(props) {
     super(props);
 
@@ -65,8 +99,8 @@ class TopicPage extends React.Component {
       transactions: [],
     };
 
+    this.fetchData = this.fetchData.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.executeTopicAndTxsRequest = this.executeTopicAndTxsRequest.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
@@ -76,16 +110,18 @@ class TopicPage extends React.Component {
 
   componentWillMount() {
     const {
+      lastUsedAddress,
+      getBetAndVoteBalances,
       getTopicsReturn,
       getTransactionsReturn,
       botWinnings,
       qtumWinnings,
     } = this.props;
+    const { address } = this.state;
 
-    this.executeTopicAndTxsRequest();
-    this.calculateWinnings();
+    this.fetchData();
 
-    const topic = _.find(getTopicsReturn, { address: this.state.address });
+    const topic = _.find(getTopicsReturn, { address });
     this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
     this.setState({ transactions: getTransactionsReturn });
   }
@@ -100,11 +136,9 @@ class TopicPage extends React.Component {
       lastUsedAddress,
     } = nextProps;
 
-
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime || lastUsedAddress !== this.props.lastUsedAddress) {
-      this.executeTopicAndTxsRequest();
-      this.calculateWinnings();
+      this.fetchData();
     }
 
     const topic = _.find(getTopicsReturn, { address: this.state.address });
@@ -157,14 +191,16 @@ class TopicPage extends React.Component {
       classes,
       txReturn,
       walletAddresses,
+      betBalances,
+      voteBalances,
       botWinnings,
       qtumWinnings,
     } = this.props;
     const { topic, transactions, config } = this.state;
 
     // TODO (DERIC): CHANGE THIS TO PERSONAL AMOUNT AND RATE
-    const resultBetAmount = topic.qtumAmount[topic.resultIdx];
-    const resultVoteAmount = topic.botAmount[topic.resultIdx];
+    const resultBetAmount = betBalances[topic.resultIdx];
+    const resultVoteAmount = voteBalances[topic.resultIdx];
     const qtumReturnRate = resultBetAmount ? ((qtumWinnings - resultBetAmount) / resultBetAmount) * 100 : 0;
     const botReturnRate = resultVoteAmount ? ((botWinnings - resultVoteAmount) / resultVoteAmount) * 100 : 0;
 
@@ -322,13 +358,23 @@ class TopicPage extends React.Component {
     ];
   }
 
-  executeTopicAndTxsRequest() {
-    this.props.getTopics([
-      { address: this.state.address },
-    ]);
-    this.props.getTransactions([
-      { topicAddress: this.state.address },
-    ]);
+  fetchData() {
+    const {
+      getTopics,
+      getTransactions,
+      getBetAndVoteBalances,
+      calculateWinnings,
+      lastUsedAddress,
+    } = this.props;
+    const { address } = this.state;
+
+    // GraphQL calls
+    getTopics([{ address }]);
+    getTransactions([{ topicAddress: address }]);
+
+    // API calls
+    getBetAndVoteBalances(address, lastUsedAddress);
+    calculateWinnings(address, lastUsedAddress);
   }
 
   constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
@@ -369,15 +415,6 @@ class TopicPage extends React.Component {
     }
   }
 
-  calculateWinnings() {
-    const { calculateWinnings, lastUsedAddress } = this.props;
-
-    calculateWinnings(
-      this.state.address,
-      lastUsedAddress,
-    );
-  }
-
   handleWalletChange(address) {
     this.props.setLastUsedAddress(address);
   }
@@ -394,40 +431,6 @@ class TopicPage extends React.Component {
   }
 }
 
-TopicPage.propTypes = {
-  classes: PropTypes.object.isRequired,
-  getTopics: PropTypes.func,
-  getTopicsReturn: PropTypes.array,
-  getTransactions: PropTypes.func,
-  getTransactionsReturn: PropTypes.array,
-  createWithdrawTx: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
-  syncBlockTime: PropTypes.number,
-  walletAddresses: PropTypes.array.isRequired,
-  lastUsedAddress: PropTypes.string.isRequired,
-  setLastUsedAddress: PropTypes.func.isRequired,
-  calculateWinnings: PropTypes.func,
-  botWinnings: PropTypes.number,
-  qtumWinnings: PropTypes.number,
-  clearTxReturn: PropTypes.func,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-  txReturn: PropTypes.object,
-};
-
-TopicPage.defaultProps = {
-  getTopics: undefined,
-  getTopicsReturn: undefined,
-  getTransactions: undefined,
-  getTransactionsReturn: [],
-  syncBlockTime: undefined,
-  clearTxReturn: undefined,
-  calculateWinnings: undefined,
-  botWinnings: undefined,
-  qtumWinnings: undefined,
-  txReturn: undefined,
-};
-
 const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
@@ -435,12 +438,16 @@ const mapStateToProps = (state) => ({
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
+  betBalances: state.Topic.get('betBalances'),
+  voteBalances: state.Topic.get('voteBalances'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    getBetAndVoteBalances: (contractAddress, senderAddress) =>
+      dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
     calculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
     getTopics: () => dispatch(graphqlActions.getTopics()),
