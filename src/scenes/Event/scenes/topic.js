@@ -15,6 +15,7 @@ import Select from 'material-ui/Select';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
+import styles from './styles';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
@@ -25,8 +26,6 @@ import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
-
-import styles from './styles';
 
 const pageMessage = defineMessages({
   winning: {
@@ -97,7 +96,6 @@ class TopicPage extends React.Component {
       address: this.props.match.params.address,
       topic: undefined,
       config: undefined,
-      transactions: [],
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -121,10 +119,6 @@ class TopicPage extends React.Component {
     const { address } = this.state;
 
     this.fetchData(lastUsedAddress);
-
-    // const topic = _.find(getTopicsReturn, { address });
-    // this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
-    // this.setState({ transactions: getTransactionsReturn });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -142,7 +136,6 @@ class TopicPage extends React.Component {
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
     this.constructTopicAndConfig(topics, nextProps.botWinnings, nextProps.qtumWinnings);
-    this.setState({ transactions: nextProps.getTransactionsReturn });
   }
 
   componentWillUnmount() {
@@ -150,8 +143,8 @@ class TopicPage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn } = this.props;
-    const { topic, transactions, config } = this.state;
+    const { classes, txReturn, getTransactionsReturn } = this.props;
+    const { topic, config } = this.state;
 
     if (!topic || !config) {
       return null;
@@ -170,7 +163,7 @@ class TopicPage extends React.Component {
             <Grid item xs={12} lg={9}>
               {this.renderWithdrawContainer()}
               {this.renderOptions()}
-              <EventTxHistory transactions={transactions} options={topic.options} />
+              <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
             </Grid>
           </Grid>
           <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
@@ -194,7 +187,7 @@ class TopicPage extends React.Component {
       qtumWinnings,
       lastUsedAddress,
     } = this.props;
-    const { topic, transactions, config } = this.state;
+    const { topic, config } = this.state;
 
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
