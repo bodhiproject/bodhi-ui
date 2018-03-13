@@ -114,10 +114,10 @@ class NavBar extends React.PureComponent {
       actionableItemCount,
     } = this.props;
 
-    if (actionableItemCount) {
+    if (actionableItemCount && actionableItemCount.totalCount) {
       return (
         <Link to="/activities" className={classes.navBarLink}>
-          <Badge badgeContent={actionableItemCount} color="secondary">
+          <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
@@ -168,7 +168,7 @@ NavBar.propTypes = {
   match: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   walletAddresses: PropTypes.array.isRequired,
-  actionableItemCount: PropTypes.number,
+  actionableItemCount: PropTypes.object,
   langHandler: PropTypes.func,
 };
 
