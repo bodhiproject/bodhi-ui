@@ -24,10 +24,10 @@ export function* getBetAndVoteBalancesHandler() {
       };
 
       let result = yield call(request, Routes.betBalances, options);
-      const bets = _.map(result.result[0], satoshiToDecimal);
+      const bets = _.map(result[0], satoshiToDecimal);
 
       result = yield call(request, Routes.voteBalances, options);
-      const votes = _.map(result.result[0], satoshiToDecimal);
+      const votes = _.map(result[0], satoshiToDecimal);
 
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,

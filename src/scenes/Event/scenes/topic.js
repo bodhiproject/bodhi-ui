@@ -188,8 +188,8 @@ class TopicPage extends React.Component {
 
   renderWithdrawContainer() {
     const {
+      intl,
       classes,
-      txReturn,
       walletAddresses,
       betBalances,
       voteBalances,
@@ -198,7 +198,6 @@ class TopicPage extends React.Component {
     } = this.props;
     const { topic, transactions, config } = this.state;
 
-    // TODO (DERIC): CHANGE THIS TO PERSONAL AMOUNT AND RATE
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
     const qtumReturnRate = resultBetAmount ? ((qtumWinnings - resultBetAmount) / resultBetAmount) * 100 : 0;
@@ -219,9 +218,7 @@ class TopicPage extends React.Component {
           {
             resultBetAmount || resultVoteAmount ?
               <Typography variant="caption">
-                {this.props.intl.formatMessage(pageMessage.youBet)}
-                {resultBetAmount} QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
-                {resultVoteAmount} BOT.
+                {`${intl.formatMessage(pageMessage.youBet)} ${resultBetAmount} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${resultVoteAmount} BOT.`}
               </Typography> :
               <Typography variant="caption">
                 You did not bet or vote on the winning outcome.
