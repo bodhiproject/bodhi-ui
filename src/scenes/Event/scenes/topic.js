@@ -28,18 +28,6 @@ import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const pageMessage = defineMessages({
-  winning: {
-    id: 'withdrawDetail.winningOutcome',
-    defaultMessage: 'Winning Outcome',
-  },
-  reward: {
-    id: 'withdrawDetail.reward',
-    defaultMessage: 'REWARD',
-  },
-  withdrawTo: {
-    id: 'withdrawDetail.withdrawTo',
-    defaultMessage: 'WITHDRAW TO',
-  },
   returnRate: {
     id: 'withdrawDetail.returnRate',
     defaultMessage: 'Return rate: ',
@@ -201,7 +189,9 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {intl.formatMessage(pageMessage.winning).toUpperCase()}
+            <FormattedMessage id="withdrawDetail.winningOutcome" defaultMessage="WINNING OUTCOME">
+              {(txt) => i18nToUpperCase(txt)}
+            </FormattedMessage>
           </Typography>
           <Typography className={classes.withdrawWinningOption}>
             {topic.options[topic.resultIdx]}
@@ -212,7 +202,10 @@ class TopicPage extends React.Component {
                 {`${intl.formatMessage(pageMessage.youBet)} ${resultBetAmount} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${resultVoteAmount} BOT.`}
               </Typography> :
               <Typography variant="caption">
-                You did not bet or vote on the winning outcome.
+                <FormattedMessage
+                  id="topic.didNotBetOrVote"
+                  defaultMessage="You did not bet or vote on the winning outcome."
+                />
               </Typography>
           }
         </div>
@@ -223,7 +216,9 @@ class TopicPage extends React.Component {
                 <i className="icon iconfont icon-ic_token"></i>
               </div>
               <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-                {intl.formatMessage(pageMessage.reward)}
+                <FormattedMessage id="withdrawDetail.reward" defaultMessage="REWARD">
+                  {(txt) => i18nToUpperCase(txt)}
+                </FormattedMessage>
               </Typography>
               <div>
                 <div className={classes.withdrawRewardWrapper}>
@@ -231,8 +226,7 @@ class TopicPage extends React.Component {
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
                   </Typography>
                   <Typography variant="caption">
-                    {intl.formatMessage(pageMessage.returnRate)}
-                    {qtumReturnRate.toFixed(2)}%
+                    {`${intl.formatMessage(pageMessage.returnRate)} ${qtumReturnRate.toFixed(2)}%`}
                   </Typography>
                 </div>
                 <div className={classes.withdrawRewardDivider} />
@@ -241,8 +235,7 @@ class TopicPage extends React.Component {
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
                   </Typography>
                   <Typography variant="caption">
-                    {intl.formatMessage(pageMessage.returnRate)}
-                    {botReturnRate.toFixed(2)}%
+                    {`${intl.formatMessage(pageMessage.returnRate)} ${botReturnRate.toFixed(2)}%`}
                   </Typography>
                 </div>
               </div>
@@ -253,16 +246,16 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_wallet"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {intl.formatMessage(pageMessage.withdrawTo)}
+            <FormattedMessage id="withdrawDetail.withdrawTo" defaultMessage="WITHDRAW TO">
+              {(txt) => i18nToUpperCase(txt)}
+            </FormattedMessage>
           </Typography>
           <Select
             native
             fullWidth
             value={lastUsedAddress}
             onChange={this.onAddressChange}
-            inputProps={{
-              id: 'address',
-            }}
+            inputProps={{ id: 'address' }}
           >
             {walletAddresses.map((item) => (
               <option key={item.address} value={item.address}>{item.address}</option>
