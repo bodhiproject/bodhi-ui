@@ -24,11 +24,17 @@ const white = '#FFFFFF';
 // neon blue
 const primaryColor = '#585AFA';
 const primaryColorDark = '#4244BB';
+const primaryColorLight = '#F0F0FF';
 
 // neo teal
 const secondaryColor = '#23DAE0';
-const secondaryColorLight = '#22F5F2';
+const secondaryColorLight = '#E9FEFE';
 const secondaryColorDark = '#11A5A9';
+
+// red
+const redColor = '#FE4A49';
+const redColorLight = '#FFDEDE';
+const redColorDark = '#960F0E';
 
 const textColorDark = '#333333';
 const textColorGrey = '#666666';
@@ -57,7 +63,7 @@ const bodhiTheme = createMuiTheme({
   /* material variables */
   palette: {
     primary: {
-      light: primaryColor,
+      light: primaryColorLight,
       main: primaryColor,
       dark: primaryColorDark,
       contrastText: white,
@@ -66,6 +72,12 @@ const bodhiTheme = createMuiTheme({
       light: secondaryColorLight,
       main: secondaryColor,
       dark: secondaryColorDark,
+      contrastText: white,
+    },
+    error: {
+      light: redColorLight,
+      main: redColor,
+      dark: redColorDark,
       contrastText: white,
     },
     background: {
@@ -203,6 +215,12 @@ const bodhiTheme = createMuiTheme({
       typeHead: {
         fontWeight: 700,
         fontSize: px(fontSizeMeta),
+      },
+    },
+    MuiExpansionPanelSummary: {
+      expandIcon: {
+        top: px(paddingSm),
+        right: 0,
       },
     },
   },

@@ -5,6 +5,7 @@ import ExpansionPanel, {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
 } from 'material-ui/ExpansionPanel';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import Select from 'material-ui/Select';
@@ -57,7 +58,9 @@ class EventOption extends React.PureComponent {
             onChange={this.handleExpansionChange}
             disabled={unconfirmedEvent}
           >
-            <ExpansionPanelSummary>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+            >
               <div className={classes.eventOptionWrapper}>
                 <div className={classes.eventOptionNum}>{optionIdx + 1}</div>
                 <Typography variant="title">
