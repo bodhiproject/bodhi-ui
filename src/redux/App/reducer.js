@@ -112,7 +112,7 @@ export default function appReducer(state = initState, action) {
         lastUsedAddress = walletAddresses[0].address;
       }
 
-      return state.set('chainBlockNum', action.syncInfo.chainBlockNum)
+      return state.set('syncPercent', action.syncInfo.syncPercent)
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
         .set('syncBlockTime', Number(action.syncInfo.syncBlockTime))
         .set('walletAddresses', walletAddresses)

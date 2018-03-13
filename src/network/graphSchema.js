@@ -65,7 +65,12 @@ const TYPE_DEF = {
   SyncInfo: `
     syncBlockNum
     syncBlockTime
-    chainBlockNum
+    syncPercent
+    addressBalances {
+      address
+      qtum
+      bot
+    }
   `,
 
   Transaction: `

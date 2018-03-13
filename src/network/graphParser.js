@@ -55,7 +55,8 @@ class GraphParser {
     return _.pick(data, [
       'syncBlockNum',
       'syncBlockTime',
-      'chainBlockNum',
+      'syncPercent',
+      'addressBalances',
     ]);
   }
 
