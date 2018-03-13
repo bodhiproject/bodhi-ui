@@ -1,12 +1,13 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import actions from './actions';
+import _ from 'lodash';
 
+import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
 export function* getBetAndVoteBalancesHandler() {
-  yield takeEvery(actions.GET_BET_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
+  yield takeEvery(actions.GET_BET_AND_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
     try {
       const {
         contractAddress,
