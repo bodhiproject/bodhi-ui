@@ -339,7 +339,7 @@ class OraclePage extends React.Component {
           id="str.pendingTransactionDisabledMsg"
           defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
         />,
-        warningTypeClass: EventWarningType.highlight,
+        warningTypeClass: EventWarningType.Highlight,
       };
     }
 
