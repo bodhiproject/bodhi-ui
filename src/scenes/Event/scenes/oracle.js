@@ -32,7 +32,7 @@ class OraclePage extends React.Component {
     super(props);
 
     const { topicAddress, address, txid } = this.props.match.params;
-    const unconfirmed = topicAddress === 'null' && address === 'null' && txid;
+    const unconfirmed = Boolean(topicAddress === 'null' && address === 'null' && txid);
 
     this.state = {
       topicAddress,
@@ -123,7 +123,7 @@ class OraclePage extends React.Component {
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
-                  unconfirmedEvent={Boolean(unconfirmed)}
+                  unconfirmedEvent={unconfirmed}
                   showAmountInput={config.predictionAction.showAmountInput}
                   onOptionChange={this.handleOptionChange}
                   onAmountChange={this.handleAmountChange}
