@@ -6,8 +6,16 @@ export function i18nToUpperCase(txt) {
   </span>);
 }
 
+let intlProvider;
 export function getIntlProvider(locale, localeMessages) {
-  const intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
+  if (!intlProvider) {
+    intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
+  } else {
+    const { locale: prev } = intlProvider.props;
+    if (prev !== locale) {
+      intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
+    }
+  }
   const { intl } = intlProvider.getChildContext();
   return intl;
 }
