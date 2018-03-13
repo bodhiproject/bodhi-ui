@@ -102,9 +102,21 @@ export default function appReducer(state = initState, action) {
       if (action.error) {
         return state.set('syncInfoError', action.error);
       }
+
+      // Sort by qtum balance
+      const walletAddresses = _.orderBy(action.syncInfo.addressBalances, ['qtum'], ['desc']);
+
+      // Set a default selected address if there was none selected before
+      let lastUsedAddress = state.get('lastUsedAddress');
+      if (_.isEmpty(lastUsedAddress) && !_.isEmpty(walletAddresses)) {
+        lastUsedAddress = walletAddresses[0].address;
+      }
+
       return state.set('chainBlockNum', action.syncInfo.chainBlockNum)
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
-        .set('syncBlockTime', Number(action.syncInfo.syncBlockTime));
+        .set('syncBlockTime', Number(action.syncInfo.syncBlockTime))
+        .set('walletAddresses', walletAddresses)
+        .set('lastUsedAddress', lastUsedAddress);
     }
     case actions.UPDATE_SYNC_PROGRESS: {
       return state.set('syncProgress', action.percentage);
