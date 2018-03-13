@@ -16,6 +16,8 @@ const Routes = {
   finalizeResult: `${BODHI_API}/finalize-result`,
   withdraw: `${BODHI_API}/withdraw`,
   winnings: `${BODHI_API}/winnings`,
+  betBalances: `${BODHI_API}/bet-balances`,
+  voteBalances: `${BODHI_API}/vote-balances`,
   insightTotals: `${INSIGHT_API}/statistics/total`,
 };
 
