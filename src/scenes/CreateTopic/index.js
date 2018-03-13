@@ -266,7 +266,9 @@ class CreateTopic extends React.Component {
               }],
             })(<Input
               placeholder="e.g. qavn7QqvdHPYKr71bNWJo4tcmcgTKaYfjM"
-              addonAfter={<Icon type="plus" onClick={this.onSelectAddress} />}
+              addonAfter={
+                <Icon type="wallet" onClick={this.onSelectAddress} style={{ fontSize: 16 }} />
+              }
             />)}
           </FormItem>
 
