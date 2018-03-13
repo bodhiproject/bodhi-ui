@@ -8,7 +8,7 @@ export function i18nToUpperCase(txt) {
 
 let intlProvider;
 let i18nIntl;
-export function getIntlProvider(locale, localeMessages) {
+export function getIntlProvider(locale = 'en', localeMessages) {
   if (!i18nIntl) {
     intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
     const { intl } = intlProvider.getChildContext();
