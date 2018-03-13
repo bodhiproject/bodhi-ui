@@ -7,15 +7,19 @@ export function i18nToUpperCase(txt) {
 }
 
 let intlProvider;
+let i18nIntl;
 export function getIntlProvider(locale, localeMessages) {
-  if (!intlProvider) {
+  if (!i18nIntl) {
     intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
+    const { intl } = intlProvider.getChildContext();
+    i18nIntl = intl;
   } else {
     const { locale: prev } = intlProvider.props;
     if (prev !== locale) {
       intlProvider = new IntlProvider({ locale, messages: localeMessages }, {});
+      const { intl } = intlProvider.getChildContext();
+      i18nIntl = intl;
     }
   }
-  const { intl } = intlProvider.getChildContext();
-  return intl;
+  return i18nIntl;
 }
