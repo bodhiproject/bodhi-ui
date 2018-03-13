@@ -122,15 +122,16 @@ class TopicPage extends React.Component {
 
     this.fetchData(lastUsedAddress);
 
-    const topic = _.find(getTopicsReturn, { address });
-    this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
-    this.setState({ transactions: getTransactionsReturn });
+    // const topic = _.find(getTopicsReturn, { address });
+    // this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
+    // this.setState({ transactions: getTransactionsReturn });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       syncBlockTime,
       lastUsedAddress,
+      getTopicsReturn,
     } = this.props;
     const { address } = this.state;
 
@@ -139,8 +140,8 @@ class TopicPage extends React.Component {
       this.fetchData(nextProps.lastUsedAddress ? nextProps.lastUsedAddress : lastUsedAddress);
     }
 
-    const topic = _.find(nextProps.getTopicsReturn, { address });
-    this.constructTopicAndConfig(topic, nextProps.botWinnings, nextProps.qtumWinnings);
+    const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
+    this.constructTopicAndConfig(topics, nextProps.botWinnings, nextProps.qtumWinnings);
     this.setState({ transactions: nextProps.getTransactionsReturn });
   }
 
@@ -153,8 +154,7 @@ class TopicPage extends React.Component {
     const { topic, transactions, config } = this.state;
 
     if (!topic || !config) {
-      // TODO: render no result page
-      return <div></div>;
+      return null;
     }
 
     const qtumTotal = _.sum(topic.qtumAmount);
@@ -375,14 +375,15 @@ class TopicPage extends React.Component {
     calculateWinnings(address, senderAddress);
   }
 
-  constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
+  constructTopicAndConfig(getTopicsReturn, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
+    const { address } = this.state;
     const { locale, messages: localeMessages } = this.props.intl;
+    const topic = _.find(getTopicsReturn, { address });
 
     if (topic) {
       let config;
 
-      // only shows Topic which are in WITHDRAW state
       if (topic.status === OracleStatus.Withdraw) {
         const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
         const decentralizedOracles = _.orderBy(
