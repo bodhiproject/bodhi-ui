@@ -271,7 +271,7 @@ class TopicPage extends React.Component {
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
-          <div className={classNames(classes.withdrawContainerSection, 'option')}>
+          <div key={`option-${index}`} className={classNames(classes.withdrawContainerSection, 'option')}>
             <div className={classes.eventOptionNum}>{index + 1}</div>
             <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
               {option}
