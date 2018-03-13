@@ -22,7 +22,7 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
-import { Token, OracleStatus, TransactionStatus } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -339,7 +339,7 @@ class OraclePage extends React.Component {
           id="str.pendingTransactionDisabledMsg"
           defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
         />,
-        warningTypeClass: 'highlight',
+        warningTypeClass: EventWarningType.highlight,
       };
     }
 
@@ -353,7 +353,7 @@ class OraclePage extends React.Component {
           id="oracle.betStartTimeDisabledText"
           defaultMessage="The betting start time has not started yet."
         />,
-        warningTypeClass: 'info',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -367,7 +367,7 @@ class OraclePage extends React.Component {
           id="oracle.setStartTimeDisabledText"
           defaultMessage="The result setting start time has not started yet."
         />,
-        warningTypeClass: 'info',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -379,7 +379,7 @@ class OraclePage extends React.Component {
           id="oracle.cOracleDisabledText"
           defaultMessage="You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
         />,
-        warningTypeClass: 'info',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -391,7 +391,7 @@ class OraclePage extends React.Component {
           id="oracle.selectResultDisabledText"
           defaultMessage="Please click and select one of the options."
         />,
-        warningTypeClass: 'info',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -403,7 +403,7 @@ class OraclePage extends React.Component {
           id="oracle.enterAmountDisabledText"
           defaultMessage="Please entered a valid amount."
         />,
-        warningTypeClass: 'info',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -416,7 +416,7 @@ class OraclePage extends React.Component {
           id="str.notEnoughQtum"
           defaultMessage="Not enough QTUM"
         />,
-        warningTypeClass: 'error',
+        warningTypeClass: EventWarningType.Error,
       };
     }
 
@@ -433,7 +433,7 @@ class OraclePage extends React.Component {
           id="str.notEnoughBot"
           defaultMessage="Not enough BOT"
         />,
-        warningTypeClass: 'error',
+        warningTypeClass: EventWarningType.Error,
       };
     }
 

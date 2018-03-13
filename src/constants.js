@@ -14,6 +14,12 @@ module.exports = {
     Default: 0,
   },
 
+  EventWarningType: {
+    Info: 'info',
+    Error: 'error',
+    Hightlight: 'hightlight',
+  },
+
   OracleStatus: {
     Created: 'CREATED',
     Voting: 'VOTING',

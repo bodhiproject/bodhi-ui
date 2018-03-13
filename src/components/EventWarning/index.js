@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 
+import { EventWarningType } from '../../constants';
 import styles from './styles';
 
 class EventWarning extends React.PureComponent {
@@ -14,7 +15,7 @@ class EventWarning extends React.PureComponent {
       message,
     } = this.props;
 
-    if (!message || message === undefined) {
+    if (!message) {
       return null;
     }
 
@@ -33,7 +34,7 @@ EventWarning.propTypes = {
 };
 
 EventWarning.defaultProps = {
-  typeClass: 'info',
+  typeClass: EventWarningType.Info,
   message: undefined,
 };
 
