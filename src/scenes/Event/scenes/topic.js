@@ -154,7 +154,6 @@ class TopicPage extends React.Component {
     const { classes, txReturn } = this.props;
     const { topic, transactions, config } = this.state;
 
-    // TODO: is this necessary?
     if (!topic || !config) {
       // TODO: render no result page
       return <div></div>;
@@ -298,8 +297,13 @@ class TopicPage extends React.Component {
   }
 
   renderOptions() {
-    const { classes } = this.props;
-    const { topic, botWinnings, qtumWinnings } = this.state;
+    const {
+      intl,
+      classes,
+      betBalances,
+      voteBalances,
+    } = this.props;
+    const { topic } = this.state;
 
     return (
       <div className={classes.withdrawOptionsWrapper}>
@@ -309,13 +313,12 @@ class TopicPage extends React.Component {
             <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
               {option}
             </Typography>
-            { // TODO (DERIC): CHANGE THIS TO PERSONAL AMOUNT AND RATE
-              topic.qtumAmount[index] || topic.botAmount[index] ?
-                <Typography variant="caption">
-                  {this.props.intl.formatMessage(pageMessage.youBet)}
-                  {topic.qtumAmount[index]} QTUM. {this.props.intl.formatMessage(pageMessage.youVote)}
-                  {topic.botAmount[index]} BOT.
-                </Typography> : null
+            {
+              betBalances[index] || voteBalances[index]
+                ? <Typography variant="caption">
+                  {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
+                </Typography>
+                : null
             }
           </div>
         ))}
