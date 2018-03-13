@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import fetch from 'node-fetch';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphQuery';
-import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
 export function* syncInfoRequestHandler() {

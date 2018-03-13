@@ -6,7 +6,6 @@ import { satoshiToDecimal } from '../../helpers/utility';
 import actions, { getView } from './actions';
 
 const preKeys = getDefaultPath();
-const WALLET_ADDRESS_MAX_COUNT = 8;
 
 const initState = new Map({
   collapsed: !(window.innerWidth > 1220),
