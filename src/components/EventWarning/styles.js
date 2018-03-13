@@ -9,6 +9,7 @@ const styles = (theme) => ({
     overflow: 'hidden',
     padding: `${theme.padding.unit.px} ${theme.padding.xs.px}`,
     marginBottom: theme.padding.sm.px,
+    fontSize: theme.sizes.font.meta,
     [`&.${EventWarningType.Error}`]: {
       background: theme.palette.error.light,
       color: theme.palette.error.main,
