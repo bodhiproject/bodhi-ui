@@ -157,6 +157,7 @@
   "walletUnlockDialog.unlockWallet": "Unlock Wallet",
   "walletUnlockDialog.walletPassphrase": "Wallet Passphrase",
   "walletUnlockDialog.walletPassphraseRequired": "This action requires you to unlock this wallet. Please enter your wallet passphrase.",
+  "withdrawDetail.alreadyWithdrawn": "You have already withdrawn with this address.",
   "withdrawDetail.returnRate": "Return rate:",
   "withdrawDetail.reward": "Reward",
   "withdrawDetail.winningOutcome": "Winning Outcome",

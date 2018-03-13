@@ -286,11 +286,11 @@ class TopicPage extends React.Component {
   }
 
   getActionButtonConfig() {
-    const { getTransactionsReturn } = this.props;
+    const { getTransactionsReturn, lastUsedAddress } = this.props;
     const { address } = this.state;
 
     // Already have a pending tx for this Topic
-    const pendingTxs = _.filter(getTransactionsReturn, { topicAddress: address, status: TransactionStatus.Pending });
+    let pendingTxs = _.filter(getTransactionsReturn, { topicAddress: address, status: TransactionStatus.Pending });
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
@@ -299,6 +299,23 @@ class TopicPage extends React.Component {
           defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
         />,
         warningTypeClass: EventWarningType.Highlight,
+      };
+    }
+
+    // Already withdrawn with this address
+    pendingTxs = _.filter(getTransactionsReturn, {
+      topicAddress: address,
+      status: TransactionStatus.Success,
+      senderAddress: lastUsedAddress,
+    });
+    if (pendingTxs.length > 0) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="withdrawDetail.alreadyWithdrawn"
+          defaultMessage="You have already withdrawn with this address."
+        />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
