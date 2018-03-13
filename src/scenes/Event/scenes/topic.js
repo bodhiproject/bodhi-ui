@@ -257,7 +257,7 @@ class TopicPage extends React.Component {
           {
             this.state.isApproving ?
               <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-              'Withdraw'
+              <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
           }
         </Button>
       </Paper>
