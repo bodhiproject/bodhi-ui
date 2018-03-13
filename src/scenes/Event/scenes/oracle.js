@@ -123,7 +123,7 @@ class OraclePage extends React.Component {
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
-                  unconfirmedEvent={unconfirmed}
+                  unconfirmedEvent={Boolean(unconfirmed)}
                   showAmountInput={config.predictionAction.showAmountInput}
                   onOptionChange={this.handleOptionChange}
                   onAmountChange={this.handleAmountChange}
