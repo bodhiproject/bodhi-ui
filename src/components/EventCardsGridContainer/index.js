@@ -188,7 +188,7 @@ class EventCardsGrid extends React.Component {
         }
       }
 
-      const totalQTUM = _.sum(oracle.amounts);
+      const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
 
       // Constructing Card element on the right
       const oracleEle = (
@@ -197,7 +197,7 @@ class EventCardsGrid extends React.Component {
           name={oracle.name}
           url={`/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`}
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
-          totalQTUM={totalQTUM}
+          amountLabel={`${amount} ${oracle.token}`}
           buttonText={buttonText}
           unconfirmed={!oracle.topicAddress && !oracle.address}
         />
@@ -213,9 +213,11 @@ class EventCardsGrid extends React.Component {
     const rowItems = [];
 
     _.each(topicEvents, (topic) => {
-      const totalQTUM = _.sum(topic.qtumAmount);
-      const totalBOT = _.sum(topic.botAmount);
+      const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
+      const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
       const unconfirmed = false;
+
+      const amountLabel = `${totalQTUM} QTUM, ${totalBOT} BOT`;
 
       // Constructing Card element on the right
       const topicEle = (
@@ -223,8 +225,7 @@ class EventCardsGrid extends React.Component {
           key={topic.txid}
           name={topic.name}
           url={`/topic/${topic.address}`}
-          totalQTUM={totalQTUM}
-          totalBOT={totalBOT}
+          amountLabel={amountLabel}
           buttonText={this.props.intl.formatMessage(messages.withdraw)}
           unconfirmed={unconfirmed}
         />

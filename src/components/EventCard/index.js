@@ -30,8 +30,7 @@ class EventCard extends React.PureComponent {
     classes: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    totalQTUM: PropTypes.number.isRequired,
-    totalBOT: PropTypes.number,
+    amountLabel: PropTypes.string.isRequired,
     endTime: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
@@ -40,7 +39,6 @@ class EventCard extends React.PureComponent {
   };
 
   static defaultProps = {
-    totalBOT: undefined,
     endTime: undefined,
   };
 
@@ -49,8 +47,7 @@ class EventCard extends React.PureComponent {
       classes,
       url,
       name,
-      totalQTUM,
-      totalBOT,
+      amountLabel,
       endTime,
       buttonText,
       unconfirmed,
@@ -80,8 +77,8 @@ class EventCard extends React.PureComponent {
               <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
-                  {`${this.props.intl.formatMessage(cardMessages.raise)} ${parseFloat(totalQTUM.toFixed(2))} QTUM`}
-                  {totalBOT !== undefined ? `, ${parseFloat(totalBOT.toFixed(2))} BOT` : null}
+                  <FormattedMessage id="str.raised" defaultMessage="Raised" />
+                  {` ${amountLabel}`}
                 </div>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
