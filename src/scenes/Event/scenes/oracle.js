@@ -149,13 +149,6 @@ class OraclePage extends React.Component {
                           config.predictionAction.btnText
                       }
                     </Button>
-                    {
-                      actionButtonConfig.message
-                        ? <Typography variant="body1" className={classes.buttonDisabledText}>
-                          {actionButtonConfig.message}
-                        </Typography>
-                        : null
-                    }
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
                 ) : (
