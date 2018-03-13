@@ -102,10 +102,10 @@ class TopicPage extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
-    this.handleWalletChange = this.handleWalletChange.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
     this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
+    this.onAddressChange = this.onAddressChange.bind(this);
   }
 
   componentWillMount() {
@@ -194,6 +194,7 @@ class TopicPage extends React.Component {
       voteBalances,
       botWinnings,
       qtumWinnings,
+      lastUsedAddress,
     } = this.props;
     const { topic, transactions, config } = this.state;
 
@@ -266,14 +267,14 @@ class TopicPage extends React.Component {
           <Select
             native
             fullWidth
-            value={0}
-            onChange={this.handleAddrChange}
+            value={lastUsedAddress}
+            onChange={this.onAddressChange}
             inputProps={{
               id: 'address',
             }}
           >
-            {walletAddresses.map((item, index) => (
-              <option key={item.address} value={index}>{item.address}</option>
+            {walletAddresses.map((item) => (
+              <option key={item.address} value={item.address}>{item.address}</option>
             ))}
           </Select>
         </div>
@@ -415,8 +416,8 @@ class TopicPage extends React.Component {
     }
   }
 
-  handleWalletChange(address) {
-    this.props.setLastUsedAddress(address);
+  onAddressChange(event) {
+    this.props.setLastUsedAddress(event.target.value);
   }
 
   onWithdrawClicked() {
