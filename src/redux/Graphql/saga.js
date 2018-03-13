@@ -118,6 +118,7 @@ function processTransaction(tx) {
 // Gets the number of actionable items; setResult, finalize, withdraw
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
+    let totalCount = 0;
     const countByStatus = {
       [EventStatus.Set]: 0,
       [EventStatus.Finalize]: 0,
@@ -130,7 +131,7 @@ export function* getActionableItemCountHandler() {
       ];
       let result = yield call(queryAllTopics, topicFilters);
       countByStatus[EventStatus.Withdraw] = result.length;
-      let totalCount = result.length;
+      totalCount += result.length;
 
       const oracleSetFilters = [
         { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
@@ -147,11 +148,6 @@ export function* getActionableItemCountHandler() {
       countByStatus[EventStatus.Finalize] = result.length;
       totalCount += result.length;
 
-      console.log({
-        totalCount,
-        countByStatus,
-      });
-
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
@@ -164,7 +160,7 @@ export function* getActionableItemCountHandler() {
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          totalCount: 0,
+          totalCount,
           countByStatus,
         },
       });
