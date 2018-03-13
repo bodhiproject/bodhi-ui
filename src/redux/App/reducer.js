@@ -1,6 +1,8 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+
 import { getDefaultPath } from '../../helpers/urlSync';
+import { satoshiToDecimal } from '../../helpers/utility';
 import actions, { getView } from './actions';
 
 const preKeys = getDefaultPath();
@@ -106,24 +108,45 @@ export default function appReducer(state = initState, action) {
         return state.set('syncInfoError', action.error);
       }
 
-      console.log(action);
+      // Process address balances to decimals
+      let newAddresses = [];
+      _.each(action.syncInfo.addressBalances, (addressObj) => {
+        newAddresses.push({
+          address: addressObj.address,
+          qtum: satoshiToDecimal(addressObj.qtum),
+          bot: satoshiToDecimal(addressObj.bot),
+        });
+      });
 
-      const initSyncing = action.syncInfo.syncPercent < 100;
+      // Add old addresses to new list if not found
+      const oldAddresses = state.get('walletAddresses');
+      _.each(oldAddresses, (addressObj) => {
+        const index = _.findIndex(newAddresses, { address: addressObj.address });
+
+        // Old address not found in new address list. Add it to new list.
+        if (index === -1) {
+          newAddresses.push({
+            address: addressObj.address,
+            qtum: 0,
+            bot: 0,
+          });
+        }
+      });
 
       // Sort by qtum balance
-      const walletAddresses = _.orderBy(action.syncInfo.addressBalances, ['qtum'], ['desc']);
+      newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
 
       // Set a default selected address if there was none selected before
       let lastUsedAddress = state.get('lastUsedAddress');
-      if (_.isEmpty(lastUsedAddress) && !_.isEmpty(walletAddresses)) {
-        lastUsedAddress = walletAddresses[0].address;
+      if (_.isEmpty(lastUsedAddress) && !_.isEmpty(newAddresses)) {
+        lastUsedAddress = newAddresses[0].address;
       }
 
-      return state.set('initSyncing', initSyncing)
+      return state.set('initSyncing', action.syncInfo.syncPercent < 100)
         .set('syncPercent', action.syncInfo.syncPercent)
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
         .set('syncBlockTime', Number(action.syncInfo.syncBlockTime))
-        .set('walletAddresses', walletAddresses)
+        .set('walletAddresses', newAddresses)
         .set('lastUsedAddress', lastUsedAddress);
     }
     case actions.UPDATE_SYNC_PROGRESS: {
