@@ -43,5 +43,25 @@ const appActions = {
   getInsightTotals: () => ({
     type: appActions.GET_INSIGHT_TOTALS,
   }),
+
+  TOGGLE_WALLET_UNLOCK_DIALOG: 'TOGGLE_WALLET_UNLOCK_DIALOG',
+  toggleWalletUnlockDialog: (isVisible) => ({
+    type: appActions.TOGGLE_WALLET_UNLOCK_DIALOG,
+    isVisible,
+  }),
+
+  CHECK_WALLET_ENCRYPTED: 'CHECK_WALLET_ENCRYPTED',
+  CHECK_WALLET_ENCRYPTED_RETURN: 'CHECK_WALLET_ENCRYPTED_RETURN',
+  checkWalletEncrypted: () => ({
+    type: appActions.CHECK_WALLET_ENCRYPTED,
+  }),
+
+  UNLOCK_WALLET: 'UNLOCK_WALLET',
+  UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
+  unlockWallet: (passphrase, timeout) => ({
+    type: appActions.UNLOCK_WALLET,
+    passphrase,
+    timeout,
+  }),
 };
 export default appActions;

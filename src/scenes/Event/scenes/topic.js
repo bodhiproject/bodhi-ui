@@ -21,12 +21,14 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
+import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 
 const pageMessage = defineMessages({
   returnRate: {
@@ -62,6 +64,9 @@ class TopicPage extends React.Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
+    walletEncrypted: PropTypes.bool.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
@@ -448,8 +453,19 @@ class TopicPage extends React.Component {
   }
 
   onWithdrawClicked() {
-    const { createWithdrawTx, lastUsedAddress } = this.props;
+    const {
+      createWithdrawTx,
+      lastUsedAddress,
+      walletEncrypted,
+      walletUnlockedUntil,
+      toggleWalletUnlockDialog
+    } = this.props;
     const { topic } = this.state;
+
+    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+      return;
+    }
 
     createWithdrawTx(
       topic.version,
@@ -463,6 +479,8 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
@@ -483,6 +501,7 @@ function mapDispatchToProps(dispatch) {
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
     clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
     setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   };
 }

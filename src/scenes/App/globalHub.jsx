@@ -23,6 +23,11 @@ class GlobalHub extends React.PureComponent {
   }
 
   componentWillMount() {
+    const { checkWalletEncrypted } = this.props;
+
+    // Checks to see if any txs will require unlocking the wallet
+    checkWalletEncrypted();
+
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     this.pollSyncInfo();
@@ -83,6 +88,7 @@ GlobalHub.propTypes = {
   initSyncing: PropTypes.bool.isRequired,
   syncBlockNum: PropTypes.number,
   lastUsedAddress: PropTypes.string.isRequired,
+  checkWalletEncrypted: PropTypes.func.isRequired,
   getSyncInfo: PropTypes.func.isRequired,
   onSyncInfo: PropTypes.func.isRequired,
   getActionableItemCount: PropTypes.func.isRequired,
@@ -101,6 +107,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: () => dispatch(appActions.getSyncInfo()),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),

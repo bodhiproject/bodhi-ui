@@ -122,6 +122,7 @@
   "str.name": "Name",
   "str.notEnoughBot": "You don't have enough BOT",
   "str.notEnoughQtum": "You don't have enough QTUM",
+  "str.minutes": "Minutes",
   "str.ok": "OK",
   "str.outcome": "OUTCOMES",
   "str.pendingTransactionDisabledMsg": "You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction.",

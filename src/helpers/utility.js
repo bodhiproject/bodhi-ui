@@ -138,3 +138,18 @@ export function shortenAddress(text, maxLength) {
     ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
     : text;
 }
+
+/**
+ * Checks to see if the unlocked until timestamp is before the current UNIX time.
+ * @param unlockedUntilUnix {Number|String} The UNIX timestamp in seconds to compare to.
+ * @return {Boolean} If the user needs to unlock their wallet.
+ */
+export function doesUserNeedToUnlockWallet(unlockedUntilUnix) {
+  if (!unlockedUntilUnix || unlockedUntilUnix <= 0) {
+    return true;
+  }
+
+  const unlockedUntil = moment().unix(unlockedUntilUnix);
+  const now = moment().unix();
+  return unlockedUntil.isSameOrBefore(now);
+}

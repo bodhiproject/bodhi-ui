@@ -21,6 +21,8 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
+import appActions from '../../../../redux/App/actions';
+import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -60,6 +62,8 @@ class MyBalances extends React.PureComponent {
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
+
+    const unlockVisible = true;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -356,12 +360,17 @@ class MyBalances extends React.PureComponent {
   };
 
   onWithdrawClicked(event) {
-    this.setState({
-      selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
-      withdrawDialogVisible: true,
-    });
+    const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
+    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+    } else {
+      this.setState({
+        selectedAddress: event.currentTarget.getAttribute('data-address'),
+        selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+        selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+        withdrawDialogVisible: true,
+      });
+    }
   }
 
   handleWithdrawDialogClose = (value) => {
@@ -389,14 +398,20 @@ class MyBalances extends React.PureComponent {
 MyBalances.propTypes = {
   classes: PropTypes.object.isRequired,
   walletAddresses: PropTypes.array.isRequired,
+  walletEncrypted: PropTypes.bool.isRequired,
+  walletUnlockedUntil: PropTypes.number.isRequired,
+  toggleWalletUnlockDialog: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   walletAddresses: state.App.get('walletAddresses'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   };
 }
 

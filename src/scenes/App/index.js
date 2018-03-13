@@ -14,6 +14,7 @@ import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
+import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 
 const { toggleAll } = appActions;
 
@@ -41,6 +42,7 @@ export class App extends React.PureComponent {
         </div>
         <BottomBar />
         <TransactionSentDialog txReturn={txReturn} />
+        <WalletUnlockDialog />
       </div>
     );
   }
