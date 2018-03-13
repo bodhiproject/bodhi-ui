@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
@@ -119,7 +120,7 @@ class TopicPage extends React.Component {
     } = this.props;
     const { address } = this.state;
 
-    this.fetchData();
+    this.fetchData(lastUsedAddress);
 
     const topic = _.find(getTopicsReturn, { address });
     this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
@@ -128,22 +129,19 @@ class TopicPage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      getTopicsReturn,
-      getTransactionsReturn,
-      botWinnings,
-      qtumWinnings,
       syncBlockTime,
       lastUsedAddress,
-    } = nextProps;
+    } = this.props;
+    const { address } = this.state;
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime || lastUsedAddress !== this.props.lastUsedAddress) {
-      this.fetchData();
+    if (nextProps.syncBlockTime !== syncBlockTime || nextProps.lastUsedAddress !== lastUsedAddress) {
+      this.fetchData(nextProps.lastUsedAddress ? nextProps.lastUsedAddress : lastUsedAddress);
     }
 
-    const topic = _.find(getTopicsReturn, { address: this.state.address });
-    this.constructTopicAndConfig(topic, botWinnings, qtumWinnings);
-    this.setState({ transactions: getTransactionsReturn });
+    const topic = _.find(nextProps.getTopicsReturn, { address });
+    this.constructTopicAndConfig(topic, nextProps.botWinnings, nextProps.qtumWinnings);
+    this.setState({ transactions: nextProps.getTransactionsReturn });
   }
 
   componentWillUnmount() {
@@ -210,7 +208,7 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {this.props.intl.formatMessage(pageMessage.winning).toUpperCase()}
+            {intl.formatMessage(pageMessage.winning).toUpperCase()}
           </Typography>
           <Typography className={classes.withdrawWinningOption}>
             {topic.options[topic.resultIdx]}
@@ -232,7 +230,7 @@ class TopicPage extends React.Component {
                 <i className="icon iconfont icon-ic_token"></i>
               </div>
               <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-                {this.props.intl.formatMessage(pageMessage.reward)}
+                {intl.formatMessage(pageMessage.reward)}
               </Typography>
               <div>
                 <div className={classes.withdrawRewardWrapper}>
@@ -240,7 +238,7 @@ class TopicPage extends React.Component {
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
                   </Typography>
                   <Typography variant="caption">
-                    {this.props.intl.formatMessage(pageMessage.returnRate)}
+                    {intl.formatMessage(pageMessage.returnRate)}
                     {qtumReturnRate.toFixed(2)}%
                   </Typography>
                 </div>
@@ -250,7 +248,7 @@ class TopicPage extends React.Component {
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
                   </Typography>
                   <Typography variant="caption">
-                    {this.props.intl.formatMessage(pageMessage.returnRate)}
+                    {intl.formatMessage(pageMessage.returnRate)}
                     {botReturnRate.toFixed(2)}%
                   </Typography>
                 </div>
@@ -262,7 +260,7 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_wallet"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            {this.props.intl.formatMessage(pageMessage.withdrawTo)}
+            {intl.formatMessage(pageMessage.withdrawTo)}
           </Typography>
           <Select
             native
@@ -359,13 +357,12 @@ class TopicPage extends React.Component {
     ];
   }
 
-  fetchData() {
+  fetchData(senderAddress) {
     const {
       getTopics,
       getTransactions,
       getBetAndVoteBalances,
       calculateWinnings,
-      lastUsedAddress,
     } = this.props;
     const { address } = this.state;
 
@@ -374,8 +371,8 @@ class TopicPage extends React.Component {
     getTransactions([{ topicAddress: address }]);
 
     // API calls
-    getBetAndVoteBalances(address, lastUsedAddress);
-    calculateWinnings(address, lastUsedAddress);
+    getBetAndVoteBalances(address, senderAddress);
+    calculateWinnings(address, senderAddress);
   }
 
   constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
