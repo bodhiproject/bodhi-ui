@@ -49,7 +49,7 @@ class NavBar extends React.PureComponent {
                 match.path === '/' ? 'selected' : '',
               )}
             >
-              QTUM Prediction
+              <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
             </Button>
             { this.renderCurrentTabArrow('/') }
           </Link>
@@ -61,7 +61,7 @@ class NavBar extends React.PureComponent {
                 match.path === '/bot-court' ? 'selected' : '',
               )}
             >
-              BOT Court
+              <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
             </Button>
             { this.renderCurrentTabArrow('/bot-court') }
           </Link>

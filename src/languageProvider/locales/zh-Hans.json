@@ -72,6 +72,8 @@
   "oracle.cOracleDisabledText": "You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins.",
   "navbar.botCourt": "BOT仲裁",
   "navbar.qtumPrediction": "QTUM Prediction",
+  "navbar.botCourt": "BOT法庭",
+  "navbar.qtumPrediction": "QTUM预测",
   "oracle.betStartTimeDisabledText": "The betting start time has not started yet.",
   "oracle.cOracleDisabledText": "You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins.",
   "oracle.consensus": "共识阈值 {value}。这个值表示需要用于设置结果的BOT。",
