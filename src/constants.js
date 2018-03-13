@@ -17,7 +17,7 @@ module.exports = {
   EventWarningType: {
     Info: 'info',
     Error: 'error',
-    Hightlight: 'hightlight',
+    Highlight: 'highlight',
   },
 
   OracleStatus: {
