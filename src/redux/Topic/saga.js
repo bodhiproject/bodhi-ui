@@ -1,9 +1,49 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import actions from './actions';
+import _ from 'lodash';
 
+import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
+
+export function* getBetAndVoteBalancesHandler() {
+  yield takeEvery(actions.GET_BET_AND_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
+    try {
+      const {
+        contractAddress,
+        senderAddress,
+      } = action.params;
+
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          contractAddress,
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      let result = yield call(request, Routes.betBalances, options);
+      const bets = _.map(result[0], satoshiToDecimal);
+
+      result = yield call(request, Routes.voteBalances, options);
+      const votes = _.map(result[0], satoshiToDecimal);
+
+      yield put({
+        type: actions.GET_BET_VOTE_BALANCES_RETURN,
+        value: {
+          bets,
+          votes,
+        },
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_BET_VOTE_BALANCES_RETURN,
+        error: err.message,
+      });
+    }
+  });
+}
 
 export function* calculateWinningsHandler() {
   yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
@@ -49,6 +89,7 @@ export function* calculateWinningsHandler() {
 
 export default function* topicSaga() {
   yield all([
+    fork(getBetAndVoteBalancesHandler),
     fork(calculateWinningsHandler),
   ]);
 }
