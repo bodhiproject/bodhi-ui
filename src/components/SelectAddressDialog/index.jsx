@@ -5,6 +5,7 @@ import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
@@ -28,7 +29,9 @@ class SelectAddressDialog extends React.Component {
         open={dialogVisible}
         onClose={this.handleClose}
       >
-        <DialogTitle>Select Centralized Oracle</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="selectAddressDialog.selectResultSetter" defaultMessage="Select Result Setter" />
+        </DialogTitle>
         <div>
           <List>
             {walletAddresses.map((item) => (
@@ -55,4 +58,4 @@ class SelectAddressDialog extends React.Component {
   };
 }
 
-export default withStyles(styles, { withTheme: true })(SelectAddressDialog);
+export default injectIntl(withStyles(styles, { withTheme: true })(SelectAddressDialog));
