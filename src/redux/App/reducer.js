@@ -14,6 +14,9 @@ const initState = new Map({
   walletAddresses: [],
   lastUsedAddress: '',
   syncProgress: 0,
+  syncPercent: 0,
+  syncBlockNum: 0,
+  syncBlockTime: 0,
   initSyncing: false,
 });
 
@@ -103,6 +106,10 @@ export default function appReducer(state = initState, action) {
         return state.set('syncInfoError', action.error);
       }
 
+      console.log(action);
+
+      const initSyncing = action.syncInfo.syncPercent < 100;
+
       // Sort by qtum balance
       const walletAddresses = _.orderBy(action.syncInfo.addressBalances, ['qtum'], ['desc']);
 
@@ -112,7 +119,8 @@ export default function appReducer(state = initState, action) {
         lastUsedAddress = walletAddresses[0].address;
       }
 
-      return state.set('syncPercent', action.syncInfo.syncPercent)
+      return state.set('initSyncing', initSyncing)
+        .set('syncPercent', action.syncInfo.syncPercent)
         .set('syncBlockNum', action.syncInfo.syncBlockNum)
         .set('syncBlockTime', Number(action.syncInfo.syncBlockTime))
         .set('walletAddresses', walletAddresses)
