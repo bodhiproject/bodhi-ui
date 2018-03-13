@@ -16,12 +16,13 @@ import moment from 'moment';
 
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
+import EventWarning from '../../../components/EventWarning/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import graphqlActions from '../../../redux/Graphql/actions';
 import appActions from '../../../redux/App/actions';
-import { Token, OracleStatus, TransactionStatus } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -107,6 +108,7 @@ class OraclePage extends React.Component {
               {oracle.name}
             </Typography>
             <Grid item xs={12} lg={9}>
+              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
               {eventOptions.map((item, index) => (
                 <EventOption
                   key={index}
@@ -335,8 +337,9 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="str.pendingTransactionDisabledMsg"
-          defaultMessage="You already have a pending transaction for this Event."
+          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
         />,
+        warningTypeClass: EventWarningType.highlight,
       };
     }
 
@@ -350,6 +353,7 @@ class OraclePage extends React.Component {
           id="oracle.betStartTimeDisabledText"
           defaultMessage="The betting start time has not started yet."
         />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -363,6 +367,7 @@ class OraclePage extends React.Component {
           id="oracle.setStartTimeDisabledText"
           defaultMessage="The result setting start time has not started yet."
         />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -372,8 +377,9 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="oracle.cOracleDisabledText"
-          defaultMessage="You are not the Centralized Oracle for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
+          defaultMessage="You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
         />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -383,8 +389,9 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="oracle.selectResultDisabledText"
-          defaultMessage="You have not selected a result."
+          defaultMessage="Please click and select one of the options."
         />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -394,8 +401,9 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="oracle.enterAmountDisabledText"
-          defaultMessage="You have not entered a valid amount."
+          defaultMessage="Please entered a valid amount."
         />,
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -408,6 +416,7 @@ class OraclePage extends React.Component {
           id="str.notEnoughQtum"
           defaultMessage="Not enough QTUM"
         />,
+        warningTypeClass: EventWarningType.Error,
       };
     }
 
@@ -424,6 +433,7 @@ class OraclePage extends React.Component {
           id="str.notEnoughBot"
           defaultMessage="Not enough BOT"
         />,
+        warningTypeClass: EventWarningType.Error,
       };
     }
 
