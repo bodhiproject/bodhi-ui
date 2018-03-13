@@ -32,7 +32,7 @@ const messages = defineMessages({
     defaultMessage: 'Finalize Result',
   },
   withdraw: {
-    id: 'str.withdraw',
+    id: 'bottomButtonText.withdraw',
     defaultMessage: 'Withdraw',
   },
 });

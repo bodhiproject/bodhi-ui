@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import asyncComponent from '../../helpers/AsyncFunc';
-import NavBar from '../../components/NavBar/index';
 
 class AppRouter extends React.Component {
   render() {
     let { url } = this.props;
-    const { langHandler } = this.props;
 
     // Remove trailing '/' from url so that we can use `${url}/topic` below
     if (url[url.length - 1] === '/') {
@@ -18,37 +16,37 @@ class AppRouter extends React.Component {
         <Route
           exact
           path={`${url}/`}
-          component={asyncComponent(() => import('../Dashboard/index'), langHandler)}
+          component={asyncComponent(() => import('../Dashboard/index'))}
         />
         <Route
           exact
           path={`${url}/bot-court`}
-          component={asyncComponent(() => import('../Dashboard/vote'), langHandler)}
+          component={asyncComponent(() => import('../Dashboard/vote'))}
         />
         <Route
           exact
           path={`${url}/oracle/:topicAddress/:address`}
-          component={asyncComponent(() => import('../Event/scenes/oracle'), langHandler)}
+          component={asyncComponent(() => import('../Event/scenes/oracle'))}
         />
         <Route
           exact
           path={`${url}/topic/:address`}
-          component={asyncComponent(() => import('../Event/scenes/topic'), langHandler)}
+          component={asyncComponent(() => import('../Event/scenes/topic'))}
         />
         <Route
           exact
           path={`${url}/create-topic`}
-          component={asyncComponent(() => import('../CreateTopic/index'), langHandler)}
+          component={asyncComponent(() => import('../CreateTopic/index'))}
         />
         <Route
           exact
           path={`${url}/my-wallet`}
-          component={asyncComponent(() => import('../Wallet/index'), langHandler)}
+          component={asyncComponent(() => import('../Wallet/index'))}
         />
         <Route
           exact
           path={`${url}/activities`}
-          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+          component={asyncComponent(() => import('../Activities/index'))}
         />
       </Switch>
     );
@@ -57,7 +55,6 @@ class AppRouter extends React.Component {
 
 AppRouter.propTypes = {
   url: PropTypes.string.isRequired,
-  langHandler: PropTypes.func.isRequired,
 };
 
 export default AppRouter;
