@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0, no-nested-ternary: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+/* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -32,7 +32,7 @@ const messages = defineMessages({
     defaultMessage: 'Finalize Result',
   },
   withdraw: {
-    id: 'bottomButtonText.withdraw',
+    id: 'str.withdraw',
     defaultMessage: 'Withdraw',
   },
 });

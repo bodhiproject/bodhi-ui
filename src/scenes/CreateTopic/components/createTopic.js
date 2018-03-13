@@ -133,11 +133,7 @@ class CreateTopic extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      txReturn,
-    } = this.props;
-
-    if (txReturn && !nextProps.txReturn) {
+    if (nextProps.txReturn) {
       this.navigateToDashboard();
     }
   }

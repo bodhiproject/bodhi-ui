@@ -5,18 +5,19 @@ import NProgress from 'nprogress';
 import ReactPlaceholder from 'react-placeholder';
 import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
+import NavBar from '../components/NavBar/index';
 
-export default function asyncComponent(importComponent) {
+export default function asyncComponent(importComponent, langHandler) {
   class AsyncFunc extends React.Component {
     constructor(props) {
       super(props);
 
       NProgress.configure({ showSpinner: false });
-
       this.state = {
         component: null,
       };
     }
+
     componentWillMount() {
       NProgress.start();
     }
@@ -40,7 +41,10 @@ export default function asyncComponent(importComponent) {
       const Component = this.state.component || <div />;
       return (
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
-          {Component}
+          <div>
+            <NavBar {...this.props} langHandler={langHandler} />
+            {Component}
+          </div>
         </ReactPlaceholder>
       );
     }
