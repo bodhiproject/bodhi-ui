@@ -13,7 +13,6 @@ const initState = new Map({
   current: preKeys,
   walletAddresses: [],
   lastUsedAddress: '',
-  updatingBalances: false,
   syncProgress: 0,
   initSyncing: false,
 });
@@ -88,9 +87,6 @@ export default function appReducer(state = initState, action) {
       }
 
       return state.set('walletAddresses', walletAddresses);
-    }
-    case actions.DISABLE_UPDATING_BALANCES: {
-      return state.set('updatingBalances', false);
     }
     case actions.TOGGLE_ALL: {
       if (state.get('view') !== action.view || action.height !== state.height) {

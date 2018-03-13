@@ -49,11 +49,6 @@ const appActions = {
     },
   }),
 
-  DISABLE_UPDATING_BALANCES: 'DISABLE_UPDATING_BALANCES',
-  disableUpdatingBalances: () => ({
-    type: appActions.DISABLE_UPDATING_BALANCES,
-  }),
-
   GET_SYNC_INFO: 'GET_SYNC_INFO',
   getSyncInfo: () => ({
     type: appActions.GET_SYNC_INFO,
