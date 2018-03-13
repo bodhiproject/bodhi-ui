@@ -75,6 +75,7 @@
   "oracle.consensus": "共识阈值 {value}。这个值表示需要用于设置结果的BOT。",
   "oracle.enterAmountDisabledText": "请输入一个有效金额.",
   "oracle.eventUnconfirmed": "这个已创建的事件还未确认，您在它确认之前不能进行操作。",
+  "oracle.optionIsPrevResult": "该选项在之前已被选为结果",
   "oracle.finalize": "任何人都可以结束。 一旦结束，赢家可以在提现标签页从对应事件提现。",
   "oracle.notCen": "您不是此话题的中心化Oracle，您不能设置结果",
   "oracle.openRes": "中心化Oracle没有设置结果，但您可以使用BOT设置结果",

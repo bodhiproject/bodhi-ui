@@ -120,6 +120,7 @@ class OraclePage extends React.Component {
                   percent={item.percent}
                   voteAmount={this.state.voteAmount}
                   token={oracle.token}
+                  isPrevResult={item.isPrevResult}
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
@@ -453,18 +454,21 @@ class OraclePage extends React.Component {
           name: optionName,
           value: `${optionAmount} ${oracle.token}`,
           percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
+          isPrevResult: false,
         };
       });
     }
 
-    return _.map(oracle.optionIdxs, (optIndex) => {
-      const optionAmount = oracle.amounts[optIndex] || 0;
-      const threshold = oracle.consensusThreshold;
+    return _.map(oracle.options, (optionName, index) => {
+      const isPrevResult = !oracle.optionIdxs.includes(index);
+      const optionAmount = oracle.amounts[index] || 0;
+      const threshold = isPrevResult ? 0 : oracle.consensusThreshold;
 
       return {
-        name: oracle.options[optIndex],
-        value: `${optionAmount} ${oracle.token}`,
+        name: oracle.options[index],
+        value: isPrevResult ? 0 : `${optionAmount} ${oracle.token}`,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
+        isPrevResult,
       };
     });
   }
@@ -500,13 +504,12 @@ class OraclePage extends React.Component {
       oracle,
       currentOptionIdx,
     } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createBetTx(
       oracle.version,
       topicAddress,
       oracle.address,
-      selectedIndex,
+      currentOptionIdx,
       amount.toString(),
       lastUsedAddress,
     );
@@ -515,13 +518,12 @@ class OraclePage extends React.Component {
   setResult() {
     const { createSetResultTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createSetResultTx(
       oracle.version,
       oracle.topicAddress,
       oracle.address,
-      selectedIndex,
+      currentOptionIdx,
       oracle.consensusThreshold,
       lastUsedAddress,
     );
@@ -530,13 +532,12 @@ class OraclePage extends React.Component {
   vote(amount) {
     const { createVoteTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
-    const selectedIndex = oracle.optionIdxs[currentOptionIdx];
 
     createVoteTx(
       oracle.version,
       oracle.topicAddress,
       oracle.address,
-      selectedIndex,
+      currentOptionIdx,
       amount,
       lastUsedAddress,
     );
