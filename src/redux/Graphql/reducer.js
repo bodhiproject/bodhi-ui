@@ -6,11 +6,6 @@ const initState = new Map({
 });
 
 export default function graphqlReducer(state = initState, action) {
-  // Catch all request errors
-  if (action.error) {
-    return state.set('txReturn', { error: action.error });
-  }
-
   switch (action.type) {
     case actions.GET_TOPICS_RETURN: {
       return state.set('getTopicsReturn', action.value);
@@ -31,6 +26,9 @@ export default function graphqlReducer(state = initState, action) {
     case actions.CREATE_FINALIZE_RESULT_TX_RETURN:
     case actions.CREATE_WITHDRAW_TX_RETURN:
     case actions.CREATE_TRANSFER_TX_RETURN: {
+      if (action.error) {
+        return state.set('txReturn', { error: action.error });
+      }
       return state.set('txReturn', action.value);
     }
     case actions.CLEAR_TX_RETURN: {

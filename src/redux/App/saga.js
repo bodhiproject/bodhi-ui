@@ -10,7 +10,9 @@ import Routes from '../../network/routes';
 export function* syncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
     try {
-      const result = yield call(querySyncInfo);
+      console.log('syncInfoRequestHandler');
+      const result = yield call(querySyncInfo, true);
+      console.log(result);
 
       yield put({
         type: actions.SYNC_INFO_RETURN,

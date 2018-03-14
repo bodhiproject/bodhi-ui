@@ -47,6 +47,7 @@ class GlobalHub extends React.PureComponent {
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     if (initSyncing && !nextProps.initSyncing) {
+      console.log('stopping sync info polling');
       clearInterval(syncInfoInterval);
     }
 
@@ -63,13 +64,16 @@ class GlobalHub extends React.PureComponent {
   subscribeSyncInfo() {
     const { client, onSyncInfo } = this.props;
 
+    console.log('subscribing');
     client.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next(data) {
+        console.log('syncInfo', data);
         onSyncInfo(data.data.onSyncInfo);
       },
       error(err) {
+        console.log('syncInfo', err);
         onSyncInfo({ error: err.message });
       },
     });
@@ -78,6 +82,7 @@ class GlobalHub extends React.PureComponent {
   pollSyncInfo() {
     const { getSyncInfo } = this.props;
 
+    console.log('start sync info polling');
     getSyncInfo();
     syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
   }
