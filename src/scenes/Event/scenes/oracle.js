@@ -171,7 +171,7 @@ class OraclePage extends React.Component {
                   <Typography variant="body1" className={classes.eventUnconfirmedText}>
                     <FormattedMessage
                       id="oracle.eventUnconfirmed"
-                      defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain."
+                      defaultMessage=""
                     />
                   </Typography>
                 )
@@ -288,6 +288,10 @@ class OraclePage extends React.Component {
             skipExpansion: false,
             showAmountInput: true,
             btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+          },
+          importantNote: {
+            heading: <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />,
+            message: <FormattedMessage id="oracle.eventUnconfirmed" defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain." />,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
