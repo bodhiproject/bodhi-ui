@@ -10,16 +10,13 @@ import Routes from '../../network/routes';
 export function* syncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
     try {
-      console.log('syncInfoRequestHandler');
       const result = yield call(querySyncInfo, true);
-      console.log(result);
 
       yield put({
         type: actions.SYNC_INFO_RETURN,
         syncInfo: result,
       });
     } catch (error) {
-      console.log(error);
       yield put({
         type: actions.SYNC_INFO_RETURN,
         error: error.message,
@@ -31,7 +28,6 @@ export function* syncInfoRequestHandler() {
 export function* onSyncInfoHandler() {
   yield takeEvery(actions.ON_SYNC_INFO, function* onSyncInfo(action) {
     if (action.syncInfo.error) {
-      console.log(action.syncInfo.error);
       yield put({
         type: actions.SYNC_INFO_RETURN,
         error: action.syncInfo.error,

@@ -70,7 +70,6 @@ export default function appReducer(state = initState, action) {
 
       // Sort by qtum balance
       newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
-      console.log('addresses', newAddresses);
 
       // Set a default selected address if there was none selected before
       let lastUsedAddress = state.get('lastUsedAddress');
