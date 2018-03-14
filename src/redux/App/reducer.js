@@ -96,6 +96,9 @@ export default function appReducer(state = initState, action) {
       return state.set('walletEncrypted', action.value);
     }
     case actions.UNLOCK_WALLET_RETURN: {
+      if (action.error) {
+        return state.set('errorApp', action.error);
+      }
       return state.set('walletUnlockedUntil', action.value);
     }
     case actions.CLEAR_ERROR_APP: {

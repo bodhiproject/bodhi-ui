@@ -5,7 +5,7 @@ const INSIGHT_API = endpoint.insight;
 
 const Routes = {
   unlockWallet: `${BODHI_API}/wallet-passphrase`,
-  getWalletInfo: `${BODHI_API}/get-wallet-infos`,
+  getWalletInfo: `${BODHI_API}/get-wallet-info`,
   listUnspent: `${BODHI_API}/list-unspent`,
   getAccountAddress: `${BODHI_API}/get-account-address`,
   approve: `${BODHI_API}/approve`,

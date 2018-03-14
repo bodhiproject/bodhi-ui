@@ -114,7 +114,10 @@ export function* unlockWalletRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
-        error: error.message,
+        error: {
+          route: Routes.unlockWallet,
+          message: error.message,
+        },
       });
     }
   });
