@@ -120,7 +120,14 @@ class OraclePage extends React.Component {
               {oracle.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
+              {
+                !unconfirmed
+                  ? <EventWarning
+                    message={actionButtonConfig.message}
+                    typeClass={actionButtonConfig.warningTypeClass}
+                  />
+                  : null
+              }
               {eventOptions.map((item, index) => (
                 <EventOption
                   key={index}
