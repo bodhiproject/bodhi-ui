@@ -7,7 +7,7 @@ import { withStyles } from 'material-ui/styles';
 
 import TopActions from './components/TopActions/index';
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
-import { EventStatus } from '../../constants';
+import { EventStatus, SortBy } from '../../constants';
 import styles from './styles';
 
 class Dashboard extends React.Component {
@@ -33,7 +33,7 @@ Dashboard.propTypes = {
 };
 
 Dashboard.defaultProps = {
-  sortBy: undefined,
+  sortBy: SortBy.Ascending,
 };
 
 const mapStateToProps = (state) => ({

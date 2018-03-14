@@ -39,7 +39,12 @@ const messages = defineMessages({
 
 class EventCardsGrid extends React.Component {
   componentWillMount() {
-    this.executeGraphRequest(this.props.eventStatusIndex);
+    const {
+      eventStatusIndex,
+      sortBy,
+    } = this.props;
+
+    this.executeGraphRequest(eventStatusIndex, sortBy);
   }
 
   componentWillReceiveProps(nextProps) {

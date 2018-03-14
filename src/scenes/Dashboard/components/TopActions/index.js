@@ -18,26 +18,29 @@ import { SortBy } from '../../../../constants';
 import styles from './styles';
 
 class TopActions extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    sortBy: PropTypes.string,
+    sortOrderChanged: PropTypes.func,
+  };
+
+  static defaultProps = {
+    sortBy: SortBy.Ascending,
+    sortOrderChanged: undefined,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      sortOption: SortBy.Ascending,
-    };
 
     this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
   }
 
   onSortOptionSelected(event) {
-    this.setState({
-      sortOption: event.target.value,
-    });
-
     this.props.sortOrderChanged(event.target.value);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, sortBy } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
@@ -55,7 +58,7 @@ class TopActions extends Component {
           </span>
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
-              <Select disableUnderline value={this.state.sortOption} onChange={this.onSortOptionSelected}>
+              <Select disableUnderline value={sortBy} onChange={this.onSortOptionSelected}>
                 <MenuItem value={SortBy.Ascending}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
                 <MenuItem value={SortBy.Descending}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
               </Select>
@@ -67,16 +70,9 @@ class TopActions extends Component {
   }
 }
 
-TopActions.propTypes = {
-  classes: PropTypes.object.isRequired,
-  sortOrderChanged: PropTypes.func,
-};
-
-TopActions.defaultProps = {
-  sortOrderChanged: undefined,
-};
-
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  sortBy: state.Dashboard.get('sortBy'),
+});
 
 function mapDispatchToProps(dispatch) {
   return {
