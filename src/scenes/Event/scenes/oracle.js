@@ -319,6 +319,10 @@ class OraclePage extends React.Component {
             showAmountInput: true,
             btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
           },
+          importantNote: {
+            heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
+            message: <FormattedMessage id="oracle.voteExplanation" defaultMessage="When a result's total votes reaches the Consensus Threshold, it will become the new result." />,
+          },
         };
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = {

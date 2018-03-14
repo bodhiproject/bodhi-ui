@@ -88,6 +88,7 @@
   "oracle.voting-1": "Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result.",
   "oracle.consensusThreshold": "Consensus Threshold",
   "oracle.setResultExplanation": "Setting the result requires staking the Consensus Threshold amount.",
+  "oracle.voteExplanation": "When a result's total votes reaches the Consensus Threshold, it will become the new result.",
   "predictInfo.endDate": "ENDING DATE",
   "predictInfo.fund": "FUNDING",
   "predictInfo.resultSetter": "RESULT SETTER",
