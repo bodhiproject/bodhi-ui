@@ -6,19 +6,30 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
+import { Token } from '../../../../constants';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import styles from './styles';
 
-class EventTxHistory extends React.PureComponent {
+class EventResultHistory extends React.PureComponent {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    oracles: PropTypes.array.isRequired,
+  };
+
   render() {
-    const { classes, transactions, options } = this.props;
+    const { classes, oracles } = this.props;
+
+    const sortedOracles = _.orderBy(oracles, ['endTime']);
 
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
-          <FormattedMessage id="str.transaction" defaultMessage="TRANSACTIONS" />
+          <FormattedMessage id="str.resultHistory" defaultMessage="Result History">
+            {(txt) => i18nToUpperCase(txt)}
+          </FormattedMessage>
         </Typography> {
-          transactions.length && options.length ?
+          sortedOracles.length ?
             (<Table>
               <TableHead>
                 <TableRow>
@@ -26,27 +37,23 @@ class EventTxHistory extends React.PureComponent {
                     <FormattedMessage id="str.date" defaultMessage="Date" />
                   </TableCell>
                   <TableCell padding="dense">
-                    <FormattedMessage id="str.type" defaultMessage="Type" />
+                    <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
                   </TableCell>
                   <TableCell padding="dense">
-                    <FormattedMessage id="str.description" defaultMessage="Description" />
+                    <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
                   </TableCell>
                   <TableCell padding="dense">
                     <FormattedMessage id="str.amount" defaultMessage="Amount" />
                   </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.status" defaultMessage="Status" />
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {_.map(transactions, (transaction, index) => (
-                  <TableRow key={transaction.txid} selected={index % 2 === 1}>
-                    <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
-                    <TableCell padding="dense">{transaction.type}</TableCell>
-                    <TableCell padding="dense">{`#${transaction.optionIdx + 1} ${options[transaction.optionIdx]}`}</TableCell>
-                    <TableCell padding="dense">{transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}</TableCell>
-                    <TableCell padding="dense">{transaction.status}</TableCell>
+                {_.map(sortedOracles, (oracle, index) => (
+                  <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+                    <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
+                    <TableCell padding="dense">{oracle.token === Token.QTUM ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
+                    <TableCell padding="dense">{`#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`}</TableCell>
+                    <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -60,10 +67,4 @@ class EventTxHistory extends React.PureComponent {
   }
 }
 
-EventTxHistory.propTypes = {
-  classes: PropTypes.object.isRequired,
-  transactions: PropTypes.array.isRequired,
-  options: PropTypes.array.isRequired,
-};
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventTxHistory));
+export default withStyles(styles, { withTheme: true })(injectIntl(EventResultHistory));

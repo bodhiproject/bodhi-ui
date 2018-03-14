@@ -19,6 +19,7 @@ import styles from './styles';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
+import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import appActions from '../../../redux/App/actions';
@@ -159,6 +160,7 @@ class TopicPage extends React.Component {
               <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
               {this.renderWithdrawContainer(actionButtonConfig)}
               {this.renderOptions()}
+              <EventResultHistory oracles={topic.oracles} />
               <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
             </Grid>
           </Grid>
@@ -197,7 +199,7 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            <FormattedMessage id="withdrawDetail.winningOutcome" defaultMessage="WINNING OUTCOME">
+            <FormattedMessage id="str.winningOutcome" defaultMessage="WINNING OUTCOME">
               {(txt) => i18nToUpperCase(txt)}
             </FormattedMessage>
           </Typography>
