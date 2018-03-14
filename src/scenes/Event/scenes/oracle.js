@@ -120,7 +120,14 @@ class OraclePage extends React.Component {
               {oracle.name}
             </Typography>
             <Grid item xs={12} lg={9}>
-              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
+              {
+                !unconfirmed
+                  ? <EventWarning
+                    message={actionButtonConfig.message}
+                    typeClass={actionButtonConfig.warningTypeClass}
+                  />
+                  : null
+              }
               {eventOptions.map((item, index) => (
                 <EventOption
                   key={index}
@@ -143,13 +150,13 @@ class OraclePage extends React.Component {
                   onWalletChange={this.handleWalletChange}
                 />
               ))}
-              {!unconfirmed
-                ? (
-                  <div>
-                    <ImportantNote
-                      heading={config.importantNote && config.importantNote.heading}
-                      message={config.importantNote && config.importantNote.message}
-                    />
+              <ImportantNote
+                heading={config.importantNote && config.importantNote.heading}
+                message={config.importantNote && config.importantNote.message}
+              />
+              {
+                !unconfirmed
+                  ? <div>
                     <Button
                       variant="raised"
                       fullWidth
@@ -167,14 +174,7 @@ class OraclePage extends React.Component {
                     </Button>
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
-                ) : (
-                  <Typography variant="body1" className={classes.eventUnconfirmedText}>
-                    <FormattedMessage
-                      id="oracle.eventUnconfirmed"
-                      defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain."
-                    />
-                  </Typography>
-                )
+                  : null
               }
             </Grid>
           </Grid>
@@ -276,8 +276,24 @@ class OraclePage extends React.Component {
     if (oracle) {
       const { token, status } = oracle;
 
-      if ((token === Token.Qtum && status === OracleStatus.Voting)
-        || (token === Token.Qtum && status === OracleStatus.Created && unconfirmed)) {
+      if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
+        config = {
+          name: 'BETTING',
+          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
+          eventInfo: {
+            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
+          },
+          predictionAction: {
+            skipExpansion: false,
+            showAmountInput: true,
+            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+          },
+          importantNote: {
+            heading: <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />,
+            message: <FormattedMessage id="oracle.eventUnconfirmed" defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain." />,
+          },
+        };
+      } else if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
