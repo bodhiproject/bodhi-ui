@@ -11,6 +11,7 @@ class GraphQuery {
     this.type = type;
     this.filters = undefined;
     this.orderBy = undefined;
+    this.params = {};
   }
 
   setFilters(filters) {
@@ -19,6 +20,10 @@ class GraphQuery {
 
   setOrderBy(orderBy) {
     this.orderBy = orderBy;
+  }
+
+  addParam(key, value) {
+    this.params[key] = value;
   }
 
   formatObject(obj) {
@@ -66,18 +71,37 @@ class GraphQuery {
     return _.isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
   }
 
+  getParamsString() {
+    let str = '';
+    const keys = Object.keys(this.params);
+    if (keys.length > 0) {
+      _.each(keys, (key) => {
+        if (!_.isEmpty(str)) {
+          str = str.concat(', ');
+        }
+
+        str = str.concat(`${key}: ${this.params[key]}`);
+      });
+    }
+    return str;
+  }
+
   build() {
     const filterStr = this.getFilterString();
     const orderByStr = this.getOrderByString();
-    const funcParamOpen = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? '(' : '';
-    const funcParamClose = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) ? ')' : '';
+    const paramsStr = this.getParamsString();
+    const needsParentheses = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) || !_.isEmpty(paramsStr);
+
+    const parenthesesOpen = needsParentheses ? '(' : '';
+    const parenthesesClose = needsParentheses ? ')' : '';
 
     const query = `
       query {
-        ${this.queryName}${funcParamOpen}
+        ${this.queryName}${parenthesesOpen}
           ${filterStr}
-          ${orderByStr} 
-        ${funcParamClose} {
+          ${orderByStr}
+          ${paramsStr}
+        ${parenthesesClose} {
           ${getTypeDef(this.type)}
         }
       }
@@ -148,7 +172,12 @@ export function queryAllTransactions(filters, orderBy) {
 
 /*
 * Queries syncInfo from GraphQL.
+* @param includeBalances {Boolean} Should include address balances array
 */
-export function querySyncInfo() {
-  return new GraphQuery('syncInfo', TYPE.syncInfo).execute();
+export function querySyncInfo(includeBalance) {
+  const request = new GraphQuery('syncInfo', TYPE.syncInfo);
+  if (includeBalance) {
+    request.addParam('includeBalance', includeBalance);
+  }
+  return request.execute();
 }

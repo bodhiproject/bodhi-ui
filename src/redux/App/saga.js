@@ -10,7 +10,8 @@ import Routes from '../../network/routes';
 export function* syncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
     try {
-      const result = yield call(querySyncInfo);
+      const includeBalances = action.syncPercent === 0 || action.syncPercent >= 98;
+      const result = yield call(querySyncInfo, includeBalances);
 
       yield put({
         type: actions.SYNC_INFO_RETURN,

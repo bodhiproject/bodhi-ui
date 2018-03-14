@@ -12,25 +12,31 @@ import AppConfig from '../../config/app';
 let syncInfoInterval;
 
 class GlobalHub extends React.PureComponent {
-  constructor(props) {
-    super(props);
+  static propTypes = {
+    client: PropTypes.object,
+    getSyncInfo: PropTypes.func.isRequired,
+    onSyncInfo: PropTypes.func.isRequired,
+    syncPercent: PropTypes.number.isRequired,
+    syncBlockNum: PropTypes.number.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    checkWalletEncrypted: PropTypes.func.isRequired,
+    getActionableItemCount: PropTypes.func.isRequired,
+  };
 
-    this.state = {
-    };
-
-    this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
-    this.pollSyncInfo = this.pollSyncInfo.bind(this);
-  }
+  static defaultProps = {
+    client: undefined,
+  };
 
   componentWillMount() {
-    const { checkWalletEncrypted } = this.props;
+    const { checkWalletEncrypted, getSyncInfo, syncPercent } = this.props;
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
-    this.pollSyncInfo();
+    getSyncInfo(syncPercent);
+    syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
 
     // Subscribe to syncInfo subscription
     // This returns only after the initial sync is done, and every new block that is returned
@@ -39,14 +45,14 @@ class GlobalHub extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      initSyncing,
+      syncPercent,
       syncBlockNum,
       getActionableItemCount,
       lastUsedAddress,
     } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
-    if (initSyncing && !nextProps.initSyncing) {
+    if (syncPercent >= 100) {
       clearInterval(syncInfoInterval);
     }
 
@@ -60,7 +66,13 @@ class GlobalHub extends React.PureComponent {
     return null;
   }
 
-  subscribeSyncInfo() {
+  fetchSyncInfo = () => {
+    const { getSyncInfo, syncPercent } = this.props;
+
+    getSyncInfo(syncPercent);
+  };
+
+  subscribeSyncInfo = () => {
     const { client, onSyncInfo } = this.props;
 
     client.subscribe({
@@ -73,42 +85,16 @@ class GlobalHub extends React.PureComponent {
         onSyncInfo({ error: err.message });
       },
     });
-  }
-
-  pollSyncInfo() {
-    const { getSyncInfo } = this.props;
-
-    getSyncInfo();
-    syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
-  }
+  };
 }
-
-GlobalHub.propTypes = {
-  client: PropTypes.object,
-  initSyncing: PropTypes.bool.isRequired,
-  syncBlockNum: PropTypes.number,
-  lastUsedAddress: PropTypes.string.isRequired,
-  checkWalletEncrypted: PropTypes.func.isRequired,
-  getSyncInfo: PropTypes.func.isRequired,
-  onSyncInfo: PropTypes.func.isRequired,
-  getActionableItemCount: PropTypes.func.isRequired,
-};
-
-GlobalHub.defaultProps = {
-  client: undefined,
-  syncBlockNum: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  initSyncing: state.App.get('initSyncing'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
-  getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),
 });
