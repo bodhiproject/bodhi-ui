@@ -120,7 +120,7 @@ class OraclePage extends React.Component {
                   currentOptionIdx={this.state.currentOptionIdx}
                   optionIdx={index}
                   name={item.name}
-                  amount={item.value}
+                  amount={`${item.value}`}
                   percent={item.percent}
                   voteAmount={this.state.voteAmount}
                   token={oracle.token}
