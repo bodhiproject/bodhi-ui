@@ -31,12 +31,10 @@ class ImportantNote extends React.PureComponent {
     }
 
     return (
-      <div>
-        <div className={classes.headingContainer}>
-          <i className={classNames(classes.infoIcon, 'icon', 'iconfont', 'icon-ic_info')}></i>
-          <span className={classes.headingText}>{heading}</span>
-          <p className={classes.messageText}>{message}</p>
-        </div>
+      <div className={classes.importantNoteContainer}>
+        <i className={classNames(classes.infoIcon, 'icon', 'iconfont', 'icon-ic_info')}></i>
+        <span className={classes.headingText}>{heading}</span>
+        <p className={classes.messageText}>{message}</p>
       </div>
     );
   }

@@ -304,7 +304,7 @@ class OraclePage extends React.Component {
           },
           importantNote: {
             heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: <FormattedMessage id="oracle.consensusThresholdExplanation" defaultMessage="This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result." />,
+            message: <FormattedMessage id="oracle.setResultExplanation" defaultMessage="Setting the result requires staking the Consensus Threshold amount." />,
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.Voting) {

@@ -1,9 +1,9 @@
 const styles = (theme) => ({
-  headingContainer: {
-    margin: `${theme.padding.unit.px} ${theme.padding.xs.px} 0px ${theme.padding.xs.px}`,
+  importantNoteContainer: {
+    margin: `${theme.padding.xs.px} ${theme.padding.xs.px} 0px ${theme.padding.xs.px}`,
   },
   infoIcon: {
-    fontSize: 18,
+    fontSize: theme.sizes.font.textMd,
     color: theme.palette.primary.main,
     marginRight: theme.padding.unit.px,
   },
