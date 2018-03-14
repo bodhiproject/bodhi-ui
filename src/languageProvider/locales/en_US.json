@@ -86,6 +86,8 @@
   "oracle.cOracleDisabledText": "You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins.",
   "oracle.voteNote": "BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards.",
   "oracle.voting-1": "Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result.",
+  "oracle.consensusThreshold": "Consensus Threshold",
+  "oracle.consensusThresholdExplanation": "Setting the result requires staking the Consensus Threshold amount.",
   "predictInfo.endDate": "ENDING DATE",
   "predictInfo.fund": "FUNDING",
   "predictInfo.resultSetter": "RESULT SETTER",

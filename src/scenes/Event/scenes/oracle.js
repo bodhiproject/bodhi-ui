@@ -11,7 +11,7 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
 import {
@@ -21,6 +21,7 @@ import {
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
+import ImportantNote from '../../../components/ImportantNote/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
@@ -29,7 +30,14 @@ import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
-import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
+
+const messages = defineMessages({
+  consensusThreshold: {
+    id: 'oracle.consensusThreshold',
+    defaultMessage: 'Consensus Threshold',
+  },
+});
 
 class OraclePage extends React.Component {
   constructor(props) {
@@ -138,6 +146,10 @@ class OraclePage extends React.Component {
               {!unconfirmed
                 ? (
                   <div>
+                    <ImportantNote
+                      heading={config.importantNote && config.importantNote.heading}
+                      message={config.importantNote && config.importantNote.message}
+                    />
                     <Button
                       variant="raised"
                       fullWidth
@@ -259,6 +271,7 @@ class OraclePage extends React.Component {
     const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
     const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
 
     if (oracle) {
       const { token, status } = oracle;
@@ -288,6 +301,10 @@ class OraclePage extends React.Component {
             skipExpansion: false,
             showAmountInput: false,
             btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
+          },
+          importantNote: {
+            heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
+            message: <FormattedMessage id="oracle.consensusThresholdExplanation" defaultMessage="This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result." />,
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
