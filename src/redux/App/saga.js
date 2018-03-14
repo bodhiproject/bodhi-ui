@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
+import moment from 'moment';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
@@ -64,7 +65,13 @@ export function* getWalletInfoRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
     try {
       const result = yield call(request, Routes.getWalletInfo);
-      const isEncrypted = 'unlocked_until' in result.result;
+
+      let isEncrypted = false;
+      if (result && result.result && result.result.unlocked_until) {
+        const now = moment().unix();
+        const unlockedUntil = moment().unix(result.result.unlocked_until);
+        isEncrypted = now.isBefore(unlockedUntil);
+      }
 
       yield put({
         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,

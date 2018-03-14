@@ -26,7 +26,6 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import styles from './styles';
