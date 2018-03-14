@@ -39,7 +39,10 @@ export function* getBetAndVoteBalancesHandler() {
     } catch (err) {
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,
-        error: err.message,
+        error: {
+          route: `${Routes.betBalances} ${Routes.voteBalances}`,
+          message: err.message,
+        },
       });
     }
   });

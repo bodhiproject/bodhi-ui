@@ -14,26 +14,36 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
+import topicActions from '../../redux/Topic/actions';
 
 class ErrorDialog extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     errorApp: PropTypes.object,
     clearErrorApp: PropTypes.func.isRequired,
+    errorTopic: PropTypes.object,
+    clearErrorTopic: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     errorApp: undefined,
+    errorTopic: undefined,
   };
 
   render() {
     const {
       classes,
       errorApp,
+      errorTopic,
     } = this.props;
 
-    const isOpen = Boolean(errorApp);
-    const error = errorApp;
+    const isOpen = Boolean(errorApp || errorTopic);
+    let error;
+    if (errorApp) {
+      error = errorApp;
+    } else if (errorTopic) {
+      error = errorTopic;
+    }
 
     if (!error) {
       return null;
@@ -57,16 +67,19 @@ class ErrorDialog extends React.PureComponent {
 
   onOkClicked = () => {
     this.props.clearErrorApp();
+    this.props.clearErrorTopic();
   }
 }
 
 const mapStateToProps = (state) => ({
   errorApp: state.App.get('errorApp'),
+  errorTopic: state.Topic.get('errorTopic'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     clearErrorApp: () => dispatch(appActions.clearErrorApp()),
+    clearErrorTopic: () => dispatch(topicActions.clearErrorTopic()),
   };
 }
 
