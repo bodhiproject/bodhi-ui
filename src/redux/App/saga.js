@@ -53,10 +53,7 @@ export function* getInsightTotalsRequestHandler() {
         value: { result },
       });
     } catch (error) {
-      yield put({
-        type: actions.GET_INSIGHT_TOTALS_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
+      console.error(error.message);
     }
   });
 }
