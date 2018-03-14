@@ -17,7 +17,18 @@ import dashboardActions from '../../../../redux/Dashboard/actions';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
-class DashboardActions extends Component {
+class TopActions extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    sortBy: PropTypes.string,
+    sortOrderChanged: PropTypes.func,
+  };
+
+  static defaultProps = {
+    sortBy: SortBy.Ascending,
+    sortOrderChanged: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -58,17 +69,6 @@ class DashboardActions extends Component {
     );
   }
 }
-
-TopActions.propTypes = {
-  classes: PropTypes.object.isRequired,
-  sortBy: PropTypes.string,
-  sortOrderChanged: PropTypes.func,
-};
-
-TopActions.defaultProps = {
-  sortBy: SortBy.Ascending,
-  sortOrderChanged: undefined,
-};
 
 const mapStateToProps = (state) => ({
   sortBy: state.Dashboard.get('sortBy'),
