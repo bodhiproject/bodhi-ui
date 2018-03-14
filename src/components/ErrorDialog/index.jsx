@@ -43,8 +43,8 @@ class ErrorDialog extends React.PureComponent {
       <Dialog open={isOpen}>
         <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
         <DialogContent>
-          <Typography variant="body1" className={classes.errorRoute}>{error.route}</Typography>
-          <Typography variant="body1">{error.message}</Typography>
+          <Typography className={classes.errorRoute}>{error.route}</Typography>
+          <Typography className={classes.errorMessage}>{error.message}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onOkClicked}>
