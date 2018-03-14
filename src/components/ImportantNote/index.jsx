@@ -26,7 +26,7 @@ class ImportantNote extends React.PureComponent {
       message,
     } = this.props;
 
-    if (!message) {
+    if (!heading && !message) {
       return null;
     }
 
