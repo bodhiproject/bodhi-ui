@@ -28,14 +28,15 @@ class GlobalHub extends React.PureComponent {
   };
 
   componentWillMount() {
-    const { checkWalletEncrypted } = this.props;
+    const { checkWalletEncrypted, getSyncInfo, syncPercent } = this.props;
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
-    this.pollSyncInfo();
+    getSyncInfo(syncPercent);
+    syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
 
     // Subscribe to syncInfo subscription
     // This returns only after the initial sync is done, and every new block that is returned
@@ -65,11 +66,10 @@ class GlobalHub extends React.PureComponent {
     return null;
   }
 
-  pollSyncInfo = () => {
-    const { getSyncInfo } = this.props;
+  fetchSyncInfo = () => {
+    const { getSyncInfo, syncPercent } = this.props;
 
-    getSyncInfo();
-    syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
+    getSyncInfo(syncPercent);
   };
 
   subscribeSyncInfo = () => {
@@ -94,7 +94,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
-  getSyncInfo: () => dispatch(appActions.getSyncInfo()),
+  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),
 });
