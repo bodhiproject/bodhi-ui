@@ -24,7 +24,6 @@ import TransactionSentDialog from '../../../components/TransactionSentDialog/ind
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import appActions from '../../../redux/App/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -458,7 +457,7 @@ class TopicPage extends React.Component {
       lastUsedAddress,
       walletEncrypted,
       walletUnlockedUntil,
-      toggleWalletUnlockDialog
+      toggleWalletUnlockDialog,
     } = this.props;
     const { topic } = this.state;
 

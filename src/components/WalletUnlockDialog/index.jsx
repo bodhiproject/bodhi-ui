@@ -28,8 +28,7 @@ class WalletUnlockDialog extends React.Component {
     classes: PropTypes.object.isRequired,
     walletUnlockDialogVisibility: PropTypes.bool.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-typos
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
@@ -124,6 +123,7 @@ class WalletUnlockDialog extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  walletUnlockDialogVisibility: state.App.get('walletUnlockDialogVisibility'),
 });
 
 function mapDispatchToProps(dispatch) {
