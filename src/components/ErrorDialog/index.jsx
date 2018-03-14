@@ -13,11 +13,13 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
+import appActions from '../../redux/App/actions';
 
 class ErrorDialog extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     errorApp: PropTypes.object,
+    clearErrorApp: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -54,7 +56,7 @@ class ErrorDialog extends React.PureComponent {
   }
 
   onOkClicked = () => {
-    // clear errors
+    this.props.clearErrorApp();
   }
 }
 
@@ -64,6 +66,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    clearErrorApp: () => dispatch(appActions.clearErrorApp()),
   };
 }
 
