@@ -271,7 +271,7 @@ class EventHistory extends React.Component {
 EventHistory.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  getOracles: PropTypes.func,
+  getOracles: PropTypes.func.isRequired,
   getOraclesReturn: PropTypes.array,
   getTransactions: PropTypes.func,
   getTransactionsReturn: PropTypes.array,
@@ -279,7 +279,6 @@ EventHistory.propTypes = {
 };
 
 EventHistory.defaultProps = {
-  getOracles: undefined,
   getOraclesReturn: [],
   getTransactions: undefined,
   getTransactionsReturn: [],
