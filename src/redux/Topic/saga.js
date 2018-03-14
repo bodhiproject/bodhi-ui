@@ -84,7 +84,10 @@ export function* calculateWinningsHandler() {
     } catch (err) {
       yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
-        value: { botWon: 0, qtumWon: 0 },
+        error: {
+          route: Routes.winnings,
+          message: err.message,
+        },
       });
     }
   });

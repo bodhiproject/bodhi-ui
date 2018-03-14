@@ -19,6 +19,9 @@ export default function topicReducer(state = initState, action) {
         .set('voteBalances', action.value.votes);
     }
     case actions.CALCULATE_WINNINGS_RETURN: {
+      if (action.error) {
+        return state.set('errorTopic', action.error);
+      }
       return state
         .set('botWinnings', action.value.botWon)
         .set('qtumWinnings', action.value.qtumWon);
