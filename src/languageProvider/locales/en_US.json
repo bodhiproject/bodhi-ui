@@ -87,6 +87,7 @@
   "oracle.voteNote": "BOT tokens are needed for voting. Don't leave this screen upon clicking Confirm. Your BOT needs to be approved before voting. The approved amount will automatically be used to vote afterwards.",
   "oracle.voting-1": "Consensus Threshold {value}. This value indicates the amount of BOT needed to reach the Proof of Agreement and become the new result.",
   "oracle.consensusThreshold": "Consensus Threshold",
+  "oracle.finalizingExplanation": "Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round's result. Winners can withdraw their winnings once an Event is finalized.",
   "oracle.setResultExplanation": "Setting the result requires staking the Consensus Threshold amount.",
   "oracle.voteExplanation": "When a result's total votes reaches the Consensus Threshold, it will become the new result.",
   "predictInfo.endDate": "ENDING DATE",

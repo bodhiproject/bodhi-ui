@@ -336,6 +336,10 @@ class OraclePage extends React.Component {
             showAmountInput: false,
             btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
           },
+          importantNote: {
+            heading: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
+            message: <FormattedMessage id="oracle.finalizingExplanation" defaultMessage="Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round's result. Winners can withdraw their winnings once an Event is finalized." />,
+          },
         };
       }
     }
