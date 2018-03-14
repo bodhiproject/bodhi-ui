@@ -73,8 +73,15 @@ class GraphQuery {
 
   getParamsString() {
     let str = '';
-    if (Object.keys(this.params).length > 0) {
-      str = str.concat(this.formatObject());
+    const keys = Object.keys(this.params);
+    if (keys.length > 0) {
+      _.each(keys, (key) => {
+        if (!_.isEmpty(str)) {
+          str = str.concat(', ');
+        }
+
+        str = str.concat(`${key}: ${this.params[key]}`);
+      });
     }
     return str;
   }
@@ -167,11 +174,10 @@ export function queryAllTransactions(filters, orderBy) {
 * Queries syncInfo from GraphQL.
 * @param includeBalances {Boolean} Should include address balances array
 */
-export function querySyncInfo(includeBalances) {
+export function querySyncInfo(includeBalance) {
   const request = new GraphQuery('syncInfo', TYPE.syncInfo);
-  if (includeBalances) {
-    request.addParam('includeBalances', includeBalances);
+  if (includeBalance) {
+    request.addParam('includeBalance', includeBalance);
   }
-
   return request.execute();
 }

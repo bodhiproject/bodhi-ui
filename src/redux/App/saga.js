@@ -19,6 +19,7 @@ export function* syncInfoRequestHandler() {
         syncInfo: result,
       });
     } catch (error) {
+      console.log(error);
       yield put({
         type: actions.SYNC_INFO_RETURN,
         error: error.message,
@@ -30,6 +31,7 @@ export function* syncInfoRequestHandler() {
 export function* onSyncInfoHandler() {
   yield takeEvery(actions.ON_SYNC_INFO, function* onSyncInfo(action) {
     if (action.syncInfo.error) {
+      console.log(action.syncInfo.error);
       yield put({
         type: actions.SYNC_INFO_RETURN,
         error: action.syncInfo.error,
