@@ -237,11 +237,9 @@ class EventHistory extends React.Component {
   onEventLinkClicked(event) {
     const {
       getOracles,
-      getOraclesReturn,
     } = this.props;
 
     const topicAddress = event.currentTarget.getAttribute('data-topic-address');
-
     getOracles(
       [
         { topicAddress },
