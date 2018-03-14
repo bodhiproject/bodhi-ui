@@ -20,8 +20,6 @@ class Loader extends React.PureComponent {
     const { classes, syncPercent } = this.props;
     const hideLoader = !AppConfig.debug.showAppLoad || syncPercent >= 100;
 
-    console.log(syncPercent);
-
     return (
       <div
         className={classes.loaderBg}

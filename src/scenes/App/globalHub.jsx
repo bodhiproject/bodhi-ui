@@ -12,15 +12,20 @@ import AppConfig from '../../config/app';
 let syncInfoInterval;
 
 class GlobalHub extends React.PureComponent {
-  constructor(props) {
-    super(props);
+  static propTypes = {
+    client: PropTypes.object,
+    getSyncInfo: PropTypes.func.isRequired,
+    onSyncInfo: PropTypes.func.isRequired,
+    syncPercent: PropTypes.number.isRequired,
+    syncBlockNum: PropTypes.number.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    checkWalletEncrypted: PropTypes.func.isRequired,
+    getActionableItemCount: PropTypes.func.isRequired,
+  };
 
-    this.state = {
-    };
-
-    this.subscribeSyncInfo = this.subscribeSyncInfo.bind(this);
-    this.pollSyncInfo = this.pollSyncInfo.bind(this);
-  }
+  static defaultProps = {
+    client: undefined,
+  };
 
   componentWillMount() {
     const { checkWalletEncrypted } = this.props;
@@ -60,7 +65,14 @@ class GlobalHub extends React.PureComponent {
     return null;
   }
 
-  subscribeSyncInfo() {
+  pollSyncInfo = () => {
+    const { getSyncInfo } = this.props;
+
+    getSyncInfo();
+    syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
+  };
+
+  subscribeSyncInfo = () => {
     const { client, onSyncInfo } = this.props;
 
     client.subscribe({
@@ -73,30 +85,8 @@ class GlobalHub extends React.PureComponent {
         onSyncInfo({ error: err.message });
       },
     });
-  }
-
-  pollSyncInfo() {
-    const { getSyncInfo } = this.props;
-
-    getSyncInfo();
-    syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
-  }
+  };
 }
-
-GlobalHub.propTypes = {
-  client: PropTypes.object,
-  syncPercent: PropTypes.number.isRequired,
-  syncBlockNum: PropTypes.number.isRequired,
-  lastUsedAddress: PropTypes.string.isRequired,
-  checkWalletEncrypted: PropTypes.func.isRequired,
-  getSyncInfo: PropTypes.func.isRequired,
-  onSyncInfo: PropTypes.func.isRequired,
-  getActionableItemCount: PropTypes.func.isRequired,
-};
-
-GlobalHub.defaultProps = {
-  client: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
