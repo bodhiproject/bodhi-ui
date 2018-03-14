@@ -39,15 +39,14 @@ class GlobalHub extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const {
-      initSyncing,
+      syncPercent,
       syncBlockNum,
       getActionableItemCount,
       lastUsedAddress,
     } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
-    if (initSyncing && !nextProps.initSyncing) {
-      console.log('stopping sync info polling');
+    if (syncPercent >= 100) {
       clearInterval(syncInfoInterval);
     }
 
@@ -64,16 +63,13 @@ class GlobalHub extends React.PureComponent {
   subscribeSyncInfo() {
     const { client, onSyncInfo } = this.props;
 
-    console.log('subscribing');
     client.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next(data) {
-        console.log('syncInfo', data);
         onSyncInfo(data.data.onSyncInfo);
       },
       error(err) {
-        console.log('syncInfo', err);
         onSyncInfo({ error: err.message });
       },
     });
@@ -82,7 +78,6 @@ class GlobalHub extends React.PureComponent {
   pollSyncInfo() {
     const { getSyncInfo } = this.props;
 
-    console.log('start sync info polling');
     getSyncInfo();
     syncInfoInterval = setInterval(getSyncInfo, AppConfig.intervals.syncInfo);
   }
@@ -90,8 +85,8 @@ class GlobalHub extends React.PureComponent {
 
 GlobalHub.propTypes = {
   client: PropTypes.object,
-  initSyncing: PropTypes.bool.isRequired,
-  syncBlockNum: PropTypes.number,
+  syncPercent: PropTypes.number.isRequired,
+  syncBlockNum: PropTypes.number.isRequired,
   lastUsedAddress: PropTypes.string.isRequired,
   checkWalletEncrypted: PropTypes.func.isRequired,
   getSyncInfo: PropTypes.func.isRequired,
@@ -101,14 +96,10 @@ GlobalHub.propTypes = {
 
 GlobalHub.defaultProps = {
   client: undefined,
-  syncBlockNum: undefined,
 };
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
-  initSyncing: state.App.get('initSyncing'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
