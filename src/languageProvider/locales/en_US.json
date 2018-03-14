@@ -104,6 +104,7 @@
   "str.emptyTxHistory": "You do not have any transactions right now.",
   "str.end": "Ended",
   "str.ends": "Ends",
+  "str.error": "Error",
   "str.fee": "Fee",
   "str.finalize": "Finalize",
   "str.finalizing": "Finalizing",

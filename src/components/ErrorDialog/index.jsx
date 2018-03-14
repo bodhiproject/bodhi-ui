@@ -10,16 +10,14 @@ import Dialog, {
   DialogTitle,
 } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
-import graphqlActions from '../../redux/Graphql/actions';
 
 class ErrorDialog extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     errorApp: PropTypes.object,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
@@ -28,7 +26,6 @@ class ErrorDialog extends React.PureComponent {
 
   render() {
     const {
-      intl,
       classes,
       errorApp,
     } = this.props;
@@ -36,16 +33,20 @@ class ErrorDialog extends React.PureComponent {
     const isOpen = Boolean(errorApp);
     const error = errorApp;
 
+    if (!error) {
+      return null;
+    }
+
     return (
       <Dialog open={isOpen}>
         <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.errorRoute}>{error.route}</Typography>
-          <Typography variant="body1">{contentText.errorMessage}</Typography>
+          <Typography variant="body1">{error.message}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onOkClicked}>
-            {intl.formatMessage(messages.ok)}
+            <FormattedMessage id="str.ok" defaultMessage="OK" />
           </Button>
         </DialogActions>
       </Dialog>
