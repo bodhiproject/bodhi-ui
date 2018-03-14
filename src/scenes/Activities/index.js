@@ -42,7 +42,7 @@ class Activities extends React.Component {
   }
 
   render() {
-    const { classes, actionableItemCount } = this.props;
+    const { classes, actionableItemCount, history } = this.props;
     const { tabIdx } = this.state;
 
     return (
@@ -57,7 +57,7 @@ class Activities extends React.Component {
           {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
           {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
           {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === 3 && <EventHistory />}
+          {tabIdx === 3 && <EventHistory history={history} />}
         </div>
       </div>
     );
@@ -89,6 +89,7 @@ class Activities extends React.Component {
 }
 
 Activities.propTypes = {
+  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   actionableItemCount: PropTypes.object,
   // eslint-disable-next-line react/no-typos

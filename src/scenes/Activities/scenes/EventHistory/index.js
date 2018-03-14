@@ -16,7 +16,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
-import { TransactionType } from '../../../../constants';
+import { TransactionType, SortBy, OracleStatus } from '../../../../constants';
 
 class EventHistory extends React.Component {
   constructor(props) {
@@ -33,6 +33,7 @@ class EventHistory extends React.Component {
     this.createSortHandler = this.createSortHandler.bind(this);
     this.handleSorting = this.handleSorting.bind(this);
     this.executeTxsRequest = this.executeTxsRequest.bind(this);
+    this.onEventLinkClicked = this.onEventLinkClicked.bind(this);
   }
 
   componentWillMount() {
@@ -41,9 +42,30 @@ class EventHistory extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
+      getOraclesReturn,
       getTransactionsReturn,
       syncBlockTime,
     } = nextProps;
+
+
+    // return from the click event
+    if (getOraclesReturn !== this.props.getOraclesReturn) {
+      if (getOraclesReturn.length) {
+        // get the latest oracle
+        const latestOracle = getOraclesReturn[0];
+        // construct url for oracle or topic
+        let url;
+        if (latestOracle.status !== OracleStatus.Withdraw) {
+          url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
+        } else {
+          url = `/topic/${latestOracle.topicAddress}`;
+        }
+
+        // nagivate to detail page
+        this.props.history.push(url);
+        return;
+      }
+    }
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime) {
@@ -201,14 +223,30 @@ class EventHistory extends React.Component {
             </TableCell>
             <TableCell>
               {transaction.topic && transaction.topic.address ?
-                <Link to={this.getEventURL(transaction.topic.address, transaction.oracleAddress)} className={classes.viewEventLink}>
+                <div data-topic-address={transaction.topic.address} onClick={this.onEventLinkClicked} className={classes.viewEventLink}>
                   <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
-                </Link> : null
+                </div> : null
               }
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
+    );
+  }
+
+  onEventLinkClicked(event) {
+    const {
+      getOracles,
+      getOraclesReturn,
+    } = this.props;
+
+    const topicAddress = event.currentTarget.getAttribute('data-topic-address');
+
+    getOracles(
+      [
+        { topicAddress },
+      ],
+      { field: 'endTime', direction: SortBy.Descending },
     );
   }
 
@@ -230,40 +268,34 @@ class EventHistory extends React.Component {
 
     this.setState({ transactions, order, orderBy });
   }
-
-  getEventURL(topicAddress, oracleAddress) {
-    if (_.isEmpty(topicAddress)) {
-      return null;
-    }
-
-    if (_.isEmpty(oracleAddress)) {
-      return `/topic/${topicAddress}`;
-    }
-
-    // TODO: NEED TO REROUTE TO TOPIC PAGE IS ITS IN WITHDRAW STATUS
-    return `/oracle/${topicAddress}/${oracleAddress}`;
-  }
 }
 
 EventHistory.propTypes = {
+  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  getOracles: PropTypes.func,
+  getOraclesReturn: PropTypes.array,
   getTransactions: PropTypes.func,
   getTransactionsReturn: PropTypes.array,
   syncBlockTime: PropTypes.number,
 };
 
 EventHistory.defaultProps = {
+  getOracles: undefined,
+  getOraclesReturn: [],
   getTransactions: undefined,
   getTransactionsReturn: [],
   syncBlockTime: undefined,
 };
 
 const mapStateToProps = (state) => ({
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   };
 }
