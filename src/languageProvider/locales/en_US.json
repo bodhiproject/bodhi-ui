@@ -137,7 +137,7 @@
   "str.token": "Token",
   "str.transaction": "TRANSACTIONS",
   "str.transactionId": "Transaction ID",
-  "str.resultHistory": "RESULT HISTORY",
+  "str.resultHistory": "Result History",
   "str.type": "Type",
   "str.description": "Description",
   "str.unconfirmed": "Unconfirmed",
