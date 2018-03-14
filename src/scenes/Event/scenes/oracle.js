@@ -504,13 +504,15 @@ class OraclePage extends React.Component {
   getEventInfoObjs() {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
+    const { locale, messages: localeMessages } = this.props.intl;
+
     return [
       {
         label: <FormattedMessage id="eventInfo.endDate" defaultMessage="Ending Date" >
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>,
         content: getLocalDateTimeString(oracle.endTime),
-        highlight: getEndTimeCountDownString(oracle.endTime),
+        highlight: getEndTimeCountDownString(oracle.endTime, locale, localeMessages),
       }, {
         label: <FormattedMessage id="eventInfo.fund" defaultMessage="Funding" >
           {(txt) => i18nToUpperCase(txt)}
