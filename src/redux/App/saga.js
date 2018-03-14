@@ -78,7 +78,10 @@ export function* getWalletInfoRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-        error: error.message,
+        error: {
+          route: Routes.getWalletInfo,
+          message: error.message,
+        },
       });
     }
   });

@@ -90,6 +90,9 @@ export default function appReducer(state = initState, action) {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
     case actions.CHECK_WALLET_ENCRYPTED_RETURN: {
+      if (action.error) {
+        return state.set('errorApp', action.error);
+      }
       return state.set('walletEncrypted', action.value);
     }
     case actions.UNLOCK_WALLET_RETURN: {
