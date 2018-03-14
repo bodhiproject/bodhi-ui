@@ -39,7 +39,10 @@ export function* getBetAndVoteBalancesHandler() {
     } catch (err) {
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,
-        error: err.message,
+        error: {
+          route: `${Routes.betBalances} ${Routes.voteBalances}`,
+          message: err.message,
+        },
       });
     }
   });
@@ -81,7 +84,10 @@ export function* calculateWinningsHandler() {
     } catch (err) {
       yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
-        value: { botWon: 0, qtumWon: 0 },
+        error: {
+          route: Routes.winnings,
+          message: err.message,
+        },
       });
     }
   });

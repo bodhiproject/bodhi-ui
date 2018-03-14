@@ -15,6 +15,7 @@ import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
+import ErrorDialog from '../../components/ErrorDialog/index';
 
 const { toggleAll } = appActions;
 
@@ -43,6 +44,7 @@ export class App extends React.PureComponent {
         <BottomBar />
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />
+        <ErrorDialog />
       </div>
     );
   }

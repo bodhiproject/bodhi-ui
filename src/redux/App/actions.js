@@ -64,5 +64,10 @@ const appActions = {
     passphrase,
     timeout,
   }),
+
+  CLEAR_ERROR_APP: 'CLEAR_ERROR_APP',
+  clearErrorApp: () => ({
+    type: appActions.CLEAR_ERROR_APP,
+  }),
 };
 export default appActions;

@@ -18,6 +18,11 @@ const topicActions = {
       senderAddress,
     },
   }),
+
+  CLEAR_ERROR_TOPIC: 'CLEAR_ERROR_TOPIC',
+  clearErrorTopic: () => ({
+    type: topicActions.CLEAR_ERROR_TOPIC,
+  }),
 };
 
 export default topicActions;

@@ -53,10 +53,7 @@ export function* getInsightTotalsRequestHandler() {
         value: { result },
       });
     } catch (error) {
-      yield put({
-        type: actions.GET_INSIGHT_TOTALS_RETURN,
-        value: { error: error.message ? error.message : '' },
-      });
+      console.error(error.message);
     }
   });
 }
@@ -81,7 +78,10 @@ export function* getWalletInfoRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-        error: error.message,
+        error: {
+          route: Routes.getWalletInfo,
+          message: error.message,
+        },
       });
     }
   });
@@ -114,7 +114,10 @@ export function* unlockWalletRequestHandler() {
     } catch (error) {
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
-        error: error.message,
+        error: {
+          route: Routes.unlockWallet,
+          message: error.message,
+        },
       });
     }
   });
