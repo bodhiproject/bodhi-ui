@@ -1,5 +1,5 @@
 /* eslint-disable */
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import { sync as globSync } from 'glob';
 import { sync as mkdirpSync } from 'mkdirp';
 
@@ -53,3 +53,4 @@ prevmessages = sortObjectKeys(prevmessages);
 cnMessages = sortObjectKeys(cnMessages);
 fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(prevmessages, null, 2)}\n`);
 fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnMessages, null, 2)}\n`);
+fs.removeSync('./build/messages/')
