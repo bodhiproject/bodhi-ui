@@ -29,7 +29,7 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -312,9 +312,10 @@ class OraclePage extends React.Component {
       ]);
     }
 
-    this.props.getTransactions([
-      { topicAddress },
-    ]);
+    this.props.getTransactions(
+      [{ topicAddress }],
+      { field: 'createdTime', direction: SortBy.Descending },
+    );
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
