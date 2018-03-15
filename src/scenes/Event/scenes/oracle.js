@@ -14,10 +14,12 @@ import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
+import styles from './styles';
 import {
   getLocalDateTimeString,
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
+  getDetailPagePath,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
@@ -29,7 +31,6 @@ import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
-import styles from './styles';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const messages = defineMessages({
@@ -360,6 +361,18 @@ class OraclePage extends React.Component {
       }
     }
 
+    if (oracle || !config) {
+      const path = getDetailPagePath(getOraclesReturn);
+      if (path) {
+        // Oracle stage changed, route to correct detail page
+        this.props.history.push(path);
+      } else {
+        // Couldn't get proper path, route to dashboard
+        this.props.history.push('/');
+      }
+      return;
+    }
+
     this.setState({ oracle, config });
   }
 
@@ -599,6 +612,7 @@ class OraclePage extends React.Component {
 
 OraclePage.propTypes = {
   match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   getOracles: PropTypes.func,
   getOraclesReturn: PropTypes.array,
