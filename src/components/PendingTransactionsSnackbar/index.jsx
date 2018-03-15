@@ -86,7 +86,6 @@ class PendingTransactionsSnackbar extends React.Component {
       <SnackbarContent
         className={classes.snackbar}
         open={snackbarVisible}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         message={
           <Grid container>
             <Grid item xs={11}>
@@ -98,7 +97,7 @@ class PendingTransactionsSnackbar extends React.Component {
                   if (key !== 'count') {
                     const amount = pendingTxs[key].length;
                     if (amount > 0) {
-                      return <Typography variant="caption">{`${this.getEventName(key)}: ${amount}`}</Typography>;
+                      return <Typography variant="caption" key={key}>{`${this.getEventName(key)}: ${amount}`}</Typography>;
                     }
                     return null;
                   }
