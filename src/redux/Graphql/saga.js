@@ -14,7 +14,7 @@ import {
 } from '../../network/graphMutation';
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
-import { Token, OracleStatus, EventStatus } from '../../constants';
+import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -96,6 +96,39 @@ export function* getTransactionsHandler() {
       console.error(err);
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
+        value: [],
+      });
+    }
+  });
+}
+
+// Send allTransactions query for pending txs only
+export function* getPendingTransactionsHandler() {
+  yield takeEvery(actions.GET_PENDING_TRANSACTIONS, function* getPendingTransactionsRequest(action) {
+    try {
+      const filters = [{ status: TransactionStatus.Pending }];
+      const result = yield call(queryAllTransactions, filters);
+      const txs = _.map(result, processTransaction);
+
+      const pendingTxsObj = {
+        count: txs.length,
+        createEvent: _.filter(txs, { type: TransactionType.CreateEvent }),
+        bet: _.filter(txs, { type: TransactionType.Bet }),
+        setResult: _.filter(txs, { type: TransactionType.ApproveSetResult }),
+        vote: _.filter(txs, { type: TransactionType.ApproveVote }),
+        finalizeResult: _.filter(txs, { type: TransactionType.FinalizeResult }),
+        withdraw: _.filter(txs, { type: TransactionType.Withdraw }),
+        transfer: _.filter(txs, { type: TransactionType.Transfer }),
+      };
+
+      yield put({
+        type: actions.GET_PENDING_TRANSACTIONS_RETURN,
+        value: pendingTxsObj,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: [],
       });
     }
@@ -363,6 +396,7 @@ export default function* graphqlSaga() {
     fork(getTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
+    fork(getPendingTransactionsHandler),
     fork(getActionableItemCountHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
