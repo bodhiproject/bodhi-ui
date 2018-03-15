@@ -13,6 +13,7 @@ import Loader from './components/Loader/index';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
+import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
@@ -21,7 +22,10 @@ const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
   render() {
-    const { classes, txReturn } = this.props;
+    const {
+      classes,
+      txReturn,
+    } = this.props;
     const { url } = this.props.match;
 
     return (
@@ -42,6 +46,7 @@ export class App extends React.PureComponent {
           <AppRouter url={url} langHandler={this.props.langHandler} />
         </div>
         <BottomBar />
+        <PendingTransactionsSnackbar />
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />
         <ErrorDialog />

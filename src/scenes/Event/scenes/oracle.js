@@ -286,7 +286,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             showAmountInput: true,
-            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+            btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
           importantNote: {
             heading: <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />,
@@ -303,7 +303,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             showAmountInput: true,
-            btnText: <FormattedMessage id="cardInfo.bet" defaultMessage="Bet" />,
+            btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
         };
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {

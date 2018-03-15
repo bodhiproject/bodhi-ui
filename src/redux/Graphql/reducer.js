@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import actions from './actions';
 
 const initState = new Map({
-  value: undefined,
+  getPendingTransactionsReturn: { count: 0 },
 });
 
 export default function graphqlReducer(state = initState, action) {
@@ -15,6 +15,10 @@ export default function graphqlReducer(state = initState, action) {
     }
     case actions.GET_TRANSACTIONS_RETURN: {
       return state.set('getTransactionsReturn', action.value);
+    }
+    case actions.GET_PENDING_TRANSACTIONS_RETURN: {
+      return state.set('getPendingTransactionsReturn', action.value)
+        .set('pendingTxsSnackbarVisible', true);
     }
     case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
       return state.set('actionableItemCount', action.value);

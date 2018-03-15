@@ -28,7 +28,7 @@ const messages = defineMessages({
     defaultMessage: 'Place Vote',
   },
   finalizeResult: {
-    id: 'bottomButtonText.final',
+    id: 'str.finalizeResult',
     defaultMessage: 'Finalize Result',
   },
   withdraw: {

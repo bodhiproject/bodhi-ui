@@ -69,5 +69,10 @@ const appActions = {
   clearErrorApp: () => ({
     type: appActions.CLEAR_ERROR_APP,
   }),
+
+  DISMISS_PENDING_TXS_SNACKBAR: 'DISMISS_PENDING_TXS_SNACKBAR',
+  dismissPendingTxsSnackbar: () => ({
+    type: appActions.DISMISS_PENDING_TXS_SNACKBAR,
+  }),
 };
 export default appActions;
