@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'str.transferTokens',
     defaultMessage: 'Transfer Tokens',
   },
+  balanceExplanation: {
+    id: 'pendingTxsSnackbar.balanceExplanation',
+    defaultMessage: 'Pending transactions will affect your wallet balances.',
+  },
 });
 
 class PendingTransactionsSnackbar extends React.Component {
@@ -108,6 +112,9 @@ class PendingTransactionsSnackbar extends React.Component {
                   return null;
                 })
               }
+              <Typography variant="caption" className={classes.balanceExplanation}>
+                {`* ${provider.formatMessage(messages.balanceExplanation)}`}
+              </Typography>
             </Grid>
             <Grid item xs={1}>
               <i

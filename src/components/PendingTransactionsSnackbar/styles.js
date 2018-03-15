@@ -6,6 +6,9 @@ const styles = (theme) => ({
   totalCountText: {
     fontWeight: theme.typography.fontWeightBold,
   },
+  balanceExplanation: {
+    marginTop: theme.padding.xs.px,
+  },
 });
 
 export default styles;
