@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
+import appActions from '../../redux/App/actions';
 import { getIntlProvider } from '../../helpers/i18nUtil';
 
 const messages = defineMessages({
@@ -57,6 +58,7 @@ class PendingTransactionsSnackbar extends React.Component {
     classes: PropTypes.object.isRequired,
     getPendingTransactionsReturn: PropTypes.object.isRequired,
     pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
+    dismissPendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -108,7 +110,10 @@ class PendingTransactionsSnackbar extends React.Component {
               }
             </Grid>
             <Grid item xs={1}>
-              <i className={classNames(classes.closeIcon, 'icon', 'iconfont', 'icon-ic_close')}></i>
+              <i
+                className={classNames(classes.closeIcon, 'icon', 'iconfont', 'icon-ic_close')}
+                onClick={this.onCloseClicked}
+              ></i>
             </Grid>
           </Grid>
         }
@@ -146,6 +151,10 @@ class PendingTransactionsSnackbar extends React.Component {
       }
     }
   };
+
+  onCloseClicked = () => {
+    this.props.dismissPendingTxsSnackbar();
+  };
 }
 
 const mapStateToProps = (state) => ({
@@ -155,6 +164,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    dismissPendingTxsSnackbar: () => dispatch(appActions.dismissPendingTxsSnackbar()),
   };
 }
 

@@ -20,7 +20,7 @@ const initState = new Map({
   walletUnlockDialogVisibility: false,
   walletEncrypted: false,
   walletUnlockedUntil: 0,
-  pendingTxsSnackbarVisible: false,
+  pendingTxsSnackbarVisible: true,
 });
 
 export default function appReducer(state = initState, action) {
