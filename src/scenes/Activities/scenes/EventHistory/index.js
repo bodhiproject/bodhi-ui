@@ -19,6 +19,23 @@ import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../help
 import { TransactionType, SortBy, OracleStatus } from '../../../../constants';
 
 class EventHistory extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    getOracles: PropTypes.func.isRequired,
+    getOraclesReturn: PropTypes.array,
+    getTransactions: PropTypes.func,
+    getTransactionsReturn: PropTypes.array,
+    syncBlockTime: PropTypes.number,
+  };
+
+  static defaultProps = {
+    getOraclesReturn: [],
+    getTransactions: undefined,
+    getTransactionsReturn: [],
+    syncBlockTime: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -256,23 +273,6 @@ class EventHistory extends React.Component {
     this.setState({ transactions, order, orderBy });
   }
 }
-
-EventHistory.propTypes = {
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  getOracles: PropTypes.func.isRequired,
-  getOraclesReturn: PropTypes.array,
-  getTransactions: PropTypes.func,
-  getTransactionsReturn: PropTypes.array,
-  syncBlockTime: PropTypes.number,
-};
-
-EventHistory.defaultProps = {
-  getOraclesReturn: [],
-  getTransactions: undefined,
-  getTransactionsReturn: [],
-  syncBlockTime: undefined,
-};
 
 const mapStateToProps = (state) => ({
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
