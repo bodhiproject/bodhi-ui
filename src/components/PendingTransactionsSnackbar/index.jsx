@@ -4,6 +4,8 @@ import { withStyles } from 'material-ui/styles';
 import { SnackbarContent } from 'material-ui/Snackbar';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
+import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
@@ -49,23 +51,28 @@ class PendingTransactionsSnackbar extends React.Component {
         open={snackbarVisible}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         message={
-          <div>
-            <Typography variant="caption">
-              {`${provider.formatMessage(messages.youHave)} ${pendingTxs.count} ${provider.formatMessage(messages.pendingTransactions)}`}
-            </Typography>
-            {
-              Object.keys(pendingTxs).map((key) => {
-                if (key !== 'count') {
-                  const amount = pendingTxs[key].length;
-                  if (amount > 0) {
-                    return <Typography variant="caption">{`${key}: ${amount}`}</Typography>;
+          <Grid container>
+            <Grid item xs={11}>
+              <Typography variant="caption" className={classes.totalCountText}>
+                {`${provider.formatMessage(messages.youHave)} ${pendingTxs.count} ${provider.formatMessage(messages.pendingTransactions)}`}
+              </Typography>
+              {
+                Object.keys(pendingTxs).map((key) => {
+                  if (key !== 'count') {
+                    const amount = pendingTxs[key].length;
+                    if (amount > 0) {
+                      return <Typography variant="caption">{`${key}: ${amount}`}</Typography>;
+                    }
+                    return null;
                   }
                   return null;
-                }
-                return null;
-              })
-            }
-          </div>
+                })
+              }
+            </Grid>
+            <Grid item xs={1}>
+              <i className={classNames(classes.closeIcon, 'icon', 'iconfont', 'icon-ic_close')}></i>
+            </Grid>
+          </Grid>
         }
       />
     );
