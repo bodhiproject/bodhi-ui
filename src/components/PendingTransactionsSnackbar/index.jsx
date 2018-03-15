@@ -81,6 +81,8 @@ class PendingTransactionsSnackbar extends React.Component {
     const { provider } = this.state;
     const pendingTxs = getPendingTransactionsReturn;
 
+    console.log(getPendingTransactionsReturn);
+
     if (pendingTxs.count === 0) {
       return null;
     }

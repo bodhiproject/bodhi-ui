@@ -110,12 +110,16 @@ export function* getPendingTransactionsHandler() {
       const result = yield call(queryAllTransactions, filters);
       const txs = _.map(result, processTransaction);
 
+      console.log(txs);
+
       const pendingTxsObj = {
         count: txs.length,
         createEvent: _.filter(txs, { type: TransactionType.CreateEvent }),
         bet: _.filter(txs, { type: TransactionType.Bet }),
-        setResult: _.filter(txs, { type: TransactionType.ApproveSetResult }),
-        vote: _.filter(txs, { type: TransactionType.ApproveVote }),
+        setResult: _.filter(txs, (tx) =>
+          tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult),
+        vote: _.filter(txs, (tx) =>
+          tx.type === TransactionType.ApproveVote || tx.type === TransactionType.Vote),
         finalizeResult: _.filter(txs, { type: TransactionType.FinalizeResult }),
         withdraw: _.filter(txs, { type: TransactionType.Withdraw }),
         transfer: _.filter(txs, { type: TransactionType.Transfer }),
