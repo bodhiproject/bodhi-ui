@@ -15,7 +15,7 @@ import moment from 'moment';
 import styles from './styles';
 import Config from '../../../../config/app';
 import graphqlActions from '../../../../redux/Graphql/actions';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
 import { TransactionType, SortBy, OracleStatus } from '../../../../constants';
 
 class EventHistory extends React.Component {
@@ -50,20 +50,9 @@ class EventHistory extends React.Component {
 
     // return from the click event
     if (getOraclesReturn !== this.props.getOraclesReturn) {
-      if (getOraclesReturn.length) {
-        // get the latest oracle
-        const latestOracle = getOraclesReturn[0];
-        // construct url for oracle or topic
-        let url;
-        if (latestOracle.status !== OracleStatus.Withdraw) {
-          url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
-        } else {
-          url = `/topic/${latestOracle.topicAddress}`;
-        }
-
-        // nagivate to detail page
-        this.props.history.push(url);
-        return;
+      const path = getDetailPagePath(getOraclesReturn);
+      if (path) {
+        this.props.history.push(path);
       }
     }
 
@@ -76,13 +65,14 @@ class EventHistory extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { transactions } = this.state;
 
     return (
       <Grid container spacing={0}>
         {
           transactions.length ?
-            (<Table>
+            (<Table className={classes.historyTable}>
               {this.getTableHeader()}
               {this.getTableRows(this.state.transactions)}
             </Table>) :
