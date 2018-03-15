@@ -397,7 +397,7 @@ class OraclePage extends React.Component {
       }
     }
 
-    if (oracle || !config) {
+    if (oracle && !config) {
       const path = getDetailPagePath(getOraclesReturn);
       if (path) {
         // Oracle stage changed, route to correct detail page
