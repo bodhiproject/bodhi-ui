@@ -110,8 +110,6 @@ export function* getPendingTransactionsHandler() {
       const result = yield call(queryAllTransactions, filters);
       const txs = _.map(result, processTransaction);
 
-      console.log(txs);
-
       const pendingTxsObj = {
         count: txs.length,
         createEvent: _.filter(txs, { type: TransactionType.CreateEvent }),
