@@ -38,6 +38,30 @@ const messages = defineMessages({
     id: 'oracle.consensusThreshold',
     defaultMessage: 'Consensus Threshold',
   },
+  unconfirmed: {
+    id: 'str.unconfirmed',
+    defaultMessage: 'Unconfirmed',
+  },
+  eventUnconfirmed: {
+    id: 'oracle.eventUnconfirmed',
+    defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
+  },
+  setResultExplanation: {
+    id: 'oracle.setResultExplanation',
+    defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
+  },
+  voteExplanation: {
+    id: 'oracle.voteExplanation',
+    defaultMessage: 'When a result\'s total votes reaches the Consensus Threshold, it will become the new result.',
+  },
+  finalizing: {
+    id: 'str.finalizing',
+    defaultMessage: 'Finalizing',
+  },
+  finalizingExplanation: {
+    id: 'oracle.finalizingExplanation',
+    defaultMessage: 'Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round\'s result. Winners can withdraw their winnings once an Event is finalized.',
+  },
 });
 
 class OraclePage extends React.Component {
@@ -326,8 +350,8 @@ class OraclePage extends React.Component {
             btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
           importantNote: {
-            heading: <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />,
-            message: <FormattedMessage id="oracle.eventUnconfirmed" defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain." />,
+            heading: intl.formatMessage(messages.unconfirmed),
+            message: intl.formatMessage(messages.eventUnconfirmed),
           },
         };
       } else if (token === Token.Qtum && status === OracleStatus.Voting) {
@@ -357,7 +381,7 @@ class OraclePage extends React.Component {
           },
           importantNote: {
             heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: <FormattedMessage id="oracle.setResultExplanation" defaultMessage="Setting the result requires staking the Consensus Threshold amount." />,
+            message: intl.formatMessage(messages.setResultExplanation),
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
@@ -374,7 +398,7 @@ class OraclePage extends React.Component {
           },
           importantNote: {
             heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: <FormattedMessage id="oracle.voteExplanation" defaultMessage="When a result's total votes reaches the Consensus Threshold, it will become the new result." />,
+            message: intl.formatMessage(messages.voteExplanation),
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
@@ -390,8 +414,8 @@ class OraclePage extends React.Component {
             btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
           },
           importantNote: {
-            heading: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-            message: <FormattedMessage id="oracle.finalizingExplanation" defaultMessage="Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round's result. Winners can withdraw their winnings once an Event is finalized." />,
+            heading: intl.formatMessage(messages.finalizing),
+            message: intl.formatMessage(messages.finalizingExplanation),
           },
         };
       }
