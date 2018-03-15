@@ -46,7 +46,7 @@ export class App extends React.PureComponent {
         </div>
         <BottomBar />
         <PendingTransactionsSnackbar
-          snackbarVisible={getPendingTransactionsReturn.count}
+          snackbarVisible={Boolean(getPendingTransactionsReturn.count)}
           pendingTxs={getPendingTransactionsReturn}
         />
         <TransactionSentDialog txReturn={txReturn} />

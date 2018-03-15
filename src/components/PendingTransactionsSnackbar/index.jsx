@@ -53,6 +53,18 @@ class PendingTransactionsSnackbar extends React.Component {
             <Typography variant="caption">
               {`${provider.formatMessage(messages.youHave)} ${pendingTxs.count} ${provider.formatMessage(messages.pendingTransactions)}`}
             </Typography>
+            {
+              Object.keys(pendingTxs).map((key) => {
+                if (key !== 'count') {
+                  const amount = pendingTxs[key].length;
+                  if (amount > 0) {
+                    return <Typography variant="caption">{`${key}: ${amount}`}</Typography>;
+                  }
+                  return null;
+                }
+                return null;
+              })
+            }
           </div>
         }
       />
