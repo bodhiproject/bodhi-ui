@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import { SnackbarContent } from 'material-ui/Snackbar';
+import Snackbar from 'material-ui/Snackbar';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
@@ -54,8 +55,8 @@ class PendingTransactionsSnackbar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
-    snackbarVisible: PropTypes.bool.isRequired,
-    pendingTxs: PropTypes.object.isRequired,
+    getPendingTransactionsReturn: PropTypes.object.isRequired,
+    pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -72,19 +73,21 @@ class PendingTransactionsSnackbar extends React.Component {
   render() {
     const {
       classes,
-      snackbarVisible,
-      pendingTxs,
+      getPendingTransactionsReturn,
+      pendingTxsSnackbarVisible,
     } = this.props;
     const { provider } = this.state;
+    const pendingTxs = getPendingTransactionsReturn;
 
     if (pendingTxs.count === 0) {
       return null;
     }
 
     return (
-      <SnackbarContent
+      <Snackbar
         className={classes.snackbar}
-        open={snackbarVisible}
+        open={pendingTxs.count > 0 && pendingTxsSnackbarVisible}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         message={
           <Grid container>
             <Grid item xs={11}>
@@ -146,7 +149,13 @@ class PendingTransactionsSnackbar extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
   getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
 });
 
-export default injectIntl(withStyles(styles, { withTheme: true })(PendingTransactionsSnackbar));
+function mapDispatchToProps(dispatch) {
+  return {
+  };
+}
+
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PendingTransactionsSnackbar)));

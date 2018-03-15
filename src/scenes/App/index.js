@@ -22,10 +22,11 @@ const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
   render() {
-    const { classes, txReturn, getPendingTransactionsReturn } = this.props;
+    const {
+      classes,
+      txReturn,
+    } = this.props;
     const { url } = this.props.match;
-
-    const snackbar = true;
 
     return (
       <div className={classes.root}>
@@ -45,10 +46,7 @@ export class App extends React.PureComponent {
           <AppRouter url={url} langHandler={this.props.langHandler} />
         </div>
         <BottomBar />
-        <PendingTransactionsSnackbar
-          snackbarVisible={Boolean(getPendingTransactionsReturn.count)}
-          pendingTxs={getPendingTransactionsReturn}
-        />
+        <PendingTransactionsSnackbar />
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />
         <ErrorDialog />
@@ -63,7 +61,6 @@ App.propTypes = {
   classes: PropTypes.object.isRequired,
   langHandler: PropTypes.func.isRequired,
   txReturn: PropTypes.object,
-  getPendingTransactionsReturn: PropTypes.object.isRequired,
 };
 
 App.defaultProps = {
@@ -72,7 +69,6 @@ App.defaultProps = {
 
 const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
