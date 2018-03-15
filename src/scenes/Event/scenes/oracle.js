@@ -459,7 +459,7 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="str.notEnoughQtum"
-          defaultMessage="Not enough QTUM"
+          defaultMessage="You don't have enough QTUM"
         />,
         warningTypeClass: EventWarningType.Error,
       };
@@ -476,7 +476,7 @@ class OraclePage extends React.Component {
         disabled: true,
         message: <FormattedMessage
           id="str.notEnoughBot"
-          defaultMessage="Not enough BOT"
+          defaultMessage="You don't have enough BOT"
         />,
         warningTypeClass: EventWarningType.Error,
       };
