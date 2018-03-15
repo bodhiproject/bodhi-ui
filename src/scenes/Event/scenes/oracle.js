@@ -41,6 +41,42 @@ const messages = defineMessages({
 });
 
 class OraclePage extends React.Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    getOracles: PropTypes.func,
+    getOraclesReturn: PropTypes.array,
+    getTransactions: PropTypes.func,
+    getTransactionsReturn: PropTypes.array,
+    createBetTx: PropTypes.func,
+    createSetResultTx: PropTypes.func,
+    createVoteTx: PropTypes.func,
+    createFinalizeResultTx: PropTypes.func,
+    txReturn: PropTypes.object,
+    syncBlockTime: PropTypes.number,
+    walletAddresses: PropTypes.array.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    setLastUsedAddress: PropTypes.func.isRequired,
+    walletEncrypted: PropTypes.bool.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  };
+
+  static defaultProps = {
+    getOracles: undefined,
+    getOraclesReturn: [],
+    getTransactions: undefined,
+    getTransactionsReturn: [],
+    createBetTx: undefined,
+    createSetResultTx: undefined,
+    createVoteTx: undefined,
+    createFinalizeResultTx: undefined,
+    txReturn: undefined,
+    syncBlockTime: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -609,42 +645,6 @@ class OraclePage extends React.Component {
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
   }
 }
-
-OraclePage.propTypes = {
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  getOracles: PropTypes.func,
-  getOraclesReturn: PropTypes.array,
-  getTransactions: PropTypes.func,
-  getTransactionsReturn: PropTypes.array,
-  createBetTx: PropTypes.func,
-  createSetResultTx: PropTypes.func,
-  createVoteTx: PropTypes.func,
-  createFinalizeResultTx: PropTypes.func,
-  txReturn: PropTypes.object,
-  syncBlockTime: PropTypes.number,
-  walletAddresses: PropTypes.array.isRequired,
-  lastUsedAddress: PropTypes.string.isRequired,
-  setLastUsedAddress: PropTypes.func.isRequired,
-  walletEncrypted: PropTypes.bool.isRequired,
-  walletUnlockedUntil: PropTypes.number.isRequired,
-  toggleWalletUnlockDialog: PropTypes.func.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-};
-
-OraclePage.defaultProps = {
-  getOracles: undefined,
-  getOraclesReturn: [],
-  getTransactions: undefined,
-  getTransactionsReturn: [],
-  createBetTx: undefined,
-  createSetResultTx: undefined,
-  createVoteTx: undefined,
-  createFinalizeResultTx: undefined,
-  txReturn: undefined,
-  syncBlockTime: undefined,
-};
 
 const mapStateToProps = (state) => ({
   walletAddresses: state.App.get('walletAddresses'),
