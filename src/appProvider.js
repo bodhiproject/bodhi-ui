@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ConnectedRouter } from 'react-router-redux';
 import { IntlProvider } from 'react-intl';
@@ -15,21 +15,17 @@ import { store, history } from './redux/store';
 
 import '../src/style/styles.less';
 
-const locales = [AppLocale.en, AppLocale.zh];
-class AppProvider extends React.Component {
+export default class AppProvider extends Component {
+  locales = [AppLocale.en, AppLocale.zh]
   state = {
     locale: localStorage.getItem('localindex') || 0,
-  }
-
-  componentDidMount() {
-    moment.locale(locales[this.state.locale].momentlocale);
   }
 
   langHandler = () => {
     this.setState({
       locale: (this.state.locale + 1) % 2,
     }, () => {
-      moment.locale(locales[this.state.locale].momentlocale);
+      moment.locale(this.locales[this.state.locale].momentlocale);
       localStorage.setItem('localindex', this.state.locale);
     });
   }
@@ -37,8 +33,8 @@ class AppProvider extends React.Component {
   render() {
     return (
       <MuiThemeProvider theme={bodhiTheme}>
-        <LocaleProvider locale={locales[this.state.locale].antd}>
-          <IntlProvider locale={locales[this.state.locale].locale} messages={locales[this.state.locale].messages}>
+        <LocaleProvider locale={this.locales[this.state.locale].antd}>
+          <IntlProvider locale={this.locales[this.state.locale].locale} messages={this.locales[this.state.locale].messages}>
             <ApolloProvider client={graphClient}>
               <Provider store={store}>
                 <ConnectedRouter history={history}>
@@ -55,5 +51,3 @@ class AppProvider extends React.Component {
     );
   }
 }
-
-export default AppProvider;
