@@ -20,6 +20,34 @@ const messages = defineMessages({
     id: 'pendingTxsSnackbar.pendingTransactions',
     defaultMessage: 'pending transactions.',
   },
+  createEvent: {
+    id: 'str.createEvent',
+    defaultMessage: 'Create Event',
+  },
+  bet: {
+    id: 'str.bet',
+    defaultMessage: 'Bet',
+  },
+  setResult: {
+    id: 'str.setResult',
+    defaultMessage: 'Set Result',
+  },
+  vote: {
+    id: 'str.vote',
+    defaultMessage: 'Vote',
+  },
+  finalizeResult: {
+    id: 'str.finalizeResult',
+    defaultMessage: 'Finalize Result',
+  },
+  withdraw: {
+    id: 'str.withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  transferTokens: {
+    id: 'str.transferTokens',
+    defaultMessage: 'Transfer Tokens',
+  },
 });
 
 class PendingTransactionsSnackbar extends React.Component {
@@ -30,6 +58,17 @@ class PendingTransactionsSnackbar extends React.Component {
     pendingTxs: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+
+    const { locale, messages: localeMessages } = this.props.intl;
+    const provider = getIntlProvider(locale, localeMessages);
+
+    this.state = {
+      provider,
+    };
+  }
+
   render() {
     const {
       intl,
@@ -37,9 +76,7 @@ class PendingTransactionsSnackbar extends React.Component {
       snackbarVisible,
       pendingTxs,
     } = this.props;
-
-    const { locale, messages: localeMessages } = this.props.intl;
-    const provider = getIntlProvider(locale, localeMessages);
+    const { provider } = this.state;
 
     if (pendingTxs.count <= 0) {
       return null;
@@ -61,7 +98,7 @@ class PendingTransactionsSnackbar extends React.Component {
                   if (key !== 'count') {
                     const amount = pendingTxs[key].length;
                     if (amount > 0) {
-                      return <Typography variant="caption">{`${key}: ${amount}`}</Typography>;
+                      return <Typography variant="caption">{`${this.getEventName(key)}: ${amount}`}</Typography>;
                     }
                     return null;
                   }
@@ -77,6 +114,37 @@ class PendingTransactionsSnackbar extends React.Component {
       />
     );
   }
+
+  getEventName = (key) => {
+    const { provider } = this.state;
+
+    switch (key) {
+      case 'createEvent': {
+        return provider.formatMessage(messages.createEvent);
+      }
+      case 'bet': {
+        return provider.formatMessage(messages.bet);
+      }
+      case 'setResult': {
+        return provider.formatMessage(messages.setResult);
+      }
+      case 'vote': {
+        return provider.formatMessage(messages.vote);
+      }
+      case 'finalizeResult': {
+        return provider.formatMessage(messages.finalizeResult);
+      }
+      case 'withdraw': {
+        return provider.formatMessage(messages.withdraw);
+      }
+      case 'transfer': {
+        return provider.formatMessage(messages.transferTokens);
+      }
+      default: {
+        return undefined;
+      }
+    }
+  };
 }
 
 const mapStateToProps = (state) => ({
