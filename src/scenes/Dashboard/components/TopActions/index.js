@@ -53,10 +53,10 @@ class TopActions extends Component {
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
           {
-            createEventVisibility
-              ? <Link to="/create-topic" >
+            createEventVisibility ?
+              <Link to="/create-topic" >
                 <Button variant="raised" size="medium" color="primary" className={classes.createEventButton}>
-                  <AddIcon fontSize />
+                  <AddIcon fontSize className={classes.createEventIcon} />
                   <FormattedMessage id="create.title" defaultMessage="Create an event" />
                 </Button>
               </Link>
