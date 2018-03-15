@@ -21,11 +21,13 @@ class GlobalHub extends React.PureComponent {
     lastUsedAddress: PropTypes.string.isRequired,
     checkWalletEncrypted: PropTypes.func.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
+    txReturn: PropTypes.object,
     getPendingTransactions: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     client: undefined,
+    txReturn: undefined,
   };
 
   componentWillMount() {
@@ -58,6 +60,8 @@ class GlobalHub extends React.PureComponent {
       syncBlockNum,
       getActionableItemCount,
       lastUsedAddress,
+      txReturn,
+      getPendingTransactions,
     } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
@@ -68,6 +72,12 @@ class GlobalHub extends React.PureComponent {
     // Gets the actionable items for the My Activities badge
     if (nextProps.lastUsedAddress !== lastUsedAddress) {
       getActionableItemCount(nextProps.lastUsedAddress);
+    }
+
+    // Refresh the pending txs snackbar when a tx is created or on a new block
+    if ((!txReturn && nextProps.txReturn)
+      || (syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)) {
+      getPendingTransactions();
     }
   }
 
@@ -99,6 +109,7 @@ class GlobalHub extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
+  txReturn: state.Graphql.get('txReturn'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

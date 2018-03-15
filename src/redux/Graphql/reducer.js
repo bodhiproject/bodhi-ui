@@ -17,7 +17,8 @@ export default function graphqlReducer(state = initState, action) {
       return state.set('getTransactionsReturn', action.value);
     }
     case actions.GET_PENDING_TRANSACTIONS_RETURN: {
-      return state.set('getPendingTransactionsReturn', action.value);
+      return state.set('getPendingTransactionsReturn', action.value)
+        .set('pendingTxsSnackbarVisible', true);
     }
     case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
       return state.set('actionableItemCount', action.value);
