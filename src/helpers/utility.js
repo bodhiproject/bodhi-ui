@@ -7,6 +7,7 @@ import { FormattedMessage, DefaultMessage, IntlProvider, defineMessages } from '
 
 import AppLocale from '../languageProvider';
 import { getIntlProvider } from './i18nUtil';
+import { OracleStatus } from '../constants';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
@@ -152,4 +153,27 @@ export function doesUserNeedToUnlockWallet(unlockedUntilUnix) {
   const unlockedUntil = moment().unix(unlockedUntilUnix);
   const now = moment().unix();
   return unlockedUntil.isSameOrBefore(now);
+}
+
+/**
+ * Returns the correct path of the latest Oracle to route to the detail page.
+ * @param oracles {Array} Array of Oracle objects.
+ * @return {String} The path to route the user to the correct detail page.
+ */
+export function getDetailPagePath(oracles) {
+  if (oracles.length) {
+    const sorted = _.orderBy(oracles, ['blockNum'], ['desc']);
+    const latestOracle = sorted[0];
+
+    // construct url for oracle or topic
+    let url;
+    if (latestOracle.status !== OracleStatus.Withdraw) {
+      url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
+    } else {
+      url = `/topic/${latestOracle.topicAddress}`;
+    }
+
+    return url;
+  }
+  return undefined;
 }

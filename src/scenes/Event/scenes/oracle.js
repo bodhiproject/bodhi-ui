@@ -14,10 +14,12 @@ import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
+import styles from './styles';
 import {
   getLocalDateTimeString,
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
+  getDetailPagePath,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
@@ -29,7 +31,6 @@ import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
-import styles from './styles';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const messages = defineMessages({
@@ -37,9 +38,69 @@ const messages = defineMessages({
     id: 'oracle.consensusThreshold',
     defaultMessage: 'Consensus Threshold',
   },
+  unconfirmed: {
+    id: 'str.unconfirmed',
+    defaultMessage: 'Unconfirmed',
+  },
+  eventUnconfirmed: {
+    id: 'oracle.eventUnconfirmed',
+    defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
+  },
+  setResultExplanation: {
+    id: 'oracle.setResultExplanation',
+    defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
+  },
+  voteExplanation: {
+    id: 'oracle.voteExplanation',
+    defaultMessage: 'When a result\'s total votes reaches the Consensus Threshold, it will become the new result.',
+  },
+  finalizing: {
+    id: 'str.finalizing',
+    defaultMessage: 'Finalizing',
+  },
+  finalizingExplanation: {
+    id: 'oracle.finalizingExplanation',
+    defaultMessage: 'Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round\'s result. Winners can withdraw their winnings once an Event is finalized.',
+  },
 });
 
 class OraclePage extends React.Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    getOracles: PropTypes.func,
+    getOraclesReturn: PropTypes.array,
+    getTransactions: PropTypes.func,
+    getTransactionsReturn: PropTypes.array,
+    createBetTx: PropTypes.func,
+    createSetResultTx: PropTypes.func,
+    createVoteTx: PropTypes.func,
+    createFinalizeResultTx: PropTypes.func,
+    txReturn: PropTypes.object,
+    syncBlockTime: PropTypes.number,
+    walletAddresses: PropTypes.array.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    setLastUsedAddress: PropTypes.func.isRequired,
+    walletEncrypted: PropTypes.bool.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  };
+
+  static defaultProps = {
+    getOracles: undefined,
+    getOraclesReturn: [],
+    getTransactions: undefined,
+    getTransactionsReturn: [],
+    createBetTx: undefined,
+    createSetResultTx: undefined,
+    createVoteTx: undefined,
+    createFinalizeResultTx: undefined,
+    txReturn: undefined,
+    syncBlockTime: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -289,8 +350,8 @@ class OraclePage extends React.Component {
             btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
           importantNote: {
-            heading: <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />,
-            message: <FormattedMessage id="oracle.eventUnconfirmed" defaultMessage="This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain." />,
+            heading: intl.formatMessage(messages.unconfirmed),
+            message: intl.formatMessage(messages.eventUnconfirmed),
           },
         };
       } else if (token === Token.Qtum && status === OracleStatus.Voting) {
@@ -320,7 +381,7 @@ class OraclePage extends React.Component {
           },
           importantNote: {
             heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: <FormattedMessage id="oracle.setResultExplanation" defaultMessage="Setting the result requires staking the Consensus Threshold amount." />,
+            message: intl.formatMessage(messages.setResultExplanation),
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
@@ -337,7 +398,7 @@ class OraclePage extends React.Component {
           },
           importantNote: {
             heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: <FormattedMessage id="oracle.voteExplanation" defaultMessage="When a result's total votes reaches the Consensus Threshold, it will become the new result." />,
+            message: intl.formatMessage(messages.voteExplanation),
           },
         };
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
@@ -353,11 +414,23 @@ class OraclePage extends React.Component {
             btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
           },
           importantNote: {
-            heading: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-            message: <FormattedMessage id="oracle.finalizingExplanation" defaultMessage="Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round's result. Winners can withdraw their winnings once an Event is finalized." />,
+            heading: intl.formatMessage(messages.finalizing),
+            message: intl.formatMessage(messages.finalizingExplanation),
           },
         };
       }
+    }
+
+    if (oracle && !config) {
+      const path = getDetailPagePath(getOraclesReturn);
+      if (path) {
+        // Oracle stage changed, route to correct detail page
+        this.props.history.push(path);
+      } else {
+        // Couldn't get proper path, route to dashboard
+        this.props.history.push('/');
+      }
+      return;
     }
 
     this.setState({ oracle, config });
@@ -596,41 +669,6 @@ class OraclePage extends React.Component {
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
   }
 }
-
-OraclePage.propTypes = {
-  match: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  getOracles: PropTypes.func,
-  getOraclesReturn: PropTypes.array,
-  getTransactions: PropTypes.func,
-  getTransactionsReturn: PropTypes.array,
-  createBetTx: PropTypes.func,
-  createSetResultTx: PropTypes.func,
-  createVoteTx: PropTypes.func,
-  createFinalizeResultTx: PropTypes.func,
-  txReturn: PropTypes.object,
-  syncBlockTime: PropTypes.number,
-  walletAddresses: PropTypes.array.isRequired,
-  lastUsedAddress: PropTypes.string.isRequired,
-  setLastUsedAddress: PropTypes.func.isRequired,
-  walletEncrypted: PropTypes.bool.isRequired,
-  walletUnlockedUntil: PropTypes.number.isRequired,
-  toggleWalletUnlockDialog: PropTypes.func.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-};
-
-OraclePage.defaultProps = {
-  getOracles: undefined,
-  getOraclesReturn: [],
-  getTransactions: undefined,
-  getTransactionsReturn: [],
-  createBetTx: undefined,
-  createSetResultTx: undefined,
-  createVoteTx: undefined,
-  createFinalizeResultTx: undefined,
-  txReturn: undefined,
-  syncBlockTime: undefined,
-};
 
 const mapStateToProps = (state) => ({
   walletAddresses: state.App.get('walletAddresses'),
