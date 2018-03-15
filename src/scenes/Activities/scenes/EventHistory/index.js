@@ -47,7 +47,6 @@ class EventHistory extends React.Component {
       syncBlockTime,
     } = nextProps;
 
-
     // return from the click event
     if (getOraclesReturn !== this.props.getOraclesReturn) {
       const path = getDetailPagePath(getOraclesReturn);

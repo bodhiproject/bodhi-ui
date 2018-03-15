@@ -162,7 +162,7 @@ export function doesUserNeedToUnlockWallet(unlockedUntilUnix) {
  */
 export function getDetailPagePath(oracles) {
   if (oracles.length) {
-    const sorted = _.sortByOrder(oracles, ['blockNum'], ['desc']);
+    const sorted = _.orderBy(oracles, ['blockNum'], ['desc']);
     const latestOracle = sorted[0];
 
     // construct url for oracle or topic
