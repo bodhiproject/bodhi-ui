@@ -24,6 +24,7 @@ class PendingTransactionsSnackbar extends React.Component {
       <SnackbarContent
         className={classes.snackbar}
         open={snackbarVisible}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         message={
           <div>
             Hello World
