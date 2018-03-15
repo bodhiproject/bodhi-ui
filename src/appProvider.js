@@ -21,6 +21,10 @@ export default class AppProvider extends Component {
     locale: localStorage.getItem('localindex') || 0,
   }
 
+  componentDidMount() {
+    moment.locale(this.locales[this.state.locale].momentlocale);
+  }
+
   langHandler = () => {
     this.setState({
       locale: (this.state.locale + 1) % 2,
