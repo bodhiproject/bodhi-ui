@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import actions from './actions';
 
 const initState = new Map({
-  value: undefined,
+  getPendingTransactionsReturn: { count: 0 },
 });
 
 export default function graphqlReducer(state = initState, action) {

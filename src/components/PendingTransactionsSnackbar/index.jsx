@@ -25,6 +25,7 @@ class PendingTransactionsSnackbar extends React.Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     snackbarVisible: PropTypes.bool.isRequired,
+    pendingTxs: PropTypes.object.isRequired,
   };
 
   render() {
@@ -32,12 +33,15 @@ class PendingTransactionsSnackbar extends React.Component {
       intl,
       classes,
       snackbarVisible,
+      pendingTxs,
     } = this.props;
 
     const { locale, messages: localeMessages } = this.props.intl;
     const provider = getIntlProvider(locale, localeMessages);
 
-    const pendingTxsCount = 2;
+    if (pendingTxs.count <= 0) {
+      return null;
+    }
 
     return (
       <SnackbarContent
@@ -47,7 +51,7 @@ class PendingTransactionsSnackbar extends React.Component {
         message={
           <div>
             <Typography variant="caption">
-              {`${provider.formatMessage(messages.youHave)} ${pendingTxsCount} ${provider.formatMessage(messages.pendingTransactions)}`}
+              {`${provider.formatMessage(messages.youHave)} ${pendingTxs.count} ${provider.formatMessage(messages.pendingTransactions)}`}
             </Typography>
           </div>
         }
@@ -55,5 +59,9 @@ class PendingTransactionsSnackbar extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
+});
 
 export default injectIntl(withStyles(styles, { withTheme: true })(PendingTransactionsSnackbar));

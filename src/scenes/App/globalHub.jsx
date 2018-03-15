@@ -21,6 +21,7 @@ class GlobalHub extends React.PureComponent {
     lastUsedAddress: PropTypes.string.isRequired,
     checkWalletEncrypted: PropTypes.func.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
+    getPendingTransactions: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -28,7 +29,12 @@ class GlobalHub extends React.PureComponent {
   };
 
   componentWillMount() {
-    const { checkWalletEncrypted, getSyncInfo, syncPercent } = this.props;
+    const {
+      checkWalletEncrypted,
+      getSyncInfo,
+      syncPercent,
+      getPendingTransactions,
+    } = this.props;
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();
@@ -41,6 +47,9 @@ class GlobalHub extends React.PureComponent {
     // Subscribe to syncInfo subscription
     // This returns only after the initial sync is done, and every new block that is returned
     this.subscribeSyncInfo();
+
+    // Get all pending txs to show snackbar
+    getPendingTransactions();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -97,6 +106,7 @@ const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddress) => dispatch(graphqlActions.getActionableItemCount(walletAddress)),
+  getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 });
 
 export default compose(
