@@ -40,7 +40,9 @@ class EventResultHistory extends React.PureComponent {
                     <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
                   </TableCell>
                   <TableCell padding="dense">
-                    <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
+                    <FormattedMessage id="str.winningOutcome" defaultMessage="Wining Outcome">
+                      {(txt) => i18nToUpperCase(txt)}
+                    </FormattedMessage>
                   </TableCell>
                   <TableCell padding="dense">
                     <FormattedMessage id="str.amount" defaultMessage="Amount" />

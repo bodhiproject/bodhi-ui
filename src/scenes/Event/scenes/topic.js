@@ -199,7 +199,7 @@ class TopicPage extends React.Component {
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
           <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            <FormattedMessage id="str.winningOutcome" defaultMessage="WINNING OUTCOME">
+            <FormattedMessage id="str.winningOutcome" defaultMessage="Wining Outcome">
               {(txt) => i18nToUpperCase(txt)}
             </FormattedMessage>
           </Typography>
