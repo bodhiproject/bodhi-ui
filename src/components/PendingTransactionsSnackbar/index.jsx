@@ -71,14 +71,13 @@ class PendingTransactionsSnackbar extends React.Component {
 
   render() {
     const {
-      intl,
       classes,
       snackbarVisible,
       pendingTxs,
     } = this.props;
     const { provider } = this.state;
 
-    if (pendingTxs.count <= 0) {
+    if (pendingTxs.count === 0) {
       return null;
     }
 

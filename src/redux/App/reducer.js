@@ -20,6 +20,7 @@ const initState = new Map({
   walletUnlockDialogVisibility: false,
   walletEncrypted: false,
   walletUnlockedUntil: 0,
+  pendingTxsSnackbarVisible: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -103,6 +104,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', undefined);
+    }
+    case actions.DISMISS_PENDING_TXS_SNACKBAR: {
+      return state.set('pendingTxsSnackbarVisible', false);
     }
     default: {
       return state;
