@@ -20,11 +20,13 @@ import styles from './styles';
 class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    path: PropTypes.string,
     sortBy: PropTypes.string,
     sortOrderChanged: PropTypes.func,
   };
 
   static defaultProps = {
+    path: undefined,
     sortBy: SortBy.Ascending,
     sortOrderChanged: undefined,
   };
@@ -40,17 +42,26 @@ class TopActions extends Component {
   }
 
   render() {
-    const { classes, sortBy } = this.props;
+    const { classes, path, sortBy } = this.props;
+
+    let createEventVisibility = true;
+    if (path && path === '/bot-court') {
+      createEventVisibility = false;
+    }
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
-          <Link to="/create-topic" >
-            <Button variant="raised" size="medium" color="primary" className={classes.createEventButton}>
-              <AddIcon fontSize />
-              <FormattedMessage id="create.title" defaultMessage="Create an event" />
-            </Button>
-          </Link>
+          {
+            createEventVisibility
+              ? <Link to="/create-topic" >
+                <Button variant="raised" size="medium" color="primary" className={classes.createEventButton}>
+                  <AddIcon fontSize />
+                  <FormattedMessage id="create.title" defaultMessage="Create an event" />
+                </Button>
+              </Link>
+              : null
+          }
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>
           <span className={classes.dashboardActionsSortLabel}>
@@ -71,6 +82,7 @@ class TopActions extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  match: PropTypes.object.isRequired,
   sortBy: state.Dashboard.get('sortBy'),
 });
 

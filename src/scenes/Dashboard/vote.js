@@ -11,14 +11,24 @@ import { EventStatus, SortBy } from '../../constants';
 import styles from './styles';
 
 class Dashboard extends React.Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    sortBy: PropTypes.string,
+  };
+
+  static defaultProps = {
+    sortBy: SortBy.Ascending,
+  };
+
   render() {
     const {
+      match,
       sortBy,
     } = this.props;
 
     return (
       <div>
-        <TopActions />
+        <TopActions path={match.path} />
         <EventCardsGridContainer
           eventStatusIndex={EventStatus.Vote}
           sortBy={sortBy}
@@ -27,14 +37,6 @@ class Dashboard extends React.Component {
     );
   }
 }
-
-Dashboard.propTypes = {
-  sortBy: PropTypes.string,
-};
-
-Dashboard.defaultProps = {
-  sortBy: SortBy.Ascending,
-};
 
 const mapStateToProps = (state) => ({
   sortBy: state.Dashboard.get('sortBy'),
