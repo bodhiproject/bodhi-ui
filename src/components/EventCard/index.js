@@ -82,7 +82,7 @@ class EventCard extends React.PureComponent {
                 </div>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
-                  {endTime !== undefined ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}` : 'Ended'}
+                  {endTime !== undefined ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}` : <FormattedMessage id="str.end" defaultMessage="Ended" />}
                 </div>
               </div>
             </div>
