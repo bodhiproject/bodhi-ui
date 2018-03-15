@@ -25,7 +25,7 @@ import TransactionSentDialog from '../../../components/TransactionSentDialog/ind
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
@@ -403,7 +403,10 @@ class TopicPage extends React.Component {
 
     // GraphQL calls
     getTopics([{ address }]);
-    getTransactions([{ topicAddress: address }]);
+    getTransactions(
+      [{ topicAddress: address }],
+      { field: 'createdTime', direction: SortBy.Descending },
+    );
 
     // API calls
     getBetAndVoteBalances(address, senderAddress);
