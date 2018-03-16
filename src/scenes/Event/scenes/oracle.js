@@ -198,8 +198,8 @@ class OraclePage extends React.Component {
                   name={item.name}
                   amount={`${item.value}`}
                   percent={item.percent}
-                  voteAmount={this.state.voteAmount}
-                  token={oracle.token}
+                  voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
+                  token={config.name === 'SETTING' ? Token.Bot : oracle.token}
                   isPrevResult={item.isPrevResult}
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
