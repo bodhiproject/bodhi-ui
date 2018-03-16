@@ -20,8 +20,14 @@ const styles = (theme) => ({
   eventCardName: {
     marginBottom: theme.padding.xs.px,
   },
-  unconfirmedChip: {
-    marginTop: theme.padding.unit.px,
+  unconfirmedTag: {
+    background: theme.palette.secondary.light,
+    color: theme.palette.secondary.main,
+    border: `solid 1px ${theme.palette.secondary.main}`,
+    borderRadius: theme.borderRadius,
+    padding: `2px ${theme.padding.unit.px}`,
+    marginBottom: theme.padding.unit.px,
+    fontSize: theme.sizes.font.meta,
   },
   dashBoardCardIcon: {
     marginRight: theme.padding.unit.px,
