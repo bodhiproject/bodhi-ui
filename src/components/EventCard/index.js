@@ -59,21 +59,21 @@ class EventCard extends React.PureComponent {
         <Link to={url}>
           <Card>
             <div className={classNames(classes.eventCardSection, 'top')}>
+              {unconfirmed ?
+                <Typography className={classes.unconfirmedTag}>
+                  <FormattedMessage id="str.pendingConfirmation" defaultMessage="Pending Confirmation" />
+                </Typography>
+                : null
+              }
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
-                {endTime !== undefined ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}` : null}
+                {endTime !== undefined
+                  ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}`
+                  : null
+                }
               </div>
-              {unconfirmed ?
-                <Typography variant="body1">
-                  <Chip
-                    label={<FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />}
-                    className={classes.unconfirmedChip}
-                  />
-                </Typography>
-                : null
-              }
               <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
@@ -82,7 +82,10 @@ class EventCard extends React.PureComponent {
                 </div>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
-                  {endTime !== undefined ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}` : <FormattedMessage id="str.end" defaultMessage="Ended" />}
+                  {endTime !== undefined
+                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
+                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
+                  }
                 </div>
               </div>
             </div>

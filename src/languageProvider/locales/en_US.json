@@ -119,6 +119,7 @@
   "str.notEnoughQtum": "You don't have enough QTUM",
   "str.ok": "OK",
   "str.outcome": "OUTCOMES",
+  "str.pendingConfirmation": "Pending Confirmation",
   "str.pendingTransactionDisabledMsg": "You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction.",
   "str.qtum": "QTUM",
   "str.raised": "Raised",
