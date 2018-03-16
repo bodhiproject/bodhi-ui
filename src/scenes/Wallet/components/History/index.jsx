@@ -9,6 +9,7 @@ import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
+import _ from 'lodash';
 
 import styles from './styles';
 import { TransactionType } from '../../../../constants';
@@ -33,7 +34,7 @@ class WalletHistory extends React.Component {
     super(props);
 
     this.state = {
-      order: 'asc',
+      order: 'desc',
       orderBy: 'time',
     };
   }
@@ -53,7 +54,7 @@ class WalletHistory extends React.Component {
   }
 
   render() {
-    const { classes, getTransactionsReturn } = this.props;
+    const { classes } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -63,7 +64,7 @@ class WalletHistory extends React.Component {
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows(getTransactionsReturn)}
+            {this.getTableRows()}
           </Table>
         </Grid>
       </Paper>
@@ -167,9 +168,7 @@ class WalletHistory extends React.Component {
       order = 'asc';
     }
 
-    const data = order === 'desc'
-      ? getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    this.sortData(orderBy, order);
 
     this.setState({
       order,
@@ -177,10 +176,22 @@ class WalletHistory extends React.Component {
     });
   };
 
-  getTableRows(data) {
+  sortData = (orderBy, order) => {
+    const { getTransactionsReturn } = this.props;
+
+    if (order === 'desc') {
+      getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
+    } else {
+      getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    }
+  };
+
+  getTableRows = () => {
+    const { getTransactionsReturn } = this.props;
+
     return (
       <TableBody>
-        {data.map((item, index) => (
+        {getTransactionsReturn.map((item, index) => (
           <TableRow key={item.txid}>
             <TableCell>
               {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
