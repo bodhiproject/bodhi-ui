@@ -38,6 +38,28 @@ const messages = defineMessages({
 });
 
 class EventCardsGrid extends React.Component {
+  static propTypes = {
+    theme: PropTypes.object.isRequired,
+    getTopics: PropTypes.func,
+    getTopicsReturn: PropTypes.array,
+    getOracles: PropTypes.func,
+    getOraclesReturn: PropTypes.array,
+    eventStatusIndex: PropTypes.number.isRequired,
+    sortBy: PropTypes.string,
+    syncBlockNum: PropTypes.number,
+    lastUsedAddress: PropTypes.string.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  };
+
+  static defaultProps = {
+    getTopics: undefined,
+    getTopicsReturn: [],
+    getOracles: undefined,
+    getOraclesReturn: [],
+    sortBy: SortBy.Ascending,
+    syncBlockNum: undefined,
+  };
+
   componentWillMount() {
     const {
       eventStatusIndex,
@@ -243,28 +265,6 @@ class EventCardsGrid extends React.Component {
     return rowItems;
   }
 }
-
-EventCardsGrid.propTypes = {
-  theme: PropTypes.object.isRequired,
-  getTopics: PropTypes.func,
-  getTopicsReturn: PropTypes.array,
-  getOracles: PropTypes.func,
-  getOraclesReturn: PropTypes.array,
-  eventStatusIndex: PropTypes.number.isRequired,
-  sortBy: PropTypes.string,
-  syncBlockNum: PropTypes.number,
-  lastUsedAddress: PropTypes.string.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-};
-
-EventCardsGrid.defaultProps = {
-  getTopics: undefined,
-  getTopicsReturn: [],
-  getOracles: undefined,
-  getOraclesReturn: [],
-  sortBy: SortBy.Ascending,
-  syncBlockNum: undefined,
-};
 
 const mapStateToProps = (state) => ({
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
