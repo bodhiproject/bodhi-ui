@@ -377,7 +377,7 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            showAmountInput: false,
+            showAmountInput: true,
             btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
           },
           importantNote: {
