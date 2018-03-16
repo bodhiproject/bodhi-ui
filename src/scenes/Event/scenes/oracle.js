@@ -198,14 +198,15 @@ class OraclePage extends React.Component {
                   name={item.name}
                   amount={`${item.value}`}
                   percent={item.percent}
-                  voteAmount={this.state.voteAmount}
-                  token={oracle.token}
+                  voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
+                  token={config.name === 'SETTING' ? Token.Bot : oracle.token}
                   isPrevResult={item.isPrevResult}
                   walletAddresses={this.props.walletAddresses}
                   lastUsedAddress={lastUsedAddress}
                   skipExpansion={config.predictionAction.skipExpansion}
                   unconfirmedEvent={unconfirmed}
                   showAmountInput={config.predictionAction.showAmountInput}
+                  amountInputDisabled={config.predictionAction.amountInputDisabled}
                   onOptionChange={this.handleOptionChange}
                   onAmountChange={this.handleAmountChange}
                   onWalletChange={this.handleWalletChange}
@@ -348,6 +349,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             showAmountInput: true,
+            amountInputDisabled: false,
             btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
           importantNote: {
@@ -365,6 +367,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             showAmountInput: true,
+            amountInputDisabled: false,
             btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
         };
@@ -377,7 +380,8 @@ class OraclePage extends React.Component {
           },
           predictionAction: {
             skipExpansion: false,
-            showAmountInput: false,
+            showAmountInput: true,
+            amountInputDisabled: true,
             btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
           },
           importantNote: {
@@ -395,6 +399,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: false,
             showAmountInput: true,
+            amountInputDisabled: false,
             btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
           },
           importantNote: {
@@ -412,6 +417,7 @@ class OraclePage extends React.Component {
           predictionAction: {
             skipExpansion: true,
             showAmountInput: false,
+            amountInputDisabled: false,
             btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
           },
           importantNote: {

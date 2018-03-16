@@ -18,6 +18,32 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 
 class EventOption extends React.PureComponent {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    isLast: PropTypes.bool.isRequired,
+    currentOptionIdx: PropTypes.number.isRequired,
+    optionIdx: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    amount: PropTypes.string.isRequired,
+    percent: PropTypes.number.isRequired,
+    voteAmount: PropTypes.number,
+    token: PropTypes.string.isRequired,
+    onOptionChange: PropTypes.func.isRequired,
+    onAmountChange: PropTypes.func.isRequired,
+    onWalletChange: PropTypes.func.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    lastUsedAddress: PropTypes.string.isRequired,
+    skipExpansion: PropTypes.bool.isRequired,
+    unconfirmedEvent: PropTypes.bool.isRequired,
+    showAmountInput: PropTypes.bool.isRequired,
+    amountInputDisabled: PropTypes.bool.isRequired,
+    isPrevResult: PropTypes.bool.isRequired,
+  };
+
+  static defaultProps = {
+    voteAmount: 0,
+  };
+
   constructor(props) {
     super(props);
 
@@ -95,6 +121,7 @@ class EventOption extends React.PureComponent {
       classes,
       voteAmount,
       token,
+      amountInputDisabled,
     } = this.props;
 
     return (<ExpansionPanelDetails>
@@ -114,6 +141,7 @@ class EventOption extends React.PureComponent {
             className={classes.eventOptionInput}
             onChange={this.handleAmountChange}
             endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
+            disabled={amountInputDisabled}
           />
         </FormControl>
       </div>
@@ -181,30 +209,5 @@ class EventOption extends React.PureComponent {
     onWalletChange(event.target.value);
   }
 }
-
-EventOption.propTypes = {
-  classes: PropTypes.object.isRequired,
-  isLast: PropTypes.bool.isRequired,
-  currentOptionIdx: PropTypes.number.isRequired,
-  optionIdx: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  amount: PropTypes.string.isRequired,
-  percent: PropTypes.number.isRequired,
-  voteAmount: PropTypes.number,
-  token: PropTypes.string.isRequired,
-  onOptionChange: PropTypes.func.isRequired,
-  onAmountChange: PropTypes.func.isRequired,
-  onWalletChange: PropTypes.func.isRequired,
-  walletAddresses: PropTypes.array.isRequired,
-  lastUsedAddress: PropTypes.string.isRequired,
-  skipExpansion: PropTypes.bool.isRequired,
-  unconfirmedEvent: PropTypes.bool.isRequired,
-  showAmountInput: PropTypes.bool.isRequired,
-  isPrevResult: PropTypes.bool.isRequired,
-};
-
-EventOption.defaultProps = {
-  voteAmount: 0,
-};
 
 export default withStyles(styles, { withTheme: true })(EventOption);
