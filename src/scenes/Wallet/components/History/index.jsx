@@ -23,6 +23,7 @@ class WalletHistory extends React.Component {
     getTransactions: PropTypes.func.isRequired,
     getTransactionsReturn: PropTypes.array,
     txReturn: PropTypes.object,
+    syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -48,9 +49,10 @@ class WalletHistory extends React.Component {
     const {
       getTransactionsReturn,
       txReturn,
+      syncBlockNum,
     } = this.props;
 
-    if (txReturn && !nextProps.txReturn) {
+    if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
       this.getTransactions();
     }
 
@@ -227,6 +229,7 @@ class WalletHistory extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
