@@ -19,6 +19,10 @@ import { SortBy } from '../../../../constants';
 import styles from './styles';
 
 class TopActions extends Component {
+  state = {
+    createDialogOpen: false,
+  };
+
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sortBy: PropTypes.string,
@@ -34,10 +38,20 @@ class TopActions extends Component {
     super(props);
 
     this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
+    this.onCreateDialogClose = this.onCreateDialogClose.bind(this);
+    this.onCreateDialogOpen = this.onCreateDialogOpen.bind(this);
   }
 
   onSortOptionSelected(event) {
     this.props.sortOrderChanged(event.target.value);
+  }
+
+  onCreateDialogClose() {
+    this.setState({ createDialogOpen: false });
+  }
+
+  onCreateDialogOpen() {
+    this.setState({ createDialogOpen: true });
   }
 
   render() {
@@ -46,12 +60,10 @@ class TopActions extends Component {
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
-          <Link to="/create-topic" >
-            <Button variant="raised" size="medium" color="primary" className={classes.createEventButton}>
-              <AddIcon fontSize />
-              <FormattedMessage id="create.title" defaultMessage="Create an event" />
-            </Button>
-          </Link>
+          <Button variant="raised" size="medium" color="primary" className={classes.createEventButton} onClick={this.onCreateDialogOpen}>
+            <AddIcon fontSize />
+            <FormattedMessage id="create.title" defaultMessage="Create an event" />
+          </Button>
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>
           <span className={classes.dashboardActionsSortLabel}>
@@ -66,7 +78,7 @@ class TopActions extends Component {
             </FormControl>
           </Card>
         </Grid>
-        <CreateEvent />
+        <CreateEvent open={this.state.createDialogOpen} onClose={this.onCreateDialogClose} />
       </Grid>
     );
   }

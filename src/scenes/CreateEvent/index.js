@@ -21,12 +21,9 @@ import { calculateBlock } from '../../helpers/utility';
 import { defaults } from '../../config/app';
 
 class CreateEvent extends React.Component {
-  state = {
-    open: true,
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
   };
 
   render() {
@@ -34,8 +31,8 @@ class CreateEvent extends React.Component {
       <Dialog
         fullWidth
         maxWidth="md"
-        open={this.state.open}
-        onClose={this.handleClose}
+        open={this.props.open}
+        onClose={this.props.onClose}
       >
         <DialogTitle>Create an Event</DialogTitle>
         <DialogContent>
@@ -191,7 +188,7 @@ class CreateEvent extends React.Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.handleClose}>
+          <Button color="primary" onClick={this.props.onClose}>
             Cancel
           </Button>
           <Button color="primary" variant="raised">
