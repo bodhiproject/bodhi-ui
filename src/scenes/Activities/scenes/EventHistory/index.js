@@ -230,6 +230,8 @@ class EventHistory extends React.Component {
     const { classes } = this.props;
     const { transactions } = this.state;
 
+    console.log(transactions);
+
     return (
       <TableBody>
         {_.map(transactions, (transaction, index) => (
@@ -241,7 +243,7 @@ class EventHistory extends React.Component {
               {transaction.type}
             </TableCell>
             <TableCell>
-              {transaction.topic ? transaction.topic.name : null}
+              {transaction.name ? transaction.name : (transaction.topic && transaction.topic.name)}
             </TableCell>
             <TableCell>
               {transaction.token}

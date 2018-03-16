@@ -86,6 +86,7 @@ const TYPE_DEF = {
     receiverAddress
     topicAddress
     oracleAddress
+    name
     optionIdx
     token
     amount
