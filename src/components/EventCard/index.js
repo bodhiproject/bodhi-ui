@@ -61,7 +61,7 @@ class EventCard extends React.PureComponent {
             <div className={classNames(classes.eventCardSection, 'top')}>
               {unconfirmed ?
                 <Typography className={classes.unconfirmedTag}>
-                  <FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />
+                  <FormattedMessage id="str.pendingConfirmation" defaultMessage="Pending Confirmation" />
                 </Typography>
                 : null
               }
@@ -69,7 +69,10 @@ class EventCard extends React.PureComponent {
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
-                {endTime !== undefined ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}` : null}
+                {endTime !== undefined
+                  ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}`
+                  : null
+                }
               </div>
               <div className={classes.eventCardInfo}>
                 <div>
@@ -79,7 +82,10 @@ class EventCard extends React.PureComponent {
                 </div>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
-                  {endTime !== undefined ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}` : <FormattedMessage id="str.end" defaultMessage="Ended" />}
+                  {endTime !== undefined
+                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
+                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
+                  }
                 </div>
               </div>
             </div>
