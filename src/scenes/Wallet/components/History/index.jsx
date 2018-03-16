@@ -17,6 +17,18 @@ import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpe
 import graphqlActions from '../../../../redux/Graphql/actions';
 
 class WalletHistory extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    getTransactions: PropTypes.func.isRequired,
+    getTransactionsReturn: PropTypes.array,
+    txReturn: PropTypes.object,
+  };
+
+  static defaultProps = {
+    getTransactionsReturn: [],
+    txReturn: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -24,11 +36,6 @@ class WalletHistory extends React.Component {
       order: 'asc',
       orderBy: 'time',
     };
-
-    this.getTransactions = this.getTransactions.bind(this);
-    this.getTableHeader = this.getTableHeader.bind(this);
-    this.createSortHandler = this.createSortHandler.bind(this);
-    this.handleSorting = this.handleSorting.bind(this);
   }
 
   componentWillMount() {
@@ -63,13 +70,13 @@ class WalletHistory extends React.Component {
     );
   }
 
-  getTransactions() {
+  getTransactions = () => {
     this.props.getTransactions([
       { type: TransactionType.Transfer },
     ]);
-  }
+  };
 
-  getTableHeader() {
+  getTableHeader = () => {
     const { order, orderBy } = this.state;
 
     const headerCols = [
@@ -144,13 +151,13 @@ class WalletHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  }
+  };
 
   createSortHandler = (property) => (event) => {
     this.handleSorting(event, property);
   };
 
-  handleSorting(event, property) {
+  handleSorting = (event, property) => {
     const { getTransactionsReturn } = this.props;
 
     const orderBy = property;
@@ -168,7 +175,7 @@ class WalletHistory extends React.Component {
       order,
       orderBy,
     });
-  }
+  };
 
   getTableRows(data) {
     return (
@@ -202,18 +209,6 @@ class WalletHistory extends React.Component {
     );
   }
 }
-
-WalletHistory.propTypes = {
-  classes: PropTypes.object.isRequired,
-  getTransactions: PropTypes.func.isRequired,
-  getTransactionsReturn: PropTypes.array,
-  txReturn: PropTypes.object,
-};
-
-WalletHistory.defaultProps = {
-  getTransactionsReturn: [],
-  txReturn: undefined,
-};
 
 const mapStateToProps = (state) => ({
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
