@@ -6,6 +6,9 @@ const styles = (theme) => ({
     padding: `12px ${theme.padding.sm.px}`,
     verticalAlign: 'middle',
   },
+  createEventIcon: {
+    marginRight: theme.padding.unit.px,
+  },
   dashboardActionsRight: {
     textAlign: 'right',
   },
