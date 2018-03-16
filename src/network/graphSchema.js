@@ -93,6 +93,7 @@ const TYPE_DEF = {
     topic {
       address
       name
+      options
     }
   `,
 };

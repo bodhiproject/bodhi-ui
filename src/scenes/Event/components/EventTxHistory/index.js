@@ -6,10 +6,17 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
-import { getLocalDateTimeString } from '../../../../helpers/utility';
 import styles from './styles';
+import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { TransactionType } from '../../../../constants';
 
 class EventTxHistory extends React.PureComponent {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    transactions: PropTypes.array.isRequired,
+    options: PropTypes.array.isRequired,
+  };
+
   render() {
     const { classes, transactions, options } = this.props;
 
@@ -44,8 +51,10 @@ class EventTxHistory extends React.PureComponent {
                   <TableRow key={transaction.txid} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
                     <TableCell padding="dense">{transaction.type}</TableCell>
-                    <TableCell padding="dense">{`#${transaction.optionIdx + 1} ${options[transaction.optionIdx]}`}</TableCell>
-                    <TableCell padding="dense">{transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}</TableCell>
+                    <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
+                    <TableCell padding="dense">
+                      {transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}
+                    </TableCell>
                     <TableCell padding="dense">{transaction.status}</TableCell>
                   </TableRow>
                 ))}
@@ -58,12 +67,22 @@ class EventTxHistory extends React.PureComponent {
       </div>
     );
   }
-}
 
-EventTxHistory.propTypes = {
-  classes: PropTypes.object.isRequired,
-  transactions: PropTypes.array.isRequired,
-  options: PropTypes.array.isRequired,
-};
+  getDescription = (tx) => {
+    switch (tx.type) {
+      case TransactionType.Bet:
+      case TransactionType.ApproveSetResult:
+      case TransactionType.SetResult:
+      case TransactionType.ApproveVote:
+      case TransactionType.Vote:
+      case TransactionType.FinalizeResult: {
+        return `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx]}`;
+      }
+      default: {
+        return undefined;
+      }
+    }
+  };
+}
 
 export default withStyles(styles, { withTheme: true })(injectIntl(EventTxHistory));
