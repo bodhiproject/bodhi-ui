@@ -34,8 +34,9 @@ class WalletHistory extends React.Component {
     super(props);
 
     this.state = {
+      data: [],
       order: 'desc',
-      orderBy: 'time',
+      orderBy: 'createdTime',
     };
   }
 
@@ -45,11 +46,24 @@ class WalletHistory extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
+      getTransactionsReturn,
       txReturn,
     } = this.props;
 
     if (txReturn && !nextProps.txReturn) {
       this.getTransactions();
+    }
+
+    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+      const sorted = _.orderBy(
+        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        [this.state.orderBy],
+        [this.state.order],
+      );
+
+      this.setState({
+        data: sorted,
+      });
     }
   }
 
@@ -82,19 +96,19 @@ class WalletHistory extends React.Component {
 
     const headerCols = [
       {
-        id: 'time',
+        id: 'createdTime',
         name: 'str.time',
         nameDefault: 'Time',
         numeric: false,
       },
       {
-        id: 'from',
+        id: 'senderAddress',
         name: 'str.from',
         nameDefault: 'From',
         numeric: false,
       },
       {
-        id: 'to',
+        id: 'receiverAddress',
         name: 'str.to',
         nameDefault: 'To',
         numeric: false,
@@ -159,7 +173,7 @@ class WalletHistory extends React.Component {
   };
 
   handleSorting = (event, property) => {
-    const { getTransactionsReturn } = this.props;
+    const { data } = this.state;
 
     const orderBy = property;
     let order = 'desc';
@@ -168,30 +182,23 @@ class WalletHistory extends React.Component {
       order = 'asc';
     }
 
-    this.sortData(orderBy, order);
+    const sorted = _.orderBy(data, [orderBy], [order]);
 
     this.setState({
-      order,
+      data: sorted,
       orderBy,
+      order,
     });
   };
 
-  sortData = (orderBy, order) => {
-    const { getTransactionsReturn } = this.props;
-
-    if (order === 'desc') {
-      getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
-    } else {
-      getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
-    }
-  };
-
   getTableRows = () => {
-    const { getTransactionsReturn } = this.props;
+    const { data } = this.state;
+
+    console.log('getTableRows', data);
 
     return (
       <TableBody>
-        {getTransactionsReturn.map((item, index) => (
+        {data.map((item, index) => (
           <TableRow key={item.txid}>
             <TableCell>
               {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
