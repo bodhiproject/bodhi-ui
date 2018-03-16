@@ -110,6 +110,7 @@ class EventCardsGrid extends React.Component {
     const {
       getTopics,
       getOracles,
+      lastUsedAddress,
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
@@ -127,7 +128,7 @@ class EventCardsGrid extends React.Component {
       case EventStatus.Set: {
         getOracles(
           [
-            { token: Token.Qtum, status: OracleStatus.WaitResult },
+            { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: lastUsedAddress },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
           { field: 'resultSetEndTime', direction: sortDirection },
@@ -252,8 +253,8 @@ EventCardsGrid.propTypes = {
   eventStatusIndex: PropTypes.number.isRequired,
   sortBy: PropTypes.string,
   syncBlockNum: PropTypes.number,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
+  lastUsedAddress: PropTypes.string.isRequired,
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
 };
 
 EventCardsGrid.defaultProps = {
@@ -270,6 +271,7 @@ const mapStateToProps = (state) => ({
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
 });
 
 function mapDispatchToProps(dispatch) {
