@@ -257,7 +257,11 @@ class EventHistory extends React.Component {
             </TableCell>
             <TableCell>
               {transaction.topic && transaction.topic.address ?
-                <div data-topic-address={transaction.topic.address} onClick={this.onEventLinkClicked} className={classes.viewEventLink}>
+                <div
+                  data-topic-address={transaction.topic.address}
+                  onClick={this.onEventLinkClicked}
+                  className={classes.viewEventLink}
+                >
                   <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
                 </div> : null
               }
