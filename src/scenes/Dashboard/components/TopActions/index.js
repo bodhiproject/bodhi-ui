@@ -14,6 +14,7 @@ import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import dashboardActions from '../../../../redux/Dashboard/actions';
+import CreateEvent from '../../../../scenes/CreateEvent/index';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
@@ -65,6 +66,7 @@ class TopActions extends Component {
             </FormControl>
           </Card>
         </Grid>
+        <CreateEvent />
       </Grid>
     );
   }
