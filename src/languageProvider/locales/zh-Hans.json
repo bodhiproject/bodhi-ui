@@ -121,6 +121,7 @@
   "str.notEnoughQtum": "您没有足够QTUM",
   "str.ok": "好的",
   "str.outcome": "结果",
+  "str.pendingConfirmation": "Pending Confirmation",
   "str.pendingTransactionDisabledMsg": "您在此项目中有一个待定的交易. 在此交易确认前无法进行新的交易, 请耐心等待.",
   "str.qtum": "QTUM",
   "str.raised": "筹集到",
