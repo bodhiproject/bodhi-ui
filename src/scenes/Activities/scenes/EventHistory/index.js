@@ -40,9 +40,9 @@ class EventHistory extends React.Component {
     super(props);
 
     this.state = {
-      order: 'asc',
-      orderBy: 'time',
       transactions: [],
+      order: 'desc',
+      orderBy: 'createdTime',
     };
 
     this.getTableHeader = this.getTableHeader.bind(this);
@@ -77,7 +77,17 @@ class EventHistory extends React.Component {
       this.executeTxsRequest();
     }
 
-    this.setState({ transactions: getTransactionsReturn });
+    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+      const sorted = _.orderBy(
+        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        [this.state.orderBy],
+        [this.state.order],
+      );
+
+      this.setState({
+        transactions: sorted,
+      });
+    }
   }
 
   render() {
@@ -90,7 +100,7 @@ class EventHistory extends React.Component {
           transactions.length ?
             (<Table className={classes.historyTable}>
               {this.getTableHeader()}
-              {this.getTableRows(this.state.transactions)}
+              {this.getTableRows()}
             </Table>) :
             (<Typography variant="body1">
               <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
@@ -117,90 +127,108 @@ class EventHistory extends React.Component {
   }
 
   getTableHeader() {
-    const { order, orderBy } = this.state;
-
     const headerCols = [
       {
-        id: 'time',
+        id: 'createdTime',
         name: 'str.time',
         nameDefault: 'Time',
         numeric: false,
+        sortable: true,
       },
       {
         id: 'type',
         name: 'str.type',
         nameDefault: 'Type',
         numeric: false,
+        sortable: true,
       },
       {
         id: 'name',
         name: 'str.name',
         nameDefault: 'Name',
         numeric: false,
+        sortable: false,
       },
       {
         id: 'token',
         name: 'str.token',
         nameDefault: 'Token',
         numeric: false,
+        sortable: true,
       },
       {
         id: 'amount',
         name: 'str.amount',
         nameDefault: 'Amount',
         numeric: true,
+        sortable: true,
       },
       {
         id: 'fee',
         name: 'str.fee',
         nameDefault: 'Fee',
         numeric: true,
+        sortable: true,
       },
       {
         id: 'status',
         name: 'str.status',
         nameDefault: 'Status',
         numeric: false,
+        sortable: true,
       },
       {
         id: 'actions',
         name: 'str.actions',
         nameDefault: 'Actions',
         numeric: false,
+        sortable: false,
       },
     ];
 
     return (
       <TableHead>
         <TableRow>
-          {headerCols.map((column) => (
-            <TableCell
-              key={column.id}
-              numeric={column.numeric}
-              sortDirection={orderBy === column.id ? order : false}
-            >
-              <Tooltip
-                title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
-                enterDelay={Config.intervals.tooltipDelay}
-                placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-              >
-                <TableSortLabel
-                  active={orderBy === column.id}
-                  direction={order}
-                  onClick={this.createSortHandler(column.id)}
-                >
-                  <FormattedMessage id={column.name} default={column.nameDefault} />
-                </TableSortLabel>
-              </Tooltip>
-            </TableCell>
-          ))}
+          {headerCols.map((column) => column.sortable ? this.getSortableCell(column) : this.getNonSortableCell(column))}
         </TableRow>
       </TableHead>
     );
   }
 
-  getTableRows(transactions) {
+  getSortableCell = (column) => {
+    const { order, orderBy } = this.state;
+    return (
+      <TableCell
+        key={column.id}
+        numeric={column.numeric}
+        sortDirection={orderBy === column.id ? order : false}
+      >
+        <Tooltip
+          title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
+          enterDelay={Config.intervals.tooltipDelay}
+          placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+        >
+          <TableSortLabel
+            active={orderBy === column.id}
+            direction={order}
+            onClick={this.createSortHandler(column.id)}
+          >
+            <FormattedMessage id={column.name} default={column.nameDefault} />
+          </TableSortLabel>
+        </Tooltip>
+      </TableCell>
+    );
+  };
+
+  getNonSortableCell = (column) => (
+    <TableCell key={column.id} numeric={column.numeric}>
+      <FormattedMessage id={column.name} default={column.nameDefault} />
+    </TableCell>
+  );
+
+  getTableRows() {
     const { classes } = this.props;
+    const { transactions } = this.state;
 
     return (
       <TableBody>
@@ -259,6 +287,8 @@ class EventHistory extends React.Component {
   };
 
   handleSorting(event, property) {
+    const { transactions } = this.state;
+
     const orderBy = property;
     let order = 'desc';
 
@@ -266,11 +296,13 @@ class EventHistory extends React.Component {
       order = 'asc';
     }
 
-    const transactions = order === 'desc'
-      ? this.state.transactions.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.state.transactions.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    const sorted = _.orderBy(transactions, [orderBy], [order]);
 
-    this.setState({ transactions, order, orderBy });
+    this.setState({
+      transactions: sorted,
+      orderBy,
+      order,
+    });
   }
 }
 

@@ -194,8 +194,6 @@ class WalletHistory extends React.Component {
   getTableRows = () => {
     const { data } = this.state;
 
-    console.log('getTableRows', data);
-
     return (
       <TableBody>
         {data.map((item, index) => (
