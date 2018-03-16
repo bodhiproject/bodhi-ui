@@ -12,7 +12,9 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
+import EventWarning from '../EventWarning/index';
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
+import { EventWarningType } from '../../constants';
 
 const cardMessages = defineMessages({
   raise: {
@@ -59,21 +61,19 @@ class EventCard extends React.PureComponent {
         <Link to={url}>
           <Card>
             <div className={classNames(classes.eventCardSection, 'top')}>
+              {unconfirmed ?
+                <EventWarning
+                  message={<FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />}
+                  typeClass={EventWarningType.Highlight}
+                />
+                : null
+              }
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
                 {endTime !== undefined ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}` : null}
               </div>
-              {unconfirmed ?
-                <Typography variant="body1">
-                  <Chip
-                    label={<FormattedMessage id="str.unconfirmed" defaultMessage="Unconfirmed" />}
-                    className={classes.unconfirmedChip}
-                  />
-                </Typography>
-                : null
-              }
               <div className={classes.eventCardInfo}>
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
