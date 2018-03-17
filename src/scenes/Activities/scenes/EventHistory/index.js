@@ -36,22 +36,11 @@ class EventHistory extends React.Component {
     syncBlockTime: undefined,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      transactions: [],
-      order: 'desc',
-      orderBy: 'createdTime',
-    };
-
-    this.getTableHeader = this.getTableHeader.bind(this);
-    this.getTableRows = this.getTableRows.bind(this);
-    this.createSortHandler = this.createSortHandler.bind(this);
-    this.handleSorting = this.handleSorting.bind(this);
-    this.executeTxsRequest = this.executeTxsRequest.bind(this);
-    this.onEventLinkClicked = this.onEventLinkClicked.bind(this);
-  }
+  state = {
+    transactions: [],
+    order: 'desc',
+    orderBy: 'createdTime',
+  };
 
   componentWillMount() {
     this.executeTxsRequest();
@@ -110,7 +99,7 @@ class EventHistory extends React.Component {
     );
   }
 
-  executeTxsRequest() {
+  executeTxsRequest = () => {
     this.props.getTransactions(
       [
         { type: TransactionType.CreateEvent },
@@ -124,9 +113,9 @@ class EventHistory extends React.Component {
       ],
       undefined
     );
-  }
+  };
 
-  getTableHeader() {
+  getTableHeader = () => {
     const headerCols = [
       {
         id: 'createdTime',
@@ -193,7 +182,7 @@ class EventHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  }
+  };
 
   getSortableCell = (column) => {
     const { order, orderBy } = this.state;
@@ -226,11 +215,9 @@ class EventHistory extends React.Component {
     </TableCell>
   );
 
-  getTableRows() {
+  getTableRows = () => {
     const { classes } = this.props;
     const { transactions } = this.state;
-
-    console.log(transactions);
 
     return (
       <TableBody>
@@ -272,9 +259,9 @@ class EventHistory extends React.Component {
         ))}
       </TableBody>
     );
-  }
+  };
 
-  onEventLinkClicked(event) {
+  onEventLinkClicked = (event) => {
     const {
       getOracles,
     } = this.props;
@@ -286,13 +273,13 @@ class EventHistory extends React.Component {
       ],
       { field: 'endTime', direction: SortBy.Descending },
     );
-  }
+  };
 
   createSortHandler = (property) => (event) => {
     this.handleSorting(event, property);
   };
 
-  handleSorting(event, property) {
+  handleSorting = (event, property) => {
     const { transactions } = this.state;
 
     const orderBy = property;

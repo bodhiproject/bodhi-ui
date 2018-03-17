@@ -31,15 +31,11 @@ class WalletHistory extends React.Component {
     txReturn: undefined,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: [],
-      order: 'desc',
-      orderBy: 'createdTime',
-    };
-  }
+  state = {
+    data: [],
+    order: 'desc',
+    orderBy: 'createdTime',
+  };
 
   componentWillMount() {
     this.getTransactions();
