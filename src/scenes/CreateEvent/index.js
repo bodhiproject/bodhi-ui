@@ -92,8 +92,6 @@ class CreateEvent extends React.Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
-    walletUnlockedUntil: PropTypes.number.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
@@ -356,16 +354,19 @@ class CreateEvent extends React.Component {
     </ul>
   );
 
-  renderAddressSelector = ({
+  renderCreatorAddressSelector = ({
     input,
     meta: { touched, error },
     ...custom
-  }) => (
-    <Select
+  }) => {
+    if (!input.value || input.value === '') {
+      this.props.changeFieldValue('creatorAddress', this.props.lastUsedAddress);
+    }
+
+    return (<Select
       {...input}
       {...custom}
       fullWidth
-      value={this.props.lastUsedAddress}
     >
       {this.props.walletAddresses.map((item, index) => (
         <MenuItem key={item.address} value={item.address}>
@@ -373,8 +374,8 @@ class CreateEvent extends React.Component {
           {` (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
         </MenuItem>
       ))}
-    </Select>
-  );
+    </Select>);
+  };
 
   onDatePickerChange = (event, newValue, previousValue, name) => {
     const {
@@ -547,7 +548,7 @@ class CreateEvent extends React.Component {
                   fullWidth
                   name="creatorAddress"
                   onChange={this.onCreatorAddressChange}
-                  component={this.renderAddressSelector}
+                  component={this.renderCreatorAddressSelector}
                 />
               </Grid>
             </Grid>
@@ -586,8 +587,6 @@ const mapStateToProps = (state) => ({
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
-  walletEncrypted: state.App.get('walletEncrypted'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockNum: state.App.get('syncBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
 });
@@ -596,24 +595,23 @@ function mapDispatchToProps(dispatch) {
   return {
     createTopicTx: (
       name,
-      results,
-      centralizedOracle,
+      outcomes,
+      resultSetter,
       bettingStartTime,
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
-      senderAddress
+      creatorAddress,
     ) => dispatch(graphqlActions.createTopicTx(
       name,
-      results,
-      centralizedOracle,
+      outcomes,
+      resultSetter,
       bettingStartTime,
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
-      senderAddress
+      creatorAddress,
     )),
-    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
     setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
     changeFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
