@@ -37,46 +37,13 @@ const ID_BETTING_END_TIME = 'bettingEndTime';
 const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
 const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
 
-const DEFAULT_PICKER_TIME = moment().format('YYYY-MM-DDTHH:mm');
-
-const resultUuid = 2;
+// default date picker to time 10 minutes from now
+const DEFAULT_PICKER_TIME = moment().add(10, 'm').format('YYYY-MM-DDTHH:mm');
 
 const messages = defineMessages({
-  betStartBlockMsg: {
-    id: 'create.betStartBlockMsg',
-    defaultMessage: 'Betting Start Time cannot be empty',
-  },
-  betEndBlocksMsg: {
-    id: 'create.betEndBlocksMsg',
-    defaultMessage: 'Betting End Time cannot be empty',
-  },
-  resultSetStartBlockMsg: {
-    id: 'create.resultSetStartBlockMsg',
-    defaultMessage: 'Result Setting Start Time cannot be empty',
-  },
-  resultSetEndBlockMsg: {
-    id: 'create.resultSetEndBlockMsg',
-    defaultMessage: 'Result Setting End Time cannot be empty',
-  },
-  resultsMsg: {
-    id: 'create.resultsMsg',
-    defaultMessage: 'Result name cannot be empty.',
-  },
-  evtNotEmpty: {
-    id: 'create.evtNotEmpty',
-    defaultMessage: 'Event name cannot be empty.',
-  },
   namePlaceholder: {
     id: 'create.namePlaceholder',
     defaultMessage: 'e.g. Who will be the next president of the United States?',
-  },
-  COnotEmpty: {
-    id: 'create.COnotEmpty',
-    defaultMessage: 'Centralized Oracle cannot be empty.',
-  },
-  dateTime: {
-    id: 'create.dateTime',
-    defaultMessage: 'Select Date & Time',
   },
   resultIndex: {
     id: 'create.resultIndex',
@@ -111,6 +78,8 @@ const messages = defineMessages({
     defaultMessage: 'Oops, something went wrong',
   },
 });
+
+const selector = formValueSelector('createEvent');
 
 class CreateEvent extends React.Component {
   static propTypes = {
@@ -210,6 +179,10 @@ class CreateEvent extends React.Component {
   };
 
   validateResultLength = (value) => {
+    if (!value) {
+      return 'Required';
+    }
+
     let hexString = _.isUndefined(value) ? '' : value;
 
     // Remove hex prefix for length validation
@@ -568,8 +541,6 @@ class CreateEvent extends React.Component {
   }
 }
 
-const selector = formValueSelector('createEvent');
-
 const mapStateToProps = (state) => ({
   initialValues: {
     bettingStartTime: DEFAULT_PICKER_TIME,
@@ -661,7 +632,7 @@ const validate = (values) => {
   return errors;
 };
 
-// Decorate with redux-form
+// decorate with redux-form
 const createEventForm = reduxForm({
   form: 'createEvent',
   validate,
