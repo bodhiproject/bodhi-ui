@@ -124,7 +124,7 @@
   "str.notEnoughBot": "You don't have enough BOT",
   "str.notEnoughQtum": "You don't have enough QTUM",
   "str.ok": "OK",
-  "str.outcomes": "OUTCOMES",
+  "str.outcomes": "Outcomes",
   "str.pendingConfirmation": "Pending Confirmation",
   "str.pendingTransactionDisabledMsg": "You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction.",
   "str.qtum": "QTUM",
