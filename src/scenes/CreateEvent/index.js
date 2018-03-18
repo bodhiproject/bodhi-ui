@@ -250,6 +250,21 @@ class CreateEvent extends React.Component {
   };
 
   componentWillMount() {
+    const {
+      syncBlockNum,
+      averageBlockTime,
+    } = this.props;
+
+    const localDate = moment(DEFAULT_PICKER_TIME).local();
+    const block = calculateBlock(syncBlockNum, localDate, averageBlockTime);
+
+    this.setState({
+      bettingStartBlock: block,
+      bettingEndBlock: block,
+      resultSettingStartBlock: block,
+      resultSettingEndBlock: block,
+    });
+
     this.props.getInsightTotals();
   }
 
@@ -295,15 +310,8 @@ class CreateEvent extends React.Component {
     </FormControl>
   );
 
-  renderBlockNumber = ({
-    input,
-    blockNum,
-    meta: { touched, error },
-    ...custom
-  }) => (
+  renderBlockNumberField = (blockNum) => (
     <TextField
-      {...input}
-      {...custom}
       fullWidth
       disabled
       placeholder="Block Number"
@@ -315,21 +323,46 @@ class CreateEvent extends React.Component {
     input,
     meta: { touched, error },
     ...custom
-  }) => (
-    <FormControl fullWidth>
-      <TextField
-        {...input}
-        {...custom}
-        fullWidth
-        type="datetime-local"
-        error={Boolean(touched && error)}
-      />
-      {
-        touched && error ?
-          <FormHelperText error>{error}</FormHelperText> : null
-      }
-    </FormControl>
-  );
+  }) => {
+    // calculate block num if input value is not empty
+    let blockNum = '';
+
+    if (!input.value || input.value !== '') {
+      const {
+        syncBlockNum,
+        averageBlockTime,
+      } = this.props;
+
+      const localDate = moment(input.value).local();
+      blockNum = calculateBlock(syncBlockNum, localDate, averageBlockTime);
+    }
+
+    return [
+      (<Grid item xs={6}>
+        <FormControl fullWidth>
+          <TextField
+            {...input}
+            {...custom}
+            fullWidth
+            type="datetime-local"
+            error={Boolean(touched && error)}
+          />
+          {
+            touched && error ?
+              <FormHelperText error>{error}</FormHelperText> : null
+          }
+        </FormControl>
+      </Grid>),
+      (<Grid item xs={6}>
+        <TextField
+          fullWidth
+          disabled
+          placeholder="Block Number"
+          value={blockNum ? `Block: ${blockNum}` : ''}
+        />
+      </Grid>),
+    ];
+  };
 
   renderOutcome = (outcome, index, fields) => {
     const { classes } = this.props;
@@ -391,6 +424,7 @@ class CreateEvent extends React.Component {
       {...input}
       {...custom}
       fullWidth
+      value={this.props.lastUsedAddress}
     >
       {this.props.walletAddresses.map((item, index) => (
         <MenuItem key={item.address} value={item.address}>
@@ -435,8 +469,6 @@ class CreateEvent extends React.Component {
       default:
         throw new Error(`Unhandled block number ${name}`);
     }
-
-    console.log(this.state);
   };
 
   onCreatorAddressChange = (event, newValue, previousValue, name) => {
@@ -480,20 +512,11 @@ class CreateEvent extends React.Component {
                 PREDICTION START TIME
               </Grid>
               <Grid item container xs={9}>
-                <Grid item xs={6}>
-                  <Field
-                    onChange={this.onDatePickerChange}
-                    name={ID_BETTING_START_TIME}
-                    component={this.renderDateTimePicker}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    name={`${ID_BETTING_START_TIME}Block`}
-                    blockNum={this.state.bettingStartBlock}
-                    component={this.renderBlockNumber}
-                  />
-                </Grid>
+                <Field
+                  onChange={this.onDatePickerChange}
+                  name={ID_BETTING_START_TIME}
+                  component={this.renderDateTimePicker}
+                />
               </Grid>
             </Grid>
             <Grid container>
@@ -501,20 +524,11 @@ class CreateEvent extends React.Component {
                 PREDICTION END TIME
               </Grid>
               <Grid item container xs={9}>
-                <Grid item xs={6}>
-                  <Field
-                    onChange={this.onDatePickerChange}
-                    name={ID_BETTING_END_TIME}
-                    component={this.renderDateTimePicker}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    name={`${ID_BETTING_END_TIME}Block`}
-                    blockNum={this.state.bettingEndBlock}
-                    component={this.renderBlockNumber}
-                  />
-                </Grid>
+                <Field
+                  onChange={this.onDatePickerChange}
+                  name={ID_BETTING_END_TIME}
+                  component={this.renderDateTimePicker}
+                />
               </Grid>
             </Grid>
             <Grid container>
@@ -522,20 +536,11 @@ class CreateEvent extends React.Component {
                 SET RESULT START TIME
               </Grid>
               <Grid item container xs={9}>
-                <Grid item xs={6}>
-                  <Field
-                    onChange={this.onDatePickerChange}
-                    name={ID_RESULT_SETTING_START_TIME}
-                    component={this.renderDateTimePicker}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    name={`${ID_RESULT_SETTING_START_TIME}Block`}
-                    blockNum={this.state.resultSettingStartBlock}
-                    component={this.renderBlockNumber}
-                  />
-                </Grid>
+                <Field
+                  onChange={this.onDatePickerChange}
+                  name={ID_RESULT_SETTING_START_TIME}
+                  component={this.renderDateTimePicker}
+                />
               </Grid>
             </Grid>
             <Grid container>
@@ -543,20 +548,11 @@ class CreateEvent extends React.Component {
                 SET RESULT END TIME
               </Grid>
               <Grid item container xs={9}>
-                <Grid item xs={6}>
-                  <Field
-                    onChange={this.onDatePickerChange}
-                    name={ID_RESULT_SETTING_END_TIME}
-                    component={this.renderDateTimePicker}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    name={`${ID_RESULT_SETTING_END_TIME}Block`}
-                    blockNum={this.state.resultSettingEndBlock}
-                    component={this.renderBlockNumber}
-                  />
-                </Grid>
+                <Field
+                  onChange={this.onDatePickerChange}
+                  name={ID_RESULT_SETTING_END_TIME}
+                  component={this.renderDateTimePicker}
+                />
               </Grid>
             </Grid>
             <Grid container>
@@ -617,6 +613,7 @@ const mapStateToProps = (state) => ({
     bettingEndTime: DEFAULT_PICKER_TIME,
     resultSettingStartTime: DEFAULT_PICKER_TIME,
     resultSettingEndTime: DEFAULT_PICKER_TIME,
+    outcomes: ['', ''],
   },
   bettingStartTime: selector(state, 'bettingStartTime'),
   bettingEndTime: selector(state, 'bettingEndTime'),
