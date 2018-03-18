@@ -589,21 +589,24 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+const fields = [
+  'name',
+  'outcomes',
+  'resultSetter',
+  'creatorAddress',
+  ID_BETTING_START_TIME,
+  ID_BETTING_END_TIME,
+  ID_RESULT_SETTING_START_TIME,
+  ID_RESULT_SETTING_END_TIME,
+];
+
 const validate = (values, props) => {
   const { intl } = props;
 
   const errors = {};
 
   // check required fields
-  const requiredFields = [
-    'name',
-    'resultSetter',
-    'creatorAddress',
-    ID_BETTING_START_TIME,
-    ID_BETTING_END_TIME,
-    ID_RESULT_SETTING_START_TIME,
-    ID_RESULT_SETTING_END_TIME,
-  ];
+  const requiredFields = fields;
   requiredFields.forEach((field) => {
     if (!values[field]) {
       errors[field] = intl.formatMessage(messages.required);
@@ -634,16 +637,7 @@ const validate = (values, props) => {
 // decorate with redux-form
 const createEventForm = reduxForm({
   form: FORM_NAME,
-  fields: [
-    'name',
-    'outcomes',
-    'resultSetter',
-    'creatorAddress',
-    ID_BETTING_START_TIME,
-    ID_BETTING_END_TIME,
-    ID_RESULT_SETTING_START_TIME,
-    ID_RESULT_SETTING_END_TIME,
-  ],
+  fields,
   validate,
 })(CreateEvent);
 
