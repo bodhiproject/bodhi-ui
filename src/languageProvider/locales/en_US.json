@@ -55,6 +55,7 @@
   "create.betEndTime": "Prediction Start Time",
   "create.resultSetStartTime": "Result Setting Start Time",
   "create.resultSetEndTime": "Result Setting End Time",
+  "create.selectMyAddress": "Select My Address",
   "create.outcomeName": "Outcome Name",
   "depositDialog.title": "QTUM/BOT Deposit Address",
   "eventHistory.viewEvent": "View Event",

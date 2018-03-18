@@ -58,6 +58,7 @@
   "create.resultSetStartTime": "结果设置开始时间",
   "create.resultSetEndTime": "结果设置结束时间",
   "create.outcomeName": "结果名称",
+  "create.selectMyAddress": "选择我的地址",
   "eventHistory.viewEvent": "查看事件",
   "str.creator": "创建者",
   "eventInfo.endDate": "截止日期",

@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'create.title',
     defaultMessage: 'Title',
   },
+  dialogTitle: {
+    id: 'create.dialogTitle',
+    defaultMessage: 'Create an Event',
+  },
   namePlaceholder: {
     id: 'create.namePlaceholder',
     defaultMessage: 'e.g. Who will be the next president of the United States?',
@@ -120,6 +124,10 @@ const messages = defineMessages({
   outcomeName: {
     id: 'create.outcomeName',
     defaultMessage: 'Outcome Name',
+  },
+  selectMyAddress: {
+    id: 'create.selectMyAddress',
+    defaultMessage: 'Select My Address',
   },
 });
 
@@ -420,7 +428,7 @@ class CreateEvent extends React.Component {
         onClose={onClose}
       >
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
-          <DialogTitle>Create an Event</DialogTitle>
+          <DialogTitle>{intl.formatMessage(messages.dialogTitle)}</DialogTitle>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>
@@ -510,7 +518,7 @@ class CreateEvent extends React.Component {
                   variant="raised"
                   onClick={this.onSelectResultSetterAddress}
                 >
-                  Select My Address
+                  {intl.formatMessage(messages.selectMyAddress)}
                 </Button>
               </Grid>
             </Grid>
