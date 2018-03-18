@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, FieldArray, reduxForm, Form, formValueSelector } from 'redux-form';
+import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
@@ -39,6 +39,8 @@ const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
 
 // default date picker to time 10 minutes from now
 const DEFAULT_PICKER_TIME = moment().add(10, 'm').format('YYYY-MM-DDTHH:mm');
+
+const FORM_NAME = 'createEvent';
 
 const messages = defineMessages({
   namePlaceholder: {
@@ -79,11 +81,12 @@ const messages = defineMessages({
   },
 });
 
-const selector = formValueSelector('createEvent');
+const selector = formValueSelector(FORM_NAME);
 
 class CreateEvent extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    fields: PropTypes.array.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -104,6 +107,7 @@ class CreateEvent extends React.Component {
     bettingEndTime: PropTypes.string,
     resultSettingStartTime: PropTypes.string,
     resultSettingEndTime: PropTypes.string,
+    changeFieldValue: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -338,14 +342,15 @@ class CreateEvent extends React.Component {
       {
         fields.length < 10 ?
           (<Button
-            color="primary"
+            className={this.props.classes.inputButton}
+            variant="raised"
             onClick={() => {
               if (fields.length < 10) {
                 fields.push('');
               }
             }}
           >
-            + Add Result
+            + Add Outcome
           </Button>) : null
       }
     </ul>
@@ -379,7 +384,6 @@ class CreateEvent extends React.Component {
 
     const localDate = moment(newValue).local();
     const block = calculateBlock(syncBlockNum, localDate, averageBlockTime);
-    console.log(block);
 
     switch (name) {
       case ID_BETTING_START_TIME:
@@ -409,6 +413,20 @@ class CreateEvent extends React.Component {
 
   onCreatorAddressChange = (event, newValue, previousValue, name) => {
     this.props.setLastUsedAddress(newValue);
+  };
+
+  onSelectResultSetterAddress = () => {
+    this.setState({
+      selectAddressDialogVisibility: true,
+    });
+  };
+
+  onSelectResultSetterAddressDialogClosed = (address) => {
+    this.setState({
+      selectAddressDialogVisibility: false,
+    });
+
+    this.props.changeFieldValue('resultSetter', address);
   };
 
   render() {
@@ -508,9 +526,16 @@ class CreateEvent extends React.Component {
                   required
                   fullWidth
                   name="resultSetter"
-                  placeholder="Enter the address of result setter or select your own address by clicking the icon on the right"
+                  placeholder="Enter the address of result setter or select your own address"
                   component={this.renderTextField}
                 />
+                <Button
+                  className={this.props.classes.inputButton}
+                  variant="raised"
+                  onClick={this.onSelectResultSetterAddress}
+                >
+                  Select My Address
+                </Button>
               </Grid>
             </Grid>
             <Grid container>
@@ -526,6 +551,11 @@ class CreateEvent extends React.Component {
                 />
               </Grid>
             </Grid>
+            <SelectAddressDialog
+              dialogVisible={this.state.selectAddressDialogVisibility}
+              walletAddresses={this.props.walletAddresses}
+              onClosed={this.onSelectResultSetterAddressDialogClosed}
+            />
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.props.onClose}>
@@ -586,6 +616,7 @@ function mapDispatchToProps(dispatch) {
     toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
     setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+    changeFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   };
 }
 
@@ -634,7 +665,8 @@ const validate = (values) => {
 
 // decorate with redux-form
 const createEventForm = reduxForm({
-  form: 'createEvent',
+  form: FORM_NAME,
+  fields: ['resultSetter'],
   validate,
 })(CreateEvent);
 

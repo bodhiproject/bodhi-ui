@@ -8,6 +8,9 @@ const styles = (theme) => ({
     right: 0,
     cursor: 'pointer',
   },
+  inputButton: {
+    marginTop: theme.padding.unit.px,
+  },
 });
 
 export default styles;
