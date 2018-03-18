@@ -203,7 +203,7 @@ class CreateEvent extends React.Component {
     return null;
   };
 
-  submit = (values) => {
+  submitCreateEvent = (values) => {
     const {
       name,
       outcomes,
@@ -456,7 +456,7 @@ class CreateEvent extends React.Component {
         open={open}
         onClose={onClose}
       >
-        <Form onSubmit={handleSubmit(this.submit)}>
+        <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
           <DialogTitle>Create an Event</DialogTitle>
           <DialogContent>
             <Grid container>
