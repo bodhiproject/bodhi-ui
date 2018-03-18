@@ -43,13 +43,21 @@ const DEFAULT_PICKER_TIME = moment().add(10, 'm').format('YYYY-MM-DDTHH:mm');
 const FORM_NAME = 'createEvent';
 
 const messages = defineMessages({
+  required: {
+    id: 'create.required',
+    defaultMessage: 'Required',
+  },
+  datePast: {
+    id: 'create.datePast',
+    defaultMessage: 'Cannot be in the past',
+  },
+  title: {
+    id: 'create.title',
+    defaultMessage: 'Title',
+  },
   namePlaceholder: {
     id: 'create.namePlaceholder',
     defaultMessage: 'e.g. Who will be the next president of the United States?',
-  },
-  resultIndex: {
-    id: 'create.resultIndex',
-    defaultMessage: 'Result',
   },
   nameLong: {
     id: 'create.nameLong',
@@ -71,13 +79,49 @@ const messages = defineMessages({
     id: 'create.resultTooLong',
     defaultMessage: 'Result name is too long.',
   },
-  alertSuc: {
-    id: 'create.alertSuc',
-    defaultMessage: 'The transaction is broadcasted to blockchain. \n You can view details from below link ',
+  cancel: {
+    id: 'str.cancel',
+    defaultMessage: 'Cancel',
   },
-  alertFail: {
-    id: 'create.alertFail',
-    defaultMessage: 'Oops, something went wrong',
+  publish: {
+    id: 'create.publish',
+    defaultMessage: 'Publish',
+  },
+  creator: {
+    id: 'str.creator',
+    defaultMessage: 'Creator',
+  },
+  outcomes: {
+    id: 'str.outcomes',
+    defaultMessage: 'Outcomes',
+  },
+  addOutcome: {
+    id: 'create.addOutcome',
+    defaultMessage: 'Add Outcome',
+  },
+  resultSetter: {
+    id: 'str.resultSetter',
+    defaultMessage: 'Result Setter',
+  },
+  betStartTime: {
+    id: 'create.betStartTime',
+    defaultMessage: 'Prediction Start Time',
+  },
+  betEndTime: {
+    id: 'create.betEndTime',
+    defaultMessage: 'Prediction End Time',
+  },
+  resultSetStartTime: {
+    id: 'create.resultSetStartTime',
+    defaultMessage: 'Result Setting Start Time',
+  },
+  resultSetEndTime: {
+    id: 'create.resultSetEndTime',
+    defaultMessage: 'Result Setting End Time',
+  },
+  outcomeName: {
+    id: 'create.outcomeName',
+    defaultMessage: 'Outcome Name',
   },
 });
 
@@ -101,18 +145,10 @@ class CreateEvent extends React.Component {
     averageBlockTime: PropTypes.number,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
-    bettingStartTime: PropTypes.string,
-    bettingEndTime: PropTypes.string,
-    resultSettingStartTime: PropTypes.string,
-    resultSettingEndTime: PropTypes.string,
-    changeFieldValue: PropTypes.func.isRequired,
+    changeFormFieldValue: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    bettingStartTime: DEFAULT_PICKER_TIME,
-    bettingEndTime: DEFAULT_PICKER_TIME,
-    resultSettingStartTime: DEFAULT_PICKER_TIME,
-    resultSettingEndTime: DEFAULT_PICKER_TIME,
     createTopicTx: undefined,
     txReturn: undefined,
     getInsightTotals: undefined,
@@ -125,64 +161,35 @@ class CreateEvent extends React.Component {
   };
 
   validateTitleLength = (value) => {
+    const { intl } = this.props;
     let hexString = _.isUndefined(value) ? '' : value;
 
     // Remove hex prefix for length validation
     hexString = Web3Utils.toHex(hexString).slice(2);
     if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
-      return this.props.intl.formatMessage(messages.nameLong);
+      return intl.formatMessage(messages.nameLong);
     }
 
     return null;
   };
 
   validateTimeAfterNow = (value) => {
+    const { intl } = this.props;
     const valueTime = moment(value);
     const now = moment();
 
     if (_.isUndefined(valueTime) || now.unix() > valueTime.unix()) {
-      return 'cannot be in the past';
+      return intl.formatMessage(messages.datePast);
     }
-
-    return null;
-  };
-
-  validateBettingEndTime = (value) => {
-    /*
-    if (_.isUndefined(bettingStartTime) || value.unix() <= bettingStartTime.unix()) {
-      return this.props.intl.formatMessage(messages.validBetEnd);
-    }
-    */
-    console.log(value);
-
-    return null;
-  };
-
-  validateResultSettingStartTime = (value) => {
-    /*
-    if (_.isUndefined(bettingEndTime) || value.unix() < bettingEndTime.unix()) {
-      return this.props.intl.formatMessage(messages.validResultSetStart);
-    }
-    */
-    console.log(value);
-
-    return null;
-  };
-
-  validateResultSettingEndTime = (value) => {
-    /*
-    if (_.isUndefined(resultSettingStartTime) || value.unix() <= resultSettingStartTime.unix()) {
-      return this.props.intl.formatMessage(messages.validResultSetEnd);
-    }
-    */
-    console.log(value);
 
     return null;
   };
 
   validateResultLength = (value) => {
+    const { intl } = this.props;
+
     if (!value) {
-      return 'Required';
+      return intl.formatMessage(messages.required);
     }
 
     let hexString = _.isUndefined(value) ? '' : value;
@@ -190,7 +197,7 @@ class CreateEvent extends React.Component {
     // Remove hex prefix for length validation
     hexString = Web3Utils.toHex(hexString).slice(2);
     if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
-      return this.props.intl.formatMessage(messages.resultTooLong);
+      return intl.formatMessage(messages.resultTooLong);
     }
 
     return null;
@@ -303,27 +310,27 @@ class CreateEvent extends React.Component {
   };
 
   renderOutcome = (outcome, index, fields) => {
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
 
     return (
       <li key={`outcome-${index}`} className={classes.outcomeWrapper}>
         <Field
           fullWidth
           name={outcome}
-          placeholder="Outcome Name"
+          placeholder={intl.formatMessage(messages.outcomeName)}
           component={this.renderTextField}
           validate={[this.validateResultLength]}
           startAdornmentLabel={`#${index + 1}`}
         />
         {
-          fields.length > 2 ?
+          fields.length > MIN_OPTION_NUMBER ?
             (<i
               className={classNames(
                 classes.removeOutcome,
                 'icon', 'iconfont', 'icon-close'
               )}
               onClick={() => {
-                if (fields.length > 2) {
+                if (fields.length > MIN_OPTION_NUMBER) {
                   fields.remove(index);
                 }
               }}
@@ -338,17 +345,17 @@ class CreateEvent extends React.Component {
     <ul>
       {fields.map(this.renderOutcome)}
       {
-        fields.length < 10 ?
+        fields.length < MAX_OPTION_NUMBER ?
           (<Button
             className={this.props.classes.inputButton}
             variant="raised"
             onClick={() => {
-              if (fields.length < 10) {
+              if (fields.length < MAX_OPTION_NUMBER) {
                 fields.push('');
               }
             }}
           >
-            + Add Outcome
+            + {this.props.intl.formatMessage(messages.addOutcome)}
           </Button>) : null
       }
     </ul>
@@ -360,7 +367,7 @@ class CreateEvent extends React.Component {
     ...custom
   }) => {
     if (!input.value || input.value === '') {
-      this.props.changeFieldValue('creatorAddress', this.props.lastUsedAddress);
+      this.props.changeFormFieldValue('creatorAddress', this.props.lastUsedAddress);
     }
 
     return (<Select
@@ -427,35 +434,40 @@ class CreateEvent extends React.Component {
       selectAddressDialogVisibility: false,
     });
 
-    this.props.changeFieldValue('resultSetter', address);
+    this.props.changeFormFieldValue('resultSetter', address);
   };
 
   render() {
     const {
+      classes,
+      open,
+      onClose,
+      walletAddresses,
       handleSubmit,
       submitting,
       lastUsedAddress,
+      intl,
     } = this.props;
 
     return (
       <Dialog
         fullWidth
         maxWidth="md"
-        open={this.props.open}
-        onClose={this.props.onClose}
+        open={open}
+        onClose={onClose}
       >
         <Form onSubmit={handleSubmit(this.submit)}>
           <DialogTitle>Create an Event</DialogTitle>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>
-                TITLE
+                {intl.formatMessage(messages.title)}
               </Grid>
               <Grid item container xs={9}>
                 <Grid item xs={12}>
                   <Field
                     name="name"
-                    placeholder="Who will be the next America president in 2020?"
+                    placeholder={intl.formatMessage(messages.namePlaceholder)}
                     validate={[this.validateTitleLength]}
                     component={this.renderTextField}
                   />
@@ -464,23 +476,25 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                PREDICTION START TIME
+                {intl.formatMessage(messages.betStartTime)}
               </Grid>
               <Grid item container xs={9}>
                 <Field
                   onChange={this.onDatePickerChange}
                   name={ID_BETTING_START_TIME}
+                  validate={[this.validateTimeAfterNow]}
                   component={this.renderDateTimePicker}
                 />
               </Grid>
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                PREDICTION END TIME
+                {intl.formatMessage(messages.betEndTime)}
               </Grid>
               <Grid item container xs={9}>
                 <Field
                   onChange={this.onDatePickerChange}
+                  validate={[this.validateTimeAfterNow]}
                   name={ID_BETTING_END_TIME}
                   component={this.renderDateTimePicker}
                 />
@@ -488,11 +502,12 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                SET RESULT START TIME
+                {intl.formatMessage(messages.resultSetStartTime)}
               </Grid>
               <Grid item container xs={9}>
                 <Field
                   onChange={this.onDatePickerChange}
+                  validate={[this.validateTimeAfterNow]}
                   name={ID_RESULT_SETTING_START_TIME}
                   component={this.renderDateTimePicker}
                 />
@@ -500,11 +515,12 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                SET RESULT END TIME
+                {intl.formatMessage(messages.resultSetEndTime)}
               </Grid>
               <Grid item container xs={9}>
                 <Field
                   onChange={this.onDatePickerChange}
+                  validate={[this.validateTimeAfterNow]}
                   name={ID_RESULT_SETTING_END_TIME}
                   component={this.renderDateTimePicker}
                 />
@@ -512,7 +528,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                OUTCOMES
+                {intl.formatMessage(messages.outcomes)}
               </Grid>
               <Grid item xs={9}>
                 <FieldArray name="outcomes" component={this.renderOutcomeList} />
@@ -520,7 +536,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                RESULT SETTER
+                {intl.formatMessage(messages.resultSetter)}
               </Grid>
               <Grid item xs={9}>
                 <Field
@@ -531,7 +547,7 @@ class CreateEvent extends React.Component {
                   component={this.renderTextField}
                 />
                 <Button
-                  className={this.props.classes.inputButton}
+                  className={classes.inputButton}
                   variant="raised"
                   onClick={this.onSelectResultSetterAddress}
                 >
@@ -541,7 +557,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                WALLET ADDRESS
+                {intl.formatMessage(messages.creator)}
               </Grid>
               <Grid item xs={9}>
                 <Field
@@ -554,16 +570,16 @@ class CreateEvent extends React.Component {
             </Grid>
             <SelectAddressDialog
               dialogVisible={this.state.selectAddressDialogVisibility}
-              walletAddresses={this.props.walletAddresses}
+              walletAddresses={walletAddresses}
               onClosed={this.onSelectResultSetterAddressDialogClosed}
             />
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={this.props.onClose}>
-              Cancel
+            <Button color="primary" onClick={onClose}>
+              {intl.formatMessage(messages.cancel)}
             </Button>
             <Button type="submit" color="primary" disabled={submitting} variant="raised">
-              Publish
+              {intl.formatMessage(messages.publish)}
             </Button>
           </DialogActions>
         </Form>
@@ -580,10 +596,6 @@ const mapStateToProps = (state) => ({
     resultSettingEndTime: DEFAULT_PICKER_TIME,
     outcomes: ['', ''],
   },
-  bettingStartTime: selector(state, 'bettingStartTime'),
-  bettingEndTime: selector(state, 'bettingEndTime'),
-  resultSettingStartTime: selector(state, 'resultSettingStartTime'),
-  resultSettingEndTime: selector(state, 'resultSettingEndTime'),
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -614,48 +626,47 @@ function mapDispatchToProps(dispatch) {
     )),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
     setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-    changeFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
+    changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   };
 }
 
-const validate = (values) => {
+const validate = (values, props) => {
+  const { intl } = props;
+
   const errors = {};
 
+  // check required fields
   const requiredFields = [
     'name',
-    'bettingStartTime',
-    'bettingEndTime',
-    'resultSettingStartTime',
-    'resultSettingEndTime',
     'resultSetter',
+    'creatorAddress',
+    ID_BETTING_START_TIME,
+    ID_BETTING_END_TIME,
+    ID_RESULT_SETTING_START_TIME,
+    ID_RESULT_SETTING_END_TIME,
   ];
-
   requiredFields.forEach((field) => {
     if (!values[field]) {
-      errors[field] = 'Required';
+      errors[field] = intl.formatMessage(messages.required);
     }
   });
 
+  // check dates
   const bettingStartTime = moment(values.bettingStartTime);
   const bettingEndTime = moment(values.bettingEndTime);
   const resultSettingStartTime = moment(values.resultSettingStartTime);
   const resultSettingEndTime = moment(values.resultSettingEndTime);
-  const now = moment();
-
-  if (now.unix() > bettingStartTime.unix()) {
-    errors.bettingStartTime = 'cannot be in the past';
-  }
 
   if (bettingStartTime.unix() > bettingEndTime.unix()) {
-    errors.bettingEndTime = 'bet end time cannot be before start time';
+    errors.bettingEndTime = intl.formatMessage(messages.validBetEnd);
   }
 
   if (bettingEndTime.unix() > resultSettingStartTime.unix()) {
-    errors.resultSettingStartTime = 'result start time cannot be before bet end time';
+    errors.resultSettingStartTime = intl.formatMessage(messages.validResultSetStart);
   }
 
   if (resultSettingStartTime.unix() > resultSettingEndTime.unix()) {
-    errors.resultSettingEndTime = 'result end time cannot be before start time';
+    errors.resultSettingEndTime = intl.formatMessage(messages.validResultSetEnd);
   }
 
   return errors;
@@ -664,7 +675,16 @@ const validate = (values) => {
 // decorate with redux-form
 const createEventForm = reduxForm({
   form: FORM_NAME,
-  fields: ['resultSetter'],
+  fields: [
+    'name',
+    'outcomes',
+    'resultSetter',
+    'creatorAddress',
+    ID_BETTING_START_TIME,
+    ID_BETTING_END_TIME,
+    ID_RESULT_SETTING_START_TIME,
+    ID_RESULT_SETTING_END_TIME,
+  ],
   validate,
 })(CreateEvent);
 

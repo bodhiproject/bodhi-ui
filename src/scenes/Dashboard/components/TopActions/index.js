@@ -62,7 +62,7 @@ class TopActions extends Component {
         <Grid item xs={8}>
           <Button variant="raised" size="medium" color="primary" className={classes.createEventButton} onClick={this.onCreateDialogOpen}>
             <AddIcon fontSize />
-            <FormattedMessage id="create.title" defaultMessage="Create an event" />
+            <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
           </Button>
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>
