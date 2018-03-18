@@ -150,10 +150,6 @@ class CreateEvent extends React.Component {
   };
 
   state = {
-    bettingStartBlock: undefined,
-    bettingEndBlock: undefined,
-    resultSettingStartBlock: undefined,
-    resultSettingEndBlock: undefined,
     selectAddressDialogVisibility: false,
   };
 
@@ -250,21 +246,6 @@ class CreateEvent extends React.Component {
   };
 
   componentWillMount() {
-    const {
-      syncBlockNum,
-      averageBlockTime,
-    } = this.props;
-
-    const localDate = moment(DEFAULT_PICKER_TIME).local();
-    const block = calculateBlock(syncBlockNum, localDate, averageBlockTime);
-
-    this.setState({
-      bettingStartBlock: block,
-      bettingEndBlock: block,
-      resultSettingStartBlock: block,
-      resultSettingEndBlock: block,
-    });
-
     this.props.getInsightTotals();
   }
 
@@ -273,17 +254,6 @@ class CreateEvent extends React.Component {
       this.setState({ open: false });
     }
   }
-
-  renderFieldContainer = (label, fieldInputComponent) => (
-    <Grid container>
-      <Grid item xs={3}>
-        {label}
-      </Grid>
-      <Grid item container xs={9}>
-        {fieldInputComponent}
-      </Grid>
-    </Grid>
-  );
 
   renderTextField = ({
     input,
@@ -310,15 +280,6 @@ class CreateEvent extends React.Component {
     </FormControl>
   );
 
-  renderBlockNumberField = (blockNum) => (
-    <TextField
-      fullWidth
-      disabled
-      placeholder="Block Number"
-      value={blockNum ? `Block: ${blockNum}` : ''}
-    />
-  );
-
   renderDateTimePicker = ({
     input,
     meta: { touched, error },
@@ -337,31 +298,33 @@ class CreateEvent extends React.Component {
       blockNum = calculateBlock(syncBlockNum, localDate, averageBlockTime);
     }
 
-    return [
-      (<Grid item xs={6}>
-        <FormControl fullWidth>
+    return (
+      <Grid item container xs={12}>
+        <Grid item xs={6}>
+          <FormControl fullWidth>
+            <TextField
+              {...input}
+              {...custom}
+              fullWidth
+              type="datetime-local"
+              error={Boolean(touched && error)}
+            />
+            {
+              touched && error ?
+                <FormHelperText error>{error}</FormHelperText> : null
+            }
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
           <TextField
-            {...input}
-            {...custom}
             fullWidth
-            type="datetime-local"
-            error={Boolean(touched && error)}
+            disabled
+            placeholder="Block Number"
+            value={blockNum ? `Block: ${blockNum}` : ''}
           />
-          {
-            touched && error ?
-              <FormHelperText error>{error}</FormHelperText> : null
-          }
-        </FormControl>
-      </Grid>),
-      (<Grid item xs={6}>
-        <TextField
-          fullWidth
-          disabled
-          placeholder="Block Number"
-          value={blockNum ? `Block: ${blockNum}` : ''}
-        />
-      </Grid>),
-    ];
+        </Grid>
+      </Grid>
+    );
   };
 
   renderOutcome = (outcome, index, fields) => {
