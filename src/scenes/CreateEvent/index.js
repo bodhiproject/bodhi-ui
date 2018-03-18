@@ -273,40 +273,42 @@ class CreateEvent extends React.Component {
   renderTextField = ({
     input,
     placeholder,
-    setValue,
     startAdornmentLabel,
     meta: { touched, error },
     ...custom
   }) => (
     <FormControl fullWidth>
-      {setValue ? (
-        <TextField
-          {...input}
-          {...custom}
-          fullWidth
-          placeholder={placeholder}
-          error={Boolean(touched && error)}
-          InputProps={{
-            startAdornment: startAdornmentLabel ? <InputAdornment position="start">{startAdornmentLabel}</InputAdornment> : null,
-          }}
-        />
-      ) : (
-        <TextField
-          {...input}
-          {...custom}
-          fullWidth
-          placeholder={placeholder}
-          value={setValue}
-          InputProps={{
-            startAdornment: startAdornmentLabel ? <InputAdornment position="start">{startAdornmentLabel}</InputAdornment> : null,
-          }}
-        />
-      )}
+      <TextField
+        {...input}
+        {...custom}
+        fullWidth
+        placeholder={placeholder}
+        error={Boolean(touched && error)}
+        InputProps={{
+          startAdornment: startAdornmentLabel ? <InputAdornment position="start">{startAdornmentLabel}</InputAdornment> : null,
+        }}
+      />
       {
-        touched && error && !setValue ?
+        touched && error ?
           <FormHelperText error>{error}</FormHelperText> : null
       }
     </FormControl>
+  );
+
+  renderBlockNumber = ({
+    input,
+    blockNum,
+    meta: { touched, error },
+    ...custom
+  }) => (
+    <TextField
+      {...input}
+      {...custom}
+      fullWidth
+      disabled
+      placeholder="Block Number"
+      value={blockNum ? `Block: ${blockNum}` : ''}
+    />
   );
 
   renderDateTimePicker = ({
@@ -335,7 +337,6 @@ class CreateEvent extends React.Component {
     return (
       <li key={`outcome-${index}`} className={classes.outcomeWrapper}>
         <Field
-          required
           fullWidth
           name={outcome}
           placeholder="Outcome Name"
@@ -434,6 +435,8 @@ class CreateEvent extends React.Component {
       default:
         throw new Error(`Unhandled block number ${name}`);
     }
+
+    console.log(this.state);
   };
 
   onCreatorAddressChange = (event, newValue, previousValue, name) => {
@@ -464,8 +467,6 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={12}>
                   <Field
-                    required
-                    fullWidth
                     name="name"
                     placeholder="Who will be the next America president in 2020?"
                     validate={[this.validateTitleLength]}
@@ -481,21 +482,16 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={6}>
                   <Field
-                    required
-                    fullWidth
                     onChange={this.onDatePickerChange}
-                    name={`${ID_BETTING_START_TIME}`}
+                    name={ID_BETTING_START_TIME}
                     component={this.renderDateTimePicker}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Field
-                    disabled
-                    fullWidth
                     name={`${ID_BETTING_START_TIME}Block`}
-                    placeholder="Block Number"
-                    setValue={this.state.bettingStartBlock}
-                    component={this.renderTextField}
+                    blockNum={this.state.bettingStartBlock}
+                    component={this.renderBlockNumber}
                   />
                 </Grid>
               </Grid>
@@ -507,21 +503,16 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={6}>
                   <Field
-                    required
-                    fullWidth
                     onChange={this.onDatePickerChange}
-                    name={`${ID_BETTING_END_TIME}`}
+                    name={ID_BETTING_END_TIME}
                     component={this.renderDateTimePicker}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Field
-                    disabled
-                    fullWidth
                     name={`${ID_BETTING_END_TIME}Block`}
-                    placeholder="Block Number"
-                    setValue={this.state.bettingEndBlock}
-                    component={this.renderTextField}
+                    blockNum={this.state.bettingEndBlock}
+                    component={this.renderBlockNumber}
                   />
                 </Grid>
               </Grid>
@@ -533,21 +524,16 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={6}>
                   <Field
-                    required
-                    fullWidth
                     onChange={this.onDatePickerChange}
-                    name={`${ID_RESULT_SETTING_START_TIME}`}
+                    name={ID_RESULT_SETTING_START_TIME}
                     component={this.renderDateTimePicker}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Field
-                    disabled
-                    fullWidth
                     name={`${ID_RESULT_SETTING_START_TIME}Block`}
-                    placeholder="Block Number"
-                    setValue={this.state.resultSettingStartBlock}
-                    component={this.renderTextField}
+                    blockNum={this.state.resultSettingStartBlock}
+                    component={this.renderBlockNumber}
                   />
                 </Grid>
               </Grid>
@@ -559,21 +545,16 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={6}>
                   <Field
-                    required
-                    fullWidth
                     onChange={this.onDatePickerChange}
-                    name={`${ID_RESULT_SETTING_END_TIME}`}
+                    name={ID_RESULT_SETTING_END_TIME}
                     component={this.renderDateTimePicker}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Field
-                    disabled
-                    fullWidth
                     name={`${ID_RESULT_SETTING_END_TIME}Block`}
-                    placeholder="Block Number"
-                    setValue={this.state.resultSettingEndBlock}
-                    component={this.renderTextField}
+                    blockNum={this.state.resultSettingEndBlock}
+                    component={this.renderBlockNumber}
                   />
                 </Grid>
               </Grid>
@@ -636,7 +617,6 @@ const mapStateToProps = (state) => ({
     bettingEndTime: DEFAULT_PICKER_TIME,
     resultSettingStartTime: DEFAULT_PICKER_TIME,
     resultSettingEndTime: DEFAULT_PICKER_TIME,
-    creatorAddress: state.App.get('lastUsedAddress'),
   },
   bettingStartTime: selector(state, 'bettingStartTime'),
   bettingEndTime: selector(state, 'bettingEndTime'),
