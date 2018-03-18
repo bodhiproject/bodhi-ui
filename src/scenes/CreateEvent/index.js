@@ -1,5 +1,3 @@
-/* eslint react/no-unused-prop-types: 0, react/no-unused-state: 0, prefer-destructuring: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
@@ -227,16 +225,6 @@ class CreateEvent extends React.Component {
     );
   };
 
-  componentWillMount() {
-    this.props.getInsightTotals();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.txReturn) {
-      this.setState({ open: false });
-    }
-  }
-
   renderTextField = ({
     input,
     placeholder,
@@ -384,41 +372,6 @@ class CreateEvent extends React.Component {
     </Select>);
   };
 
-  onDatePickerChange = (event, newValue, previousValue, name) => {
-    const {
-      syncBlockNum,
-      averageBlockTime,
-    } = this.props;
-
-    const localDate = moment(newValue).local();
-    const block = calculateBlock(syncBlockNum, localDate, averageBlockTime);
-
-    switch (name) {
-      case ID_BETTING_START_TIME:
-        this.setState({
-          bettingStartBlock: block,
-        });
-        break;
-      case ID_BETTING_END_TIME:
-        this.setState({
-          bettingEndBlock: block,
-        });
-        break;
-      case ID_RESULT_SETTING_START_TIME:
-        this.setState({
-          resultSettingStartBlock: block,
-        });
-        break;
-      case ID_RESULT_SETTING_END_TIME:
-        this.setState({
-          resultSettingEndBlock: block,
-        });
-        break;
-      default:
-        throw new Error(`Unhandled block number ${name}`);
-    }
-  };
-
   onCreatorAddressChange = (event, newValue, previousValue, name) => {
     this.props.setLastUsedAddress(newValue);
   };
@@ -436,6 +389,16 @@ class CreateEvent extends React.Component {
 
     this.props.changeFormFieldValue('resultSetter', address);
   };
+
+  componentWillMount() {
+    this.props.getInsightTotals();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.txReturn) {
+      this.props.onClose();
+    }
+  }
 
   render() {
     const {
@@ -480,7 +443,6 @@ class CreateEvent extends React.Component {
               </Grid>
               <Grid item container xs={9}>
                 <Field
-                  onChange={this.onDatePickerChange}
                   name={ID_BETTING_START_TIME}
                   validate={[this.validateTimeAfterNow]}
                   component={this.renderDateTimePicker}
@@ -493,7 +455,6 @@ class CreateEvent extends React.Component {
               </Grid>
               <Grid item container xs={9}>
                 <Field
-                  onChange={this.onDatePickerChange}
                   validate={[this.validateTimeAfterNow]}
                   name={ID_BETTING_END_TIME}
                   component={this.renderDateTimePicker}
@@ -506,7 +467,6 @@ class CreateEvent extends React.Component {
               </Grid>
               <Grid item container xs={9}>
                 <Field
-                  onChange={this.onDatePickerChange}
                   validate={[this.validateTimeAfterNow]}
                   name={ID_RESULT_SETTING_START_TIME}
                   component={this.renderDateTimePicker}
@@ -519,7 +479,6 @@ class CreateEvent extends React.Component {
               </Grid>
               <Grid item container xs={9}>
                 <Field
-                  onChange={this.onDatePickerChange}
                   validate={[this.validateTimeAfterNow]}
                   name={ID_RESULT_SETTING_END_TIME}
                   component={this.renderDateTimePicker}
