@@ -74,6 +74,7 @@ class GraphParser {
       receiverAddress: entry.receiverAddress,
       topicAddress: entry.topicAddress,
       oracleAddress: entry.oracleAddress,
+      name: entry.name,
       optionIdx: entry.optionIdx,
       token: entry.token,
       amount: entry.amount,

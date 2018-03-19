@@ -9,6 +9,7 @@ import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
+import _ from 'lodash';
 
 import styles from './styles';
 import { TransactionType } from '../../../../constants';
@@ -17,19 +18,24 @@ import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpe
 import graphqlActions from '../../../../redux/Graphql/actions';
 
 class WalletHistory extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    getTransactions: PropTypes.func.isRequired,
+    getTransactionsReturn: PropTypes.array,
+    txReturn: PropTypes.object,
+    syncBlockNum: PropTypes.number.isRequired,
+  };
 
-    this.state = {
-      order: 'asc',
-      orderBy: 'time',
-    };
+  static defaultProps = {
+    getTransactionsReturn: [],
+    txReturn: undefined,
+  };
 
-    this.getTransactions = this.getTransactions.bind(this);
-    this.getTableHeader = this.getTableHeader.bind(this);
-    this.createSortHandler = this.createSortHandler.bind(this);
-    this.handleSorting = this.handleSorting.bind(this);
-  }
+  state = {
+    data: [],
+    order: 'desc',
+    orderBy: 'createdTime',
+  };
 
   componentWillMount() {
     this.getTransactions();
@@ -37,16 +43,30 @@ class WalletHistory extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
+      getTransactionsReturn,
       txReturn,
+      syncBlockNum,
     } = this.props;
 
-    if (txReturn && !nextProps.txReturn) {
+    if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
       this.getTransactions();
+    }
+
+    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+      const sorted = _.orderBy(
+        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        [this.state.orderBy],
+        [this.state.order],
+      );
+
+      this.setState({
+        data: sorted,
+      });
     }
   }
 
   render() {
-    const { classes, getTransactionsReturn } = this.props;
+    const { classes } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -56,37 +76,37 @@ class WalletHistory extends React.Component {
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows(getTransactionsReturn)}
+            {this.getTableRows()}
           </Table>
         </Grid>
       </Paper>
     );
   }
 
-  getTransactions() {
+  getTransactions = () => {
     this.props.getTransactions([
       { type: TransactionType.Transfer },
     ]);
-  }
+  };
 
-  getTableHeader() {
+  getTableHeader = () => {
     const { order, orderBy } = this.state;
 
     const headerCols = [
       {
-        id: 'time',
+        id: 'createdTime',
         name: 'str.time',
         nameDefault: 'Time',
         numeric: false,
       },
       {
-        id: 'from',
+        id: 'senderAddress',
         name: 'str.from',
         nameDefault: 'From',
         numeric: false,
       },
       {
-        id: 'to',
+        id: 'receiverAddress',
         name: 'str.to',
         nameDefault: 'To',
         numeric: false,
@@ -134,7 +154,7 @@ class WalletHistory extends React.Component {
                 <TableSortLabel
                   active={orderBy === column.id}
                   direction={order}
-                  onClick={this.createSortHandler(column.id)}
+                  onClick={this.handleSorting(column.id)}
                 >
                   <FormattedMessage id={column.name} default={column.nameDefault} />
                 </TableSortLabel>
@@ -144,14 +164,10 @@ class WalletHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  }
-
-  createSortHandler = (property) => (event) => {
-    this.handleSorting(event, property);
   };
 
-  handleSorting(event, property) {
-    const { getTransactionsReturn } = this.props;
+  handleSorting = (property) => (event) => {
+    const { data } = this.state;
 
     const orderBy = property;
     let order = 'desc';
@@ -160,17 +176,18 @@ class WalletHistory extends React.Component {
       order = 'asc';
     }
 
-    const data = order === 'desc'
-      ? getTransactionsReturn.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : getTransactionsReturn.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    const sorted = _.orderBy(data, [orderBy], [order]);
 
     this.setState({
-      order,
+      data: sorted,
       orderBy,
+      order,
     });
-  }
+  };
 
-  getTableRows(data) {
+  getTableRows = () => {
+    const { data } = this.state;
+
     return (
       <TableBody>
         {data.map((item, index) => (
@@ -203,19 +220,8 @@ class WalletHistory extends React.Component {
   }
 }
 
-WalletHistory.propTypes = {
-  classes: PropTypes.object.isRequired,
-  getTransactions: PropTypes.func.isRequired,
-  getTransactionsReturn: PropTypes.array,
-  txReturn: PropTypes.object,
-};
-
-WalletHistory.defaultProps = {
-  getTransactionsReturn: [],
-  txReturn: undefined,
-};
-
 const mapStateToProps = (state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
