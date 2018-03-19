@@ -22,10 +22,11 @@ export function* getEventEscrowAmountHandler() {
       };
 
       const result = yield call(request, Routes.eventEscrowAmount, options);
+      const eventEscrowAmount = satoshiToDecimal(result[0]);
 
       yield put({
         type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
-        value: result[0],
+        value: eventEscrowAmount,
       });
     } catch (err) {
       yield put({

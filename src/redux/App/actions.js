@@ -80,5 +80,11 @@ const appActions = {
   dismissPendingTxsSnackbar: () => ({
     type: appActions.DISMISS_PENDING_TXS_SNACKBAR,
   }),
+
+  TOGGLE_CREATE_EVENT_DIALOG: 'TOGGLE_CREATE_EVENT_DIALOG',
+  toggleCreateEventDialog: (isVisible) => ({
+    type: appActions.TOGGLE_CREATE_EVENT_DIALOG,
+    isVisible,
+  }),
 };
 export default appActions;
