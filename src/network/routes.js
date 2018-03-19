@@ -11,6 +11,7 @@ const Routes = {
   approve: `${BODHI_API}/approve`,
   allowance: `${BODHI_API}/allowance`,
   botBalance: `${BODHI_API}/bot-balance`,
+  eventEscrowAmount: `${BODHI_API}/event-escrow-amount`,
   createTopic: `${BODHI_API}/create-topic`,
   bet: `${BODHI_API}/bet`,
   setResult: `${BODHI_API}/set-result`,

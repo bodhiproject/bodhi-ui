@@ -6,6 +6,39 @@ import { request } from '../../network/httpRequest';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Routes from '../../network/routes';
 
+export function* getEventEscrowAmountHandler() {
+  yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
+    try {
+      const {
+        senderAddress,
+      } = action.params;
+
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, Routes.eventEscrowAmount, options);
+
+      yield put({
+        type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
+        value: result[0],
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
+        error: {
+          route: Routes.eventEscrowAmount,
+          message: err.message,
+        },
+      });
+    }
+  });
+}
+
 export function* getBetAndVoteBalancesHandler() {
   yield takeEvery(actions.GET_BET_AND_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
     try {
@@ -95,6 +128,7 @@ export function* calculateWinningsHandler() {
 
 export default function* topicSaga() {
   yield all([
+    fork(getEventEscrowAmountHandler),
     fork(getBetAndVoteBalancesHandler),
     fork(calculateWinningsHandler),
   ]);
