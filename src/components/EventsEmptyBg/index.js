@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Typography from 'material-ui/Typography';
 import EventIcon from 'material-ui-icons/Event';
 import { withStyles } from 'material-ui/styles';
@@ -13,7 +14,7 @@ class EventsEmptyBg extends React.PureComponent {
     return (
       <div className={classes.eventsEmptyWrapper}>
         <EventIcon className={classes.eventsEmptyIcon} fontSize />
-        <Typography variant="body1">No Event at Current Status</Typography>
+        <Typography variant="body1"><FormattedMessage id="dashboard.empty" defaultMessage="No Event at Current Status" /> </Typography>
       </div>
     );
   }
