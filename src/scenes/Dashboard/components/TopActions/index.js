@@ -39,7 +39,11 @@ class TopActions extends Component {
   };
 
   onCreateDialogOpen = () => {
-    const { lastUsedAddress, getEventEscrowAmount, toggleCreateEventDialog } = this.props;
+    const {
+      toggleCreateEventDialog,
+      lastUsedAddress,
+      getEventEscrowAmount,
+    } = this.props;
 
     toggleCreateEventDialog(true);
     getEventEscrowAmount(lastUsedAddress);

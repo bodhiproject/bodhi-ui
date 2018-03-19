@@ -46,6 +46,7 @@ const graphqlActions = {
     bettingEndTime,
     resultSettingStartTime,
     resultSettingEndTime,
+    escrowAmount,
     senderAddress,
   ) => ({
     type: graphqlActions.CREATE_TOPIC_TX,
@@ -57,6 +58,7 @@ const graphqlActions = {
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
+      escrowAmount,
       senderAddress,
     },
   }),

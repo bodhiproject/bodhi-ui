@@ -160,6 +160,7 @@ class CreateEvent extends React.Component {
   };
 
   submitCreateEvent = (values) => {
+    const { eventEscrowAmount } = this.props;
     const {
       name,
       outcomes,
@@ -179,6 +180,7 @@ class CreateEvent extends React.Component {
       moment(bettingEndTime).utc().unix().toString(),
       moment(resultSettingStartTime).utc().unix().toString(),
       moment(resultSettingEndTime).utc().unix().toString(),
+      eventEscrowAmount,
       creatorAddress,
     );
   };
@@ -386,6 +388,7 @@ function mapDispatchToProps(dispatch) {
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
+      escrowAmount,
       creatorAddress,
     ) => dispatch(graphqlActions.createTopicTx(
       name,
@@ -395,6 +398,7 @@ function mapDispatchToProps(dispatch) {
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
+      escrowAmount,
       creatorAddress,
     )),
     toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
