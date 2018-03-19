@@ -121,17 +121,18 @@ class CreateEvent extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     fields: PropTypes.array.isRequired,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    setLastUsedAddress: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
     history: PropTypes.object.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
+    toggleCreateEventDialog: PropTypes.func.isRequired,
+    createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
   };
 
@@ -222,13 +223,17 @@ class CreateEvent extends React.Component {
     this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
   };
 
+  onClose = () => {
+    this.props.toggleCreateEventDialog(false);
+  };
+
   componentWillMount() {
     this.props.getInsightTotals();
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.txReturn) {
-      this.props.onClose();
+      this.onClose();
     }
   }
 
@@ -236,23 +241,20 @@ class CreateEvent extends React.Component {
     const {
       intl,
       classes,
-      open,
-      onClose,
       walletAddresses,
       changeFormFieldValue,
       handleSubmit,
       submitting,
+      createEventDialogVisible,
       eventEscrowAmount,
     } = this.props;
-
-    console.log(eventEscrowAmount);
 
     return (
       <Dialog
         fullWidth
         maxWidth="md"
-        open={_.isNumber(eventEscrowAmount)}
-        onClose={onClose}
+        open={createEventDialogVisible && _.isNumber(eventEscrowAmount)}
+        onClose={this.onClose}
       >
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
           <DialogTitle>{intl.formatMessage(messages.dialogTitle)}</DialogTitle>
@@ -348,7 +350,7 @@ class CreateEvent extends React.Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={onClose}>
+            <Button color="primary" onClick={this.onClose}>
               <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
             </Button>
             <Button type="submit" color="primary" disabled={submitting} variant="raised">
@@ -371,6 +373,7 @@ const mapStateToProps = (state) => ({
   },
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
+  createEventDialogVisible: state.App.get('createEventDialogVisible'),
   eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
 });
 
@@ -395,6 +398,7 @@ function mapDispatchToProps(dispatch) {
       resultSettingEndTime,
       creatorAddress,
     )),
+    toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
     changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   };
