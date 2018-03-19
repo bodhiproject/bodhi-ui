@@ -34,6 +34,12 @@ const ID_BETTING_START_TIME = 'bettingStartTime';
 const ID_BETTING_END_TIME = 'bettingEndTime';
 const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
 const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
+const ID_NAME = 'name';
+const ID_OUTCOMES = 'outcomes';
+const ID_RESULT_SETTER = 'resultSetter';
+const ID_CREATOR_ADDRESS = 'creatorAddress';
+
+const TIME_GAP_MIN_SEC = 30 * 60;
 
 // default date picker to time 10 minutes from now
 const DEFAULT_PICKER_TIME = moment().add(10, 'm').format('YYYY-MM-DDTHH:mm');
@@ -61,21 +67,25 @@ const messages = defineMessages({
     id: 'create.namePlaceholder',
     defaultMessage: 'e.g. Who will be the next president of the United States?',
   },
+  resultSetterPlaceholder: {
+    id: 'create.resultSetterPlaceholder',
+    defaultMessage: 'Enter the address of the result setter or select your own address',
+  },
   nameLong: {
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
   validBetEnd: {
     id: 'create.validBetEnd',
-    defaultMessage: 'Must be greater than Betting Start Time',
+    defaultMessage: 'Must be at least 30 minutes after Prediction Start Time',
   },
   validResultSetStart: {
     id: 'create.validResultSetStart',
-    defaultMessage: 'Must be greater than or equal to Betting End Time',
+    defaultMessage: 'Must be greater than or equal to Prediction End Time',
   },
   validResultSetEnd: {
     id: 'create.validResultSetEnd',
-    defaultMessage: 'Must be greater than Result Setting Start Time',
+    defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
   },
   resultTooLong: {
     id: 'create.resultTooLong',
@@ -95,7 +105,7 @@ const messages = defineMessages({
   },
   outcomes: {
     id: 'str.outcomes',
-    defaultMessage: 'Outcomes',
+    defaultMessage: ID_OUTCOMES,
   },
   addOutcome: {
     id: 'create.addOutcome',
@@ -362,8 +372,8 @@ class CreateEvent extends React.Component {
     meta: { touched, error },
     ...custom
   }) => {
-    if (!input.value || input.value === '') {
-      this.props.changeFormFieldValue('creatorAddress', this.props.lastUsedAddress);
+    if (_.isEmpty(input.value)) {
+      this.props.changeFormFieldValue(ID_CREATOR_ADDRESS, this.props.lastUsedAddress);
     }
 
     return (<Select
@@ -395,7 +405,7 @@ class CreateEvent extends React.Component {
       selectAddressDialogVisibility: false,
     });
 
-    this.props.changeFormFieldValue('resultSetter', address);
+    this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
   };
 
   componentWillMount() {
@@ -510,7 +520,7 @@ class CreateEvent extends React.Component {
                   required
                   fullWidth
                   name="resultSetter"
-                  placeholder="Enter the address of result setter or select your own address"
+                  placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}
                   component={this.renderTextField}
                 />
                 <Button
@@ -598,10 +608,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 const fields = [
-  'name',
-  'outcomes',
-  'resultSetter',
-  'creatorAddress',
+  ID_NAME,
+  ID_OUTCOMES,
+  ID_RESULT_SETTER,
+  ID_CREATOR_ADDRESS,
   ID_BETTING_START_TIME,
   ID_BETTING_END_TIME,
   ID_RESULT_SETTING_START_TIME,
@@ -627,15 +637,15 @@ const validate = (values, props) => {
   const resultSettingStartTime = moment(values.resultSettingStartTime);
   const resultSettingEndTime = moment(values.resultSettingEndTime);
 
-  if (bettingStartTime.unix() > bettingEndTime.unix()) {
+  if (bettingEndTime.unix() - bettingStartTime.unix() < TIME_GAP_MIN_SEC) {
     errors.bettingEndTime = intl.formatMessage(messages.validBetEnd);
   }
 
-  if (bettingEndTime.unix() > resultSettingStartTime.unix()) {
+  if (resultSettingStartTime.unix() < bettingEndTime.unix()) {
     errors.resultSettingStartTime = intl.formatMessage(messages.validResultSetStart);
   }
 
-  if (resultSettingStartTime.unix() > resultSettingEndTime.unix()) {
+  if (resultSettingEndTime.unix() - resultSettingStartTime.unix() < TIME_GAP_MIN_SEC) {
     errors.resultSettingEndTime = intl.formatMessage(messages.validResultSetEnd);
   }
 
