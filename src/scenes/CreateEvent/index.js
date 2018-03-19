@@ -42,7 +42,9 @@ const ID_CREATOR_ADDRESS = 'creatorAddress';
 const TIME_GAP_MIN_SEC = 30 * 60;
 
 // default date picker to time 10 minutes from now
-const DEFAULT_PICKER_TIME = moment().add(10, 'm').format('YYYY-MM-DDTHH:mm');
+const DEFAULT_PICKER_TIME_15_MIN = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
+const DEFAULT_PICKER_TIME_45_MIN = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
+const DEFAULT_PICKER_TIME_75_MIN = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
 
 const FORM_NAME = 'createEvent';
 
@@ -91,21 +93,13 @@ const messages = defineMessages({
     id: 'create.resultTooLong',
     defaultMessage: 'Result name is too long.',
   },
-  cancel: {
-    id: 'str.cancel',
-    defaultMessage: 'Cancel',
-  },
-  publish: {
-    id: 'create.publish',
-    defaultMessage: 'Publish',
-  },
   creator: {
     id: 'str.creator',
     defaultMessage: 'Creator',
   },
   outcomes: {
     id: 'str.outcomes',
-    defaultMessage: ID_OUTCOMES,
+    defaultMessage: 'Outcomes',
   },
   addOutcome: {
     id: 'create.addOutcome',
@@ -553,10 +547,10 @@ class CreateEvent extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={onClose}>
-              {intl.formatMessage(messages.cancel)}
+              <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
             </Button>
             <Button type="submit" color="primary" disabled={submitting} variant="raised">
-              {intl.formatMessage(messages.publish)}
+              <FormattedMessage id="create.publish" defaultMessage="Publish" />
             </Button>
           </DialogActions>
         </Form>
@@ -567,10 +561,10 @@ class CreateEvent extends React.Component {
 
 const mapStateToProps = (state) => ({
   initialValues: {
-    bettingStartTime: DEFAULT_PICKER_TIME,
-    bettingEndTime: DEFAULT_PICKER_TIME,
-    resultSettingStartTime: DEFAULT_PICKER_TIME,
-    resultSettingEndTime: DEFAULT_PICKER_TIME,
+    bettingStartTime: DEFAULT_PICKER_TIME_15_MIN,
+    bettingEndTime: DEFAULT_PICKER_TIME_45_MIN,
+    resultSettingStartTime: DEFAULT_PICKER_TIME_45_MIN,
+    resultSettingEndTime: DEFAULT_PICKER_TIME_75_MIN,
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
