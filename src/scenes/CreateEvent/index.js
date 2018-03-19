@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import { withRouter } from 'react-router-dom';
+import _ from 'lodash';
+import moment from 'moment';
+import Web3Utils from 'web3-utils';
 import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
+import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import Button from 'material-ui/Button';
 import { FormControl, FormHelperText } from 'material-ui/Form';
-import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
-import Web3Utils from 'web3-utils';
-import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import CreateEventDatePicker from './components/CreateEventDatePicker/index';
@@ -22,8 +21,6 @@ import CreateEventCreatorPicker from './components/CreateEventCreatorPicker/inde
 import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
-import { calculateBlock } from '../../helpers/utility';
-import { defaults } from '../../config/app';
 import styles from './styles';
 
 const MAX_LEN_EVENTNAME_HEX = 640;
@@ -131,8 +128,6 @@ class CreateEvent extends React.Component {
     history: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    syncBlockNum: PropTypes.number,
-    averageBlockTime: PropTypes.number,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
@@ -142,8 +137,6 @@ class CreateEvent extends React.Component {
     createTopicTx: undefined,
     txReturn: undefined,
     getInsightTotals: undefined,
-    syncBlockNum: undefined,
-    averageBlockTime: defaults.averageBlockTime,
   };
 
   state = {
@@ -372,8 +365,6 @@ const mapStateToProps = (state) => ({
   },
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  averageBlockTime: state.App.get('averageBlockTime'),
 });
 
 function mapDispatchToProps(dispatch) {
