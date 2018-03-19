@@ -109,6 +109,7 @@ class EventHistory extends React.Component {
   executeTxsRequest = () => {
     this.props.getTransactions(
       [
+        { type: TransactionType.ApproveCreateEvent },
         { type: TransactionType.CreateEvent },
         { type: TransactionType.Bet },
         { type: TransactionType.ApproveSetResult },

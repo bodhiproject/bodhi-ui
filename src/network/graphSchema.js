@@ -264,6 +264,7 @@ const ENUMS = {
   ],
 
   type: [
+    'APPROVECREATEEVENT',
     'CREATEEVENT',
     'BET',
     'APPROVESETRESULT',
