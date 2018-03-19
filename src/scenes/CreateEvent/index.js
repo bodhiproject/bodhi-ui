@@ -244,11 +244,13 @@ class CreateEvent extends React.Component {
       eventEscrowAmount,
     } = this.props;
 
+    console.log(eventEscrowAmount);
+
     return (
       <Dialog
         fullWidth
         maxWidth="md"
-        open={open}
+        open={_.isNumber(eventEscrowAmount)}
         onClose={onClose}
       >
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
