@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
+import { connect } from 'react-redux';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import Select from 'material-ui/Select';
 import Button from 'material-ui/Button';
 import { FormControl, FormHelperText } from 'material-ui/Form';
-import { MenuItem } from 'material-ui/Menu';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
@@ -20,6 +18,7 @@ import { withStyles } from 'material-ui/styles';
 
 import CreateEventDatePicker from './components/CreateEventDatePicker/index';
 import CreateEventOutcomes from './components/CreateEventOutcomes/index';
+import CreateEventCreatorPicker from './components/CreateEventCreatorPicker/index';
 import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
@@ -126,13 +125,11 @@ class CreateEvent extends React.Component {
     fields: PropTypes.array.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
-    lastUsedAddress: PropTypes.string.isRequired,
-    setLastUsedAddress: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
     history: PropTypes.object.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     syncBlockNum: PropTypes.number,
     averageBlockTime: PropTypes.number,
@@ -215,33 +212,6 @@ class CreateEvent extends React.Component {
     </FormControl>
   );
 
-  renderCreatorAddressSelector = ({
-    input,
-    meta: { touched, error },
-    ...custom
-  }) => {
-    if (_.isEmpty(input.value)) {
-      this.props.changeFormFieldValue(ID_CREATOR_ADDRESS, this.props.lastUsedAddress);
-    }
-
-    return (<Select
-      {...input}
-      {...custom}
-      fullWidth
-    >
-      {this.props.walletAddresses.map((item, index) => (
-        <MenuItem key={item.address} value={item.address}>
-          {`${item.address}`}
-          {` (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
-        </MenuItem>
-      ))}
-    </Select>);
-  };
-
-  onCreatorAddressChange = (event, newValue, previousValue, name) => {
-    this.props.setLastUsedAddress(newValue);
-  };
-
   onSelectResultSetterAddress = () => {
     this.setState({
       selectAddressDialogVisibility: true,
@@ -272,9 +242,9 @@ class CreateEvent extends React.Component {
       open,
       onClose,
       walletAddresses,
+      changeFormFieldValue,
       handleSubmit,
       submitting,
-      lastUsedAddress,
       intl,
     } = this.props;
 
@@ -369,12 +339,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.creator)}
               </Grid>
               <Grid item xs={9}>
-                <Field
-                  fullWidth
-                  name={ID_CREATOR_ADDRESS}
-                  onChange={this.onCreatorAddressChange}
-                  component={this.renderCreatorAddressSelector}
-                />
+                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} changeFormFieldValue={changeFormFieldValue} />
               </Grid>
             </Grid>
             <SelectAddressDialog
@@ -407,7 +372,6 @@ const mapStateToProps = (state) => ({
   },
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
   syncBlockNum: state.App.get('syncBlockNum'),
   averageBlockTime: state.App.get('averageBlockTime'),
 });
@@ -434,7 +398,6 @@ function mapDispatchToProps(dispatch) {
       creatorAddress,
     )),
     getInsightTotals: () => dispatch(appActions.getInsightTotals()),
-    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
     changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   };
 }

@@ -109,6 +109,8 @@ const mapStateToProps = (state) => ({
   averageBlockTime: state.App.get('averageBlockTime'),
 });
 
-function mapDispatchToProps(dispatch) {}
+function mapDispatchToProps(dispatch) {
+  return {};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateEventDatePicker));
