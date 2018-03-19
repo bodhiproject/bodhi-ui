@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Typography from 'material-ui/Typography';
 import EventIcon from 'material-ui-icons/Event';
 import { withStyles } from 'material-ui/styles';
