@@ -13,6 +13,7 @@ import Loader from './components/Loader/index';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
+import CreateEvent from '../CreateEvent/index';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
@@ -46,6 +47,7 @@ export class App extends React.PureComponent {
           <AppRouter url={url} langHandler={this.props.langHandler} />
         </div>
         <BottomBar />
+        <CreateEvent />
         <PendingTransactionsSnackbar />
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />

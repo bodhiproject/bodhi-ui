@@ -14,19 +14,17 @@ import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import dashboardActions from '../../../../redux/Dashboard/actions';
-import CreateEvent from '../../../../scenes/CreateEvent/index';
+import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
 class TopActions extends Component {
-  state = {
-    createDialogOpen: false,
-  };
-
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sortBy: PropTypes.string,
     sortOrderChanged: PropTypes.func,
+    lastUsedAddress: PropTypes.string.isRequired,
+    getEventEscrowAmount: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -38,7 +36,6 @@ class TopActions extends Component {
     super(props);
 
     this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
-    this.onCreateDialogClose = this.onCreateDialogClose.bind(this);
     this.onCreateDialogOpen = this.onCreateDialogOpen.bind(this);
   }
 
@@ -46,12 +43,10 @@ class TopActions extends Component {
     this.props.sortOrderChanged(event.target.value);
   }
 
-  onCreateDialogClose() {
-    this.setState({ createDialogOpen: false });
-  }
-
   onCreateDialogOpen() {
-    this.setState({ createDialogOpen: true });
+    const { lastUsedAddress, getEventEscrowAmount } = this.props;
+
+    getEventEscrowAmount(lastUsedAddress);
   }
 
   render() {
@@ -78,19 +73,20 @@ class TopActions extends Component {
             </FormControl>
           </Card>
         </Grid>
-        <CreateEvent open={this.state.createDialogOpen} onClose={this.onCreateDialogClose} />
       </Grid>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   sortBy: state.Dashboard.get('sortBy'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
+    getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
   };
 }
 
