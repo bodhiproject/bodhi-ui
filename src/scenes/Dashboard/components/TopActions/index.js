@@ -13,6 +13,7 @@ import { MenuItem } from 'material-ui/Menu';
 import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
+import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
 import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
@@ -24,6 +25,7 @@ class TopActions extends Component {
     sortBy: PropTypes.string,
     sortOrderChanged: PropTypes.func,
     lastUsedAddress: PropTypes.string.isRequired,
+    toggleCreateEventDialog: PropTypes.func.isRequired,
     getEventEscrowAmount: PropTypes.func.isRequired,
   };
 
@@ -32,22 +34,16 @@ class TopActions extends Component {
     sortOrderChanged: undefined,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
-    this.onCreateDialogOpen = this.onCreateDialogOpen.bind(this);
-  }
-
-  onSortOptionSelected(event) {
+  onSortOptionSelected = (event) => {
     this.props.sortOrderChanged(event.target.value);
-  }
+  };
 
-  onCreateDialogOpen() {
-    const { lastUsedAddress, getEventEscrowAmount } = this.props;
+  onCreateDialogOpen = () => {
+    const { lastUsedAddress, getEventEscrowAmount, toggleCreateEventDialog } = this.props;
 
+    toggleCreateEventDialog(true);
     getEventEscrowAmount(lastUsedAddress);
-  }
+  };
 
   render() {
     const { classes, sortBy } = this.props;
@@ -85,6 +81,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
     sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
     getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
   };
