@@ -131,12 +131,14 @@ class CreateEvent extends React.Component {
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
+    eventEscrowAmount: PropTypes.number,
   };
 
   static defaultProps = {
     createTopicTx: undefined,
     txReturn: undefined,
     getInsightTotals: undefined,
+    eventEscrowAmount: undefined,
   };
 
   state = {
@@ -231,6 +233,7 @@ class CreateEvent extends React.Component {
 
   render() {
     const {
+      intl,
       classes,
       open,
       onClose,
@@ -238,7 +241,7 @@ class CreateEvent extends React.Component {
       changeFormFieldValue,
       handleSubmit,
       submitting,
-      intl,
+      eventEscrowAmount,
     } = this.props;
 
     return (
@@ -365,6 +368,7 @@ const mapStateToProps = (state) => ({
   },
   txReturn: state.Graphql.get('txReturn'),
   walletAddresses: state.App.get('walletAddresses'),
+  eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
 });
 
 function mapDispatchToProps(dispatch) {
