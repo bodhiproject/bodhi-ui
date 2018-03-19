@@ -19,6 +19,7 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import CreateEventDatePicker from './components/CreateEventDatePicker/index';
+import CreateEventOutcomes from './components/CreateEventOutcomes/index';
 import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
@@ -26,10 +27,7 @@ import { calculateBlock } from '../../helpers/utility';
 import { defaults } from '../../config/app';
 import styles from './styles';
 
-const MIN_OPTION_NUMBER = 2;
-const MAX_OPTION_NUMBER = 10;
 const MAX_LEN_EVENTNAME_HEX = 640;
-const MAX_LEN_RESULT_HEX = 64;
 
 const ID_BETTING_START_TIME = 'bettingStartTime';
 const ID_BETTING_END_TIME = 'bettingEndTime';
@@ -53,10 +51,6 @@ const messages = defineMessages({
   required: {
     id: 'create.required',
     defaultMessage: 'Required',
-  },
-  datePast: {
-    id: 'create.datePast',
-    defaultMessage: 'Cannot be in the past',
   },
   title: {
     id: 'create.title',
@@ -90,21 +84,9 @@ const messages = defineMessages({
     id: 'create.validResultSetEnd',
     defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
   },
-  resultTooLong: {
-    id: 'create.resultTooLong',
-    defaultMessage: 'Result name is too long.',
-  },
   creator: {
     id: 'str.creator',
     defaultMessage: 'Creator',
-  },
-  outcomes: {
-    id: 'str.outcomes',
-    defaultMessage: 'Outcomes',
-  },
-  addOutcome: {
-    id: 'create.addOutcome',
-    defaultMessage: 'Add Outcome',
   },
   resultSetter: {
     id: 'str.resultSetter',
@@ -126,13 +108,13 @@ const messages = defineMessages({
     id: 'create.resultSetEndTime',
     defaultMessage: 'Result Setting End Time',
   },
-  outcomeName: {
-    id: 'create.outcomeName',
-    defaultMessage: 'Outcome Name',
-  },
   selectMyAddress: {
     id: 'create.selectMyAddress',
     defaultMessage: 'Select My Address',
+  },
+  outcomes: {
+    id: 'str.outcomes',
+    defaultMessage: 'Outcomes',
   },
 });
 
@@ -179,24 +161,6 @@ class CreateEvent extends React.Component {
     hexString = Web3Utils.toHex(hexString).slice(2);
     if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
       return intl.formatMessage(messages.nameLong);
-    }
-
-    return null;
-  };
-
-  validateResultLength = (value) => {
-    const { intl } = this.props;
-
-    if (_.isEmpty(value)) {
-      return intl.formatMessage(messages.required);
-    }
-
-    let hexString = _.isUndefined(value) ? '' : value;
-
-    // Remove hex prefix for length validation
-    hexString = Web3Utils.toHex(hexString).slice(2);
-    if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
-      return intl.formatMessage(messages.resultTooLong);
     }
 
     return null;
@@ -249,58 +213,6 @@ class CreateEvent extends React.Component {
           <FormHelperText error>{error}</FormHelperText> : null
       }
     </FormControl>
-  );
-
-  renderOutcome = (outcome, index, fields) => {
-    const { classes, intl } = this.props;
-
-    return (
-      <li key={`outcome-${index}`} className={classes.outcomeWrapper}>
-        <Field
-          fullWidth
-          name={outcome}
-          placeholder={intl.formatMessage(messages.outcomeName)}
-          component={this.renderTextField}
-          validate={[this.validateResultLength]}
-          startAdornmentLabel={`#${index + 1}`}
-        />
-        {
-          fields.length > MIN_OPTION_NUMBER ?
-            (<i
-              className={classNames(
-                classes.removeOutcome,
-                'icon', 'iconfont', 'icon-close'
-              )}
-              onClick={() => {
-                if (fields.length > MIN_OPTION_NUMBER) {
-                  fields.remove(index);
-                }
-              }}
-            >
-            </i>) : null
-        }
-      </li>
-    );
-  };
-
-  renderOutcomeList = ({ fields }) => (
-    <ul>
-      {fields.map(this.renderOutcome)}
-      {
-        fields.length < MAX_OPTION_NUMBER ?
-          (<Button
-            className={this.props.classes.inputButton}
-            variant="raised"
-            onClick={() => {
-              if (fields.length < MAX_OPTION_NUMBER) {
-                fields.push('');
-              }
-            }}
-          >
-            + {this.props.intl.formatMessage(messages.addOutcome)}
-          </Button>) : null
-      }
-    </ul>
   );
 
   renderCreatorAddressSelector = ({
@@ -383,7 +295,7 @@ class CreateEvent extends React.Component {
               <Grid item container xs={9}>
                 <Grid item xs={12}>
                   <Field
-                    name="name"
+                    name={ID_NAME}
                     placeholder={intl.formatMessage(messages.namePlaceholder)}
                     validate={[this.validateTitleLength]}
                     component={this.renderTextField}
@@ -428,7 +340,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.outcomes)}
               </Grid>
               <Grid item xs={9}>
-                <FieldArray name="outcomes" component={this.renderOutcomeList} />
+                <CreateEventOutcomes name={ID_OUTCOMES} />
               </Grid>
             </Grid>
             <Grid container>
@@ -439,7 +351,7 @@ class CreateEvent extends React.Component {
                 <Field
                   required
                   fullWidth
-                  name="resultSetter"
+                  name={ID_RESULT_SETTER}
                   placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}
                   component={this.renderTextField}
                 />
@@ -459,7 +371,7 @@ class CreateEvent extends React.Component {
               <Grid item xs={9}>
                 <Field
                   fullWidth
-                  name="creatorAddress"
+                  name={ID_CREATOR_ADDRESS}
                   onChange={this.onCreatorAddressChange}
                   component={this.renderCreatorAddressSelector}
                 />
