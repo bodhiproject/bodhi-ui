@@ -386,7 +386,7 @@ class TopicPage extends React.Component {
         label: <FormattedMessage id="eventInfo.voteVolumn" defaultMessage="Votting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: `${botTotal} BOT`,
       }, {
-        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
+        label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: resultSetterQAddress,
       },
     ];

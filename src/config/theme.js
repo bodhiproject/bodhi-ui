@@ -160,6 +160,10 @@ const bodhiTheme = createMuiTheme({
         borderRadius: px(paddingLg),
         textTransform: 'none',
       },
+      raised: {
+        backgroundColor: 'white',
+        color: primaryColor,
+      },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),
         fontWeight: 700,

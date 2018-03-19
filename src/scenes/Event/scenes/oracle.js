@@ -615,7 +615,7 @@ class OraclePage extends React.Component {
         </FormattedMessage>,
         content: `${parseFloat(totalAmount.toFixed(5)).toString()} ${oracle.token}`,
       }, {
-        label: <FormattedMessage id="eventInfo.resultSetter" defaultMessage="Result Setter" >
+        label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>,
         content: oracle.resultSetterQAddress,
