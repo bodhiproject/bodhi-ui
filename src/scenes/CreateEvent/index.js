@@ -204,7 +204,7 @@ class CreateEvent extends React.Component {
   validateResultLength = (value) => {
     const { intl } = this.props;
 
-    if (!value) {
+    if (_.isEmpty(value)) {
       return intl.formatMessage(messages.required);
     }
 
@@ -626,7 +626,7 @@ const validate = (values, props) => {
   // check required fields
   const requiredFields = fields;
   requiredFields.forEach((field) => {
-    if (!values[field]) {
+    if (_.isEmpty(values[field])) {
       errors[field] = intl.formatMessage(messages.required);
     }
   });
