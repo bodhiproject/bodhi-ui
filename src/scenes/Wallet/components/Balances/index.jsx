@@ -205,7 +205,7 @@ class MyBalances extends React.PureComponent {
           <TableSortLabel
             active={orderBy === column.id}
             direction={order}
-            onClick={this.createSortHandler(column.id)}
+            onClick={this.handleSorting(column.id)}
           >
             <Typography variant="body1" className={classes.tableHeaderItemText}>
               <FormattedMessage id={column.name} default={column.nameDefault} />
@@ -231,11 +231,7 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  createSortHandler = (property) => (event) => {
-    this.handleSorting(event, property);
-  };
-
-  handleSorting(event, property) {
+  handleSorting = (property) => (event) => {
     const orderBy = property;
     let order = 'desc';
 

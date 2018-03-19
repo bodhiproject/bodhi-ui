@@ -154,7 +154,7 @@ class WalletHistory extends React.Component {
                 <TableSortLabel
                   active={orderBy === column.id}
                   direction={order}
-                  onClick={this.createSortHandler(column.id)}
+                  onClick={this.handleSorting(column.id)}
                 >
                   <FormattedMessage id={column.name} default={column.nameDefault} />
                 </TableSortLabel>
@@ -166,11 +166,7 @@ class WalletHistory extends React.Component {
     );
   };
 
-  createSortHandler = (property) => (event) => {
-    this.handleSorting(event, property);
-  };
-
-  handleSorting = (event, property) => {
+  handleSorting = (property) => (event) => {
     const { data } = this.state;
 
     const orderBy = property;
