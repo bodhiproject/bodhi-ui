@@ -18,6 +18,7 @@ import Web3Utils from 'web3-utils';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
+import CreateEventDatePicker from './components/CreateEventDatePicker/index';
 import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
@@ -183,18 +184,6 @@ class CreateEvent extends React.Component {
     return null;
   };
 
-  validateTimeAfterNow = (value) => {
-    const { intl } = this.props;
-    const valueTime = moment(value);
-    const now = moment();
-
-    if (_.isUndefined(valueTime) || now.unix() > valueTime.unix()) {
-      return intl.formatMessage(messages.datePast);
-    }
-
-    return null;
-  };
-
   validateResultLength = (value) => {
     const { intl } = this.props;
 
@@ -261,53 +250,6 @@ class CreateEvent extends React.Component {
       }
     </FormControl>
   );
-
-  renderDateTimePicker = ({
-    input,
-    meta: { touched, error },
-    ...custom
-  }) => {
-    // calculate block num if input value is not empty
-    let blockNum = '';
-
-    if (!input.value || input.value !== '') {
-      const {
-        syncBlockNum,
-        averageBlockTime,
-      } = this.props;
-
-      const localDate = moment(input.value).local();
-      blockNum = calculateBlock(syncBlockNum, localDate, averageBlockTime);
-    }
-
-    return (
-      <Grid item container xs={12}>
-        <Grid item xs={6}>
-          <FormControl fullWidth>
-            <TextField
-              {...input}
-              {...custom}
-              fullWidth
-              type="datetime-local"
-              error={Boolean(touched && error)}
-            />
-            {
-              touched && error ?
-                <FormHelperText error>{error}</FormHelperText> : null
-            }
-          </FormControl>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            disabled
-            placeholder="Block Number"
-            value={blockNum ? `Block: ${blockNum}` : ''}
-          />
-        </Grid>
-      </Grid>
-    );
-  };
 
   renderOutcome = (outcome, index, fields) => {
     const { classes, intl } = this.props;
@@ -454,11 +396,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.betStartTime)}
               </Grid>
               <Grid item container xs={9}>
-                <Field
-                  name={ID_BETTING_START_TIME}
-                  validate={[this.validateTimeAfterNow]}
-                  component={this.renderDateTimePicker}
-                />
+                <CreateEventDatePicker name={ID_BETTING_START_TIME} />
               </Grid>
             </Grid>
             <Grid container>
@@ -466,11 +404,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.betEndTime)}
               </Grid>
               <Grid item container xs={9}>
-                <Field
-                  validate={[this.validateTimeAfterNow]}
-                  name={ID_BETTING_END_TIME}
-                  component={this.renderDateTimePicker}
-                />
+                <CreateEventDatePicker name={ID_BETTING_END_TIME} />
               </Grid>
             </Grid>
             <Grid container>
@@ -478,11 +412,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.resultSetStartTime)}
               </Grid>
               <Grid item container xs={9}>
-                <Field
-                  validate={[this.validateTimeAfterNow]}
-                  name={ID_RESULT_SETTING_START_TIME}
-                  component={this.renderDateTimePicker}
-                />
+                <CreateEventDatePicker name={ID_RESULT_SETTING_START_TIME} />
               </Grid>
             </Grid>
             <Grid container>
@@ -490,11 +420,7 @@ class CreateEvent extends React.Component {
                 {intl.formatMessage(messages.resultSetEndTime)}
               </Grid>
               <Grid item container xs={9}>
-                <Field
-                  validate={[this.validateTimeAfterNow]}
-                  name={ID_RESULT_SETTING_END_TIME}
-                  component={this.renderDateTimePicker}
-                />
+                <CreateEventDatePicker name={ID_RESULT_SETTING_END_TIME} />
               </Grid>
             </Grid>
             <Grid container>
