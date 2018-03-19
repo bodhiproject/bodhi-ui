@@ -213,6 +213,8 @@ export function* getActionableItemCountHandler() {
 export function* createTopicTxHandler() {
   yield takeEvery(actions.CREATE_TOPIC_TX, function* createTopicTxRequest(action) {
     try {
+      const escrowAmountBotoshi = decimalToSatoshi(action.params.escrowAmount);
+
       const tx = yield call(
         createTopic,
         action.params.name,
@@ -222,6 +224,7 @@ export function* createTopicTxHandler() {
         action.params.bettingEndTime,
         action.params.resultSettingStartTime,
         action.params.resultSettingEndTime,
+        escrowAmountBotoshi,
         action.params.senderAddress
       );
 

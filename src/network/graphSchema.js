@@ -108,6 +108,7 @@ const MUTATIONS = {
       'bettingEndTime',
       'resultSettingStartTime',
       'resultSettingEndTime',
+      'amount',
       'senderAddress',
     ],
     return: `
