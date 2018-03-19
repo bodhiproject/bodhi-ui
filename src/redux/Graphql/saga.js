@@ -112,7 +112,8 @@ export function* getPendingTransactionsHandler() {
 
       const pendingTxsObj = {
         count: txs.length,
-        createEvent: _.filter(txs, { type: TransactionType.CreateEvent }),
+        createEvent: _.filter(txs, (tx) =>
+          tx.type === TransactionType.ApproveCreateEvent || tx.type === TransactionType.CreateEvent),
         bet: _.filter(txs, { type: TransactionType.Bet }),
         setResult: _.filter(txs, (tx) =>
           tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult),

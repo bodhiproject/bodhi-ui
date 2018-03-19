@@ -30,6 +30,7 @@ module.exports = {
   },
 
   TransactionType: {
+    ApproveCreateEvent: 'APPROVECREATEEVENT',
     CreateEvent: 'CREATEEVENT',
     Bet: 'BET',
     ApproveSetResult: 'APPROVESETRESULT',
