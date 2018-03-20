@@ -127,13 +127,19 @@ class GraphQuery {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
-export function queryAllTopics(filters, orderBy) {
+export function queryAllTopics(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTopics', TYPE.topic);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
+  }
+  if (!_.isNil(skip) && limit >= 0) {
+    request.addParam('limit', limit);
+  }
+  if (!_.isNil(skip) && skip >= 0) {
+    request.addParam('skip', skip);
   }
   return request.execute();
 }
@@ -143,13 +149,19 @@ export function queryAllTopics(filters, orderBy) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllOracles(filters, orderBy) {
+export function queryAllOracles(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allOracles', TYPE.oracle);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
+  }
+  if (!_.isNil(skip) && limit >= 0) {
+    request.addParam('limit', limit);
+  }
+  if (!_.isNil(skip) && skip >= 0) {
+    request.addParam('skip', skip);
   }
   return request.execute();
 }
