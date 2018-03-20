@@ -37,19 +37,19 @@ const pageMessage = defineMessages({
   },
   youBet: {
     id: 'withdrawDetail.youBet',
-    defaultMessage: 'You bet ',
+    defaultMessage: 'You bet',
   },
   youVote: {
     id: 'withdrawDetail.youVote',
-    defaultMessage: 'You vote ',
+    defaultMessage: 'You vote',
   },
   totalBet: {
     id: 'withdrawDetail.totalBet',
-    defaultMessage: 'Total bet ',
+    defaultMessage: 'Total bet amount',
   },
   totalVote: {
     id: 'withdrawDetail.totalVote',
-    defaultMessage: 'Total vote ',
+    defaultMessage: 'Total vote amount',
   },
 });
 
@@ -360,15 +360,14 @@ class TopicPage extends React.Component {
                 {`${intl.formatMessage(pageMessage.totalBet)} ${topic.qtumAmount[index]} QTUM. ${intl.formatMessage(pageMessage.totalVote)} ${topic.botAmount[index]} BOT.`}
               </Typography>
             </div>
-            <div>
-              {
-                betBalances[index] || voteBalances[index]
-                  ? <Typography variant="caption">
+            {
+              betBalances[index] || voteBalances[index] ?
+                <div>
+                  <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
                   </Typography>
-                  : null
-              }
-            </div>
+                </div> : null
+            }
           </div>
         ))}
       </div>
