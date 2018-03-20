@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphQuery';
 import {
   createTopic,
   createBetTx,
@@ -162,7 +162,15 @@ export function* getActionableItemCountHandler() {
     };
 
     try {
-      // Get Withdrawable items with winning amounts
+      // Get all votes for all your addresses
+      const voteFilters = [];
+      _.each(action.walletAddresses, (address) => {
+        voteFilters.push({ voterQAddress: address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+
       const topicFilters = [
         { status: OracleStatus.Withdraw },
       ];
@@ -171,7 +179,7 @@ export function* getActionableItemCountHandler() {
       totalCount += result.length;
 
       const oracleSetFilters = [
-        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
+        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
       result = yield call(queryAllOracles, oracleSetFilters);
