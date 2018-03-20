@@ -15,6 +15,8 @@ import {
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { request } from '../../network/httpRequest';
+import Routes from '../../network/routes';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -154,11 +156,10 @@ function processTransaction(tx) {
 // Gets the number of actionable items; setResult, finalize, withdraw
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
-    let totalCount = 0;
-    const countByStatus = {
-      [EventStatus.Set]: 0,
-      [EventStatus.Finalize]: 0,
-      [EventStatus.Withdraw]: 0,
+    const actionItems = {
+      setResult: [],
+      finalize: [],
+      withdraw: [],
     };
 
     try {
@@ -168,49 +169,92 @@ export function* getActionableItemCountHandler() {
         voteFilters.push({ voterQAddress: address });
       });
       let votes = yield call(queryAllVotes, voteFilters);
+      console.log(votes);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
       console.log(votes);
 
-      const topicFilters = [
-        { status: OracleStatus.Withdraw },
-      ];
-      let result = yield call(queryAllTopics, topicFilters);
-      countByStatus[EventStatus.Withdraw] = result.length;
-      totalCount += result.length;
+      // Fetch topics with votes
+      const topicFilters = [];
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress });
+      });
+      const topics = yield call(queryAllTopics, topicFilters);
+      const winningTopics = [];
+      _.each(topics, (topic) => {
+        const votesForTopic = _.filter(votes, { topicAddress: topic.address });
 
+        _.each(votesForTopic, (vote) => {
+          const winningsObj = requestCalculateWinnings(topic.address, vote.voterQAddress);
+
+          // If one address wins, then add it to the list and go to the next Topic
+          if (winningsObj.botWon > 0 || winningsObj.qtumWon > 0) {
+            actionItems.withdraw.push(topic);
+            return; // eslint-disable-line no-useless-return
+          }
+        });
+      });
+
+      // Get result set items
       const oracleSetFilters = [
         { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
-      result = yield call(queryAllOracles, oracleSetFilters);
-      countByStatus[EventStatus.Set] = result.length;
-      totalCount += result.length;
+      actionItems.setResult = yield call(queryAllOracles, oracleSetFilters);
 
+      // Get finalize items
       const oracleFinalizeFilters = [
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
-      result = yield call(queryAllOracles, oracleFinalizeFilters);
-      countByStatus[EventStatus.Finalize] = result.length;
-      totalCount += result.length;
+      actionItems.finalize = yield call(queryAllOracles, oracleFinalizeFilters);
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        value: {
-          totalCount,
-          countByStatus,
-        },
+        value: actionItems,
       });
     } catch (err) {
       console.log(err);
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          totalCount,
-          countByStatus,
+          setResult: [],
+          finalize: [],
+          withdraw: [],
         },
       });
     }
   });
+}
+
+function* requestCalculateWinnings(topicAddress, senderAddress) {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({
+      contractAddress: topicAddress,
+      senderAddress,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const result = yield call(request, Routes.winnings, options);
+  if (result) {
+    const botWon = satoshiToDecimal(result['0']);
+    const qtumWon = satoshiToDecimal(result['1']);
+    return {
+      topicAddress,
+      senderAddress,
+      botWon,
+      qtumWon,
+    };
+  }
+
+  return {
+    topicAddress,
+    senderAddress,
+    botWon: 0,
+    qtumWon: 0,
+  };
 }
 
 // Sends createTopic mutation
