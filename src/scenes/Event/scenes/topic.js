@@ -37,11 +37,19 @@ const pageMessage = defineMessages({
   },
   youBet: {
     id: 'withdrawDetail.youBet',
-    defaultMessage: 'You bet ',
+    defaultMessage: 'You bet',
   },
   youVote: {
     id: 'withdrawDetail.youVote',
-    defaultMessage: 'You vote ',
+    defaultMessage: 'You vote',
+  },
+  totalBet: {
+    id: 'withdrawDetail.totalBet',
+    defaultMessage: 'Total bet amount',
+  },
+  totalVote: {
+    id: 'withdrawDetail.totalVote',
+    defaultMessage: 'Total vote amount',
   },
 });
 
@@ -347,12 +355,18 @@ class TopicPage extends React.Component {
             <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
               {option}
             </Typography>
+            <div>
+              <Typography variant="caption">
+                {`${intl.formatMessage(pageMessage.totalBet)} ${topic.qtumAmount[index]} QTUM. ${intl.formatMessage(pageMessage.totalVote)} ${topic.botAmount[index]} BOT.`}
+              </Typography>
+            </div>
             {
-              betBalances[index] || voteBalances[index]
-                ? <Typography variant="caption">
-                  {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
-                </Typography>
-                : null
+              betBalances[index] || voteBalances[index] ?
+                <div>
+                  <Typography variant="caption">
+                    {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
+                  </Typography>
+                </div> : null
             }
           </div>
         ))}
