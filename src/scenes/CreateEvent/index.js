@@ -121,7 +121,6 @@ class CreateEvent extends React.Component {
     classes: PropTypes.object.isRequired,
     fields: PropTypes.array.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    setLastUsedAddress: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
