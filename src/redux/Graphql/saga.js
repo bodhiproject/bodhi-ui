@@ -169,7 +169,7 @@ export function* getActionableItemCountHandler() {
       });
       let votes = yield call(queryAllVotes, voteFilters);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
-
+      console.log(votes);
 
       const topicFilters = [
         { status: OracleStatus.Withdraw },
