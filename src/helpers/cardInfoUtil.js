@@ -52,12 +52,12 @@ class CardInfoUtil {
       },
       {
         title: BETTING,
-        description: `${getLocalDateTimeString(cOracle.startTime)} 
+        description: `${getLocalDateTimeString(cOracle.startTime)}
           ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.endTime)}`,
       },
       {
         title: ORACLE_RESULT_SETTING,
-        description: `${getLocalDateTimeString(cOracle.resultSetStartTime)} 
+        description: `${getLocalDateTimeString(cOracle.resultSetStartTime)}
           ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.resultSetEndTime)}`,
       },
     ];
@@ -68,7 +68,7 @@ class CardInfoUtil {
       _.each(dOracles, (item) => {
         value.push({
           title: VOTING,
-          description: `${getLocalDateTimeString(item.startTime)} 
+          description: `${getLocalDateTimeString(item.startTime)}
             ${RANGE_SEPARATOR} ${getLocalDateTimeString(item.endTime)}`,
         });
       });
@@ -115,7 +115,7 @@ class CardInfoUtil {
       // Set step number
       if (blockTime < cOracle.startTime) {
         current = POS_TOPIC_CREATED;
-      } else if (blockTime >= cOracle.startTime && blockTime < cOracle.endTime) {
+      } else if (blockTime >= cOracle.startTime && blockTime < cOracle.resultSetStartTime) {
         current = POS_BETTING;
       } else if (blockTime >= cOracle.resultSetStartTime && blockTime < cOracle.resultSetEndTime) {
         current = POS_ORACLE_RESULT_SETTING;
