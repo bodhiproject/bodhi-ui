@@ -155,6 +155,22 @@ export function queryAllOracles(filters, orderBy) {
 }
 
 /*
+* Queries allVotes from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+*/
+export function queryAllVotes(filters, orderBy) {
+  const request = new GraphQuery('allVotes', TYPE.vote);
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  return request.execute();
+}
+
+/*
 * Queries allTransactions from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }

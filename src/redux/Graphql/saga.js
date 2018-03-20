@@ -162,6 +162,7 @@ export function* getActionableItemCountHandler() {
     };
 
     try {
+      // Get Withdrawable items with winning amounts
       const topicFilters = [
         { status: OracleStatus.Withdraw },
       ];
