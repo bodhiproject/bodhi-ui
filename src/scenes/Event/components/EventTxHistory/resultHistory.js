@@ -22,6 +22,9 @@ class EventResultHistory extends React.PureComponent {
 
     const sortedOracles = _.orderBy(oracles, ['endTime']);
 
+    console.log(sortedOracles);
+
+
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
