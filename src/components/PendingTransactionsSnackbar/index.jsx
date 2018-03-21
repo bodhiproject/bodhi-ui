@@ -11,7 +11,6 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
-import { getIntlProvider } from '../../helpers/i18nUtil';
 
 const messages = defineMessages({
   youHave: {
@@ -65,24 +64,14 @@ class PendingTransactionsSnackbar extends React.Component {
     dismissPendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-
-    const { locale, messages: localeMessages } = this.props.intl;
-    const provider = getIntlProvider(locale, localeMessages);
-
-    this.state = {
-      provider,
-    };
-  }
 
   render() {
     const {
       classes,
       getPendingTransactionsReturn,
       pendingTxsSnackbarVisible,
+      intl,
     } = this.props;
-    const { provider } = this.state;
     const pendingTxs = getPendingTransactionsReturn;
 
     if (pendingTxs.count === 0) {
@@ -98,7 +87,7 @@ class PendingTransactionsSnackbar extends React.Component {
           <Grid container>
             <Grid item xs={11}>
               <Typography variant="caption" className={classes.totalCountText}>
-                {`${provider.formatMessage(messages.youHave)} ${pendingTxs.count} ${provider.formatMessage(messages.pendingTransactions)}`}
+                {`${intl.formatMessage(messages.youHave)} ${pendingTxs.count} ${intl.formatMessage(messages.pendingTransactions)}`}
               </Typography>
               {
                 Object.keys(pendingTxs).map((key) => {
@@ -113,7 +102,7 @@ class PendingTransactionsSnackbar extends React.Component {
                 })
               }
               <Typography variant="caption" className={classes.balanceExplanation}>
-                {`* ${provider.formatMessage(messages.balanceExplanation)}`}
+                {`* ${intl.formatMessage(messages.balanceExplanation)}`}
               </Typography>
             </Grid>
             <Grid item xs={1}>
@@ -129,29 +118,29 @@ class PendingTransactionsSnackbar extends React.Component {
   }
 
   getEventName = (key) => {
-    const { provider } = this.state;
+    const { intl } = this.props;
 
     switch (key) {
       case 'createEvent': {
-        return provider.formatMessage(messages.createEvent);
+        return intl.formatMessage(messages.createEvent);
       }
       case 'bet': {
-        return provider.formatMessage(messages.bet);
+        return intl.formatMessage(messages.bet);
       }
       case 'setResult': {
-        return provider.formatMessage(messages.setResult);
+        return intl.formatMessage(messages.setResult);
       }
       case 'vote': {
-        return provider.formatMessage(messages.vote);
+        return intl.formatMessage(messages.vote);
       }
       case 'finalizeResult': {
-        return provider.formatMessage(messages.finalizeResult);
+        return intl.formatMessage(messages.finalizeResult);
       }
       case 'withdraw': {
-        return provider.formatMessage(messages.withdraw);
+        return intl.formatMessage(messages.withdraw);
       }
       case 'transfer': {
-        return provider.formatMessage(messages.transferTokens);
+        return intl.formatMessage(messages.transferTokens);
       }
       default: {
         return undefined;
