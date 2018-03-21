@@ -72,8 +72,13 @@ class GlobalHub extends React.PureComponent {
     }
 
     // Gets the actionable items for the My Activities badge
-    if (nextProps.lastUsedAddress !== lastUsedAddress) {
-      getActionableItemCount(nextProps.lastUsedAddress, walletAddresses);
+    if ((syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)
+      || nextProps.lastUsedAddress !== lastUsedAddress
+      || (_.isEmpty(walletAddresses) && !_.isEmpty(nextProps.walletAddresses))) {
+      getActionableItemCount(
+        nextProps.lastUsedAddress,
+        nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses,
+      );
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block
