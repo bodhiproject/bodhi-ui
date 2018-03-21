@@ -11,11 +11,12 @@ import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
-import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
+import { Progress } from '../progress';
 import styles from './styles';
+
 
 class EventOption extends React.PureComponent {
   static propTypes = {
@@ -95,7 +96,7 @@ class EventOption extends React.PureComponent {
                   {name}
                 </Typography>
                 <div className={classes.eventOptionProgress}>
-                  <LinearProgress color="secondary" variant="determinate" value={percent} />
+                  <Progress color="secondary" data-invalid={name === 'Invalid'} variant="determinate" value={percent} />
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
