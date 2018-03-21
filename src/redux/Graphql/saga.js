@@ -255,38 +255,6 @@ export function* getActionableItemCountHandler() {
   });
 }
 
-function* requestCalculateWinnings(topicAddress, senderAddress) {
-  const options = {
-    method: 'POST',
-    body: JSON.stringify({
-      contractAddress: topicAddress,
-      senderAddress,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const result = yield call(request, Routes.winnings, options);
-  if (result) {
-    const botWon = satoshiToDecimal(result['0']);
-    const qtumWon = satoshiToDecimal(result['1']);
-    return {
-      topicAddress,
-      senderAddress,
-      botWon,
-      qtumWon,
-    };
-  }
-
-  return {
-    topicAddress,
-    senderAddress,
-    botWon: 0,
-    qtumWon: 0,
-  };
-}
-
 // Sends createTopic mutation
 export function* createTopicTxHandler() {
   yield takeEvery(actions.CREATE_TOPIC_TX, function* createTopicTxRequest(action) {
