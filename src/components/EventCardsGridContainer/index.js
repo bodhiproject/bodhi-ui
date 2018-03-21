@@ -46,22 +46,22 @@ const SKIP = 0;
 class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
-    getTopics: PropTypes.func,
-    topics: PropTypes.object,
+    getActionableTopics: PropTypes.func.isRequired,
+    getTopicsReturn: PropTypes.object,
     getOracles: PropTypes.func,
-    oracles: PropTypes.object,
+    getOraclesReturn: PropTypes.object,
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
     setAppLocation: PropTypes.func.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object,
   };
 
   static defaultProps = {
-    getTopics: undefined,
-    topics: {},
+    getTopicsReturn: {},
     getOracles: undefined,
     oracles: {},
     sortBy: SortBy.Ascending,
@@ -188,9 +188,10 @@ class EventCardsGrid extends React.Component {
 
   executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
     const {
-      getTopics,
+      getActionableTopics,
       getOracles,
       lastUsedAddress,
+      walletAddresses,
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
@@ -242,14 +243,7 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        getTopics(
-          [
-            { status: OracleStatus.Withdraw },
-          ],
-          { field: 'blockNum', direction: sortDirection },
-          limit,
-          skip,
-        );
+        getActionableTopics(walletAddresses);
         break;
       }
       default: {
@@ -335,17 +329,18 @@ class EventCardsGrid extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  topics: state.Graphql.get('getTopicsReturn'),
-  oracles: state.Graphql.get('getOraclesReturn'),
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletAddresses: state.App.get('walletAddresses'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
+    getActionableTopics: (walletAddresses) => dispatch(graphqlActions.getActionableTopics(walletAddresses)),
     getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
 }

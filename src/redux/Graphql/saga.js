@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphQuery';
 import {
   createTopic,
   createBetTx,
@@ -15,6 +15,8 @@ import {
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { request } from '../../network/httpRequest';
+import Routes from '../../network/routes';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -35,6 +37,42 @@ export function* getTopicsHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
+      });
+    }
+  });
+}
+
+// Send allTopics query for actionable topics: topics you can withdraw escrow and topics that you won
+export function* getActionableTopicsHandler() {
+  yield takeEvery(actions.GET_ACTIONABLE_TOPICS, function* getActionableTopicsRequest(action) {
+    try {
+      const voteFilters = [];
+      const topicFilters = [];
+
+      // Get all votes for all your addresses
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      });
+      const result = yield call(queryAllTopics, topicFilters);
+      const topics = _.map(result, processTopic);
+
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: topics,
+      });
+    } catch (err) {
+      console.log(err);
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: [],
       });
     }
   });
@@ -160,50 +198,63 @@ function processTransaction(tx) {
 // Gets the number of actionable items; setResult, finalize, withdraw
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
-    let totalCount = 0;
-    const countByStatus = {
+    const actionItems = {
       [EventStatus.Set]: 0,
       [EventStatus.Finalize]: 0,
       [EventStatus.Withdraw]: 0,
+      totalCount: 0,
     };
 
     try {
-      const topicFilters = [
-        { status: OracleStatus.Withdraw },
-      ];
-      let result = yield call(queryAllTopics, topicFilters);
-      countByStatus[EventStatus.Withdraw] = result.length;
-      totalCount += result.length;
+      const voteFilters = [];
+      const topicFilters = [];
 
+      // Get all votes for all your addresses
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      });
+      let result = yield call(queryAllTopics, topicFilters);
+      actionItems[EventStatus.Withdraw] = result.length;
+      actionItems.totalCount += result.length;
+
+      // Get result set items
       const oracleSetFilters = [
-        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
+        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
       result = yield call(queryAllOracles, oracleSetFilters);
-      countByStatus[EventStatus.Set] = result.length;
-      totalCount += result.length;
+      actionItems[EventStatus.Set] = result.length;
+      actionItems.totalCount += result.length;
 
+      // Get finalize items
       const oracleFinalizeFilters = [
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
       result = yield call(queryAllOracles, oracleFinalizeFilters);
-      countByStatus[EventStatus.Finalize] = result.length;
-      totalCount += result.length;
+      actionItems[EventStatus.Finalize] = result.length;
+      actionItems.totalCount += result.length;
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        value: {
-          totalCount,
-          countByStatus,
-        },
+        value: actionItems,
       });
     } catch (err) {
       console.log(err);
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          totalCount,
-          countByStatus,
+          [EventStatus.Set]: 0,
+          [EventStatus.Finalize]: 0,
+          [EventStatus.Withdraw]: 0,
+          totalCount: 0,
         },
       });
     }
@@ -406,6 +457,7 @@ export function* createTransferTxHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
+    fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),
