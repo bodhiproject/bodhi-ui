@@ -14,7 +14,7 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
-import { Progress } from '../progress';
+import Progress from '../Progress/index';
 import styles from './styles';
 
 
@@ -96,7 +96,7 @@ class EventOption extends React.PureComponent {
                   {name}
                 </Typography>
                 <div className={classes.eventOptionProgress}>
-                  <Progress color="secondary" data-invalid={name === 'Invalid'} variant="determinate" value={percent} />
+                  <Progress color="secondary" invalid={name === 'Invalid'} variant="determinate" value={percent} />
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
