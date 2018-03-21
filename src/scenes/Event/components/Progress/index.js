@@ -21,4 +21,4 @@ Progress.propTypes = {
   className: PropTypes.string, // eslint-disable-line
 };
 
-export default withStyles(styles, { withTheme: true })(Progress);
+export default withStyles(styles)(Progress);
