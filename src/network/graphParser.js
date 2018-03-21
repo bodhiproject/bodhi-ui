@@ -25,6 +25,7 @@ class GraphParser {
       botAmount: entry.botAmount,
       oracles: entry.oracles,
       blockNum: entry.blockNum,
+      creatorAddress: entry.creatorAddress,
     }));
   }
 

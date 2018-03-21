@@ -47,9 +47,9 @@ export function* getActionableTopicsHandler() {
       const topicFilters = [];
 
       // Get all votes for all your addresses
-      _.each(action.walletAddresses, (address) => {
-        voteFilters.push({ voterQAddress: address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
       let votes = yield call(queryAllVotes, voteFilters);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
@@ -203,10 +203,12 @@ export function* getActionableItemCountHandler() {
       const voteFilters = [];
       const topicFilters = [];
 
+      console.log(action.walletAddresses);
+
       // Get all votes for all your addresses
-      _.each(action.walletAddresses, (address) => {
-        voteFilters.push({ voterQAddress: address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
       let votes = yield call(queryAllVotes, voteFilters);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
