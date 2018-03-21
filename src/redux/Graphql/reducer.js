@@ -7,8 +7,7 @@ const initState = new Map({
 
 export default function graphqlReducer(state = initState, action) {
   switch (action.type) {
-    case actions.GET_TOPICS_RETURN:
-    case actions.GET_ACTIONABLE_TOPICS_RETURN: {
+    case actions.GET_TOPICS_RETURN: {
       return state.set('getTopicsReturn', action.value);
     }
     case actions.GET_ORACLES_RETURN: {

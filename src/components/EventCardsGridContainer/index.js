@@ -40,7 +40,7 @@ const messages = defineMessages({
 class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
-    getTopics: PropTypes.func,
+    getActionableTopics: PropTypes.func.isRequired,
     getTopicsReturn: PropTypes.array,
     getOracles: PropTypes.func,
     getOraclesReturn: PropTypes.array,
@@ -48,11 +48,11 @@ class EventCardsGrid extends React.Component {
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
-    getTopics: undefined,
     getTopicsReturn: [],
     getOracles: undefined,
     getOraclesReturn: [],
@@ -130,9 +130,10 @@ class EventCardsGrid extends React.Component {
 
   executeGraphRequest(eventStatusIndex, sortBy) {
     const {
-      getTopics,
+      getActionableTopics,
       getOracles,
       lastUsedAddress,
+      walletAddresses,
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
@@ -176,12 +177,7 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        getTopics(
-          [
-            { status: OracleStatus.Withdraw },
-          ],
-          { field: 'blockNum', direction: sortDirection },
-        );
+        getActionableTopics(walletAddresses);
         break;
       }
       default: {
@@ -189,10 +185,6 @@ class EventCardsGrid extends React.Component {
       }
     }
   }
-
-  getFiltersForWinningTopics = () => {
-
-  };
 
   renderOracles(oracles, eventStatusIndex) {
     const rowItems = [];
@@ -276,11 +268,12 @@ const mapStateToProps = (state) => ({
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletAddresses: state.App.get('walletAddresses'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
+    getActionableTopics: (walletAddresses) => dispatch(graphqlActions.getActionableTopics(walletAddresses)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
   };
 }

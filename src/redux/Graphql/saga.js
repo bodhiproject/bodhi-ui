@@ -62,13 +62,13 @@ export function* getActionableTopicsHandler() {
       const topics = _.map(result, processTopic);
 
       yield put({
-        type: actions.GET_ACTIONABLE_TOPICS_RETURN,
+        type: actions.GET_TOPICS_RETURN,
         value: topics,
       });
     } catch (err) {
       console.log(err);
       yield put({
-        type: actions.GET_ACTIONABLE_TOPICS_RETURN,
+        type: actions.GET_TOPICS_RETURN,
         value: [],
       });
     }
