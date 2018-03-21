@@ -116,6 +116,7 @@ const messages = defineMessages({
 
 const selector = formValueSelector(FORM_NAME);
 
+@withRouter
 class CreateEvent extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -445,4 +446,4 @@ const createEventForm = reduxForm({
   validate,
 })(CreateEvent);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(withStyles(styles, { withTheme: true })(createEventForm))));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(createEventForm)));
