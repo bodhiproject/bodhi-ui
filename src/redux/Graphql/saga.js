@@ -39,6 +39,42 @@ export function* getTopicsHandler() {
   });
 }
 
+// Send allTopics query for actionable topics: topics you can withdraw escrow and topics that you won
+export function* getActionableTopicsHandler() {
+  yield takeEvery(actions.GET_ACTIONABLE_TOPICS, function* getActionableTopicsRequest(action) {
+    try {
+      const voteFilters = [];
+      const topicFilters = [];
+
+      // Get all votes for all your addresses
+      _.each(action.walletAddresses, (address) => {
+        voteFilters.push({ voterQAddress: address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      });
+      const result = yield call(queryAllTopics, topicFilters);
+      const topics = _.map(result, processTopic);
+
+      yield put({
+        type: actions.GET_ACTIONABLE_TOPICS_RETURN,
+        value: topics,
+      });
+    } catch (err) {
+      console.log(err);
+      yield put({
+        type: actions.GET_ACTIONABLE_TOPICS_RETURN,
+        value: [],
+      });
+    }
+  });
+}
+
 function processTopic(topic) {
   if (!topic) {
     return undefined;
@@ -444,6 +480,7 @@ export function* createTransferTxHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
+    fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),

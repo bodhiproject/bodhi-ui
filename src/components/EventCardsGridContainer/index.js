@@ -190,6 +190,10 @@ class EventCardsGrid extends React.Component {
     }
   }
 
+  getFiltersForWinningTopics = () => {
+
+  };
+
   renderOracles(oracles, eventStatusIndex) {
     const rowItems = [];
     _.each(oracles, (oracle) => {
