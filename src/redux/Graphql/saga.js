@@ -203,8 +203,6 @@ export function* getActionableItemCountHandler() {
       const voteFilters = [];
       const topicFilters = [];
 
-      console.log(action.walletAddresses);
-
       // Get all votes for all your addresses
       _.each(action.walletAddresses, (item) => {
         voteFilters.push({ voterQAddress: item.address });
