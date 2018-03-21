@@ -163,36 +163,24 @@ export function* getActionableItemCountHandler() {
     };
 
     try {
-      // Get all votes for all your addresses
       const voteFilters = [];
+      const topicFilters = [];
+
+      // Get all votes for all your addresses
       _.each(action.walletAddresses, (address) => {
         voteFilters.push({ voterQAddress: address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
       });
       let votes = yield call(queryAllVotes, voteFilters);
       console.log(votes);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
       console.log(votes);
 
-      // Fetch topics with votes
-      const topicFilters = [];
+      // Fetch topics with votes that have the winning result index
       _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress });
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
-      const topics = yield call(queryAllTopics, topicFilters);
-      const winningTopics = [];
-      _.each(topics, (topic) => {
-        const votesForTopic = _.filter(votes, { topicAddress: topic.address });
-
-        _.each(votesForTopic, (vote) => {
-          const winningsObj = requestCalculateWinnings(topic.address, vote.voterQAddress);
-
-          // If one address wins, then add it to the list and go to the next Topic
-          if (winningsObj.botWon > 0 || winningsObj.qtumWon > 0) {
-            actionItems.withdraw.push(topic);
-            return; // eslint-disable-line no-useless-return
-          }
-        });
-      });
+      actionItems.withdraw = yield call(queryAllTopics, topicFilters);
 
       // Get result set items
       const oracleSetFilters = [
