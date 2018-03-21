@@ -160,6 +160,7 @@ export function* getActionableItemCountHandler() {
       setResult: [],
       finalize: [],
       withdraw: [],
+      totalCount: 0,
     };
 
     try {
@@ -172,15 +173,14 @@ export function* getActionableItemCountHandler() {
         topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
       });
       let votes = yield call(queryAllVotes, voteFilters);
-      console.log(votes);
       votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
-      console.log(votes);
 
-      // Fetch topics with votes that have the winning result index
+      // Fetch topics against votes that have the winning result index
       _.each(votes, (vote) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
       actionItems.withdraw = yield call(queryAllTopics, topicFilters);
+      actionItems.totalCount += actionItems.withdraw.length;
 
       // Get result set items
       const oracleSetFilters = [
@@ -188,12 +188,14 @@ export function* getActionableItemCountHandler() {
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
       actionItems.setResult = yield call(queryAllOracles, oracleSetFilters);
+      actionItems.totalCount += actionItems.setResult.length;
 
       // Get finalize items
       const oracleFinalizeFilters = [
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
       actionItems.finalize = yield call(queryAllOracles, oracleFinalizeFilters);
+      actionItems.totalCount += actionItems.finalize.length;
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
@@ -207,6 +209,7 @@ export function* getActionableItemCountHandler() {
           setResult: [],
           finalize: [],
           withdraw: [],
+          totalCount: 0,
         },
       });
     }

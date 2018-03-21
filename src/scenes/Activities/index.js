@@ -42,7 +42,7 @@ class Activities extends React.Component {
   }
 
   render() {
-    const { classes, actionableItemCount, history } = this.props;
+    const { classes, history } = this.props;
     const { tabIdx } = this.state;
 
     return (
@@ -66,21 +66,33 @@ class Activities extends React.Component {
   getTabLabel(eventStatusIndex) {
     const { actionableItemCount, intl } = this.props;
 
-    let countLabel = '';
-    if (actionableItemCount && actionableItemCount.countByStatus[eventStatusIndex]) {
-      countLabel = ` (${actionableItemCount.countByStatus[eventStatusIndex]})`;
+    let label;
+    let count;
+    switch (eventStatusIndex) {
+      case EventStatus.Set: {
+        label = intl.formatMessage(messages.set);
+        count = actionableItemCount && actionableItemCount.setResult.length;
+        break;
+      }
+      case EventStatus.Finalize: {
+        label = intl.formatMessage(messages.finalize);
+        count = actionableItemCount && actionableItemCount.finalize.length;
+        break;
+      }
+      case EventStatus.Withdraw: {
+        label = intl.formatMessage(messages.withdraw);
+        count = actionableItemCount && actionableItemCount.withdraw.length;
+        break;
+      }
+      default:
+        break;
     }
 
-    switch (eventStatusIndex) {
-      case EventStatus.Set:
-        return `${intl.formatMessage(messages.set)}${countLabel}`;
-      case EventStatus.Finalize:
-        return `${intl.formatMessage(messages.finalize)}${countLabel}`;
-      case EventStatus.Withdraw:
-        return `${intl.formatMessage(messages.withdraw)}${countLabel}`;
-      default:
-        return null;
+    let countText = '';
+    if (count > 0) {
+      countText = ` (${count})`;
     }
+    return `${label}${countText}`;
   }
 
   handleTabChange(event, value) {

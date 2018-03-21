@@ -21,12 +21,7 @@ export default function graphqlReducer(state = initState, action) {
         .set('pendingTxsSnackbarVisible', true);
     }
     case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
-      console.log(action.value);
-      let totalCount = action.value.setResult.length;
-      totalCount += action.value.finalize.length;
-      totalCount += action.value.withdraw.length;
-
-      return state.set('actionableItemCount', totalCount);
+      return state.set('actionableItemCount', action.value);
     }
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:
