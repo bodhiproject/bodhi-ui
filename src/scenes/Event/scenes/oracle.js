@@ -335,10 +335,10 @@ class OraclePage extends React.Component {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (oracle && oracle.token === Token.Qtum) {
-      const { status } = oracle;
+    if (oracle) {
+      const { token, status } = oracle;
 
-      if (status === OracleStatus.Created && unconfirmed) {
+      if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
@@ -356,7 +356,7 @@ class OraclePage extends React.Component {
             message: intl.formatMessage(messages.eventUnconfirmed),
           },
         };
-      } else if (status === OracleStatus.Voting) {
+      } else if (token === Token.Qtum && status === OracleStatus.Voting) {
         config = {
           name: 'BETTING',
           breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
@@ -370,7 +370,7 @@ class OraclePage extends React.Component {
             btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
           },
         };
-      } else if (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet) {
+      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
         config = {
           name: 'SETTING',
           breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
@@ -388,7 +388,7 @@ class OraclePage extends React.Component {
             message: intl.formatMessage(messages.setResultExplanation),
           },
         };
-      } else if (status === OracleStatus.Voting) {
+      } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = {
           name: 'VOTING',
           breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
@@ -406,7 +406,7 @@ class OraclePage extends React.Component {
             message: intl.formatMessage(messages.voteExplanation),
           },
         };
-      } else if (status === OracleStatus.WaitResult) {
+      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = {
           name: 'FINALIZING',
           breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
