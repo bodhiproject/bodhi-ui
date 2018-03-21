@@ -15,6 +15,18 @@ import { EventStatus } from '../../constants';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    actionableItemCount: PropTypes.object.isRequired,
+    langHandler: PropTypes.func,
+  };
+
+  static defaultProps = {
+    langHandler: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -114,7 +126,7 @@ class NavBar extends React.PureComponent {
       actionableItemCount,
     } = this.props;
 
-    if (actionableItemCount && actionableItemCount.totalCount) {
+    if (actionableItemCount.totalCount > 0) {
       return (
         <Link to="/activities" className={classes.navBarLink}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
@@ -163,19 +175,6 @@ class NavBar extends React.PureComponent {
     return total.toFixed(2);
   }
 }
-
-NavBar.propTypes = {
-  match: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  walletAddresses: PropTypes.array.isRequired,
-  actionableItemCount: PropTypes.object,
-  langHandler: PropTypes.func,
-};
-
-NavBar.defaultProps = {
-  actionableItemCount: undefined,
-  langHandler: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),

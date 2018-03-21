@@ -193,9 +193,9 @@ function processTransaction(tx) {
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
     const actionItems = {
-      setResult: [],
-      finalize: [],
-      withdraw: [],
+      setResult: 0,
+      finalize: 0,
+      withdraw: 0,
       totalCount: 0,
     };
 
@@ -215,23 +215,26 @@ export function* getActionableItemCountHandler() {
       _.each(votes, (vote) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
-      actionItems.withdraw = yield call(queryAllTopics, topicFilters);
-      actionItems.totalCount += actionItems.withdraw.length;
+      let result = yield call(queryAllTopics, topicFilters);
+      actionItems.withdraw = result.length;
+      actionItems.totalCount += result.length;
 
       // Get result set items
       const oracleSetFilters = [
         { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
-      actionItems.setResult = yield call(queryAllOracles, oracleSetFilters);
-      actionItems.totalCount += actionItems.setResult.length;
+      result = yield call(queryAllOracles, oracleSetFilters);
+      actionItems.setResult = result.length;
+      actionItems.totalCount += result.length;
 
       // Get finalize items
       const oracleFinalizeFilters = [
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
-      actionItems.finalize = yield call(queryAllOracles, oracleFinalizeFilters);
-      actionItems.totalCount += actionItems.finalize.length;
+      result = yield call(queryAllOracles, oracleFinalizeFilters);
+      actionItems.finalize = result.length;
+      actionItems.totalCount += result.length;
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
@@ -242,9 +245,9 @@ export function* getActionableItemCountHandler() {
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          setResult: [],
-          finalize: [],
-          withdraw: [],
+          setResult: 0,
+          finalize: 0,
+          withdraw: 0,
           totalCount: 0,
         },
       });

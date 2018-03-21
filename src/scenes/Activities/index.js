@@ -30,6 +30,14 @@ const messages = defineMessages({
 });
 
 class Activities extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    actionableItemCount: PropTypes.object.isRequired,
+    // eslint-disable-next-line react/no-typos
+    intl: intlShape.isRequired,
+  };
+
   constructor(props) {
     super(props);
 
@@ -71,17 +79,17 @@ class Activities extends React.Component {
     switch (eventStatusIndex) {
       case EventStatus.Set: {
         label = intl.formatMessage(messages.set);
-        count = actionableItemCount && actionableItemCount.setResult.length;
+        count = actionableItemCount.setResult;
         break;
       }
       case EventStatus.Finalize: {
         label = intl.formatMessage(messages.finalize);
-        count = actionableItemCount && actionableItemCount.finalize.length;
+        count = actionableItemCount.finalize;
         break;
       }
       case EventStatus.Withdraw: {
         label = intl.formatMessage(messages.withdraw);
-        count = actionableItemCount && actionableItemCount.withdraw.length;
+        count = actionableItemCount.withdraw;
         break;
       }
       default: {
@@ -100,18 +108,6 @@ class Activities extends React.Component {
     this.setState({ tabIdx: value });
   }
 }
-
-Activities.propTypes = {
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  actionableItemCount: PropTypes.object,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-Activities.defaultProps = {
-  actionableItemCount: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),

@@ -3,6 +3,12 @@ import actions from './actions';
 
 const initState = new Map({
   getPendingTransactionsReturn: { count: 0 },
+  actionableItemCount: {
+    setResult: 0,
+    finalize: 0,
+    withdraw: 0,
+    totalCount: 0,
+  },
 });
 
 export default function graphqlReducer(state = initState, action) {
