@@ -1,12 +1,14 @@
 import { Map } from 'immutable';
+
 import actions from './actions';
+import { EventStatus } from '../../constants';
 
 const initState = new Map({
   getPendingTransactionsReturn: { count: 0 },
   actionableItemCount: {
-    setResult: 0,
-    finalize: 0,
-    withdraw: 0,
+    [EventStatus.Set]: 0,
+    [EventStatus.Finalize]: 0,
+    [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
 });

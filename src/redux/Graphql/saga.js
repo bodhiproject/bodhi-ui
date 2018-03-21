@@ -193,9 +193,9 @@ function processTransaction(tx) {
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
     const actionItems = {
-      setResult: 0,
-      finalize: 0,
-      withdraw: 0,
+      [EventStatus.Set]: 0,
+      [EventStatus.Finalize]: 0,
+      [EventStatus.Withdraw]: 0,
       totalCount: 0,
     };
 
@@ -216,7 +216,7 @@ export function* getActionableItemCountHandler() {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
       let result = yield call(queryAllTopics, topicFilters);
-      actionItems.withdraw = result.length;
+      actionItems[EventStatus.Withdraw] = result.length;
       actionItems.totalCount += result.length;
 
       // Get result set items
@@ -225,7 +225,7 @@ export function* getActionableItemCountHandler() {
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
       result = yield call(queryAllOracles, oracleSetFilters);
-      actionItems.setResult = result.length;
+      actionItems[EventStatus.Set] = result.length;
       actionItems.totalCount += result.length;
 
       // Get finalize items
@@ -233,7 +233,7 @@ export function* getActionableItemCountHandler() {
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
       result = yield call(queryAllOracles, oracleFinalizeFilters);
-      actionItems.finalize = result.length;
+      actionItems[EventStatus.Finalize] = result.length;
       actionItems.totalCount += result.length;
 
       yield put({
@@ -245,9 +245,9 @@ export function* getActionableItemCountHandler() {
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          setResult: 0,
-          finalize: 0,
-          withdraw: 0,
+          [EventStatus.Set]: 0,
+          [EventStatus.Finalize]: 0,
+          [EventStatus.Withdraw]: 0,
           totalCount: 0,
         },
       });

@@ -79,17 +79,17 @@ class Activities extends React.Component {
     switch (eventStatusIndex) {
       case EventStatus.Set: {
         label = intl.formatMessage(messages.set);
-        count = actionableItemCount.setResult;
+        count = actionableItemCount[EventStatus.Set];
         break;
       }
       case EventStatus.Finalize: {
         label = intl.formatMessage(messages.finalize);
-        count = actionableItemCount.finalize;
+        count = actionableItemCount[EventStatus.Finalize];
         break;
       }
       case EventStatus.Withdraw: {
         label = intl.formatMessage(messages.withdraw);
-        count = actionableItemCount.withdraw;
+        count = actionableItemCount[EventStatus.Withdraw];
         break;
       }
       default: {
