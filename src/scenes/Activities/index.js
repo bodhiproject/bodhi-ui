@@ -84,8 +84,9 @@ class Activities extends React.Component {
         count = actionableItemCount && actionableItemCount.withdraw.length;
         break;
       }
-      default:
+      default: {
         break;
+      }
     }
 
     let countText = '';
