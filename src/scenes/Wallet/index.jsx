@@ -4,8 +4,20 @@ import { connect } from 'react-redux';
 
 import MyBalances from './components/Balances/index';
 import WalletHistory from './components/History/index';
+import appActions from '../../redux/App/actions';
+import { AppLocation } from '../../constants';
 
 class MyWallet extends React.Component {
+  static propTypes = {
+    setAppLocation: PropTypes.func.isRequired,
+  };
+
+  componentWillMount() {
+    const { setAppLocation } = this.props;
+
+    setAppLocation(AppLocation.wallet);
+  }
+
   render() {
     return (
       <div>
@@ -21,6 +33,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   };
 }
 
