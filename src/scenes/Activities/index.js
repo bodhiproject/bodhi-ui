@@ -30,6 +30,17 @@ const messages = defineMessages({
 });
 
 class Activities extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    actionableItemCount: PropTypes.object,
+  };
+
+  static defaultProps = {
+    actionableItemCount: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -88,23 +99,12 @@ class Activities extends React.Component {
   }
 }
 
-Activities.propTypes = {
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  actionableItemCount: PropTypes.object,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-Activities.defaultProps = {
-  actionableItemCount: undefined,
-};
-
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   actionableItemCount: state.Graphql.get('actionableItemCount'),
 });
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(Activities)));
