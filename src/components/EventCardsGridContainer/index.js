@@ -7,7 +7,6 @@ import _ from 'lodash';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import Infinite from 'react-infinite';
 import EventWarning from '../EventWarning/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import { Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
