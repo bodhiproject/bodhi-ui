@@ -22,7 +22,6 @@ export default class InfiniteScroll extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('CLLLLL');
     window.removeEventListener('scroll', this.handleOnScroll);
   }
 
@@ -33,9 +32,7 @@ export default class InfiniteScroll extends React.Component {
     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
     if (scrolledToBottom && this.props.hasMore) {
-      setTimeout(() => {
-        this.props.loadMore();
-      }, 300);
+      this.props.loadMore();
     }
   }
 

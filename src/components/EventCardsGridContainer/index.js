@@ -111,7 +111,6 @@ class EventCardsGrid extends React.Component {
     } = this.props;
     skip += LIMIT;
 
-
     this.setState({ skip });
     const sortDirection = this.props.sortBy || SortBy.Ascending;
 
