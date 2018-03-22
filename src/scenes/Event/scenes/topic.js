@@ -202,6 +202,9 @@ export default class TopicPage extends React.Component {
               </Typography>
               <Grid item xs={12}>
                 {this.renderWithdrawContainer()}
+                {/* <Grid item xs={12} lg={9}>
+                  <EventWarning id={actionButtonConfig.id} message={actionButtonConfig.message} className={actionButtonConfig.warningTypeClass} />
+                  {this.renderWithdrawContainer(actionButtonConfig)} */}
                 {this.renderOptions()}
                 <EventResultHistory oracles={topic.oracles} />
                 <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
@@ -433,10 +436,8 @@ export default class TopicPage extends React.Component {
       return {
         show: true,
         disabled: true,
-        message: <FormattedMessage
-          id="str.pendingTransactionDisabledMsg"
-          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
-        />,
+        id: 'str.pendingTransactionDisabledMsg',
+        message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
         warningTypeClass: classes.pending,
       };
     }
@@ -452,10 +453,8 @@ export default class TopicPage extends React.Component {
       return {
         show: true,
         disabled: true,
-        message: <FormattedMessage
-          id="withdrawDetail.alreadyWithdrawn"
-          defaultMessage="You have already withdrawn with this address."
-        />,
+        id: 'withdrawDetail.alreadyWithdrawn',
+        message: 'You have already withdrawn with this address.',
         warningTypeClass: classes.withdrawn,
       };
     }

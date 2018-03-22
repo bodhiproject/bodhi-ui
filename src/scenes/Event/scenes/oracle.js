@@ -194,12 +194,7 @@ export default class OraclePage extends React.Component {
 
   render() {
     const { classes, txReturn, lastUsedAddress } = this.props;
-    const {
-      oracle,
-      config,
-      transactions,
-      unconfirmed,
-    } = this.state;
+    const { oracle, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
@@ -218,14 +213,13 @@ export default class OraclePage extends React.Component {
                 {oracle.name}
               </Typography>
               <Grid item xs={12} lg={9}>
-                {
-                  !unconfirmed
-                    ? <EventWarning
-                      message={actionButtonConfig.message}
-                      typeClass={actionButtonConfig.warningTypeClass}
-                    />
-                    : null
-                }
+                {!unconfirmed && (
+                  <EventWarning
+                    id={actionButtonConfig.id}
+                    message={actionButtonConfig.message}
+                    className={actionButtonConfig.warningTypeClass}
+                  />
+                )}
                 {eventOptions.map((item, index) => (
                   <EventOption
                     key={index}
@@ -256,33 +250,31 @@ export default class OraclePage extends React.Component {
                     message={config.importantNote && config.importantNote.message}
                   />
                 </div>
-                {
-                  !unconfirmed
-                    ? <div>
-                      <Button
-                        variant="raised"
-                        fullWidth
-                        size="large"
-                        color="primary"
-                        disabled={actionButtonConfig.disabled}
-                        onClick={this.handleConfirmClick}
-                        className={classes.eventActionButton}
-                      >
-                        {
-                          this.state.isApproving ?
-                            <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                            config.predictionAction.btnText
-                        }
-                      </Button>
-                      <EventTxHistory transactions={transactions} options={oracle.options} />
-                    </div>
-                    : null
-                }
+                {!unconfirmed && (
+                  <div>
+                    <Button
+                      variant="raised"
+                      fullWidth
+                      size="large"
+                      color="primary"
+                      disabled={actionButtonConfig.disabled}
+                      onClick={this.handleConfirmClick}
+                      className={classes.eventActionButton}
+                    >
+                      {
+                        this.state.isApproving ?
+                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                          config.predictionAction.btnText
+                      }
+                    </Button>
+                    <EventTxHistory transactions={transactions} options={oracle.options} />
+                  </div>
+                )}
               </Grid>
-            </Grid>
-            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-              <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
-              <StepperVertRight steps={config.eventInfo.steps} />
+              <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+                <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
+                <StepperVertRight steps={config.eventInfo.steps} />
+              </Grid>
             </Grid>
           </Grid>
         </Paper>
@@ -534,13 +526,7 @@ export default class OraclePage extends React.Component {
 
   getActionButtonConfig() {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
-    const {
-      address,
-      oracle,
-      transactions,
-      currentOptionIdx,
-      voteAmount,
-    } = this.state;
+    const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
     const currBlockTime = moment.unix(syncBlockTime);
 
@@ -549,10 +535,8 @@ export default class OraclePage extends React.Component {
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="str.pendingTransactionDisabledMsg"
-          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
-        />,
+        id: 'str.pendingTransactionDisabledMsg',
+        message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
         warningTypeClass: EventWarningType.Highlight,
       };
     }
@@ -563,10 +547,8 @@ export default class OraclePage extends React.Component {
       && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.betStartTimeDisabledText"
-          defaultMessage="The betting start time has not started yet."
-        />,
+        id: 'oracle.betStartTimeDisabledText',
+        message: 'The betting start time has not started yet.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -577,10 +559,8 @@ export default class OraclePage extends React.Component {
       && currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime))) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.setStartTimeDisabledText"
-          defaultMessage="The result setting start time has not started yet."
-        />,
+        id: 'oracle.setStartTimeDisabledText',
+        message: 'The result setting start time has not started yet.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -589,10 +569,8 @@ export default class OraclePage extends React.Component {
     if (token === Token.Qtum && status === OracleStatus.WaitResult && resultSetterQAddress !== lastUsedAddress) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.cOracleDisabledText"
-          defaultMessage="You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
-        />,
+        id: 'oracle.cOracleDisabledText',
+        message: 'You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -601,10 +579,8 @@ export default class OraclePage extends React.Component {
     if (!(token === Token.Bot && status === OracleStatus.WaitResult) && currentOptionIdx === -1) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.selectResultDisabledText"
-          defaultMessage="Please click and select one of the options."
-        />,
+        id: 'oracle.selectResultDisabledText',
+        message: 'Please click and select one of the options.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -613,10 +589,8 @@ export default class OraclePage extends React.Component {
     if (status === OracleStatus.Voting && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.enterAmountDisabledText"
-          defaultMessage="Please entered a valid amount."
-        />,
+        id: 'oracle.enterAmountDisabledText',
+        defaultMessage: 'Please entered a valid amount.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -626,10 +600,8 @@ export default class OraclePage extends React.Component {
     if (token === Token.Qtum && status === OracleStatus.Voting && voteAmount > totalQtum) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="str.notEnoughQtum"
-          defaultMessage="You don't have enough QTUM"
-        />,
+        id: 'str.notEnoughQtum',
+        message: 'You do\'t have enough QTUM',
         warningTypeClass: EventWarningType.Error,
       };
     }
@@ -643,10 +615,8 @@ export default class OraclePage extends React.Component {
       || (token === Token.Bot && status === OracleStatus.Voting && currentBot < voteAmount)) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="str.notEnoughBot"
-          defaultMessage="You don't have enough BOT"
-        />,
+        id: 'str.notEnoughBot',
+        message: 'You don\'t have enough BOT',
         warningTypeClass: EventWarningType.Error,
       };
     }

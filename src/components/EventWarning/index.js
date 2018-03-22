@@ -7,42 +7,27 @@ import classNames from 'classnames';
 import { EventWarningType } from '../../constants';
 import styles from './styles';
 
-class EventWarning extends React.PureComponent {
-  render() {
-    const {
-      classes,
-      className,
-      typeClass,
-      message,
-      intl,
-      theme,
-      ...props
-    } = this.props;
 
-    if (!message) {
-      return null;
-    }
-
-    return (
-      <div {...props} className={classNames(className, classes.warningWrapper, typeClass)}>
-        {message}
-      </div>
-    );
-  }
+function FormattedMessageFixed(props) {
+  return <FormattedMessage {...props} />;
 }
+
+const EventWarning = ({ classes, id = '', message, className, intl, theme, ...props }) => !message ? null : (console.log('ID: ', id),
+  <div {...props} className={classNames(className, classes.warningWrapper)}>
+    <FormattedMessageFixed id={id} defaultMessage={message} />
+  </div>
+);
 
 EventWarning.propTypes = {
   classes: PropTypes.object.isRequired,
-  message: PropTypes.object,
-  typeClass: PropTypes.string,
-  className: PropTypes.string,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-  theme: PropTypes.object,
+  className: PropTypes.string, // eslint-disable-line
+  message: PropTypes.string,
+  id: PropTypes.string, // eslint-disable-line
+  theme: PropTypes.object, // eslint-disable-line
+  intl: intlShape.isRequired, // eslint-disable-line
 };
 
 EventWarning.defaultProps = {
-  typeClass: EventWarningType.Info,
-  className: EventWarningType.Info,
   message: undefined,
   theme: undefined,
 };
