@@ -12,6 +12,8 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import styles from './styles';
+import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
+import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { TransactionType } from '../../../../constants';
 import Config from '../../../../config/app';
 import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpers/utility';
@@ -190,34 +192,53 @@ class WalletHistory extends React.Component {
 
     return (
       <TableBody>
-        {data.map((item, index) => (
-          <TableRow key={item.txid}>
-            <TableCell>
-              {getShortLocalDateTimeString(item.blockTime ? item.blockTime : item.createdTime)}
-            </TableCell>
-            <TableCell>
-              {item.senderAddress}
-            </TableCell>
-            <TableCell>
-              {item.receiverAddress}
-            </TableCell>
-            <TableCell>
-              {item.token}
-            </TableCell>
-            <TableCell numeric>
-              {item.amount}
-            </TableCell>
-            <TableCell numeric>
-              {item.fee}
-            </TableCell>
-            <TableCell>
-              {item.status}
-            </TableCell>
-          </TableRow>
+        {data.map((transaction, index) => (
+          this.getTableRow(transaction, index)
         ))}
       </TableBody>
     );
-  }
+  };
+
+  getTableRow = (transaction, index) => {
+    const { classes } = this.props;
+    const result = [];
+
+    result[0] = (
+      <TableRow key={transaction.txid}>
+        <TableCell>
+          {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
+        </TableCell>
+        <TableCell>
+          {transaction.senderAddress}
+        </TableCell>
+        <TableCell>
+          {transaction.receiverAddress}
+        </TableCell>
+        <TableCell>
+          {transaction.token}
+        </TableCell>
+        <TableCell numeric>
+          {transaction.amount}
+        </TableCell>
+        <TableCell numeric>
+          {transaction.fee}
+        </TableCell>
+        <TableCell>
+          {transaction.status}
+        </TableCell>
+      </TableRow>
+    );
+    result[1] = (
+      <TableRow key={`txaddr-${transaction.txid}`} selected>
+        <TransactionHistoryAddress transaction={transaction} />
+        <TableCell />
+        <TransactionHistoryID transaction={transaction} />
+        <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
+      </TableRow>
+    );
+
+    return result;
+  };
 }
 
 const mapStateToProps = (state) => ({

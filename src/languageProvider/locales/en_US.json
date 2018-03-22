@@ -143,6 +143,7 @@
   "str.token": "Token",
   "str.transaction": "TRANSACTIONS",
   "str.transactionId": "Transaction ID",
+  "str.addressUsed": "Address Used",
   "str.transferTokens": "Transfer Tokens",
   "str.type": "Type",
   "str.unconfirmed": "Unconfirmed",
