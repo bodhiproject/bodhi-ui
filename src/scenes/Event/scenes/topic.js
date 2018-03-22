@@ -25,7 +25,7 @@ import TransactionSentDialog from '../../../components/TransactionSentDialog/ind
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
@@ -78,6 +78,7 @@ const pageMessage = defineMessages({
   createWithdrawTx: (version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
@@ -107,6 +108,7 @@ export default class TopicPage extends React.Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -141,6 +143,7 @@ export default class TopicPage extends React.Component {
 
   componentWillMount() {
     const {
+      setAppLocation,
       lastUsedAddress,
       getBetAndVoteBalances,
       getTransactionsReturn,
@@ -149,6 +152,7 @@ export default class TopicPage extends React.Component {
     } = this.props;
     const { address } = this.state;
 
+    setAppLocation(AppLocation.withdraw);
     this.fetchData(lastUsedAddress);
   }
 
