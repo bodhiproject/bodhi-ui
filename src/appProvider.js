@@ -18,7 +18,7 @@ import '../src/style/styles.less';
 export default class AppProvider extends Component {
   locales = [AppLocale.en, AppLocale.zh]
   state = {
-    locale: localStorage.getItem('localindex') || 0,
+    locale: Number(localStorage.getItem('localindex')) || 0,
   }
 
   componentDidMount() {
@@ -26,12 +26,12 @@ export default class AppProvider extends Component {
   }
 
   langHandler = () => {
+    const nextlocale = (this.state.locale + 1) % 2;
     this.setState({
-      locale: (this.state.locale + 1) % 2,
-    }, () => {
-      moment.locale(this.locales[this.state.locale].momentlocale);
-      localStorage.setItem('localindex', this.state.locale);
+      locale: nextlocale,
     });
+    moment.locale(this.locales[nextlocale].momentlocale);
+    localStorage.setItem('localindex', nextlocale);
   }
 
   render() {
