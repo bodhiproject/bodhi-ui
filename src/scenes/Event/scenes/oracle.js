@@ -29,7 +29,7 @@ import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -76,6 +76,7 @@ const messages = defineMessages({
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch, props) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
@@ -118,6 +119,7 @@ export default class OraclePage extends React.Component {
     walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
@@ -400,8 +402,11 @@ export default class OraclePage extends React.Component {
   }
 
   setUnconfirmedConfig = (syncBlockTime, oracle) => {
+    const { setAppLocation } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
+
+    setAppLocation(AppLocation.bet);
 
     return {
       name: 'BETTING',
@@ -423,8 +428,11 @@ export default class OraclePage extends React.Component {
   };
 
   setBetConfig = (syncBlockTime, oracle) => {
+    const { setAppLocation } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
+
+    setAppLocation(AppLocation.bet);
 
     return {
       name: 'BETTING',
@@ -442,8 +450,11 @@ export default class OraclePage extends React.Component {
   };
 
   setResultSetConfig = (syncBlockTime, oracle) => {
+    const { setAppLocation } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
+
+    setAppLocation(AppLocation.resultSet);
 
     return {
       name: 'SETTING',
@@ -465,8 +476,11 @@ export default class OraclePage extends React.Component {
   };
 
   setVoteConfig = (syncBlockTime, oracle, centralizedOracle, decentralizedOracles) => {
+    const { setAppLocation } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
+
+    setAppLocation(AppLocation.vote);
 
     return {
       name: 'VOTING',
@@ -488,8 +502,11 @@ export default class OraclePage extends React.Component {
   };
 
   setFinalizeConfig = (syncBlockTime, centralizedOracle, decentralizedOracles) => {
+    const { setAppLocation } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
+
+    setAppLocation(AppLocation.finalize);
 
     return {
       name: 'FINALIZING',
