@@ -31,6 +31,8 @@ class NavBar extends React.PureComponent {
       match,
     } = this.props;
 
+    console.log(match);
+
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>

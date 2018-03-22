@@ -21,6 +21,12 @@ const appActions = {
     };
   },
 
+  SET_APP_LOCATION: 'SET_APP_LOCATION',
+  setAppLocation: (location) => ({
+    type: appActions.SET_APP_LOCATION,
+    location,
+  }),
+
   SET_LAST_USED_ADDRESS: 'SET_LAST_USED_ADDRESS',
   setLastUsedAddress: (address) => ({
     type: appActions.SET_LAST_USED_ADDRESS,
