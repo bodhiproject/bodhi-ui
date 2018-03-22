@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 
+import { AppLocation } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
 import actions, { getView } from './actions';
@@ -12,6 +13,7 @@ const initState = new Map({
   view: getView(window.innerWidth),
   height: window.innerHeight,
   current: preKeys,
+  appLocation: AppLocation.qtumPrediction,
   walletAddresses: [],
   lastUsedAddress: '',
   syncPercent: 0,

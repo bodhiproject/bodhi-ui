@@ -11,7 +11,7 @@ import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-i
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import { EventStatus } from '../../constants';
+import { EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
@@ -26,10 +26,13 @@ class NavBar extends React.PureComponent {
   render() {
     const {
       classes,
+      appLocation,
       walletAddresses,
       actionableItemCount,
       match,
     } = this.props;
+
+    console.log(appLocation);
 
     return (
       <AppBar position="fixed" className={classes.navBar}>
@@ -51,7 +54,10 @@ class NavBar extends React.PureComponent {
             >
               <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
             </Button>
-            { this.renderCurrentTabArrow('/') }
+            {
+              appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet
+                ? this.renderCurrentTabArrow('/') : null
+            }
           </Link>
           <Link to="/bot-court" className={classes.navBarLink}>
             <Button
@@ -63,7 +69,10 @@ class NavBar extends React.PureComponent {
             >
               <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
             </Button>
-            { this.renderCurrentTabArrow('/bot-court') }
+            {
+              appLocation === AppLocation.botCourt || appLocation === AppLocation.vote
+                ? this.renderCurrentTabArrow('/bot-court') : null
+            }
           </Link>
           <div className={classes.navBarRightWrapper}>
             <Link to="/my-wallet" className={classes.navBarLink}>
@@ -71,7 +80,7 @@ class NavBar extends React.PureComponent {
                 <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
-              { this.renderCurrentTabArrow('/my-wallet') }
+              { appLocation === AppLocation.wallet ? this.renderCurrentTabArrow('/my-wallet') : null }
             </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
@@ -89,6 +98,22 @@ class NavBar extends React.PureComponent {
       match,
     } = this.props;
 
+    console.log('renderCurrentTabArrow');
+
+    return (
+      <img
+        src="/images/nav-arrow.png"
+        alt="nav-arrow"
+        className={
+          classNames(
+            classes.navArrow,
+            currentPath === '/my-wallet' || currentPath === '/activities' ? 'right' : ''
+          )
+        }
+      />
+    );
+
+    /*
     if (this.props.match.path === currentPath) {
       return (
         <img
@@ -105,12 +130,14 @@ class NavBar extends React.PureComponent {
     }
 
     return null;
+    */
   }
 
   renderActivitiesButtonWithBadge() {
     const {
       classes,
       match,
+      appLocation,
       actionableItemCount,
     } = this.props;
 
@@ -122,7 +149,14 @@ class NavBar extends React.PureComponent {
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
           </Badge>
-          { this.renderCurrentTabArrow('/activities') }
+          {
+            appLocation === AppLocation.myActivities
+              || appLocation === AppLocation.resultSet
+              || appLocation === AppLocation.finalize
+              || appLocation === AppLocation.withdraw
+              || appLocation === AppLocation.activityHistory
+              ? this.renderCurrentTabArrow('/activities') : null
+          }
         </Link>
       );
     }
@@ -170,6 +204,7 @@ NavBar.propTypes = {
   walletAddresses: PropTypes.array.isRequired,
   actionableItemCount: PropTypes.object,
   langHandler: PropTypes.func,
+  appLocation: PropTypes.string.isRequired,
 };
 
 NavBar.defaultProps = {
