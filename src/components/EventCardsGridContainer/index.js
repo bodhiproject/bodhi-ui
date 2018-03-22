@@ -181,7 +181,6 @@ class EventCardsGrid extends React.Component {
 
   render() {
     const { theme, eventStatusIndex, topics, oracles, sortBy, classes } = this.props; // eslint-disable-line
-    console.log('​EventCardsGrid -> render -> classes', classes);
     let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
@@ -209,8 +208,6 @@ class EventCardsGrid extends React.Component {
         throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
       }
     }
-    console.log('​EventCardsGrid -> render -> rowItems', eventStatusIndex, rowItems);
-
 
     return (
       <span>
@@ -398,35 +395,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(EventCardsGrid)));
-
-
-// const InfiniteScroll = React.createClass({
-
-//   componentDidMount() {
-//     window.addEventListener('scroll', this.handleOnScroll);
-//   },
-
-//   componentWillUnmount() {
-//     window.removeEventListener('scroll', this.handleOnScroll);
-//   },
-
-//   handleOnScroll() {
-//     const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
-//     const scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
-//     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
-//     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-//     if (scrolledToBottom && this.props.hasMore) {
-//       setTimeout(() => {
-//         this.props.loadMore();
-//       }, 300);
-//     }
-//   },
-
-//   render() {
-//     return (
-//       <Grid container spacing={this.props.spacing}>
-//         {this.props.data}
-//       </Grid>
-//     );
-//   },
-// });
