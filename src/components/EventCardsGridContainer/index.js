@@ -7,12 +7,14 @@ import _ from 'lodash';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import EventWarning from '../EventWarning/index';
+
+import styles from './styles';
+import { AppLocation, Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
+import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
-import { Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
+import EventWarning from '../EventWarning/index';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
-import styles from './styles';
 import InfiniteScroll from '../InfiniteScroll/index';
 
 const messages = defineMessages({
@@ -52,6 +54,7 @@ class EventCardsGrid extends React.Component {
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object,
   };
@@ -76,6 +79,7 @@ class EventCardsGrid extends React.Component {
       sortBy,
     } = this.props;
 
+    this.setAppLocation(eventStatusIndex);
     this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
   }
 
@@ -151,6 +155,36 @@ class EventCardsGrid extends React.Component {
       />
     );
   }
+
+  setAppLocation = (eventStatusIndex) => {
+    const { setAppLocation } = this.props;
+
+    switch (eventStatusIndex) {
+      case EventStatus.Bet: {
+        setAppLocation(AppLocation.qtumPrediction);
+        break;
+      }
+      case EventStatus.Set: {
+        setAppLocation(AppLocation.resultSet);
+        break;
+      }
+      case EventStatus.Vote: {
+        setAppLocation(AppLocation.botCourt);
+        break;
+      }
+      case EventStatus.Finalize: {
+        setAppLocation(AppLocation.finalize);
+        break;
+      }
+      case EventStatus.Withdraw: {
+        setAppLocation(AppLocation.withdraw);
+        break;
+      }
+      default: {
+        throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
+      }
+    }
+  };
 
   executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
     const {
@@ -310,6 +344,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
     getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
     getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
