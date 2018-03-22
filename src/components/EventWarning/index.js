@@ -11,8 +11,10 @@ class EventWarning extends React.PureComponent {
   render() {
     const {
       classes,
+      className,
       typeClass,
       message,
+      ...props
     } = this.props;
 
     if (!message) {
@@ -20,7 +22,7 @@ class EventWarning extends React.PureComponent {
     }
 
     return (
-      <div className={classNames(classes.warningWrapper, typeClass)}>
+      <div {...props} className={classNames(className, classes.warningWrapper, typeClass)}>
         {message}
       </div>
     );
@@ -31,10 +33,12 @@ EventWarning.propTypes = {
   classes: PropTypes.object.isRequired,
   message: PropTypes.object,
   typeClass: PropTypes.string,
+  className: PropTypes.string,
 };
 
 EventWarning.defaultProps = {
   typeClass: EventWarningType.Info,
+  className: EventWarningType.Info,
   message: undefined,
 };
 

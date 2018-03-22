@@ -112,8 +112,6 @@ class GraphQuery {
 
   async execute() {
     const query = this.build();
-    console.debug(query);
-
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',

@@ -7,12 +7,14 @@ import _ from 'lodash';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-
+import Infinite from 'react-infinite';
+import EventWarning from '../EventWarning/index';
 import graphqlActions from '../../redux/Graphql/actions';
-import { Token, OracleStatus, SortBy, EventStatus } from '../../constants';
+import { Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
 import styles from './styles';
+import InfiniteScroll from '../InfiniteScroll/index';
 
 const messages = defineMessages({
   placeBet: {
@@ -44,9 +46,9 @@ class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
     getTopics: PropTypes.func,
-    getTopicsReturn: PropTypes.array,
+    topics: PropTypes.array,
     getOracles: PropTypes.func,
-    getOraclesReturn: PropTypes.array,
+    oracles: PropTypes.array,
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
@@ -54,20 +56,20 @@ class EventCardsGrid extends React.Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     getMoreOracles: PropTypes.func.isRequired,
     getMoreTopics: PropTypes.func.isRequired,
-    // classes: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     getTopics: undefined,
-    getTopicsReturn: [],
+    topics: [],
     getOracles: undefined,
-    getOraclesReturn: [],
+    oracles: [],
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
   };
 
   state = {
     skip: 0,
+    hint: false,
   }
 
   componentWillMount() {
@@ -87,10 +89,15 @@ class EventCardsGrid extends React.Component {
     } = nextProps;
 
     if (eventStatusIndex !== this.props.eventStatusIndex
-      || sortBy !== this.props.sortBy
-      || syncBlockNum !== this.props.syncBlockNum) {
-      console.log('​EventCardsGrid -> componentWillReceiveProps -> eventStatusIndex', eventStatusIndex);
+      || sortBy !== this.props.sortBy) {
       this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
+      this.setState({ skip: 0 });
+    }
+    if (syncBlockNum !== this.props.syncBlockNum && this.props.syncBlockNum !== 0) {
+      this.setState({ hint: true });
+      setTimeout(() => {
+        this.setState({ hint: false });
+      }, 3000);
     }
   }
 
@@ -99,6 +106,7 @@ class EventCardsGrid extends React.Component {
     const {
       eventStatusIndex,
       sortBy,
+      lastUsedAddress,
       getMoreOracles,
       getMoreTopics,
     } = this.props;
@@ -124,7 +132,7 @@ class EventCardsGrid extends React.Component {
       case EventStatus.Set: {
         getMoreOracles(
           [
-            { token: Token.Qtum, status: OracleStatus.WaitResult },
+            { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: lastUsedAddress },
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
           { field: 'resultSetEndTime', direction: sortDirection },
@@ -172,20 +180,10 @@ class EventCardsGrid extends React.Component {
     }
   }
 
-
   render() {
-    const {
-      theme,
-      eventStatusIndex,
-      getTopicsReturn,
-      getOraclesReturn,
-    } = this.props;
-    const topics = getTopicsReturn;
-    console.log('​EventCardsGrid -> render -> topics', topics);
-    console.log('skip', this.state.skip);
-    const oracles = getOraclesReturn;
-    console.log('​EventCardsGrid -> render -> oracles', oracles);
-    let rowItems;
+    const { theme, eventStatusIndex, topics, oracles, sortBy, classes } = this.props; // eslint-disable-line
+    console.log('​EventCardsGrid -> render -> classes', classes);
+    let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
@@ -212,14 +210,26 @@ class EventCardsGrid extends React.Component {
         throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
       }
     }
+    console.log('​EventCardsGrid -> render -> rowItems', eventStatusIndex, rowItems);
+
 
     return (
-      <InfiniteData
-        spacing={theme.padding.sm.value}
-        data={rowItems}
-        loadMore={this.loadMoreOracles}
-        hasMore={rowItems.length >= this.state.skip + LIMIT}
-      />
+      <span>
+        <InfiniteScroll
+          spacing={theme.padding.sm.value}
+          data={rowItems}
+          loadMore={this.loadMoreOracles}
+          hasMore={rowItems.length >= this.state.skip + LIMIT}
+        />
+        {this.state.hint && (
+          <EventWarning
+            message={<FormattedMessage id="str.newBlock" defaultMessage="New block comes, you can refresh to get new data" />}
+            typeClass={EventWarningType.Highlight}
+
+            className={classes.hint}
+          />
+        )}
+      </span>
     );
   }
 
@@ -372,8 +382,8 @@ class EventCardsGrid extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  topics: state.Graphql.get('getTopicsReturn'),
+  oracles: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -391,32 +401,33 @@ function mapDispatchToProps(dispatch) {
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(EventCardsGrid)));
 
 
-const InfiniteData = React.createClass({
+// const InfiniteScroll = React.createClass({
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleOnScroll);
-  },
+//   componentDidMount() {
+//     window.addEventListener('scroll', this.handleOnScroll);
+//   },
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleOnScroll);
-  },
+//   componentWillUnmount() {
+//     window.removeEventListener('scroll', this.handleOnScroll);
+//   },
 
-  handleOnScroll() {
-    const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
-    const scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight || window.innerHeight;
-    const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-    if (scrolledToBottom && this.props.hasMore) {
-      console.log('loadmore');
-      this.props.loadMore();
-    }
-  },
+//   handleOnScroll() {
+//     const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+//     const scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+//     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+//     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+//     if (scrolledToBottom && this.props.hasMore) {
+//       setTimeout(() => {
+//         this.props.loadMore();
+//       }, 300);
+//     }
+//   },
 
-  render() {
-    return (
-      <Grid container spacing={this.props.spacing}>
-        {this.props.data}
-      </Grid>
-    );
-  },
-});
+//   render() {
+//     return (
+//       <Grid container spacing={this.props.spacing}>
+//         {this.props.data}
+//       </Grid>
+//     );
+//   },
+// });
