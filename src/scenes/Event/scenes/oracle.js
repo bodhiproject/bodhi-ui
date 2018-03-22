@@ -367,98 +367,20 @@ export default class OraclePage extends React.Component {
     const centralizedOracle = _.find(oracles, { token: Token.Qtum });
     const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
-    const { locale, messages: localeMessages } = this.props.intl;
-    const intl = getIntlProvider(locale, localeMessages);
 
     if (oracle) {
       const { token, status } = oracle;
 
       if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
-        config = {
-          name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            showAmountInput: true,
-            amountInputDisabled: false,
-            btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
-          },
-          importantNote: {
-            heading: intl.formatMessage(messages.unconfirmed),
-            message: intl.formatMessage(messages.eventUnconfirmed),
-          },
-        };
+        config = this.setUnconfirmedConfig(syncBlockTime, oracle);
       } else if (token === Token.Qtum && status === OracleStatus.Voting) {
-        config = {
-          name: 'BETTING',
-          breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            showAmountInput: true,
-            amountInputDisabled: false,
-            btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
-          },
-        };
+        config = this.setBetConfig(syncBlockTime, oracle);
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
-        config = {
-          name: 'SETTING',
-          breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            showAmountInput: true,
-            amountInputDisabled: true,
-            btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
-          },
-          importantNote: {
-            heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: intl.formatMessage(messages.setResultExplanation),
-          },
-        };
+        config = this.setResultSetConfig(syncBlockTime, oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        config = {
-          name: 'VOTING',
-          breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-          },
-          predictionAction: {
-            skipExpansion: false,
-            showAmountInput: true,
-            amountInputDisabled: false,
-            btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
-          },
-          importantNote: {
-            heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
-            message: intl.formatMessage(messages.voteExplanation),
-          },
-        };
+        config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        config = {
-          name: 'FINALIZING',
-          breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-          eventInfo: {
-            steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-          },
-          predictionAction: {
-            skipExpansion: true,
-            showAmountInput: false,
-            amountInputDisabled: false,
-            btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
-          },
-          importantNote: {
-            heading: intl.formatMessage(messages.finalizing),
-            message: intl.formatMessage(messages.finalizingExplanation),
-          },
-        };
+        config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
       }
     }
 
@@ -476,6 +398,117 @@ export default class OraclePage extends React.Component {
 
     this.setState({ oracle, config });
   }
+
+  setUnconfirmedConfig = (syncBlockTime, oracle) => {
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
+
+    return {
+      name: 'BETTING',
+      breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
+      eventInfo: {
+        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
+      },
+      predictionAction: {
+        skipExpansion: false,
+        showAmountInput: true,
+        amountInputDisabled: false,
+        btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
+      },
+      importantNote: {
+        heading: intl.formatMessage(messages.unconfirmed),
+        message: intl.formatMessage(messages.eventUnconfirmed),
+      },
+    };
+  };
+
+  setBetConfig = (syncBlockTime, oracle) => {
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
+
+    return {
+      name: 'BETTING',
+      breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
+      eventInfo: {
+        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
+      },
+      predictionAction: {
+        skipExpansion: false,
+        showAmountInput: true,
+        amountInputDisabled: false,
+        btnText: <FormattedMessage id="str.bet" defaultMessage="Bet" />,
+      },
+    };
+  };
+
+  setResultSetConfig = (syncBlockTime, oracle) => {
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
+
+    return {
+      name: 'SETTING',
+      breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
+      eventInfo: {
+        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
+      },
+      predictionAction: {
+        skipExpansion: false,
+        showAmountInput: true,
+        amountInputDisabled: true,
+        btnText: <FormattedMessage id="str.setResult" defaultMessage="Set Result" />,
+      },
+      importantNote: {
+        heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
+        message: intl.formatMessage(messages.setResultExplanation),
+      },
+    };
+  };
+
+  setVoteConfig = (syncBlockTime, oracle, centralizedOracle, decentralizedOracles) => {
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
+
+    return {
+      name: 'VOTING',
+      breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
+      eventInfo: {
+        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
+      },
+      predictionAction: {
+        skipExpansion: false,
+        showAmountInput: true,
+        amountInputDisabled: false,
+        btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
+      },
+      importantNote: {
+        heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
+        message: intl.formatMessage(messages.voteExplanation),
+      },
+    };
+  };
+
+  setFinalizeConfig = (syncBlockTime, centralizedOracle, decentralizedOracles) => {
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
+
+    return {
+      name: 'FINALIZING',
+      breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
+      eventInfo: {
+        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
+      },
+      predictionAction: {
+        skipExpansion: true,
+        showAmountInput: false,
+        amountInputDisabled: false,
+        btnText: <FormattedMessage id="str.finalize" defaultMessage="Finalize" />,
+      },
+      importantNote: {
+        heading: intl.formatMessage(messages.finalizing),
+        message: intl.formatMessage(messages.finalizingExplanation),
+      },
+    };
+  };
 
   getActionButtonConfig() {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
