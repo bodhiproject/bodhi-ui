@@ -53,9 +53,9 @@ class GraphQuery {
       });
 
       filterStr = `
-        filter: { 
-          OR: [ 
-            ${filterStr} 
+        filter: {
+          OR: [
+            ${filterStr}
           ]
         }
       `;
@@ -112,6 +112,7 @@ class GraphQuery {
 
   async execute() {
     const query = this.build();
+    console.debug(query);
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
@@ -133,10 +134,10 @@ export function queryAllTopics(filters, orderBy, limit, skip) {
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  if (!_.isNil(skip) && limit >= 0) {
+  if (_.isFinite(limit) && limit > 0) {
     request.addParam('limit', limit);
   }
-  if (!_.isNil(skip) && skip >= 0) {
+  if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
   return request.execute();
@@ -155,10 +156,10 @@ export function queryAllOracles(filters, orderBy, limit, skip) {
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  if (!_.isNil(skip) && limit >= 0) {
+  if (_.isFinite(limit) && limit > 0) {
     request.addParam('limit', limit);
   }
-  if (!_.isNil(skip) && skip >= 0) {
+  if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
   return request.execute();

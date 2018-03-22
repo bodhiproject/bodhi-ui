@@ -53,8 +53,7 @@ class EventCardsGrid extends React.Component {
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    getMoreOracles: PropTypes.func.isRequired,
-    getMoreTopics: PropTypes.func.isRequired,
+    classes: PropTypes.object,
   };
 
   static defaultProps = {
@@ -64,6 +63,7 @@ class EventCardsGrid extends React.Component {
     oracles: [],
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
+    classes: undefined,
   };
 
   state = {
@@ -105,81 +105,21 @@ class EventCardsGrid extends React.Component {
     const {
       eventStatusIndex,
       sortBy,
-      lastUsedAddress,
-      getMoreOracles,
-      getMoreTopics,
     } = this.props;
     skip += LIMIT;
-
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip, true);
     this.setState({ skip });
-    const sortDirection = this.props.sortBy || SortBy.Ascending;
-
-    switch (eventStatusIndex) {
-      case EventStatus.Bet: {
-        getMoreOracles(
-          [
-            { token: Token.Qtum, status: OracleStatus.Voting },
-            { token: Token.Qtum, status: OracleStatus.Created },
-          ],
-          { field: 'endTime', direction: sortDirection },
-          LIMIT,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Set: {
-        getMoreOracles(
-          [
-            { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: lastUsedAddress },
-            { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-          ],
-          { field: 'resultSetEndTime', direction: sortDirection },
-          LIMIT,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Vote: {
-        getMoreOracles(
-          [
-            { token: Token.Bot, status: OracleStatus.Voting },
-          ],
-          { field: 'endTime', direction: sortDirection },
-          LIMIT,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Finalize: {
-        getMoreOracles(
-          [
-            { token: Token.Bot, status: OracleStatus.WaitResult },
-          ],
-          { field: 'endTime', direction: sortDirection },
-          LIMIT,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Withdraw: {
-        getMoreTopics(
-          [
-            { status: OracleStatus.Withdraw },
-          ],
-          { field: 'blockNum', direction: sortDirection },
-          LIMIT,
-          skip,
-        );
-        break;
-      }
-      default: {
-        throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
-      }
-    }
   }
 
   render() {
-    const { theme, eventStatusIndex, topics, oracles, sortBy, classes } = this.props; // eslint-disable-line
+    const {
+      theme,
+      eventStatusIndex,
+      topics,
+      oracles,
+      sortBy,
+      classes,
+    } = this.props;
     let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
@@ -228,7 +168,7 @@ class EventCardsGrid extends React.Component {
     );
   }
 
-  executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
+  executeGraphRequest(eventStatusIndex, sortBy, limit, skip, isMore) {
     const {
       getTopics,
       getOracles,
@@ -246,6 +186,7 @@ class EventCardsGrid extends React.Component {
           { field: 'endTime', direction: sortDirection },
           limit,
           skip,
+          isMore,
         );
         break;
       }
@@ -258,6 +199,7 @@ class EventCardsGrid extends React.Component {
           { field: 'resultSetEndTime', direction: sortDirection },
           limit,
           skip,
+          isMore,
         );
         break;
       }
@@ -268,7 +210,8 @@ class EventCardsGrid extends React.Component {
           ],
           { field: 'endTime', direction: sortDirection },
           limit,
-          skip
+          skip,
+          isMore,
         );
         break;
       }
@@ -280,6 +223,7 @@ class EventCardsGrid extends React.Component {
           { field: 'endTime', direction: sortDirection },
           limit,
           skip,
+          isMore,
         );
         break;
       }
@@ -291,6 +235,7 @@ class EventCardsGrid extends React.Component {
           { field: 'blockNum', direction: sortDirection },
           limit,
           skip,
+          isMore,
         );
         break;
       }
@@ -386,10 +331,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
-    getMoreTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getMoreTopics(filters, orderBy, limit, skip)),
-    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
-    getMoreOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getMoreOracles(filters, orderBy, limit, skip)),
+    getTopics: (filters, orderBy, limit, skip, isMore) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip, isMore)),
+    getOracles: (filters, orderBy, limit, skip, isMore) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, isMore)),
   };
 }
 

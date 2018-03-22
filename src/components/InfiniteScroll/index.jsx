@@ -37,7 +37,6 @@ export default class InfiniteScroll extends React.Component {
   }
 
   render() {
-    // console.log('PROPS 2: ', this.props);
     return (
       <Grid container spacing={this.props.spacing}>
         {this.props.data}

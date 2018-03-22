@@ -19,38 +19,21 @@ import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } 
 // Send allTopics query
 export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
+    let actionType = actions.GET_TOPICS_RETURN;
     try {
       const result = yield call(queryAllTopics, action.filters, null, action.limit, action.skip);
       const topics = _.map(result, processTopic);
-
+      if (action.isMore) {
+        actionType = actions.GET_MORE_TOPICS_RETURN;
+      }
       yield put({
-        type: actions.GET_TOPICS_RETURN,
+        type: actionType,
         value: topics,
       });
     } catch (err) {
       console.error(err);
       yield put({
-        type: actions.GET_TOPICS_RETURN,
-        value: [],
-      });
-    }
-  });
-}
-
-export function* getMoreTopicsHandler() {
-  yield takeEvery(actions.GET_MORE_TOPICS, function* getTopicsRequest(action) {
-    try {
-      const result = yield call(queryAllTopics, action.filters, null, action.limit, action.skip);
-      const topics = _.map(result, processTopic);
-
-      yield put({
-        type: actions.GET_MORE_TOPICS_RETURN,
-        value: topics,
-      });
-    } catch (err) {
-      console.error(err);
-      yield put({
-        type: actions.GET_MORE_TOPICS_RETURN,
+        type: actionType,
         value: [],
       });
     }
@@ -72,38 +55,21 @@ function processTopic(topic) {
 // Send allOracles query
 export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
+    let actionType = actions.GET_ORACLES_RETURN;
     try {
       const result = yield call(queryAllOracles, action.filters, action.orderBy, action.limit, action.skip);
       const oracles = _.map(result, processOracle);
-
+      if (action.isMore) {
+        actionType = actions.GET_MORE_ORACLES_RETURN;
+      }
       yield put({
-        type: actions.GET_ORACLES_RETURN,
+        type: actionType,
         value: oracles,
       });
     } catch (err) {
       console.error(err);
       yield put({
-        type: actions.GET_ORACLES_RETURN,
-        value: [],
-      });
-    }
-  });
-}
-
-export function* getMoreOraclesHandler() {
-  yield takeEvery(actions.GET_MORE_ORACLES, function* getOraclesRequest(action) {
-    try {
-      const result = yield call(queryAllOracles, action.filters, action.orderBy, action.limit, action.skip);
-      const oracles = _.map(result, processOracle);
-
-      yield put({
-        type: actions.GET_MORE_ORACLES_RETURN,
-        value: oracles,
-      });
-    } catch (err) {
-      console.error(err);
-      yield put({
-        type: actions.GET_MORE_ORACLES_RETURN,
+        type: actionType,
         value: [],
       });
     }
@@ -436,9 +402,7 @@ export function* createTransferTxHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
-    fork(getMoreTopicsHandler),
     fork(getOraclesHandler),
-    fork(getMoreOraclesHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),
     fork(getActionableItemCountHandler),
