@@ -15,6 +15,20 @@ import { EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    actionableItemCount: PropTypes.object,
+    langHandler: PropTypes.func,
+    appLocation: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    actionableItemCount: undefined,
+    langHandler: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -112,25 +126,6 @@ class NavBar extends React.PureComponent {
         }
       />
     );
-
-    /*
-    if (this.props.match.path === currentPath) {
-      return (
-        <img
-          src="/images/nav-arrow.png"
-          alt="nav-arrow"
-          className={
-            classNames(
-              classes.navArrow,
-              currentPath === '/my-wallet' || currentPath === '/activities' ? 'right' : ''
-            )
-          }
-        />
-      );
-    }
-
-    return null;
-    */
   }
 
   renderActivitiesButtonWithBadge() {
@@ -197,20 +192,6 @@ class NavBar extends React.PureComponent {
     return total.toFixed(2);
   }
 }
-
-NavBar.propTypes = {
-  match: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  walletAddresses: PropTypes.array.isRequired,
-  actionableItemCount: PropTypes.object,
-  langHandler: PropTypes.func,
-  appLocation: PropTypes.string.isRequired,
-};
-
-NavBar.defaultProps = {
-  actionableItemCount: undefined,
-  langHandler: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
