@@ -1,3 +1,8 @@
+@font-face {
+  src: url('/fonts/lato.css');
+  font-family: 'Lato, Helvetica, Arial, sans-serif';
+}
+
 .container {
   position: absolute;
   top: 50%;
@@ -14,10 +19,6 @@
   height: 120px;
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
-}
-
-.text {
-  font-family: 'Lato, Helvetica, Arial, sans-serif';
 }
 
 /* Safari */
