@@ -52,7 +52,12 @@ class EventResultHistory extends React.PureComponent {
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
                     <TableCell padding="dense">{oracle.token === Token.Qtum ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
-                    <TableCell padding="dense">{`#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`}</TableCell>
+                    <TableCell padding="dense">
+                      {index !== sortedOracles.length - 1
+                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
+                        : ''
+                      }
+                    </TableCell>
                     <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
                   </TableRow>
                 ))}
