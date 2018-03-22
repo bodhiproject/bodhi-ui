@@ -1,10 +1,23 @@
 module.exports = {
+  /* App Constants */
+  AppLocation: {
+    qtumPrediction: 'QtumPrediction',
+    bet: 'Bet',
+    botCourt: 'BotCourt',
+    vote: 'Vote',
+    wallet: 'Wallet',
+    myActivities: 'MyActivities',
+    resultSet: 'ResultSet',
+    finalize: 'Finalize',
+    withdraw: 'Withdraw',
+    activityHistory: 'ActivityHistory',
+  },
+
   Token: {
     Qtum: 'QTUM',
     Bot: 'BOT',
   },
 
-  /* Event status for UI */
   EventStatus: {
     Bet: 0,
     Set: 1,
@@ -20,6 +33,7 @@ module.exports = {
     Highlight: 'highlight',
   },
 
+  /* GraphQL Constants */
   OracleStatus: {
     Created: 'CREATED',
     Voting: 'VOTING',
