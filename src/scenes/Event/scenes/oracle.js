@@ -563,6 +563,7 @@ export default class OraclePage extends React.Component {
       };
     }
 
+    // Trying to set result or vote when not enough QTUM or BOT
     const totalQtum = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
     const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
     const totalBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0;
