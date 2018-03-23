@@ -63,7 +63,7 @@ class EventCardsGrid extends React.Component {
   static defaultProps = {
     getTopicsReturn: {},
     getOracles: undefined,
-    oracles: {},
+    getOraclesReturn: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
     classes: undefined,
@@ -113,19 +113,20 @@ class EventCardsGrid extends React.Component {
     const {
       theme,
       eventStatusIndex,
-      topics,
-      oracles,
+      getTopicsReturn,
+      getOraclesReturn,
       sortBy,
       classes,
     } = this.props;
+
     let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        if (!_.isNil(oracles.data) && oracles.data.length !== 0) {
-          rowItems = this.renderOracles(oracles.data, eventStatusIndex);
+        if (!_.isNil(getOraclesReturn.data) && getOraclesReturn.data.length !== 0) {
+          rowItems = this.renderOracles(getOraclesReturn.data, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -133,8 +134,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        if (!_.isNil(topics.data) && topics.data.length !== 0) {
-          rowItems = this.renderTopics(topics.data);
+        if (!_.isNil(getTopicsReturn.data) && getTopicsReturn.data.length !== 0) {
+          rowItems = this.renderTopics(getTopicsReturn.data);
         } else {
           rowItems = <EventsEmptyBg />;
         }
