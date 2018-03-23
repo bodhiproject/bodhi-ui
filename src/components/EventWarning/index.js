@@ -10,7 +10,7 @@ import styles from './styles';
 
 const FormattedMessageFixed = (props) => <FormattedMessage {...props} />; // workaround: http://bit.ly/2u7Hhe4
 
-const EventWarning = ({ classes, id, message, className, intl, ...props }) => !message ? null : (
+const EventWarning = ({ classes, id, message, className, intl, theme, ...props }) => !message ? null : (
   <div {...props} className={classNames(className, classes.warningWrapper)}>
     <FormattedMessageFixed id={id} defaultMessage={message} />
   </div>
@@ -20,6 +20,7 @@ EventWarning.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   message: PropTypes.string,
+  theme: PropTypes.object,
   id: PropTypes.string,
   intl: intlShape.isRequired, // eslint-disable-line
 };

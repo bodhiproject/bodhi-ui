@@ -136,21 +136,22 @@ export default class OraclePage extends React.Component {
     syncBlockTime: undefined,
   };
 
-  state = {
-    topicAddress: '',
-    address: '',
-    txid: '',
-    unconfirmed: true,
-    oracle: undefined,
-    transactions: [],
-    voteAmount: 0,
-    currentOptionIdx: -1,
-  }
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
     const { topicAddress, address, txid } = this.props.match.params;
     const unconfirmed = Boolean(topicAddress === 'null' && address === 'null' && txid);
-    this.setState({ topicAddress, address, txid, unconfirmed });
+
+    this.state = {
+      topicAddress,
+      address,
+      txid,
+      unconfirmed,
+      oracle: undefined,
+      transactions: [],
+      voteAmount: 0,
+      currentOptionIdx: -1,
+    };
   }
 
   componentWillMount() {
