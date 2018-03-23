@@ -22,6 +22,7 @@ import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
+import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
@@ -190,27 +191,30 @@ export default class TopicPage extends React.Component {
     const actionButtonConfig = this.getActionButtonConfig();
 
     return (
-      <Paper className={classes.eventDetailPaper}>
-        <Grid container spacing={0}>
-          <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
-            <Typography variant="display1" className={classes.eventDetailTitle}>
-              {topic.name}
-            </Typography>
-            <Grid item xs={12} lg={9}>
-              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
-              {this.renderWithdrawContainer(actionButtonConfig)}
-              {this.renderOptions()}
-              <EventResultHistory oracles={topic.oracles} />
-              <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
+      <div>
+        <BackButton />
+        <Paper className={classes.eventDetailPaper}>
+          <Grid container spacing={0}>
+            <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
+              <Typography variant="display1" className={classes.eventDetailTitle}>
+                {topic.name}
+              </Typography>
+              <Grid item xs={12} lg={9}>
+                <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
+                {this.renderWithdrawContainer(actionButtonConfig)}
+                {this.renderOptions()}
+                <EventResultHistory oracles={topic.oracles} />
+                <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+              <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
+              <StepperVertRight steps={config.steps} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-            <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
-            <StepperVertRight steps={config.steps} />
-          </Grid>
-        </Grid>
-        <TransactionSentDialog txReturn={this.props.txReturn} />
-      </Paper>
+          <TransactionSentDialog txReturn={this.props.txReturn} />
+        </Paper>
+      </div>
     );
   }
 

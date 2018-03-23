@@ -27,6 +27,7 @@ import ImportantNote from '../../../components/ImportantNote/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
+import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
@@ -209,78 +210,81 @@ export default class OraclePage extends React.Component {
     const actionButtonConfig = this.getActionButtonConfig();
 
     return (
-      <Paper className={classes.eventDetailPaper}>
-        <Grid container spacing={0}>
-          <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
-            <Typography variant="display1" className={classes.eventDetailTitle}>
-              {oracle.name}
-            </Typography>
-            <Grid item xs={12} lg={9}>
-              {
-                !unconfirmed
-                  ? <EventWarning
-                    message={actionButtonConfig.message}
-                    typeClass={actionButtonConfig.warningTypeClass}
+      <div>
+        <BackButton />
+        <Paper className={classes.eventDetailPaper}>
+          <Grid container spacing={0}>
+            <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
+              <Typography variant="display1" className={classes.eventDetailTitle}>
+                {oracle.name}
+              </Typography>
+              <Grid item xs={12} lg={9}>
+                {
+                  !unconfirmed
+                    ? <EventWarning
+                      message={actionButtonConfig.message}
+                      typeClass={actionButtonConfig.warningTypeClass}
+                    />
+                    : null
+                }
+                {eventOptions.map((item, index) => (
+                  <EventOption
+                    key={index}
+                    isLast={index === eventOptions.length - 1}
+                    currentOptionIdx={this.state.currentOptionIdx}
+                    optionIdx={index}
+                    name={item.name}
+                    amount={`${item.value}`}
+                    percent={item.percent}
+                    voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
+                    token={config.name === 'SETTING' ? Token.Bot : oracle.token}
+                    isPrevResult={item.isPrevResult}
+                    walletAddresses={this.props.walletAddresses}
+                    lastUsedAddress={lastUsedAddress}
+                    skipExpansion={config.predictionAction.skipExpansion}
+                    unconfirmedEvent={unconfirmed}
+                    showAmountInput={config.predictionAction.showAmountInput}
+                    amountInputDisabled={config.predictionAction.amountInputDisabled}
+                    onOptionChange={this.handleOptionChange}
+                    onAmountChange={this.handleAmountChange}
+                    onWalletChange={this.handleWalletChange}
                   />
-                  : null
-              }
-              {eventOptions.map((item, index) => (
-                <EventOption
-                  key={index}
-                  isLast={index === eventOptions.length - 1}
-                  currentOptionIdx={this.state.currentOptionIdx}
-                  optionIdx={index}
-                  name={item.name}
-                  amount={`${item.value}`}
-                  percent={item.percent}
-                  voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
-                  token={config.name === 'SETTING' ? Token.Bot : oracle.token}
-                  isPrevResult={item.isPrevResult}
-                  walletAddresses={this.props.walletAddresses}
-                  lastUsedAddress={lastUsedAddress}
-                  skipExpansion={config.predictionAction.skipExpansion}
-                  unconfirmedEvent={unconfirmed}
-                  showAmountInput={config.predictionAction.showAmountInput}
-                  amountInputDisabled={config.predictionAction.amountInputDisabled}
-                  onOptionChange={this.handleOptionChange}
-                  onAmountChange={this.handleAmountChange}
-                  onWalletChange={this.handleWalletChange}
+                ))}
+                <ImportantNote
+                  heading={config.importantNote && config.importantNote.heading}
+                  message={config.importantNote && config.importantNote.message}
                 />
-              ))}
-              <ImportantNote
-                heading={config.importantNote && config.importantNote.heading}
-                message={config.importantNote && config.importantNote.message}
-              />
-              {
-                !unconfirmed
-                  ? <div>
-                    <Button
-                      variant="raised"
-                      fullWidth
-                      size="large"
-                      color="primary"
-                      disabled={actionButtonConfig.disabled}
-                      onClick={this.handleConfirmClick}
-                      className={classes.eventActionButton}
-                    >
-                      {
-                        this.state.isApproving ?
-                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                          config.predictionAction.btnText
-                      }
-                    </Button>
-                    <EventTxHistory transactions={transactions} options={oracle.options} />
-                  </div>
-                  : null
-              }
+                {
+                  !unconfirmed
+                    ? <div>
+                      <Button
+                        variant="raised"
+                        fullWidth
+                        size="large"
+                        color="primary"
+                        disabled={actionButtonConfig.disabled}
+                        onClick={this.handleConfirmClick}
+                        className={classes.eventActionButton}
+                      >
+                        {
+                          this.state.isApproving ?
+                            <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                            config.predictionAction.btnText
+                        }
+                      </Button>
+                      <EventTxHistory transactions={transactions} options={oracle.options} />
+                    </div>
+                    : null
+                }
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+              <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
+              <StepperVertRight steps={config.eventInfo.steps} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-            <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
-            <StepperVertRight steps={config.eventInfo.steps} />
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </div>
     );
   }
 
