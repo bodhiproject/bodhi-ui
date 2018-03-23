@@ -1,28 +1,22 @@
 const graphqlActions = {
-  GET_MORE_TOPICS: 'GET_MORE_TOPICS',
-  GET_MORE_TOPICS_RETURN: 'GET_MORE_TOPICS_RETURN',
   GET_TOPICS: 'GET_TOPICS',
   GET_TOPICS_RETURN: 'GET_TOPICS_RETURN',
-  getTopics: (filters, orderBy, limit, skip, isMore) => ({
+  getTopics: (filters, orderBy, limit, skip) => ({
     type: graphqlActions.GET_TOPICS,
     filters,
     orderBy,
     limit,
     skip,
-    isMore,
   }),
 
   GET_ORACLES: 'GET_ORACLES',
   GET_ORACLES_RETURN: 'GET_ORACLES_RETURN',
-  GET_MORE_ORACLES: 'GET_MORE_ORACLES',
-  GET_MORE_ORACLES_RETURN: 'GET_MORE_ORACLES_RETURN',
-  getOracles: (filters, orderBy, limit, skip, isMore) => ({
+  getOracles: (filters, orderBy, limit, skip) => ({
     type: graphqlActions.GET_ORACLES,
     filters,
     orderBy,
     limit,
     skip,
-    isMore,
   }),
 
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',

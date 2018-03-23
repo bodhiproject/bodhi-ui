@@ -45,9 +45,9 @@ class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
     getTopics: PropTypes.func,
-    topics: PropTypes.array,
+    topics: PropTypes.object,
     getOracles: PropTypes.func,
-    oracles: PropTypes.array,
+    oracles: PropTypes.object,
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
@@ -58,9 +58,9 @@ class EventCardsGrid extends React.Component {
 
   static defaultProps = {
     getTopics: undefined,
-    topics: [],
+    topics: {},
     getOracles: undefined,
-    oracles: [],
+    oracles: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
     classes: undefined,
@@ -68,7 +68,6 @@ class EventCardsGrid extends React.Component {
 
   state = {
     skip: 0,
-    hint: false,
   }
 
   componentWillMount() {
@@ -88,15 +87,10 @@ class EventCardsGrid extends React.Component {
     } = nextProps;
 
     if (eventStatusIndex !== this.props.eventStatusIndex
-      || sortBy !== this.props.sortBy) {
+      || sortBy !== this.props.sortBy
+      || syncBlockNum !== this.props.syncBlockNum) {
       this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
       this.setState({ skip: 0 });
-    }
-    if (syncBlockNum !== this.props.syncBlockNum && this.props.syncBlockNum !== 0) {
-      this.setState({ hint: true });
-      setTimeout(() => {
-        this.setState({ hint: false });
-      }, 3000);
     }
   }
 
@@ -107,7 +101,7 @@ class EventCardsGrid extends React.Component {
       sortBy,
     } = this.props;
     skip += LIMIT;
-    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip, true);
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip);
     this.setState({ skip });
   }
 
@@ -126,8 +120,8 @@ class EventCardsGrid extends React.Component {
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        if (oracles.length) {
-          rowItems = this.renderOracles(oracles, eventStatusIndex);
+        if (!_.isNil(oracles.data) && oracles.data.length !== 0) {
+          rowItems = this.renderOracles(oracles.data, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -135,8 +129,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        if (topics.length) {
-          rowItems = this.renderTopics(topics);
+        if (!_.isNil(topics.data) && topics.data.length !== 0) {
+          rowItems = this.renderTopics(topics.data);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -149,26 +143,16 @@ class EventCardsGrid extends React.Component {
     }
 
     return (
-      <span>
-        <InfiniteScroll
-          spacing={theme.padding.sm.value}
-          data={rowItems}
-          loadMore={this.loadMoreOracles}
-          hasMore={rowItems.length >= this.state.skip + LIMIT}
-        />
-        {this.state.hint && (
-          <EventWarning
-            message={<FormattedMessage id="str.newBlock" defaultMessage="New block comes, you can refresh to get new data" />}
-            typeClass={EventWarningType.Highlight}
-
-            className={classes.hint}
-          />
-        )}
-      </span>
+      <InfiniteScroll
+        spacing={theme.padding.sm.value}
+        data={rowItems}
+        loadMore={this.loadMoreOracles}
+        hasMore={rowItems.length >= this.state.skip + LIMIT}
+      />
     );
   }
 
-  executeGraphRequest(eventStatusIndex, sortBy, limit, skip, isMore) {
+  executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
     const {
       getTopics,
       getOracles,
@@ -186,7 +170,6 @@ class EventCardsGrid extends React.Component {
           { field: 'endTime', direction: sortDirection },
           limit,
           skip,
-          isMore,
         );
         break;
       }
@@ -199,7 +182,6 @@ class EventCardsGrid extends React.Component {
           { field: 'resultSetEndTime', direction: sortDirection },
           limit,
           skip,
-          isMore,
         );
         break;
       }
@@ -211,7 +193,6 @@ class EventCardsGrid extends React.Component {
           { field: 'endTime', direction: sortDirection },
           limit,
           skip,
-          isMore,
         );
         break;
       }
@@ -223,7 +204,6 @@ class EventCardsGrid extends React.Component {
           { field: 'endTime', direction: sortDirection },
           limit,
           skip,
-          isMore,
         );
         break;
       }
@@ -235,7 +215,6 @@ class EventCardsGrid extends React.Component {
           { field: 'blockNum', direction: sortDirection },
           limit,
           skip,
-          isMore,
         );
         break;
       }
@@ -331,8 +310,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: (filters, orderBy, limit, skip, isMore) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip, isMore)),
-    getOracles: (filters, orderBy, limit, skip, isMore) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, isMore)),
+    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
+    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
 }
 
