@@ -94,7 +94,7 @@ class EventCardsGrid extends React.Component {
     }
   }
 
-  loadMoreOracles = () => {
+  loadMoreData = () => {
     let { skip } = this.state;
     const {
       eventStatusIndex,
@@ -146,7 +146,7 @@ class EventCardsGrid extends React.Component {
       <InfiniteScroll
         spacing={theme.padding.sm.value}
         data={rowItems}
-        loadMore={this.loadMoreOracles}
+        loadMore={this.loadMoreData}
         hasMore={rowItems.length >= this.state.skip + LIMIT}
       />
     );

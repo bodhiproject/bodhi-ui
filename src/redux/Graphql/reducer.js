@@ -15,7 +15,7 @@ export default function graphqlReducer(state = initState, action) {
         {
           data: [...state.get('getTopicsReturn').data, ...action.value],
           limit: action.limit,
-          skip: action.limit,
+          skip: action.skip,
         }
       );
     }
@@ -29,7 +29,7 @@ export default function graphqlReducer(state = initState, action) {
         {
           data: [...state.get('getOraclesReturn').data, ...action.value],
           limit: action.limit,
-          skip: action.limit,
+          skip: action.skip,
         }
       );
     }
