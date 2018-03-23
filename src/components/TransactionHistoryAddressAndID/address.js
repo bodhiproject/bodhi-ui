@@ -6,6 +6,11 @@ import { withStyles } from 'material-ui/styles';
 import styles from './styles';
 
 class TransactionHistoryAddress extends React.PureComponent {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    transaction: PropTypes.object.isRequired,
+  };
+
   render() {
     const { classes, transaction } = this.props;
     return (
@@ -22,10 +27,5 @@ class TransactionHistoryAddress extends React.PureComponent {
     );
   }
 }
-
-TransactionHistoryAddress.propTypes = {
-  classes: PropTypes.object.isRequired,
-  transaction: PropTypes.object.isRequired,
-};
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TransactionHistoryAddress));
