@@ -14,6 +14,8 @@ import moment from 'moment';
 
 import styles from './styles';
 import Config from '../../../../config/app';
+import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
+import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
 import { TransactionType, SortBy, OracleStatus } from '../../../../constants';
@@ -222,43 +224,62 @@ class EventHistory extends React.Component {
     return (
       <TableBody>
         {_.map(transactions, (transaction, index) => (
-          <TableRow key={transaction.txid} selected={index % 2 === 1}>
-            <TableCell>
-              {getShortLocalDateTimeString(transaction.createdTime)}
-            </TableCell>
-            <TableCell>
-              {transaction.type}
-            </TableCell>
-            <TableCell>
-              {transaction.name ? transaction.name : (transaction.topic && transaction.topic.name)}
-            </TableCell>
-            <TableCell>
-              {transaction.token}
-            </TableCell>
-            <TableCell numeric>
-              {transaction.amount}
-            </TableCell>
-            <TableCell numeric>
-              {transaction.fee}
-            </TableCell>
-            <TableCell>
-              {transaction.status}
-            </TableCell>
-            <TableCell>
-              {transaction.topic && transaction.topic.address ?
-                <div
-                  data-topic-address={transaction.topic.address}
-                  onClick={this.onEventLinkClicked}
-                  className={classes.viewEventLink}
-                >
-                  <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
-                </div> : null
-              }
-            </TableCell>
-          </TableRow>
+          this.getTableRow(transaction, index)
         ))}
       </TableBody>
     );
+  };
+
+  getTableRow = (transaction, index) => {
+    const { classes } = this.props;
+    const result = [];
+
+    result[0] = (
+      <TableRow key={transaction.txid}>
+        <TableCell>
+          {getShortLocalDateTimeString(transaction.createdTime)}
+        </TableCell>
+        <TableCell>
+          {transaction.type}
+        </TableCell>
+        <TableCell>
+          {transaction.name ? transaction.name : (transaction.topic && transaction.topic.name)}
+        </TableCell>
+        <TableCell>
+          {transaction.token}
+        </TableCell>
+        <TableCell numeric>
+          {transaction.amount}
+        </TableCell>
+        <TableCell numeric>
+          {transaction.fee}
+        </TableCell>
+        <TableCell>
+          {transaction.status}
+        </TableCell>
+        <TableCell>
+          {transaction.topic && transaction.topic.address ?
+            <div
+              data-topic-address={transaction.topic.address}
+              onClick={this.onEventLinkClicked}
+              className={classes.viewEventLink}
+            >
+              <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
+            </div> : null
+          }
+        </TableCell>
+      </TableRow>
+    );
+    result[1] = (
+      <TableRow key={`txaddr-${transaction.txid}`} selected>
+        <TransactionHistoryAddress transaction={transaction} />
+        <TableCell /><TableCell />
+        <TransactionHistoryID transaction={transaction} />
+        <TableCell /><TableCell /><TableCell /><TableCell />
+      </TableRow>
+    );
+
+    return result;
   };
 
   onEventLinkClicked = (event) => {

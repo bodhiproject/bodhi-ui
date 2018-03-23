@@ -7,6 +7,8 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
+import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
+import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 import { TransactionType } from '../../../../constants';
 
@@ -48,15 +50,7 @@ class EventTxHistory extends React.PureComponent {
               </TableHead>
               <TableBody>
                 {_.map(transactions, (transaction, index) => (
-                  <TableRow key={transaction.txid} selected={index % 2 === 1}>
-                    <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
-                    <TableCell padding="dense">{transaction.type}</TableCell>
-                    <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
-                    <TableCell padding="dense">
-                      {transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}
-                    </TableCell>
-                    <TableCell padding="dense">{transaction.status}</TableCell>
-                  </TableRow>
+                  this.renderTxRow(transaction, index)
                 ))}
               </TableBody>
             </Table>) :
@@ -67,6 +61,37 @@ class EventTxHistory extends React.PureComponent {
       </div>
     );
   }
+
+  renderTxRow = (transaction, index) => {
+    const { classes } = this.props;
+
+    const result = [];
+    result[0] = (
+      <TableRow key={transaction.txid}>
+        <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
+        <TableCell padding="dense">{transaction.type}</TableCell>
+        <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
+        <TableCell padding="dense">
+          {transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}
+        </TableCell>
+        <TableCell padding="dense">{transaction.status}</TableCell>
+      </TableRow>
+    );
+    result[1] = (
+      <TableRow key={`txaddr-${transaction.txid}`} selected>
+        <TransactionHistoryAddress transaction={transaction} />
+        <TableCell /><TableCell /><TableCell /><TableCell />
+      </TableRow>
+    );
+    result[2] = (
+      <TableRow key={`txid-${transaction.txid}`} selected>
+        <TransactionHistoryID transaction={transaction} />
+        <TableCell /><TableCell /><TableCell /><TableCell />
+      </TableRow>
+    );
+
+    return result;
+  };
 
   getDescription = (tx) => {
     switch (tx.type) {
