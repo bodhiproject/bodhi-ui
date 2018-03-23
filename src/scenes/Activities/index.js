@@ -7,7 +7,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
-import { EventStatus } from '../../constants';
+import { RouterPath, EventStatus } from '../../constants';
 import styles from './styles';
 
 const messages = defineMessages({
@@ -32,6 +32,7 @@ const messages = defineMessages({
 class Activities extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     actionableItemCount: PropTypes.object,
@@ -44,8 +45,32 @@ class Activities extends React.Component {
   constructor(props) {
     super(props);
 
+    // Determine tab index based on path
+    let tabIdx;
+    switch (this.props.match.path) {
+      case RouterPath.set: {
+        tabIdx = 0;
+        break;
+      }
+      case RouterPath.finalize: {
+        tabIdx = 1;
+        break;
+      }
+      case RouterPath.withdraw: {
+        tabIdx = 2;
+        break;
+      }
+      case RouterPath.activityHistory: {
+        tabIdx = 3;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
     this.state = {
-      tabIdx: 0,
+      tabIdx,
     };
 
     this.getTabLabel = this.getTabLabel.bind(this);
@@ -95,9 +120,27 @@ class Activities extends React.Component {
   }
 
   handleTabChange(event, value) {
-    
-    
-    this.setState({ tabIdx: value });
+    switch (value) {
+      case 0: {
+        this.props.history.push(RouterPath.set);
+        break;
+      }
+      case 1: {
+        this.props.history.push(RouterPath.finalize);
+        break;
+      }
+      case 2: {
+        this.props.history.push(RouterPath.withdraw);
+        break;
+      }
+      case 3: {
+        this.props.history.push(RouterPath.activityHistory);
+        break;
+      }
+      default: {
+        throw new Error(`Invalid tab index: ${value}`);
+      }
+    }
   }
 }
 

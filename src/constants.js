@@ -1,4 +1,14 @@
 module.exports = {
+  RouterPath: {
+    qtumPrediction: '/',
+    botCourt: '/bot-court',
+    myWallet: '/my-wallet',
+    set: '/activities/set',
+    finalize: '/activities/finalize',
+    withdraw: '/activities/withdraw',
+    activityHistory: '/activities/history',
+  },
+
   /* App Constants */
   AppLocation: {
     qtumPrediction: 'QtumPrediction',

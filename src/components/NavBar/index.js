@@ -11,7 +11,7 @@ import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-i
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import { EventStatus, AppLocation } from '../../constants';
+import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
@@ -51,7 +51,7 @@ class NavBar extends React.PureComponent {
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
-          <Link to="/">
+          <Link to={RouterPath.qtumPrediction}>
             <img
               src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
               alt="bodhi-logo"
@@ -70,10 +70,10 @@ class NavBar extends React.PureComponent {
             </Button>
             {
               appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet
-                ? this.renderCurrentTabArrow('/') : null
+                ? this.renderCurrentTabArrow(RouterPath.qtumPrediction) : null
             }
           </Link>
-          <Link to="/bot-court" className={classes.navBarLink}>
+          <Link to={RouterPath.botCourt} className={classes.navBarLink}>
             <Button
               data-index={EventStatus.Vote}
               className={classNames(
@@ -85,7 +85,7 @@ class NavBar extends React.PureComponent {
             </Button>
             {
               appLocation === AppLocation.botCourt || appLocation === AppLocation.vote
-                ? this.renderCurrentTabArrow('/bot-court') : null
+                ? this.renderCurrentTabArrow(RouterPath.botCourt) : null
             }
           </Link>
           <div className={classes.navBarRightWrapper}>
@@ -94,7 +94,7 @@ class NavBar extends React.PureComponent {
                 <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
-              { appLocation === AppLocation.wallet ? this.renderCurrentTabArrow('/my-wallet') : null }
+              { appLocation === AppLocation.wallet ? this.renderCurrentTabArrow(RouterPath.myWallet) : null }
             </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
@@ -119,7 +119,7 @@ class NavBar extends React.PureComponent {
         className={
           classNames(
             classes.navArrow,
-            currentPath === '/my-wallet' || currentPath === '/activities/set' ? 'right' : ''
+            currentPath === RouterPath.myWallet || currentPath === RouterPath.set ? 'right' : ''
           )
         }
       />
@@ -136,7 +136,7 @@ class NavBar extends React.PureComponent {
 
     if (actionableItemCount && actionableItemCount.totalCount) {
       return (
-        <Link to="/activities/set" className={classes.navBarLink}>
+        <Link to={RouterPath.set} className={classes.navBarLink}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
@@ -148,18 +148,18 @@ class NavBar extends React.PureComponent {
               || appLocation === AppLocation.finalize
               || appLocation === AppLocation.withdraw
               || appLocation === AppLocation.activityHistory
-              ? this.renderCurrentTabArrow('/activities/set') : null
+              ? this.renderCurrentTabArrow(RouterPath.set) : null
           }
         </Link>
       );
     }
 
     return (
-      <Link to="/activities/set" className={classes.navBarLink}>
+      <Link to={RouterPath.set} className={classes.navBarLink}>
         <Button className={classes.navBarRightButton}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
-        { this.renderCurrentTabArrow('/activities/set') }
+        { this.renderCurrentTabArrow(RouterPath.set) }
       </Link>
     );
   }

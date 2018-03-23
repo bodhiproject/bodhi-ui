@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
-import { AppLocation } from '../../constants';
+import { AppLocation, RouterPath } from '../../constants';
 
 @withRouter
 @injectIntl
@@ -18,7 +18,6 @@ import { AppLocation } from '../../constants';
   appLocation: state.App.get('appLocation'),
 }), (dispatch, props) => ({
 }))
-
 export default class BackButton extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -44,23 +43,23 @@ export default class BackButton extends React.Component {
 
     switch (appLocation) {
       case AppLocation.bet: {
-        this.props.history.push('/');
+        this.props.history.push(RouterPath.qtumPrediction);
         break;
       }
       case AppLocation.vote: {
-        this.props.history.push('/bot-court');
+        this.props.history.push(RouterPath.botCourt);
         break;
       }
       case AppLocation.resultSet: {
-        this.props.history.push('/activities/set');
+        this.props.history.push(RouterPath.set);
         break;
       }
       case AppLocation.finalize: {
-        this.props.history.push('/activities/finalize');
+        this.props.history.push(RouterPath.finalize);
         break;
       }
       case AppLocation.withdraw: {
-        this.props.history.push('/activities/withdraw');
+        this.props.history.push(RouterPath.withdraw);
         break;
       }
       default: {
