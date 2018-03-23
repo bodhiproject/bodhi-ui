@@ -23,7 +23,19 @@ export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
     try {
       const result = yield call(queryAllTopics, action.filters, action.orderBy, action.limit, action.skip);
-      const topics = _.map(result, processTopic);
+
+      // Filter out duplicate topics
+      const topics = [];
+      _.each(result, (topic) => {
+        const processed = processTopic(topic);
+        const index = _.findIndex(topics, { txid: topic.txid });
+        if (index === -1) {
+          topics.push(processed);
+        } else if (!topics[index].address) {
+          topics.splice(index, 1, processed);
+        }
+      });
+
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: topics,
@@ -95,7 +107,19 @@ export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
     try {
       const result = yield call(queryAllOracles, action.filters, action.orderBy, action.limit, action.skip);
-      const oracles = _.map(result, processOracle);
+
+      // Filter out duplicate topics
+      const oracles = [];
+      _.each(result, (oracle) => {
+        const processed = processOracle(oracle);
+        const index = _.findIndex(oracles, { txid: oracle.txid });
+        if (index === -1) {
+          oracles.push(processed);
+        } else if (!oracles[index].address) {
+          oracles.splice(index, 1, processed);
+        }
+      });
+
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: oracles,
