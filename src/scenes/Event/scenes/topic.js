@@ -26,7 +26,15 @@ import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
+import {
+  Token,
+  OracleStatus,
+  TransactionType,
+  TransactionStatus,
+  EventWarningType,
+  SortBy,
+  AppLocation,
+} from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
@@ -340,7 +348,12 @@ export default class TopicPage extends React.Component {
     const { address } = this.state;
 
     // Already have a pending tx for this Topic
-    let pendingTxs = _.filter(getTransactionsReturn, { topicAddress: address, status: TransactionStatus.Pending });
+    let pendingTxs = _.filter(getTransactionsReturn, {
+      type: TransactionType.Withdraw,
+      status: TransactionStatus.Pending,
+      topicAddress: address,
+      senderAddress: lastUsedAddress,
+    });
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
@@ -354,8 +367,9 @@ export default class TopicPage extends React.Component {
 
     // Already withdrawn with this address
     pendingTxs = _.filter(getTransactionsReturn, {
-      topicAddress: address,
+      type: TransactionType.Withdraw,
       status: TransactionStatus.Success,
+      topicAddress: address,
       senderAddress: lastUsedAddress,
     });
     if (pendingTxs.length > 0) {
