@@ -136,6 +136,7 @@ class TopicPage extends React.Component {
       this.fetchData(nextProps.lastUsedAddress ? nextProps.lastUsedAddress : lastUsedAddress);
     }
 
+    console.log(getTopicsReturn);
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
     this.constructTopicAndConfig(topics, nextProps.botWinnings, nextProps.qtumWinnings);
   }
@@ -415,7 +416,7 @@ class TopicPage extends React.Component {
     const { address } = this.state;
 
     // GraphQL calls
-    getTopics([{ address }]);
+    getTopics([{ address }], undefined, 1, 0);
     getTransactions(
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.Descending },
