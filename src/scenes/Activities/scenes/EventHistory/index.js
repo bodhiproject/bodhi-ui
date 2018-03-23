@@ -62,7 +62,7 @@ class EventHistory extends React.Component {
 
     // return from the click event
     if (getOraclesReturn !== this.props.getOraclesReturn) {
-      const path = getDetailPagePath(getOraclesReturn);
+      const path = getDetailPagePath(getOraclesReturn.data);
       if (path) {
         this.props.history.push(path);
       }
