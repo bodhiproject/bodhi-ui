@@ -10,9 +10,12 @@ const graphqlActions = {
   }),
 
   GET_ACTIONABLE_TOPICS: 'GET_ACTIONABLE_TOPICS',
-  getActionableTopics: (walletAddresses) => ({
+  getActionableTopics: (walletAddresses, orderBy, limit, skip) => ({
     type: graphqlActions.GET_ACTIONABLE_TOPICS,
     walletAddresses,
+    orderBy,
+    limit,
+    skip,
   }),
 
   GET_ORACLES: 'GET_ORACLES',

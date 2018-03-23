@@ -73,18 +73,22 @@ export function* getActionableTopicsHandler() {
       _.each(votes, (vote) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
-      const result = yield call(queryAllTopics, topicFilters);
+      const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
       const topics = _.map(result, processTopic);
 
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: topics,
+        limit: action.limit,
+        skip: action.skip,
       });
     } catch (err) {
       console.log(err);
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
+        limit: action.limit,
+        skip: action.skip,
       });
     }
   });

@@ -244,7 +244,12 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        getActionableTopics(walletAddresses);
+        getActionableTopics(
+          walletAddresses,
+          { field: 'blockNum', direction: sortDirection },
+          limit,
+          skip,
+        );
         break;
       }
       default: {
@@ -341,7 +346,8 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-    getActionableTopics: (walletAddresses) => dispatch(graphqlActions.getActionableTopics(walletAddresses)),
+    getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
+      dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
     getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
 }
