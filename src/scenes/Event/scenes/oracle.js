@@ -64,7 +64,40 @@ const messages = defineMessages({
   },
 });
 
-class OraclePage extends React.Component {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state, props) => ({
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
+  syncBlockTime: state.App.get('syncBlockTime'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
+}), (dispatch, props) => ({
+  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
+  getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
+  getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
+  createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
+    dispatch(graphqlActions.createBetTx(version, topicAddress, oracleAddress, index, amount, senderAddress)),
+  createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
+    dispatch(graphqlActions.createSetResultTx(
+      version,
+      topicAddress,
+      oracleAddress,
+      resultIndex,
+      consensusThreshold,
+      senderAddress
+    )),
+  createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
+    dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
+  createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
+    dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
+  setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+}))
+
+export default class OraclePage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -677,40 +710,3 @@ class OraclePage extends React.Component {
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
   }
 }
-
-const mapStateToProps = (state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-  walletEncrypted: state.App.get('walletEncrypted'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
-  txReturn: state.Graphql.get('txReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
-    createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
-      dispatch(graphqlActions.createBetTx(version, topicAddress, oracleAddress, index, amount, senderAddress)),
-    createSetResultTx: (version, topicAddress, oracleAddress, resultIndex, consensusThreshold, senderAddress) =>
-      dispatch(graphqlActions.createSetResultTx(
-        version,
-        topicAddress,
-        oracleAddress,
-        resultIndex,
-        consensusThreshold,
-        senderAddress
-      )),
-    createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
-      dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-    createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
-      dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
-    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(OraclePage)));
