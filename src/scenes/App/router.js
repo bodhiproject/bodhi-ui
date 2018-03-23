@@ -5,7 +5,12 @@ import asyncComponent from '../../helpers/AsyncFunc';
 import NavBar from '../../components/NavBar/index';
 import { RouterPath } from '../../constants';
 
-class AppRouter extends React.Component {
+export default class AppRouter extends React.Component {
+  static propTypes = {
+    url: PropTypes.string.isRequired,
+    langHandler: PropTypes.func.isRequired,
+  };
+
   render() {
     let { url } = this.props;
     const { langHandler } = this.props;
@@ -66,10 +71,3 @@ class AppRouter extends React.Component {
     );
   }
 }
-
-AppRouter.propTypes = {
-  url: PropTypes.string.isRequired,
-  langHandler: PropTypes.func.isRequired,
-};
-
-export default AppRouter;
