@@ -7,8 +7,13 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
-import { EventStatus } from '../../constants';
+import { RouterPath, EventStatus } from '../../constants';
 import styles from './styles';
+
+const TAB_SET = 0;
+const TAB_FINALIZE = 1;
+const TAB_WITHDRAW = 2;
+const TAB_HISTORY = 3;
 
 const messages = defineMessages({
   set: {
@@ -30,11 +35,47 @@ const messages = defineMessages({
 });
 
 class Activities extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    actionableItemCount: PropTypes.object,
+  };
+
+  static defaultProps = {
+    actionableItemCount: undefined,
+  };
+
   constructor(props) {
     super(props);
 
+    // Determine tab index based on path
+    let tabIdx;
+    switch (this.props.match.path) {
+      case RouterPath.set: {
+        tabIdx = TAB_SET;
+        break;
+      }
+      case RouterPath.finalize: {
+        tabIdx = TAB_FINALIZE;
+        break;
+      }
+      case RouterPath.withdraw: {
+        tabIdx = TAB_WITHDRAW;
+        break;
+      }
+      case RouterPath.activityHistory: {
+        tabIdx = TAB_HISTORY;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
     this.state = {
-      tabIdx: 0,
+      tabIdx,
     };
 
     this.getTabLabel = this.getTabLabel.bind(this);
@@ -54,10 +95,10 @@ class Activities extends React.Component {
           <Tab label={this.props.intl.formatMessage(messages.history)} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
-          {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === 3 && <EventHistory history={history} />}
+          {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
+          {tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
+          {tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {tabIdx === TAB_HISTORY && <EventHistory history={history} />}
         </div>
       </div>
     );
@@ -84,27 +125,36 @@ class Activities extends React.Component {
   }
 
   handleTabChange(event, value) {
-    this.setState({ tabIdx: value });
+    switch (value) {
+      case TAB_SET: {
+        this.props.history.push(RouterPath.set);
+        break;
+      }
+      case TAB_FINALIZE: {
+        this.props.history.push(RouterPath.finalize);
+        break;
+      }
+      case TAB_WITHDRAW: {
+        this.props.history.push(RouterPath.withdraw);
+        break;
+      }
+      case TAB_HISTORY: {
+        this.props.history.push(RouterPath.activityHistory);
+        break;
+      }
+      default: {
+        throw new Error(`Invalid tab index: ${value}`);
+      }
+    }
   }
 }
-
-Activities.propTypes = {
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  actionableItemCount: PropTypes.object,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-Activities.defaultProps = {
-  actionableItemCount: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
   actionableItemCount: state.Graphql.get('actionableItemCount'),
 });
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(Activities)));

@@ -1,9 +1,16 @@
 import React, { PropTypes } from 'react';
 import { Switch, Route } from 'react-router-dom';
+
 import asyncComponent from '../../helpers/AsyncFunc';
 import NavBar from '../../components/NavBar/index';
+import { RouterPath } from '../../constants';
 
-class AppRouter extends React.Component {
+export default class AppRouter extends React.Component {
+  static propTypes = {
+    url: PropTypes.string.isRequired,
+    langHandler: PropTypes.func.isRequired,
+  };
+
   render() {
     let { url } = this.props;
     const { langHandler } = this.props;
@@ -17,12 +24,12 @@ class AppRouter extends React.Component {
       <Switch>
         <Route
           exact
-          path={`${url}/`}
+          path={`${url}${RouterPath.qtumPrediction}`}
           component={asyncComponent(() => import('../Dashboard/index'), langHandler)}
         />
         <Route
           exact
-          path={`${url}/bot-court`}
+          path={`${url}${RouterPath.botCourt}`}
           component={asyncComponent(() => import('../Dashboard/vote'), langHandler)}
         />
         <Route
@@ -37,22 +44,30 @@ class AppRouter extends React.Component {
         />
         <Route
           exact
-          path={`${url}/my-wallet`}
+          path={`${url}${RouterPath.myWallet}`}
           component={asyncComponent(() => import('../Wallet/index'), langHandler)}
         />
         <Route
           exact
-          path={`${url}/activities`}
+          path={`${url}${RouterPath.set}`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
+        <Route
+          exact
+          path={`${url}${RouterPath.finalize}`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
+        <Route
+          exact
+          path={`${url}${RouterPath.withdraw}`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
+        <Route
+          exact
+          path={`${url}${RouterPath.activityHistory}`}
           component={asyncComponent(() => import('../Activities/index'), langHandler)}
         />
       </Switch>
     );
   }
 }
-
-AppRouter.propTypes = {
-  url: PropTypes.string.isRequired,
-  langHandler: PropTypes.func.isRequired,
-};
-
-export default AppRouter;

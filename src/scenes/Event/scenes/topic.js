@@ -22,10 +22,11 @@ import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
+import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
@@ -78,6 +79,7 @@ const pageMessage = defineMessages({
   createWithdrawTx: (version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
@@ -107,6 +109,7 @@ export default class TopicPage extends React.Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -141,6 +144,7 @@ export default class TopicPage extends React.Component {
 
   componentWillMount() {
     const {
+      setAppLocation,
       lastUsedAddress,
       getBetAndVoteBalances,
       getTransactionsReturn,
@@ -149,6 +153,7 @@ export default class TopicPage extends React.Component {
     } = this.props;
     const { address } = this.state;
 
+    setAppLocation(AppLocation.withdraw);
     this.fetchData(lastUsedAddress);
   }
 
@@ -186,27 +191,30 @@ export default class TopicPage extends React.Component {
     const actionButtonConfig = this.getActionButtonConfig();
 
     return (
-      <Paper className={classes.eventDetailPaper}>
-        <Grid container spacing={0}>
-          <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
-            <Typography variant="display1" className={classes.eventDetailTitle}>
-              {topic.name}
-            </Typography>
-            <Grid item xs={12} lg={9}>
-              <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
-              {this.renderWithdrawContainer(actionButtonConfig)}
-              {this.renderOptions()}
-              <EventResultHistory oracles={topic.oracles} />
-              <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
+      <div>
+        <BackButton />
+        <Paper className={classes.eventDetailPaper}>
+          <Grid container spacing={0}>
+            <Grid item xs={12} md={8} className={classes.eventDetailContainerGrid}>
+              <Typography variant="display1" className={classes.eventDetailTitle}>
+                {topic.name}
+              </Typography>
+              <Grid item xs={12} lg={9}>
+                <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
+                {this.renderWithdrawContainer(actionButtonConfig)}
+                {this.renderOptions()}
+                <EventResultHistory oracles={topic.oracles} />
+                <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+              <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
+              <StepperVertRight steps={config.steps} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
-            <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
-            <StepperVertRight steps={config.steps} />
-          </Grid>
-        </Grid>
-        <TransactionSentDialog txReturn={this.props.txReturn} />
-      </Paper>
+          <TransactionSentDialog txReturn={this.props.txReturn} />
+        </Paper>
+      </div>
     );
   }
 

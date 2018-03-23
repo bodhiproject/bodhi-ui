@@ -16,14 +16,16 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
+import appActions from '../../../../redux/App/actions';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
-import { TransactionType, SortBy, OracleStatus } from '../../../../constants';
+import { TransactionType, SortBy, OracleStatus, AppLocation } from '../../../../constants';
 
 class EventHistory extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
     getOraclesReturn: PropTypes.array,
     getTransactions: PropTypes.func,
@@ -45,6 +47,9 @@ class EventHistory extends React.Component {
   };
 
   componentWillMount() {
+    const { setAppLocation } = this.props;
+
+    setAppLocation(AppLocation.activityHistory);
     this.executeTxsRequest();
   }
 
@@ -327,6 +332,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
+    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   };

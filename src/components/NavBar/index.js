@@ -11,10 +11,24 @@ import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-i
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 
-import { EventStatus } from '../../constants';
+import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import styles from './styles';
 
 class NavBar extends React.PureComponent {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    actionableItemCount: PropTypes.object,
+    langHandler: PropTypes.func,
+    appLocation: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    actionableItemCount: undefined,
+    langHandler: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -26,6 +40,7 @@ class NavBar extends React.PureComponent {
   render() {
     const {
       classes,
+      appLocation,
       walletAddresses,
       actionableItemCount,
       match,
@@ -34,7 +49,7 @@ class NavBar extends React.PureComponent {
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
-          <Link to="/">
+          <Link to={RouterPath.qtumPrediction}>
             <img
               src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
               alt="bodhi-logo"
@@ -46,24 +61,30 @@ class NavBar extends React.PureComponent {
               data-index={EventStatus.Bet}
               className={classNames(
                 classes.navEventsButton,
-                match.path === '/' ? 'selected' : '',
+                appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
               )}
             >
               <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
             </Button>
-            { this.renderCurrentTabArrow('/') }
+            {
+              appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet
+                ? this.renderCurrentTabArrow(RouterPath.qtumPrediction) : null
+            }
           </Link>
-          <Link to="/bot-court" className={classes.navBarLink}>
+          <Link to={RouterPath.botCourt} className={classes.navBarLink}>
             <Button
               data-index={EventStatus.Vote}
               className={classNames(
                 classes.navEventsButton,
-                match.path === '/bot-court' ? 'selected' : '',
+                appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
               )}
             >
               <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
             </Button>
-            { this.renderCurrentTabArrow('/bot-court') }
+            {
+              appLocation === AppLocation.botCourt || appLocation === AppLocation.vote
+                ? this.renderCurrentTabArrow(RouterPath.botCourt) : null
+            }
           </Link>
           <div className={classes.navBarRightWrapper}>
             <Link to="/my-wallet" className={classes.navBarLink}>
@@ -71,7 +92,7 @@ class NavBar extends React.PureComponent {
                 <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
-              { this.renderCurrentTabArrow('/my-wallet') }
+              { appLocation === AppLocation.wallet ? this.renderCurrentTabArrow(RouterPath.myWallet) : null }
             </Link>
             <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
@@ -89,50 +110,54 @@ class NavBar extends React.PureComponent {
       match,
     } = this.props;
 
-    if (this.props.match.path === currentPath) {
-      return (
-        <img
-          src="/images/nav-arrow.png"
-          alt="nav-arrow"
-          className={
-            classNames(
-              classes.navArrow,
-              currentPath === '/my-wallet' || currentPath === '/activities' ? 'right' : ''
-            )
-          }
-        />
-      );
-    }
-
-    return null;
+    return (
+      <img
+        src="/images/nav-arrow.png"
+        alt="nav-arrow"
+        className={
+          classNames(
+            classes.navArrow,
+            currentPath === RouterPath.myWallet || currentPath === RouterPath.set ? 'right' : ''
+          )
+        }
+      />
+    );
   }
 
   renderActivitiesButtonWithBadge() {
     const {
       classes,
       match,
+      appLocation,
       actionableItemCount,
     } = this.props;
 
     if (actionableItemCount && actionableItemCount.totalCount) {
       return (
-        <Link to="/activities" className={classes.navBarLink}>
+        <Link to={RouterPath.set} className={classes.navBarLink}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
           </Badge>
-          { this.renderCurrentTabArrow('/activities') }
+          {
+            appLocation === AppLocation.myActivities
+              || appLocation === AppLocation.resultSet
+              || appLocation === AppLocation.finalize
+              || appLocation === AppLocation.withdraw
+              || appLocation === AppLocation.activityHistory
+              ? this.renderCurrentTabArrow(RouterPath.set) : null
+          }
         </Link>
       );
     }
 
     return (
-      <Link to="/activities" className={classes.navBarLink}>
+      <Link to={RouterPath.set} className={classes.navBarLink}>
         <Button className={classes.navBarRightButton}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
-        { this.renderCurrentTabArrow('/activities') }
+        { this.renderCurrentTabArrow(RouterPath.set) }
       </Link>
     );
   }
@@ -163,19 +188,6 @@ class NavBar extends React.PureComponent {
     return total.toFixed(2);
   }
 }
-
-NavBar.propTypes = {
-  match: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
-  walletAddresses: PropTypes.array.isRequired,
-  actionableItemCount: PropTypes.object,
-  langHandler: PropTypes.func,
-};
-
-NavBar.defaultProps = {
-  actionableItemCount: undefined,
-  langHandler: undefined,
-};
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
