@@ -59,7 +59,7 @@ class TopicPage extends React.Component {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     getTopics: PropTypes.func.isRequired,
-    getTopicsReturn: PropTypes.array,
+    getTopicsReturn: PropTypes.object,
     getTransactions: PropTypes.func.isRequired,
     getTransactionsReturn: PropTypes.array,
     getBetAndVoteBalances: PropTypes.func.isRequired,
@@ -114,7 +114,6 @@ class TopicPage extends React.Component {
     const {
       lastUsedAddress,
       getBetAndVoteBalances,
-      getTopicsReturn,
       getTransactionsReturn,
       botWinnings,
       qtumWinnings,
@@ -514,7 +513,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
     calculateWinnings: (contractAddress, senderAddress) =>
       dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
-    getTopics: () => dispatch(graphqlActions.getTopics()),
+    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createWithdrawTx: (version, topicAddress, senderAddress) =>
       dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
