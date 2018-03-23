@@ -219,6 +219,9 @@ function processTransaction(tx) {
   if (tx.token && tx.token === Token.Bot) {
     newTx.amount = satoshiToDecimal(tx.amount);
     newTx.fee = gasToQtum(tx.gasUsed);
+  } else if (tx.token && tx.token === Token.Qtum && tx.type === TransactionType.Transfer) {
+    // Process sendtoaddress
+    newTx.fee = gasToQtum(tx.gasUsed);
   }
   return newTx;
 }
