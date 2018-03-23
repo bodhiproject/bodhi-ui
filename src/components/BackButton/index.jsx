@@ -31,7 +31,7 @@ export default class BackButton extends React.Component {
     } = this.props;
 
     return (
-      <Button className={classes.button} onClick={this.onBackClick}>
+      <Button variant="raised" size="small" className={classes.button} onClick={this.onBackClick}>
         <ChevronLeft />
         <FormattedMessage id="str.back" defaultMessage="Back" />
       </Button>
