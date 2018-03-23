@@ -322,16 +322,17 @@ class OraclePage extends React.Component {
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
     const { lastUsedAddress } = this.props;
     const { address, txid, unconfirmed } = this.state;
+    const oracles = getOraclesReturn && getOraclesReturn.data;
 
     let oracle;
     if (!unconfirmed) {
-      oracle = _.find(getOraclesReturn, { address });
+      oracle = _.find(oracles, { address });
     } else {
-      oracle = _.find(getOraclesReturn, { txid });
+      oracle = _.find(oracles, { txid });
     }
 
-    const centralizedOracle = _.find(getOraclesReturn, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(getOraclesReturn, { token: Token.Bot }), ['blockNum'], ['asc']);
+    const centralizedOracle = _.find(oracles, { token: Token.Qtum });
+    const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], ['asc']);
     let config;
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
@@ -429,7 +430,7 @@ class OraclePage extends React.Component {
     }
 
     if (oracle && !config) {
-      const path = getDetailPagePath(getOraclesReturn);
+      const path = getDetailPagePath(oracles);
       if (path) {
         // Oracle stage changed, route to correct detail page
         this.props.history.push(path);
@@ -691,7 +692,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
     getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
     createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
       dispatch(graphqlActions.createBetTx(version, topicAddress, oracleAddress, index, amount, senderAddress)),

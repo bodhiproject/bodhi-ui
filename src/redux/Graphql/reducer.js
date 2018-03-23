@@ -26,17 +26,21 @@ export default function graphqlReducer(state = initState, action) {
     }
 
     case actions.GET_ORACLES_RETURN: {
-      if (action.skip === 0) {
-        return state.set('getOraclesReturn', { data: action.value, limit: action.limit, skip: action.skip });
-      }
-      return state.set(
-        'getOraclesReturn',
-        {
-          data: [...state.get('getOraclesReturn').data, ...action.value],
+      // First page, overwrite all data
+      if (!action.skip || action.skip === 0) {
+        return state.set('getOraclesReturn', {
+          data: action.value,
           limit: action.limit,
           skip: action.skip,
-        }
-      );
+        });
+      }
+
+      // Not first page, add to existing data
+      return state.set('getOraclesReturn', {
+        data: [...state.get('getOraclesReturn').data, ...action.value],
+        limit: action.limit,
+        skip: action.skip,
+      });
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {
