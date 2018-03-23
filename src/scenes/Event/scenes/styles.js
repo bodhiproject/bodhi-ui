@@ -61,6 +61,8 @@ const styles = (theme) => ({
   },
   eventActionButton: {
     marginTop: theme.padding.md.px,
+    backgroundColor: `${theme.palette.primary.main} !important`,
+    color: 'white',
   },
   withdrawPaper: {
     padding: theme.padding.md.px,
