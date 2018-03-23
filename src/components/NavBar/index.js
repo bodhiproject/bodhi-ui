@@ -63,7 +63,7 @@ class NavBar extends React.PureComponent {
               data-index={EventStatus.Bet}
               className={classNames(
                 classes.navEventsButton,
-                match.path === '/' ? 'selected' : '',
+                appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
               )}
             >
               <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
@@ -78,7 +78,7 @@ class NavBar extends React.PureComponent {
               data-index={EventStatus.Vote}
               className={classNames(
                 classes.navEventsButton,
-                match.path === '/bot-court' ? 'selected' : '',
+                appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
               )}
             >
               <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
@@ -111,8 +111,6 @@ class NavBar extends React.PureComponent {
       classes,
       match,
     } = this.props;
-
-    console.log('renderCurrentTabArrow');
 
     return (
       <img
