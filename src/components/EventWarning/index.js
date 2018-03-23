@@ -10,7 +10,7 @@ import styles from './styles';
 
 const FormattedMessageFixed = (props) => <FormattedMessage {...props} />; // workaround: http://bit.ly/2u7Hhe4
 
-const EventWarning = ({ classes, id, message, className, intl, theme, ...props }) => !message ? null : (
+const EventWarning = ({ classes, id, message, className, intl, ...props }) => !message ? null : (
   <div {...props} className={classNames(className, classes.warningWrapper)}>
     <FormattedMessageFixed id={id} defaultMessage={message} />
   </div>
@@ -21,7 +21,6 @@ EventWarning.propTypes = {
   className: PropTypes.string,
   message: PropTypes.string,
   id: PropTypes.string,
-  theme: PropTypes.object,
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
@@ -32,4 +31,4 @@ EventWarning.defaultProps = {
   theme: undefined,
 };
 
-export default injectIntl(withStyles(styles, { withTheme: true })(EventWarning));
+export default injectIntl(withStyles(styles)(EventWarning));
