@@ -359,7 +359,6 @@ export default class OraclePage extends React.Component {
   }
 
   constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
-    const { lastUsedAddress } = this.props;
     const { address, txid, unconfirmed } = this.state;
     const oracles = getOraclesReturn && getOraclesReturn.data;
 
