@@ -8,11 +8,9 @@ import { EventWarningType } from '../../constants';
 import styles from './styles';
 
 
-function FormattedMessageFixed(props) {
-  return <FormattedMessage {...props} />;
-}
+const FormattedMessageFixed = (props) => <FormattedMessage {...props} />; // workaround: http://bit.ly/2u7Hhe4
 
-const EventWarning = ({ classes, id = '', message, className, intl, theme, ...props }) => !message ? null : (console.log('ID: ', id),
+const EventWarning = ({ classes, id, message, className, intl, theme, ...props }) => !message ? null : (
   <div {...props} className={classNames(className, classes.warningWrapper)}>
     <FormattedMessageFixed id={id} defaultMessage={message} />
   </div>
@@ -20,15 +18,17 @@ const EventWarning = ({ classes, id = '', message, className, intl, theme, ...pr
 
 EventWarning.propTypes = {
   classes: PropTypes.object.isRequired,
-  className: PropTypes.string, // eslint-disable-line
+  className: PropTypes.string,
   message: PropTypes.string,
-  id: PropTypes.string, // eslint-disable-line
-  theme: PropTypes.object, // eslint-disable-line
+  id: PropTypes.string,
+  theme: PropTypes.object,
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
 EventWarning.defaultProps = {
   message: undefined,
+  id: '',
+  className: undefined,
   theme: undefined,
 };
 
