@@ -20,18 +20,21 @@ import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } 
 export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
     try {
-      const result = yield call(queryAllTopics, action.filters, action.orderBy);
+      const result = yield call(queryAllTopics, action.filters, null, action.limit, action.skip);
       const topics = _.map(result, processTopic);
-
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: topics,
+        limit: action.limit,
+        skip: action.skip,
       });
     } catch (err) {
       console.error(err);
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
+        limit: action.limit,
+        skip: action.skip,
       });
     }
   });
@@ -53,18 +56,21 @@ function processTopic(topic) {
 export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
     try {
-      const result = yield call(queryAllOracles, action.filters, action.orderBy);
+      const result = yield call(queryAllOracles, action.filters, action.orderBy, action.limit, action.skip);
       const oracles = _.map(result, processOracle);
-
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: oracles,
+        limit: action.limit,
+        skip: action.skip,
       });
     } catch (err) {
       console.error(err);
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: [],
+        limit: action.limit,
+        skip: action.skip,
       });
     }
   });

@@ -7,12 +7,13 @@ import _ from 'lodash';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-
+import EventWarning from '../EventWarning/index';
 import graphqlActions from '../../redux/Graphql/actions';
-import { Token, OracleStatus, SortBy, EventStatus } from '../../constants';
+import { Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
 import styles from './styles';
+import InfiniteScroll from '../InfiniteScroll/index';
 
 const messages = defineMessages({
   placeBet: {
@@ -37,28 +38,37 @@ const messages = defineMessages({
   },
 });
 
+const LIMIT = 8;
+const SKIP = 0;
+
 class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
     getTopics: PropTypes.func,
-    getTopicsReturn: PropTypes.array,
+    topics: PropTypes.object,
     getOracles: PropTypes.func,
-    getOraclesReturn: PropTypes.array,
+    oracles: PropTypes.object,
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    classes: PropTypes.object,
   };
 
   static defaultProps = {
     getTopics: undefined,
-    getTopicsReturn: [],
+    topics: {},
     getOracles: undefined,
-    getOraclesReturn: [],
+    oracles: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
+    classes: undefined,
   };
+
+  state = {
+    skip: 0,
+  }
 
   componentWillMount() {
     const {
@@ -66,7 +76,7 @@ class EventCardsGrid extends React.Component {
       sortBy,
     } = this.props;
 
-    this.executeGraphRequest(eventStatusIndex, sortBy);
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -79,28 +89,39 @@ class EventCardsGrid extends React.Component {
     if (eventStatusIndex !== this.props.eventStatusIndex
       || sortBy !== this.props.sortBy
       || syncBlockNum !== this.props.syncBlockNum) {
-      this.executeGraphRequest(eventStatusIndex, sortBy);
+      this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
+      this.setState({ skip: 0 });
     }
+  }
+
+  loadMoreData = () => {
+    let { skip } = this.state;
+    const {
+      eventStatusIndex,
+      sortBy,
+    } = this.props;
+    skip += LIMIT;
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip);
+    this.setState({ skip });
   }
 
   render() {
     const {
       theme,
       eventStatusIndex,
-      getTopicsReturn,
-      getOraclesReturn,
+      topics,
+      oracles,
+      sortBy,
+      classes,
     } = this.props;
-
-    const topics = getTopicsReturn;
-    const oracles = getOraclesReturn;
-    let rowItems;
+    let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        if (oracles.length) {
-          rowItems = this.renderOracles(oracles, eventStatusIndex);
+        if (!_.isNil(oracles.data) && oracles.data.length !== 0) {
+          rowItems = this.renderOracles(oracles.data, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -108,8 +129,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        if (topics.length) {
-          rowItems = this.renderTopics(topics);
+        if (!_.isNil(topics.data) && topics.data.length !== 0) {
+          rowItems = this.renderTopics(topics.data);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -122,13 +143,16 @@ class EventCardsGrid extends React.Component {
     }
 
     return (
-      <Grid container spacing={theme.padding.sm.value}>
-        {rowItems}
-      </Grid>
+      <InfiniteScroll
+        spacing={theme.padding.sm.value}
+        data={rowItems}
+        loadMore={this.loadMoreData}
+        hasMore={rowItems.length >= this.state.skip + LIMIT}
+      />
     );
   }
 
-  executeGraphRequest(eventStatusIndex, sortBy) {
+  executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
     const {
       getTopics,
       getOracles,
@@ -144,6 +168,8 @@ class EventCardsGrid extends React.Component {
             { token: Token.Qtum, status: OracleStatus.Created },
           ],
           { field: 'endTime', direction: sortDirection },
+          limit,
+          skip,
         );
         break;
       }
@@ -154,6 +180,8 @@ class EventCardsGrid extends React.Component {
             { token: Token.Qtum, status: OracleStatus.OpenResultSet },
           ],
           { field: 'resultSetEndTime', direction: sortDirection },
+          limit,
+          skip,
         );
         break;
       }
@@ -163,6 +191,8 @@ class EventCardsGrid extends React.Component {
             { token: Token.Bot, status: OracleStatus.Voting },
           ],
           { field: 'endTime', direction: sortDirection },
+          limit,
+          skip,
         );
         break;
       }
@@ -172,6 +202,8 @@ class EventCardsGrid extends React.Component {
             { token: Token.Bot, status: OracleStatus.WaitResult },
           ],
           { field: 'endTime', direction: sortDirection },
+          limit,
+          skip,
         );
         break;
       }
@@ -181,6 +213,8 @@ class EventCardsGrid extends React.Component {
             { status: OracleStatus.Withdraw },
           ],
           { field: 'blockNum', direction: sortDirection },
+          limit,
+          skip,
         );
         break;
       }
@@ -267,8 +301,8 @@ class EventCardsGrid extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  topics: state.Graphql.get('getTopicsReturn'),
+  oracles: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -276,8 +310,8 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTopics: (filters, orderBy) => dispatch(graphqlActions.getTopics(filters, orderBy)),
-    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
+    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
 }
 

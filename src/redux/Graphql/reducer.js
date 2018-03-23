@@ -1,6 +1,5 @@
 import { Map } from 'immutable';
 import actions from './actions';
-
 const initState = new Map({
   getPendingTransactionsReturn: { count: 0 },
 });
@@ -8,11 +7,33 @@ const initState = new Map({
 export default function graphqlReducer(state = initState, action) {
   switch (action.type) {
     case actions.GET_TOPICS_RETURN: {
-      return state.set('getTopicsReturn', action.value);
+      if (action.skip === 0) {
+        return state.set('getTopicsReturn', { data: action.value, limit: action.limit, skip: action.skip });
+      }
+      return state.set(
+        'getTopicsReturn',
+        {
+          data: [...state.get('getTopicsReturn').data, ...action.value],
+          limit: action.limit,
+          skip: action.skip,
+        }
+      );
     }
+
     case actions.GET_ORACLES_RETURN: {
-      return state.set('getOraclesReturn', action.value);
+      if (action.skip === 0) {
+        return state.set('getOraclesReturn', { data: action.value, limit: action.limit, skip: action.skip });
+      }
+      return state.set(
+        'getOraclesReturn',
+        {
+          data: [...state.get('getOraclesReturn').data, ...action.value],
+          limit: action.limit,
+          skip: action.skip,
+        }
+      );
     }
+
     case actions.GET_TRANSACTIONS_RETURN: {
       return state.set('getTransactionsReturn', action.value);
     }

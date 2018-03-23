@@ -53,9 +53,9 @@ class GraphQuery {
       });
 
       filterStr = `
-        filter: { 
-          OR: [ 
-            ${filterStr} 
+        filter: {
+          OR: [
+            ${filterStr}
           ]
         }
       `;
@@ -113,7 +113,6 @@ class GraphQuery {
   async execute() {
     const query = this.build();
     console.debug(query);
-
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
@@ -127,13 +126,19 @@ class GraphQuery {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
-export function queryAllTopics(filters, orderBy) {
+export function queryAllTopics(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTopics', TYPE.topic);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
+  }
+  if (_.isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (_.isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
   }
   return request.execute();
 }
@@ -143,13 +148,19 @@ export function queryAllTopics(filters, orderBy) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllOracles(filters, orderBy) {
+export function queryAllOracles(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allOracles', TYPE.oracle);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
+  }
+  if (_.isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (_.isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
   }
   return request.execute();
 }
