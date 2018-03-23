@@ -136,8 +136,7 @@ class TopicPage extends React.Component {
       this.fetchData(nextProps.lastUsedAddress ? nextProps.lastUsedAddress : lastUsedAddress);
     }
 
-    console.log(getTopicsReturn);
-    const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
+    const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
     this.constructTopicAndConfig(topics, nextProps.botWinnings, nextProps.qtumWinnings);
   }
 
@@ -427,11 +426,11 @@ class TopicPage extends React.Component {
     calculateWinnings(address, senderAddress);
   }
 
-  constructTopicAndConfig(getTopicsReturn, botWinnings, qtumWinnings) {
+  constructTopicAndConfig(topics, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
     const { address } = this.state;
     const { locale, messages: localeMessages } = this.props.intl;
-    const topic = _.find(getTopicsReturn, { address });
+    const topic = _.find(topics, { address });
 
     if (topic) {
       let config;

@@ -20,10 +20,8 @@ import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } 
 export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
     try {
-      console.log(action);
       const result = yield call(queryAllTopics, action.filters, action.orderBy, action.limit, action.skip);
       const topics = _.map(result, processTopic);
-      console.log(topics);
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: topics,
