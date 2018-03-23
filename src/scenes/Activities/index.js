@@ -10,6 +10,11 @@ import EventHistory from './scenes/EventHistory/index';
 import { RouterPath, EventStatus } from '../../constants';
 import styles from './styles';
 
+const TAB_SET = 0;
+const TAB_FINALIZE = 1;
+const TAB_WITHDRAW = 2;
+const TAB_HISTORY = 3;
+
 const messages = defineMessages({
   set: {
     id: 'activitiesTab.Set',
@@ -49,19 +54,19 @@ class Activities extends React.Component {
     let tabIdx;
     switch (this.props.match.path) {
       case RouterPath.set: {
-        tabIdx = 0;
+        tabIdx = TAB_SET;
         break;
       }
       case RouterPath.finalize: {
-        tabIdx = 1;
+        tabIdx = TAB_FINALIZE;
         break;
       }
       case RouterPath.withdraw: {
-        tabIdx = 2;
+        tabIdx = TAB_WITHDRAW;
         break;
       }
       case RouterPath.activityHistory: {
-        tabIdx = 3;
+        tabIdx = TAB_HISTORY;
         break;
       }
       default: {
@@ -90,10 +95,10 @@ class Activities extends React.Component {
           <Tab label={this.props.intl.formatMessage(messages.history)} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
-          {tabIdx === 0 && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {tabIdx === 1 && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {tabIdx === 2 && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === 3 && <EventHistory history={history} />}
+          {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
+          {tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
+          {tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {tabIdx === TAB_HISTORY && <EventHistory history={history} />}
         </div>
       </div>
     );
@@ -121,19 +126,19 @@ class Activities extends React.Component {
 
   handleTabChange(event, value) {
     switch (value) {
-      case 0: {
+      case TAB_SET: {
         this.props.history.push(RouterPath.set);
         break;
       }
-      case 1: {
+      case TAB_FINALIZE: {
         this.props.history.push(RouterPath.finalize);
         break;
       }
-      case 2: {
+      case TAB_WITHDRAW: {
         this.props.history.push(RouterPath.withdraw);
         break;
       }
-      case 3: {
+      case TAB_HISTORY: {
         this.props.history.push(RouterPath.activityHistory);
         break;
       }
