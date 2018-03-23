@@ -95,6 +95,8 @@ class Activities extends React.Component {
   }
 
   handleTabChange(event, value) {
+    
+    
     this.setState({ tabIdx: value });
   }
 }

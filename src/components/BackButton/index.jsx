@@ -51,10 +51,16 @@ export default class BackButton extends React.Component {
         this.props.history.push('/bot-court');
         break;
       }
-      case AppLocation.resultSet:
-      case AppLocation.finalize:
+      case AppLocation.resultSet: {
+        this.props.history.push('/activities/set');
+        break;
+      }
+      case AppLocation.finalize: {
+        this.props.history.push('/activities/finalize');
+        break;
+      }
       case AppLocation.withdraw: {
-        this.props.history.push('/activities');
+        this.props.history.push('/activities/withdraw');
         break;
       }
       default: {

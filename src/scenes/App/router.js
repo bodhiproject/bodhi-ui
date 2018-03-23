@@ -45,6 +45,21 @@ class AppRouter extends React.Component {
           path={`${url}/activities`}
           component={asyncComponent(() => import('../Activities/index'), langHandler)}
         />
+        <Route
+          exact
+          path={`${url}/activities/set`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
+        <Route
+          exact
+          path={`${url}/activities/finalize`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
+        <Route
+          exact
+          path={`${url}/activities/withdraw`}
+          component={asyncComponent(() => import('../Activities/index'), langHandler)}
+        />
       </Switch>
     );
   }

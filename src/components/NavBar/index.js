@@ -119,7 +119,7 @@ class NavBar extends React.PureComponent {
         className={
           classNames(
             classes.navArrow,
-            currentPath === '/my-wallet' || currentPath === '/activities' ? 'right' : ''
+            currentPath === '/my-wallet' || currentPath === '/activities/set' ? 'right' : ''
           )
         }
       />
@@ -136,7 +136,7 @@ class NavBar extends React.PureComponent {
 
     if (actionableItemCount && actionableItemCount.totalCount) {
       return (
-        <Link to="/activities" className={classes.navBarLink}>
+        <Link to="/activities/set" className={classes.navBarLink}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
             <Button className={classes.navBarRightButton}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
@@ -148,18 +148,18 @@ class NavBar extends React.PureComponent {
               || appLocation === AppLocation.finalize
               || appLocation === AppLocation.withdraw
               || appLocation === AppLocation.activityHistory
-              ? this.renderCurrentTabArrow('/activities') : null
+              ? this.renderCurrentTabArrow('/activities/set') : null
           }
         </Link>
       );
     }
 
     return (
-      <Link to="/activities" className={classes.navBarLink}>
+      <Link to="/activities/set" className={classes.navBarLink}>
         <Button className={classes.navBarRightButton}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
-        { this.renderCurrentTabArrow('/activities') }
+        { this.renderCurrentTabArrow('/activities/set') }
       </Link>
     );
   }
