@@ -136,35 +136,21 @@ export default class OraclePage extends React.Component {
     syncBlockTime: undefined,
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    topicAddress: '',
+    address: '',
+    txid: '',
+    unconfirmed: true,
+    oracle: undefined,
+    transactions: [],
+    voteAmount: 0,
+    currentOptionIdx: -1,
+  }
 
+  componentDidMount() {
     const { topicAddress, address, txid } = this.props.match.params;
     const unconfirmed = Boolean(topicAddress === 'null' && address === 'null' && txid);
-
-    this.state = {
-      topicAddress,
-      address,
-      txid,
-      unconfirmed,
-      oracle: undefined,
-      transactions: [],
-      voteAmount: 0,
-      currentOptionIdx: -1,
-    };
-    this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
-    this.getEventOptionsInfo = this.getEventOptionsInfo.bind(this);
-    this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.getActionButtonConfig = this.getActionButtonConfig.bind(this);
-    this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.handleAmountChange = this.handleAmountChange.bind(this);
-    this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.bet = this.bet.bind(this);
-    this.setResult = this.setResult.bind(this);
-    this.vote = this.vote.bind(this);
-    this.finalizeResult = this.finalizeResult.bind(this);
-    this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
+    this.setState({ topicAddress, address, txid, unconfirmed });
   }
 
   componentWillMount() {
@@ -172,12 +158,7 @@ export default class OraclePage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      oracles,
-      getTransactionsReturn,
-      syncBlockTime,
-      txReturn,
-    } = nextProps;
+    const { oracles, getTransactionsReturn, syncBlockTime, txReturn } = nextProps;
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
@@ -276,11 +257,11 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  handleOptionChange(idx) {
+  handleOptionChange = (idx) => {
     this.setState({ currentOptionIdx: idx });
   }
 
-  handleAmountChange(amount) {
+  handleAmountChange = (amount) => {
     this.setState({ voteAmount: amount });
   }
 
@@ -288,7 +269,7 @@ export default class OraclePage extends React.Component {
     this.props.setLastUsedAddress(address);
   }
 
-  handleConfirmClick() {
+  handleConfirmClick = () => {
     const { config, voteAmount } = this.state;
     const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
 
@@ -320,7 +301,7 @@ export default class OraclePage extends React.Component {
     }
   }
 
-  executeOracleAndTxsRequest() {
+  executeOracleAndTxsRequest = () => {
     const { topicAddress, txid, unconfirmed } = this.state;
 
     if (unconfirmed) {
@@ -341,7 +322,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  constructOracleAndConfig(syncBlockTime, { data: oracles }) {
+  constructOracleAndConfig = (syncBlockTime, { data: oracles }) => {
     const { address, txid, unconfirmed } = this.state;
 
     let oracle;
@@ -512,7 +493,7 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  getActionButtonConfig() {
+  getActionButtonConfig = () => {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
     const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
@@ -627,7 +608,7 @@ export default class OraclePage extends React.Component {
     };
   }
 
-  getEventOptionsInfo() {
+  getEventOptionsInfo = () => {
     const { oracle } = this.state;
     const { token, status } = oracle;
     const totalBalance = _.sum(oracle.amounts);
@@ -660,7 +641,7 @@ export default class OraclePage extends React.Component {
     });
   }
 
-  getEventInfoObjs() {
+  getEventInfoObjs = () => {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
     const { locale, messages: localeMessages } = this.props.intl;
@@ -686,7 +667,7 @@ export default class OraclePage extends React.Component {
     ];
   }
 
-  bet(amount) {
+  bet = (amount) => {
     const { createBetTx, lastUsedAddress } = this.props;
     const { topicAddress, oracle, currentOptionIdx } = this.state;
 
@@ -700,7 +681,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  setResult() {
+  setResult = () => {
     const { createSetResultTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
 
@@ -714,7 +695,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  vote(amount) {
+  vote = (amount) => {
     const { createVoteTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
 
@@ -728,7 +709,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  finalizeResult() {
+  finalizeResult = () => {
     const { createFinalizeResultTx, lastUsedAddress } = this.props;
     const { oracle } = this.state;
 
