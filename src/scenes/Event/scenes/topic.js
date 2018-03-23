@@ -53,7 +53,36 @@ const pageMessage = defineMessages({
   },
 });
 
-class TopicPage extends React.Component {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state, props) => ({
+  syncBlockTime: state.App.get('syncBlockTime'),
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
+  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
+  betBalances: state.Topic.get('betBalances'),
+  voteBalances: state.Topic.get('voteBalances'),
+  botWinnings: state.Topic.get('botWinnings'),
+  qtumWinnings: state.Topic.get('qtumWinnings'),
+}), (dispatch, props) => ({
+  getBetAndVoteBalances: (contractAddress, senderAddress) =>
+    dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
+  calculateWinnings: (contractAddress, senderAddress) =>
+    dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
+  getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
+  getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
+  createWithdrawTx: (version, topicAddress, senderAddress) =>
+    dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
+  clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
+  setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+}))
+
+export default class TopicPage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
@@ -491,36 +520,3 @@ class TopicPage extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncBlockTime: state.App.get('syncBlockTime'),
-  walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-  walletEncrypted: state.App.get('walletEncrypted'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
-  txReturn: state.Graphql.get('txReturn'),
-  betBalances: state.Topic.get('betBalances'),
-  voteBalances: state.Topic.get('voteBalances'),
-  botWinnings: state.Topic.get('botWinnings'),
-  qtumWinnings: state.Topic.get('qtumWinnings'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getBetAndVoteBalances: (contractAddress, senderAddress) =>
-      dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
-    calculateWinnings: (contractAddress, senderAddress) =>
-      dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
-    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
-    createWithdrawTx: (version, topicAddress, senderAddress) =>
-      dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(TopicPage)));
