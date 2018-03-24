@@ -65,11 +65,9 @@ class CreateEventCreatorPicker extends React.PureComponent {
   validateEnoughBOT = (address) => {
     const { walletAddresses, eventEscrowAmount, intl } = this.props;
 
-    for (let i = 0; i < walletAddresses.length; i++) {
-      const checkingAddress = walletAddresses[i];
-      if (checkingAddress.address === address && checkingAddress.bot < eventEscrowAmount) {
-        return intl.formatMessage(messages.notEnoughBot);
-      }
+    const checkingAddresses = _.filter(walletAddresses, { address });
+    if (checkingAddresses.length && checkingAddresses[0].bot < eventEscrowAmount) {
+      return intl.formatMessage(messages.notEnoughBot);
     }
 
     return null;
