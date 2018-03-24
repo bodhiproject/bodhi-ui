@@ -1,7 +1,4 @@
 const styles = (theme) => ({
-  importantNoteContainer: {
-    margin: `${theme.padding.xs.px} ${theme.padding.xs.px} 0px ${theme.padding.xs.px}`,
-  },
   infoIcon: {
     fontSize: theme.sizes.font.textMd,
     color: theme.palette.primary.main,

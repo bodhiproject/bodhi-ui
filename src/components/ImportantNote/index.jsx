@@ -31,7 +31,7 @@ class ImportantNote extends React.PureComponent {
     }
 
     return (
-      <div className={classes.importantNoteContainer}>
+      <div>
         <i className={classNames(classes.infoIcon, 'icon', 'iconfont', 'icon-ic_info')}></i>
         <span className={classes.headingText}>{heading}</span>
         <p className={classes.messageText}>{message}</p>

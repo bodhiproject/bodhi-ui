@@ -15,6 +15,7 @@ import { FormControl, FormHelperText } from 'material-ui/Form';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 
+import ImportantNote from '../../components/ImportantNote/index';
 import CreateEventDatePicker from './components/CreateEventDatePicker/index';
 import CreateEventOutcomes from './components/CreateEventOutcomes/index';
 import CreateEventCreatorPicker from './components/CreateEventCreatorPicker/index';
@@ -111,6 +112,18 @@ const messages = defineMessages({
   outcomes: {
     id: 'str.outcomes',
     defaultMessage: 'Outcomes',
+  },
+  escrowNoteTitle: {
+    id: 'create.escrowNoteTitle',
+    defaultMessage: 'BOT Escrow',
+  },
+  escrowNoteDescPre: {
+    id: 'create.escrowNoteDescPre',
+    defaultMessage: 'You will need to pay',
+  },
+  escrowNoteDescAfter: {
+    id: 'create.escrowNoteDescAfter',
+    defaultMessage: 'BOT as escrow in order to create an event.',
   },
 });
 
@@ -260,6 +273,13 @@ class CreateEvent extends React.Component {
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
           <DialogTitle>{intl.formatMessage(messages.dialogTitle)}</DialogTitle>
           <DialogContent>
+            <div className={classes.importantNoteContainer}>
+              <ImportantNote
+                className={classes.createEscrowNote}
+                heading={`${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteTitle)}`}
+                message={`${intl.formatMessage(messages.escrowNoteDescPre)} ${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteDescAfter)}`}
+              />
+            </div>
             <Grid container>
               <Grid item xs={3}>
                 {intl.formatMessage(messages.title)}
@@ -273,6 +293,14 @@ class CreateEvent extends React.Component {
                     component={this.renderTextField}
                   />
                 </Grid>
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item xs={3}>
+                {intl.formatMessage(messages.creator)}
+              </Grid>
+              <Grid item xs={9}>
+                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} changeFormFieldValue={changeFormFieldValue} />
               </Grid>
             </Grid>
             <Grid container>
@@ -334,14 +362,6 @@ class CreateEvent extends React.Component {
                 >
                   {intl.formatMessage(messages.selectMyAddress)}
                 </Button>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={3}>
-                {intl.formatMessage(messages.creator)}
-              </Grid>
-              <Grid item xs={9}>
-                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} changeFormFieldValue={changeFormFieldValue} />
               </Grid>
             </Grid>
             <SelectAddressDialog
