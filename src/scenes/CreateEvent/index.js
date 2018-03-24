@@ -115,11 +115,15 @@ const messages = defineMessages({
   },
   escrowNoteTitle: {
     id: 'create.escrowNoteTitle',
-    defaultMessage: '100 BOT Escrow',
+    defaultMessage: 'BOT Escrow',
   },
-  escrowNoteDesc: {
-    id: 'create.escrowNoteDesc',
-    defaultMessage: 'You will need to pay 100 BOT as escrow in order to create an event.',
+  escrowNoteDescPre: {
+    id: 'create.escrowNoteDescPre',
+    defaultMessage: 'You will need to pay',
+  },
+  escrowNoteDescAfter: {
+    id: 'create.escrowNoteDescAfter',
+    defaultMessage: 'BOT as escrow in order to create an event.',
   },
 });
 
@@ -272,8 +276,8 @@ class CreateEvent extends React.Component {
             <div className={classes.importantNoteContainer}>
               <ImportantNote
                 className={classes.createEscrowNote}
-                heading={intl.formatMessage(messages.escrowNoteTitle)}
-                message={intl.formatMessage(messages.escrowNoteDesc)}
+                heading={`${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteTitle)}`}
+                message={`${intl.formatMessage(messages.escrowNoteDescPre)} ${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteDescAfter)}`}
               />
             </div>
             <Grid container>
