@@ -46,24 +46,24 @@ const SKIP = 0;
 class EventCardsGrid extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
-    getTopics: PropTypes.func,
-    topics: PropTypes.object,
+    getActionableTopics: PropTypes.func.isRequired,
+    getTopicsReturn: PropTypes.object,
     getOracles: PropTypes.func,
-    oracles: PropTypes.object,
+    getOraclesReturn: PropTypes.object,
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
     lastUsedAddress: PropTypes.string.isRequired,
     setAppLocation: PropTypes.func.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object,
   };
 
   static defaultProps = {
-    getTopics: undefined,
-    topics: {},
+    getTopicsReturn: {},
     getOracles: undefined,
-    oracles: {},
+    getOraclesReturn: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
     classes: undefined,
@@ -113,19 +113,20 @@ class EventCardsGrid extends React.Component {
     const {
       theme,
       eventStatusIndex,
-      topics,
-      oracles,
+      getTopicsReturn,
+      getOraclesReturn,
       sortBy,
       classes,
     } = this.props;
+
     let rowItems = [];
     switch (eventStatusIndex) {
       case EventStatus.Bet:
       case EventStatus.Set:
       case EventStatus.Vote:
       case EventStatus.Finalize: {
-        if (!_.isNil(oracles.data) && oracles.data.length !== 0) {
-          rowItems = this.renderOracles(oracles.data, eventStatusIndex);
+        if (!_.isNil(getOraclesReturn.data) && getOraclesReturn.data.length !== 0) {
+          rowItems = this.renderOracles(getOraclesReturn.data, eventStatusIndex);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -133,8 +134,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        if (!_.isNil(topics.data) && topics.data.length !== 0) {
-          rowItems = this.renderTopics(topics.data);
+        if (!_.isNil(getTopicsReturn.data) && getTopicsReturn.data.length !== 0) {
+          rowItems = this.renderTopics(getTopicsReturn.data);
         } else {
           rowItems = <EventsEmptyBg />;
         }
@@ -188,9 +189,10 @@ class EventCardsGrid extends React.Component {
 
   executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
     const {
-      getTopics,
+      getActionableTopics,
       getOracles,
       lastUsedAddress,
+      walletAddresses,
     } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
@@ -242,10 +244,8 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Withdraw: {
-        getTopics(
-          [
-            { status: OracleStatus.Withdraw },
-          ],
+        getActionableTopics(
+          walletAddresses,
           { field: 'blockNum', direction: sortDirection },
           limit,
           skip,
@@ -335,17 +335,19 @@ class EventCardsGrid extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  topics: state.Graphql.get('getTopicsReturn'),
-  oracles: state.Graphql.get('getOraclesReturn'),
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
+  walletAddresses: state.App.get('walletAddresses'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-    getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
+    getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
+      dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
     getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   };
 }

@@ -1,8 +1,16 @@
 import { Map } from 'immutable';
+
 import actions from './actions';
+import { EventStatus } from '../../constants';
 
 const initState = new Map({
   getPendingTransactionsReturn: { count: 0 },
+  actionableItemCount: {
+    [EventStatus.Set]: 0,
+    [EventStatus.Finalize]: 0,
+    [EventStatus.Withdraw]: 0,
+    totalCount: 0,
+  },
 });
 
 export default function graphqlReducer(state = initState, action) {

@@ -23,6 +23,7 @@ const initState = new Map({
   walletEncrypted: false,
   walletUnlockedUntil: 0,
   pendingTxsSnackbarVisible: true,
+  createEventDialogVisible: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -112,6 +113,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.DISMISS_PENDING_TXS_SNACKBAR: {
       return state.set('pendingTxsSnackbarVisible', false);
+    }
+    case actions.TOGGLE_CREATE_EVENT_DIALOG: {
+      return state.set('createEventDialogVisible', action.isVisible);
     }
     default: {
       return state;

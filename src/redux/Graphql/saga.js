@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles, queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphQuery';
 import {
   createTopic,
   createBetTx,
@@ -15,13 +15,27 @@ import {
 import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { request } from '../../network/httpRequest';
+import Routes from '../../network/routes';
 
 // Send allTopics query
 export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
     try {
       const result = yield call(queryAllTopics, action.filters, action.orderBy, action.limit, action.skip);
-      const topics = _.map(result, processTopic);
+
+      // Filter out duplicate topics
+      const topics = [];
+      _.each(result, (topic) => {
+        const processed = processTopic(topic);
+        const index = _.findIndex(topics, { txid: topic.txid });
+        if (index === -1) {
+          topics.push(processed);
+        } else if (!topics[index].address) {
+          topics.splice(index, 1, processed);
+        }
+      });
+
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: topics,
@@ -30,6 +44,46 @@ export function* getTopicsHandler() {
       });
     } catch (err) {
       console.error(err);
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: [],
+        limit: action.limit,
+        skip: action.skip,
+      });
+    }
+  });
+}
+
+// Send allTopics query for actionable topics: topics you can withdraw escrow and topics that you won
+export function* getActionableTopicsHandler() {
+  yield takeEvery(actions.GET_ACTIONABLE_TOPICS, function* getActionableTopicsRequest(action) {
+    try {
+      const voteFilters = [];
+      const topicFilters = [];
+
+      // Get all votes for all your addresses
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      });
+      const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
+      const topics = _.map(result, processTopic);
+
+      yield put({
+        type: actions.GET_TOPICS_RETURN,
+        value: topics,
+        limit: action.limit,
+        skip: action.skip,
+      });
+    } catch (err) {
+      console.log(err);
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
@@ -57,7 +111,19 @@ export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
     try {
       const result = yield call(queryAllOracles, action.filters, action.orderBy, action.limit, action.skip);
-      const oracles = _.map(result, processOracle);
+
+      // Filter out duplicate topics
+      const oracles = [];
+      _.each(result, (oracle) => {
+        const processed = processOracle(oracle);
+        const index = _.findIndex(oracles, { txid: oracle.txid });
+        if (index === -1) {
+          oracles.push(processed);
+        } else if (!oracles[index].address) {
+          oracles.splice(index, 1, processed);
+        }
+      });
+
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: oracles,
@@ -118,7 +184,8 @@ export function* getPendingTransactionsHandler() {
 
       const pendingTxsObj = {
         count: txs.length,
-        createEvent: _.filter(txs, { type: TransactionType.CreateEvent }),
+        createEvent: _.filter(txs, (tx) =>
+          tx.type === TransactionType.ApproveCreateEvent || tx.type === TransactionType.CreateEvent),
         bet: _.filter(txs, { type: TransactionType.Bet }),
         setResult: _.filter(txs, (tx) =>
           tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult),
@@ -152,6 +219,9 @@ function processTransaction(tx) {
   if (tx.token && tx.token === Token.Bot) {
     newTx.amount = satoshiToDecimal(tx.amount);
     newTx.fee = gasToQtum(tx.gasUsed);
+  } else if (tx.token && tx.token === Token.Qtum && tx.type === TransactionType.Transfer) {
+    // Process sendtoaddress
+    newTx.fee = gasToQtum(tx.gasUsed);
   }
   return newTx;
 }
@@ -159,50 +229,63 @@ function processTransaction(tx) {
 // Gets the number of actionable items; setResult, finalize, withdraw
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
-    let totalCount = 0;
-    const countByStatus = {
+    const actionItems = {
       [EventStatus.Set]: 0,
       [EventStatus.Finalize]: 0,
       [EventStatus.Withdraw]: 0,
+      totalCount: 0,
     };
 
     try {
-      const topicFilters = [
-        { status: OracleStatus.Withdraw },
-      ];
-      let result = yield call(queryAllTopics, topicFilters);
-      countByStatus[EventStatus.Withdraw] = result.length;
-      totalCount += result.length;
+      const voteFilters = [];
+      const topicFilters = [];
 
+      // Get all votes for all your addresses
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+      });
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, (vote) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      });
+      let result = yield call(queryAllTopics, topicFilters);
+      actionItems[EventStatus.Withdraw] = result.length;
+      actionItems.totalCount += result.length;
+
+      // Get result set items
       const oracleSetFilters = [
-        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.walletAddress },
+        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
         { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       ];
       result = yield call(queryAllOracles, oracleSetFilters);
-      countByStatus[EventStatus.Set] = result.length;
-      totalCount += result.length;
+      actionItems[EventStatus.Set] = result.length;
+      actionItems.totalCount += result.length;
 
+      // Get finalize items
       const oracleFinalizeFilters = [
         { token: Token.Bot, status: OracleStatus.WaitResult },
       ];
       result = yield call(queryAllOracles, oracleFinalizeFilters);
-      countByStatus[EventStatus.Finalize] = result.length;
-      totalCount += result.length;
+      actionItems[EventStatus.Finalize] = result.length;
+      actionItems.totalCount += result.length;
 
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
-        value: {
-          totalCount,
-          countByStatus,
-        },
+        value: actionItems,
       });
     } catch (err) {
       console.log(err);
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          totalCount,
-          countByStatus,
+          [EventStatus.Set]: 0,
+          [EventStatus.Finalize]: 0,
+          [EventStatus.Withdraw]: 0,
+          totalCount: 0,
         },
       });
     }
@@ -213,6 +296,8 @@ export function* getActionableItemCountHandler() {
 export function* createTopicTxHandler() {
   yield takeEvery(actions.CREATE_TOPIC_TX, function* createTopicTxRequest(action) {
     try {
+      const escrowAmountBotoshi = decimalToSatoshi(action.params.escrowAmount);
+
       const tx = yield call(
         createTopic,
         action.params.name,
@@ -222,6 +307,7 @@ export function* createTopicTxHandler() {
         action.params.bettingEndTime,
         action.params.resultSettingStartTime,
         action.params.resultSettingEndTime,
+        escrowAmountBotoshi,
         action.params.senderAddress
       );
 
@@ -402,6 +488,7 @@ export function* createTransferTxHandler() {
 export default function* graphqlSaga() {
   yield all([
     fork(getTopicsHandler),
+    fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),

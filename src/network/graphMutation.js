@@ -61,6 +61,7 @@ export function createTopic(
   bettingEndTime,
   resultSettingStartTime,
   resultSettingEndTime,
+  escrowAmount,
   senderAddress
 ) {
   const args = {
@@ -71,6 +72,7 @@ export function createTopic(
     bettingEndTime,
     resultSettingStartTime,
     resultSettingEndTime,
+    amount: escrowAmount,
     senderAddress,
   };
 

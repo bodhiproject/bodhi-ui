@@ -3,6 +3,7 @@ import _ from 'lodash';
 export const TYPE = {
   topic: 'Topic',
   oracle: 'Oracle',
+  vote: 'Vote',
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
 };
@@ -19,6 +20,7 @@ const TYPE_DEF = {
     resultIdx
     qtumAmount
     botAmount
+    creatorAddress
     oracles {
       version
       address
@@ -60,6 +62,18 @@ const TYPE_DEF = {
     resultSetterAddress
     resultSetterQAddress
     consensusThreshold
+  `,
+
+  Vote: `
+    txid
+    version
+    blockNum
+    voterAddress
+    voterQAddress
+    topicAddress
+    oracleAddress
+    optionIdx
+    amount
   `,
 
   SyncInfo: `
@@ -108,6 +122,7 @@ const MUTATIONS = {
       'bettingEndTime',
       'resultSettingStartTime',
       'resultSettingEndTime',
+      'amount',
       'senderAddress',
     ],
     return: `
@@ -263,6 +278,7 @@ const ENUMS = {
   ],
 
   type: [
+    'APPROVECREATEEVENT',
     'CREATEEVENT',
     'BET',
     'APPROVESETRESULT',

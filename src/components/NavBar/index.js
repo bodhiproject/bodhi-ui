@@ -132,7 +132,7 @@ class NavBar extends React.PureComponent {
       actionableItemCount,
     } = this.props;
 
-    if (actionableItemCount && actionableItemCount.totalCount) {
+    if (actionableItemCount.totalCount > 0) {
       return (
         <Link to={RouterPath.set} className={classes.navBarLink}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">

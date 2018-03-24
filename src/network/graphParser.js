@@ -5,6 +5,7 @@ class GraphParser {
     const PARSER_MAPPINGS = {
       Topic: this.parseTopic,
       Oracle: this.parseOracle,
+      Vote: this.parseVote,
       SyncInfo: this.parseSyncInfo,
       Transaction: this.parseTransaction,
     };
@@ -24,6 +25,7 @@ class GraphParser {
       botAmount: entry.botAmount,
       oracles: entry.oracles,
       blockNum: entry.blockNum,
+      creatorAddress: entry.creatorAddress,
     }));
   }
 
@@ -48,6 +50,20 @@ class GraphParser {
       resultSetterQAddress: entry.resultSetterQAddress,
       consensusThreshold: entry.consensusThreshold,
       blockNum: entry.blockNum,
+    }));
+  }
+
+  static parseVote(data) {
+    return data.map((entry) => ({
+      txid: entry.txid,
+      version: entry.version,
+      blockNum: entry.blockNum,
+      voterAddress: entry.voterAddress,
+      voterQAddress: entry.voterQAddress,
+      topicAddress: entry.topicAddress,
+      oracleAddress: entry.oracleAddress,
+      optionIdx: entry.optionIdx,
+      amount: entry.amount,
     }));
   }
 

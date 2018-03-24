@@ -10,6 +10,12 @@ const initState = new Map({
 
 export default function topicReducer(state = initState, action) {
   switch (action.type) {
+    case actions.GET_EVENT_ESCROW_AMOUNT_RETURN: {
+      if (action.error) {
+        return state.set('errorTopic', action.error);
+      }
+      return state.set('eventEscrowAmount', action.value);
+    }
     case actions.GET_BET_VOTE_BALANCES_RETURN: {
       if (action.error) {
         return state.set('errorTopic', action.error);

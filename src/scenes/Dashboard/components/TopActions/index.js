@@ -13,20 +13,20 @@ import { MenuItem } from 'material-ui/Menu';
 import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
+import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
-import CreateEvent from '../../../../scenes/CreateEvent/index';
+import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
 class TopActions extends Component {
-  state = {
-    createDialogOpen: false,
-  };
-
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sortBy: PropTypes.string,
     sortOrderChanged: PropTypes.func,
+    lastUsedAddress: PropTypes.string.isRequired,
+    toggleCreateEventDialog: PropTypes.func.isRequired,
+    getEventEscrowAmount: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -34,25 +34,20 @@ class TopActions extends Component {
     sortOrderChanged: undefined,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.onSortOptionSelected = this.onSortOptionSelected.bind(this);
-    this.onCreateDialogClose = this.onCreateDialogClose.bind(this);
-    this.onCreateDialogOpen = this.onCreateDialogOpen.bind(this);
-  }
-
-  onSortOptionSelected(event) {
+  onSortOptionSelected = (event) => {
     this.props.sortOrderChanged(event.target.value);
-  }
+  };
 
-  onCreateDialogClose() {
-    this.setState({ createDialogOpen: false });
-  }
+  onCreateDialogOpen = () => {
+    const {
+      toggleCreateEventDialog,
+      lastUsedAddress,
+      getEventEscrowAmount,
+    } = this.props;
 
-  onCreateDialogOpen() {
-    this.setState({ createDialogOpen: true });
-  }
+    toggleCreateEventDialog(true);
+    getEventEscrowAmount(lastUsedAddress);
+  };
 
   render() {
     const { classes, sortBy } = this.props;
@@ -60,7 +55,13 @@ class TopActions extends Component {
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
-          <Button variant="raised" size="medium" color="primary" className={classes.createEventButton} onClick={this.onCreateDialogOpen}>
+          <Button
+            variant="raised"
+            size="medium"
+            color="primary"
+            className={classes.createEventButton}
+            onClick={this.onCreateDialogOpen}
+          >
             <AddIcon fontSize />
             <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
           </Button>
@@ -78,19 +79,21 @@ class TopActions extends Component {
             </FormControl>
           </Card>
         </Grid>
-        <CreateEvent open={this.state.createDialogOpen} onClose={this.onCreateDialogClose} />
       </Grid>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
+  lastUsedAddress: state.App.get('lastUsedAddress'),
   sortBy: state.Dashboard.get('sortBy'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
     sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
+    getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
   };
 }
 

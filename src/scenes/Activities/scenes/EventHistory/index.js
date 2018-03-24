@@ -62,7 +62,7 @@ class EventHistory extends React.Component {
 
     // return from the click event
     if (getOraclesReturn !== this.props.getOraclesReturn) {
-      const path = getDetailPagePath(getOraclesReturn);
+      const path = getDetailPagePath(getOraclesReturn.data);
       if (path) {
         this.props.history.push(path);
       }
@@ -109,6 +109,7 @@ class EventHistory extends React.Component {
   executeTxsRequest = () => {
     this.props.getTransactions(
       [
+        { type: TransactionType.ApproveCreateEvent },
         { type: TransactionType.CreateEvent },
         { type: TransactionType.Bet },
         { type: TransactionType.ApproveSetResult },

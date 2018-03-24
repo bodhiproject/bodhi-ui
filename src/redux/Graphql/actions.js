@@ -9,6 +9,15 @@ const graphqlActions = {
     skip,
   }),
 
+  GET_ACTIONABLE_TOPICS: 'GET_ACTIONABLE_TOPICS',
+  getActionableTopics: (walletAddresses, orderBy, limit, skip) => ({
+    type: graphqlActions.GET_ACTIONABLE_TOPICS,
+    walletAddresses,
+    orderBy,
+    limit,
+    skip,
+  }),
+
   GET_ORACLES: 'GET_ORACLES',
   GET_ORACLES_RETURN: 'GET_ORACLES_RETURN',
   getOracles: (filters, orderBy, limit, skip) => ({
@@ -35,9 +44,10 @@ const graphqlActions = {
 
   GET_ACTIONABLE_ITEM_COUNT: 'GET_ACTIONABLE_ITEM_COUNT',
   GET_ACTIONABLE_ITEM_COUNT_RETURN: 'GET_ACTIONABLE_ITEM_COUNT_RETURN',
-  getActionableItemCount: (walletAddress) => ({
+  getActionableItemCount: (lastUsedAddress, walletAddresses) => ({
     type: graphqlActions.GET_ACTIONABLE_ITEM_COUNT,
-    walletAddress,
+    lastUsedAddress,
+    walletAddresses,
   }),
 
   CREATE_TOPIC_TX: 'CREATE_TOPIC_TX',
@@ -50,6 +60,7 @@ const graphqlActions = {
     bettingEndTime,
     resultSettingStartTime,
     resultSettingEndTime,
+    escrowAmount,
     senderAddress,
   ) => ({
     type: graphqlActions.CREATE_TOPIC_TX,
@@ -61,6 +72,7 @@ const graphqlActions = {
       bettingEndTime,
       resultSettingStartTime,
       resultSettingEndTime,
+      escrowAmount,
       senderAddress,
     },
   }),
