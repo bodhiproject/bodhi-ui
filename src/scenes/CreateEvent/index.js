@@ -282,6 +282,14 @@ class CreateEvent extends React.Component {
             </div>
             <Grid container>
               <Grid item xs={3}>
+                {intl.formatMessage(messages.creator)}
+              </Grid>
+              <Grid item xs={9}>
+                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} eventEscrowAmount={eventEscrowAmount} changeFormFieldValue={changeFormFieldValue} />
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item xs={3}>
                 {intl.formatMessage(messages.title)}
               </Grid>
               <Grid item container xs={9}>
@@ -293,14 +301,6 @@ class CreateEvent extends React.Component {
                     component={this.renderTextField}
                   />
                 </Grid>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={3}>
-                {intl.formatMessage(messages.creator)}
-              </Grid>
-              <Grid item xs={9}>
-                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} changeFormFieldValue={changeFormFieldValue} />
               </Grid>
             </Grid>
             <Grid container>

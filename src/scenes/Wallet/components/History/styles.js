@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   txHistoryPaper: {
     minWidth: theme.sizes.table.minWidth,
-    overflowX: 'scroll',
+    overflow: 'scroll',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.paper,
@@ -11,6 +11,7 @@ const styles = (theme) => ({
   },
   table: {
     marginTop: theme.padding.sm.px,
+    overflow: 'scroll',
   },
 });
 
