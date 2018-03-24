@@ -233,7 +233,7 @@ class WalletHistory extends React.Component {
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />
-        <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
+        <TableCell /><TableCell /><TableCell /><TableCell />
       </TableRow>
     );
 
