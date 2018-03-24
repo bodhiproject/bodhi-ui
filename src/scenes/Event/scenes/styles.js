@@ -1,4 +1,7 @@
 const styles = (theme) => ({
+  importantNoteContainer: {
+    margin: `${theme.padding.xs.px} ${theme.padding.xs.px} 0px ${theme.padding.xs.px}`,
+  },
   eventDetailPaper: {
     boxShadow: 'none',
     borderRadius: theme.borderRadius,

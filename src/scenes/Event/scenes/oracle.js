@@ -250,10 +250,12 @@ export default class OraclePage extends React.Component {
                     onWalletChange={this.handleWalletChange}
                   />
                 ))}
-                <ImportantNote
-                  heading={config.importantNote && config.importantNote.heading}
-                  message={config.importantNote && config.importantNote.message}
-                />
+                <div className={classes.importantNoteContainer}>
+                  <ImportantNote
+                    heading={config.importantNote && config.importantNote.heading}
+                    message={config.importantNote && config.importantNote.message}
+                  />
+                </div>
                 {
                   !unconfirmed
                     ? <div>
