@@ -2,8 +2,11 @@ const AUTHORITY = '127.0.0.1:5555';
 const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
-const BASE_INSIGHT_DEV = 'https://testnet.qtum.org/insight-api';
-const BASE_INSIGHT_PROD = 'https://explorer.qtum.org/insight-api';
+const QTUM_EXPLORER_DEV = 'https://testnet.qtum.org';
+const QTUM_EXPLORER_PROD = 'https://explorer.qtum.org';
+
+const BASE_INSIGHT_DEV = `${QTUM_EXPLORER_DEV}/insight-api`;
+const BASE_INSIGHT_PROD = `${QTUM_EXPLORER_PROD}/insight-api`;
 
 export default {
   graphql: {
@@ -20,5 +23,8 @@ export default {
   },
   insight: {
     totals: `${BASE_INSIGHT_DEV}/statistics/total`,
+  },
+  explorer: {
+    tx: `${QTUM_EXPLORER_DEV}/tx`,
   },
 };

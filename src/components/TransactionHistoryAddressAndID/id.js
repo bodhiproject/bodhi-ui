@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
+import Routes from '../../network/routes';
 
 class TransactionHistoryID extends React.PureComponent {
   static propTypes = {
@@ -29,7 +30,7 @@ class TransactionHistoryID extends React.PureComponent {
 
   onIdClick = () => {
     const { transaction } = this.props;
-    window.open(`https://testnet.qtum.org/tx/${transaction.txid}`, '_blank');
+    window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
   };
 }
 
