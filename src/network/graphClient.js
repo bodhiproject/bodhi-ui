@@ -5,14 +5,14 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 
-import { endpoint } from '../config/app';
+import Routes from '../network/routes';
 
 const httpLink = new HttpLink({
-  uri: endpoint.graphHttp,
+  uri: Routes.graphql.http,
 });
 
 const wsLink = new WebSocketLink({
-  uri: endpoint.graphSubs,
+  uri: Routes.graphql.subs,
   options: {
     reconnect: true,
   },

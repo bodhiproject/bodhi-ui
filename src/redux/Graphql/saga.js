@@ -16,7 +16,6 @@ import Config from '../../config/app';
 import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
-import Routes from '../../network/routes';
 
 // Send allTopics query
 export function* getTopicsHandler() {

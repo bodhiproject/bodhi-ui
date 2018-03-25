@@ -1,27 +1,25 @@
-import { endpoint } from '../config/app';
+const AUTHORITY = '127.0.0.1:5555';
 
-const BODHI_API = endpoint.api;
-const INSIGHT_API = endpoint.insight;
+const HTTP_ROUTE = `http://${AUTHORITY}`;
+const WS_ROUTE = `ws://${AUTHORITY}`;
 
-const Routes = {
-  unlockWallet: `${BODHI_API}/wallet-passphrase`,
-  getWalletInfo: `${BODHI_API}/get-wallet-info`,
-  listUnspent: `${BODHI_API}/list-unspent`,
-  getAccountAddress: `${BODHI_API}/get-account-address`,
-  approve: `${BODHI_API}/approve`,
-  allowance: `${BODHI_API}/allowance`,
-  botBalance: `${BODHI_API}/bot-balance`,
-  eventEscrowAmount: `${BODHI_API}/event-escrow-amount`,
-  createTopic: `${BODHI_API}/create-topic`,
-  bet: `${BODHI_API}/bet`,
-  setResult: `${BODHI_API}/set-result`,
-  vote: `${BODHI_API}/vote`,
-  finalizeResult: `${BODHI_API}/finalize-result`,
-  withdraw: `${BODHI_API}/withdraw`,
-  winnings: `${BODHI_API}/winnings`,
-  betBalances: `${BODHI_API}/bet-balances`,
-  voteBalances: `${BODHI_API}/vote-balances`,
-  insightTotals: `${INSIGHT_API}/statistics/total`,
+const BASE_INSIGHT_DEV = 'https://testnet.qtum.org/insight-api';
+const BASE_INSIGHT_PROD = 'https://explorer.qtum.org/insight-api';
+
+export default {
+  graphql: {
+    http: `${HTTP_ROUTE}/graphql`,
+    subs: `${WS_ROUTE}/subscriptions`,
+  },
+  api: {
+    getWalletInfo: `${HTTP_ROUTE}/get-wallet-info`,
+    unlockWallet: `${HTTP_ROUTE}/wallet-passphrase`,
+    eventEscrowAmount: `${HTTP_ROUTE}/event-escrow-amount`,
+    winnings: `${HTTP_ROUTE}/winnings`,
+    betBalances: `${HTTP_ROUTE}/bet-balances`,
+    voteBalances: `${HTTP_ROUTE}/vote-balances`,
+  },
+  insight: {
+    totals: `${BASE_INSIGHT_DEV}/statistics/total`,
+  },
 };
-
-export default Routes;

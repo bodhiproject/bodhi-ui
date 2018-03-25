@@ -46,7 +46,7 @@ export function* onSyncInfoHandler() {
 export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
-      const result = yield call(request, Routes.insightTotals);
+      const result = yield call(request, Routes.insight.totals);
 
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
@@ -62,7 +62,7 @@ export function* getInsightTotalsRequestHandler() {
 export function* getWalletInfoRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
     try {
-      const result = yield call(request, Routes.getWalletInfo);
+      const result = yield call(request, Routes.api.getWalletInfo);
 
       let isEncrypted = false;
       if (result && result.result && result.result.unlocked_until) {
@@ -79,7 +79,7 @@ export function* getWalletInfoRequestHandler() {
       yield put({
         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
         error: {
-          route: Routes.getWalletInfo,
+          route: Routes.api.getWalletInfo,
           message: error.message,
         },
       });
@@ -101,10 +101,10 @@ export function* unlockWalletRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
       // Unlock the wallet
-      yield call(request, Routes.unlockWallet, options);
+      yield call(request, Routes.api.unlockWallet, options);
 
       // Get the unlocked_until timestamp
-      const result = yield call(request, Routes.getWalletInfo);
+      const result = yield call(request, Routes.api.getWalletInfo);
       const unlockedUntil = result.result.unlocked_until;
 
       yield put({
@@ -115,7 +115,7 @@ export function* unlockWalletRequestHandler() {
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
         error: {
-          route: Routes.unlockWallet,
+          route: Routes.api.unlockWallet,
           message: error.message,
         },
       });
