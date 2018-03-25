@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { TableCell } from 'material-ui/Table';
-import { FormattedMessage, injectIntl } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
+import Routes from '../../network/routes';
 
 class TransactionHistoryID extends React.PureComponent {
   static propTypes = {
@@ -19,13 +20,18 @@ class TransactionHistoryID extends React.PureComponent {
           <div className={classes.txidLabel}>
             <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
           </div>
-          <div>
+          <div className={classes.txIdText} onClick={this.onIdClick}>
             {transaction.txid}
           </div>
         </div>
       </TableCell>
     );
   }
+
+  onIdClick = () => {
+    const { transaction } = this.props;
+    window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
+  };
 }
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TransactionHistoryID));

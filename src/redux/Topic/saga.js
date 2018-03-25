@@ -21,7 +21,7 @@ export function* getEventEscrowAmountHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.eventEscrowAmount, options);
+      const result = yield call(request, Routes.api.eventEscrowAmount, options);
       const eventEscrowAmount = satoshiToDecimal(result[0]);
 
       yield put({
@@ -32,7 +32,7 @@ export function* getEventEscrowAmountHandler() {
       yield put({
         type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
         error: {
-          route: Routes.eventEscrowAmount,
+          route: Routes.api.eventEscrowAmount,
           message: err.message,
         },
       });
@@ -57,10 +57,10 @@ export function* getBetAndVoteBalancesHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
 
-      let result = yield call(request, Routes.betBalances, options);
+      let result = yield call(request, Routes.api.betBalances, options);
       const bets = _.map(result[0], satoshiToDecimal);
 
-      result = yield call(request, Routes.voteBalances, options);
+      result = yield call(request, Routes.api.voteBalances, options);
       const votes = _.map(result[0], satoshiToDecimal);
 
       yield put({
@@ -74,7 +74,7 @@ export function* getBetAndVoteBalancesHandler() {
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,
         error: {
-          route: `${Routes.betBalances} ${Routes.voteBalances}`,
+          route: `${Routes.api.betBalances} ${Routes.api.voteBalances}`,
           message: err.message,
         },
       });
@@ -101,7 +101,7 @@ export function* calculateWinningsHandler() {
         },
       };
 
-      const result = yield call(request, Routes.winnings, options);
+      const result = yield call(request, Routes.api.winnings, options);
       let value;
       if (result) {
         const botWon = satoshiToDecimal(result['0']);
@@ -119,7 +119,7 @@ export function* calculateWinningsHandler() {
       yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
         error: {
-          route: Routes.winnings,
+          route: Routes.api.winnings,
           message: err.message,
         },
       });
