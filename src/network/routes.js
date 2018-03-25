@@ -1,5 +1,4 @@
 const AUTHORITY = '127.0.0.1:5555';
-
 const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
