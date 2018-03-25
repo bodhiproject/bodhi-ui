@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { TableCell } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
