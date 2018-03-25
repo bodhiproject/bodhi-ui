@@ -19,13 +19,18 @@ class TransactionHistoryID extends React.PureComponent {
           <div className={classes.txidLabel}>
             <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
           </div>
-          <div>
+          <div onClick={this.onIdClick}>
             {transaction.txid}
           </div>
         </div>
       </TableCell>
     );
   }
+
+  onIdClick = () => {
+    const { transaction } = this.props;
+    window.open(`https://testnet.qtum.org/tx/${transaction.txid}`, '_blank');
+  };
 }
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TransactionHistoryID));
