@@ -12,6 +12,10 @@ const styles = (theme) => ({
     bottom: '4px',
     right: '24px',
   },
+  txIdText: {
+    color: theme.palette.primary.main,
+    cursor: 'pointer',
+  },
 });
 
 export default styles;

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { TableCell } from 'material-ui/Table';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
@@ -19,7 +20,7 @@ class TransactionHistoryID extends React.PureComponent {
           <div className={classes.txidLabel}>
             <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
           </div>
-          <div onClick={this.onIdClick}>
+          <div className={classes.txIdText} onClick={this.onIdClick}>
             {transaction.txid}
           </div>
         </div>
