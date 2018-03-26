@@ -44,9 +44,8 @@ const graphqlActions = {
 
   GET_ACTIONABLE_ITEM_COUNT: 'GET_ACTIONABLE_ITEM_COUNT',
   GET_ACTIONABLE_ITEM_COUNT_RETURN: 'GET_ACTIONABLE_ITEM_COUNT_RETURN',
-  getActionableItemCount: (lastUsedAddress, walletAddresses) => ({
+  getActionableItemCount: (walletAddresses) => ({
     type: graphqlActions.GET_ACTIONABLE_ITEM_COUNT,
-    lastUsedAddress,
     walletAddresses,
   }),
 

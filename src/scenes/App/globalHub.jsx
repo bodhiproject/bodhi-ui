@@ -75,10 +75,7 @@ class GlobalHub extends React.PureComponent {
     if ((syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)
       || nextProps.lastUsedAddress !== lastUsedAddress
       || (_.isEmpty(walletAddresses) && !_.isEmpty(nextProps.walletAddresses))) {
-      getActionableItemCount(
-        nextProps.lastUsedAddress,
-        nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses,
-      );
+      getActionableItemCount(nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses);
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block
@@ -122,8 +119,7 @@ const mapDispatchToProps = (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
-  getActionableItemCount: (lastUsedAddress, walletAddresses) =>
-    dispatch(graphqlActions.getActionableItemCount(lastUsedAddress, walletAddresses)),
+  getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 });
 
