@@ -43,6 +43,7 @@ const messages = defineMessages({
 
 export default class WithdrawDialog extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddress: PropTypes.string,
@@ -51,8 +52,6 @@ export default class WithdrawDialog extends React.Component {
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
     createTransferTx: PropTypes.func,
-    // eslint-disable-next-line react/no-typos
-    intl: intlShape.isRequired,
   };
 
   static defaultProps = {
@@ -62,22 +61,11 @@ export default class WithdrawDialog extends React.Component {
     createTransferTx: undefined,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      toAddress: '',
-      withdrawAmount: 0,
-      selectedToken: Token.Qtum,
-    };
-
-    this.getFromToFields = this.getFromToFields.bind(this);
-    this.getAmountFields = this.getAmountFields.bind(this);
-    this.onToAddressChange = this.onToAddressChange.bind(this);
-    this.onAmountChange = this.onAmountChange.bind(this);
-    this.onTokenChange = this.onTokenChange.bind(this);
-    this.onSendClicked = this.onSendClicked.bind(this);
-  }
+  state = {
+    toAddress: '',
+    withdrawAmount: 0,
+    selectedToken: Token.Qtum,
+  };
 
   render() {
     const {
@@ -114,7 +102,7 @@ export default class WithdrawDialog extends React.Component {
     );
   }
 
-  getFromToFields() {
+  getFromToFields = () => {
     const {
       classes,
       walletAddress,
@@ -142,9 +130,9 @@ export default class WithdrawDialog extends React.Component {
         />
       </div>
     );
-  }
+  };
 
-  getAmountFields() {
+  getAmountFields = () => {
     const {
       classes,
       intl,
@@ -197,27 +185,27 @@ export default class WithdrawDialog extends React.Component {
         </Typography>
       </div>
     );
-  }
+  };
 
-  onToAddressChange(event) {
+  onToAddressChange = (event) => {
     this.setState({
       toAddress: event.target.value,
     });
-  }
+  };
 
-  onAmountChange(event) {
+  onAmountChange = (event) => {
     this.setState({
       withdrawAmount: event.target.value,
     });
-  }
+  };
 
-  onTokenChange(event) {
+  onTokenChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
-  onSendClicked() {
+  onSendClicked = () => {
     const { walletAddress, createTransferTx } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
@@ -228,5 +216,5 @@ export default class WithdrawDialog extends React.Component {
 
     createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
-  }
+  };
 }
