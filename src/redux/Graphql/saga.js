@@ -256,10 +256,15 @@ export function* getActionableItemCountHandler() {
       actionItems.totalCount += result.length;
 
       // Get result set items
-      const oracleSetFilters = [
-        { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: action.lastUsedAddress },
-        { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-      ];
+      const oracleSetFilters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
+      _.each(action.walletAddresses, (item) => {
+        oracleSetFilters.push({
+          token: Token.Qtum,
+          status: OracleStatus.WaitResult,
+          resultSetterQAddress: item.address,
+        });
+      });
+
       result = yield call(queryAllOracles, oracleSetFilters);
       actionItems[EventStatus.Set] = result.length;
       actionItems.totalCount += result.length;
