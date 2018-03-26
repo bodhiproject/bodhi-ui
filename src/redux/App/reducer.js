@@ -59,21 +59,6 @@ export default function appReducer(state = initState, action) {
         });
       });
 
-      // Add old addresses to new list if not found
-      const oldAddresses = state.get('walletAddresses');
-      _.each(oldAddresses, (addressObj) => {
-        const index = _.findIndex(newAddresses, { address: addressObj.address });
-
-        // Old address not found in new address list. Add it to new list.
-        if (index === -1) {
-          newAddresses.push({
-            address: addressObj.address,
-            qtum: 0,
-            bot: 0,
-          });
-        }
-      });
-
       // Sort by qtum balance
       newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
 
