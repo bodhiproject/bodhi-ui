@@ -26,9 +26,13 @@ class CreateEventCreatorPicker extends React.PureComponent {
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
-    eventEscrowAmount: PropTypes.number.isRequired,
+    eventEscrowAmount: PropTypes.number,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
+
+  static defaultProps = {
+    eventEscrowAmount: 100,
+  }
 
   renderCreatorAddressSelector = ({
     input,

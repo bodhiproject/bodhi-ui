@@ -4,7 +4,6 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import classNames from 'classnames';
 
-import { EventWarningType } from '../../constants';
 import styles from './styles';
 
 

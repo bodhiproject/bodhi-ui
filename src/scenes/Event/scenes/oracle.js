@@ -266,7 +266,7 @@ export default class OraclePage extends React.Component {
     this.setState({ voteAmount: amount });
   }
 
-  handleWalletChange(address) {
+  handleWalletChange = (address) => {
     this.props.setLastUsedAddress(address);
   }
 

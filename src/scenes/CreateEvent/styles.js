@@ -9,6 +9,13 @@ const styles = (theme) => ({
   importantNoteContainer: {
     marginBottom: theme.padding.xs.px,
   },
+  title: {
+    padding: 0,
+  },
+  warning: {
+    width: 'fit-content',
+    margin: 0,
+  },
 });
 
 export default styles;
