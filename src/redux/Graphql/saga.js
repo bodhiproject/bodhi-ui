@@ -13,7 +13,7 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { decimalToSatoshi, satoshiToDecimal, gasToQtum } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal, gasToQtum, getUniqueVotes } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
 
@@ -65,8 +65,9 @@ export function* getActionableTopicsHandler() {
         voteFilters.push({ voterQAddress: item.address });
         topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
+
       let votes = yield call(queryAllVotes, voteFilters);
-      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+      votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, (vote) => {
@@ -244,8 +245,9 @@ export function* getActionableItemCountHandler() {
         voteFilters.push({ voterQAddress: item.address });
         topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
+
       let votes = yield call(queryAllVotes, voteFilters);
-      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress']);
+      votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, (vote) => {
