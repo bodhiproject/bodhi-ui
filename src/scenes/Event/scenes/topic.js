@@ -94,7 +94,6 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-
 export default class TopicPage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -188,9 +187,6 @@ export default class TopicPage extends React.Component {
       return null;
     }
 
-    const qtumTotal = _.sum(topic.qtumAmount);
-    const botTotal = _.sum(topic.botAmount);
-
     return (
       <div>
         <BackButton />
@@ -202,9 +198,6 @@ export default class TopicPage extends React.Component {
               </Typography>
               <Grid item xs={12}>
                 {this.renderWithdrawContainer()}
-                {/* <Grid item xs={12} lg={9}>
-                  <EventWarning id={actionButtonConfig.id} message={actionButtonConfig.message} className={actionButtonConfig.warningTypeClass} />
-                  {this.renderWithdrawContainer(actionButtonConfig)} */}
                 {this.renderOptions()}
                 <EventResultHistory oracles={topic.oracles} />
                 <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
@@ -215,7 +208,7 @@ export default class TopicPage extends React.Component {
               <StepperVertRight steps={config.steps} />
             </Grid>
           </Grid>
-          <TransactionSentDialog txReturn={this.props.txReturn} />
+          <TransactionSentDialog txReturn={txReturn} />
         </Paper>
       </div>
     );
@@ -225,14 +218,12 @@ export default class TopicPage extends React.Component {
     const {
       intl,
       classes,
-      walletAddresses,
       betBalances,
       voteBalances,
       botWinnings,
       qtumWinnings,
-      lastUsedAddress,
     } = this.props;
-    const { topic, config } = this.state;
+    const { topic } = this.state;
 
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
@@ -349,7 +340,6 @@ export default class TopicPage extends React.Component {
   };
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
-    const { classes } = this.props;
     const config = this.getActionButtonConfig(withdrawableAddress.address);
 
     if (!config.show) {
