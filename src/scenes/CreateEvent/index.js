@@ -221,7 +221,6 @@ const validate = (values, props) => {
 export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    // fields: PropTypes.array.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
