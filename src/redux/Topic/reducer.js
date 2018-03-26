@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 import actions from './actions';
 
 const initState = new Map({
@@ -6,6 +7,7 @@ const initState = new Map({
   voteBalances: [],
   botWinnings: 0,
   qtumWinnings: 0,
+  walletAddressesWithWinnings: [],
 });
 
 export default function topicReducer(state = initState, action) {
@@ -29,8 +31,9 @@ export default function topicReducer(state = initState, action) {
         return state.set('errorTopic', action.error);
       }
       return state
-        .set('botWinnings', action.value.botWon)
-        .set('qtumWinnings', action.value.qtumWon);
+        .set('walletAddressesWithWinnings', action.value)
+        .set('botWinnings', _.sumBy(action.value, (wallet) => wallet.botWon ? wallet.botWon : 0))
+        .set('qtumWinnings', _.sumBy(action.value, (wallet) => wallet.qtumWon ? wallet.qtumWon : 0));
     }
     case actions.CLEAR_ERROR_TOPIC: {
       return state.set('errorTopic', undefined);

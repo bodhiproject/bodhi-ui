@@ -97,6 +97,12 @@ const styles = (theme) => ({
   eventUnconfirmedText: {
     marginTop: theme.padding.sm.px,
   },
+  pending: {
+    color: theme.palette.secondary.main,
+  },
+  withdrawn: {
+    color: theme.palette.primary.main,
+  },
 });
 
 export default styles;

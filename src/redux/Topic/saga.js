@@ -87,28 +87,37 @@ export function* calculateWinningsHandler() {
     try {
       const {
         contractAddress,
-        senderAddress,
+        walletAddresses,
       } = action.params;
 
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+      const value = [];
+      for (let i = 0; i < walletAddresses.length; i++) {
+        const item = walletAddresses[i];
+        const senderAddress = item.address;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({
+            contractAddress,
+            senderAddress,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
 
-      const result = yield call(request, Routes.api.winnings, options);
-      let value;
-      if (result) {
-        const botWon = satoshiToDecimal(result['0']);
-        const qtumWon = satoshiToDecimal(result['1']);
-        value = { botWon, qtumWon };
-      } else {
-        value = { botWon: 0, qtumWon: 0 };
+        const result = yield call(request, Routes.api.winnings, options);
+        let botWon = 0;
+        let qtumWon = 0;
+
+        if (result) {
+          botWon = satoshiToDecimal(result['0']);
+          qtumWon = satoshiToDecimal(result['1']);
+        }
+
+        // return only winning addresses
+        if (botWon || qtumWon) {
+          value.push({ address: senderAddress, botWon, qtumWon });
+        }
       }
 
       yield put({
