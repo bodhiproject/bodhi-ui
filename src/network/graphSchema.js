@@ -224,6 +224,7 @@ const MUTATIONS = {
 
   withdraw: {
     mapping: [
+      'type',
       'version',
       'topicAddress',
       'senderAddress',
@@ -287,6 +288,7 @@ const ENUMS = {
     'VOTE',
     'FINALIZERESULT',
     'WITHDRAW',
+    'WITHDRAWESCROW',
     'TRANSFER',
   ],
 

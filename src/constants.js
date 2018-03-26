@@ -63,6 +63,7 @@ module.exports = {
     Vote: 'VOTE',
     FinalizeResult: 'FINALIZERESULT',
     Withdraw: 'WITHDRAW',
+    WithdrawEscrow: 'WITHDRAWESCROW',
     Transfer: 'TRANSFER',
   },
 
