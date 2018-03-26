@@ -210,11 +210,17 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Set: {
+        const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
+        _.each(walletAddresses, (addressObj) => {
+          filters.push({
+            token: Token.Qtum,
+            status: OracleStatus.WaitResult,
+            resultSetterQAddress: addressObj.address,
+          });
+        });
+
         getOracles(
-          [
-            { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: lastUsedAddress },
-            { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-          ],
+          filters,
           { field: 'resultSetEndTime', direction: sortDirection },
           limit,
           skip,
