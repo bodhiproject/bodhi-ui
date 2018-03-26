@@ -14,6 +14,7 @@ import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
 import StepperVertRight from '../../../components/StepperVertRight/index';
@@ -77,11 +78,12 @@ const pageMessage = defineMessages({
   voteBalances: state.Topic.get('voteBalances'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
+  winningAddresses: state.Topic.get('winningAddresses'),
 }), (dispatch, props) => ({
   getBetAndVoteBalances: (contractAddress, senderAddress) =>
     dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
-  calculateWinnings: (contractAddress, senderAddress) =>
-    dispatch(topicActions.calculateWinnings(contractAddress, senderAddress)),
+  calculateWinnings: (contractAddress, walletAddresses) =>
+    dispatch(topicActions.calculateWinnings(contractAddress, walletAddresses)),
   getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   createWithdrawTx: (version, topicAddress, senderAddress) =>
@@ -107,6 +109,7 @@ export default class TopicPage extends React.Component {
     calculateWinnings: PropTypes.func.isRequired,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
+    winningAddresses: PropTypes.array,
     createWithdrawTx: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
@@ -129,6 +132,7 @@ export default class TopicPage extends React.Component {
     voteBalances: [],
     botWinnings: 0,
     qtumWinnings: 0,
+    winningAddresses: [],
   };
 
   constructor(props) {
@@ -158,6 +162,7 @@ export default class TopicPage extends React.Component {
       getTransactionsReturn,
       botWinnings,
       qtumWinnings,
+      winningAddresses,
     } = this.props;
     const { address } = this.state;
 
@@ -170,6 +175,7 @@ export default class TopicPage extends React.Component {
       syncBlockTime,
       lastUsedAddress,
       getTopicsReturn,
+      winningAddresses,
     } = this.props;
     const { address } = this.state;
 
@@ -187,7 +193,7 @@ export default class TopicPage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn, getTransactionsReturn } = this.props;
+    const { classes, txReturn, getTransactionsReturn, lastUsedAddress } = this.props;
     const { topic, config } = this.state;
 
     if (!topic || !config) {
@@ -196,7 +202,6 @@ export default class TopicPage extends React.Component {
 
     const qtumTotal = _.sum(topic.qtumAmount);
     const botTotal = _.sum(topic.botAmount);
-    const actionButtonConfig = this.getActionButtonConfig();
 
     return (
       <div>
@@ -207,9 +212,8 @@ export default class TopicPage extends React.Component {
               <Typography variant="display1" className={classes.eventDetailTitle}>
                 {topic.name}
               </Typography>
-              <Grid item xs={12} lg={9}>
-                <EventWarning message={actionButtonConfig.message} typeClass={actionButtonConfig.warningTypeClass} />
-                {this.renderWithdrawContainer(actionButtonConfig)}
+              <Grid item xs={12}>
+                {this.renderWithdrawContainer()}
                 {this.renderOptions()}
                 <EventResultHistory oracles={topic.oracles} />
                 <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
@@ -226,7 +230,7 @@ export default class TopicPage extends React.Component {
     );
   }
 
-  renderWithdrawContainer(actionButtonConfig) {
+  renderWithdrawContainer() {
     const {
       intl,
       classes,
@@ -236,6 +240,7 @@ export default class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       lastUsedAddress,
+      winningAddresses,
     } = this.props;
     const { topic, config } = this.state;
 
@@ -246,7 +251,7 @@ export default class TopicPage extends React.Component {
 
     return (
       <Paper className={classes.withdrawPaper}>
-        <div className={classes.withdrawContainerSection}>
+        <div className={classNames(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
           <div className={classes.withdrawContainerSectionIcon}>
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
@@ -271,8 +276,8 @@ export default class TopicPage extends React.Component {
               </Typography>
           }
         </div>
-        {
-          botWinnings || qtumWinnings || true ?
+        { botWinnings || qtumWinnings ?
+          <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
                 <i className="icon iconfont icon-ic_token"></i>
@@ -301,50 +306,96 @@ export default class TopicPage extends React.Component {
                   </Typography>
                 </div>
               </div>
-            </div> : null
+            </div>
+            <div className={classNames(classes.withdrawContainerSection, 'last')}>
+              <div className={classes.withdrawContainerSectionIcon}>
+                <i className="icon iconfont icon-ic_wallet"></i>
+              </div>
+              <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
+                <FormattedMessage id="withdrawDetail.withdrawTo" defaultMessage="WITHDRAW TO">
+                  {(txt) => i18nToUpperCase(txt)}
+                </FormattedMessage>
+              </Typography>
+            </div>
+            {this.renderWithdrawList()}
+          </div> : null
         }
-        <div className={classNames(classes.withdrawContainerSection, 'last')}>
-          <div className={classes.withdrawContainerSectionIcon}>
-            <i className="icon iconfont icon-ic_wallet"></i>
-          </div>
-          <Typography variant="body2" className={classes.withdrawContainerSectionLabel}>
-            <FormattedMessage id="withdrawDetail.withdrawTo" defaultMessage="WITHDRAW TO">
-              {(txt) => i18nToUpperCase(txt)}
-            </FormattedMessage>
-          </Typography>
-          <Select
-            native
-            fullWidth
-            value={lastUsedAddress}
-            onChange={this.onAddressChange}
-            inputProps={{ id: 'address' }}
-          >
-            {walletAddresses.map((item) => (
-              <option key={item.address} value={item.address}>{item.address}</option>
-            ))}
-          </Select>
-        </div>
-        <Button
-          variant="raised"
-          fullWidth
-          size="large"
-          color="primary"
-          disabled={actionButtonConfig.disabled}
-          onClick={this.onWithdrawClicked}
-          className={classes.eventActionButton}
-        >
-          {
-            this.state.isApproving ?
-              <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-              <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
-          }
-        </Button>
       </Paper>
     );
   }
 
-  getActionButtonConfig() {
-    const { getTransactionsReturn, lastUsedAddress } = this.props;
+  renderWithdrawList = () => {
+    const {
+      winningAddresses,
+    } = this.props;
+
+    if (winningAddresses.length > 0) {
+      return (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="dense">
+                <FormattedMessage id="str.address" defaultMessage="Address" />
+              </TableCell>
+              <TableCell padding="dense">
+                <FormattedMessage id="str.type" defaultMessage="Type" />
+              </TableCell>
+              <TableCell padding="dense">
+                <FormattedMessage id="str.amount" defaultMessage="Amount" />
+              </TableCell>
+              <TableCell padding="dense">
+                <FormattedMessage id="str.actions" defaultMessage="Actions" />
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {_.map(winningAddresses, (walletWithinWinnings, index) => (
+              this.renderWinningWithdrawRow(walletWithinWinnings, index)
+            ))}
+          </TableBody>
+        </Table>
+      );
+    }
+
+    return null;
+  };
+
+  renderWinningWithdrawRow = (walletWithinWinnings, index) => {
+    const { classes } = this.props;
+    const config = this.getActionButtonConfig(walletWithinWinnings.address);
+
+    if (!config.show) {
+      return null;
+    }
+
+    return (
+      <TableRow key={walletWithinWinnings.address}>
+        <TableCell padding="dense">
+          <div>{walletWithinWinnings.address}</div>
+          <div className={config.warningTypeClass}>{config.message}</div>
+        </TableCell>
+        <TableCell padding="dense">Winning</TableCell>
+        <TableCell padding="dense">
+          {`${walletWithinWinnings.botWon} ${Token.Bot}, ${walletWithinWinnings.botWon} ${Token.Qtum}`}
+        </TableCell>
+        <TableCell padding="dense">
+          <Button
+            size="small"
+            variant="raised"
+            color="primary"
+            disabled={config.disabled}
+            data-address={walletWithinWinnings.address}
+            onClick={this.onWithdrawClicked}
+          >
+            <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
+          </Button>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  getActionButtonConfig = (senderAddress) => {
+    const { getTransactionsReturn, winningAddresses, classes } = this.props;
     const { address } = this.state;
 
     // Already have a pending tx for this Topic
@@ -352,16 +403,17 @@ export default class TopicPage extends React.Component {
       type: TransactionType.Withdraw,
       status: TransactionStatus.Pending,
       topicAddress: address,
-      senderAddress: lastUsedAddress,
+      senderAddress,
     });
     if (pendingTxs.length > 0) {
       return {
+        show: true,
         disabled: true,
         message: <FormattedMessage
           id="str.pendingTransactionDisabledMsg"
           defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
         />,
-        warningTypeClass: EventWarningType.Highlight,
+        warningTypeClass: classes.pending,
       };
     }
 
@@ -370,23 +422,36 @@ export default class TopicPage extends React.Component {
       type: TransactionType.Withdraw,
       status: TransactionStatus.Success,
       topicAddress: address,
-      senderAddress: lastUsedAddress,
+      senderAddress,
     });
     if (pendingTxs.length > 0) {
       return {
+        show: true,
         disabled: true,
         message: <FormattedMessage
           id="withdrawDetail.alreadyWithdrawn"
           defaultMessage="You have already withdrawn with this address."
         />,
-        warningTypeClass: EventWarningType.Info,
+        warningTypeClass: classes.withdrawn,
+      };
+    }
+
+    // Can withdraw winning
+    const winniningAddress = _.find(winningAddresses, {
+      address: senderAddress,
+    });
+    if (winniningAddress) {
+      return {
+        show: true,
+        disabled: false,
       };
     }
 
     return {
-      disabled: false,
+      show: true,
+      disabled: true,
     };
-  }
+  };
 
   renderOptions() {
     const {
@@ -461,6 +526,7 @@ export default class TopicPage extends React.Component {
       getTopics,
       getTransactions,
       getBetAndVoteBalances,
+      walletAddresses,
       calculateWinnings,
     } = this.props;
     const { address } = this.state;
@@ -474,7 +540,7 @@ export default class TopicPage extends React.Component {
 
     // API calls
     getBetAndVoteBalances(address, senderAddress);
-    calculateWinnings(address, senderAddress);
+    calculateWinnings(address, walletAddresses);
   }
 
   constructTopicAndConfig(topics, botWinnings, qtumWinnings) {
@@ -520,15 +586,16 @@ export default class TopicPage extends React.Component {
     this.props.setLastUsedAddress(event.target.value);
   }
 
-  onWithdrawClicked() {
+  onWithdrawClicked(event) {
     const {
       createWithdrawTx,
-      lastUsedAddress,
       walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
     } = this.props;
     const { topic } = this.state;
+
+    const senderAddress = event.currentTarget.getAttribute('data-address');
 
     if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
@@ -538,7 +605,7 @@ export default class TopicPage extends React.Component {
     createWithdrawTx(
       topic.version,
       topic.address,
-      lastUsedAddress,
+      senderAddress,
     );
   }
 }
