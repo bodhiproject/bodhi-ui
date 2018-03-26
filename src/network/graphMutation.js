@@ -129,8 +129,9 @@ export function createFinalizeResultTx(version, topicAddress, oracleAddress, sen
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
 }
 
-export function createWithdrawTx(version, topicAddress, senderAddress) {
+export function createWithdrawTx(type, version, topicAddress, senderAddress) {
   const args = {
+    type,
     version,
     senderAddress,
     topicAddress,

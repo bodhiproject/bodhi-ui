@@ -86,8 +86,8 @@ const pageMessage = defineMessages({
     dispatch(topicActions.calculateWinnings(contractAddress, walletAddresses)),
   getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
-  createWithdrawTx: (version, topicAddress, senderAddress) =>
-    dispatch(graphqlActions.createWithdrawTx(version, topicAddress, senderAddress)),
+  createWithdrawTx: (type, version, topicAddress, senderAddress) =>
+    dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
@@ -603,6 +603,7 @@ export default class TopicPage extends React.Component {
     }
 
     createWithdrawTx(
+      TransactionType.Withdraw,
       topic.version,
       topic.address,
       senderAddress,
