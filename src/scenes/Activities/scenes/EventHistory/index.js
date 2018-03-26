@@ -27,7 +27,7 @@ class EventHistory extends React.Component {
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    getOraclesReturn: PropTypes.array,
+    getOraclesReturn: PropTypes.object,
     getTransactions: PropTypes.func,
     getTransactionsReturn: PropTypes.array,
     syncBlockTime: PropTypes.number,

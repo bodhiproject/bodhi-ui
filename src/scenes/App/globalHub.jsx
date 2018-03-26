@@ -18,7 +18,6 @@ class GlobalHub extends React.PureComponent {
     onSyncInfo: PropTypes.func.isRequired,
     syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
-    lastUsedAddress: PropTypes.string.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     checkWalletEncrypted: PropTypes.func.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
@@ -60,7 +59,6 @@ class GlobalHub extends React.PureComponent {
       syncPercent,
       syncBlockNum,
       getActionableItemCount,
-      lastUsedAddress,
       walletAddresses,
       txReturn,
       getPendingTransactions,
@@ -73,12 +71,8 @@ class GlobalHub extends React.PureComponent {
 
     // Gets the actionable items for the My Activities badge
     if ((syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)
-      || nextProps.lastUsedAddress !== lastUsedAddress
       || (_.isEmpty(walletAddresses) && !_.isEmpty(nextProps.walletAddresses))) {
-      getActionableItemCount(
-        nextProps.lastUsedAddress,
-        nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses,
-      );
+      getActionableItemCount(nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses);
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block
@@ -122,8 +116,7 @@ const mapDispatchToProps = (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
-  getActionableItemCount: (lastUsedAddress, walletAddresses) =>
-    dispatch(graphqlActions.getActionableItemCount(lastUsedAddress, walletAddresses)),
+  getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 });
 

@@ -53,7 +53,6 @@ class EventCardsGrid extends React.Component {
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
-    lastUsedAddress: PropTypes.string.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -191,7 +190,6 @@ class EventCardsGrid extends React.Component {
     const {
       getActionableTopics,
       getOracles,
-      lastUsedAddress,
       walletAddresses,
     } = this.props;
 
@@ -210,11 +208,17 @@ class EventCardsGrid extends React.Component {
         break;
       }
       case EventStatus.Set: {
+        const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
+        _.each(walletAddresses, (addressObj) => {
+          filters.push({
+            token: Token.Qtum,
+            status: OracleStatus.WaitResult,
+            resultSetterQAddress: addressObj.address,
+          });
+        });
+
         getOracles(
-          [
-            { token: Token.Qtum, status: OracleStatus.WaitResult, resultSetterQAddress: lastUsedAddress },
-            { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-          ],
+          filters,
           { field: 'resultSetEndTime', direction: sortDirection },
           limit,
           skip,
@@ -339,7 +343,6 @@ const mapStateToProps = (state) => ({
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
   walletAddresses: state.App.get('walletAddresses'),
 });
 
