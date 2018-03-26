@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0, no-nested-ternary: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
+/* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -78,7 +78,7 @@ const pageMessage = defineMessages({
   voteBalances: state.Topic.get('voteBalances'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
-  walletAddressesWithWinnings: state.Topic.get('walletAddressesWithWinnings'),
+  winningAddresses: state.Topic.get('winningAddresses'),
 }), (dispatch, props) => ({
   getBetAndVoteBalances: (contractAddress, senderAddress) =>
     dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
@@ -109,7 +109,7 @@ export default class TopicPage extends React.Component {
     calculateWinnings: PropTypes.func.isRequired,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
-    walletAddressesWithWinnings: PropTypes.array,
+    winningAddresses: PropTypes.array,
     createWithdrawTx: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
@@ -132,7 +132,7 @@ export default class TopicPage extends React.Component {
     voteBalances: [],
     botWinnings: 0,
     qtumWinnings: 0,
-    walletAddressesWithWinnings: [],
+    winningAddresses: [],
   };
 
   constructor(props) {
@@ -162,7 +162,7 @@ export default class TopicPage extends React.Component {
       getTransactionsReturn,
       botWinnings,
       qtumWinnings,
-      walletAddressesWithWinnings,
+      winningAddresses,
     } = this.props;
     const { address } = this.state;
 
@@ -175,7 +175,7 @@ export default class TopicPage extends React.Component {
       syncBlockTime,
       lastUsedAddress,
       getTopicsReturn,
-      walletAddressesWithWinnings,
+      winningAddresses,
     } = this.props;
     const { address } = this.state;
 
@@ -240,7 +240,7 @@ export default class TopicPage extends React.Component {
       botWinnings,
       qtumWinnings,
       lastUsedAddress,
-      walletAddressesWithWinnings,
+      winningAddresses,
     } = this.props;
     const { topic, config } = this.state;
 
@@ -326,10 +326,10 @@ export default class TopicPage extends React.Component {
 
   renderWithdrawList = () => {
     const {
-      walletAddressesWithWinnings,
+      winningAddresses,
     } = this.props;
 
-    if (walletAddressesWithWinnings.length > 0) {
+    if (winningAddresses.length > 0) {
       return (
         <Table>
           <TableHead>
@@ -349,7 +349,7 @@ export default class TopicPage extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.map(walletAddressesWithWinnings, (walletWithinWinnings, index) => (
+            {_.map(winningAddresses, (walletWithinWinnings, index) => (
               this.renderWinningWithdrawRow(walletWithinWinnings, index)
             ))}
           </TableBody>
@@ -395,7 +395,7 @@ export default class TopicPage extends React.Component {
   };
 
   getActionButtonConfig = (senderAddress) => {
-    const { getTransactionsReturn, walletAddressesWithWinnings, classes } = this.props;
+    const { getTransactionsReturn, winningAddresses, classes } = this.props;
     const { address } = this.state;
 
     // Already have a pending tx for this Topic
@@ -437,10 +437,10 @@ export default class TopicPage extends React.Component {
     }
 
     // Can withdraw winning
-    const winniningAddresses = _.filter(walletAddressesWithWinnings, {
+    const winniningAddress = _.find(winningAddresses, {
       address: senderAddress,
     });
-    if (winniningAddresses.length > 0) {
+    if (winniningAddress) {
       return {
         show: true,
         disabled: false,
