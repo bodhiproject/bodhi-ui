@@ -33,7 +33,35 @@ const messages = defineMessages({
   },
 });
 
-class WithdrawDialog extends React.Component {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state, props) => ({
+}), (dispatch, props) => ({
+  createTransferTx: (senderAddress, receiverAddress, token, amount) =>
+    dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
+}))
+
+export default class WithdrawDialog extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    dialogVisible: PropTypes.bool.isRequired,
+    walletAddress: PropTypes.string,
+    qtumAmount: PropTypes.string,
+    botAmount: PropTypes.string,
+    onClose: PropTypes.func.isRequired,
+    onWithdraw: PropTypes.func.isRequired,
+    createTransferTx: PropTypes.func,
+    // eslint-disable-next-line react/no-typos
+    intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    walletAddress: undefined,
+    qtumAmount: undefined,
+    botAmount: undefined,
+    createTransferTx: undefined,
+  };
+
   constructor(props) {
     super(props);
 
@@ -202,35 +230,3 @@ class WithdrawDialog extends React.Component {
     this.props.onWithdraw();
   }
 }
-
-WithdrawDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  dialogVisible: PropTypes.bool.isRequired,
-  walletAddress: PropTypes.string,
-  qtumAmount: PropTypes.string,
-  botAmount: PropTypes.string,
-  onClose: PropTypes.func.isRequired,
-  onWithdraw: PropTypes.func.isRequired,
-  createTransferTx: PropTypes.func,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-WithdrawDialog.defaultProps = {
-  walletAddress: undefined,
-  qtumAmount: undefined,
-  botAmount: undefined,
-  createTransferTx: undefined,
-};
-
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    createTransferTx: (senderAddress, receiverAddress, token, amount) =>
-      dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(WithdrawDialog)));
