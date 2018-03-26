@@ -33,30 +33,44 @@ const messages = defineMessages({
   },
 });
 
-class WithdrawDialog extends React.Component {
-  constructor(props) {
-    super(props);
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state, props) => ({
+  walletAddresses: state.App.get('walletAddresses'),
+}), (dispatch, props) => ({
+  createTransferTx: (senderAddress, receiverAddress, token, amount) =>
+    dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
+}))
 
-    this.state = {
-      toAddress: '',
-      withdrawAmount: 0,
-      selectedToken: Token.Qtum,
-    };
+export default class WithdrawDialog extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    classes: PropTypes.object.isRequired,
+    dialogVisible: PropTypes.bool.isRequired,
+    walletAddress: PropTypes.string,
+    qtumAmount: PropTypes.string,
+    botAmount: PropTypes.string,
+    onClose: PropTypes.func.isRequired,
+    onWithdraw: PropTypes.func.isRequired,
+    createTransferTx: PropTypes.func,
+    walletAddresses: PropTypes.array.isRequired,
+  };
 
-    this.getFromToFields = this.getFromToFields.bind(this);
-    this.getAmountFields = this.getAmountFields.bind(this);
-    this.onToAddressChange = this.onToAddressChange.bind(this);
-    this.onAmountChange = this.onAmountChange.bind(this);
-    this.onTokenChange = this.onTokenChange.bind(this);
-    this.onSendClicked = this.onSendClicked.bind(this);
-  }
+  static defaultProps = {
+    walletAddress: undefined,
+    qtumAmount: undefined,
+    botAmount: undefined,
+    createTransferTx: undefined,
+  };
+
+  state = {
+    toAddress: '',
+    withdrawAmount: 0,
+    selectedToken: Token.Qtum,
+  };
 
   render() {
-    const {
-      dialogVisible,
-      walletAddress,
-      onClose,
-    } = this.props;
+    const { dialogVisible, walletAddress, onClose } = this.props;
 
     if (!walletAddress) {
       return null;
@@ -86,12 +100,8 @@ class WithdrawDialog extends React.Component {
     );
   }
 
-  getFromToFields() {
-    const {
-      classes,
-      walletAddress,
-      intl,
-    } = this.props;
+  getFromToFields = () => {
+    const { classes, walletAddress, intl } = this.props;
     const { toAddress } = this.state;
 
     return (
@@ -114,21 +124,22 @@ class WithdrawDialog extends React.Component {
         />
       </div>
     );
-  }
+  };
 
-  getAmountFields() {
+  getAmountFields = () => {
     const {
       classes,
       intl,
       qtumAmount,
       botAmount,
+      walletAddresses,
     } = this.props;
     const { withdrawAmount, selectedToken } = this.state;
 
-    let withdrawLimit;
+    let withdrawLimit = 0;
     switch (selectedToken) {
       case Token.Qtum: {
-        withdrawLimit = qtumAmount;
+        withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
         break;
       }
       case Token.Bot: {
@@ -169,27 +180,27 @@ class WithdrawDialog extends React.Component {
         </Typography>
       </div>
     );
-  }
+  };
 
-  onToAddressChange(event) {
+  onToAddressChange = (event) => {
     this.setState({
       toAddress: event.target.value,
     });
-  }
+  };
 
-  onAmountChange(event) {
+  onAmountChange = (event) => {
     this.setState({
       withdrawAmount: event.target.value,
     });
-  }
+  };
 
-  onTokenChange(event) {
+  onTokenChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
-  onSendClicked() {
+  onSendClicked = () => {
     const { walletAddress, createTransferTx } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
@@ -200,37 +211,5 @@ class WithdrawDialog extends React.Component {
 
     createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
-  }
-}
-
-WithdrawDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  dialogVisible: PropTypes.bool.isRequired,
-  walletAddress: PropTypes.string,
-  qtumAmount: PropTypes.string,
-  botAmount: PropTypes.string,
-  onClose: PropTypes.func.isRequired,
-  onWithdraw: PropTypes.func.isRequired,
-  createTransferTx: PropTypes.func,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-WithdrawDialog.defaultProps = {
-  walletAddress: undefined,
-  qtumAmount: undefined,
-  botAmount: undefined,
-  createTransferTx: undefined,
-};
-
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    createTransferTx: (senderAddress, receiverAddress, token, amount) =>
-      dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
   };
 }
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(WithdrawDialog)));
