@@ -3,8 +3,10 @@ import _ from 'lodash';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
-import { satoshiToDecimal } from '../../helpers/utility';
+import { queryAllVotes } from '../../network/graphQuery';
+import { satoshiToDecimal, getUniqueVotes } from '../../helpers/utility';
 import Routes from '../../network/routes';
+import { WithdrawType } from '../../constants';
 
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
@@ -82,6 +84,109 @@ export function* getBetAndVoteBalancesHandler() {
   });
 }
 
+export function* getWithdrawableAddressesHandler() {
+  yield takeEvery(actions.GET_WITHDRAWABLE_ADDRESSES, function* getWithdrawableAddressesRequest(action) {
+    // Get event escrow amount
+    let eventEscrowAmount;
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          senderAddress: action.senderAddress,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, Routes.api.eventEscrowAmount, options);
+      eventEscrowAmount = satoshiToDecimal(result[0]);
+    } catch (err) {
+      yield put({
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
+        error: {
+          route: Routes.api.eventEscrowAmount,
+          message: err.message,
+        },
+      });
+    }
+
+    // Get winning addresses
+    try {
+      const winningAddresses = [];
+
+      // Get all winning votes for a Topic
+      const voteFilters = [];
+      _.each(action.walletAddresses, (item) => {
+        voteFilters.push({
+          topicAddress: action.topic.address,
+          optionIdx: action.topic.resultIdx,
+          voterQAddress: item.address,
+        });
+
+        // Add escrow withdraw object if is event creator
+        if (item.address === action.topic.creatorAddress) {
+          winningAddresses.push({
+            type: WithdrawType.escrow,
+            address: item.address,
+            botWon: eventEscrowAmount,
+            qtumWon: 0,
+          });
+        }
+      });
+
+      // Filter unique votes
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = getUniqueVotes(votes);
+
+      // Create array of winning addresses and amounts
+      for (let i = 0; i < votes.length; i++) {
+        const vote = votes[i];
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({
+            contractAddress: vote.topicAddress,
+            senderAddress: vote.voterQAddress,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+
+        const result = yield call(request, Routes.api.winnings, options);
+        let botWon = 0;
+        let qtumWon = 0;
+
+        if (result) {
+          botWon = satoshiToDecimal(result['0']);
+          qtumWon = satoshiToDecimal(result['1']);
+        }
+
+        // return only winning addresses
+        if (botWon || qtumWon) {
+          winningAddresses.push({
+            type: WithdrawType.winnings,
+            address: vote.voterQAddress,
+            botWon,
+            qtumWon,
+          });
+        }
+      }
+
+      yield put({
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
+        value: winningAddresses,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
+        error: {
+          route: '',
+          message: err.message,
+        },
+      });
+    }
+  });
+}
+
 export function* calculateWinningsHandler() {
   yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
     try {
@@ -140,6 +245,7 @@ export default function* topicSaga() {
   yield all([
     fork(getEventEscrowAmountHandler),
     fork(getBetAndVoteBalancesHandler),
+    fork(getWithdrawableAddressesHandler),
     fork(calculateWinningsHandler),
   ]);
 }

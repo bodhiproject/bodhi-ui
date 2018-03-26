@@ -18,13 +18,23 @@ const topicActions = {
     },
   }),
 
+  GET_WITHDRAWABLE_ADDRESSES: 'GET_WITHDRAWABLE_ADDRESSES',
+  GET_WITHDRAWABLE_ADDRESSES_RETURN: 'GET_WITHDRAWABLE_ADDRESSES_RETURN',
+  getWithdrawableAddresses: (topic, walletAddresses, senderAddress) => ({
+    type: topicActions.GET_WITHDRAWABLE_ADDRESSES,
+    topic,
+    walletAddresses,
+    senderAddress,
+  }),
+
   CALCULATE_WINNINGS: 'CALCULATE_WINNINGS',
   CALCULATE_WINNINGS_RETURN: 'CALCULATE_WINNINGS_RETURN',
-  calculateWinnings: (contractAddress, walletAddresses) => ({
+  calculateWinnings: (contractAddress, walletAddresses, eventCreator) => ({
     type: topicActions.CALCULATE_WINNINGS,
     params: {
       contractAddress,
       walletAddresses,
+      eventCreator,
     },
   }),
 

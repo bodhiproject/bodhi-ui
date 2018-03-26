@@ -82,8 +82,8 @@ const pageMessage = defineMessages({
 }), (dispatch, props) => ({
   getBetAndVoteBalances: (contractAddress, senderAddress) =>
     dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
-  calculateWinnings: (contractAddress, walletAddresses) =>
-    dispatch(topicActions.calculateWinnings(contractAddress, walletAddresses)),
+  calculateWinnings: (contractAddress, walletAddresses, eventCreator) =>
+    dispatch(topicActions.calculateWinnings(contractAddress, walletAddresses, eventCreator)),
   getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
