@@ -167,7 +167,7 @@ export default class TopicPage extends React.Component {
     const { address } = this.state;
 
     setAppLocation(AppLocation.withdraw);
-    this.fetchData(lastUsedAddress);
+    this.fetchTopic();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -394,6 +394,32 @@ export default class TopicPage extends React.Component {
     );
   };
 
+  fetchTopic = () => {
+    this.props.getTopics([{ this.state.address }], undefined, 1, 0);
+  };
+
+  fetchData(senderAddress) {
+    const {
+      getTopics,
+      getTransactions,
+      getBetAndVoteBalances,
+      walletAddresses,
+      calculateWinnings,
+    } = this.props;
+    const { address } = this.state;
+
+    // GraphQL calls
+    getTopics([{ address }], undefined, 1, 0);
+    getTransactions(
+      [{ topicAddress: address }],
+      { field: 'createdTime', direction: SortBy.Descending },
+    );
+
+    // API calls
+    getBetAndVoteBalances(address, senderAddress);
+    calculateWinnings(address, walletAddresses);
+  }
+
   getActionButtonConfig = (senderAddress) => {
     const { getTransactionsReturn, winningAddresses, classes } = this.props;
     const { address } = this.state;
@@ -519,28 +545,6 @@ export default class TopicPage extends React.Component {
         content: resultSetterQAddress,
       },
     ];
-  }
-
-  fetchData(senderAddress) {
-    const {
-      getTopics,
-      getTransactions,
-      getBetAndVoteBalances,
-      walletAddresses,
-      calculateWinnings,
-    } = this.props;
-    const { address } = this.state;
-
-    // GraphQL calls
-    getTopics([{ address }], undefined, 1, 0);
-    getTransactions(
-      [{ topicAddress: address }],
-      { field: 'createdTime', direction: SortBy.Descending },
-    );
-
-    // API calls
-    getBetAndVoteBalances(address, senderAddress);
-    calculateWinnings(address, walletAddresses);
   }
 
   constructTopicAndConfig(topics, botWinnings, qtumWinnings) {
