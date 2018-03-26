@@ -36,6 +36,7 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state, props) => ({
+  walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch, props) => ({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
@@ -52,6 +53,7 @@ export default class WithdrawDialog extends React.Component {
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
     createTransferTx: PropTypes.func,
+    walletAddresses: PropTypes.array.isRequired,
   };
 
   static defaultProps = {
@@ -68,11 +70,7 @@ export default class WithdrawDialog extends React.Component {
   };
 
   render() {
-    const {
-      dialogVisible,
-      walletAddress,
-      onClose,
-    } = this.props;
+    const { dialogVisible, walletAddress, onClose } = this.props;
 
     if (!walletAddress) {
       return null;
@@ -103,11 +101,7 @@ export default class WithdrawDialog extends React.Component {
   }
 
   getFromToFields = () => {
-    const {
-      classes,
-      walletAddress,
-      intl,
-    } = this.props;
+    const { classes, walletAddress, intl } = this.props;
     const { toAddress } = this.state;
 
     return (
@@ -138,13 +132,14 @@ export default class WithdrawDialog extends React.Component {
       intl,
       qtumAmount,
       botAmount,
+      walletAddresses,
     } = this.props;
     const { withdrawAmount, selectedToken } = this.state;
 
-    let withdrawLimit;
+    let withdrawLimit = 0;
     switch (selectedToken) {
       case Token.Qtum: {
-        withdrawLimit = qtumAmount;
+        withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
         break;
       }
       case Token.Bot: {
