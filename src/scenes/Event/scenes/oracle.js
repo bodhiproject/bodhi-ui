@@ -689,7 +689,6 @@ export default class OraclePage extends React.Component {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
     const { locale, messages: localeMessages } = this.props.intl;
-    window.oracle = oracle;
 
     return [
       {
