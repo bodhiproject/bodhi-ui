@@ -30,14 +30,13 @@ class EventHistory extends React.Component {
     getOraclesReturn: PropTypes.object,
     getTransactions: PropTypes.func,
     getTransactionsReturn: PropTypes.array,
-    syncBlockTime: PropTypes.number,
+    syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    getOraclesReturn: [],
+    getOraclesReturn: undefined,
     getTransactions: undefined,
     getTransactionsReturn: [],
-    syncBlockTime: undefined,
   };
 
   state = {
@@ -57,7 +56,7 @@ class EventHistory extends React.Component {
     const {
       getOraclesReturn,
       getTransactionsReturn,
-      syncBlockTime,
+      syncBlockNum,
     } = nextProps;
 
     // return from the click event
@@ -69,11 +68,13 @@ class EventHistory extends React.Component {
     }
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockNum !== this.props.syncBlockNum) {
+      console.log('executing tx req');
       this.executeTxsRequest();
     }
 
     if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+      console.log('setting txs');
       const sorted = _.orderBy(
         nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
         [this.state.orderBy],
@@ -327,6 +328,7 @@ class EventHistory extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
 });
