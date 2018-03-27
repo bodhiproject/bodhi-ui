@@ -343,15 +343,7 @@ export default class CreateEvent extends Component {
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onClose={this.onClose}>
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
-          {/* <DialogTitle>{formatMessage(messages.dialogTitle)}</DialogTitle> */}
           <DialogContent>
-            <div className={classes.importantNoteContainer}>
-              <ImportantNote
-                className={classes.createEscrowNote}
-                heading={formatMessage(messages.escrowNoteTitle, { amount: eventEscrowAmount })}
-                message={formatMessage(messages.escrowNoteDesc, { amount: eventEscrowAmount })}
-              />
-            </div>
             <Grid container>
               <Grid item xs={3}>
                 <DialogTitle className={classes.title}>{formatMessage(messages.dialogTitle)}</DialogTitle>
@@ -360,6 +352,13 @@ export default class CreateEvent extends Component {
                 {!hasEnoughQtum && <EventWarning id={id} message={message} className={`error ${classes.warning}`} />}
               </Grid>
             </Grid>
+            <div className={classes.importantNoteContainer}>
+              <ImportantNote
+                className={classes.createEscrowNote}
+                heading={formatMessage(messages.escrowNoteTitle, { amount: eventEscrowAmount })}
+                message={formatMessage(messages.escrowNoteDesc, { amount: eventEscrowAmount })}
+              />
+            </div>
           </DialogContent>
           <DialogContent>
             <Section title={messages.title}>
