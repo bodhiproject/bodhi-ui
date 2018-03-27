@@ -98,7 +98,6 @@ const messages = defineMessages({
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-
 export default class OraclePage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -690,6 +689,7 @@ export default class OraclePage extends React.Component {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
     const { locale, messages: localeMessages } = this.props.intl;
+    window.oracle = oracle;
 
     return [
       {

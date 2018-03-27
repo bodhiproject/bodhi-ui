@@ -111,16 +111,16 @@ export function getShortLocalDateTimeString(unixSeconds) {
 }
 
 export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
+  const { day, hour, minute, end } = messages;
   const nowUnix = moment().unix();
   const unixDiff = unixSeconds - nowUnix;
 
-  const intl = getIntlProvider(locale, localeMessages);
+  const { formatMessage } = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
-    return intl.formatMessage(messages.end);
+    return formatMessage(end);
   }
 
-  const dur = moment.duration(unixDiff * 1000);
-  return `${dur.days()}${intl.formatMessage(messages.day)} ${dur.hours()}${intl.formatMessage(messages.hour)} ${dur.minutes()}${intl.formatMessage(messages.minute)} ${intl.formatMessage(messages.left)}`;
+  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}]`);
 }
 
 /**
