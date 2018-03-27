@@ -178,6 +178,30 @@ export function getDetailPagePath(oracles) {
   return undefined;
 }
 
+export function processTopic(topic) {
+  if (!topic) {
+    return undefined;
+  }
+
+  const newTopic = _.assign({}, topic);
+  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
+  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
+  newTopic.escrowAmount = satoshiToDecimal(topic.escrowAmount);
+  newTopic.oracles = _.map(topic.oracles, processOracle);
+  return newTopic;
+}
+
+export function processOracle(oracle) {
+  if (!oracle) {
+    return undefined;
+  }
+
+  const newOracle = _.assign({}, oracle);
+  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
+  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
+  return newOracle;
+}
+
 /*
 * Filter out unique votes by voter address, topic address, and option index.
 * Used to query against Topics that you can win.

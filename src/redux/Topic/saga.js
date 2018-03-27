@@ -3,8 +3,8 @@ import _ from 'lodash';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
-import { queryAllVotes } from '../../network/graphQuery';
-import { satoshiToDecimal, getUniqueVotes } from '../../helpers/utility';
+import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
+import { satoshiToDecimal, processTopic, getUniqueVotes } from '../../helpers/utility';
 import Routes from '../../network/routes';
 import { WithdrawType } from '../../constants';
 
@@ -84,11 +84,20 @@ export function* getBetAndVoteBalancesHandler() {
   });
 }
 
-export function* calculateWinningsHandler() {
-  yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
+export function* getWithdrawableAddressesHandler() {
+  yield takeEvery(actions.GET_WITHDRAWABLE_ADDRESSES, function* getWithdrawableAddressesRequest(action) {
     try {
-      const { topic, walletAddresses, senderAddress } = action;
+      const { eventAddress, walletAddresses } = action;
       const withdrawableAddresses = [];
+
+      // Fetch Topic
+      const topics = yield call(queryAllTopics, [{ address: eventAddress }]);
+      let topic;
+      if (!_.isEmpty(topics)) {
+        topic = processTopic(topics[0]);
+      } else {
+        throw new Error(`Unable to find topic ${eventAddress}`);
+      }
 
       // Get all winning votes for this Topic
       const voteFilters = [];
@@ -139,7 +148,7 @@ export function* calculateWinningsHandler() {
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
             type: WithdrawType.winnings,
-            address: senderAddress,
+            address: vote.voterQAddress,
             botWon,
             qtumWon,
           });
@@ -147,14 +156,14 @@ export function* calculateWinningsHandler() {
       }
 
       yield put({
-        type: actions.CALCULATE_WINNINGS_RETURN,
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
         value: withdrawableAddresses,
       });
     } catch (err) {
       yield put({
-        type: actions.CALCULATE_WINNINGS_RETURN,
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
         error: {
-          route: Routes.api.winnings,
+          route: '',
           message: err.message,
         },
       });
@@ -166,6 +175,6 @@ export default function* topicSaga() {
   yield all([
     fork(getEventEscrowAmountHandler),
     fork(getBetAndVoteBalancesHandler),
-    fork(calculateWinningsHandler),
+    fork(getWithdrawableAddressesHandler),
   ]);
 }

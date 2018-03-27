@@ -13,7 +13,14 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { decimalToSatoshi, satoshiToDecimal, gasToQtum, getUniqueVotes } from '../../helpers/utility';
+import {
+  decimalToSatoshi,
+  satoshiToDecimal,
+  gasToQtum,
+  processTopic,
+  processOracle,
+  getUniqueVotes,
+} from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
 
@@ -95,18 +102,6 @@ export function* getActionableTopicsHandler() {
   });
 }
 
-function processTopic(topic) {
-  if (!topic) {
-    return undefined;
-  }
-
-  const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
-  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
-  newTopic.oracles = _.map(topic.oracles, processOracle);
-  return newTopic;
-}
-
 // Send allOracles query
 export function* getOraclesHandler() {
   yield takeEvery(actions.GET_ORACLES, function* getOraclesRequest(action) {
@@ -141,17 +136,6 @@ export function* getOraclesHandler() {
       });
     }
   });
-}
-
-function processOracle(oracle) {
-  if (!oracle) {
-    return undefined;
-  }
-
-  const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
-  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-  return newOracle;
 }
 
 // Send allTransactions query

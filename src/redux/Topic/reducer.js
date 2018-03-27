@@ -26,7 +26,7 @@ export default function topicReducer(state = initState, action) {
         .set('betBalances', action.value.bets)
         .set('voteBalances', action.value.votes);
     }
-    case actions.CALCULATE_WINNINGS_RETURN: {
+    case actions.GET_WITHDRAWABLE_ADDRESSES_RETURN: {
       if (action.error) {
         return state.set('errorTopic', action.error);
       }

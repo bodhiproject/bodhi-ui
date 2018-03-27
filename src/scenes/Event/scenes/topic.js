@@ -82,8 +82,8 @@ const pageMessage = defineMessages({
 }), (dispatch, props) => ({
   getBetAndVoteBalances: (contractAddress, senderAddress) =>
     dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
-  calculateWinnings: (contractAddress, walletAddresses, eventCreator) =>
-    dispatch(topicActions.calculateWinnings(contractAddress, walletAddresses, eventCreator)),
+  getWithdrawableAddresses: (eventAddress, walletAddresses) =>
+    dispatch(topicActions.getWithdrawableAddresses(eventAddress, walletAddresses)),
   getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
@@ -106,7 +106,7 @@ export default class TopicPage extends React.Component {
     getBetAndVoteBalances: PropTypes.func.isRequired,
     betBalances: PropTypes.array,
     voteBalances: PropTypes.array,
-    calculateWinnings: PropTypes.func.isRequired,
+    getWithdrawableAddresses: PropTypes.func.isRequired,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
     winningAddresses: PropTypes.array,
@@ -390,7 +390,7 @@ export default class TopicPage extends React.Component {
       getTopics,
       getTransactions,
       getBetAndVoteBalances,
-      calculateWinnings,
+      getWithdrawableAddresses,
       walletAddresses,
       lastUsedAddress,
     } = this.props;
@@ -402,7 +402,7 @@ export default class TopicPage extends React.Component {
 
     // API calls
     getBetAndVoteBalances(address, lastUsedAddress);
-    calculateWinnings(address, walletAddresses);
+    getWithdrawableAddresses(address, walletAddresses);
   };
 
   getActionButtonConfig = (senderAddress) => {
