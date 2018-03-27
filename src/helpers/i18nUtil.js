@@ -1,5 +1,6 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
+
 export function i18nToUpperCase(txt) {
   return (<span>
     {txt.toUpperCase()}
