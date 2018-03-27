@@ -1,9 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import moment from 'moment';
+import momentDurationFormat from 'moment-duration-format';
 import AppProvider from './appProvider';
 import { unregister } from './registerServiceWorker';
 
-ReactDOM.render(
+momentDurationFormat(moment);
+
+render(
   <AppProvider />,
   document.getElementById('root')
 );
@@ -12,7 +16,10 @@ ReactDOM.render(
 if (module.hot) {
   module.hot.accept('./appProvider.js', () => {
     const NextAppProvider = AppProvider.default;
-    ReactDOM.render(<NextAppProvider />, document.getElementById('root'));
+    render(
+      <NextAppProvider />,
+      document.getElementById('root')
+    );
   });
 }
 

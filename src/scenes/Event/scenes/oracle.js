@@ -98,7 +98,6 @@ const messages = defineMessages({
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-
 export default class OraclePage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
