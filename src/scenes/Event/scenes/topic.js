@@ -360,7 +360,7 @@ export default class TopicPage extends React.Component {
         </TableCell>
         <TableCell padding="dense">{withdrawableAddress.type.toUpperCase()}</TableCell>
         <TableCell padding="dense">
-          {`${withdrawableAddress.botWon} ${Token.Bot}, ${withdrawableAddress.botWon} ${Token.Qtum}`}
+          {`${withdrawableAddress.botWon} ${Token.Bot}, ${withdrawableAddress.qtumWon} ${Token.Qtum}`}
         </TableCell>
         <TableCell padding="dense">
           <Button
