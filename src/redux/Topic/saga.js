@@ -148,7 +148,7 @@ export function* getWithdrawableAddressesHandler() {
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
             type: WithdrawType.winnings,
-            address: senderAddress,
+            address: vote.voterQAddress,
             botWon,
             qtumWon,
           });
