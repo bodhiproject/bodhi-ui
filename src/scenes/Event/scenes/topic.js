@@ -35,6 +35,7 @@ import {
   EventWarningType,
   SortBy,
   AppLocation,
+  WithdrawType,
 } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -578,7 +579,20 @@ export default class TopicPage extends React.Component {
     const { topic } = this.state;
 
     const senderAddress = event.currentTarget.getAttribute('data-address');
-    const type = event.currentTarget.getAttribute('data-type');
+    let type = event.currentTarget.getAttribute('data-type');
+    switch (type) {
+      case WithdrawType.escrow: {
+        type = TransactionType.WithdrawEscrow;
+        break;
+      }
+      case WithdrawType.winnings: {
+        type = TransactionType.Withdraw;
+        break;
+      }
+      default: {
+        throw new Error(`Invalid withdraw type: ${type}`);
+      }
+    }
 
     if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
