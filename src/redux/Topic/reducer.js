@@ -7,7 +7,7 @@ const initState = new Map({
   voteBalances: [],
   botWinnings: 0,
   qtumWinnings: 0,
-  winningAddresses: [],
+  withdrawableAddresses: [],
 });
 
 export default function topicReducer(state = initState, action) {
@@ -31,7 +31,7 @@ export default function topicReducer(state = initState, action) {
         return state.set('errorTopic', action.error);
       }
       return state
-        .set('winningAddresses', action.value)
+        .set('withdrawableAddresses', action.value)
         .set('botWinnings', _.sumBy(action.value, (wallet) => wallet.botWon ? wallet.botWon : 0))
         .set('qtumWinnings', _.sumBy(action.value, (wallet) => wallet.qtumWon ? wallet.qtumWon : 0));
     }
