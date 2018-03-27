@@ -344,7 +344,7 @@ export default class TopicPage extends React.Component {
     return null;
   };
 
-  renderWinningWithdrawRow = (withdrawableAddress) => {
+  renderWinningWithdrawRow = (withdrawableAddress, index) => {
     const { classes } = this.props;
     const config = this.getActionButtonConfig(withdrawableAddress.address);
 
@@ -353,7 +353,7 @@ export default class TopicPage extends React.Component {
     }
 
     return (
-      <TableRow key={withdrawableAddress.address}>
+      <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
           <div className={config.warningTypeClass}>{config.message}</div>
