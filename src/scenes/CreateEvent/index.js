@@ -115,15 +115,11 @@ const messages = defineMessages({
   },
   escrowNoteTitle: {
     id: 'create.escrowNoteTitle',
-    defaultMessage: 'BOT Escrow',
+    defaultMessage: '{amount} BOT Escrow',
   },
-  escrowNoteDescPre: {
-    id: 'create.escrowNoteDescPre',
-    defaultMessage: 'You will need to pay',
-  },
-  escrowNoteDescAfter: {
-    id: 'create.escrowNoteDescAfter',
-    defaultMessage: 'BOT as escrow in order to create an event.',
+  escrowNoteDesc: {
+    id: 'create.escrowNoteDesc',
+    defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
 });
 
@@ -262,6 +258,7 @@ class CreateEvent extends React.Component {
       createEventDialogVisible,
       eventEscrowAmount,
     } = this.props;
+    const { formatMessage } = intl;
 
     return (
       <Dialog
@@ -271,18 +268,18 @@ class CreateEvent extends React.Component {
         onClose={this.onClose}
       >
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
-          <DialogTitle>{intl.formatMessage(messages.dialogTitle)}</DialogTitle>
+          <DialogTitle>{formatMessage(messages.dialogTitle)}</DialogTitle>
           <DialogContent>
             <div className={classes.importantNoteContainer}>
               <ImportantNote
                 className={classes.createEscrowNote}
-                heading={`${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteTitle)}`}
-                message={`${intl.formatMessage(messages.escrowNoteDescPre)} ${eventEscrowAmount} ${intl.formatMessage(messages.escrowNoteDescAfter)}`}
+                heading={formatMessage(messages.escrowNoteTitle, { amount: eventEscrowAmount })}
+                message={formatMessage(messages.escrowNoteDesc, { amount: eventEscrowAmount })}
               />
             </div>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.creator)}
+                {formatMessage(messages.creator)}
               </Grid>
               <Grid item xs={9}>
                 <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} eventEscrowAmount={eventEscrowAmount} changeFormFieldValue={changeFormFieldValue} />
@@ -290,13 +287,13 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.title)}
+                {formatMessage(messages.title)}
               </Grid>
               <Grid item container xs={9}>
                 <Grid item xs={12}>
                   <Field
                     name={ID_NAME}
-                    placeholder={intl.formatMessage(messages.namePlaceholder)}
+                    placeholder={formatMessage(messages.namePlaceholder)}
                     validate={[this.validateTitleLength]}
                     component={this.renderTextField}
                   />
@@ -305,7 +302,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.betStartTime)}
+                {formatMessage(messages.betStartTime)}
               </Grid>
               <Grid item container xs={9}>
                 <CreateEventDatePicker name={ID_BETTING_START_TIME} />
@@ -313,7 +310,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.betEndTime)}
+                {formatMessage(messages.betEndTime)}
               </Grid>
               <Grid item container xs={9}>
                 <CreateEventDatePicker name={ID_BETTING_END_TIME} />
@@ -321,7 +318,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.resultSetStartTime)}
+                {formatMessage(messages.resultSetStartTime)}
               </Grid>
               <Grid item container xs={9}>
                 <CreateEventDatePicker name={ID_RESULT_SETTING_START_TIME} />
@@ -329,7 +326,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.resultSetEndTime)}
+                {formatMessage(messages.resultSetEndTime)}
               </Grid>
               <Grid item container xs={9}>
                 <CreateEventDatePicker name={ID_RESULT_SETTING_END_TIME} />
@@ -337,7 +334,7 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.outcomes)}
+                {formatMessage(messages.outcomes)}
               </Grid>
               <Grid item xs={9}>
                 <CreateEventOutcomes name={ID_OUTCOMES} />
@@ -345,14 +342,14 @@ class CreateEvent extends React.Component {
             </Grid>
             <Grid container>
               <Grid item xs={3}>
-                {intl.formatMessage(messages.resultSetter)}
+                {formatMessage(messages.resultSetter)}
               </Grid>
               <Grid item xs={9}>
                 <Field
                   required
                   fullWidth
                   name={ID_RESULT_SETTER}
-                  placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}
+                  placeholder={formatMessage(messages.resultSetterPlaceholder)}
                   component={this.renderTextField}
                 />
                 <Button
@@ -360,7 +357,7 @@ class CreateEvent extends React.Component {
                   variant="raised"
                   onClick={this.onSelectResultSetterAddress}
                 >
-                  {intl.formatMessage(messages.selectMyAddress)}
+                  {formatMessage(messages.selectMyAddress)}
                 </Button>
               </Grid>
             </Grid>
