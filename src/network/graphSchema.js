@@ -20,6 +20,7 @@ const TYPE_DEF = {
     resultIdx
     qtumAmount
     botAmount
+    escrowAmount
     creatorAddress
     oracles {
       version

@@ -23,6 +23,7 @@ class GraphParser {
       resultIdx: entry.resultIdx,
       qtumAmount: entry.qtumAmount,
       botAmount: entry.botAmount,
+      escrowAmount: entry.escrowAmount,
       oracles: entry.oracles,
       blockNum: entry.blockNum,
       creatorAddress: entry.creatorAddress,
