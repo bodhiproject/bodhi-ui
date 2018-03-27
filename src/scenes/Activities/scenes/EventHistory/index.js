@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
@@ -19,10 +19,12 @@ import TransactionHistoryAddress from '../../../../components/TransactionHistory
 import appActions from '../../../../redux/App/actions';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
+import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType, SortBy, OracleStatus, AppLocation } from '../../../../constants';
 
 class EventHistory extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
@@ -30,14 +32,13 @@ class EventHistory extends React.Component {
     getOraclesReturn: PropTypes.object,
     getTransactions: PropTypes.func,
     getTransactionsReturn: PropTypes.array,
-    syncBlockTime: PropTypes.number,
+    syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    getOraclesReturn: [],
+    getOraclesReturn: undefined,
     getTransactions: undefined,
     getTransactionsReturn: [],
-    syncBlockTime: undefined,
   };
 
   state = {
@@ -57,7 +58,7 @@ class EventHistory extends React.Component {
     const {
       getOraclesReturn,
       getTransactionsReturn,
-      syncBlockTime,
+      syncBlockNum,
     } = nextProps;
 
     // return from the click event
@@ -69,7 +70,7 @@ class EventHistory extends React.Component {
     }
 
     // Update page on new block
-    if (syncBlockTime !== this.props.syncBlockTime) {
+    if (syncBlockNum !== this.props.syncBlockNum) {
       this.executeTxsRequest();
     }
 
@@ -237,7 +238,8 @@ class EventHistory extends React.Component {
   };
 
   getTableRow = (transaction, index) => {
-    const { classes } = this.props;
+    const { intl, classes } = this.props;
+    const { locale, messages: localeMessages } = intl;
     const result = [];
 
     result[0] = (
@@ -246,7 +248,7 @@ class EventHistory extends React.Component {
           {getShortLocalDateTimeString(transaction.createdTime)}
         </TableCell>
         <TableCell>
-          {transaction.type}
+          {getTxTypeString(transaction.type, locale, localeMessages)}
         </TableCell>
         <TableCell>
           {transaction.name ? transaction.name : (transaction.topic && transaction.topic.name)}
@@ -327,6 +329,7 @@ class EventHistory extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
   getOraclesReturn: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
 });
