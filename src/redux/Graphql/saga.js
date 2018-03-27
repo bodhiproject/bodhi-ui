@@ -217,7 +217,15 @@ function processTransaction(tx) {
 
   const newTx = _.assign({}, tx);
   if (tx.token && tx.token === Token.Bot) {
-    newTx.amount = satoshiToDecimal(tx.amount);
+    if (tx.type !== TransactionType.ApproveCreateEvent
+      && tx.type !== TransactionType.ApproveSetResult
+      && tx.type !== TransactionType.ApproveVote) {
+      newTx.amount = satoshiToDecimal(tx.amount);
+    } else {
+      // Don't show the amount for any approves
+      newTx.amount = undefined;
+    }
+
     newTx.fee = gasToQtum(tx.gasUsed);
   } else if (tx.token && tx.token === Token.Qtum && tx.type === TransactionType.Transfer) {
     // Process sendtoaddress
