@@ -84,50 +84,27 @@ export function* getBetAndVoteBalancesHandler() {
   });
 }
 
-export function* getWithdrawableAddressesHandler() {
-  yield takeEvery(actions.GET_WITHDRAWABLE_ADDRESSES, function* getWithdrawableAddressesRequest(action) {
-    // Get event escrow amount
-    let eventEscrowAmount;
+export function* calculateWinningsHandler() {
+  yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          senderAddress: action.senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
+      const { topic, walletAddresses, senderAddress } = action;
+      const withdrawableAddresses = [];
 
-      const result = yield call(request, Routes.api.eventEscrowAmount, options);
-      eventEscrowAmount = satoshiToDecimal(result[0]);
-    } catch (err) {
-      yield put({
-        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
-        error: {
-          route: Routes.api.eventEscrowAmount,
-          message: err.message,
-        },
-      });
-    }
-
-    // Get winning addresses
-    try {
-      const winningAddresses = [];
-
-      // Get all winning votes for a Topic
+      // Get all winning votes for this Topic
       const voteFilters = [];
-      _.each(action.walletAddresses, (item) => {
+      _.each(walletAddresses, (item) => {
         voteFilters.push({
-          topicAddress: action.topic.address,
-          optionIdx: action.topic.resultIdx,
+          topicAddress: topic.address,
+          optionIdx: topic.resultIdx,
           voterQAddress: item.address,
         });
 
         // Add escrow withdraw object if is event creator
-        if (item.address === action.topic.creatorAddress) {
-          winningAddresses.push({
+        if (item.address === topic.creatorAddress) {
+          withdrawableAddresses.push({
             type: WithdrawType.escrow,
             address: item.address,
-            botWon: eventEscrowAmount,
+            botWon: topic.escrowAmount,
             qtumWon: 0,
           });
         }
@@ -137,18 +114,16 @@ export function* getWithdrawableAddressesHandler() {
       let votes = yield call(queryAllVotes, voteFilters);
       votes = getUniqueVotes(votes);
 
-      // Create array of winning addresses and amounts
+      // Calculate winnings for each winning vote
       for (let i = 0; i < votes.length; i++) {
         const vote = votes[i];
         const options = {
           method: 'POST',
           body: JSON.stringify({
-            contractAddress: vote.topicAddress,
+            contractAddress: topic.address,
             senderAddress: vote.voterQAddress,
           }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         };
 
         const result = yield call(request, Routes.api.winnings, options);
@@ -162,9 +137,9 @@ export function* getWithdrawableAddressesHandler() {
 
         // return only winning addresses
         if (botWon || qtumWon) {
-          winningAddresses.push({
+          withdrawableAddresses.push({
             type: WithdrawType.winnings,
-            address: vote.voterQAddress,
+            address: senderAddress,
             botWon,
             qtumWon,
           });
@@ -172,62 +147,8 @@ export function* getWithdrawableAddressesHandler() {
       }
 
       yield put({
-        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
-        value: winningAddresses,
-      });
-    } catch (err) {
-      yield put({
-        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
-        error: {
-          route: '',
-          message: err.message,
-        },
-      });
-    }
-  });
-}
-
-export function* calculateWinningsHandler() {
-  yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
-    try {
-      const {
-        contractAddress,
-        walletAddresses,
-      } = action.params;
-
-      const value = [];
-      for (let i = 0; i < walletAddresses.length; i++) {
-        const item = walletAddresses[i];
-        const senderAddress = item.address;
-        const options = {
-          method: 'POST',
-          body: JSON.stringify({
-            contractAddress,
-            senderAddress,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-
-        const result = yield call(request, Routes.api.winnings, options);
-        let botWon = 0;
-        let qtumWon = 0;
-
-        if (result) {
-          botWon = satoshiToDecimal(result['0']);
-          qtumWon = satoshiToDecimal(result['1']);
-        }
-
-        // return only winning addresses
-        if (botWon || qtumWon) {
-          value.push({ address: senderAddress, botWon, qtumWon });
-        }
-      }
-
-      yield put({
         type: actions.CALCULATE_WINNINGS_RETURN,
-        value,
+        value: withdrawableAddresses,
       });
     } catch (err) {
       yield put({
@@ -245,7 +166,6 @@ export default function* topicSaga() {
   yield all([
     fork(getEventEscrowAmountHandler),
     fork(getBetAndVoteBalancesHandler),
-    fork(getWithdrawableAddressesHandler),
     fork(calculateWinningsHandler),
   ]);
 }

@@ -26,15 +26,6 @@ export default function topicReducer(state = initState, action) {
         .set('betBalances', action.value.bets)
         .set('voteBalances', action.value.votes);
     }
-    case actions.GET_WITHDRAWABLE_ADDRESSES_RETURN: {
-      if (action.error) {
-        return state.set('errorTopic', action.error);
-      }
-      return state
-        .set('winningAddresses', action.value)
-        .set('botWinnings', _.sumBy(action.value, (item) => item.botWon ? item.botWon : 0))
-        .set('qtumWinnings', _.sumBy(action.value, (item) => item.qtumWon ? item.qtumWon : 0));
-    }
     case actions.CALCULATE_WINNINGS_RETURN: {
       if (action.error) {
         return state.set('errorTopic', action.error);
