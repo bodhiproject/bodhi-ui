@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 
+import { getIntlProvider } from './i18nUtil';
 import { TransactionType } from '../constants';
 
 const strings = defineMessages({
@@ -47,28 +48,29 @@ export function getTxTypeString(txType, locale, localeMessages) {
       return formatMessage(strings.approveBotTransfer);
     }
     case TransactionType.CreateEvent: {
-      return formatMessage(strings.createEvent); 
+      return formatMessage(strings.createEvent);
     }
     case TransactionType.Bet: {
-      return formatMessage(strings.bet); 
+      return formatMessage(strings.bet);
     }
     case TransactionType.SetResult: {
-      return formatMessage(strings.setResult); 
+      return formatMessage(strings.setResult);
     }
     case TransactionType.Vote: {
-      return formatMessage(strings.vote); 
+      return formatMessage(strings.vote);
     }
     case TransactionType.FinalizeResult: {
-      return formatMessage(strings.finalizeResult); 
+      return formatMessage(strings.finalizeResult);
     }
     case TransactionType.Withdraw: {
-      return formatMessage(strings.withdraw); 
+      return formatMessage(strings.withdraw);
     }
     case TransactionType.Transfer: {
-      return formatMessage(strings.transfer); 
+      return formatMessage(strings.transfer);
     }
     default: {
       console.error(`Invalid txType: ${txType}`);
+      return '';
     }
   }
 }

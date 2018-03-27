@@ -10,10 +10,12 @@ import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType } from '../../../../constants';
 
 class EventTxHistory extends React.PureComponent {
   static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
@@ -63,13 +65,14 @@ class EventTxHistory extends React.PureComponent {
   }
 
   renderTxRow = (transaction, index) => {
-    const { classes } = this.props;
+    const { intl, classes } = this.props;
+    const { locale, messages: localeMessages } = intl;
 
     const result = [];
     result[0] = (
       <TableRow key={transaction.txid}>
         <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
-        <TableCell padding="dense">{transaction.type}</TableCell>
+        <TableCell padding="dense">{getTxTypeString(transaction.type, locale, localeMessages)}</TableCell>
         <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
         <TableCell padding="dense">
           {transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}
