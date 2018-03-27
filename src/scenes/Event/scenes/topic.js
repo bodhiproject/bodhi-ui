@@ -144,7 +144,6 @@ export default class TopicPage extends React.Component {
       config: undefined,
     };
 
-    this.fetchData = this.fetchData.bind(this);
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
@@ -176,7 +175,8 @@ export default class TopicPage extends React.Component {
     }
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
-    this.constructTopicAndConfig(topics, nextProps.botWinnings, nextProps.qtumWinnings);
+    const topic = _.find(topics, { address });
+    this.constructTopicAndConfig(topic, nextProps.botWinnings, nextProps.qtumWinnings);
   }
 
   componentWillUnmount() {
@@ -385,7 +385,7 @@ export default class TopicPage extends React.Component {
     );
   };
 
-  fetchData() {
+  fetchData = () => {
     const {
       getTopics,
       getTransactions,
@@ -403,7 +403,7 @@ export default class TopicPage extends React.Component {
     // API calls
     getBetAndVoteBalances(address, lastUsedAddress);
     calculateWinnings(address, walletAddresses);
-  }
+  };
 
   getActionButtonConfig = (senderAddress) => {
     const { getTransactionsReturn, winningAddresses, classes } = this.props;
@@ -532,11 +532,10 @@ export default class TopicPage extends React.Component {
     ];
   }
 
-  constructTopicAndConfig(topics, botWinnings, qtumWinnings) {
+  constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
     const { syncBlockTime } = this.props;
     const { address } = this.state;
     const { locale, messages: localeMessages } = this.props.intl;
-    const topic = _.find(topics, { address });
 
     if (topic) {
       let config;
