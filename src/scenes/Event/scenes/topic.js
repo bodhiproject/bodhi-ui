@@ -155,19 +155,10 @@ export default class TopicPage extends React.Component {
   }
 
   componentWillMount() {
-    const {
-      setAppLocation,
-      lastUsedAddress,
-      getBetAndVoteBalances,
-      getTransactionsReturn,
-      botWinnings,
-      qtumWinnings,
-      winningAddresses,
-    } = this.props;
-    const { address } = this.state;
+    const { setAppLocation } = this.props;
 
     setAppLocation(AppLocation.withdraw);
-    this.fetchTopic();
+    this.fetchData();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -180,8 +171,8 @@ export default class TopicPage extends React.Component {
     const { address } = this.state;
 
     // Update page on new block
-    if (nextProps.syncBlockTime !== syncBlockTime || nextProps.lastUsedAddress !== lastUsedAddress) {
-      this.fetchData(nextProps.lastUsedAddress ? nextProps.lastUsedAddress : lastUsedAddress);
+    if (nextProps.syncBlockTime !== syncBlockTime) {
+      this.fetchData();
     }
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
@@ -394,29 +385,23 @@ export default class TopicPage extends React.Component {
     );
   };
 
-  fetchTopic = () => {
-    this.props.getTopics([{ this.state.address }], undefined, 1, 0);
-  };
-
-  fetchData(senderAddress) {
+  fetchData() {
     const {
       getTopics,
       getTransactions,
       getBetAndVoteBalances,
-      walletAddresses,
       calculateWinnings,
+      walletAddresses,
+      lastUsedAddress,
     } = this.props;
     const { address } = this.state;
 
     // GraphQL calls
     getTopics([{ address }], undefined, 1, 0);
-    getTransactions(
-      [{ topicAddress: address }],
-      { field: 'createdTime', direction: SortBy.Descending },
-    );
+    getTransactions([{ topicAddress: address }], { field: 'createdTime', direction: SortBy.Descending });
 
     // API calls
-    getBetAndVoteBalances(address, senderAddress);
+    getBetAndVoteBalances(address, lastUsedAddress);
     calculateWinnings(address, walletAddresses);
   }
 
