@@ -11,6 +11,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
+import { TransactionType } from '../../constants';
 
 const messages = defineMessages({
   youHave: {
@@ -121,25 +122,25 @@ class PendingTransactionsSnackbar extends React.Component {
     const { intl } = this.props;
 
     switch (key) {
-      case 'createEvent': {
+      case TransactionType.CreateEvent: {
         return intl.formatMessage(messages.createEvent);
       }
-      case 'bet': {
+      case TransactionType.Bet: {
         return intl.formatMessage(messages.bet);
       }
-      case 'setResult': {
+      case TransactionType.SetResult: {
         return intl.formatMessage(messages.setResult);
       }
-      case 'vote': {
+      case TransactionType.Vote: {
         return intl.formatMessage(messages.vote);
       }
-      case 'finalizeResult': {
+      case TransactionType.FinalizeResult: {
         return intl.formatMessage(messages.finalizeResult);
       }
-      case 'withdraw': {
+      case TransactionType.Withdraw: {
         return intl.formatMessage(messages.withdraw);
       }
-      case 'transfer': {
+      case TransactionType.Transfer: {
         return intl.formatMessage(messages.transferTokens);
       }
       default: {
