@@ -109,7 +109,7 @@ export default class TopicPage extends React.Component {
     getWithdrawableAddresses: PropTypes.func.isRequired,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
-    withdrawableAddresses: PropTypes.array.isRequired,
+    withdrawableAddresses: PropTypes.array,
     createWithdrawTx: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
@@ -130,8 +130,9 @@ export default class TopicPage extends React.Component {
     txReturn: undefined,
     betBalances: [],
     voteBalances: [],
-    botWinnings: 0,
-    qtumWinnings: 0,
+    withdrawableAddresses: undefined,
+    botWinnings: undefined,
+    qtumWinnings: undefined,
   };
 
   constructor(props) {
@@ -170,7 +171,7 @@ export default class TopicPage extends React.Component {
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
     const topic = _.find(topics, { address });
-    this.constructTopicAndConfig(topic, nextProps.botWinnings, nextProps.qtumWinnings);
+    this.constructTopicAndConfig(topic);
   }
 
   componentWillUnmount() {
@@ -178,10 +179,11 @@ export default class TopicPage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn, getTransactionsReturn, lastUsedAddress } = this.props;
+    const { classes, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
     const { topic, config } = this.state;
 
-    if (!topic || !config) {
+    // Make sure all the data is available before rendering page
+    if (!topic || !config || !withdrawableAddresses) {
       return null;
     }
 
@@ -524,7 +526,7 @@ export default class TopicPage extends React.Component {
     ];
   }
 
-  constructTopicAndConfig(topic, botWinnings, qtumWinnings) {
+  constructTopicAndConfig(topic) {
     const { syncBlockTime } = this.props;
     const { address } = this.state;
     const { locale, messages: localeMessages } = this.props.intl;

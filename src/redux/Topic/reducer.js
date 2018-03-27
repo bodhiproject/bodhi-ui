@@ -5,9 +5,6 @@ import actions from './actions';
 const initState = new Map({
   betBalances: [],
   voteBalances: [],
-  botWinnings: 0,
-  qtumWinnings: 0,
-  withdrawableAddresses: [],
 });
 
 export default function topicReducer(state = initState, action) {
