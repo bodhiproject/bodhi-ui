@@ -7,11 +7,9 @@ import classNames from 'classnames';
 import styles from './styles';
 
 
-const FormattedMessageFixed = (props) => <FormattedMessage {...props} />; // workaround: http://bit.ly/2u7Hhe4
-
 const EventWarning = ({ classes, id, message, className, intl, theme, ...props }) => !message ? null : (
   <div {...props} className={classNames(className, classes.warningWrapper)}>
-    <FormattedMessageFixed id={id} defaultMessage={message} />
+    {intl.formatMessage({ id, message })}
   </div>
 );
 

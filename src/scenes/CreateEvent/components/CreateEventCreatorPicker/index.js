@@ -31,7 +31,7 @@ class CreateEventCreatorPicker extends React.PureComponent {
   };
 
   static defaultProps = {
-    eventEscrowAmount: 100,
+    eventEscrowAmount: undefined,
   }
 
   renderCreatorAddressSelector = ({

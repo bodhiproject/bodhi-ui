@@ -244,8 +244,8 @@ export default class CreateEvent extends Component {
 
   state = {
     selectAddressDialogVisibility: false,
-    error: {},
-    isValid: true,
+    notEnoughQtumError: {},
+    hasEnoughQtum: true,
   }
 
   validateTitleLength = (value) => {
@@ -308,13 +308,12 @@ export default class CreateEvent extends Component {
 
   validateEnoughQTUM = () => {
     const totalQtum = _.sumBy(this.props.walletAddresses, ({ qtum }) => qtum ? qtum : 0); // eslint-disable-line
-    const hasEnoughQTUM = totalQtum > maxTransactionFee;
-    const isValid = hasEnoughQTUM;
-    const error = {
+    const hasEnoughQtum = totalQtum > maxTransactionFee;
+    const notEnoughQtumError = {
       id: 'str.notEnoughQtum',
       message: 'You do\'t have enough QTUM',
     };
-    this.setState({ error, isValid });
+    this.setState({ hasEnoughQtum, notEnoughQtumError });
   }
 
   componentWillMount() {
@@ -339,7 +338,7 @@ export default class CreateEvent extends Component {
       createEventDialogVisible,
       eventEscrowAmount,
     } = this.props;
-    const { isValid, error: { id, message } } = this.state;
+    const { hasEnoughQtum, notEnoughQtumError: { id, message } } = this.state;
 
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onClose={this.onClose}>
@@ -358,7 +357,7 @@ export default class CreateEvent extends Component {
                 <DialogTitle className={classes.title}>{formatMessage(messages.dialogTitle)}</DialogTitle>
               </Grid>
               <Grid item xs={9}>
-                {!isValid && <EventWarning id={id} message={message} className={`error ${classes.warning}`} />}
+                {!hasEnoughQtum && <EventWarning id={id} message={message} className={`error ${classes.warning}`} />}
               </Grid>
             </Grid>
           </DialogContent>
@@ -420,7 +419,7 @@ export default class CreateEvent extends Component {
             <Button color="primary" onClick={this.onClose}>
               <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
             </Button>
-            <Button type="submit" color="primary" disabled={submitting || !isValid} variant="raised">
+            <Button type="submit" color="primary" disabled={submitting || !hasEnoughQtum} variant="raised">
               <FormattedMessage id="create.publish" defaultMessage="Publish" />
             </Button>
           </DialogActions>

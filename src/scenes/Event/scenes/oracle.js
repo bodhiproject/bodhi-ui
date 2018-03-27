@@ -548,9 +548,9 @@ export default class OraclePage extends React.Component {
     // Trying to set result or vote when not enough QTUM or BOT
     const totalQtum = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
     const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
-    const totalBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0;
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
     if ((token === Token.Bot || (token === Token.Qtum && status === OracleStatus.OpenResultSet))
-      && (totalQtum < maxTransactionFee && totalBot < oracle.consensusThreshold)
+      && (totalQtum < maxTransactionFee && currentBot < oracle.consensusThreshold)
       && [OracleStatus.Voting, OracleStatus.WaitResult, OracleStatus.OpenResultSet].includes(status)) {
       return {
         disabled: true,
@@ -574,8 +574,8 @@ export default class OraclePage extends React.Component {
     // Not enough bot for setting the result or voting
     if ((token === Token.Qtum
       && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
-      && totalBot < oracle.consensusThreshold)
-      || (token === Token.Bot && status === OracleStatus.Voting && (totalBot < voteAmount || totalBot < oracle.consensusThreshold))) {
+      && currentBot < oracle.consensusThreshold)
+      || (token === Token.Bot && status === OracleStatus.Voting && (currentBot < voteAmount || currentBot < oracle.consensusThreshold))) {
       return {
         disabled: true,
         id: 'str.notEnoughBot',
