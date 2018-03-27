@@ -69,12 +69,10 @@ class EventHistory extends React.Component {
 
     // Update page on new block
     if (syncBlockNum !== this.props.syncBlockNum) {
-      console.log('executing tx req');
       this.executeTxsRequest();
     }
 
     if (getTransactionsReturn || nextProps.getTransactionsReturn) {
-      console.log('setting txs');
       const sorted = _.orderBy(
         nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
         [this.state.orderBy],
