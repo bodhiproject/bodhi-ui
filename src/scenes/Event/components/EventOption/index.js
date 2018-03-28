@@ -75,9 +75,6 @@ class EventOption extends React.PureComponent {
       isFinalizing,
     } = this.props;
 
-    console.log('isPrevResult', isPrevResult);
-    console.log('isFinalizing', isFinalizing);
-
     return (
       <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
         <div
