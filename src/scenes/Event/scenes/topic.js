@@ -359,7 +359,7 @@ export default class TopicPage extends React.Component {
           <div>{withdrawableAddress.address}</div>
           <div className={config.warningTypeClass}>{config.message}</div>
         </TableCell>
-        <TableCell padding="dense">{withdrawableAddress.type.toUpperCase()}</TableCell>
+        <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
           {`${withdrawableAddress.botWon} ${Token.Bot}, ${withdrawableAddress.qtumWon} ${Token.Qtum}`}
         </TableCell>
@@ -378,6 +378,24 @@ export default class TopicPage extends React.Component {
         </TableCell>
       </TableRow>
     );
+  };
+
+  getLocalizedTypeString = (type) => {
+    switch (type) {
+      case WithdrawType.escrow: {
+        return (<FormattedMessage id="str.escrow" defaultMessage="Escrow">
+          {(txt) => i18nToUpperCase(txt)}
+        </FormattedMessage>);
+      }
+      case WithdrawType.winnings: {
+        return (<FormattedMessage id="str.winnings" defaultMessage="Winnings">
+          {(txt) => i18nToUpperCase(txt)}
+        </FormattedMessage>);
+      }
+      default: {
+        return '';
+      }
+    }
   };
 
   fetchData = () => {
