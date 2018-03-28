@@ -39,6 +39,7 @@ class EventOption extends React.PureComponent {
     showAmountInput: PropTypes.bool.isRequired,
     amountInputDisabled: PropTypes.bool.isRequired,
     isPrevResult: PropTypes.bool.isRequired,
+    isFinalizing: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -71,7 +72,11 @@ class EventOption extends React.PureComponent {
       unconfirmedEvent,
       showAmountInput,
       isPrevResult,
+      isFinalizing,
     } = this.props;
+
+    console.log('isPrevResult', isPrevResult);
+    console.log('isFinalizing', isFinalizing);
 
     return (
       <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
@@ -85,7 +90,7 @@ class EventOption extends React.PureComponent {
           <ExpansionPanel
             expanded={optionIdx === currentOptionIdx || skipExpansion}
             onChange={this.handleExpansionChange}
-            disabled={unconfirmedEvent || isPrevResult}
+            disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
           >
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
