@@ -340,6 +340,9 @@ export default class TopicPage extends React.Component {
       return null;
     }
 
+    const botWonText = withdrawableAddress.botWon ? `${withdrawableAddress.botWon} ${Token.Bot}` : '';
+    const qtumWonText = withdrawableAddress.qtumWon ? `${withdrawableAddress.qtumWon} ${Token.Qtum}` : '';
+
     return (
       <TableRow key={index}>
         <TableCell padding="dense">
@@ -350,7 +353,7 @@ export default class TopicPage extends React.Component {
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
-          {`${withdrawableAddress.botWon} ${Token.Bot}, ${withdrawableAddress.qtumWon} ${Token.Qtum}`}
+          {`${botWonText}${!_.isEmpty(botWonText) && !_.isEmpty(qtumWonText) ? ', ' : ''}${qtumWonText}`}
         </TableCell>
         <TableCell padding="dense">
           <Button
