@@ -446,7 +446,10 @@ export default class TopicPage extends React.Component {
     }
 
     // Can withdraw winnings
-    if (_.find(withdrawableAddresses, { address: withdrawableAddress.address })) {
+    if (_.find(withdrawableAddresses, {
+      type: withdrawableAddress.type,
+      address: withdrawableAddress.address,
+    })) {
       return {
         show: true,
         disabled: false,
