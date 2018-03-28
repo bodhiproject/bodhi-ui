@@ -186,7 +186,7 @@ export default class OraclePage extends React.Component {
 
   render() {
     const { classes, lastUsedAddress } = this.props;
-    const { oracle, config, transactions, unconfirmed } = this.state;
+    const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
@@ -336,10 +336,12 @@ export default class OraclePage extends React.Component {
 
   constructOracleAndConfig = (syncBlockTime, { data: oracles }) => {
     const { address, txid, unconfirmed } = this.state;
+    let oracles = getOraclesReturn && getOraclesReturn.data;
 
     let oracle;
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
+      oracles = _.orderBy(oracles, ['blockNum'], ['asc']);
     } else {
       oracle = _.find(oracles, { txid });
     }
@@ -376,7 +378,7 @@ export default class OraclePage extends React.Component {
       return;
     }
 
-    this.setState({ oracle, config });
+    this.setState({ oracle, oracles, config });
   }
 
   setUnconfirmedConfig = (syncBlockTime, oracle) => {
