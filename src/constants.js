@@ -43,11 +43,6 @@ module.exports = {
     Highlight: 'highlight',
   },
 
-  WithdrawType: {
-    winnings: 'winnings',
-    escrow: 'escrow',
-  },
-
   /* GraphQL Constants */
   OracleStatus: {
     Created: 'CREATED',

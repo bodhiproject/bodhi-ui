@@ -30,7 +30,6 @@ import {
   TransactionStatus,
   SortBy,
   AppLocation,
-  WithdrawType,
 } from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -143,7 +142,6 @@ export default class TopicPage extends React.Component {
     this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
     this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
-    this.getActionButtonConfig = this.getActionButtonConfig.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
     this.onAddressChange = this.onAddressChange.bind(this);
   }
@@ -335,8 +333,8 @@ export default class TopicPage extends React.Component {
   };
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
-    const { intl } = this.props;
-    const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress.address);
+    const { intl, classes } = this.props;
+    const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
 
     if (!show) {
       return null;
@@ -373,12 +371,12 @@ export default class TopicPage extends React.Component {
 
   getLocalizedTypeString = (type) => {
     switch (type) {
-      case WithdrawType.escrow: {
+      case TransactionType.WithdrawEscrow: {
         return (<FormattedMessage id="str.escrow" defaultMessage="Escrow">
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>);
       }
-      case WithdrawType.winnings: {
+      case TransactionType.Withdraw: {
         return (<FormattedMessage id="str.winnings" defaultMessage="Winnings">
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>);
@@ -409,16 +407,16 @@ export default class TopicPage extends React.Component {
     getWithdrawableAddresses(address, walletAddresses);
   };
 
-  getActionButtonConfig = (senderAddress) => {
+  getActionButtonConfig = (withdrawableAddress) => {
     const { getTransactionsReturn, withdrawableAddresses, classes } = this.props;
     const { address } = this.state;
 
     // Already have a pending tx for this Topic
     let pendingTxs = _.filter(getTransactionsReturn, {
-      type: TransactionType.Withdraw,
+      type: withdrawableAddress.type,
       status: TransactionStatus.Pending,
       topicAddress: address,
-      senderAddress,
+      senderAddress: withdrawableAddress.address,
     });
     if (pendingTxs.length > 0) {
       return {
@@ -432,10 +430,10 @@ export default class TopicPage extends React.Component {
 
     // Already withdrawn with this address
     pendingTxs = _.filter(getTransactionsReturn, {
-      type: TransactionType.Withdraw,
+      type: withdrawableAddress.type,
       status: TransactionStatus.Success,
       topicAddress: address,
-      senderAddress,
+      senderAddress: withdrawableAddress.address,
     });
     if (pendingTxs.length > 0) {
       return {
@@ -447,11 +445,8 @@ export default class TopicPage extends React.Component {
       };
     }
 
-    // Can withdraw winning
-    const winniningAddress = _.find(withdrawableAddresses, {
-      address: senderAddress,
-    });
-    if (winniningAddress) {
+    // Can withdraw winnings
+    if (_.find(withdrawableAddresses, { address: withdrawableAddress.address })) {
       return {
         show: true,
         disabled: false,
@@ -576,20 +571,7 @@ export default class TopicPage extends React.Component {
     const { topic } = this.state;
 
     const senderAddress = event.currentTarget.getAttribute('data-address');
-    let type = event.currentTarget.getAttribute('data-type');
-    switch (type) {
-      case WithdrawType.escrow: {
-        type = TransactionType.WithdrawEscrow;
-        break;
-      }
-      case WithdrawType.winnings: {
-        type = TransactionType.Withdraw;
-        break;
-      }
-      default: {
-        throw new Error(`Invalid withdraw type: ${type}`);
-      }
-    }
+    const type = event.currentTarget.getAttribute('data-type');
 
     if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);

@@ -6,7 +6,7 @@ import { request } from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic, getUniqueVotes } from '../../helpers/utility';
 import Routes from '../../network/routes';
-import { WithdrawType } from '../../constants';
+import { TransactionType } from '../../constants';
 
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
@@ -111,7 +111,7 @@ export function* getWithdrawableAddressesHandler() {
         // Add escrow withdraw object if is event creator
         if (item.address === topic.creatorAddress) {
           withdrawableAddresses.push({
-            type: WithdrawType.escrow,
+            type: TransactionType.WithdrawEscrow,
             address: item.address,
             botWon: topic.escrowAmount,
             qtumWon: 0,
@@ -147,7 +147,7 @@ export function* getWithdrawableAddressesHandler() {
         // return only winning addresses
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
-            type: WithdrawType.winnings,
+            type: TransactionType.Withdraw,
             address: vote.voterQAddress,
             botWon,
             qtumWon,
