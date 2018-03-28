@@ -26,12 +26,21 @@ import EventWarning from '../../../components/EventWarning/index';
 import ImportantNote from '../../../components/ImportantNote/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
+import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import EventTxHistory from '../components/EventTxHistory/index';
 import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
 import { maxTransactionFee } from '../../../config/app';
+import {
+  Token,
+  OracleStatus,
+  TransactionStatus,
+  EventWarningType,
+  SortBy,
+  AppLocation,
+  EventStatus,
+} from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -183,6 +192,7 @@ export default class OraclePage extends React.Component {
       return null;
     }
 
+    const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
     const { id, message, warningTypeClass, disabled } = this.getActionButtonConfig();
 
@@ -206,8 +216,8 @@ export default class OraclePage extends React.Component {
                     name={item.name}
                     amount={`${item.value}`}
                     percent={item.percent}
-                    voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
-                    token={config.name === 'SETTING' ? Token.Bot : oracle.token}
+                    voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
+                    token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
                     isPrevResult={item.isPrevResult}
                     isFinalizing={item.isFinalizing}
                     walletAddresses={this.props.walletAddresses}
@@ -280,20 +290,20 @@ export default class OraclePage extends React.Component {
       return;
     }
 
-    switch (config.name) {
-      case 'BETTING': {
+    switch (config.eventStatus) {
+      case EventStatus.Bet: {
         this.bet(voteAmount);
         break;
       }
-      case 'SETTING': {
+      case EventStatus.Set: {
         this.setResult();
         break;
       }
-      case 'VOTING': {
+      case EventStatus.Vote: {
         this.vote(voteAmount);
         break;
       }
-      case 'FINALIZING': {
+      case EventStatus.Finalize: {
         this.finalizeResult();
         break;
       }
@@ -377,7 +387,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.bet);
 
     return {
-      name: 'BETTING',
+      eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -403,7 +413,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.bet);
 
     return {
-      name: 'BETTING',
+      eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -425,7 +435,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.resultSet);
 
     return {
-      name: 'SETTING',
+      eventStatus: EventStatus.Set,
       breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -451,7 +461,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.vote);
 
     return {
-      name: 'VOTING',
+      eventStatus: EventStatus.Vote,
       breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
@@ -477,7 +487,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.finalize);
 
     return {
-      name: 'FINALIZING',
+      eventStatus: EventStatus.Finalize,
       breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
