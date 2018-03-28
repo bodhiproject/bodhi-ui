@@ -75,7 +75,7 @@ class EventTxHistory extends React.PureComponent {
         <TableCell padding="dense">{getTxTypeString(transaction.type, locale, localeMessages)}</TableCell>
         <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
         <TableCell padding="dense">
-          {transaction.amount === null ? null : `${transaction.amount} ${transaction.token}`}
+          {!transaction.amount ? '' : `${transaction.amount} ${transaction.token}`}
         </TableCell>
         <TableCell padding="dense">{transaction.status}</TableCell>
       </TableRow>

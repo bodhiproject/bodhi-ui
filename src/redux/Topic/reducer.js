@@ -29,8 +29,8 @@ export default function topicReducer(state = initState, action) {
       }
       return state
         .set('withdrawableAddresses', action.value)
-        .set('botWinnings', _.sumBy(action.value, (wallet) => wallet.botWon ? wallet.botWon : 0))
-        .set('qtumWinnings', _.sumBy(action.value, (wallet) => wallet.qtumWon ? wallet.qtumWon : 0));
+        .set('botWinnings', _.sumBy(action.value, (item) => item.botWon ? item.botWon : 0))
+        .set('qtumWinnings', _.sumBy(action.value, (item) => item.qtumWon ? item.qtumWon : 0));
     }
     case actions.CLEAR_ERROR_TOPIC: {
       return state.set('errorTopic', undefined);

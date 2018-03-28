@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { Field, FieldArray, reduxForm, Form, formValueSelector, change } from 'redux-form';
+import { Field, FieldArray, reduxForm, Form, formValueSelector, change, reset } from 'redux-form';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
@@ -137,6 +137,7 @@ class CreateEvent extends React.Component {
     history: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     handleSubmit: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
     toggleCreateEventDialog: PropTypes.func.isRequired,
@@ -169,7 +170,7 @@ class CreateEvent extends React.Component {
   };
 
   submitCreateEvent = (values) => {
-    const { eventEscrowAmount } = this.props;
+    const { eventEscrowAmount, createTopicTx } = this.props;
     const {
       name,
       outcomes,
@@ -181,7 +182,7 @@ class CreateEvent extends React.Component {
       creatorAddress,
     } = values;
 
-    this.props.createTopicTx(
+    createTopicTx(
       name,
       outcomes,
       resultSetter,
@@ -192,6 +193,8 @@ class CreateEvent extends React.Component {
       eventEscrowAmount,
       creatorAddress,
     );
+
+    this.props.reset(FORM_NAME);
   };
 
   renderTextField = ({
