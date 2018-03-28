@@ -132,9 +132,10 @@ const graphqlActions = {
 
   CREATE_WITHDRAW_TX: 'CREATE_WITHDRAW_TX',
   CREATE_WITHDRAW_TX_RETURN: 'CREATE_WITHDRAW_TX_RETURN',
-  createWithdrawTx: (version, topicAddress, senderAddress) => ({
+  createWithdrawTx: (type, version, topicAddress, senderAddress) => ({
     type: graphqlActions.CREATE_WITHDRAW_TX,
     params: {
+      type,
       version,
       topicAddress,
       senderAddress,

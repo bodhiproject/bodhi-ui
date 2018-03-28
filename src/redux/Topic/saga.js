@@ -3,8 +3,10 @@ import _ from 'lodash';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
-import { satoshiToDecimal } from '../../helpers/utility';
+import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
+import { satoshiToDecimal, processTopic, getUniqueVotes } from '../../helpers/utility';
 import Routes from '../../network/routes';
+import { WithdrawType } from '../../constants';
 
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
@@ -82,27 +84,55 @@ export function* getBetAndVoteBalancesHandler() {
   });
 }
 
-export function* calculateWinningsHandler() {
-  yield takeEvery(actions.CALCULATE_WINNINGS, function* calculateWinningsRequest(action) {
+export function* getWithdrawableAddressesHandler() {
+  yield takeEvery(actions.GET_WITHDRAWABLE_ADDRESSES, function* getWithdrawableAddressesRequest(action) {
     try {
-      const {
-        contractAddress,
-        walletAddresses,
-      } = action.params;
+      const { eventAddress, walletAddresses } = action;
+      const withdrawableAddresses = [];
 
-      const value = [];
-      for (let i = 0; i < walletAddresses.length; i++) {
-        const item = walletAddresses[i];
-        const senderAddress = item.address;
+      // Fetch Topic
+      const topics = yield call(queryAllTopics, [{ address: eventAddress }]);
+      let topic;
+      if (!_.isEmpty(topics)) {
+        topic = processTopic(topics[0]);
+      } else {
+        throw new Error(`Unable to find topic ${eventAddress}`);
+      }
+
+      // Get all winning votes for this Topic
+      const voteFilters = [];
+      _.each(walletAddresses, (item) => {
+        voteFilters.push({
+          topicAddress: topic.address,
+          optionIdx: topic.resultIdx,
+          voterQAddress: item.address,
+        });
+
+        // Add escrow withdraw object if is event creator
+        if (item.address === topic.creatorAddress) {
+          withdrawableAddresses.push({
+            type: WithdrawType.escrow,
+            address: item.address,
+            botWon: topic.escrowAmount,
+            qtumWon: 0,
+          });
+        }
+      });
+
+      // Filter unique votes
+      let votes = yield call(queryAllVotes, voteFilters);
+      votes = getUniqueVotes(votes);
+
+      // Calculate winnings for each winning vote
+      for (let i = 0; i < votes.length; i++) {
+        const vote = votes[i];
         const options = {
           method: 'POST',
           body: JSON.stringify({
-            contractAddress,
-            senderAddress,
+            contractAddress: topic.address,
+            senderAddress: vote.voterQAddress,
           }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         };
 
         const result = yield call(request, Routes.api.winnings, options);
@@ -116,19 +146,24 @@ export function* calculateWinningsHandler() {
 
         // return only winning addresses
         if (botWon || qtumWon) {
-          value.push({ address: senderAddress, botWon, qtumWon });
+          withdrawableAddresses.push({
+            type: WithdrawType.winnings,
+            address: vote.voterQAddress,
+            botWon,
+            qtumWon,
+          });
         }
       }
 
       yield put({
-        type: actions.CALCULATE_WINNINGS_RETURN,
-        value,
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
+        value: withdrawableAddresses,
       });
     } catch (err) {
       yield put({
-        type: actions.CALCULATE_WINNINGS_RETURN,
+        type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
         error: {
-          route: Routes.api.winnings,
+          route: '',
           message: err.message,
         },
       });
@@ -140,6 +175,6 @@ export default function* topicSaga() {
   yield all([
     fork(getEventEscrowAmountHandler),
     fork(getBetAndVoteBalancesHandler),
-    fork(calculateWinningsHandler),
+    fork(getWithdrawableAddressesHandler),
   ]);
 }

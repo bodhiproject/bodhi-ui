@@ -20,6 +20,7 @@ const TYPE_DEF = {
     resultIdx
     qtumAmount
     botAmount
+    escrowAmount
     creatorAddress
     oracles {
       version
@@ -224,6 +225,7 @@ const MUTATIONS = {
 
   withdraw: {
     mapping: [
+      'type',
       'version',
       'topicAddress',
       'senderAddress',
@@ -287,6 +289,7 @@ const ENUMS = {
     'VOTE',
     'FINALIZERESULT',
     'WITHDRAW',
+    'WITHDRAWESCROW',
     'TRANSFER',
   ],
 

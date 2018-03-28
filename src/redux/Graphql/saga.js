@@ -13,7 +13,14 @@ import {
   createTransferTx,
 } from '../../network/graphMutation';
 import Config from '../../config/app';
-import { decimalToSatoshi, satoshiToDecimal, gasToQtum, getUniqueVotes } from '../../helpers/utility';
+import {
+  decimalToSatoshi,
+  satoshiToDecimal,
+  gasToQtum,
+  processTopic,
+  processOracle,
+  getUniqueVotes,
+} from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
 
@@ -66,6 +73,7 @@ export function* getActionableTopicsHandler() {
         topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
 
+      // Filter votes
       let votes = yield call(queryAllVotes, voteFilters);
       votes = getUniqueVotes(votes);
 
@@ -92,18 +100,6 @@ export function* getActionableTopicsHandler() {
       });
     }
   });
-}
-
-function processTopic(topic) {
-  if (!topic) {
-    return undefined;
-  }
-
-  const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
-  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
-  newTopic.oracles = _.map(topic.oracles, processOracle);
-  return newTopic;
 }
 
 // Send allOracles query
@@ -142,17 +138,6 @@ export function* getOraclesHandler() {
   });
 }
 
-function processOracle(oracle) {
-  if (!oracle) {
-    return undefined;
-  }
-
-  const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
-  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-  return newOracle;
-}
-
 // Send allTransactions query
 export function* getTransactionsHandler() {
   yield takeEvery(actions.GET_TRANSACTIONS, function* getTransactionsRequest(action) {
@@ -184,16 +169,17 @@ export function* getPendingTransactionsHandler() {
 
       const pendingTxsObj = {
         count: txs.length,
-        createEvent: _.filter(txs, (tx) =>
+        CREATEEVENT: _.filter(txs, (tx) =>
           tx.type === TransactionType.ApproveCreateEvent || tx.type === TransactionType.CreateEvent),
-        bet: _.filter(txs, { type: TransactionType.Bet }),
-        setResult: _.filter(txs, (tx) =>
+        BET: _.filter(txs, { type: TransactionType.Bet }),
+        SETRESULT: _.filter(txs, (tx) =>
           tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult),
-        vote: _.filter(txs, (tx) =>
+        VOTE: _.filter(txs, (tx) =>
           tx.type === TransactionType.ApproveVote || tx.type === TransactionType.Vote),
-        finalizeResult: _.filter(txs, { type: TransactionType.FinalizeResult }),
-        withdraw: _.filter(txs, { type: TransactionType.Withdraw }),
-        transfer: _.filter(txs, { type: TransactionType.Transfer }),
+        FINALIZERESULT: _.filter(txs, { type: TransactionType.FinalizeResult }),
+        WITHDRAW: _.filter(txs, (tx) =>
+          tx.type === TransactionType.Withdraw || tx.type === TransactionType.WithdrawEscrow),
+        TRANSFER: _.filter(txs, { type: TransactionType.Transfer }),
       };
 
       yield put({
@@ -254,6 +240,7 @@ export function* getActionableItemCountHandler() {
         topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
       });
 
+      // Filter votes
       let votes = yield call(queryAllVotes, voteFilters);
       votes = getUniqueVotes(votes);
 
@@ -456,6 +443,7 @@ export function* createWithdrawTxHandler() {
     try {
       const tx = yield call(
         createWithdrawTx,
+        action.params.type,
         action.params.version,
         action.params.topicAddress,
         action.params.senderAddress,

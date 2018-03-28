@@ -62,7 +62,8 @@ export function getTxTypeString(txType, locale, localeMessages) {
     case TransactionType.FinalizeResult: {
       return formatMessage(strings.finalizeResult);
     }
-    case TransactionType.Withdraw: {
+    case TransactionType.Withdraw:
+    case TransactionType.WithdrawEscrow: {
       return formatMessage(strings.withdraw);
     }
     case TransactionType.Transfer: {
