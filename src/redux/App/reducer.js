@@ -96,8 +96,8 @@ export default function appReducer(state = initState, action) {
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', undefined);
     }
-    case actions.DISMISS_PENDING_TXS_SNACKBAR: {
-      return state.set('pendingTxsSnackbarVisible', false);
+    case actions.TOGGLE_PENDING_TXS_SNACKBAR: {
+      return state.set('pendingTxsSnackbarVisible', action.isVisible);
     }
     case actions.TOGGLE_CREATE_EVENT_DIALOG: {
       return state.set('createEventDialogVisible', action.isVisible);

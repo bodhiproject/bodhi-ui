@@ -23,6 +23,7 @@ class GlobalHub extends React.PureComponent {
     getActionableItemCount: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     getPendingTransactions: PropTypes.func.isRequired,
+    togglePendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -61,6 +62,7 @@ class GlobalHub extends React.PureComponent {
       getActionableItemCount,
       walletAddresses,
       txReturn,
+      togglePendingTxsSnackbar,
       getPendingTransactions,
     } = this.props;
 
@@ -73,6 +75,11 @@ class GlobalHub extends React.PureComponent {
     if ((syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)
       || (_.isEmpty(walletAddresses) && !_.isEmpty(nextProps.walletAddresses))) {
       getActionableItemCount(nextProps.walletAddresses ? nextProps.walletAddresses : walletAddresses);
+    }
+
+    // Tx was executed, show the pending txs snackbar again
+    if (!txReturn && nextProps.txReturn) {
+      togglePendingTxsSnackbar(true);
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block
@@ -116,6 +123,7 @@ const mapDispatchToProps = (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
+  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 });
