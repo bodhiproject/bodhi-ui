@@ -238,6 +238,7 @@ export default class OraclePage extends React.Component {
                     voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
                     token={config.name === 'SETTING' ? Token.Bot : oracle.token}
                     isPrevResult={item.isPrevResult}
+                    isFinalizing={item.isFinalizing}
                     walletAddresses={this.props.walletAddresses}
                     lastUsedAddress={lastUsedAddress}
                     skipExpansion={config.predictionAction.skipExpansion}
@@ -657,9 +658,10 @@ export default class OraclePage extends React.Component {
 
   getEventOptionsInfo() {
     const { oracle } = this.state;
+    const { token, status } = oracle;
     const totalBalance = _.sum(oracle.amounts);
 
-    if (oracle.token === Token.Qtum) {
+    if (token === Token.Qtum) {
       return _.map(oracle.options, (optionName, index) => {
         const optionAmount = oracle.amounts[index] || 0;
         return {
@@ -667,6 +669,7 @@ export default class OraclePage extends React.Component {
           value: `${optionAmount} ${oracle.token}`,
           percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
           isPrevResult: false,
+          isFinalizing: false,
         };
       });
     }
@@ -681,6 +684,7 @@ export default class OraclePage extends React.Component {
         value: isPrevResult ? 0 : `${optionAmount} ${oracle.token}`,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
         isPrevResult,
+        isFinalizing: token === Token.Bot && status === OracleStatus.WaitResult,
       };
     });
   }
