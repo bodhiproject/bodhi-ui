@@ -94,8 +94,8 @@ const messages = defineMessages({
     )),
   createVoteTx: (version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress) =>
     dispatch(graphqlActions.createVoteTx(version, topicAddress, oracleAddress, resultIndex, botAmount, senderAddress)),
-  createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
-    dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
+  createFinalizeResultTx: (version, topicAddress, oracleAddress, optionIdx, senderAddress) =>
+    dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, optionIdx, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
 export default class OraclePage extends React.Component {
@@ -765,6 +765,14 @@ export default class OraclePage extends React.Component {
     const { createFinalizeResultTx, lastUsedAddress } = this.props;
     const { oracle } = this.state;
 
-    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
+    let winningOptionIdx;
+    for (let i = 0; i < oracle.options.length; i++) {
+      if (!_.includes(oracle.optionIdxs, i)) {
+        winningOptionIdx = i;
+        break;
+      }
+    }
+
+    createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, winningOptionIdx, lastUsedAddress);
   }
 }
