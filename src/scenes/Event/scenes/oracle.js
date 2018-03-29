@@ -678,10 +678,13 @@ export default class OraclePage extends React.Component {
       const isPrevResult = !oracle.optionIdxs.includes(index);
       const optionAmount = oracle.amounts[index] || 0;
       const threshold = isPrevResult ? 0 : oracle.consensusThreshold;
+      const maxAmount = token === Token.Bot && status === OracleStatus.Voting
+        ? oracle.consensusThreshold - optionAmount : undefined;
 
       return {
         name: oracle.options[index],
         value: isPrevResult ? 0 : `${optionAmount} ${oracle.token}`,
+        maxAmount,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
         isPrevResult,
         isFinalizing: token === Token.Bot && status === OracleStatus.WaitResult,
