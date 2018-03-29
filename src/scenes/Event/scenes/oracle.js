@@ -652,6 +652,27 @@ export default class OraclePage extends React.Component {
       };
     }
 
+    // Trying to vote over the consensus threshold
+    const optionAmount = oracle.amounts[currentOptionIdx];
+    const maxVote = token === Token.Bot && status === OracleStatus.Voting
+      ? oracle.consensusThreshold - optionAmount : 0;
+    if (token === Token.Bot
+      && status === OracleStatus.Voting
+      && currentOptionIdx >= 0
+      && voteAmount > maxVote) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="oracle.maxVote"
+          defaultMessage="Max vote allowed: {amount}"
+          values={{
+            amount: maxVote,
+          }}
+        />,
+        warningTypeClass: EventWarningType.Error,
+      };
+    }
+
     return {
       disabled: false,
     };

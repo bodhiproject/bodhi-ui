@@ -28,7 +28,6 @@ class EventOption extends React.PureComponent {
     amount: PropTypes.string.isRequired,
     percent: PropTypes.number.isRequired,
     voteAmount: PropTypes.number,
-    maxAmount: PropTypes.number,
     token: PropTypes.string.isRequired,
     onOptionChange: PropTypes.func.isRequired,
     onAmountChange: PropTypes.func.isRequired,
@@ -45,7 +44,6 @@ class EventOption extends React.PureComponent {
 
   static defaultProps = {
     voteAmount: 0,
-    maxAmount: undefined,
   };
 
   constructor(props) {
@@ -128,7 +126,6 @@ class EventOption extends React.PureComponent {
       token,
       amountInputDisabled,
     } = this.props;
-    const { amountError } = this.state;
 
     return (<ExpansionPanelDetails>
       <div className={classNames(classes.eventOptionWrapper, 'noMargin')}>
@@ -148,7 +145,6 @@ class EventOption extends React.PureComponent {
             onChange={this.handleAmountChange}
             endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
             disabled={amountInputDisabled}
-            error={amountError || ''}
           />
         </FormControl>
       </div>
@@ -203,19 +199,9 @@ class EventOption extends React.PureComponent {
   handleAmountChange(event) {
     const {
       onAmountChange,
-      maxAmount,
     } = this.props;
-    const amount = parseFloat(event.target.value);
 
-    let amountError;
-    if (maxAmount && amount > maxAmount) {
-      amountError = `Max vote allowed: ${maxAmount}`;
-    } else {
-      amountError = undefined;
-      onAmountChange();
-    }
-
-    this.setState({ amountError });
+    onAmountChange(parseFloat(event.target.value));
   }
 
   handleAddrChange(event) {
