@@ -119,6 +119,7 @@ class EventHistory extends React.Component {
         { type: TransactionType.Vote },
         { type: TransactionType.FinalizeResult },
         { type: TransactionType.Withdraw },
+        { type: TransactionType.ResetApprove },
       ],
       undefined
     );

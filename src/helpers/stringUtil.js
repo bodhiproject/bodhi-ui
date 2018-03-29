@@ -46,9 +46,6 @@ export function getTxTypeString(txType, locale, localeMessages) {
   const { formatMessage } = getIntlProvider(locale, localeMessages);
 
   switch (txType) {
-    case TransactionType.ResetApprove: {
-      return formatMessage(strings.resetApproval);
-    }
     case TransactionType.ApproveCreateEvent:
     case TransactionType.ApproveSetResult:
     case TransactionType.ApproveVote: {
@@ -75,6 +72,9 @@ export function getTxTypeString(txType, locale, localeMessages) {
     }
     case TransactionType.Transfer: {
       return formatMessage(strings.transfer);
+    }
+    case TransactionType.ResetApprove: {
+      return formatMessage(strings.resetApproval);
     }
     default: {
       console.error(`Invalid txType: ${txType}`);
