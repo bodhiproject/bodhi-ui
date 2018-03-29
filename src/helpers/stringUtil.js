@@ -4,6 +4,10 @@ import { getIntlProvider } from './i18nUtil';
 import { TransactionType } from '../constants';
 
 const strings = defineMessages({
+  resetApproval: {
+    id: 'tx.resetApproval',
+    defaultMessage: 'Reset Approval',
+  },
   approveBotTransfer: {
     id: 'tx.approveBotTransfer',
     defaultMessage: 'Approve BOT Transfer',
@@ -68,6 +72,9 @@ export function getTxTypeString(txType, locale, localeMessages) {
     }
     case TransactionType.Transfer: {
       return formatMessage(strings.transfer);
+    }
+    case TransactionType.ResetApprove: {
+      return formatMessage(strings.resetApproval);
     }
     default: {
       console.error(`Invalid txType: ${txType}`);

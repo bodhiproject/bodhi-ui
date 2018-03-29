@@ -180,6 +180,7 @@ export function* getPendingTransactionsHandler() {
         WITHDRAW: _.filter(txs, (tx) =>
           tx.type === TransactionType.Withdraw || tx.type === TransactionType.WithdrawEscrow),
         TRANSFER: _.filter(txs, { type: TransactionType.Transfer }),
+        RESETAPPROVE: _.filter(txs, { type: TransactionType.ResetApprove }),
       };
 
       yield put({

@@ -167,6 +167,7 @@
   "transactionSentDialog.failureMsg": "Oops, something went wrong",
   "transactionSentDialog.successMsg": "Success",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
+  "tx.resetApproval": "Reset Approval",
   "tx.approveBotTransfer": "Approve BOT Transfer",
   "walletHistory.transferHistory": "Transfer History",
   "walletUnlockDialog.keepWalletUnlocked": "Keep wallet unlocked for",

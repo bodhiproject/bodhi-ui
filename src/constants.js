@@ -70,6 +70,7 @@ module.exports = {
     Withdraw: 'WITHDRAW',
     WithdrawEscrow: 'WITHDRAWESCROW',
     Transfer: 'TRANSFER',
+    ResetApprove: 'RESETAPPROVE',
   },
 
   TransactionStatus: {

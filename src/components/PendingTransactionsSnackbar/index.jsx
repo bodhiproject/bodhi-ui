@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'str.transferTokens',
     defaultMessage: 'Transfer Tokens',
   },
+  resetApproval: {
+    id: 'tx.resetApproval',
+    defaultMessage: 'Reset Approval',
+  },
   balanceExplanation: {
     id: 'pendingTxsSnackbar.balanceExplanation',
     defaultMessage: 'Pending transactions will affect your wallet balances.',
@@ -64,7 +68,6 @@ class PendingTransactionsSnackbar extends React.Component {
     pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
     dismissPendingTxsSnackbar: PropTypes.func.isRequired,
   };
-
 
   render() {
     const {
@@ -142,6 +145,9 @@ class PendingTransactionsSnackbar extends React.Component {
       }
       case TransactionType.Transfer: {
         return intl.formatMessage(messages.transferTokens);
+      }
+      case TransactionType.ResetApprove: {
+        return intl.formatMessage(messages.resetApproval);
       }
       default: {
         return undefined;
