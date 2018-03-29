@@ -148,7 +148,7 @@ class EventOption extends React.PureComponent {
             onChange={this.handleAmountChange}
             endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
             disabled={amountInputDisabled}
-            error={amountError}
+            error={amountError || ''}
           />
         </FormControl>
       </div>
