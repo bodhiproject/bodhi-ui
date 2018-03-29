@@ -421,6 +421,7 @@ export function* createFinalizeResultTxHandler() {
         action.params.version,
         action.params.topicAddress,
         action.params.oracleAddress,
+        action.params.optionIdx,
         action.params.senderAddress,
       );
 
