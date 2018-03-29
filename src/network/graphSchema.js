@@ -210,6 +210,7 @@ const MUTATIONS = {
       'version',
       'topicAddress',
       'oracleAddress',
+      'optionIdx',
       'senderAddress',
     ],
     return: `
@@ -219,6 +220,7 @@ const MUTATIONS = {
       type
       status
       oracleAddress
+      optionIdx
       senderAddress
     `,
   },
