@@ -24,7 +24,7 @@ import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
-import { maxTransactionFee } from '../../constants';
+import { maxTransactionFee } from '../../config/app';
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 
@@ -307,11 +307,12 @@ export default class CreateEvent extends Component {
   }
 
   validateEnoughQTUM = () => {
-    const totalQtum = _.sumBy(this.props.walletAddresses, ({ qtum }) => qtum ? qtum : 0); // eslint-disable-line
+    // debugger; // eslint-disable-line
+    const totalQtum = _.sumBy(this.props.walletAddresses, ({ qtum }) => qtum);
     const hasEnoughQtum = totalQtum > maxTransactionFee;
     const notEnoughQtumError = {
       id: 'str.notEnoughQtum',
-      message: 'You do\'t have enough QTUM',
+      message: 'You don\'t have enough QTUM',
     };
     this.setState({ hasEnoughQtum, notEnoughQtumError });
   }

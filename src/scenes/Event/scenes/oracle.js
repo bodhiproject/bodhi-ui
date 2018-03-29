@@ -30,7 +30,8 @@ import EventTxHistory from '../components/EventTxHistory/index';
 import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, maxTransactionFee, AppLocation } from '../../../constants';
+import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
+import { maxTransactionFee } from '../../../config/app';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -498,7 +499,14 @@ export default class OraclePage extends React.Component {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
     const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
+    const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
+    const isBettingPhase = token === Token.Qtum && status === OracleStatus.Voting;
+    const isVotingPhase = token === Token.Bot && status === OracleStatus.Voting;
+    const isOpenResultSettingPhase = token === Token.Qtum && status === OracleStatus.OpenResultSet;
+    const isOracleResultSettingPhase = token === Token.Qtum && status === OracleStatus.WaitResult;
+    const isFinalizePhase = token === Token.Bot && status === OracleStatus.WaitResult;
+    const notEnoughQtum = totalQtum < maxTransactionFee;
 
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
@@ -512,9 +520,7 @@ export default class OraclePage extends React.Component {
     }
 
     // Has not reached betting start time
-    if (token === Token.Qtum
-      && status === OracleStatus.Voting
-      && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
+    if (isBettingPhase && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
       return {
         disabled: true,
         id: 'oracle.betStartTimeDisabledText',
@@ -524,8 +530,7 @@ export default class OraclePage extends React.Component {
     }
 
     // Has not reached result setting start time
-    if (token === Token.Qtum
-      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
+    if ((isOpenResultSettingPhase || isOracleResultSettingPhase)
       && currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime))) {
       return {
         disabled: true,
@@ -536,7 +541,7 @@ export default class OraclePage extends React.Component {
     }
 
     // User is not the result setter
-    if (token === Token.Qtum && status === OracleStatus.WaitResult && resultSetterQAddress !== lastUsedAddress) {
+    if (isOracleResultSettingPhase && resultSetterQAddress !== lastUsedAddress) {
       return {
         disabled: true,
         id: 'oracle.cOracleDisabledText',
@@ -545,13 +550,14 @@ export default class OraclePage extends React.Component {
       };
     }
 
+
     // Trying to set result or vote when not enough QTUM or BOT
-    const totalQtum = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
     const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
-    if ((token === Token.Bot || (token === Token.Qtum && status === OracleStatus.OpenResultSet))
-      && (totalQtum < maxTransactionFee && currentBot < oracle.consensusThreshold)
-      && [OracleStatus.Voting, OracleStatus.WaitResult, OracleStatus.OpenResultSet].includes(status)) {
+    if ((
+      (isVotingPhase && currentBot < voteAmount)
+      || ((isOpenResultSettingPhase || isOracleResultSettingPhase) && currentBot < oracle.consensusThreshold)
+    ) && notEnoughQtum) {
       return {
         disabled: true,
         id: 'str.notEnoughQtumAndBot',
@@ -560,9 +566,8 @@ export default class OraclePage extends React.Component {
       };
     }
 
-    // Trying to bet more qtum than you have
-    if ((status === OracleStatus.Voting && voteAmount > totalQtum + maxTransactionFee)
-      || totalQtum < maxTransactionFee) {
+    // Trying to bet more qtum than you have or you just don't have enough QTUM period
+    if ((isBettingPhase && voteAmount > totalQtum + maxTransactionFee) || notEnoughQtum) {
       return {
         disabled: true,
         id: 'str.notEnoughQtum',
@@ -572,10 +577,8 @@ export default class OraclePage extends React.Component {
     }
 
     // Not enough bot for setting the result or voting
-    if ((token === Token.Qtum
-      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
-      && currentBot < oracle.consensusThreshold)
-      || (token === Token.Bot && status === OracleStatus.Voting && (currentBot < voteAmount || currentBot < oracle.consensusThreshold))) {
+    if (((isOpenResultSettingPhase || isOracleResultSettingPhase) && currentBot < oracle.consensusThreshold)
+      || (isVotingPhase && currentBot < voteAmount)) {
       return {
         disabled: true,
         id: 'str.notEnoughBot',
@@ -585,7 +588,7 @@ export default class OraclePage extends React.Component {
     }
 
     // Did not select a result
-    if (!(token === Token.Bot && status === OracleStatus.WaitResult) && currentOptionIdx === -1) {
+    if (!isFinalizePhase && currentOptionIdx === -1) {
       return {
         disabled: true,
         id: 'oracle.selectResultDisabledText',
@@ -595,7 +598,7 @@ export default class OraclePage extends React.Component {
     }
 
     // Did not enter an amount
-    if (status === OracleStatus.Voting && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
+    if ((isBettingPhase || isVotingPhase) && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
       return {
         disabled: true,
         id: 'oracle.enterAmountDisabledText',

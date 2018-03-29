@@ -83,5 +83,4 @@ module.exports = {
     Descending: 'DESC',
   },
 
-  maxTransactionFee: 0.1,
 };

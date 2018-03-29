@@ -7,6 +7,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.md.px,
   },
   importantNoteContainer: {
+    marginTop: '15px',
     marginBottom: theme.padding.xs.px,
   },
   title: {
