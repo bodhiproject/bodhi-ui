@@ -234,6 +234,7 @@ export default class OraclePage extends React.Component {
                     optionIdx={index}
                     name={item.name}
                     amount={`${item.value}`}
+                    maxAmount={item.maxAmount}
                     percent={item.percent}
                     voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
                     token={config.name === 'SETTING' ? Token.Bot : oracle.token}
