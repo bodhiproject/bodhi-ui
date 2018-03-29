@@ -265,30 +265,34 @@ class EventCardsGrid extends React.Component {
   renderOracles(oracles, eventStatusIndex) {
     const rowItems = [];
     _.each(oracles, (oracle) => {
+      const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
       let buttonText;
+      let amountLabel;
       switch (eventStatusIndex) {
         case EventStatus.Bet: {
           buttonText = this.props.intl.formatMessage(messages.placeBet);
+          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Set: {
           buttonText = this.props.intl.formatMessage(messages.setResult);
+          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Vote: {
           buttonText = this.props.intl.formatMessage(messages.vote);
+          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Finalize: {
           buttonText = this.props.intl.formatMessage(messages.finalizeResult);
+          amountLabel = undefined;
           break;
         }
         default: {
           throw new RangeError(`Invalid tab position ${eventStatusIndex}`);
         }
       }
-
-      const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
 
       // Constructing Card element on the right
       const oracleEle = (
@@ -297,7 +301,7 @@ class EventCardsGrid extends React.Component {
           name={oracle.name}
           url={`/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`}
           endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
-          amountLabel={`${amount} ${oracle.token}`}
+          amountLabel={amountLabel}
           buttonText={buttonText}
           unconfirmed={!oracle.topicAddress && !oracle.address}
         />
