@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
@@ -19,8 +19,24 @@ import TransactionHistoryAddress from '../../../../components/TransactionHistory
 import appActions from '../../../../redux/App/actions';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
+import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType, SortBy, OracleStatus, AppLocation } from '../../../../constants';
+
+const messages = defineMessages({
+  statusSuccess: {
+    id: 'str.success',
+    defaultMessage: 'Success',
+  },
+  statusPending: {
+    id: 'str.pending',
+    defaultMessage: 'Pending',
+  },
+  statusFail: {
+    id: 'str.fail',
+    defaultMessage: 'Fail',
+  },
+});
 
 class EventHistory extends React.Component {
   static propTypes = {
@@ -263,7 +279,9 @@ class EventHistory extends React.Component {
           {transaction.fee}
         </TableCell>
         <TableCell>
-          {transaction.status}
+          <FormattedMessage id={`str.${transaction.status}`.toLowerCase()}>
+            {(txt) => i18nToUpperCase(txt)}
+          </FormattedMessage>
         </TableCell>
         <TableCell>
           {transaction.topic && transaction.topic.address ?

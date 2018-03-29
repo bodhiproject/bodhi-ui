@@ -18,7 +18,7 @@ import '../src/style/styles.less';
 export default class AppProvider extends Component {
   locales = [AppLocale.en, AppLocale.zh]
   state = {
-    locale: Number(localStorage.getItem('localindex')) || 0,
+    locale: Number(localStorage.getItem('localindex')) || 1,
   }
 
   componentDidMount() {
