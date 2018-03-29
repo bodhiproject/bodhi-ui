@@ -173,7 +173,7 @@
   "transactionSentDialog.failureMsg": "哎呀，出错了",
   "transactionSentDialog.successMsg": "成功",
   "transactionSentDialog.waitingMsg": "交易已发出，请等待确认。",
-  "tx.approveBotTransfer": "允许BOT转让",
+  "tx.approveBotTransfer": "授权BOT转账额度",
   "walletHistory.transferHistory": "转账历史",
   "walletUnlockDialog.keepWalletUnlocked": "保持钱包解锁",
   "walletUnlockDialog.unlock": "解锁",
