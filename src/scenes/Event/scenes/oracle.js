@@ -663,8 +663,8 @@ export default class OraclePage extends React.Component {
       return {
         disabled: true,
         message: <FormattedMessage
-          id="oracle.maxVote"
-          defaultMessage="Max vote allowed: {amount}"
+          id="oracle.maxVoteText"
+          defaultMessage="You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT."
           values={{
             amount: maxVote,
           }}
