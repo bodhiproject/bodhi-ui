@@ -4,8 +4,8 @@ import { getIntlProvider } from './i18nUtil';
 import { TransactionType } from '../constants';
 
 const strings = defineMessages({
-  resetApprove: {
-    id: 'tx.resetApprove',
+  resetApproval: {
+    id: 'tx.resetApproval',
     defaultMessage: 'Reset Approval',
   },
   approveBotTransfer: {
@@ -47,7 +47,7 @@ export function getTxTypeString(txType, locale, localeMessages) {
 
   switch (txType) {
     case TransactionType.ResetApprove: {
-      return formatMessage(strings.resetApprove);
+      return formatMessage(strings.resetApproval);
     }
     case TransactionType.ApproveCreateEvent:
     case TransactionType.ApproveSetResult:
