@@ -26,12 +26,21 @@ import EventWarning from '../../../components/EventWarning/index';
 import ImportantNote from '../../../components/ImportantNote/index';
 import EventOption from '../components/EventOption/index';
 import EventInfo from '../components/EventInfo/index';
+import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import EventTxHistory from '../components/EventTxHistory/index';
 import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
 import { maxTransactionFee } from '../../../config/app';
+import {
+  Token,
+  OracleStatus,
+  TransactionStatus,
+  EventWarningType,
+  SortBy,
+  AppLocation,
+  EventStatus,
+} from '../../../constants';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -169,7 +178,7 @@ export default class OraclePage extends React.Component {
 
     // Construct page config
     if (oracles) {
-      this.constructOracleAndConfig(syncBlockTime, oracles);
+      this.constructOracleAndConfig(syncBlockTime, oracles.data);
     }
 
     this.setState({ transactions: getTransactionsReturn });
@@ -177,12 +186,13 @@ export default class OraclePage extends React.Component {
 
   render() {
     const { classes, lastUsedAddress } = this.props;
-    const { oracle, config, transactions, unconfirmed } = this.state;
+    const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
     }
 
+    const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
     const { id, message, warningTypeClass, disabled } = this.getActionButtonConfig();
 
@@ -206,8 +216,8 @@ export default class OraclePage extends React.Component {
                     name={item.name}
                     amount={`${item.value}`}
                     percent={item.percent}
-                    voteAmount={config.name === 'SETTING' ? oracle.consensusThreshold : this.state.voteAmount}
-                    token={config.name === 'SETTING' ? Token.Bot : oracle.token}
+                    voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
+                    token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
                     isPrevResult={item.isPrevResult}
                     isFinalizing={item.isFinalizing}
                     walletAddresses={this.props.walletAddresses}
@@ -244,6 +254,7 @@ export default class OraclePage extends React.Component {
                           config.predictionAction.btnText
                       }
                     </Button>
+                    {showResultHistory ? <EventResultHistory oracles={oracles} /> : undefined}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
                 )}
@@ -280,20 +291,20 @@ export default class OraclePage extends React.Component {
       return;
     }
 
-    switch (config.name) {
-      case 'BETTING': {
+    switch (config.eventStatus) {
+      case EventStatus.Bet: {
         this.bet(voteAmount);
         break;
       }
-      case 'SETTING': {
+      case EventStatus.Set: {
         this.setResult();
         break;
       }
-      case 'VOTING': {
+      case EventStatus.Vote: {
         this.vote(voteAmount);
         break;
       }
-      case 'FINALIZING': {
+      case EventStatus.Finalize: {
         this.finalizeResult();
         break;
       }
@@ -324,12 +335,14 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  constructOracleAndConfig = (syncBlockTime, { data: oracles }) => {
+  constructOracleAndConfig = (syncBlockTime, oraclesData) => {
     const { address, txid, unconfirmed } = this.state;
 
     let oracle;
+    let oracles = oraclesData;
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
+      oracles = _.orderBy(oracles, ['blockNum'], ['asc']);
     } else {
       oracle = _.find(oracles, { txid });
     }
@@ -349,6 +362,7 @@ export default class OraclePage extends React.Component {
         config = this.setResultSetConfig(syncBlockTime, oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
+        oracles = _.filter(oracles, (item) => item.address !== oracle.address);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
       }
@@ -366,7 +380,7 @@ export default class OraclePage extends React.Component {
       return;
     }
 
-    this.setState({ oracle, config });
+    this.setState({ oracle, oracles, config });
   }
 
   setUnconfirmedConfig = (syncBlockTime, oracle) => {
@@ -377,7 +391,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.bet);
 
     return {
-      name: 'BETTING',
+      eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -403,7 +417,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.bet);
 
     return {
-      name: 'BETTING',
+      eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -425,7 +439,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.resultSet);
 
     return {
-      name: 'SETTING',
+      eventStatus: EventStatus.Set,
       breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
@@ -451,7 +465,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.vote);
 
     return {
-      name: 'VOTING',
+      eventStatus: EventStatus.Vote,
       breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
@@ -477,7 +491,7 @@ export default class OraclePage extends React.Component {
     setAppLocation(AppLocation.finalize);
 
     return {
-      name: 'FINALIZING',
+      eventStatus: EventStatus.Finalize,
       breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
       eventInfo: {
         steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
