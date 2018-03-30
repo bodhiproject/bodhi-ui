@@ -6,7 +6,15 @@ import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TableFooter,
+  TablePagination,
+} from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -114,6 +122,7 @@ class EventHistory extends React.Component {
             (<Table className={classes.historyTable}>
               {this.getTableHeader()}
               {this.getTableRows()}
+              {this.getTableFooter()}
             </Table>) :
             (<Typography variant="body1">
               <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
@@ -308,6 +317,25 @@ class EventHistory extends React.Component {
     );
 
     return result;
+  };
+
+  getTableFooter = () => {
+    const { transactions } = this.state;
+
+    return (
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            colSpan={6}
+            count={transactions.length}
+            rowsPerPage={10}
+            page={1}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </TableRow>
+      </TableFooter>
+    );
   };
 
   onEventLinkClicked = (event) => {
