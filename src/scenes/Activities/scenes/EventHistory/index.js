@@ -62,7 +62,7 @@ class EventHistory extends React.Component {
 
   static defaultProps = {
     oracles: undefined,
-    transactions: [],
+    transactions: undefined,
   };
 
   state = {
