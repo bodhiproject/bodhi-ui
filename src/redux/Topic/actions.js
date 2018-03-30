@@ -10,12 +10,10 @@ const topicActions = {
 
   GET_BET_AND_VOTE_BALANCES: 'GET_BET_VOTE_BALANCES',
   GET_BET_VOTE_BALANCES_RETURN: 'GET_BET_VOTE_BALANCES_RETURN',
-  getBetAndVoteBalances: (contractAddress, senderAddress) => ({
+  getBetAndVoteBalances: (contractAddress, walletAddresses) => ({
     type: topicActions.GET_BET_AND_VOTE_BALANCES,
-    params: {
-      contractAddress,
-      senderAddress,
-    },
+    contractAddress,
+    walletAddresses,
   }),
 
   GET_WITHDRAWABLE_ADDRESSES: 'GET_WITHDRAWABLE_ADDRESSES',
