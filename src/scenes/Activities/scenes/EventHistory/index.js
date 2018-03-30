@@ -328,7 +328,7 @@ class EventHistory extends React.Component {
       <TableFooter>
         <TableRow>
           <TablePagination
-            colSpan={6}
+            colSpan={12}
             count={transactions.length}
             rowsPerPage={perPage}
             page={page}
@@ -340,12 +340,12 @@ class EventHistory extends React.Component {
     );
   }
 
-  handleChangePage = () => {
-
+  handleChangePage = (event, page) => {
+    this.setState({ page });
   }
 
-  handleChangePerPage = () => {
-
+  handleChangePerPage = (event) => {
+    this.setState({ perPage: event.target.value });
   }
 
   onEventLinkClicked = (event) => {
