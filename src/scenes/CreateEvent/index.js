@@ -405,9 +405,6 @@ export default class CreateEvent extends Component {
                 {formatMessage(messages.selectMyAddress)}
               </Button>
             </Section>
-            <Section title={messages.creator}>
-              <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} changeFormFieldValue={changeFormFieldValue} />
-            </Section>
             <SelectAddressDialog
               dialogVisible={this.state.selectAddressDialogVisibility}
               walletAddresses={walletAddresses}

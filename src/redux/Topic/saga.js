@@ -45,25 +45,49 @@ export function* getEventEscrowAmountHandler() {
 export function* getBetAndVoteBalancesHandler() {
   yield takeEvery(actions.GET_BET_AND_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
     try {
-      const {
-        contractAddress,
-        senderAddress,
-      } = action.params;
+      const { contractAddress, walletAddresses } = action;
+      const votedAddresses = [];
 
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          contractAddress,
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
+      // Get all votes for this Topic
+      const voteFilters = [];
+      _.each(walletAddresses, (item) => {
+        voteFilters.push({
+          topicAddress: contractAddress,
+          voterQAddress: item.address,
+        });
+      });
 
-      let result = yield call(request, Routes.api.betBalances, options);
-      const bets = _.map(result[0], satoshiToDecimal);
+      // Filter unique votes
+      let result = yield call(queryAllVotes, voteFilters);
+      const uniqueVotes = [];
+      _.each(result, (vote) => {
+        const { voterQAddress, topicAddress } = vote;
+        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
+          uniqueVotes.push(vote);
+        }
+      });
 
-      result = yield call(request, Routes.api.voteBalances, options);
-      const votes = _.map(result[0], satoshiToDecimal);
+      // Call bet and vote balances for each unique vote address and get arrays for each address
+      const betArrays = [];
+      const voteArrays = [];
+      for (let i = 0; i < uniqueVotes.length; i++) {
+        const voteObj = uniqueVotes[i];
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({ contractAddress, senderAddress: voteObj.voterQAddress }),
+          headers: { 'Content-Type': 'application/json' },
+        };
+
+        result = yield call(request, Routes.api.betBalances, options);
+        betArrays.push(_.map(result[0], satoshiToDecimal));
+
+        result = yield call(request, Routes.api.voteBalances, options);
+        voteArrays.push(_.map(result[0], satoshiToDecimal));
+      }
+
+      // Sum all arrays by index into one array
+      const bets = _.map(_.unzip(betArrays), _.sum);
+      const votes = _.map(_.unzip(voteArrays), _.sum);
 
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,

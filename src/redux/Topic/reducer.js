@@ -1,6 +1,8 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+
 import actions from './actions';
+import { TransactionType } from '../../constants';
 
 const initState = new Map({
   betBalances: [],
@@ -29,7 +31,8 @@ export default function topicReducer(state = initState, action) {
       }
       return state
         .set('withdrawableAddresses', action.value)
-        .set('botWinnings', _.sumBy(action.value, (item) => item.botWon ? item.botWon : 0))
+        .set('botWinnings', _.sumBy(action.value, (item) =>
+          item.type === TransactionType.Withdraw && item.botWon ? item.botWon : 0))
         .set('qtumWinnings', _.sumBy(action.value, (item) => item.qtumWon ? item.qtumWon : 0));
     }
     case actions.CLEAR_ERROR_TOPIC: {
