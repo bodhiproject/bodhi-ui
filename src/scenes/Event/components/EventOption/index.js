@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Collapse from 'material-ui/transitions/Collapse';
-import ExpansionPanel, {
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-} from 'material-ui/ExpansionPanel';
+import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
@@ -173,10 +171,10 @@ class EventOption extends React.PureComponent {
             inputProps={{ id: 'address' }}
           >
             {walletAddresses.map((item, index) => (
-              <option key={item.address} value={item.address}>
+              <MenuItem key={item.address} value={item.address}>
                 {`${item.address}`}
                 {` (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
