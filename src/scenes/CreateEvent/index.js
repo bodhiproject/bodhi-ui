@@ -307,9 +307,8 @@ export default class CreateEvent extends Component {
   }
 
   validateEnoughQTUM = () => {
-    // debugger; // eslint-disable-line
     const totalQtum = _.sumBy(this.props.walletAddresses, ({ qtum }) => qtum);
-    const hasEnoughQtum = totalQtum > maxTransactionFee;
+    const hasEnoughQtum = totalQtum >= maxTransactionFee;
     const notEnoughQtumError = {
       id: 'str.notEnoughQtum',
       message: 'You don\'t have enough QTUM',
