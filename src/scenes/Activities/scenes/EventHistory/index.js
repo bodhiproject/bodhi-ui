@@ -69,6 +69,8 @@ class EventHistory extends React.Component {
     transactions: [],
     order: 'desc',
     orderBy: 'createdTime',
+    perPage: 10,
+    page: 0,
   };
 
   componentWillMount() {
@@ -320,7 +322,7 @@ class EventHistory extends React.Component {
   };
 
   getTableFooter = () => {
-    const { transactions } = this.state;
+    const { transactions, perPage, page } = this.state;
 
     return (
       <TableFooter>
@@ -328,15 +330,23 @@ class EventHistory extends React.Component {
           <TablePagination
             colSpan={6}
             count={transactions.length}
-            rowsPerPage={10}
-            page={1}
+            rowsPerPage={perPage}
+            page={page}
             onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            onChangeRowsPerPage={this.handleChangePerPage}
           />
         </TableRow>
       </TableFooter>
     );
-  };
+  }
+
+  handleChangePage = () => {
+
+  }
+
+  handleChangePerPage = () => {
+
+  }
 
   onEventLinkClicked = (event) => {
     const {
