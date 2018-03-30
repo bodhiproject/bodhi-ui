@@ -52,7 +52,13 @@ export default function graphqlReducer(state = initState, action) {
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {
-      return state.set('getTransactionsReturn', action.value);
+      // First page, overwrite all data
+      if (!action.skip || action.skip === 0) {
+        return state.set('getTransactionsReturn', action.value);
+      }
+
+      // Not first page, add to existing data
+      return state.set('getTransactionsReturn', [...state.get('getTransactionsReturn').data, ...action.value]);
     }
     case actions.GET_PENDING_TRANSACTIONS_RETURN: {
       return state.set('getPendingTransactionsReturn', action.value);

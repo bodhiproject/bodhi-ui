@@ -150,7 +150,7 @@ class EventHistory extends React.Component {
         { type: TransactionType.ResetApprove },
       ],
       { field: orderBy, direction },
-      1000,
+      500,
     );
   }
 
