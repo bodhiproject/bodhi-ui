@@ -172,8 +172,7 @@ class EventOption extends React.PureComponent {
           >
             {walletAddresses.map((item, index) => (
               <MenuItem key={item.address} value={item.address}>
-                {`${item.address}`}
-                {` (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
+                {`${item.address} (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
               </MenuItem>
             ))}
           </Select>
