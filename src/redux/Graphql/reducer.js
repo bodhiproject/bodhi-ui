@@ -52,7 +52,6 @@ export default function graphqlReducer(state = initState, action) {
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {
-      console.log(action);
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
         return state.set('getTransactionsReturn', action.value);
