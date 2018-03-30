@@ -347,9 +347,7 @@ export default class TopicPage extends React.Component {
       <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
-          <div className={warningTypeClass}>
-            {intl.formatMessage({ id, message })}
-          </div>
+          { id && message && <div className={warningTypeClass}>{intl.formatMessage({ id, message })}</div> }
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
