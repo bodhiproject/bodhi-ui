@@ -1,4 +1,3 @@
-import antdZh from 'antd/lib/locale-provider/zh_TW';
 import appLocaleData from 'react-intl/locale-data/zh';
 import 'moment/locale/zh-cn';
 import zhMessages from '../locales/zh-Hans.json';
@@ -7,7 +6,6 @@ const ZhLan = {
   messages: {
     ...zhMessages,
   },
-  antd: antdZh,
   locale: 'zh-Hans-CN',
   data: appLocaleData,
   momentlocale: 'zh-cn',
