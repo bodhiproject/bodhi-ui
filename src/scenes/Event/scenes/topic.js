@@ -220,9 +220,13 @@ export default class TopicPage extends React.Component {
 
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
-    const qtumReturnRate = resultBetAmount ? ((qtumWinnings - resultBetAmount) / resultBetAmount) * 100 : 0;
-    const botReturnRate = resultVoteAmount ? ((botWinnings - resultVoteAmount) / resultVoteAmount) * 100 : 0;
+    const totalBetAmount = _.sum(betBalances);
+    const totalVoteAmount = _.sum(voteBalances);
+    const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
+    const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
 
+    console.log(resultBetAmount);
+    console.log(resultVoteAmount);
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={classNames(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
