@@ -536,7 +536,7 @@ export default class TopicPage extends React.Component {
         const decentralizedOracles = _.orderBy(
           _.filter(topic.oracles, (item) => item.token === Token.Bot),
           ['blockNum'],
-          ['asc'],
+          [SortBy.Ascending.toLowerCase()],
         );
 
         config = {

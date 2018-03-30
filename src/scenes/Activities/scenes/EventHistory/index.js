@@ -67,7 +67,7 @@ class EventHistory extends React.Component {
 
   state = {
     transactions: [],
-    order: 'desc',
+    order: SortBy.Descending.toLowerCase(),
     orderBy: 'createdTime',
     perPage: 10,
     page: 0,
@@ -142,7 +142,7 @@ class EventHistory extends React.Component {
 
   executeTxsRequest = () => {
     const { orderBy, order, perPage, page, limit, skip } = this.state;
-    const direction = order === 'desc' ? SortBy.Descending : SortBy.Ascending;
+    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
 
     this.props.getTransactions(
       [
@@ -390,10 +390,10 @@ class EventHistory extends React.Component {
     const { transactions } = this.state;
 
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
     const sorted = _.orderBy(transactions, [orderBy], [order]);

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 
-import { AppLocation } from '../../constants';
+import { AppLocation, SortBy } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
 import actions, { getView } from './actions';
@@ -60,7 +60,7 @@ export default function appReducer(state = initState, action) {
       });
 
       // Sort by qtum balance
-      newAddresses = _.orderBy(newAddresses, ['qtum'], ['desc']);
+      newAddresses = _.orderBy(newAddresses, ['qtum'], [SortBy.Descending.toLowerCase()]);
 
       // Set a default selected address if there was none selected before
       let lastUsedAddress = state.get('lastUsedAddress');

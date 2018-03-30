@@ -23,11 +23,6 @@ module.exports = {
     activityHistory: 'ActivityHistory',
   },
 
-  Token: {
-    Qtum: 'QTUM',
-    Bot: 'BOT',
-  },
-
   EventStatus: {
     Bet: 0,
     Set: 1,
@@ -44,6 +39,11 @@ module.exports = {
   },
 
   /* GraphQL Constants */
+  Token: {
+    Qtum: 'QTUM',
+    Bot: 'BOT',
+  },
+
   OracleStatus: {
     Created: 'CREATED',
     Voting: 'VOTING',
@@ -78,5 +78,4 @@ module.exports = {
     Ascending: 'ASC',
     Descending: 'DESC',
   },
-
 };

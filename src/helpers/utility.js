@@ -7,7 +7,7 @@ import { FormattedMessage, DefaultMessage, IntlProvider, defineMessages } from '
 
 import AppLocale from '../languageProvider';
 import { getIntlProvider } from './i18nUtil';
-import { OracleStatus } from '../constants';
+import { OracleStatus, SortBy } from '../constants';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01;
@@ -162,7 +162,7 @@ export function doesUserNeedToUnlockWallet(unlockedUntilUnix) {
  */
 export function getDetailPagePath(oracles) {
   if (oracles.length) {
-    const sorted = _.orderBy(oracles, ['blockNum'], ['desc']);
+    const sorted = _.orderBy(oracles, ['blockNum'], [SortBy.Descending.toLowerCase()]);
     const latestOracle = sorted[0];
 
     // construct url for oracle or topic

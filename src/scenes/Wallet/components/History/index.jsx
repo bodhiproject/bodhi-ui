@@ -43,7 +43,7 @@ class WalletHistory extends React.Component {
 
   state = {
     transactions: [],
-    order: 'desc',
+    order: SortBy.Descending.toLowerCase(),
     orderBy: 'createdTime',
     perPage: 10,
     page: 0,
@@ -108,7 +108,7 @@ class WalletHistory extends React.Component {
 
   getTransactions = () => {
     const { orderBy, order, limit, skip } = this.state;
-    const direction = order === 'desc' ? SortBy.Descending : SortBy.Ascending;
+    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
 
     this.props.getTransactions(
       [{ type: TransactionType.Transfer }],
@@ -199,10 +199,10 @@ class WalletHistory extends React.Component {
     const { transactions } = this.state;
 
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
     const sorted = _.orderBy(transactions, [orderBy], [order]);
