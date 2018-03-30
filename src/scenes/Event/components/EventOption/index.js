@@ -168,12 +168,9 @@ class EventOption extends React.PureComponent {
             ADDRESS
           </InputLabel>
           <Select
-            native
             value={lastUsedAddress}
             onChange={this.handleAddrChange}
-            inputProps={{
-              id: 'address',
-            }}
+            inputProps={{ id: 'address' }}
           >
             {walletAddresses.map((item, index) => (
               <option key={item.address} value={item.address}>
