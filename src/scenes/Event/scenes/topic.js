@@ -63,7 +63,6 @@ const pageMessage = defineMessages({
 @connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
@@ -75,8 +74,8 @@ const pageMessage = defineMessages({
   qtumWinnings: state.Topic.get('qtumWinnings'),
   withdrawableAddresses: state.Topic.get('withdrawableAddresses'),
 }), (dispatch) => ({
-  getBetAndVoteBalances: (contractAddress, senderAddress) =>
-    dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
+  getBetAndVoteBalances: (contractAddress, walletAddresses) =>
+    dispatch(topicActions.getBetAndVoteBalances(contractAddress, walletAddresses)),
   getWithdrawableAddresses: (eventAddress, walletAddresses) =>
     dispatch(topicActions.getWithdrawableAddresses(eventAddress, walletAddresses)),
   getTopics: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTopics(filters, orderBy, limit, skip)),
@@ -112,7 +111,6 @@ export default class TopicPage extends React.Component {
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
     setAppLocation: PropTypes.func.isRequired,
   };
@@ -399,7 +397,6 @@ export default class TopicPage extends React.Component {
       getBetAndVoteBalances,
       getWithdrawableAddresses,
       walletAddresses,
-      lastUsedAddress,
     } = this.props;
     const { address } = this.state;
 
@@ -408,7 +405,7 @@ export default class TopicPage extends React.Component {
     getTransactions([{ topicAddress: address }], { field: 'createdTime', direction: SortBy.Descending });
 
     // API calls
-    getBetAndVoteBalances(address, lastUsedAddress);
+    getBetAndVoteBalances(address, walletAddresses);
     getWithdrawableAddresses(address, walletAddresses);
   };
 
