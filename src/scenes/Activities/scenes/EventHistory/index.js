@@ -15,6 +15,7 @@ import Table, {
   TableFooter,
   TablePagination,
 } from 'material-ui/Table';
+import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -255,11 +256,12 @@ class EventHistory extends React.Component {
 
   getTableRows = () => {
     const { classes } = this.props;
-    const { transactions } = this.state;
+    const { transactions, page, perPage } = this.state;
+    const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
 
     return (
       <TableBody>
-        {_.map(transactions, (transaction, index) => (
+        {_.map(slicedTxs, (transaction, index) => (
           this.getTableRow(transaction, index)
         ))}
       </TableBody>
