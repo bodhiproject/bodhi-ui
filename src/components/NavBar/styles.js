@@ -3,12 +3,14 @@ const styles = (theme) => ({
     boxShadow: 'none',
   },
   navBarWrapper: {
-    padding: `${theme.padding.xs.px} ${theme.padding.sm.px}`,
+    display: 'flex',
+    padding: `0 ${theme.padding.sm.px}`,
+    'align-items': 'center',
+    height: '70px',
+    'justify-content': 'space-between',
   },
-  navBarRightWrapper: {
-    position: 'absolute',
-    right: theme.padding.sm.px,
-    top: theme.padding.xs.px,
+  navSection: {
+    display: 'flex',
   },
   navBarLogo: {
     height: '38px',
@@ -23,11 +25,14 @@ const styles = (theme) => ({
     fontWeight: 400,
     marginRight: theme.padding.sm.px,
   },
-  navBarRightButton: {
-    color: 'white',
+  sides: {
+    marginRight: theme.padding.unit.px,
+    marginLeft: '32px',
+  },
+  dark: {
+    color: 'white !important',
     fontWeight: 400,
     background: theme.palette.primary.dark,
-    marginLeft: theme.padding.unit.px,
   },
   navEventsButton: {
     color: 'rgba(255,255,255,0.65)',
@@ -40,17 +45,14 @@ const styles = (theme) => ({
     },
   },
   navBarLink: {
-    position: 'relative',
+    display: 'flex',
+    'justify-content': 'center',
   },
   navArrow: {
-    width: '16px',
-    height: '8px',
-    position: 'absolute',
-    bottom: '-16px',
-    left: '50%',
-    marginLeft: '-4px',
-    '&.right': {
-      bottom: '-28px',
+    '&:after': {
+      content: 'url(/images/nav-arrow.png)',
+      position: 'absolute',
+      top: '52px',
     },
   },
 });
