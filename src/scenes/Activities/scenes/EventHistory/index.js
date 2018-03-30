@@ -151,7 +151,7 @@ class EventHistory extends React.Component {
       ],
       undefined
     );
-  };
+  }
 
   getTableHeader = () => {
     const headerCols = [
@@ -220,7 +220,7 @@ class EventHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  };
+  }
 
   getSortableCell = (column) => {
     const { order, orderBy } = this.state;
@@ -245,13 +245,13 @@ class EventHistory extends React.Component {
         </Tooltip>
       </TableCell>
     );
-  };
+  }
 
   getNonSortableCell = (column) => (
     <TableCell key={column.id} numeric={column.numeric}>
       <FormattedMessage id={column.name} default={column.nameDefault} />
     </TableCell>
-  );
+  )
 
   getTableRows = () => {
     const { classes } = this.props;
@@ -264,7 +264,7 @@ class EventHistory extends React.Component {
         ))}
       </TableBody>
     );
-  };
+  }
 
   getTableRow = (transaction, index) => {
     const { intl, classes } = this.props;
@@ -319,7 +319,7 @@ class EventHistory extends React.Component {
     );
 
     return result;
-  };
+  }
 
   getTableFooter = () => {
     const { transactions, perPage, page } = this.state;
