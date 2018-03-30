@@ -291,6 +291,7 @@ const ENUMS = {
     'WITHDRAW',
     'WITHDRAWESCROW',
     'TRANSFER',
+    'RESETAPPROVE',
   ],
 
   token: [

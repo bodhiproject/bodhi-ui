@@ -68,8 +68,8 @@ export function* getBetAndVoteBalancesHandler() {
       });
 
       // Call bet and vote balances for each unique vote address and get arrays for each address
-      let betArrays = [];
-      let voteArrays = [];
+      const betArrays = [];
+      const voteArrays = [];
       for (let i = 0; i < uniqueVotes.length; i++) {
         const voteObj = uniqueVotes[i];
         const options = {
@@ -84,14 +84,10 @@ export function* getBetAndVoteBalancesHandler() {
         result = yield call(request, Routes.api.voteBalances, options);
         voteArrays.push(_.map(result[0], satoshiToDecimal));
       }
-      console.log(betArrays);
-      console.log(voteArrays);
 
       // Sum all arrays by index into one array
       const bets = _.map(_.unzip(betArrays), _.sum);
       const votes = _.map(_.unzip(voteArrays), _.sum);
-      console.log(bets);
-      console.log(votes);
 
       yield put({
         type: actions.GET_BET_VOTE_BALANCES_RETURN,
