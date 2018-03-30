@@ -267,21 +267,18 @@ class EventCardsGrid extends React.Component {
     _.each(oracles, (oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
       let buttonText;
-      let amountLabel;
+      let amountLabel = `${amount} ${oracle.token}`;
       switch (eventStatusIndex) {
         case EventStatus.Bet: {
           buttonText = this.props.intl.formatMessage(messages.placeBet);
-          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Set: {
           buttonText = this.props.intl.formatMessage(messages.setResult);
-          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Vote: {
           buttonText = this.props.intl.formatMessage(messages.vote);
-          amountLabel = `${amount} ${oracle.token}`;
           break;
         }
         case EventStatus.Finalize: {
