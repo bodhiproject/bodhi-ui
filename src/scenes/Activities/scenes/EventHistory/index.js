@@ -54,16 +54,15 @@ class EventHistory extends React.Component {
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    getOraclesReturn: PropTypes.object,
-    getTransactions: PropTypes.func,
-    getTransactionsReturn: PropTypes.array,
+    oracles: PropTypes.object,
+    getTransactions: PropTypes.func.isRequired,
+    transactions: PropTypes.array,
     syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    getOraclesReturn: undefined,
-    getTransactions: undefined,
-    getTransactionsReturn: [],
+    oracles: undefined,
+    transactions: [],
   };
 
   state = {
@@ -82,28 +81,24 @@ class EventHistory extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      getOraclesReturn,
-      getTransactionsReturn,
-      syncBlockNum,
-    } = nextProps;
+    const { oracles, transactions, syncBlockNum } = this.props;
 
     // return from the click event
-    if (getOraclesReturn !== this.props.getOraclesReturn) {
-      const path = getDetailPagePath(getOraclesReturn.data);
+    if (nextProps.oracles !== oracles) {
+      const path = getDetailPagePath(nextProps.oracles.data);
       if (path) {
         this.props.history.push(path);
       }
     }
 
     // Update page on new block
-    if (syncBlockNum !== this.props.syncBlockNum) {
+    if (nextProps.syncBlockNum !== syncBlockNum) {
       this.executeTxsRequest();
     }
 
-    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+    if (nextProps.transactions || transactions) {
       const sorted = _.orderBy(
-        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        nextProps.transactions ? nextProps.transactions : transactions,
         [this.state.orderBy],
         [this.state.order],
       );
@@ -395,8 +390,8 @@ class EventHistory extends React.Component {
 
 const mapStateToProps = (state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  oracles: state.Graphql.get('getOraclesReturn'),
+  transactions: state.Graphql.get('getTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
