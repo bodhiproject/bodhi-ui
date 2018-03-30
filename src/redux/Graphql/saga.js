@@ -142,7 +142,7 @@ export function* getOraclesHandler() {
 export function* getTransactionsHandler() {
   yield takeEvery(actions.GET_TRANSACTIONS, function* getTransactionsRequest(action) {
     try {
-      const result = yield call(queryAllTransactions, action.filters, action.orderBy);
+      const result = yield call(queryAllTransactions, action.filters, action.orderBy, action.limit, action.skip);
       const txs = _.map(result, processTransaction);
 
       yield put({

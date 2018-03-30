@@ -136,6 +136,10 @@ class EventHistory extends React.Component {
   }
 
   executeTxsRequest = () => {
+    const { orderBy, order, perPage, page } = this.state;
+    const direction = order === 'desc' ? SortBy.Descending : SortBy.Ascending;
+    const skip = page * perPage;
+
     this.props.getTransactions(
       [
         { type: TransactionType.ApproveCreateEvent },
@@ -150,7 +154,8 @@ class EventHistory extends React.Component {
         { type: TransactionType.WithdrawEscrow },
         { type: TransactionType.ResetApprove },
       ],
-      undefined
+      { field: orderBy, direction },
+      1000,
     );
   }
 
@@ -398,7 +403,8 @@ function mapDispatchToProps(dispatch) {
   return {
     setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
+    getTransactions: (filters, orderBy, limit, skip) =>
+      dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
   };
 }
 
