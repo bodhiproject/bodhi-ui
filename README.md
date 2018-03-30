@@ -98,7 +98,7 @@ const messages = defineMessages({
     },
 });
 ```
-Then put `this.props.intl.formatMessage(messages.greeting, { {name: 'Eric'}})` at the place where you want to put the text
+Then put `this.props.intl.formatMessage(messages.greeting, { {name: 'Eric'}})` at the place where you want to put the text, also support variables by putting variables within `{}`
 
 Run `run build:langs`
 
