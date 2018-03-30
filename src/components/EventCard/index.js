@@ -75,11 +75,14 @@ class EventCard extends React.PureComponent {
                 }
               </div>
               <div className={classes.eventCardInfo}>
-                <div>
-                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
-                  <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                  {` ${amountLabel}`}
-                </div>
+                {
+                  amountLabel &&
+                  <div>
+                    <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
+                    <FormattedMessage id="str.raised" defaultMessage="Raised" />
+                    {` ${amountLabel}`}
+                  </div>
+                }
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
                   {endTime !== undefined
