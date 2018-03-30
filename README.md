@@ -21,7 +21,7 @@ Yarn
 
 ## Prepare Database data
 
-### Importing 
+### Importing
 1. use `which mongo` find mongo install directory, in which you will also find a mongorestore executable.
 
 2. `mongorestore --db <dbname> topics.json`
@@ -43,7 +43,7 @@ We use eslint to validate and format javascript code.
 npm run lint:fix <path/to/code>
 e.g. npm run lint:fix ./app/components/ImageButton/
 
-The actually command run is eslint --fix -- "<path/to/code>". Some basic rules can be auto-fixed and the eslint --fix command will print out non-fixables which need mannual repair. 
+The actually command run is eslint --fix -- "<path/to/code>". Some basic rules can be auto-fixed and the eslint --fix command will print out non-fixables which need mannual repair.
 
 The complete rule settings are in
 http://eslint.org/docs/rules/
@@ -74,21 +74,31 @@ There are 2 ways to achieve responsive layout
 
 ## Localization
 
-for most of the text, use 
-`<FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />`   
-put the default text inside defaultMessage,
+for most of the text, use
+```
+<FormattedMessage
+    id='app.greeting'
+    description='Greeting to welcome the user to the app'
+    defaultMessage='Hello, {name}!'
+    values={{
+        name: 'Eric'
+    }}
+/>
+```
+put the default text inside defaultMessage, also you can put the variables within `{}` like the example.
 
 for String inside placeholder or previous method can not handle, define messages in the top of the file using `defindMessages`
 
 ```
 const messages = defineMessages({
-  betStartBlockMsg: {
-    id: 'create.betStartBlockMsg',
-    defaultMessage: 'Betting Start Time cannot be empty',
-  }
+    greeting: {
+        id: 'app.greeting',
+        defaultMessage: 'Hello, {name}!',
+        description: 'Greeting to welcome the user to the app',
+    },
 });
 ```
-Then put `this.props.intl.formatMessage(messages.betStartBlockMsg)` at the place where you want to put the text
+Then put `this.props.intl.formatMessage(messages.greeting, { {name: 'Eric'}})` at the place where you want to put the text
 
 Run `run build:langs`
 
