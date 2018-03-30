@@ -178,7 +178,7 @@ export default class OraclePage extends React.Component {
 
     // Construct page config
     if (oracles) {
-      this.constructOracleAndConfig(syncBlockTime, oracles);
+      this.constructOracleAndConfig(syncBlockTime, oracles.data);
     }
 
     this.setState({ transactions: getTransactionsReturn });
@@ -254,6 +254,7 @@ export default class OraclePage extends React.Component {
                           config.predictionAction.btnText
                       }
                     </Button>
+                    {showResultHistory ? <EventResultHistory oracles={oracles} /> : undefined}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
                 )}
@@ -334,11 +335,11 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  constructOracleAndConfig = (syncBlockTime, { data: oracles }) => {
+  constructOracleAndConfig = (syncBlockTime, oraclesData) => {
     const { address, txid, unconfirmed } = this.state;
-    let oracles = getOraclesReturn && getOraclesReturn.data;
 
     let oracle;
+    let oracles = oraclesData;
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
       oracles = _.orderBy(oracles, ['blockNum'], ['asc']);
