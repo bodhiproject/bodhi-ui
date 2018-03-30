@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Route, Link as _Link } from 'react-router-dom';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import classNames from 'classnames';
-
+import { Link } from './components/Link/index';
+import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import styles from './styles';
 
@@ -134,21 +134,6 @@ class NavBar extends Component {
 }
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
-
-const NavLink = ({ to, ...props }) => ( // eslint-disable-line react/prop-types
-  <Route exact path={to}>
-    {({ match }) => <Link to={to} active={match} {...props} />}
-  </Route>
-);
-
-const Link = withStyles(styles)(({ active = false, id, message, classes, className, ...props }) => ( // eslint-disable-line
-  <_Link
-    {...props}
-    className={classNames(className, classes.navBarLink, {
-      [classes.navArrow]: active,
-    })}
-  />
-));
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
