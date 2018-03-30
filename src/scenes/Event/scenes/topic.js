@@ -6,12 +6,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
-import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { FormControl } from 'material-ui/Form';
-import Select from 'material-ui/Select';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
@@ -21,7 +18,6 @@ import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
-import EventWarning from '../../../components/EventWarning/index';
 import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
@@ -32,7 +28,6 @@ import {
   OracleStatus,
   TransactionType,
   TransactionStatus,
-  EventWarningType,
   SortBy,
   AppLocation,
   WithdrawType,
@@ -66,7 +61,7 @@ const pageMessage = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state, props) => ({
+@connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -80,7 +75,7 @@ const pageMessage = defineMessages({
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
   withdrawableAddresses: state.Topic.get('withdrawableAddresses'),
-}), (dispatch, props) => ({
+}), (dispatch) => ({
   getBetAndVoteBalances: (contractAddress, senderAddress) =>
     dispatch(topicActions.getBetAndVoteBalances(contractAddress, senderAddress)),
   getWithdrawableAddresses: (eventAddress, walletAddresses) =>
@@ -94,7 +89,6 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-
 export default class TopicPage extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -188,9 +182,6 @@ export default class TopicPage extends React.Component {
       return null;
     }
 
-    const qtumTotal = _.sum(topic.qtumAmount);
-    const botTotal = _.sum(topic.botAmount);
-
     return (
       <div>
         <BackButton />
@@ -212,7 +203,7 @@ export default class TopicPage extends React.Component {
               <StepperVertRight steps={config.steps} />
             </Grid>
           </Grid>
-          <TransactionSentDialog txReturn={this.props.txReturn} />
+          <TransactionSentDialog txReturn={txReturn} />
         </Paper>
       </div>
     );
@@ -222,14 +213,12 @@ export default class TopicPage extends React.Component {
     const {
       intl,
       classes,
-      walletAddresses,
       betBalances,
       voteBalances,
       botWinnings,
       qtumWinnings,
-      lastUsedAddress,
     } = this.props;
-    const { topic, config } = this.state;
+    const { topic } = this.state;
 
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
@@ -346,10 +335,10 @@ export default class TopicPage extends React.Component {
   };
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
-    const { classes } = this.props;
-    const config = this.getActionButtonConfig(withdrawableAddress.address);
+    const { intl } = this.props;
+    const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress.address);
 
-    if (!config.show) {
+    if (!show) {
       return null;
     }
 
@@ -357,7 +346,9 @@ export default class TopicPage extends React.Component {
       <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
-          <div className={config.warningTypeClass}>{config.message}</div>
+          <div className={warningTypeClass}>
+            {intl.formatMessage({ id, message })}
+          </div>
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
@@ -368,7 +359,7 @@ export default class TopicPage extends React.Component {
             size="small"
             variant="raised"
             color="primary"
-            disabled={config.disabled}
+            disabled={disabled}
             data-address={withdrawableAddress.address}
             data-type={withdrawableAddress.type}
             onClick={this.onWithdrawClicked}
@@ -433,10 +424,8 @@ export default class TopicPage extends React.Component {
       return {
         show: true,
         disabled: true,
-        message: <FormattedMessage
-          id="str.pendingTransactionDisabledMsg"
-          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
-        />,
+        id: 'str.pendingTransactionDisabledMsg',
+        message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
         warningTypeClass: classes.pending,
       };
     }
@@ -452,10 +441,8 @@ export default class TopicPage extends React.Component {
       return {
         show: true,
         disabled: true,
-        message: <FormattedMessage
-          id="withdrawDetail.alreadyWithdrawn"
-          defaultMessage="You have already withdrawn with this address."
-        />,
+        id: 'withdrawDetail.alreadyWithdrawn',
+        message: 'You have already withdrawn with this address.',
         warningTypeClass: classes.withdrawn,
       };
     }
@@ -478,12 +465,7 @@ export default class TopicPage extends React.Component {
   };
 
   renderOptions() {
-    const {
-      intl,
-      classes,
-      betBalances,
-      voteBalances,
-    } = this.props;
+    const { intl, classes, betBalances, voteBalances } = this.props;
     const { topic } = this.state;
 
     return (
@@ -575,10 +557,7 @@ export default class TopicPage extends React.Component {
         // highlight current step using current field
         config.steps.current = config.steps.value.length - 1;
 
-        this.setState({
-          topic,
-          config,
-        });
+        this.setState({ topic, config });
       }
     }
   }

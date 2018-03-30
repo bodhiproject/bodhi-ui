@@ -130,6 +130,7 @@
   "str.newBlock": "New block comes, you can refresh to get new data",
   "str.notEnoughBot": "You don't have enough BOT",
   "str.notEnoughQtum": "You don't have enough QTUM",
+  "str.notEnoughQtumAndBot": "You don't have enough QTUM or BOT",
   "str.ok": "OK",
   "str.outcomes": "Outcomes",
   "str.pendingConfirmation": "Pending Confirmation",

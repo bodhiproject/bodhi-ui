@@ -31,6 +31,7 @@ import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { Token, OracleStatus, TransactionStatus, EventWarningType, SortBy, AppLocation } from '../../../constants';
+import { maxTransactionFee } from '../../../config/app';
 import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
@@ -67,16 +68,16 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state, props) => ({
+@connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockTime: state.App.get('syncBlockTime'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  oracles: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
-}), (dispatch, props) => ({
+}), (dispatch) => ({
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
@@ -104,7 +105,7 @@ export default class OraclePage extends React.Component {
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getOracles: PropTypes.func,
-    getOraclesReturn: PropTypes.array,
+    oracles: PropTypes.object,
     getTransactions: PropTypes.func,
     getTransactionsReturn: PropTypes.array,
     createBetTx: PropTypes.func,
@@ -125,7 +126,7 @@ export default class OraclePage extends React.Component {
 
   static defaultProps = {
     getOracles: undefined,
-    getOraclesReturn: [],
+    oracles: undefined,
     getTransactions: undefined,
     getTransactionsReturn: [],
     createBetTx: undefined,
@@ -152,19 +153,6 @@ export default class OraclePage extends React.Component {
       voteAmount: 0,
       currentOptionIdx: -1,
     };
-    this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.executeOracleAndTxsRequest = this.executeOracleAndTxsRequest.bind(this);
-    this.getEventOptionsInfo = this.getEventOptionsInfo.bind(this);
-    this.constructOracleAndConfig = this.constructOracleAndConfig.bind(this);
-    this.getActionButtonConfig = this.getActionButtonConfig.bind(this);
-    this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.handleAmountChange = this.handleAmountChange.bind(this);
-    this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.bet = this.bet.bind(this);
-    this.setResult = this.setResult.bind(this);
-    this.vote = this.vote.bind(this);
-    this.finalizeResult = this.finalizeResult.bind(this);
-    this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
   }
 
   componentWillMount() {
@@ -172,12 +160,7 @@ export default class OraclePage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      getOraclesReturn,
-      getTransactionsReturn,
-      syncBlockTime,
-      txReturn,
-    } = nextProps;
+    const { oracles, getTransactionsReturn, syncBlockTime, txReturn } = nextProps;
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
@@ -185,28 +168,23 @@ export default class OraclePage extends React.Component {
     }
 
     // Construct page config
-    if (getOraclesReturn) {
-      this.constructOracleAndConfig(syncBlockTime, getOraclesReturn);
+    if (oracles) {
+      this.constructOracleAndConfig(syncBlockTime, oracles);
     }
 
     this.setState({ transactions: getTransactionsReturn });
   }
 
   render() {
-    const { classes, txReturn, lastUsedAddress } = this.props;
-    const {
-      oracle,
-      config,
-      transactions,
-      unconfirmed,
-    } = this.state;
+    const { classes, lastUsedAddress } = this.props;
+    const { oracle, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
     }
 
     const eventOptions = this.getEventOptionsInfo();
-    const actionButtonConfig = this.getActionButtonConfig();
+    const { id, message, warningTypeClass, disabled } = this.getActionButtonConfig();
 
     return (
       <div>
@@ -218,14 +196,7 @@ export default class OraclePage extends React.Component {
                 {oracle.name}
               </Typography>
               <Grid item xs={12} lg={9}>
-                {
-                  !unconfirmed
-                    ? <EventWarning
-                      message={actionButtonConfig.message}
-                      typeClass={actionButtonConfig.warningTypeClass}
-                    />
-                    : null
-                }
+                {!unconfirmed && <EventWarning id={id} message={message} className={warningTypeClass} />}
                 {eventOptions.map((item, index) => (
                   <EventOption
                     key={index}
@@ -256,28 +227,26 @@ export default class OraclePage extends React.Component {
                     message={config.importantNote && config.importantNote.message}
                   />
                 </div>
-                {
-                  !unconfirmed
-                    ? <div>
-                      <Button
-                        variant="raised"
-                        fullWidth
-                        size="large"
-                        color="primary"
-                        disabled={actionButtonConfig.disabled}
-                        onClick={this.handleConfirmClick}
-                        className={classes.eventActionButton}
-                      >
-                        {
-                          this.state.isApproving ?
-                            <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                            config.predictionAction.btnText
-                        }
-                      </Button>
-                      <EventTxHistory transactions={transactions} options={oracle.options} />
-                    </div>
-                    : null
-                }
+                {!unconfirmed && (
+                  <div>
+                    <Button
+                      variant="raised"
+                      fullWidth
+                      size="large"
+                      color="primary"
+                      disabled={disabled}
+                      onClick={this.handleConfirmClick}
+                      className={classes.eventActionButton}
+                    >
+                      {
+                        this.state.isApproving ?
+                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                          config.predictionAction.btnText
+                      }
+                    </Button>
+                    <EventTxHistory transactions={transactions} options={oracle.options} />
+                  </div>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
@@ -290,19 +259,19 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  handleOptionChange(idx) {
+  handleOptionChange = (idx) => {
     this.setState({ currentOptionIdx: idx });
   }
 
-  handleAmountChange(amount) {
+  handleAmountChange = (amount) => {
     this.setState({ voteAmount: amount });
   }
 
-  handleWalletChange(address) {
+  handleWalletChange = (address) => {
     this.props.setLastUsedAddress(address);
   }
 
-  handleConfirmClick() {
+  handleConfirmClick = () => {
     const { config, voteAmount } = this.state;
     const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
 
@@ -334,13 +303,8 @@ export default class OraclePage extends React.Component {
     }
   }
 
-  executeOracleAndTxsRequest() {
-    const {
-      topicAddress,
-      address,
-      txid,
-      unconfirmed,
-    } = this.state;
+  executeOracleAndTxsRequest = () => {
+    const { topicAddress, txid, unconfirmed } = this.state;
 
     if (unconfirmed) {
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
@@ -360,9 +324,8 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  constructOracleAndConfig(syncBlockTime, getOraclesReturn) {
+  constructOracleAndConfig = (syncBlockTime, { data: oracles }) => {
     const { address, txid, unconfirmed } = this.state;
-    const oracles = getOraclesReturn && getOraclesReturn.data;
 
     let oracle;
     if (!unconfirmed) {
@@ -532,122 +495,115 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  getActionButtonConfig() {
+  getActionButtonConfig = () => {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
-    const {
-      address,
-      oracle,
-      transactions,
-      currentOptionIdx,
-      voteAmount,
-    } = this.state;
+    const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
+    const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
+    const isBettingPhase = token === Token.Qtum && status === OracleStatus.Voting;
+    const isVotingPhase = token === Token.Bot && status === OracleStatus.Voting;
+    const isOpenResultSettingPhase = token === Token.Qtum && status === OracleStatus.OpenResultSet;
+    const isOracleResultSettingPhase = token === Token.Qtum && status === OracleStatus.WaitResult;
+    const isFinalizePhase = token === Token.Bot && status === OracleStatus.WaitResult;
+    const notEnoughQtum = totalQtum < maxTransactionFee;
 
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="str.pendingTransactionDisabledMsg"
-          defaultMessage="You have a pending transaction for this event. Please wait until it's confirmed before doing another transaction."
-        />,
+        id: 'str.pendingTransactionDisabledMsg',
+        message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
         warningTypeClass: EventWarningType.Highlight,
       };
     }
 
     // Has not reached betting start time
-    if (token === Token.Qtum
-      && status === OracleStatus.Voting
-      && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
+    if (isBettingPhase && currBlockTime.isBefore(moment.unix(oracle.startTime))) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.betStartTimeDisabledText"
-          defaultMessage="The betting start time has not started yet."
-        />,
+        id: 'oracle.betStartTimeDisabledText',
+        message: 'The betting start time has not started yet.',
         warningTypeClass: EventWarningType.Info,
       };
     }
 
     // Has not reached result setting start time
-    if (token === Token.Qtum
-      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
+    if ((isOpenResultSettingPhase || isOracleResultSettingPhase)
       && currBlockTime.isBefore(moment.unix(oracle.resultSetStartTime))) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.setStartTimeDisabledText"
-          defaultMessage="The result setting start time has not started yet."
-        />,
+        id: 'oracle.setStartTimeDisabledText',
+        message: 'The result setting start time has not started yet.',
         warningTypeClass: EventWarningType.Info,
       };
     }
 
     // User is not the result setter
-    if (token === Token.Qtum && status === OracleStatus.WaitResult && resultSetterQAddress !== lastUsedAddress) {
+    if (isOracleResultSettingPhase && resultSetterQAddress !== lastUsedAddress) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.cOracleDisabledText"
-          defaultMessage="You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins."
-        />,
+        id: 'oracle.cOracleDisabledText',
+        message: 'You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
         warningTypeClass: EventWarningType.Info,
       };
     }
 
-    // Did not select a result
-    if (!(token === Token.Bot && status === OracleStatus.WaitResult) && currentOptionIdx === -1) {
+
+    // Trying to set result or vote when not enough QTUM or BOT
+    const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
+    if ((
+      (isVotingPhase && currentBot < voteAmount)
+      || ((isOpenResultSettingPhase || isOracleResultSettingPhase) && currentBot < oracle.consensusThreshold)
+    ) && notEnoughQtum) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.selectResultDisabledText"
-          defaultMessage="Please click and select one of the options."
-        />,
-        warningTypeClass: EventWarningType.Info,
+        id: 'str.notEnoughQtumAndBot',
+        message: 'You don\'t have enough QTUM or BOT',
+        warningTypeClass: EventWarningType.Error,
       };
     }
 
-    // Did not enter an amount
-    if (status === OracleStatus.Voting && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
+    // Trying to bet more qtum than you have or you just don't have enough QTUM period
+    if ((isBettingPhase && voteAmount > totalQtum + maxTransactionFee) || notEnoughQtum) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.enterAmountDisabledText"
-          defaultMessage="Please entered a valid amount."
-        />,
-        warningTypeClass: EventWarningType.Info,
-      };
-    }
-
-    // Trying to bet more qtum than you have
-    const totalQtum = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
-    if (token === Token.Qtum && status === OracleStatus.Voting && voteAmount > totalQtum) {
-      return {
-        disabled: true,
-        message: <FormattedMessage
-          id="str.notEnoughQtum"
-          defaultMessage="You don't have enough QTUM"
-        />,
+        id: 'str.notEnoughQtum',
+        message: 'You do\'t have enough QTUM',
         warningTypeClass: EventWarningType.Error,
       };
     }
 
     // Not enough bot for setting the result or voting
-    const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
-    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0;
-    if ((token === Token.Qtum
-      && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)
-      && currentBot < oracle.consensusThreshold)
-      || (token === Token.Bot && status === OracleStatus.Voting && currentBot < voteAmount)) {
+    if (((isOpenResultSettingPhase || isOracleResultSettingPhase) && currentBot < oracle.consensusThreshold)
+      || (isVotingPhase && currentBot < voteAmount)) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="str.notEnoughBot"
-          defaultMessage="You don't have enough BOT"
-        />,
+        id: 'str.notEnoughBot',
+        message: 'You don\'t have enough BOT',
         warningTypeClass: EventWarningType.Error,
+      };
+    }
+
+    // Did not select a result
+    if (!isFinalizePhase && currentOptionIdx === -1) {
+      return {
+        disabled: true,
+        id: 'oracle.selectResultDisabledText',
+        message: 'Please click and select one of the options.',
+        warningTypeClass: EventWarningType.Info,
+      };
+    }
+
+    // Did not enter an amount
+    if ((isBettingPhase || isVotingPhase) && (voteAmount <= 0 || Number.isNaN(voteAmount))) {
+      return {
+        disabled: true,
+        id: 'oracle.enterAmountDisabledText',
+        defaultMessage: 'Please entered a valid amount.',
+        warningTypeClass: EventWarningType.Info,
       };
     }
 
@@ -656,7 +612,7 @@ export default class OraclePage extends React.Component {
     };
   }
 
-  getEventOptionsInfo() {
+  getEventOptionsInfo = () => {
     const { oracle } = this.state;
     const { token, status } = oracle;
     const totalBalance = _.sum(oracle.amounts);
@@ -689,7 +645,7 @@ export default class OraclePage extends React.Component {
     });
   }
 
-  getEventInfoObjs() {
+  getEventInfoObjs = () => {
     const { oracle } = this.state;
     const totalAmount = _.sum(oracle.amounts);
     const { locale, messages: localeMessages } = this.props.intl;
@@ -715,13 +671,9 @@ export default class OraclePage extends React.Component {
     ];
   }
 
-  bet(amount) {
+  bet = (amount) => {
     const { createBetTx, lastUsedAddress } = this.props;
-    const {
-      topicAddress,
-      oracle,
-      currentOptionIdx,
-    } = this.state;
+    const { topicAddress, oracle, currentOptionIdx } = this.state;
 
     createBetTx(
       oracle.version,
@@ -733,7 +685,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  setResult() {
+  setResult = () => {
     const { createSetResultTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
 
@@ -747,7 +699,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  vote(amount) {
+  vote = (amount) => {
     const { createVoteTx, lastUsedAddress } = this.props;
     const { oracle, currentOptionIdx } = this.state;
 
@@ -761,7 +713,7 @@ export default class OraclePage extends React.Component {
     );
   }
 
-  finalizeResult() {
+  finalizeResult = () => {
     const { createFinalizeResultTx, lastUsedAddress } = this.props;
     const { oracle } = this.state;
 

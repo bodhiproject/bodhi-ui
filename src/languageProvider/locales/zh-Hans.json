@@ -132,6 +132,7 @@
   "str.newBlock": "新区块到达，您可以刷新以获得更多事件。",
   "str.notEnoughBot": "您没有足够BOT",
   "str.notEnoughQtum": "您没有足够QTUM",
+  "str.notEnoughQtumAndBot": "您没有足够的QTUM或BOT",
   "str.ok": "好的",
   "str.outcomes": "结果",
   "str.pendingConfirmation": "确认等待中",
