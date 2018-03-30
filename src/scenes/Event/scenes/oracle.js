@@ -215,6 +215,7 @@ export default class OraclePage extends React.Component {
                     optionIdx={index}
                     name={item.name}
                     amount={`${item.value}`}
+                    maxAmount={item.maxAmount}
                     percent={item.percent}
                     voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
                     token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
@@ -621,6 +622,27 @@ export default class OraclePage extends React.Component {
       };
     }
 
+    // Trying to vote over the consensus threshold
+    const optionAmount = oracle.amounts[currentOptionIdx];
+    const maxVote = token === Token.Bot && status === OracleStatus.Voting
+      ? oracle.consensusThreshold - optionAmount : 0;
+    if (token === Token.Bot
+      && status === OracleStatus.Voting
+      && currentOptionIdx >= 0
+      && voteAmount > maxVote) {
+      return {
+        disabled: true,
+        message: <FormattedMessage
+          id="oracle.maxVoteText"
+          defaultMessage="You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT."
+          values={{
+            amount: maxVote,
+          }}
+        />,
+        warningTypeClass: EventWarningType.Error,
+      };
+    }
+
     return {
       disabled: false,
     };
@@ -648,10 +670,13 @@ export default class OraclePage extends React.Component {
       const isPrevResult = !oracle.optionIdxs.includes(index);
       const optionAmount = oracle.amounts[index] || 0;
       const threshold = isPrevResult ? 0 : oracle.consensusThreshold;
+      const maxAmount = token === Token.Bot && status === OracleStatus.Voting
+        ? oracle.consensusThreshold - optionAmount : undefined;
 
       return {
         name: oracle.options[index],
         value: isPrevResult ? 0 : `${optionAmount} ${oracle.token}`,
+        maxAmount,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
         isPrevResult,
         isFinalizing: token === Token.Bot && status === OracleStatus.WaitResult,
