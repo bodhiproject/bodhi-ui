@@ -30,7 +30,7 @@ export class NavLink extends Component {
     };
     return (
       <Route exact path={to}>
-        {({ match }) => <Link to={to} active={match || to === map[appLocation]} {...props} />}
+        {({ match }) => <Link to={to} active={!!match || to === map[appLocation]} {...props} />}
       </Route>
     );
   }

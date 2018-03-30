@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui';
 import styles from './styles';
 
 
-export const Link = withStyles(styles)(({ active = false, classes, className, children, ...props }) => (
+export const Link = withStyles(styles)(({ active = false, classes, className, children, dispatch, ...props }) => (
   <_Link {...props} className={`${className} ${classes.navBarLink}`}>
     {children}
     {active && <img src="/images/nav-arrow.png" className={classes.navArrow} alt="cool" />}

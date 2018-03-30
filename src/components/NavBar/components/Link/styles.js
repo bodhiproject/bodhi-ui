@@ -7,7 +7,8 @@ const styles = () => ({
   },
   navArrow: {
     position: 'absolute',
-    top: '58px',
+    top: 62,
+    width: 16,
   },
 });
 
