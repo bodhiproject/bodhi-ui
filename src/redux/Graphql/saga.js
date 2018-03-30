@@ -148,6 +148,8 @@ export function* getTransactionsHandler() {
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
         value: txs,
+        limit: action.limit,
+        skip: action.skip,
       });
     } catch (err) {
       console.error(err);

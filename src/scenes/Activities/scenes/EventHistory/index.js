@@ -71,6 +71,8 @@ class EventHistory extends React.Component {
     orderBy: 'createdTime',
     perPage: 10,
     page: 0,
+    limit: 50,
+    skip: 0,
   };
 
   componentWillMount() {
@@ -109,6 +111,14 @@ class EventHistory extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { skip } = this.state;
+
+    if (skip !== prevState.skip) {
+      this.executeTxsRequest();
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const { transactions } = this.state;
@@ -131,10 +141,10 @@ class EventHistory extends React.Component {
   }
 
   executeTxsRequest = () => {
-    const { orderBy, order, perPage, page } = this.state;
+    const { orderBy, order, perPage, page, limit, skip } = this.state;
     const direction = order === 'desc' ? SortBy.Descending : SortBy.Ascending;
-    const skip = page * perPage;
 
+    console.log(`executing txs request ${page} ${skip}`);
     this.props.getTransactions(
       [
         { type: TransactionType.ApproveCreateEvent },
@@ -150,7 +160,8 @@ class EventHistory extends React.Component {
         { type: TransactionType.ResetApprove },
       ],
       { field: orderBy, direction },
-      500,
+      limit,
+      skip,
     );
   }
 
@@ -343,7 +354,15 @@ class EventHistory extends React.Component {
   }
 
   handleChangePage = (event, page) => {
-    this.setState({ page });
+    const { transactions, perPage, skip } = this.state;
+
+    // Set skip to fetch more txs if last page is reached
+    let newSkip = skip;
+    if (Math.floor(transactions.length / perPage) - 1 === page) {
+      newSkip = transactions.length;
+    }
+
+    this.setState({ page, skip: newSkip });
   }
 
   handleChangePerPage = (event) => {
@@ -366,7 +385,7 @@ class EventHistory extends React.Component {
 
   createSortHandler = (property) => (event) => {
     this.handleSorting(event, property);
-  };
+  }
 
   handleSorting = (event, property) => {
     const { transactions } = this.state;
