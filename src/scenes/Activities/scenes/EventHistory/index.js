@@ -144,7 +144,6 @@ class EventHistory extends React.Component {
     const { orderBy, order, perPage, page, limit, skip } = this.state;
     const direction = order === 'desc' ? SortBy.Descending : SortBy.Ascending;
 
-    console.log(`executing txs request ${page} ${skip}`);
     this.props.getTransactions(
       [
         { type: TransactionType.ApproveCreateEvent },
