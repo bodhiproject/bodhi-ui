@@ -66,7 +66,7 @@ class PendingTransactionsSnackbar extends React.Component {
     classes: PropTypes.object.isRequired,
     getPendingTransactionsReturn: PropTypes.object.isRequired,
     pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
-    dismissPendingTxsSnackbar: PropTypes.func.isRequired,
+    togglePendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
   render() {
@@ -156,7 +156,7 @@ class PendingTransactionsSnackbar extends React.Component {
   };
 
   onCloseClicked = () => {
-    this.props.dismissPendingTxsSnackbar();
+    this.props.togglePendingTxsSnackbar(false);
   };
 }
 
@@ -167,7 +167,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps(dispatch) {
   return {
-    dismissPendingTxsSnackbar: () => dispatch(appActions.dismissPendingTxsSnackbar()),
+    togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
   };
 }
 

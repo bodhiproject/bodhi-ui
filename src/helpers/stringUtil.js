@@ -36,6 +36,10 @@ const strings = defineMessages({
     id: 'str.withdraw',
     defaultMessage: 'Withdraw',
   },
+  withdrawEscrow: {
+    id: 'str.withdrawEscrow',
+    defaultMessage: 'Withdraw Escrow',
+  },
   transfer: {
     id: 'str.transfer',
     defaultMessage: 'Transfer',
@@ -66,9 +70,11 @@ export function getTxTypeString(txType, locale, localeMessages) {
     case TransactionType.FinalizeResult: {
       return formatMessage(strings.finalizeResult);
     }
-    case TransactionType.Withdraw:
-    case TransactionType.WithdrawEscrow: {
+    case TransactionType.Withdraw: {
       return formatMessage(strings.withdraw);
+    }
+    case TransactionType.WithdrawEscrow: {
+      return formatMessage(strings.withdrawEscrow);
     }
     case TransactionType.Transfer: {
       return formatMessage(strings.transfer);
