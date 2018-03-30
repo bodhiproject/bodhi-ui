@@ -11,6 +11,10 @@ const styles = (theme) => ({
   inputButton: {
     marginTop: theme.padding.unit.px,
   },
+  outcomeList: {
+    listStyleType: 'none',
+    padding: 0,
+  },
 });
 
 export default styles;

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import { Field, FieldArray } from 'redux-form';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import { InputAdornment } from 'material-ui/Input';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import classNames from 'classnames';
@@ -119,7 +119,7 @@ class CreateEventOutcomes extends React.PureComponent {
   };
 
   renderOutcomeList = ({ fields }) => (
-    <ul>
+    <ul className={this.props.classes.outcomeList}>
       {fields.map(this.renderOutcome)}
       {
         fields.length < MAX_OPTION_NUMBER ?
