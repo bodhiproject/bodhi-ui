@@ -187,8 +187,7 @@
   "withdrawDetail.totalBet": "Total bet amount",
   "withdrawDetail.totalVote": "Total vote amount",
   "withdrawDetail.withdrawTo": "WITHDRAW TO",
-  "withdrawDetail.youBet": "You bet",
-  "withdrawDetail.youVote": "You vote",
+  "withdrawDetail.youBetYouVote": "You bet {qtum} QTUM. You voted {bot} BOT.",
   "withdrawDialog.send": "Send",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:"

@@ -40,13 +40,9 @@ const pageMessage = defineMessages({
     id: 'withdrawDetail.returnRate',
     defaultMessage: 'Return rate: ',
   },
-  youBet: {
-    id: 'withdrawDetail.youBet',
-    defaultMessage: 'You bet',
-  },
-  youVote: {
-    id: 'withdrawDetail.youVote',
-    defaultMessage: 'You vote',
+  youBetYouVote: {
+    id: 'withdrawDetail.youBetYouVote',
+    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
   },
   totalBet: {
     id: 'withdrawDetail.totalBet',
@@ -238,9 +234,9 @@ export default class TopicPage extends React.Component {
             {topic.options[topic.resultIdx]}
           </Typography>
           {
-            resultBetAmount || resultVoteAmount ?
+            totalBetAmount || totalVoteAmount ?
               <Typography variant="caption">
-                {`${intl.formatMessage(pageMessage.youBet)} ${resultBetAmount} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${resultVoteAmount} BOT.`}
+                {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
               </Typography> :
               <Typography variant="caption">
                 <FormattedMessage
@@ -466,6 +462,11 @@ export default class TopicPage extends React.Component {
     const { intl, classes, betBalances, voteBalances } = this.props;
     const { topic } = this.state;
 
+    const totalBets = topic.qtumAmount[index];
+    const totalVotes = topic.botAmount[index];
+    const yourBets = betBalances[index];
+    const yourVotes = voteBalances[index];
+
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
@@ -480,10 +481,10 @@ export default class TopicPage extends React.Component {
               </Typography>
             </div>
             {
-              betBalances[index] || voteBalances[index] ?
+              yourBets || yourVotes ?
                 <div>
                   <Typography variant="caption">
-                    {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
+                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: yourBets, bot: yourVotes })}
                   </Typography>
                 </div> : null
             }

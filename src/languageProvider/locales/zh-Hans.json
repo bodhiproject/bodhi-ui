@@ -188,8 +188,6 @@
   "withdrawDetail.totalBet": "总计投注",
   "withdrawDetail.totalVote": "总计投票",
   "withdrawDetail.withdrawTo": "提现到",
-  "withdrawDetail.youBet": "你投注了",
-  "withdrawDetail.youVote": "你投票了",
   "withdrawDialog.send": "发送",
   "withdrawDialog.title": "提现 QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "最多可取出："
