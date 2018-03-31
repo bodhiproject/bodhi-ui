@@ -462,11 +462,6 @@ export default class TopicPage extends React.Component {
     const { intl, classes, betBalances, voteBalances } = this.props;
     const { topic } = this.state;
 
-    const totalBets = topic.qtumAmount[index];
-    const totalVotes = topic.botAmount[index];
-    const yourBets = betBalances[index];
-    const yourVotes = voteBalances[index];
-
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
@@ -481,10 +476,10 @@ export default class TopicPage extends React.Component {
               </Typography>
             </div>
             {
-              yourBets || yourVotes ?
+              betBalances[index] || voteBalances[index] ?
                 <div>
                   <Typography variant="caption">
-                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: yourBets, bot: yourVotes })}
+                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
                   </Typography>
                 </div> : null
             }
