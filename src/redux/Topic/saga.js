@@ -165,9 +165,6 @@ export function* getWithdrawableAddressesHandler() {
         let botWon = 0;
         let qtumWon = 0;
 
-        console.log(topic.creatorAddress);
-        console.log(topic.escrowAmount);
-
         if (result) {
           botWon = satoshiToDecimal(result['0']);
           qtumWon = satoshiToDecimal(result['1']);
@@ -178,7 +175,6 @@ export function* getWithdrawableAddressesHandler() {
           withdrawableAddresses.push({
             type: TransactionType.Withdraw,
             address: vote.voterQAddress,
-            escrowClaim,
             botWon,
             qtumWon,
           });
