@@ -31,6 +31,7 @@ export default function topicReducer(state = initState, action) {
       }
       return state
         .set('withdrawableAddresses', action.value)
+        .set('escrowClaim', action.escrowClaim)
         .set('botWinnings', _.sumBy(action.value, (item) =>
           item.type === TransactionType.Withdraw && item.botWon ? item.botWon : 0))
         .set('qtumWinnings', _.sumBy(action.value, (item) => item.qtumWon ? item.qtumWon : 0));

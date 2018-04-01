@@ -62,6 +62,7 @@ const pageMessage = defineMessages({
   txReturn: state.Graphql.get('txReturn'),
   betBalances: state.Topic.get('betBalances'),
   voteBalances: state.Topic.get('voteBalances'),
+  escrowClaim: state.Topic.get('escrowClaim'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
   withdrawableAddresses: state.Topic.get('withdrawableAddresses'),
@@ -92,6 +93,7 @@ export default class TopicPage extends React.Component {
     betBalances: PropTypes.array,
     voteBalances: PropTypes.array,
     getWithdrawableAddresses: PropTypes.func.isRequired,
+    escrowClaim: PropTypes.number,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
     withdrawableAddresses: PropTypes.array,
@@ -115,6 +117,7 @@ export default class TopicPage extends React.Component {
     betBalances: [],
     voteBalances: [],
     withdrawableAddresses: undefined,
+    escrowClaim: undefined,
     botWinnings: undefined,
     qtumWinnings: undefined,
   };
@@ -203,6 +206,7 @@ export default class TopicPage extends React.Component {
       classes,
       betBalances,
       voteBalances,
+      escrowClaim,
       botWinnings,
       qtumWinnings,
     } = this.props;
@@ -242,7 +246,7 @@ export default class TopicPage extends React.Component {
               </Typography>
           }
         </div>
-        { botWinnings || qtumWinnings ?
+        { escrowClaim || botWinnings || qtumWinnings ?
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
