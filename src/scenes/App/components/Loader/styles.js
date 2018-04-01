@@ -10,13 +10,14 @@ const styles = (theme) => ({
     transition: 'opacity 1s;',
   },
   loaderWrapper: {
-    width: '200px',
-    height: '400px',
+    width: '50vw',
+    height: '480px',
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: '-200px',
-    marginLeft: '-100px',
+    textAlign: 'center',
+    marginTop: '-240px',
+    marginLeft: '-25vw',
   },
   loaderLogoWrapper: {
     position: 'relative',
@@ -26,6 +27,7 @@ const styles = (theme) => ({
     backgroundSize: 'contain',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    display: 'inline-block',
   },
   loaderGif: {
     width: '100px',
@@ -35,14 +37,35 @@ const styles = (theme) => ({
     marginTop: '-50px',
     marginLeft: '-50px',
   },
-  loaderInfoWrapper: {
-    textAlign: 'center',
+  loaderPercentWrapper: {
     marginTop: theme.padding.sm.px,
   },
   loaderPercent: {
     display: 'inline-block',
     marginRight: '4px',
     fontSize: '50px',
+  },
+  loaderProgressWrapper: {
+    width: '50vw',
+    padding: '4px',
+    background: 'white',
+    borderRadius: '14px',
+    boxShadow: '0 0 8px rgba(0,0,0,0.15)',
+    marginTop: theme.padding.sm.px,
+    marginBottom: theme.padding.xs.px,
+  },
+  loaderProgress: {
+    height: '10px',
+  },
+  loaderInfoWrapper: {
+    marginTop: theme.padding.sm.px,
+  },
+  loaderInfoLabel: {
+    fontWeight: 'bold',
+    textAlign: 'right',
+  },
+  loaderInfoData: {
+    textAlign: 'left',
   },
 });
 
