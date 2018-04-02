@@ -4,7 +4,15 @@ import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TableFooter,
+  TablePagination,
+} from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -14,7 +22,7 @@ import _ from 'lodash';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
-import { TransactionType } from '../../../../constants';
+import { TransactionType, SortBy } from '../../../../constants';
 import Config from '../../../../config/app';
 import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
@@ -23,20 +31,24 @@ class WalletHistory extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getTransactions: PropTypes.func.isRequired,
-    getTransactionsReturn: PropTypes.array,
+    transactions: PropTypes.array,
     txReturn: PropTypes.object,
     syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    getTransactionsReturn: [],
+    transactions: [],
     txReturn: undefined,
   };
 
   state = {
-    data: [],
-    order: 'desc',
+    transactions: [],
+    order: SortBy.Descending.toLowerCase(),
     orderBy: 'createdTime',
+    perPage: 10,
+    page: 0,
+    limit: 50,
+    skip: 0,
   };
 
   componentWillMount() {
@@ -45,7 +57,7 @@ class WalletHistory extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      getTransactionsReturn,
+      transactions,
       txReturn,
       syncBlockNum,
     } = this.props;
@@ -54,16 +66,24 @@ class WalletHistory extends React.Component {
       this.getTransactions();
     }
 
-    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+    if (transactions || nextProps.transactions) {
       const sorted = _.orderBy(
-        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        nextProps.transactions ? nextProps.transactions : transactions,
         [this.state.orderBy],
         [this.state.order],
       );
 
       this.setState({
-        data: sorted,
+        transactions: sorted,
       });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { skip } = this.state;
+
+    if (skip !== prevState.skip) {
+      this.getTransactions();
     }
   }
 
@@ -79,6 +99,7 @@ class WalletHistory extends React.Component {
           <Table className={classes.table}>
             {this.getTableHeader()}
             {this.getTableRows()}
+            {this.getTableFooter()}
           </Table>
         </Grid>
       </Paper>
@@ -86,10 +107,16 @@ class WalletHistory extends React.Component {
   }
 
   getTransactions = () => {
-    this.props.getTransactions([
-      { type: TransactionType.Transfer },
-    ]);
-  };
+    const { orderBy, order, limit, skip } = this.state;
+    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
+
+    this.props.getTransactions(
+      [{ type: TransactionType.Transfer }],
+      { field: orderBy, direction },
+      limit,
+      skip,
+    );
+  }
 
   getTableHeader = () => {
     const { order, orderBy } = this.state;
@@ -166,38 +193,38 @@ class WalletHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  };
+  }
 
   handleSorting = (property) => (event) => {
-    const { data } = this.state;
+    const { transactions } = this.state;
 
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
-    const sorted = _.orderBy(data, [orderBy], [order]);
+    const sorted = _.orderBy(transactions, [orderBy], [order]);
 
     this.setState({
-      data: sorted,
+      transactions: sorted,
       orderBy,
       order,
     });
-  };
+  }
 
   getTableRows = () => {
-    const { data } = this.state;
+    const { transactions } = this.state;
 
     return (
       <TableBody>
-        {data.map((transaction, index) => (
+        {transactions.map((transaction, index) => (
           this.getTableRow(transaction, index)
         ))}
       </TableBody>
     );
-  };
+  }
 
   getTableRow = (transaction, index) => {
     const { classes } = this.props;
@@ -238,18 +265,54 @@ class WalletHistory extends React.Component {
     );
 
     return result;
-  };
+  }
+
+  getTableFooter = () => {
+    const { transactions, perPage, page } = this.state;
+
+    return (
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            colSpan={12}
+            count={transactions.length}
+            rowsPerPage={perPage}
+            page={page}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangePerPage}
+          />
+        </TableRow>
+      </TableFooter>
+    );
+  }
+
+  handleChangePage = (event, page) => {
+    const { transactions, perPage, skip } = this.state;
+
+    // Set skip to fetch more txs if last page is reached
+    let newSkip = skip;
+    if (Math.floor(transactions.length / perPage) - 1 === page) {
+      newSkip = transactions.length;
+    }
+
+    this.setState({ page, skip: newSkip });
+  }
+
+  handleChangePerPage = (event) => {
+    this.setState({ perPage: event.target.value });
+  }
 }
 
 const mapStateToProps = (state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  transactions: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
+    getTransactions: (filters, orderBy, limit, skip) =>
+      dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
   };
 }
 

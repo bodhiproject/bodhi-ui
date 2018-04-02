@@ -343,13 +343,13 @@ export default class OraclePage extends React.Component {
     let oracles = oraclesData;
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
-      oracles = _.orderBy(oracles, ['blockNum'], ['asc']);
+      oracles = _.orderBy(oracles, ['blockNum'], [SortBy.Descending.toLowerCase()]);
     } else {
       oracle = _.find(oracles, { txid });
     }
 
     const centralizedOracle = _.find(oracles, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], ['asc']);
+    const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Descending.toLowerCase()]);
     let config;
 
     if (oracle) {

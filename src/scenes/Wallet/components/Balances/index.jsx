@@ -23,13 +23,14 @@ import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
 import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
+import { SortBy } from '../../../../constants';
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      order: 'asc',
+      order: SortBy.Ascending.toLowerCase(),
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
       selectedAddress: undefined,
@@ -233,13 +234,13 @@ class MyBalances extends React.PureComponent {
 
   handleSorting = (property) => (event) => {
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
-    if (order === 'desc') {
+    if (order === SortBy.Descending.toLowerCase()) {
       this.props.walletAddresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
     } else {
       this.props.walletAddresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));

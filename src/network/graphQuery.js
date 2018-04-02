@@ -186,13 +186,19 @@ export function queryAllVotes(filters, orderBy) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllTransactions(filters, orderBy) {
+export function queryAllTransactions(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTransactions', TYPE.transaction);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
   }
   if (!_.isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
+  }
+  if (_.isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (_.isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
   }
   return request.execute();
 }

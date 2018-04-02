@@ -30,10 +30,12 @@ const graphqlActions = {
 
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   GET_TRANSACTIONS_RETURN: 'GET_TRANSACTIONS_RETURN',
-  getTransactions: (filters, orderBy) => ({
+  getTransactions: (filters, orderBy, limit, skip) => ({
     type: graphqlActions.GET_TRANSACTIONS,
     filters,
     orderBy,
+    limit,
+    skip,
   }),
 
   GET_PENDING_TRANSACTIONS: 'GET_PENDING_TRANSACTIONS',

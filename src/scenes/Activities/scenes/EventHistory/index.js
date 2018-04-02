@@ -6,7 +6,16 @@ import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TableFooter,
+  TablePagination,
+} from 'material-ui/Table';
+import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -45,22 +54,25 @@ class EventHistory extends React.Component {
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    getOraclesReturn: PropTypes.object,
-    getTransactions: PropTypes.func,
-    getTransactionsReturn: PropTypes.array,
+    oracles: PropTypes.object,
+    getTransactions: PropTypes.func.isRequired,
+    transactions: PropTypes.array,
     syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    getOraclesReturn: undefined,
-    getTransactions: undefined,
-    getTransactionsReturn: [],
+    oracles: undefined,
+    transactions: undefined,
   };
 
   state = {
     transactions: [],
-    order: 'desc',
+    order: SortBy.Descending.toLowerCase(),
     orderBy: 'createdTime',
+    perPage: 10,
+    page: 0,
+    limit: 50,
+    skip: 0,
   };
 
   componentWillMount() {
@@ -71,28 +83,24 @@ class EventHistory extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      getOraclesReturn,
-      getTransactionsReturn,
-      syncBlockNum,
-    } = nextProps;
+    const { oracles, transactions, syncBlockNum } = this.props;
 
     // return from the click event
-    if (getOraclesReturn !== this.props.getOraclesReturn) {
-      const path = getDetailPagePath(getOraclesReturn.data);
+    if (nextProps.oracles !== oracles) {
+      const path = getDetailPagePath(nextProps.oracles.data);
       if (path) {
         this.props.history.push(path);
       }
     }
 
     // Update page on new block
-    if (syncBlockNum !== this.props.syncBlockNum) {
+    if (nextProps.syncBlockNum !== syncBlockNum) {
       this.executeTxsRequest();
     }
 
-    if (getTransactionsReturn || nextProps.getTransactionsReturn) {
+    if (nextProps.transactions || transactions) {
       const sorted = _.orderBy(
-        nextProps.getTransactionsReturn ? nextProps.getTransactionsReturn : getTransactionsReturn,
+        nextProps.transactions ? nextProps.transactions : transactions,
         [this.state.orderBy],
         [this.state.order],
       );
@@ -100,6 +108,14 @@ class EventHistory extends React.Component {
       this.setState({
         transactions: sorted,
       });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { skip } = this.state;
+
+    if (skip !== prevState.skip) {
+      this.executeTxsRequest();
     }
   }
 
@@ -114,6 +130,7 @@ class EventHistory extends React.Component {
             (<Table className={classes.historyTable}>
               {this.getTableHeader()}
               {this.getTableRows()}
+              {this.getTableFooter()}
             </Table>) :
             (<Typography variant="body1">
               <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
@@ -124,6 +141,9 @@ class EventHistory extends React.Component {
   }
 
   executeTxsRequest = () => {
+    const { orderBy, order, perPage, page, limit, skip } = this.state;
+    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
+
     this.props.getTransactions(
       [
         { type: TransactionType.ApproveCreateEvent },
@@ -138,9 +158,11 @@ class EventHistory extends React.Component {
         { type: TransactionType.WithdrawEscrow },
         { type: TransactionType.ResetApprove },
       ],
-      undefined
+      { field: orderBy, direction },
+      limit,
+      skip,
     );
-  };
+  }
 
   getTableHeader = () => {
     const headerCols = [
@@ -209,7 +231,7 @@ class EventHistory extends React.Component {
         </TableRow>
       </TableHead>
     );
-  };
+  }
 
   getSortableCell = (column) => {
     const { order, orderBy } = this.state;
@@ -234,26 +256,27 @@ class EventHistory extends React.Component {
         </Tooltip>
       </TableCell>
     );
-  };
+  }
 
   getNonSortableCell = (column) => (
     <TableCell key={column.id} numeric={column.numeric}>
       <FormattedMessage id={column.name} default={column.nameDefault} />
     </TableCell>
-  );
+  )
 
   getTableRows = () => {
     const { classes } = this.props;
-    const { transactions } = this.state;
+    const { transactions, page, perPage } = this.state;
+    const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
 
     return (
       <TableBody>
-        {_.map(transactions, (transaction, index) => (
+        {_.map(slicedTxs, (transaction, index) => (
           this.getTableRow(transaction, index)
         ))}
       </TableBody>
     );
-  };
+  }
 
   getTableRow = (transaction, index) => {
     const { intl, classes } = this.props;
@@ -308,7 +331,42 @@ class EventHistory extends React.Component {
     );
 
     return result;
-  };
+  }
+
+  getTableFooter = () => {
+    const { transactions, perPage, page } = this.state;
+
+    return (
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            colSpan={12}
+            count={transactions.length}
+            rowsPerPage={perPage}
+            page={page}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangePerPage}
+          />
+        </TableRow>
+      </TableFooter>
+    );
+  }
+
+  handleChangePage = (event, page) => {
+    const { transactions, perPage, skip } = this.state;
+
+    // Set skip to fetch more txs if last page is reached
+    let newSkip = skip;
+    if (Math.floor(transactions.length / perPage) - 1 === page) {
+      newSkip = transactions.length;
+    }
+
+    this.setState({ page, skip: newSkip });
+  }
+
+  handleChangePerPage = (event) => {
+    this.setState({ perPage: event.target.value });
+  }
 
   onEventLinkClicked = (event) => {
     const {
@@ -326,16 +384,16 @@ class EventHistory extends React.Component {
 
   createSortHandler = (property) => (event) => {
     this.handleSorting(event, property);
-  };
+  }
 
   handleSorting = (event, property) => {
     const { transactions } = this.state;
 
     const orderBy = property;
-    let order = 'desc';
+    let order = SortBy.Descending.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+      order = SortBy.Ascending.toLowerCase();
     }
 
     const sorted = _.orderBy(transactions, [orderBy], [order]);
@@ -350,15 +408,16 @@ class EventHistory extends React.Component {
 
 const mapStateToProps = (state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  oracles: state.Graphql.get('getOraclesReturn'),
+  transactions: state.Graphql.get('getTransactionsReturn'),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
     getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
+    getTransactions: (filters, orderBy, limit, skip) =>
+      dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
   };
 }
 
