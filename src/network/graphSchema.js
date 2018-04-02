@@ -95,6 +95,8 @@ const TYPE_DEF = {
     createdTime
     blockNum
     blockTime
+    gasLimit
+    gasPrice
     gasUsed
     version
     senderAddress
