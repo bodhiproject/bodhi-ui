@@ -24,9 +24,11 @@ export class NavLink extends Component {
     const map = {
       [AppLocation.bet]: RouterPath.qtumPrediction,
       [AppLocation.vote]: RouterPath.botCourt,
+      // so all the routes under /activities keep the pointer under it
       [AppLocation.resultSet]: RouterPath.set,
-      [AppLocation.finalize]: RouterPath.finalize,
-      [AppLocation.withdraw]: RouterPath.withdraw,
+      [AppLocation.finalize]: RouterPath.set,
+      [AppLocation.withdraw]: RouterPath.set,
+      [AppLocation.activityHistory]: RouterPath.set,
     };
     return (
       <Route exact path={to}>
