@@ -125,6 +125,7 @@ export function* getWithdrawableAddressesHandler() {
 
       // Get all winning votes for this Topic
       const voteFilters = [];
+      let escrowClaim = 0;
       _.each(walletAddresses, (item) => {
         voteFilters.push({
           topicAddress: topic.address,
@@ -140,6 +141,7 @@ export function* getWithdrawableAddressesHandler() {
             botWon: topic.escrowAmount,
             qtumWon: 0,
           });
+          escrowClaim = topic.escrowAmount;
         }
       });
 
@@ -182,6 +184,7 @@ export function* getWithdrawableAddressesHandler() {
       yield put({
         type: actions.GET_WITHDRAWABLE_ADDRESSES_RETURN,
         value: withdrawableAddresses,
+        escrowClaim,
       });
     } catch (err) {
       yield put({

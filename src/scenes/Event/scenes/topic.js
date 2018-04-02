@@ -40,21 +40,13 @@ const pageMessage = defineMessages({
     id: 'withdrawDetail.returnRate',
     defaultMessage: 'Return rate: ',
   },
-  youBet: {
-    id: 'withdrawDetail.youBet',
-    defaultMessage: 'You bet',
+  youBetYouVote: {
+    id: 'withdrawDetail.youBetYouVote',
+    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
   },
-  youVote: {
-    id: 'withdrawDetail.youVote',
-    defaultMessage: 'You vote',
-  },
-  totalBet: {
-    id: 'withdrawDetail.totalBet',
-    defaultMessage: 'Total bet amount',
-  },
-  totalVote: {
-    id: 'withdrawDetail.totalVote',
-    defaultMessage: 'Total vote amount',
+  totalBetTotalVote: {
+    id: 'withdrawDetail.totalBetTotalVote',
+    defaultMessage: 'Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.',
   },
 });
 
@@ -70,6 +62,7 @@ const pageMessage = defineMessages({
   txReturn: state.Graphql.get('txReturn'),
   betBalances: state.Topic.get('betBalances'),
   voteBalances: state.Topic.get('voteBalances'),
+  escrowClaim: state.Topic.get('escrowClaim'),
   botWinnings: state.Topic.get('botWinnings'),
   qtumWinnings: state.Topic.get('qtumWinnings'),
   withdrawableAddresses: state.Topic.get('withdrawableAddresses'),
@@ -100,6 +93,7 @@ export default class TopicPage extends React.Component {
     betBalances: PropTypes.array,
     voteBalances: PropTypes.array,
     getWithdrawableAddresses: PropTypes.func.isRequired,
+    escrowClaim: PropTypes.number,
     botWinnings: PropTypes.number,
     qtumWinnings: PropTypes.number,
     withdrawableAddresses: PropTypes.array,
@@ -123,6 +117,7 @@ export default class TopicPage extends React.Component {
     betBalances: [],
     voteBalances: [],
     withdrawableAddresses: undefined,
+    escrowClaim: undefined,
     botWinnings: undefined,
     qtumWinnings: undefined,
   };
@@ -211,6 +206,7 @@ export default class TopicPage extends React.Component {
       classes,
       betBalances,
       voteBalances,
+      escrowClaim,
       botWinnings,
       qtumWinnings,
     } = this.props;
@@ -238,9 +234,9 @@ export default class TopicPage extends React.Component {
             {topic.options[topic.resultIdx]}
           </Typography>
           {
-            resultBetAmount || resultVoteAmount ?
+            totalBetAmount || totalVoteAmount ?
               <Typography variant="caption">
-                {`${intl.formatMessage(pageMessage.youBet)} ${resultBetAmount} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${resultVoteAmount} BOT.`}
+                {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
               </Typography> :
               <Typography variant="caption">
                 <FormattedMessage
@@ -250,7 +246,7 @@ export default class TopicPage extends React.Component {
               </Typography>
           }
         </div>
-        { botWinnings || qtumWinnings ?
+        { escrowClaim || botWinnings || qtumWinnings ?
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
@@ -476,14 +472,16 @@ export default class TopicPage extends React.Component {
             </Typography>
             <div>
               <Typography variant="caption">
-                {`${intl.formatMessage(pageMessage.totalBet)} ${topic.qtumAmount[index]} QTUM. ${intl.formatMessage(pageMessage.totalVote)} ${topic.botAmount[index]} BOT.`}
+                {intl.formatMessage(pageMessage.totalBetTotalVote, {
+                  qtum: topic.qtumAmount[index], bot: topic.botAmount[index],
+                })}
               </Typography>
             </div>
             {
               betBalances[index] || voteBalances[index] ?
                 <div>
                   <Typography variant="caption">
-                    {`${intl.formatMessage(pageMessage.youBet)} ${betBalances[index]} QTUM. ${intl.formatMessage(pageMessage.youVote)} ${voteBalances[index]} BOT.`}
+                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
                   </Typography>
                 </div> : null
             }
