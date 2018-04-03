@@ -397,9 +397,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -423,9 +420,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -445,9 +439,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Set,
       breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -471,9 +462,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Vote,
       breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -497,9 +485,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Finalize,
       breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: true,
         showAmountInput: false,

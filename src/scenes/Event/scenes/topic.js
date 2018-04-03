@@ -128,7 +128,6 @@ export default class TopicPage extends React.Component {
     this.state = {
       address: this.props.match.params.address,
       topic: undefined,
-      config: undefined,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
@@ -166,10 +165,10 @@ export default class TopicPage extends React.Component {
 
   render() {
     const { classes, syncBlockTime, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
-    const { topic, config } = this.state;
+    const { topic } = this.state;
 
     // Make sure all the data is available before rendering page
-    if (!topic || !config || !withdrawableAddresses) {
+    if (!topic || !withdrawableAddresses) {
       return null;
     }
 
@@ -531,37 +530,8 @@ export default class TopicPage extends React.Component {
   }
 
   constructTopicAndConfig(topic) {
-    const { syncBlockTime } = this.props;
-    const { address } = this.state;
-    const { locale, messages: localeMessages } = this.props.intl;
-
-    if (topic) {
-      let config;
-
-      if (topic.status === OracleStatus.Withdraw) {
-        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(
-          _.filter(topic.oracles, (item) => item.token === Token.Bot),
-          ['blockNum'],
-          [SortBy.Ascending.toLowerCase()],
-        );
-
-        config = {
-          steps: CardInfoUtil.getSteps(
-            syncBlockTime,
-            centralizedOracle,
-            decentralizedOracles,
-            true,
-            locale,
-            localeMessages
-          ),
-        };
-
-        // highlight current step using current field
-        config.steps.current = config.steps.value.length - 1;
-
-        this.setState({ topic, config });
-      }
+    if (topic && topic.status === OracleStatus.Withdraw) {
+      this.setState({ topic });
     }
   }
 
