@@ -31,7 +31,6 @@ import {
   SortBy,
   AppLocation,
 } from '../../../constants';
-import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 

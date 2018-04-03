@@ -41,7 +41,6 @@ import {
   AppLocation,
   EventStatus,
 } from '../../../constants';
-import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const messages = defineMessages({
