@@ -7,9 +7,9 @@ import classNames from 'classnames';
 import styles from './styles';
 
 
-const EventWarning = ({ classes, id, message, className, intl, theme, ...props }) => !message ? null : (
+const EventWarning = ({ classes, id, message, values, className, intl, theme, ...props }) => !message ? null : (
   <div {...props} className={classNames(className, classes.warningWrapper)}>
-    {intl.formatMessage({ id, message })}
+    {intl.formatMessage({ id, message }, values)}
   </div>
 );
 
@@ -19,11 +19,13 @@ EventWarning.propTypes = {
   message: PropTypes.string,
   theme: PropTypes.object,
   id: PropTypes.string,
+  values: PropTypes.object,
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
 EventWarning.defaultProps = {
   message: undefined,
+  values: {},
   id: '',
   className: undefined,
   theme: undefined,

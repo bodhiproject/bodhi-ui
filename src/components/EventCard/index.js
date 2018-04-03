@@ -30,7 +30,7 @@ class EventCard extends React.PureComponent {
     classes: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    amountLabel: PropTypes.string.isRequired,
+    amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
@@ -39,6 +39,7 @@ class EventCard extends React.PureComponent {
   };
 
   static defaultProps = {
+    amountLabel: undefined,
     endTime: undefined,
   };
 

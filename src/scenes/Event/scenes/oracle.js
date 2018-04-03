@@ -41,7 +41,6 @@ import {
   AppLocation,
   EventStatus,
 } from '../../../constants';
-import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const messages = defineMessages({
@@ -185,16 +184,19 @@ export default class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes, lastUsedAddress } = this.props;
+    const { classes, lastUsedAddress, syncBlockTime } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
     }
 
+    const cOracle = _.find(oracles, { token: Token.Qtum });
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
+
     const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
-    const { id, message, warningTypeClass, disabled } = this.getActionButtonConfig();
+    const { id, message, values, warningTypeClass, disabled } = this.getActionButtonConfig();
 
     return (
       <div>
@@ -206,7 +208,7 @@ export default class OraclePage extends React.Component {
                 {oracle.name}
               </Typography>
               <Grid item xs={12} lg={9}>
-                {!unconfirmed && <EventWarning id={id} message={message} className={warningTypeClass} />}
+                {!unconfirmed && <EventWarning id={id} message={message} values={values} className={warningTypeClass} />}
                 {eventOptions.map((item, index) => (
                   <EventOption
                     key={index}
@@ -263,7 +265,7 @@ export default class OraclePage extends React.Component {
             </Grid>
             <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
-              <StepperVertRight steps={config.eventInfo.steps} />
+              <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail={false} />
             </Grid>
           </Grid>
         </Paper>
@@ -349,7 +351,11 @@ export default class OraclePage extends React.Component {
     }
 
     const centralizedOracle = _.find(oracles, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Descending.toLowerCase()]);
+    const decentralizedOracles = _.orderBy(
+      _.filter(oracles, { token: Token.Bot }),
+      ['blockNum'],
+      [SortBy.Descending.toLowerCase()]
+    );
     let config;
 
     if (oracle) {
@@ -363,7 +369,6 @@ export default class OraclePage extends React.Component {
         config = this.setResultSetConfig(syncBlockTime, oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
-        oracles = _.filter(oracles, (item) => item.address !== oracle.address);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
       }
@@ -394,9 +399,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -420,9 +422,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Bet,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -442,9 +441,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Set,
       breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, oracle, null, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -468,9 +464,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Vote,
       breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: false,
         showAmountInput: true,
@@ -494,9 +487,6 @@ export default class OraclePage extends React.Component {
     return {
       eventStatus: EventStatus.Finalize,
       breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
-      eventInfo: {
-        steps: CardInfoUtil.getSteps(syncBlockTime, centralizedOracle, decentralizedOracles, null, locale, localeMessages),
-      },
       predictionAction: {
         skipExpansion: true,
         showAmountInput: false,
@@ -565,7 +555,6 @@ export default class OraclePage extends React.Component {
       };
     }
 
-
     // Trying to set result or vote when not enough QTUM or BOT
     const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
@@ -617,7 +606,7 @@ export default class OraclePage extends React.Component {
       return {
         disabled: true,
         id: 'oracle.enterAmountDisabledText',
-        defaultMessage: 'Please entered a valid amount.',
+        message: 'Please entered a valid amount.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -632,13 +621,9 @@ export default class OraclePage extends React.Component {
       && voteAmount > maxVote) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.maxVoteText"
-          defaultMessage="You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT."
-          values={{
-            amount: maxVote,
-          }}
-        />,
+        id: 'oracle.maxVoteText',
+        message: 'You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT.',
+        values: { amount: maxVote },
         warningTypeClass: EventWarningType.Error,
       };
     }

@@ -31,7 +31,6 @@ import {
   SortBy,
   AppLocation,
 } from '../../../constants';
-import CardInfoUtil from '../../../helpers/cardInfoUtil';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 
@@ -128,11 +127,9 @@ export default class TopicPage extends React.Component {
     this.state = {
       address: this.props.match.params.address,
       topic: undefined,
-      config: undefined,
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
     this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
@@ -157,7 +154,9 @@ export default class TopicPage extends React.Component {
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
     const topic = _.find(topics, { address });
-    this.constructTopicAndConfig(topic);
+    if (topic && topic.status === OracleStatus.Withdraw) {
+      this.setState({ topic });
+    }
   }
 
   componentWillUnmount() {
@@ -165,13 +164,20 @@ export default class TopicPage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
-    const { topic, config } = this.state;
+    const { classes, syncBlockTime, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
+    const { topic } = this.state;
 
     // Make sure all the data is available before rendering page
-    if (!topic || !config || !withdrawableAddresses) {
+    if (!topic || !withdrawableAddresses) {
       return null;
     }
+
+    const cOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+    const dOracles = _.orderBy(
+      _.filter(topic.oracles, (item) => item.token === Token.Bot),
+      ['blockNum'],
+      [SortBy.Ascending.toLowerCase()],
+    );
 
     return (
       <div>
@@ -191,7 +197,7 @@ export default class TopicPage extends React.Component {
             </Grid>
             <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
-              <StepperVertRight steps={config.steps} />
+              <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail />
             </Grid>
           </Grid>
           <TransactionSentDialog txReturn={txReturn} />
@@ -521,41 +527,6 @@ export default class TopicPage extends React.Component {
         content: resultSetterQAddress,
       },
     ];
-  }
-
-  constructTopicAndConfig(topic) {
-    const { syncBlockTime } = this.props;
-    const { address } = this.state;
-    const { locale, messages: localeMessages } = this.props.intl;
-
-    if (topic) {
-      let config;
-
-      if (topic.status === OracleStatus.Withdraw) {
-        const centralizedOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
-        const decentralizedOracles = _.orderBy(
-          _.filter(topic.oracles, (item) => item.token === Token.Bot),
-          ['blockNum'],
-          [SortBy.Ascending.toLowerCase()],
-        );
-
-        config = {
-          steps: CardInfoUtil.getSteps(
-            syncBlockTime,
-            centralizedOracle,
-            decentralizedOracles,
-            true,
-            locale,
-            localeMessages
-          ),
-        };
-
-        // highlight current step using current field
-        config.steps.current = config.steps.value.length - 1;
-
-        this.setState({ topic, config });
-      }
-    }
   }
 
   onAddressChange(event) {
