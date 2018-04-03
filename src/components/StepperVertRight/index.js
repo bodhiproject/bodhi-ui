@@ -51,7 +51,6 @@ export default class StepperVertRight extends React.PureComponent {
   render() {
     const { classes, blockTime, cOracle } = this.props;
 
-    // TODO (LIVIA): CHECK STEPS DATA STRUCUTURE
     if (!blockTime && !cOracle) {
       return null;
     }
@@ -77,15 +76,21 @@ export default class StepperVertRight extends React.PureComponent {
   }
 
   getSteps = () => {
-    const { intl, blockTime, cOracle, dOracles, isTopicDetail } = this.props;
+    const {
+      intl: { formatMessage },
+      blockTime,
+      cOracle,
+      dOracles,
+      isTopicDetail,
+    } = this.props;
 
-    const RANGE_SEPARATOR = intl.formatMessage(messages.to);
-    const ANYTIME = intl.formatMessage(messages.anytime);
+    const RANGE_SEPARATOR = formatMessage(messages.to);
+    const ANYTIME = formatMessage(messages.anytime);
 
     // Init all events with these steps
     const value = [{
       title: TOPIC_CREATED,
-      description: `${intl.formatMessage(messages.block)}: ${cOracle.blockNum || ''}`,
+      description: `${formatMessage(messages.block)}: ${cOracle.blockNum || ''}`,
     }, {
       title: BETTING,
       description: `${getLocalDateTimeString(cOracle.startTime)}
