@@ -194,7 +194,7 @@ export default class OraclePage extends React.Component {
 
     const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
-    const { id, message, warningTypeClass, disabled } = this.getActionButtonConfig();
+    const { id, message, values, warningTypeClass, disabled } = this.getActionButtonConfig();
 
     return (
       <div>
@@ -206,7 +206,7 @@ export default class OraclePage extends React.Component {
                 {oracle.name}
               </Typography>
               <Grid item xs={12} lg={9}>
-                {!unconfirmed && <EventWarning id={id} message={message} className={warningTypeClass} />}
+                {!unconfirmed && <EventWarning id={id} message={message} values={values} className={warningTypeClass} />}
                 {eventOptions.map((item, index) => (
                   <EventOption
                     key={index}
@@ -617,7 +617,7 @@ export default class OraclePage extends React.Component {
       return {
         disabled: true,
         id: 'oracle.enterAmountDisabledText',
-        defaultMessage: 'Please entered a valid amount.',
+        message: 'Please entered a valid amount.',
         warningTypeClass: EventWarningType.Info,
       };
     }
@@ -632,13 +632,9 @@ export default class OraclePage extends React.Component {
       && voteAmount > maxVote) {
       return {
         disabled: true,
-        message: <FormattedMessage
-          id="oracle.maxVoteText"
-          defaultMessage="You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT."
-          values={{
-            amount: maxVote,
-          }}
-        />,
+        id: 'oracle.maxVoteText',
+        message: 'You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT.',
+        values: { amount: maxVote },
         warningTypeClass: EventWarningType.Error,
       };
     }
