@@ -165,13 +165,20 @@ export default class TopicPage extends React.Component {
   }
 
   render() {
-    const { classes, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
+    const { classes, syncBlockTime, txReturn, getTransactionsReturn, withdrawableAddresses } = this.props;
     const { topic, config } = this.state;
 
     // Make sure all the data is available before rendering page
     if (!topic || !config || !withdrawableAddresses) {
       return null;
     }
+
+    const cOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+    const dOracles = _.orderBy(
+      _.filter(topic.oracles, (item) => item.token === Token.Bot),
+      ['blockNum'],
+      [SortBy.Ascending.toLowerCase()],
+    );
 
     return (
       <div>
@@ -191,7 +198,7 @@ export default class TopicPage extends React.Component {
             </Grid>
             <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
-              <StepperVertRight steps={config.steps} />
+              <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail />
             </Grid>
           </Grid>
           <TransactionSentDialog txReturn={txReturn} />
