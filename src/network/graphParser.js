@@ -85,6 +85,8 @@ class GraphParser {
       createdTime: entry.createdTime,
       blockNum: entry.blockNum,
       blockTime: entry.blockTime,
+      gasLimit: entry.gasLimit,
+      gasPrice: entry.gasPrice,
       gasUsed: entry.gasUsed,
       version: entry.version,
       senderAddress: entry.senderAddress,

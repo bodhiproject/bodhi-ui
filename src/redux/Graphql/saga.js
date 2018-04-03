@@ -205,6 +205,8 @@ function processTransaction(tx) {
   }
 
   const newTx = _.assign({}, tx);
+  newTx.gasLimit = Number(tx.gasLimit);
+  newTx.gasPrice = Number(tx.gasPrice);
   newTx.fee = gasToQtum(tx.gasUsed);
 
   if (tx.token && tx.token === Token.Bot) {
