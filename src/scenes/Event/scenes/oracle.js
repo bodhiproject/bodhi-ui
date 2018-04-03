@@ -192,7 +192,7 @@ export default class OraclePage extends React.Component {
     }
 
     const cOracle = _.find(oracles, { token: Token.Qtum });
-    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Descending.toLowerCase()]);
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
 
     const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
