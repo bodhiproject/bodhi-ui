@@ -78,17 +78,14 @@ export default class StepperVertRight extends React.PureComponent {
 
   getSteps = () => {
     const { intl, blockTime, cOracle, dOracles, isTopicDetail } = this.props;
-    console.log(cOracle);
-    console.log(dOracles);
 
-    const BLOCK = `${intl.formatMessage(messages.block)}:`;
     const RANGE_SEPARATOR = intl.formatMessage(messages.to);
     const ANYTIME = intl.formatMessage(messages.anytime);
 
     // Init all events with these steps
     const value = [{
       title: TOPIC_CREATED,
-      description: `${BLOCK} ${cOracle.blockNum || ''}`,
+      description: `${intl.formatMessage(messages.block)}: ${cOracle.blockNum || ''}`,
     }, {
       title: BETTING,
       description: `${getLocalDateTimeString(cOracle.startTime)}

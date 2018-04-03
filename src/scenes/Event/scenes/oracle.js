@@ -351,7 +351,11 @@ export default class OraclePage extends React.Component {
     }
 
     const centralizedOracle = _.find(oracles, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Descending.toLowerCase()]);
+    const decentralizedOracles = _.orderBy(
+      _.filter(oracles, { token: Token.Bot }),
+      ['blockNum'],
+      [SortBy.Descending.toLowerCase()]
+    );
     let config;
 
     if (oracle) {
@@ -365,7 +369,6 @@ export default class OraclePage extends React.Component {
         config = this.setResultSetConfig(syncBlockTime, oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
         config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
-        oracles = _.filter(oracles, (item) => item.address !== oracle.address);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
         config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
       }
