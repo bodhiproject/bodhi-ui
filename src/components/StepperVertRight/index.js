@@ -78,31 +78,29 @@ export default class StepperVertRight extends React.PureComponent {
 
   getSteps = () => {
     const { intl, blockTime, cOracle, dOracles, isTopicDetail } = this.props;
+    console.log(cOracle);
+    console.log(dOracles);
 
     const BLOCK = `${intl.formatMessage(messages.block)}:`;
     const RANGE_SEPARATOR = intl.formatMessage(messages.to);
     const ANYTIME = intl.formatMessage(messages.anytime);
 
     // Init all events with these steps
-    const value = [
-      {
-        title: TOPIC_CREATED,
-        description: `${BLOCK} ${cOracle.blockNum || ''}`,
-      },
-      {
-        title: BETTING,
-        description: `${getLocalDateTimeString(cOracle.startTime)}
-          ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.endTime)}`,
-      },
-      {
-        title: ORACLE_RESULT_SETTING,
-        description: `${getLocalDateTimeString(cOracle.resultSetStartTime)}
-          ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.resultSetEndTime)}`,
-      },
-    ];
+    const value = [{
+      title: TOPIC_CREATED,
+      description: `${BLOCK} ${cOracle.blockNum || ''}`,
+    }, {
+      title: BETTING,
+      description: `${getLocalDateTimeString(cOracle.startTime)}
+        ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.endTime)}`,
+    }, {
+      title: ORACLE_RESULT_SETTING,
+      description: `${getLocalDateTimeString(cOracle.resultSetStartTime)}
+        ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.resultSetEndTime)}`,
+    }];
 
     let current;
-    if (dOracles) { // DecentralizedOracle and Topic detail
+    if (!_.isEmpty(dOracles)) { // DecentralizedOracle and Topic detail
       // Add all voting steps of each DecentralizedOracle
       _.each(dOracles, (item) => {
         value.push({
