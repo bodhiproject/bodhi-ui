@@ -130,7 +130,6 @@ export default class TopicPage extends React.Component {
     };
 
     this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.constructTopicAndConfig = this.constructTopicAndConfig.bind(this);
     this.getEventInfoObjs = this.getEventInfoObjs.bind(this);
     this.renderWithdrawContainer = this.renderWithdrawContainer.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
@@ -155,7 +154,9 @@ export default class TopicPage extends React.Component {
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn.data : getTopicsReturn.data;
     const topic = _.find(topics, { address });
-    this.constructTopicAndConfig(topic);
+    if (topic && topic.status === OracleStatus.Withdraw) {
+      this.setState({ topic });
+    }
   }
 
   componentWillUnmount() {
@@ -526,12 +527,6 @@ export default class TopicPage extends React.Component {
         content: resultSetterQAddress,
       },
     ];
-  }
-
-  constructTopicAndConfig(topic) {
-    if (topic && topic.status === OracleStatus.Withdraw) {
-      this.setState({ topic });
-    }
   }
 
   onAddressChange(event) {
