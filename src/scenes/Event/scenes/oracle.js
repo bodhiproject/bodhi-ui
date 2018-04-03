@@ -185,12 +185,15 @@ export default class OraclePage extends React.Component {
   }
 
   render() {
-    const { classes, lastUsedAddress } = this.props;
+    const { classes, lastUsedAddress, syncBlockTime } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
       return null;
     }
+
+    const cOracle = _.find(oracles, { token: Token.Qtum });
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Descending.toLowerCase()]);
 
     const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
@@ -263,7 +266,7 @@ export default class OraclePage extends React.Component {
             </Grid>
             <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
-              <StepperVertRight steps={config.eventInfo.steps} />
+              <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail={false} />
             </Grid>
           </Grid>
         </Paper>
@@ -564,7 +567,6 @@ export default class OraclePage extends React.Component {
         warningTypeClass: EventWarningType.Info,
       };
     }
-
 
     // Trying to set result or vote when not enough QTUM or BOT
     const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
