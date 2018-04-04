@@ -15,9 +15,9 @@ import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
 export default class AppProvider extends Component {
-  locales = [AppLocale.en, AppLocale.zh]
+  locales = { english: AppLocale.en, mandarin: AppLocale.zh }
   state = {
-    locale: Number(localStorage.getItem('localindex')) || 1,
+    locale: localStorage.getItem('language') || 'mandarin',
   }
 
   componentDidMount() {
@@ -25,12 +25,10 @@ export default class AppProvider extends Component {
   }
 
   langHandler = () => {
-    const nextlocale = (this.state.locale + 1) % 2;
-    this.setState({
-      locale: nextlocale,
-    });
-    moment.locale(this.locales[nextlocale].momentlocale);
-    localStorage.setItem('localindex', nextlocale);
+    const locale = this.state.locale === 'english' ? 'mandarin' : 'english';
+    this.setState({ locale });
+    moment.locale(this.locales[locale].momentlocale);
+    localStorage.setItem('language', locale);
   }
 
   render() {
