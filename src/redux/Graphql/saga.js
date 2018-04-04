@@ -73,7 +73,7 @@ export function* getActionableTopicsHandler() {
       });
 
       // Filter votes
-      const votes = yield call(queryAllVotes, voteFilters);
+      let votes = yield call(queryAllVotes, voteFilters);
       votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
