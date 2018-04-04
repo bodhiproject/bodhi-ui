@@ -1,22 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Badge from 'material-ui/Badge';
-import Button from 'material-ui/Button';
-import { FormattedMessage, injectIntl, intlShape, defaultMessage } from 'react-intl';
-import { withStyles } from 'material-ui/styles';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import classNames from 'classnames';
-
+import { Link } from './components/Link/index';
+import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import styles from './styles';
 
-class NavBar extends React.PureComponent {
+class NavBar extends Component {
   static propTypes = {
-    match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
@@ -38,134 +33,85 @@ class NavBar extends React.PureComponent {
   }
 
   render() {
-    const {
-      classes,
-      appLocation,
-      walletAddresses,
-      actionableItemCount,
-      match,
-    } = this.props;
+    const { classes, appLocation } = this.props;
 
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
-          <Link to={RouterPath.qtumPrediction}>
-            <img
-              src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
-              alt="bodhi-logo"
-              className={classes.navBarLogo}
-            />
-          </Link>
-          <Link to="/" className={classes.navBarLink}>
-            <Button
-              data-index={EventStatus.Bet}
-              className={classNames(
-                classes.navEventsButton,
-                appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
-              )}
-            >
-              <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
-            </Button>
-            {
-              appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet
-                ? this.renderCurrentTabArrow(RouterPath.qtumPrediction) : null
-            }
-          </Link>
-          <Link to={RouterPath.botCourt} className={classes.navBarLink}>
-            <Button
-              data-index={EventStatus.Vote}
-              className={classNames(
-                classes.navEventsButton,
-                appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
-              )}
-            >
-              <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
-            </Button>
-            {
-              appLocation === AppLocation.botCourt || appLocation === AppLocation.vote
-                ? this.renderCurrentTabArrow(RouterPath.botCourt) : null
-            }
-          </Link>
-          <div className={classes.navBarRightWrapper}>
-            <Link to="/my-wallet" className={classes.navBarLink}>
+          <NavSection>
+            <Link to={RouterPath.qtumPrediction}>
+              <img
+                src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
+                alt="bodhi-logo"
+                className={classes.navBarLogo}
+              />
+            </Link>
+            <NavLink to={RouterPath.qtumPrediction}>
+              <Button
+                data-index={EventStatus.Bet}
+                className={classNames(
+                  classes.navEventsButton,
+                  appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
+                )}
+              >
+                <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
+              </Button>
+            </NavLink>
+            <NavLink to={RouterPath.botCourt}>
+              <Button
+                data-index={EventStatus.Vote}
+                className={classNames(
+                  classes.navEventsButton,
+                  appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
+                )}
+              >
+                <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+              </Button>
+            </NavLink>
+          </NavSection>
+          <NavSection>
+            <NavLink to="/my-wallet">
               <Button className={classes.navBarWalletButton}>
                 <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
-              { appLocation === AppLocation.wallet ? this.renderCurrentTabArrow(RouterPath.myWallet) : null }
-            </Link>
-            <Button onClick={this.props.langHandler} className={classes.navBarRightButton}>
+            </NavLink>
+            <Button onClick={this.props.langHandler} className={`${classes.dark} ${classes.sides}`}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
             </Button>
             {this.renderActivitiesButtonWithBadge()}
-          </div>
+          </NavSection>
         </Toolbar>
       </AppBar>
     );
   }
 
-  renderCurrentTabArrow(currentPath) {
-    const {
-      classes,
-      match,
-    } = this.props;
-
-    return (
-      <img
-        src="/images/nav-arrow.png"
-        alt="nav-arrow"
-        className={
-          classNames(
-            classes.navArrow,
-            currentPath === RouterPath.myWallet || currentPath === RouterPath.set ? 'right' : ''
-          )
-        }
-      />
-    );
-  }
-
   renderActivitiesButtonWithBadge() {
-    const {
-      classes,
-      match,
-      appLocation,
-      actionableItemCount,
-    } = this.props;
+    const { classes, actionableItemCount } = this.props;
 
     if (actionableItemCount.totalCount > 0) {
       return (
-        <Link to={RouterPath.set} className={classes.navBarLink}>
+        <NavLink to={RouterPath.set}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
-            <Button className={classes.navBarRightButton}>
+            <Button className={`${classes.navEventsButton} ${classes.dark}`}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
           </Badge>
-          {
-            appLocation === AppLocation.myActivities
-              || appLocation === AppLocation.resultSet
-              || appLocation === AppLocation.finalize
-              || appLocation === AppLocation.withdraw
-              || appLocation === AppLocation.activityHistory
-              ? this.renderCurrentTabArrow(RouterPath.set) : null
-          }
-        </Link>
+        </NavLink>
       );
     }
 
     return (
-      <Link to={RouterPath.set} className={classes.navBarLink}>
-        <Button className={classes.navBarRightButton}>
+      <NavLink to={RouterPath.set}>
+        <Button className={`${classes.navEventsButton} ${classes.dark}`}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
-        { this.renderCurrentTabArrow(RouterPath.set) }
-      </Link>
+      </NavLink>
     );
   }
 
   getTotalQTUM() {
-    const {
-      walletAddresses,
-    } = this.props;
+    const { walletAddresses } = this.props;
 
     let total = 0;
     if (walletAddresses && walletAddresses.length) {
@@ -176,9 +122,7 @@ class NavBar extends React.PureComponent {
   }
 
   getTotalBOT() {
-    const {
-      walletAddresses,
-    } = this.props;
+    const { walletAddresses } = this.props;
 
     let total = 0;
     if (walletAddresses && walletAddresses.length) {
@@ -188,6 +132,8 @@ class NavBar extends React.PureComponent {
     return total.toFixed(2);
   }
 }
+
+const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
 
 const mapStateToProps = (state) => ({
   ...state.App.toJS(),
