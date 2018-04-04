@@ -74,19 +74,10 @@ export function* getActionableTopicsHandler() {
 
       // Filter votes
       const votes = yield call(queryAllVotes, voteFilters);
-      const filtered = [];
-      _.each(votes, (vote) => {
-        if (!_.find(filtered, {
-          voterQAddress: vote.voterQAddress,
-          topicAddress: vote.topicAddress,
-          optionIdx: vote.optionIdx,
-        })) {
-          filtered.push(vote);
-        }
-      });
+      votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
-      _.each(filtered, (vote) => {
+      _.each(votes, (vote) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
       const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
