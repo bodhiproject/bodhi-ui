@@ -117,16 +117,8 @@ const ID_RESULT_SETTER = 'resultSetter';
 const ID_CREATOR_ADDRESS = 'creatorAddress';
 
 let TIME_GAP_MIN_SEC = 30 * 60;
-
-// default date picker to time 10 minutes from now
-let DEFAULT_PICKER_TIME_15_MIN = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
-let DEFAULT_PICKER_TIME_45_MIN = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
-let DEFAULT_PICKER_TIME_75_MIN = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
 if (process.env.REACT_APP_ENV === 'dev') {
   TIME_GAP_MIN_SEC = 2 * 60;
-  DEFAULT_PICKER_TIME_15_MIN = moment().add(2, 'm').format('YYYY-MM-DDTHH:mm');
-  DEFAULT_PICKER_TIME_45_MIN = moment().add(4, 'm').format('YYYY-MM-DDTHH:mm');
-  DEFAULT_PICKER_TIME_75_MIN = moment().add(6, 'm').format('YYYY-MM-DDTHH:mm');
 }
 
 const FORM_NAME = 'createEvent';
@@ -183,10 +175,6 @@ const validate = (values, props) => {
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   initialValues: {
-    bettingStartTime: DEFAULT_PICKER_TIME_15_MIN,
-    bettingEndTime: DEFAULT_PICKER_TIME_45_MIN,
-    resultSettingStartTime: DEFAULT_PICKER_TIME_45_MIN,
-    resultSettingEndTime: DEFAULT_PICKER_TIME_75_MIN,
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
@@ -254,6 +242,10 @@ export default class CreateEvent extends Component {
     hasEnoughQtum: true,
   }
 
+  getAdjustedTime = (minIncrease) => (
+    moment().add(minIncrease, 'm').format('YYYY-MM-DDTHH:mm')
+  )
+
   validateTitleLength = (value) => {
     const { intl } = this.props;
     let hexString = _.isUndefined(value) ? '' : value;
@@ -308,6 +300,20 @@ export default class CreateEvent extends Component {
     this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
   }
 
+  onEnter = () => {
+    if (process.env.REACT_APP_ENV === 'dev') {
+      this.props.changeFormFieldValue(ID_BETTING_START_TIME, this.getAdjustedTime(2));
+      this.props.changeFormFieldValue(ID_BETTING_END_TIME, this.getAdjustedTime(4));
+      this.props.changeFormFieldValue(ID_RESULT_SETTING_START_TIME, this.getAdjustedTime(4));
+      this.props.changeFormFieldValue(ID_RESULT_SETTING_END_TIME, this.getAdjustedTime(6));
+    } else {
+      this.props.changeFormFieldValue(ID_BETTING_START_TIME, this.getAdjustedTime(15));
+      this.props.changeFormFieldValue(ID_BETTING_END_TIME, this.getAdjustedTime(45));
+      this.props.changeFormFieldValue(ID_RESULT_SETTING_START_TIME, this.getAdjustedTime(45));
+      this.props.changeFormFieldValue(ID_RESULT_SETTING_END_TIME, this.getAdjustedTime(75));
+    }
+  }
+
   onClose = () => {
     this.props.toggleCreateEventDialog(false);
   }
@@ -347,7 +353,7 @@ export default class CreateEvent extends Component {
     const { hasEnoughQtum, notEnoughQtumError: { id, message } } = this.state;
 
     return (
-      <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onClose={this.onClose}>
+      <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
           <DialogContent>
             <Grid container>
