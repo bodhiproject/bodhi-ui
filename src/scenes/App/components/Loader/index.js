@@ -50,7 +50,7 @@ class Loader extends React.PureComponent {
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          { !_.isEmpty(syncBlockNum) && !_.isEmpty(syncBlockTime) ?
+          { syncBlockNum && !_.isEmpty(syncBlockTime) ?
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />
