@@ -19,7 +19,6 @@ import {
   gasToQtum,
   processTopic,
   processOracle,
-  getUniqueVotes,
 } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
@@ -74,11 +73,20 @@ export function* getActionableTopicsHandler() {
       });
 
       // Filter votes
-      let votes = yield call(queryAllVotes, voteFilters);
-      votes = getUniqueVotes(votes);
+      const votes = yield call(queryAllVotes, voteFilters);
+      const filtered = [];
+      _.each(votes, (vote) => {
+        if (!_.find(filtered, {
+          voterQAddress: vote.voterQAddress,
+          topicAddress: vote.topicAddress,
+          optionIdx: vote.optionIdx,
+        })) {
+          filtered.push(vote);
+        }
+      });
 
       // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
+      _.each(filtered, (vote) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
       });
       const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
@@ -293,6 +301,24 @@ export function* getActionableItemCountHandler() {
       });
     }
   });
+}
+
+/*
+* Filter out unique votes by voter address, topic address, and option index.
+* Used to query against Topics that you can win.
+*/
+function getUniqueVotes(votes) {
+  const filtered = [];
+  _.each(votes, (vote) => {
+    if (!_.find(filtered, {
+      voterQAddress: vote.voterQAddress,
+      topicAddress: vote.topicAddress,
+      optionIdx: vote.optionIdx,
+    })) {
+      filtered.push(vote);
+    }
+  });
+  return filtered;
 }
 
 // Sends createTopic mutation

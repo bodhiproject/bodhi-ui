@@ -201,21 +201,3 @@ export function processOracle(oracle) {
   newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
   return newOracle;
 }
-
-/*
-* Filter out unique votes by voter address, topic address, and option index.
-* Used to query against Topics that you can win.
-*/
-export function getUniqueVotes(votes) {
-  const filtered = [];
-  _.each(votes, (vote) => {
-    if (!_.find(filtered, {
-      voterQAddress: vote.voterQAddress,
-      topicAddress: vote.topicAddress,
-      optionIdx: vote.optionIdx,
-    })) {
-      filtered.push(vote);
-    }
-  });
-  return filtered;
-}

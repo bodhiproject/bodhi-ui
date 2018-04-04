@@ -4,7 +4,7 @@ import _ from 'lodash';
 import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
-import { satoshiToDecimal, processTopic, getUniqueVotes } from '../../helpers/utility';
+import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
 import { TransactionType } from '../../constants';
 
