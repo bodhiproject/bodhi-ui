@@ -39,11 +39,6 @@ const ID_CREATOR_ADDRESS = 'creatorAddress';
 
 const TIME_GAP_MIN_SEC = 30 * 60;
 
-// default date picker to time 10 minutes from now
-const DEFAULT_PICKER_TIME_15_MIN = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
-const DEFAULT_PICKER_TIME_45_MIN = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
-const DEFAULT_PICKER_TIME_75_MIN = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
-
 const FORM_NAME = 'createEvent';
 
 const messages = defineMessages({
@@ -177,10 +172,6 @@ const validate = (values, props) => {
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   initialValues: {
-    bettingStartTime: DEFAULT_PICKER_TIME_15_MIN,
-    bettingEndTime: DEFAULT_PICKER_TIME_45_MIN,
-    resultSettingStartTime: DEFAULT_PICKER_TIME_45_MIN,
-    resultSettingEndTime: DEFAULT_PICKER_TIME_75_MIN,
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
@@ -302,6 +293,17 @@ export default class CreateEvent extends Component {
     this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
   }
 
+  onEnter = () => {
+    const time15min = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
+    const time45min = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
+    const time75min = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
+
+    this.props.changeFormFieldValue(ID_BETTING_START_TIME, time15min);
+    this.props.changeFormFieldValue(ID_BETTING_END_TIME, time45min);
+    this.props.changeFormFieldValue(ID_RESULT_SETTING_START_TIME, time45min);
+    this.props.changeFormFieldValue(ID_RESULT_SETTING_END_TIME, time75min);
+  }
+
   onClose = () => {
     this.props.toggleCreateEventDialog(false);
   }
@@ -341,7 +343,7 @@ export default class CreateEvent extends Component {
     const { hasEnoughQtum, notEnoughQtumError: { id, message } } = this.state;
 
     return (
-      <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onClose={this.onClose}>
+      <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
         <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
           <DialogContent>
             <Grid container>
