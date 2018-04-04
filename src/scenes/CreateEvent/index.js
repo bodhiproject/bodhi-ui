@@ -28,24 +28,6 @@ import { maxTransactionFee } from '../../config/app';
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 
-const ID_BETTING_START_TIME = 'bettingStartTime';
-const ID_BETTING_END_TIME = 'bettingEndTime';
-const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
-const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
-const ID_NAME = 'name';
-const ID_OUTCOMES = 'outcomes';
-const ID_RESULT_SETTER = 'resultSetter';
-const ID_CREATOR_ADDRESS = 'creatorAddress';
-
-const TIME_GAP_MIN_SEC = 30 * 60;
-
-// default date picker to time 10 minutes from now
-const DEFAULT_PICKER_TIME_15_MIN = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
-const DEFAULT_PICKER_TIME_45_MIN = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
-const DEFAULT_PICKER_TIME_75_MIN = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
-
-const FORM_NAME = 'createEvent';
-
 const messages = defineMessages({
   required: {
     id: 'create.required',
@@ -124,6 +106,30 @@ const messages = defineMessages({
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
 });
+
+const ID_BETTING_START_TIME = 'bettingStartTime';
+const ID_BETTING_END_TIME = 'bettingEndTime';
+const ID_RESULT_SETTING_START_TIME = 'resultSettingStartTime';
+const ID_RESULT_SETTING_END_TIME = 'resultSettingEndTime';
+const ID_NAME = 'name';
+const ID_OUTCOMES = 'outcomes';
+const ID_RESULT_SETTER = 'resultSetter';
+const ID_CREATOR_ADDRESS = 'creatorAddress';
+
+let TIME_GAP_MIN_SEC = 30 * 60;
+
+// default date picker to time 10 minutes from now
+let DEFAULT_PICKER_TIME_15_MIN = moment().add(15, 'm').format('YYYY-MM-DDTHH:mm');
+let DEFAULT_PICKER_TIME_45_MIN = moment().add(45, 'm').format('YYYY-MM-DDTHH:mm');
+let DEFAULT_PICKER_TIME_75_MIN = moment().add(75, 'm').format('YYYY-MM-DDTHH:mm');
+if (process.env.REACT_APP_ENV === 'dev') {
+  TIME_GAP_MIN_SEC = 2 * 60;
+  DEFAULT_PICKER_TIME_15_MIN = moment().add(2, 'm').format('YYYY-MM-DDTHH:mm');
+  DEFAULT_PICKER_TIME_45_MIN = moment().add(4, 'm').format('YYYY-MM-DDTHH:mm');
+  DEFAULT_PICKER_TIME_75_MIN = moment().add(6, 'm').format('YYYY-MM-DDTHH:mm');
+}
+
+const FORM_NAME = 'createEvent';
 
 const selector = formValueSelector(FORM_NAME);
 
