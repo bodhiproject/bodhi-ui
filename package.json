@@ -120,7 +120,7 @@
   },
   "scripts": {
     "start": "REACT_APP_ENV=dev node scripts/start.js",
-    "start:prod": "REACT_APP_ENV=prod node scripts/start.js",
+    "start:prod": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "lint:fix": "eslint --fix --",
