@@ -203,22 +203,6 @@ const bodhiTheme = createMuiTheme({
         border: 'solid 1px '.concat(borderColor),
       },
     },
-    MuiTableRow: {
-      typeHead: {
-        height: tableHeaderHeight,
-        background: borderColor,
-      },
-    },
-    MuiTableCell: {
-      typeBody: {
-        color: textColorGrey,
-        padding: px(spaceUnit),
-      },
-      typeHead: {
-        fontWeight: 700,
-        fontSize: px(fontSizeMeta),
-      },
-    },
     MuiExpansionPanelSummary: {
       expandIcon: {
         top: px(paddingSm),

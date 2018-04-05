@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Reboot from 'material-ui/Reboot';
 import { connect } from 'react-redux';
 import { Debounce } from 'react-throttle';
 import { WindowResizeListener } from 'react-window-resize-listener';
-import { withStyles } from 'material-ui/styles';
+import { CssBaseline, withStyles } from 'material-ui';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -30,7 +29,7 @@ export class App extends React.PureComponent {
 
     return (
       <div className={classes.root}>
-        <Reboot />
+        <CssBaseline />
         <Debounce time="1000" handler="onResize">
           <WindowResizeListener
             onResize={(windowSize) =>
