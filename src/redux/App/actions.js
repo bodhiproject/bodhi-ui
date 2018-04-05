@@ -1,26 +1,5 @@
-export function getView(width) {
-  let newView = 'MobileView';
-  if (width > 1220) {
-    newView = 'DesktopView';
-  } else if (width > 767) {
-    newView = 'TabView';
-  }
-  return newView;
-}
 
 const appActions = {
-  TOGGLE_ALL: 'TOGGLE_ALL',
-  toggleAll: (width, height) => {
-    const view = getView(width);
-    const collapsed = view !== 'DesktopView';
-    return {
-      type: appActions.TOGGLE_ALL,
-      collapsed,
-      view,
-      height,
-    };
-  },
-
   SET_APP_LOCATION: 'SET_APP_LOCATION',
   setAppLocation: (location) => ({
     type: appActions.SET_APP_LOCATION,

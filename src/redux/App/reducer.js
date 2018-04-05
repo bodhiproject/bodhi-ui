@@ -4,14 +4,11 @@ import _ from 'lodash';
 import { AppLocation, SortBy } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
-import actions, { getView } from './actions';
+import actions from './actions';
 
 const preKeys = getDefaultPath();
 
 const initState = new Map({
-  collapsed: !(window.innerWidth > 1220),
-  view: getView(window.innerWidth),
-  height: window.innerHeight,
   current: preKeys,
   appLocation: AppLocation.qtumPrediction,
   walletAddresses: [],
@@ -30,16 +27,6 @@ const initState = new Map({
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    case actions.TOGGLE_ALL: {
-      if (state.get('view') !== action.view || action.height !== state.height) {
-        const height = action.height ? action.height : state.height;
-        return state
-          .set('collapsed', action.collapsed)
-          .set('view', action.view)
-          .set('height', height);
-      }
-      return state;
-    }
     case actions.SET_APP_LOCATION: {
       return state.set('appLocation', action.location);
     }
