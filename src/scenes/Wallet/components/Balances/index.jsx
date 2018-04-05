@@ -366,7 +366,7 @@ class MyBalances extends React.PureComponent {
     }
   }
 
-  handleWithdrawDialogClose = (value) => {
+  handleWithdrawDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,

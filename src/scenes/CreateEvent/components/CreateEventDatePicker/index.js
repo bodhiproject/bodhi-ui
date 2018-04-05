@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import { Field } from 'redux-form';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -109,8 +109,4 @@ const mapStateToProps = (state) => ({
   averageBlockTime: state.App.get('averageBlockTime'),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateEventDatePicker));
+export default connect(mapStateToProps)(injectIntl(CreateEventDatePicker));

@@ -332,7 +332,6 @@ export default class TopicPage extends React.Component {
   };
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
-    const { intl, classes } = this.props;
     const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
 
     if (!show) {

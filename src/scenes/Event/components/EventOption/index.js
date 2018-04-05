@@ -10,7 +10,7 @@ import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import Progress from '../Progress/index';
 import styles from './styles';
@@ -63,9 +63,6 @@ class EventOption extends React.PureComponent {
       name,
       amount,
       percent,
-      voteAmount,
-      token,
-      walletAddresses,
       skipExpansion,
       unconfirmedEvent,
       showAmountInput,
@@ -170,7 +167,7 @@ class EventOption extends React.PureComponent {
             onChange={this.handleAddrChange}
             inputProps={{ id: 'address' }}
           >
-            {walletAddresses.map((item, index) => (
+            {walletAddresses.map((item) => (
               <MenuItem key={item.address} value={item.address}>
                 {`${item.address} (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
               </MenuItem>

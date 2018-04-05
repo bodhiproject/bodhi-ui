@@ -46,7 +46,6 @@ export function* getBetAndVoteBalancesHandler() {
   yield takeEvery(actions.GET_BET_AND_VOTE_BALANCES, function* getBetAndVoteBalancesRequest(action) {
     try {
       const { contractAddress, walletAddresses } = action;
-      const votedAddresses = [];
 
       // Get all votes for this Topic
       const voteFilters = [];

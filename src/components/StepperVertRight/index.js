@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
@@ -55,7 +56,7 @@ export default class StepperVertRight extends React.PureComponent {
 
     return (
       <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
-        {steps.value.map((item, index) => (
+        {steps.value.map((item) => (
           <Step key={item.title}>
             <StepLabel className={classes.stepperVertRightLabel}>
               <Typography variant="title">

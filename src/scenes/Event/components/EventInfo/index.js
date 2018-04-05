@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
@@ -23,14 +24,14 @@ class BottomBar extends React.PureComponent {
 
   componentDidMount() {
     // Subscribe to changes
-    window.addEventListener('offline', (e) => this.handleNetworkChange());
-    window.addEventListener('online', (e) => this.handleNetworkChange());
+    window.addEventListener('offline', () => this.handleNetworkChange());
+    window.addEventListener('online', () => this.handleNetworkChange());
   }
 
   componentWillUnmount() {
     // Clean up listener
-    window.removeEventListener('offline', (e) => this.handleNetworkChange());
-    window.removeEventListener('online', (e) => this.handleNetworkChange());
+    window.removeEventListener('offline', () => this.handleNetworkChange());
+    window.removeEventListener('online', () => this.handleNetworkChange());
   }
 
   handleNetworkChange() {
@@ -38,7 +39,7 @@ class BottomBar extends React.PureComponent {
   }
 
   render() {
-    const { classes, syncBlockNum, syncBlockTime } = this.props;
+    const { classes, syncBlockTime } = this.props;
     return (
       <Paper className={classes.bottomBarWrapper}>
         <Grid container>

@@ -54,7 +54,6 @@ class EventCardsGrid extends React.Component {
     setAppLocation: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    classes: PropTypes.object,
   };
 
   static defaultProps = {
@@ -63,7 +62,6 @@ class EventCardsGrid extends React.Component {
     getOraclesReturn: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
-    classes: undefined,
   };
 
   state = {
@@ -107,14 +105,7 @@ class EventCardsGrid extends React.Component {
   }
 
   render() {
-    const {
-      theme,
-      eventStatusIndex,
-      getTopicsReturn,
-      getOraclesReturn,
-      sortBy,
-      classes,
-    } = this.props;
+    const { theme, eventStatusIndex, getTopicsReturn, getOraclesReturn } = this.props;
 
     let rowItems = [];
     switch (eventStatusIndex) {

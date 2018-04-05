@@ -1,18 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import styles from './styles';
 
-class DepositDialog extends React.Component {
+@withStyles(styles, { withTheme: true })
+@injectIntl
+export default class DepositDialog extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    dialogVisible: PropTypes.bool.isRequired,
+    walletAddress: PropTypes.string,
+    qtumAmount: PropTypes.string,
+    botAmount: PropTypes.string,
+    onClose: PropTypes.func.isRequired,
+    onCopyClicked: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    walletAddress: undefined,
+    qtumAmount: undefined,
+    botAmount: undefined,
+  }
+
   render() {
     const {
       classes,
@@ -29,10 +44,7 @@ class DepositDialog extends React.Component {
     }
 
     return (
-      <Dialog
-        open={dialogVisible}
-        onClose={onClose}
-      >
+      <Dialog open={dialogVisible} onClose={onClose}>
         <DialogTitle>
           <FormattedMessage id="depositDialog.title" defaultMessage="QTUM/BOT Deposit Address" />
         </DialogTitle>
@@ -61,29 +73,3 @@ class DepositDialog extends React.Component {
     );
   }
 }
-
-DepositDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  dialogVisible: PropTypes.bool.isRequired,
-  walletAddress: PropTypes.string,
-  qtumAmount: PropTypes.string,
-  botAmount: PropTypes.string,
-  onClose: PropTypes.func.isRequired,
-  onCopyClicked: PropTypes.func.isRequired,
-};
-
-DepositDialog.defaultProps = {
-  walletAddress: undefined,
-  qtumAmount: undefined,
-  botAmount: undefined,
-};
-
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(DepositDialog)));

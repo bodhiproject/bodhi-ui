@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { Field, reduxForm, Form, formValueSelector, change, reset } from 'redux-form';
+import { Field, reduxForm, Form, change } from 'redux-form';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import _TextField from 'material-ui/TextField';
@@ -123,8 +123,6 @@ if (process.env.REACT_APP_ENV === 'dev') {
 }
 
 const FORM_NAME = 'createEvent';
-
-const selector = formValueSelector(FORM_NAME);
 
 const fields = [
   ID_NAME,

@@ -64,8 +64,8 @@ class EventTxHistory extends React.PureComponent {
     );
   }
 
-  renderTxRow = (transaction, index) => {
-    const { intl, classes } = this.props;
+  renderTxRow = (transaction) => {
+    const { intl } = this.props;
     const { locale, messages: localeMessages } = intl;
 
     const result = [];

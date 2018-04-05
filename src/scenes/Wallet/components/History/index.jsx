@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
@@ -17,8 +17,7 @@ import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import classNames from 'classnames';
+import cx from 'classnames';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
@@ -27,7 +26,17 @@ import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
-class WalletHistory extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
+  transactions: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
+}), (dispatch) => ({
+  getTransactions: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
+}))
+export default class WalletHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getTransactions: PropTypes.func.isRequired,
@@ -229,7 +238,7 @@ class WalletHistory extends React.Component {
   }
 
 
-  handleClick = (id) => (event) => {
+  handleClick = (id) => (event) => { // eslint-disable-line
     const { expanded } = this.state;
     const expandedIndex = expanded.indexOf(id);
     let newexpanded = [];
@@ -241,7 +250,7 @@ class WalletHistory extends React.Component {
     this.setState({ expanded: newexpanded });
   };
 
-  getTableRow = (transaction, index) => {
+  getTableRow = (transaction) => {
     const { classes } = this.props;
     const result = [];
     const isExpanded = this.state.expanded.includes(transaction.txid);
@@ -266,7 +275,7 @@ class WalletHistory extends React.Component {
           {transaction.status}
         </TableCell>
         <TableCell>
-          <i className={classNames(isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up', classes.arrowSize)} />
+          <i className={cx(isExpanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} />
         </TableCell>
       </TableRow>
     );
@@ -317,18 +326,3 @@ class WalletHistory extends React.Component {
     this.setState({ perPage: event.target.value });
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
-  txReturn: state.Graphql.get('txReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getTransactions: (filters, orderBy, limit, skip) =>
-      dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(WalletHistory)));

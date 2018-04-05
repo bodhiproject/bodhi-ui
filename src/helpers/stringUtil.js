@@ -83,7 +83,7 @@ export function getTxTypeString(txType, locale, localeMessages) {
       return formatMessage(strings.resetApproval);
     }
     default: {
-      console.error(`Invalid txType: ${txType}`);
+      console.error(`Invalid txType: ${txType}`); // eslint-disable-line
       return '';
     }
   }

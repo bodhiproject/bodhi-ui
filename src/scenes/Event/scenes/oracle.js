@@ -350,27 +350,21 @@ export default class OraclePage extends React.Component {
       oracle = _.find(oracles, { txid });
     }
 
-    const centralizedOracle = _.find(oracles, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(
-      _.filter(oracles, { token: Token.Bot }),
-      ['blockNum'],
-      [SortBy.Descending.toLowerCase()]
-    );
     let config;
 
     if (oracle) {
       const { token, status } = oracle;
 
       if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
-        config = this.setUnconfirmedConfig(syncBlockTime, oracle);
+        config = this.setUnconfirmedConfig();
       } else if (token === Token.Qtum && status === OracleStatus.Voting) {
-        config = this.setBetConfig(syncBlockTime, oracle);
+        config = this.setBetConfig();
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
-        config = this.setResultSetConfig(syncBlockTime, oracle);
+        config = this.setResultSetConfig(oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
+        config = this.setVoteConfig(oracle);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
+        config = this.setFinalizeConfig();
       }
     }
 
@@ -389,12 +383,11 @@ export default class OraclePage extends React.Component {
     this.setState({ oracle, oracles, config });
   }
 
-  setUnconfirmedConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
+  setUnconfirmedConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.bet);
+    this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -412,12 +405,8 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setBetConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
-    const { locale, messages: localeMessages } = this.props.intl;
-    const intl = getIntlProvider(locale, localeMessages);
-
-    setAppLocation(AppLocation.bet);
+  setBetConfig = () => {
+    this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -431,12 +420,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setResultSetConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
+  setResultSetConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.resultSet);
+    this.props.setAppLocation(AppLocation.resultSet);
 
     return {
       eventStatus: EventStatus.Set,
@@ -454,12 +442,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setVoteConfig = (syncBlockTime, oracle, centralizedOracle, decentralizedOracles) => {
-    const { setAppLocation } = this.props;
+  setVoteConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.vote);
+    this.props.setAppLocation(AppLocation.vote);
 
     return {
       eventStatus: EventStatus.Vote,
@@ -477,12 +464,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setFinalizeConfig = (syncBlockTime, centralizedOracle, decentralizedOracles) => {
-    const { setAppLocation } = this.props;
+  setFinalizeConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.finalize);
+    this.props.setAppLocation(AppLocation.finalize);
 
     return {
       eventStatus: EventStatus.Finalize,

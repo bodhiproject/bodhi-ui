@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 import client from './graphClient';
 import { TYPE, getMutation, isValidEnum } from './graphSchema';
-import GraphParser from './graphParser';
 
 if (process.env.REACT_APP_ENV === 'dev') {
   window.mutations = '';

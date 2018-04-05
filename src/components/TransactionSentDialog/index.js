@@ -6,7 +6,6 @@ import Button from 'material-ui/Button';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
@@ -123,13 +122,8 @@ TransactionSentDialog.defaultProps = {
   txReturn: undefined,
 };
 
-const mapStateToProps = (state) => ({
+const mapDispatchToProps = (dispatch) => ({
+  clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(TransactionSentDialog)));
+export default injectIntl(connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(TransactionSentDialog)));

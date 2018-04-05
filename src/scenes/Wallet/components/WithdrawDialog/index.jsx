@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
 import styles from './styles';
@@ -35,9 +33,9 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state, props) => ({
+@connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch, props) => ({
+}), (dispatch) => ({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
 }))
@@ -48,7 +46,6 @@ export default class WithdrawDialog extends React.Component {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddress: PropTypes.string,
-    qtumAmount: PropTypes.string,
     botAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
@@ -58,7 +55,6 @@ export default class WithdrawDialog extends React.Component {
 
   static defaultProps = {
     walletAddress: undefined,
-    qtumAmount: undefined,
     botAmount: undefined,
     createTransferTx: undefined,
   };
@@ -130,7 +126,6 @@ export default class WithdrawDialog extends React.Component {
     const {
       classes,
       intl,
-      qtumAmount,
       botAmount,
       walletAddresses,
     } = this.props;

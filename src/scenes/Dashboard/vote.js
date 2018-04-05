@@ -10,11 +10,22 @@ import EventCardsGridContainer from '../../components/EventCardsGridContainer/in
 import { EventStatus, SortBy } from '../../constants';
 import styles from './styles';
 
-class Dashboard extends React.Component {
+
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  sortBy: state.Dashboard.get('sortBy'),
+}))
+export default class Dashboard extends React.Component {
+  static propTypes = {
+    sortBy: PropTypes.string,
+  }
+
+  static defaultProps = {
+    sortBy: SortBy.Ascending,
+  }
+
   render() {
-    const {
-      sortBy,
-    } = this.props;
+    const { sortBy } = this.props;
 
     return (
       <div>
@@ -27,22 +38,3 @@ class Dashboard extends React.Component {
     );
   }
 }
-
-Dashboard.propTypes = {
-  sortBy: PropTypes.string,
-};
-
-Dashboard.defaultProps = {
-  sortBy: SortBy.Ascending,
-};
-
-const mapStateToProps = (state) => ({
-  sortBy: state.Dashboard.get('sortBy'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Dashboard));

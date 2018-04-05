@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import AddIcon from 'material-ui-icons/Add';

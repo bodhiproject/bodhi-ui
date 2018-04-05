@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Snackbar from 'material-ui/Snackbar';
-import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';

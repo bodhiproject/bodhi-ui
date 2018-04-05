@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Table, {
@@ -15,13 +13,11 @@ import Table, {
   TableFooter,
   TablePagination,
 } from 'material-ui/Table';
-import classNames from 'classnames';
-import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import cx from 'classnames';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import moment from 'moment';
+
 import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -31,9 +27,9 @@ import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { TransactionType, SortBy, OracleStatus, AppLocation } from '../../../../constants';
+import { TransactionType, SortBy, AppLocation } from '../../../../constants';
 
-const messages = defineMessages({
+const messages = defineMessages({ // eslint-disable-line
   statusSuccess: {
     id: 'str.success',
     defaultMessage: 'Success',
@@ -48,7 +44,20 @@ const messages = defineMessages({
   },
 });
 
-class EventHistory extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
+  oracles: state.Graphql.get('getOraclesReturn'),
+  transactions: state.Graphql.get('getTransactionsReturn'),
+}), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
+  getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
+  getTransactions: (filters, orderBy, limit, skip) =>
+    dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
+}))
+export default class EventHistory extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     history: PropTypes.object.isRequired,
@@ -143,7 +152,7 @@ class EventHistory extends React.Component {
   }
 
   executeTxsRequest = () => {
-    const { orderBy, order, perPage, page, limit, skip } = this.state;
+    const { orderBy, order, limit, skip } = this.state;
     const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
 
     this.props.getTransactions(
@@ -260,7 +269,6 @@ class EventHistory extends React.Component {
   )
 
   getTableRows = () => {
-    const { classes } = this.props;
     const { transactions, page, perPage } = this.state;
     const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
 
@@ -273,7 +281,7 @@ class EventHistory extends React.Component {
     );
   }
 
-  handleClick = (id, topicAddress) => ({ target }) => {
+  handleClick = (id, topicAddress) => (event) => { // eslint-disable-line
     const { expanded } = this.state;
     const expandedIndex = expanded.indexOf(id);
     let newexpanded = [];
@@ -292,7 +300,8 @@ class EventHistory extends React.Component {
 
     this.setState({ expanded: newexpanded });
   };
-  getTableRow = (transaction, index) => {
+
+  getTableRow = (transaction) => {
     const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
     const { intl, classes } = this.props;
     const { locale, messages: localeMessages } = intl;
@@ -321,7 +330,7 @@ class EventHistory extends React.Component {
           </FormattedMessage>
         </TableCell>
         <TableCell>
-          <i className={classNames(classes.arrowSize, isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up')} />
+          <i className={cx(isExpanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} />
         </TableCell>
       </TableRow>
     );
@@ -395,23 +404,6 @@ class EventHistory extends React.Component {
     });
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  oracles: state.Graphql.get('getOraclesReturn'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-    getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-    getTransactions: (filters, orderBy, limit, skip) =>
-      dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(EventHistory)));
 
 const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
   <TableCell>

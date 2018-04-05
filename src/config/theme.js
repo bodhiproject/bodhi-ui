@@ -53,9 +53,7 @@ const paddingLg = spaceUnit * 7; // 56
 const navHeight = 70;
 const tableHeaderHeight = 40;
 
-const px = function (value) {
-  return value.toString().concat('px');
-};
+const px = (value) => value.toString().concat('px');
 
 // Material Theme for Bodhi
 
