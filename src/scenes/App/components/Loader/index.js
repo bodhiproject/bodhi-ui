@@ -12,7 +12,6 @@ import AppConfig from '../../../../config/app';
 import styles from './styles';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 
-const MIN_BLOCK_COUNT_GAP = 1;
 
 class Loader extends React.PureComponent {
   static propTypes = {
@@ -78,7 +77,4 @@ const mapStateToProps = (state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Loader));
+export default connect(mapStateToProps)(withStyles(styles)(Loader));

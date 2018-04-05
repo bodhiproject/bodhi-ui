@@ -4,15 +4,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import { AppLocation, Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
+import { AppLocation, Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
-import EventWarning from '../EventWarning/index';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
 import InfiniteScroll from '../InfiniteScroll/index';

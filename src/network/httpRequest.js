@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
  * @return {Object} The response data as a Promise.
  */
 export function request(url, options) {
-  console.log('url:', url, 'options:', options);
+  // console.log('url:', url, 'options:', options);
 
   return fetch(url, options)
     .then(checkStatusCode)

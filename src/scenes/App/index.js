@@ -12,7 +12,6 @@ import GlobalHub from './globalHub';
 import Loader from './components/Loader/index';
 import appActions from '../../redux/App/actions';
 import BottomBar from '../../components/BottomBar/index';
-import NavBar from '../../components/NavBar/index';
 import CreateEvent from '../CreateEvent/index';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar/index';
 import GlobalSnackbar from '../../components/GlobalSnackbar/index';
@@ -20,7 +19,6 @@ import TransactionSentDialog from '../../components/TransactionSentDialog/index'
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
 
-const { toggleAll } = appActions;
 
 export class App extends React.PureComponent {
   render() {

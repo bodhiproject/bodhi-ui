@@ -35,15 +35,19 @@ export default class StepperVertRight extends React.PureComponent {
     intl: intlShape.isRequired, // eslint-disable-line
     classes: PropTypes.object.isRequired,
     blockTime: PropTypes.number.isRequired,
-    cOracle: PropTypes.object.isRequired,
+    cOracle: PropTypes.object,
     dOracles: PropTypes.array.isRequired,
     isTopicDetail: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    cOracle: undefined,
   }
 
   render() {
     const { classes, blockTime, cOracle } = this.props;
 
-    if (!blockTime && !cOracle) {
+    if (!blockTime || !cOracle) { // the && was blocking this oracle page from being viewed since cOracle was undefined and the getSteps() needed it and blockTime was defined
       return null;
     }
 

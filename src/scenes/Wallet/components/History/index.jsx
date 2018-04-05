@@ -16,7 +16,6 @@ import Table, {
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import moment from 'moment';
 import _ from 'lodash';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import classNames from 'classnames';
@@ -25,7 +24,7 @@ import TransactionHistoryID from '../../../../components/TransactionHistoryAddre
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { TransactionType, SortBy } from '../../../../constants';
 import Config from '../../../../config/app';
-import { getShortLocalDateTimeString, decimalToSatoshi } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
 class WalletHistory extends React.Component {
@@ -198,7 +197,7 @@ class WalletHistory extends React.Component {
     );
   }
 
-  handleSorting = (property) => (event) => {
+  handleSorting = (property) => (event) => { // eslint-disable-line
     const { transactions } = this.state;
 
     const orderBy = property;

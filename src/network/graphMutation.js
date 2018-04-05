@@ -5,6 +5,10 @@ import client from './graphClient';
 import { TYPE, getMutation, isValidEnum } from './graphSchema';
 import GraphParser from './graphParser';
 
+if (process.env.REACT_APP_ENV === 'dev') {
+  window.mutations = '';
+}
+
 class GraphMutation {
   constructor(mutationName, args) {
     this.mutationName = mutationName;
@@ -43,7 +47,9 @@ class GraphMutation {
 
   async execute() {
     const mutation = this.build();
-    console.debug(mutation);
+    if (process.env.REACT_APP_ENV === 'dev') {
+      window.mutations += `\n${mutation}`;
+    }
 
     const res = await client.mutate({
       mutation: gql`${mutation}`,

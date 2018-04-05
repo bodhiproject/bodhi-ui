@@ -12,7 +12,6 @@ import {
   createWithdrawTx,
   createTransferTx,
 } from '../../network/graphMutation';
-import Config from '../../config/app';
 import {
   decimalToSatoshi,
   satoshiToDecimal,
@@ -21,7 +20,6 @@ import {
   processOracle,
 } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
-import { request } from '../../network/httpRequest';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -48,7 +46,7 @@ export function* getTopicsHandler() {
         skip: action.skip,
       });
     } catch (err) {
-      console.error(err);
+      console.error(err); // eslint-disable-line
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
@@ -90,7 +88,7 @@ export function* getActionableTopicsHandler() {
         skip: action.skip,
       });
     } catch (err) {
-      console.log(err);
+      console.log(err); // eslint-disable-line
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
@@ -126,7 +124,7 @@ export function* getOraclesHandler() {
         skip: action.skip,
       });
     } catch (err) {
-      console.error(err);
+      console.error(err); // eslint-disable-line
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: [],
@@ -151,7 +149,7 @@ export function* getTransactionsHandler() {
         skip: action.skip,
       });
     } catch (err) {
-      console.error(err);
+      console.error(err); // eslint-disable-line
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
         value: [],
@@ -162,7 +160,7 @@ export function* getTransactionsHandler() {
 
 // Send allTransactions query for pending txs only
 export function* getPendingTransactionsHandler() {
-  yield takeEvery(actions.GET_PENDING_TRANSACTIONS, function* getPendingTransactionsRequest(action) {
+  yield takeEvery(actions.GET_PENDING_TRANSACTIONS, function* getPendingTransactionsRequest() {
     try {
       const filters = [{ status: TransactionStatus.Pending }];
       const result = yield call(queryAllTransactions, filters);
@@ -189,7 +187,7 @@ export function* getPendingTransactionsHandler() {
         value: pendingTxsObj,
       });
     } catch (err) {
-      console.error(err);
+      console.error(err); // eslint-disable-line
       yield put({
         type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: [],
@@ -280,7 +278,7 @@ export function* getActionableItemCountHandler() {
         value: actionItems,
       });
     } catch (err) {
-      console.log(err);
+      console.log(err); // eslint-disable-line
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {

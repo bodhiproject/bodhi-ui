@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import Card from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import Chip from 'material-ui/Chip';
 import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
@@ -34,8 +32,7 @@ class EventCard extends React.PureComponent {
     endTime: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/no-typos
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
@@ -60,30 +57,25 @@ class EventCard extends React.PureComponent {
         <Link to={url}>
           <Card>
             <div className={classNames(classes.eventCardSection, 'top')}>
-              {unconfirmed ?
+              {unconfirmed && (
                 <Typography className={classes.unconfirmedTag}>
                   <FormattedMessage id="str.pendingConfirmation" defaultMessage="Pending Confirmation" />
                 </Typography>
-                : null
-              }
+              )}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
-                {endTime !== undefined
-                  ? `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}`
-                  : null
-                }
+                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}`}
               </div>
               <div className={classes.eventCardInfo}>
-                {
-                  amountLabel &&
+                {amountLabel && (
                   <div>
                     <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
                     {` ${amountLabel}`}
                   </div>
-                }
+                )}
                 <div>
                   <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
                   {endTime !== undefined

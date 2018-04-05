@@ -14,7 +14,7 @@ const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
 const lineHeightLg = '133.33%';
-const lineHeightSm = '125%';
+// const lineHeightSm = '125%';
 
 const progressHeight = 12;
 const iconSize = 24;

@@ -12,7 +12,6 @@ import IconButton from 'material-ui/IconButton';
 import CloseIcon from 'material-ui-icons/Close';
 import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
@@ -64,8 +63,6 @@ class MyBalances extends React.PureComponent {
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
-
-    const unlockVisible = true;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -140,8 +137,6 @@ class MyBalances extends React.PureComponent {
   }
 
   getTableHeader() {
-    const { classes } = this.props;
-
     const cols = [
       {
         id: 'address',
@@ -233,7 +228,7 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  handleSorting = (property) => (event) => {
+  handleSorting = (property) => (event) => { // eslint-disable-line
     const orderBy = property;
     let order = SortBy.Descending.toLowerCase();
 
@@ -333,7 +328,7 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  onCopyClicked(text) {
+  onCopyClicked() {
     this.setState({
       addrCopiedSnackbarVisible: true,
     });
@@ -348,7 +343,7 @@ class MyBalances extends React.PureComponent {
     });
   }
 
-  handleDepositDialogClose = (value) => {
+  handleDepositDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,

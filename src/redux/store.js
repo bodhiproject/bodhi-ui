@@ -27,4 +27,6 @@ const store = createStore(
 );
 sagaMiddleware.run(rootSaga);
 export { store, history };
-window.store = store;
+if (process.env.REACT_APP_ENV === 'dev') {
+  window.store = store;
+}

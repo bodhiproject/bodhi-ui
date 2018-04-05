@@ -4,16 +4,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
+import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
+import EventWarning from '../../../components/EventWarning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
@@ -349,7 +346,7 @@ export default class TopicPage extends React.Component {
       <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
-          { id && message && <div className={warningTypeClass}>{intl.formatMessage({ id, message })}</div> }
+          {id && message && <EventWarning id={id} message={message} className={warningTypeClass} />}
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">

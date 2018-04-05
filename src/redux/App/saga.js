@@ -1,6 +1,6 @@
-import _ from 'lodash';
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import moment from 'moment';
+import _ from 'lodash';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
@@ -53,7 +53,7 @@ export function* getInsightTotalsRequestHandler() {
         value: { result },
       });
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message); // eslint-disable-line
     }
   });
 }
