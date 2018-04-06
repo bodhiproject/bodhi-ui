@@ -19,7 +19,6 @@ import {
   gasToQtum,
   processTopic,
   processOracle,
-  getUniqueVotes,
 } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import { request } from '../../network/httpRequest';
@@ -293,6 +292,24 @@ export function* getActionableItemCountHandler() {
       });
     }
   });
+}
+
+/*
+* Filter out unique votes by voter address, topic address, and option index.
+* Used to query against Topics that you can win.
+*/
+function getUniqueVotes(votes) {
+  const filtered = [];
+  _.each(votes, (vote) => {
+    if (!_.find(filtered, {
+      voterQAddress: vote.voterQAddress,
+      topicAddress: vote.topicAddress,
+      optionIdx: vote.optionIdx,
+    })) {
+      filtered.push(vote);
+    }
+  });
+  return filtered;
 }
 
 // Sends createTopic mutation

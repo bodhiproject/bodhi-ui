@@ -4,7 +4,7 @@ import _ from 'lodash';
 import actions from './actions';
 import { request } from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
-import { satoshiToDecimal, processTopic, getUniqueVotes } from '../../helpers/utility';
+import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
 import { TransactionType } from '../../constants';
 
@@ -146,12 +146,20 @@ export function* getWithdrawableAddressesHandler() {
       });
 
       // Filter unique votes
-      let votes = yield call(queryAllVotes, voteFilters);
-      votes = getUniqueVotes(votes);
+      const votes = yield call(queryAllVotes, voteFilters);
+      const filtered = [];
+      _.each(votes, (vote) => {
+        if (!_.find(filtered, {
+          voterQAddress: vote.voterQAddress,
+          topicAddress: vote.topicAddress,
+        })) {
+          filtered.push(vote);
+        }
+      });
 
       // Calculate winnings for each winning vote
-      for (let i = 0; i < votes.length; i++) {
-        const vote = votes[i];
+      for (let i = 0; i < filtered.length; i++) {
+        const vote = filtered[i];
         const options = {
           method: 'POST',
           body: JSON.stringify({
