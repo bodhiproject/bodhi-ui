@@ -3,12 +3,11 @@ const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
 
-let QTUM_EXPLORER = 'https://explorer.qtum.org';
-let BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
-if (process.env.REACT_APP_ENV === 'dev') {
-  QTUM_EXPLORER = 'https://testnet.qtum.org';
-  BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
-}
+const QTUM_EXPLORER = {
+  dev: 'https://testnet.qtum.org',
+  prod: 'https://explorer.qtum.org',
+}[process.env.REACT_APP_ENV];
+const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
 
 export default {
   graphql: {
