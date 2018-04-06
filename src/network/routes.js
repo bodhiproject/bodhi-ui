@@ -2,11 +2,13 @@ const AUTHORITY = '127.0.0.1:5555';
 const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
-const QTUM_EXPLORER_DEV = 'https://testnet.qtum.org';
-const QTUM_EXPLORER_PROD = 'https://explorer.qtum.org';
 
-const BASE_INSIGHT_DEV = `${QTUM_EXPLORER_DEV}/insight-api`;
-const BASE_INSIGHT_PROD = `${QTUM_EXPLORER_PROD}/insight-api`;
+let QTUM_EXPLORER = 'https://explorer.qtum.org';
+let BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
+if (process.env.REACT_APP_ENV === 'dev') {
+  QTUM_EXPLORER = 'https://testnet.qtum.org';
+  BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
+}
 
 export default {
   graphql: {
@@ -22,9 +24,9 @@ export default {
     voteBalances: `${HTTP_ROUTE}/vote-balances`,
   },
   insight: {
-    totals: `${BASE_INSIGHT_DEV}/statistics/total`,
+    totals: `${BASE_INSIGHT}/statistics/total`,
   },
   explorer: {
-    tx: `${QTUM_EXPLORER_DEV}/tx`,
+    tx: `${QTUM_EXPLORER}/tx`,
   },
 };
