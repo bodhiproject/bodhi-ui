@@ -26,6 +26,6 @@ export default {
     totals: `${BASE_INSIGHT}/statistics/total`,
   },
   explorer: {
-    tx: `${QTUM_EXPLORER}/tx`,
+    tx: 'https://qtumhost/tx',
   },
 };
