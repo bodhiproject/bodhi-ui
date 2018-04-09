@@ -11,13 +11,20 @@ import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
-
 import '../src/style/styles.less';
+
+const language = (navigator.languages && navigator.languages[0]) ||
+                     navigator.language ||
+                     navigator.userLanguage;
+let browserLang = 'mandarin';
+if (language.includes('en')) {
+  browserLang = 'english';
+}
 
 export default class AppProvider extends Component {
   locales = { english: AppLocale.en, mandarin: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || 'mandarin',
+    locale: localStorage.getItem('language') || browserLang,
   }
 
   componentDidMount() {
