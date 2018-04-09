@@ -13,18 +13,16 @@ import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
-const language = (navigator.languages && navigator.languages[0]) ||
-                     navigator.language ||
-                     navigator.userLanguage;
-let browserLang = 'mandarin';
-if (language.includes('en')) {
-  browserLang = 'english';
-}
 
 export default class AppProvider extends Component {
-  locales = { english: AppLocale.en, mandarin: AppLocale.zh }
+  get defaultLocale() {
+    const locale = navigator.language || navigator.userLanguage;
+    if (locale.startsWith('en')) return 'en-US';
+    return 'zh-Hans-CN';
+  }
+  locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || browserLang,
+    locale: localStorage.getItem('language') || this.defaultLocale,
   }
 
   componentDidMount() {
@@ -32,7 +30,8 @@ export default class AppProvider extends Component {
   }
 
   langHandler = () => {
-    const locale = this.state.locale === 'english' ? 'mandarin' : 'english';
+    const { en, zh } = AppLocale;
+    const locale = this.state.locale === en.locale ? zh.locale : en.locale;
     this.setState({ locale });
     moment.locale(this.locales[locale].momentlocale);
     localStorage.setItem('language', locale);
