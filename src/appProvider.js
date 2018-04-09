@@ -13,16 +13,12 @@ import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
+const defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN';
 
 export default class AppProvider extends Component {
-  get defaultLocale() {
-    const locale = navigator.language || navigator.userLanguage;
-    if (locale.startsWith('en')) return 'en-US';
-    return 'zh-Hans-CN';
-  }
   locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || this.defaultLocale,
+    locale: localStorage.getItem('language') || defaultLocale,
   }
 
   componentDidMount() {
