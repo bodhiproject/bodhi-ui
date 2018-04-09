@@ -41,7 +41,7 @@ class Loader extends React.PureComponent {
             <img className={classes.loaderGif} src="/images/loader.gif" alt="Loading..." />
           </div>
           <div className={classes.loaderPercentWrapper}>
-            <Typography variant="display1" className={classes.loaderPercent}>{!_.isEmpty(syncPercent) ? syncPercent : 0}</Typography>%
+            <Typography variant="display1" className={classes.loaderPercent}>{syncPercent || 0}</Typography>%
             <p>
               <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing." />
               <FormattedMessage id="str.wait" defaultMessage="Please wait." />
@@ -50,7 +50,7 @@ class Loader extends React.PureComponent {
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          { syncBlockNum && !_.isEmpty(syncBlockTime) ?
+          { syncBlockNum && syncBlockTime ?
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />
