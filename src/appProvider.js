@@ -14,7 +14,6 @@ import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
 
-
 export default class AppProvider extends Component {
   defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN'
   locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
