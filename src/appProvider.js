@@ -11,21 +11,23 @@ import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
-
 import '../src/style/styles.less';
 
+
 export default class AppProvider extends Component {
-  locales = { english: AppLocale.en, mandarin: AppLocale.zh }
+  defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN'
+  locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || 'mandarin',
+    locale: localStorage.getItem('language') || this.defaultLocale,
   }
 
   componentDidMount() {
     moment.locale(this.locales[this.state.locale].momentlocale);
   }
 
-  langHandler = () => {
-    const locale = this.state.locale === 'english' ? 'mandarin' : 'english';
+  toggleLanguage = () => {
+    const { en, zh } = AppLocale;
+    const locale = this.state.locale === en.locale ? zh.locale : en.locale;
     this.setState({ locale });
     moment.locale(this.locales[locale].momentlocale);
     localStorage.setItem('language', locale);
@@ -40,7 +42,7 @@ export default class AppProvider extends Component {
               <ConnectedRouter history={history}>
                 <Route
                   path="/"
-                  render={(props) => (<App match={props.match} langHandler={this.langHandler} />)}
+                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
                 />
               </ConnectedRouter>
             </Provider>
