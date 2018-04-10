@@ -178,7 +178,7 @@
   "transactionSentDialog.successMsg": "成功",
   "transactionSentDialog.waitingMsg": "交易已发出，请等待确认。",
   "tx.approveBotTransfer": "授权BOT转账额度",
-  "tx.resetApproval": "授权重置",
+  "tx.resetApproval": "重置授权",
   "walletHistory.transferHistory": "转账历史",
   "walletUnlockDialog.keepWalletUnlocked": "保持钱包解锁",
   "walletUnlockDialog.unlock": "解锁",
