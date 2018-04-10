@@ -13,19 +13,20 @@ import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
 import '../src/style/styles.less';
 
-const defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN';
+
 
 export default class AppProvider extends Component {
+  defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN'
   locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || defaultLocale,
+    locale: localStorage.getItem('language') || this.defaultLocale,
   }
 
   componentDidMount() {
     moment.locale(this.locales[this.state.locale].momentlocale);
   }
 
-  langHandler = () => {
+  toggleLanguage = () => {
     const { en, zh } = AppLocale;
     const locale = this.state.locale === en.locale ? zh.locale : en.locale;
     this.setState({ locale });
@@ -42,7 +43,7 @@ export default class AppProvider extends Component {
               <ConnectedRouter history={history}>
                 <Route
                   path="/"
-                  render={(props) => (<App match={props.match} langHandler={this.langHandler} />)}
+                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
                 />
               </ConnectedRouter>
             </Provider>
