@@ -7,7 +7,12 @@
   <body>
     <div class="container">
       <div class="loader"></div>
-      <h1>Initializing...</h1>
+      <h1 id='loading-text'>初始化中...</h1>
+      <script>
+        const locale = window.navigator.userLanguage || window.navigator.language;
+        const loadingText = locale.startsWith('en') ? 'Initializing...' : '初始化中...';
+        document.getElementById('loading-text').innerHTML = loadingText;
+      </script>
     </div>
   </body>
 </html>
