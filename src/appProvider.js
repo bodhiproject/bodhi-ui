@@ -18,7 +18,7 @@ export default class AppProvider extends Component {
   defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN'
   locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
   state = {
-    locale: localStorage.getItem('language') || this.defaultLocale,
+    locale: localStorage.getItem('lang') || this.defaultLocale,
   }
 
   componentDidMount() {
@@ -30,7 +30,7 @@ export default class AppProvider extends Component {
     const locale = this.state.locale === en.locale ? zh.locale : en.locale;
     this.setState({ locale });
     moment.locale(this.locales[locale].momentlocale);
-    localStorage.setItem('language', locale);
+    localStorage.setItem('lang', locale);
   }
 
   render() {
