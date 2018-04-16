@@ -34,7 +34,7 @@ export default class GlobalSnackbar extends React.Component {
       <Snackbar
         open={globalSnackbarVisible}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        autoHideDuration={Config.intervals.snackbarShort}
+        autoHideDuration={Config.intervals.snackbarLong}
         onClose={this.onCloseClicked}
         message={globalSnackbarMessage}
         action={[

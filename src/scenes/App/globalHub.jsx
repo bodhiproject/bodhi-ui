@@ -3,16 +3,41 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, withApollo } from 'react-apollo';
 import _ from 'lodash';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import getSubscription, { channels } from '../../network/graphSubscription';
 import AppConfig from '../../config/app';
+import { getIntlProvider } from '../../helpers/i18nUtil';
 
 let syncInfoInterval;
 
-class GlobalHub extends React.PureComponent {
+const messages = defineMessages({
+  walletUnlocked: {
+    id: 'walletUnlockDialog.walletUnlocked',
+    defaultMessage: 'Wallet unlocked! Please redo your action.',
+  },
+});
+
+@injectIntl
+@withApollo
+@connect((state) => ({
+  ...state.App.toJS(),
+  txReturn: state.Graphql.get('txReturn'),
+}), (dispatch) => ({
+  checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
+  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
+  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
+  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
+  toggleGlobalSnackbar: (isVisible, message) => dispatch(appActions.toggleGlobalSnackbar(isVisible, message)),
+  getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
+  getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
+}))
+
+export default class GlobalHub extends React.PureComponent {
   static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     client: PropTypes.object,
     getSyncInfo: PropTypes.func.isRequired,
     onSyncInfo: PropTypes.func.isRequired,
@@ -123,27 +148,9 @@ class GlobalHub extends React.PureComponent {
 
   showWalletUnlockedSnackbar = () => {
     const { toggleGlobalSnackbar } = this.props;
+    const { locale, messages: localeMessages } = this.props.intl;
+    const intl = getIntlProvider(locale, localeMessages);
 
-    toggleGlobalSnackbar(true, 'Wallet unlocked!');
+    toggleGlobalSnackbar(true, intl.formatMessage(messages.walletUnlocked));
   }
 }
-
-const mapStateToProps = (state) => ({
-  ...state.App.toJS(),
-  txReturn: state.Graphql.get('txReturn'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
-  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
-  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
-  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
-  toggleGlobalSnackbar: (isVisible, message) => dispatch(appActions.toggleGlobalSnackbar(isVisible, message)),
-  getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
-  getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
-});
-
-export default compose(
-  withApollo,
-  connect(mapStateToProps, mapDispatchToProps),
-)(GlobalHub);
