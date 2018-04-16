@@ -1,8 +1,6 @@
 {
   "activitiesTab.History": "Activities History",
   "activitiesTab.Set": "Result Setting",
-  "loader.blockNum": "Latest Block Number",
-  "loader.blockTime": "Latest Block Time",
   "bottomBar.blockNum": "Current Block Number",
   "bottomBar.blockTime": "Current Block Time",
   "bottomBar.offline": "Offline",
@@ -69,6 +67,8 @@
   "eventInfo.predictionFund": "Prediction Fund",
   "eventInfo.voteVolumn": "Votting Volume",
   "language.select": "中文",
+  "loader.blockNum": "Latest Block Number",
+  "loader.blockTime": "Latest Block Time",
   "myBalances.addressCopied": "Address copied",
   "myBalances.deposit": "Deposit",
   "myBalances.myBalance": "My Balance",
