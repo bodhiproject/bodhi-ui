@@ -13,6 +13,7 @@ import appActions from '../../redux/App/actions';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   globalSnackbarVisible: state.App.get('globalSnackbarVisible'),
+  globalSnackbarMessage: state.App.get('globalSnackbarMessage'),
 }), (dispatch) => ({
   toggleGlobalSnackbar: (isVisible) => dispatch(appActions.toggleGlobalSnackbar(isVisible)),
 }))
@@ -22,18 +23,19 @@ class GlobalSnackbar extends React.Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     globalSnackbarVisible: PropTypes.bool.isRequired,
+    globalSnackbarMessage: PropTypes.string.isRequired,
     toggleGlobalSnackbar: PropTypes.func.isRequired,
   };
 
   render() {
-    const { intl, classes, message, globalSnackbarVisible } = this.props;
+    const { intl, classes, globalSnackbarVisible, globalSnackbarMessage } = this.props;
 
     return (
       <Snackbar
         className={classes.snackbar}
         open={globalSnackbarVisible}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        message={message}
+        message={globalSnackbarMessage}
         action={[
           <IconButton key="close" color="inherit" onClick={this.onCloseClicked}>
             <CloseIcon />
@@ -44,6 +46,6 @@ class GlobalSnackbar extends React.Component {
   }
 
   onCloseClicked = () => {
-    this.props.toggleGlobalSnackbar(false);
+    this.props.toggleGlobalSnackbar(false, '');
   };
 }

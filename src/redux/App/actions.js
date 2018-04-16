@@ -83,9 +83,10 @@ const appActions = {
   }),
 
   TOGGLE_GLOBAL_SNACKBAR: 'TOGGLE_GLOBAL_SNACKBAR',
-  toggleGlobalSnackbar: (isVisible) => ({
+  toggleGlobalSnackbar: (isVisible, message) => ({
     type: appActions.TOGGLE_GLOBAL_SNACKBAR,
     isVisible,
+    message,
   }),
 
   TOGGLE_CREATE_EVENT_DIALOG: 'TOGGLE_CREATE_EVENT_DIALOG',
