@@ -92,7 +92,7 @@ export default function appReducer(state = initState, action) {
       if (action.error) {
         return state.set('errorApp', action.error);
       }
-      return state.set('walletUnlockedUntil', action.value);
+      return state.set('walletUnlockedUntil', action.unlockedUntil);
     }
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', undefined);

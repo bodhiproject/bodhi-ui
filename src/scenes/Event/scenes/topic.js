@@ -545,7 +545,7 @@ export default class TopicPage extends React.Component {
     const senderAddress = event.currentTarget.getAttribute('data-address');
     const type = event.currentTarget.getAttribute('data-type');
 
-    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
       return;
     }

@@ -358,7 +358,7 @@ class MyBalances extends React.PureComponent {
 
   onWithdrawClicked(event) {
     const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
-    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
     } else {
       this.setState({

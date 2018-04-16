@@ -138,7 +138,7 @@ export function* unlockWalletRequestHandler() {
 
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
-        value: unlockedUntil,
+        unlockedUntil,
       });
     } catch (error) {
       yield put({
