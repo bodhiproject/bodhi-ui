@@ -59,6 +59,30 @@ export function* getInsightTotalsRequestHandler() {
 }
 
 // Checks if the wallet is encrypted
+export function* checkWalletEncryptedRequestHandler() {
+  yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* checkWalletEncryptedRequest() {
+    try {
+      const result = yield call(request, Routes.api.getWalletInfo);
+      const isEncrypted = result && !_.isUndefined(result.unlocked_until);
+      const unlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
+
+      yield put({
+        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+        isEncrypted,
+        unlockedUntil,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+        error: {
+          route: Routes.api.getWalletInfo,
+          message: error.message,
+        },
+      });
+    }
+  });
+}
+
 export function* getWalletInfoRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
     try {
@@ -133,6 +157,7 @@ export default function* appSaga() {
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
+    fork(checkWalletEncryptedRequestHandler),
     fork(getWalletInfoRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
