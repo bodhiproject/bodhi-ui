@@ -83,39 +83,6 @@ export function* checkWalletEncryptedRequestHandler() {
   });
 }
 
-// export function* getWalletInfoRequestHandler() {
-//   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
-//     try {
-//       const result = yield call(request, Routes.api.getWalletInfo);
-//       const unlockedUntil = result.unlocked_until;
-
-//       let isEncrypted = false;
-//       if (result && !_.isUndefined(unlockedUntil)) {
-//         if (unlockedUntil === 0) {
-//           isEncrypted = true;
-//         } else {
-//           const now = moment().unix();
-//           const unlocked = moment().unix(unlockedUntil).add(10, 's');
-//           isEncrypted = now.isBefore(unlocked);
-//         }
-//       }
-
-//       yield put({
-//         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-//         value: isEncrypted,
-//       });
-//     } catch (error) {
-//       yield put({
-//         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-//         error: {
-//           route: Routes.api.getWalletInfo,
-//           message: error.message,
-//         },
-//       });
-//     }
-//   });
-// }
-
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
   yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
@@ -134,7 +101,7 @@ export function* unlockWalletRequestHandler() {
 
       // Get the unlocked_until timestamp
       const result = yield call(request, Routes.api.getWalletInfo);
-      const unlockedUntil = result.result.unlocked_until;
+      const unlockedUntil = result.unlocked_until;
 
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
@@ -158,7 +125,6 @@ export default function* appSaga() {
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
     fork(checkWalletEncryptedRequestHandler),
-    // fork(getWalletInfoRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
 }

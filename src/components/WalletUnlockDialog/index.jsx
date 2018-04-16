@@ -23,22 +23,30 @@ const messages = defineMessages({
   },
 });
 
-class WalletUnlockDialog extends React.Component {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  walletUnlockDialogVisibility: state.App.get('walletUnlockDialogVisibility'),
+}), (dispatch) => ({
+  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
+  unlockWallet: (passphrase, timeout) => dispatch(appActions.unlockWallet(passphrase, timeout)),
+}))
+
+export default class WalletUnlockDialog extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletUnlockDialogVisibility: PropTypes.bool.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
+    unlockWallet: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-  };
-
-  static defaultProps = {
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      unlockMinutes: 1,
+      passphrase: '',
+      unlockMinutes: 5,
     };
 
     this.onCancelClicked = this.onCancelClicked.bind(this);
@@ -74,6 +82,7 @@ class WalletUnlockDialog extends React.Component {
             id="passphrase"
             label={intl.formatMessage(messages.walletPassphrase)}
             fullWidth
+            onChange={this.handlePassphraseChange('passphrase')}
           />
           <div className={classes.unlockMinutesContainer}>
             <FormattedMessage
@@ -107,6 +116,12 @@ class WalletUnlockDialog extends React.Component {
     );
   }
 
+  handlePassphraseChange = (name) => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  }
+
   handleUnlockMinutesChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
@@ -118,18 +133,10 @@ class WalletUnlockDialog extends React.Component {
   }
 
   onUnlockClicked() {
-    this.props.toggleWalletUnlockDialog(false);
+    const { unlockWallet, toggleWalletUnlockDialog } = this.props;
+    const { passphrase, unlockMinutes } = this.state;
+
+    unlockWallet(passphrase, unlockMinutes);
+    toggleWalletUnlockDialog(false);
   }
 }
-
-const mapStateToProps = (state) => ({
-  walletUnlockDialogVisibility: state.App.get('walletUnlockDialogVisibility'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(WalletUnlockDialog)));

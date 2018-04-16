@@ -155,8 +155,8 @@ export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
     return true;
   }
 
-  const now = moment().unix();
-  const unlocked = moment().unix(unlockedUntil).subtract(5, 's');
+  const now = moment.unix();
+  const unlocked = moment.unix(unlockedUntil);
   return now.isSameOrBefore(unlocked);
 }
 
