@@ -81,6 +81,7 @@ export default class WalletUnlockDialog extends React.Component {
             margin="dense"
             id="passphrase"
             label={intl.formatMessage(messages.walletPassphrase)}
+            type="password"
             fullWidth
             onChange={this.handlePassphraseChange('passphrase')}
           />
