@@ -63,12 +63,17 @@ export function* getWalletInfoRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
     try {
       const result = yield call(request, Routes.api.getWalletInfo);
+      const unlockedUntil = result.unlocked_until;
 
       let isEncrypted = false;
-      if (result && result.result && result.result.unlocked_until) {
-        const now = moment().unix();
-        const unlockedUntil = moment().unix(result.result.unlocked_until);
-        isEncrypted = now.isBefore(unlockedUntil);
+      if (result && !_.isUndefined(unlockedUntil)) {
+        if (unlockedUntil === 0) {
+          isEncrypted = true;
+        } else {
+          const now = moment().unix();
+          const unlocked = moment().unix(unlockedUntil).add(10, 's');
+          isEncrypted = now.isBefore(unlocked);
+        }
       }
 
       yield put({
