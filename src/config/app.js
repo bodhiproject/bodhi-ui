@@ -1,6 +1,6 @@
 module.exports = {
   intervals: { // in MS
-    syncInfo: 20000,
+    syncInfo: 10000,
     tooltipDelay: 300,
     snackbarLong: 5000,
     snackbarShort: 2000,
