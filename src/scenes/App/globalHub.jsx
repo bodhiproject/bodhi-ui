@@ -20,10 +20,12 @@ class GlobalHub extends React.PureComponent {
     syncBlockNum: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     checkWalletEncrypted: PropTypes.func.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     getPendingTransactions: PropTypes.func.isRequired,
     togglePendingTxsSnackbar: PropTypes.func.isRequired,
+    toggleGlobalSnackbar: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -64,6 +66,7 @@ class GlobalHub extends React.PureComponent {
       txReturn,
       togglePendingTxsSnackbar,
       getPendingTransactions,
+      walletUnlockedUntil,
     } = this.props;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
@@ -86,6 +89,11 @@ class GlobalHub extends React.PureComponent {
     if ((!txReturn && nextProps.txReturn)
       || (syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)) {
       getPendingTransactions();
+    }
+
+    // Show the GlobalSnackbar with wallet unlocked message
+    if (walletUnlockedUntil === 0 && nextProps.walletUnlockedUntil > 0) {
+      this.showWalletUnlockedSnackbar();
     }
   }
 
@@ -112,6 +120,12 @@ class GlobalHub extends React.PureComponent {
       },
     });
   };
+
+  showWalletUnlockedSnackbar = () => {
+    const { toggleGlobalSnackbar } = this.props;
+
+    toggleGlobalSnackbar(true, 'Wallet unlocked!');
+  }
 }
 
 const mapStateToProps = (state) => ({
@@ -124,6 +138,7 @@ const mapDispatchToProps = (dispatch) => ({
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
+  toggleGlobalSnackbar: (isVisible, message) => dispatch(appActions.toggleGlobalSnackbar(isVisible, message)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 });
