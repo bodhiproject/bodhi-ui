@@ -85,6 +85,7 @@ export default function appReducer(state = initState, action) {
       if (action.error) {
         return state.set('errorApp', action.error);
       }
+      console.log(action.isEncrypted, action.unlockedUntil);
       return state.set('walletEncrypted', action.isEncrypted)
         .set('walletUnlockedUntil', action.unlockedUntil);
     }
