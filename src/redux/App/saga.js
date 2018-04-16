@@ -83,38 +83,38 @@ export function* checkWalletEncryptedRequestHandler() {
   });
 }
 
-export function* getWalletInfoRequestHandler() {
-  yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
-    try {
-      const result = yield call(request, Routes.api.getWalletInfo);
-      const unlockedUntil = result.unlocked_until;
+// export function* getWalletInfoRequestHandler() {
+//   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
+//     try {
+//       const result = yield call(request, Routes.api.getWalletInfo);
+//       const unlockedUntil = result.unlocked_until;
 
-      let isEncrypted = false;
-      if (result && !_.isUndefined(unlockedUntil)) {
-        if (unlockedUntil === 0) {
-          isEncrypted = true;
-        } else {
-          const now = moment().unix();
-          const unlocked = moment().unix(unlockedUntil).add(10, 's');
-          isEncrypted = now.isBefore(unlocked);
-        }
-      }
+//       let isEncrypted = false;
+//       if (result && !_.isUndefined(unlockedUntil)) {
+//         if (unlockedUntil === 0) {
+//           isEncrypted = true;
+//         } else {
+//           const now = moment().unix();
+//           const unlocked = moment().unix(unlockedUntil).add(10, 's');
+//           isEncrypted = now.isBefore(unlocked);
+//         }
+//       }
 
-      yield put({
-        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-        value: isEncrypted,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-        error: {
-          route: Routes.api.getWalletInfo,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
+//       yield put({
+//         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+//         value: isEncrypted,
+//       });
+//     } catch (error) {
+//       yield put({
+//         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
+//         error: {
+//           route: Routes.api.getWalletInfo,
+//           message: error.message,
+//         },
+//       });
+//     }
+//   });
+// }
 
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
@@ -158,7 +158,7 @@ export default function* appSaga() {
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
     fork(checkWalletEncryptedRequestHandler),
-    fork(getWalletInfoRequestHandler),
+    // fork(getWalletInfoRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
 }
