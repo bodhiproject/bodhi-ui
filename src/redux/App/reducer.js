@@ -23,6 +23,8 @@ const initState = new Map({
   walletEncrypted: false,
   walletUnlockedUntil: 0,
   pendingTxsSnackbarVisible: true,
+  globalSnackbarVisible: false,
+  globalSnackbarMessage: '',
   createEventDialogVisible: false,
 });
 
@@ -85,19 +87,24 @@ export default function appReducer(state = initState, action) {
       if (action.error) {
         return state.set('errorApp', action.error);
       }
-      return state.set('walletEncrypted', action.value);
+      return state.set('walletEncrypted', action.isEncrypted)
+        .set('walletUnlockedUntil', action.unlockedUntil);
     }
     case actions.UNLOCK_WALLET_RETURN: {
       if (action.error) {
         return state.set('errorApp', action.error);
       }
-      return state.set('walletUnlockedUntil', action.value);
+      return state.set('walletUnlockedUntil', action.unlockedUntil);
     }
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', undefined);
     }
     case actions.TOGGLE_PENDING_TXS_SNACKBAR: {
       return state.set('pendingTxsSnackbarVisible', action.isVisible);
+    }
+    case actions.TOGGLE_GLOBAL_SNACKBAR: {
+      return state.set('globalSnackbarVisible', action.isVisible)
+        .set('globalSnackbarMessage', action.message);
     }
     case actions.TOGGLE_CREATE_EVENT_DIALOG: {
       return state.set('createEventDialogVisible', action.isVisible);

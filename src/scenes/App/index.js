@@ -15,6 +15,7 @@ import BottomBar from '../../components/BottomBar/index';
 import NavBar from '../../components/NavBar/index';
 import CreateEvent from '../CreateEvent/index';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar/index';
+import GlobalSnackbar from '../../components/GlobalSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
@@ -49,6 +50,7 @@ export class App extends React.PureComponent {
         <BottomBar />
         <CreateEvent />
         <PendingTransactionsSnackbar />
+        <GlobalSnackbar />
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />
         <ErrorDialog />

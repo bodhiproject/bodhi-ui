@@ -289,7 +289,7 @@ export default class OraclePage extends React.Component {
     const { config, voteAmount } = this.state;
     const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
 
-    if (walletEncrypted && doesUserNeedToUnlockWallet(walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
       return;
     }

@@ -59,21 +59,17 @@ export function* getInsightTotalsRequestHandler() {
 }
 
 // Checks if the wallet is encrypted
-export function* getWalletInfoRequestHandler() {
-  yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* getWalletInfoRequest() {
+export function* checkWalletEncryptedRequestHandler() {
+  yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* checkWalletEncryptedRequest() {
     try {
       const result = yield call(request, Routes.api.getWalletInfo);
-
-      let isEncrypted = false;
-      if (result && result.result && result.result.unlocked_until) {
-        const now = moment().unix();
-        const unlockedUntil = moment().unix(result.result.unlocked_until);
-        isEncrypted = now.isBefore(unlockedUntil);
-      }
+      const isEncrypted = result && !_.isUndefined(result.unlocked_until);
+      const unlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
 
       yield put({
         type: actions.CHECK_WALLET_ENCRYPTED_RETURN,
-        value: isEncrypted,
+        isEncrypted,
+        unlockedUntil,
       });
     } catch (error) {
       yield put({
@@ -105,11 +101,11 @@ export function* unlockWalletRequestHandler() {
 
       // Get the unlocked_until timestamp
       const result = yield call(request, Routes.api.getWalletInfo);
-      const unlockedUntil = result.result.unlocked_until;
+      const unlockedUntil = result.unlocked_until;
 
       yield put({
         type: actions.UNLOCK_WALLET_RETURN,
-        value: unlockedUntil,
+        unlockedUntil,
       });
     } catch (error) {
       yield put({
@@ -128,7 +124,7 @@ export default function* appSaga() {
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
-    fork(getWalletInfoRequestHandler),
+    fork(checkWalletEncryptedRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
 }

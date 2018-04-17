@@ -25,6 +25,7 @@ import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
 import { maxTransactionFee } from '../../config/app';
+import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 
@@ -178,6 +179,8 @@ const validate = (values, props) => {
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   walletAddresses: state.App.get('walletAddresses'),
   createEventDialogVisible: state.App.get('createEventDialogVisible'),
   eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
@@ -203,6 +206,7 @@ const validate = (values, props) => {
     escrowAmount,
     creatorAddress,
   )),
+  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
@@ -215,6 +219,8 @@ const validate = (values, props) => {
 export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    walletEncrypted: PropTypes.bool.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
@@ -224,6 +230,7 @@ export default class CreateEvent extends Component {
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     toggleCreateEventDialog: PropTypes.func.isRequired,
     createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
@@ -260,7 +267,19 @@ export default class CreateEvent extends Component {
   }
 
   submitCreateEvent = (values) => {
-    const { eventEscrowAmount, createTopicTx } = this.props;
+    const {
+      walletEncrypted,
+      walletUnlockedUntil,
+      toggleWalletUnlockDialog,
+      eventEscrowAmount,
+      createTopicTx,
+    } = this.props;
+
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+      return;
+    }
+
     const {
       name,
       outcomes,
@@ -271,7 +290,6 @@ export default class CreateEvent extends Component {
       resultSettingEndTime,
       creatorAddress,
     } = values;
-
     createTopicTx(
       name,
       outcomes,
