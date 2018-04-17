@@ -15,6 +15,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
+import Config from '../../config/app';
 
 const messages = defineMessages({
   walletPassphrase: {
@@ -46,7 +47,7 @@ export default class WalletUnlockDialog extends React.Component {
 
     this.state = {
       passphrase: '',
-      unlockMinutes: 5,
+      unlockMinutes: Config.defaults.unlockWalletMins,
     };
 
     this.onCancelClicked = this.onCancelClicked.bind(this);
