@@ -1,8 +1,9 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import classNames from 'classnames';
 import { Link } from './components/Link/index';
@@ -10,6 +11,14 @@ import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import styles from './styles';
 
+const messages = defineMessages({
+  url: {
+    id: 'faq-url',
+    defaultMessage: 'https://www.bodhi.network/faq',
+  },
+});
+
+@injectIntl
 class NavBar extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -79,7 +88,9 @@ class NavBar extends Component {
             <Button onClick={this.props.langHandler} className={`${classes.dark} ${classes.sides}`}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
             </Button>
+
             {this.renderActivitiesButtonWithBadge()}
+            <FAQIcon {...this.props} />
           </NavSection>
         </Toolbar>
       </AppBar>
@@ -133,6 +144,21 @@ class NavBar extends Component {
   }
 }
 
+const FAQIcon = ({ intl }) => (
+  <a
+    target='_link'
+    href={intl.formatMessage(messages.url)}
+    style={{
+      margin: 'auto 0px auto 20px',
+      color: 'white',
+      fontSize: '1.47em',
+      fontWeight: 700,
+    }}
+  >
+    ?
+  </a>
+)
+
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
 
 const mapStateToProps = (state) => ({
@@ -142,4 +168,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({});
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(NavBar)));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(NavBar));
