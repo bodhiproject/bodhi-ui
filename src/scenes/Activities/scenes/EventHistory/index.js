@@ -21,7 +21,6 @@ import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
-import { findDOMNode } from 'react-dom';
 import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
