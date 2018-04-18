@@ -49,6 +49,7 @@ class WalletHistory extends React.Component {
     page: 0,
     limit: 50,
     skip: 0,
+    selected: [],
   };
 
   componentWillMount() {
@@ -141,12 +142,6 @@ class WalletHistory extends React.Component {
         numeric: false,
       },
       {
-        id: 'token',
-        name: 'str.token',
-        nameDefault: 'Token',
-        numeric: false,
-      },
-      {
         id: 'amount',
         name: 'str.amount',
         nameDefault: 'Amount',
@@ -155,7 +150,7 @@ class WalletHistory extends React.Component {
       {
         id: 'fee',
         name: 'str.fee',
-        nameDefault: 'Fee',
+        nameDefault: 'Gas Fee(QTUM)',
         numeric: true,
       },
       {
@@ -226,12 +221,25 @@ class WalletHistory extends React.Component {
     );
   }
 
+
+  handleClick = (id) => (event) => {
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+    if (selectedIndex === -1) {
+      newSelected = [...selected, id];
+    } else {
+      newSelected = [...selected.slice(0, selectedIndex), ...selected.slice(selectedIndex + 1)];
+    }
+    this.setState({ selected: newSelected });
+  };
+
   getTableRow = (transaction, index) => {
     const { classes } = this.props;
     const result = [];
-
+    const isSelected = this.state.selected.includes(transaction.txid);
     result[0] = (
-      <TableRow key={transaction.txid}>
+      <TableRow key={transaction.txid} selected={isSelected} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
         <TableCell>
           {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
         </TableCell>
@@ -241,11 +249,8 @@ class WalletHistory extends React.Component {
         <TableCell>
           {transaction.receiverAddress}
         </TableCell>
-        <TableCell>
-          {transaction.token}
-        </TableCell>
         <TableCell numeric>
-          {transaction.amount}
+          {`${transaction.amount || ''}  ${transaction.amount ? transaction.token : ''}`}
         </TableCell>
         <TableCell numeric>
           {transaction.fee}
@@ -256,11 +261,11 @@ class WalletHistory extends React.Component {
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected>
+      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isSelected ? classes.show : classes.hide}>
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />
-        <TableCell /><TableCell /><TableCell /><TableCell />
+        <TableCell /><TableCell /><TableCell />
       </TableRow>
     );
 

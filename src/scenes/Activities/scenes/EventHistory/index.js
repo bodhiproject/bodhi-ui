@@ -16,11 +16,12 @@ import Table, {
   TablePagination,
 } from 'material-ui/Table';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
-
+import { findDOMNode } from 'react-dom';
 import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -73,6 +74,7 @@ class EventHistory extends React.Component {
     page: 0,
     limit: 50,
     skip: 0,
+    selected: [],
   };
 
   componentWillMount() {
@@ -188,13 +190,6 @@ class EventHistory extends React.Component {
         sortable: false,
       },
       {
-        id: 'token',
-        name: 'str.token',
-        nameDefault: 'Token',
-        numeric: false,
-        sortable: true,
-      },
-      {
         id: 'amount',
         name: 'str.amount',
         nameDefault: 'Amount',
@@ -204,7 +199,7 @@ class EventHistory extends React.Component {
       {
         id: 'fee',
         name: 'str.fee',
-        nameDefault: 'Fee',
+        nameDefault: 'Gas Fee(QTUM)',
         numeric: true,
         sortable: true,
       },
@@ -217,8 +212,8 @@ class EventHistory extends React.Component {
       },
       {
         id: 'actions',
-        name: 'str.actions',
-        nameDefault: 'Actions',
+        name: 'str.empty',
+        nameDefault: '',
         numeric: false,
         sortable: false,
       },
@@ -278,55 +273,65 @@ class EventHistory extends React.Component {
     );
   }
 
+  handleClick = (id, topicAddress) => ({ target }) => {
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+    if (topicAddress) {
+      this.props.getOracles(
+        [
+          { topicAddress },
+        ],
+        { field: 'endTime', direction: SortBy.Descending },
+      );
+      this.props.history.push(`/topic/${topicAddress}`);
+    } else if (selectedIndex === -1) {
+      newSelected = [...selected, id];
+    } else {
+      newSelected = [...selected.slice(0, selectedIndex), ...selected.slice(selectedIndex + 1)];
+    }
+
+    this.setState({ selected: newSelected });
+  };
   getTableRow = (transaction, index) => {
+    const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
     const { intl, classes } = this.props;
     const { locale, messages: localeMessages } = intl;
     const result = [];
-
+    const isSelected = this.state.selected.includes(txid);
     result[0] = (
-      <TableRow key={transaction.txid}>
-        <TableCell>
-          {getShortLocalDateTimeString(transaction.createdTime)}
+      <TableRow key={txid} selected={isSelected} onClick={this.handleClick(txid)} className={classes.clickToExpandRow} >
+        <TableCell className={classes.summaryRowCell}>
+          {getShortLocalDateTimeString(createdTime)}
         </TableCell>
         <TableCell>
-          {getTxTypeString(transaction.type, locale, localeMessages)}
+          {getTxTypeString(type, locale, localeMessages)}
         </TableCell>
-        <TableCell>
-          {transaction.name ? transaction.name : (transaction.topic && transaction.topic.name)}
-        </TableCell>
-        <TableCell>
-          {transaction.token}
+        <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
+          {name || topic.name}
+        </NameLinkCell>
+        <TableCell numeric>
+          {`${amount || ''}  ${amount ? token : ''}`}
         </TableCell>
         <TableCell numeric>
-          {transaction.amount}
-        </TableCell>
-        <TableCell numeric>
-          {transaction.fee}
+          {fee}
         </TableCell>
         <TableCell>
-          <FormattedMessage id={`str.${transaction.status}`.toLowerCase()}>
+          <FormattedMessage id={`str.${status}`.toLowerCase()}>
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
         </TableCell>
         <TableCell>
-          {transaction.topic && transaction.topic.address ?
-            <div
-              data-topic-address={transaction.topic.address}
-              onClick={this.onEventLinkClicked}
-              className={classes.viewEventLink}
-            >
-              <FormattedMessage id="eventHistory.viewEvent" defaultMessage="View Event" />
-            </div> : null
-          }
+          <ExpandMoreIcon className={isSelected ? classes.rotate : classes.rotatedown} />
         </TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected>
-        <TransactionHistoryAddress transaction={transaction} />
-        <TableCell /><TableCell />
-        <TransactionHistoryID transaction={transaction} />
-        <TableCell /><TableCell /><TableCell /><TableCell />
+      <TableRow key={`txaddr-${txid}`} selected onClick={this.handleClick(txid)} className={isSelected ? classes.show : classes.hide}>
+        <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
+        <TableCell /><TransactionHistoryID transaction={transaction} />
+        <TableCell />
+        <TableCell /><TableCell /><TableCell />
       </TableRow>
     );
 
@@ -354,7 +359,7 @@ class EventHistory extends React.Component {
 
   handleChangePage = (event, page) => {
     const { transactions, perPage, skip } = this.state;
-
+    this.setState({ selected: [] });
     // Set skip to fetch more txs if last page is reached
     let newSkip = skip;
     if (Math.floor(transactions.length / perPage) - 1 === page) {
@@ -367,20 +372,6 @@ class EventHistory extends React.Component {
   handleChangePerPage = (event) => {
     this.setState({ perPage: event.target.value });
   }
-
-  onEventLinkClicked = (event) => {
-    const {
-      getOracles,
-    } = this.props;
-
-    const topicAddress = event.currentTarget.getAttribute('data-topic-address');
-    getOracles(
-      [
-        { topicAddress },
-      ],
-      { field: 'endTime', direction: SortBy.Descending },
-    );
-  };
 
   createSortHandler = (property) => (event) => {
     this.handleSorting(event, property);
@@ -421,4 +412,10 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(EventHistory)));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(EventHistory)));
+
+const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
+  <TableCell>
+    <span className={clickable && classes.viewEventLink} {...props} />
+  </TableCell>
+));
