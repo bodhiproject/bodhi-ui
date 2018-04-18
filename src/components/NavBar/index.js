@@ -1,37 +1,38 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
+import LiveHelpIcon from 'material-ui-icons/LiveHelp';
 import classNames from 'classnames';
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
+import { faqUrls } from '../../config/app';
 import styles from './styles';
 
-const messages = defineMessages({
-  url: {
-    id: 'faq-url',
-    defaultMessage: 'https://www.bodhi.network/faq',
-  },
-});
 
+@withStyles(styles, { withTheme: true })
 @injectIntl
-class NavBar extends Component {
+@connect((state) => ({
+  ...state.App.toJS(),
+  actionableItemCount: state.Graphql.get('actionableItemCount'),
+}))
+export default class NavBar extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
     langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
-  };
+  }
 
   static defaultProps = {
     actionableItemCount: undefined,
     langHandler: undefined,
-  };
+  }
 
   constructor(props) {
     super(props);
@@ -90,7 +91,7 @@ class NavBar extends Component {
             </Button>
 
             {this.renderActivitiesButtonWithBadge()}
-            <FAQIcon {...this.props} />
+            <FAQIcon {...this.props.intl} />
           </NavSection>
         </Toolbar>
       </AppBar>
@@ -144,28 +145,21 @@ class NavBar extends Component {
   }
 }
 
-const FAQIcon = ({ intl }) => (
+const FAQIcon = ({ locale }) => (
   <a
-    target='_link'
-    href={intl.formatMessage(messages.url)}
+    onClick={() => window.open(faqUrls[locale], '_blank')}
     style={{
       margin: 'auto 0px auto 20px',
       color: 'white',
-      fontSize: '1.47em',
-      fontWeight: 700,
+      cursor: 'pointer',
     }}
   >
-    ?
+    <LiveHelpIcon />
   </a>
-)
+);
+
+FAQIcon.propTypes = {
+  locale: PropTypes.string.isRequired,
+};
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
-
-const mapStateToProps = (state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(NavBar));

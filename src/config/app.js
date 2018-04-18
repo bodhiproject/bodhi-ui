@@ -10,6 +10,10 @@ module.exports = {
     unlockWalletMins: 5,
   },
   maxTransactionFee: 0.1,
+  faqUrls: {
+    'en-US': 'https://www.bodhi.network/faq',
+    'zh-Hans-CN': 'https://cn.bodhi.network/faq',
+  },
   debug: {
     // Set to false if in test environment and Insight API is down
     // and loading screen is blocking the view.
