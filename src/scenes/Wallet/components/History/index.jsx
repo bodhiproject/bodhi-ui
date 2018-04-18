@@ -50,7 +50,7 @@ class WalletHistory extends React.Component {
     page: 0,
     limit: 50,
     skip: 0,
-    selected: [],
+    expanded: [],
   };
 
   componentWillMount() {
@@ -231,23 +231,23 @@ class WalletHistory extends React.Component {
 
 
   handleClick = (id) => (event) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
+    const { expanded } = this.state;
+    const expandedIndex = expanded.indexOf(id);
+    let newexpanded = [];
+    if (expandedIndex === -1) {
+      newexpanded = [...expanded, id];
     } else {
-      newSelected = [...selected.slice(0, selectedIndex), ...selected.slice(selectedIndex + 1)];
+      newexpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
     }
-    this.setState({ selected: newSelected });
+    this.setState({ expanded: newexpanded });
   };
 
   getTableRow = (transaction, index) => {
     const { classes } = this.props;
     const result = [];
-    const isSelected = this.state.selected.includes(transaction.txid);
+    const isexpanded = this.state.expanded.includes(transaction.txid);
     result[0] = (
-      <TableRow key={transaction.txid} selected={isSelected} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
+      <TableRow key={transaction.txid} selected={isexpanded} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
         <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
         </TableCell>
@@ -267,12 +267,12 @@ class WalletHistory extends React.Component {
           {transaction.status}
         </TableCell>
         <TableCell>
-          <ExpandMoreIcon className={isSelected ? classes.rotate : classes.rotatedown} />
+          <ExpandMoreIcon className={isexpanded ? classes.rotate : classes.rotatedown} />
         </TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isSelected ? classes.show : classes.hide}>
+      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isexpanded ? classes.show : classes.hide}>
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />
@@ -304,7 +304,7 @@ class WalletHistory extends React.Component {
 
   handleChangePage = (event, page) => {
     const { transactions, perPage, skip } = this.state;
-    this.setState({ selected: [] });
+    this.setState({ expanded: [] });
     // Set skip to fetch more txs if last page is reached
     let newSkip = skip;
     if (Math.floor(transactions.length / perPage) - 1 === page) {
