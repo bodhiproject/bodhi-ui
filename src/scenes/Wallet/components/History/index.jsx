@@ -304,7 +304,7 @@ class WalletHistory extends React.Component {
 
   handleChangePage = (event, page) => {
     const { transactions, perPage, skip } = this.state;
-
+    this.setState({ selected: [] });
     // Set skip to fetch more txs if last page is reached
     let newSkip = skip;
     if (Math.floor(transactions.length / perPage) - 1 === page) {
