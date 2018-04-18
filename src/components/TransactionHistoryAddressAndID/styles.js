@@ -15,8 +15,10 @@ const styles = (theme) => ({
     paddingTop: '18px',
   },
   txIdText: {
-    color: theme.palette.primary.main,
-    cursor: 'pointer',
+    '&:hover': {
+      color: '#585AFA',
+      cursor: 'pointer',
+    },
   },
 });
 

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { findDOMNode } from 'react-dom'; //  eslint-disable-line
 import { TableCell } from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';

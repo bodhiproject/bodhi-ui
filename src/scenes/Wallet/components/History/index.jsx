@@ -18,6 +18,7 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 import _ from 'lodash';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -159,6 +160,13 @@ class WalletHistory extends React.Component {
         nameDefault: 'Status',
         numeric: false,
       },
+      {
+        id: 'actions',
+        name: 'str.empty',
+        nameDefault: '',
+        numeric: false,
+        sortable: false,
+      },
     ];
 
     return (
@@ -240,7 +248,7 @@ class WalletHistory extends React.Component {
     const isSelected = this.state.selected.includes(transaction.txid);
     result[0] = (
       <TableRow key={transaction.txid} selected={isSelected} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
-        <TableCell>
+        <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
         </TableCell>
         <TableCell>
@@ -258,6 +266,9 @@ class WalletHistory extends React.Component {
         <TableCell>
           {transaction.status}
         </TableCell>
+        <TableCell>
+          <ExpandMoreIcon className={isSelected ? classes.rotate : classes.rotatedown} />
+        </TableCell>
       </TableRow>
     );
     result[1] = (
@@ -265,7 +276,7 @@ class WalletHistory extends React.Component {
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />
-        <TableCell /><TableCell /><TableCell />
+        <TableCell /><TableCell /><TableCell /><TableCell />
       </TableRow>
     );
 
