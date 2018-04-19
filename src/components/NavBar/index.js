@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import classNames from 'classnames';
 import { Link } from './components/Link/index';
@@ -11,6 +11,12 @@ import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 
+const messages = defineMessages({
+  help: {
+    id: 'help',
+    defaultMessage: 'help',
+  },
+});
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -144,15 +150,11 @@ export default class NavBar extends Component {
   }
 }
 
-const HelpButton = ({ classes, ...props }) => (
+const HelpButton = injectIntl(({ classes, intl, ...props }) => (
   <Button className={`${classes.faq} ${classes.navEventsButton} ${classes.dark}`} {...props}>
-    <i className={`icon iconfont icon-ic_question ${classes.questionIcon}`} /> HELP
+    <i className={`icon iconfont icon-ic_question ${classes.questionIcon}`} /> {intl.formatMessage(messages.help)}
   </Button>
-);
-
-HelpButton.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+));
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
 
