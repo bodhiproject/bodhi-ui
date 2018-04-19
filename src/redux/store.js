@@ -23,7 +23,7 @@ const store = createStore(
     router: routerReducer,
     form: reduxFormReducer,
   }),
-  compose(applyMiddleware(...middlewares)),
+  compose(applyMiddleware(...middlewares))
 );
 sagaMiddleware.run(rootSaga);
 export { store, history };
