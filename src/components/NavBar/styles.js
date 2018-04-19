@@ -49,8 +49,9 @@ const styles = (theme) => ({
     color: 'white',
   },
   questionIcon: {
+    marginRight: 2,
     '&:before': {
-      fontSize: 20,
+      fontSize: theme.sizes.icon,
     },
   },
 });
