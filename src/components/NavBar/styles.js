@@ -51,7 +51,7 @@ const styles = (theme) => ({
   questionIcon: {
     marginRight: 2,
     '&:before': {
-      fontSize: 24,
+      fontSize: theme.sizes.icon,
     },
   },
 });
