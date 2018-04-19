@@ -18,7 +18,8 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 import _ from 'lodash';
-
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import classNames from 'classnames';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
@@ -49,6 +50,7 @@ class WalletHistory extends React.Component {
     page: 0,
     limit: 50,
     skip: 0,
+    expanded: [],
   };
 
   componentWillMount() {
@@ -141,12 +143,6 @@ class WalletHistory extends React.Component {
         numeric: false,
       },
       {
-        id: 'token',
-        name: 'str.token',
-        nameDefault: 'Token',
-        numeric: false,
-      },
-      {
         id: 'amount',
         name: 'str.amount',
         nameDefault: 'Amount',
@@ -155,7 +151,7 @@ class WalletHistory extends React.Component {
       {
         id: 'fee',
         name: 'str.fee',
-        nameDefault: 'Fee',
+        nameDefault: 'Gas Fee(QTUM)',
         numeric: true,
       },
       {
@@ -163,6 +159,13 @@ class WalletHistory extends React.Component {
         name: 'str.status',
         nameDefault: 'Status',
         numeric: false,
+      },
+      {
+        id: 'actions',
+        name: 'str.empty',
+        nameDefault: '',
+        numeric: false,
+        sortable: false,
       },
     ];
 
@@ -226,13 +229,26 @@ class WalletHistory extends React.Component {
     );
   }
 
+
+  handleClick = (id) => (event) => {
+    const { expanded } = this.state;
+    const expandedIndex = expanded.indexOf(id);
+    let newexpanded = [];
+    if (expandedIndex === -1) {
+      newexpanded = [...expanded, id];
+    } else {
+      newexpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
+    }
+    this.setState({ expanded: newexpanded });
+  };
+
   getTableRow = (transaction, index) => {
     const { classes } = this.props;
     const result = [];
-
+    const isExpanded = this.state.expanded.includes(transaction.txid);
     result[0] = (
-      <TableRow key={transaction.txid}>
-        <TableCell>
+      <TableRow key={transaction.txid} selected={isExpanded} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
+        <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
         </TableCell>
         <TableCell>
@@ -241,11 +257,8 @@ class WalletHistory extends React.Component {
         <TableCell>
           {transaction.receiverAddress}
         </TableCell>
-        <TableCell>
-          {transaction.token}
-        </TableCell>
         <TableCell numeric>
-          {transaction.amount}
+          {`${transaction.amount || ''}  ${transaction.amount ? transaction.token : ''}`}
         </TableCell>
         <TableCell numeric>
           {transaction.fee}
@@ -253,10 +266,13 @@ class WalletHistory extends React.Component {
         <TableCell>
           {transaction.status}
         </TableCell>
+        <TableCell>
+          <i className={classNames(isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up', classes.arrowSize)} />
+        </TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected>
+      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isExpanded ? classes.show : classes.hide}>
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />
@@ -288,7 +304,7 @@ class WalletHistory extends React.Component {
 
   handleChangePage = (event, page) => {
     const { transactions, perPage, skip } = this.state;
-
+    this.setState({ expanded: [] });
     // Set skip to fetch more txs if last page is reached
     let newSkip = skip;
     if (Math.floor(transactions.length / perPage) - 1 === page) {

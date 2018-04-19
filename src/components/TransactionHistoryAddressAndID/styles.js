@@ -4,6 +4,7 @@ const styles = (theme) => ({
   },
   txidRow: {
     position: 'relative',
+    height: '85px',
   },
   txidWrapper: {
     position: 'absolute',
@@ -11,10 +12,14 @@ const styles = (theme) => ({
     top: '4px',
     bottom: '4px',
     right: '24px',
+    paddingTop: '18px',
   },
   txIdText: {
-    color: theme.palette.primary.main,
-    cursor: 'pointer',
+    '&:hover': {
+      color: '#585AFA',
+      cursor: 'pointer',
+    },
+    textDecoration: 'underline',
   },
 });
 

@@ -28,7 +28,8 @@ class TransactionHistoryID extends React.PureComponent {
     );
   }
 
-  onIdClick = () => {
+  onIdClick = (event) => {
+    event.stopPropagation();
     const { transaction } = this.props;
     window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
   };
