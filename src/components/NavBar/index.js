@@ -2,27 +2,42 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
+import { faqUrls } from '../../config/app';
 import styles from './styles';
 
-class NavBar extends Component {
+const messages = defineMessages({
+  help: {
+    id: 'help',
+    defaultMessage: 'help',
+  },
+});
+
+@withStyles(styles, { withTheme: true })
+@injectIntl
+@connect((state) => ({
+  ...state.App.toJS(),
+  actionableItemCount: state.Graphql.get('actionableItemCount'),
+}))
+export default class NavBar extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
     langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
-  };
+  }
 
   static defaultProps = {
     actionableItemCount: undefined,
     langHandler: undefined,
-  };
+  }
 
   constructor(props) {
     super(props);
@@ -49,7 +64,7 @@ class NavBar extends Component {
             <NavLink to={RouterPath.qtumPrediction}>
               <Button
                 data-index={EventStatus.Bet}
-                className={classNames(
+                className={cx(
                   classes.navEventsButton,
                   appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
                 )}
@@ -60,7 +75,7 @@ class NavBar extends Component {
             <NavLink to={RouterPath.botCourt}>
               <Button
                 data-index={EventStatus.Vote}
-                className={classNames(
+                className={cx(
                   classes.navEventsButton,
                   appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
                 )}
@@ -72,14 +87,16 @@ class NavBar extends Component {
           <NavSection>
             <NavLink to="/my-wallet">
               <Button className={classes.navBarWalletButton}>
-                <i className={classNames('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
+                <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </NavLink>
-            <Button onClick={this.props.langHandler} className={`${classes.dark} ${classes.sides}`}>
+            <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
             </Button>
+
             {this.renderActivitiesButtonWithBadge()}
+            <HelpButton onClick={() => window.open(faqUrls[this.props.intl.locale], '_blank')} classes={classes} />
           </NavSection>
         </Toolbar>
       </AppBar>
@@ -93,7 +110,7 @@ class NavBar extends Component {
       return (
         <NavLink to={RouterPath.set}>
           <Badge badgeContent={actionableItemCount.totalCount} color="secondary">
-            <Button className={`${classes.navEventsButton} ${classes.dark}`}>
+            <Button className={cx(classes.navEventsButton, classes.dark)}>
               <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
             </Button>
           </Badge>
@@ -103,7 +120,7 @@ class NavBar extends Component {
 
     return (
       <NavLink to={RouterPath.set}>
-        <Button className={`${classes.navEventsButton} ${classes.dark}`}>
+        <Button className={cx(classes.navEventsButton, classes.dark)}>
           <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </Button>
       </NavLink>
@@ -133,13 +150,11 @@ class NavBar extends Component {
   }
 }
 
+const HelpButton = injectIntl(({ classes, intl, ...props }) => (
+  <Button className={cx(classes.faq, classes.navEventsButton, classes.dark)} {...props}>
+    <i className={cx('icon iconfont icon-ic_question', classes.questionIcon)} /> {intl.formatMessage(messages.help)}
+  </Button>
+));
+
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
 
-const mapStateToProps = (state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(NavBar)));
