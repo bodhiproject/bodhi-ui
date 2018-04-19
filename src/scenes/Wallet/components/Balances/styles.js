@@ -42,6 +42,9 @@ const styles = (theme) => ({
     marginRight: theme.padding.unit.px,
     borderRadius: 2,
   },
+  importantNoteContainer: {
+    paddingBottom: theme.padding.xs.px,
+  },
 });
 
 export default styles;
