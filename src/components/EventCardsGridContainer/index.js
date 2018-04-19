@@ -48,7 +48,7 @@ const SKIP = 0;
 @connect((state) => ({
   topics: state.Graphql.get('getTopicsReturn'),
   oracles: state.Graphql.get('getOraclesReturn'),
-  sortBy: state.Dashboard.get('sortBy'),
+  sortBy: state.dashboard.sortBy,
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch) => ({

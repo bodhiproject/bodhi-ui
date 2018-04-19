@@ -12,7 +12,7 @@ import styles from './styles';
 
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  sortBy: state.Dashboard.get('sortBy'),
+  sortBy: state.dashboard.sortBy,
 }))
 export default class Dashboard extends Component {
   static propTypes = {
