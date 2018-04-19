@@ -11,8 +11,8 @@ const httpLink = new HttpLink({
   uri: Routes.graphql.http,
 });
 
-// the check for process.browser makes sure our tests run
-// properly since this can only be run in the browser. Source: http://tinyurl.com/ycsjfq6p
+// the check for process.browser makes sure our tests run properly since
+// this can only be run in the browser. Source: http://tinyurl.com/ycsjfq6p
 const wsLink = process.browser && new WebSocketLink({
   uri: Routes.graphql.subs,
   options: {

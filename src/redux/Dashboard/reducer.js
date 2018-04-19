@@ -1,8 +1,10 @@
 import { Map } from 'immutable';
 import actions from './actions';
+import { SortBy } from '../../constants';
 
 const initState = {
   value: undefined,
+  sortBy: SortBy.Ascending,
 };
 
 export default function dashboardReducer(state = initState, action) {
