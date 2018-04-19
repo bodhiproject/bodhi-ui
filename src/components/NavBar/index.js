@@ -14,7 +14,7 @@ import styles from './styles';
 const messages = defineMessages({
   help: {
     id: 'help',
-    defaultMessage: 'help',
+    defaultMessage: 'Help',
   },
 });
 
