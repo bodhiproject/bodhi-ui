@@ -198,7 +198,7 @@ class EventHistory extends React.Component {
       {
         id: 'fee',
         name: 'str.fee',
-        nameDefault: 'Gas Fee(QTUM)',
+        nameDefault: 'Gas Fee (QTUM)',
         numeric: true,
         sortable: true,
       },
@@ -283,7 +283,6 @@ class EventHistory extends React.Component {
         ],
         { field: 'endTime', direction: SortBy.Descending },
       );
-      this.props.history.push(`/topic/${topicAddress}`);
     } else if (expandedIndex === -1) {
       newexpanded = [...expanded, id];
     } else {
@@ -297,9 +296,9 @@ class EventHistory extends React.Component {
     const { intl, classes } = this.props;
     const { locale, messages: localeMessages } = intl;
     const result = [];
-    const isexpanded = this.state.expanded.includes(txid);
+    const isExpanded = this.state.expanded.includes(txid);
     result[0] = (
-      <TableRow key={txid} selected={isexpanded} onClick={this.handleClick(txid)} className={classes.clickToExpandRow} >
+      <TableRow key={txid} selected={isExpanded} onClick={this.handleClick(txid)} className={classes.clickToExpandRow} >
         <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(createdTime)}
         </TableCell>
@@ -321,12 +320,12 @@ class EventHistory extends React.Component {
           </FormattedMessage>
         </TableCell>
         <TableCell>
-          <ExpandMoreIcon className={isexpanded ? classes.rotate : classes.rotatedown} />
+          <i className={isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up'} />
         </TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${txid}`} selected onClick={this.handleClick(txid)} className={isexpanded ? classes.show : classes.hide}>
+      <TableRow key={`txaddr-${txid}`} selected onClick={this.handleClick(txid)} className={isExpanded ? classes.show : classes.hide}>
         <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
         <TableCell /><TransactionHistoryID transaction={transaction} />
         <TableCell />

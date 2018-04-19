@@ -122,7 +122,7 @@
   "str.error": "Error",
   "str.escrow": "Escrow",
   "str.fail": "Fail",
-  "str.fee": "Gas Fee(QTUM)",
+  "str.fee": "Gas Fee (QTUM)",
   "str.finalize": "Finalize",
   "str.finalizeResult": "Finalize Result",
   "str.finalizing": "Finalizing",

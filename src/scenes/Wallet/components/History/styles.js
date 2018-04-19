@@ -26,12 +26,6 @@ const styles = (theme) => ({
   show: {
     display: 'table-row',
   },
-  rotate: {
-    transition: 'all 0.2s linear',
-  },
-  rotatedown: {
-    transform: 'rotate(180deg)',
-  },
 });
 
 export default styles;

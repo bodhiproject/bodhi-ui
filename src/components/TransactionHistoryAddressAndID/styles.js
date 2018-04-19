@@ -19,6 +19,7 @@ const styles = (theme) => ({
       color: '#585AFA',
       cursor: 'pointer',
     },
+    textDecoration: 'underline',
   },
 });
 

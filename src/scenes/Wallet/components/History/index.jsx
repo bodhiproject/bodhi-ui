@@ -19,7 +19,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 import _ from 'lodash';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-
+import classNames from 'classnames';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
@@ -245,9 +245,9 @@ class WalletHistory extends React.Component {
   getTableRow = (transaction, index) => {
     const { classes } = this.props;
     const result = [];
-    const isexpanded = this.state.expanded.includes(transaction.txid);
+    const isExpanded = this.state.expanded.includes(transaction.txid);
     result[0] = (
-      <TableRow key={transaction.txid} selected={isexpanded} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
+      <TableRow key={transaction.txid} selected={isExpanded} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
         <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
         </TableCell>
@@ -267,12 +267,12 @@ class WalletHistory extends React.Component {
           {transaction.status}
         </TableCell>
         <TableCell>
-          <ExpandMoreIcon className={isexpanded ? classes.rotate : classes.rotatedown} />
+          <i className={isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up'} />
         </TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isexpanded ? classes.show : classes.hide}>
+      <TableRow key={`txaddr-${transaction.txid}`} selected onClick={this.handleClick(transaction.txid)} className={isExpanded ? classes.show : classes.hide}>
         <TransactionHistoryAddress transaction={transaction} />
         <TableCell />
         <TransactionHistoryID transaction={transaction} />

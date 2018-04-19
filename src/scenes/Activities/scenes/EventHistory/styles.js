@@ -7,6 +7,7 @@ const styles = (theme) => ({
       color: '#585AFA',
       cursor: 'pointer',
     },
+    textDecoration: 'underline',
   },
   clickToExpandRow: {
     cursor: 'pointer',
@@ -20,12 +21,6 @@ const styles = (theme) => ({
   },
   show: {
     display: 'table-row',
-  },
-  rotate: {
-    transition: 'all 0.2s linear',
-  },
-  rotatedown: {
-    transform: 'rotate(180deg)',
   },
 });
 
