@@ -267,7 +267,7 @@ class WalletHistory extends React.Component {
           {transaction.status}
         </TableCell>
         <TableCell>
-          <i className={isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up'} />
+          <i className={classNames(isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up', classes.arrowSize)} />
         </TableCell>
       </TableRow>
     );

@@ -15,6 +15,7 @@ import Table, {
   TableFooter,
   TablePagination,
 } from 'material-ui/Table';
+import classNames from 'classnames';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Tooltip from 'material-ui/Tooltip';
@@ -320,7 +321,7 @@ class EventHistory extends React.Component {
           </FormattedMessage>
         </TableCell>
         <TableCell>
-          <i className={isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up'} />
+          <i className={classNames(classes.arrowSize, isExpanded ? 'icon iconfont icon-ic_down' : 'icon iconfont icon-ic_up')} />
         </TableCell>
       </TableRow>
     );

@@ -22,6 +22,9 @@ const styles = (theme) => ({
   show: {
     display: 'table-row',
   },
+  arrowSize: {
+    fontSize: '10px',
+  },
 });
 
 export default styles;
