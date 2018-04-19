@@ -27,7 +27,7 @@ const styles = (theme) => ({
     display: 'table-row',
   },
   arrowSize: {
-    fontSize: '10px',
+    fontSize: '8px',
   },
 });
 
