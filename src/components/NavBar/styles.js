@@ -44,6 +44,15 @@ const styles = (theme) => ({
       color: 'white',
     },
   },
+  faq: {
+    marginLeft: 10,
+    color: 'white',
+  },
+  questionIcon: {
+    '&:before': {
+      fontSize: 20,
+    },
+  },
 });
 
 export default styles;

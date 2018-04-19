@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
-import LiveHelpIcon from 'material-ui-icons/LiveHelp';
 import classNames from 'classnames';
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
@@ -91,7 +90,7 @@ export default class NavBar extends Component {
             </Button>
 
             {this.renderActivitiesButtonWithBadge()}
-            <FAQIcon {...this.props.intl} />
+            <HelpButton onClick={() => window.open(faqUrls[this.props.intl.locale], '_blank')} classes={classes} />
           </NavSection>
         </Toolbar>
       </AppBar>
@@ -145,21 +144,15 @@ export default class NavBar extends Component {
   }
 }
 
-const FAQIcon = ({ locale }) => (
-  <a
-    onClick={() => window.open(faqUrls[locale], '_blank')}
-    style={{
-      margin: 'auto 0px auto 20px',
-      color: 'white',
-      cursor: 'pointer',
-    }}
-  >
-    <LiveHelpIcon />
-  </a>
+const HelpButton = ({ classes, ...props }) => (
+  <Button className={`${classes.faq} ${classes.navEventsButton} ${classes.dark}`} {...props}>
+    <i className={`icon iconfont icon-ic_question ${classes.questionIcon}`} /> HELP
+  </Button>
 );
 
-FAQIcon.propTypes = {
-  locale: PropTypes.string.isRequired,
+HelpButton.propTypes = {
+  classes: PropTypes.object.isRequired,
 };
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
+
