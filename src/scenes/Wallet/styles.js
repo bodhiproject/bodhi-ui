@@ -5,9 +5,8 @@ const styles = (theme) => ({
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.paper,
-    paddingTop: '10px',
-    paddingLeft: theme.padding.md.px,
-    marginBottom: '10px',
+    padding: `${theme.padding.xs.px} ${theme.padding.md.px} ${theme.padding.unit.px} ${theme.padding.md.px}`,
+    marginBottom: theme.padding.xs.px,
   },
 });
 

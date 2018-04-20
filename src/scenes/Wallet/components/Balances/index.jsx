@@ -13,7 +13,7 @@ import CloseIcon from 'material-ui-icons/Close';
 import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
