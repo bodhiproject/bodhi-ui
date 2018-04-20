@@ -35,7 +35,6 @@ class MyWallet extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log(classes);
     return (
       <div>
         <Paper className={classes.infoPaper}>
