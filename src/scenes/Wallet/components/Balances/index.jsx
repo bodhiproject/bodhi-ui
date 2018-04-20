@@ -13,10 +13,9 @@ import CloseIcon from 'material-ui-icons/Close';
 import ContentCopy from 'material-ui-icons/ContentCopy';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl, defineMessages, formatMessage, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
-import ImportantNote from '../../../../components/ImportantNote/index';
 
 import styles from './styles';
 import Config from '../../../../config/app';
@@ -26,12 +25,6 @@ import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import { SortBy } from '../../../../constants';
 
-const messages = defineMessages({
-  balanceInfo: {
-    id: 'balance.info',
-    defaultMessage: 'If you would like to encrypt, backup, or restore your wallet, please do this from the Qtum Wallet. In the application menu, there is a "Launch Qtum Wallet" option.',
-  },
-});
 
 class MyBalances extends React.PureComponent {
   constructor(props) {
@@ -78,11 +71,6 @@ class MyBalances extends React.PureComponent {
       <Paper className={classes.myBalancePaper}>
         <Grid container spacing={0} className={classes.myBalanceGridContainer}>
           <Typography variant="title" className={classes.myBalanceTitle}>
-            <div className={classes.importantNoteContainer}>
-              <ImportantNote
-                heading={this.props.intl.formatMessage(messages.balanceInfo)}
-              />
-            </div>
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
           {this.getTotalsGrid()}
@@ -411,7 +399,6 @@ MyBalances.propTypes = {
   walletEncrypted: PropTypes.bool.isRequired,
   walletUnlockedUntil: PropTypes.number.isRequired,
   toggleWalletUnlockDialog: PropTypes.func.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
 };
 
 const mapStateToProps = (state) => ({
