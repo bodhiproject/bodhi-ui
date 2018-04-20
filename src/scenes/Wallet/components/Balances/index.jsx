@@ -25,6 +25,7 @@ import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import { SortBy } from '../../../../constants';
 
+
 class MyBalances extends React.PureComponent {
   constructor(props) {
     super(props);
