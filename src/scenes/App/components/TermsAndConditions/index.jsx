@@ -14,7 +14,7 @@ import Button from 'material-ui/Button';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
 
-const TNC_ACCEPTED = 'tnc7';
+const TNC_ACCEPTED = 'termsAndConditionsAccepted';
 
 @withStyles(styles, { withTheme: true })
 export default class TermsAndConditions extends React.PureComponent {
