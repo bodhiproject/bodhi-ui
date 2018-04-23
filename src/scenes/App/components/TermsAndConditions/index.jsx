@@ -48,6 +48,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderDefinitions()}
               {this.renderSubordination()}
               {this.renderParticipate()}
+              {this.renderRepresentations()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -119,6 +120,17 @@ export default class TermsAndConditions extends React.PureComponent {
           </ol>
         </li>
         <li><FormattedMessage id="tnc.participate2" defaultMessage="The Site and/or Platform are intended only for users who are not prohibited by the laws of any applicable jurisdiction from creating Events, making Trades and Predictions, or otherwise Participating on the Platform. The Company does not intend to enable You to contravene applicable law. You represent, warrant and agree to ensure that Your use of the Site and/or Platform will comply with all applicable laws, statutes and regulations. The offering or availability of the Site and/or Platform shall not be deemed or interpreted as an offer or invitation by Us to use the Site and/or Platform, if You reside in a place in which such use is currently forbidden by law (including without limitation the Restricted Territories), or where Bodhi, in its sole discretion, elects not to offer Site and/or Platform. You shall be solely responsible for determining whether Your use of the Site and/or Platform is legal in the place where You live and/or use the Site and/or Platform. We make no representations or warranties, express or implied, concerning the legality of the Site and/or Platform and/or of any person’s use of the Site and/or Platform, and shall not be responsible for any illegal use of the Site and/or Platform by You. It is Your responsibility to ensure that You comply with any and all laws applicable to You before using the Site and/or Platform. If You have any concerns, You should consult with your own legal counsel in the applicable jurisdiction about the legality of Your use of the Site and/or Platform. The Company reserves the right at any time to request from You evidence of age and if satisfactory proof of age is not provided within 72 hours of requesting such proof, then You shall be prohibited from using the Site and Platform. In the event that it is found that You are under the age of 18, or the legal age as determined by the laws of the country where You live (whichever is higher), then the Company shall cease Your use of the Site and Platform." /></li>
+      </ol>
+    </div>
+  );
+
+  renderRepresentations = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.representations" defaultMessage="Your Representations" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.representations1" defaultMessage="You represent, warrant, acknowledge and undertake that: (i) You have verified and determined that Your use of the Site and/or Platform does not violate any laws or regulations of any jurisdiction that applies to You, (ii) You are solely responsible for recording, paying and accounting to any relevant governmental, taxation or other authority for any tax or other levy that may be payable due to Your use of the Site and/or Platform, (iii) You will use the Site and Platform in good faith towards Bodhi and others using the Site and/or Platform, (iv) Bodhi may, at its sole and absolute discretion, decide whether to allow You to use the Site and/or Platform and/or whether to cease Your use of the Site and/or Platform, (v) BOT is offered as a utility token only and is not offered for speculative purposes, and (vi) You shall indemnify Us and hold Us harmless, from and against all claims, liabilities, damages, losses, costs and expenses, including legal fees, arising out of or in connection with any breach of these Terms and Conditions by You, and any other liabilities arising out of Your use of the Site and/or Platform." /></li>
       </ol>
     </div>
   );
