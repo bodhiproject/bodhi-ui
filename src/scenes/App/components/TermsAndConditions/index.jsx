@@ -52,6 +52,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderAwards()}
               {this.renderPowers()}
               {this.renderResponsibilities()}
+              {this.renderIp()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -180,6 +181,17 @@ export default class TermsAndConditions extends React.PureComponent {
         <li><FormattedMessage id="tnc.responsibilities7" defaultMessage="You will indemnify and hold Us harmless against all direct and indirect claims, liabilities, damages, losses, costs and expenses arising from Your breach of these Terms and Conditions." /></li>
         <li><FormattedMessage id="tnc.responsibilities8" defaultMessage="The Site and Platform are provided “as is”, and We make no warranty or representation, whether express or implied (whether by law, statute, or otherwise), including but not limited to implied warranties and conditions of merchantability, satisfactory quality, fitness for a particular purpose, completeness or accuracy, non-infringement of third parties’ rights or of applicable laws and regulation in respect of the Site and/or Platform, or that the Site and/or Platform will be uninterrupted, timely, secure or error-free, or that defects will be corrected, or will be free of viruses or bugs or as to results or the accuracy of any information through the Site and/or Platform." /></li>
         <li><FormattedMessage id="tnc.responsibilities9" defaultMessage="You are responsible for maintaining your own wallet. Bodhi is a decentralized application, with no centralized mechanism for accessing your wallet. Bodhi does not keep, store, save, or in any way backup your account details. Therefore Bodhi is unable to assist in any way to recover wallet access. Mismanagement of your wallet details may cause you to lose all your funds that may not be recoverable. We are not responsible for the loss of such funds arising from entering the wrong wallet details." /></li>
+      </ol>
+    </div>
+  );
+
+  renderIp = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.ip" defaultMessage="Intellectual Property" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.ip1" defaultMessage="All the rights, including the intellectual property rights (i.e., patents, copyright, trademarks, service marks, logos, trade names, know-how or any other intellectual property right) concerning the Site, and all of its content (including, but not limited to, programs, files, video, audio, pictures, graphics, pictures, text and software), and/or Platform (collectively the “Rights“), are and shall remain the sole and exclusive property of Bodhi and/or any of its licensors. You may not use any of the Rights without the express prior written approval of Bodhi, except pursuant to these Terms and Conditions, and You shall not, by using the Site and/or Platform or otherwise, acquire any rights in any of the Rights. Without derogating from the above, You are strictly prohibited from: (i) copying. redistributing, publishing, reverse engineering, decompiling, disassembling, modifying, translating or making any attempt to access the source code of the Site and/or Platform, (ii) creating derivative works of the source code; and (iii) selling, assigning, licensing, sublicensing, transferring the Site and/or Platform." /></li>
       </ol>
     </div>
   );
