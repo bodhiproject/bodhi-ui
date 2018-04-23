@@ -14,7 +14,7 @@ import Button from 'material-ui/Button';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
 
-const TNC_ACCEPTED = 'tnc3';
+const TNC_ACCEPTED = 'tnc4';
 
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -34,7 +34,6 @@ export default class TermsAndConditions extends React.PureComponent {
     const { classes } = this.props;
     const { checkboxChecked } = this.state;
 
-    // TODO: use this to not show again
     let tncAccepted = localStorage.getItem(TNC_ACCEPTED);
     tncAccepted = _.isUndefined(tncAccepted) || _.isNull(tncAccepted) ? false : tncAccepted;
 

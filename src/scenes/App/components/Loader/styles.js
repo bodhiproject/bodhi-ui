@@ -6,7 +6,7 @@ const styles = (theme) => ({
     right: 0,
     bottom: 0,
     left: 0,
-    zIndex: 999999,
+    zIndex: 999998,
     transition: 'opacity 1s;',
   },
   loaderWrapper: {
