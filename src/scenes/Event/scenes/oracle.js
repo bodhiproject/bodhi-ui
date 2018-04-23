@@ -257,7 +257,7 @@ export default class OraclePage extends React.Component {
                           config.predictionAction.btnText
                       }
                     </Button>
-                    {showResultHistory ? <EventResultHistory oracles={oracles} /> : undefined}
+                    {showResultHistory && <EventResultHistory oracles={oracles} />}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
                 )}

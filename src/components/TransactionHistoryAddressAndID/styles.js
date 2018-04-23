@@ -1,4 +1,4 @@
-const styles = (theme) => ({
+const styles = () => ({
   txidLabel: {
     width: '150px',
   },

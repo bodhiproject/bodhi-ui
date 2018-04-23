@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
@@ -13,7 +12,13 @@ import styles from './styles';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 
 
-class Loader extends React.PureComponent {
+@withStyles(styles)
+@connect((state) => ({
+  syncPercent: state.App.get('syncPercent'),
+  syncBlockNum: state.App.get('syncBlockNum'),
+  syncBlockTime: state.App.get('syncBlockTime'),
+}))
+export default class Loader extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     syncPercent: PropTypes.number.isRequired,
@@ -70,11 +75,3 @@ class Loader extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncPercent: state.App.get('syncPercent'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-});
-
-export default connect(mapStateToProps)(withStyles(styles)(Loader));

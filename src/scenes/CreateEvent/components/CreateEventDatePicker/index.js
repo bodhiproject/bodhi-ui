@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -19,7 +19,13 @@ const messages = defineMessages({
   },
 });
 
-class CreateEventDatePicker extends React.PureComponent {
+
+@injectIntl
+@connect((state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
+  averageBlockTime: state.App.get('averageBlockTime'),
+}))
+export default class CreateEventDatePicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     syncBlockNum: PropTypes.number,
@@ -100,10 +106,3 @@ class CreateEventDatePicker extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  averageBlockTime: state.App.get('averageBlockTime'),
-});
-
-export default connect(mapStateToProps)(injectIntl(CreateEventDatePicker));

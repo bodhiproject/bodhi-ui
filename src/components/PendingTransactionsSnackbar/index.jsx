@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
@@ -59,7 +59,16 @@ const messages = defineMessages({
   },
 });
 
-class PendingTransactionsSnackbar extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
+  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
+}), (dispatch) => ({
+  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
+}))
+export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
@@ -155,16 +164,3 @@ class PendingTransactionsSnackbar extends React.Component {
     this.props.togglePendingTxsSnackbar(false);
   };
 }
-
-const mapStateToProps = (state) => ({
-  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PendingTransactionsSnackbar)));

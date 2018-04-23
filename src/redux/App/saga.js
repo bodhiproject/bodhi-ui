@@ -1,5 +1,4 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import moment from 'moment';
 import _ from 'lodash';
 
 import actions from './actions';

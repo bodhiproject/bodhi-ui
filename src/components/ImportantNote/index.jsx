@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { injectIntl } from 'react-intl';
@@ -6,7 +6,10 @@ import cx from 'classnames';
 
 import styles from './styles';
 
-class ImportantNote extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class ImportantNote extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     heading: PropTypes.string,
@@ -38,5 +41,3 @@ class ImportantNote extends React.PureComponent {
     );
   }
 }
-
-export default injectIntl(withStyles(styles, { withTheme: true })(ImportantNote));

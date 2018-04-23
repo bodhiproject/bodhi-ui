@@ -17,6 +17,17 @@ import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+  sortBy: state.Dashboard.get('sortBy'),
+}), (dispatch) => ({
+  toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
+  sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
+  getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
+}))
 class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -81,18 +92,3 @@ class TopActions extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-  sortBy: state.Dashboard.get('sortBy'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
-    sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
-    getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(TopActions)));

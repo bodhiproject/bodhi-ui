@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { compose, withApollo } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -19,6 +19,7 @@ const messages = defineMessages({
     defaultMessage: 'Wallet unlocked! Please redo your action.',
   },
 });
+
 
 @injectIntl
 @withApollo

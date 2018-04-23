@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
@@ -13,7 +13,26 @@ import cx from 'classnames';
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
-class BottomBar extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  ...state.App.toJS(),
+  syncBlockNum: state.App.get('syncBlockNum'),
+  syncBlockTime: state.App.get('syncBlockTime'),
+}))
+export default class BottomBar extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    syncBlockNum: PropTypes.number,
+    syncBlockTime: PropTypes.number,
+  }
+
+  static defaultProps = {
+    syncBlockNum: undefined,
+    syncBlockTime: undefined,
+  }
+
   constructor(props) {
     super(props);
 
@@ -90,22 +109,3 @@ class BottomBar extends React.PureComponent {
     );
   }
 }
-
-BottomBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  syncBlockNum: PropTypes.number,
-  syncBlockTime: PropTypes.number,
-};
-
-BottomBar.defaultProps = {
-  syncBlockNum: undefined,
-  syncBlockTime: undefined,
-};
-
-const mapStateToProps = (state) => ({
-  ...state.App.toJS(),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-});
-
-export default injectIntl(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(BottomBar)));

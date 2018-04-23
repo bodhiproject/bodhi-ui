@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -17,7 +17,15 @@ const messages = defineMessages({
   },
 });
 
-class CreateEventCreatorPicker extends React.PureComponent {
+
+@injectIntl
+@connect((state) => ({
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+}), (dispatch) => ({
+  setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+}))
+export default class CreateEventCreatorPicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -90,16 +98,3 @@ class CreateEventCreatorPicker extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateEventCreatorPicker));

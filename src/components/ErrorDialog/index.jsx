@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from 'material-ui/Typography';
@@ -11,19 +11,28 @@ import styles from './styles';
 import appActions from '../../redux/App/actions';
 import topicActions from '../../redux/Topic/actions';
 
-class ErrorDialog extends React.PureComponent {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  errorApp: state.App.get('errorApp'),
+  errorTopic: state.Topic.get('errorTopic'),
+}), (dispatch) => ({
+  clearErrorApp: () => dispatch(appActions.clearErrorApp()),
+  clearErrorTopic: () => dispatch(topicActions.clearErrorTopic()),
+}))
+export default class ErrorDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     errorApp: PropTypes.object,
     clearErrorApp: PropTypes.func.isRequired,
     errorTopic: PropTypes.object,
     clearErrorTopic: PropTypes.func.isRequired,
-  };
+  }
 
   static defaultProps = {
     errorApp: undefined,
     errorTopic: undefined,
-  };
+  }
 
   render() {
     const {
@@ -65,17 +74,3 @@ class ErrorDialog extends React.PureComponent {
     this.props.clearErrorTopic();
   }
 }
-
-const mapStateToProps = (state) => ({
-  errorApp: state.App.get('errorApp'),
-  errorTopic: state.Topic.get('errorTopic'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    clearErrorApp: () => dispatch(appActions.clearErrorApp()),
-    clearErrorTopic: () => dispatch(topicActions.clearErrorTopic()),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(ErrorDialog)));
