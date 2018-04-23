@@ -46,6 +46,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderTitle()}
               {this.renderGeneral()}
               {this.renderDefinitions()}
+              {this.renderSubordination()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -87,6 +88,19 @@ export default class TermsAndConditions extends React.PureComponent {
         <li><FormattedMessage id="tnc.definitions6" defaultMessage="“BOT” shall mean the utility token which is the Bodhi Token (BOT) cryptocurrency." /></li>
         <li><FormattedMessage id="tnc.definitions7" defaultMessage="“We“, “Our“ or “Us” shall mean the Bodhi Foundation, and/or any subsidiaries, affiliates, employees, directors, officers, agents, suppliers, consultants and contractors." /></li>
       </ul>
+    </div>
+  );
+
+  renderSubordination = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.subordination" defaultMessage="Subordination to the Terms and Conditions and the Binding Effect Thereof" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.subordination1" defaultMessage="By using the Site, registering at the Site, or by making use of the Platform, You agree to be bound by and to act in accordance with the Terms and Conditions, as they may be updated from time to time, without any reservation." /></li>
+        <li><FormattedMessage id="tnc.subordination2" defaultMessage="Bodhi reserves its right to amend these Terms and Conditions at any time, in its sole and absolute discretion. You will be informed of such amendment by placing the amended version of the Terms and Conditions on the Site. Failure to confirm such amendment will prevent You from continuing using the Site and/or Platform. If You do not wish to be bound by such amendment You must cease use of the Site and Platform." /></li>
+        <li><FormattedMessage id="tnc.subordination3" defaultMessage="These Terms and Conditions supersede all prior agreements between the parties in relation to its subject matter and constitute the entire and whole agreement between You and Bodhi. You confirm that, in agreeing to accept these Terms and Conditions, You have not relied on any representation except for any express representation made by the Company in these Terms and Conditions." /></li>
+      </ol>
     </div>
   );
 }
