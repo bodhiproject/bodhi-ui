@@ -49,6 +49,8 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderSubordination()}
               {this.renderParticipate()}
               {this.renderRepresentations()}
+              {this.renderAwards()}
+              {this.renderPowers()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -131,6 +133,33 @@ export default class TermsAndConditions extends React.PureComponent {
       </Typography>
       <ol>
         <li><FormattedMessage id="tnc.representations1" defaultMessage="You represent, warrant, acknowledge and undertake that: (i) You have verified and determined that Your use of the Site and/or Platform does not violate any laws or regulations of any jurisdiction that applies to You, (ii) You are solely responsible for recording, paying and accounting to any relevant governmental, taxation or other authority for any tax or other levy that may be payable due to Your use of the Site and/or Platform, (iii) You will use the Site and Platform in good faith towards Bodhi and others using the Site and/or Platform, (iv) Bodhi may, at its sole and absolute discretion, decide whether to allow You to use the Site and/or Platform and/or whether to cease Your use of the Site and/or Platform, (v) BOT is offered as a utility token only and is not offered for speculative purposes, and (vi) You shall indemnify Us and hold Us harmless, from and against all claims, liabilities, damages, losses, costs and expenses, including legal fees, arising out of or in connection with any breach of these Terms and Conditions by You, and any other liabilities arising out of Your use of the Site and/or Platform." /></li>
+      </ol>
+    </div>
+  );
+
+  renderAwards = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.awards" defaultMessage="Awards Policy" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.awards1" defaultMessage="All promotions, prizes, awards or special offers are subject to promotion-specific terms and conditions. Please review such promotion-specific terms and conditions that are applicable to the relevant promotion." /></li>
+        <li><FormattedMessage id="tnc.awards2" defaultMessage="Bodhi reserves the right to withdraw any promotion, award, prize or special offer at any time. In the event that Bodhi believes You are abusing or attempting to abuse any award or other promotion,  or are likely to benefit through abuse or lack of good faith, then Bodhi may, at its sole and absolute discretion, deny, withhold or withdraw from You any award or promotion and/or rescind any policy with respect to You, either temporarily or permanently." /></li>
+        <li><FormattedMessage id="tnc.awards3" defaultMessage="Bodhi reserves the right to prevent players from certain jurisdictions from participating and being eligible for any or all promotions and awards, at its sole and absolute discretion." /></li>
+      </ol>
+    </div>
+  );
+
+  renderPowers = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.powers" defaultMessage="Powers and Authorities of the Company" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.powers1" defaultMessage="Bodhi shall make commercially reasonable efforts to prevent any malfunctioning in the Site’s and Platform’s activity. However, in any event of a technical failure (or any other error, including the creation of an Invalid Event) in the Site’s and/or Platform’s systems for any reason whatsoever, Bodhi will be entitled to cancel any Events and or Predictions, concerning which the malfunctioning has occurred, without being liable to You in any form or manner." /></li>
+        <li><FormattedMessage id="tnc.powers2" defaultMessage="Bodhi reserves the right to cancel, terminate, modify or suspend the Site and/or Platform if for any reason, the Site and/or Platform cannot be operated as planned, including, but not limited to, infection by computer virus, bugs, tampering or unauthorized intervention, fraud, technical failures as well as any other causes beyond Bodhi’s control. If any errors result in awarding QTUM or BOT (“tokens”) to You or in an increase in tokens paid to You, You shall not be entitled to these tokens. You agree to immediately inform Bodhi of the error and shall repay any tokens credited to You in error to Bodhi (as directed by Bodhi) or Bodhi may, at its discretion, set off such amount against any tokens owed to You." /></li>
+        <li><FormattedMessage id="tnc.powers3" defaultMessage="Bodhi reserves the right to limit, refuse or cancel any Event and/or Prediction made by You, where Bodhi believes that any act of fraud or any other act of bad faith has been taken against Bodhi or any third party, whether by You or by any third party, without being liable to You in any form or manner." /></li>
+        <li><FormattedMessage id="tnc.powers4" defaultMessage="Bodhi shall be entitled, at its sole discretion, to amend, modify, or discontinue, from time to time, any of part of the Site and/or Platform, and/or awards and/or promotions and/or introduce new features of the Site and/or Platform and/or new awards and/or promotions. We shall not be liable for any loss suffered by You resulting from any changes made and You shall have no claims against Us in such regard." /></li>
       </ol>
     </div>
   );
