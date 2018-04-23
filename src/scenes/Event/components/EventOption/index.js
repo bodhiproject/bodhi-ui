@@ -1,22 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
-import Typography from 'material-ui/Typography';
 import cx from 'classnames';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, MenuItem, Select, Typography, FormControl } from 'material-ui';
 import { FormattedMessage } from 'react-intl';
 
 import Progress from '../Progress/index';
 import styles from './styles';
 
 
-class EventOption extends React.PureComponent {
+@withStyles(styles, { withTheme: true })
+export default class EventOption extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     isLast: PropTypes.bool.isRequired,
@@ -43,16 +40,6 @@ class EventOption extends React.PureComponent {
   static defaultProps = {
     voteAmount: 0,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.renderAmountInput = this.renderAmountInput.bind(this);
-    this.renderAddrSelect = this.renderAddrSelect.bind(this);
-    this.handleExpansionChange = this.handleExpansionChange.bind(this);
-    this.handleAmountChange = this.handleAmountChange.bind(this);
-    this.handleAddrChange = this.handleAddrChange.bind(this);
-  }
 
   render() {
     const {
@@ -83,9 +70,7 @@ class EventOption extends React.PureComponent {
             onChange={this.handleExpansionChange}
             disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
           >
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-            >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>
                 <div className={classes.eventOptionNum}>{optionIdx + 1}</div>
                 <Typography variant="title">
@@ -113,94 +98,77 @@ class EventOption extends React.PureComponent {
     );
   }
 
-  renderAmountInput() {
-    const {
-      classes,
-      voteAmount,
-      token,
-      amountInputDisabled,
-    } = this.props;
+  renderAmountInput = () => {
+    const { classes, voteAmount, token, amountInputDisabled } = this.props;
 
-    return (<ExpansionPanelDetails>
-      <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
-        <div className={classes.eventOptionIcon}>
-          <i className="icon iconfont icon-ic_token"></i>
+    return (
+      <ExpansionPanelDetails>
+        <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
+          <div className={classes.eventOptionIcon}>
+            <i className="icon iconfont icon-ic_token"></i>
+          </div>
+          <FormControl fullWidth>
+            <InputLabel htmlFor="amount" shrink>
+              AMOUNT
+            </InputLabel>
+            <Input
+              id="vote-amount"
+              value={voteAmount}
+              type="number"
+              placeholder="0.00"
+              className={classes.eventOptionInput}
+              onChange={this.handleAmountChange}
+              endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
+              disabled={amountInputDisabled}
+            />
+          </FormControl>
         </div>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="amount" shrink>
-            AMOUNT
-          </InputLabel>
-          <Input
-            id="vote-amount"
-            value={voteAmount}
-            type="number"
-            placeholder="0.00"
-            className={classes.eventOptionInput}
-            onChange={this.handleAmountChange}
-            endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
-            disabled={amountInputDisabled}
-          />
-        </FormControl>
-      </div>
-    </ExpansionPanelDetails>);
+      </ExpansionPanelDetails>
+    );
   }
 
-  renderAddrSelect() {
-    const {
-      classes,
-      walletAddresses,
-      lastUsedAddress,
-    } = this.props;
+  renderAddrSelect = () => {
+    const { classes, walletAddresses, lastUsedAddress } = this.props;
 
-    return (<ExpansionPanelDetails>
-      <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
-        <div className={classes.eventOptionIcon}>
-          <i className="icon iconfont icon-ic_wallet"></i>
+    return (
+      <ExpansionPanelDetails>
+        <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
+          <div className={classes.eventOptionIcon}>
+            <i className="icon iconfont icon-ic_wallet"></i>
+          </div>
+          <FormControl fullWidth>
+            <InputLabel htmlFor="address" shrink>
+              ADDRESS
+            </InputLabel>
+            <Select
+              value={lastUsedAddress}
+              onChange={this.handleAddrChange}
+              inputProps={{ id: 'address' }}
+            >
+              {walletAddresses.map((item) => (
+                <MenuItem key={item.address} value={item.address}>
+                  {`${item.address} (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="address" shrink>
-            ADDRESS
-          </InputLabel>
-          <Select
-            value={lastUsedAddress}
-            onChange={this.handleAddrChange}
-            inputProps={{ id: 'address' }}
-          >
-            {walletAddresses.map((item) => (
-              <MenuItem key={item.address} value={item.address}>
-                {`${item.address} (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-    </ExpansionPanelDetails>);
+      </ExpansionPanelDetails>
+    );
   }
 
-  handleExpansionChange(event, expanded) {
-    const {
-      optionIdx,
-      onOptionChange,
-    } = this.props;
-
+  handleExpansionChange = (event, expanded) => {
+    const { optionIdx, onOptionChange } = this.props;
     onOptionChange(expanded ? optionIdx : -1);
   }
 
-  handleAmountChange(event) {
-    const {
-      onAmountChange,
-    } = this.props;
-
+  handleAmountChange = (event) => {
+    const { onAmountChange } = this.props;
     onAmountChange(parseFloat(event.target.value));
   }
 
-  handleAddrChange(event) {
-    const {
-      onWalletChange,
-    } = this.props;
-
+  handleAddrChange = (event) => {
+    const { onWalletChange } = this.props;
     onWalletChange(event.target.value);
   }
 }
-
-export default withStyles(styles, { withTheme: true })(EventOption);
