@@ -53,6 +53,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderPowers()}
               {this.renderResponsibilities()}
               {this.renderIp()}
+              {this.renderSupport()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -192,6 +193,18 @@ export default class TermsAndConditions extends React.PureComponent {
       </Typography>
       <ol>
         <li><FormattedMessage id="tnc.ip1" defaultMessage="All the rights, including the intellectual property rights (i.e., patents, copyright, trademarks, service marks, logos, trade names, know-how or any other intellectual property right) concerning the Site, and all of its content (including, but not limited to, programs, files, video, audio, pictures, graphics, pictures, text and software), and/or Platform (collectively the “Rights“), are and shall remain the sole and exclusive property of Bodhi and/or any of its licensors. You may not use any of the Rights without the express prior written approval of Bodhi, except pursuant to these Terms and Conditions, and You shall not, by using the Site and/or Platform or otherwise, acquire any rights in any of the Rights. Without derogating from the above, You are strictly prohibited from: (i) copying. redistributing, publishing, reverse engineering, decompiling, disassembling, modifying, translating or making any attempt to access the source code of the Site and/or Platform, (ii) creating derivative works of the source code; and (iii) selling, assigning, licensing, sublicensing, transferring the Site and/or Platform." /></li>
+      </ol>
+    </div>
+  );
+
+  renderSupport = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.support" defaultMessage="Customer Support" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.support1" defaultMessage="You may contact the Company in connection with anything related to the Site and/or Platform at any time via our customer support, which is available at support@bodhi.network." /></li>
+        <li><FormattedMessage id="tnc.support2" defaultMessage="Any communication with the Company’s customer support will be handled in the utmost care and without any delay by the Company’s customer support representatives and will be escalated to the relevant people where necessary." /></li>
       </ol>
     </div>
   );
