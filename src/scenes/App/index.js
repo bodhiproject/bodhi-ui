@@ -30,16 +30,16 @@ export default class App extends Component {
   }
 
   render() {
-    const { classes, txReturn, match: { url } } = this.props;
+    const { classes, langHandler, txReturn, match: { url } } = this.props;
 
     return (
       <div className={classes.root}>
         <CssBaseline />
         <GlobalHub />
         <Loader />
-        <TermsAndConditions />
+        <TermsAndConditions langHandler={langHandler} locale={locale} />
         <div className={classes.container}>
-          <AppRouter url={url} langHandler={this.props.langHandler} />
+          <AppRouter url={url} langHandler={langHandler} />
         </div>
         <BottomBar />
         <CreateEvent />
@@ -53,3 +53,13 @@ export default class App extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  txReturn: state.Graphql.get('txReturn'),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App));

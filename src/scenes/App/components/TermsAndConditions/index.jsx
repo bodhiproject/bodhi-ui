@@ -14,24 +14,26 @@ import Button from 'material-ui/Button';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
 
-const TNC_ACCEPTED = 'tnc4';
+const TNC_ACCEPTED = 'tnc7';
 
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-}), (dispatch) => ({
-}))
-
 export default class TermsAndConditions extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired,
+    langHandler: PropTypes.func,
+  };
+
+  static defaultProps = {
+    langHandler: undefined,
   };
 
   state = {
     checkboxChecked: false,
-  }
+  };
 
   render() {
-    const { classes } = this.props;
+    const { classes, locale } = this.props;
     const { checkboxChecked } = this.state;
 
     let tncAccepted = localStorage.getItem(TNC_ACCEPTED);
@@ -48,7 +50,11 @@ export default class TermsAndConditions extends React.PureComponent {
         }
       >
         <Grid container>
-          <Grid item xs></Grid>
+          <Grid item xs>
+            <Button color="primary" variant="raised" className={classes.langBtn} onClick={this.props.langHandler}>
+              <FormattedMessage id="language.select" defaultMessage="中文" />
+            </Button>
+          </Grid>
           <Grid item xs={8}>
             <Paper className={classes.tncWrapper}>
               {this.renderTitle()}

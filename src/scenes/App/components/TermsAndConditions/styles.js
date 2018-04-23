@@ -11,6 +11,9 @@ const styles = (theme) => ({
     overflowY: 'scroll',
     overflowX: 'hidden',
   },
+  langBtn: {
+    margin: theme.padding.xs.px,
+  },
   tncWrapper: {
     margin: `${theme.padding.lg.px} 0px ${theme.padding.xs.px} 0px`,
     padding: theme.padding.sm.px,

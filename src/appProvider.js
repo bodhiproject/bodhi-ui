@@ -42,7 +42,7 @@ export default class AppProvider extends Component {
               <ConnectedRouter history={history}>
                 <Route
                   path="/"
-                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
+                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} locale={this.state.locale} />)}
                 />
               </ConnectedRouter>
             </Provider>
