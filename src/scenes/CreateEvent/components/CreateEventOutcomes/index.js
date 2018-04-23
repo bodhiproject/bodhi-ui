@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -7,7 +7,7 @@ import { Field, FieldArray } from 'redux-form';
 import { InputAdornment } from 'material-ui/Input';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
-import classNames from 'classnames';
+import cx from 'classnames';
 import Web3Utils from 'web3-utils';
 import { withStyles } from 'material-ui/styles';
 
@@ -36,7 +36,9 @@ const messages = defineMessages({
   },
 });
 
-class CreateEventOutcomes extends React.PureComponent {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class CreateEventOutcomes extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
@@ -79,10 +81,7 @@ class CreateEventOutcomes extends React.PureComponent {
           startAdornment: startAdornmentLabel ? <InputAdornment position="start">{startAdornmentLabel}</InputAdornment> : null,
         }}
       />
-      {
-        touched && error ?
-          <FormHelperText error>{error}</FormHelperText> : null
-      }
+      {(touched && error) && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>
   );
 
@@ -99,21 +98,16 @@ class CreateEventOutcomes extends React.PureComponent {
           validate={[this.validateResultLength]}
           startAdornmentLabel={`#${index + 1}`}
         />
-        {
-          fields.length > MIN_OPTION_NUMBER ?
-            (<i
-              className={classNames(
-                classes.removeOutcome,
-                'icon', 'iconfont', 'icon-close'
-              )}
-              onClick={() => {
-                if (fields.length > MIN_OPTION_NUMBER) {
-                  fields.remove(index);
-                }
-              }}
-            >
-            </i>) : null
-        }
+        {fields.length > MIN_OPTION_NUMBER && (
+          <i
+            className={cx(classes.removeOutcome, 'icon iconfont icon-close')}
+            onClick={() => {
+              if (fields.length > MIN_OPTION_NUMBER) {
+                fields.remove(index);
+              }
+            }}
+          />
+        )}
       </li>
     );
   };
@@ -121,20 +115,19 @@ class CreateEventOutcomes extends React.PureComponent {
   renderOutcomeList = ({ fields }) => (
     <ul className={this.props.classes.outcomeList}>
       {fields.map(this.renderOutcome)}
-      {
-        fields.length < MAX_OPTION_NUMBER ?
-          (<Button
-            className={this.props.classes.inputButton}
-            variant="raised"
-            onClick={() => {
-              if (fields.length < MAX_OPTION_NUMBER) {
-                fields.push('');
-              }
-            }}
-          >
-            + {this.props.intl.formatMessage(messages.addOutcome)}
-          </Button>) : null
-      }
+      {fields.length < MAX_OPTION_NUMBER && (
+        <Button
+          className={this.props.classes.inputButton}
+          variant="raised"
+          onClick={() => {
+            if (fields.length < MAX_OPTION_NUMBER) {
+              fields.push('');
+            }
+          }}
+        >
+          + {this.props.intl.formatMessage(messages.addOutcome)}
+        </Button>
+      )}
     </ul>
   );
 
@@ -145,4 +138,3 @@ class CreateEventOutcomes extends React.PureComponent {
   }
 }
 
-export default injectIntl(withStyles(styles, { withTheme: true })(CreateEventOutcomes));

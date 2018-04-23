@@ -44,7 +44,7 @@ class BottomBar extends React.PureComponent {
       <Paper className={classes.bottomBarWrapper}>
         <Grid container>
           {this.renderNetworkConnection()}
-          {syncBlockTime && syncBlockTime ? this.renderBlockInfo() : null}
+          {(syncBlockTime && syncBlockTime) && this.renderBlockInfo()}
         </Grid>
       </Paper>
     );

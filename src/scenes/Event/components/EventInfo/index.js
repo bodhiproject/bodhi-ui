@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -8,7 +8,14 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 
-class EventInfo extends React.PureComponent {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class EventInfo extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    infoObjs: PropTypes.array.isRequired,
+  }
+
   render() {
     const { classes, infoObjs } = this.props;
 
@@ -18,33 +25,24 @@ class EventInfo extends React.PureComponent {
 
     return (
       <div className={classes.eventInfoWrapper}>
-        {
-          _.map(infoObjs, (infoObj, index) => (
-            infoObj.label && infoObj.content ?
-              <Grid key={`info${index}`} item xs={6} md={12} className={classes.eventInfoBlock}>
-                <Typography variant="body1">
-                  {infoObj.label}
+        {_.map(infoObjs, ({ label, highlight, content }, index) => (
+          label && content && (
+            <Grid key={`info${index}`} item xs={6} md={12} className={classes.eventInfoBlock}>
+              <Typography variant="body1">
+                {label}
+              </Typography>
+              <Typography variant="title" className={classes.eventInfo}>
+                {content}
+              </Typography>
+              {highlight && (
+                <Typography variant="body2" color="secondary">
+                  {highlight}
                 </Typography>
-                <Typography variant="title" className={classes.eventInfo}>
-                  {infoObj.content}
-                </Typography>
-                {
-                  infoObj.highlight ? (
-                    <Typography variant="body2" color="secondary">
-                      {infoObj.highlight}
-                    </Typography>) : null
-                }
-              </Grid> : null
-          ))
-        }
+              )}
+            </Grid>
+          )
+        ))}
       </div>
     );
   }
 }
-
-EventInfo.propTypes = {
-  classes: PropTypes.object.isRequired,
-  infoObjs: PropTypes.array.isRequired,
-};
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventInfo));

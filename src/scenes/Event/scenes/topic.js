@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import classNames from 'classnames';
+import cx from 'classnames';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
@@ -192,7 +192,7 @@ export default class TopicPage extends React.Component {
                 <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
               </Grid>
             </Grid>
-            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <Grid item xs={12} md={4} className={cx(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
               <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail />
             </Grid>
@@ -224,7 +224,7 @@ export default class TopicPage extends React.Component {
 
     return (
       <Paper className={classes.withdrawPaper}>
-        <div className={classNames(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
+        <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
           <div className={classes.withdrawContainerSectionIcon}>
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
@@ -236,20 +236,20 @@ export default class TopicPage extends React.Component {
           <Typography className={classes.withdrawWinningOption}>
             {topic.options[topic.resultIdx]}
           </Typography>
-          {
-            totalBetAmount || totalVoteAmount ?
-              <Typography variant="caption">
-                {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
-              </Typography> :
-              <Typography variant="caption">
-                <FormattedMessage
-                  id="topic.didNotBetOrVote"
-                  defaultMessage="You did not bet or vote on the winning outcome."
-                />
-              </Typography>
-          }
+          {(totalBetAmount || totalVoteAmount) ? (
+            <Typography variant="caption">
+              {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
+            </Typography>
+          ) : (
+            <Typography variant="caption">
+              <FormattedMessage
+                id="topic.didNotBetOrVote"
+                defaultMessage="You did not bet or vote on the winning outcome."
+              />
+            </Typography>
+          )}
         </div>
-        { escrowClaim || botWinnings || qtumWinnings ?
+        {(escrowClaim || botWinnings || qtumWinnings) && (
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
@@ -280,7 +280,7 @@ export default class TopicPage extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={classNames(classes.withdrawContainerSection, 'last')}>
+            <div className={cx(classes.withdrawContainerSection, 'last')}>
               <div className={classes.withdrawContainerSectionIcon}>
                 <i className="icon iconfont icon-ic_wallet"></i>
               </div>
@@ -291,8 +291,8 @@ export default class TopicPage extends React.Component {
               </Typography>
             </div>
             {this.renderWithdrawList()}
-          </div> : null
-        }
+          </div>
+        )}
       </Paper>
     );
   }
@@ -467,9 +467,9 @@ export default class TopicPage extends React.Component {
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
-          <div key={`option-${index}`} className={classNames(classes.withdrawContainerSection, 'option')}>
+          <div key={`option-${index}`} className={cx(classes.withdrawContainerSection, 'option')}>
             <div className={classes.eventOptionNum}>{index + 1}</div>
-            <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
+            <Typography variant="title" className={cx({ [classes.withdrawWinningOptionSmall]: topic.resultIdx === index })}>
               {option}
             </Typography>
             <div>
@@ -479,14 +479,13 @@ export default class TopicPage extends React.Component {
                 })}
               </Typography>
             </div>
-            {
-              betBalances[index] || voteBalances[index] ?
-                <div>
-                  <Typography variant="caption">
-                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
-                  </Typography>
-                </div> : null
-            }
+            {(betBalances[index] || voteBalances[index]) && (
+              <div>
+                <Typography variant="caption">
+                  {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
+                </Typography>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -57,10 +57,7 @@ class CreateEventCreatorPicker extends React.PureComponent {
           </MenuItem>
         ))}
       </Select>
-      {
-        error ?
-          <FormHelperText error>{error}</FormHelperText> : null
-      }
+      {error && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>);
   };
 

@@ -49,7 +49,7 @@ class Loader extends React.PureComponent {
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          { syncBlockNum && syncBlockTime ?
+          {syncBlockNum && syncBlockTime && (
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />
@@ -63,8 +63,8 @@ class Loader extends React.PureComponent {
               <Grid item className={classes.loaderInfoData} xs={6}>
                 {getLocalDateTimeString(syncBlockTime)}
               </Grid>
-            </Grid> : null
-          }
+            </Grid>
+          )}
         </div>
       </div>
     );

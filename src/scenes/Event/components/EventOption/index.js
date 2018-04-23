@@ -8,7 +8,7 @@ import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage } from 'react-intl';
 
@@ -73,11 +73,10 @@ class EventOption extends React.PureComponent {
     return (
       <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
         <div
-          className={classNames(
-            classes.eventOptionCollapse,
-            isLast || optionIdx === currentOptionIdx ? 'last' : '',
-            optionIdx === 0 || optionIdx === currentOptionIdx ? 'first' : ''
-          )}
+          className={cx(classes.eventOptionCollapse, {
+            last: isLast || optionIdx === currentOptionIdx,
+            first: optionIdx === 0 || optionIdx === currentOptionIdx,
+          })}
         >
           <ExpansionPanel
             expanded={optionIdx === currentOptionIdx || skipExpansion}
@@ -106,8 +105,8 @@ class EventOption extends React.PureComponent {
                 </Typography>
               </div>
             </ExpansionPanelSummary>
-            { showAmountInput ? this.renderAmountInput() : null }
-            { showAmountInput ? this.renderAddrSelect() : null }
+            {showAmountInput && this.renderAmountInput()}
+            {showAmountInput && this.renderAddrSelect()}
           </ExpansionPanel>
         </div>
       </Collapse>
@@ -123,7 +122,7 @@ class EventOption extends React.PureComponent {
     } = this.props;
 
     return (<ExpansionPanelDetails>
-      <div className={classNames(classes.eventOptionWrapper, 'noMargin')}>
+      <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
         <div className={classes.eventOptionIcon}>
           <i className="icon iconfont icon-ic_token"></i>
         </div>
@@ -154,7 +153,7 @@ class EventOption extends React.PureComponent {
     } = this.props;
 
     return (<ExpansionPanelDetails>
-      <div className={classNames(classes.eventOptionWrapper, 'noMargin', 'last')}>
+      <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
         <div className={classes.eventOptionIcon}>
           <i className="icon iconfont icon-ic_wallet"></i>
         </div>

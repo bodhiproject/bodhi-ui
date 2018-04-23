@@ -73,10 +73,7 @@ class CreateEventDatePicker extends React.PureComponent {
               type="datetime-local"
               error={Boolean(touched && error)}
             />
-            {
-              touched && error ?
-                <FormHelperText error>{error}</FormHelperText> : null
-            }
+            {touched && error && <FormHelperText error>{error}</FormHelperText>}
           </FormControl>
         </Grid>
         <Grid item xs={6}>
