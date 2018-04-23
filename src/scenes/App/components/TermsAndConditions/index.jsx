@@ -14,6 +14,8 @@ import Button from 'material-ui/Button';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
 
+const TNC_ACCEPTED = 'tnc3';
+
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
 }), (dispatch) => ({
@@ -25,15 +27,16 @@ export default class TermsAndConditions extends React.PureComponent {
   };
 
   state = {
-    accepted: false,
+    checkboxChecked: false,
   }
 
   render() {
     const { classes } = this.props;
-    const { accepted } = this.state;
+    const { checkboxChecked } = this.state;
 
-    const tncAccepted = localStorage.getItem('termsAndConditionsAccepted');
-    console.log(tncAccepted);
+    // TODO: use this to not show again
+    let tncAccepted = localStorage.getItem(TNC_ACCEPTED);
+    tncAccepted = _.isUndefined(tncAccepted) || _.isNull(tncAccepted) ? false : tncAccepted;
 
     return (
       <div
@@ -67,14 +70,21 @@ export default class TermsAndConditions extends React.PureComponent {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={accepted}
-                      value="accepted"
-                      onChange={this.handleCheckedChange('accepted')}
+                      checked={checkboxChecked}
+                      value="checkboxChecked"
+                      onChange={this.handleCheckedChange('checkboxChecked')}
                     />
                   }
                   label={<FormattedMessage id="tnc.acceptCheckboxText" defaultMessage="I accept the Terms and Conditions" />}
                 />
-                <Button type="submit" color="primary" variant="raised" disabled={!accepted} className={classes.acceptButton}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="raised"
+                  disabled={!checkboxChecked}
+                  className={classes.acceptButton}
+                  onClick={this.onAcceptButtonClick}
+                >
                   <FormattedMessage id="tnc.accept" defaultMessage="Accept" />
                 </Button>
               </FormGroup>
@@ -88,6 +98,11 @@ export default class TermsAndConditions extends React.PureComponent {
 
   handleCheckedChange = (name) => (event) => {
     this.setState({ [name]: event.target.checked });
+  }
+
+  onAcceptButtonClick = () => {
+    localStorage.setItem(TNC_ACCEPTED, true);
+    this.forceUpdate();
   }
 
   renderTitle = () => (
