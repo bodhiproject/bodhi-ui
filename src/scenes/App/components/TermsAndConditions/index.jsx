@@ -47,6 +47,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderGeneral()}
               {this.renderDefinitions()}
               {this.renderSubordination()}
+              {this.renderParticipate()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -100,6 +101,24 @@ export default class TermsAndConditions extends React.PureComponent {
         <li><FormattedMessage id="tnc.subordination1" defaultMessage="By using the Site, registering at the Site, or by making use of the Platform, You agree to be bound by and to act in accordance with the Terms and Conditions, as they may be updated from time to time, without any reservation." /></li>
         <li><FormattedMessage id="tnc.subordination2" defaultMessage="Bodhi reserves its right to amend these Terms and Conditions at any time, in its sole and absolute discretion. You will be informed of such amendment by placing the amended version of the Terms and Conditions on the Site. Failure to confirm such amendment will prevent You from continuing using the Site and/or Platform. If You do not wish to be bound by such amendment You must cease use of the Site and Platform." /></li>
         <li><FormattedMessage id="tnc.subordination3" defaultMessage="These Terms and Conditions supersede all prior agreements between the parties in relation to its subject matter and constitute the entire and whole agreement between You and Bodhi. You confirm that, in agreeing to accept these Terms and Conditions, You have not relied on any representation except for any express representation made by the Company in these Terms and Conditions." /></li>
+      </ol>
+    </div>
+  );
+
+  renderParticipate = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.participate" defaultMessage=" Who is Entitled to Participate?" />
+      </Typography>
+      <ol>
+        <li>
+          <FormattedMessage id="tnc.participate1" defaultMessage="You may only use the Site and/or Platform if You comply with all of the following:" />
+          <ol>
+            <li><FormattedMessage id="tnc.participate1a" defaultMessage="You are at least eighteen (18) years old or of legal age as determined by the laws of the country where You live (whichever is higher); and" /></li>
+            <li><FormattedMessage id="tnc.participate1b" defaultMessage="You do not violate any law or regulation as a result of using the Site and/or Platform. In this context, You agree that if You reside or are present in any jurisdiction that prohibits using the Site and/or Platform (including without limitation any of the Restricted Territories) You shall not participate in the prohibited activity." /></li>
+          </ol>
+        </li>
+        <li><FormattedMessage id="tnc.participate2" defaultMessage="The Site and/or Platform are intended only for users who are not prohibited by the laws of any applicable jurisdiction from creating Events, making Trades and Predictions, or otherwise Participating on the Platform. The Company does not intend to enable You to contravene applicable law. You represent, warrant and agree to ensure that Your use of the Site and/or Platform will comply with all applicable laws, statutes and regulations. The offering or availability of the Site and/or Platform shall not be deemed or interpreted as an offer or invitation by Us to use the Site and/or Platform, if You reside in a place in which such use is currently forbidden by law (including without limitation the Restricted Territories), or where Bodhi, in its sole discretion, elects not to offer Site and/or Platform. You shall be solely responsible for determining whether Your use of the Site and/or Platform is legal in the place where You live and/or use the Site and/or Platform. We make no representations or warranties, express or implied, concerning the legality of the Site and/or Platform and/or of any person’s use of the Site and/or Platform, and shall not be responsible for any illegal use of the Site and/or Platform by You. It is Your responsibility to ensure that You comply with any and all laws applicable to You before using the Site and/or Platform. If You have any concerns, You should consult with your own legal counsel in the applicable jurisdiction about the legality of Your use of the Site and/or Platform. The Company reserves the right at any time to request from You evidence of age and if satisfactory proof of age is not provided within 72 hours of requesting such proof, then You shall be prohibited from using the Site and Platform. In the event that it is found that You are under the age of 18, or the legal age as determined by the laws of the country where You live (whichever is higher), then the Company shall cease Your use of the Site and Platform." /></li>
       </ol>
     </div>
   );

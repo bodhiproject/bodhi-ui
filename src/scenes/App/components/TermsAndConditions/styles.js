@@ -8,6 +8,8 @@ const styles = (theme) => ({
     left: 0,
     zIndex: 999998,
     transition: 'opacity 1s;',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
   },
   tncWrapper: {
     padding: theme.padding.sm.px,
