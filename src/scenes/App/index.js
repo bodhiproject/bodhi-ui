@@ -5,6 +5,7 @@ import { CssBaseline, withStyles } from 'material-ui';
 import styles from './styles';
 import AppRouter from './router';
 import GlobalHub from './globalHub';
+import TermsAndConditions from './components/TermsAndConditions/index';
 import Loader from './components/Loader/index';
 import BottomBar from '../../components/BottomBar/index';
 import CreateEvent from '../CreateEvent/index';
@@ -36,6 +37,7 @@ export default class App extends Component {
         <CssBaseline />
         <GlobalHub />
         <Loader />
+        <TermsAndConditions />
         <div className={classes.container}>
           <AppRouter url={url} langHandler={this.props.langHandler} />
         </div>

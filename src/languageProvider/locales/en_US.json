@@ -175,6 +175,7 @@
   "topBar.setting": "Setting",
   "topBar.voting": "Voting",
   "topic.didNotBetOrVote": "You did not bet or vote on the winning outcome.",
+  "tnc.title": "Bodhi Terms and Conditions",
   "transactionSentDialog.failureMsg": "Oops, something went wrong",
   "transactionSentDialog.successMsg": "Success",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
