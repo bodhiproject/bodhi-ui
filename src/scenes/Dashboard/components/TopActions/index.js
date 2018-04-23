@@ -28,7 +28,7 @@ import styles from './styles';
   sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
 }))
-class TopActions extends Component {
+export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sortBy: PropTypes.string,

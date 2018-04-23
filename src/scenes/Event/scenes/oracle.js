@@ -1,15 +1,11 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
+import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
 import { CircularProgress } from 'material-ui/Progress';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
@@ -107,7 +103,7 @@ const messages = defineMessages({
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-export default class OraclePage extends React.Component {
+export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
