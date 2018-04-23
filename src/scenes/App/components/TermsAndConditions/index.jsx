@@ -54,6 +54,7 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderResponsibilities()}
               {this.renderIp()}
               {this.renderSupport()}
+              {this.renderMisc()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -205,6 +206,23 @@ export default class TermsAndConditions extends React.PureComponent {
       <ol>
         <li><FormattedMessage id="tnc.support1" defaultMessage="You may contact the Company in connection with anything related to the Site and/or Platform at any time via our customer support, which is available at support@bodhi.network." /></li>
         <li><FormattedMessage id="tnc.support2" defaultMessage="Any communication with the Company’s customer support will be handled in the utmost care and without any delay by the Company’s customer support representatives and will be escalated to the relevant people where necessary." /></li>
+      </ol>
+    </div>
+  );
+
+  renderMisc = () => (
+    <div>
+      <Typography variant="title">
+        <FormattedMessage id="tnc.misc" defaultMessage="Miscellaneous" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.misc1" defaultMessage="These Terms and Conditions and the relationship between You and Us shall be governed by, and construed and interpreted in accordance with, the laws of Singapore, and You irrevocably submit to the exclusive jurisdiction of the competent courts of Singapore with respect to any dispute regarding the validity, breach, interpretation, performance or otherwise arising out of or in connection with these Terms and Conditions and the relationship between You and Us." /></li>
+        <li><FormattedMessage id="tnc.misc2" defaultMessage="Bodhi may transfer or assign any and all of its rights and obligations hereunder to any third party; without derogating from the above, the Site and/or Platform may be operated by third parties. You may not transfer, assign or pledge in any manner whatsoever any of Your rights or obligations under these Terms and Conditions." /></li>
+        <li><FormattedMessage id="tnc.misc3" defaultMessage="Unless explicitly stated in these Terms and Conditions, nothing in these Terms and Conditions shall: (i) be construed as creating any agency, arrangement, trust of fiduciary relationships or any similar relationship between You and Us; (ii) create or confer any rights or benefits to any third party, and/or (iii) grant You any security interest in any asset of the Company." /></li>
+        <li><FormattedMessage id="tnc.misc4" defaultMessage="We may provide You with notices with respect to or in connection with these Terms and Conditions in an e-mail, where applicable, and such notice shall be deemed received by You within 24 hours from the time it is sent to You in the aforesaid manner." /></li>
+        <li><FormattedMessage id="tnc.misc5" defaultMessage="These Terms and Conditions have been drafted in the English language. In the event of any discrepancy between the meanings of any translated versions of these Terms and Conditions and the English language version, the meaning of the English language version shall prevail." /></li>
+        <li><FormattedMessage id="tnc.misc6" defaultMessage="No failure or delay on Our part in exercising any right, power or remedy thereunder shall operate as a waiver thereof, nor shall any single or partial exercise of any such right, power or remedy preclude any other or further exercise thereof or the exercise of any other right, power or remedy." /></li>
+        <li><FormattedMessage id="tnc.misc7" defaultMessage="If any provision of these Terms and Conditions is held by a court of competent jurisdiction to be unenforceable under applicable law, then such provision shall be excluded from these Terms and Conditions and the remainder of these Terms and Conditions shall be interpreted as if such provision was so excluded and shall be enforceable in accordance with its terms; provided, however, that in such event these Terms and Conditions shall be interpreted so as to give effect, to the greatest extent consistent with and permitted by applicable law, to the meaning and intention of the excluded provision as determined by such court of competent jurisdiction." /></li>
       </ol>
     </div>
   );
