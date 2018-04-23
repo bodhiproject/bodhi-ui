@@ -12,6 +12,9 @@ const styles = (theme) => ({
   tncWrapper: {
     padding: theme.padding.sm.px,
   },
+  title: {
+    marginBottom: theme.padding.md.px,
+  },
 });
 
 export default styles;

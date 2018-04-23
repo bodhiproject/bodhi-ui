@@ -44,6 +44,7 @@ export default class TermsAndConditions extends React.PureComponent {
           <Grid item xs={8}>
             <Paper className={classes.tncWrapper}>
               {this.renderTitle()}
+              {this.renderParagraph1()}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
@@ -53,8 +54,20 @@ export default class TermsAndConditions extends React.PureComponent {
   }
 
   renderTitle = () => (
-    <Typography variant="title">
+    <Typography variant="title" className={this.props.classes.title}>
       <FormattedMessage id="tnc.title" defaultMessage="Bodhi Terms and Conditions" />
     </Typography>
+  );
+
+  renderParagraph1 = () => (
+    <div>
+      <Typography variant="headline">
+        <FormattedMessage id="tnc.general" defaultMessage="General" />
+      </Typography>
+      <ol>
+        <li><FormattedMessage id="tnc.general1" defaultMessage="The Site is operated by the Bodhi Foundation (“Bodhi“), with registered address at 22 NORTH CANAL ROAD #02-00 SINGAPORE (048834). At this stage of the Platform development this Site is entirely for free, and no risking of any BOT or QTUM Tokens is required in order to use it. Therefore, all Events and/or Predictions made via the Site are entirely risk free, however this is subject to change in accordance with the development milestones in the White Paper." /></li>
+        <li><FormattedMessage id="tnc.general2" defaultMessage="These terms and conditions (“Terms and Conditions“) govern your (“You“, “Your”, “Player“ or “Participant”) use of the platform provided to You by Bodhi.  These Terms and Conditions should be read carefully by You in their entirety prior to Your use of the Platform and/or Site. Please note that these Terms and Conditions constitute a legally binding agreement between You and the Company." /></li>
+      </ol>
+    </div>
   );
 }
