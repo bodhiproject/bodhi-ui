@@ -12,6 +12,7 @@ const styles = (theme) => ({
     overflowX: 'hidden',
   },
   tncWrapper: {
+    margin: `${theme.padding.lg.px} 0px`,
     padding: theme.padding.sm.px,
   },
   title: {
