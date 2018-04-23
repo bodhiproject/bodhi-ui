@@ -14,7 +14,7 @@ import Button from 'material-ui/Button';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
 
-const TNC_ACCEPTED = 'termsAndConditionsAccepted';
+const TNC_ACCEPTED = 'tnc13';
 
 @withStyles(styles, { withTheme: true })
 export default class TermsAndConditions extends React.PureComponent {
@@ -70,30 +70,28 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderSupport()}
               {this.renderMisc()}
             </Paper>
-            <div className={classes.acceptBtnContainer}>
-              <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkboxChecked}
-                      value="checkboxChecked"
-                      onChange={this.handleCheckedChange('checkboxChecked')}
-                    />
-                  }
-                  label={<FormattedMessage id="tnc.acceptCheckboxText" defaultMessage="I accept the Terms and Conditions" />}
-                />
-                <Button
-                  type="submit"
-                  color="primary"
-                  variant="raised"
-                  disabled={!checkboxChecked}
-                  className={classes.acceptButton}
-                  onClick={this.onAcceptButtonClick}
-                >
-                  <FormattedMessage id="tnc.accept" defaultMessage="Accept" />
-                </Button>
-              </FormGroup>
-            </div>
+            <FormGroup row className={classes.formGroup}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkboxChecked}
+                    value="checkboxChecked"
+                    onChange={this.handleCheckedChange('checkboxChecked')}
+                  />
+                }
+                label={<FormattedMessage id="tnc.acceptCheckboxText" defaultMessage="I accept the Terms and Conditions" />}
+              />
+              <Button
+                type="submit"
+                color="primary"
+                variant="raised"
+                disabled={!checkboxChecked}
+                className={classes.acceptButton}
+                onClick={this.onAcceptButtonClick}
+              >
+                <FormattedMessage id="tnc.accept" defaultMessage="Accept" />
+              </Button>
+            </FormGroup>
           </Grid>
           <Grid item xs></Grid>
         </Grid>

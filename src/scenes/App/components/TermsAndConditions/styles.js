@@ -21,8 +21,11 @@ const styles = (theme) => ({
   title: {
     marginBottom: theme.padding.md.px,
   },
-  acceptBtnContainer: {
+  formGroup: {
     marginBottom: theme.padding.lg.px,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   acceptButton: {
     padding: `0px ${theme.padding.md.px}`,
