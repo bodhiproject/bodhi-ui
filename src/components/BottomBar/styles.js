@@ -5,9 +5,14 @@ const styles = (theme) => ({
     left: 0,
     right: 0,
     padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   bottomBarNetworkIcon: {
     marginRight: '4px',
+    width: 14,
+    height: 14,
     '&.online': {
       color: theme.palette.secondary.main,
     },
