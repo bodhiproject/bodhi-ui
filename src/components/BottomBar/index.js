@@ -8,7 +8,7 @@ import RemoveCircleIcon from 'material-ui-icons/RemoveCircle';
 import Typography from 'material-ui/Typography';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
@@ -73,7 +73,7 @@ class BottomBar extends React.PureComponent {
       return (
         <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
           <Typography variant="body1">
-            <CheckCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'online')} />
+            <CheckCircleIcon fontSize className={cx(classes.bottomBarNetworkIcon, 'online')} />
             <span><FormattedMessage id="bottomBar.online" defaultMessage="Online" /></span>
           </Typography>
         </Grid>
@@ -83,7 +83,7 @@ class BottomBar extends React.PureComponent {
     return (
       <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
         <Typography variant="body1">
-          <RemoveCircleIcon fontSize className={classNames(classes.bottomBarNetworkIcon, 'offline')} />
+          <RemoveCircleIcon fontSize className={cx(classes.bottomBarNetworkIcon, 'offline')} />
           <span><FormattedMessage id="bottomBar.offline" defaultMessage="Offline" /></span>
         </Typography>
       </Grid>

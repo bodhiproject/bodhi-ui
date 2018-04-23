@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { injectIntl } from 'react-intl';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 import styles from './styles';
 
@@ -31,7 +31,7 @@ class ImportantNote extends React.PureComponent {
 
     return (
       <div>
-        <i className={classNames(classes.infoIcon, 'icon', 'iconfont', 'icon-ic_info')}></i>
+        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_info')}></i>
         <span className={classes.headingText}>{heading}</span>
         <p className={classes.messageText}>{message}</p>
       </div>

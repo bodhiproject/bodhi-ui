@@ -6,7 +6,7 @@ import Grid from 'material-ui/Grid';
 import Card from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import Typography from 'material-ui/Typography';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
@@ -56,7 +56,7 @@ class EventCard extends React.PureComponent {
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
           <Card>
-            <div className={classNames(classes.eventCardSection, 'top')}>
+            <div className={cx(classes.eventCardSection, 'top')}>
               {unconfirmed && (
                 <Typography className={classes.unconfirmedTag}>
                   <FormattedMessage id="str.pendingConfirmation" defaultMessage="Pending Confirmation" />
@@ -71,13 +71,13 @@ class EventCard extends React.PureComponent {
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
                   <div>
-                    <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
+                    <i className={cx(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
                     {` ${amountLabel}`}
                   </div>
                 )}
                 <div>
-                  <i className={classNames(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
+                  <i className={cx(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
                   {endTime !== undefined
                     ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
@@ -86,7 +86,7 @@ class EventCard extends React.PureComponent {
               </div>
             </div>
             <Divider />
-            <div className={classNames(classes.eventCardSection, 'button')}>
+            <div className={cx(classes.eventCardSection, 'button')}>
               {buttonText}
             </div>
           </Card>

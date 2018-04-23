@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import Snackbar from 'material-ui/Snackbar';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
@@ -109,10 +109,7 @@ class PendingTransactionsSnackbar extends React.Component {
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              <i
-                className={classNames(classes.closeIcon, 'icon', 'iconfont', 'icon-ic_close')}
-                onClick={this.onCloseClicked}
-              ></i>
+              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
             </Grid>
           </Grid>
         }

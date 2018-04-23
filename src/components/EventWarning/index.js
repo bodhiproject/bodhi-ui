@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { injectIntl, intlShape } from 'react-intl';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 import styles from './styles';
 
 
 const EventWarning = ({ classes, id, message, values, className, intl, theme, ...props }) => !message ? null : (
-  <div {...props} className={classNames(className, classes.warningWrapper)}>
+  <div {...props} className={cx(className, classes.warningWrapper)}>
     {intl.formatMessage({ id, message }, values)}
   </div>
 );

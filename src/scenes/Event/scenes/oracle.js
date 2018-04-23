@@ -10,7 +10,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
@@ -263,7 +263,7 @@ export default class OraclePage extends React.Component {
                 )}
               </Grid>
             </Grid>
-            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <Grid item xs={12} md={4} className={cx(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
               <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail={false} />
             </Grid>
