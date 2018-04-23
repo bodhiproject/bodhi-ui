@@ -7,11 +7,12 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import { FormattedMessage } from 'react-intl';
 import Grid from 'material-ui/Grid';
-import { LinearProgress } from 'material-ui/Progress';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Checkbox from 'material-ui/Checkbox';
+import Button from 'material-ui/Button';
 
 import AppConfig from '../../../../config/app';
 import styles from './styles';
-import { getLocalDateTimeString } from '../../../../helpers/utility';
 
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -23,8 +24,13 @@ export default class TermsAndConditions extends React.PureComponent {
     classes: PropTypes.object.isRequired,
   };
 
+  state = {
+    accepted: false,
+  }
+
   render() {
     const { classes } = this.props;
+    const { accepted } = this.state;
 
     const tncAccepted = localStorage.getItem('termsAndConditionsAccepted');
     console.log(tncAccepted);
@@ -56,11 +62,32 @@ export default class TermsAndConditions extends React.PureComponent {
               {this.renderSupport()}
               {this.renderMisc()}
             </Paper>
+            <div className={classes.acceptBtnContainer}>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={accepted}
+                      value="accepted"
+                      onChange={this.handleCheckedChange('accepted')}
+                    />
+                  }
+                  label={<FormattedMessage id="tnc.acceptCheckboxText" defaultMessage="I accept the Terms and Conditions" />}
+                />
+                <Button type="submit" color="primary" variant="raised" disabled={!accepted} className={classes.acceptButton}>
+                  <FormattedMessage id="tnc.accept" defaultMessage="Accept" />
+                </Button>
+              </FormGroup>
+            </div>
           </Grid>
           <Grid item xs></Grid>
         </Grid>
       </div>
     );
+  }
+
+  handleCheckedChange = (name) => (event) => {
+    this.setState({ [name]: event.target.checked });
   }
 
   renderTitle = () => (

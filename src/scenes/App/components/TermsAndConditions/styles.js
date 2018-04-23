@@ -12,11 +12,17 @@ const styles = (theme) => ({
     overflowX: 'hidden',
   },
   tncWrapper: {
-    margin: `${theme.padding.lg.px} 0px`,
+    margin: `${theme.padding.lg.px} 0px ${theme.padding.xs.px} 0px`,
     padding: theme.padding.sm.px,
   },
   title: {
     marginBottom: theme.padding.md.px,
+  },
+  acceptBtnContainer: {
+    marginBottom: theme.padding.lg.px,
+  },
+  acceptButton: {
+    padding: `0px ${theme.padding.md.px}`,
   },
 });
 
