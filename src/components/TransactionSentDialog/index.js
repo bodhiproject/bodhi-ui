@@ -68,7 +68,7 @@ export default class TransactionSentDialog extends Component {
   }
 
   render() {
-    const { intl, classes, txReturn } = this.props;
+    const { intl, classes, txReturn, clearTxReturn } = this.props;
 
     let contentText;
     if (txReturn) {
@@ -86,17 +86,14 @@ export default class TransactionSentDialog extends Component {
     }
 
     return (
-      <Dialog
-        open={Boolean(txReturn)}
-        onClose={() => this.props.clearTxReturn}
-      >
+      <Dialog open={Boolean(txReturn)} onClose={clearTxReturn}>
         <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
           <Typography variant="body1">{contentText.bodySecondary}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.onOkClicked}>
+          <Button color="primary" onClick={clearTxReturn}>
             {intl.formatMessage(messages.ok)}
           </Button>
         </DialogActions>

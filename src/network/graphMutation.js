@@ -52,7 +52,7 @@ class GraphMutation {
 
     const res = await client.mutate({
       mutation: gql`${mutation}`,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
     });
     return res;
   }
