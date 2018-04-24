@@ -42,8 +42,7 @@ export default class TransactionSentDialog extends Component {
     classes: PropTypes.object.isRequired,
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-typos
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line
   }
 
   static defaultProps = {
@@ -54,7 +53,7 @@ export default class TransactionSentDialog extends Component {
     const { intl, txReturn } = this.props;
     return {
       title: intl.formatMessage(messages.successMsg),
-      bodyPrimary: `${intl.formatMessage(messages.waitingMsg)}`,
+      bodyPrimary: intl.formatMessage(messages.waitingMsg),
       bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
     };
   }

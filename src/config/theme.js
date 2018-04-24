@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createMuiTheme } from 'material-ui/styles';
 
 /* Brand Variables */
@@ -14,7 +15,7 @@ const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
 const lineHeightLg = '133.33%';
-// const lineHeightSm = '125%';
+const lineHeightSm = '125%';
 
 const progressHeight = 12;
 const iconSize = 24;
@@ -201,6 +202,22 @@ const bodhiTheme = createMuiTheme({
       root: {
         background: white,
         border: 'solid 1px '.concat(borderColor),
+      },
+    },
+    MuiTableRow: {
+      head: {
+        height: tableHeaderHeight,
+        background: borderColor,
+      },
+    },
+    MuiTableCell: {
+      body: {
+        color: textColorGrey,
+        fontSize: 13,
+      },
+      head: {
+        fontWeight: 700,
+        fontSize: px(fontSizeMeta),
       },
     },
     MuiExpansionPanelSummary: {

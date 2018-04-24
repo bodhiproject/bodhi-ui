@@ -5,12 +5,15 @@ import { injectIntl, intlShape } from 'react-intl';
 import cx from 'classnames';
 
 import styles from './styles';
-import Warning from '../Warning/index';
 
 
-const EventWarning = ({ classes, className, ...props }) => <Warning {...props} className={cx(className, classes.warningWrapper)} />;
+const Warning = ({ classes, id, message, values, className, intl, theme, ...props }) => !message ? null : (
+  <div {...props} className={cx(className, classes.warning)}>
+    {intl.formatMessage({ id, message }, values)}
+  </div>
+);
 
-EventWarning.propTypes = {
+Warning.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   message: PropTypes.string,
@@ -20,7 +23,7 @@ EventWarning.propTypes = {
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
-EventWarning.defaultProps = {
+Warning.defaultProps = {
   message: undefined,
   values: {},
   id: '',
@@ -28,4 +31,4 @@ EventWarning.defaultProps = {
   theme: undefined,
 };
 
-export default injectIntl(withStyles(styles)(EventWarning));
+export default injectIntl(withStyles(styles)(Warning));

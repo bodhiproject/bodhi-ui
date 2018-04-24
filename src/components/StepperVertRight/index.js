@@ -29,6 +29,7 @@ const messages = defineMessages({
   },
 });
 
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 export default class StepperVertRight extends Component {
@@ -48,7 +49,7 @@ export default class StepperVertRight extends Component {
   render() {
     const { classes, blockTime, cOracle } = this.props;
 
-    if (!blockTime || !cOracle) { // the && was blocking this oracle page from being viewed since cOracle was undefined and the getSteps() needed it and blockTime was defined
+    if (!blockTime && !cOracle) {
       return null;
     }
 

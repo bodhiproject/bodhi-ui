@@ -9,7 +9,7 @@ import cx from 'classnames';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
-import EventWarning from '../../../components/EventWarning/index';
+import Warning from '../../../components/Warning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
@@ -344,7 +344,7 @@ export default class TopicPage extends Component {
       <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
-          {id && message && <EventWarning id={id} message={message} className={warningTypeClass} />}
+          {id && message && <Warning id={id} message={message} className={warningTypeClass} />}
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
@@ -468,7 +468,7 @@ export default class TopicPage extends Component {
         {_.map(topic.options, (option, index) => (
           <div key={`option-${index}`} className={cx(classes.withdrawContainerSection, 'option')}>
             <div className={classes.eventOptionNum}>{index + 1}</div>
-            <Typography variant="title" className={cx({ [classes.withdrawWinningOptionSmall]: topic.resultIdx === index })}>
+            <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : ''}>
               {option}
             </Typography>
             <div>
@@ -478,7 +478,7 @@ export default class TopicPage extends Component {
                 })}
               </Typography>
             </div>
-            {(betBalances[index] || voteBalances[index]) && (
+            {!!(betBalances[index] || voteBalances[index]) && (
               <div>
                 <Typography variant="caption">
                   {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
