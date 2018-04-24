@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import Select from 'material-ui/Select';
-import { MenuItem } from 'material-ui/Menu';
+import { MenuItem, Select, TextField, Button, Typography } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
@@ -31,6 +27,7 @@ const messages = defineMessages({
   },
 });
 
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -39,8 +36,7 @@ const messages = defineMessages({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
 }))
-
-export default class WithdrawDialog extends React.Component {
+export default class WithdrawDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,

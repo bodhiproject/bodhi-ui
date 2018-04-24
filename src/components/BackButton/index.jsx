@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { AppLocation, RouterPath } from '../../constants';
 @connect((state) => ({
   appLocation: state.App.get('appLocation'),
 }))
-export default class BackButton extends React.Component {
+export default class BackButton extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,

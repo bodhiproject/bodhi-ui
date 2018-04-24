@@ -1,39 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TableCell } from 'material-ui/Table';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, TableCell } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 import Routes from '../../network/routes';
 
-class TransactionHistoryID extends React.PureComponent {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    transaction: PropTypes.object.isRequired,
-  };
 
-  render() {
-    const { classes, transaction } = this.props;
-    return (
-      <TableCell padding="dense" className={classes.txidRow}>
-        <div className={classes.txidWrapper}>
-          <div className={classes.txidLabel}>
-            <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
-          </div>
-          <div className={classes.txIdText} onClick={this.onIdClick}>
-            {transaction.txid}
-          </div>
-        </div>
-      </TableCell>
-    );
-  }
+const TransactionHistoryID = ({ classes, transaction }) => (
+  <TableCell padding="dense" className={classes.txidRow}>
+    <div className={classes.txidWrapper}>
+      <div className={classes.txidLabel}>
+        <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
+      </div>
+      <div
+        className={classes.txIdText}
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
+        }}
+      >
+        {transaction.txid}
+      </div>
+    </div>
+  </TableCell>
+);
 
-  onIdClick = (event) => {
-    event.stopPropagation();
-    const { transaction } = this.props;
-    window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
-  };
-}
+TransactionHistoryID.propTypes = {
+  classes: PropTypes.object.isRequired,
+  transaction: PropTypes.object.isRequired,
+};
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TransactionHistoryID));

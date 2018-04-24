@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CssBaseline, withStyles } from 'material-ui';
 
@@ -16,7 +16,7 @@ import ErrorDialog from '../../components/ErrorDialog/index';
 
 
 @withStyles(styles)
-export default class App extends React.PureComponent {
+export default class App extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,

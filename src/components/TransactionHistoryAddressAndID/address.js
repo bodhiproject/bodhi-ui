@@ -6,27 +6,22 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 
-class TransactionHistoryAddress extends React.PureComponent {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    transaction: PropTypes.object.isRequired,
-  };
+const TransactionHistoryAddress = ({ classes, transaction }) => (
+  <TableCell padding="dense" className={classes.txidRow}>
+    <div className={classes.txidWrapper}>
+      <div className={classes.txidLabel}>
+        <FormattedMessage id="str.addressUsed" defaultMessage="Address Used" />
+      </div>
+      <div>
+        {transaction.senderAddress}
+      </div>
+    </div>
+  </TableCell>
+);
 
-  render() {
-    const { classes, transaction } = this.props;
-    return (
-      <TableCell padding="dense" className={classes.txidRow}>
-        <div className={classes.txidWrapper}>
-          <div className={classes.txidLabel}>
-            <FormattedMessage id="str.addressUsed" defaultMessage="Address Used" />
-          </div>
-          <div>
-            {transaction.senderAddress}
-          </div>
-        </div>
-      </TableCell>
-    );
-  }
-}
+TransactionHistoryAddress.propTypes = {
+  classes: PropTypes.object.isRequired,
+  transaction: PropTypes.object.isRequired,
+};
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TransactionHistoryAddress));

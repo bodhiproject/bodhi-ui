@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -7,7 +7,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
-class SelectAddressDialog extends React.Component {
+class SelectAddressDialog extends Component {
   static propTypes = {
     dialogVisible: PropTypes.bool.isRequired,
     walletAddresses: PropTypes.array.isRequired,

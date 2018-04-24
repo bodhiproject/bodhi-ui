@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
@@ -18,7 +18,7 @@ import { getLocalDateTimeString } from '../../../../helpers/utility';
   syncBlockNum: state.App.get('syncBlockNum'),
   syncBlockTime: state.App.get('syncBlockTime'),
 }))
-export default class Loader extends React.PureComponent {
+export default class Loader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     syncPercent: PropTypes.number.isRequired,
@@ -33,12 +33,10 @@ export default class Loader extends React.PureComponent {
     return (
       <div
         className={classes.loaderBg}
-        style={
-          {
-            opacity: hideLoader ? 0 : 1,
-            display: hideLoader ? 'none' : 'block',
-          }
-        }
+        style={{
+          opacity: hideLoader ? 0 : 1,
+          display: hideLoader ? 'none' : 'block',
+        }}
       >
         <div className={classes.loaderWrapper}>
           <div className={classes.loaderLogoWrapper}>

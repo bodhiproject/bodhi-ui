@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Snackbar from 'material-ui/Snackbar';
@@ -15,7 +15,7 @@ import Config from '../../config/app';
 }), (dispatch) => ({
   toggleGlobalSnackbar: (isVisible, message) => dispatch(appActions.toggleGlobalSnackbar(isVisible, message)),
 }))
-export default class GlobalSnackbar extends React.Component {
+export default class GlobalSnackbar extends Component {
   static propTypes = {
     globalSnackbarVisible: PropTypes.bool.isRequired,
     globalSnackbarMessage: PropTypes.string.isRequired,

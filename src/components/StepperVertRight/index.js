@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Typography from 'material-ui/Typography';
@@ -31,7 +31,7 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-export default class StepperVertRight extends React.PureComponent {
+export default class StepperVertRight extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line
     classes: PropTypes.object.isRequired,

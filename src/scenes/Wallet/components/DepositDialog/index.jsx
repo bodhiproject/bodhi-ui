@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, Typography, Button } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import styles from './styles';
 
+
 @withStyles(styles, { withTheme: true })
 @injectIntl
-export default class DepositDialog extends React.Component {
+export default class DepositDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,

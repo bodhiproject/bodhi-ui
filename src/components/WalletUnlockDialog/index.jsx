@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, TextField, Button, Typography } from 'material-ui';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
@@ -19,6 +16,7 @@ const messages = defineMessages({
   },
 });
 
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -27,8 +25,7 @@ const messages = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   unlockWallet: (passphrase, timeout) => dispatch(appActions.unlockWallet(passphrase, timeout)),
 }))
-
-export default class WalletUnlockDialog extends React.Component {
+export default class WalletUnlockDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletUnlockDialogVisibility: PropTypes.bool.isRequired,
@@ -37,31 +34,27 @@ export default class WalletUnlockDialog extends React.Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    passphrase: '',
+    unlockMinutes: Config.defaults.unlockWalletMins,
+  }
 
-    this.state = {
-      passphrase: '',
-      unlockMinutes: Config.defaults.unlockWalletMins,
-    };
+  handleChange = (name) => ({ target: { value } }) => {
+    this.setState({ [name]: value });
+  }
 
-    this.onCancelClicked = this.onCancelClicked.bind(this);
-    this.onUnlockClicked = this.onUnlockClicked.bind(this);
+  unlock() {
+    const { passphrase, unlockMinutes } = this.state;
+    this.props.unlockWallet(passphrase, unlockMinutes);
+    this.props.toggleWalletUnlockDialog(false);
   }
 
   render() {
-    const {
-      intl,
-      classes,
-      walletUnlockDialogVisibility,
-    } = this.props;
+    const { intl, classes, walletUnlockDialogVisibility } = this.props;
     const { unlockMinutes } = this.state;
 
     return (
-      <Dialog
-        open={walletUnlockDialogVisibility}
-        onClose={this.onOkClicked}
-      >
+      <Dialog open={walletUnlockDialogVisibility} onClose={this.onOkClicked}>
         <DialogTitle>
           <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>
@@ -79,7 +72,7 @@ export default class WalletUnlockDialog extends React.Component {
             label={intl.formatMessage(messages.walletPassphrase)}
             type="password"
             fullWidth
-            onChange={this.handlePassphraseChange('passphrase')}
+            onChange={this.handleChange('passphrase')}
           />
           <div className={classes.unlockMinutesContainer}>
             <FormattedMessage
@@ -89,7 +82,7 @@ export default class WalletUnlockDialog extends React.Component {
             <TextField
               id="unlockMinutes"
               value={unlockMinutes}
-              onChange={this.handleUnlockMinutesChange('unlockMinutes')}
+              onChange={this.handleChange('unlockMinutes')}
               type="number"
               InputLabelProps={{ shrink: true }}
               margin="normal"
@@ -102,38 +95,14 @@ export default class WalletUnlockDialog extends React.Component {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.onCancelClicked}>
+          <Button onClick={() => this.props.toggleWalletUnlockDialog(false)}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
-          <Button color="primary" onClick={this.onUnlockClicked}>
+          <Button color="primary" onClick={this.unlock}>
             <FormattedMessage id="walletUnlockDialog.unlock" defaultMessage="Unlock" />
           </Button>
         </DialogActions>
       </Dialog>
     );
-  }
-
-  handlePassphraseChange = (name) => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  }
-
-  handleUnlockMinutesChange = (name) => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
-  onCancelClicked() {
-    this.props.toggleWalletUnlockDialog(false);
-  }
-
-  onUnlockClicked() {
-    const { unlockWallet, toggleWalletUnlockDialog } = this.props;
-    const { passphrase, unlockMinutes } = this.state;
-
-    unlockWallet(passphrase, unlockMinutes);
-    toggleWalletUnlockDialog(false);
   }
 }

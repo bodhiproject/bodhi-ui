@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, Typography } from 'material-ui';
 
 import { Token } from '../../../../constants';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import styles from './styles';
 
-class EventResultHistory extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     oracles: PropTypes.array.isRequired,
@@ -29,8 +31,8 @@ class EventResultHistory extends React.PureComponent {
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
         </Typography> {
-          sortedOracles.length ?
-            (<Table>
+          sortedOracles.length ? (
+            <Table>
               <TableHead>
                 <TableRow>
                   <TableCell padding="dense">
@@ -62,14 +64,14 @@ class EventResultHistory extends React.PureComponent {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>) :
+            </Table>
+          ) : (
             <Typography variant="body1">
               <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
             </Typography>
+          )
         }
       </div>
     );
   }
 }
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventResultHistory));

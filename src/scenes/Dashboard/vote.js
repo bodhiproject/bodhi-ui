@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
@@ -15,7 +14,7 @@ import styles from './styles';
 @connect((state) => ({
   sortBy: state.Dashboard.get('sortBy'),
 }))
-export default class Dashboard extends React.Component {
+export default class Dashboard extends Component {
   static propTypes = {
     sortBy: PropTypes.string,
   }

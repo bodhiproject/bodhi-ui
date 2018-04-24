@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import Grid from 'material-ui/Grid';
-import Card from 'material-ui/Card';
-import Divider from 'material-ui/Divider';
-import Typography from 'material-ui/Typography';
+import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
-import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
@@ -23,7 +19,10 @@ const cardMessages = defineMessages({
   },
 });
 
-class EventCard extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
@@ -95,5 +94,3 @@ class EventCard extends React.PureComponent {
     );
   }
 }
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventCard));

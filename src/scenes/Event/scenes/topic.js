@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -76,7 +75,7 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-export default class TopicPage extends React.Component {
+export default class TopicPage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
