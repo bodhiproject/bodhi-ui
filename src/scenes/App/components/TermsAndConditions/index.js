@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { connect } from 'react-redux';
 import { Paper, Typography, Grid, FormGroup, FormControlLabel, Checkbox, Button, withStyles } from 'material-ui';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-import AppConfig from '../../../../config/app';
 import styles from './styles';
 
 const TNC_ACCEPTED = 'tncAccepted';
@@ -15,7 +12,6 @@ const TNC_ACCEPTED = 'tncAccepted';
 export default class TermsAndConditions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     langHandler: PropTypes.func,
   }
 
@@ -38,7 +34,7 @@ export default class TermsAndConditions extends Component {
   }
 
   render() {
-    const { classes, intl: { locale } } = this.props;
+    const { classes } = this.props;
     const { isVisible, checkboxChecked } = this.state;
 
     return (
