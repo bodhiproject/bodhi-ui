@@ -106,7 +106,7 @@ const Heading = withStyles(styles)(({ classes }) => (
   </Typography>
 ));
 
-const GeneralSection = withStyles(styles)(() => (
+const GeneralSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.general" defaultMessage="General" />
@@ -116,9 +116,9 @@ const GeneralSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.general2" defaultMessage="These terms and conditions (“Terms and Conditions“) govern your (“You“, “Your”, “Player“ or “Participant”) use of the platform provided to You by Bodhi.  These Terms and Conditions should be read carefully by You in their entirety prior to Your use of the Platform and/or Site. Please note that these Terms and Conditions constitute a legally binding agreement between You and the Company." /></li>
     </ol>
   </div>
-));
+);
 
-const DefinitionsSection = withStyles(styles)(() => (
+const DefinitionsSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.definitions" defaultMessage="Definitions" />
@@ -134,9 +134,9 @@ const DefinitionsSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.definitions7" defaultMessage="“We“, “Our“ or “Us” shall mean the Bodhi Foundation, and/or any subsidiaries, affiliates, employees, directors, officers, agents, suppliers, consultants and contractors." /></li>
     </ul>
   </div>
-));
+);
 
-const SubordinationSection = withStyles(styles)(() => (
+const SubordinationSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.subordination" defaultMessage="Subordination to the Terms and Conditions and the Binding Effect Thereof" />
@@ -147,9 +147,9 @@ const SubordinationSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.subordination3" defaultMessage="These Terms and Conditions supersede all prior agreements between the parties in relation to its subject matter and constitute the entire and whole agreement between You and Bodhi. You confirm that, in agreeing to accept these Terms and Conditions, You have not relied on any representation except for any express representation made by the Company in these Terms and Conditions." /></li>
     </ol>
   </div>
-));
+);
 
-const ParticipateSection = withStyles(styles)(() => (
+const ParticipateSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.participate" defaultMessage=" Who is Entitled to Participate?" />
@@ -165,9 +165,9 @@ const ParticipateSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.participate2" defaultMessage="The Site and/or Platform are intended only for users who are not prohibited by the laws of any applicable jurisdiction from creating Events, making Trades and Predictions, or otherwise Participating on the Platform. The Company does not intend to enable You to contravene applicable law. You represent, warrant and agree to ensure that Your use of the Site and/or Platform will comply with all applicable laws, statutes and regulations. The offering or availability of the Site and/or Platform shall not be deemed or interpreted as an offer or invitation by Us to use the Site and/or Platform, if You reside in a place in which such use is currently forbidden by law (including without limitation the Restricted Territories), or where Bodhi, in its sole discretion, elects not to offer Site and/or Platform. You shall be solely responsible for determining whether Your use of the Site and/or Platform is legal in the place where You live and/or use the Site and/or Platform. We make no representations or warranties, express or implied, concerning the legality of the Site and/or Platform and/or of any person’s use of the Site and/or Platform, and shall not be responsible for any illegal use of the Site and/or Platform by You. It is Your responsibility to ensure that You comply with any and all laws applicable to You before using the Site and/or Platform. If You have any concerns, You should consult with your own legal counsel in the applicable jurisdiction about the legality of Your use of the Site and/or Platform. The Company reserves the right at any time to request from You evidence of age and if satisfactory proof of age is not provided within 72 hours of requesting such proof, then You shall be prohibited from using the Site and Platform. In the event that it is found that You are under the age of 18, or the legal age as determined by the laws of the country where You live (whichever is higher), then the Company shall cease Your use of the Site and Platform." /></li>
     </ol>
   </div>
-));
+);
 
-const RepresentationsSection = withStyles(styles)(() => (
+const RepresentationsSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.representations" defaultMessage="Your Representations" />
@@ -176,9 +176,9 @@ const RepresentationsSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.representations1" defaultMessage="You represent, warrant, acknowledge and undertake that: (i) You have verified and determined that Your use of the Site and/or Platform does not violate any laws or regulations of any jurisdiction that applies to You, (ii) You are solely responsible for recording, paying and accounting to any relevant governmental, taxation or other authority for any tax or other levy that may be payable due to Your use of the Site and/or Platform, (iii) You will use the Site and Platform in good faith towards Bodhi and others using the Site and/or Platform, (iv) Bodhi may, at its sole and absolute discretion, decide whether to allow You to use the Site and/or Platform and/or whether to cease Your use of the Site and/or Platform, (v) BOT is offered as a utility token only and is not offered for speculative purposes, and (vi) You shall indemnify Us and hold Us harmless, from and against all claims, liabilities, damages, losses, costs and expenses, including legal fees, arising out of or in connection with any breach of these Terms and Conditions by You, and any other liabilities arising out of Your use of the Site and/or Platform." /></li>
     </ol>
   </div>
-));
+);
 
-const AwardsSection = withStyles(styles)(() => (
+const AwardsSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.awards" defaultMessage="Awards Policy" />
@@ -189,9 +189,9 @@ const AwardsSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.awards3" defaultMessage="Bodhi reserves the right to prevent players from certain jurisdictions from participating and being eligible for any or all promotions and awards, at its sole and absolute discretion." /></li>
     </ol>
   </div>
-));
+);
 
-const PowersSection = withStyles(styles)(() => (
+const PowersSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.powers" defaultMessage="Powers and Authorities of the Company" />
@@ -203,9 +203,9 @@ const PowersSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.powers4" defaultMessage="Bodhi shall be entitled, at its sole discretion, to amend, modify, or discontinue, from time to time, any of part of the Site and/or Platform, and/or awards and/or promotions and/or introduce new features of the Site and/or Platform and/or new awards and/or promotions. We shall not be liable for any loss suffered by You resulting from any changes made and You shall have no claims against Us in such regard." /></li>
     </ol>
   </div>
-));
+);
 
-const ResponsibilitiesSection = withStyles(styles)(() => (
+const ResponsibilitiesSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.responsibilities" defaultMessage="Reservations Concerning Our Responsibility" />
@@ -222,9 +222,9 @@ const ResponsibilitiesSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.responsibilities9" defaultMessage="You are responsible for maintaining your own wallet. Bodhi is a decentralized application, with no centralized mechanism for accessing your wallet. Bodhi does not keep, store, save, or in any way backup your account details. Therefore Bodhi is unable to assist in any way to recover wallet access. Mismanagement of your wallet details may cause you to lose all your funds that may not be recoverable. We are not responsible for the loss of such funds arising from entering the wrong wallet details." /></li>
     </ol>
   </div>
-));
+);
 
-const IpSection = withStyles(styles)(() => (
+const IpSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.ip" defaultMessage="Intellectual Property" />
@@ -233,9 +233,9 @@ const IpSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.ip1" defaultMessage="All the rights, including the intellectual property rights (i.e., patents, copyright, trademarks, service marks, logos, trade names, know-how or any other intellectual property right) concerning the Site, and all of its content (including, but not limited to, programs, files, video, audio, pictures, graphics, pictures, text and software), and/or Platform (collectively the “Rights“), are and shall remain the sole and exclusive property of Bodhi and/or any of its licensors. You may not use any of the Rights without the express prior written approval of Bodhi, except pursuant to these Terms and Conditions, and You shall not, by using the Site and/or Platform or otherwise, acquire any rights in any of the Rights. Without derogating from the above, You are strictly prohibited from: (i) copying. redistributing, publishing, reverse engineering, decompiling, disassembling, modifying, translating or making any attempt to access the source code of the Site and/or Platform, (ii) creating derivative works of the source code; and (iii) selling, assigning, licensing, sublicensing, transferring the Site and/or Platform." /></li>
     </ol>
   </div>
-));
+);
 
-const SupportSection = withStyles(styles)(() => (
+const SupportSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.support" defaultMessage="Customer Support" />
@@ -245,9 +245,9 @@ const SupportSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.support2" defaultMessage="Any communication with the Company’s customer support will be handled in the utmost care and without any delay by the Company’s customer support representatives and will be escalated to the relevant people where necessary." /></li>
     </ol>
   </div>
-));
+);
 
-const MiscSection = withStyles(styles)(() => (
+const MiscSection = () => (
   <div>
     <Typography variant="title">
       <FormattedMessage id="tnc.misc" defaultMessage="Miscellaneous" />
@@ -262,4 +262,4 @@ const MiscSection = withStyles(styles)(() => (
       <li><FormattedMessage id="tnc.misc7" defaultMessage="If any provision of these Terms and Conditions is held by a court of competent jurisdiction to be unenforceable under applicable law, then such provision shall be excluded from these Terms and Conditions and the remainder of these Terms and Conditions shall be interpreted as if such provision was so excluded and shall be enforceable in accordance with its terms; provided, however, that in such event these Terms and Conditions shall be interpreted so as to give effect, to the greatest extent consistent with and permitted by applicable law, to the meaning and intention of the excluded provision as determined by such court of competent jurisdiction." /></li>
     </ol>
   </div>
-));
+);
