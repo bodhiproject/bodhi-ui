@@ -1,18 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
-import Tooltip from 'material-ui/Tooltip';
-import Button from 'material-ui/Button';
-import Snackbar from 'material-ui/Snackbar';
+import { Tooltip, Button, Snackbar, withStyles, Grid, Paper } from 'material-ui';
 import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'material-ui-icons/Close';
-import ContentCopy from 'material-ui-icons/ContentCopy';
-import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
+import Typography from 'material-ui/Typography';
+import { Close as CloseIcon, ContentCopy } from 'material-ui-icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
@@ -26,7 +19,24 @@ import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import { SortBy } from '../../../../constants';
 
 
-class MyBalances extends React.PureComponent {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  walletAddresses: state.App.get('walletAddresses'),
+  walletEncrypted: state.App.get('walletEncrypted'),
+  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
+}), (dispatch) => ({
+  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
+}))
+export default class MyBalances extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
+    walletEncrypted: PropTypes.bool.isRequired,
+    walletUnlockedUntil: PropTypes.number.isRequired,
+    toggleWalletUnlockDialog: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props);
 
@@ -64,8 +74,6 @@ class MyBalances extends React.PureComponent {
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
-
-    const unlockVisible = true;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -140,8 +148,6 @@ class MyBalances extends React.PureComponent {
   }
 
   getTableHeader() {
-    const { classes } = this.props;
-
     const cols = [
       {
         id: 'address',
@@ -233,7 +239,7 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  handleSorting = (property) => (event) => {
+  handleSorting = (property) => (event) => { // eslint-disable-line
     const orderBy = property;
     let order = SortBy.Descending.toLowerCase();
 
@@ -333,7 +339,7 @@ class MyBalances extends React.PureComponent {
     );
   }
 
-  onCopyClicked(text) {
+  onCopyClicked() {
     this.setState({
       addrCopiedSnackbarVisible: true,
     });
@@ -348,7 +354,7 @@ class MyBalances extends React.PureComponent {
     });
   }
 
-  handleDepositDialogClose = (value) => {
+  handleDepositDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,
@@ -371,7 +377,7 @@ class MyBalances extends React.PureComponent {
     }
   }
 
-  handleWithdrawDialogClose = (value) => {
+  handleWithdrawDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,
@@ -392,25 +398,3 @@ class MyBalances extends React.PureComponent {
     });
   }
 }
-
-MyBalances.propTypes = {
-  classes: PropTypes.object.isRequired,
-  walletAddresses: PropTypes.array.isRequired,
-  walletEncrypted: PropTypes.bool.isRequired,
-  walletUnlockedUntil: PropTypes.number.isRequired,
-  toggleWalletUnlockDialog: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-  walletEncrypted: state.App.get('walletEncrypted'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(injectIntl(MyBalances)));

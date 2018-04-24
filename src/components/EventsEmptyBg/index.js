@@ -7,18 +7,13 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
 
-class EventsEmptyBg extends React.PureComponent {
-  render() {
-    const { classes } = this.props;
 
-    return (
-      <div className={classes.eventsEmptyWrapper}>
-        <EventIcon className={classes.eventsEmptyIcon} fontSize />
-        <Typography variant="body1"><FormattedMessage id="dashboard.empty" defaultMessage="No Event at Current Status" /> </Typography>
-      </div>
-    );
-  }
-}
+const EventsEmptyBg = ({ classes }) => (
+  <div className={classes.eventsEmptyWrapper}>
+    <EventIcon className={classes.eventsEmptyIcon} fontSize />
+    <Typography variant="body1"><FormattedMessage id="dashboard.empty" defaultMessage="No Event at Current Status" /> </Typography>
+  </div>
+);
 
 EventsEmptyBg.propTypes = {
   classes: PropTypes.object.isRequired,

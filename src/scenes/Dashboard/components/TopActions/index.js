@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import AddIcon from 'material-ui-icons/Add';
@@ -19,7 +17,18 @@ import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
 import styles from './styles';
 
-class TopActions extends Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+  sortBy: state.Dashboard.get('sortBy'),
+}), (dispatch) => ({
+  toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
+  sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
+  getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
+}))
+export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sortBy: PropTypes.string,
@@ -83,18 +92,3 @@ class TopActions extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-  sortBy: state.Dashboard.get('sortBy'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
-    sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
-    getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(TopActions)));

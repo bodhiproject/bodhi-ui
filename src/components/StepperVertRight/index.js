@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
@@ -28,16 +29,21 @@ const messages = defineMessages({
   },
 });
 
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
-export default class StepperVertRight extends React.PureComponent {
+export default class StepperVertRight extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line
     classes: PropTypes.object.isRequired,
     blockTime: PropTypes.number.isRequired,
-    cOracle: PropTypes.object.isRequired,
+    cOracle: PropTypes.object,
     dOracles: PropTypes.array.isRequired,
     isTopicDetail: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    cOracle: undefined,
   }
 
   render() {
@@ -51,7 +57,7 @@ export default class StepperVertRight extends React.PureComponent {
 
     return (
       <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
-        {steps.value.map((item, index) => (
+        {steps.value.map((item) => (
           <Step key={item.title}>
             <StepLabel className={classes.stepperVertRightLabel}>
               <Typography variant="title">

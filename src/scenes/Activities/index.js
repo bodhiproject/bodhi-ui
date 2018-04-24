@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
@@ -34,7 +34,14 @@ const messages = defineMessages({
   },
 });
 
-class Activities extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  ...state.App.toJS(),
+  actionableItemCount: state.Graphql.get('actionableItemCount'),
+}))
+export default class Activities extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     match: PropTypes.object.isRequired,
@@ -161,13 +168,3 @@ class Activities extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles, { withTheme: true })(Activities)));

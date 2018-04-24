@@ -1,16 +1,13 @@
-import BN from 'bn.js';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
-import React from 'react';
-import { FormattedMessage, DefaultMessage, IntlProvider, defineMessages } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
-import AppLocale from '../languageProvider';
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy } from '../constants';
 
 const SATOSHI_CONVERSION = 10 ** 8;
-const BOT_MIN_VALUE = 0.01;
+const BOT_MIN_VALUE = 0.01; // eslint-disable-line
 const GAS_COST = 0.0000004;
 const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';

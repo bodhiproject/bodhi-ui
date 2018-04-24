@@ -1,18 +1,16 @@
 /* eslint react/no-array-index-key: 0, no-nested-ternary: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import { AppLocation, Token, OracleStatus, SortBy, EventStatus, EventWarningType } from '../../constants';
+import { AppLocation, Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
-import EventWarning from '../EventWarning/index';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
 import InfiniteScroll from '../InfiniteScroll/index';
@@ -43,7 +41,22 @@ const messages = defineMessages({
 const LIMIT = 8;
 const SKIP = 0;
 
-class EventCardsGrid extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
+  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
+  sortBy: state.Dashboard.get('sortBy'),
+  syncBlockNum: state.App.get('syncBlockNum'),
+  walletAddresses: state.App.get('walletAddresses'),
+}), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
+  getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
+    dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
+  getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
+}))
+export default class EventCardsGrid extends Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
     getActionableTopics: PropTypes.func.isRequired,
@@ -56,7 +69,6 @@ class EventCardsGrid extends React.Component {
     setAppLocation: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    classes: PropTypes.object,
   };
 
   static defaultProps = {
@@ -65,7 +77,6 @@ class EventCardsGrid extends React.Component {
     getOraclesReturn: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
-    classes: undefined,
   };
 
   state = {
@@ -109,14 +120,7 @@ class EventCardsGrid extends React.Component {
   }
 
   render() {
-    const {
-      theme,
-      eventStatusIndex,
-      getTopicsReturn,
-      getOraclesReturn,
-      sortBy,
-      classes,
-    } = this.props;
+    const { theme, eventStatusIndex, getTopicsReturn, getOraclesReturn } = this.props;
 
     let rowItems = [];
     switch (eventStatusIndex) {
@@ -338,22 +342,3 @@ class EventCardsGrid extends React.Component {
     return rowItems;
   }
 }
-
-const mapStateToProps = (state) => ({
-  getTopicsReturn: state.Graphql.get('getTopicsReturn'),
-  getOraclesReturn: state.Graphql.get('getOraclesReturn'),
-  sortBy: state.Dashboard.get('sortBy'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  walletAddresses: state.App.get('walletAddresses'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-    getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
-      dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
-    getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(EventCardsGrid)));

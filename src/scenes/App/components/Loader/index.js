@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
@@ -12,9 +11,14 @@ import AppConfig from '../../../../config/app';
 import styles from './styles';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 
-const MIN_BLOCK_COUNT_GAP = 1;
 
-class Loader extends React.PureComponent {
+@withStyles(styles)
+@connect((state) => ({
+  syncPercent: state.App.get('syncPercent'),
+  syncBlockNum: state.App.get('syncBlockNum'),
+  syncBlockTime: state.App.get('syncBlockTime'),
+}))
+export default class Loader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     syncPercent: PropTypes.number.isRequired,
@@ -29,12 +33,10 @@ class Loader extends React.PureComponent {
     return (
       <div
         className={classes.loaderBg}
-        style={
-          {
-            opacity: hideLoader ? 0 : 1,
-            display: hideLoader ? 'none' : 'block',
-          }
-        }
+        style={{
+          opacity: hideLoader ? 0 : 1,
+          display: hideLoader ? 'none' : 'block',
+        }}
       >
         <div className={classes.loaderWrapper}>
           <div className={classes.loaderLogoWrapper}>
@@ -50,7 +52,7 @@ class Loader extends React.PureComponent {
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          { syncBlockNum && syncBlockTime ?
+          {syncBlockNum && syncBlockTime && (
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />
@@ -64,21 +66,10 @@ class Loader extends React.PureComponent {
               <Grid item className={classes.loaderInfoData} xs={6}>
                 {getLocalDateTimeString(syncBlockTime)}
               </Grid>
-            </Grid> : null
-          }
+            </Grid>
+          )}
         </div>
       </div>
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncPercent: state.App.get('syncPercent'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Loader));

@@ -1,28 +1,21 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
-import Typography from 'material-ui/Typography';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
-class SelectAddressDialog extends React.Component {
+class SelectAddressDialog extends Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     onClosed: PropTypes.func.isRequired,
   };
 
   render() {
-    const {
-      classes,
-      dialogVisible,
-      walletAddresses,
-    } = this.props;
+    const { dialogVisible, walletAddresses } = this.props;
 
     return (
       <Dialog

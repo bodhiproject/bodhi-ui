@@ -1,16 +1,12 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
+import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
 import { CircularProgress } from 'material-ui/Progress';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 
@@ -107,7 +103,7 @@ const messages = defineMessages({
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-export default class OraclePage extends React.Component {
+export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -257,13 +253,13 @@ export default class OraclePage extends React.Component {
                           config.predictionAction.btnText
                       }
                     </Button>
-                    {showResultHistory ? <EventResultHistory oracles={oracles} /> : undefined}
+                    {showResultHistory && <EventResultHistory oracles={oracles} />}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
                 )}
               </Grid>
             </Grid>
-            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <Grid item xs={12} md={4} className={cx(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo className={classes.eventDetailInfo} infoObjs={this.getEventInfoObjs()} />
               <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail={false} />
             </Grid>
@@ -350,27 +346,21 @@ export default class OraclePage extends React.Component {
       oracle = _.find(oracles, { txid });
     }
 
-    const centralizedOracle = _.find(oracles, { token: Token.Qtum });
-    const decentralizedOracles = _.orderBy(
-      _.filter(oracles, { token: Token.Bot }),
-      ['blockNum'],
-      [SortBy.Descending.toLowerCase()]
-    );
     let config;
 
     if (oracle) {
       const { token, status } = oracle;
 
       if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
-        config = this.setUnconfirmedConfig(syncBlockTime, oracle);
+        config = this.setUnconfirmedConfig();
       } else if (token === Token.Qtum && status === OracleStatus.Voting) {
-        config = this.setBetConfig(syncBlockTime, oracle);
+        config = this.setBetConfig();
       } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
-        config = this.setResultSetConfig(syncBlockTime, oracle);
+        config = this.setResultSetConfig(oracle);
       } else if (token === Token.Bot && status === OracleStatus.Voting) {
-        config = this.setVoteConfig(syncBlockTime, oracle, centralizedOracle, decentralizedOracles);
+        config = this.setVoteConfig(oracle);
       } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
-        config = this.setFinalizeConfig(syncBlockTime, centralizedOracle, decentralizedOracles);
+        config = this.setFinalizeConfig();
       }
     }
 
@@ -389,12 +379,11 @@ export default class OraclePage extends React.Component {
     this.setState({ oracle, oracles, config });
   }
 
-  setUnconfirmedConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
+  setUnconfirmedConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.bet);
+    this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -412,12 +401,8 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setBetConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
-    const { locale, messages: localeMessages } = this.props.intl;
-    const intl = getIntlProvider(locale, localeMessages);
-
-    setAppLocation(AppLocation.bet);
+  setBetConfig = () => {
+    this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -431,12 +416,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setResultSetConfig = (syncBlockTime, oracle) => {
-    const { setAppLocation } = this.props;
+  setResultSetConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.resultSet);
+    this.props.setAppLocation(AppLocation.resultSet);
 
     return {
       eventStatus: EventStatus.Set,
@@ -454,12 +438,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setVoteConfig = (syncBlockTime, oracle, centralizedOracle, decentralizedOracles) => {
-    const { setAppLocation } = this.props;
+  setVoteConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.vote);
+    this.props.setAppLocation(AppLocation.vote);
 
     return {
       eventStatus: EventStatus.Vote,
@@ -477,12 +460,11 @@ export default class OraclePage extends React.Component {
     };
   };
 
-  setFinalizeConfig = (syncBlockTime, centralizedOracle, decentralizedOracles) => {
-    const { setAppLocation } = this.props;
+  setFinalizeConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    setAppLocation(AppLocation.finalize);
+    this.props.setAppLocation(AppLocation.finalize);
 
     return {
       eventStatus: EventStatus.Finalize,

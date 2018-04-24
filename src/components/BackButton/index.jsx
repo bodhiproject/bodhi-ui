@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import ChevronLeft from 'material-ui-icons/ChevronLeft';
-import Typography from 'material-ui/Typography';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
@@ -14,11 +13,10 @@ import { AppLocation, RouterPath } from '../../constants';
 @withRouter
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state, props) => ({
+@connect((state) => ({
   appLocation: state.App.get('appLocation'),
-}), (dispatch, props) => ({
 }))
-export default class BackButton extends React.Component {
+export default class BackButton extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,

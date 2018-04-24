@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, defineMessages, formatMessage, intlShape } from 'react-intl';
+import { injectIntl, defineMessages, intlShape } from 'react-intl';
 import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
 
@@ -20,7 +20,12 @@ const messages = defineMessages({
 });
 
 
-class MyWallet extends React.Component {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect(null, (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
+}))
+export default class MyWallet extends Component {
   static propTypes = {
     setAppLocation: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -48,14 +53,3 @@ class MyWallet extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(MyWallet)));

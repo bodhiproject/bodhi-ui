@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createMuiTheme } from 'material-ui/styles';
 
 /* Brand Variables */
@@ -53,9 +54,7 @@ const paddingLg = spaceUnit * 7; // 56
 const navHeight = 70;
 const tableHeaderHeight = 40;
 
-const px = function (value) {
-  return value.toString().concat('px');
-};
+const px = (value) => value.toString().concat('px');
 
 // Material Theme for Bodhi
 
@@ -206,17 +205,17 @@ const bodhiTheme = createMuiTheme({
       },
     },
     MuiTableRow: {
-      typeHead: {
+      head: {
         height: tableHeaderHeight,
         background: borderColor,
       },
     },
     MuiTableCell: {
-      typeBody: {
+      body: {
         color: textColorGrey,
-        padding: px(spaceUnit),
+        fontSize: 13,
       },
-      typeHead: {
+      head: {
         fontWeight: 700,
         fontSize: px(fontSizeMeta),
       },

@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { compose, withApollo } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -20,6 +20,7 @@ const messages = defineMessages({
   },
 });
 
+
 @injectIntl
 @withApollo
 @connect((state) => ({
@@ -34,8 +35,7 @@ const messages = defineMessages({
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 }))
-
-export default class GlobalHub extends React.PureComponent {
+export default class GlobalHub extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     client: PropTypes.object,

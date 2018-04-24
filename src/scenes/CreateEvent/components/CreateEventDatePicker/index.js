@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import { Field } from 'redux-form';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -19,7 +19,13 @@ const messages = defineMessages({
   },
 });
 
-class CreateEventDatePicker extends React.PureComponent {
+
+@injectIntl
+@connect((state) => ({
+  syncBlockNum: state.App.get('syncBlockNum'),
+  averageBlockTime: state.App.get('averageBlockTime'),
+}))
+export default class CreateEventDatePicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     syncBlockNum: PropTypes.number,
@@ -73,10 +79,7 @@ class CreateEventDatePicker extends React.PureComponent {
               type="datetime-local"
               error={Boolean(touched && error)}
             />
-            {
-              touched && error ?
-                <FormHelperText error>{error}</FormHelperText> : null
-            }
+            {touched && error && <FormHelperText error>{error}</FormHelperText>}
           </FormControl>
         </Grid>
         <Grid item xs={6}>
@@ -103,14 +106,3 @@ class CreateEventDatePicker extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  averageBlockTime: state.App.get('averageBlockTime'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateEventDatePicker));

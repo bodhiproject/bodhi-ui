@@ -1,15 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog';
-import { withStyles } from 'material-ui/styles';
+import { Button, Typography, withStyles } from 'material-ui';
+import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
@@ -38,28 +31,51 @@ const messages = defineMessages({
   },
 });
 
-class TransactionSentDialog extends React.PureComponent {
-  constructor(props) {
-    super(props);
 
-    this.getSuccessText = this.getSuccessText.bind(this);
-    this.getErrorText = this.getErrorText.bind(this);
-    this.onOkClicked = this.onOkClicked.bind(this);
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect(null, (dispatch) => ({
+  clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+}))
+export default class TransactionSentDialog extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    txReturn: PropTypes.object,
+    clearTxReturn: PropTypes.func.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line
+  }
+
+  static defaultProps = {
+    txReturn: undefined,
+  }
+
+  get successText() {
+    const { intl, txReturn } = this.props;
+    return {
+      title: intl.formatMessage(messages.successMsg),
+      bodyPrimary: intl.formatMessage(messages.waitingMsg),
+      bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
+    };
+  }
+
+  get errorText() {
+    const { intl, txReturn } = this.props;
+    return {
+      title: intl.formatMessage(messages.failureMsg),
+      bodyPrimary: txReturn.error,
+      bodySecondary: '',
+    };
   }
 
   render() {
-    const {
-      intl,
-      classes,
-      txReturn,
-    } = this.props;
+    const { intl, classes, txReturn } = this.props;
 
     let contentText;
     if (txReturn) {
       if (txReturn.txid) {
-        contentText = this.getSuccessText();
+        contentText = this.successText;
       } else {
-        contentText = this.getErrorText();
+        contentText = this.errorText;
       }
     } else {
       contentText = {
@@ -72,7 +88,7 @@ class TransactionSentDialog extends React.PureComponent {
     return (
       <Dialog
         open={Boolean(txReturn)}
-        onClose={this.onOkClicked}
+        onClose={() => this.props.clearTxReturn}
       >
         <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
@@ -87,49 +103,4 @@ class TransactionSentDialog extends React.PureComponent {
       </Dialog>
     );
   }
-
-  getSuccessText() {
-    const { intl, txReturn } = this.props;
-    return {
-      title: intl.formatMessage(messages.successMsg),
-      bodyPrimary: `${intl.formatMessage(messages.waitingMsg)}`,
-      bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
-    };
-  }
-
-  getErrorText() {
-    const { intl, txReturn } = this.props;
-    return {
-      title: intl.formatMessage(messages.failureMsg),
-      bodyPrimary: txReturn.error,
-      bodySecondary: '',
-    };
-  }
-
-  onOkClicked() {
-    this.props.clearTxReturn();
-  }
 }
-
-TransactionSentDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  txReturn: PropTypes.object,
-  clearTxReturn: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-typos
-  intl: intlShape.isRequired,
-};
-
-TransactionSentDialog.defaultProps = {
-  txReturn: undefined,
-};
-
-const mapStateToProps = (state) => ({
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(TransactionSentDialog)));

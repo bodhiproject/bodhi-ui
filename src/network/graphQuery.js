@@ -5,6 +5,11 @@ import client from './graphClient';
 import GraphParser from './graphParser';
 import { TYPE, isValidEnum, getTypeDef } from './graphSchema';
 
+if (process.env.REACT_APP_ENV === 'dev') {
+  window.queries = '';
+}
+
+
 class GraphQuery {
   constructor(queryName, type) {
     this.queryName = queryName;
@@ -112,7 +117,10 @@ class GraphQuery {
 
   async execute() {
     const query = this.build();
-    console.debug(query);
+    if (process.env.REACT_APP_ENV === 'dev') {
+      window.queries += `\n${query}`;
+    }
+
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',

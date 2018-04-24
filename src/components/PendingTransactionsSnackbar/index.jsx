@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Snackbar from 'material-ui/Snackbar';
-import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import classNames from 'classnames';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import cx from 'classnames';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
@@ -60,7 +59,16 @@ const messages = defineMessages({
   },
 });
 
-class PendingTransactionsSnackbar extends React.Component {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
+  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
+}), (dispatch) => ({
+  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
+}))
+export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
@@ -110,10 +118,7 @@ class PendingTransactionsSnackbar extends React.Component {
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              <i
-                className={classNames(classes.closeIcon, 'icon', 'iconfont', 'icon-ic_close')}
-                onClick={this.onCloseClicked}
-              ></i>
+              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
             </Grid>
           </Grid>
         }
@@ -159,16 +164,3 @@ class PendingTransactionsSnackbar extends React.Component {
     this.props.togglePendingTxsSnackbar(false);
   };
 }
-
-const mapStateToProps = (state) => ({
-  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
-  };
-}
-
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PendingTransactionsSnackbar)));

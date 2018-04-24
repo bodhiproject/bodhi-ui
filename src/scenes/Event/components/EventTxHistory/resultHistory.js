@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, Typography } from 'material-ui';
 
 import { Token } from '../../../../constants';
 import { getLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import styles from './styles';
 
-class EventResultHistory extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     oracles: PropTypes.array.isRequired,
@@ -28,48 +30,47 @@ class EventResultHistory extends React.PureComponent {
           <FormattedMessage id="str.resultHistory" defaultMessage="Result History">
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
-        </Typography> {
-          sortedOracles.length ?
-            (<Table>
-              <TableHead>
-                <TableRow>
+        </Typography>
+        {sortedOracles.length ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.date" defaultMessage="Date" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.amount" defaultMessage="Amount" />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {_.map(sortedOracles, (oracle, index) => (
+                <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+                  <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
+                  <TableCell padding="dense">{oracle.token === Token.Qtum ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
                   <TableCell padding="dense">
-                    <FormattedMessage id="str.date" defaultMessage="Date" />
+                    {index !== sortedOracles.length - 1
+                      ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
+                      : ''
+                    }
                   </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.amount" defaultMessage="Amount" />
-                  </TableCell>
+                  <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {_.map(sortedOracles, (oracle, index) => (
-                  <TableRow key={`result-${index}`} selected={index % 2 === 1}>
-                    <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
-                    <TableCell padding="dense">{oracle.token === Token.Qtum ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
-                    <TableCell padding="dense">
-                      {index !== sortedOracles.length - 1
-                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
-                        : ''
-                      }
-                    </TableCell>
-                    <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>) :
-            <Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-            </Typography>
-        }
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <Typography variant="body1">
+            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+          </Typography>
+        )}
       </div>
     );
   }
 }
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventResultHistory));

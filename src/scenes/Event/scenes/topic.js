@@ -1,19 +1,15 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
+import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
+import cx from 'classnames';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
+import Warning from '../../../components/Warning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
@@ -79,7 +75,7 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
-export default class TopicPage extends React.Component {
+export default class TopicPage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
@@ -195,7 +191,7 @@ export default class TopicPage extends React.Component {
                 <EventTxHistory transactions={getTransactionsReturn} options={topic.options} />
               </Grid>
             </Grid>
-            <Grid item xs={12} md={4} className={classNames(classes.eventDetailContainerGrid, 'right')}>
+            <Grid item xs={12} md={4} className={cx(classes.eventDetailContainerGrid, 'right')}>
               <EventInfo infoObjs={this.getEventInfoObjs()} className={classes.eventDetailInfo} />
               <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail />
             </Grid>
@@ -227,7 +223,7 @@ export default class TopicPage extends React.Component {
 
     return (
       <Paper className={classes.withdrawPaper}>
-        <div className={classNames(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
+        <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
           <div className={classes.withdrawContainerSectionIcon}>
             <i className="icon iconfont icon-ic_reward"></i>
           </div>
@@ -239,20 +235,20 @@ export default class TopicPage extends React.Component {
           <Typography className={classes.withdrawWinningOption}>
             {topic.options[topic.resultIdx]}
           </Typography>
-          {
-            totalBetAmount || totalVoteAmount ?
-              <Typography variant="caption">
-                {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
-              </Typography> :
-              <Typography variant="caption">
-                <FormattedMessage
-                  id="topic.didNotBetOrVote"
-                  defaultMessage="You did not bet or vote on the winning outcome."
-                />
-              </Typography>
-          }
+          {(totalBetAmount || totalVoteAmount) ? (
+            <Typography variant="caption">
+              {intl.formatMessage(pageMessage.youBetYouVote, { qtum: resultBetAmount, bot: resultVoteAmount })}
+            </Typography>
+          ) : (
+            <Typography variant="caption">
+              <FormattedMessage
+                id="topic.didNotBetOrVote"
+                defaultMessage="You did not bet or vote on the winning outcome."
+              />
+            </Typography>
+          )}
         </div>
-        { escrowClaim || botWinnings || qtumWinnings ?
+        {(escrowClaim || botWinnings || qtumWinnings) && (
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
@@ -283,7 +279,7 @@ export default class TopicPage extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={classNames(classes.withdrawContainerSection, 'last')}>
+            <div className={cx(classes.withdrawContainerSection, 'last')}>
               <div className={classes.withdrawContainerSectionIcon}>
                 <i className="icon iconfont icon-ic_wallet"></i>
               </div>
@@ -294,8 +290,8 @@ export default class TopicPage extends React.Component {
               </Typography>
             </div>
             {this.renderWithdrawList()}
-          </div> : null
-        }
+          </div>
+        )}
       </Paper>
     );
   }
@@ -335,7 +331,6 @@ export default class TopicPage extends React.Component {
   };
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
-    const { intl, classes } = this.props;
     const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
 
     if (!show) {
@@ -349,7 +344,7 @@ export default class TopicPage extends React.Component {
       <TableRow key={index}>
         <TableCell padding="dense">
           <div>{withdrawableAddress.address}</div>
-          { id && message && <div className={warningTypeClass}>{intl.formatMessage({ id, message })}</div> }
+          {id && message && <Warning id={id} message={message} className={warningTypeClass} />}
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>
         <TableCell padding="dense">
@@ -471,9 +466,9 @@ export default class TopicPage extends React.Component {
     return (
       <div className={classes.withdrawOptionsWrapper}>
         {_.map(topic.options, (option, index) => (
-          <div key={`option-${index}`} className={classNames(classes.withdrawContainerSection, 'option')}>
+          <div key={`option-${index}`} className={cx(classes.withdrawContainerSection, 'option')}>
             <div className={classes.eventOptionNum}>{index + 1}</div>
-            <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : null}>
+            <Typography variant="title" className={topic.resultIdx === index ? classes.withdrawWinningOptionSmall : ''}>
               {option}
             </Typography>
             <div>
@@ -483,14 +478,13 @@ export default class TopicPage extends React.Component {
                 })}
               </Typography>
             </div>
-            {
-              betBalances[index] || voteBalances[index] ?
-                <div>
-                  <Typography variant="caption">
-                    {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
-                  </Typography>
-                </div> : null
-            }
+            {!!(betBalances[index] || voteBalances[index]) && (
+              <div>
+                <Typography variant="caption">
+                  {intl.formatMessage(pageMessage.youBetYouVote, { qtum: betBalances[index], bot: voteBalances[index] })}
+                </Typography>
+              </div>
+            )}
           </div>
         ))}
       </div>

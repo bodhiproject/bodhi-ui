@@ -1,4 +1,6 @@
-const styles = (theme) => ({
+
+
+const styles = () => ({
   scroll: {
     width: '100%',
     display: 'flex',

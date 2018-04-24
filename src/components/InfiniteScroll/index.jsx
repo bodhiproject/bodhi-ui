@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Grid from 'material-ui/Grid';
 
-export default class InfiniteScroll extends React.Component {
+export default class InfiniteScroll extends Component {
   static propTypes = {
     hasMore: PropTypes.bool,
     loadMore: PropTypes.func,

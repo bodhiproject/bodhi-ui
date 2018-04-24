@@ -1,4 +1,6 @@
-const styles = (theme) => ({
+
+
+const styles = () => ({
   eventsEmptyWrapper: {
     width: '300px',
     position: 'relative',

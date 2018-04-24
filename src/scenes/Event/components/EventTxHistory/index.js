@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import { Typography, withStyles } from 'material-ui';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -13,7 +12,10 @@ import { getLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType } from '../../../../constants';
 
-class EventTxHistory extends React.PureComponent {
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+export default class EventTxHistory extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
@@ -28,44 +30,45 @@ class EventTxHistory extends React.PureComponent {
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
           <FormattedMessage id="str.transaction" defaultMessage="TRANSACTIONS" />
-        </Typography> {
-          transactions.length && options.length ?
-            (<Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.date" defaultMessage="Date" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.type" defaultMessage="Type" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.description" defaultMessage="Description" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.amount" defaultMessage="Amount" />
-                  </TableCell>
-                  <TableCell padding="dense">
-                    <FormattedMessage id="str.status" defaultMessage="Status" />
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {_.map(transactions, (transaction, index) => (
-                  this.renderTxRow(transaction, index)
-                ))}
-              </TableBody>
-            </Table>) :
-            <Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-            </Typography>
-        }
+        </Typography>
+        {transactions.length && options.length ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.date" defaultMessage="Date" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.type" defaultMessage="Type" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.description" defaultMessage="Description" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.amount" defaultMessage="Amount" />
+                </TableCell>
+                <TableCell padding="dense">
+                  <FormattedMessage id="str.status" defaultMessage="Status" />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {_.map(transactions, (transaction, index) => (
+                this.renderTxRow(transaction, index)
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <Typography variant="body1">
+            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+          </Typography>
+        )}
       </div>
     );
   }
 
-  renderTxRow = (transaction, index) => {
-    const { intl, classes } = this.props;
+  renderTxRow = (transaction) => {
+    const { intl } = this.props;
     const { locale, messages: localeMessages } = intl;
 
     const result = [];
@@ -112,5 +115,3 @@ class EventTxHistory extends React.PureComponent {
     }
   };
 }
-
-export default withStyles(styles, { withTheme: true })(injectIntl(EventTxHistory));

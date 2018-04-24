@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import moment from 'moment';
-import Grid from 'material-ui/Grid';
 import { Field } from 'redux-form';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../../../redux/App/actions';
 
@@ -19,7 +17,15 @@ const messages = defineMessages({
   },
 });
 
-class CreateEventCreatorPicker extends React.PureComponent {
+
+@injectIntl
+@connect((state) => ({
+  walletAddresses: state.App.get('walletAddresses'),
+  lastUsedAddress: state.App.get('lastUsedAddress'),
+}), (dispatch) => ({
+  setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+}))
+export default class CreateEventCreatorPicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -36,7 +42,7 @@ class CreateEventCreatorPicker extends React.PureComponent {
 
   renderCreatorAddressSelector = ({
     input,
-    meta: { touched, error },
+    meta: { error },
     ...custom
   }) => {
     const { name } = this.props;
@@ -52,17 +58,14 @@ class CreateEventCreatorPicker extends React.PureComponent {
         fullWidth
         error={Boolean(error)}
       >
-        {this.props.walletAddresses.map((item, index) => (
+        {this.props.walletAddresses.map((item) => (
           <MenuItem key={item.address} value={item.address}>
             {`${item.address}`}
             {` (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
           </MenuItem>
         ))}
       </Select>
-      {
-        error ?
-          <FormHelperText error>{error}</FormHelperText> : null
-      }
+      {error && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>);
   };
 
@@ -77,7 +80,7 @@ class CreateEventCreatorPicker extends React.PureComponent {
     return null;
   };
 
-  onCreatorAddressChange = (event, newValue, previousValue, name) => {
+  onCreatorAddressChange = (event, newValue) => {
     this.props.setLastUsedAddress(newValue);
   };
 
@@ -95,16 +98,3 @@ class CreateEventCreatorPicker extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-  lastUsedAddress: state.App.get('lastUsedAddress'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateEventCreatorPicker));

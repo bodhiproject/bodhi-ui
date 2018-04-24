@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key: 0, no-nested-ternary:0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
@@ -10,11 +9,22 @@ import EventCardsGridContainer from '../../components/EventCardsGridContainer/in
 import { EventStatus, SortBy } from '../../constants';
 import styles from './styles';
 
-class Dashboard extends React.Component {
+
+@withStyles(styles, { withTheme: true })
+@connect((state) => ({
+  sortBy: state.Dashboard.get('sortBy'),
+}))
+export default class Dashboard extends Component {
+  static propTypes = {
+    sortBy: PropTypes.string,
+  }
+
+  static defaultProps = {
+    sortBy: SortBy.Ascending,
+  }
+
   render() {
-    const {
-      sortBy,
-    } = this.props;
+    const { sortBy } = this.props;
 
     return (
       <div>
@@ -27,22 +37,3 @@ class Dashboard extends React.Component {
     );
   }
 }
-
-Dashboard.propTypes = {
-  sortBy: PropTypes.string,
-};
-
-Dashboard.defaultProps = {
-  sortBy: SortBy.Ascending,
-};
-
-const mapStateToProps = (state) => ({
-  sortBy: state.Dashboard.get('sortBy'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Dashboard));
