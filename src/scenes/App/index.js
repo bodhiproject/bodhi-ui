@@ -37,7 +37,7 @@ export default class App extends Component {
         <CssBaseline />
         <GlobalHub />
         <Loader />
-        <TermsAndConditions langHandler={langHandler} locale={locale} />
+        <TermsAndConditions langHandler={langHandler} />
         <div className={classes.container}>
           <AppRouter url={url} langHandler={langHandler} />
         </div>
