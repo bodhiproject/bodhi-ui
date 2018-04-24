@@ -235,10 +235,10 @@ export default class CreateEvent extends Component {
   }
 
   static defaultProps = {
-    createTopicTx: null,
-    txReturn: null,
-    getInsightTotals: null,
-    eventEscrowAmount: null,
+    createTopicTx: undefined,
+    txReturn: undefined,
+    getInsightTotals: undefined,
+    eventEscrowAmount: undefined,
   }
 
   state = {
