@@ -25,22 +25,20 @@ export default class EventInfo extends Component {
 
     return (
       <div className={classes.eventInfoWrapper}>
-        {_.map(infoObjs, ({ label, highlight, content }, index) => (
-          label && content && (
-            <Grid key={`info${index}`} item xs={6} md={12} className={classes.eventInfoBlock}>
-              <Typography variant="body1">
-                {label}
+        {_.map(infoObjs, ({ label, highlight, content }, index) => label && content && (
+          <Grid key={`info${index}`} item xs={6} md={12} className={classes.eventInfoBlock}>
+            <Typography variant="body1">
+              {label}
+            </Typography>
+            <Typography variant="title" className={classes.eventInfo}>
+              {content}
+            </Typography>
+            {highlight && (
+              <Typography variant="body2" color="secondary">
+                {highlight}
               </Typography>
-              <Typography variant="title" className={classes.eventInfo}>
-                {content}
-              </Typography>
-              {highlight && (
-                <Typography variant="body2" color="secondary">
-                  {highlight}
-                </Typography>
-              )}
-            </Grid>
-          )
+            )}
+          </Grid>
         ))}
       </div>
     );
