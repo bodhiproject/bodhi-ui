@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CssBaseline, withStyles } from 'material-ui';
+import { connect } from 'react-redux';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -17,6 +18,9 @@ import ErrorDialog from '../../components/ErrorDialog/index';
 
 
 @withStyles(styles)
+@connect((state) => ({
+  txReturn: state.Graphql.get('txReturn'),
+}))
 export default class App extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -52,14 +56,3 @@ export default class App extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  txReturn: state.Graphql.get('txReturn'),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App));
