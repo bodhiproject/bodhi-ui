@@ -17,16 +17,25 @@ export default class TermsAndConditions extends Component {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     langHandler: PropTypes.func,
-  };
+  }
 
   static defaultProps = {
     langHandler: undefined,
-  };
+  }
 
   state = {
     isVisible: !!localStorage.getItem(TNC_ACCEPTED),
     checkboxChecked: false,
-  };
+  }
+
+  handleCheckedChange = (name) => (event) => {
+    this.setState({ [name]: event.target.checked });
+  }
+
+  onAcceptButtonClick = () => {
+    localStorage.setItem(TNC_ACCEPTED, true);
+    this.setState({ isVisible: true });
+  }
 
   render() {
     const { classes, intl: { locale } } = this.props;
@@ -88,15 +97,6 @@ export default class TermsAndConditions extends Component {
         </Grid>
       </div>
     );
-  }
-
-  handleCheckedChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  }
-
-  onAcceptButtonClick = () => {
-    localStorage.setItem(TNC_ACCEPTED, true);
-    this.setState({ isVisible: true });
   }
 }
 
