@@ -691,7 +691,7 @@ export default class OraclePage extends Component {
       lastUsedAddress,
     );
 
-    Tracking.track('bet');
+    Tracking.track('oracleDetail-bet');
   }
 
   setResult = () => {
@@ -707,7 +707,7 @@ export default class OraclePage extends Component {
       lastUsedAddress,
     );
 
-    Tracking.track('set');
+    Tracking.track('oracleDetail-set');
   }
 
   vote = (amount) => {
@@ -723,7 +723,7 @@ export default class OraclePage extends Component {
       lastUsedAddress,
     );
 
-    Tracking.track('vote');
+    Tracking.track('oracleDetail-vote');
   }
 
   finalizeResult = () => {
@@ -732,6 +732,6 @@ export default class OraclePage extends Component {
 
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
 
-    Tracking.track('finalize');
+    Tracking.track('oracleDetail-finalize');
   }
 }

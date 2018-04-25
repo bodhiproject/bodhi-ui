@@ -11,6 +11,7 @@ import styles from './styles';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { Token } from '../../../../constants';
 import { decimalToSatoshi } from '../../../../helpers/utility';
+import Tracking from '../../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
   to: {
@@ -202,5 +203,7 @@ export default class WithdrawDialog extends Component {
 
     createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
+
+    Tracking.track('myWallet-withdraw');
   };
 }

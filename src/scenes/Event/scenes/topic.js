@@ -552,6 +552,6 @@ export default class TopicPage extends Component {
       senderAddress,
     );
 
-    Tracking.track('withdraw');
+    Tracking.track('topicDetail-withdraw');
   }
 }

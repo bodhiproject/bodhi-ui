@@ -15,6 +15,7 @@ import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
 import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
+import Tracking from '../../../../helpers/mixpanelUtil';
 import styles from './styles';
 
 
@@ -56,6 +57,8 @@ export default class TopActions extends Component {
 
     toggleCreateEventDialog(true);
     getEventEscrowAmount(lastUsedAddress);
+
+    Tracking.track('dashboard-createEventClick');
   };
 
   render() {
