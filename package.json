@@ -40,6 +40,7 @@
     "react-hot-loader": "^1.3.1",
     "react-intl": "^2.3.0",
     "react-iscroll": "^2.0.3",
+    "react-mixpanel": "0.0.11",
     "react-perfect-scrollbar": "^0.2.0",
     "react-placeholder": "^1.0.5",
     "react-redux": "^5.0.4",
