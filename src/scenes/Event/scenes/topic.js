@@ -29,6 +29,7 @@ import {
 } from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
+import Tracking from '../../../helpers/mixpanelUtil';
 
 const pageMessage = defineMessages({
   returnRate: {
@@ -550,5 +551,7 @@ export default class TopicPage extends Component {
       topic.address,
       senderAddress,
     );
+
+    Tracking.track('withdraw');
   }
 }
