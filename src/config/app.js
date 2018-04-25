@@ -20,6 +20,6 @@ module.exports = {
     showAppLoad: true,
   },
   analytics: {
-    mixpanelToken: "5c13e6b02fc222c0adae2f1f8cd923b0",
+    mixpanelToken: '5c13e6b02fc222c0adae2f1f8cd923b0',
   },
 };

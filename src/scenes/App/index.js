@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CssBaseline, withStyles } from 'material-ui';
 import { connect } from 'react-redux';
+import mixpanel from 'mixpanel-browser';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -31,6 +32,14 @@ export default class App extends Component {
 
   static defaultProps = {
     txReturn: undefined,
+  }
+
+  contextTypes = {
+    mixpanel: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    this.context.mixpanel.track('AppStart');
   }
 
   render() {
