@@ -15,7 +15,6 @@ import GlobalSnackbar from '../../components/GlobalSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
-import Tracking from '../../helpers/mixpanelUtil';
 
 
 @withStyles(styles)
@@ -32,10 +31,6 @@ export default class App extends Component {
 
   static defaultProps = {
     txReturn: undefined,
-  }
-
-  componentDidMount() {
-    Tracking.appStart();
   }
 
   render() {

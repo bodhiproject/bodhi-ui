@@ -12,10 +12,15 @@ export default class Tracking {
       return;
     }
 
+    // Instantiate if not instantiated yet
     if (!mixpanel) {
       mixpanel = Mixpanel.init(AppConfig.analytics.mixpanelToken);
     }
-    mixpanel.track(eventName);
+
+    // Only track in production build
+    if (process.env && process.env.NODE_ENV === 'production') {
+      mixpanel.track(eventName);
+    }
   }
 
   static appStart() {
