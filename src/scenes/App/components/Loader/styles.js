@@ -63,11 +63,11 @@ const styles = (theme) => ({
   loaderInfoLabel: {
     fontWeight: 'bold',
     textAlign: 'right',
-    padding: 6,
+    padding: theme.padding.unit.px,
   },
   loaderInfoData: {
     textAlign: 'left',
-    padding: 6,
+    padding: theme.padding.unit.px,
   },
 });
 
