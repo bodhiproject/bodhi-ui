@@ -9,7 +9,6 @@ import moment from 'moment';
 
 import App from './scenes/App/index';
 import AppLocale from './languageProvider';
-import AppConfig from './config/app';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
