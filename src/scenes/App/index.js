@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CssBaseline, withStyles } from 'material-ui';
 import { connect } from 'react-redux';
-import mixpanel from 'mixpanel-browser';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -16,6 +15,7 @@ import GlobalSnackbar from '../../components/GlobalSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
+import Tracking from '../../helpers/mixpanelUtil';
 
 
 @withStyles(styles)
@@ -34,12 +34,8 @@ export default class App extends Component {
     txReturn: undefined,
   }
 
-  contextTypes = {
-    mixpanel: PropTypes.object.isRequired
-  }
-
   componentDidMount() {
-    this.context.mixpanel.track('AppStart');
+    Tracking.appStart();
   }
 
   render() {

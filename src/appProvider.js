@@ -6,12 +6,10 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import moment from 'moment';
-import mixpanel from 'mixpanel-browser';
-import MixpanelProvider from 'react-mixpanel';
 
 import App from './scenes/App/index';
 import AppLocale from './languageProvider';
-import AppConfig from './config/app'
+import AppConfig from './config/app';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
 import { store, history } from './redux/store';
@@ -42,16 +40,14 @@ export default class AppProvider extends Component {
       <MuiThemeProvider theme={bodhiTheme}>
         <IntlProvider locale={this.locales[this.state.locale].locale} messages={this.locales[this.state.locale].messages}>
           <ApolloProvider client={graphClient}>
-            <MixpanelProvider mixpanel={mixpanel.init(AppConfig.analytics.mixpanelToken)}>
-              <Provider store={store}>
-                <ConnectedRouter history={history}>
-                  <Route
-                    path="/"
-                    render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
-                  />
-                </ConnectedRouter>
-              </Provider>
-            </MixpanelProvider>
+            <Provider store={store}>
+              <ConnectedRouter history={history}>
+                <Route
+                  path="/"
+                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
+                />
+              </ConnectedRouter>
+            </Provider>
           </ApolloProvider>
         </IntlProvider>
       </MuiThemeProvider>
