@@ -46,8 +46,8 @@ const SKIP = 0;
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  topics: state.Graphql.get('getTopicsReturn'),
-  oracles: state.Graphql.get('getOraclesReturn'),
+  topics: state.graphql.getTopicsReturn,
+  oracles: state.graphql.getOraclesReturn,
   sortBy: state.dashboard.sortBy,
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddresses: state.App.get('walletAddresses'),

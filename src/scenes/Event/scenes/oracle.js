@@ -93,9 +93,9 @@ const messages = defineMessages({
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockTime: state.App.get('syncBlockTime'),
-  oracles: state.Graphql.get('getOraclesReturn'),
-  getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
-  txReturn: state.Graphql.get('txReturn'),
+  oracles: state.graphql.getOraclesReturn,
+  getTransactionsReturn: state.graphql.getTransactionsReturn,
+  txReturn: state.graphql.txReturn,
 }), (dispatch) => ({
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),

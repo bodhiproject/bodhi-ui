@@ -24,7 +24,7 @@ const messages = defineMessages({
 @injectIntl
 @connect((state) => ({
   ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
+  actionableItemCount: state.graphql.actionableItemCount,
 }))
 export default class NavBar extends Component {
   static propTypes = {

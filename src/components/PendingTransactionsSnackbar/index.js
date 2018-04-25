@@ -64,7 +64,7 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
+  getPendingTransactionsReturn: state.graphql.getPendingTransactionsReturn,
 }), (dispatch) => ({
   togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
 }))

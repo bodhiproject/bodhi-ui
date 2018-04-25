@@ -185,7 +185,7 @@ const validate = (values, props) => {
   initialValues: {
     outcomes: ['', ''],
   },
-  txReturn: state.Graphql.get('txReturn'),
+  txReturn: state.graphql.txReturn,
   walletEncrypted: state.App.get('walletEncrypted'),
   addressValidated: state.App.get('addressValidated'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),

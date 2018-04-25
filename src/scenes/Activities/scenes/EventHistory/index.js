@@ -49,8 +49,8 @@ const messages = defineMessages({ // eslint-disable-line
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  oracles: state.Graphql.get('getOraclesReturn'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
+  oracles: state.graphql.getOraclesReturn,
+  transactions: state.graphql.getTransactionsReturn,
 }), (dispatch) => ({
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
