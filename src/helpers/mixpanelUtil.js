@@ -1,7 +1,7 @@
 import Mixpanel from 'mixpanel';
 import _ from 'lodash';
 
-import AppConfig from '../config/app';
+const MIXPANEL_TOKEN = '5c13e6b02fc222c0adae2f1f8cd923b0';
 
 let mixpanel;
 
@@ -14,16 +14,12 @@ export default class Tracking {
 
     // Instantiate if not instantiated yet
     if (!mixpanel) {
-      mixpanel = Mixpanel.init(AppConfig.analytics.mixpanelToken);
+      mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
     }
 
     // Only track in production build
     if (process.env && process.env.NODE_ENV === 'production') {
       mixpanel.track(eventName);
     }
-  }
-
-  static appStart() {
-    this.track('AppStart');
   }
 }

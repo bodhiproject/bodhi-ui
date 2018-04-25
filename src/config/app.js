@@ -19,7 +19,4 @@ module.exports = {
     // and loading screen is blocking the view.
     showAppLoad: true,
   },
-  analytics: {
-    mixpanelToken: '5c13e6b02fc222c0adae2f1f8cd923b0',
-  },
 };
