@@ -19,7 +19,12 @@ export default class Tracking {
 
     // Only track in production build
     if (process.env && process.env.NODE_ENV === 'production') {
-      mixpanel.track(eventName);
+      mixpanel.track(eventName, { id: getTrackingId() });
     }
   }
+}
+
+function getTrackingId() {
+  const { OS_HOSTNAME, OS_USERNAME, OS_PLATFORM, OS_ARCH } = process.env;
+  return `${OS_HOSTNAME}.${OS_USERNAME}.${OS_PLATFORM}.${OS_ARCH}`;
 }

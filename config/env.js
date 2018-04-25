@@ -77,7 +77,7 @@ function getClientEnvironment(publicUrl) {
         PUBLIC_URL: publicUrl,
         OS_HOSTNAME: os.hostname(),
         OS_USERNAME: os.userInfo().username,
-        OS_PLATOFRM: os.platform(),
+        OS_PLATFORM: os.platform(),
         OS_ARCH: os.arch(),
       }
     );
