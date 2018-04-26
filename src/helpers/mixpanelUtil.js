@@ -1,9 +1,9 @@
-import Mixpanel from 'mixpanel';
+import mixpanel from 'mixpanel-browser/src/loader-module';
 import _ from 'lodash';
 
 const MIXPANEL_TOKEN = '5c13e6b02fc222c0adae2f1f8cd923b0';
 
-let mixpanel;
+let initialized = false;
 
 export default class Tracking {
   static track(eventName) {
@@ -13,8 +13,9 @@ export default class Tracking {
     }
 
     // Instantiate if not instantiated yet
-    if (!mixpanel) {
-      mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
+    if (!initialized) {
+      mixpanel.init(MIXPANEL_TOKEN);
+      initialized = true;
     }
 
     // Only track in production build
