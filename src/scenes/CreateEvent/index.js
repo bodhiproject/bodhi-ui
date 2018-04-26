@@ -7,13 +7,9 @@ import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { Field, reduxForm, Form, change } from 'redux-form';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import Grid from 'material-ui/Grid';
 import _TextField from 'material-ui/TextField';
-import { InputAdornment } from 'material-ui/Input';
-import Button from 'material-ui/Button';
-import { FormControl, FormHelperText } from 'material-ui/Form';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, Button, Grid, InputAdornment, FormControl, FormHelperText } from 'material-ui';
 
 import ImportantNote from '../../components/ImportantNote/index';
 import EventWarning from '../../components/EventWarning/index';
@@ -307,7 +303,6 @@ export default class CreateEvent extends Component {
       resultSettingEndTime,
       creatorAddress,
     } = values;
-
     createTopicTx(
       name,
       outcomes,

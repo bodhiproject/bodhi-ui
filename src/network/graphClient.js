@@ -4,6 +4,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
+import { mockClient } from './mockServer';
 
 import Routes from '../network/routes';
 
@@ -32,7 +33,9 @@ const link = process.browser ? split(
   httpLink,
 ) : httpLink;
 
-const client = new ApolloClient({
+
+const inTestEnv = process.env.REACT_APP_ENV === 'test';
+const client = inTestEnv ? mockClient : new ApolloClient({
   link,
   cache: new InMemoryCache(),
 });
