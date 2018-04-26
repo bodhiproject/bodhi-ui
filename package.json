@@ -22,7 +22,6 @@
     "lodash": "^4.17.4",
     "material-ui": "^1.0.0-beta.34",
     "material-ui-icons": "^1.0.0-beta.17",
-    "mixpanel": "^0.9.1",
     "moment": "^2.18.1",
     "moment-duration-format": "^2.2.2",
     "nprogress": "^0.2.0",
