@@ -8,52 +8,68 @@ import { gql } from '../../network/mockServer';
 
 describe('GraphQL tests', () => {
   // const server = mockServer();
-  const store = createStore();
+  const { dispatch, getState } = createStore();
 
   it('should create an event', async () => {
     const timeGap = 30; // minutes
     const nowPlus = (numOf) => `${moment().add(numOf, 'minutes').utc().unix()}`;
     const topic = Object.values({
-      name: '',
-      outcomes: [],
-      resultSetter: '',
+      name: casual.title,
+      outcomes: casual.array_of_words(3),
+      resultSetter: casual.uuid,
       bettingStartTime: nowPlus(0),
       bettingEndTime: nowPlus(timeGap),
       resultSettingStartTime: nowPlus(timeGap),
       resultSettingEndTime: nowPlus(2 * timeGap),
-      escrowAmount: 100,
-      creatorAddress: '',
+      escrowAmount: 10, // TODO: is this always the case???
+      creatorAddress: casual.uuid,
     });
-    store.dispatch(graphqlActions.createTopicTx(...topic));
-  });
-
-  it('should get all Oracles', async () => {
+    // expect(graphqlStore().getOraclesReturn.length).toBe(0);
+    dispatch(graphqlActions.createTopicTx(...topic));
+    console.log('STORE: ', getState().graphql);
     const { data } = await gql`
-      query {
-        allOracles(filter: {OR: [{token: BOT, status: WAITRESULT}]}) {
+      mutation {
+        createTopic(name: "a", options: ["a", "b"], resultSetterAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd", bettingStartTime: "1524727080", bettingEndTime: "1524727200", resultSettingStartTime: "1524727200", resultSettingEndTime: "1524727320", amount: "1000000000", senderAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd") {
           txid
+          createdTime
           version
-          address
-          topicAddress
+          type
           status
-          token
-          name
-          options
-          optionIdxs
-          amounts
-          resultIdx
-          blockNum
-          startTime
-          endTime
-          resultSetStartTime
-          resultSetEndTime
-          resultSetterAddress
-          resultSetterQAddress
-          consensusThreshold
+          senderAddress
         }
       }
     `;
     console.log('DATA: ', data);
+    // expect(graphqlStore().getOraclesReturn.length).toBe(1);
+  });
+
+  it('should get all Oracles', async () => {
+    // const { data } = await gql`
+    //   query {
+    //     allOracles(filter: {OR: [{token: BOT, status: WAITRESULT}]}) {
+    //       txid
+    //       version
+    //       address
+    //       topicAddress
+    //       status
+    //       token
+    //       name
+    //       options
+    //       optionIdxs
+    //       amounts
+    //       resultIdx
+    //       blockNum
+    //       startTime
+    //       endTime
+    //       resultSetStartTime
+    //       resultSetEndTime
+    //       resultSetterAddress
+    //       resultSetterQAddress
+    //       consensusThreshold
+    //     }
+    //   }
+    // `;
+    // console.log('DATA: ', data);
   });
   // it('should have the sortBy start out as ASC', () => {
   //   expect(store.getState().dashboard.sortBy).toBe(Ascending);
