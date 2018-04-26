@@ -5,11 +5,13 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import cx from 'classnames';
+
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
+import Tracking from '../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
   help: {
@@ -96,7 +98,7 @@ export default class NavBar extends Component {
             </Button>
 
             {this.renderActivitiesButtonWithBadge()}
-            <HelpButton onClick={() => window.open(faqUrls[this.props.intl.locale], '_blank')} classes={classes} />
+            <HelpButton onClick={this.onHelpButtonClick} classes={classes} />
           </NavSection>
         </Toolbar>
       </AppBar>
@@ -147,6 +149,11 @@ export default class NavBar extends Component {
     }
 
     return total.toFixed(2);
+  }
+
+  onHelpButtonClick = () => {
+    window.open(faqUrls[this.props.intl.locale], '_blank');
+    Tracking.track('navBar-helpClick');
   }
 }
 

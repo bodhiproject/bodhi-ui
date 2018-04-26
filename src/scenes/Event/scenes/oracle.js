@@ -38,6 +38,7 @@ import {
   EventStatus,
 } from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
+import Tracking from '../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
   consensusThreshold: {
@@ -689,6 +690,8 @@ export default class OraclePage extends Component {
       amount.toString(),
       lastUsedAddress,
     );
+
+    Tracking.track('oracleDetail-bet');
   }
 
   setResult = () => {
@@ -703,6 +706,8 @@ export default class OraclePage extends Component {
       oracle.consensusThreshold,
       lastUsedAddress,
     );
+
+    Tracking.track('oracleDetail-set');
   }
 
   vote = (amount) => {
@@ -717,6 +722,8 @@ export default class OraclePage extends Component {
       amount,
       lastUsedAddress,
     );
+
+    Tracking.track('oracleDetail-vote');
   }
 
   finalizeResult = () => {
@@ -724,5 +731,7 @@ export default class OraclePage extends Component {
     const { oracle } = this.state;
 
     createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
+
+    Tracking.track('oracleDetail-finalize');
   }
 }

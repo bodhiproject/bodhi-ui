@@ -16,6 +16,7 @@ import DepositDialog from '../DepositDialog/index';
 import WithdrawDialog from '../WithdrawDialog/index';
 import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
+import Tracking from '../../../../helpers/mixpanelUtil';
 import { SortBy } from '../../../../constants';
 
 
@@ -352,6 +353,8 @@ export default class MyBalances extends Component {
       selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
       depositDialogVisible: true,
     });
+
+    Tracking.track('myWallet-depositDialogOpen');
   }
 
   handleDepositDialogClose = () => {
@@ -374,6 +377,8 @@ export default class MyBalances extends Component {
         selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
         withdrawDialogVisible: true,
       });
+
+      Tracking.track('myWallet-withdrawDialogOpen');
     }
   }
 

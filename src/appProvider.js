@@ -6,6 +6,7 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import moment from 'moment';
+
 import App from './scenes/App/index';
 import AppLocale from './languageProvider';
 import bodhiTheme from './config/theme';
