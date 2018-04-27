@@ -454,7 +454,7 @@ export default class CreateEvent extends Component {
 }
 
 const Section = injectIntl(withStyles(styles, { withTheme: true })(({ classes, title, children, intl }) => (
-  <Grid container className={classes.eventField}>
+  <Grid container className={classes.sectionContainer}>
     <Grid item xs={3}>
       {intl.formatMessage(title)}
     </Grid>

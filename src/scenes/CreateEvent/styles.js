@@ -19,7 +19,7 @@ const styles = (theme) => ({
     width: 'fit-content',
     margin: 0,
   },
-  eventField: {
+  sectionContainer: {
     marginBottom: theme.padding.unit.px,
   },
 });
