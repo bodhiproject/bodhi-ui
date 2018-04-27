@@ -45,19 +45,25 @@ export default class CreateEventOutcomes extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  validateResultLength = (value) => {
+  validate = (value, allValues) => {
     const { intl } = this.props;
 
+    // Validate not empty
     if (_.isEmpty(value)) {
       return intl.formatMessage(messages.required);
     }
 
+    // Validate hex length
     let hexString = _.isUndefined(value) ? '' : value;
-
-    // Remove hex prefix for length validation
-    hexString = Web3Utils.toHex(hexString).slice(2);
+    hexString = Web3Utils.toHex(hexString).slice(2); // Remove hex prefix for length validation
     if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
       return intl.formatMessage(messages.resultTooLong);
+    }
+
+    // Validate no duplicate outcomes
+    const filtered = _.filter(allValues.outcomes, (item) => item.toLowerCase() === value.toLowerCase());
+    if (filtered.length > 1) {
+      return 'Duplicate results are not allowed';
     }
 
     return null;
@@ -95,7 +101,7 @@ export default class CreateEventOutcomes extends Component {
           name={outcome}
           placeholder={intl.formatMessage(messages.outcomeName)}
           component={this.renderTextField}
-          validate={[this.validateResultLength]}
+          validate={[this.validate]}
           startAdornmentLabel={`#${index + 1}`}
         />
         {fields.length > MIN_OPTION_NUMBER && (
@@ -137,4 +143,3 @@ export default class CreateEventOutcomes extends Component {
     );
   }
 }
-
