@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+// import { gql } from '../network/mockServer';
 import _ from 'lodash';
 
 import client from './graphClient';
@@ -45,15 +46,32 @@ class GraphMutation {
   }
 
   async execute() {
+    console.log('EXECUTE');
     const mutation = this.build();
     if (process.env.REACT_APP_ENV === 'dev') {
       window.mutations += `\n${mutation}`;
     }
+    // debugger; // eslint-disable-line
+    // client.mutate({
+    //   mutation: gql`${mutation}`,
+    //   // fetchPolicy: 'no-cache',
+    // }).then((res) => {
+    //   console.log('RES: ', res);
+    //   return res;
+    // });
+    console.log('MUTATION: ', mutation);
 
-    const res = await client.mutate({
-      mutation: gql`${mutation}`,
-      fetchPolicy: 'no-cache',
-    });
+    let res;
+    try {
+      // res = await gql`${mutation}`;
+      res = await client.mutate({
+        mutation: gql`${mutation}`,
+        fetchPolicy: 'no-cache',
+      });
+    } catch (e) {
+      console.log('ERROR: ', e);
+    }
+    console.log('RES: ', res);
     return res;
   }
 }
@@ -80,6 +98,7 @@ export function createTopic(
     amount: escrowAmount,
     senderAddress,
   };
+  console.log('CREATE TOPIC');
 
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }

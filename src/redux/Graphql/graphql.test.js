@@ -25,21 +25,25 @@ describe('GraphQL tests', () => {
       creatorAddress: casual.uuid,
     });
     // expect(graphqlStore().getOraclesReturn.length).toBe(0);
+    console.log('BEFORE: ', getState().graphql);
+    // expect(getState().graphql.txReturn)
     dispatch(graphqlActions.createTopicTx(...topic));
-    console.log('STORE: ', getState().graphql);
-    const { data } = await gql`
-      mutation {
-        createTopic(name: "a", options: ["a", "b"], resultSetterAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd", bettingStartTime: "1524727080", bettingEndTime: "1524727200", resultSettingStartTime: "1524727200", resultSettingEndTime: "1524727320", amount: "1000000000", senderAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd") {
-          txid
-          createdTime
-          version
-          type
-          status
-          senderAddress
-        }
-      }
-    `;
-    console.log('DATA: ', data);
+    console.log('AFTER: ', getState().graphql);
+
+    // console.log('STORE: ', getState().graphql);
+    // const { data } = await gql`
+    //   mutation {
+    //     createTopic(name: "a", options: ["a", "b"], resultSetterAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd", bettingStartTime: "1524727080", bettingEndTime: "1524727200", resultSettingStartTime: "1524727200", resultSettingEndTime: "1524727320", amount: "1000000000", senderAddress: "qUttsnD9TW3aknHM9217tkab8sdhzFv6Wd") {
+    //       txid
+    //       createdTime
+    //       version
+    //       type
+    //       status
+    //       senderAddress
+    //     }
+    //   }
+    // `;
+    // console.log('DATA: ', data);
     // expect(graphqlStore().getOraclesReturn.length).toBe(1);
   });
 

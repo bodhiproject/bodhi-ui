@@ -297,3 +297,5 @@ $RECYCLE.BIN/
 .history
 
 # End of https://www.gitignore.io/api/node,macos,linux,windows,firebase,reactnative
+
+.vscode
