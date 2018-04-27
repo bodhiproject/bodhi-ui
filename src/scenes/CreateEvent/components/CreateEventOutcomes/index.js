@@ -30,6 +30,10 @@ const messages = defineMessages({
     id: 'create.duplicateOutcome',
     defaultMessage: 'Duplicate outcomes are not allowed.',
   },
+  invalidName: {
+    id: 'create.invalidName',
+    defaultMessage: "Cannot name the outcome 'Invalid'",
+  },
   addOutcome: {
     id: 'create.addOutcome',
     defaultMessage: 'Add Outcome',
@@ -68,6 +72,11 @@ export default class CreateEventOutcomes extends Component {
     const filtered = _.filter(allValues.outcomes, (item) => item.toLowerCase() === value.toLowerCase());
     if (filtered.length > 1) {
       return intl.formatMessage(messages.duplicateOutcome);
+    }
+
+    // Validate cannot name Invalid
+    if (value.toLowerCase() === 'invalid') {
+      return intl.formatMessage(messages.invalidName);
     }
 
     return null;
