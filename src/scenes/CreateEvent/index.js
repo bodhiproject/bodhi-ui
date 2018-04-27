@@ -439,7 +439,7 @@ export default class CreateEvent extends Component {
               onClosed={this.onSelectResultSetterAddressDialogClosed}
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions className={classes.buttonContainer}>
             <Button color="primary" onClick={this.onClose}>
               <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
             </Button>

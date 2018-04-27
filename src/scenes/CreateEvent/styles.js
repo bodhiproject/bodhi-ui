@@ -22,6 +22,9 @@ const styles = (theme) => ({
   sectionContainer: {
     marginBottom: theme.padding.unit.px,
   },
+  buttonContainer: {
+    margin: theme.padding.sm.px,
+  },
 });
 
 export default styles;
