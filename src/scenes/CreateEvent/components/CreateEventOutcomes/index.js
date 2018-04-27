@@ -26,6 +26,10 @@ const messages = defineMessages({
     id: 'create.resultTooLong',
     defaultMessage: 'Result name is too long.',
   },
+  duplicateOutcome: {
+    id: 'create.duplicateOutcome',
+    defaultMessage: 'Duplicate outcomes are not allowed.',
+  },
   addOutcome: {
     id: 'create.addOutcome',
     defaultMessage: 'Add Outcome',
@@ -63,7 +67,7 @@ export default class CreateEventOutcomes extends Component {
     // Validate no duplicate outcomes
     const filtered = _.filter(allValues.outcomes, (item) => item.toLowerCase() === value.toLowerCase());
     if (filtered.length > 1) {
-      return 'Duplicate results are not allowed';
+      return intl.formatMessage(messages.duplicateOutcome);
     }
 
     return null;
