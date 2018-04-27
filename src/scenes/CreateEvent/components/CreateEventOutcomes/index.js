@@ -68,15 +68,15 @@ export default class CreateEventOutcomes extends Component {
       return intl.formatMessage(messages.resultTooLong);
     }
 
+    // Validate cannot name Invalid
+    if (value.toLowerCase() === 'invalid') {
+      return intl.formatMessage(messages.invalidName);
+    }
+
     // Validate no duplicate outcomes
     const filtered = _.filter(allValues.outcomes, (item) => item.toLowerCase() === value.toLowerCase());
     if (filtered.length > 1) {
       return intl.formatMessage(messages.duplicateOutcome);
-    }
-
-    // Validate cannot name Invalid
-    if (value.toLowerCase() === 'invalid') {
-      return intl.formatMessage(messages.invalidName);
     }
 
     return null;
