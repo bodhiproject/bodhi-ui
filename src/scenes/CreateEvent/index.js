@@ -453,8 +453,8 @@ export default class CreateEvent extends Component {
   }
 }
 
-const Section = injectIntl(({ title, children, intl }) => (
-  <Grid container>
+const Section = injectIntl(withStyles(styles, { withTheme: true })(({ classes, title, children, intl }) => (
+  <Grid container className={classes.eventField}>
     <Grid item xs={3}>
       {intl.formatMessage(title)}
     </Grid>
@@ -462,7 +462,7 @@ const Section = injectIntl(({ title, children, intl }) => (
       {children}
     </Grid>
   </Grid>
-));
+)));
 
 const TextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => ( // eslint-disable-line
   <FormControl fullWidth>

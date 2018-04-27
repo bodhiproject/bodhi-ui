@@ -19,6 +19,9 @@ const styles = (theme) => ({
     width: 'fit-content',
     margin: 0,
   },
+  eventField: {
+    marginBottom: theme.padding.unit.px,
+  },
 });
 
 export default styles;
