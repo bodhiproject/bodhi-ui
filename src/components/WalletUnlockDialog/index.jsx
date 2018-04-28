@@ -43,7 +43,7 @@ export default class WalletUnlockDialog extends Component {
     this.setState({ [name]: value });
   }
 
-  unlock() {
+  unlock = () => {
     const { passphrase, unlockMinutes } = this.state;
     this.props.unlockWallet(passphrase, unlockMinutes);
     this.props.toggleWalletUnlockDialog(false);
