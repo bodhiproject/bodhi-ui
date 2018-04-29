@@ -23,6 +23,7 @@ const initState = new Map({
   globalSnackbarVisible: false,
   globalSnackbarMessage: '',
   createEventDialogVisible: false,
+  txConfirmInfoAndCallback: {},
 });
 
 export default function appReducer(state = initState, action) {
@@ -95,6 +96,17 @@ export default function appReducer(state = initState, action) {
     }
     case actions.TOGGLE_CREATE_EVENT_DIALOG: {
       return state.set('createEventDialogVisible', action.isVisible);
+    }
+    case actions.SET_TX_CONFIRM_INFO_AND_CALLBACK: {
+      return state.set('txConfirmInfoAndCallback', {
+        txDesc: action.txDesc,
+        txAmount: action.txAmount,
+        txToken: action.txToken,
+        confirmCallback: action.confirmCallback,
+      });
+    }
+    case actions.CLEAR_TX_CONFIRM: {
+      return state.set('txConfirmInfoAndCallback', {});
     }
     default: {
       return state;

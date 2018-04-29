@@ -15,7 +15,7 @@ import GlobalSnackbar from '../../components/GlobalSnackbar/index';
 import TransactionSentDialog from '../../components/TransactionSentDialog/index';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
-
+import TxConfirmDialog from '../../components/TxConfirmDialog/index';
 
 @withStyles(styles)
 @connect((state) => ({
@@ -52,6 +52,7 @@ export default class App extends Component {
         <TransactionSentDialog txReturn={txReturn} />
         <WalletUnlockDialog />
         <ErrorDialog />
+        <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
       </div>
     );
   }

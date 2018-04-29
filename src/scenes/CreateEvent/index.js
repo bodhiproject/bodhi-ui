@@ -208,6 +208,7 @@ const validate = (values, props) => {
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
 }))
 @reduxForm({
   form: FORM_NAME,
@@ -232,6 +233,7 @@ export default class CreateEvent extends Component {
     toggleCreateEventDialog: PropTypes.func.isRequired,
     createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
+    setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -288,6 +290,7 @@ export default class CreateEvent extends Component {
       resultSettingEndTime,
       creatorAddress,
     } = values;
+
     createTopicTx(
       name,
       outcomes,
@@ -300,6 +303,13 @@ export default class CreateEvent extends Component {
       creatorAddress,
     );
     this.props.reset(FORM_NAME);
+  }
+
+  confirmCreate = (values) => {
+    const self = this;
+    this.props.setTxConfirmInfoAndCallback('TEST', 10, 'QTUM', () => {
+      self.submitCreateEvent(values);
+    });
   }
 
   onSelectResultSetterAddress = () => {
@@ -370,7 +380,7 @@ export default class CreateEvent extends Component {
 
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
-        <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
+        <Form onSubmit={handleSubmit(this.confirmCreate)}>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>
