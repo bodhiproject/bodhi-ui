@@ -257,5 +257,8 @@
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:",
   "txConfirm.title": "Please Confirm Your Transaction",
   "txConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
-  "txConfirmMsg.create": "create an event"
+  "txConfirmMsg.create": "create an event",
+  "txConfirmMsg.bet": "bet on {option}",
+  "txConfirmMsg.set": "set the result as {option}",
+  "txConfirmMsg.vote": "vote on {option}"
 }

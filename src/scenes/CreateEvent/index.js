@@ -273,17 +273,9 @@ export default class CreateEvent extends Component {
 
   submitCreateEvent = (values) => {
     const {
-      walletEncrypted,
-      walletUnlockedUntil,
-      toggleWalletUnlockDialog,
       eventEscrowAmount,
       createTopicTx,
     } = this.props;
-
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
-      toggleWalletUnlockDialog(true);
-      return;
-    }
 
     const {
       name,
@@ -310,12 +302,20 @@ export default class CreateEvent extends Component {
     this.props.reset(FORM_NAME);
   }
 
-  confirmCreate = (values) => {
+  checkWalletAndConfirmAction = (values) => {
     const {
+      walletEncrypted,
+      walletUnlockedUntil,
+      toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
     } = this.props;
+
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+      return;
+    }
 
     const self = this;
     setTxConfirmInfoAndCallback(intl.formatMessage(messages.confirmCreateMsg), eventEscrowAmount, Token.Qtum, () => {
@@ -391,7 +391,7 @@ export default class CreateEvent extends Component {
 
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
-        <Form onSubmit={handleSubmit(this.confirmCreate)}>
+        <Form onSubmit={handleSubmit(this.checkWalletAndConfirmAction)}>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>

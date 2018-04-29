@@ -259,5 +259,8 @@
   "withdrawDialog.youCanWithdraw": "最多可取出：",
   "txConfirm.title": "请确认您的交易",
   "txConfirm.message": "您即将{txDesc}并为此花费{txAmount} {txToken}。请点击确认完成该交易。",
-  "txConfirmMsg.create": "创建一个事件"
+  "txConfirmMsg.create": "创建一个事件",
+  "txConfirmMsg.bet": "为{option}投注",
+  "txConfirmMsg.set": "设置结果为{option}",
+  "txConfirmMsg.vote": "为{option}投票"
 }

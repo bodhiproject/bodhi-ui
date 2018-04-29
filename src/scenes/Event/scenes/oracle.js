@@ -69,6 +69,18 @@ const messages = defineMessages({
     id: 'oracle.finalizingExplanation',
     defaultMessage: 'Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round\'s result. Winners can withdraw their winnings once an Event is finalized.',
   },
+  confirmBetMsg: {
+    id: 'txConfirmMsg.bet',
+    defaultMessage: 'bet on {option}',
+  },
+  confirmSetMsg: {
+    id: 'txConfirmMsg.set',
+    defaultMessage: 'set the result as {option}',
+  },
+  confirmVoteMsg: {
+    id: 'txConfirmMsg.vote',
+    defaultMessage: 'vote on {option}',
+  },
 });
 
 @injectIntl
@@ -103,6 +115,7 @@ const messages = defineMessages({
   createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
 }))
 export default class OraclePage extends Component {
   static propTypes = {
@@ -127,6 +140,7 @@ export default class OraclePage extends Component {
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -283,25 +297,59 @@ export default class OraclePage extends Component {
   }
 
   handleConfirmClick = () => {
-    const { config, voteAmount } = this.state;
-    const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
+    const {
+      oracle,
+      config,
+      voteAmount,
+      currentOptionIdx,
+    } = this.state;
+
+    const {
+      walletEncrypted,
+      walletUnlockedUntil,
+      toggleWalletUnlockDialog,
+      setTxConfirmInfoAndCallback,
+      intl,
+    } = this.props;
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
       return;
     }
 
+    const self = this;
     switch (config.eventStatus) {
       case EventStatus.Bet: {
-        this.bet(voteAmount);
+        setTxConfirmInfoAndCallback(
+          intl.formatMessage(messages.confirmBetMsg, { option: oracle.options[currentOptionIdx] }),
+          voteAmount,
+          Token.Qtum,
+          () => {
+            self.bet(voteAmount);
+          }
+        );
         break;
       }
       case EventStatus.Set: {
-        this.setResult();
+        setTxConfirmInfoAndCallback(
+          intl.formatMessage(messages.confirmSetMsg, { option: oracle.options[currentOptionIdx] }),
+          oracle.consensusThreshold,
+          Token.Bot,
+          () => {
+            self.setResult();
+          }
+        );
         break;
       }
       case EventStatus.Vote: {
-        this.vote(voteAmount);
+        setTxConfirmInfoAndCallback(
+          intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
+          voteAmount,
+          Token.Bot,
+          () => {
+            self.vote(voteAmount);
+          }
+        );
         break;
       }
       case EventStatus.Finalize: {
