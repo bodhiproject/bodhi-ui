@@ -6,10 +6,17 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
+
+const messages = defineMessages({
+  confirmMessage: {
+    id: 'txConfirm.message',
+    defaultMessage: 'You are about to {txDesc} for {txAmount}{txToken}. Please click OK to continue.',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -22,12 +29,14 @@ import appActions from '../../redux/App/actions';
 export default class TxConfirmDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     txConfirmInfoAndCallback: PropTypes.object.isRequired,
     clearTxConfirm: PropTypes.func.isRequired,
   }
 
   render() {
     const {
+      intl: { formatMessage },
       classes,
       txConfirmInfoAndCallback,
     } = this.props;
@@ -45,16 +54,18 @@ export default class TxConfirmDialog extends Component {
 
     return (
       <Dialog open={isOpen}>
-        <DialogTitle>Please Confirm Your Transaction</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
+        </DialogTitle>
         <DialogContent>
-          You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.
+          {formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onClose}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.onOkClicked}>
-            <FormattedMessage id="str.ok" defaultMessage="OK" />
+            <FormattedMessage id="str.confirm" defaultMessage="OK" />
           </Button>
         </DialogActions>
       </Dialog>
