@@ -258,5 +258,6 @@
   "withdrawDialog.title": "提现 QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "最多可取出：",
   "txConfirm.title": "请确认您的交易",
-  "txConfirm.message": "您即将{txDesc}并为此花费{txAmount}{txToken}。请点击确认完成该交易。"
+  "txConfirm.message": "您即将{txDesc}并为此花费{txAmount} {txToken}。请点击确认完成该交易。",
+  "txConfirmMsg.create": "创建一个事件"
 }

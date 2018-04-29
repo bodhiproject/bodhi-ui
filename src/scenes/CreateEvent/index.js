@@ -24,6 +24,7 @@ import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
+import { Token } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 
@@ -105,6 +106,10 @@ const messages = defineMessages({
   escrowNoteDesc: {
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
+  },
+  confirmCreateMsg: {
+    id: 'txConfirmMsg.create',
+    defaultMessage: 'create an event',
   },
 });
 
@@ -306,8 +311,14 @@ export default class CreateEvent extends Component {
   }
 
   confirmCreate = (values) => {
+    const {
+      setTxConfirmInfoAndCallback,
+      eventEscrowAmount,
+      intl,
+    } = this.props;
+
     const self = this;
-    this.props.setTxConfirmInfoAndCallback('TEST', 10, 'QTUM', () => {
+    setTxConfirmInfoAndCallback(intl.formatMessage(messages.confirmCreateMsg), eventEscrowAmount, Token.Qtum, () => {
       self.submitCreateEvent(values);
     });
   }

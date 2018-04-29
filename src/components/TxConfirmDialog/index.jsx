@@ -14,7 +14,7 @@ import appActions from '../../redux/App/actions';
 const messages = defineMessages({
   confirmMessage: {
     id: 'txConfirm.message',
-    defaultMessage: 'You are about to {txDesc} for {txAmount}{txToken}. Please click OK to continue.',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
   },
 });
 
