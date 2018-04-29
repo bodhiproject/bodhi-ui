@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import styles from './styles';
 import graphqlActions from '../../../../redux/Graphql/actions';
+import appActions from '../../../../redux/App/actions';
 import { Token } from '../../../../constants';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
@@ -26,6 +27,10 @@ const messages = defineMessages({
     id: 'withdrawDialog.youCanWithdraw',
     defaultMessage: 'You can withdraw up to:',
   },
+  confirmSendMsg: {
+    id: 'txConfirmMsg.send',
+    defaultMessage: 'send to address {address}',
+  },
 });
 
 
@@ -36,6 +41,7 @@ const messages = defineMessages({
 }), (dispatch) => ({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
 }))
 export default class WithdrawDialog extends Component {
   static propTypes = {
@@ -48,6 +54,7 @@ export default class WithdrawDialog extends Component {
     onWithdraw: PropTypes.func.isRequired,
     createTransferTx: PropTypes.func,
     walletAddresses: PropTypes.array.isRequired,
+    setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -85,7 +92,7 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={this.onSendClicked}>
+          <Button color="primary" onClick={this.confirmSend}>
             <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
@@ -192,7 +199,7 @@ export default class WithdrawDialog extends Component {
     });
   };
 
-  onSendClicked = () => {
+  submitSend = () => {
     const { walletAddress, createTransferTx } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
@@ -206,4 +213,19 @@ export default class WithdrawDialog extends Component {
 
     Tracking.track('myWallet-withdraw');
   };
+
+  confirmSend = () => {
+    const { toAddress, withdrawAmount, selectedToken } = this.state;
+    const { intl, setTxConfirmInfoAndCallback } = this.props;
+    const self = this;
+
+    setTxConfirmInfoAndCallback(
+      intl.formatMessage(messages.confirmSendMsg, { address: toAddress }),
+      withdrawAmount,
+      selectedToken,
+      () => {
+        self.submitSend();
+      }
+    );
+  }
 }

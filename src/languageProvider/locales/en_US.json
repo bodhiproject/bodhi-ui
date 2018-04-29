@@ -260,5 +260,6 @@
   "txConfirmMsg.create": "create an event",
   "txConfirmMsg.bet": "bet on {option}",
   "txConfirmMsg.set": "set the result as {option}",
-  "txConfirmMsg.vote": "vote on {option}"
+  "txConfirmMsg.vote": "vote on {option}",
+  "txConfirmMsg.send": "send to address {address}"
 }

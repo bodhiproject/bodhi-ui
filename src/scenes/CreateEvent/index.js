@@ -318,9 +318,14 @@ export default class CreateEvent extends Component {
     }
 
     const self = this;
-    setTxConfirmInfoAndCallback(intl.formatMessage(messages.confirmCreateMsg), eventEscrowAmount, Token.Qtum, () => {
-      self.submitCreateEvent(values);
-    });
+    setTxConfirmInfoAndCallback(
+      intl.formatMessage(messages.confirmCreateMsg),
+      eventEscrowAmount,
+      Token.Bot,
+      () => {
+        self.submitCreateEvent(values);
+      }
+    );
   }
 
   onSelectResultSetterAddress = () => {
