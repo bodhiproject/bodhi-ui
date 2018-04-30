@@ -62,8 +62,7 @@ export default class CreateEventOutcomes extends Component {
     }
 
     // Validate hex length
-    let hexString = _.isUndefined(value) ? '' : value;
-    hexString = Web3Utils.toHex(hexString).slice(2); // Remove hex prefix for length validation
+    const hexString = Web3Utils.toHex(value || '').slice(2); // Remove hex prefix for length validation
     if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
       return intl.formatMessage(messages.resultTooLong);
     }
