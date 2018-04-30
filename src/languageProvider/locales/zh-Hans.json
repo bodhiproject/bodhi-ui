@@ -141,6 +141,7 @@
   "str.notEnoughQtum": "您没有足够QTUM",
   "str.notEnoughQtumAndBot": "您没有足够的QTUM或BOT",
   "str.ok": "好的",
+  "str.confirm": "确认",
   "str.outcomes": "结果",
   "str.pending": "等待中",
   "str.pendingConfirmation": "确认等待中",
@@ -255,5 +256,12 @@
   "withdrawDetail.youBetYouVote": "您投入了 {qtum} QTUM. 您投入了 {bot} BOT.",
   "withdrawDialog.send": "发送",
   "withdrawDialog.title": "提现 QTUM/BOT",
-  "withdrawDialog.youCanWithdraw": "最多可取出："
+  "withdrawDialog.youCanWithdraw": "最多可取出：",
+  "txConfirm.title": "请确认您的交易",
+  "txConfirm.message": "您即将{txDesc}，金额为{txAmount} {txToken}。请点击确认完成该交易。",
+  "txConfirmMsg.create": "创建一个事件",
+  "txConfirmMsg.bet": "为{option}投注",
+  "txConfirmMsg.set": "设置结果为{option}",
+  "txConfirmMsg.vote": "为{option}投票",
+  "txConfirmMsg.send": "发送代币到地址{address}"
 }

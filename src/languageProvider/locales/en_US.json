@@ -139,6 +139,7 @@
   "str.notEnoughQtum": "You don't have enough QTUM",
   "str.notEnoughQtumAndBot": "You don't have enough QTUM or BOT",
   "str.ok": "OK",
+  "str.confirm": "OK",
   "str.outcomes": "Outcomes",
   "str.pending": "Pending",
   "str.pendingConfirmation": "Pending Confirmation",
@@ -253,5 +254,12 @@
   "withdrawDetail.youBetYouVote": "You bet {qtum} QTUM. You voted {bot} BOT.",
   "withdrawDialog.send": "Send",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
-  "withdrawDialog.youCanWithdraw": "You can withdraw up to:"
+  "withdrawDialog.youCanWithdraw": "You can withdraw up to:",
+  "txConfirm.title": "Please Confirm Your Transaction",
+  "txConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
+  "txConfirmMsg.create": "create an event",
+  "txConfirmMsg.bet": "bet on {option}",
+  "txConfirmMsg.set": "set the result as {option}",
+  "txConfirmMsg.vote": "vote on {option}",
+  "txConfirmMsg.send": "send to address {address}"
 }

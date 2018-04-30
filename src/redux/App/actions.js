@@ -73,5 +73,19 @@ const appActions = {
     type: appActions.TOGGLE_CREATE_EVENT_DIALOG,
     isVisible,
   }),
+
+  SET_TX_CONFIRM_INFO_AND_CALLBACK: 'SET_TX_CONFIRM_INFO_AND_CALLBACK',
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => ({
+    type: appActions.SET_TX_CONFIRM_INFO_AND_CALLBACK,
+    txDesc,
+    txAmount,
+    txToken,
+    confirmCallback,
+  }),
+
+  CLEAR_TX_CONFIRM: 'CLEAR_TX_CONFIRM',
+  clearTxConfirm: () => ({
+    type: appActions.CLEAR_TX_CONFIRM,
+  }),
 };
 export default appActions;

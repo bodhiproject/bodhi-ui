@@ -24,6 +24,7 @@ import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
+import { Token } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 
@@ -105,6 +106,10 @@ const messages = defineMessages({
   escrowNoteDesc: {
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
+  },
+  confirmCreateMsg: {
+    id: 'txConfirmMsg.create',
+    defaultMessage: 'create an event',
   },
 });
 
@@ -208,6 +213,7 @@ const validate = (values, props) => {
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
 }))
 @reduxForm({
   form: FORM_NAME,
@@ -232,6 +238,7 @@ export default class CreateEvent extends Component {
     toggleCreateEventDialog: PropTypes.func.isRequired,
     createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
+    setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -266,17 +273,9 @@ export default class CreateEvent extends Component {
 
   submitCreateEvent = (values) => {
     const {
-      walletEncrypted,
-      walletUnlockedUntil,
-      toggleWalletUnlockDialog,
       eventEscrowAmount,
       createTopicTx,
     } = this.props;
-
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
-      toggleWalletUnlockDialog(true);
-      return;
-    }
 
     const {
       name,
@@ -288,6 +287,7 @@ export default class CreateEvent extends Component {
       resultSettingEndTime,
       creatorAddress,
     } = values;
+
     createTopicTx(
       name,
       outcomes,
@@ -300,6 +300,32 @@ export default class CreateEvent extends Component {
       creatorAddress,
     );
     this.props.reset(FORM_NAME);
+  }
+
+  checkWalletAndConfirmAction = (values) => {
+    const {
+      walletEncrypted,
+      walletUnlockedUntil,
+      toggleWalletUnlockDialog,
+      setTxConfirmInfoAndCallback,
+      eventEscrowAmount,
+      intl,
+    } = this.props;
+
+    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+      toggleWalletUnlockDialog(true);
+      return;
+    }
+
+    const self = this;
+    setTxConfirmInfoAndCallback(
+      intl.formatMessage(messages.confirmCreateMsg),
+      eventEscrowAmount,
+      Token.Bot,
+      () => {
+        self.submitCreateEvent(values);
+      }
+    );
   }
 
   onSelectResultSetterAddress = () => {
@@ -370,7 +396,7 @@ export default class CreateEvent extends Component {
 
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
-        <Form onSubmit={handleSubmit(this.submitCreateEvent)}>
+        <Form onSubmit={handleSubmit(this.checkWalletAndConfirmAction)}>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>

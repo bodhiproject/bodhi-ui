@@ -41,7 +41,6 @@ const messages = defineMessages({
 const LIMIT = 8;
 const SKIP = 0;
 
-
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
