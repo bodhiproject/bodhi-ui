@@ -21,28 +21,26 @@ export default class EventResultHistory extends Component {
 
   checkType(oracle, index) {
     if (oracle.token === Token.Qtum) {
-      return <FormattedMessage id="str.betRound" defaultMessage="Betting Round" />;
+      return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
     } else if (index === 1) {
-      return <FormattedMessage id="str.resultSetRound" defaultMessage="Result Setting Round" />;
+      return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
     }
-    return <FormattedMessage id="str.voteRound" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
+    return <FormattedMessage id="str.voteRoundX" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
   }
 
   render() {
     const { classes, oracles } = this.props;
-    let sortedOracles = _.orderBy(oracles, ['endTime']);
+    const sortedOracles = _.orderBy(oracles, ['endTime']);
     if (sortedOracles.length) {
-      const row1 = sortedOracles.splice(0, 1)[0];
-      const rowLeft = sortedOracles;
-      const resultSettingOracle = {};
-      resultSettingOracle.endTime = rowLeft[0].endTime;
-      resultSettingOracle.token = rowLeft[0].token;
-      resultSettingOracle.resultIdx = row1.resultIdx;
-      resultSettingOracle.options = row1.options;
-      resultSettingOracle.amounts = row1.amounts;
-      resultSettingOracle.amounts.fill(0);
-      resultSettingOracle.amounts[resultSettingOracle.resultIdx] = 100;
-      sortedOracles = [row1, resultSettingOracle, ...rowLeft];
+      const resultSettingRound = {};
+      resultSettingRound.endTime = sortedOracles[1].endTime;
+      resultSettingRound.token = sortedOracles[1].token;
+      resultSettingRound.resultIdx = sortedOracles[0].resultIdx;
+      resultSettingRound.options = sortedOracles[0].options;
+      resultSettingRound.amounts = sortedOracles[0].amounts;
+      resultSettingRound.amounts.fill(0);
+      resultSettingRound.amounts[resultSettingRound.resultIdx] = 100;
+      sortedOracles.slice(1, 0, resultSettingRound);
     }
 
     return (
