@@ -19,10 +19,26 @@ export default class EventResultHistory extends Component {
     oracles: PropTypes.array.isRequired,
   };
 
+  getTypeText(oracle, index) {
+    if (oracle.token === Token.Qtum) {
+      return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
+    } else if (index === 1) {
+      return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
+    }
+    return <FormattedMessage id="str.votingRoundX" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
+  }
+
   render() {
     const { classes, oracles } = this.props;
-
     const sortedOracles = _.orderBy(oracles, ['endTime']);
+    if (sortedOracles.length) {
+      const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
+      const { endTime, token } = sortedOracles[1];
+      const resultSettingRound = { endTime, token, resultIdx, options, amounts };
+      resultSettingRound.amounts.fill(0);
+      resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
+      sortedOracles.splice(1, 0, resultSettingRound);
+    }
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -53,9 +69,9 @@ export default class EventResultHistory extends Component {
               {_.map(sortedOracles, (oracle, index) => (
                 <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                   <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
-                  <TableCell padding="dense">{oracle.token === Token.Qtum ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
+                  <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                   <TableCell padding="dense">
-                    {index !== sortedOracles.length - 1
+                    {index !== sortedOracles.length - 1 && index !== 0
                       ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
                       : ''
                     }
