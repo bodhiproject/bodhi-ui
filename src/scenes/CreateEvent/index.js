@@ -465,7 +465,7 @@ export default class CreateEvent extends Component {
               onClosed={this.onSelectResultSetterAddressDialogClosed}
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions className={classes.buttonContainer}>
             <Button color="primary" onClick={this.onClose}>
               <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
             </Button>
@@ -479,8 +479,8 @@ export default class CreateEvent extends Component {
   }
 }
 
-const Section = injectIntl(({ title, children, intl }) => (
-  <Grid container>
+const Section = injectIntl(withStyles(styles, { withTheme: true })(({ classes, title, children, intl }) => (
+  <Grid container className={classes.sectionContainer}>
     <Grid item xs={3}>
       {intl.formatMessage(title)}
     </Grid>
@@ -488,7 +488,7 @@ const Section = injectIntl(({ title, children, intl }) => (
       {children}
     </Grid>
   </Grid>
-));
+)));
 
 const TextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => ( // eslint-disable-line
   <FormControl fullWidth>

@@ -19,6 +19,12 @@ const styles = (theme) => ({
     width: 'fit-content',
     margin: 0,
   },
+  sectionContainer: {
+    marginBottom: theme.padding.unit.px,
+  },
+  buttonContainer: {
+    margin: theme.padding.sm.px,
+  },
 });
 
 export default styles;
