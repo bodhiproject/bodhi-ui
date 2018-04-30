@@ -166,7 +166,7 @@
   "str.type": "Type",
   "str.unconfirmed": "Unconfirmed",
   "str.vote": "Vote",
-  "str.voteRoundX": "Voting Round {idx}",
+  "str.votingRoundX": "Voting Round {idx}",
   "str.voting": "Voting",
   "str.wait": "Please wait.",
   "str.winningOutcome": "Wining Outcome",

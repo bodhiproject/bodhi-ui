@@ -168,7 +168,7 @@
   "str.type": "类型",
   "str.unconfirmed": "未确认",
   "str.vote": "仲裁",
-  "str.voteRoundX": "仲裁阶段 {idx}",
+  "str.votingRoundX": "仲裁阶段 {idx}",
   "str.voting": "投票",
   "str.wait": "请等待",
   "str.winningOutcome": "胜出选项",

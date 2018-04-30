@@ -25,22 +25,19 @@ export default class EventResultHistory extends Component {
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
     }
-    return <FormattedMessage id="str.voteRoundX" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
+    return <FormattedMessage id="str.votingRoundX" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
   }
 
   render() {
     const { classes, oracles } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);
     if (sortedOracles.length) {
-      const resultSettingRound = {};
-      resultSettingRound.endTime = sortedOracles[1].endTime;
-      resultSettingRound.token = sortedOracles[1].token;
-      resultSettingRound.resultIdx = sortedOracles[0].resultIdx;
-      resultSettingRound.options = sortedOracles[0].options;
-      resultSettingRound.amounts = sortedOracles[0].amounts;
+      const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
+      const { endTime, token } = sortedOracles[1];
+      const resultSettingRound = { endTime, token, resultIdx, options, amounts };
       resultSettingRound.amounts.fill(0);
-      resultSettingRound.amounts[resultSettingRound.resultIdx] = 100;
-      sortedOracles.slice(1, 0, resultSettingRound);
+      resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
+      sortedOracles.splice(1, 0, resultSettingRound);
     }
 
     return (
