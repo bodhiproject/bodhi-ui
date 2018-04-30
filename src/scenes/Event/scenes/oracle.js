@@ -315,49 +315,49 @@ export default class OraclePage extends Component {
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
       return;
-    }
-
-    const self = this;
-    switch (config.eventStatus) {
-      case EventStatus.Bet: {
-        setTxConfirmInfoAndCallback(
-          intl.formatMessage(messages.confirmBetMsg, { option: oracle.options[currentOptionIdx] }),
-          voteAmount,
-          Token.Qtum,
-          () => {
-            self.bet(voteAmount);
-          }
-        );
-        break;
-      }
-      case EventStatus.Set: {
-        setTxConfirmInfoAndCallback(
-          intl.formatMessage(messages.confirmSetMsg, { option: oracle.options[currentOptionIdx] }),
-          oracle.consensusThreshold,
-          Token.Bot,
-          () => {
-            self.setResult();
-          }
-        );
-        break;
-      }
-      case EventStatus.Vote: {
-        setTxConfirmInfoAndCallback(
-          intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
-          voteAmount,
-          Token.Bot,
-          () => {
-            self.vote(voteAmount);
-          }
-        );
-        break;
-      }
-      case EventStatus.Finalize: {
-        this.finalizeResult();
-        break;
-      }
-      default: {
-        break;
+    } else {
+      const self = this;
+      switch (config.eventStatus) {
+        case EventStatus.Bet: {
+          setTxConfirmInfoAndCallback(
+            intl.formatMessage(messages.confirmBetMsg, { option: oracle.options[currentOptionIdx] }),
+            voteAmount,
+            Token.Qtum,
+            () => {
+              self.bet(voteAmount);
+            }
+          );
+          break;
+        }
+        case EventStatus.Set: {
+          setTxConfirmInfoAndCallback(
+            intl.formatMessage(messages.confirmSetMsg, { option: oracle.options[currentOptionIdx] }),
+            oracle.consensusThreshold,
+            Token.Bot,
+            () => {
+              self.setResult();
+            }
+          );
+          break;
+        }
+        case EventStatus.Vote: {
+          setTxConfirmInfoAndCallback(
+            intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
+            voteAmount,
+            Token.Bot,
+            () => {
+              self.vote(voteAmount);
+            }
+          );
+          break;
+        }
+        case EventStatus.Finalize: {
+          this.finalizeResult();
+          break;
+        }
+        default: {
+          break;
+        }
       }
     }
   }

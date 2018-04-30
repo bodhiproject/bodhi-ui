@@ -542,16 +542,9 @@ export default class TopicPage extends Component {
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
-      return;
+    } else {
+      createWithdrawTx(type, topic.version, topic.address, senderAddress);
+      Tracking.track('topicDetail-withdraw');
     }
-
-    createWithdrawTx(
-      type,
-      topic.version,
-      topic.address,
-      senderAddress,
-    );
-
-    Tracking.track('topicDetail-withdraw');
   }
 }

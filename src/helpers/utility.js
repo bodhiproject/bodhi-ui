@@ -144,9 +144,6 @@ export function shortenAddress(text, maxLength) {
  * @return {Boolean} If the user needs to unlock their wallet.
  */
 export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
-  console.log('isEncrypted', isEncrypted);
-  console.log('unlockedUntil', unlockedUntil);
-
   if (!isEncrypted) {
     return false;
   }
@@ -155,8 +152,8 @@ export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
     return true;
   }
 
-  const now = moment.unix();
-  const unlocked = moment.unix(unlockedUntil).subtract(3, 'seconds');
+  const now = moment();
+  const unlocked = moment.unix(unlockedUntil).subtract(5, 'seconds');
   return now.isSameOrAfter(unlocked);
 }
 
