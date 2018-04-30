@@ -19,10 +19,31 @@ export default class EventResultHistory extends Component {
     oracles: PropTypes.array.isRequired,
   };
 
+  checktype(oracle, index) {
+    if (oracle.token === Token.Qtum) {
+      return <FormattedMessage id="str.betRound" defaultMessage="Betting Round" />;
+    } else if (index === 1) {
+      return <FormattedMessage id="str.resultSetRound" defaultMessage="Result Setting Round" />;
+    }
+    return <FormattedMessage id="str.voteRound" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
+  }
+
   render() {
     const { classes, oracles } = this.props;
-
-    const sortedOracles = _.orderBy(oracles, ['endTime']);
+    let sortedOracles = _.orderBy(oracles, ['endTime']);
+    if (sortedOracles.length) {
+      const row1 = sortedOracles.splice(0, 1)[0];
+      const rowLeft = sortedOracles;
+      const resultSettingOracle = {};
+      resultSettingOracle.endTime = rowLeft[0].endTime;
+      resultSettingOracle.token = rowLeft[0].token;
+      resultSettingOracle.resultIdx = row1.resultIdx;
+      resultSettingOracle.options = row1.options;
+      resultSettingOracle.amounts = row1.amounts;
+      resultSettingOracle.amounts.fill(0);
+      resultSettingOracle.amounts[resultSettingOracle.resultIdx] = 100;
+      sortedOracles = [row1, resultSettingOracle, ...rowLeft];
+    }
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -53,9 +74,9 @@ export default class EventResultHistory extends Component {
               {_.map(sortedOracles, (oracle, index) => (
                 <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                   <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
-                  <TableCell padding="dense">{oracle.token === Token.Qtum ? 'Betting Round' : `Voting Round ${index}`}</TableCell>
+                  <TableCell padding="dense">{this.checktype(oracle, index)}</TableCell>
                   <TableCell padding="dense">
-                    {index !== sortedOracles.length - 1
+                    {index !== sortedOracles.length - 1 && index !== 0
                       ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
                       : ''
                     }
