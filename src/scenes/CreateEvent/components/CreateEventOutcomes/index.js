@@ -55,25 +55,26 @@ export default class CreateEventOutcomes extends Component {
 
   validate = (value, allValues) => {
     const { intl } = this.props;
+    const outcome = value || '';
 
     // Validate not empty
-    if (_.isEmpty(value)) {
+    if (_.isEmpty(outcome)) {
       return intl.formatMessage(messages.required);
     }
 
     // Validate hex length
-    const hexString = Web3Utils.toHex(value || '').slice(2); // Remove hex prefix for length validation
+    const hexString = Web3Utils.toHex(outcome).slice(2); // Remove hex prefix for length validation
     if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
       return intl.formatMessage(messages.resultTooLong);
     }
 
     // Validate cannot name Invalid
-    if (value.toLowerCase() === 'invalid') {
+    if (outcome.toLowerCase() === 'invalid') {
       return intl.formatMessage(messages.invalidName);
     }
 
     // Validate no duplicate outcomes
-    const filtered = _.filter(allValues.outcomes, (item) => item.toLowerCase() === value.toLowerCase());
+    const filtered = _.filter(allValues.outcomes, (item) => (item || '').toLowerCase() === outcome.toLowerCase());
     if (filtered.length > 1) {
       return intl.formatMessage(messages.duplicateOutcome);
     }
