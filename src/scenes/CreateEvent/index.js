@@ -314,18 +314,17 @@ export default class CreateEvent extends Component {
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
-      return;
+    } else {
+      const self = this;
+      setTxConfirmInfoAndCallback(
+        intl.formatMessage(messages.confirmCreateMsg),
+        eventEscrowAmount,
+        Token.Bot,
+        () => {
+          self.submitCreateEvent(values);
+        }
+      );
     }
-
-    const self = this;
-    setTxConfirmInfoAndCallback(
-      intl.formatMessage(messages.confirmCreateMsg),
-      eventEscrowAmount,
-      Token.Bot,
-      () => {
-        self.submitCreateEvent(values);
-      }
-    );
   }
 
   onSelectResultSetterAddress = () => {

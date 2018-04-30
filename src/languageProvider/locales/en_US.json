@@ -242,7 +242,6 @@
   "tx.approveBotTransfer": "Approve BOT Transfer",
   "tx.resetApproval": "Reset Approval",
   "walletHistory.transferHistory": "Transfer History",
-  "walletUnlockDialog.keepWalletUnlocked": "Keep wallet unlocked for",
   "walletUnlockDialog.unlock": "Unlock",
   "walletUnlockDialog.unlockWallet": "Unlock Wallet",
   "walletUnlockDialog.walletPassphrase": "Wallet Passphrase",

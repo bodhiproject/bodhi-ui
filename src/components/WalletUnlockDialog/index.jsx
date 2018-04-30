@@ -74,25 +74,6 @@ export default class WalletUnlockDialog extends Component {
             fullWidth
             onChange={this.handleChange('passphrase')}
           />
-          <div className={classes.unlockMinutesContainer}>
-            <FormattedMessage
-              id="walletUnlockDialog.keepWalletUnlocked"
-              defaultMessage="Keep wallet unlocked for"
-            />
-            <TextField
-              id="unlockMinutes"
-              value={unlockMinutes}
-              onChange={this.handleChange('unlockMinutes')}
-              type="number"
-              InputLabelProps={{ shrink: true }}
-              margin="normal"
-              className={classes.unlockMinutesInput}
-            />
-            <FormattedMessage
-              id="str.minutes"
-              defaultMessage="Minutes"
-            />
-          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.props.toggleWalletUnlockDialog(false)}>
