@@ -7,7 +7,7 @@ module.exports = {
   },
   defaults: {
     averageBlockTime: 142.01324503311258,
-    unlockWalletMins: 5,
+    unlockWalletMins: 1440,
   },
   maxTransactionFee: 0.1,
   faqUrls: {
