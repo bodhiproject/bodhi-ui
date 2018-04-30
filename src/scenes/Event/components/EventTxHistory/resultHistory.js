@@ -19,7 +19,7 @@ export default class EventResultHistory extends Component {
     oracles: PropTypes.array.isRequired,
   };
 
-  checkType(oracle, index) {
+  getTypeText(oracle, index) {
     if (oracle.token === Token.Qtum) {
       return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
     } else if (index === 1) {
@@ -72,7 +72,7 @@ export default class EventResultHistory extends Component {
               {_.map(sortedOracles, (oracle, index) => (
                 <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                   <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
-                  <TableCell padding="dense">{this.checkType(oracle, index)}</TableCell>
+                  <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                   <TableCell padding="dense">
                     {index !== sortedOracles.length - 1 && index !== 0
                       ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
