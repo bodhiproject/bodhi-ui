@@ -26,6 +26,14 @@ const messages = defineMessages({
     id: 'create.resultTooLong',
     defaultMessage: 'Result name is too long.',
   },
+  duplicateOutcome: {
+    id: 'create.duplicateOutcome',
+    defaultMessage: 'Duplicate outcomes are not allowed.',
+  },
+  invalidName: {
+    id: 'create.invalidName',
+    defaultMessage: "Cannot name the outcome 'Invalid'",
+  },
   addOutcome: {
     id: 'create.addOutcome',
     defaultMessage: 'Add Outcome',
@@ -45,19 +53,30 @@ export default class CreateEventOutcomes extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  validateResultLength = (value) => {
+  validate = (value, allValues) => {
     const { intl } = this.props;
+    const outcome = value || '';
 
-    if (_.isEmpty(value)) {
+    // Validate not empty
+    if (_.isEmpty(outcome)) {
       return intl.formatMessage(messages.required);
     }
 
-    let hexString = _.isUndefined(value) ? '' : value;
-
-    // Remove hex prefix for length validation
-    hexString = Web3Utils.toHex(hexString).slice(2);
+    // Validate hex length
+    const hexString = Web3Utils.toHex(outcome).slice(2); // Remove hex prefix for length validation
     if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
       return intl.formatMessage(messages.resultTooLong);
+    }
+
+    // Validate cannot name Invalid
+    if (outcome.toLowerCase() === 'invalid') {
+      return intl.formatMessage(messages.invalidName);
+    }
+
+    // Validate no duplicate outcomes
+    const filtered = _.filter(allValues.outcomes, (item) => (item || '').toLowerCase() === outcome.toLowerCase());
+    if (filtered.length > 1) {
+      return intl.formatMessage(messages.duplicateOutcome);
     }
 
     return null;
@@ -95,7 +114,7 @@ export default class CreateEventOutcomes extends Component {
           name={outcome}
           placeholder={intl.formatMessage(messages.outcomeName)}
           component={this.renderTextField}
-          validate={[this.validateResultLength]}
+          validate={[this.validate]}
           startAdornmentLabel={`#${index + 1}`}
         />
         {fields.length > MIN_OPTION_NUMBER && (
@@ -137,4 +156,3 @@ export default class CreateEventOutcomes extends Component {
     );
   }
 }
-
