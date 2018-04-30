@@ -314,7 +314,6 @@ export default class OraclePage extends Component {
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
-      return;
     } else {
       const self = this;
       switch (config.eventStatus) {
