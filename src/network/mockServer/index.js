@@ -5,18 +5,39 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { SchemaLink } from 'apollo-link-schema';
 import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
 import typeDefs from './schema.graphql';
+import faker from 'faker';
+import moment from 'moment';
 
 
-// const mocks = {
-//   Query: () => ...,
-//   Mutation: () => ...
-// };
+const mocks = {
+  // Query: () => ...,
+  Mutation: () => ({
+    /**
+     * data: {
+     *  senderAddress, name, options, resultSetterAddress,
+     *  bettingStartTime, bettingEndTime, resultSettingEndTime,
+     *  resultSettingEndTime, amount
+     * }
+     */
+    createTopic: (root, data) => ({
+      txid: faker.random.uuid(),
+      type: 'CREATEEVENT',
+      status: 'PENDING',
+      createdTime: moment().unix(),
+      gasLimit: (3500000).toString(10),
+      gasPrice: (0.0000004).toFixed(8),
+      version: 1,
+      ...data,
+      token: 'BOT',
+    }),
+  })
+};
 
 const schema = makeExecutableSchema({ typeDefs });
 
 addMockFunctionsToSchema({
   schema,
-  // mocks
+  mocks
 });
 
 const apolloCache = new InMemoryCache(window.__APOLLO_STATE__);

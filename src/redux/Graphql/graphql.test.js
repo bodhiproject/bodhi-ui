@@ -1,5 +1,5 @@
 import moment from 'moment';
-import casual from 'casual';
+import faker from 'faker';
 import { createStore } from '../store';
 import graphqlActions from './actions';
 // const { Descending, Ascending } = SortBy;
@@ -8,26 +8,28 @@ import { gql } from '../../network/mockServer';
 
 describe('GraphQL tests', () => {
   // const server = mockServer();
-  const { dispatch, getState } = createStore();
+  const store = createStore();
+  const { dispatch, getState } = store;
 
   it('should create an event', async () => {
     const timeGap = 30; // minutes
     const nowPlus = (numOf) => `${moment().add(numOf, 'minutes').utc().unix()}`;
     const topic = Object.values({
-      name: casual.title,
-      outcomes: casual.array_of_words(3),
-      resultSetter: casual.uuid,
+      name: faker.lorem.word(),
+      outcomes: [...faker.lorem.words().split(' ')],
+      resultSetter: faker.finance.bitcoinAddress(),
       bettingStartTime: nowPlus(0),
       bettingEndTime: nowPlus(timeGap),
       resultSettingStartTime: nowPlus(timeGap),
       resultSettingEndTime: nowPlus(2 * timeGap),
       escrowAmount: 10, // TODO: is this always the case???
-      creatorAddress: casual.uuid,
+      creatorAddress: faker.finance.bitcoinAddress(),
     });
     // expect(graphqlStore().getOraclesReturn.length).toBe(0);
     console.log('BEFORE: ', getState().graphql);
     // expect(getState().graphql.txReturn)
-    dispatch(graphqlActions.createTopicTx(...topic));
+    await dispatch(graphqlActions.createTopicTx(...topic));
+
     console.log('AFTER: ', getState().graphql);
 
     // console.log('STORE: ', getState().graphql);

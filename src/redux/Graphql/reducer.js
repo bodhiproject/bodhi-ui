@@ -58,7 +58,8 @@ export default function graphqlReducer(state = initState, action) {
     case actions.CREATE_FINALIZE_RESULT_TX_RETURN:
     case actions.CREATE_WITHDRAW_TX_RETURN:
     case actions.CREATE_TRANSFER_TX_RETURN: {
-      const txReturn = error ? { ...state.txReturn, error } : value;
+      const txReturn = error ? { ...(state.txReturn || {}), error } : value;
+      console.log('txReturn: ', txReturn);
       return { ...state, txReturn };
     }
 
