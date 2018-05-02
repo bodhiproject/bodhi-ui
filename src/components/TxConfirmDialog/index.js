@@ -31,7 +31,7 @@ export default class TxConfirmDialog extends Component {
   render() {
     const { intl: { formatMessage }, txConfirmInfoAndCallback } = this.props;
     const { txDesc, txAmount, txToken, confirmCallback } = txConfirmInfoAndCallback;
-    const isOpen = !txDesc && !txAmount && !txToken && _.isFunction(confirmCallback);
+    const isOpen = txDesc && txAmount && txToken && _.isFunction(confirmCallback);
 
     return (
       <Dialog open={isOpen}>
