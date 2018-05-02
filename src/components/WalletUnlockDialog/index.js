@@ -51,7 +51,6 @@ export default class WalletUnlockDialog extends Component {
 
   render() {
     const { intl, classes, walletUnlockDialogVisibility } = this.props;
-    const { unlockMinutes } = this.state;
 
     return (
       <Dialog open={walletUnlockDialogVisibility} onClose={this.onOkClicked}>
