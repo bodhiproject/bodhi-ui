@@ -25,7 +25,7 @@ export default class EventResultHistory extends Component {
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
     }
-    return <FormattedMessage id="str.votingRoundX" defaultMessage="Voting Round {idx}" values={{ idx: index - 1 }} />;
+    return <FormattedMessage id="str.arbitrateRoundX" defaultMessage="Arbitrate Round {idx}" values={{ idx: index - 1 }} />;
   }
 
   render() {

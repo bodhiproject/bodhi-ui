@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   finalizingExplanation: {
     id: 'oracle.finalizingExplanation',
-    defaultMessage: 'Finalizing the result can be done by anyone. It will finish this voting round and set the final result as the last round\'s result. Winners can withdraw their winnings once an Event is finalized.',
+    defaultMessage: 'Finalizing the result can be done by anyone. It will finish this arbitrate round and set the final result as the last round\'s result. Winners can withdraw their winnings once an Event is finalized.',
   },
   confirmBetMsg: {
     id: 'txConfirmMsg.bet',
@@ -499,7 +499,7 @@ export default class OraclePage extends Component {
         skipExpansion: false,
         showAmountInput: true,
         amountInputDisabled: false,
-        btnText: <FormattedMessage id="str.vote" defaultMessage="Vote" />,
+        btnText: <FormattedMessage id="str.arbitrate" defaultMessage="Arbitrate" />,
       },
       importantNote: {
         heading: `${intl.formatMessage(messages.consensusThreshold)}: ${oracle.consensusThreshold} BOT`,
