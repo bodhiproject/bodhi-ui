@@ -288,6 +288,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/node,macos,linux,windows,firebase,reactnative
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+# !.vscode/launch.json
+!.vscode/extensions.json
+.history
 
-.vscode
+# End of https://www.gitignore.io/api/node,macos,linux,windows,firebase,reactnative

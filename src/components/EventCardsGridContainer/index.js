@@ -95,9 +95,14 @@ export default class EventCardsGrid extends Component {
 
     return (_.get(oracles, 'data', [])).map((oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
-      let amountLabel = `${amount} ${oracle.token}`;
-      if (eventStatusIndex === EventStatus.Finalize) amountLabel = undefined;
-      return { amount, amountLabel, buttonText, ...oracle };
+      return {
+        amountLabel: eventStatusIndex !== EventStatus.Finalize && `${amount} ${oracle.token}`,
+        url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
+        endTime: eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime,
+        unconfirmed: !oracle.topicAddress && !oracle.address,
+        buttonText,
+        ...oracle,
+      };
     });
   }
 
@@ -105,12 +110,13 @@ export default class EventCardsGrid extends Component {
     return _.get(this.props.topics, 'data', []).map((topic) => {
       const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
       const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
-
-      const amountLabel = `${totalQTUM} QTUM, ${totalBOT} BOT`;
-      const unconfirmed = false;
-      const url = `/topic/${topic.address}`;
-      const buttonText = this.props.intl.formatMessage(messages.withdraw);
-      return { amountLabel, unconfirmed, url, buttonText, ...topic };
+      return {
+        amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
+        unconfirmed: false,
+        url: `/topic/${topic.address}`,
+        buttonText: this.props.intl.formatMessage(messages.withdraw),
+        ...topic,
+      };
     });
   }
 
@@ -231,15 +237,7 @@ export default class EventCardsGrid extends Component {
     if (eventStatusIndex === Withdraw && this.topics.length > 0) {
       rowItems = this.topics.map((topic) => <EventCard key={topic.txid} {...topic} />);
     } else if (this.oracles.length > 0) { // Bet, Set, Vote, Finalize
-      rowItems = this.oracles.map((oracle) => (
-        <EventCard
-          {...oracle}
-          key={oracle.txid}
-          url={`/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`}
-          endTime={eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime}
-          unconfirmed={!oracle.topicAddress && !oracle.address}
-        />
-      ));
+      rowItems = this.oracles.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
     } else {
       rowItems = <EventsEmptyBg />;
     }
