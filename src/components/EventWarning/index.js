@@ -8,7 +8,7 @@ import styles from './styles';
 import Warning from '../Warning/index';
 
 
-const EventWarning = ({ classes, className, ...props }) => <Warning {...props} className={cx(className, classes.warningWrapper)} />;
+const EventWarning = ({ classes, className, type, ...props }) => <Warning {...props} type={type} className={cx(className, classes.warningWrapper, classes[type])} />;
 
 EventWarning.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -17,6 +17,7 @@ EventWarning.propTypes = {
   theme: PropTypes.object,
   id: PropTypes.string,
   values: PropTypes.object,
+  type: PropTypes.string,
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
@@ -26,6 +27,7 @@ EventWarning.defaultProps = {
   id: '',
   className: undefined,
   theme: undefined,
+  type: 'pending',
 };
 
 export default injectIntl(withStyles(styles)(EventWarning));

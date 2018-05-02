@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
+import EventWarning from '../EventWarning';
 
 import styles from './styles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
@@ -56,11 +57,7 @@ export default class EventCard extends Component {
         <Link to={url}>
           <Card>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {unconfirmed && (
-                <Typography className={classes.unconfirmedTag}>
-                  <FormattedMessage id="str.pendingConfirmation" defaultMessage="Pending Confirmation" />
-                </Typography>
-              )}
+              {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
@@ -70,13 +67,13 @@ export default class EventCard extends Component {
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
                   <div>
-                    <i className={cx(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_token')}></i>
+                    <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
                     {` ${amountLabel}`}
                   </div>
                 )}
                 <div>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon', 'iconfont', 'icon-ic_timer')}></i>
+                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
                     ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />

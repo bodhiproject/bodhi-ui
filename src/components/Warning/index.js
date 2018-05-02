@@ -7,8 +7,8 @@ import cx from 'classnames';
 import styles from './styles';
 
 
-const Warning = ({ classes, id, message, values, className, intl, theme, ...props }) => !message ? null : (
-  <div {...props} className={cx(className, classes.warning)}>
+const Warning = ({ classes, id, message, values, className, type, intl, theme, ...props }) => !message ? null : (
+  <div {...props} className={cx(className, classes[type])}>
     {intl.formatMessage({ id, message }, values)}
   </div>
 );
@@ -21,6 +21,7 @@ Warning.propTypes = {
   id: PropTypes.string,
   values: PropTypes.object,
   intl: intlShape.isRequired, // eslint-disable-line
+  type: PropTypes.string,
 };
 
 Warning.defaultProps = {
@@ -29,6 +30,7 @@ Warning.defaultProps = {
   id: '',
   className: undefined,
   theme: undefined,
+  type: 'pending',
 };
 
 export default injectIntl(withStyles(styles)(Warning));
