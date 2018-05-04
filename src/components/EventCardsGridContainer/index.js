@@ -24,9 +24,9 @@ const messages = defineMessages({
     id: 'str.setResult',
     defaultMessage: 'Set Result',
   },
-  vote: {
-    id: 'bottomButtonText.vote',
-    defaultMessage: 'Place Vote',
+  arbitrate: {
+    id: 'bottomButtonText.arbitrate',
+    defaultMessage: 'Arbitrate',
   },
   finalizeResult: {
     id: 'str.finalizeResult',
@@ -88,7 +88,7 @@ export default class EventCardsGrid extends Component {
     const buttonText = {
       [EventStatus.Bet]: formatMessage(messages.placeBet),
       [EventStatus.Set]: formatMessage(messages.setResult),
-      [EventStatus.Vote]: formatMessage(messages.vote),
+      [EventStatus.Vote]: formatMessage(messages.arbitrate),
       [EventStatus.Finalize]: formatMessage(messages.finalizeResult),
       [EventStatus.Withdraw]: formatMessage(messages.withdraw),
     }[eventStatusIndex];

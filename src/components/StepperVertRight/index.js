@@ -104,7 +104,7 @@ export default class StepperVertRight extends Component {
       // Add all voting steps of each DecentralizedOracle
       _.each(dOracles, (item) => {
         value.push({
-          title: <FormattedMessage id="cardInfo.vote" defaultMessage="Voting" />,
+          title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
           description: `${getLocalDateTimeString(item.startTime)}
             ${RANGE_SEPARATOR} ${getLocalDateTimeString(item.endTime)}`,
         });
