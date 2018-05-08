@@ -96,7 +96,7 @@ export default class EventCardsGrid extends Component {
     return (_.get(oracles, 'data', [])).map((oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
       return {
-        amountLabel: eventStatusIndex !== EventStatus.Finalize && `${amount} ${oracle.token}`,
+        amountLabel: eventStatusIndex !== EventStatus.Finalize ? `${amount} ${oracle.token}` : '',
         url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
         endTime: eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime,
         unconfirmed: !oracle.topicAddress && !oracle.address,
