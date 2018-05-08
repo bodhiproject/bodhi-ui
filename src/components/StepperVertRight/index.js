@@ -43,7 +43,7 @@ export default class StepperVertRight extends Component {
   }
 
   static defaultProps = {
-    cOracle: undefined,
+    cOracle: {},
   }
 
   render() {
