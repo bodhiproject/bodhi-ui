@@ -83,7 +83,7 @@ export default function appReducer(state = initState, action) {
       if (action.error) {
         return state.set('errorApp', action.error);
       }
-      return state.set('addressValidated', action.isValid);
+      return state.set('addressValidated', action.value);
     }
     case actions.UNLOCK_WALLET_RETURN: {
       if (action.error) {

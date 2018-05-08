@@ -86,31 +86,26 @@ export function* checkWalletEncryptedRequestHandler() {
 export function* validateAddressRequestHandler() {
   yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
     try {
-      const {
-        address,
-      } = action.params;
-
-      method: 'POST',
+      const options = {
+        method: 'POST',
         body: JSON.stringify({
-          address,
+          address: action.address,
         }),
         headers: { 'Content-Type': 'application/json' },
       };
 
-      const result = yield call(request, Routes.api.validateAddress);
-
-      console.log(result);
+      const result = yield call(request, Routes.api.validateAddress, options);
 
       yield put({
         type: actions.VALIDATE_ADDRESS_RETURN,
-        isValid: result,
+        value: result.isvalid,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.VALIDATE_ADDRESS_RETURN,
         error: {
           route: Routes.api.validateAddress,
-          message: error.message,
+          message: err.message,
         },
       });
     }

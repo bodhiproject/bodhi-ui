@@ -46,6 +46,7 @@ const appActions = {
   VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
   validateAddress: (address) => ({
     type: appActions.VALIDATE_ADDRESS,
+    address,
   }),
 
   UNLOCK_WALLET: 'UNLOCK_WALLET',
