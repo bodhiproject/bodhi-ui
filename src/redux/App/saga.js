@@ -82,6 +82,41 @@ export function* checkWalletEncryptedRequestHandler() {
   });
 }
 
+// Checks if the address is valid
+export function* validateAddressRequestHandler() {
+  yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
+    try {
+      const {
+        address,
+      } = action.params;
+
+      method: 'POST',
+        body: JSON.stringify({
+          address,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, Routes.api.validateAddress);
+
+      console.log(result);
+
+      yield put({
+        type: actions.VALIDATE_ADDRESS_RETURN,
+        isValid: result,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.VALIDATE_ADDRESS_RETURN,
+        error: {
+          route: Routes.api.validateAddress,
+          message: error.message,
+        },
+      });
+    }
+  });
+}
+
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
   yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
@@ -124,6 +159,7 @@ export default function* appSaga() {
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
     fork(checkWalletEncryptedRequestHandler),
+    fork(validateAddressRequestHandler),
     fork(unlockWalletRequestHandler),
   ]);
 }

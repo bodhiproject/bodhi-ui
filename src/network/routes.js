@@ -21,6 +21,7 @@ export default {
     winnings: `${HTTP_ROUTE}/winnings`,
     betBalances: `${HTTP_ROUTE}/bet-balances`,
     voteBalances: `${HTTP_ROUTE}/vote-balances`,
+    validateAddress: `${HTTP_ROUTE}/validate-address`,
   },
   insight: {
     totals: `${BASE_INSIGHT}/statistics/total`,

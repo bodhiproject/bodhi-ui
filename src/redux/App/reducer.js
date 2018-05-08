@@ -24,6 +24,7 @@ const initState = new Map({
   globalSnackbarMessage: '',
   createEventDialogVisible: false,
   txConfirmInfoAndCallback: {},
+  addressValidated: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -77,6 +78,12 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('walletEncrypted', action.isEncrypted)
         .set('walletUnlockedUntil', action.unlockedUntil);
+    }
+    case actions.VALIDATE_ADDRESS_RETURN: {
+      if (action.error) {
+        return state.set('errorApp', action.error);
+      }
+      return state.set('addressValidated', action.isValid);
     }
     case actions.UNLOCK_WALLET_RETURN: {
       if (action.error) {
