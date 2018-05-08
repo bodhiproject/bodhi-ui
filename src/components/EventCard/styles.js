@@ -3,8 +3,7 @@ const styles = (theme) => ({
     position: 'relative',
     padding: theme.padding.sm.px,
     '&.top': {
-      minHeight: '320px',
-      paddingBottom: '80px',
+      height: '320px',
     },
     '&.button': {
       textAlign: 'center',
@@ -20,6 +19,14 @@ const styles = (theme) => ({
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
+    display: '-webkit-box',
+    maxWidth: '400px',
+    maxHeight: '160px',
+    margin: '0 auto',
+    WebkitLineClamp: 5,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
