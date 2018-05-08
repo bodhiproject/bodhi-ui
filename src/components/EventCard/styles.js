@@ -3,7 +3,8 @@ const styles = (theme) => ({
     position: 'relative',
     padding: theme.padding.sm.px,
     '&.top': {
-      height: '320px',
+      minHeight: '320px',
+      paddingBottom: '80px',
     },
     '&.button': {
       textAlign: 'center',
