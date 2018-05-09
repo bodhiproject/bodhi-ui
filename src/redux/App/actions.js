@@ -42,6 +42,13 @@ const appActions = {
     type: appActions.CHECK_WALLET_ENCRYPTED,
   }),
 
+  VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
+  VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
+  validateAddress: (address) => ({
+    type: appActions.VALIDATE_ADDRESS,
+    address,
+  }),
+
   UNLOCK_WALLET: 'UNLOCK_WALLET',
   UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
   unlockWallet: (passphrase, timeout) => ({

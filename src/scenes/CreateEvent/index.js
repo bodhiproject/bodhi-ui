@@ -111,6 +111,10 @@ const messages = defineMessages({
     id: 'txConfirmMsg.create',
     defaultMessage: 'create an event',
   },
+  invalidAddress: {
+    id: 'str.invalidQtumAddress',
+    defaultMessage: 'Invalid QTUM Address',
+  },
 });
 
 const ID_BETTING_START_TIME = 'bettingStartTime';
@@ -183,6 +187,7 @@ const validate = (values, props) => {
   },
   txReturn: state.Graphql.get('txReturn'),
   walletEncrypted: state.App.get('walletEncrypted'),
+  addressValidated: state.App.get('addressValidated'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   walletAddresses: state.App.get('walletAddresses'),
   createEventDialogVisible: state.App.get('createEventDialogVisible'),
@@ -212,6 +217,7 @@ const validate = (values, props) => {
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
+  validateAddress: (address) => dispatch(appActions.validateAddress(address)),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
 }))
@@ -224,11 +230,13 @@ export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletEncrypted: PropTypes.bool.isRequired,
+    addressValidated: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
+    validateAddress: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     handleSubmit: PropTypes.func.isRequired,
     reset: PropTypes.func.isRequired,
@@ -266,6 +274,18 @@ export default class CreateEvent extends Component {
     hexString = Web3Utils.toHex(hexString).slice(2);
     if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
       return intl.formatMessage(messages.nameLong);
+    }
+
+    return null;
+  }
+
+  validateResultSetterAddress = (value) => {
+    const { intl, validateAddress } = this.props;
+
+    if (!_.isUndefined(value)) {
+      validateAddress(value);
+    } else {
+      return intl.formatMessage(messages.required);
     }
 
     return null;
@@ -378,7 +398,52 @@ export default class CreateEvent extends Component {
     if (nextProps.txReturn) {
       this.onClose();
     }
+
+    if (!_.isUndefined(nextProps.addressValidated)) {
+      this.resultSetterField();
+    }
   }
+
+  resultSetterField() {
+    const { intl: { formatMessage } } = this.props;
+    return (
+      <Field
+        required
+        fullWidth
+        name={ID_RESULT_SETTER}
+        placeholder={formatMessage(messages.resultSetterPlaceholder)}
+        component={this.resultSetterTextField}
+        validate={[this.validateResultSetterAddress]}
+      />
+    );
+  }
+
+  resultSetterTextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => {
+    const { intl, addressValidated } = this.props;
+    let errorMsg = null;
+    if (touched) {
+      if (error) {
+        errorMsg = error;
+      } else if (!addressValidated) {
+        errorMsg = intl.formatMessage(messages.invalidAddress);
+      }
+    }
+
+    return (
+      <FormControl fullWidth>
+        <_TextField
+          {...input}
+          {...custom}
+          fullWidth
+          placeholder={placeholder}
+          error={!_.isEmpty(errorMsg)}
+        />
+        {
+          !_.isEmpty(errorMsg) && <FormHelperText error>{errorMsg}</FormHelperText>
+        }
+      </FormControl>
+    );
+  };
 
   render() {
     const {
@@ -443,13 +508,7 @@ export default class CreateEvent extends Component {
               <CreateEventOutcomes name={ID_OUTCOMES} />
             </Section>
             <Section title={messages.resultSetter}>
-              <Field
-                required
-                fullWidth
-                name={ID_RESULT_SETTER}
-                placeholder={formatMessage(messages.resultSetterPlaceholder)}
-                component={TextField}
-              />
+              {this.resultSetterField()}
               <Button
                 className={classes.inputButton}
                 variant="raised"

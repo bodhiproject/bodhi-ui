@@ -148,6 +148,7 @@
   "str.notEnoughBot": "您没有足够BOT",
   "str.notEnoughQtum": "您没有足够QTUM",
   "str.notEnoughQtumAndBot": "您没有足够的QTUM或BOT",
+  "str.invalidQtumAddress": "无效的QTUM地址",
   "str.ok": "好的",
   "str.outcomes": "结果",
   "str.pending": "等待中",
