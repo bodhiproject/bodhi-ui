@@ -17,6 +17,7 @@ import {
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
   getDetailPagePath,
+  toFixed,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
@@ -654,7 +655,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.maxVoteText',
         message: 'You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT.',
-        values: { amount: this.toFixed(maxVote) },
+        values: { amount: toFixed(maxVote) },
         warningTypeClass: EventWarningType.Error,
       };
     }
@@ -662,25 +663,6 @@ export default class OraclePage extends Component {
     return {
       disabled: false,
     };
-  }
-
-  toFixed = (num) => {
-    let x = num;
-    if (Math.abs(x) < 1.0) {
-      const e = parseInt(x.toString().split('e-')[1], 10);
-      if (e) {
-        x *= 10 ** (e - 1);
-        x = `0.${(new Array(e)).join('0')}${x.toString().substring(2)}`;
-      }
-    } else {
-      let e = parseInt(x.toString().split('+')[1], 10);
-      if (e > 20) {
-        e -= 20;
-        x /= 10 ** e;
-        x += (new Array(e + 1)).join('0');
-      }
-    }
-    return x;
   }
 
   getEventOptionsInfo = () => {
