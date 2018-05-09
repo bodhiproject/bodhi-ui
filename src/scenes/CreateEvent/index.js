@@ -112,7 +112,7 @@ const messages = defineMessages({
     defaultMessage: 'create an event',
   },
   invalidAddress: {
-    id: 'str.invalidAddress',
+    id: 'str.invalidQtumAddress',
     defaultMessage: 'Invalid QTUM Address',
   },
 });
@@ -400,11 +400,11 @@ export default class CreateEvent extends Component {
     }
 
     if (!_.isUndefined(nextProps.addressValidated)) {
-      this.renderResultSetter();
+      this.resultSetterField();
     }
   }
 
-  renderResultSetter = () => {
+  resultSetterField() {
     const { intl: { formatMessage } } = this.props;
     return (
       <Field
@@ -412,13 +412,13 @@ export default class CreateEvent extends Component {
         fullWidth
         name={ID_RESULT_SETTER}
         placeholder={formatMessage(messages.resultSetterPlaceholder)}
-        component={this.renderResultSetterTextField}
+        component={this.resultSetterTextField}
         validate={[this.validateResultSetterAddress]}
       />
     );
   }
 
-  renderResultSetterTextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => {
+  resultSetterTextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => {
     const { intl, addressValidated } = this.props;
     let errorMsg = null;
     if (touched) {
@@ -439,8 +439,7 @@ export default class CreateEvent extends Component {
           error={!_.isEmpty(errorMsg)}
         />
         {
-          !_.isEmpty(errorMsg) ?
-            <FormHelperText error>{errorMsg}</FormHelperText> : null
+          !_.isEmpty(errorMsg) && <FormHelperText error>{errorMsg}</FormHelperText>
         }
       </FormControl>
     );
@@ -509,7 +508,7 @@ export default class CreateEvent extends Component {
               <CreateEventOutcomes name={ID_OUTCOMES} />
             </Section>
             <Section title={messages.resultSetter}>
-              {this.renderResultSetter()}
+              {this.resultSetterField()}
               <Button
                 className={classes.inputButton}
                 variant="raised"

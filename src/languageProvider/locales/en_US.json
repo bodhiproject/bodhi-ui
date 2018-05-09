@@ -146,7 +146,7 @@
   "str.notEnoughBot": "You don't have enough BOT",
   "str.notEnoughQtum": "You don't have enough QTUM",
   "str.notEnoughQtumAndBot": "You don't have enough QTUM or BOT",
-  "str.invalidAddress": "Invalid QTUM Address",
+  "str.invalidQtumAddress": "Invalid QTUM Address",
   "str.ok": "OK",
   "str.outcomes": "Outcomes",
   "str.pending": "Pending",
