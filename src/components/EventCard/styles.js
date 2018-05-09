@@ -19,6 +19,14 @@ const styles = (theme) => ({
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
+    display: '-webkit-box',
+    maxWidth: '400px',
+    maxHeight: '160px',
+    margin: '0 auto',
+    WebkitLineClamp: 5,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
