@@ -9,6 +9,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
+import NP from 'number-precision';
 
 import styles from './styles';
 import {
@@ -16,6 +17,7 @@ import {
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
   getDetailPagePath,
+  toFixed,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventWarning from '../../../components/EventWarning/index';
@@ -644,7 +646,7 @@ export default class OraclePage extends Component {
     // Trying to vote over the consensus threshold
     const optionAmount = oracle.amounts[currentOptionIdx];
     const maxVote = token === Token.Bot && status === OracleStatus.Voting
-      ? oracle.consensusThreshold - optionAmount : 0;
+      ? NP.minus(oracle.consensusThreshold, optionAmount) : 0;
     if (token === Token.Bot
       && status === OracleStatus.Voting
       && currentOptionIdx >= 0
@@ -653,7 +655,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.maxVoteText',
         message: 'You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT.',
-        values: { amount: maxVote },
+        values: { amount: toFixed(maxVote) },
         warningTypeClass: EventWarningType.Error,
       };
     }
