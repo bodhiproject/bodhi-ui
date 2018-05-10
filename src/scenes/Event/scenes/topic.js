@@ -249,7 +249,7 @@ export default class TopicPage extends Component {
             </Typography>
           )}
         </div>
-        {(escrowClaim || botWinnings || qtumWinnings) && (
+        {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
