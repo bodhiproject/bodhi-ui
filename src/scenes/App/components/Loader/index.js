@@ -9,7 +9,7 @@ import { LinearProgress } from 'material-ui/Progress';
 
 import AppConfig from '../../../../config/app';
 import styles from './styles';
-import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 
 @withStyles(styles)
@@ -64,7 +64,7 @@ export default class Loader extends Component {
                 <FormattedMessage id="loader.blockTime" defaultMessage="Latest Block Time" />
               </Grid>
               <Grid item className={classes.loaderInfoData} xs={6}>
-                {getLocalDateTimeString(syncBlockTime)}
+                {getShortLocalDateTimeString(syncBlockTime)}
               </Grid>
             </Grid>
           )}

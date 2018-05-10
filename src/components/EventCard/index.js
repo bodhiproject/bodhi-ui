@@ -6,7 +6,7 @@ import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
 
 import styles from './styles';
-import { getLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
+import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
 const cardMessages = defineMessages({
   raise: {
@@ -65,7 +65,7 @@ export default class EventCard extends Component {
                 {name}
               </Typography>
               <div className={classes.dashboardTime}>
-                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getLocalDateTimeString(endTime)}`}
+                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getShortLocalDateTimeString(endTime)}`}
               </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (

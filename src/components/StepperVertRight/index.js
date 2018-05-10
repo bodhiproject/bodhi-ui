@@ -7,7 +7,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import _ from 'lodash';
 
 import styles from './styles';
-import { getLocalDateTimeString } from '../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 const POS_TOPIC_CREATED = 0;
 const POS_BETTING = 1;
@@ -91,12 +91,12 @@ export default class StepperVertRight extends Component {
       description: `${formatMessage(messages.block)}: ${cOracle.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      description: `${getLocalDateTimeString(cOracle.startTime)}
-        ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.endTime)}`,
+      description: `${getShortLocalDateTimeString(cOracle.startTime)}
+        ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(cOracle.endTime)}`,
     }, {
       title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />,
-      description: `${getLocalDateTimeString(cOracle.resultSetStartTime)}
-        ${RANGE_SEPARATOR} ${getLocalDateTimeString(cOracle.resultSetEndTime)}`,
+      description: `${getShortLocalDateTimeString(cOracle.resultSetStartTime)}
+        ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(cOracle.resultSetEndTime)}`,
     }];
 
     let current;
@@ -105,8 +105,8 @@ export default class StepperVertRight extends Component {
       _.each(dOracles, (item) => {
         value.push({
           title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-          description: `${getLocalDateTimeString(item.startTime)}
-            ${RANGE_SEPARATOR} ${getLocalDateTimeString(item.endTime)}`,
+          description: `${getShortLocalDateTimeString(item.startTime)}
+            ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(item.endTime)}`,
         });
       });
 
@@ -116,7 +116,7 @@ export default class StepperVertRight extends Component {
         // Add withdrawing step for TopicEvent
         value.push({
           title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
-          description: `${getLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+          description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
         if (blockTime >= lastDOracle.endTime) {
@@ -129,7 +129,7 @@ export default class StepperVertRight extends Component {
         // Add finalizing step for DecentralizedOracle
         value.push({
           title: <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />,
-          description: `${getLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+          description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
         if (blockTime >= lastDOracle.startTime && blockTime < lastDOracle.endTime) {
@@ -146,7 +146,7 @@ export default class StepperVertRight extends Component {
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
-        description: `${getLocalDateTimeString(cOracle.resultSetEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${getShortLocalDateTimeString(cOracle.resultSetEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
       // Set step number
