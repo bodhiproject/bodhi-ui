@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, defineMessages, intlShape } from 'react-intl';
-import Paper from 'material-ui/Paper';
+import { injectIntl } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 
 import MyBalances from './components/Balances/index';
+import FunctionRow from './components/FunctionRow/index';
 import WalletHistory from './components/History/index';
 import appActions from '../../redux/App/actions';
 import { AppLocation } from '../../constants';
-import ImportantNote from '../../components/ImportantNote/index';
 import styles from './styles';
-
-const messages = defineMessages({
-  balanceInfo: {
-    id: 'balance.info',
-    defaultMessage: 'If you would like to encrypt, backup, or restore your wallet, please do this from the Qtum Wallet. In the application menu, there is a "Launch Qtum Wallet" option.',
-  },
-});
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -28,8 +19,6 @@ const messages = defineMessages({
 export default class MyWallet extends Component {
   static propTypes = {
     setAppLocation: PropTypes.func.isRequired,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    classes: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
@@ -39,14 +28,9 @@ export default class MyWallet extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <div>
-        <Paper className={classes.infoPaper}>
-          <ImportantNote
-            heading={this.props.intl.formatMessage(messages.balanceInfo)}
-          />
-        </Paper>
+        <FunctionRow />
         <MyBalances />
         <WalletHistory />
       </div>
