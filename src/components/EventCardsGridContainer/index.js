@@ -121,28 +121,30 @@ export default class EventCardsGrid extends Component {
   }
 
   componentWillMount() {
-    const { eventStatusIndex, sortBy } = this.props;
+    const { eventStatusIndex, sortBy, walletAddresses } = this.props;
 
     this.setAppLocation(eventStatusIndex);
-    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP, walletAddresses);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { eventStatusIndex, sortBy, syncBlockNum } = nextProps;
+    const { eventStatusIndex, sortBy, syncBlockNum, walletAddresses } = nextProps;
 
     if (eventStatusIndex !== this.props.eventStatusIndex
       || sortBy !== this.props.sortBy
-      || syncBlockNum !== this.props.syncBlockNum) {
-      this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP);
+      || syncBlockNum !== this.props.syncBlockNum
+      || walletAddresses !== this.props.walletAddresses) {
+      const addresses = walletAddresses || this.props.walletAddresses;
+      this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP, addresses);
       this.setState({ skip: 0 });
     }
   }
 
   loadMoreData = () => {
     let { skip } = this.state;
-    const { eventStatusIndex, sortBy } = this.props;
+    const { eventStatusIndex, sortBy, walletAddresses } = this.props;
     skip += LIMIT;
-    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip);
+    this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip, walletAddresses);
     this.setState({ skip });
   }
 
@@ -157,8 +159,8 @@ export default class EventCardsGrid extends Component {
     this.props.setAppLocation(locations[eventStatusIndex]);
   }
 
-  executeGraphRequest(eventStatusIndex, sortBy, limit, skip) {
-    const { getActionableTopics, getOracles, walletAddresses } = this.props;
+  executeGraphRequest(eventStatusIndex, sortBy, limit, skip, walletAddresses) {
+    const { getActionableTopics, getOracles } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
     switch (eventStatusIndex) {
@@ -233,13 +235,14 @@ export default class EventCardsGrid extends Component {
     const { theme, eventStatusIndex } = this.props;
     const { Withdraw } = EventStatus;
 
+    const objs = eventStatusIndex === Withdraw ? this.topics : this.oracles;
     let rowItems = [];
-    if (eventStatusIndex === Withdraw && this.topics.length > 0) {
-      rowItems = this.topics.map((topic) => <EventCard key={topic.txid} {...topic} />);
-    } else if (this.oracles.length > 0) { // Bet, Set, Vote, Finalize
-      rowItems = this.oracles.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
-    } else {
+    if (objs.length === 0) {
       rowItems = <EventsEmptyBg />;
+    } else if (eventStatusIndex === Withdraw) {
+      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} />);
+    } else { // Bet, Set, Vote, Finalize
+      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
     }
 
     return (

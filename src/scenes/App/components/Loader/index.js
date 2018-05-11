@@ -6,6 +6,7 @@ import Typography from 'material-ui/Typography';
 import { FormattedMessage } from 'react-intl';
 import Grid from 'material-ui/Grid';
 import { LinearProgress } from 'material-ui/Progress';
+import _ from 'lodash';
 
 import AppConfig from '../../../../config/app';
 import styles from './styles';
@@ -17,6 +18,7 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
   syncPercent: state.App.get('syncPercent'),
   syncBlockNum: state.App.get('syncBlockNum'),
   syncBlockTime: state.App.get('syncBlockTime'),
+  walletAddresses: state.App.get('walletAddresses'),
 }))
 export default class Loader extends Component {
   static propTypes = {
@@ -24,11 +26,12 @@ export default class Loader extends Component {
     syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     syncBlockTime: PropTypes.number.isRequired,
+    walletAddresses: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, syncPercent, syncBlockNum, syncBlockTime } = this.props;
-    const hideLoader = !AppConfig.debug.showAppLoad || syncPercent >= 100;
+    const { classes, syncPercent, syncBlockNum, syncBlockTime, walletAddresses } = this.props;
+    const hideLoader = !AppConfig.debug.showAppLoad || (syncPercent >= 100 && !_.isEmpty(walletAddresses));
 
     return (
       <div
