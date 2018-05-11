@@ -2,6 +2,7 @@ const styles = (theme) => ({
   functionRow: {
     minWidth: theme.sizes.table.minWidth,
     margin: '-30px 0px 20px 0px',
+    textAlign: 'right',
   },
   button: {
     margin: `${theme.padding.xs.px} 12px ${theme.padding.unit.px} 12px`,

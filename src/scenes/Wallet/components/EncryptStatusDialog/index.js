@@ -34,7 +34,7 @@ export default class EncryptStatusDialog extends Component {
 
   render() {
     const { encryptResult } = this.props;
-    const isSuccessful = !_.isUndefined(encryptResult) && (encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.'));
+    const isSuccessful = !_.isUndefined(encryptResult) && !_.isObject(encryptResult) && (encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.'));
 
     return (
       <Dialog

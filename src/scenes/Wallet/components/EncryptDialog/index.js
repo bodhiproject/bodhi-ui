@@ -78,7 +78,7 @@ export default class EncryptDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          {!walletEncrypted && <Button color="primary" onClick={this.confirmEncrypt}>
+          {!walletEncrypted && <Button color="primary" onClick={this.confirmEncrypt} disabled={passphrase === ''}>
             <FormattedMessage id="wallet.encrypt" defaultMessage="Encrypt" />
           </Button>
           }

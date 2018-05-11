@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, intlShape, defineMessages } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import Tooltip from 'material-ui/Tooltip';
+
 import Typography from 'material-ui/Typography';
 import EncryptDialog from '../EncryptDialog/index';
 import EncryptStatusDialog from '../EncryptStatusDialog/index';
@@ -11,6 +13,21 @@ import EncryptStatusDialog from '../EncryptStatusDialog/index';
 import appActions from '../../../../redux/App/actions';
 
 import styles from './styles';
+
+const messages = defineMessages({
+  encrypt: {
+    id: 'str.encrypt',
+    defaultMessage: 'Encrypts the wallet with a passphrase. This is for first time encryption. After encrypting, you will have to use this passphrase to unlock your wallet when starting Bodhi.',
+  },
+  backup: {
+    id: 'str.backup',
+    defaultMessage: 'Creates a backup wallet data file which can be restored later.',
+  },
+  restore: {
+    id: 'str.restore',
+    defaultMessage: 'Restores your backed up wallet data file. This will add all the addresses from the backed up wallet to your current wallet.',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -22,7 +39,7 @@ import styles from './styles';
 }))
 export default class FunctionRow extends Component {
   static propTypes = {
-    // intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     backupWallet: PropTypes.func.isRequired,
     importWallet: PropTypes.func.isRequired,
@@ -44,19 +61,25 @@ export default class FunctionRow extends Component {
     };
   }
   render() {
-    const { classes, encryptResult } = this.props;
+    const { classes, encryptResult, intl } = this.props;
     const { encryptDialogVisible } = this.state;
     return (
-      <Typography align="right" className={classes.functionRow}>
-        <Button variant="raised" color="primary" className={classes.button} onClick={this.onEncryptClicked}>
-          <FormattedMessage id="button.encrypt" defaultMessage="Encrypt" />
-        </Button>
-        <Button variant="raised" color="primary" className={classes.button} onClick={this.onBackup}>
-          <FormattedMessage id="button.backup" defaultMessage="Backup" />
-        </Button>
-        <Button variant="raised" color="primary" className={classes.button} onClick={this.onImport}>
-          <FormattedMessage id="button.import" defaultMessage="Import" />
-        </Button>
+      <div className={classes.functionRow}>
+        <Tooltip id="tooltip-icon" title={intl.formatMessage(messages.encrypt)}>
+          <Button variant="raised" color="primary" className={classes.button} onClick={this.onEncryptClicked}>
+            <FormattedMessage id="button.encrypt" defaultMessage="Encrypt" />
+          </Button>
+        </Tooltip>
+        <Tooltip id="tooltip-icon" title={intl.formatMessage(messages.backup)}>
+          <Button variant="raised" color="primary" className={classes.button} onClick={this.onBackup}>
+            <FormattedMessage id="button.backup" defaultMessage="Backup" />
+          </Button>
+        </Tooltip>
+        <Tooltip id="tooltip-icon" title={intl.formatMessage(messages.restore)}>
+          <Button variant="raised" color="primary" className={classes.button} onClick={this.onImport}>
+            <FormattedMessage id="button.resotre" defaultMessage="Restore" />
+          </Button>
+        </Tooltip>
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={this.handleEncryptDialogClose}
@@ -66,7 +89,7 @@ export default class FunctionRow extends Component {
           onClose={this.handleEncryptStatusDialogClose}
           encryptResult={encryptResult}
         />
-      </Typography>
+      </div>
     );
   }
 
