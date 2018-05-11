@@ -6,7 +6,7 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 import { withStyles, Typography } from 'material-ui';
 
 import { Token } from '../../../../constants';
-import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import styles from './styles';
 
@@ -68,7 +68,7 @@ export default class EventResultHistory extends Component {
             <TableBody>
               {_.map(sortedOracles, (oracle, index) => (
                 <TableRow key={`result-${index}`} selected={index % 2 === 1}>
-                  <TableCell padding="dense">{getLocalDateTimeString(oracle.endTime)}</TableCell>
+                  <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
                   <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                   <TableCell padding="dense">
                     {index !== sortedOracles.length - 1 && index !== 0

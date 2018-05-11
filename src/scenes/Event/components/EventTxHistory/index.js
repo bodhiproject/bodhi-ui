@@ -8,7 +8,7 @@ import { Typography, withStyles } from 'material-ui';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
-import { getLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType } from '../../../../constants';
 
@@ -74,7 +74,7 @@ export default class EventTxHistory extends Component {
     const result = [];
     result[0] = (
       <TableRow key={transaction.txid}>
-        <TableCell padding="dense">{getLocalDateTimeString(transaction.createdTime)}</TableCell>
+        <TableCell padding="dense">{getShortLocalDateTimeString(transaction.createdTime)}</TableCell>
         <TableCell padding="dense">{getTxTypeString(transaction.type, locale, localeMessages)}</TableCell>
         <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
         <TableCell padding="dense">

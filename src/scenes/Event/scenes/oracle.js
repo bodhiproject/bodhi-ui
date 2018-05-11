@@ -13,7 +13,7 @@ import NP from 'number-precision';
 
 import styles from './styles';
 import {
-  getLocalDateTimeString,
+  getShortLocalDateTimeString,
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
   getDetailPagePath,
@@ -711,7 +711,7 @@ export default class OraclePage extends Component {
         label: <FormattedMessage id="eventInfo.endDate" defaultMessage="Ending Date" >
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>,
-        content: getLocalDateTimeString(oracle.endTime),
+        content: getShortLocalDateTimeString(oracle.endTime),
         highlight: getEndTimeCountDownString(oracle.endTime, locale, localeMessages),
       }, {
         label: <FormattedMessage id="eventInfo.fund" defaultMessage="Funding" >

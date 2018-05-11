@@ -5,12 +5,14 @@ import { defineMessages } from 'react-intl';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy } from '../constants';
+import Zhlang from '../languageProvider/entries/zh-Hans-CN';
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01; // eslint-disable-line
 const GAS_COST = 0.0000004;
 const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
 const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';
+const FORMAT_SHORT_DATE_TIME_CN = 'YY/M/D H:mm:ss';
 const messages = defineMessages({
   end: {
     id: 'str.end',
@@ -104,7 +106,12 @@ export function getLocalDateTimeString(unixSeconds) {
 }
 
 export function getShortLocalDateTimeString(unixSeconds) {
-  return moment.unix(unixSeconds).format(FORMAT_SHORT_DATE_TIME);
+  const dateTime = moment.unix(unixSeconds);
+  if (moment.locale() === Zhlang.momentlocale) {
+    return dateTime.format(FORMAT_SHORT_DATE_TIME_CN);
+  }
+
+  return dateTime.format(FORMAT_SHORT_DATE_TIME);
 }
 
 export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
