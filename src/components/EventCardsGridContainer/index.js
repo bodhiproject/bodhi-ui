@@ -233,13 +233,14 @@ export default class EventCardsGrid extends Component {
     const { theme, eventStatusIndex } = this.props;
     const { Withdraw } = EventStatus;
 
+    const objs = eventStatusIndex === Withdraw ? this.topics : this.oracles;
     let rowItems = [];
-    if (eventStatusIndex === Withdraw && this.topics.length > 0) {
-      rowItems = this.topics.map((topic) => <EventCard key={topic.txid} {...topic} />);
-    } else if (this.oracles.length > 0) { // Bet, Set, Vote, Finalize
-      rowItems = this.oracles.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
-    } else {
+    if (objs.length === 0) {
       rowItems = <EventsEmptyBg />;
+    } else if (eventStatusIndex === Withdraw) {
+      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} />);
+    } else { // Bet, Set, Vote, Finalize
+      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
     }
 
     return (
