@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
@@ -26,7 +26,10 @@ export default class FunctionRow extends Component {
     classes: PropTypes.object.isRequired,
     backupWallet: PropTypes.func.isRequired,
     importWallet: PropTypes.func.isRequired,
-    encryptResult: PropTypes.object,
+    encryptResult: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
   };
 
   static defaultProps = {
@@ -38,23 +41,21 @@ export default class FunctionRow extends Component {
 
     this.state = {
       encryptDialogVisible: false,
-      EncryptStatusDialogVisible: false,
     };
   }
   render() {
     const { classes, encryptResult } = this.props;
-    console.log('​FunctionRow -> render -> encryptResult', encryptResult);
-    const { encryptDialogVisible, EncryptStatusDialogVisible } = this.state;
+    const { encryptDialogVisible } = this.state;
     return (
       <Typography align="right" className={classes.functionRow}>
         <Button variant="raised" color="primary" className={classes.button} onClick={this.onEncryptClicked}>
-          Encrypt
+          <FormattedMessage id="button.encrypt" defaultMessage="Encrypt" />
         </Button>
         <Button variant="raised" color="primary" className={classes.button} onClick={this.onBackup}>
-          Backup
+          <FormattedMessage id="button.backup" defaultMessage="Backup" />
         </Button>
         <Button variant="raised" color="primary" className={classes.button} onClick={this.onImport}>
-          Importwallet
+          <FormattedMessage id="button.import" defaultMessage="Import" />
         </Button>
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
@@ -93,12 +94,6 @@ export default class FunctionRow extends Component {
   handleEncryptDialogClose = () => {
     this.setState({
       encryptDialogVisible: false,
-    });
-  };
-
-  handleEncryptStatusDialogClose = () => {
-    this.setState({
-      EncryptStatusDialogVisible: false,
     });
   };
 }

@@ -21,26 +21,24 @@ import appActions from '../../../../redux/App/actions';
 export default class EncryptStatusDialog extends Component {
   static propTypes = {
     // classes: PropTypes.object.isRequired,
-    dialogVisible: PropTypes.bool,
-    onClose: PropTypes.func.isRequired,
-    encryptResult: PropTypes.object,
+    encryptResult: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
     clearEncryptResult: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     encryptResult: undefined,
-    dialogVisible: false,
   };
 
   render() {
-    const { dialogVisible, onClose, encryptResult } = this.props;
-    console.log('​EncryptStatusDialog -> render -> encryptResult', encryptResult);
+    const { encryptResult } = this.props;
     const isSuccessful = !_.isUndefined(encryptResult) && (encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.'));
 
     return (
       <Dialog
         open={!_.isUndefined(encryptResult)}
-        onClose={onClose}
       >
         <DialogTitle>
           {
