@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import MyBalances from './components/Balances/index';
-import FunctionRow from './components/FunctionRow/index';
+import ActionButtonHeader from './components/ActionButtonHeader/index';
 import WalletHistory from './components/History/index';
 import appActions from '../../redux/App/actions';
 import { AppLocation } from '../../constants';
@@ -25,7 +25,7 @@ export default class MyWallet extends Component {
   render() {
     return (
       <div>
-        <FunctionRow />
+        <ActionButtonHeader />
         <MyBalances />
         <WalletHistory />
       </div>

@@ -45,7 +45,7 @@ const messages = defineMessages({
   backupWallet: () => dispatch(appActions.backupWallet()),
   importWallet: () => dispatch(appActions.importWallet()),
 }))
-export default class FunctionRow extends Component {
+export default class ActionButtonHeader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     backupWallet: PropTypes.func.isRequired,
@@ -75,7 +75,7 @@ export default class FunctionRow extends Component {
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
-          onEncryptWallet={this.onEncryptWallet}
+          onEncryptWallet={() => { this.setState({ encryptDialogVisible: false }); }}
         />
         <EncryptStatusDialog
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}

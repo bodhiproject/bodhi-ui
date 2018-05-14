@@ -36,6 +36,13 @@ export default class EncryptDialog extends Component {
     passphrase: '',
   }
 
+  confirmEncrypt = () => {
+    const { passphrase } = this.state;
+    const { encryptWallet } = this.props;
+    encryptWallet(passphrase);
+    this.props.onEncryptWallet();
+  }
+
   render() {
     const { dialogVisible, onClose, intl, walletEncrypted } = this.props;
     const { passphrase } = this.state;
@@ -62,8 +69,7 @@ export default class EncryptDialog extends Component {
                 required
               />
             </span>
-          )
-          }
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>
@@ -77,12 +83,5 @@ export default class EncryptDialog extends Component {
         </DialogActions>
       </Dialog>
     );
-  }
-
-  confirmEncrypt = () => {
-    const { passphrase } = this.state;
-    const { encryptWallet } = this.props;
-    encryptWallet(passphrase);
-    this.props.onEncryptWallet();
   }
 }
