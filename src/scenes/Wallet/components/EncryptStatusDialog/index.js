@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { Button } from 'material-ui';
-import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
-import styles from './styles';
 import appActions from '../../../../redux/App/actions';
 
 @injectIntl
-@withStyles(styles, { withTheme: true })
 @connect((state) => ({
   encryptResult: state.App.get('encryptResult'),
 }), (dispatch) => ({
@@ -20,7 +17,6 @@ import appActions from '../../../../redux/App/actions';
 }))
 export default class EncryptStatusDialog extends Component {
   static propTypes = {
-    // classes: PropTypes.object.isRequired,
     encryptResult: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object,
@@ -34,23 +30,19 @@ export default class EncryptStatusDialog extends Component {
 
   render() {
     const { encryptResult } = this.props;
-    const isSuccessful = !_.isUndefined(encryptResult) && !_.isObject(encryptResult) && (encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.'));
+    const isSuccessful = !_.isUndefined(encryptResult) && !_.isObject(encryptResult) && encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.');
 
     return (
-      <Dialog
-        open={!_.isUndefined(encryptResult)}
-      >
+      <Dialog open={!_.isUndefined(encryptResult)}>
         <DialogTitle>
-          {
-            isSuccessful ?
-              <FormattedMessage id="encrypt.success" defaultMessage="Encrypt Wallet Successful." /> :
-              <FormattedMessage id="encrypt:fail" defaultMessage="Encrypt Wallet Failed." />
-          }
+          {isSuccessful ? (
+            <FormattedMessage id="encrypt.success" defaultMessage="Encrypt Wallet Successful." />
+          ) : (
+            <FormattedMessage id="encrypt:fail" defaultMessage="Encrypt Wallet Failed." />
+          )}
         </DialogTitle>
         <DialogContent>
-          {
-            isSuccessful && <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />
-          }
+          {isSuccessful && <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.dialogHide}>

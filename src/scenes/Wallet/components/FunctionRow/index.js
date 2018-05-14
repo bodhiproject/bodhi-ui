@@ -6,7 +6,6 @@ import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 
-import Typography from 'material-ui/Typography';
 import EncryptDialog from '../EncryptDialog/index';
 import EncryptStatusDialog from '../EncryptStatusDialog/index';
 

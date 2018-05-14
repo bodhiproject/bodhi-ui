@@ -91,8 +91,6 @@ export function* backupWalletRequestHandler() {
     try {
       const options = {
         method: 'POST',
-        body: JSON.stringify({
-        }),
         headers: { 'Content-Type': 'application/json' },
       };
       const backupResult = yield call(request, Routes.api.backupWallet, options);
@@ -118,8 +116,6 @@ export function* importWalletRequestHandler() {
     try {
       const options = {
         method: 'POST',
-        body: JSON.stringify({
-        }),
         headers: { 'Content-Type': 'application/json' },
       };
       const importResult = yield call(request, Routes.api.importWallet, options);
