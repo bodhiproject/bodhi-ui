@@ -75,7 +75,6 @@ export default class ActionButtonHeader extends Component {
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
-          onEncryptWallet={() => { this.setState({ encryptDialogVisible: false }); }}
         />
         <EncryptStatusDialog
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}

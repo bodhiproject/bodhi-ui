@@ -28,7 +28,6 @@ export default class EncryptDialog extends Component {
     dialogVisible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     encryptWallet: PropTypes.func.isRequired,
-    onEncryptWallet: PropTypes.func.isRequired,
     walletEncrypted: PropTypes.bool.isRequired,
   }
 
@@ -38,9 +37,9 @@ export default class EncryptDialog extends Component {
 
   confirmEncrypt = () => {
     const { passphrase } = this.state;
-    const { encryptWallet } = this.props;
+    const { encryptWallet, onClose } = this.props;
     encryptWallet(passphrase);
-    this.props.onEncryptWallet();
+    onClose();
   }
 
   render() {
