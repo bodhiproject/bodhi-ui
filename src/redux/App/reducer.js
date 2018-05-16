@@ -72,6 +72,18 @@ export default function appReducer(state = initState, action) {
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
+    case actions.ENCRYPT_WALLET_RETURN: {
+      if (action.error) {
+        return state.set('encryptResult', action.error);
+      }
+      return state.set('encryptResult', action.encryptResult);
+    }
+    case actions.BACKUP_WALLET_RETURN: {
+      return state.set('backupWallet', action.backupResult);
+    }
+    case actions.IMPORT_WALLET_RETURN: {
+      return state.set('importWallet', action.importResult);
+    }
     case actions.CHECK_WALLET_ENCRYPTED_RETURN: {
       if (action.error) {
         return state.set('errorApp', action.error);
@@ -114,6 +126,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.CLEAR_TX_CONFIRM: {
       return state.set('txConfirmInfoAndCallback', {});
+    }
+    case actions.CLEAR_ENCRYPT_RESULT: {
+      return state.set('encryptResult', undefined);
     }
     default: {
       return state;

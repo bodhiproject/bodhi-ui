@@ -22,6 +22,9 @@ export default {
     betBalances: `${HTTP_ROUTE}/bet-balances`,
     voteBalances: `${HTTP_ROUTE}/vote-balances`,
     validateAddress: `${HTTP_ROUTE}/validate-address`,
+    encryptWallet: `${HTTP_ROUTE}/encrypt-wallet`,
+    backupWallet: `${HTTP_ROUTE}/backup-wallet`,
+    importWallet: `${HTTP_ROUTE}/import-wallet`,
   },
   insight: {
     totals: `${BASE_INSIGHT}/statistics/total`,

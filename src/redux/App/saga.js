@@ -57,6 +57,84 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
+// Encrypt the wallet
+export function* encryptWalletRequestHandler() {
+  yield takeEvery(actions.ENCRYPT_WALLET, function* encryptWalletRequest(action) {
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({
+          passphrase: action.passphrase,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const encryptResult = yield call(request, Routes.api.encryptWallet, options);
+      yield put({
+        type: actions.ENCRYPT_WALLET_RETURN,
+        encryptResult,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.ENCRYPT_WALLET_RETURN,
+        error: {
+          route: Routes.api.encryptWallet,
+          message: error.message,
+        },
+      });
+    }
+  });
+}
+
+// Backup the wallet
+export function* backupWalletRequestHandler() {
+  yield takeEvery(actions.BACKUP_WALLET, function* backupWalletRequest() {
+    try {
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const backupResult = yield call(request, Routes.api.backupWallet, options);
+      yield put({
+        type: actions.BACKUP_WALLET_RETURN,
+        backupResult,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.BACKUP_WALLET_RETURN,
+        error: {
+          route: Routes.api.backupWallet,
+          message: error.message,
+        },
+      });
+    }
+  });
+}
+
+// Import the wallet
+export function* importWalletRequestHandler() {
+  yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
+    try {
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const importResult = yield call(request, Routes.api.importWallet, options);
+      yield put({
+        type: actions.IMPORT_WALLET_RETURN,
+        importResult,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.IMPORT_WALLET_RETURN,
+        error: {
+          route: Routes.api.importWallet,
+          message: error.message,
+        },
+      });
+    }
+  });
+}
+
 // Checks if the wallet is encrypted
 export function* checkWalletEncryptedRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* checkWalletEncryptedRequest() {
@@ -152,6 +230,9 @@ export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
+    fork(encryptWalletRequestHandler),
+    fork(backupWalletRequestHandler),
+    fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),
     fork(checkWalletEncryptedRequestHandler),
     fork(validateAddressRequestHandler),
