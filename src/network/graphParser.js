@@ -27,6 +27,7 @@ class GraphParser {
       oracles: entry.oracles,
       blockNum: entry.blockNum,
       creatorAddress: entry.creatorAddress,
+      transactions: entry.transactions,
     }));
   }
 
@@ -51,6 +52,7 @@ class GraphParser {
       resultSetterQAddress: entry.resultSetterQAddress,
       consensusThreshold: entry.consensusThreshold,
       blockNum: entry.blockNum,
+      transactions: entry.transactions,
     }));
   }
 

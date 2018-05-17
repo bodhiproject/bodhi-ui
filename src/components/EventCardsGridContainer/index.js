@@ -8,7 +8,7 @@ import { withStyles } from 'material-ui/styles';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import { AppLocation, Token, OracleStatus, SortBy, EventStatus } from '../../constants';
+import { AppLocation, Token, OracleStatus, SortBy, EventStatus, TransactionType, TransactionStatus } from '../../constants';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import EventCard from '../EventCard/index';
@@ -38,8 +38,10 @@ const messages = defineMessages({
   },
 });
 
+const { Pending } = TransactionStatus;
 const LIMIT = 8;
 const SKIP = 0;
+
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -93,13 +95,22 @@ export default class EventCardsGrid extends Component {
       [EventStatus.Withdraw]: formatMessage(messages.withdraw),
     }[eventStatusIndex];
 
+    const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+    const pendingTypes = {
+      [EventStatus.Set]: [ApproveSetResult, SetResult],
+      [EventStatus.Vote]: [ApproveVote, Vote],
+      [EventStatus.Finalize]: [FinalizeResult],
+      [EventStatus.Bet]: [Bet],
+    }[eventStatusIndex] || [];
+
     return (_.get(oracles, 'data', [])).map((oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
+      const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
       return {
         amountLabel: eventStatusIndex !== EventStatus.Finalize ? `${amount} ${oracle.token}` : '',
         url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
         endTime: eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime,
-        unconfirmed: !oracle.topicAddress && !oracle.address,
+        unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
         buttonText,
         ...oracle,
       };
@@ -107,12 +118,15 @@ export default class EventCardsGrid extends Component {
   }
 
   get topics() {
+    const { WithdrawEscrow, Withdraw } = TransactionType;
     return _.get(this.props.topics, 'data', []).map((topic) => {
       const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
       const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
+      const pendingTypes = [WithdrawEscrow, Withdraw];
+      const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
       return {
         amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
-        unconfirmed: false,
+        unconfirmed: isPending,
         url: `/topic/${topic.address}`,
         buttonText: this.props.intl.formatMessage(messages.withdraw),
         ...topic,
