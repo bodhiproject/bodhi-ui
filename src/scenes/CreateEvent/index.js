@@ -24,7 +24,7 @@ import SelectAddressDialog from '../../components/SelectAddressDialog/index';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
-import { Token } from '../../constants';
+import { Token, TransactionType } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 
@@ -340,7 +340,15 @@ export default class CreateEvent extends Component {
         intl.formatMessage(messages.confirmCreateMsg),
         eventEscrowAmount,
         Token.Bot,
-        {},
+        {
+          type: TransactionType.ApproveCreateEvent,
+          token: Token.Bot,
+          amount: eventEscrowAmount,
+          optionIdx: undefined,
+          topicAddress: undefined,
+          oracleAddress: undefined,
+          senderAddress: values.creatorAddress,
+        },
         () => {
           self.submitCreateEvent(values);
         }

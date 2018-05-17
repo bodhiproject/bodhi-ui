@@ -37,6 +37,7 @@ const messages = defineMessages({
   clearTxConfirm: () => dispatch(appActions.clearTxConfirm()),
   getTransactionCost: (txInfo) => dispatch(appActions.getTransactionCost(txInfo)),
 }))
+
 export default class TxConfirmDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,

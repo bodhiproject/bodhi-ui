@@ -367,7 +367,15 @@ export default class OraclePage extends Component {
             intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
             voteAmount,
             Token.Bot,
-            {},
+            {
+              type: TransactionType.ApproveVote,
+              token: Token.Bot,
+              amount: voteAmount,
+              optionIdx: currentOptionIdx,
+              topicAddress,
+              oracleAddress: oracle.address,
+              senderAddress: lastUsedAddress,
+            },
             () => {
               self.vote(voteAmount);
             }
