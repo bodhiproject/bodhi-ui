@@ -70,6 +70,19 @@ const appActions = {
     address,
   }),
 
+  GET_TRANSACTION_COST: 'GET_TRANSACTION_COST',
+  GET_TRANSACTION_COST_RETURN: 'GET_TRANSACTION_COST_RETURN',
+  getTransactionCost: (type, token, amount, optionIdx, topicAddress, oracleAddress, senderAddress) => ({
+    type: appActions.GET_TRANSACTION_COST,
+    type, // string
+    token, // string
+    amount, // number
+    optionIdx, // number
+    topicAddress, // address
+    oracleAddress, // address
+    senderAddress, // address
+  }),
+
   UNLOCK_WALLET: 'UNLOCK_WALLET',
   UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
   unlockWallet: (passphrase, timeout) => ({

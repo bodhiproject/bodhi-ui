@@ -2,7 +2,6 @@ const AUTHORITY = '127.0.0.1:5555';
 const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
-
 const QTUM_EXPLORER = {
   dev: 'https://testnet.qtum.org',
   prod: 'https://explorer.qtum.org',
@@ -25,6 +24,7 @@ export default {
     encryptWallet: `${HTTP_ROUTE}/encrypt-wallet`,
     backupWallet: `${HTTP_ROUTE}/backup-wallet`,
     importWallet: `${HTTP_ROUTE}/import-wallet`,
+    transactionCost: `${HTTP_ROUTE}/transaction-cost`,
   },
   insight: {
     totals: `${BASE_INSIGHT}/statistics/total`,
