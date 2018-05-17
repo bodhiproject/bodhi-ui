@@ -2,20 +2,34 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { withStyles } from 'material-ui';
 import Button from 'material-ui/Button';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableFooter,
+} from 'material-ui/Table';
 
 import appActions from '../../redux/App/actions';
+import styles from './styles';
 
 const messages = defineMessages({
   confirmMessage: {
     id: 'txConfirm.message',
     defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
   },
+  confirmMessageWithFee: {
+    id: 'txConfirm.messageWithFee',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}, with fee for {txFee} QTUM. Please click OK to continue.',
+  },
 });
 
 @injectIntl
+@withStyles(styles, { withTheme: true })
 @connect((state) => ({
   txConfirmInfoAndCallback: state.App.get('txConfirmInfoAndCallback'),
   transactionCost: state.App.get('transactionCost'),
@@ -25,6 +39,7 @@ const messages = defineMessages({
 }))
 export default class TxConfirmDialog extends Component {
   static propTypes = {
+    classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     txConfirmInfoAndCallback: PropTypes.object.isRequired,
     clearTxConfirm: PropTypes.func.isRequired,
@@ -42,9 +57,10 @@ export default class TxConfirmDialog extends Component {
   }
 
   render() {
-    const { intl: { formatMessage }, txConfirmInfoAndCallback, transactionCost } = this.props;
+    const { classes, intl: { formatMessage }, txConfirmInfoAndCallback, transactionCost } = this.props;
     const { txDesc, txAmount, txToken, txInfo, confirmCallback } = txConfirmInfoAndCallback;
     const isOpen = !!(txDesc && txAmount && txToken && _.isFunction(confirmCallback));
+    const txFee = _.sumBy(transactionCost, (cost) => cost.gasCost ? parseFloat(cost.gasCost) : 0);
 
     return (
       <Dialog open={isOpen}>
@@ -52,8 +68,37 @@ export default class TxConfirmDialog extends Component {
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
-          {formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
-          {JSON.stringify(transactionCost)}
+          { txFee ? formatMessage(messages.confirmMessageWithFee, { txDesc, txAmount, txToken, txFee }) : formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken }) }
+          { transactionCost.length ?
+            (<Table className={classes.costTable}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <FormattedMessage id="str.type" defaultMessage="Type" />
+                  </TableCell>
+                  <TableCell>
+                    <FormattedMessage id="str.amount" defaultMessage="Amount" />
+                  </TableCell>
+                  <TableCell>
+                    <FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" />
+                  </TableCell>
+                  <TableCell>
+                    <FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" />
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {_.map(transactionCost, (cost, index) => (
+                  <TableRow>
+                    <TableCell>{cost.type}</TableCell>
+                    <TableCell>{cost.amount} {cost.token}</TableCell>
+                    <TableCell>{cost.gasCost}</TableCell>
+                    <TableCell>{cost.gasLimit}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>) : null
+          }
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onClose}>
