@@ -34,6 +34,7 @@ import {
   Token,
   OracleStatus,
   TransactionStatus,
+  TransactionType,
   EventWarningType,
   SortBy,
   AppLocation,
@@ -117,7 +118,7 @@ const messages = defineMessages({
   createFinalizeResultTx: (version, topicAddress, oracleAddress, senderAddress) =>
     dispatch(graphqlActions.createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
-  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
 export default class OraclePage extends Component {
   static propTypes = {
@@ -304,6 +305,7 @@ export default class OraclePage extends Component {
       config,
       voteAmount,
       currentOptionIdx,
+      topicAddress,
     } = this.state;
 
     const {
@@ -312,6 +314,7 @@ export default class OraclePage extends Component {
       toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       intl,
+      lastUsedAddress,
     } = this.props;
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
@@ -324,6 +327,15 @@ export default class OraclePage extends Component {
             intl.formatMessage(messages.confirmBetMsg, { option: oracle.options[currentOptionIdx] }),
             voteAmount,
             Token.Qtum,
+            {
+              type: TransactionType.Bet,
+              token: Token.Qtum,
+              amount: voteAmount,
+              optionIdx: currentOptionIdx,
+              topicAddress,
+              oracleAddress: oracle.address,
+              senderAddress: lastUsedAddress,
+            },
             () => {
               self.bet(voteAmount);
             }
@@ -335,6 +347,15 @@ export default class OraclePage extends Component {
             intl.formatMessage(messages.confirmSetMsg, { option: oracle.options[currentOptionIdx] }),
             oracle.consensusThreshold,
             Token.Bot,
+            {
+              type: TransactionType.ApproveSetResult,
+              token: Token.Bot,
+              amount: oracle.consensusThreshold,
+              optionIdx: currentOptionIdx,
+              topicAddress,
+              oracleAddress: oracle.address,
+              senderAddress: lastUsedAddress,
+            },
             () => {
               self.setResult();
             }
@@ -346,6 +367,7 @@ export default class OraclePage extends Component {
             intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
             voteAmount,
             Token.Bot,
+            {},
             () => {
               self.vote(voteAmount);
             }

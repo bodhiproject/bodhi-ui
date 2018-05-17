@@ -72,15 +72,9 @@ const appActions = {
 
   GET_TRANSACTION_COST: 'GET_TRANSACTION_COST',
   GET_TRANSACTION_COST_RETURN: 'GET_TRANSACTION_COST_RETURN',
-  getTransactionCost: (type, token, amount, optionIdx, topicAddress, oracleAddress, senderAddress) => ({
+  getTransactionCost: (txInfo) => ({
     type: appActions.GET_TRANSACTION_COST,
-    type, // string
-    token, // string
-    amount, // number
-    optionIdx, // number
-    topicAddress, // address
-    oracleAddress, // address
-    senderAddress, // address
+    txInfo,
   }),
 
   UNLOCK_WALLET: 'UNLOCK_WALLET',
@@ -116,11 +110,12 @@ const appActions = {
   }),
 
   SET_TX_CONFIRM_INFO_AND_CALLBACK: 'SET_TX_CONFIRM_INFO_AND_CALLBACK',
-  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => ({
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => ({
     type: appActions.SET_TX_CONFIRM_INFO_AND_CALLBACK,
     txDesc,
     txAmount,
     txToken,
+    txInfo,
     confirmCallback,
   }),
 

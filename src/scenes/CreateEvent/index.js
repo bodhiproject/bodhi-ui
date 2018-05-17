@@ -219,7 +219,7 @@ const validate = (values, props) => {
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   validateAddress: (address) => dispatch(appActions.validateAddress(address)),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
-  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
 @reduxForm({
   form: FORM_NAME,
@@ -340,6 +340,7 @@ export default class CreateEvent extends Component {
         intl.formatMessage(messages.confirmCreateMsg),
         eventEscrowAmount,
         Token.Bot,
+        {},
         () => {
           self.submitCreateEvent(values);
         }

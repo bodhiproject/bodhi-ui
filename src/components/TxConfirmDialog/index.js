@@ -18,19 +18,32 @@ const messages = defineMessages({
 @injectIntl
 @connect((state) => ({
   txConfirmInfoAndCallback: state.App.get('txConfirmInfoAndCallback'),
+  transactionCost: state.App.get('transactionCost'),
 }), (dispatch) => ({
   clearTxConfirm: () => dispatch(appActions.clearTxConfirm()),
+  getTransactionCost: (txInfo) => dispatch(appActions.getTransactionCost(txInfo)),
 }))
 export default class TxConfirmDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     txConfirmInfoAndCallback: PropTypes.object.isRequired,
     clearTxConfirm: PropTypes.func.isRequired,
+    transactionCost: PropTypes.array.isRequired,
+    getTransactionCost: PropTypes.func.isRequired,
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { txConfirmInfoAndCallback, getTransactionCost } = nextProps;
+    const { txInfo } = txConfirmInfoAndCallback;
+
+    if (txConfirmInfoAndCallback !== this.props.txConfirmInfoAndCallback && txInfo) {
+      getTransactionCost(txInfo);
+    }
   }
 
   render() {
-    const { intl: { formatMessage }, txConfirmInfoAndCallback } = this.props;
-    const { txDesc, txAmount, txToken, confirmCallback } = txConfirmInfoAndCallback;
+    const { intl: { formatMessage }, txConfirmInfoAndCallback, transactionCost } = this.props;
+    const { txDesc, txAmount, txToken, txInfo, confirmCallback } = txConfirmInfoAndCallback;
     const isOpen = !!(txDesc && txAmount && txToken && _.isFunction(confirmCallback));
 
     return (
@@ -40,6 +53,7 @@ export default class TxConfirmDialog extends Component {
         </DialogTitle>
         <DialogContent>
           {formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
+          {JSON.stringify(transactionCost)}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onClose}>

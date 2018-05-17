@@ -41,7 +41,7 @@ const messages = defineMessages({
 }), (dispatch) => ({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
-  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, confirmCallback)),
+  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
 export default class WithdrawDialog extends Component {
   static propTypes = {
@@ -223,6 +223,7 @@ export default class WithdrawDialog extends Component {
       intl.formatMessage(messages.confirmSendMsg, { address: toAddress }),
       withdrawAmount,
       selectedToken,
+      {},
       () => {
         self.submitSend();
       }

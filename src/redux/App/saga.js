@@ -194,27 +194,9 @@ export function* validateAddressRequestHandler() {
 export function* getTransactionCostRequestHandler() {
   yield takeEvery(actions.GET_TRANSACTION_COST, function* getTransactionCostRequest(action) {
     try {
-      const = {
-        type, // string
-        token, // string
-        amount, // number
-        optionIdx, // number
-        topicAddress, // address
-        oracleAddress, // address
-        senderAddress, // address
-      } = action;
-
       const options = {
         method: 'POST',
-        body: JSON.stringify({
-          type,
-          token,
-          amount,
-          optionIdx,
-          topicAddress,
-          oracleAddress,
-          senderAddress,
-        }),
+        body: JSON.stringify(action.txInfo),
         headers: { 'Content-Type': 'application/json' },
       };
 

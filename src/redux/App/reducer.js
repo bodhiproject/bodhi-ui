@@ -128,11 +128,12 @@ export default function appReducer(state = initState, action) {
         txDesc: action.txDesc,
         txAmount: action.txAmount,
         txToken: action.txToken,
+        txInfo: action.txInfo,
         confirmCallback: action.confirmCallback,
       });
     }
     case actions.CLEAR_TX_CONFIRM: {
-      return state.set('txConfirmInfoAndCallback', {});
+      return state.set('txConfirmInfoAndCallback', {}).set('transactionCost', []);
     }
     case actions.CLEAR_ENCRYPT_RESULT: {
       return state.set('encryptResult', undefined);
