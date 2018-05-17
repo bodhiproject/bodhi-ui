@@ -10,7 +10,7 @@ import _ from 'lodash';
 import styles from './styles';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import appActions from '../../../../redux/App/actions';
-import { Token } from '../../../../constants';
+import { Token, TransactionType } from '../../../../constants';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 
@@ -216,14 +216,22 @@ export default class WithdrawDialog extends Component {
 
   confirmSend = () => {
     const { toAddress, withdrawAmount, selectedToken } = this.state;
-    const { intl, setTxConfirmInfoAndCallback } = this.props;
+    const { walletAddress, intl, setTxConfirmInfoAndCallback } = this.props;
     const self = this;
 
     setTxConfirmInfoAndCallback(
       intl.formatMessage(messages.confirmSendMsg, { address: toAddress }),
       withdrawAmount,
       selectedToken,
-      {},
+      {
+        type: TransactionType.Transfer,
+        token: selectedToken,
+        amount: withdrawAmount,
+        optionIdx: undefined,
+        topicAddress: undefined,
+        oracleAddress: undefined,
+        senderAddress: walletAddress,
+      },
       () => {
         self.submitSend();
       }
