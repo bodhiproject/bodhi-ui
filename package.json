@@ -172,5 +172,22 @@
     "presets": [
       "react-app"
     ]
-  }
+  },
+  "authors": [
+    {
+      "name": "Alex Cory",
+      "email": "alex@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    },
+    {
+      "name": "Henry Zhang",
+      "email": "henry@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    },
+    {
+      "name": "Deric Walintukan",
+      "email": "deric@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    }
+  ]
 }

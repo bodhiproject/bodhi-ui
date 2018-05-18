@@ -1,17 +1,12 @@
 import { createStore as _createStore, combineReducers, applyMiddleware, compose as _compose } from 'redux';
-import createHistory from 'history/createBrowserHistory';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import { reducer as reduxFormReducer } from 'redux-form';
 
 import reducers from './reducers';
 import rootSaga from './sagas';
 
-const history = createHistory();
 const sagaMiddleware = createSagaMiddleware();
-const routeMiddleware = routerMiddleware(history);
-const middlewares = [thunk, sagaMiddleware, routeMiddleware];
+const middlewares = [thunk, sagaMiddleware];
 
 let compose = _compose;
 if (process.env.REACT_APP_ENV === 'dev') {
@@ -20,11 +15,7 @@ if (process.env.REACT_APP_ENV === 'dev') {
 
 const createStore = () => {
   const store = _createStore(
-    combineReducers({
-      ...reducers,
-      router: routerReducer,
-      form: reduxFormReducer,
-    }),
+    combineReducers(reducers),
     compose(applyMiddleware(...middlewares))
   );
   sagaMiddleware.run(rootSaga);
@@ -37,4 +28,4 @@ if (process.env.REACT_APP_ENV === 'dev') {
   window.store = store;
 }
 
-export { store, history, createStore };
+export { store, createStore };

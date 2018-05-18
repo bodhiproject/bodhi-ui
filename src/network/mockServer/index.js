@@ -47,6 +47,17 @@ const mockClient = new ApolloClient({
   link: new SchemaLink({ schema }),
 });
 
+/**
+ * Used like:
+ * gql`
+ *  query {
+ *    allOracles {
+ *      txid
+ *    }
+ *  }
+ * `
+ * @param {Array}
+ */
 const gql = ([str]) => {
   const { query, mutate } = mockClient;
   return str.includes('query') ? query({ query: graphql(str) }) : mutate({ mutation: graphql(str) });
