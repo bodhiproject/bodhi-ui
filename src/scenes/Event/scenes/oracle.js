@@ -209,7 +209,7 @@ export default class OraclePage extends Component {
 
     const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
     const eventOptions = this.getEventOptionsInfo();
-    const { id, message, values, warningTypeClass, disabled } = this.getActionButtonConfig();
+    const { id, message, values, warningType, disabled } = this.getActionButtonConfig();
 
     return (
       <div>
@@ -221,7 +221,7 @@ export default class OraclePage extends Component {
                 {oracle.name}
               </Typography>
               <Grid item xs={12} lg={9}>
-                {!unconfirmed && <EventWarning id={id} message={message} values={values} className={warningTypeClass} />}
+                {!unconfirmed && <EventWarning id={id} message={message} values={values} type={warningType} />}
                 {eventOptions.map((item, index) => (
                   <EventOption
                     key={index}
@@ -552,7 +552,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.pendingTransactionDisabledMsg',
         message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
-        warningTypeClass: EventWarningType.Highlight,
+        warningType: EventWarningType.Highlight,
       };
     }
 
@@ -562,7 +562,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.betStartTimeDisabledText',
         message: 'The betting start time has not started yet.',
-        warningTypeClass: EventWarningType.Info,
+        warningType: EventWarningType.Info,
       };
     }
 
@@ -573,7 +573,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.setStartTimeDisabledText',
         message: 'The result setting start time has not started yet.',
-        warningTypeClass: EventWarningType.Info,
+        warningType: EventWarningType.Info,
       };
     }
 
@@ -583,7 +583,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.cOracleDisabledText',
         message: 'You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
-        warningTypeClass: EventWarningType.Info,
+        warningType: EventWarningType.Info,
       };
     }
 
@@ -598,7 +598,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughQtumAndBot',
         message: 'You don\'t have enough QTUM or BOT',
-        warningTypeClass: EventWarningType.Error,
+        warningType: EventWarningType.Error,
       };
     }
 
@@ -608,7 +608,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughQtum',
         message: 'You do\'t have enough QTUM',
-        warningTypeClass: EventWarningType.Error,
+        warningType: EventWarningType.Error,
       };
     }
 
@@ -619,7 +619,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughBot',
         message: 'You don\'t have enough BOT',
-        warningTypeClass: EventWarningType.Error,
+        warningType: EventWarningType.Error,
       };
     }
 
@@ -629,7 +629,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.selectResultDisabledText',
         message: 'Please click and select one of the options.',
-        warningTypeClass: EventWarningType.Info,
+        warningType: EventWarningType.Info,
       };
     }
 
@@ -639,7 +639,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.enterAmountDisabledText',
         message: 'Please entered a valid amount.',
-        warningTypeClass: EventWarningType.Info,
+        warningType: EventWarningType.Info,
       };
     }
 

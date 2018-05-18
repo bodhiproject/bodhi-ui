@@ -467,7 +467,7 @@ export default class CreateEvent extends Component {
                 <DialogTitle className={classes.title}>{formatMessage(messages.dialogTitle)}</DialogTitle>
               </Grid>
               <Grid item xs={9}>
-                {!hasEnoughQtum && <EventWarning id={id} message={message} className={`error ${classes.warning}`} />}
+                {!hasEnoughQtum && <EventWarning id={id} message={message} type="error" />}
               </Grid>
             </Grid>
             <div className={classes.importantNoteContainer}>

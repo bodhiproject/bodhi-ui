@@ -41,7 +41,12 @@ const TYPE_DEF = {
       resultSetterAddress
       resultSetterQAddress
       consensusThreshold
-    }`,
+    }
+    transactions {
+      type
+      status
+    }
+  `,
 
   Oracle: `
     txid
@@ -63,6 +68,10 @@ const TYPE_DEF = {
     resultSetterAddress
     resultSetterQAddress
     consensusThreshold
+    transactions {
+      type
+      status
+    }
   `,
 
   Vote: `
