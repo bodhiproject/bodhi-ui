@@ -69,9 +69,9 @@ export default class TxConfirmDialog extends Component {
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
-          { txFee ? formatMessage(messages.confirmMessageWithFee, { txDesc, txAmount, txToken, txFee }) : formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken }) }
-          { transactionCost.length ?
-            (<Table className={classes.costTable}>
+          {txFee ? formatMessage(messages.confirmMessageWithFee, { txDesc, txAmount, txToken, txFee }) : formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
+          {Boolean(transactionCost.length) && (
+            <Table className={classes.costTable}>
               <TableHead>
                 <TableRow>
                   <TableCell>
@@ -98,8 +98,8 @@ export default class TxConfirmDialog extends Component {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>) : null
-          }
+            </Table>
+          )}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onClose}>
