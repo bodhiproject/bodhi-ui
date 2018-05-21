@@ -25,57 +25,57 @@ export default class Tutorial3 extends Component {
         <ul className={classes.contentList}>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content0" defaultMessage="Assuming you have not used the Qtum Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Qtum wallet. " />
+              <FormattedMessage id="tutorial3.content0" defaultMessage="Because we need you to understand that we cannot..." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content1" defaultMessage="Qtum uses the Bitcoin Core wallet infrastructure." />
+              <FormattedMessage id="tutorial3.content1" defaultMessage="Access your account or send your funds for you." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content2" defaultMessage="Bitcoin wallets already contain roughly 100 different addresses assigned to one wallet. This is why you might see new addresses appearing in your wallet." />
+              <FormattedMessage id="tutorial3.content2" defaultMessage="Recover your wallet data file." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content3" defaultMessage="The Qtum Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you." />
+              <FormattedMessage id="tutorial3.content3" defaultMessage="Recover or change your private key." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content4" defaultMessage="We never transmit, receive, or store your private key, passphrase, or other account information." />
+              <FormattedMessage id="tutorial3.content4" defaultMessage="Recover or reset your passphrase." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content5" defaultMessage="You are simply using our interface to interact directly with the Qtum blockchain." />
+              <FormattedMessage id="tutorial3.content5" defaultMessage="Reverse, cancel, or refund transactions." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content6" defaultMessage="If you send your public key (Qtum address) to someone, they can send you QTUM or BOT." />
+              <FormattedMessage id="tutorial3.content6" defaultMessage="Freeze accounts." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content7" defaultMessage="If you send your passphrase, wallet data file, and/or private key to someone, they now have full control of your account." />
+              <FormattedMessage id="tutorial3.content7" defaultMessage="You and only you are responsible for your security." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content8" defaultMessage="If you send your passphrase, wallet data file, and/or private key to someone, they now have full control of your account." />
+              <FormattedMessage id="tutorial3.content8" defaultMessage="Be diligent to keep your wallet data file and passphrase safe and don’t share it with anyone you don’t trust!" />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content9" defaultMessage="If you send your passphrase, wallet data file, and/or private key to someone, they now have full control of your account." />
+              <FormattedMessage id="tutorial3.content9" defaultMessage="If you lose your wallet data file, passphrase, and private key no one can recover it for you." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial3.content10" defaultMessage="If you send your passphrase, wallet data file, and/or private key to someone, they now have full control of your account." />
+              <FormattedMessage id="tutorial3.content10" defaultMessage="If you enter your passphrase, wallet data file, or private key on a phishing website, you will have all your funds taken from you." />
             </Typography>
           </li>
         </ul>

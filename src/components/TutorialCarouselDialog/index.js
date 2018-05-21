@@ -13,6 +13,8 @@ import Tutorial1 from './components/tutorial1';
 import Tutorial2 from './components/tutorial2';
 import Tutorial3 from './components/tutorial3';
 import Tutorial4 from './components/tutorial4';
+import Tutorial5 from './components/tutorial5';
+import Tutorial6 from './components/tutorial6';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -25,6 +27,8 @@ export default class TutorialCarouselDialog extends Component {
     currentIndex: 0,
     openTutorial: !JSON.parse(localStorage.getItem('tutorialDisplayed')),
   }
+
+  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6]
 
   prevSlide = () => {
     const { currentIndex } = this.state;
@@ -46,14 +50,15 @@ export default class TutorialCarouselDialog extends Component {
 
   closeTutorial = () => {
     this.setState({ openTutorial: false });
+    localStorage.setItem('tutorialDisplayed', true);
   }
-
-  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4];
 
   render() {
     const { classes } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
+
+    localStorage.setItem('tutorialDisplayed', false);
 
     return (
       <Dialog open={openTutorial} fullWidth maxWidth="md">

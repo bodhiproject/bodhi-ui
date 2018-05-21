@@ -36,13 +36,13 @@ export default class Tutorial0 extends Component {
           <li>
             <Typography variant="body2">
               <FormattedMessage id="tutorial0.content2Part0" defaultMessage="Bodhi Dapp is " />
-              <FormattedMessage id="tutorial0.content2Part1" defaultMessage="not " />
+              <span className={classes.warning}><FormattedMessage id="tutorial0.content2Part1" defaultMessage="not " /></span>
               <FormattedMessage id="tutorial0.content2Part2" defaultMessage="a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain." />
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              <FormattedMessage id="tutorial0.content3Part0" defaultMessage="You and only you " />
+              <span className={classes.warning}><FormattedMessage id="tutorial0.content3Part0" defaultMessage="You and only you " /></span>
               <FormattedMessage id="tutorial0.content3Part1" defaultMessage="are responsible for your security. This saying is applicable for all things related to blockchain and cryptocurrency." />
             </Typography>
           </li>

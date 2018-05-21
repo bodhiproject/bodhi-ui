@@ -326,5 +326,14 @@
   "tutorial4.content0": "If you lose your passphrase, wallet data file, or private key, it is gone forever. Don’t lose it.",
   "tutorial4.content1": "Make a backup of your wallet data file and passphrase. Do NOT just store it on your computer. Print it out on a piece of paper or save it to a USB drive.",
   "tutorial4.content2": "Store this paper or USB drive in a different physical location. A backup is not useful if it is destroyed by a fire or flood along with your laptop.",
-  "tutorial4.content3": "Do not store your private key in Dropbox, Google Drive, or other cloud storage. If that account is compromised, your funds will be stolen."
+  "tutorial4.content3": "Do not store your private key in Dropbox, Google Drive, or other cloud storage. If that account is compromised, your funds will be stolen.",
+  "tutorial5.content0": "The blockchain is like a huge, global, decentralized spreadsheet.",
+  "tutorial5.content1": "It keeps track of who sent how many tokens to whom, and what the balance of every account is.",
+  "tutorial5.content2": "It is stored and maintained by thousands of people (miners) across the globe who have special computers.",
+  "tutorial5.content3": "The blocks in the blockchain are made up of all the individual transactions sent from users who interact with the blockchain.",
+  "tutorial5.content4": "When you see your balance on Bodhi Dapp, the Qtum Wallet, or view your transactions on the Qtum Explorer, you are seeing data on the blockchain, not in our personal systems.",
+  "tutorial6.content0": "Having to be in control of your own security is the trade-off for decentralization.",
+  "tutorial6.content1": "You don't have to rely on your bank, government, or anyone else when you want to move your funds.",
+  "tutorial6.content2": "You don't have to rely on the security of an exchange or bank to keep your funds safe.",
+  "tutorial6.content3": "If you don't find these things valuable, ask yourself why you think the blockchain and cryptocurrencies are valuable."
 }
