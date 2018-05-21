@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Typography, withStyles } from 'material-ui';
-import cx from 'classnames';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
@@ -18,7 +17,6 @@ export default class Tutorial3 extends Component {
 
     return (
       <div>
-        <div className={classes.titleTopLine}></div>
         <Typography variant="display1">
           <FormattedMessage id="tutorial3.title" defaultMessage="Why Should I Read All This" />
         </Typography>

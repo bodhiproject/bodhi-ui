@@ -61,6 +61,7 @@ export default class TutorialCarouselDialog extends Component {
     return (
       <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
+          <div className={classes.titleTopLine}></div>
           <CurrentComponentName />
           <div className={classes.buttonsWrapper}>
             {currentIndex > 0 && <Button className={classes.button} variant="raised" size="medium" onClick={this.prevSlide}>Previous</Button>}
