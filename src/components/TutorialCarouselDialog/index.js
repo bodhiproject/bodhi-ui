@@ -58,8 +58,6 @@ export default class TutorialCarouselDialog extends Component {
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
-    localStorage.setItem('tutorialDisplayed', false);
-
     return (
       <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
