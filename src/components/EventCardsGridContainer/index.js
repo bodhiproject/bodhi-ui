@@ -39,7 +39,7 @@ const messages = defineMessages({
 });
 
 const { Pending } = TransactionStatus;
-const LIMIT = 8;
+const LIMIT = 16;
 const SKIP = 0;
 
 
