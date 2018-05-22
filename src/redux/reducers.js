@@ -1,11 +1,14 @@
+import { reducer as form } from 'redux-form';
 import App from './App/reducer';
-import Dashboard from './Dashboard/reducer';
-import Graphql from './Graphql/reducer';
+import dashboard from './Dashboard/reducer';
+import graphql from './Graphql/reducer';
 import Topic from './Topic/reducer';
+
 
 export default {
   App,
-  Dashboard,
-  Graphql,
+  dashboard,
+  graphql,
   Topic,
+  form,
 };

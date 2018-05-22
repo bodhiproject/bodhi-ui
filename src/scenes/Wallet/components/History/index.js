@@ -31,8 +31,8 @@ import graphqlActions from '../../../../redux/Graphql/actions';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
-  txReturn: state.Graphql.get('txReturn'),
+  transactions: state.graphql.getTransactionsReturn,
+  txReturn: state.graphql.txReturn,
 }), (dispatch) => ({
   getTransactions: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
 }))

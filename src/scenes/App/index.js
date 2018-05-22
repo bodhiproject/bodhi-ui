@@ -19,7 +19,7 @@ import TxConfirmDialog from '../../components/TxConfirmDialog/index';
 
 @withStyles(styles)
 @connect((state) => ({
-  txReturn: state.Graphql.get('txReturn'),
+  txReturn: state.graphql.txReturn,
 }))
 export default class App extends Component {
   static propTypes = {

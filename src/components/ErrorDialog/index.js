@@ -11,6 +11,7 @@ import styles from './styles';
 import appActions from '../../redux/App/actions';
 import topicActions from '../../redux/Topic/actions';
 
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -35,11 +36,7 @@ export default class ErrorDialog extends Component {
   }
 
   render() {
-    const {
-      classes,
-      errorApp,
-      errorTopic,
-    } = this.props;
+    const { classes, errorApp, errorTopic } = this.props;
 
     const isOpen = Boolean(errorApp || errorTopic);
     let error;

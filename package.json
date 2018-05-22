@@ -6,14 +6,17 @@
     "apollo-cache-inmemory": "^1.1.3",
     "apollo-client": "^2.1.0",
     "apollo-link-http": "^1.3.0",
+    "apollo-link-schema": "^1.1.0",
     "apollo-link-ws": "^1.0.6",
     "apollo-utilities": "^1.0.8",
     "bignumber.js": "^6.0.0",
     "clone": "^2.1.1",
+    "faker": "^4.1.0",
     "file-system": "^2.2.2",
     "globalize": "^1.2.3",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.6.0",
+    "graphql-tools": "^2.24.0",
     "halogen": "^0.2.0",
     "history": "^4.6.3",
     "immutable": "^3.8.1",
@@ -75,6 +78,8 @@
     "babel-jest": "20.0.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-import": "^1.4.0",
+    "babel-plugin-inline-import": "^2.0.6",
+    "babel-plugin-inline-import-graphql-ast": "^2.3.6",
     "babel-plugin-react-intl": "^2.4.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
@@ -124,7 +129,7 @@
     "start": "REACT_APP_ENV=dev node scripts/start.js",
     "start:prod": "REACT_APP_ENV=prod node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "test": "REACT_APP_ENV=test node scripts/test.js --env=jsdom",
     "lint:fix": "eslint --fix --",
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
@@ -167,5 +172,22 @@
     "presets": [
       "react-app"
     ]
-  }
+  },
+  "authors": [
+    {
+      "name": "Alex Cory",
+      "email": "alex@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    },
+    {
+      "name": "Henry Zhang",
+      "email": "henry@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    },
+    {
+      "name": "Deric Walintukan",
+      "email": "deric@bodhi.network",
+      "url": "https://www.bodhi.network/"
+    }
+  ]
 }

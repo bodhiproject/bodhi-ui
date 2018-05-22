@@ -1,9 +1,8 @@
-import { Map } from 'immutable';
-
+/* eslint-disable */
 import actions from './actions';
 import { EventStatus } from '../../constants';
 
-const initState = new Map({
+const initState = {
   getPendingTransactionsReturn: { count: 0 },
   actionableItemCount: {
     [EventStatus.Set]: 0,
@@ -11,61 +10,47 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
-});
+  // getTopicsReturn: {
+  //   data: [],
+  //   limit: 50,
+  //   skip: 0,
+  // },
+  // getOraclesReturn: {
+  //   data: [],
+  //   limit: 50,
+  //   skip: 0,
+  // },
+  // getTransactionsReturn: [],
+  // txReturn: {},
+};
 
 export default function graphqlReducer(state = initState, action) {
+  const { limit, skip, value, error } = action;
   switch (action.type) {
-    case actions.GET_TOPICS_RETURN: {
-      // First page, overwrite all data
-      if (!action.skip || action.skip === 0) {
-        return state.set('getTopicsReturn', {
-          data: action.value,
-          limit: action.limit,
-          skip: action.skip,
-        });
-      }
+    case actions.GET_TOPICS_RETURN:
+      // First page, overwrite all data, otherwise update it
+      const data = !skip ? value : [...state.getTopicsReturn.data, ...value];
+      return { ...state, getTopicsReturn: { data, limit, skip } };
 
-      // Not first page, add to existing data
-      return state.set('getTopicsReturn', {
-        data: [...state.get('getTopicsReturn').data, ...action.value],
-        limit: action.limit,
-        skip: action.skip,
-      });
-    }
 
     case actions.GET_ORACLES_RETURN: {
-      // First page, overwrite all data
-      if (!action.skip || action.skip === 0) {
-        return state.set('getOraclesReturn', {
-          data: action.value,
-          limit: action.limit,
-          skip: action.skip,
-        });
-      }
-
-      // Not first page, add to existing data
-      return state.set('getOraclesReturn', {
-        data: [...state.get('getOraclesReturn').data, ...action.value],
-        limit: action.limit,
-        skip: action.skip,
-      });
+      // First page, overwrite all data, otherwise update it
+      const data = !skip ? value : [...state.getOraclesReturn.data, ...value];
+      return { ...state, getOraclesReturn: { data, limit, skip } };
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {
       // First page, overwrite all data
-      if (!action.skip || action.skip === 0) {
-        return state.set('getTransactionsReturn', action.value);
-      }
+      const getTransactionsReturn = !skip ? value : [...state.getTransactionsReturn, ...value];
+      return { ...state, getTransactionsReturn };
+    }
 
-      // Not first page, add to existing data
-      return state.set('getTransactionsReturn', [...state.get('getTransactionsReturn'), ...action.value]);
-    }
-    case actions.GET_PENDING_TRANSACTIONS_RETURN: {
-      return state.set('getPendingTransactionsReturn', action.value);
-    }
-    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
-      return state.set('actionableItemCount', action.value);
-    }
+    case actions.GET_PENDING_TRANSACTIONS_RETURN:
+      return { ...state, getPendingTransactionsReturn: value };
+
+    case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN:
+      return { ...state, actionableItemCount: value };
+
     case actions.CREATE_TOPIC_TX_RETURN:
     case actions.CREATE_BET_TX_RETURN:
     case actions.CREATE_SET_RESULT_TX_RETURN:
@@ -73,16 +58,15 @@ export default function graphqlReducer(state = initState, action) {
     case actions.CREATE_FINALIZE_RESULT_TX_RETURN:
     case actions.CREATE_WITHDRAW_TX_RETURN:
     case actions.CREATE_TRANSFER_TX_RETURN: {
-      if (action.error) {
-        return state.set('txReturn', { error: action.error });
-      }
-      return state.set('txReturn', action.value);
+      const txReturn = error ? { ...(state.txReturn || {}), error } : value;
+      console.log('txReturn: ', txReturn);
+      return { ...state, txReturn };
     }
-    case actions.CLEAR_TX_RETURN: {
-      return state.set('txReturn', undefined);
-    }
-    default: {
+
+    case actions.CLEAR_TX_RETURN:
+      return { ...state, txReturn: undefined };
+
+    default:
       return state;
-    }
   }
 }

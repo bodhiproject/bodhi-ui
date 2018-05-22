@@ -23,7 +23,7 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   lastUsedAddress: state.App.get('lastUsedAddress'),
-  sortBy: state.Dashboard.get('sortBy'),
+  sortBy: state.dashboard.sortBy,
 }), (dispatch) => ({
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),

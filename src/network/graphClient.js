@@ -4,6 +4,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
+import { mockClient } from './mockServer';
 
 import Routes from '../network/routes';
 
@@ -11,7 +12,9 @@ const httpLink = new HttpLink({
   uri: Routes.graphql.http,
 });
 
-const wsLink = new WebSocketLink({
+// the check for process.browser makes sure our tests run properly since
+// this can only be run in the browser. Source: http://tinyurl.com/ycsjfq6p
+const wsLink = process.browser && new WebSocketLink({
   uri: Routes.graphql.subs,
   options: {
     reconnect: true,
@@ -20,7 +23,7 @@ const wsLink = new WebSocketLink({
 
 // using the ability to split links, you can send data to each link
 // depending on what kind of operation is being sent
-const link = split(
+const link = process.browser ? split(
   // split based on operation type
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query);
@@ -28,9 +31,11 @@ const link = split(
   },
   wsLink,
   httpLink,
-);
+) : httpLink;
 
-const client = new ApolloClient({
+
+const inTestEnv = process.env.REACT_APP_ENV === 'test';
+const client = inTestEnv ? mockClient : new ApolloClient({
   link,
   cache: new InMemoryCache(),
 });

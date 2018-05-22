@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+// import { gql } from '../network/mockServer';
 import _ from 'lodash';
 
 import client from './graphClient';
@@ -49,7 +50,6 @@ class GraphMutation {
     if (process.env.REACT_APP_ENV === 'dev') {
       window.mutations += `\n${mutation}`;
     }
-
     const res = await client.mutate({
       mutation: gql`${mutation}`,
       fetchPolicy: 'no-cache',

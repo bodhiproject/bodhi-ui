@@ -25,7 +25,7 @@ const messages = defineMessages({
 @withApollo
 @connect((state) => ({
   ...state.App.toJS(),
-  txReturn: state.Graphql.get('txReturn'),
+  txReturn: state.graphql.txReturn,
 }), (dispatch) => ({
   checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
