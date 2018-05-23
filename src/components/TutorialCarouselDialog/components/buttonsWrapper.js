@@ -11,9 +11,6 @@ import styles from '../styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect(null, (dispatch) => ({
-  clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-}))
 export default class TutorialButtonsWrapper extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
