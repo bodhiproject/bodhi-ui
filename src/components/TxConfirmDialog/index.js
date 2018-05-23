@@ -37,7 +37,6 @@ const messages = defineMessages({
   clearTxConfirm: () => dispatch(appActions.clearTxConfirm()),
   getTransactionCost: (txInfo) => dispatch(appActions.getTransactionCost(txInfo)),
 }))
-
 export default class TxConfirmDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -74,18 +73,10 @@ export default class TxConfirmDialog extends Component {
             <Table className={classes.costTable}>
               <TableHead>
                 <TableRow>
-                  <TableCell>
-                    <FormattedMessage id="str.type" defaultMessage="Type" />
-                  </TableCell>
-                  <TableCell>
-                    <FormattedMessage id="str.amount" defaultMessage="Amount" />
-                  </TableCell>
-                  <TableCell>
-                    <FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" />
-                  </TableCell>
-                  <TableCell>
-                    <FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" />
-                  </TableCell>
+                  <Cell id="str.type" defaultMessage="Type" />
+                  <Cell id="str.amount" defaultMessage="Amount" />
+                  <Cell id="str.fee" defaultMessage="Gas Fee (QTUM)" />
+                  <Cell id="str.gasLimit" defaultMessage="Gas Limit" />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -125,3 +116,9 @@ export default class TxConfirmDialog extends Component {
     this.props.clearTxConfirm();
   }
 }
+
+const Cell = injectIntl(({ id, defaultMessage, intl }) => (
+  <TableCell>
+    {intl.formatMessage({ id, defaultMessage })}
+  </TableCell>
+));
