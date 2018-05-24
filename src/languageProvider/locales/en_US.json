@@ -271,6 +271,8 @@
   "wallet.encryptLabel": "Please enter passphrase to encrypt your wallet",
   "wallet.encryptTitle": "Encrypt Your Wallet",
   "wallet.encrypted": "Your wallet is already encrypted",
+  "wallet.restoreWallet": "Restore Your Wallet",
+  "wallet.restoreWalletDescription": "Please open Qtum Wallet to restore.",
   "walletHistory.transferHistory": "Transfer History",
   "walletUnlockDialog.unlock": "Unlock",
   "walletUnlockDialog.unlockWallet": "Unlock Wallet",
