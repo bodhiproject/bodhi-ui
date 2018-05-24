@@ -4,6 +4,7 @@ import { Typography, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
+import ContentItem from './contentItem';
 
 const Tutorial2 = ({ classes }) => (
   <div>
@@ -11,11 +12,7 @@ const Tutorial2 = ({ classes }) => (
       <FormattedMessage id="tutorial2.title" defaultMessage="Securing Your New Wallet" />
     </Typography>
     <ul className={classes.contentList}>
-      <li>
-        <Typography variant="body2">
-          <FormattedMessage id="tutorial2.content0" defaultMessage="Assuming you have not used the Qtum Wallet client before, now that you have a brand new Qtum wallet, it is advised to take the proper steps to encrypt and back it up first." />
-        </Typography>
-      </li>
+      <ContentItem id="tutorial2.content0" defaultMessage="Assuming you have not used the Qtum Wallet client before, now that you have a brand new Qtum wallet, it is advised to take the proper steps to encrypt and back it up first." />
       <li>
         <Typography variant="body2">
           <FormattedMessage id="tutorial2.content1" defaultMessage="To encrypt your wallet, select “Launch Qtum Wallet” in the application menu and follow the instructions here:" />

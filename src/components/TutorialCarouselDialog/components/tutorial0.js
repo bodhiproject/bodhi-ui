@@ -4,6 +4,7 @@ import { Typography, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
+import ContentItem from './contentItem';
 
 const Tutorial0 = ({ classes }) => (
   <div>
@@ -11,16 +12,8 @@ const Tutorial0 = ({ classes }) => (
       <FormattedMessage id="tutorial0.title" defaultMessage="What Is The Bodhi App" />
     </Typography>
     <ul className={classes.contentList}>
-      <li>
-        <Typography variant="body2">
-          <FormattedMessage id="tutorial0.content0" defaultMessage="Bodhi Dapp is a free, open-source, client-side interface." />
-        </Typography>
-      </li>
-      <li>
-        <Typography variant="body2">
-          <FormattedMessage id="tutorial0.content1" defaultMessage="It allows you to interact directly with the blockchain while remaining in full control of your keys & your funds." />
-        </Typography>
-      </li>
+      <ContentItem id="tutorial0.content0" defaultMessage="Bodhi Dapp is a free, open-source, client-side interface." />
+      <ContentItem id="tutorial0.content1" defaultMessage="It allows you to interact directly with the blockchain while remaining in full control of your keys & your funds." />
       <li>
         <Typography variant="body2">
           <FormattedMessage id="tutorial0.content2Part0" defaultMessage="Bodhi Dapp is " />
