@@ -21,7 +21,7 @@ export default class RestoreWalletDialog extends Component {
           <FormattedMessage id="wallet.restoreWallet" defaultMessage="Restore Your Wallet" />
         </DialogTitle>
         <DialogContent>
-          <FormattedMessage id="wallet.restoreWalletDescription" defaultMessage="Please open Qtum Wallet to restore. " />
+          <FormattedMessage id="wallet.restoreWalletDescription" defaultMessage="Please select Launch Qtum Wallet in the menu and restore your wallet in QT Wallet." />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>

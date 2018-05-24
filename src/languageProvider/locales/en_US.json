@@ -272,7 +272,7 @@
   "wallet.encryptTitle": "Encrypt Your Wallet",
   "wallet.encrypted": "Your wallet is already encrypted",
   "wallet.restoreWallet": "Restore Your Wallet",
-  "wallet.restoreWalletDescription": "Please open Qtum Wallet to restore.",
+  "wallet.restoreWalletDescription": "Please select Launch Qtum Wallet in the menu and restore your wallet in QT Wallet.",
   "walletHistory.transferHistory": "Transfer History",
   "walletUnlockDialog.unlock": "Unlock",
   "walletUnlockDialog.unlockWallet": "Unlock Wallet",
