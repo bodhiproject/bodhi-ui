@@ -273,6 +273,8 @@
   "wallet.encryptLabel": "请输入密码用于加密您的钱包",
   "wallet.encryptTitle": "加密您的钱包",
   "wallet.encrypted": "您的钱包已加锁",
+  "wallet.restoreWallet": "恢复钱包",
+  "wallet.restoreWalletDescription": "请在菜单栏中选择启动Qtum Wallet,再在QT Wallet中恢复您的钱包。",
   "walletHistory.transferHistory": "转账历史",
   "walletUnlockDialog.unlock": "解锁",
   "walletUnlockDialog.unlockWallet": "解锁钱包",
