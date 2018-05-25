@@ -14,7 +14,6 @@ import StepperVertRight from '../../../components/StepperVertRight/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
-// import TransactionSentDialog from '../../../components/TransactionSentDialog/index';
 import BackButton from '../../../components/BackButton/index';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
@@ -55,7 +54,6 @@ const pageMessage = defineMessages({
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
-  // txReturn: state.Graphql.get('txReturn'),
   betBalances: state.Topic.get('betBalances'),
   voteBalances: state.Topic.get('voteBalances'),
   escrowClaim: state.Topic.get('escrowClaim'),
@@ -71,7 +69,7 @@ const pageMessage = defineMessages({
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
-  // clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
+  clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
@@ -94,8 +92,7 @@ export default class TopicPage extends Component {
     qtumWinnings: PropTypes.number,
     withdrawableAddresses: PropTypes.array,
     createWithdrawTx: PropTypes.func.isRequired,
-    // txReturn: PropTypes.object,
-    // clearTxReturn: PropTypes.func.isRequired,
+    clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
     walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
@@ -109,7 +106,6 @@ export default class TopicPage extends Component {
     syncBlockTime: undefined,
     getTopicsReturn: undefined,
     getTransactionsReturn: [],
-    // txReturn: undefined,
     betBalances: [],
     voteBalances: [],
     withdrawableAddresses: undefined,
@@ -149,16 +145,16 @@ export default class TopicPage extends Component {
       this.fetchData();
     }
 
-    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data', []);
+    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data',);
     const topic = _.find(topics, { address });
     if (topic && topic.status === OracleStatus.Withdraw) {
       this.setState({ topic });
     }
   }
 
-  // componentWillUnmount() {
-  //   this.props.clearTxReturn();
-  // }
+  componentWillUnmount() {
+    this.props.clearTxReturn();
+  }
 
   render() {
     const { classes, syncBlockTime, getTransactionsReturn, withdrawableAddresses } = this.props;
@@ -197,7 +193,6 @@ export default class TopicPage extends Component {
               <StepperVertRight blockTime={syncBlockTime} cOracle={cOracle} dOracles={dOracles} isTopicDetail />
             </Grid>
           </Grid>
-          {/* <TransactionSentDialog txReturn={txReturn} /> */}
         </Paper>
       </div>
     );
