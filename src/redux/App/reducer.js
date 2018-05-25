@@ -25,6 +25,7 @@ const initState = new Map({
   createEventDialogVisible: false,
   txConfirmInfoAndCallback: {},
   addressValidated: false,
+  transactionCost: [],
 });
 
 export default function appReducer(state = initState, action) {
@@ -97,6 +98,12 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('addressValidated', action.value);
     }
+    case actions.GET_TRANSACTION_COST_RETURN: {
+      if (action.error) {
+        return state.set('errorApp', action.error);
+      }
+      return state.set('transactionCost', action.value);
+    }
     case actions.UNLOCK_WALLET_RETURN: {
       if (action.error) {
         return state.set('errorApp', action.error);
@@ -121,11 +128,12 @@ export default function appReducer(state = initState, action) {
         txDesc: action.txDesc,
         txAmount: action.txAmount,
         txToken: action.txToken,
+        txInfo: action.txInfo,
         confirmCallback: action.confirmCallback,
       });
     }
     case actions.CLEAR_TX_CONFIRM: {
-      return state.set('txConfirmInfoAndCallback', {});
+      return state.set('txConfirmInfoAndCallback', {}).set('transactionCost', []);
     }
     case actions.CLEAR_ENCRYPT_RESULT: {
       return state.set('encryptResult', undefined);

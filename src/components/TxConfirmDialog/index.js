@@ -2,36 +2,65 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { withStyles } from 'material-ui';
 import Button from 'material-ui/Button';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableFooter,
+} from 'material-ui/Table';
 
 import appActions from '../../redux/App/actions';
+import styles from './styles';
 
 const messages = defineMessages({
   confirmMessage: {
     id: 'txConfirm.message',
     defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
   },
+  confirmMessageWithFee: {
+    id: 'txConfirm.messageWithFee',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}, with fee for {txFee} QTUM. Please click OK to continue.',
+  },
 });
 
 @injectIntl
+@withStyles(styles, { withTheme: true })
 @connect((state) => ({
   txConfirmInfoAndCallback: state.App.get('txConfirmInfoAndCallback'),
+  transactionCost: state.App.get('transactionCost'),
 }), (dispatch) => ({
   clearTxConfirm: () => dispatch(appActions.clearTxConfirm()),
+  getTransactionCost: (txInfo) => dispatch(appActions.getTransactionCost(txInfo)),
 }))
 export default class TxConfirmDialog extends Component {
   static propTypes = {
+    classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     txConfirmInfoAndCallback: PropTypes.object.isRequired,
     clearTxConfirm: PropTypes.func.isRequired,
+    transactionCost: PropTypes.array.isRequired,
+    getTransactionCost: PropTypes.func.isRequired,
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { txConfirmInfoAndCallback, getTransactionCost } = nextProps;
+    const { txInfo } = txConfirmInfoAndCallback;
+
+    if (txConfirmInfoAndCallback !== this.props.txConfirmInfoAndCallback && txInfo) {
+      getTransactionCost(txInfo);
+    }
   }
 
   render() {
-    const { intl: { formatMessage }, txConfirmInfoAndCallback } = this.props;
-    const { txDesc, txAmount, txToken, confirmCallback } = txConfirmInfoAndCallback;
+    const { classes, intl: { formatMessage }, txConfirmInfoAndCallback, transactionCost } = this.props;
+    const { txDesc, txAmount, txToken, txInfo, confirmCallback } = txConfirmInfoAndCallback;
     const isOpen = !!(txDesc && txAmount && txToken && _.isFunction(confirmCallback));
+    const txFee = _.sumBy(transactionCost, (cost) => cost.gasCost ? parseFloat(cost.gasCost) : 0);
 
     return (
       <Dialog open={isOpen}>
@@ -39,7 +68,29 @@ export default class TxConfirmDialog extends Component {
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
-          {formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
+          {txFee ? formatMessage(messages.confirmMessageWithFee, { txDesc, txAmount, txToken, txFee }) : formatMessage(messages.confirmMessage, { txDesc, txAmount, txToken })}
+          {Boolean(transactionCost.length) && (
+            <Table className={classes.costTable}>
+              <TableHead>
+                <TableRow>
+                  <Cell id="str.type" defaultMessage="Type" />
+                  <Cell id="str.amount" defaultMessage="Amount" />
+                  <Cell id="str.fee" defaultMessage="Gas Fee (QTUM)" />
+                  <Cell id="str.gasLimit" defaultMessage="Gas Limit" />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {_.map(transactionCost, (cost, index) => (
+                  <TableRow>
+                    <TableCell>{cost.type}</TableCell>
+                    <TableCell>{cost.amount} {cost.token}</TableCell>
+                    <TableCell>{cost.gasCost}</TableCell>
+                    <TableCell>{cost.gasLimit}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={this.onClose}>
@@ -65,3 +116,9 @@ export default class TxConfirmDialog extends Component {
     this.props.clearTxConfirm();
   }
 }
+
+const Cell = injectIntl(({ id, defaultMessage, intl }) => (
+  <TableCell>
+    {intl.formatMessage({ id, defaultMessage })}
+  </TableCell>
+));

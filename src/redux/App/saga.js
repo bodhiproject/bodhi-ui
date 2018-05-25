@@ -190,6 +190,34 @@ export function* validateAddressRequestHandler() {
   });
 }
 
+// Get transaction cost
+export function* getTransactionCostRequestHandler() {
+  yield takeEvery(actions.GET_TRANSACTION_COST, function* getTransactionCostRequest(action) {
+    try {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(action.txInfo),
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = yield call(request, Routes.api.transactionCost, options);
+
+      yield put({
+        type: actions.GET_TRANSACTION_COST_RETURN,
+        value: result,
+      });
+    } catch (err) {
+      yield put({
+        type: actions.GET_TRANSACTION_COST_RETURN,
+        error: {
+          route: Routes.api.transactionCost,
+          message: err.message,
+        },
+      });
+    }
+  });
+}
+
 // Unlocks your encrypted wallet with the passphrase
 export function* unlockWalletRequestHandler() {
   yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
@@ -237,5 +265,6 @@ export default function* appSaga() {
     fork(checkWalletEncryptedRequestHandler),
     fork(validateAddressRequestHandler),
     fork(unlockWalletRequestHandler),
+    fork(getTransactionCostRequestHandler),
   ]);
 }
