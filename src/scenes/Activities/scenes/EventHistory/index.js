@@ -307,6 +307,7 @@ export default class EventHistory extends Component {
     const { locale, messages: localeMessages } = intl;
     const result = [];
     const isExpanded = this.state.expanded.includes(txid);
+
     result[0] = (
       <TableRow key={txid} selected={isExpanded} onClick={this.handleClick(txid)} className={classes.clickToExpandRow} >
         <TableCell className={classes.summaryRowCell}>
@@ -316,7 +317,7 @@ export default class EventHistory extends Component {
           {getTxTypeString(type, locale, localeMessages)}
         </TableCell>
         <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
-          {name || topic.name}
+          {name || (topic && topic.name)}
         </NameLinkCell>
         <TableCell numeric>
           {`${amount || ''}  ${amount ? token : ''}`}
