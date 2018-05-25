@@ -2,17 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { withStyles } from 'material-ui';
-import Button from 'material-ui/Button';
+import { withStyles, Button } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableFooter,
-} from 'material-ui/Table';
 
 import appActions from '../../redux/App/actions';
 import styles from './styles';
@@ -58,7 +51,7 @@ export default class TxConfirmDialog extends Component {
 
   render() {
     const { classes, intl: { formatMessage }, txConfirmInfoAndCallback, transactionCost } = this.props;
-    const { txDesc, txAmount, txToken, txInfo, confirmCallback } = txConfirmInfoAndCallback;
+    const { txDesc, txAmount, txToken, confirmCallback } = txConfirmInfoAndCallback;
     const isOpen = !!(txDesc && txAmount && txToken && _.isFunction(confirmCallback));
     const txFee = _.sumBy(transactionCost, (cost) => cost.gasCost ? parseFloat(cost.gasCost) : 0);
 
@@ -80,8 +73,8 @@ export default class TxConfirmDialog extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {_.map(transactionCost, (cost, index) => (
-                  <TableRow>
+                {_.map(transactionCost, (cost, i) => (
+                  <TableRow key={i}>
                     <TableCell>{cost.type}</TableCell>
                     <TableCell>{cost.amount} {cost.token}</TableCell>
                     <TableCell>{cost.gasCost}</TableCell>
@@ -93,7 +86,7 @@ export default class TxConfirmDialog extends Component {
           )}
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.onClose}>
+          <Button color="primary" onClick={this.props.clearTxConfirm}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.onOkClicked}>
@@ -104,16 +97,9 @@ export default class TxConfirmDialog extends Component {
     );
   }
 
-  onClose = () => {
-    this.props.clearTxConfirm();
-  }
-
   onOkClicked = () => {
-    const callback = this.props.txConfirmInfoAndCallback.confirmCallback;
-    if (callback) {
-      callback();
-    }
-    this.props.clearTxConfirm();
+    const { txConfirmInfoAndCallback: { confirmCallback }, clearTxConfirm } = this.props;
+    if (confirmCallback) clearTxConfirm();
   }
 }
 
