@@ -44,10 +44,7 @@ export default class ErrorDialog extends Component {
 
   clearError = () => {
     const { error, dispatch } = this.props;
-    if (!error.type) {
-      console.error('No error to clear. Check <ErrorDialog />'); // eslint-disable-line
-      return;
-    }
+    if (!error.type) return;
     const clearError = {
       app: appActions.clearErrorApp,
       topic: topicActions.clearErrorTopic,

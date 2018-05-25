@@ -145,7 +145,7 @@ export default class TopicPage extends Component {
       this.fetchData();
     }
 
-    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data',);
+    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data', []);
     const topic = _.find(topics, { address });
     if (topic && topic.status === OracleStatus.Withdraw) {
       this.setState({ topic });

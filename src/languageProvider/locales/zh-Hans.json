@@ -258,7 +258,6 @@
   "topBar.setting": "设置",
   "topBar.voting": "仲裁",
   "topic.didNotBetOrVote": "您没有投注或投票胜出选项.",
-  "transactionSentDialog.failureMsg": "哎呀，出错了",
   "transactionSentDialog.successMsg": "成功",
   "transactionSentDialog.waitingMsg": "交易已发出，请等待确认。",
   "tx.approveBotTransfer": "授权BOT转账额度",

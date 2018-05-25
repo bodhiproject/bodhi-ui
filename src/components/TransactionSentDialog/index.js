@@ -13,10 +13,6 @@ const messages = defineMessages({
     id: 'transactionSentDialog.successMsg',
     defaultMessage: 'Success',
   },
-  failureMsg: {
-    id: 'transactionSentDialog.failureMsg',
-    defaultMessage: 'Oops, something went wrong',
-  },
   waitingMsg: {
     id: 'transactionSentDialog.waitingMsg',
     defaultMessage: 'Transaction sent. Waiting for confirmations.',
