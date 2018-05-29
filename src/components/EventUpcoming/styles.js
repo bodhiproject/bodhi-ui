@@ -1,5 +1,3 @@
-import { EventWarningType } from '../../constants';
-
 const styles = (theme) => ({
   warningWrapper: {
     borderRadius: theme.borderRadius,
