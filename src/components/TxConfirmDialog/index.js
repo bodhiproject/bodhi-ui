@@ -99,7 +99,8 @@ export default class TxConfirmDialog extends Component {
 
   onOkClicked = () => {
     const { txConfirmInfoAndCallback: { confirmCallback }, clearTxConfirm } = this.props;
-    if (confirmCallback) clearTxConfirm();
+    if (confirmCallback) confirmCallback();
+    clearTxConfirm();
   }
 }
 
