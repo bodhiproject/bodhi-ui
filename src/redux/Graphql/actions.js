@@ -160,11 +160,6 @@ const graphqlActions = {
   clearTxReturn: () => ({
     type: graphqlActions.CLEAR_TX_RETURN,
   }),
-
-  CLEAR_GRAPHQL_ERROR: 'CLEAR_GRAPHQL_ERROR',
-  clearGraphqlError: () => ({
-    type: graphqlActions.CLEAR_GRAPHQL_ERROR,
-  }),
 };
 
 export default graphqlActions;
