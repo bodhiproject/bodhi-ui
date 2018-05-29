@@ -10,67 +10,65 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 import appActions from '../../redux/App/actions';
 import topicActions from '../../redux/Topic/actions';
+import graphqlActions from '../../redux/Graphql/actions';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  errorApp: state.App.get('errorApp'),
-  errorTopic: state.Topic.get('errorTopic'),
-}), (dispatch) => ({
-  clearErrorApp: () => dispatch(appActions.clearErrorApp()),
-  clearErrorTopic: () => dispatch(topicActions.clearErrorTopic()),
+  get error() {
+    let type = '';
+    let error = { message: '', route: '' };
+    if (state.App.get('errorApp')) {
+      type = 'app';
+      error = state.App.get('errorApp');
+    } else if (state.Topic.get('errorTopic')) {
+      type = 'topic';
+      error = state.Topic.get('errorTopic');
+    } else if (state.Graphql.get('error')) {
+      type = 'graphql';
+      error = state.Graphql.get('error');
+    }
+    return { ...error, type };
+  },
 }))
 export default class ErrorDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    errorApp: PropTypes.object,
-    clearErrorApp: PropTypes.func.isRequired,
-    errorTopic: PropTypes.object,
-    clearErrorTopic: PropTypes.func.isRequired,
+    error: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
-    errorApp: undefined,
-    errorTopic: undefined,
+    error: {},
+  }
+
+  clearError = () => {
+    const { error, dispatch } = this.props;
+    if (!error.type) return;
+    const clearError = {
+      app: appActions.clearErrorApp,
+      topic: topicActions.clearErrorTopic,
+      graphql: graphqlActions.clearGraphqlError,
+    }[error.type];
+    dispatch(clearError());
   }
 
   render() {
-    const {
-      classes,
-      errorApp,
-      errorTopic,
-    } = this.props;
-
-    const isOpen = Boolean(errorApp || errorTopic);
-    let error;
-    if (errorApp) {
-      error = errorApp;
-    } else if (errorTopic) {
-      error = errorTopic;
-    }
-
-    if (!error) {
-      return null;
-    }
+    const { classes, error } = this.props;
 
     return (
-      <Dialog open={isOpen}>
+      <Dialog open={!!error.message}>
         <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
         <DialogContent>
           <Typography className={classes.errorRoute}>{error.route}</Typography>
           <Typography className={classes.errorMessage}>{error.message}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.onOkClicked}>
+          <Button color="primary" onClick={this.clearError}>
             <FormattedMessage id="str.ok" defaultMessage="OK" />
           </Button>
         </DialogActions>
       </Dialog>
     );
-  }
-
-  onOkClicked = () => {
-    this.props.clearErrorApp();
-    this.props.clearErrorTopic();
   }
 }

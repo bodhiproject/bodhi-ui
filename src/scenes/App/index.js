@@ -18,9 +18,6 @@ import ErrorDialog from '../../components/ErrorDialog/index';
 import TxConfirmDialog from '../../components/TxConfirmDialog/index';
 
 @withStyles(styles)
-@connect((state) => ({
-  txReturn: state.Graphql.get('txReturn'),
-}))
 export default class App extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -49,7 +46,7 @@ export default class App extends Component {
         <CreateEvent />
         <PendingTransactionsSnackbar />
         <GlobalSnackbar />
-        <TransactionSentDialog txReturn={txReturn} />
+        <TransactionSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
         <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
