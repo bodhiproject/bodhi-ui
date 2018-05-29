@@ -55,7 +55,7 @@ const SKIP = 0;
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
     dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
-  getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
+  getOracles: (filters, orderBy, limit, skip, exclude) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, exclude)),
 }))
 export default class EventCardsGrid extends Component {
   static propTypes = {
@@ -209,9 +209,17 @@ export default class EventCardsGrid extends Component {
         break;
       }
       case EventStatus.Vote: {
+        const excludeSelfAddress = [];
+        _.each(walletAddresses, (addressObj) => {
+          excludeSelfAddress.push(addressObj.address);
+        });
+
         getOracles(
           [
             { token: Token.Bot, status: OracleStatus.Voting },
+            { token: Token.Qtum,
+              status: OracleStatus.WaitResult,
+              excludeSelfAddress },
           ],
           { field: 'endTime', direction: sortDirection },
           limit,
@@ -254,9 +262,9 @@ export default class EventCardsGrid extends Component {
     if (objs.length === 0) {
       rowItems = <EventsEmptyBg />;
     } else if (eventStatusIndex === Withdraw) {
-      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} />);
+      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} eventStatusIndex={eventStatusIndex} />);
     } else { // Bet, Set, Vote, Finalize
-      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
+      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} eventStatusIndex={eventStatusIndex} />);
     }
 
     return (
