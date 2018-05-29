@@ -333,10 +333,10 @@ export function* createTopicTxHandler() {
         type: actions.CREATE_TOPIC_TX_RETURN,
         value: tx.data.createTopic,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_TOPIC_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -360,10 +360,10 @@ export function* createBetTxHandler() {
         type: actions.CREATE_BET_TX_RETURN,
         value: tx.data.createBet,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_BET_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -390,10 +390,10 @@ export function* createSetResultTxHandler() {
         type: actions.CREATE_SET_RESULT_TX_RETURN,
         value: tx.data.setResult,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_SET_RESULT_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -420,10 +420,10 @@ export function* createVoteTxHandler() {
         type: actions.CREATE_VOTE_TX_RETURN,
         value: tx.data.createVote,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_VOTE_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -445,10 +445,10 @@ export function* createFinalizeResultTxHandler() {
         type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
         value: tx.data.finalizeResult,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -470,10 +470,10 @@ export function* createWithdrawTxHandler() {
         type: actions.CREATE_WITHDRAW_TX_RETURN,
         value: tx.data.withdraw,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_WITHDRAW_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });
@@ -495,10 +495,10 @@ export function* createTransferTxHandler() {
         type: actions.CREATE_TRANSFER_TX_RETURN,
         value: tx.data.transfer,
       });
-    } catch (error) {
+    } catch (err) {
       yield put({
         type: actions.CREATE_TRANSFER_TX_RETURN,
-        error,
+        error: err.message,
       });
     }
   });

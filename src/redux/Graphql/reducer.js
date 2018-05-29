@@ -11,7 +11,6 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
-  error: null, // type: object
 });
 
 export default function graphqlReducer(state = initState, action) {
@@ -75,12 +74,9 @@ export default function graphqlReducer(state = initState, action) {
     case actions.CREATE_WITHDRAW_TX_RETURN:
     case actions.CREATE_TRANSFER_TX_RETURN: {
       if (action.error) {
-        return state.set('error', action.error);
+        return state.set('txReturn', { error: action.error });
       }
       return state.set('txReturn', action.value);
-    }
-    case actions.CLEAR_GRAPHQL_ERROR: {
-      return state.set('error', null);
     }
     case actions.CLEAR_TX_RETURN: {
       return state.set('txReturn', undefined);

@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'transactionSentDialog.successMsg',
     defaultMessage: 'Success',
   },
+  failureMsg: {
+    id: 'transactionSentDialog.failureMsg',
+    defaultMessage: 'Oops, something went wrong',
+  },
   waitingMsg: {
     id: 'transactionSentDialog.waitingMsg',
     defaultMessage: 'Transaction sent. Waiting for confirmations.',
@@ -30,9 +34,7 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  txReturn: state.App.get('txReturn'),
-}), (dispatch) => ({
+@connect(null, (dispatch) => ({
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
 }))
 export default class TransactionSentDialog extends Component {
@@ -47,16 +49,48 @@ export default class TransactionSentDialog extends Component {
     txReturn: undefined,
   }
 
+  get successText() {
+    const { intl, txReturn } = this.props;
+    return {
+      title: intl.formatMessage(messages.successMsg),
+      bodyPrimary: intl.formatMessage(messages.waitingMsg),
+      bodySecondary: `${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`,
+    };
+  }
+
+  get errorText() {
+    const { intl, txReturn } = this.props;
+    return {
+      title: intl.formatMessage(messages.failureMsg),
+      bodyPrimary: txReturn.error,
+      bodySecondary: '',
+    };
+  }
+
   render() {
     const { intl, classes, txReturn, clearTxReturn } = this.props;
-    if (!txReturn) return null;
+
+    let contentText;
+    if (txReturn) {
+      if (txReturn.txid) {
+        contentText = this.successText;
+      } else {
+        contentText = this.errorText;
+      }
+    } else {
+      contentText = {
+        title: '',
+        bodyPrimary: '',
+        bodySecondary: '',
+      };
+    }
 
     return (
       <Dialog open={Boolean(txReturn)} onClose={clearTxReturn}>
-        <DialogTitle>{intl.formatMessage(messages.successMsg)}</DialogTitle>
+        <DialogTitle>{contentText.title}</DialogTitle>
         <DialogContent>
-          <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.waitingMsg)}</Typography>
-          <Typography variant="body1">{`${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`}</Typography>
+          <Typography variant="body1" className={classes.bodyPrimary}>{contentText.bodyPrimary}</Typography>
+          <Typography variant="body1">{contentText.bodySecondary}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={clearTxReturn}>
