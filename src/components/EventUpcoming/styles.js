@@ -11,7 +11,6 @@ const styles = (theme) => ({
     fontFamily: 'Lato',
     fontWeight: 'bold',
     color: '#F5A623',
-    // width: '121px',
   },
 });
 
