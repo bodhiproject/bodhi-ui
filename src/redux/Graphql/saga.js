@@ -53,10 +53,6 @@ export function* getTopicsHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getTopics`,
-        },
       });
     }
   });
@@ -99,10 +95,6 @@ export function* getActionableTopicsHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getActionableTopics`,
-        },
       });
     }
   });
@@ -139,10 +131,6 @@ export function* getOraclesHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getOracles`,
-        },
       });
     }
   });
@@ -166,10 +154,6 @@ export function* getTransactionsHandler() {
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
         value: [],
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getTransactions`,
-        },
       });
     }
   });
@@ -208,10 +192,6 @@ export function* getPendingTransactionsHandler() {
       yield put({
         type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: [],
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getPendingTransactions`,
-        },
       });
     }
   });
