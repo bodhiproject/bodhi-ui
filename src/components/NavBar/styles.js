@@ -56,6 +56,8 @@ const styles = (theme) => ({
   },
   selectMenu: {
     color: 'white',
+    paddingTop: 3,
+    marginLeft: 25,
   },
 });
 

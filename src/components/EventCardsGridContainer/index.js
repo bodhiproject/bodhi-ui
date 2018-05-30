@@ -100,44 +100,27 @@ export default class EventCardsGrid extends Component {
       [EventStatus.Withdraw]: formatMessage(messages.withdraw),
     }[eventStatusIndex];
 
-    const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
-    const pendingTypes = {
-      [EventStatus.Set]: [ApproveSetResult, SetResult],
-      [EventStatus.Vote]: [ApproveVote, Vote],
-      [EventStatus.Finalize]: [FinalizeResult],
-      [EventStatus.Bet]: [Bet],
-    }[eventStatusIndex] || [];
-
     return (_.get(oracles, 'data', [])).map((oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
-      const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
-      const isUpcoming = eventStatusIndex === EventStatus.Vote && oracle.status === OracleStatus.WaitResult;
       return {
         amountLabel: eventStatusIndex !== EventStatus.Finalize ? `${amount} ${oracle.token}` : '',
         url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
         endTime: eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime,
-        unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
         buttonText,
-        isUpcoming,
         ...oracle,
       };
     });
   }
 
   get topics() {
-    const { WithdrawEscrow, Withdraw } = TransactionType;
+    // console.log('TOPICS: ', this.props.topics.data);
     return _.get(this.props.topics, 'data', []).map((topic) => {
       const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
       const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
-      const pendingTypes = [WithdrawEscrow, Withdraw];
-      const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
-      const isUpcoming = false;
       return {
         amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
-        unconfirmed: isPending,
         url: `/topic/${topic.address}`,
         buttonText: this.props.intl.formatMessage(messages.withdraw),
-        isUpcoming,
         ...topic,
       };
     });

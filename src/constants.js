@@ -29,6 +29,7 @@ module.exports = {
     Vote: 2,
     Finalize: 3,
     Withdraw: 4,
+    allEvents: 5,
     Default: 0,
   },
 
