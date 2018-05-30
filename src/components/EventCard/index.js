@@ -6,6 +6,7 @@ import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
 import EventWarning from '../EventWarning';
 import EventUpcoming from '../EventUpcoming';
+import { EventStatus, OracleStatus } from '../../constants';
 
 import styles from './styles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
@@ -60,7 +61,7 @@ export default class EventCard extends Component {
       status,
     } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
-    const isUpcoming = eventStatusIndex === 2 && status === 'WAITRESULT';
+    const isUpcoming = eventStatusIndex === EventStatus.Vote && status === OracleStatus.WaitResult;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
