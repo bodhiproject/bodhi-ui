@@ -16,6 +16,7 @@ import TransactionSentDialog from '../../components/TransactionSentDialog/index'
 import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
 import ErrorDialog from '../../components/ErrorDialog/index';
 import TxConfirmDialog from '../../components/TxConfirmDialog/index';
+import TutorialCarouselDialog from '../../components/TutorialCarouselDialog/index';
 
 @withStyles(styles)
 export default class App extends Component {
@@ -50,6 +51,7 @@ export default class App extends Component {
         <WalletUnlockDialog />
         <ErrorDialog />
         <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
+        <TutorialCarouselDialog />
       </div>
     );
   }
