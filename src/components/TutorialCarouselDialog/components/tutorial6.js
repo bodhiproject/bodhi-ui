@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
-import ContentItem from './contentItem';
+import { ContentItem } from './contentItem';
 
 const Tutorial6 = ({ classes }) => (
   <div>

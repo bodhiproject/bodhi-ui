@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CssBaseline, withStyles } from 'material-ui';
-import { connect } from 'react-redux';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -24,15 +23,10 @@ export default class App extends Component {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     langHandler: PropTypes.func.isRequired,
-    txReturn: PropTypes.object,
-  }
-
-  static defaultProps = {
-    txReturn: undefined,
   }
 
   render() {
-    const { classes, langHandler, txReturn, match: { url } } = this.props;
+    const { classes, langHandler, match: { url } } = this.props;
 
     return (
       <div className={classes.root}>
