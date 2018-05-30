@@ -6,6 +6,7 @@ import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
 import EventWarning from '../EventWarning';
 import EventUpcoming from '../EventUpcoming';
+import { EventStatus, OracleStatus } from '../../constants';
 
 import styles from './styles';
 import sportStyles from './sportStyles';
