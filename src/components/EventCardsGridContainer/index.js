@@ -264,9 +264,9 @@ export default class EventCardsGrid extends Component {
     if (objs.length === 0) {
       rowItems = <EventsEmptyBg />;
     } else if (eventStatusIndex === Withdraw) {
-      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} eventStatusIndex={eventStatusIndex} />);
+      rowItems = objs.map((topic) => <EventCard key={topic.txid} {...topic} />);
     } else { // Bet, Set, Vote, Finalize
-      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} eventStatusIndex={eventStatusIndex} />);
+      rowItems = objs.map((oracle) => <EventCard key={oracle.txid} {...oracle} />);
     }
 
     return (
