@@ -23,6 +23,13 @@ const styles = (theme) => ({
     background: '#E9FEFE',
     border: 'solid 1px #23DAE0',
   },
+  upcoming: {
+    background: '#F5A6231A',
+    border: 'solid 1px #F5A623',
+    fontFamily: 'Lato',
+    fontWeight: 'bold',
+    color: '#F5A623',
+  },
 });
 
 export default styles;

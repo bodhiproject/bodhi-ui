@@ -36,14 +36,7 @@ class GraphQuery {
       .keys(obj)
       .map((key) => {
         const value = obj[key];
-        if (_.isArray(value)) {
-          const exclude = [];
-          for (let x = 0; x < value.length; x++) {
-            exclude.push(`"${value[x]}"`);
-          }
-
-          return `${key}: [${exclude}]`;
-        }
+        if (_.isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
         if (isValidEnum(key, value) || !_.isString(value)) {
           // Enums require values without quotes
           return `${key}: ${value}`;

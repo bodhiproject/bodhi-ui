@@ -5,8 +5,6 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
 import EventWarning from '../EventWarning';
-import EventUpcoming from '../EventUpcoming';
-import { EventStatus, OracleStatus } from '../../constants';
 
 import styles from './styles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
@@ -32,15 +30,14 @@ const cardMessages = defineMessages({
 export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    eventStatusIndex: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
-    status: PropTypes.string.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -57,18 +54,16 @@ export default class EventCard extends Component {
       endTime,
       buttonText,
       unconfirmed,
-      eventStatusIndex,
-      status,
+      isUpcoming,
     } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
-    const isUpcoming = eventStatusIndex === EventStatus.Vote && status === OracleStatus.WaitResult;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
           <Card>
             <div className={cx(classes.eventCardSection, 'top')}>
               {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
-              {isUpcoming && <EventUpcoming id="str.upcoming" message="Upcoming" />}
+              {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
