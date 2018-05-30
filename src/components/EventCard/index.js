@@ -5,8 +5,6 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
 import cx from 'classnames';
 import EventWarning from '../EventWarning';
-import EventUpcoming from '../EventUpcoming';
-import { EventStatus, OracleStatus } from '../../constants';
 
 import styles from './styles';
 import sportStyles from './sportStyles';
@@ -34,15 +32,17 @@ const cardMessages = defineMessages({
 export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+<<<<<<< HEAD
     index: PropTypes.number.isRequired,
     eventStatusIndex: PropTypes.number.isRequired,
+=======
+>>>>>>> use map to replace for loop
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
-    status: PropTypes.string.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     isUpcoming: PropTypes.bool.isRequired,
   };
