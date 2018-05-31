@@ -8,6 +8,10 @@ const outputLanguageDataDir = './src/languageProvider/locales/';
 
 let prevmessages = JSON.parse(fs.readFileSync('./src/languageProvider/locales/en_US.json', 'utf8'));
 let cnMessages = JSON.parse(fs.readFileSync('./src/languageProvider/locales/zh-Hans.json', 'utf8'));
+let krMessages = JSON.parse(fs.readFileSync('./src/languageProvider/locales/ko-KR.json', 'utf8'));
+let ff = fs.readFileSync('./src/languageProvider/locales/1.txt', 'utf8').split('\n');
+console.log('​ff', ff[200]);
+
 // Aggregates the default messages that were extracted from the app's
 // React components via the React Intl Babel plugin. The result
 // is a flat collection of `id: message` pairs for the app's default locale.
@@ -27,18 +31,23 @@ function update(obj){
       if(obj[key]!==prevmessages[key]){
         cnMessages[key] = obj[key];
         prevmessages[key] = obj[key];
+        krMessages[key] = obj[key];
       }
     } else{
       cnMessages[key] = obj[key];
       prevmessages[key] = obj[key];
+      krMessages[key] = obj[key];
     }
   });
   Object.keys(prevmessages).forEach((key) => {
     if(!cnMessages.hasOwnProperty(key)){
       cnMessages[key] = prevmessages[key];
     }
+    if(!krMessages.hasOwnProperty(key)){
+      krMessages[key] = prevmessages[key];
+    }
   });
-}  
+}
 
 function sortObjectKeys(obj){
   return Object.keys(obj).sort().reduce((acc,key)=>{
@@ -47,10 +56,26 @@ function sortObjectKeys(obj){
   },{});
 }
 
+
 mkdirpSync(outputLanguageDataDir);
 update(defaultMessages);
 prevmessages = sortObjectKeys(prevmessages);
 cnMessages = sortObjectKeys(cnMessages);
+krMessages = sortObjectKeys(krMessages);
+let cc = "";
+let trans = {};
+let i = 0;
+Object.keys(prevmessages).forEach((key) => {
+  trans[key] = ff[i];
+  i++;
+  console.log(i);
+  console.log(trans[key]);
+});
+
+
 fs.writeFileSync(outputLanguageDataDir + 'en_US.json', `${JSON.stringify(prevmessages, null, 2)}\n`);
 fs.writeFileSync(outputLanguageDataDir + 'zh-Hans.json', `${JSON.stringify(cnMessages, null, 2)}\n`);
+fs.writeFileSync(outputLanguageDataDir + 'ko-KR.json', `${JSON.stringify(krMessages, null, 2)}\n`);
+fs.writeFileSync(outputLanguageDataDir + 'trans.json', `${JSON.stringify(trans, null, 2)}\n`);
+
 fs.removeSync('./build/messages/')

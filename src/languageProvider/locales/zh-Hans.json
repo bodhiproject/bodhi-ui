@@ -1,5 +1,4 @@
 {
-  "activitiesTab.Finalize": "结束",
   "activitiesTab.History": "历史记录",
   "activitiesTab.Set": "设置结果",
   "balance.info": "如果您想加密，备份或恢复您的钱包，请在Qtum钱包中进行。在程序菜单栏，有一个启动Qtum钱包选项。",
@@ -88,7 +87,6 @@
   "myBalances.addressCopied": "地址已复制",
   "myBalances.deposit": "充值",
   "myBalances.myBalance": "余额",
-  "myBalances.withdraw": "提现",
   "navBar.activities": "我的活动",
   "navbar.botCourt": "BOT法庭",
   "navbar.qtumPrediction": "QTUM预测",

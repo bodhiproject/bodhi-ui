@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
 import cx from 'classnames';
+import Select from 'material-ui/Select';
+import { MenuItem } from 'material-ui/Menu';
 
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
@@ -45,11 +47,17 @@ export default class NavBar extends Component {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      age: '',
+    };
     this.renderActivitiesButtonWithBadge = this.renderActivitiesButtonWithBadge.bind(this);
     this.getTotalQTUM = this.getTotalQTUM.bind(this);
     this.getTotalBOT = this.getTotalBOT.bind(this);
   }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   render() {
     const { classes, appLocation } = this.props;
@@ -98,6 +106,23 @@ export default class NavBar extends Component {
             <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
             </Button>
+            <Select
+              value={this.state.age}
+              onChange={this.handleChange}
+              displayEmpty
+              name="age"
+              disableUnderline
+              className={classes.selectEmpty}
+              IconComponent="ds"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+
 
             {this.renderActivitiesButtonWithBadge()}
             <HelpButton onClick={this.onHelpButtonClick} classes={classes} />
@@ -166,4 +191,3 @@ const HelpButton = injectIntl(({ classes, intl, ...props }) => (
 ));
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
-
