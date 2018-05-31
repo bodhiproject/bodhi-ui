@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { Button, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import cx from 'classnames';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { injectIntl } from 'react-intl';
 
 import styles from './styles';
-import graphqlActions from '../../redux/Graphql/actions';
 import Tutorial0 from './components/tutorial0';
 import Tutorial1 from './components/tutorial1';
 import Tutorial2 from './components/tutorial2';
