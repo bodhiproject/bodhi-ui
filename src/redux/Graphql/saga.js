@@ -20,6 +20,7 @@ import {
   processOracle,
 } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import Routes from '../../network/routes';
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -45,8 +46,8 @@ export function* getTopicsHandler() {
         limit: action.limit,
         skip: action.skip,
       });
-    } catch (err) {
-      console.error(err); // eslint-disable-line
+    } catch (error) {
+      console.error(error); // eslint-disable-line
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
@@ -87,8 +88,8 @@ export function* getActionableTopicsHandler() {
         limit: action.limit,
         skip: action.skip,
       });
-    } catch (err) {
-      console.log(err); // eslint-disable-line
+    } catch (error) {
+      console.log(error); // eslint-disable-line
       yield put({
         type: actions.GET_TOPICS_RETURN,
         value: [],
@@ -123,8 +124,8 @@ export function* getOraclesHandler() {
         limit: action.limit,
         skip: action.skip,
       });
-    } catch (err) {
-      console.error(err); // eslint-disable-line
+    } catch (error) {
+      console.error(error); // eslint-disable-line
       yield put({
         type: actions.GET_ORACLES_RETURN,
         value: [],
@@ -148,8 +149,8 @@ export function* getTransactionsHandler() {
         limit: action.limit,
         skip: action.skip,
       });
-    } catch (err) {
-      console.error(err); // eslint-disable-line
+    } catch (error) {
+      console.error(error); // eslint-disable-line
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
         value: [],
@@ -186,8 +187,8 @@ export function* getPendingTransactionsHandler() {
         type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: pendingTxsObj,
       });
-    } catch (err) {
-      console.error(err); // eslint-disable-line
+    } catch (error) {
+      console.error(error); // eslint-disable-line
       yield put({
         type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: [],
@@ -336,7 +337,10 @@ export function* createTopicTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_TOPIC_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createTopicTx`,
+        },
       });
     }
   });
@@ -363,7 +367,10 @@ export function* createBetTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_BET_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createBetTx`,
+        },
       });
     }
   });
@@ -393,7 +400,10 @@ export function* createSetResultTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_SET_RESULT_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createSetResultTx`,
+        },
       });
     }
   });
@@ -423,7 +433,10 @@ export function* createVoteTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_VOTE_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createVoteTx`,
+        },
       });
     }
   });
@@ -448,7 +461,10 @@ export function* createFinalizeResultTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_FINALIZE_RESULT_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createFinalizeResultTx`,
+        },
       });
     }
   });
@@ -473,7 +489,10 @@ export function* createWithdrawTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_WITHDRAW_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createWithdrawTx`,
+        },
       });
     }
   });
@@ -498,7 +517,10 @@ export function* createTransferTxHandler() {
     } catch (error) {
       yield put({
         type: actions.CREATE_TRANSFER_TX_RETURN,
-        error,
+        error: {
+          ...error,
+          route: `${Routes.graphql.http}/createTransferTx`,
+        },
       });
     }
   });
