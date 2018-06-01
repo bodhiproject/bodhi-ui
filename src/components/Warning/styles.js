@@ -18,6 +18,11 @@ const styles = (theme) => ({
     color: '#23DAE0',
     fontSize: theme.sizes.font.meta,
   },
+  upcoming: {
+    fontFamily: 'Lato',
+    fontWeight: 'bold',
+    color: '#F5A623',
+  },
 });
 
 export default styles;
