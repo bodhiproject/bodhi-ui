@@ -1,4 +1,7 @@
 const styles = (theme) => ({
+  eventCard: {
+    position: 'relative',
+  },
   eventCardSection: {
     position: 'relative',
     padding: theme.padding.sm.px,
