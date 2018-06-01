@@ -1,4 +1,4 @@
-const styles = (theme) => ({
+const styles = () => ({
   navBar: {
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',

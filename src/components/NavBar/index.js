@@ -36,32 +36,29 @@ export default class NavBar extends Component {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
-    // langHandler: PropTypes.func,
+    langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
+    lang: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
     actionableItemCount: undefined,
-    // langHandler: undefined,
+    langHandler: undefined,
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      age: '',
-    };
     this.renderActivitiesButtonWithBadge = this.renderActivitiesButtonWithBadge.bind(this);
     this.getTotalQTUM = this.getTotalQTUM.bind(this);
     this.getTotalBOT = this.getTotalBOT.bind(this);
   }
 
   handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
+    this.props.langHandler(event.target.value);
   };
 
   render() {
-    const { classes, appLocation } = this.props;
-
+    const { classes, appLocation, lang } = this.props;
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
@@ -103,26 +100,17 @@ export default class NavBar extends Component {
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </NavLink>
-            {/* <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
-              <FormattedMessage id="language.select" defaultMessage="中文" />
-            </Button> */}
             <Select
-              value={this.state.age}
+              value={lang}
               onChange={this.handleChange}
-              displayEmpty
-              name="age"
+              name="lang"
               disableUnderline
-              className={classes.selectEmpty}
+              className={classes.selectMenu}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
+              <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
+              <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
             </Select>
-
-
             {this.renderActivitiesButtonWithBadge()}
             <HelpButton onClick={this.onHelpButtonClick} classes={classes} />
           </NavSection>

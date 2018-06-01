@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
 import NavBar from '../components/NavBar/index';
 
-export default function asyncComponent(importComponent, langHandler) {
+export default function asyncComponent(importComponent, langHandler, lang) {
   class AsyncFunc extends React.Component {
     constructor(props) {
       super(props);
@@ -42,7 +42,7 @@ export default function asyncComponent(importComponent, langHandler) {
       return (
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
           <div>
-            <NavBar {...this.props} langHandler={langHandler} />
+            <NavBar {...this.props} langHandler={langHandler} lang={lang} />
             {Component}
           </div>
         </ReactPlaceholder>
