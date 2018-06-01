@@ -6,8 +6,8 @@ const KrLan = {
   messages: {
     ...KrMessages,
   },
-  locale: 'zh-Hans-CN',
+  locale: 'ko-KR',
   data: appLocaleData,
-  momentlocale: 'zh-cn',
+  momentlocale: 'ko',
 };
 export default KrLan;
