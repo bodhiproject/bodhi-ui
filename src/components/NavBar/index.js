@@ -36,13 +36,13 @@ export default class NavBar extends Component {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
-    langHandler: PropTypes.func,
+    // langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
     actionableItemCount: undefined,
-    langHandler: undefined,
+    // langHandler: undefined,
   }
 
   constructor(props) {
@@ -103,9 +103,9 @@ export default class NavBar extends Component {
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </NavLink>
-            <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
+            {/* <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
               <FormattedMessage id="language.select" defaultMessage="中文" />
-            </Button>
+            </Button> */}
             <Select
               value={this.state.age}
               onChange={this.handleChange}
@@ -113,7 +113,6 @@ export default class NavBar extends Component {
               name="age"
               disableUnderline
               className={classes.selectEmpty}
-              IconComponent="ds"
             >
               <MenuItem value="">
                 <em>None</em>
