@@ -16,7 +16,7 @@ let syncInfoInterval;
 const messages = defineMessages({
   walletUnlocked: {
     id: 'walletUnlockDialog.walletUnlocked',
-    defaultMessage: 'Wallet unlocked! Please redo your action.',
+    defaultMessage: 'Wallet unlocked!',
   },
 });
 
