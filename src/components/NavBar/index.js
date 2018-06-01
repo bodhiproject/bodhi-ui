@@ -11,6 +11,7 @@ import { NavLink } from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
+import sportStyles from './sportStyles';
 import Tracking from '../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
@@ -20,6 +21,7 @@ const messages = defineMessages({
   },
 });
 
+@withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @connect((state) => ({
@@ -58,7 +60,7 @@ export default class NavBar extends Component {
           <NavSection>
             <Link to={RouterPath.qtumPrediction}>
               <img
-                src="http://res.cloudinary.com/dd1ixvdxn/image/upload/c_scale,h_38/v1514426750/logo_en_oa4ewt.svg"
+                src="/images/sports-logo.svg"
                 alt="bodhi-logo"
                 className={classes.navBarLogo}
               />
