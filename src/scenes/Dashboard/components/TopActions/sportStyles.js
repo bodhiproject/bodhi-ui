@@ -4,6 +4,9 @@ const styles = (theme) => ({
     color: theme.palette.text.primary,
     position: 'relative',
     paddingLeft: '60px',
+    '&:hover': {
+      color: 'white',
+    },
   },
   sportCreateIcon: {
     height: '54px',
