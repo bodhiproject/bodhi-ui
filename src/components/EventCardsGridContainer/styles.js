@@ -1,5 +1,3 @@
-
-
 const styles = () => ({
   scroll: {
     width: '100%',

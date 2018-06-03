@@ -8,31 +8,31 @@ const styles = (theme) => ({
     position: 'absolute',
     left: theme.padding.sm.px,
     right: 0,
-    height: '40px',
+    height: '50px',
     backgroundImage: 'url(/images/sports-card-1.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'right',
     backgroundRepeat: 'no-repeat',
-    '&:nth-child(8n+1)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg1': {
+      backgroundImage: 'url(/images/sports-card-2.png)',
     },
-    '&:nth-child(8n+2)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg2': {
+      backgroundImage: 'url(/images/sports-card-3.png)',
     },
-    '&:nth-child(8n+3)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg3': {
+      backgroundImage: 'url(/images/sports-card-4.png)',
     },
-    '&:nth-child(8n+4)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg4': {
+      backgroundImage: 'url(/images/sports-card-5.png)',
     },
-    '&:nth-child(8n+5)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg5': {
+      backgroundImage: 'url(/images/sports-card-6.png)',
     },
-    '&:nth-child(8n+6)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg6': {
+      backgroundImage: 'url(/images/sports-card-7.png)',
     },
-    '&:nth-child(8n+7)': {
-      backgroundImage: 'url(/images/sports-card-1.png)',
+    '&.bg7': {
+      backgroundImage: 'url(/images/sports-card-8.png)',
     },
   },
 });
