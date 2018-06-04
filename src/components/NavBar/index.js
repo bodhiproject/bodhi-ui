@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
 });
 
-@withStyles(sportStyles, { withTheme: true })
+@withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @connect((state) => ({

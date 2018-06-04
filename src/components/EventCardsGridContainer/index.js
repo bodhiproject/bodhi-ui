@@ -8,7 +8,7 @@ import { withStyles } from 'material-ui/styles';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import { AppLocation, Token, OracleStatus, SortBy, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { AppLocation, Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import EventCard from '../EventCard/index';
@@ -38,7 +38,6 @@ const messages = defineMessages({
   },
 });
 
-const { Pending } = TransactionStatus;
 const LIMIT = 50;
 const SKIP = 0;
 
