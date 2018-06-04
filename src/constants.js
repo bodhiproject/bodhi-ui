@@ -7,6 +7,7 @@ module.exports = {
     finalize: '/activities/finalize',
     withdraw: '/activities/withdraw',
     activityHistory: '/activities/history',
+    allEvents: '/all-events',
   },
 
   /* App Constants */
