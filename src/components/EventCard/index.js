@@ -32,11 +32,7 @@ const cardMessages = defineMessages({
 export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-<<<<<<< HEAD
     index: PropTypes.number.isRequired,
-    eventStatusIndex: PropTypes.number.isRequired,
-=======
->>>>>>> use map to replace for loop
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
