@@ -19,6 +19,10 @@ const cardMessages = defineMessages({
     id: 'str.ends',
     defaultMessage: 'Ends',
   },
+  upcoming: {
+    id: 'str.upcoming',
+    defaultMessage: 'Upcoming',
+  },
 });
 
 
@@ -36,6 +40,7 @@ export default class EventCard extends Component {
     buttonText: PropTypes.string.isRequired,
     unconfirmed: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -53,9 +58,9 @@ export default class EventCard extends Component {
       endTime,
       buttonText,
       unconfirmed,
+      isUpcoming,
     } = this.props;
     const { locale, messages: localeMessages } = this.props.intl;
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -63,6 +68,7 @@ export default class EventCard extends Component {
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
               {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+              {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
@@ -88,7 +94,7 @@ export default class EventCard extends Component {
             </div>
             <Divider />
             <div className={cx(classes.eventCardSection, 'button')}>
-              {buttonText}
+              {isUpcoming ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" /> : buttonText}
             </div>
           </Card>
         </Link>

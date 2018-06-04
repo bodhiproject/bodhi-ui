@@ -55,7 +55,7 @@ const SKIP = 0;
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
     dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
-  getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
+  getOracles: (filters, orderBy, limit, skip, exclude) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, exclude)),
 }))
 export default class EventCardsGrid extends Component {
   static propTypes = {
@@ -70,6 +70,7 @@ export default class EventCardsGrid extends Component {
     setAppLocation: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    status: PropTypes.string,
   };
 
   static defaultProps = {
@@ -78,6 +79,7 @@ export default class EventCardsGrid extends Component {
     oracles: {},
     sortBy: SortBy.Ascending,
     syncBlockNum: undefined,
+    status: '',
   };
 
   state = {
@@ -106,12 +108,14 @@ export default class EventCardsGrid extends Component {
     return (_.get(oracles, 'data', [])).map((oracle) => {
       const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
       const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+      const isUpcoming = eventStatusIndex === EventStatus.Vote && oracle.status === OracleStatus.WaitResult;
       return {
         amountLabel: eventStatusIndex !== EventStatus.Finalize ? `${amount} ${oracle.token}` : '',
         url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
         endTime: eventStatusIndex === EventStatus.Set ? oracle.resultSetEndTime : oracle.endTime,
         unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
         buttonText,
+        isUpcoming,
         ...oracle,
       };
     });
@@ -124,11 +128,13 @@ export default class EventCardsGrid extends Component {
       const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
       const pendingTypes = [WithdrawEscrow, Withdraw];
       const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+      const isUpcoming = false;
       return {
         amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
         unconfirmed: isPending,
         url: `/topic/${topic.address}`,
         buttonText: this.props.intl.formatMessage(messages.withdraw),
+        isUpcoming,
         ...topic,
       };
     });
@@ -209,9 +215,13 @@ export default class EventCardsGrid extends Component {
         break;
       }
       case EventStatus.Vote: {
+        const excludeSelfAddress = walletAddresses.map(({ address }) => address);
         getOracles(
           [
             { token: Token.Bot, status: OracleStatus.Voting },
+            { token: Token.Qtum,
+              status: OracleStatus.WaitResult,
+              excludeSelfAddress },
           ],
           { field: 'endTime', direction: sortDirection },
           limit,
