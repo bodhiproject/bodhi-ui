@@ -7,6 +7,7 @@ import cx from 'classnames';
 import EventWarning from '../EventWarning';
 
 import styles from './styles';
+import sportStyles from './sportStyles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
 const cardMessages = defineMessages({
@@ -22,10 +23,12 @@ const cardMessages = defineMessages({
 
 
 @injectIntl
+@withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
 export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
@@ -43,6 +46,7 @@ export default class EventCard extends Component {
   render() {
     const {
       classes,
+      index,
       url,
       name,
       amountLabel,
@@ -55,7 +59,8 @@ export default class EventCard extends Component {
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
-          <Card>
+          <Card className={classes.eventCard}>
+            <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
               {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               <Typography variant="headline" className={classes.eventCardName}>

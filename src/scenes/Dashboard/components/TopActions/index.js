@@ -17,9 +17,11 @@ import topicActions from '../../../../redux/Topic/actions';
 import { SortBy } from '../../../../constants';
 import Tracking from '../../../../helpers/mixpanelUtil';
 import styles from './styles';
+import sportStyles from './sportStyles';
 
 
 @injectIntl
+@withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -74,7 +76,7 @@ export default class TopActions extends Component {
             className={classes.createEventButton}
             onClick={this.onCreateDialogOpen}
           >
-            <AddIcon fontSize />
+            <img src="/images/sports-create.svg" alt="create" className={classes.sportCreateIcon} />
             <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
           </Button>
         </Grid>
