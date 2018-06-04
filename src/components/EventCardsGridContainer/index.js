@@ -215,13 +215,13 @@ export default class EventCardsGrid extends Component {
         break;
       }
       case EventStatus.Vote: {
-        const excludeSelfAddress = walletAddresses.map(({ address }) => address);
+        const excludeResultSetterQAddress = walletAddresses.map(({ address }) => address);
         getOracles(
           [
             { token: Token.Bot, status: OracleStatus.Voting },
             { token: Token.Qtum,
               status: OracleStatus.WaitResult,
-              excludeSelfAddress },
+              excludeResultSetterQAddress },
           ],
           { field: 'endTime', direction: sortDirection },
           limit,
