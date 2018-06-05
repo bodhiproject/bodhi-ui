@@ -3,8 +3,8 @@ const styles = (theme) => ({
     backgroundPosition: 'bottom',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    padding: `${theme.padding.md.px} !important`,
     minHeight: '600px',
+    padding: '0 !important',
     position: 'relative',
   },
   tutorialDialog0: {
@@ -50,11 +50,11 @@ const styles = (theme) => ({
     },
   },
   titleTopLine: {
-    width: '170px',
     height: '5px',
-    position: 'relative',
-    left: '-40px',
     marginBottom: theme.padding.xs.px,
+  },
+  contentWrapper: {
+    padding: `${theme.padding.md.px} !important`,
   },
   contentList: {
     lineHeight: '28px',
