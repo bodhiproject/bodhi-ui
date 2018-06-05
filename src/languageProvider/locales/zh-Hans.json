@@ -283,7 +283,7 @@
   "walletUnlockDialog.unlockWallet": "解锁钱包",
   "walletUnlockDialog.walletPassphrase": "钱包密码",
   "walletUnlockDialog.walletPassphraseRequired": "这个操作需要解锁您的钱包，请输入您的密码.",
-  "walletUnlockDialog.walletUnlocked": "钱包已解锁！请重新进行您的操作。",
+  "walletUnlockDialog.walletUnlocked": "钱包已解锁！",
   "withdrawDetail.alreadyWithdrawn": "您已经使用过此地址提现。",
   "withdrawDetail.returnRate": "回报率：",
   "withdrawDetail.reward": "回报",
