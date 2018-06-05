@@ -4,6 +4,7 @@ const styles = (theme) => ({
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     minHeight: '600px',
+    minWidth: '880px',
     padding: '0 !important',
     position: 'relative',
   },
