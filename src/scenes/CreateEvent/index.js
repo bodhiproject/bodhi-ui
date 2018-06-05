@@ -447,9 +447,7 @@ export default class CreateEvent extends Component {
           placeholder={placeholder}
           error={!_.isEmpty(errorMsg)}
         />
-        {
-          !_.isEmpty(errorMsg) && <FormHelperText error>{errorMsg}</FormHelperText>
-        }
+        {!_.isEmpty(errorMsg) && <FormHelperText error>{errorMsg}</FormHelperText>}
       </FormControl>
     );
   };
