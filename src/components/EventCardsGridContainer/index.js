@@ -14,7 +14,7 @@ import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
 import InfiniteScroll from '../InfiniteScroll/index';
 
-const LIMIT = 10;
+const LIMIT = 12;
 const SKIP = 0;
 
 

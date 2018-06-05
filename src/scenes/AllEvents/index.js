@@ -9,7 +9,7 @@ import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import { Token, OracleStatus } from '../../constants';
 
-const LIMIT = 5;
+const LIMIT = 6;
 
 
 @connect((state) => (console.log('TOPICS: ', state.Graphql.get('getTopicsReturn'), 'ORACLES: ', state.Graphql.get('getOraclesReturn')), {
@@ -18,13 +18,9 @@ const LIMIT = 5;
   walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch) => ({
   getAllEvents: (...args) => {
-    console.log('ARGS: ', args);
     dispatch(graphqlActions.getOracles(...args));
-    console.log('TOPIC ARGS: ', topicArgs);
-    const [filters, ...topicArgs] = args;
-    dispatch(graphqlActions.getTopics(...topicArgs));
-    // const [filters, orderBy, limit, skip, walletAddresses] = args;
-    // dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip));
+    const [filters, orderBy, limit, skip, walletAddresses] = args;
+    dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip));
   },
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
@@ -43,12 +39,6 @@ export default class AllEvents extends Component {
 
   componentDidMount() {
     this.loadMoreData();
-    // const { sortBy, walletAddresses } = this.props;
-    // const orderBy = { field: 'endTime', direction: sortBy };
-    // this.props.getAllEvents(orderBy, LIMIT, 0, walletAddresses);
-  }
-
-  componentWillMount() {
     this.props.setAppLocation('allEvents');
   }
 

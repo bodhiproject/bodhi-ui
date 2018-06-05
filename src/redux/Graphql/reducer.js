@@ -37,8 +37,8 @@ const getPhase = ({ token, status, name }) => {
   if (token === 'QTUM' && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return 'resultSetting';
   if (token === 'BOT' && status === 'WAITRESULT') return 'finalizing';
   if (['QTUM', 'BOT'].includes(token) && status === 'WITHDRAW') return 'withdrawing';
-  console.log('TOKEN: ', token, 'STATUS: ', status, 'NAME: ', name);
-  // throw Error('invalid phase');
+  console.warn('TOKEN: ', token, 'STATUS: ', status, 'NAME: ', name);
+  throw Error('invalid phase');
 };
 
 export default function graphqlReducer(state = initState, action) {
@@ -110,8 +110,8 @@ export default function graphqlReducer(state = initState, action) {
           ...oracle,
         };
       // filter out the oracles in the 'withdrawing' phase
-      }).filter(({ buttonText, phase }) => buttonText && phase !== 'withdrawing');
-      // }).filter(({ phase }) => phase !== 'withdrawing');
+      })
+      // .filter(({ buttonText, phase }) => buttonText && phase !== 'withdrawing');
 
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
