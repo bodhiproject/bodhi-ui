@@ -39,11 +39,13 @@ export default class TopActions extends Component {
     lastUsedAddress: PropTypes.string.isRequired,
     toggleCreateEventDialog: PropTypes.func.isRequired,
     getEventEscrowAmount: PropTypes.func.isRequired,
+    noCreateEventButton: PropTypes.bool,
   };
 
   static defaultProps = {
     sortBy: SortBy.Ascending,
     sortOrderChanged: undefined,
+    noCreateEventButton: false,
   };
 
   onSortOptionSelected = (event) => {
@@ -64,21 +66,23 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, sortBy } = this.props;
+    const { classes, sortBy, noCreateEventButton } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
-          <Button
-            variant="raised"
-            size="medium"
-            color="primary"
-            className={classes.createEventButton}
-            onClick={this.onCreateDialogOpen}
-          >
-            <img src="/images/sports-create.svg" alt="create" className={classes.sportCreateIcon} />
-            <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
-          </Button>
+          {!noCreateEventButton && (
+            <Button
+              variant="raised"
+              size="medium"
+              color="primary"
+              className={classes.createEventButton}
+              onClick={this.onCreateDialogOpen}
+            >
+              <img src="/images/sports-create.svg" alt="create" className={classes.sportCreateIcon} />
+              <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
+            </Button>
+          )}
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>
           <span className={classes.dashboardActionsSortLabel}>

@@ -1,4 +1,6 @@
 {
+  "All Events": "全部事件",
+  "activitiesTab.Finalize": "结束",
   "activitiesTab.History": "历史记录",
   "activitiesTab.Set": "设置结果",
   "balance.info": "如果您想加密，备份或恢复您的钱包，请在Qtum钱包中进行。在程序菜单栏，有一个启动Qtum钱包选项。",
@@ -269,6 +271,11 @@
   "tutorial0.content1": "它可以让你直接与区块链互动，同时让您对自己密钥及资金有全方面的掌控。",
   "tutorial0.content2": "菩提应用程序不是一个独立的钱包。我们使用Qtum Core钱包来处理所有交易并和Qtum区块链进行交互。",
   "tutorial0.content3": "您且只有您需对您的安全负责。 这里的安全性是指所有有关区块链及数字货币的安全性。",
+  "tutorial0.content2Part0": "Bodhi Dapp is",
+  "tutorial0.content2Part1": "not",
+  "tutorial0.content2Part2": "一个独立的钱包。我们使用量子钱包去执行所有量子区块链上的交易及交互。",
+  "tutorial0.content3Part0": "You and only you",
+  "tutorial0.content3Part1": "对您的安全性负责。这里的安全性是指所有有关区块链及数字货币的安全性。",
   "tutorial0.title": "菩提APP是做什么的",
   "tutorial1.content0": "如果您之前没有用过量子钱包客户端，当您第一次打开菩提Dapp的时候，您将为自己创建一个新的量子钱包。",
   "tutorial1.content1": "量子链使用的是比特币核心的钱包底层技术架构。",

@@ -16,6 +16,7 @@ const initState = new Map({
   txReturn: null, // used to display TransactionSentDialog
   getOraclesReturn: [],
   getTopicsReturn: [],
+  allEvents: [],
   error: null, // type: object
 });
 
@@ -65,11 +66,15 @@ export default function graphqlReducer(state = initState, action) {
       });
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getTopicsReturn', topics);
+        return state
+          .set('getTopicsReturn', topics)
+          .set('allEvents', [...state.get('allEvents'), ...topics]);
       }
 
       // Not first page, add to existing data
-      return state.set('getTopicsReturn', [...state.get('getTopicsReturn'), ...topics]);
+      return state
+        .set('getTopicsReturn', [...state.get('getTopicsReturn'), ...topics])
+        .set('allEvents', [...state.get('allEvents'), ...topics]);
     }
 
     case actions.GET_ORACLES_RETURN: {
@@ -109,17 +114,19 @@ export default function graphqlReducer(state = initState, action) {
           phase,
           ...oracle,
         };
-      // filter out the oracles in the 'withdrawing' phase
       })
-      // .filter(({ buttonText, phase }) => buttonText && phase !== 'withdrawing');
 
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getOraclesReturn', oracles);
+        return state
+          .set('getOraclesReturn', oracles)
+          .set('allEvents', [...state.get('allEvents'), ...oracles]);
       }
 
       // Not first page, add to existing data
-      return state.set('getOraclesReturn', [...state.get('getOraclesReturn'), ...oracles]);
+      return state
+        .set('getOraclesReturn', [...state.get('getOraclesReturn'), ...oracles])
+        .set('allEvents', [...state.get('allEvents'), ...oracles]);
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {

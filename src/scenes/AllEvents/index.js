@@ -8,12 +8,13 @@ import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import { Token, OracleStatus } from '../../constants';
+import TopActions from '../Dashboard/components/TopActions';
 
 const LIMIT = 6;
 
 
-@connect((state) => (console.log('TOPICS: ', state.Graphql.get('getTopicsReturn'), 'ORACLES: ', state.Graphql.get('getOraclesReturn')), {
-  events: [...state.Graphql.get('getOraclesReturn'), ...state.Graphql.get('getTopicsReturn')],
+@connect((state) => ({
+  events: state.Graphql.get('allEvents'),
   sortBy: state.Dashboard.get('sortBy') || 'ASC',
   walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch) => ({
@@ -37,6 +38,13 @@ export default class AllEvents extends Component {
     skip: 0,
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.sortBy !== this.props.sortBy) {
+      console.log('CALLED')
+      this.fetchEvents(0, this.state.skip)
+    }
+  }
+
   componentDidMount() {
     this.loadMoreData();
     this.props.setAppLocation('allEvents');
@@ -44,8 +52,13 @@ export default class AllEvents extends Component {
 
   loadMoreData = () => {
     let { skip } = this.state;
-    const { sortBy, walletAddresses } = this.props;
     skip += LIMIT;
+    this.fetchEvents(skip)
+    this.setState({ skip });
+  }
+
+  fetchEvents(skip, limit = LIMIT) {
+    const { sortBy, walletAddresses, getAllEvents } = this.props;
     const orderBy = { field: 'endTime', direction: sortBy };
     const filters = [
       // finalizing
@@ -62,20 +75,24 @@ export default class AllEvents extends Component {
       { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       { token: Token.Qtum, status: OracleStatus.WaitResult }
     ]
-    this.props.getAllEvents(filters, orderBy, LIMIT, skip, walletAddresses);
-    this.setState({ skip });
+    getAllEvents(filters, orderBy, limit, skip, walletAddresses);
   }
 
   render() {
+    console.log('RERENDER');
     const events = this.props.events.map((event, i) => <EventCard key={i} index={i} {...event} />)
-    console.log('EVENTS: ', this.props.events);
+    // const events = this.props.events.map()
+    // console.log('EVENTS: ', this.props.events);
     return (
-      <InfiniteScroll
-        spacing={theme.padding.sm.value}
-        data={events}
-        loadMore={this.loadMoreData}
-        hasMore={this.props.events.length >= this.state.skip + LIMIT}
-      />
+      <div>
+        <TopActions />
+        <InfiniteScroll
+          spacing={theme.padding.sm.value}
+          data={events}
+          loadMore={this.loadMoreData}
+          hasMore={this.props.events.length >= this.state.skip + LIMIT}
+        />
+      </div>
     );
   }
 }

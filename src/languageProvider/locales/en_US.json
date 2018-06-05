@@ -1,4 +1,5 @@
 {
+  "All Events": "All Events",
   "activitiesTab.History": "Activities History",
   "activitiesTab.Set": "Result Setting",
   "balance.info": "If you would like to encrypt, backup, or restore your wallet, please do this from the Qtum Wallet. In the application menu, there is a \"Launch Qtum Wallet\" option.",
@@ -268,6 +269,11 @@
   "tutorial0.content1": "It allows you to interact directly with the blockchain while remaining in full control of your keys & your funds.",
   "tutorial0.content2": "Bodhi Dapp is NOT a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain.",
   "tutorial0.content3": "YOU and ONLY YOU are responsible for your security. This saying is applicable for all things related to blockchain and cryptocurrency.",
+  "tutorial0.content2Part0": "Bodhi Dapp is",
+  "tutorial0.content2Part1": "not",
+  "tutorial0.content2Part2": "a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain.",
+  "tutorial0.content3Part0": "You and only you",
+  "tutorial0.content3Part1": "are responsible for your security. This saying is applicable for all things related to blockchain and cryptocurrency.",
   "tutorial0.title": "What Is The Bodhi App",
   "tutorial1.content0": "Assuming you have not used the Qtum Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Qtum wallet. ",
   "tutorial1.content1": "Qtum uses the Bitcoin Core wallet infrastructure.",
