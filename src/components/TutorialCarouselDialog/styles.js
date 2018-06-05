@@ -8,43 +8,43 @@ const styles = (theme) => ({
     position: 'relative',
   },
   tutorialDialog0: {
-    backgroundImage: 'url(/images/carousel-bg-0.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-0.png)',
     '& $titleTopLine': {
       backgroundColor: '#DC3CAA',
     },
   },
   tutorialDialog1: {
-    backgroundImage: 'url(/images/carousel-bg-1.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-1.png)',
     '& $titleTopLine': {
       backgroundColor: '#46AAFF',
     },
   },
   tutorialDialog2: {
-    backgroundImage: 'url(/images/carousel-bg-2.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-2.png)',
     '& $titleTopLine': {
       backgroundColor: '#23DAE0',
     },
   },
   tutorialDialog3: {
-    backgroundImage: 'url(/images/carousel-bg-3.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-3.png)',
     '& $titleTopLine': {
       backgroundColor: '#EF5257',
     },
   },
   tutorialDialog4: {
-    backgroundImage: 'url(/images/carousel-bg-4.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-4.png)',
     '& $titleTopLine': {
       backgroundColor: '#00B4AA',
     },
   },
   tutorialDialog5: {
-    backgroundImage: 'url(/images/carousel-bg-5.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-5.png)',
     '& $titleTopLine': {
       backgroundColor: '#2DAAB4',
     },
   },
   tutorialDialog6: {
-    backgroundImage: 'url(/images/carousel-bg-6.jpg)',
+    backgroundImage: 'url(/images/carousel-bg-6.png)',
     '& $titleTopLine': {
       backgroundColor: '#8850FF',
     },
