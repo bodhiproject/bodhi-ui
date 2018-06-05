@@ -262,7 +262,7 @@
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
   "tutorial0.content0": "Bodhi Dapp is a free, open-source, client-side interface.",
   "tutorial0.content1": "It allows you to interact directly with the blockchain while remaining in full control of your keys & your funds.",
-  "tutorial0.content2Part0": "Bodhi Dapp is",
+  "tutorial0.content2Part0": "Bodhi Dapp is ",
   "tutorial0.content2Part1": "not",
   "tutorial0.content2Part2": "a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain.",
   "tutorial0.content3Part0": "You and only you",

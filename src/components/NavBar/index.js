@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
+import { AppBar, Toolbar, Badge, Button, withStyles, Select } from 'material-ui';
 import cx from 'classnames';
-import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 
 import { Link } from './components/Link/index';
