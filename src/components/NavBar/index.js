@@ -40,8 +40,6 @@ export default class NavBar extends Component {
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
     langHandler: PropTypes.func,
-    appLocation: PropTypes.string.isRequired,
-    lang: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -50,7 +48,7 @@ export default class NavBar extends Component {
   }
 
   render() {
-    const { classes, appLocation, lang } = this.props;
+    const { classes } = this.props;
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
@@ -121,9 +119,9 @@ const Wallet = ({ classes, walletAddresses }) => { // eslint-disable-line
   );
 };
 
-const LanguageSelector = ({ classes, langHandler, lang }) => ( // eslint-disable-line
+const LanguageSelector = ({ classes, langHandler, intl }) => ( // eslint-disable-line
   <Select
-    value={lang}
+    value={intl.locale}
     onChange={(e) => langHandler(e.target.value)}
     name="lang"
     disableUnderline

@@ -37,13 +37,14 @@ export default class EventCard extends Component {
     name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
-    buttonText: PropTypes.string.isRequired,
+    buttonText: PropTypes.object,
     unconfirmed: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
+    buttonText: { id: 'didnt work', defaultMessage: 'didnt work' },
     amountLabel: undefined,
     endTime: undefined,
   };
@@ -60,7 +61,7 @@ export default class EventCard extends Component {
       unconfirmed,
       isUpcoming,
     } = this.props;
-    const { locale, messages: localeMessages } = this.props.intl;
+    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -94,7 +95,7 @@ export default class EventCard extends Component {
             </div>
             <Divider />
             <div className={cx(classes.eventCardSection, 'button')}>
-              {isUpcoming ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" /> : buttonText}
+              {isUpcoming ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" /> : formatMessage(buttonText)}
             </div>
           </Card>
         </Link>

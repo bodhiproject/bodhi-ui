@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { Map } from 'immutable';
+import { defineMessages } from 'react-intl';
 
 import actions from './actions';
 import { EventStatus, TransactionStatus, TransactionType, OracleStatus } from '../../constants';
@@ -12,20 +13,31 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
+  txReturn: null, // used to display TransactionSentDialog
+  getOraclesReturn: [],
+  getTopicsReturn: [],
   error: null, // type: object
+});
+
+const messages = defineMessages({
+  placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
+  setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
+  arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
+  finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
+  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
 
 /**
  * Takes an oracle object and returns which phase it is in.
  * @param {oracle} oracle
  */
-const getPhase = ({ token, status }) => {
+const getPhase = ({ token, status, name }) => {
   if (token === 'QTUM' && status === 'VOTING') return 'betting';
   if (token === 'BOT' && status === 'VOTING') return 'voting';
   if (token === 'QTUM' && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return 'resultSetting';
   if (token === 'BOT' && status === 'WAITRESULT') return 'finalizing';
-  if (['QTUM', 'BOT'].includes(token) === 'QTUM' && status === 'WITHDRAW') return 'withdrawing';
-  console.log('TOKEN: ', token, 'STATUS: ', status);
+  if (['QTUM', 'BOT'].includes(token) && status === 'WITHDRAW') return 'withdrawing';
+  console.log('TOKEN: ', token, 'STATUS: ', status, 'NAME: ', name);
   // throw Error('invalid phase');
 };
 
@@ -34,69 +46,80 @@ export default function graphqlReducer(state = initState, action) {
 
   switch (action.type) {
     case actions.GET_TOPICS_RETURN: {
+      console.log('ACTION: ', action);
       const { WithdrawEscrow, Withdraw } = TransactionType;
       const topics = action.value.map((topic) => {
         const pendingTypes = [WithdrawEscrow, Withdraw];
         const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+
+        const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
+        const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
         return {
           ...topic,
+          amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
+          url: `/topic/${topic.address}`,
           isUpcoming: false,
+          buttonText: messages.withdraw,
           unconfirmed: isPending,
         };
       });
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getTopicsReturn', {
-          data: topics,
-          limit: action.limit,
-          skip: action.skip,
-        });
+        return state.set('getTopicsReturn', topics);
       }
 
       // Not first page, add to existing data
-      return state.set('getTopicsReturn', {
-        data: [...state.get('getTopicsReturn').data, ...topics],
-        limit: action.limit,
-        skip: action.skip,
-      });
+      return state.set('getTopicsReturn', [...state.get('getTopicsReturn'), ...topics]);
     }
 
     case actions.GET_ORACLES_RETURN: {
       const oracles = action.value.map((oracle) => {
         const phase = getPhase(oracle);
-        if (phase !== 'withdrawing') {
-          const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
-          const pendingTypes = {
-            betting: [Bet],
-            voting: [ApproveVote, Vote],
-            resultSetting: [ApproveSetResult, SetResult],
-            finalizing: [FinalizeResult],
-          }[phase] || [];
-          const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
-          const isUpcoming = phase === 'voting' && oracle.status === OracleStatus.WaitResult;
-          return {
-            unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
-            isUpcoming,
-            phase,
-            ...oracle,
-          };
-        }
-      });
+
+        const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+        const pendingTypes = {
+          betting: [Bet],
+          voting: [ApproveVote, Vote],
+          resultSetting: [ApproveSetResult, SetResult],
+          finalizing: [FinalizeResult],
+        }[phase] || [];
+        const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+
+        const isUpcoming = phase === 'voting' && oracle.status === OracleStatus.WaitResult;
+
+        const buttonText = {
+          betting: messages.placeBet,
+          resultSetting: messages.setResult,
+          voting: messages.arbitrate,
+          finalizing: messages.finalizeResult,
+          withdrawing: messages.withdraw,
+        }[phase];
+
+        if (!buttonText) console.log('NO BUTTON TEXT. phase: ', phase);
+
+        const amount = parseFloat(_.sum(oracle.amounts).toFixed(2));
+
+        return {
+          amountLabel: phase === 'finalizing' ? `${amount} ${oracle.token}` : '',
+          url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
+          endTime: phase === 'resultSetting' ? oracle.resultSetEndTime : oracle.endTime,
+          unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
+          isUpcoming,
+          buttonText,
+          phase,
+          ...oracle,
+        };
+      // filter out the oracles in the 'withdrawing' phase
+      }).filter(({ buttonText, phase }) => buttonText && phase !== 'withdrawing');
+      // }).filter(({ phase }) => phase !== 'withdrawing');
+
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getOraclesReturn', {
-          data: oracles,
-          limit: action.limit,
-          skip: action.skip,
-        });
+        return state.set('getOraclesReturn', oracles);
       }
 
       // Not first page, add to existing data
-      return state.set('getOraclesReturn', {
-        data: [...state.get('getOraclesReturn').data, ...oracles],
-        limit: action.limit,
-        skip: action.skip,
-      });
+      return state.set('getOraclesReturn', [...state.get('getOraclesReturn'), ...oracles]);
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {

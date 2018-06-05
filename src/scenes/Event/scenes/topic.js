@@ -82,7 +82,7 @@ export default class TopicPage extends Component {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     getTopics: PropTypes.func.isRequired,
-    getTopicsReturn: PropTypes.object,
+    getTopicsReturn: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
     getTransactionsReturn: PropTypes.array,
     getBetAndVoteBalances: PropTypes.func.isRequired,
@@ -107,7 +107,7 @@ export default class TopicPage extends Component {
 
   static defaultProps = {
     syncBlockTime: undefined,
-    getTopicsReturn: undefined,
+    getTopicsReturn: [],
     getTransactionsReturn: [],
     txReturn: undefined,
     betBalances: [],
@@ -149,7 +149,7 @@ export default class TopicPage extends Component {
       this.fetchData();
     }
 
-    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data', []);
+    const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
     const topic = _.find(topics, { address });
     if (topic && topic.status === OracleStatus.Withdraw) {
       this.setState({ topic });

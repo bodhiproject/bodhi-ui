@@ -193,7 +193,7 @@ export default class OraclePage extends Component {
 
     // Construct page config
     if (oracles) {
-      this.constructOracleAndConfig(syncBlockTime, oracles.data);
+      this.constructOracleAndConfig(syncBlockTime, oracles);
     }
 
     this.setState({ transactions: getTransactionsReturn });

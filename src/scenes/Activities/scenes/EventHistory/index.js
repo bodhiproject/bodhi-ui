@@ -98,7 +98,7 @@ export default class EventHistory extends Component {
 
     // return from the click event
     if (nextProps.oracles !== oracles) {
-      const path = getDetailPagePath(nextProps.oracles.data);
+      const path = getDetailPagePath(nextProps.oracles);
       if (path) {
         this.props.history.push(path);
       }
