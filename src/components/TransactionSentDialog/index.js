@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Typography, withStyles } from 'material-ui';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import _ from 'lodash';
 
 import styles from './styles';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -31,7 +32,7 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  txReturn: state.App.get('txReturn'),
+  txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
 }))
@@ -44,15 +45,14 @@ export default class TransactionSentDialog extends Component {
   }
 
   static defaultProps = {
-    txReturn: undefined,
+    txReturn: {},
   }
 
   render() {
     const { intl, classes, txReturn, clearTxReturn } = this.props;
-    if (!txReturn) return null;
 
     return (
-      <Dialog open={Boolean(txReturn)} onClose={clearTxReturn}>
+      <Dialog open={!_.isEmpty(txReturn)} onClose={clearTxReturn}>
         <DialogTitle>{intl.formatMessage(messages.successMsg)}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.waitingMsg)}</Typography>
