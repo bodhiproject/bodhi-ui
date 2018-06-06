@@ -73,10 +73,6 @@ const styles = (theme) => ({
     marginRight: '50px',
     display: 'inline-block',
   },
-  warning: {
-    color: '#FF5000',
-    fontWeight: theme.typography.fontWeightBold,
-  },
   link: {
     color: theme.palette.primary.main,
   },
