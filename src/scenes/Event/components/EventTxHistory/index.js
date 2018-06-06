@@ -9,6 +9,7 @@ import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { localizeInvalidOption } from '../../../../helpers/localizeInvalidOption';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType } from '../../../../constants';
 
@@ -101,6 +102,7 @@ export default class EventTxHistory extends Component {
 
   getDescription = (tx) => {
     const { optionIdx, topic } = tx;
+    const { intl } = this.props;
     switch (tx.type) {
       case TransactionType.Bet:
       case TransactionType.ApproveSetResult:
@@ -108,7 +110,11 @@ export default class EventTxHistory extends Component {
       case TransactionType.ApproveVote:
       case TransactionType.Vote:
       case TransactionType.FinalizeResult: {
-        return optionIdx && topic ? `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx]}` : '';
+        if (optionIdx && topic) {
+          const invalidOption = localizeInvalidOption(tx.topic.options[tx.optionIdx], intl);
+          return `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx] === 'Invalid' ? invalidOption : tx.topic.options[tx.optionIdx]}`;
+        }
+        return '';
       }
       default: {
         return undefined;

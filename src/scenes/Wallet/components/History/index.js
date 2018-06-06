@@ -73,8 +73,6 @@ export default class WalletHistory extends Component {
     } = this.props;
 
     if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
-      console.log('​WalletHistory -> componentWillReceiveProps -> txReturn', txReturn);
-      console.log('​WalletHistory -> componentWillReceiveProps -> nextProps.txReturn', nextProps.txReturn);
       this.getTransactions();
     }
 

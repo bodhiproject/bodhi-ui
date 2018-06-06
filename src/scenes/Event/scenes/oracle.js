@@ -41,6 +41,8 @@ import {
   EventStatus,
 } from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
+
 import Tracking from '../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
@@ -224,14 +226,7 @@ export default class OraclePage extends Component {
               <Grid item xs={12} lg={9}>
                 {!unconfirmed && <EventWarning id={id} message={message} values={values} type={warningType} />}
                 {eventOptions.map((item, index) => {
-                  let invalidOption = 'Invalid';
-                  if (item.name === 'Invalid') {
-                    if (intl.locale.startsWith('zh')) {
-                      invalidOption = '无效';
-                    } else if (intl.locale.startsWith('ko')) {
-                      invalidOption = '무효의';
-                    }
-                  }
+                  const invalidOption = localizeInvalidOption(item.name, intl);
                   return (
                     <EventOption
                       key={index}

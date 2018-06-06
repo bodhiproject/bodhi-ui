@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import { withStyles, Typography } from 'material-ui';
 
 import { Token } from '../../../../constants';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
+import { localizeInvalidOption } from '../../../../helpers/localizeInvalidOption';
 import styles from './styles';
 
 
@@ -17,6 +18,7 @@ export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     oracles: PropTypes.array.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   getTypeText(oracle, index) {
@@ -29,7 +31,7 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { classes, oracles } = this.props;
+    const { classes, oracles, intl } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);
     if (sortedOracles.length) {
       const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
@@ -66,19 +68,22 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(sortedOracles, (oracle, index) => (
-                <TableRow key={`result-${index}`} selected={index % 2 === 1}>
-                  <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
-                  <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
-                  <TableCell padding="dense">
-                    {index !== sortedOracles.length - 1 && index !== 0
-                      ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx]}`
-                      : ''
-                    }
-                  </TableCell>
-                  <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
-                </TableRow>
-              ))}
+              {_.map(sortedOracles, (oracle, index) => {
+                const invalidOption = localizeInvalidOption(oracle.options[oracle.resultIdx], intl);
+                return (
+                  <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+                    <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
+                    <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
+                    <TableCell padding="dense">
+                      {index !== sortedOracles.length - 1 && index !== 0
+                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx]}`
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
