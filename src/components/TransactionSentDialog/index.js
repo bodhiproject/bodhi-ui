@@ -32,7 +32,7 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  txReturn: state.App.get('txReturn'),
+  txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
 }))
@@ -52,7 +52,7 @@ export default class TransactionSentDialog extends Component {
     const { intl, classes, txReturn, clearTxReturn } = this.props;
 
     return (
-      <Dialog open={Boolean(txReturn)} onClose={clearTxReturn}>
+      <Dialog open={!_.isEmpty(txReturn)} onClose={clearTxReturn}>
         <DialogTitle>{intl.formatMessage(messages.successMsg)}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.waitingMsg)}</Typography>
