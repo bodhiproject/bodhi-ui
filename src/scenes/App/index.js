@@ -23,10 +23,11 @@ export default class App extends Component {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     langHandler: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
   }
 
   render() {
-    const { classes, langHandler, match: { url } } = this.props;
+    const { classes, langHandler, lang, match: { url } } = this.props;
 
     return (
       <div className={classes.root}>
@@ -35,7 +36,7 @@ export default class App extends Component {
         <Loader />
         <TermsAndConditions langHandler={langHandler} />
         <div className={classes.container}>
-          <AppRouter url={url} langHandler={langHandler} />
+          <AppRouter url={url} langHandler={langHandler} lang={lang} />
         </div>
         <BottomBar />
         <CreateEvent />

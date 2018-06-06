@@ -54,6 +54,9 @@ const styles = (theme) => ({
       fontSize: theme.sizes.icon,
     },
   },
+  selectMenu: {
+    color: 'white',
+  },
 });
 
 export default styles;

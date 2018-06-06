@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { AppBar, Toolbar, Badge, Button, withStyles } from 'material-ui';
+import { AppBar, Toolbar, Badge, Button, withStyles, Select } from 'material-ui';
 import cx from 'classnames';
+import { MenuItem } from 'material-ui/Menu';
 
 import { Link } from './components/Link/index';
 import { NavLink } from './components/NavLink/index';
@@ -36,6 +37,7 @@ export default class NavBar extends Component {
     actionableItemCount: PropTypes.object,
     langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
+    lang: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -45,15 +47,17 @@ export default class NavBar extends Component {
 
   constructor(props) {
     super(props);
-
     this.renderActivitiesButtonWithBadge = this.renderActivitiesButtonWithBadge.bind(this);
     this.getTotalQTUM = this.getTotalQTUM.bind(this);
     this.getTotalBOT = this.getTotalBOT.bind(this);
   }
 
-  render() {
-    const { classes, appLocation } = this.props;
+  handleChange = (event) => {
+    this.props.langHandler(event.target.value);
+  };
 
+  render() {
+    const { classes, appLocation, lang } = this.props;
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
@@ -95,10 +99,17 @@ export default class NavBar extends Component {
                 {`${this.getTotalQTUM()} QTUM / ${this.getTotalBOT()} BOT`}
               </Button>
             </NavLink>
-            <Button onClick={this.props.langHandler} className={cx(classes.dark, classes.sides)}>
-              <FormattedMessage id="language.select" defaultMessage="中文" />
-            </Button>
-
+            <Select
+              value={lang}
+              onChange={this.handleChange}
+              name="lang"
+              disableUnderline
+              className={classes.selectMenu}
+            >
+              <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
+              <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
+              <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+            </Select>
             {this.renderActivitiesButtonWithBadge()}
             <HelpButton onClick={this.onHelpButtonClick} classes={classes} />
           </NavSection>
@@ -166,4 +177,3 @@ const HelpButton = injectIntl(({ classes, intl, ...props }) => (
 ));
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
-

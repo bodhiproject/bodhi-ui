@@ -16,8 +16,12 @@ import '../src/style/styles.less';
 
 
 export default class AppProvider extends Component {
-  defaultLocale = (navigator.language || navigator.userLanguage).startsWith('en') ? 'en-US' : 'zh-Hans-CN'
-  locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh }
+  defaultLang = (navigator.language || navigator.userLanguage)
+  enLang = this.defaultLang.startsWith('en') ? 'en-US' : '';
+  zhLang = this.defaultLang.startsWith('zh') ? 'zh-Hans-CN' : '';
+  koLang = this.defaultLang.startsWith('ko') ? 'ko-KR' : '';
+  defaultLocale = this.enLang || this.zhLang || this.koLang;
+  locales = { [AppLocale.en.locale]: AppLocale.en, [AppLocale.zh.locale]: AppLocale.zh, [AppLocale.kr.locale]: AppLocale.kr }
   state = {
     locale: localStorage.getItem('lang') || this.defaultLocale,
   }
@@ -26,12 +30,10 @@ export default class AppProvider extends Component {
     moment.locale(this.locales[this.state.locale].momentlocale);
   }
 
-  toggleLanguage = () => {
-    const { en, zh } = AppLocale;
-    const locale = this.state.locale === en.locale ? zh.locale : en.locale;
-    this.setState({ locale });
-    moment.locale(this.locales[locale].momentlocale);
-    localStorage.setItem('lang', locale);
+  toggleLanguage = (value) => {
+    this.setState({ locale: value });
+    moment.locale(this.locales[value].momentlocale);
+    localStorage.setItem('lang', value);
   }
 
   render() {
@@ -43,7 +45,7 @@ export default class AppProvider extends Component {
               <ConnectedRouter history={history}>
                 <Route
                   path="/"
-                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} />)}
+                  render={(props) => (<App match={props.match} langHandler={this.toggleLanguage} lang={this.state.locale} />)}
                 />
               </ConnectedRouter>
             </Provider>
