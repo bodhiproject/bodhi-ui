@@ -45,7 +45,7 @@ export default class TransactionSentDialog extends Component {
   }
 
   static defaultProps = {
-    txReturn: undefined,
+    txReturn: {},
   }
 
   render() {
@@ -56,7 +56,7 @@ export default class TransactionSentDialog extends Component {
         <DialogTitle>{intl.formatMessage(messages.successMsg)}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.waitingMsg)}</Typography>
-          <Typography variant="body1">{`${intl.formatMessage(messages.transactionId)}: ${_.get(txReturn, 'txid')}`}</Typography>
+          <Typography variant="body1">{`${intl.formatMessage(messages.transactionId)}: ${txReturn.txid}`}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={clearTxReturn}>
