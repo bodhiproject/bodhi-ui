@@ -198,7 +198,7 @@ export default class OraclePage extends Component {
   }
 
   render() {
-    const { classes, lastUsedAddress, syncBlockTime } = this.props;
+    const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
     if (!oracle || !config) {
@@ -223,31 +223,41 @@ export default class OraclePage extends Component {
               </Typography>
               <Grid item xs={12} lg={9}>
                 {!unconfirmed && <EventWarning id={id} message={message} values={values} type={warningType} />}
-                {eventOptions.map((item, index) => (
-                  <EventOption
-                    key={index}
-                    isLast={index === eventOptions.length - 1}
-                    currentOptionIdx={this.state.currentOptionIdx}
-                    optionIdx={index}
-                    name={item.name}
-                    amount={`${item.value}`}
-                    maxAmount={item.maxAmount}
-                    percent={item.percent}
-                    voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
-                    token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
-                    isPrevResult={item.isPrevResult}
-                    isFinalizing={item.isFinalizing}
-                    walletAddresses={this.props.walletAddresses}
-                    lastUsedAddress={lastUsedAddress}
-                    skipExpansion={config.predictionAction.skipExpansion}
-                    unconfirmedEvent={unconfirmed}
-                    showAmountInput={config.predictionAction.showAmountInput}
-                    amountInputDisabled={config.predictionAction.amountInputDisabled}
-                    onOptionChange={this.handleOptionChange}
-                    onAmountChange={this.handleAmountChange}
-                    onWalletChange={this.handleWalletChange}
-                  />
-                ))}
+                {eventOptions.map((item, index) => {
+                  let invalidOption = 'Invalid';
+                  if (item.name === 'Invalid') {
+                    if (intl.locale.startsWith('zh')) {
+                      invalidOption = '无效';
+                    } else if (intl.locale.startsWith('ko')) {
+                      invalidOption = '무효의';
+                    }
+                  }
+                  return (
+                    <EventOption
+                      key={index}
+                      isLast={index === eventOptions.length - 1}
+                      currentOptionIdx={this.state.currentOptionIdx}
+                      optionIdx={index}
+                      name={item.name === 'Invalid' ? invalidOption : item.name}
+                      amount={`${item.value}`}
+                      maxAmount={item.maxAmount}
+                      percent={item.percent}
+                      voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
+                      token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
+                      isPrevResult={item.isPrevResult}
+                      isFinalizing={item.isFinalizing}
+                      walletAddresses={this.props.walletAddresses}
+                      lastUsedAddress={lastUsedAddress}
+                      skipExpansion={config.predictionAction.skipExpansion}
+                      unconfirmedEvent={unconfirmed}
+                      showAmountInput={config.predictionAction.showAmountInput}
+                      amountInputDisabled={config.predictionAction.amountInputDisabled}
+                      onOptionChange={this.handleOptionChange}
+                      onAmountChange={this.handleAmountChange}
+                      onWalletChange={this.handleWalletChange}
+                    />
+                  );
+                })}
                 <div className={classes.importantNoteContainer}>
                   <ImportantNote
                     heading={config.importantNote && config.importantNote.heading}
