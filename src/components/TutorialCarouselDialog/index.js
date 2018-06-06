@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, withStyles } from 'material-ui';
+import { Button as _Button, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import cx from 'classnames';
 import { injectIntl } from 'react-intl';
@@ -63,36 +63,9 @@ export default class TutorialCarouselDialog extends Component {
           <div className={classes.contentWrapper}>
             <CurrentComponentName />
             <div className={classes.buttonsWrapper}>
-              {currentIndex > 0 &&
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  size="medium"
-                  onClick={this.prevSlide}
-                >
-                  Previous
-                </Button>
-              }
-              {currentIndex < this.components.length - 1 &&
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  size="medium"
-                  onClick={this.nextSlide}
-                >
-                  Next
-                </Button>
-              }
-              {currentIndex === this.components.length - 1 &&
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  size="medium"
-                  onClick={this.closeTutorial}
-                >
-                  Got It. Let&apos;s Start.
-                </Button>
-              }
+              {currentIndex > 0 && <Button onClick={this.prevSlide}>Previous</Button>}
+              {currentIndex < this.components.length - 1 && <Button onClick={this.nextSlide}>Next</Button>}
+              {currentIndex === this.components.length - 1 && <Button onClick={this.closeTutorial}>Got It. Let&apos;s Start.</Button>}
             </div>
           </div>
         </DialogContent>
@@ -100,3 +73,12 @@ export default class TutorialCarouselDialog extends Component {
     );
   }
 }
+
+const Button = withStyles(styles)(({ classes, ...props }) => (
+  <_Button
+    {...props}
+    className={classes.button}
+    variant="raised"
+    size="medium"
+  />
+));
