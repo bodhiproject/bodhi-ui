@@ -51,6 +51,7 @@ const SKIP = 0;
   sortBy: state.Dashboard.get('sortBy'),
   syncBlockNum: state.App.get('syncBlockNum'),
   walletAddresses: state.App.get('walletAddresses'),
+  txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
@@ -71,9 +72,11 @@ export default class EventCardsGrid extends Component {
     walletAddresses: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     status: PropTypes.string,
+    txReturn: PropTypes.object,
   };
 
   static defaultProps = {
+    txReturn: undefined,
     topics: {},
     getOracles: undefined,
     oracles: {},
@@ -148,12 +151,13 @@ export default class EventCardsGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { eventStatusIndex, sortBy, syncBlockNum, walletAddresses } = nextProps;
+    const { eventStatusIndex, sortBy, syncBlockNum, walletAddresses, txReturn } = nextProps;
 
     if (eventStatusIndex !== this.props.eventStatusIndex
       || sortBy !== this.props.sortBy
       || syncBlockNum !== this.props.syncBlockNum
-      || walletAddresses !== this.props.walletAddresses) {
+      || walletAddresses !== this.props.walletAddresses
+      || txReturn !== this.props.txReturn) {
       const addresses = walletAddresses || this.props.walletAddresses;
       this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP, addresses);
       this.setState({ skip: 0 });
