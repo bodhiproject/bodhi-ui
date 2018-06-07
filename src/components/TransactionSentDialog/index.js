@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Button, Typography, withStyles } from 'material-ui';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import _ from 'lodash';
 
 import styles from './styles';
 import graphqlActions from '../../redux/Graphql/actions';
@@ -45,14 +44,15 @@ export default class TransactionSentDialog extends Component {
   }
 
   static defaultProps = {
-    txReturn: {},
+    txReturn: undefined,
   }
 
   render() {
     const { intl, classes, txReturn, clearTxReturn } = this.props;
+    if (!txReturn) return null;
 
     return (
-      <Dialog open={!_.isEmpty(txReturn)} onClose={clearTxReturn}>
+      <Dialog open={Boolean(txReturn)} onClose={clearTxReturn}>
         <DialogTitle>{intl.formatMessage(messages.successMsg)}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.waitingMsg)}</Typography>

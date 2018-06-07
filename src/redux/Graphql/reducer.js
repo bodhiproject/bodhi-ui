@@ -11,7 +11,6 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
-  txReturn: {}, // used to display TransactionSentDialog
   error: null, // type: object
 });
 
@@ -84,7 +83,7 @@ export default function graphqlReducer(state = initState, action) {
       return state.set('error', null);
     }
     case actions.CLEAR_TX_RETURN: {
-      return state.set('txReturn', {});
+      return state.set('txReturn', undefined);
     }
     default: {
       return state;
