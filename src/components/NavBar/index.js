@@ -40,6 +40,7 @@ export default class NavBar extends Component {
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
     langHandler: PropTypes.func,
+    appLocation: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -119,7 +120,7 @@ const Wallet = ({ classes, walletAddresses }) => { // eslint-disable-line
   );
 };
 
-const LanguageSelector = ({ classes, langHandler, intl }) => ( // eslint-disable-line
+const LanguageSelector = ({ classes, intl, langHandler }) => ( // eslint-disable-line
   <Select
     value={intl.locale}
     onChange={(e) => langHandler(e.target.value)}

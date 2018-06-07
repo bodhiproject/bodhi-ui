@@ -32,14 +32,14 @@ const messages = defineMessages({
  * Takes an oracle object and returns which phase it is in.
  * @param {oracle} oracle
  */
-const getPhase = ({ token, status, name }) => {
-  if (token === 'QTUM' && status === 'VOTING') return 'betting';
-  if (token === 'BOT' && status === 'VOTING') return 'voting';
-  if (token === 'QTUM' && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return 'resultSetting';
-  if (token === 'BOT' && status === 'WAITRESULT') return 'finalizing';
-  if (['QTUM', 'BOT'].includes(token) && status === 'WITHDRAW') return 'withdrawing';
-  console.warn('TOKEN: ', token, 'STATUS: ', status, 'NAME: ', name);
-  throw Error('invalid phase');
+const getPhase = ({ token, status }) => {
+  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
+  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return 'betting';
+  if (BOT && status === 'VOTING') return 'voting';
+  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return 'resultSetting';
+  if (BOT && status === 'WAITRESULT') return 'finalizing';
+  if ((BOT || QTUM) && status === 'WITHDRAW' || QTUM && status === 'PENDING') return 'withdrawing';
+  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`)
 };
 
 export default function graphqlReducer(state = initState, action) {
@@ -118,6 +118,7 @@ export default function graphqlReducer(state = initState, action) {
 
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
+        console.log('FIRST PAGE OVERWRITE');
         return state
           .set('getOraclesReturn', oracles)
           .set('allEvents', [...state.get('allEvents'), ...oracles]);

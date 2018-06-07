@@ -40,7 +40,6 @@ export default class AllEvents extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.sortBy !== this.props.sortBy) {
-      console.log('CALLED')
       this.fetchEvents(0, this.state.skip)
     }
   }
@@ -81,11 +80,10 @@ export default class AllEvents extends Component {
   render() {
     console.log('RERENDER');
     const events = this.props.events.map((event, i) => <EventCard key={i} index={i} {...event} />)
-    // const events = this.props.events.map()
     // console.log('EVENTS: ', this.props.events);
     return (
       <div>
-        <TopActions />
+        <TopActions noCreateEventButton />
         <InfiniteScroll
           spacing={theme.padding.sm.value}
           data={events}
