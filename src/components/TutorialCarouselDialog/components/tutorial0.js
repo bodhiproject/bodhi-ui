@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import cx from 'classnames';
 
 import styles from '../styles';
 import { ContentItem } from './contentItem';
