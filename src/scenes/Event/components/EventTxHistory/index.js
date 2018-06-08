@@ -100,6 +100,7 @@ export default class EventTxHistory extends Component {
   };
 
   getDescription = (tx) => {
+    const { optionIdx, topic } = tx;
     switch (tx.type) {
       case TransactionType.Bet:
       case TransactionType.ApproveSetResult:
@@ -107,7 +108,7 @@ export default class EventTxHistory extends Component {
       case TransactionType.ApproveVote:
       case TransactionType.Vote:
       case TransactionType.FinalizeResult: {
-        return `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx]}`;
+        return optionIdx && topic ? `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx]}` : '';
       }
       default: {
         return undefined;
