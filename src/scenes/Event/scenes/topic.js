@@ -27,6 +27,7 @@ import {
   AppLocation,
 } from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 import Tracking from '../../../helpers/mixpanelUtil';
 
@@ -216,7 +217,7 @@ export default class TopicPage extends Component {
     const totalVoteAmount = _.sum(voteBalances);
     const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
     const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
-
+    const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
@@ -229,7 +230,7 @@ export default class TopicPage extends Component {
             </FormattedMessage>
           </Typography>
           <Typography className={classes.withdrawWinningOption}>
-            {topic.options[topic.resultIdx]}
+            {topic.options[topic.resultIdx] === 'Invalid' ? invalidOption : topic.options[topic.resultIdx]}
           </Typography>
           {(totalBetAmount || totalVoteAmount) ? (
             <Typography variant="caption">
