@@ -110,11 +110,10 @@ export default class EventTxHistory extends Component {
       case TransactionType.ApproveVote:
       case TransactionType.Vote:
       case TransactionType.FinalizeResult: {
-        if (optionIdx && topic) {
-          const invalidOption = localizeInvalidOption(tx.topic.options[tx.optionIdx], intl);
-          return `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx] === 'Invalid' ? invalidOption : tx.topic.options[tx.optionIdx]}`;
-        }
-        return '';
+        const invalidOption = localizeInvalidOption(tx.topic.options[tx.optionIdx], intl);
+        return optionIdx && topic
+          ? `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx] === 'Invalid' ? invalidOption : tx.topic.options[tx.optionIdx]}`
+          : '';
       }
       default: {
         return undefined;
