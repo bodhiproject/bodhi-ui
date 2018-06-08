@@ -71,9 +71,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
     withdrawing: messages.withdraw,
   }[phase];
 
-  if (!buttonText) console.log('NO BUTTON TEXT. phase: ', phase);
-
-  const amount = parseFloat(_.sum(oracle.amounts));
+  const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
 
   return {
     amountLabel: phase === 'finalizing' ? `${amount} ${oracle.token}` : '',

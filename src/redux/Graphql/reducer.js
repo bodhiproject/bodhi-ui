@@ -1,9 +1,7 @@
-/* eslint-disable */
 import { Map } from 'immutable';
-import { defineMessages } from 'react-intl';
 
 import actions from './actions';
-import { EventStatus, TransactionStatus, TransactionType, OracleStatus } from '../../constants';
+import { EventStatus } from '../../constants';
 
 
 const initState = new Map({
@@ -27,7 +25,7 @@ export default function graphqlReducer(state = initState, action) {
     case actions.GET_TOPICS_RETURN: {
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getTopicsReturn', action.value)
+        return state.set('getTopicsReturn', action.value);
       }
 
       // Not first page, add to existing data
@@ -37,11 +35,11 @@ export default function graphqlReducer(state = initState, action) {
     case actions.GET_ORACLES_RETURN: {
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getOraclesReturn', action.value)
+        return state.set('getOraclesReturn', action.value);
       }
 
       // Not first page, add to existing data
-      return state.set('getOraclesReturn', [...state.get('getOraclesReturn'), ...action.value])
+      return state.set('getOraclesReturn', [...state.get('getOraclesReturn'), ...action.value]);
     }
 
     case actions.GET_ALL_EVENTS_RETURN: {
