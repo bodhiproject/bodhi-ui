@@ -18,11 +18,7 @@ const LIMIT = 6;
   sortBy: state.Dashboard.get('sortBy') || 'ASC',
   walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch) => ({
-  getAllEvents: (...args) => {
-    dispatch(graphqlActions.getOracles(...args));
-    const [filters, orderBy, limit, skip, walletAddresses] = args;
-    dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip));
-  },
+  getAllEvents: (...args) => dispatch(graphqlActions.getAllEvents(...args)),
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
 export default class AllEvents extends Component {
@@ -58,7 +54,7 @@ export default class AllEvents extends Component {
 
   fetchEvents(skip, limit = LIMIT) {
     const { sortBy, walletAddresses, getAllEvents } = this.props;
-    const orderBy = { field: 'endTime', direction: sortBy };
+    const orderBy = { field: 'blockNum', direction: sortBy };
     const filters = [
       // finalizing
       { token: Token.Bot, status: OracleStatus.WaitResult },
@@ -78,9 +74,7 @@ export default class AllEvents extends Component {
   }
 
   render() {
-    console.log('RERENDER');
     const events = this.props.events.map((event, i) => <EventCard key={i} index={i} {...event} />)
-    // console.log('EVENTS: ', this.props.events);
     return (
       <div>
         <TopActions noCreateEventButton />

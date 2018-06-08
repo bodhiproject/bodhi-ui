@@ -14,6 +14,16 @@ const graphqlActions = {
     skip,
   }),
 
+  GET_ALL_EVENTS: 'GET_ALL_EVENTS',
+  GET_ALL_EVENTS_RETURN: 'GET_ALL_EVENTS_RETURN',
+  getAllEvents: (filters, orderBy, limit, skip) => ({
+    type: graphqlActions.GET_ALL_EVENTS,
+    filters,
+    orderBy,
+    limit,
+    skip,
+  }),
+
   GET_ACTIONABLE_TOPICS: 'GET_ACTIONABLE_TOPICS',
   getActionableTopics: (walletAddresses, orderBy, limit, skip) => ({
     type: graphqlActions.GET_ACTIONABLE_TOPICS,
