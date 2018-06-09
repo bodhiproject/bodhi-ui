@@ -22,6 +22,15 @@ module.exports = {
     finalize: 'Finalize',
     withdraw: 'Withdraw',
     activityHistory: 'ActivityHistory',
+    allEvents: 'AllEvents',
+  },
+
+  Phases: {
+    bet: 'bet',
+    vote: 'vote',
+    setResult: 'setResult',
+    finalize: 'finalize',
+    withdraw: 'withdraw',
   },
 
   EventStatus: {
@@ -30,7 +39,7 @@ module.exports = {
     Vote: 2,
     Finalize: 3,
     Withdraw: 4,
-    allEvents: 5,
+    AllEvents: 5,
     Default: 0,
   },
 

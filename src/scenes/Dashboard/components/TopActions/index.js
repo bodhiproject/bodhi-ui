@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-// import AddIcon from 'material-ui-icons/Add';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';

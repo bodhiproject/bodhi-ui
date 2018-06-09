@@ -1,9 +1,4 @@
 const graphqlActions = {
-  /*
-    TODO: do we even use this in the app?
-    I know we use getTopicsReturn, but we don't
-    call the action `getTopics` anywhere.
-  */
   GET_TOPICS: 'GET_TOPICS',
   GET_TOPICS_RETURN: 'GET_TOPICS_RETURN',
   getTopics: (filters, orderBy, limit, skip) => ({

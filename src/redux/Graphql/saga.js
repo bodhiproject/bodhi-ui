@@ -20,9 +20,10 @@ import {
   processTopic,
   processOracle,
 } from '../../helpers/utility';
-import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import Routes from '../../network/routes';
 const { Pending } = TransactionStatus;
+const { bet, vote, setResult, finalize, withdraw } = Phases;
 
 const messages = defineMessages({
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
@@ -38,11 +39,11 @@ const messages = defineMessages({
  */
 const getPhase = ({ token, status }) => {
   const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return 'betting';
-  if (BOT && status === 'VOTING') return 'voting';
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return 'resultSetting';
-  if (BOT && status === 'WAITRESULT') return 'finalizing';
-  if (((BOT || QTUM) && status === 'WITHDRAW') || (QTUM && status === 'PENDING')) return 'withdrawing';
+  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return bet;
+  if (BOT && status === 'VOTING') return vote;
+  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return setResult;
+  if (BOT && status === 'WAITRESULT') return finalize;
+  if (((BOT || QTUM) && status === 'WITHDRAW') || (QTUM && status === 'PENDING')) return withdraw;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 
@@ -54,29 +55,29 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
 
   const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
   const pendingTypes = {
-    betting: [Bet],
-    voting: [ApproveVote, Vote],
-    resultSetting: [ApproveSetResult, SetResult],
-    finalizing: [FinalizeResult],
+    bet: [Bet],
+    vote: [ApproveVote, Vote],
+    setResult: [ApproveSetResult, SetResult],
+    finalize: [FinalizeResult],
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
   const isUpcoming = phase === 'voting' && oracle.status === OracleStatus.WaitResult;
 
   const buttonText = {
-    betting: messages.placeBet,
-    resultSetting: messages.setResult,
-    voting: messages.arbitrate,
-    finalizing: messages.finalizeResult,
-    withdrawing: messages.withdraw,
+    bet: messages.placeBet,
+    setResult: messages.setResult,
+    vote: messages.arbitrate,
+    finalize: messages.finalizeResult,
+    withdraw: messages.withdraw,
   }[phase];
 
   const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
 
   return {
-    amountLabel: phase === 'finalizing' ? `${amount} ${oracle.token}` : '',
+    amountLabel: phase === finalize ? `${amount} ${oracle.token}` : '',
     url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
-    endTime: phase === 'resultSetting' ? oracle.resultSetEndTime : oracle.endTime,
+    endTime: phase === setResult ? oracle.resultSetEndTime : oracle.endTime,
     unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
     isUpcoming,
     buttonText,
@@ -104,38 +105,20 @@ const massageTopics = (topics) => topics.map((topic) => {
   };
 });
 
-
-// Send allTopics query
+// Send allTopics & allOracles query
 export function* getAllEventsHandler() {
   yield takeEvery(actions.GET_ALL_EVENTS, function* getAllEventsRequest(action) {
     try {
-      const { filters, orderBy, limit, skip } = action;
-      const voteFilters = [];
-      const topicFilters = [];
+      let { filters, orderBy, limit, skip } = action; // eslint-disable-line prefer-const
 
-      // Get all votes for all your addresses
-      _.each(action.walletAddresses, ({ address }) => {
-        voteFilters.push({ voterQAddress: address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
-      });
-
-      // Filter votes
-      let votes = yield call(queryAllVotes, voteFilters);
-      votes = getUniqueVotes(votes);
-
-      // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
-      });
-      const topicsResult = yield call(queryAllTopics, topicFilters, orderBy, limit, skip);
-      const topics = _.map(topicsResult, processTopic);
-
+      limit /= 2; // since we're making 2 requests
+      const topicsResult = yield call(queryAllTopics, null, orderBy, limit, skip);
+      const topics = _.uniqBy(topicsResult.map(processTopic), 'txid');
 
       const oraclesResult = yield call(queryAllOracles, filters, orderBy, limit, skip);
+      const oracles = _.uniqBy(oraclesResult.map(processOracle), 'txid');
 
-      // Filter out duplicate topics
-      const oracles = _.uniqBy(oraclesResult.map(processTopic), 'txid');
-
+      // order them all properly
       const { field, direction } = orderBy;
       const events = [...massageOracles(oracles), ...massageTopics(topics)].sort((a, b) => (
         direction === 'ASC' ? a[field] - b[field] : b[field] - a[field]
@@ -144,20 +127,12 @@ export function* getAllEventsHandler() {
       yield put({
         type: actions.GET_ALL_EVENTS_RETURN,
         value: events,
-        limit: action.limit,
-        skip: action.skip,
       });
     } catch (error) {
       console.error(error); // eslint-disable-line
       yield put({
         type: actions.GET_ALL_EVENTS_RETURN,
         value: [],
-        limit: action.limit,
-        skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getAllEvents`,
-        },
       });
     }
   });
@@ -194,10 +169,6 @@ export function* getTopicsHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getTopics`,
-        },
       });
     }
   });
@@ -221,8 +192,8 @@ export function* getActionableTopicsHandler() {
       votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
       const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
       const topics = _.map(result, processTopic);
@@ -240,10 +211,6 @@ export function* getActionableTopicsHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getActionableTopics`,
-        },
       });
     }
   });
@@ -280,10 +247,6 @@ export function* getOraclesHandler() {
         value: [],
         limit: action.limit,
         skip: action.skip,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getOracles`,
-        },
       });
     }
   });
@@ -307,10 +270,6 @@ export function* getTransactionsHandler() {
       yield put({
         type: actions.GET_TRANSACTIONS_RETURN,
         value: [],
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getTransactions`,
-        },
       });
     }
   });
@@ -349,10 +308,6 @@ export function* getPendingTransactionsHandler() {
       yield put({
         type: actions.GET_PENDING_TRANSACTIONS_RETURN,
         value: [],
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/getPendingTransactions`,
-        },
       });
     }
   });
@@ -406,8 +361,8 @@ export function* getActionableItemCountHandler() {
       votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
       let result = yield call(queryAllTopics, topicFilters);
       actionItems[EventStatus.Withdraw] = result.length;
@@ -460,13 +415,10 @@ export function* getActionableItemCountHandler() {
 */
 function getUniqueVotes(votes) {
   const filtered = [];
-  _.each(votes, (vote) => {
-    if (!_.find(filtered, {
-      voterQAddress: vote.voterQAddress,
-      topicAddress: vote.topicAddress,
-      optionIdx: vote.optionIdx,
-    })) {
-      filtered.push(vote);
+  _.each(votes, (v) => {
+    const { voterQAddress, topicAddress, optionIdx } = v;
+    if (!_.find(filtered, { voterQAddress, topicAddress, optionIdx })) {
+      filtered.push(v);
     }
   });
   return filtered;

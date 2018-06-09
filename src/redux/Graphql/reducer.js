@@ -12,7 +12,6 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
-  txReturn: null, // used to display TransactionSentDialog
   getOraclesReturn: [],
   getTopicsReturn: [],
   allEvents: [],

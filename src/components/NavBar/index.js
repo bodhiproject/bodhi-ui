@@ -21,10 +21,11 @@ const messages = defineMessages({
     defaultMessage: 'Help',
   },
   allEvents: {
-    id: 'All Events',
+    id: 'navbar.allEvents',
     defaultMessage: 'All Events',
   },
 });
+
 
 @withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
@@ -55,8 +56,8 @@ export default class NavBar extends Component {
         <Toolbar className={classes.navBarWrapper}>
           <NavSection>
             <BodhiLogo {...this.props} />
-            <QTUMPrediction {...this.props} />
-            <BOTCourt {...this.props} />
+            <QtumPrediction {...this.props} />
+            <BotCourt {...this.props} />
           </NavSection>
           <NavSection>
             <Wallet {...this.props} />
@@ -71,29 +72,17 @@ export default class NavBar extends Component {
   }
 }
 
-const AllEvents = ({ classes }) => ( // eslint-disable-line
-  <NavLink to="/all-events">
-    <Button className={classes.navBarWalletButton}>
-      <FormattedMessage id="All Events" defaultMessage="All Events" />
-    </Button>
-  </NavLink>
+const BodhiLogo = ({ classes }) => (
+  <Link to={RouterPath.qtumPrediction}>
+    <img
+      src="/images/sports-logo.svg"
+      alt="bodhi-logo"
+      className={classes.navBarLogo}
+    />
+  </Link>
 );
 
-const BOTCourt = ({ classes, appLocation }) => ( // eslint-disable-line
-  <NavLink to={RouterPath.botCourt}>
-    <Button
-      data-index={EventStatus.Vote}
-      className={cx(
-        classes.navEventsButton,
-        appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
-      )}
-    >
-      <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
-    </Button>
-  </NavLink>
-);
-
-const QTUMPrediction = ({ classes, appLocation }) => ( // eslint-disable-line
+const QtumPrediction = ({ classes, appLocation }) => (
   <NavLink to={RouterPath.qtumPrediction}>
     <Button
       data-index={EventStatus.Bet}
@@ -107,9 +96,23 @@ const QTUMPrediction = ({ classes, appLocation }) => ( // eslint-disable-line
   </NavLink>
 );
 
-const Wallet = ({ classes, walletAddresses }) => { // eslint-disable-line
-  const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || 0;
-  const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || 0;
+const BotCourt = ({ classes, appLocation }) => (
+  <NavLink to={RouterPath.botCourt}>
+    <Button
+      data-index={EventStatus.Vote}
+      className={cx(
+        classes.navEventsButton,
+        appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
+      )}
+    >
+      <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+    </Button>
+  </NavLink>
+);
+
+const Wallet = ({ classes, walletAddresses }) => {
+  const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
+  const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
     <NavLink to="/my-wallet">
       <Button className={classes.navBarWalletButton}>
@@ -120,7 +123,31 @@ const Wallet = ({ classes, walletAddresses }) => { // eslint-disable-line
   );
 };
 
-const LanguageSelector = ({ classes, intl, langHandler }) => ( // eslint-disable-line
+const MyActivities = ({ classes, actionableItemCount }) => {
+  let children = (
+    <Button className={cx(classes.navEventsButton, classes.dark)}>
+      <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+    </Button>
+  );
+  if (actionableItemCount.totalCount > 0) {
+    children = <Badge badgeContent={actionableItemCount.totalCount} color="secondary">{children}</Badge>;
+  }
+  return <NavLink to={RouterPath.set}>{children}</NavLink>;
+};
+
+const HelpButton = ({ classes, intl }) => (
+  <Button
+    className={cx(classes.faq, classes.navEventsButton, classes.dark)}
+    onClick={() => {
+      window.open(faqUrls[intl.locale], '_blank');
+      Tracking.track('navBar-helpClick');
+    }}
+  >
+    <i className={cx('icon iconfont icon-ic_question', classes.questionIcon)} /> {intl.formatMessage(messages.help)}
+  </Button>
+);
+
+const LanguageSelector = ({ classes, intl, langHandler }) => (
   <Select
     value={intl.locale}
     onChange={(e) => langHandler(e.target.value)}
@@ -134,38 +161,12 @@ const LanguageSelector = ({ classes, intl, langHandler }) => ( // eslint-disable
   </Select>
 );
 
-const MyActivities = ({ classes, actionableItemCount }) => { // eslint-disable-line
-  let children = (
-    <Button className={cx(classes.navEventsButton, classes.dark)}>
-      <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+const AllEvents = ({ classes }) => (
+  <NavLink to={RouterPath.allEvents}>
+    <Button className={classes.navBarWalletButton}>
+      <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>
-  );
-  if (actionableItemCount.totalCount > 0) {
-    children = <Badge badgeContent={actionableItemCount.totalCount} color="secondary">{children}</Badge>;
-  }
-  return <NavLink to={RouterPath.set}>{children}</NavLink>;
-};
-
-const BodhiLogo = ({ classes }) => ( // eslint-disable-line
-  <Link to={RouterPath.qtumPrediction}>
-    <img
-      src="/images/sports-logo.svg"
-      alt="bodhi-logo"
-      className={classes.navBarLogo}
-    />
-  </Link>
-);
-
-const HelpButton = ({ classes, intl }) => ( // eslint-disable-line
-  <Button
-    className={cx(classes.faq, classes.navEventsButton, classes.dark)}
-    onClick={() => {
-      window.open(faqUrls[intl.locale], '_blank');
-      Tracking.track('navBar-helpClick');
-    }}
-  >
-    <i className={cx('icon iconfont icon-ic_question', classes.questionIcon)} /> {intl.formatMessage(messages.help)}
-  </Button>
+  </NavLink>
 );
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);

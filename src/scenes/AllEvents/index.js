@@ -9,8 +9,9 @@ import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import { Token, OracleStatus } from '../../constants';
 import TopActions from '../Dashboard/components/TopActions';
+import { AppLocation } from '../../constants';
 
-const LIMIT = 6;
+const LIMIT = 50;
 
 
 @connect((state) => ({
@@ -42,7 +43,7 @@ export default class AllEvents extends Component {
 
   componentDidMount() {
     this.loadMoreData();
-    this.props.setAppLocation('allEvents');
+    this.props.setAppLocation(AppLocation.allEvents);
   }
 
   loadMoreData = () => {
