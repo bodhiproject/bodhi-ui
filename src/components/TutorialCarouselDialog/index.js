@@ -92,7 +92,7 @@ export default class TutorialCarouselDialog extends Component {
             className={classes.langBtn}
             name="lang"
             value={lang}
-            onChange={this.handleLangChange}
+            onChange={(e) => langHandler(e.target.value)}
             disableUnderline
           >
             <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
