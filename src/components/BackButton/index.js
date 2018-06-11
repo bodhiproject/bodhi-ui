@@ -37,9 +37,15 @@ export default class BackButton extends Component {
   }
 
   onBackClick = () => {
-    const { appLocation } = this.props;
+    const { appLocation, history } = this.props;
+    console.log('CLICKED');
 
     switch (appLocation) {
+      case AppLocation.allEvents: {
+        history.push(RouterPath.allEvents);
+        break;
+      }
+      case AppLocation.qtumPrediction:
       case AppLocation.bet: {
         this.props.history.push(RouterPath.qtumPrediction);
         break;
@@ -61,6 +67,7 @@ export default class BackButton extends Component {
         break;
       }
       default: {
+        this.props.history.push(RouterPath.qtumPrediction);
         break;
       }
     }

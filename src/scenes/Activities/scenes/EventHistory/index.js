@@ -64,7 +64,7 @@ export default class EventHistory extends Component {
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    oracles: PropTypes.object,
+    oracles: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
     transactions: PropTypes.array,
     syncBlockNum: PropTypes.number.isRequired,

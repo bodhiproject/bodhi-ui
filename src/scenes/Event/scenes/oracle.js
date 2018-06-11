@@ -95,6 +95,7 @@ const messages = defineMessages({
   lastUsedAddress: state.App.get('lastUsedAddress'),
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
+  appLocation: state.App.get('appLocation'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -128,7 +129,7 @@ export default class OraclePage extends Component {
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getOracles: PropTypes.func,
-    oracles: PropTypes.object,
+    oracles: PropTypes.array,
     getTransactions: PropTypes.func,
     getTransactionsReturn: PropTypes.array,
     createBetTx: PropTypes.func,
@@ -468,7 +469,7 @@ export default class OraclePage extends Component {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    this.props.setAppLocation(AppLocation.bet);
+    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -487,7 +488,7 @@ export default class OraclePage extends Component {
   };
 
   setBetConfig = () => {
-    this.props.setAppLocation(AppLocation.bet);
+    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.bet);
 
     return {
       eventStatus: EventStatus.Bet,
@@ -505,7 +506,7 @@ export default class OraclePage extends Component {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    this.props.setAppLocation(AppLocation.resultSet);
+    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.resultSet);
 
     return {
       eventStatus: EventStatus.Set,
@@ -527,7 +528,7 @@ export default class OraclePage extends Component {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    this.props.setAppLocation(AppLocation.vote);
+    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.vote);
 
     return {
       eventStatus: EventStatus.Vote,
@@ -549,7 +550,7 @@ export default class OraclePage extends Component {
     const { locale, messages: localeMessages } = this.props.intl;
     const intl = getIntlProvider(locale, localeMessages);
 
-    this.props.setAppLocation(AppLocation.finalize);
+    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.finalize);
 
     return {
       eventStatus: EventStatus.Finalize,

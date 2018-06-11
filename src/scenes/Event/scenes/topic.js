@@ -24,7 +24,6 @@ import {
   TransactionType,
   TransactionStatus,
   SortBy,
-  AppLocation,
 } from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
@@ -72,7 +71,6 @@ const pageMessage = defineMessages({
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
@@ -102,7 +100,6 @@ export default class TopicPage extends Component {
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    setAppLocation: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -134,9 +131,6 @@ export default class TopicPage extends Component {
   }
 
   componentWillMount() {
-    const { setAppLocation } = this.props;
-
-    setAppLocation(AppLocation.withdraw);
     this.fetchData();
   }
 

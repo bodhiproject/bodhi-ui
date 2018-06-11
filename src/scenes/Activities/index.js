@@ -7,7 +7,8 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
-import { RouterPath, EventStatus } from '../../constants';
+import appActions from '../../redux/App/actions';
+import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 
 const TAB_SET = 0;
@@ -40,6 +41,8 @@ const messages = defineMessages({
 @connect((state) => ({
   ...state.App.toJS(),
   actionableItemCount: state.Graphql.get('actionableItemCount'),
+}), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
 export default class Activities extends Component {
   static propTypes = {
@@ -48,70 +51,38 @@ export default class Activities extends Component {
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     actionableItemCount: PropTypes.object,
-  };
+  }
 
   static defaultProps = {
     actionableItemCount: undefined,
-  };
+  }
 
-  constructor(props) {
-    super(props);
+  state = {
+    tabIdx: 0,
+  }
 
+  componentDidMount() {
     // Determine tab index based on path
-    let tabIdx;
-    switch (this.props.match.path) {
-      case RouterPath.set: {
-        tabIdx = TAB_SET;
-        break;
-      }
-      case RouterPath.finalize: {
-        tabIdx = TAB_FINALIZE;
-        break;
-      }
-      case RouterPath.withdraw: {
-        tabIdx = TAB_WITHDRAW;
-        break;
-      }
-      case RouterPath.activityHistory: {
-        tabIdx = TAB_HISTORY;
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-
-    this.state = {
-      tabIdx,
+    const { set, finalize, withdraw, activityHistory } = RouterPath;
+    const tabIdxs = {
+      [set]: TAB_SET,
+      [finalize]: TAB_FINALIZE,
+      [withdraw]: TAB_WITHDRAW,
+      [activityHistory]: TAB_HISTORY,
     };
-
-    this.getTabLabel = this.getTabLabel.bind(this);
-    this.handleTabChange = this.handleTabChange.bind(this);
+    const tabIdx = tabIdxs[this.props.match.path];
+    this.setState({ tabIdx });
+    const locations = {
+      [set]: AppLocation.resultSet,
+      [finalize]: AppLocation.finalize,
+      [withdraw]: AppLocation.withdraw,
+      [activityHistory]: AppLocation.activityHistory,
+    };
+    const appLocation = locations[this.props.match.path];
+    this.props.setAppLocation(appLocation);
   }
 
-  render() {
-    const { classes, history } = this.props;
-    const { tabIdx } = this.state;
-
-    return (
-      <div>
-        <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.getTabLabel(EventStatus.Set)} className={classes.activitiesTabButton} />
-          <Tab label={this.getTabLabel(EventStatus.Finalize)} className={classes.activitiesTabButton} />
-          <Tab label={this.getTabLabel(EventStatus.Withdraw)} className={classes.activitiesTabButton} />
-          <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
-        </Tabs>
-        <div className={classes.activitiesTabContainer}>
-          {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === TAB_HISTORY && <EventHistory history={history} />}
-        </div>
-      </div>
-    );
-  }
-
-  getTabLabel(eventStatusIndex) {
+  getTabLabel = (eventStatusIndex) => {
     const { actionableItemCount, intl } = this.props;
 
     let label;
@@ -144,7 +115,7 @@ export default class Activities extends Component {
     return `${label}${countText}`;
   }
 
-  handleTabChange(event, value) {
+  handleTabChange = (event, value) => {
     switch (value) {
       case TAB_SET: {
         this.props.history.push(RouterPath.set);
@@ -166,5 +137,27 @@ export default class Activities extends Component {
         throw new Error(`Invalid tab index: ${value}`);
       }
     }
+  }
+
+  render() {
+    const { classes, history } = this.props;
+    const { tabIdx } = this.state;
+
+    return (
+      <div>
+        <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
+          <Tab label={this.getTabLabel(EventStatus.Set)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.Finalize)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.Withdraw)} className={classes.activitiesTabButton} />
+          <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
+        </Tabs>
+        <div className={classes.activitiesTabContainer}>
+          {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
+          {tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
+          {tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {tabIdx === TAB_HISTORY && <EventHistory history={history} />}
+        </div>
+      </div>
+    );
   }
 }
