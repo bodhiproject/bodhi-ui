@@ -22,12 +22,11 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
-import appActions from '../../../../redux/App/actions';
 import graphqlActions from '../../../../redux/Graphql/actions';
-import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { TransactionType, SortBy, AppLocation } from '../../../../constants';
+import { TransactionType, SortBy } from '../../../../constants';
 
 const messages = defineMessages({ // eslint-disable-line
   statusSuccess: {
@@ -49,10 +48,8 @@ const messages = defineMessages({ // eslint-disable-line
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  oracles: state.Graphql.get('getOraclesReturn'),
   transactions: state.Graphql.get('getTransactionsReturn'),
 }), (dispatch) => ({
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
   getTransactions: (filters, orderBy, limit, skip) =>
     dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
@@ -60,18 +57,14 @@ const messages = defineMessages({ // eslint-disable-line
 export default class EventHistory extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
-    setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    oracles: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
     transactions: PropTypes.array,
     syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    oracles: undefined,
     transactions: undefined,
   };
 
@@ -87,22 +80,11 @@ export default class EventHistory extends Component {
   };
 
   componentWillMount() {
-    const { setAppLocation } = this.props;
-
-    setAppLocation(AppLocation.activityHistory);
     this.executeTxsRequest();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { oracles, transactions, syncBlockNum } = this.props;
-
-    // return from the click event
-    if (nextProps.oracles !== oracles) {
-      const path = getDetailPagePath(nextProps.oracles);
-      if (path) {
-        this.props.history.push(path);
-      }
-    }
+    const { transactions, syncBlockNum } = this.props;
 
     // Update page on new block
     if (nextProps.syncBlockNum !== syncBlockNum) {
