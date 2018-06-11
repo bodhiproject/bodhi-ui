@@ -44,7 +44,7 @@ export default class App extends Component {
         <WalletUnlockDialog />
         <ErrorDialog />
         <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
-        <TutorialCarouselDialog />
+        <TutorialCarouselDialog langHandler={langHandler} />
       </div>
     );
   }

@@ -75,6 +75,10 @@ const styles = (theme) => ({
     marginLeft: '50px',
     marginRight: '50px',
     display: 'inline-block',
+    '&.langBtn': {
+      float: 'right',
+      marginRight: theme.padding.xs.px,
+    },
   },
   link: {
     color: theme.palette.primary.main,
@@ -89,9 +93,6 @@ const styles = (theme) => ({
   tncAgreement: {
     fontWeight: 'bold',
     color: theme.palette.error.main,
-  },
-  langBtn: {
-    margin: theme.padding.xs.px,
   },
 });
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button as _Button, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import cx from 'classnames';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
@@ -36,6 +36,11 @@ const messages = defineMessages({
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    langHandler: PropTypes.func,
+  }
+
+  static defaultProps = {
+    langHandler: undefined,
   }
 
   state = {
@@ -69,7 +74,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, langHandler } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -77,6 +82,14 @@ export default class TutorialCarouselDialog extends Component {
       <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
           <div className={classes.titleTopLine}></div>
+          <_Button
+            className={cx(classes.button, 'langBtn')}
+            variant="raised"
+            size="small"
+            onClick={this.props.langHandler}
+          >
+            <FormattedMessage id="language.select" defaultMessage="中文" />
+          </_Button>
           <div className={classes.contentWrapper}>
             <CurrentComponentName />
             <div className={classes.buttonsWrapper}>

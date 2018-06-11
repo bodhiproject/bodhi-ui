@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, Grid, Button, FormGroup, FormControlLabel, Checkbox, withStyles } from 'material-ui';
+import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
