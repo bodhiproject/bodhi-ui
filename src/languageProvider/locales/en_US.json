@@ -261,7 +261,7 @@
   "topic.didNotBetOrVote": "You did not bet or vote on the winning outcome.",
   "transactionSentDialog.successMsg": "Success",
   "transactionSentDialog.waitingMsg": "Transaction sent. Waiting for confirmations.",
-  "tutorial.gotItLetsStart": "Got It. Let's Start.",
+  "tutorial.iAcceptLetsStart": "I Accept. Let's Start.",
   "tutorial.next": "Next",
   "tutorial.previous": "Previous",
   "tutorial0.content0": "Bodhi Dapp is a free, open-source, client-side interface.",

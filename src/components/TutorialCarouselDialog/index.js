@@ -16,9 +16,9 @@ import Tutorial6 from './components/tutorial6';
 import TermsAndConditions from './components/termsAndConditions';
 
 const messages = defineMessages({
-  gotItLetsStart: {
-    id: 'tutorial.gotItLetsStart',
-    defaultMessage: 'Got It. Let\'s Start.',
+  iAcceptLetsStart: {
+    id: 'tutorial.iAcceptLetsStart',
+    defaultMessage: 'I Accept. Let\'s Start.',
   },
   next: {
     id: 'tutorial.next',
@@ -87,7 +87,7 @@ export default class TutorialCarouselDialog extends Component {
                 <Button onClick={this.nextSlide} msgId={messages.next} />
               )}
               {currentIndex === this.components.length - 1 && (
-                <Button onClick={this.closeTutorial} msgId={messages.gotItLetsStart} />
+                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} />
               )}
             </div>
           </div>
