@@ -58,7 +58,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.xs.px,
   },
   contentWrapper: {
-    padding: `${theme.padding.md.px} !important`,
+    padding: `${theme.padding.sm.px} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px} !important`,
   },
   contentList: {
     lineHeight: '28px',
@@ -67,7 +67,7 @@ const styles = (theme) => ({
   buttonsWrapper: {
     textAlign: 'center',
     position: 'absolute',
-    bottom: '90px',
+    bottom: theme.padding.lg.px,
     left: 0,
     right: 0,
   },
@@ -75,10 +75,6 @@ const styles = (theme) => ({
     marginLeft: '50px',
     marginRight: '50px',
     display: 'inline-block',
-    '&.langBtn': {
-      float: 'right',
-      marginRight: theme.padding.xs.px,
-    },
   },
   link: {
     color: theme.palette.primary.main,
@@ -93,6 +89,12 @@ const styles = (theme) => ({
   tncAgreement: {
     fontWeight: 'bold',
     color: theme.palette.error.main,
+  },
+  langBtn: {
+    marginLeft: theme.padding.xs.px,
+    padding: `0px ${theme.padding.unit.px}`,
+    border: theme.border,
+    borderRadius: theme.borderRadius,
   },
 });
 

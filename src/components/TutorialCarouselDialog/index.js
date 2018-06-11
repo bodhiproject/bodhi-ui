@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button as _Button, withStyles } from 'material-ui';
+import { Button as _Button, Select, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
+import { MenuItem } from 'material-ui/Menu';
 import cx from 'classnames';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
@@ -37,6 +38,7 @@ export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     langHandler: PropTypes.func,
+    lang: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -49,6 +51,10 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6, TermsAndConditions]
+
+  handleLangChange = () => {
+
+  }
 
   prevSlide = () => {
     const { currentIndex } = this.state;
@@ -74,7 +80,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes, langHandler } = this.props;
+    const { classes, langHandler, lang } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -82,14 +88,17 @@ export default class TutorialCarouselDialog extends Component {
       <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
           <div className={classes.titleTopLine}></div>
-          <_Button
-            className={cx(classes.button, 'langBtn')}
-            variant="raised"
-            size="small"
-            onClick={this.props.langHandler}
+          <Select
+            className={classes.langBtn}
+            name="lang"
+            value={lang}
+            onChange={this.handleLangChange}
+            disableUnderline
           >
-            <FormattedMessage id="language.select" defaultMessage="中文" />
-          </_Button>
+            <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
+            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
+            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+          </Select>
           <div className={classes.contentWrapper}>
             <CurrentComponentName />
             <div className={classes.buttonsWrapper}>
