@@ -115,7 +115,7 @@ const Wallet = ({ classes, walletAddresses }) => {
   const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
     <NavLink to="/my-wallet">
-      <Button className={classes.navBarWalletButton}>
+      <Button className={classes.marginRightButton}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
         {`${totalQTUM} QTUM / ${totalBOT} BOT`}
       </Button>
@@ -163,7 +163,7 @@ const LanguageSelector = ({ classes, intl, langHandler }) => (
 
 const AllEvents = ({ classes }) => (
   <NavLink to={RouterPath.allEvents}>
-    <Button className={classes.navBarWalletButton}>
+    <Button className={classes.marginRightButton}>
       <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>
   </NavLink>
