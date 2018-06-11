@@ -13,6 +13,7 @@ import Tutorial3 from './components/tutorial3';
 import Tutorial4 from './components/tutorial4';
 import Tutorial5 from './components/tutorial5';
 import Tutorial6 from './components/tutorial6';
+import TermsAndConditions from './components/termsAndConditions';
 
 const messages = defineMessages({
   gotItLetsStart: {
@@ -42,7 +43,7 @@ export default class TutorialCarouselDialog extends Component {
     openTutorial: !JSON.parse(localStorage.getItem('tutorialDisplayed')),
   }
 
-  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6]
+  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6, TermsAndConditions]
 
   prevSlide = () => {
     const { currentIndex } = this.state;

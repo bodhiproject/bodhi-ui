@@ -50,6 +50,9 @@ const styles = (theme) => ({
       backgroundColor: '#8850FF',
     },
   },
+  tutorialDialog7: {
+    backgroundImage: 'url(/images/tnc-bg.png)',
+  },
   titleTopLine: {
     height: '5px',
     marginBottom: theme.padding.xs.px,
@@ -75,6 +78,20 @@ const styles = (theme) => ({
   },
   link: {
     color: theme.palette.primary.main,
+  },
+  tncWrapper: {
+    maxHeight: '300px',
+    overflowY: 'scroll',
+    marginTop: theme.padding.xs.px,
+    marginBottom: theme.padding.unit.px,
+    padding: theme.padding.sm.px,
+  },
+  tncAgreement: {
+    fontWeight: 'bold',
+    color: theme.palette.error.main,
+  },
+  langBtn: {
+    margin: theme.padding.xs.px,
   },
 });
 
