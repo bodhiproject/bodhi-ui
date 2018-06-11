@@ -36,7 +36,9 @@ export default class EventResultHistory extends Component {
     if (sortedOracles.length) {
       const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
       const { endTime, token } = sortedOracles[1];
-      const resultSettingRound = { endTime, token, resultIdx, options, amounts };
+      const resultSettingRound = { endTime, token, resultIdx, options };
+      const resultSettingRoundamount = amounts.slice(0);
+      resultSettingRound.amounts = resultSettingRoundamount;
       resultSettingRound.amounts.fill(0);
       resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
       sortedOracles.splice(1, 0, resultSettingRound);
