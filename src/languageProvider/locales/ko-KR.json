@@ -213,6 +213,7 @@
   "tnc.general": "일반",
   "tnc.general1": "본 사이트는 Bodhi Foundation ( “Bodhi“)에서 운영하며 등록 된 사이트로 본사 주소는 22 NORTH CANAL ROAD # 02-00 SINGAPORE (우편번호:048834)입니다. 현재 사이트는 플랫폼 개발 단계로 BOT 또는 QTUM 토큰을 사용할 필요가 없이 무료로 서비스를 제공하고 있습니다. 모든 이벤트 및 예측은 부담 없이 사용하실 수 있으며 이는 백서의 개발 목표에 따라 변경 될 수 있습니다.",
   "tnc.general2": "본 이용 약관 (이하 “이용 약관“)은 Bodhi가 귀하에게 제공 한 플랫폼을 귀하 (“플레이어“ 또는 “참가자“)가 사용함에 있어 적용됩니다. 본 이용 약관은 귀하가 플랫폼 및 사이트를 사용하기 전에 신중히 읽으셔야 합니다. 본 이용 약관은 통해 귀하와 회사 간의 법적 구속력있는 계약이 성립된다는 점을 유념하십시오.",
+  "tnc.iAgree": "By clicking the Accept button, I am explicitly agreeing to the Terms and Conditions.",
   "tnc.ip": "지적 재산권",
   "tnc.ip1": "본 사이트와 관련된 지적 재산권 (즉, 특허, 저작권, 상표, 서비스 마크, 로고, 상호, 상표권, 노하우 또는 기타 지적 재산권) 및 모든 컨텐츠(프로그램, 파일, 비디오, 오디오, 그림, 그래픽, 그림, 텍스트 및 소프트웨어를 포함한 그외 컨텐츠 모두) 및 플랫폼 (이하 “권리“로 통칭)에 대한 소유권은 Bodhi 및 해당 컨텐츠의 라이센스를 가진 자에게 있습니다. 귀하는 본 이용 약관에 의한 경우를 제외하고는 Bodhi의 명시적인 사전 서면 승인없이 권리를 사용할 수 없으며 귀하는 사이트 및 플랫폼을 사용하거나 권리의 권리를 취득해서는 안됩니다. 위의 내용을 포함하여, 다음과 같은 사항들을 엄격히 금지합니다. (i) 복사. 재배포, 게시, 리버스 엔지니어링, 디 컴파일, 디스 어셈블, 수정, 번역 또는 사이트 및 플랫폼의 소스 코드에 액세스하려는 시도 등 (ii) 소스 코드의 파생물 생성. (iii) 사이트 및 플랫폼의 판매, 양도, 라이센스 부여, 재 라이센스 부여, 양도.",
   "tnc.misc": "그 외",
@@ -261,6 +262,9 @@
   "topic.didNotBetOrVote": "최종 선정된 결과에 베팅을 하거나 투표하지 않았습니다.",
   "transactionSentDialog.successMsg": "성공",
   "transactionSentDialog.waitingMsg": "트랜잭션이 전송되었습니다. 확인을 기다리는 중입니다.",
+  "tutorial.iAcceptLetsStart": "I Accept. Let's Start.",
+  "tutorial.next": "Next",
+  "tutorial.previous": "Previous",
   "tutorial0.content0": "Bodhi Dapp는 무료 오픈 소스 클라이언트 측 인터페이스입니다.",
   "tutorial0.content1": "키와 자금을 완벽하게 관리하면서 블록 체인과 직접 상호 작용할 수 있습니다.",
   "tutorial0.content2": "Bodhi Dapp는 독립형 지갑이 아닙니다. 우리는 Qtum 코어 월렛을 사용하여 Qtum 블록 체인과의 모든 거래 및 상호 작용을 처리합니다.",
@@ -340,4 +344,3 @@
   "withdrawDialog.title": "QTUM / BOT 철회",
   "withdrawDialog.youCanWithdraw": "다음 기간내로 인출 할 수 있습니다:"
 }
-
