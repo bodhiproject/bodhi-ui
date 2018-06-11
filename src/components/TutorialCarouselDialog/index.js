@@ -52,10 +52,6 @@ export default class TutorialCarouselDialog extends Component {
 
   components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6, TermsAndConditions]
 
-  handleLangChange = () => {
-
-  }
-
   prevSlide = () => {
     const { currentIndex } = this.state;
     if (currentIndex > 0) {
