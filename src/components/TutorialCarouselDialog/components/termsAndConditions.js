@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
+import { Typography, Paper, withStyles } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
-import { ContentItem } from './contentItem';
 
-const TNC_ACCEPTED = 'tncAccepted';
 
 const TermsAndConditions = ({ classes }) => (
   <div>
@@ -151,92 +149,3 @@ TermsAndConditions.propTypes = {
 };
 
 export default injectIntl(withStyles(styles, { withTheme: true })(TermsAndConditions));
-
-// @injectIntl
-// @withStyles(styles, { withTheme: true })
-// export default class TermsAndConditions extends Component {
-//   static propTypes = {
-//     classes: PropTypes.object.isRequired,
-//     langHandler: PropTypes.func,
-//   }
-
-//   static defaultProps = {
-//     langHandler: undefined,
-//   }
-
-//   state = {
-//     isVisible: !!localStorage.getItem(TNC_ACCEPTED),
-//     checkboxChecked: false,
-//   }
-
-//   handleCheckedChange = (name) => (event) => {
-//     this.setState({ [name]: event.target.checked });
-//   }
-
-//   onAcceptButtonClick = () => {
-//     localStorage.setItem(TNC_ACCEPTED, true);
-//     this.setState({ isVisible: true });
-//   }
-
-//   render() {
-//     const { classes } = this.props;
-//     const { isVisible, checkboxChecked } = this.state;
-
-//     return (
-//       <div
-//         className={classes.tncBg}
-//         style={{
-//           opacity: isVisible ? 0 : 1,
-//           display: isVisible ? 'none' : 'block',
-//         }}
-//       >
-//         <Grid container>
-//           <Grid item xs>
-//             <Button color="primary" variant="raised" className={classes.langBtn} onClick={this.props.langHandler}>
-//               <FormattedMessage id="language.select" defaultMessage="中文" />
-//             </Button>
-//           </Grid>
-//           <Grid item xs={8}>
-//             <Paper className={classes.tncWrapper}>
-//               <Heading />
-//               <GeneralSection />
-//               <DefinitionsSection />
-//               <SubordinationSection />
-//               <ParticipateSection />
-//               <RepresentationsSection />
-//               <AwardsSection />
-//               <PowersSection />
-//               <ResponsibilitiesSection />
-//               <IpSection />
-//               <SupportSection />
-//               <MiscSection />
-//             </Paper>
-//             <FormGroup row className={classes.formGroup}>
-//               <FormControlLabel
-//                 control={
-//                   <Checkbox
-//                     checked={checkboxChecked}
-//                     value="checkboxChecked"
-//                     onChange={this.handleCheckedChange('checkboxChecked')}
-//                   />
-//                 }
-//                 label={<FormattedMessage id="tnc.acceptCheckboxText" defaultMessage="I accept the Terms and Conditions" />}
-//               />
-//               <Button
-//                 type="submit"
-//                 color="primary"
-//                 variant="raised"
-//                 disabled={!checkboxChecked}
-//                 className={classes.acceptButton}
-//                 onClick={this.onAcceptButtonClick}
-//               >
-//                 <FormattedMessage id="tnc.accept" defaultMessage="Accept" />
-//               </Button>
-//             </FormGroup>
-//           </Grid>
-//           <Grid item xs></Grid>
-//         </Grid>
-//       </div>
-//     );
-//   }
-// }
