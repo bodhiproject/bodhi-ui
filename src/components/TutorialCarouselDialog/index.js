@@ -4,7 +4,7 @@ import { Button as _Button, Select, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import { MenuItem } from 'material-ui/Menu';
 import cx from 'classnames';
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
