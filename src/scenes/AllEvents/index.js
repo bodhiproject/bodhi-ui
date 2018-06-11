@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,9 +6,8 @@ import graphqlActions from '../../redux/Graphql/actions';
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
-import { Token, OracleStatus } from '../../constants';
 import TopActions from '../Dashboard/components/TopActions';
-import { AppLocation } from '../../constants';
+import { AppLocation, Token, OracleStatus } from '../../constants';
 
 const LIMIT = 50;
 
@@ -35,9 +33,9 @@ export default class AllEvents extends Component {
     skip: 0,
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.sortBy !== this.props.sortBy) {
-      this.fetchEvents(0, this.state.skip)
+      this.fetchEvents(0, this.state.skip);
     }
   }
 
@@ -49,7 +47,7 @@ export default class AllEvents extends Component {
   loadMoreData = () => {
     let { skip } = this.state;
     skip += LIMIT;
-    this.fetchEvents(skip)
+    this.fetchEvents(skip);
     this.setState({ skip });
   }
 
@@ -61,21 +59,18 @@ export default class AllEvents extends Component {
       { token: Token.Bot, status: OracleStatus.WaitResult },
       // voting
       { token: Token.Bot, status: OracleStatus.Voting },
-      // { token: Token.Qtum,
-      //   status: OracleStatus.WaitResult,
-      //   excludeSelfAddress: walletAddresses.map(({ address }) => address) },
       // betting
       { token: Token.Qtum, status: OracleStatus.Voting },
       { token: Token.Qtum, status: OracleStatus.Created },
       // result setting
       { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-      { token: Token.Qtum, status: OracleStatus.WaitResult }
-    ]
+      { token: Token.Qtum, status: OracleStatus.WaitResult },
+    ];
     getAllEvents(filters, orderBy, limit, skip, walletAddresses);
   }
 
   render() {
-    const events = this.props.events.map((event, i) => <EventCard key={i} index={i} {...event} />)
+    const events = this.props.events.map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
     return (
       <div>
         <TopActions noCreateEventButton />
