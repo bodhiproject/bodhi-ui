@@ -125,7 +125,7 @@
     "start:prod": "REACT_APP_ENV=prod node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "lint:fix": "eslint --fix --",
+    "lint:fix": "eslint . --fix",
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations"
