@@ -44,7 +44,7 @@ export default class EventCard extends Component {
   };
 
   static defaultProps = {
-    buttonText: { id: 'didnt work', defaultMessage: 'didnt work' },
+    buttonText: { id: '', defaultMessage: '' },
     amountLabel: undefined,
     endTime: undefined,
   };
