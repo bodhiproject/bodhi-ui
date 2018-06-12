@@ -2,25 +2,21 @@ import React from 'react';
 import { render } from 'react-dom';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
-import AppProvider from './appProvider';
+import { AppProvider } from './appProvider';
 import { unregister } from './registerServiceWorker';
+import { store } from './redux/store';
+import xstore from './stores/AppStore';
 
 momentDurationFormat(moment);
 
 render(
-  <AppProvider />,
+  <AppProvider store={store} xstore={xstore} />,
   document.getElementById('root')
 );
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./appProvider.js', () => {
-    const NextAppProvider = AppProvider.default;
-    render(
-      <NextAppProvider />,
-      document.getElementById('root')
-    );
-  });
+  console.log('hot reloading...'); // eslint-disable-line
 }
 
 // Unregister the service worker since we don't want to cache.

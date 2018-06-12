@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -40,13 +41,11 @@ export default class NavBar extends Component {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
-    langHandler: PropTypes.func,
     appLocation: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
     actionableItemCount: undefined,
-    langHandler: undefined,
   }
 
   render() {
@@ -147,10 +146,10 @@ const HelpButton = ({ classes, intl }) => (
   </Button>
 );
 
-const LanguageSelector = ({ classes, intl, langHandler }) => (
+const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) => (
   <Select
-    value={intl.locale}
-    onChange={(e) => langHandler(e.target.value)}
+    value={ui.locale}
+    onChange={(e) => ui.changeLocale(e.target.value)}
     name="lang"
     disableUnderline
     className={classes.selectMenu}
@@ -159,7 +158,7 @@ const LanguageSelector = ({ classes, intl, langHandler }) => (
     <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
     <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
   </Select>
-);
+)));
 
 const AllEvents = ({ classes }) => (
   <NavLink to={RouterPath.allEvents}>
