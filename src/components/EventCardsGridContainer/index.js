@@ -7,8 +7,7 @@ import _ from 'lodash';
 import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
-import { AppLocation, Token, OracleStatus, SortBy, EventStatus } from '../../constants';
-import appActions from '../../redux/App/actions';
+import { Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import graphqlActions from '../../redux/Graphql/actions';
 import EventCard from '../EventCard/index';
 import EventsEmptyBg from '../EventsEmptyBg/index';
@@ -27,7 +26,6 @@ const SKIP = 0;
   walletAddresses: state.App.get('walletAddresses'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
     dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
   getOracles: (filters, orderBy, limit, skip, exclude) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, exclude)),
@@ -42,7 +40,6 @@ export default class EventCardsGrid extends Component {
     eventStatusIndex: PropTypes.number.isRequired,
     sortBy: PropTypes.string,
     syncBlockNum: PropTypes.number,
-    setAppLocation: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     status: PropTypes.string,
     txReturn: PropTypes.object,
@@ -65,7 +62,6 @@ export default class EventCardsGrid extends Component {
   componentWillMount() {
     const { eventStatusIndex, sortBy, walletAddresses } = this.props;
 
-    this.setAppLocation(eventStatusIndex);
     this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, SKIP, walletAddresses);
   }
 
@@ -89,17 +85,6 @@ export default class EventCardsGrid extends Component {
     skip += LIMIT;
     this.executeGraphRequest(eventStatusIndex, sortBy, LIMIT, skip, walletAddresses);
     this.setState({ skip });
-  }
-
-  setAppLocation = (eventStatusIndex) => {
-    const locations = {
-      [EventStatus.Bet]: AppLocation.qtumPrediction,
-      [EventStatus.Set]: AppLocation.resultSet,
-      [EventStatus.Vote]: AppLocation.botCourt,
-      [EventStatus.Finalize]: AppLocation.finalize,
-      [EventStatus.Withdraw]: AppLocation.withdraw,
-    };
-    this.props.setAppLocation(locations[eventStatusIndex]);
   }
 
   executeGraphRequest(eventStatusIndex, sortBy, limit, skip, walletAddresses) {

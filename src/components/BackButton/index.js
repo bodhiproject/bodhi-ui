@@ -38,7 +38,6 @@ export default class BackButton extends Component {
 
   onBackClick = () => {
     const { appLocation, history } = this.props;
-    console.log('CLICKED');
 
     switch (appLocation) {
       case AppLocation.allEvents: {
