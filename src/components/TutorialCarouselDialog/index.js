@@ -4,7 +4,7 @@ import { Button as _Button, Select, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import { MenuItem } from 'material-ui/Menu';
 import cx from 'classnames';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl, defineMessages, intlShape } from 'react-intl';
 
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
@@ -37,8 +37,8 @@ const messages = defineMessages({
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line
     langHandler: PropTypes.func,
-    lang: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -76,7 +76,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes, langHandler, lang } = this.props;
+    const { classes, langHandler, intl } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -87,7 +87,7 @@ export default class TutorialCarouselDialog extends Component {
           <Select
             className={classes.langBtn}
             name="lang"
-            value={lang}
+            value={intl.locale}
             onChange={(e) => langHandler(e.target.value)}
             disableUnderline
           >
