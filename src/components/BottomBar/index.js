@@ -70,9 +70,9 @@ const NetworkConnection = withStyles(styles)(({ classes }) => (
   <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
     <Typography variant="body1">
       {navigator.onLine ? (
-        <CheckCircleIcon fontSize className={cx(classes.bottomBarNetworkIcon, 'online')} />
+        <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
       ) : (
-        <RemoveCircleIcon fontSize className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+        <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
       )}
       <span>
         {navigator.onLine ? (
