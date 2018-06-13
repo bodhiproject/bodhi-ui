@@ -219,7 +219,7 @@ export default class TopicPage extends Component {
     const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
     const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
-    
+
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
