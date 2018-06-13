@@ -5,14 +5,14 @@ const styles = (theme) => ({
     top: theme.sizes.navHeight,
     left: 0,
     right: 0,
-    height: '64px',
+    height: '56px',
   },
   activitiesTabButton: {
     marginTop: '0px',
     marginBottom: '0px',
-    paddingTop: '8px',
-    paddingBottom: '8px',
-    height: '64px',
+    paddingTop: '3px',
+    paddingBottom: '5px',
+    height: '56px',
   },
   activitiesTabContainer: {
     marginTop: theme.sizes.navHeight,
