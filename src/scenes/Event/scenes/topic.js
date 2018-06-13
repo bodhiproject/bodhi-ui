@@ -295,39 +295,31 @@ export default class TopicPage extends Component {
     );
   }
 
-  renderWithdrawList = () => {
-    const { withdrawableAddresses } = this.props;
-
-    if (withdrawableAddresses.length > 0) {
-      return (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.address" defaultMessage="Address" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.type" defaultMessage="Type" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.amount" defaultMessage="Amount" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.actions" defaultMessage="Actions" />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {_.map(withdrawableAddresses, (withdrawableAddress, index) => (
-              this.renderWinningWithdrawRow(withdrawableAddress, index)
-            ))}
-          </TableBody>
-        </Table>
-      );
-    }
-
-    return null;
-  };
+  renderWithdrawList = () => (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.address" defaultMessage="Address" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.type" defaultMessage="Type" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.amount" defaultMessage="Amount" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.actions" defaultMessage="Actions" />
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {_.map(this.props.withdrawableAddresses, (withdrawableAddress, index) => (
+          this.renderWinningWithdrawRow(withdrawableAddress, index)
+        ))}
+      </TableBody>
+    </Table>
+  )
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
     const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
