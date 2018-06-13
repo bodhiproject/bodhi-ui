@@ -31,7 +31,7 @@
     "polished": "^1.7.0",
     "postcss-inline-rtl": "^0.9.8",
     "prop-types": "^15.5.10",
-    "react": "^15.5.4",
+    "react": "^16.4.1",
     "react-addons-shallow-compare": "^15.5.2",
     "react-apollo": "^2.0.4",
     "react-copy-to-clipboard": "^5.0.1",
