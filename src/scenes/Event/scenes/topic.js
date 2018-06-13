@@ -208,6 +208,7 @@ export default class TopicPage extends Component {
       escrowClaim,
       botWinnings,
       qtumWinnings,
+      withdrawableAddresses,
     } = this.props;
     const { topic } = this.state;
 
@@ -218,6 +219,7 @@ export default class TopicPage extends Component {
     const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
     const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
+
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
@@ -245,7 +247,7 @@ export default class TopicPage extends Component {
             </Typography>
           )}
         </div>
-        {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
+        {(withdrawableAddresses.length > 0) && (
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
@@ -293,39 +295,31 @@ export default class TopicPage extends Component {
     );
   }
 
-  renderWithdrawList = () => {
-    const { withdrawableAddresses } = this.props;
-
-    if (withdrawableAddresses.length > 0) {
-      return (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.address" defaultMessage="Address" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.type" defaultMessage="Type" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.amount" defaultMessage="Amount" />
-              </TableCell>
-              <TableCell padding="dense">
-                <FormattedMessage id="str.actions" defaultMessage="Actions" />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {_.map(withdrawableAddresses, (withdrawableAddress, index) => (
-              this.renderWinningWithdrawRow(withdrawableAddress, index)
-            ))}
-          </TableBody>
-        </Table>
-      );
-    }
-
-    return null;
-  };
+  renderWithdrawList = () => (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.address" defaultMessage="Address" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.type" defaultMessage="Type" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.amount" defaultMessage="Amount" />
+          </TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id="str.actions" defaultMessage="Actions" />
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {_.map(this.props.withdrawableAddresses, (withdrawableAddress, index) => (
+          this.renderWinningWithdrawRow(withdrawableAddress, index)
+        ))}
+      </TableBody>
+    </Table>
+  )
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
     const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
