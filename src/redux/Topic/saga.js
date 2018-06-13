@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import getAxios from '../../network/httpRequest';
+import axios from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
@@ -13,7 +13,7 @@ export function* getEventEscrowAmountHandler() {
     try {
       const { senderAddress } = action.params;
 
-      const { data: { result } } = yield getAxios().post(Routes.api.eventEscrowAmount, {
+      const { data: { result } } = yield axios.post(Routes.api.eventEscrowAmount, {
         senderAddress,
       });
       const eventEscrowAmount = satoshiToDecimal(result[0]);
@@ -69,13 +69,13 @@ export function* getBetAndVoteBalancesHandler() {
           headers: { 'Content-Type': 'application/json' },
         };
 
-        const betBalances = yield getAxios().post(Routes.api.betBalances, {
+        const betBalances = yield axios.post(Routes.api.betBalances, {
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
         betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
 
-        const voteBalances = yield getAxios().post(Routes.api.voteBalances, {
+        const voteBalances = yield axios.post(Routes.api.voteBalances, {
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
@@ -158,7 +158,7 @@ export function* getWithdrawableAddressesHandler() {
       for (let i = 0; i < filtered.length; i++) {
         const vote = filtered[i];
 
-        const { data: { result } } = yield getAxios().post(Routes.api.winnings, {
+        const { data: { result } } = yield axios.post(Routes.api.winnings, {
           contractAddress: topic.address,
           senderAddress: vote.voterQAddress,
         });

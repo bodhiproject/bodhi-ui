@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import getAxios from '../../network/httpRequest';
+import axios from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphQuery';
 import Routes from '../../network/routes';
 
@@ -45,7 +45,7 @@ export function* onSyncInfoHandler() {
 export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
-      const { data } = yield getAxios().get(Routes.insight.totals);
+      const { data } = yield axios.get(Routes.insight.totals);
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
         timeBetweenBlocks: data.time_between_blocks,
@@ -60,7 +60,7 @@ export function* getInsightTotalsRequestHandler() {
 export function* encryptWalletRequestHandler() {
   yield takeEvery(actions.ENCRYPT_WALLET, function* encryptWalletRequest(action) {
     try {
-      const { data: { result } } = yield getAxios().post(Routes.api.encryptWallet, {
+      const { data: { result } } = yield axios.post(Routes.api.encryptWallet, {
         passphrase: action.passphrase,
       });
       yield put({
@@ -83,7 +83,7 @@ export function* encryptWalletRequestHandler() {
 export function* backupWalletRequestHandler() {
   yield takeEvery(actions.BACKUP_WALLET, function* backupWalletRequest() {
     try {
-      yield getAxios().post(Routes.api.backupWallet);
+      yield axios.post(Routes.api.backupWallet);
     } catch (error) {
       yield put({
         type: actions.BACKUP_WALLET_RETURN,
@@ -100,7 +100,7 @@ export function* backupWalletRequestHandler() {
 export function* importWalletRequestHandler() {
   yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
     try {
-      yield getAxios().post(Routes.api.importWallet);
+      yield axios.post(Routes.api.importWallet);
     } catch (error) {
       yield put({
         type: actions.IMPORT_WALLET_RETURN,
@@ -117,7 +117,7 @@ export function* importWalletRequestHandler() {
 export function* checkWalletEncryptedRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* checkWalletEncryptedRequest() {
     try {
-      const { data: { result } } = yield getAxios().get(Routes.api.getWalletInfo);
+      const { data: { result } } = yield axios.get(Routes.api.getWalletInfo);
       const isEncrypted = result && !_.isUndefined(result.unlocked_until);
       const unlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
 
@@ -142,7 +142,7 @@ export function* checkWalletEncryptedRequestHandler() {
 export function* validateAddressRequestHandler() {
   yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
     try {
-      const { data: { result } } = yield getAxios().post(Routes.api.validateAddress, {
+      const { data: { result } } = yield axios.post(Routes.api.validateAddress, {
         address: action.address,
       });
       yield put({
@@ -165,7 +165,7 @@ export function* validateAddressRequestHandler() {
 export function* getTransactionCostRequestHandler() {
   yield takeEvery(actions.GET_TRANSACTION_COST, function* getTransactionCostRequest(action) {
     try {
-      const { data: { result } } = yield getAxios().post(Routes.api.transactionCost, action.txInfo);
+      const { data: { result } } = yield axios.post(Routes.api.transactionCost, action.txInfo);
       yield put({
         type: actions.GET_TRANSACTION_COST_RETURN,
         value: result,
@@ -189,13 +189,13 @@ export function* unlockWalletRequestHandler() {
       const timeoutSec = action.timeout * 60;
 
       // Unlock the wallet
-      yield getAxios().post(Routes.api.unlockWallet, {
+      yield axios.post(Routes.api.unlockWallet, {
         passphrase: action.passphrase,
         timeout: timeoutSec,
       });
 
       // Get the unlocked_until timestamp
-      const { data: { result } } = yield getAxios().get(Routes.api.getWalletInfo);
+      const { data: { result } } = yield axios.get(Routes.api.getWalletInfo);
       const unlockedUntil = result.unlocked_until;
 
       yield put({
