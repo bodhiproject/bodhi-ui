@@ -132,7 +132,7 @@
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations",
-    "precommmit": "lint-staged"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.js": [
