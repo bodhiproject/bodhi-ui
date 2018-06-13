@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { request } from '../../network/httpRequest';
+import getAxios, { request } from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
@@ -11,24 +11,16 @@ import { TransactionType } from '../../constants';
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
     try {
-      const {
+      const { senderAddress } = action.params;
+
+      const { data: { result } } = yield getAxios().post(Routes.api.eventEscrowAmount, {
         senderAddress,
-      } = action.params;
-
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.api.eventEscrowAmount, options);
+      });
       const eventEscrowAmount = satoshiToDecimal(result[0]);
 
       yield put({
         type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
-        value: eventEscrowAmount,
+        eventEscrowAmount,
       });
     } catch (err) {
       yield put({

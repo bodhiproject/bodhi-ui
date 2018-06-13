@@ -68,6 +68,7 @@ export function* encryptWalletRequestHandler() {
         headers: { 'Content-Type': 'application/json' },
       };
       const encryptResult = yield call(request, Routes.api.encryptWallet, options);
+
       // const encryptResult = yield getAxios().post(Routes.api.encryptWallet, {
       // passphrase: action.passphrase,
       // });
