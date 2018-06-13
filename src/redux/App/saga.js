@@ -45,10 +45,10 @@ export function* onSyncInfoHandler() {
 export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
-      const result = yield getAxios().get(Routes.insight.totals);
+      const { data } = yield getAxios().get(Routes.insight.totals);
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
-        timeBetweenBlocks: result.data.time_between_blocks,
+        timeBetweenBlocks: data.time_between_blocks,
       });
     } catch (error) {
       console.error(error.message); // eslint-disable-line
@@ -213,19 +213,15 @@ export function* unlockWalletRequestHandler() {
   yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
     try {
       const timeoutSec = action.timeout * 60;
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          passphrase: action.passphrase,
-          timeout: timeoutSec,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
+
       // Unlock the wallet
-      yield call(request, Routes.api.unlockWallet, options);
+      yield getAxios().post(Routes.api.unlockWallet, {
+        passphrase: action.passphrase,
+        timeout: timeoutSec,
+      });
 
       // Get the unlocked_until timestamp
-      const result = yield call(request, Routes.api.getWalletInfo);
+      const { data: { result } } = yield getAxios().get(Routes.api.getWalletInfo);
       const unlockedUntil = result.unlocked_until;
 
       yield put({
