@@ -136,4 +136,4 @@ update the translated string in the corresponding language file
 
 The language file is in `./src/languageProvider/locales`
 
-## [LGPL-3.0License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)
+## [LGPL-3.0 License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)
