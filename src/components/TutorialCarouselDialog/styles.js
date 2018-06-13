@@ -50,12 +50,15 @@ const styles = (theme) => ({
       backgroundColor: '#8850FF',
     },
   },
+  tutorialDialog7: {
+    backgroundImage: 'url(/images/tnc-bg.png)',
+  },
   titleTopLine: {
     height: '5px',
     marginBottom: theme.padding.xs.px,
   },
   contentWrapper: {
-    padding: `${theme.padding.md.px} !important`,
+    padding: `${theme.padding.sm.px} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px} !important`,
   },
   contentList: {
     lineHeight: '28px',
@@ -64,7 +67,7 @@ const styles = (theme) => ({
   buttonsWrapper: {
     textAlign: 'center',
     position: 'absolute',
-    bottom: '90px',
+    bottom: theme.padding.lg.px,
     left: 0,
     right: 0,
   },
@@ -75,6 +78,23 @@ const styles = (theme) => ({
   },
   link: {
     color: theme.palette.primary.main,
+  },
+  tncWrapper: {
+    maxHeight: '300px',
+    overflowY: 'scroll',
+    marginTop: theme.padding.xs.px,
+    marginBottom: theme.padding.unit.px,
+    padding: theme.padding.sm.px,
+  },
+  tncAgreement: {
+    fontWeight: 'bold',
+    color: theme.palette.error.main,
+  },
+  langBtn: {
+    marginLeft: theme.padding.xs.px,
+    padding: `0px ${theme.padding.unit.px}`,
+    border: theme.border,
+    borderRadius: theme.borderRadius,
   },
 });
 

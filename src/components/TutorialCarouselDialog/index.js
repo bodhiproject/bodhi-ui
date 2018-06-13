@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button as _Button, withStyles } from 'material-ui';
+import { Button as _Button, Select, withStyles } from 'material-ui';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
+import { MenuItem } from 'material-ui/Menu';
 import cx from 'classnames';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl, defineMessages, intlShape } from 'react-intl';
 
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
@@ -13,11 +14,12 @@ import Tutorial3 from './components/tutorial3';
 import Tutorial4 from './components/tutorial4';
 import Tutorial5 from './components/tutorial5';
 import Tutorial6 from './components/tutorial6';
+import TermsAndConditions from './components/termsAndConditions';
 
 const messages = defineMessages({
-  gotItLetsStart: {
-    id: 'tutorial.gotItLetsStart',
-    defaultMessage: 'Got It. Let\'s Start.',
+  iAcceptLetsStart: {
+    id: 'tutorial.iAcceptLetsStart',
+    defaultMessage: 'I Accept. Let\'s Start.',
   },
   next: {
     id: 'tutorial.next',
@@ -35,6 +37,12 @@ const messages = defineMessages({
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line
+    langHandler: PropTypes.func,
+  }
+
+  static defaultProps = {
+    langHandler: undefined,
   }
 
   state = {
@@ -42,7 +50,7 @@ export default class TutorialCarouselDialog extends Component {
     openTutorial: !JSON.parse(localStorage.getItem('tutorialDisplayed')),
   }
 
-  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6]
+  components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6, TermsAndConditions]
 
   prevSlide = () => {
     const { currentIndex } = this.state;
@@ -68,7 +76,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, langHandler, intl } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -76,6 +84,17 @@ export default class TutorialCarouselDialog extends Component {
       <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
           <div className={classes.titleTopLine}></div>
+          <Select
+            className={classes.langBtn}
+            name="lang"
+            value={intl.locale}
+            onChange={(e) => langHandler(e.target.value)}
+            disableUnderline
+          >
+            <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
+            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
+            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+          </Select>
           <div className={classes.contentWrapper}>
             <CurrentComponentName />
             <div className={classes.buttonsWrapper}>
@@ -86,7 +105,7 @@ export default class TutorialCarouselDialog extends Component {
                 <Button onClick={this.nextSlide} msgId={messages.next} />
               )}
               {currentIndex === this.components.length - 1 && (
-                <Button onClick={this.closeTutorial} msgId={messages.gotItLetsStart} />
+                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} />
               )}
             </div>
           </div>
