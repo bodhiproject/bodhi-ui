@@ -6,6 +6,12 @@ const styles = (theme) => ({
     left: 0,
     right: 0,
   },
+  activitiesTabButton: {
+    marginTop: '0px',
+    marginBottom: '0px',
+    paddingTop: '8px',
+    paddingBottom: '7px',
+  },
   activitiesTabContainer: {
     marginTop: theme.sizes.navHeight,
   },
