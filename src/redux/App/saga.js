@@ -46,7 +46,6 @@ export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
       const result = yield getAxios().get(Routes.insight.totals);
-
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
         value: { result },
@@ -61,14 +60,9 @@ export function* getInsightTotalsRequestHandler() {
 export function* encryptWalletRequestHandler() {
   yield takeEvery(actions.ENCRYPT_WALLET, function* encryptWalletRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          passphrase: action.passphrase,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const encryptResult = yield call(request, Routes.api.encryptWallet, options);
+      const encryptResult = yield getAxios().post(Routes.api.encryptWallet, {
+        passphrase: action.passphrase,
+      });
       yield put({
         type: actions.ENCRYPT_WALLET_RETURN,
         encryptResult,
@@ -89,11 +83,7 @@ export function* encryptWalletRequestHandler() {
 export function* backupWalletRequestHandler() {
   yield takeEvery(actions.BACKUP_WALLET, function* backupWalletRequest() {
     try {
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const backupResult = yield call(request, Routes.api.backupWallet, options);
+      const backupResult = yield getAxios().post(Routes.api.backupWallet);
       yield put({
         type: actions.BACKUP_WALLET_RETURN,
         backupResult,
@@ -114,11 +104,7 @@ export function* backupWalletRequestHandler() {
 export function* importWalletRequestHandler() {
   yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
     try {
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const importResult = yield call(request, Routes.api.importWallet, options);
+      const importResult = yield getAxios().post(Routes.api.importWallet);
       yield put({
         type: actions.IMPORT_WALLET_RETURN,
         importResult,
@@ -139,7 +125,7 @@ export function* importWalletRequestHandler() {
 export function* checkWalletEncryptedRequestHandler() {
   yield takeEvery(actions.CHECK_WALLET_ENCRYPTED, function* checkWalletEncryptedRequest() {
     try {
-      const result = yield call(request, Routes.api.getWalletInfo);
+      const result = yield getAxios().get(Routes.api.getWalletInfo);
       const isEncrypted = result && !_.isUndefined(result.unlocked_until);
       const unlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
 
@@ -164,16 +150,9 @@ export function* checkWalletEncryptedRequestHandler() {
 export function* validateAddressRequestHandler() {
   yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          address: action.address,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.api.validateAddress, options);
-
+      const result = yield getAxios().post(Routes.api.validateAddress, {
+        address: action.address,
+      });
       yield put({
         type: actions.VALIDATE_ADDRESS_RETURN,
         value: result.isvalid,
@@ -201,7 +180,9 @@ export function* getTransactionCostRequestHandler() {
       };
 
       const result = yield call(request, Routes.api.transactionCost, options);
+      console.log(result);
 
+      // const result = yield getAxios().post(Routes.api.transactionCost, action.txInfo);
       yield put({
         type: actions.GET_TRANSACTION_COST_RETURN,
         value: result,
