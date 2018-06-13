@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import getAxios, { request } from '../../network/httpRequest';
+import getAxios from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
@@ -157,23 +157,13 @@ export function* getWithdrawableAddressesHandler() {
       // Calculate winnings for each winning vote
       for (let i = 0; i < filtered.length; i++) {
         const vote = filtered[i];
-        const options = {
-          method: 'POST',
-          body: JSON.stringify({
-            contractAddress: topic.address,
-            senderAddress: vote.voterQAddress,
-          }),
-          headers: { 'Content-Type': 'application/json' },
-        };
 
-        const result = yield call(request, Routes.api.winnings, options);
-        let botWon = 0;
-        let qtumWon = 0;
-
-        if (result) {
-          botWon = satoshiToDecimal(result['0']);
-          qtumWon = satoshiToDecimal(result['1']);
-        }
+        const { data: { result } } = yield getAxios().post(Routes.api.winnings, {
+          contractAddress: topic.address,
+          senderAddress: vote.voterQAddress,
+        });
+        const botWon = result ? satoshiToDecimal(result['0']) : 0;
+        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
 
         // return only winning addresses
         if (botWon || qtumWon) {
