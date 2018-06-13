@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import { request } from '../../network/httpRequest';
+import axios from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
@@ -11,24 +11,16 @@ import { TransactionType } from '../../constants';
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {
     try {
-      const {
+      const { senderAddress } = action.params;
+
+      const { data: { result } } = yield axios.post(Routes.api.eventEscrowAmount, {
         senderAddress,
-      } = action.params;
-
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          senderAddress,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.api.eventEscrowAmount, options);
+      });
       const eventEscrowAmount = satoshiToDecimal(result[0]);
 
       yield put({
         type: actions.GET_EVENT_ESCROW_AMOUNT_RETURN,
-        value: eventEscrowAmount,
+        eventEscrowAmount,
       });
     } catch (err) {
       yield put({
@@ -57,9 +49,9 @@ export function* getBetAndVoteBalancesHandler() {
       });
 
       // Filter unique votes
-      let result = yield call(queryAllVotes, voteFilters);
+      const allVotes = yield call(queryAllVotes, voteFilters);
       const uniqueVotes = [];
-      _.each(result, (vote) => {
+      _.each(allVotes, (vote) => {
         const { voterQAddress, topicAddress } = vote;
         if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
           uniqueVotes.push(vote);
@@ -77,11 +69,17 @@ export function* getBetAndVoteBalancesHandler() {
           headers: { 'Content-Type': 'application/json' },
         };
 
-        result = yield call(request, Routes.api.betBalances, options);
-        betArrays.push(_.map(result[0], satoshiToDecimal));
+        const betBalances = yield axios.post(Routes.api.betBalances, {
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
 
-        result = yield call(request, Routes.api.voteBalances, options);
-        voteArrays.push(_.map(result[0], satoshiToDecimal));
+        const voteBalances = yield axios.post(Routes.api.voteBalances, {
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
@@ -159,23 +157,13 @@ export function* getWithdrawableAddressesHandler() {
       // Calculate winnings for each winning vote
       for (let i = 0; i < filtered.length; i++) {
         const vote = filtered[i];
-        const options = {
-          method: 'POST',
-          body: JSON.stringify({
-            contractAddress: topic.address,
-            senderAddress: vote.voterQAddress,
-          }),
-          headers: { 'Content-Type': 'application/json' },
-        };
 
-        const result = yield call(request, Routes.api.winnings, options);
-        let botWon = 0;
-        let qtumWon = 0;
-
-        if (result) {
-          botWon = satoshiToDecimal(result['0']);
-          qtumWon = satoshiToDecimal(result['1']);
-        }
+        const { data: { result } } = yield axios.post(Routes.api.winnings, {
+          contractAddress: topic.address,
+          senderAddress: vote.voterQAddress,
+        });
+        const botWon = result ? satoshiToDecimal(result['0']) : 0;
+        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
 
         // return only winning addresses
         if (botWon || qtumWon) {
