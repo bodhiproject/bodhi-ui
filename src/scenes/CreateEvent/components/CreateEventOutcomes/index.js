@@ -131,7 +131,7 @@ export default class CreateEventOutcomes extends Component {
     );
   };
 
-  renderOutcomeList = ({ fields}) => (
+  renderOutcomeList = ({ fields }) => (
     <ul className={this.props.classes.outcomeList}>
       {fields.map(this.renderOutcome)}
       {fields.length < MAX_OPTION_NUMBER && (
