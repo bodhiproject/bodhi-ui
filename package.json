@@ -1,5 +1,5 @@
 {
-  "name": "isomorphic-boilerplate",
+  "name": "bodhi-ui",
   "version": "1.1.0",
   "private": true,
   "dependencies": {
@@ -19,11 +19,11 @@
     "immutable": "^3.8.1",
     "immutable-devtools": "^0.0.7",
     "iscroll": "^5.2.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.10",
     "material-ui": "^1.0.0-beta.34",
     "material-ui-icons": "^1.0.0-beta.17",
     "mixpanel-browser": "^2.21.0",
-    "moment": "^2.18.1",
+    "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
     "nprogress": "^0.2.0",
     "number-precision": "^1.2.0",
@@ -70,7 +70,7 @@
   "devDependencies": {
     "autoprefixer": "^7.1.2",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.2",
     "babel-jest": "20.0.3",
     "babel-loader": "^7.1.1",
@@ -89,7 +89,7 @@
     "dotenv": "4.0.0",
     "enzyme": "^2.9.1",
     "enzyme-to-json": "^1.5.1",
-    "eslint": "^4.11.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-loader": "1.9.0",
     "eslint-plugin-flowtype": "2.35.0",
@@ -101,9 +101,11 @@
     "file-loader": "0.11.2",
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "^2.29.0",
+    "husky": "^0.14.3",
     "jest": "^20.0.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
+    "lint-staged": "^7.2.0",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
@@ -125,10 +127,19 @@
     "start:prod": "REACT_APP_ENV=prod node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "lint:fix": "eslint --fix --",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
-    "build:langs": "npm run extract-messages && npm run manage:translations"
+    "build:langs": "npm run extract-messages && npm run manage:translations",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint:fix"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "git add"
+    ]
   },
   "jest": {
     "collectCoverageFrom": [

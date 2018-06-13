@@ -1,4 +1,4 @@
-'use strict';
+
 
 if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
@@ -16,10 +16,10 @@ Object.assign = require('object-assign');
 
 // Hack, need to look for another solution
 window.matchMedia = window.matchMedia ||
-  function() {
+  function () {
     return {
       matches: false,
-      addListener: function() {},
-      removeListener: function() {},
+      addListener() {},
+      removeListener() {},
     };
   };
