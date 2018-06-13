@@ -1,5 +1,6 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
+import axios from 'axios';
 
 import actions from './actions';
 import { request } from '../../network/httpRequest';
@@ -45,7 +46,7 @@ export function* onSyncInfoHandler() {
 export function* getInsightTotalsRequestHandler() {
   yield takeEvery(actions.GET_INSIGHT_TOTALS, function* getInsightTotalsRequest() {
     try {
-      const result = yield call(request, Routes.insight.totals);
+      const result = yield axios.get(Routes.insight.totals);
 
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
