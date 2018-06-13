@@ -10,6 +10,7 @@ const styles = (theme) => ({
     alignItems: 'center',
   },
   bottomBarNetworkIcon: {
+    marginBottom: '-2px',
     marginRight: '4px',
     width: 14,
     height: 14,
