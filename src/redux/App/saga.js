@@ -2,7 +2,7 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
 
 import actions from './actions';
-import getAxios, { request } from '../../network/httpRequest';
+import getAxios from '../../network/httpRequest';
 import { querySyncInfo } from '../../network/graphQuery';
 import Routes from '../../network/routes';
 
@@ -60,21 +60,12 @@ export function* getInsightTotalsRequestHandler() {
 export function* encryptWalletRequestHandler() {
   yield takeEvery(actions.ENCRYPT_WALLET, function* encryptWalletRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          passphrase: action.passphrase,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const encryptResult = yield call(request, Routes.api.encryptWallet, options);
-
-      // const encryptResult = yield getAxios().post(Routes.api.encryptWallet, {
-      // passphrase: action.passphrase,
-      // });
+      const { data: { result } } = yield getAxios().post(Routes.api.encryptWallet, {
+        passphrase: action.passphrase,
+      });
       yield put({
         type: actions.ENCRYPT_WALLET_RETURN,
-        encryptResult,
+        encryptResult: result,
       });
     } catch (error) {
       yield put({
@@ -109,16 +100,7 @@ export function* backupWalletRequestHandler() {
 export function* importWalletRequestHandler() {
   yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
     try {
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const importResult = yield call(request, Routes.api.importWallet, options);
-      // const importResult = yield getAxios().post(Routes.api.importWallet);
-      yield put({
-        type: actions.IMPORT_WALLET_RETURN,
-        importResult,
-      });
+      yield getAxios().post(Routes.api.importWallet);
     } catch (error) {
       yield put({
         type: actions.IMPORT_WALLET_RETURN,

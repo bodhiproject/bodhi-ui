@@ -79,12 +79,10 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('encryptResult', action.encryptResult);
     }
-    case actions.BACKUP_WALLET_RETURN: {
+    case actions.BACKUP_WALLET_RETURN:
+    case actions.IMPORT_WALLET_RETURN: {
       if (action.error) return state.set('errorApp', action.error);
       return state;
-    }
-    case actions.IMPORT_WALLET_RETURN: {
-      return state.set('importWallet', action.importResult);
     }
     case actions.CHECK_WALLET_ENCRYPTED_RETURN: {
       if (action.error) {
