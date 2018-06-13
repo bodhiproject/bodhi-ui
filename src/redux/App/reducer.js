@@ -68,7 +68,7 @@ export default function appReducer(state = initState, action) {
         .set('lastUsedAddress', lastUsedAddress);
     }
     case actions.GET_INSIGHT_TOTALS_RETURN: {
-      return state.set('averageBlockTime', action.value.result.time_between_blocks);
+      return state.set('averageBlockTime', action.timeBetweenBlocks);
     }
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
@@ -79,11 +79,10 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('encryptResult', action.encryptResult);
     }
-    case actions.BACKUP_WALLET_RETURN: {
-      return state.set('backupWallet', action.backupResult);
-    }
+    case actions.BACKUP_WALLET_RETURN:
     case actions.IMPORT_WALLET_RETURN: {
-      return state.set('importWallet', action.importResult);
+      if (action.error) return state.set('errorApp', action.error);
+      return state;
     }
     case actions.CHECK_WALLET_ENCRYPTED_RETURN: {
       if (action.error) {
