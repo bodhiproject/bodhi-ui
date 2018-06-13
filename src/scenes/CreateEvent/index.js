@@ -26,7 +26,7 @@ import appActions from '../../redux/App/actions';
 import styles from './styles';
 import { Token, TransactionType } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
-import { doesUserNeedToUnlockWallet } from '../../helpers/utility'
+import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 
