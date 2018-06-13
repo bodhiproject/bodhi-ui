@@ -131,13 +131,14 @@
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations",
-    "precommmit": "npm run lint:fix",
+    "precommmit": "lint-staged",
     "prepush": "npm run lint:fix"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:fix"
-    }
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "git add"
+    ]
   },
   "jest": {
     "collectCoverageFrom": [
