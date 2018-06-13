@@ -168,7 +168,7 @@ export function* checkWalletEncryptedRequestHandler() {
 export function* validateAddressRequestHandler() {
   yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
     try {
-      const result = yield getAxios().post(Routes.api.validateAddress, {
+      const { data: { result } } = yield getAxios().post(Routes.api.validateAddress, {
         address: action.address,
       });
       yield put({
