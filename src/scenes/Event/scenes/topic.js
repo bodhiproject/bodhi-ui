@@ -208,6 +208,7 @@ export default class TopicPage extends Component {
       escrowClaim,
       botWinnings,
       qtumWinnings,
+      withdrawableAddresses,
     } = this.props;
     const { topic } = this.state;
 
@@ -218,6 +219,7 @@ export default class TopicPage extends Component {
     const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
     const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
+    
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
@@ -245,7 +247,7 @@ export default class TopicPage extends Component {
             </Typography>
           )}
         </div>
-        {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
+        {(withdrawableAddresses.length > 0) && (
           <div>
             <div className={classes.withdrawContainerSection}>
               <div className={classes.withdrawContainerSectionIcon}>
