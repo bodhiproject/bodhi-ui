@@ -92,16 +92,7 @@ export function* encryptWalletRequestHandler() {
 export function* backupWalletRequestHandler() {
   yield takeEvery(actions.BACKUP_WALLET, function* backupWalletRequest() {
     try {
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const backupResult = yield call(request, Routes.api.backupWallet, options);
-      // const backupResult = yield getAxios().post(Routes.api.backupWallet);
-      yield put({
-        type: actions.BACKUP_WALLET_RETURN,
-        backupResult,
-      });
+      yield getAxios().post(Routes.api.backupWallet);
     } catch (error) {
       yield put({
         type: actions.BACKUP_WALLET_RETURN,
