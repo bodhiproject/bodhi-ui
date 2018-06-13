@@ -34,6 +34,5 @@ export default class UIStore {
   @action.bound
   changeLocale(newLocale) {
     this.locale = locales[newLocale].locale;
-    // this.locale = this.locale === 'en-US' ? locales['zh-Hans-CN'].locale : locales['en-US'].locale;
   }
 }
