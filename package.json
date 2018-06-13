@@ -134,6 +134,11 @@
     "precommmit": "npm run lint:fix",
     "prepush": "npm run lint:fix"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:fix"
+    }
+  },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
