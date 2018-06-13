@@ -26,6 +26,7 @@ ReactJS frontend that interacts with the Bodhi backend services
 $ git clone https://github.com/bodhiproject/bodhi-ui.git
 $ cd bodhi-ui
 $ yarn
+$ yarn upgrade    // this is important
 $ npm install
 ```
 
