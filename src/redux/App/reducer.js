@@ -68,7 +68,7 @@ export default function appReducer(state = initState, action) {
         .set('lastUsedAddress', lastUsedAddress);
     }
     case actions.GET_INSIGHT_TOTALS_RETURN: {
-      return state.set('averageBlockTime', action.value.result.time_between_blocks);
+      return state.set('averageBlockTime', action.timeBetweenBlocks);
     }
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);

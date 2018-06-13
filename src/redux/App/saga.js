@@ -48,7 +48,7 @@ export function* getInsightTotalsRequestHandler() {
       const result = yield getAxios().get(Routes.insight.totals);
       yield put({
         type: actions.GET_INSIGHT_TOTALS_RETURN,
-        value: { result },
+        timeBetweenBlocks: result.data.time_between_blocks,
       });
     } catch (error) {
       console.error(error.message); // eslint-disable-line
