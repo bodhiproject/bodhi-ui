@@ -49,9 +49,9 @@ export function* getBetAndVoteBalancesHandler() {
       });
 
       // Filter unique votes
-      let result = yield call(queryAllVotes, voteFilters);
+      const allVotes = yield call(queryAllVotes, voteFilters);
       const uniqueVotes = [];
-      _.each(result, (vote) => {
+      _.each(allVotes, (vote) => {
         const { voterQAddress, topicAddress } = vote;
         if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
           uniqueVotes.push(vote);
@@ -69,11 +69,17 @@ export function* getBetAndVoteBalancesHandler() {
           headers: { 'Content-Type': 'application/json' },
         };
 
-        result = yield call(request, Routes.api.betBalances, options);
-        betArrays.push(_.map(result[0], satoshiToDecimal));
+        const betBalances = yield getAxios().post(Routes.api.betBalances, {
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
 
-        result = yield call(request, Routes.api.voteBalances, options);
-        voteArrays.push(_.map(result[0], satoshiToDecimal));
+        const voteBalances = yield getAxios().post(Routes.api.voteBalances, {
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
