@@ -191,16 +191,7 @@ export function* validateAddressRequestHandler() {
 export function* getTransactionCostRequestHandler() {
   yield takeEvery(actions.GET_TRANSACTION_COST, function* getTransactionCostRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify(action.txInfo),
-        headers: { 'Content-Type': 'application/json' },
-      };
-
-      const result = yield call(request, Routes.api.transactionCost, options);
-      console.log(result);
-
-      // const result = yield getAxios().post(Routes.api.transactionCost, action.txInfo);
+      const { data: { result } } = yield getAxios().post(Routes.api.transactionCost, action.txInfo);
       yield put({
         type: actions.GET_TRANSACTION_COST_RETURN,
         value: result,
