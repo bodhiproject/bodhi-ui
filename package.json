@@ -105,7 +105,6 @@
     "jest": "^20.0.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
-    "lint-staged": "^7.2.0",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
@@ -132,13 +131,8 @@
     "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null",
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.js": [
-      "npm run lint:fix",
-      "git add"
-    ]
+    "precommit": "npm run lint:fix",
+    "prepush": "npm run lint:fix"
   },
   "jest": {
     "collectCoverageFrom": [
