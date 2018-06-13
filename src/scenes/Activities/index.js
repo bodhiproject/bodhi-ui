@@ -96,10 +96,10 @@ export default class Activities extends Component {
     return (
       <div>
         <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.getTabLabel(EventStatus.Set)} />
-          <Tab label={this.getTabLabel(EventStatus.Finalize)} />
-          <Tab label={this.getTabLabel(EventStatus.Withdraw)} />
-          <Tab label={this.props.intl.formatMessage(messages.history)} />
+          <Tab label={this.getTabLabel(EventStatus.Set)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.Finalize)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.Withdraw)} className={classes.activitiesTabButton} />
+          <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
