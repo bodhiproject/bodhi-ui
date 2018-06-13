@@ -51,10 +51,9 @@ $ npm install
 
 ### Exporting
 
-1. Use `which mongo` find mongo install directory, in which you will also find a mongodump executable.
+1. Use `which mongo` to find mongo install directory, in which you will also find a mongodump executable.
 
-2.`mongodump --db bodhiapi --collection <colleciton_name> --out - > <output_path>/<filename>.bson`
-Note that filename is best to be same as collection name for the ease of importing.
+2. `mongodump --db bodhiapi --collection <colleciton_name> --out - > <output_path>/<filename>.bson` Note that filename is best to be same as collection name for the ease of importing.
 
 
 ## Coding
@@ -66,14 +65,16 @@ Note that filename is best to be same as collection name for the ease of importi
 ### to do style checking
 
 ```bash
-npm run lint:fix
+npm run lint:fix    // get sweet link checking and fixing
+npm run lint        // to see whats wrong
 ```
-The actually command run is eslint --fix -- "<path/to/code>". Some basic rules can be auto-fixed and the eslint --fix command will print out non-fixables which need mannual repair.
 
 ### Responsive Layout
 
 There are 2 ways to achieve responsive layout
+
 1. Using React layout in js, for example use medium={4} to set column width and showOnlyFor={Breakpoints.SMALL} to set visible option on different devices
+
   ```js
     <Row>
       <Column small={6} medium={4}>
@@ -85,7 +86,8 @@ There are 2 ways to achieve responsive layout
       </Column>
     </Row>
   ```
-  2. Using Sass mixin defined in app/containers/app/index.scss. Media query variables are defined with the same value as those in Foundation. Usage example:
+
+2. Using Sass mixin defined in app/containers/app/index.scss. Media query variables are defined with the same value as those in Foundation. Usage example:
 
   ```css
     .some-class{
@@ -101,6 +103,7 @@ There are 2 ways to achieve responsive layout
 ## Localization
 
 for most of the text, use
+  
   ```js
   <FormattedMessage
       id='app.greeting'
@@ -111,11 +114,11 @@ for most of the text, use
       }}
   />
 ```
+
 put the default text inside defaultMessage, also you can put the variables within `{}` like the example.
+For string inside placeholder or previous method can not handle, define messages in the top of the file using `defindMessages`
 
-for String inside placeholder or previous method can not handle, define messages in the top of the file using `defindMessages`
-
-  ```js
+```js
   const messages = defineMessages({
       greeting: {
           id: 'app.greeting',
@@ -124,6 +127,7 @@ for String inside placeholder or previous method can not handle, define messages
       },
   });
 ```
+
 Then put `this.props.intl.formatMessage(messages.greeting, { {name: 'Eric'}})` at the place where you want to put the text, also support variables by putting variables within `{}`
 
 Run `run build:langs`
@@ -132,5 +136,4 @@ update the translated string in the corresponding language file
 
 The language file is in `./src/languageProvider/locales`
 
-## [LGPL-3.0
- License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)
+## [LGPL-3.0License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)
