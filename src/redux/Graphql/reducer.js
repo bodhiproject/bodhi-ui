@@ -3,6 +3,7 @@ import { Map } from 'immutable';
 import actions from './actions';
 import { EventStatus } from '../../constants';
 
+
 const initState = new Map({
   getPendingTransactionsReturn: { count: 0 },
   actionableItemCount: {
@@ -11,45 +12,43 @@ const initState = new Map({
     [EventStatus.Withdraw]: 0,
     totalCount: 0,
   },
+  getOraclesReturn: [],
+  getTopicsReturn: [],
+  allEvents: [],
   error: null, // type: object
 });
+
 
 export default function graphqlReducer(state = initState, action) {
   switch (action.type) {
     case actions.GET_TOPICS_RETURN: {
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getTopicsReturn', {
-          data: action.value,
-          limit: action.limit,
-          skip: action.skip,
-        });
+        return state.set('getTopicsReturn', action.value);
       }
 
       // Not first page, add to existing data
-      return state.set('getTopicsReturn', {
-        data: [...state.get('getTopicsReturn').data, ...action.value],
-        limit: action.limit,
-        skip: action.skip,
-      });
+      return state.set('getTopicsReturn', [...state.get('getTopicsReturn'), ...action.value]);
     }
 
     case actions.GET_ORACLES_RETURN: {
       // First page, overwrite all data
       if (!action.skip || action.skip === 0) {
-        return state.set('getOraclesReturn', {
-          data: action.value,
-          limit: action.limit,
-          skip: action.skip,
-        });
+        return state.set('getOraclesReturn', action.value);
       }
 
       // Not first page, add to existing data
-      return state.set('getOraclesReturn', {
-        data: [...state.get('getOraclesReturn').data, ...action.value],
-        limit: action.limit,
-        skip: action.skip,
-      });
+      return state.set('getOraclesReturn', [...state.get('getOraclesReturn'), ...action.value]);
+    }
+
+    case actions.GET_ALL_EVENTS_RETURN: {
+      // First page, overwrite all data
+      if (!action.skip || action.skip === 0) {
+        return state.set('allEvents', action.value);
+      }
+
+      // Not first page, add to existing data
+      return state.set('allEvents', [...state.get('allEvents'), ...action.value]);
     }
 
     case actions.GET_TRANSACTIONS_RETURN: {

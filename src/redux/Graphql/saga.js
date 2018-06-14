@@ -1,4 +1,5 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
+import { defineMessages } from 'react-intl';
 import _ from 'lodash';
 
 import actions from './actions';
@@ -19,8 +20,121 @@ import {
   processTopic,
   processOracle,
 } from '../../helpers/utility';
-import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus } from '../../constants';
+import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import Routes from '../../network/routes';
+const { Pending } = TransactionStatus;
+const { bet, vote, setResult, finalize, withdraw } = Phases;
+
+const messages = defineMessages({
+  placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
+  setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
+  arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
+  finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
+  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
+});
+
+/**
+ * Takes an oracle object and returns which phase it is in.
+ * @param {oracle} oracle
+ */
+const getPhase = ({ token, status }) => {
+  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
+  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return bet;
+  if (BOT && status === 'VOTING') return vote;
+  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return setResult;
+  if (BOT && status === 'WAITRESULT') return finalize;
+  if (((BOT || QTUM) && status === 'WITHDRAW') || (QTUM && status === 'PENDING')) return withdraw;
+  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
+};
+
+/**
+ * Adds computed properties to each oracle used throughout the app
+ */
+const massageOracles = (oracles) => oracles.map((oracle) => {
+  const phase = getPhase(oracle);
+
+  const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+  const pendingTypes = {
+    bet: [Bet],
+    vote: [ApproveVote, Vote],
+    setResult: [ApproveSetResult, SetResult],
+    finalize: [FinalizeResult],
+  }[phase] || [];
+  const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+
+  const isUpcoming = phase === vote && oracle.status === OracleStatus.WaitResult;
+
+  const buttonText = {
+    bet: messages.placeBet,
+    setResult: messages.setResult,
+    vote: messages.arbitrate,
+    finalize: messages.finalizeResult,
+    withdraw: messages.withdraw,
+  }[phase];
+
+  const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
+
+  return {
+    amountLabel: phase === finalize ? `${amount} ${oracle.token}` : '',
+    url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
+    endTime: phase === setResult ? oracle.resultSetEndTime : oracle.endTime,
+    unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
+    isUpcoming,
+    buttonText,
+    phase,
+    ...oracle,
+  };
+});
+
+/**
+* Adds computed properties to each topic used throughout the app
+*/
+const massageTopics = (topics) => topics.map((topic) => {
+  const pendingTypes = [TransactionType.WithdrawEscrow, TransactionType.Withdraw];
+  const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+
+  const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
+  const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
+  return {
+    ...topic,
+    amountLabel: `${totalQTUM} QTUM, ${totalBOT} BOT`,
+    url: `/topic/${topic.address}`,
+    isUpcoming: false,
+    buttonText: messages.withdraw,
+    unconfirmed: isPending,
+  };
+});
+
+// Send allTopics & allOracles query
+export function* getAllEventsHandler() {
+  yield takeEvery(actions.GET_ALL_EVENTS, function* getAllEventsRequest(action) {
+    try {
+      let { filters, orderBy, limit, skip } = action; // eslint-disable-line prefer-const
+
+      limit /= 2; // since we're making 2 requests
+      const topicsResult = yield call(queryAllTopics, null, orderBy, limit, skip);
+      const topics = _.uniqBy(topicsResult.map(processTopic), 'txid');
+
+      const oraclesResult = yield call(queryAllOracles, filters, orderBy, limit, skip);
+      const oracles = _.uniqBy(oraclesResult.map(processOracle), 'txid');
+
+      // order them all properly
+      const { field, direction } = orderBy;
+      const events = _.orderBy([...massageOracles(oracles), ...massageTopics(topics)], [field], direction);
+
+      yield put({
+        type: actions.GET_ALL_EVENTS_RETURN,
+        value: events,
+      });
+    } catch (error) {
+      console.error(error); // eslint-disable-line
+      yield put({
+        type: actions.GET_ALL_EVENTS_RETURN,
+        value: [],
+      });
+    }
+  });
+}
 
 // Send allTopics query
 export function* getTopicsHandler() {
@@ -42,7 +156,7 @@ export function* getTopicsHandler() {
 
       yield put({
         type: actions.GET_TOPICS_RETURN,
-        value: topics,
+        value: massageTopics(topics),
         limit: action.limit,
         skip: action.skip,
       });
@@ -76,15 +190,15 @@ export function* getActionableTopicsHandler() {
       votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
       const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
       const topics = _.map(result, processTopic);
 
       yield put({
         type: actions.GET_TOPICS_RETURN,
-        value: topics,
+        value: massageTopics(topics),
         limit: action.limit,
         skip: action.skip,
       });
@@ -120,7 +234,7 @@ export function* getOraclesHandler() {
 
       yield put({
         type: actions.GET_ORACLES_RETURN,
-        value: oracles,
+        value: massageOracles(oracles),
         limit: action.limit,
         skip: action.skip,
       });
@@ -245,8 +359,8 @@ export function* getActionableItemCountHandler() {
       votes = getUniqueVotes(votes);
 
       // Fetch topics against votes that have the winning result index
-      _.each(votes, (vote) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: vote.topicAddress, resultIdx: vote.optionIdx });
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
       let result = yield call(queryAllTopics, topicFilters);
       actionItems[EventStatus.Withdraw] = result.length;
@@ -299,13 +413,10 @@ export function* getActionableItemCountHandler() {
 */
 function getUniqueVotes(votes) {
   const filtered = [];
-  _.each(votes, (vote) => {
-    if (!_.find(filtered, {
-      voterQAddress: vote.voterQAddress,
-      topicAddress: vote.topicAddress,
-      optionIdx: vote.optionIdx,
-    })) {
-      filtered.push(vote);
+  _.each(votes, (v) => {
+    const { voterQAddress, topicAddress, optionIdx } = v;
+    if (!_.find(filtered, { voterQAddress, topicAddress, optionIdx })) {
+      filtered.push(v);
     }
   });
   return filtered;
@@ -531,6 +642,7 @@ export default function* graphqlSaga() {
     fork(getTopicsHandler),
     fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
+    fork(getAllEventsHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),
     fork(getActionableItemCountHandler),

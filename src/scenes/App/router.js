@@ -16,6 +16,11 @@ const AppRouter = ({ url, langHandler, lang }) => {
     <Switch>
       <Route
         exact
+        path={`${url}${RouterPath.allEvents}`}
+        component={asyncComponent(() => import('../AllEvents'), langHandler)}
+      />
+      <Route
+        exact
         path={`${url}${RouterPath.qtumPrediction}`}
         component={asyncComponent(() => import('../Dashboard/index'), langHandler, lang)}
       />

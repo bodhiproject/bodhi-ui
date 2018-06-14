@@ -20,7 +20,7 @@ const styles = (theme) => ({
     marginRight: theme.padding.unit.px,
     verticalAlign: 'middle',
   },
-  navBarWalletButton: {
+  marginRightButton: {
     color: 'white',
     fontWeight: 400,
     marginRight: theme.padding.sm.px,
@@ -56,6 +56,8 @@ const styles = (theme) => ({
   },
   selectMenu: {
     color: 'white',
+    paddingTop: 3,
+    marginLeft: 25,
   },
 });
 

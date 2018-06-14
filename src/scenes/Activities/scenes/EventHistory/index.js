@@ -64,7 +64,7 @@ export default class EventHistory extends Component {
     classes: PropTypes.object.isRequired,
     setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
-    oracles: PropTypes.object,
+    oracles: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
     transactions: PropTypes.array,
     syncBlockNum: PropTypes.number.isRequired,
@@ -86,7 +86,9 @@ export default class EventHistory extends Component {
     expanded: [],
   };
 
-  componentWillMount() {
+  navigating = false
+
+  componentDidMount() {
     const { setAppLocation } = this.props;
 
     setAppLocation(AppLocation.activityHistory);
@@ -94,15 +96,7 @@ export default class EventHistory extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { oracles, transactions, syncBlockNum } = this.props;
-
-    // return from the click event
-    if (nextProps.oracles !== oracles) {
-      const path = getDetailPagePath(nextProps.oracles.data);
-      if (path) {
-        this.props.history.push(path);
-      }
-    }
+    const { transactions, syncBlockNum } = this.props;
 
     // Update page on new block
     if (nextProps.syncBlockNum !== syncBlockNum) {
@@ -124,9 +118,15 @@ export default class EventHistory extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { skip } = this.state;
+    const { oracles, history } = this.props;
 
     if (skip !== prevState.skip) {
       this.executeTxsRequest();
+    }
+
+    if (prevProps.oracles !== oracles && this.navigating) {
+      const path = getDetailPagePath(oracles);
+      if (path) history.push(path);
     }
   }
 
@@ -292,6 +292,7 @@ export default class EventHistory extends Component {
         ],
         { field: 'endTime', direction: SortBy.Descending },
       );
+      this.navigating = true;
     } else if (expandedIndex === -1) {
       newexpanded = [...expanded, id];
     } else {
