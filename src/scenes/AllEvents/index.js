@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -43,7 +42,7 @@ export default class AllEvents extends Component {
 
   componentDidMount() {
     this.fetchEvents(0);
-    this.setState({ skip: LIMIT })
+    this.setState({ skip: LIMIT });
     this.props.setAppLocation(AppLocation.allEvents);
   }
 
