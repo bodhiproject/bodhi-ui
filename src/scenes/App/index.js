@@ -16,17 +16,16 @@ import ErrorDialog from '../../components/ErrorDialog/index';
 import TxConfirmDialog from '../../components/TxConfirmDialog/index';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog/index';
 
+
 @withStyles(styles)
 export default class App extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
-    langHandler: PropTypes.func.isRequired,
-    lang: PropTypes.string.isRequired,
   }
 
   render() {
-    const { classes, langHandler, lang, match: { url } } = this.props;
+    const { classes, match: { url } } = this.props;
 
     return (
       <div className={classes.root}>
@@ -34,7 +33,7 @@ export default class App extends Component {
         <GlobalHub />
         <Loader />
         <div className={classes.container}>
-          <AppRouter url={url} langHandler={langHandler} lang={lang} />
+          <AppRouter url={url} />
         </div>
         <BottomBar />
         <CreateEvent />
@@ -44,7 +43,7 @@ export default class App extends Component {
         <WalletUnlockDialog />
         <ErrorDialog />
         <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
-        <TutorialCarouselDialog langHandler={langHandler} />
+        <TutorialCarouselDialog />
       </div>
     );
   }

@@ -2,12 +2,13 @@ import { addLocaleData } from 'react-intl';
 import Enlang from './entries/en-US';
 import Zhlang from './entries/zh-Hans-CN';
 import Krlang from './entries/ko-KR';
-const AppLocale = {
-  en: Enlang,
-  zh: Zhlang,
-  kr: Krlang,
+
+addLocaleData(Enlang.data);
+addLocaleData(Zhlang.data);
+addLocaleData(Krlang.data);
+
+export default {
+  [Enlang.locale]: Enlang,
+  [Zhlang.locale]: Zhlang,
+  [Krlang.locale]: Krlang,
 };
-addLocaleData(AppLocale.en.data);
-addLocaleData(AppLocale.zh.data);
-addLocaleData(AppLocale.kr.data);
-export default AppLocale;

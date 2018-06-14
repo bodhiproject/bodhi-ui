@@ -5,6 +5,7 @@ import Dialog, { DialogContent } from 'material-ui/Dialog';
 import { MenuItem } from 'material-ui/Menu';
 import cx from 'classnames';
 import { injectIntl, defineMessages, intlShape } from 'react-intl';
+import { inject, observer } from 'mobx-react';
 
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
@@ -34,15 +35,12 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line
-    langHandler: PropTypes.func,
-  }
-
-  static defaultProps = {
-    langHandler: undefined,
   }
 
   state = {
@@ -76,7 +74,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes, langHandler, intl } = this.props;
+    const { classes, store: { ui }, intl } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -88,7 +86,7 @@ export default class TutorialCarouselDialog extends Component {
             className={classes.langBtn}
             name="lang"
             value={intl.locale}
-            onChange={(e) => langHandler(e.target.value)}
+            onChange={(e) => ui.changeLocale(e.target.value)}
             disableUnderline
           >
             <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
