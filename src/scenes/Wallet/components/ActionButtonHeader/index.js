@@ -7,6 +7,7 @@ import EncryptDialog from '../EncryptDialog/index';
 import EncryptStatusDialog from '../EncryptStatusDialog/index';
 import RestoreWalletDialog from '../RestoreWalletDialog/index';
 import ChangePassphraseDialog from '../ChangPassphraseDialog';
+import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
 
 import appActions from '../../../../redux/App/actions';
 
@@ -63,7 +64,7 @@ export default class ActionButtonHeader extends Component {
   state = {
     encryptDialogVisible: false,
     restoreDialogVisible: false,
-    passphraseChangeDialogVisible: true,
+    passphraseChangeDialogVisible: false,
   }
 
   render() {
@@ -92,6 +93,7 @@ export default class ActionButtonHeader extends Component {
           onClose={() => { this.setState({ passphraseChangeDialogVisible: false }); }}
           closeEncryptDialog={() => { this.setState({ encryptDialogVisible: false }); }}
         />
+        <ChangePassphraseStatusDialog />
       </div>
     );
   }

@@ -7,7 +7,6 @@ import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 
-import graphqlActions from '../../../../redux/Graphql/actions';
 import appActions from '../../../../redux/App/actions';
 
 const messages = defineMessages({
@@ -27,6 +26,7 @@ const messages = defineMessages({
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
 }), (dispatch) => ({
+  changePassphrase: (oldPassphrase, newPassphrase) => (dispatch(appActions.changePassphrase(oldPassphrase, newPassphrase))),
 }))
 export default class ChangePassphraseDialog extends Component {
   static propTypes = {
@@ -34,6 +34,7 @@ export default class ChangePassphraseDialog extends Component {
     dialogVisible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     closeEncryptDialog: PropTypes.func.isRequired,
+    changePassphrase: PropTypes.func.isRequired,
   };
 
   state = {
@@ -42,6 +43,8 @@ export default class ChangePassphraseDialog extends Component {
   };
 
   submitPasswordChange = () => {
+    const { oldPassphrase, newPassphrase } = this.state;
+    this.props.changePassphrase(oldPassphrase, newPassphrase);
     this.props.closeEncryptDialog();
     this.props.onClose();
   }
