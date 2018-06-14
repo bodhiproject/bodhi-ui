@@ -120,9 +120,7 @@ export function* getAllEventsHandler() {
 
       // order them all properly
       const { field, direction } = orderBy;
-      const events = [...massageOracles(oracles), ...massageTopics(topics)].sort((a, b) => (
-        direction === 'ASC' ? a[field] - b[field] : b[field] - a[field]
-      ));
+      const events = _.orderBy([...massageOracles(oracles), ...massageTopics(topics)], [field], direction);
 
       yield put({
         type: actions.GET_ALL_EVENTS_RETURN,
