@@ -1,5 +1,6 @@
-src/modules/**
+build/**
 config/**
-scripts/**
 public/**
+scripts/**
+src/modules/**
 README.md
