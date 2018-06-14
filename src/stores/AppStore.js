@@ -1,9 +1,7 @@
-import { observable } from 'mobx';
 import UiStore from './UiStore';
 
 
 class AppStore {
-  @observable loading = true
   ui = {} // ui store
 
   constructor() {
