@@ -77,6 +77,7 @@ export default function graphqlReducer(state = initState, action) {
       if (action.error) {
         return state.set('error', action.error);
       }
+      console.log(action.value);
       return state.set('txReturn', action.value);
     }
     case actions.CLEAR_GRAPHQL_ERROR: {

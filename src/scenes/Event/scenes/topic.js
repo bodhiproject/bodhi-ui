@@ -55,6 +55,7 @@ const pageMessage = defineMessages({
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
+  txReturn: state.Graphql.get('txReturn'),
   betBalances: state.Topic.get('betBalances'),
   voteBalances: state.Topic.get('voteBalances'),
   escrowClaim: state.Topic.get('escrowClaim'),
@@ -93,6 +94,7 @@ export default class TopicPage extends Component {
     qtumWinnings: PropTypes.number,
     withdrawableAddresses: PropTypes.array,
     createWithdrawTx: PropTypes.func.isRequired,
+    txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
     walletEncrypted: PropTypes.bool.isRequired,
@@ -107,6 +109,7 @@ export default class TopicPage extends Component {
     syncBlockTime: undefined,
     getTopicsReturn: undefined,
     getTransactionsReturn: [],
+    txReturn: undefined,
     betBalances: [],
     voteBalances: [],
     withdrawableAddresses: undefined,
@@ -138,11 +141,11 @@ export default class TopicPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { syncBlockTime, getTopicsReturn } = this.props;
+    const { syncBlockTime, getTopicsReturn, txReturn } = this.props;
     const { address } = this.state;
 
     // Update page on new block
-    if (nextProps.syncBlockTime !== syncBlockTime) {
+    if ((nextProps.syncBlockTime !== syncBlockTime) || (txReturn && !nextProps.txReturn)) {
       this.fetchData();
     }
 

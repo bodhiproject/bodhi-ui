@@ -49,6 +49,7 @@ export default class TransactionSentDialog extends Component {
 
   render() {
     const { intl, classes, txReturn, clearTxReturn } = this.props;
+    console.log(txReturn);
     if (!txReturn) return null;
 
     return (
