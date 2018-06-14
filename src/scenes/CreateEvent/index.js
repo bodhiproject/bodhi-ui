@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { Field, reduxForm, Form, change } from 'redux-form';
+import { Field, reduxForm, Form, change, untouch } from 'redux-form';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import _TextField from 'material-ui/TextField';
@@ -219,6 +219,7 @@ const validate = (values, props) => {
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   validateAddress: (address) => dispatch(appActions.validateAddress(address)),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
+  untouchForm: (field) => dispatch(untouch(FORM_NAME, field)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
 @reduxForm({
@@ -237,6 +238,7 @@ export default class CreateEvent extends Component {
     createTopicTx: PropTypes.func,
     getInsightTotals: PropTypes.func,
     validateAddress: PropTypes.func.isRequired,
+    untouchForm: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     handleSubmit: PropTypes.func.isRequired,
     reset: PropTypes.func.isRequired,
@@ -368,6 +370,7 @@ export default class CreateEvent extends Component {
     });
 
     this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
+    this.props.untouchForm(ID_RESULT_SETTER);
   }
 
   onEnter = () => {
