@@ -35,6 +35,7 @@ export default class AllEvents extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.sortBy !== this.props.sortBy) {
+      // fetches the same amount of events on the page
       this.fetchEvents(0, this.state.skip);
     }
   }
