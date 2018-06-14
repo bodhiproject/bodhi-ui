@@ -3,7 +3,7 @@ import moment from 'moment';
 import locales from '../languageProvider';
 
 
-export default class UIStore {
+export default class UiStore {
   @observable locale = localStorage.getItem('lang') || this.defaultLocale
   @computed get localeMessages() {
     return locales[this.locale].messages;
