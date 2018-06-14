@@ -10,6 +10,7 @@ import EventHistory from './scenes/EventHistory/index';
 import appActions from '../../redux/App/actions';
 import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
+const { set, finalize, withdraw, activityHistory } = RouterPath;
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
@@ -58,12 +59,11 @@ export default class Activities extends Component {
   }
 
   state = {
-    tabIdx: 0,
+    tabIdx: this.tabIdx,
   }
 
-  componentDidMount() {
+  get tabIdx() {
     // Determine tab index based on path
-    const { set, finalize, withdraw, activityHistory } = RouterPath;
     const tabIdxs = {
       [set]: TAB_SET,
       [finalize]: TAB_FINALIZE,
@@ -71,7 +71,10 @@ export default class Activities extends Component {
       [activityHistory]: TAB_HISTORY,
     };
     const tabIdx = tabIdxs[this.props.match.path];
-    this.setState({ tabIdx });
+    return tabIdx;
+  }
+
+  componentDidMount() {
     const locations = {
       [set]: AppLocation.resultSet,
       [finalize]: AppLocation.finalize,
