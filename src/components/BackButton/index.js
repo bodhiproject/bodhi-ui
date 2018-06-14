@@ -40,6 +40,10 @@ export default class BackButton extends Component {
     const { appLocation, history } = this.props;
 
     switch (appLocation) {
+      case AppLocation.activityHistory: {
+        history.push(RouterPath.activityHistory);
+        break;
+      }
       case AppLocation.allEvents: {
         history.push(RouterPath.allEvents);
         break;
