@@ -58,21 +58,12 @@ export default class Activities extends Component {
     actionableItemCount: undefined,
   }
 
-  state = {
-    tabIdx: this.tabIdx,
-  }
-
-  get tabIdx() {
-    // Determine tab index based on path
-    const tabIdxs = {
-      [set]: TAB_SET,
-      [finalize]: TAB_FINALIZE,
-      [withdraw]: TAB_WITHDRAW,
-      [activityHistory]: TAB_HISTORY,
-    };
-    const tabIdx = tabIdxs[this.props.match.path];
-    return tabIdx;
-  }
+  tabIdx = { // Determine tab index based on path
+    [set]: TAB_SET,
+    [finalize]: TAB_FINALIZE,
+    [withdraw]: TAB_WITHDRAW,
+    [activityHistory]: TAB_HISTORY,
+  }[this.props.match.path]
 
   componentDidMount() {
     const locations = {
@@ -144,21 +135,20 @@ export default class Activities extends Component {
 
   render() {
     const { classes, history } = this.props;
-    const { tabIdx } = this.state;
 
     return (
       <div>
-        <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
+        <Tabs indicatorColor="primary" value={this.tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
           <Tab label={this.getTabLabel(EventStatus.Set)} className={classes.activitiesTabButton} />
           <Tab label={this.getTabLabel(EventStatus.Finalize)} className={classes.activitiesTabButton} />
           <Tab label={this.getTabLabel(EventStatus.Withdraw)} className={classes.activitiesTabButton} />
           <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
-          {tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
-          {tabIdx === TAB_HISTORY && <EventHistory history={history} />}
+          {this.tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
+          {this.tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
+          {this.tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {this.tabIdx === TAB_HISTORY && <EventHistory history={history} />}
         </div>
       </div>
     );
