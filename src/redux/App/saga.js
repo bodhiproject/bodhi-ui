@@ -83,15 +83,10 @@ export function* encryptWalletRequestHandler() {
 export function* changePassphraseRequestHandler() {
   yield takeEvery(actions.CHANGE_PASSPHRASE, function* changePassphraseRequest(action) {
     try {
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({
-          oldPassphrase: action.oldPassphrase,
-          newPassphrase: action.newPassphrase,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      };
-      const changePassphraseResult = yield call(request, Routes.api.walletPassphraseChange, options);
+      const changePassphraseResult = yield axios.post(Routes.api.walletPassphraseChange, {
+        oldPassphrase: action.oldPassphrase,
+        newPassphrase: action.newPassphrase,
+      });
       yield put({
         type: actions.CHANGE_PASSPHRASE_RETURN,
         changePassphraseResult,

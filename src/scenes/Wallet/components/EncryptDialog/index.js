@@ -61,7 +61,7 @@ export default class EncryptDialog extends Component {
                 margin="dense"
                 id="toAddress"
                 label={intl.formatMessage(messages.passphrase)}
-                type="string"
+                type="password"
                 fullWidth
                 error={_.isEmpty(passphrase)}
                 onChange={(e) => this.setState({ passphrase: e.target.value })}

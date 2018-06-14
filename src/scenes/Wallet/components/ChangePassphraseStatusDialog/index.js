@@ -26,7 +26,7 @@ export default class ChangePassphraseStatusDialog extends Component {
 
   render() {
     const { changePassphraseResult } = this.props;
-    const isSuccessful = !_.isUndefined(changePassphraseResult) && _.has(changePassphraseResult, 'result');
+    const isSuccessful = !_.isUndefined(changePassphraseResult) && _.has(changePassphraseResult, 'status');
 
     return (
       <Dialog open={!_.isUndefined(changePassphraseResult)}>

@@ -68,7 +68,7 @@ export default class ChangePassphraseDialog extends Component {
               margin="normal"
               id="oldPassphrase"
               label={intl.formatMessage(messages.oldPassphrase)}
-              type="string"
+              type="password"
               fullWidth
               onChange={(e) => { this.setState({ oldPassphrase: e.target.value }); }}
               error={_.isEmpty(oldPassphrase)}
@@ -78,7 +78,7 @@ export default class ChangePassphraseDialog extends Component {
               margin="normal"
               id="newPassphrase"
               label={intl.formatMessage(messages.newPassphrase)}
-              type="string"
+              type="password"
               fullWidth
               onChange={(e) => { this.setState({ newPassphrase: e.target.value }); }}
               error={_.isEmpty(newPassphrase)}
