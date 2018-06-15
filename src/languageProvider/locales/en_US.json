@@ -26,7 +26,7 @@
   "cardInfo.vote": "Voting",
   "cardInfo.withdraw": "Withdraw",
   "changePassphrase.fail": "Passphrase Change Failed",
-  "changePassphrase.success": "Passphrase Change Successful.",
+  "changePassphrase.success": "Passphrase Change Successful",
   "create.addOutcome": "Add Outcome",
   "create.alertFail": "Oops, something went wrong",
   "create.alertSuc": "The transaction is broadcasted to blockchain. \n You can view details from below link",

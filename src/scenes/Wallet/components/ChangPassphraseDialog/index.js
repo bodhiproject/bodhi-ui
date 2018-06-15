@@ -12,20 +12,18 @@ import appActions from '../../../../redux/App/actions';
 const messages = defineMessages({
   oldPassphrase: {
     id: 'str.oldPassphrase',
-    defaultMessage: 'old passphrase',
+    defaultMessage: 'OLD PASSPHRASE',
   },
   newPassphrase: {
     id: 'str.newPassphrase',
-    defaultMessage: 'new passphrase',
+    defaultMessage: 'NEW PASSPHRASE',
   },
 });
 
 
 @injectIntl
 @withStyles(null, { withTheme: true })
-@connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch) => ({
+@connect(null, (dispatch) => ({
   changePassphrase: (oldPassphrase, newPassphrase) => (dispatch(appActions.changePassphrase(oldPassphrase, newPassphrase))),
 }))
 export default class ChangePassphraseDialog extends Component {
@@ -44,9 +42,10 @@ export default class ChangePassphraseDialog extends Component {
 
   submitPasswordChange = () => {
     const { oldPassphrase, newPassphrase } = this.state;
-    this.props.changePassphrase(oldPassphrase, newPassphrase);
-    this.props.closeEncryptDialog();
-    this.props.onClose();
+    const { changePassphrase, closeEncryptDialog, onClose } = this.props;
+    changePassphrase(oldPassphrase, newPassphrase);
+    closeEncryptDialog();
+    onClose();
   }
 
   render() {
@@ -70,7 +69,7 @@ export default class ChangePassphraseDialog extends Component {
               label={intl.formatMessage(messages.oldPassphrase)}
               type="password"
               fullWidth
-              onChange={(e) => { this.setState({ oldPassphrase: e.target.value }); }}
+              onChange={(e) => this.setState({ oldPassphrase: e.target.value })}
               error={_.isEmpty(oldPassphrase)}
               required
             />
@@ -80,7 +79,7 @@ export default class ChangePassphraseDialog extends Component {
               label={intl.formatMessage(messages.newPassphrase)}
               type="password"
               fullWidth
-              onChange={(e) => { this.setState({ newPassphrase: e.target.value }); }}
+              onChange={(e) => this.setState({ newPassphrase: e.target.value })}
               error={_.isEmpty(newPassphrase)}
               required
             />

@@ -32,7 +32,7 @@ export default class ChangePassphraseStatusDialog extends Component {
       <Dialog open={!_.isUndefined(changePassphraseResult)}>
         <DialogTitle>
           {isSuccessful ? (
-            <FormattedMessage id="changePassphrase.success" defaultMessage="Passphrase Change Successful." />
+            <FormattedMessage id="changePassphrase.success" defaultMessage="Passphrase Change Successful" />
           ) : (
             <FormattedMessage id="changePassphrase.fail" defaultMessage="Passphrase Change Failed" />
           )}

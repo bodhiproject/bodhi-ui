@@ -78,7 +78,7 @@ export default class ActionButtonHeader extends Component {
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
-          openPassphraseChangeDialog={() => { this.setState({ passphraseChangeDialogVisible: true }); }}
+          openPassphraseChangeDialog={() => this.setState({ passphraseChangeDialogVisible: true })}
         />
         <EncryptStatusDialog
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
@@ -90,8 +90,8 @@ export default class ActionButtonHeader extends Component {
         />
         <ChangePassphraseDialog
           dialogVisible={passphraseChangeDialogVisible}
-          onClose={() => { this.setState({ passphraseChangeDialogVisible: false }); }}
-          closeEncryptDialog={() => { this.setState({ encryptDialogVisible: false }); }}
+          onClose={() => this.setState({ passphraseChangeDialogVisible: false })}
+          closeEncryptDialog={() => this.setState({ encryptDialogVisible: false })}
         />
         <ChangePassphraseStatusDialog />
       </div>
