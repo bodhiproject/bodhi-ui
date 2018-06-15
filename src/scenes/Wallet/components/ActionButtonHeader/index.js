@@ -6,6 +6,8 @@ import { withStyles, Button, Tooltip } from 'material-ui';
 import EncryptDialog from '../EncryptDialog/index';
 import EncryptStatusDialog from '../EncryptStatusDialog/index';
 import RestoreWalletDialog from '../RestoreWalletDialog/index';
+import ChangePassphraseDialog from '../ChangPassphraseDialog';
+import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
 
 import appActions from '../../../../redux/App/actions';
 
@@ -62,11 +64,12 @@ export default class ActionButtonHeader extends Component {
   state = {
     encryptDialogVisible: false,
     restoreDialogVisible: false,
+    passphraseChangeDialogVisible: false,
   }
 
   render() {
     const { classes, encryptResult } = this.props;
-    const { encryptDialogVisible, restoreDialogVisible } = this.state;
+    const { encryptDialogVisible, restoreDialogVisible, passphraseChangeDialogVisible } = this.state;
     return (
       <div className={classes.functionRow}>
         <Tip onClick={() => { this.setState({ encryptDialogVisible: true }); }}>encrypt</Tip>
@@ -75,6 +78,7 @@ export default class ActionButtonHeader extends Component {
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
+          openPassphraseChangeDialog={() => this.setState({ passphraseChangeDialogVisible: true })}
         />
         <EncryptStatusDialog
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
@@ -84,6 +88,12 @@ export default class ActionButtonHeader extends Component {
           dialogVisible={restoreDialogVisible}
           onClose={() => { this.setState({ restoreDialogVisible: false }); }}
         />
+        <ChangePassphraseDialog
+          dialogVisible={passphraseChangeDialogVisible}
+          onClose={() => this.setState({ passphraseChangeDialogVisible: false })}
+          closeEncryptDialog={() => this.setState({ encryptDialogVisible: false })}
+        />
+        <ChangePassphraseStatusDialog />
       </div>
     );
   }

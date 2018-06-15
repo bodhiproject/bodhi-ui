@@ -20,6 +20,14 @@ const appActions = {
     destination,
   }),
 
+  CHANGE_PASSPHRASE: 'CHANGE_PASSPHRASE',
+  CHANGE_PASSPHRASE_RETURN: 'CHANGE_PASSPHRASE_RETURN',
+  changePassphrase: (oldPassphrase, newPassphrase) => ({
+    type: appActions.CHANGE_PASSPHRASE,
+    oldPassphrase,
+    newPassphrase,
+  }),
+
   IMPORT_WALLET: 'IMPORT_WALLET',
   IMPORT_WALLET_RETURN: 'IMPORT_WALLET_RETURN',
   importWallet: (destination) => ({
@@ -127,6 +135,11 @@ const appActions = {
   CLEAR_ENCRYPT_RESULT: 'CLEAR_ENCRYPT_RESULT',
   clearEncryptResult: () => ({
     type: appActions.CLEAR_ENCRYPT_RESULT,
+  }),
+
+  CLEAR_CHANGE_PASSPHRASE_RESULT: 'CLEAR_CHANGE_PASSPHRASE_RESULT',
+  clearChangePassphraseResult: () => ({
+    type: appActions.CLEAR_CHANGE_PASSPHRASE_RESULT,
   }),
 };
 export default appActions;

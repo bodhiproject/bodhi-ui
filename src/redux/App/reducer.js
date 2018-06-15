@@ -13,6 +13,7 @@ const initState = new Map({
   appLocation: AppLocation.qtumPrediction,
   walletAddresses: [],
   lastUsedAddress: '',
+  changePassphraseResult: undefined,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
@@ -79,7 +80,15 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('encryptResult', action.encryptResult);
     }
-    case actions.BACKUP_WALLET_RETURN:
+    case actions.CHANGE_PASSPHRASE_RETURN: {
+      if (action.error) {
+        return state.set('changePassphraseResult', action.error);
+      }
+      return state.set('changePassphraseResult', action.changePassphraseResult);
+    }
+    case actions.BACKUP_WALLET_RETURN: {
+      return state.set('backupWallet', action.backupResult);
+    }
     case actions.IMPORT_WALLET_RETURN: {
       if (action.error) return state.set('errorApp', action.error);
       return state;
@@ -136,6 +145,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.CLEAR_ENCRYPT_RESULT: {
       return state.set('encryptResult', undefined);
+    }
+    case actions.CLEAR_CHANGE_PASSPHRASE_RESULT: {
+      return state.set('changePassphraseResult', undefined);
     }
     default: {
       return state;

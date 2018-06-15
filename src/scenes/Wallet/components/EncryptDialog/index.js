@@ -8,7 +8,6 @@ import _ from 'lodash';
 
 import appActions from '../../../../redux/App/actions';
 
-
 const messages = defineMessages({
   passphrase: {
     id: 'encrypt.passphrase',
@@ -29,6 +28,7 @@ export default class EncryptDialog extends Component {
     onClose: PropTypes.func.isRequired,
     encryptWallet: PropTypes.func.isRequired,
     walletEncrypted: PropTypes.bool.isRequired,
+    openPassphraseChangeDialog: PropTypes.func.isRequired,
   }
 
   state = {
@@ -61,7 +61,7 @@ export default class EncryptDialog extends Component {
                 margin="dense"
                 id="toAddress"
                 label={intl.formatMessage(messages.passphrase)}
-                type="string"
+                type="password"
                 fullWidth
                 error={_.isEmpty(passphrase)}
                 onChange={(e) => this.setState({ passphrase: e.target.value })}
@@ -71,6 +71,11 @@ export default class EncryptDialog extends Component {
           )}
         </DialogContent>
         <DialogActions>
+          {walletEncrypted && (
+            <Button color="primary" onClick={this.props.openPassphraseChangeDialog}>
+              <FormattedMessage id="wallet.changePassphrase" defaultMessage="Change Passphrase" />
+            </Button>
+          )}
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
