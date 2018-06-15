@@ -37,30 +37,40 @@ export default class BackButton extends Component {
   }
 
   onBackClick = () => {
-    const { appLocation } = this.props;
+    const { appLocation, history } = this.props;
 
     switch (appLocation) {
+      case AppLocation.activityHistory: {
+        history.push(RouterPath.activityHistory);
+        break;
+      }
+      case AppLocation.allEvents: {
+        history.push(RouterPath.allEvents);
+        break;
+      }
+      case AppLocation.qtumPrediction:
       case AppLocation.bet: {
-        this.props.history.push(RouterPath.qtumPrediction);
+        history.push(RouterPath.qtumPrediction);
         break;
       }
       case AppLocation.vote: {
-        this.props.history.push(RouterPath.botCourt);
+        history.push(RouterPath.botCourt);
         break;
       }
       case AppLocation.resultSet: {
-        this.props.history.push(RouterPath.set);
+        history.push(RouterPath.set);
         break;
       }
       case AppLocation.finalize: {
-        this.props.history.push(RouterPath.finalize);
+        history.push(RouterPath.finalize);
         break;
       }
       case AppLocation.withdraw: {
-        this.props.history.push(RouterPath.withdraw);
+        history.push(RouterPath.withdraw);
         break;
       }
       default: {
+        history.push(RouterPath.qtumPrediction);
         break;
       }
     }

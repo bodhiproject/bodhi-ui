@@ -24,7 +24,6 @@ import {
   TransactionType,
   TransactionStatus,
   SortBy,
-  AppLocation,
 } from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
@@ -72,7 +71,6 @@ const pageMessage = defineMessages({
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
@@ -82,7 +80,7 @@ export default class TopicPage extends Component {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     getTopics: PropTypes.func.isRequired,
-    getTopicsReturn: PropTypes.object,
+    getTopicsReturn: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
     getTransactionsReturn: PropTypes.array,
     getBetAndVoteBalances: PropTypes.func.isRequired,
@@ -102,12 +100,11 @@ export default class TopicPage extends Component {
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    setAppLocation: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     syncBlockTime: undefined,
-    getTopicsReturn: undefined,
+    getTopicsReturn: [],
     getTransactionsReturn: [],
     txReturn: undefined,
     betBalances: [],
@@ -134,9 +131,6 @@ export default class TopicPage extends Component {
   }
 
   componentWillMount() {
-    const { setAppLocation } = this.props;
-
-    setAppLocation(AppLocation.withdraw);
     this.fetchData();
   }
 
@@ -149,7 +143,7 @@ export default class TopicPage extends Component {
       this.fetchData();
     }
 
-    const topics = nextProps.getTopicsReturn ? _.get(nextProps.getTopicsReturn, 'data', []) : _.get(getTopicsReturn, 'data', []);
+    const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
     const topic = _.find(topics, { address });
     if (topic && topic.status === OracleStatus.Withdraw) {
       this.setState({ topic });

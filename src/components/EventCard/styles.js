@@ -48,6 +48,7 @@ const styles = (theme) => ({
     bottom: theme.padding.sm.px,
     color: theme.palette.text.primary,
   },
+  eventCardBg: {},
 });
 
 export default styles;

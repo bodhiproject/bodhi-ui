@@ -63,11 +63,6 @@ export function* getBetAndVoteBalancesHandler() {
       const voteArrays = [];
       for (let i = 0; i < uniqueVotes.length; i++) {
         const voteObj = uniqueVotes[i];
-        const options = {
-          method: 'POST',
-          body: JSON.stringify({ contractAddress, senderAddress: voteObj.voterQAddress }),
-          headers: { 'Content-Type': 'application/json' },
-        };
 
         const betBalances = yield axios.post(Routes.api.betBalances, {
           contractAddress,
