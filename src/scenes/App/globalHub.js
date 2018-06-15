@@ -1,5 +1,7 @@
+/* eslint-disable */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { withApollo } from 'react-apollo';
 import _ from 'lodash';
@@ -35,6 +37,8 @@ const messages = defineMessages({
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 }))
+@inject('store')
+@observer
 export default class GlobalHub extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -64,6 +68,7 @@ export default class GlobalHub extends Component {
       getSyncInfo,
       syncPercent,
       getPendingTransactions,
+      store,
     } = this.props;
 
     // Checks to see if any txs will require unlocking the wallet
@@ -71,6 +76,7 @@ export default class GlobalHub extends Component {
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
+    store.pubsub.getSyncInfo();
     getSyncInfo(syncPercent);
     syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
 
@@ -127,21 +133,24 @@ export default class GlobalHub extends Component {
   }
 
   fetchSyncInfo = () => {
-    const { getSyncInfo, syncPercent } = this.props;
+    const { getSyncInfo, syncPercent, store } = this.props;
     getSyncInfo(syncPercent);
+    store.pubsub.getSyncInfo();
   };
 
   subscribeSyncInfo = () => {
-    const { client, onSyncInfo } = this.props;
+    const { client, onSyncInfo, store } = this.props;
 
     client.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
-      next(data) {
-        onSyncInfo(data.data.onSyncInfo);
+      next({ data }) {
+        store.pubsub.syncInfo(data.onSyncInfo);
+        onSyncInfo(data.onSyncInfo);
       },
       error(err) {
         onSyncInfo({ error: err.message });
+        store.pubsub.syncInfo({ error: err.message });
       },
     });
   };

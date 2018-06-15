@@ -1,5 +1,8 @@
-import { observable, action, runInAction } from 'mobx';
+/* eslint-disable */
+import { observable, action, runInAction, transaction } from 'mobx';
 import { Token, OracleStatus } from '../constants';
+import { queryAllTopics, queryAllOracles } from '../network/graphQuery';
+import _ from 'lodash';
 
 
 export default class AllEventsStore {
@@ -30,9 +33,9 @@ export default class AllEventsStore {
   }
 
   @action.bound
-  fetchAllEvents(skip = this.skip, limit = this.limit) {
-    const { sortBy, wallet } = this.app;
-    const orderBy = { field: 'blockNum', direction: sortBy };
+  async fetchAllEvents(skip = this.skip, limit = this.limit) {
+    limit /= 2; // eslint-disable-line
+    const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [
       // finalizing
       { token: Token.Bot, status: OracleStatus.WaitResult },
@@ -45,7 +48,24 @@ export default class AllEventsStore {
       { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       { token: Token.Qtum, status: OracleStatus.WaitResult },
     ];
-    console.log('FETCH ALL EVENTS');
-    // make graphql request
+    let topics = await queryAllTopics(null, orderBy, limit, skip);
+    let oracles = await queryAllOracles(filters, orderBy, limit, skip);
+    // const event = {
+    //   bet: Bet,
+    //   vote: Vote,
+    //   setResult: SetResult,
+    //   finalize: Finalize,
+    //   withdraw: Withdraw,
+    // };
+    runInAction(() => {
+      console.log('TOPIC: ', topics[0]);
+      console.log('ORACLE: ', oracles[0]);
+      // topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+      // oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      // OR
+      //  const allEvents = _.uniqBy([...topics, ...oracles], 'txid').map((evt) => new event[getPhase(evt)](evt, this.app))
+      const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy);
+      return allEvents;
+    });
   }
 }

@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import WalletStore from './WalletStore';
+import PubSubStore from './PubSubStore';
 
 
 class AppStore {
@@ -13,6 +14,7 @@ class AppStore {
   constructor() {
     this.ui = new UiStore();
     this.wallet = new WalletStore();
+    this.pubsub = new PubSubStore(this);
     this.allEvents = new AllEventsStore(this);
   }
 }
