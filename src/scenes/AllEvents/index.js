@@ -41,7 +41,8 @@ export default class AllEvents extends Component {
   }
 
   componentDidMount() {
-    this.loadMoreData();
+    this.fetchEvents(0);
+    this.setState({ skip: LIMIT });
     this.props.setAppLocation(AppLocation.allEvents);
   }
 
