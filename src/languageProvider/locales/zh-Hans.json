@@ -1,5 +1,4 @@
 {
-  "navbar.allEvents": "全部事件",
   "activitiesTab.Finalize": "结束",
   "activitiesTab.History": "历史记录",
   "activitiesTab.Set": "设置结果",
@@ -92,6 +91,7 @@
   "myBalances.deposit": "充值",
   "myBalances.myBalance": "余额",
   "navBar.activities": "我的活动",
+  "navbar.allEvents": "全部事件",
   "navbar.botCourt": "BOT法庭",
   "navbar.qtumPrediction": "QTUM预测",
   "oracle.betStartTimeDisabledText": "下注开始时间还没到",
