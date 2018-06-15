@@ -24,6 +24,8 @@
     "material-ui": "^1.0.0-beta.46",
     "material-ui-icons": "^1.0.0-beta.36",
     "mixpanel-browser": "^2.22.4",
+    "mobx": "^5.0.2",
+    "mobx-react": "^5.2.3",
     "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
     "nprogress": "^0.2.0",
