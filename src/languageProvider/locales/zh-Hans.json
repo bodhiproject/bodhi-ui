@@ -1,4 +1,6 @@
 {
+  "navbar.allEvents": "全部事件",
+  "activitiesTab.Finalize": "结束",
   "activitiesTab.History": "历史记录",
   "activitiesTab.Set": "设置结果",
   "balance.info": "如果您想加密，备份或恢复您的钱包，请在Qtum钱包中进行。在程序菜单栏，有一个启动Qtum钱包选项。",

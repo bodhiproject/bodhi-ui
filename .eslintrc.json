@@ -21,6 +21,7 @@
     }
   },
   "rules": {
+    "react/prop-types": 0,
     "object-curly-newline": 0,
     "react/no-did-mount-set-state": 0,
     "react/jsx-pascal-case": 0,

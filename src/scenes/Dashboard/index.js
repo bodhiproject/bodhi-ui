@@ -6,13 +6,16 @@ import { withStyles } from 'material-ui/styles';
 
 import TopActions from './components/TopActions/index';
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
-import { EventStatus, SortBy } from '../../constants';
+import appActions from '../../redux/App/actions';
+import { EventStatus, SortBy, AppLocation } from '../../constants';
 import styles from './styles';
 
 
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   sortBy: state.Dashboard.get('sortBy'),
+}), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
 export default class Dashboard extends Component {
   static propTypes = {
@@ -21,6 +24,10 @@ export default class Dashboard extends Component {
 
   static defaultProps = {
     sortBy: SortBy.Ascending,
+  }
+
+  componentDidMount() {
+    this.props.setAppLocation(AppLocation.bet);
   }
 
   render() {

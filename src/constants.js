@@ -7,6 +7,7 @@ module.exports = {
     finalize: '/activities/finalize',
     withdraw: '/activities/withdraw',
     activityHistory: '/activities/history',
+    allEvents: '/all-events',
   },
 
   /* App Constants */
@@ -21,6 +22,15 @@ module.exports = {
     finalize: 'Finalize',
     withdraw: 'Withdraw',
     activityHistory: 'ActivityHistory',
+    allEvents: 'AllEvents',
+  },
+
+  Phases: {
+    bet: 'bet',
+    vote: 'vote',
+    setResult: 'setResult',
+    finalize: 'finalize',
+    withdraw: 'withdraw',
   },
 
   EventStatus: {
@@ -29,6 +39,7 @@ module.exports = {
     Vote: 2,
     Finalize: 3,
     Withdraw: 4,
+    AllEvents: 5,
     Default: 0,
   },
 
