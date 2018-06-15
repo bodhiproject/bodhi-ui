@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
 import InfiniteScroll from '../../components/InfiniteScroll';
@@ -20,6 +21,8 @@ const LIMIT = 50;
   getAllEvents: (...args) => dispatch(graphqlActions.getAllEvents(...args)),
   setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
+@inject('store')
+@observer
 export default class AllEvents extends Component {
   static propTypes = {
     events: PropTypes.array.isRequired,
@@ -43,6 +46,9 @@ export default class AllEvents extends Component {
   componentDidMount() {
     this.fetchEvents(0);
     this.setState({ skip: LIMIT });
+    this.props.store.allEvents.init();
+    this.props.store.ui.location = AppLocation.allEvents;
+    // this.loadMoreData();
     this.props.setAppLocation(AppLocation.allEvents);
   }
 
