@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
 
 import asyncComponent from '../../helpers/AsyncFunc';
 import { RouterPath } from '../../constants';
