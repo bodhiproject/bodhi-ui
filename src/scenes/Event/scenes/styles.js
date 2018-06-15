@@ -103,6 +103,9 @@ const styles = (theme) => ({
   withdrawn: {
     color: theme.palette.primary.main,
   },
+  tooltip_reward: {
+    background: 'rgba(249, 249, 249, 1)',
+  },
 });
 
 export default styles;

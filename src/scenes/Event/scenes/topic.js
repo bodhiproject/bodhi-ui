@@ -17,6 +17,7 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
+import Tooltip from 'material-ui/Tooltip';
 
 import styles from './styles';
 import Warning from '../../../components/Warning';
@@ -165,6 +166,45 @@ export default class TopicPage extends Component {
     this.props.clearTxReturn();
   }
 
+  renderTooltipContent = (token) => (
+    <Table className={this.props.classes.tooltip_reward}>
+      <TableBody>
+        <TableRow>
+          <TableCell>
+            Total {token} Investment
+          </TableCell>
+          <TableCell>
+            Total {token} Investment
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>
+            Total {token} Profit
+          </TableCell>
+          <TableCell>
+            Total {token} Profit
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>
+            Total {token} Losing
+          </TableCell>
+          <TableCell>
+            Total {token} Losing
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>
+            Total {token} Reward
+          </TableCell>
+          <TableCell>
+            Total {token} Reward
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+
   render() {
     const { classes, syncBlockTime, getTransactionsReturn, withdrawableAddresses } = this.props;
     const { topic } = this.state;
@@ -277,6 +317,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
+                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('BOT')} open className={classes.MuiTooltip_tooltip}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${botReturnRate.toFixed(2)}%`}
