@@ -166,44 +166,48 @@ export default class TopicPage extends Component {
     this.props.clearTxReturn();
   }
 
-  renderTooltipContent = (token) => (
-    <Table className={this.props.classes.tooltip_reward}>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            Total {token} Investment
-          </TableCell>
-          <TableCell>
-            Total {token} Investment
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Profit
-          </TableCell>
-          <TableCell>
-            Total {token} Profit
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Losing
-          </TableCell>
-          <TableCell>
-            Total {token} Losing
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Reward
-          </TableCell>
-          <TableCell>
-            Total {token} Reward
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
+  renderTooltipContent = (token, { resultTokenAmount = 0, totalTokenAmount, tokenWinnings }) => {
+    const tokenLosing = totalTokenAmount - resultTokenAmount;
+    const tokenProfit = tokenWinnings - resultTokenAmount;
+    return (
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>
+              Total {token} Investment
+            </TableCell>
+            <TableCell>
+              {totalTokenAmount}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              Total {token} Profit
+            </TableCell>
+            <TableCell>
+              {tokenProfit}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              Total {token} Losing
+            </TableCell>
+            <TableCell>
+              {tokenLosing}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              Total {token} Reward
+            </TableCell>
+            <TableCell>
+              {tokenWinnings}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+  }
 
   render() {
     const { classes, syncBlockTime, getTransactionsReturn, withdrawableAddresses } = this.props;
@@ -308,6 +312,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
+                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('QTUM', { resultTokenAmount: resultBetAmount, totalTokenAmount: totalBetAmount, tokenWinnings: qtumWinnings })}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${qtumReturnRate.toFixed(2)}%`}
@@ -317,7 +324,7 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
-                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('BOT')} open className={classes.MuiTooltip_tooltip}>
+                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('BOT', { resultTokenAmount: resultVoteAmount, totalTokenAmount: totalVoteAmount, tokenWinnings: botWinnings })}>
                       <i className="icon iconfont icon-ic_question" />
                     </Tooltip>
                   </Typography>
