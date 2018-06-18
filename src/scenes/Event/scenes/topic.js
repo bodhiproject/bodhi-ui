@@ -174,7 +174,7 @@ export default class TopicPage extends Component {
         <TableBody>
           <TableRow>
             <TableCell>
-              Total {token} Investment
+              <FormattedMessage id="tooltip.tokenInvestment" defaultMessage="Total {token} Investment" values={{ token }} />
             </TableCell>
             <TableCell>
               {totalTokenAmount}
@@ -182,7 +182,7 @@ export default class TopicPage extends Component {
           </TableRow>
           <TableRow>
             <TableCell>
-              Total {token} Profit
+              <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
             </TableCell>
             <TableCell>
               {tokenProfit}
@@ -190,7 +190,7 @@ export default class TopicPage extends Component {
           </TableRow>
           <TableRow>
             <TableCell>
-              Total {token} Losing
+              <FormattedMessage id="tooltip.tokenLosing" defaultMessage="Total {token} Losing" values={{ token }} />
             </TableCell>
             <TableCell>
               {tokenLosing}
@@ -198,7 +198,7 @@ export default class TopicPage extends Component {
           </TableRow>
           <TableRow>
             <TableCell>
-              Total {token} Reward
+              <FormattedMessage id="tooltip.tokenReward" defaultMessage="Total {token} Reward" values={{ token }} />
             </TableCell>
             <TableCell>
               {tokenWinnings}
