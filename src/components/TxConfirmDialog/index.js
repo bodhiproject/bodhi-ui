@@ -2,13 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { withStyles, Button } from 'material-ui';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import { withStyles,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../redux/App/actions';
 import styles from './styles';
+
 
 const messages = defineMessages({
   confirmMessage: {

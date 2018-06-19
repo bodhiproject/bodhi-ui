@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { IntlProvider } from 'react-intl';
-import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider } from '@material-ui/core';
 import { Provider } from 'react-redux';
 import { Route, BrowserRouter } from 'react-router-dom';
 import { Provider as MobxProvider, observer } from 'mobx-react';

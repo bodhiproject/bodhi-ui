@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { CssBaseline, withStyles } from 'material-ui';
+import { CssBaseline, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 import AppRouter from './router';

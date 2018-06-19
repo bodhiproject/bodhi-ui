@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, TableCell } from 'material-ui';
+import { withStyles, TableCell } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';

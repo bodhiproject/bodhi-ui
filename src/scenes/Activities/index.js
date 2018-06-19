@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import { withStyles } from 'material-ui/styles';
+import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
