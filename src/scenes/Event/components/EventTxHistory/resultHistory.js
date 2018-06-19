@@ -2,8 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import { withStyles, Typography } from 'material-ui';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  withStyles,
+  Typography,
+} from '@material-ui/core';
 
 import { Token } from '../../../../constants';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
