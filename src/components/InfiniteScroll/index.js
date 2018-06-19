@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Grid from 'material-ui/Grid';
+import Loading from '../Loading';
 
 export default class InfiniteScroll extends Component {
   static propTypes = {
     hasMore: PropTypes.bool,
+    loadingMore: PropTypes.bool,
     loadMore: PropTypes.func,
     spacing: PropTypes.number,
     data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   };
 
   static defaultProps = {
-    hasMore: false,
+    hasMore: true,
     loadMore: undefined,
+    loadingMore: false,
     spacing: undefined,
     data: undefined,
   };
@@ -40,7 +43,23 @@ export default class InfiniteScroll extends Component {
     return (
       <Grid container spacing={this.props.spacing}>
         {this.props.data}
+        {this.props.loadingMore && <LoadingMore />}
       </Grid>
     );
   }
 }
+
+const LoadingMore = () => <Row><Loading text="Loading More..." /></Row>;
+
+const Row = (props) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      margin: 20,
+    }}
+    {...props}
+  />
+);

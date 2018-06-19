@@ -7,8 +7,9 @@ import PubSubStore from './PubSubStore';
 
 class AppStore {
   @observable sortBy = 'ASC' // might want to move somewhere else
-  wallet = {} // wallet store
   ui = {} // ui store
+  wallet = {} // wallet store
+  pubsub = {} // pubsub store
   allEvents = {} // allEvents store
 
   constructor() {
@@ -23,4 +24,5 @@ const store = new AppStore();
 if (process.env.REACT_APP_ENV === 'dev') {
   window.xstore = store;
 }
+
 export default store;

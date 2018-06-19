@@ -52,6 +52,7 @@ const paddingMd = spaceUnit * 5; // 40
 const paddingLg = spaceUnit * 7; // 56
 
 const navHeight = 70;
+const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
 
 const px = (value) => value.toString().concat('px');
@@ -266,6 +267,7 @@ const bodhiTheme = createMuiTheme({
       headerHeight: tableHeaderHeight,
     },
     navHeight: px(navHeight),
+    footerHeight,
   },
   border: 'solid 1px '.concat(borderColor),
   borderRadius: px(borderRadius),

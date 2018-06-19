@@ -1,39 +1,65 @@
-/* eslint-disable */
-import { observable, action, runInAction, transaction } from 'mobx';
-import { Token, OracleStatus } from '../constants';
-import { queryAllTopics, queryAllOracles } from '../network/graphQuery';
+import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
+import { Token, OracleStatus, AppLocation } from '../constants';
+import { queryAllTopics, queryAllOracles } from '../network/graphQuery';
+import Topic from './models/Topic';
+import Oracle from './models/Oracle';
 
 
 export default class AllEventsStore {
   @observable loading = true
+  @observable loadingMore = false
   @observable list = []
+  @observable hasMoreTopics = true
+  @observable hasMoreOracles = true
+  @computed get hasMore() {
+    return this.hasMoreOracles || this.hasMoreTopics;
+  }
   @observable skip = 0
   limit = 50
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.app.sortBy, // when 'sortBy' changes
+      () => {
+        // and we're on the AllEvents page
+        if (this.app.ui.location === AppLocation.allEvents) {
+          this.init(this.skip); // fetch new events
+        }
+      }
+    );
   }
 
   @action.bound
-  async init() {
-    this.list = await this.fetchAllEvents();
+  async init(limit = this.limit) {
+    if (limit === this.limit) {
+      this.skip = 0;
+    }
+    this.hasMoreOracles = true;
+    this.hasMoreTopics = true;
+    this.app.ui.location = AppLocation.allEvents;
+    this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
+      this.skip += this.limit;
       this.loading = false;
     });
   }
 
   @action.bound
   async loadMoreEvents() {
-    this.skip += this.limit;
-    const newEvents = await this.fetchAllEvents();
-    runInAction(() => {
-      this.list = [...this.list, ...newEvents];
-    });
+    if (this.hasMore) {
+      this.loadingMore = true;
+      this.skip += this.limit;
+      const nextFewEvents = await this.fetchAllEvents();
+      runInAction(() => {
+        this.list = [...this.list, ...nextFewEvents];
+        this.loadingMore = false;
+      });
+    }
   }
 
-  @action.bound
-  async fetchAllEvents(skip = this.skip, limit = this.limit) {
+  async fetchAllEvents(limit = this.limit, skip = this.skip) {
     limit /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [
@@ -47,25 +73,21 @@ export default class AllEventsStore {
       // result setting
       { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       { token: Token.Qtum, status: OracleStatus.WaitResult },
+      // TODO: add withdrawing filters
     ];
-    let topics = await queryAllTopics(null, orderBy, limit, skip);
-    let oracles = await queryAllOracles(filters, orderBy, limit, skip);
-    // const event = {
-    //   bet: Bet,
-    //   vote: Vote,
-    //   setResult: SetResult,
-    //   finalize: Finalize,
-    //   withdraw: Withdraw,
-    // };
-    runInAction(() => {
-      console.log('TOPIC: ', topics[0]);
-      console.log('ORACLE: ', oracles[0]);
-      // topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
-      // oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      // OR
-      //  const allEvents = _.uniqBy([...topics, ...oracles], 'txid').map((evt) => new event[getPhase(evt)](evt, this.app))
-      const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy);
-      return allEvents;
-    });
+    let topics = [];
+    if (this.hasMoreTopics) {
+      topics = await queryAllTopics(null, orderBy, limit, skip);
+      topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+      if (topics.length < limit) this.hasMoreTopics = false;
+    }
+    let oracles = [];
+    if (this.hasMoreOracles) {
+      oracles = await queryAllOracles(filters, orderBy, limit, skip);
+      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      if (oracles.length < limit) this.hasMoreOracles = false;
+    }
+    const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy);
+    return allEvents;
   }
 }
