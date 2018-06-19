@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import { FormControl } from 'material-ui/Form';
-import Select from 'material-ui/Select';
-import { MenuItem } from 'material-ui/Menu';
-import Card from 'material-ui/Card';
-import { withStyles } from 'material-ui/styles';
+import {
+  Button,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Card,
+  withStyles,
+} from '@material-ui/core';
 
 import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';

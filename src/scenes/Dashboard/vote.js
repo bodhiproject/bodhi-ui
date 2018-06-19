@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core';
 
 import TopActions from './components/TopActions/index';
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
