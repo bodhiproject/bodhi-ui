@@ -2,8 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Card, MenuItem, Select, Grid, Button, FormControl, withStyles } from 'material-ui';
 import { inject, observer } from 'mobx-react';
+import {
+  Button,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Card,
+  withStyles,
+} from '@material-ui/core';
 
 import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
