@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Snackbar, IconButton } from '@material-ui/core';
-import CloseIcon from 'material-ui-icons/Close';
+import { Close as CloseIcon } from '@material-ui/icons';
 
 import appActions from '../../redux/App/actions';
 import Config from '../../config/app';
