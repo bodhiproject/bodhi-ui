@@ -5,8 +5,14 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
-import { CircularProgress } from 'material-ui/Progress';
+import {
+  Paper,
+  Grid,
+  Button,
+  Typography,
+  withStyles,
+  CircularProgress,
+} from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
@@ -43,8 +49,8 @@ import {
 } from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
-
 import Tracking from '../../../helpers/mixpanelUtil';
+
 
 const messages = defineMessages({
   consensusThreshold: {
