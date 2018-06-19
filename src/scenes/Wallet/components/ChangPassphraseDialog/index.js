@@ -9,8 +9,8 @@ import {
   TextField,
   Button,
   Typography,
+  withStyles,
 } from '@material-ui/core';
-import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 
