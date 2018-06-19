@@ -57,8 +57,8 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
   const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
   const pendingTypes = {
     betting: [Bet],
-    voting: [ApproveVote, Vote],
     resultSetting: [ApproveSetResult, SetResult],
+    voting: [ApproveVote, Vote],
     finalizing: [FinalizeResult],
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
