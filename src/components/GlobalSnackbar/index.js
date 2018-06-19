@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
+import { Snackbar, IconButton } from '@material-ui/core';
 import CloseIcon from 'material-ui-icons/Close';
 
 import appActions from '../../redux/App/actions';

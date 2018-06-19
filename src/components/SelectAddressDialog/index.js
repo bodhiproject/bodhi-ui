@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import {
+  withStyles,
+  List,
+  ListItem,
+  ListItemText,
+  Dialog,
+  DialogTitle,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
+
 
 class SelectAddressDialog extends Component {
   static propTypes = {

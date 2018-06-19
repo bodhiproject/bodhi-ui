@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 

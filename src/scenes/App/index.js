@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CssBaseline, withStyles } from 'material-ui';
+import { CssBaseline, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 import AppRouter from './router';

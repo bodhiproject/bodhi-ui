@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import Table, {
+import {
+  Typography,
+  Table,
+  Grid,
   TableBody,
   TableCell,
   TableHead,
@@ -12,10 +13,10 @@ import Table, {
   TableSortLabel,
   TableFooter,
   TablePagination,
-} from 'material-ui/Table';
+  Tooltip,
+  withStyles,
+} from '@material-ui/core';
 import cx from 'classnames';
-import Tooltip from 'material-ui/Tooltip';
-import { withStyles } from 'material-ui/styles';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
@@ -28,6 +29,7 @@ import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../help
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { TransactionType, SortBy, AppLocation } from '../../../../constants';
+
 
 const messages = defineMessages({ // eslint-disable-line
   statusSuccess: {
