@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import { Grid, Typography, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 

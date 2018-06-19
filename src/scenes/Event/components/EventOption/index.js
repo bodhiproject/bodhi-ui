@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Collapse from 'material-ui/transitions/Collapse';
-import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import {
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  ExpandMoreIcon,
+  Input,
+  InputLabel,
+  InputAdornment,
+  withStyles,
+  MenuItem,
+  Select,
+  Typography,
+  FormControl,
+} from '@material-ui/core';
 import cx from 'classnames';
-import { withStyles, MenuItem, Select, Typography, FormControl } from 'material-ui';
 import { FormattedMessage } from 'react-intl';
 
 import Progress from '../Progress/index';

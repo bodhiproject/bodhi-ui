@@ -2,8 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import { Typography, withStyles } from 'material-ui';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
