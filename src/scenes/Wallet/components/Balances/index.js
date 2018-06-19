@@ -17,7 +17,7 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
-import { Close as CloseIcon, ContentCopy } from 'material-ui-icons';
+import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
