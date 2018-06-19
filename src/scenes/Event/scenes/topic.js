@@ -24,6 +24,8 @@ import Warning from '../../../components/Warning';
 import StepperVertRight from '../../../components/StepperVertRight';
 import EventInfo from '../components/EventInfo';
 import EventTxHistory from '../components/EventTxHistory';
+
+import RewardTooltip from '../../../components/RewardTooltip/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
@@ -166,49 +168,6 @@ export default class TopicPage extends Component {
     this.props.clearTxReturn();
   }
 
-  renderTooltipContent = (token, { resultTokenAmount = 0, totalTokenAmount, tokenWinnings }) => {
-    const tokenLosing = totalTokenAmount - resultTokenAmount;
-    const tokenProfit = tokenWinnings - resultTokenAmount;
-    return (
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="tooltip.tokenInvestment" defaultMessage="Total {token} Investment" values={{ token }} />
-            </TableCell>
-            <TableCell>
-              {totalTokenAmount}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
-            </TableCell>
-            <TableCell>
-              {tokenProfit}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="tooltip.tokenLosing" defaultMessage="Total {token} Losing" values={{ token }} />
-            </TableCell>
-            <TableCell>
-              {tokenLosing}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="tooltip.tokenReward" defaultMessage="Total {token} Reward" values={{ token }} />
-            </TableCell>
-            <TableCell>
-              {tokenWinnings}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    );
-  }
-
   render() {
     const { classes, syncBlockTime, getTransactionsReturn, withdrawableAddresses } = this.props;
     const { topic } = this.state;
@@ -312,9 +271,7 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
-                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('QTUM', { resultTokenAmount: resultBetAmount, totalTokenAmount: totalBetAmount, tokenWinnings: qtumWinnings })}>
-                      <i className="icon iconfont icon-ic_question" />
-                    </Tooltip>
+                    <RewardTooltip token="QTUM" resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${qtumReturnRate.toFixed(2)}%`}
@@ -324,9 +281,7 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
-                    <Tooltip id="tooltip-bot-reward" title={this.renderTooltipContent('BOT', { resultTokenAmount: resultVoteAmount, totalTokenAmount: totalVoteAmount, tokenWinnings: botWinnings })}>
-                      <i className="icon iconfont icon-ic_question" />
-                    </Tooltip>
+                    <RewardTooltip token="BOT" resultTokenAmount={resultVoteAmount} totalTokenAmount={totalVoteAmount} tokenWinnings={botWinnings} />
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${botReturnRate.toFixed(2)}%`}

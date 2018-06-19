@@ -1,41 +1,55 @@
 import React from 'react';
-import Tooltip from 'material-ui/Tooltip';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import { withStyles, Table, TableBody, TableCell, TableRow, Tooltip, Divider } from 'material-ui';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import cx from 'classnames';
 
-const RewardTooltip = ({ token }) => {
+import styles from './styles';
+
+const RewardTooltip = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, classes }) => {
+  const tokenLosing = totalTokenAmount - resultTokenAmount;
+  const tokenProfit = tokenWinnings - resultTokenAmount;
+
   const getTooltipContent = () => (
-    <Table>
+    <Table className={classes.table}>
       <TableBody>
-        <TableRow>
-          <TableCell>
-            Total {token} Investment
+        <TableRow className={classes.tableRow}>
+          <TableCell className={classes.tableCell}>
+            <FormattedMessage id="tooltip.tokenInvestment" defaultMessage="Total {token} Investment" values={{ token }} />
           </TableCell>
-          <TableCell>
-            Total {token} Investment
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Profit
-          </TableCell>
-          <TableCell>
-            Total {token} Profit
+          <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+            {totalTokenAmount}
           </TableCell>
         </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Losing
+        <TableRow className={classes.tableRow}>
+          <TableCell className={classes.tableCell}>
+            <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
           </TableCell>
-          <TableCell>
-            Total {token} Losing
+          <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+            {tokenProfit}
           </TableCell>
         </TableRow>
-        <TableRow>
-          <TableCell>
-            Total {token} Reward
+        <TableRow className={classes.tableRow}>
+          <TableCell className={classes.tableCell}>
+            <FormattedMessage id="tooltip.tokenLosing" defaultMessage="Total {token} Losing" values={{ token }} />
           </TableCell>
-          <TableCell>
-            Total {token} Reward
+          <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+            {tokenLosing}
+          </TableCell>
+        </TableRow>
+        <TableRow className={classes.tableRow}>
+          <TableCell className={classes.tableCell}>
+            <Divider />
+          </TableCell>
+          <TableCell className={cx(classes.tableCell)} numeric padding="none">
+            <Divider />
+          </TableCell>
+        </TableRow>
+        <TableRow className={classes.tableRow}>
+          <TableCell className={cx(classes.tableCell, classes.lastRow)} >
+            <FormattedMessage id="tooltip.tokenReward" defaultMessage="Total {token} Reward" values={{ token }} />
+          </TableCell>
+          <TableCell className={cx(classes.tableCell, classes.lastRow, classes.root)} numeric>
+            {tokenWinnings}
           </TableCell>
         </TableRow>
       </TableBody>
@@ -43,10 +57,10 @@ const RewardTooltip = ({ token }) => {
   );
 
   return (
-    <Tooltip id="tooltip-icon" title={getTooltipContent()}>
+    <Tooltip id="tooltip-reward" title={getTooltipContent()}>
       <i className="icon iconfont icon-ic_question" />
     </Tooltip>
   );
 };
 
-export default RewardTooltip;
+export default injectIntl(withStyles(styles)(RewardTooltip));
