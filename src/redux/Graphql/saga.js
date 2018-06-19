@@ -63,7 +63,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
-  const isUpcoming = phase === VOTING && oracle.status === OracleStatus.WaitResult;
+  const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult;
 
   const buttonText = {
     betting: messages.placeBet,
