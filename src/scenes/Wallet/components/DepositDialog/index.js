@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { withStyles, Typography, Button } from 'material-ui';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  withStyles,
+  Typography,
+  Button,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
