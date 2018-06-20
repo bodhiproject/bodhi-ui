@@ -6,7 +6,7 @@ import { AppLocation, RouterPath } from '../../../../constants';
 
 
 const NavLink = observer(({ to, store: { ui }, ...props }) => {
-  const map = {
+  const location = {
     [AppLocation.bet]: RouterPath.qtumPrediction,
     [AppLocation.vote]: RouterPath.botCourt,
     [AppLocation.allEvents]: RouterPath.allEvents,
@@ -15,10 +15,10 @@ const NavLink = observer(({ to, store: { ui }, ...props }) => {
     [AppLocation.finalize]: RouterPath.set,
     [AppLocation.withdraw]: RouterPath.set,
     [AppLocation.activityHistory]: RouterPath.set,
-  };
+  }[ui.location];
   return (
     <Route exact path={to}>
-      {() => <Link to={to} active={to === map[ui.location]} {...props} />}
+      {({ match }) => <Link to={to} active={!!match && to === location} {...props} />}
     </Route>
   );
 });
