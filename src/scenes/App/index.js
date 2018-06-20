@@ -1,19 +1,19 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { CssBaseline, withStyles } from 'material-ui';
+import { CssBaseline, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 import AppRouter from './router';
 import GlobalHub from './globalHub';
-import BottomBar from '../../components/BottomBar/index';
-import CreateEvent from '../CreateEvent/index';
-import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar/index';
-import GlobalSnackbar from '../../components/GlobalSnackbar/index';
-import TransactionSentDialog from '../../components/TransactionSentDialog/index';
-import WalletUnlockDialog from '../../components/WalletUnlockDialog/index';
-import ErrorDialog from '../../components/ErrorDialog/index';
-import TxConfirmDialog from '../../components/TxConfirmDialog/index';
-import TutorialCarouselDialog from '../../components/TutorialCarouselDialog/index';
+import BottomBar from '../../components/BottomBar';
+import CreateEvent from '../CreateEvent';
+import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
+import GlobalSnackbar from '../../components/GlobalSnackbar';
+import TransactionSentDialog from '../../components/TransactionSentDialog';
+import WalletUnlockDialog from '../../components/WalletUnlockDialog';
+import ErrorDialog from '../../components/ErrorDialog';
+import TxConfirmDialog from '../../components/TxConfirmDialog';
+import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 import Loader from './components/Loader';
 
 

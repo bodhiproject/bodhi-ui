@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Field } from 'redux-form';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
+import { MenuItem, FormControl, FormHelperText, Select } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import appActions from '../../../../redux/App/actions';

@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
-import Snackbar from 'material-ui/Snackbar';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
+import {
+  withStyles,
+  Snackbar,
+  Typography,
+  Grid,
+} from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
 import { TransactionType } from '../../constants';
+
 
 const messages = defineMessages({
   youHave: {
@@ -58,7 +61,6 @@ const messages = defineMessages({
     defaultMessage: 'Pending transactions will affect your wallet balances.',
   },
 });
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })

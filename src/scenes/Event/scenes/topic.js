@@ -3,18 +3,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
+import {
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  withStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
-import Warning from '../../../components/Warning/index';
-import StepperVertRight from '../../../components/StepperVertRight/index';
-import EventInfo from '../components/EventInfo/index';
-import EventTxHistory from '../components/EventTxHistory/index';
+import Warning from '../../../components/Warning';
+import StepperVertRight from '../../../components/StepperVertRight';
+import EventInfo from '../components/EventInfo';
+import EventTxHistory from '../components/EventTxHistory';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
-import BackButton from '../../../components/BackButton/index';
+import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
@@ -29,6 +39,7 @@ import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 import Tracking from '../../../helpers/mixpanelUtil';
+
 
 const pageMessage = defineMessages({
   returnRate: {

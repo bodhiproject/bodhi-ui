@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core';
 import { injectIntl, intlShape } from 'react-intl';
 import cx from 'classnames';
 
 import styles from './styles';
-import Warning from '../Warning/index';
+import Warning from '../Warning';
 
 
 const EventWarning = ({ classes, className, type, ...props }) => <Warning {...props} type={type} className={cx(className, classes.warningWrapper, classes[type])} />;

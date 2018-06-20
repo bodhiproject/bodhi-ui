@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import Table, {
+import {
+  Table,
+  Paper,
+  Grid,
+  Typography,
   TableBody,
   TableCell,
   TableHead,
@@ -12,12 +13,13 @@ import Table, {
   TableSortLabel,
   TableFooter,
   TablePagination,
-} from 'material-ui/Table';
-import Tooltip from 'material-ui/Tooltip';
-import { withStyles } from 'material-ui/styles';
+  Tooltip,
+  withStyles,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import cx from 'classnames';
+
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';

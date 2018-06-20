@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, withStyles } from 'material-ui';
+import { Typography, Paper, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';

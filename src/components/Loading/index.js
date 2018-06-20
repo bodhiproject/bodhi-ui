@@ -1,6 +1,6 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { withStyles } from 'material-ui';
+import { withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import styles from './styles';
 

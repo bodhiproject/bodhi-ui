@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Grid, Card, Divider, Typography, withStyles } from 'material-ui';
+import {
+  Grid,
+  Card,
+  Divider,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
 import cx from 'classnames';
 import EventWarning from '../EventWarning';
 

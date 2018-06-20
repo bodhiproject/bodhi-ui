@@ -1,7 +1,6 @@
 import React from 'react';
-import { LinearProgress } from 'material-ui/Progress';
+import { LinearProgress, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 import cx from 'classnames';
 import styles from './styles';
 

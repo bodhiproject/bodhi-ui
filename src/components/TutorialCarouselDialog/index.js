@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button as _Button, Select, withStyles } from 'material-ui';
-import Dialog, { DialogContent } from 'material-ui/Dialog';
-import { MenuItem } from 'material-ui/Menu';
+import {
+  Button as _Button,
+  Select,
+  withStyles,
+  Dialog,
+  DialogContent,
+  MenuItem,
+} from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, defineMessages, intlShape } from 'react-intl';
 import { inject, observer } from 'mobx-react';

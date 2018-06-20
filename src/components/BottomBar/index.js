@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Paper, Grid, Typography, withStyles } from 'material-ui';
-import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from 'material-ui-icons';
+import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
+import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 

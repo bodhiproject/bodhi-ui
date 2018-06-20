@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
+import { withStyles, Button } from '@material-ui/core';
+import { ChevronLeft } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
