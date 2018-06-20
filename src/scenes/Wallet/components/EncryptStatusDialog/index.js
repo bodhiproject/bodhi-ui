@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { Button } from 'material-ui';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import appActions from '../../../../redux/App/actions';
+
 
 @injectIntl
 @connect((state) => ({

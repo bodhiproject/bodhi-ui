@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { TextField, Button } from 'material-ui';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 
 import appActions from '../../../../redux/App/actions';
+
 
 const messages = defineMessages({
   passphrase: {

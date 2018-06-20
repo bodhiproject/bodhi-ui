@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import Grid from 'material-ui/Grid';
+import { Grid, FormControl, FormHelperText, TextField } from '@material-ui/core';
 import { Field } from 'redux-form';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
 
 import { calculateBlock } from '../../../../helpers/utility';
 import { defaults } from '../../../../config/app';
+
 
 const messages = defineMessages({
   datePast: {
@@ -18,7 +17,6 @@ const messages = defineMessages({
     defaultMessage: 'Cannot be in the past',
   },
 });
-
 
 @injectIntl
 @connect((state) => ({

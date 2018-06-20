@@ -1,6 +1,11 @@
 import React from 'react';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { Button } from 'material-ui';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 const RestoreWalletDialog = injectIntl(({ dialogVisible, onClose }) => (

@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { withStyles } from 'material-ui';
+import { withStyles } from '@material-ui/core';
+
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';

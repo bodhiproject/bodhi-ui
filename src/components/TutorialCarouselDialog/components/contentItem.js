@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from 'material-ui';
+import { Typography } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
 export const ContentItem = injectIntl(({ intl, id, defaultMessage }) => ( // eslint-disable-line

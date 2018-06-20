@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, withStyles } from 'material-ui';
+import { Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from '../styles';
 import { ContentItem } from './contentItem';
+
 
 const Tutorial0 = ({ classes }) => (
   <div>

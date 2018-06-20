@@ -6,27 +6,34 @@ import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { Field, reduxForm, Form, change, untouch } from 'redux-form';
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import Grid from 'material-ui/Grid';
-import _TextField from 'material-ui/TextField';
-import { InputAdornment } from 'material-ui/Input';
-import Button from 'material-ui/Button';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField as _TextField,
+  InputAdornment,
+  Button,
+  FormControl,
+  FormHelperText,
+  withStyles,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { withStyles } from 'material-ui/styles';
 
-import ImportantNote from '../../components/ImportantNote/index';
-import EventWarning from '../../components/EventWarning/index';
-import CreateEventDatePicker from './components/CreateEventDatePicker/index';
-import CreateEventOutcomes from './components/CreateEventOutcomes/index';
-import CreateEventCreatorPicker from './components/CreateEventCreatorPicker/index';
-import SelectAddressDialog from '../../components/SelectAddressDialog/index';
+import ImportantNote from '../../components/ImportantNote';
+import EventWarning from '../../components/EventWarning';
+import CreateEventDatePicker from './components/CreateEventDatePicker';
+import CreateEventOutcomes from './components/CreateEventOutcomes';
+import CreateEventCreatorPicker from './components/CreateEventCreatorPicker';
+import SelectAddressDialog from '../../components/SelectAddressDialog';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
 import { Token, TransactionType } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
+
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 

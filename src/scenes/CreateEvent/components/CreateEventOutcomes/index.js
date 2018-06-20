@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import {
+  InputAdornment,
+  FormControl,
+  FormHelperText,
+  TextField,
+  Button,
+  withStyles,
+} from '@material-ui/core';
 import { Field, FieldArray } from 'redux-form';
-import { InputAdornment } from 'material-ui/Input';
-import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
 import cx from 'classnames';
 import Web3Utils from 'web3-utils';
-import { withStyles } from 'material-ui/styles';
 
 import styles from './styles';
+
 
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;

@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { withStyles } from 'material-ui/styles';
+import {
+  withStyles,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
 import topicActions from '../../redux/Topic/actions';
 import graphqlActions from '../../redux/Graphql/actions';
+
 
 @injectIntl
 @withStyles(styles, { withTheme: true })

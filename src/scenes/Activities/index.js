@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import { withStyles } from 'material-ui/styles';
+import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
-import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
-import EventHistory from './scenes/EventHistory/index';
+import EventCardsGridContainer from '../../components/EventCardsGridContainer';
+import EventHistory from './scenes/EventHistory';
 import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 const { set, finalize, withdraw, activityHistory } = RouterPath;

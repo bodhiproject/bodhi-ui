@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Typography, withStyles } from 'material-ui';
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import {
+  Button,
+  Typography,
+  withStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';

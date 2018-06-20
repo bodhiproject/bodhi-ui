@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
+import { withStyles, Typography, Grid, LinearProgress } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import Grid from 'material-ui/Grid';
-import { LinearProgress } from 'material-ui/Progress';
 import _ from 'lodash';
 
 import AppConfig from '../../../../config/app';

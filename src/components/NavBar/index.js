@@ -4,17 +4,25 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { AppBar, Toolbar, Badge, Button, withStyles, Select } from 'material-ui';
+import {
+  AppBar,
+  Toolbar,
+  Badge,
+  Button,
+  withStyles,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
 import cx from 'classnames';
-import { MenuItem } from 'material-ui/Menu';
 
-import { Link } from './components/Link/index';
-import NavLink from './components/NavLink/index';
+import { Link } from './components/Link';
+import NavLink from './components/NavLink';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import sportStyles from './sportStyles';
 import Tracking from '../../helpers/mixpanelUtil';
+
 
 const messages = defineMessages({
   help: {
@@ -26,7 +34,6 @@ const messages = defineMessages({
     defaultMessage: 'All Events',
   },
 });
-
 
 @withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
