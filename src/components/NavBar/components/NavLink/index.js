@@ -18,7 +18,7 @@ const NavLink = observer(({ to, store: { ui }, ...props }) => {
   }[ui.location];
   return (
     <Route exact path={to}>
-      {({ match }) => <Link to={to} active={!!match && to === location} {...props} />}
+      {({ match }) => <Link to={to} active={!!match || to === location} {...props} />}
     </Route>
   );
 });
