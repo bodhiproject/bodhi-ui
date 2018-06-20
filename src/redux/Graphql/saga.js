@@ -19,11 +19,12 @@ import {
   gasToQtum,
   processTopic,
   processOracle,
+  getPhase,
 } from '../../helpers/utility';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import Routes from '../../network/routes';
 const { Pending } = TransactionStatus;
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
+const { RESULT_SETTING, FINALIZING } = Phases;
 
 const messages = defineMessages({
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
@@ -33,21 +34,6 @@ const messages = defineMessages({
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
-
-/**
- * Takes an oracle object and returns which phase it is in.
- * @param {oracle} oracle
- */
-const getPhase = ({ token, status }) => {
-  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return BETTING;
-  if (BOT && status === 'VOTING') return VOTING;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING;
-  if (BOT && status === 'WAITRESULT') return FINALIZING;
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
-  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
-};
 
 /**
  * Adds computed properties to each oracle used throughout the app
