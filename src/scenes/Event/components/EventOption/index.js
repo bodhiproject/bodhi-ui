@@ -2,23 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Collapse,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  ExpandMoreIcon,
-  Input,
-  InputLabel,
-  InputAdornment,
   withStyles,
   MenuItem,
   Select,
   Typography,
   FormControl,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Input,
+  InputLabel,
+  InputAdornment,
 } from '@material-ui/core';
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
-import Progress from '../Progress/index';
+import Progress from '../Progress';
 import styles from './styles';
 
 

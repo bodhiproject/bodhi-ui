@@ -23,6 +23,7 @@
     "immutable-devtools": "^0.0.7",
     "iscroll": "^5.2.0",
     "lodash": "^4.17.10",
+    "material-ui": "^1.0.0-beta.46",
     "mixpanel-browser": "^2.22.4",
     "mobx": "^5.0.2",
     "mobx-react": "^5.2.3",
