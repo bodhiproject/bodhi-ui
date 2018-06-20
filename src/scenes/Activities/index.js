@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { withStyles } from 'material-ui/styles';
@@ -8,6 +7,7 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
 import EventHistory from './scenes/EventHistory/index';
+import appActions from '../../redux/App/actions';
 import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 const { set, finalize, withdraw, activityHistory } = RouterPath;
@@ -42,9 +42,9 @@ const messages = defineMessages({
 @connect((state) => ({
   ...state.App.toJS(),
   actionableItemCount: state.Graphql.get('actionableItemCount'),
+}), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
 }))
-@inject('store')
-@observer
 export default class Activities extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -73,7 +73,7 @@ export default class Activities extends Component {
       [activityHistory]: AppLocation.activityHistory,
     };
     const appLocation = locations[this.props.match.path];
-    this.props.store.ui.location = appLocation;
+    this.props.setAppLocation(appLocation);
   }
 
   getTabLabel = (eventStatusIndex) => {
