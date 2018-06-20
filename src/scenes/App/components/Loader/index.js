@@ -53,7 +53,7 @@ export default class Loader extends Component {
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          {syncBlockNum && syncBlockTime && (
+          {Boolean(syncBlockNum && syncBlockTime) && (
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />

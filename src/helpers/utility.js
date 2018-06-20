@@ -4,8 +4,9 @@ import _ from 'lodash';
 import { defineMessages } from 'react-intl';
 
 import { getIntlProvider } from './i18nUtil';
-import { OracleStatus, SortBy } from '../constants';
+import { OracleStatus, SortBy, Phases } from '../constants';
 import Zhlang from '../languageProvider/entries/zh-Hans-CN';
+const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01; // eslint-disable-line
@@ -186,6 +187,21 @@ export function getDetailPagePath(oracles) {
   }
   return undefined;
 }
+
+/**
+ * Takes an oracle object and returns which phase it is in.
+ * @param {oracle} oracle
+ */
+export const getPhase = ({ token, status }) => {
+  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
+  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return BETTING;
+  if (BOT && status === 'VOTING') return VOTING;
+  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+  if ((BOT || QTUM) && status === 'PENDING') return PENDING;
+  if (BOT && status === 'WAITRESULT') return FINALIZING;
+  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
+  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
+};
 
 export function processTopic(topic) {
   if (!topic) {

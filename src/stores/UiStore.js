@@ -1,14 +1,16 @@
-import { observable, action, reaction, computed } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import locales from '../languageProvider';
+import { AppLocation } from '../constants';
 
 
 export default class UiStore {
+  @observable location = AppLocation.qtumPrediction
   @observable locale = localStorage.getItem('lang') || this.defaultLocale
-  @computed get localeMessages() {
+  get localeMessages() {
     return locales[this.locale].messages;
   }
-  @computed get defaultLocale() {
+  get defaultLocale() {
     let locale = navigator.language || navigator.userLanguage || '';
     if (locale.startsWith('en')) {
       locale = 'en-US';

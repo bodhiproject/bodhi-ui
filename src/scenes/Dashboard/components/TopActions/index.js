@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+
 import {
   Button,
   Grid,
@@ -11,6 +12,7 @@ import {
   Card,
   withStyles,
 } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 
 import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
@@ -32,6 +34,8 @@ import sportStyles from './sportStyles';
   sortOrderChanged: (sortBy) => dispatch(dashboardActions.sortOrderChanged(sortBy)),
   getEventEscrowAmount: (senderAddress) => dispatch(topicActions.getEventEscrowAmount(senderAddress)),
 }))
+@inject('store')
+@observer
 export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -49,8 +53,9 @@ export default class TopActions extends Component {
     noCreateEventButton: false,
   };
 
-  onSortOptionSelected = (event) => {
-    this.props.sortOrderChanged(event.target.value);
+  onSortOptionSelected = ({ target: { value } }) => {
+    this.props.store.sortBy = value;
+    this.props.sortOrderChanged(value);
   };
 
   onCreateDialogOpen = () => {

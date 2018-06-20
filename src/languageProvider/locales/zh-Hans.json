@@ -87,6 +87,8 @@
   "language.select": "English",
   "loader.blockNum": "最新区块数",
   "loader.blockTime": "最新区块时间",
+  "loading": "加载中...",
+  "loadingMore": "加载更多...",
   "myBalances.addressCopied": "地址已复制",
   "myBalances.deposit": "充值",
   "myBalances.myBalance": "余额",
