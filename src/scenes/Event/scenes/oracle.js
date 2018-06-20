@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
@@ -95,7 +96,6 @@ const messages = defineMessages({
   lastUsedAddress: state.App.get('lastUsedAddress'),
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-  appLocation: state.App.get('appLocation'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -122,6 +122,8 @@ const messages = defineMessages({
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
+@inject('store')
+@observer
 export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,

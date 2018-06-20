@@ -35,13 +35,13 @@ const messages = defineMessages({
   ...state.App.toJS(),
   actionableItemCount: state.Graphql.get('actionableItemCount'),
 }))
+@inject('store')
 export default class NavBar extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     actionableItemCount: PropTypes.object,
-    appLocation: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -81,33 +81,33 @@ const BodhiLogo = ({ classes }) => (
   </Link>
 );
 
-const QtumPrediction = ({ classes, appLocation }) => (
+const QtumPrediction = observer(({ classes, store: { ui } }) => (
   <NavLink to={RouterPath.qtumPrediction}>
     <Button
       data-index={EventStatus.Bet}
       className={cx(
         classes.navEventsButton,
-        appLocation === AppLocation.qtumPrediction || appLocation === AppLocation.bet ? 'selected' : '',
+        ui.location === AppLocation.qtumPrediction || ui.location === AppLocation.bet ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
     </Button>
   </NavLink>
-);
+));
 
-const BotCourt = ({ classes, appLocation }) => (
+const BotCourt = observer(({ classes, store: { ui } }) => (
   <NavLink to={RouterPath.botCourt}>
     <Button
       data-index={EventStatus.Vote}
       className={cx(
         classes.navEventsButton,
-        appLocation === AppLocation.botCourt || appLocation === AppLocation.vote ? 'selected' : '',
+        ui.location === AppLocation.botCourt || ui.location === AppLocation.vote ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
     </Button>
   </NavLink>
-);
+));
 
 const Wallet = ({ classes, walletAddresses }) => {
   const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
