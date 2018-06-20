@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 
-import { AppLocation, SortBy } from '../../constants';
+import { SortBy } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
 import actions from './actions';
@@ -10,7 +10,6 @@ const preKeys = getDefaultPath();
 
 const initState = new Map({
   current: preKeys,
-  appLocation: AppLocation.qtumPrediction,
   walletAddresses: [],
   lastUsedAddress: '',
   changePassphraseResult: undefined,
@@ -31,9 +30,6 @@ const initState = new Map({
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    case actions.SET_APP_LOCATION: {
-      return state.set('appLocation', action.location);
-    }
     case actions.SET_LAST_USED_ADDRESS: {
       return state.set('lastUsedAddress', action.address);
     }

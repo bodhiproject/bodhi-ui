@@ -49,13 +49,14 @@ export default class Loader extends Component {
             <Typography variant="display1" className={classes.loaderPercent}>{syncPercent || 0}</Typography>%
             <p>
               <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing." />
+              &nbsp;
               <FormattedMessage id="str.wait" defaultMessage="Please wait." />
             </p>
           </div>
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
           </div>
-          {syncBlockNum && syncBlockTime && (
+          {Boolean(syncBlockNum && syncBlockTime) && (
             <Grid container className={classes.loaderInfoWrapper}>
               <Grid item className={classes.loaderInfoLabel} xs={6}>
                 <FormattedMessage id="loader.blockNum" defaultMessage="Latest Block Number" />
