@@ -29,6 +29,7 @@ const messages = defineMessages({
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
   setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
+  pending: { id: 'str.pending', defaultMessage: 'Pending' },
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
@@ -69,6 +70,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
     BETTING: messages.placeBet,
     RESULT_SETTING: messages.setResult,
     VOTING: messages.arbitrate,
+    PENDING: messages.pending,
     FINALIZING: messages.finalizeResult,
     WITHDRAWING: messages.withdraw,
   }[phase];
