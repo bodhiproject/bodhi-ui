@@ -130,7 +130,7 @@
   "str.betting": "投注",
   "str.bettingRound": "投注阶段",
   "str.block": "区块数",
-  "str.blockSync": "Blockchain syncing.",
+  "str.blockSync": "区块链正在同步...",
   "str.bot": "BOT",
   "str.cancel": "取消",
   "str.changePassphrase": "更改您的密码",

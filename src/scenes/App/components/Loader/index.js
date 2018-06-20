@@ -45,7 +45,7 @@ export default class Loader extends Component {
           <div className={classes.loaderPercentWrapper}>
             <Typography variant="display1" className={classes.loaderPercent}>{syncPercent || 0}</Typography>%
             <p>
-              <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing." />
+              <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing..." />
               &nbsp;
               <FormattedMessage id="str.wait" defaultMessage="Please wait." />
             </p>
