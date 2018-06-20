@@ -56,21 +56,21 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
 
   const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
   const pendingTypes = {
-    betting: [Bet],
-    resultSetting: [ApproveSetResult, SetResult],
-    voting: [ApproveVote, Vote],
-    finalizing: [FinalizeResult],
+    BETTING: [Bet],
+    RESULT_SETTING: [ApproveSetResult, SetResult],
+    VOTING: [ApproveVote, Vote],
+    FINALIZING: [FinalizeResult],
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
   const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult;
 
   const buttonText = {
-    betting: messages.placeBet,
-    resultSetting: messages.setResult,
-    voting: messages.arbitrate,
-    finalizing: messages.finalizeResult,
-    withdrawing: messages.withdraw,
+    BETTING: messages.placeBet,
+    RESULT_SETTING: messages.setResult,
+    VOTING: messages.arbitrate,
+    FINALIZING: messages.finalizeResult,
+    WITHDRAWING: messages.withdraw,
   }[phase];
 
   const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
