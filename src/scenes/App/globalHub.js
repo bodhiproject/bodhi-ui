@@ -67,7 +67,6 @@ export default class GlobalHub extends Component {
       getSyncInfo,
       syncPercent,
       getPendingTransactions,
-      store,
     } = this.props;
 
     // Checks to see if any txs will require unlocking the wallet

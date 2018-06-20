@@ -33,7 +33,7 @@ export default class Oracle {
   address = ''
   amounts = []
   blockNum
-  consensusThreshold = '10000000000'
+  consensusThreshold = ''
   startTime = ''
   endTime = ''
   name = ''

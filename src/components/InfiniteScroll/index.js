@@ -49,7 +49,7 @@ export default class InfiniteScroll extends Component {
   }
 }
 
-const LoadingMore = () => <Row><Loading text="Loading More..." /></Row>;
+const LoadingMore = () => <Row><Loading text="loadingMore" /></Row>;
 
 const Row = (props) => (
   <div

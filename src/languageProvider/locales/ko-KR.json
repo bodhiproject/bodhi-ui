@@ -87,6 +87,8 @@
   "language.select": "中文",
   "loader.blockNum": "최신 블록 번호",
   "loader.blockTime": "최신 블록 시간",
+  "loading": "로딩...",
+  "loadingMore": "로딩...",
   "myBalances.addressCopied": "주소를 복사했습니다.",
   "myBalances.deposit": "예금",
   "myBalances.myBalance": "내 잔액",
