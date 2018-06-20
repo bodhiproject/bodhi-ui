@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, Table, TableBody, TableCell, TableRow, Divider } from 'material-ui';
+import { withStyles, Table, TableBody, TableCell, TableRow, Divider } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import _ from 'lodash';

@@ -14,11 +14,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Tooltip from 'material-ui/Tooltip';
 import styles from './styles';
 import Warning from '../../../components/Warning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
