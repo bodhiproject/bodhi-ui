@@ -1,3 +1,4 @@
+/*eslint-disable */
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { Component } from 'react';
@@ -5,14 +6,8 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import {
-  Paper,
-  Grid,
-  Button,
-  Typography,
-  withStyles,
-  CircularProgress,
-} from '@material-ui/core';
+import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
+import { CircularProgress } from 'material-ui/Progress';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
@@ -26,14 +21,14 @@ import {
   getDetailPagePath,
   toFixed,
 } from '../../../helpers/utility';
-import StepperVertRight from '../../../components/StepperVertRight/index';
-import EventWarning from '../../../components/EventWarning/index';
-import ImportantNote from '../../../components/ImportantNote/index';
-import EventOption from '../components/EventOption/index';
-import EventInfo from '../components/EventInfo/index';
+import StepperVertRight from '../../../components/StepperVertRight';
+import EventWarning from '../../../components/EventWarning';
+import ImportantNote from '../../../components/ImportantNote';
+import EventOption from '../components/EventOption';
+import EventInfo from '../components/EventInfo';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
-import EventTxHistory from '../components/EventTxHistory/index';
-import BackButton from '../../../components/BackButton/index';
+import EventTxHistory from '../components/EventTxHistory';
+import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { maxTransactionFee } from '../../../config/app';
@@ -49,8 +44,8 @@ import {
 } from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
-import Tracking from '../../../helpers/mixpanelUtil';
 
+import Tracking from '../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
   consensusThreshold: {
