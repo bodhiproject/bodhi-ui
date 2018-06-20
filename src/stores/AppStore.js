@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import WalletStore from './WalletStore';
@@ -6,6 +6,7 @@ import PubSubStore from './PubSubStore';
 
 
 class AppStore {
+  @observable loading = true;
   @observable sortBy = 'ASC' // might want to move somewhere else
   ui = {} // ui store
   wallet = {} // wallet store
@@ -13,10 +14,19 @@ class AppStore {
   allEvents = {} // allEvents store
 
   constructor() {
+    this.init();
+  }
+
+  async init() {
+    this.loading = true;
     this.ui = new UiStore();
     this.wallet = new WalletStore();
     this.pubsub = new PubSubStore(this);
-    this.allEvents = new AllEventsStore(this);
+    await this.pubsub.getSyncInfo();
+    runInAction(() => {
+      this.allEvents = new AllEventsStore(this);
+      this.loading = false;
+    });
   }
 }
 

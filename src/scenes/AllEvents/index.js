@@ -24,7 +24,7 @@ export default class AllEvents extends Component {
   render() {
     const { list, loadMoreEvents, loadingMore, loading } = this.props.store.allEvents;
     if (loading) return <Loading />;
-    const events = list.map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
+    const events = (list || []).map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
     return (
       <Fragment>
         <TopActions noCreateEventButton />

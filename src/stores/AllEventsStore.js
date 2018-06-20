@@ -1,7 +1,7 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, AppLocation } from '../constants';
-import { queryAllTopics, queryAllOracles } from '../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
@@ -73,11 +73,27 @@ export default class AllEventsStore {
       // result setting
       { token: Token.Qtum, status: OracleStatus.OpenResultSet },
       { token: Token.Qtum, status: OracleStatus.WaitResult },
-      // TODO: add withdrawing filters
     ];
     let topics = [];
     if (this.hasMoreTopics) {
-      topics = await queryAllTopics(null, orderBy, limit, skip);
+      const voteFilters = [];
+      const topicFilters = [];
+
+      // Get all votes for all your addresses
+      _.each(this.app.wallet.addresses, ({ address }) => {
+        voteFilters.push({ voterQAddress: address });
+        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
+      });
+
+      // Filter votes
+      let votes = await queryAllVotes(voteFilters);
+      // Filter out unique votes by voter address, topic address, and option index.
+      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress', 'optionIdx']);
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
+      });
+      topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
       topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
       if (topics.length < limit) this.hasMoreTopics = false;
     }

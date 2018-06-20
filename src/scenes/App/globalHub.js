@@ -76,7 +76,6 @@ export default class GlobalHub extends Component {
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
-    store.pubsub.getSyncInfo();
     getSyncInfo(syncPercent);
     syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
 
