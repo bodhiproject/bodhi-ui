@@ -1,6 +1,6 @@
-/* eslint-disable */
 
-const styles = ({ palette: { primary, secondary } }) => ({
+
+const styles = ({ palette: { primary } }) => ({
   '@keyframes loading': {
     '0%': {
       transform: 'rotate(0deg)',
@@ -35,7 +35,7 @@ const styles = ({ palette: { primary, secondary } }) => ({
     display: 'flex',
     flexDirection: 'column',
     color: 'gray',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 });
 
