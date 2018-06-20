@@ -21,12 +21,12 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
-import ImportantNote from '../../components/ImportantNote/index';
-import EventWarning from '../../components/EventWarning/index';
-import CreateEventDatePicker from './components/CreateEventDatePicker/index';
-import CreateEventOutcomes from './components/CreateEventOutcomes/index';
-import CreateEventCreatorPicker from './components/CreateEventCreatorPicker/index';
-import SelectAddressDialog from '../../components/SelectAddressDialog/index';
+import ImportantNote from '../../components/ImportantNote';
+import EventWarning from '../../components/EventWarning';
+import CreateEventDatePicker from './components/CreateEventDatePicker';
+import CreateEventOutcomes from './components/CreateEventOutcomes';
+import CreateEventCreatorPicker from './components/CreateEventCreatorPicker';
+import SelectAddressDialog from '../../components/SelectAddressDialog';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';

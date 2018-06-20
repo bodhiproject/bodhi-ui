@@ -19,12 +19,12 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import cx from 'classnames';
 
 import styles from './styles';
-import Warning from '../../../components/Warning/index';
-import StepperVertRight from '../../../components/StepperVertRight/index';
-import EventInfo from '../components/EventInfo/index';
-import EventTxHistory from '../components/EventTxHistory/index';
+import Warning from '../../../components/Warning';
+import StepperVertRight from '../../../components/StepperVertRight';
+import EventInfo from '../components/EventInfo';
+import EventTxHistory from '../components/EventTxHistory';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
-import BackButton from '../../../components/BackButton/index';
+import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';

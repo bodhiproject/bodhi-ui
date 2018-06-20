@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { Route, BrowserRouter } from 'react-router-dom';
 import { Provider as MobxProvider, observer } from 'mobx-react';
 
-import App from './scenes/App/index';
+import App from './scenes/App';
 import bodhiTheme from './config/theme';
 import graphClient from './network/graphClient';
 import '../src/style/styles.less';

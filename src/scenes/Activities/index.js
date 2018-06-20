@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
-import EventCardsGridContainer from '../../components/EventCardsGridContainer/index';
-import EventHistory from './scenes/EventHistory/index';
+import EventCardsGridContainer from '../../components/EventCardsGridContainer';
+import EventHistory from './scenes/EventHistory';
 import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 const { set, finalize, withdraw, activityHistory } = RouterPath;

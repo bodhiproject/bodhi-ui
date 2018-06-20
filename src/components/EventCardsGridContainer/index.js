@@ -9,9 +9,9 @@ import { withStyles } from '@material-ui/core';
 import styles from './styles';
 import { Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import graphqlActions from '../../redux/Graphql/actions';
-import EventCard from '../EventCard/index';
-import EventsEmptyBg from '../EventsEmptyBg/index';
-import InfiniteScroll from '../InfiniteScroll/index';
+import EventCard from '../EventCard';
+import EventsEmptyBg from '../EventsEmptyBg';
+import InfiniteScroll from '../InfiniteScroll';
 
 const LIMIT = 50;
 const SKIP = 0;

@@ -15,8 +15,8 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 
-import { Link } from './components/Link/index';
-import NavLink from './components/NavLink/index';
+import { Link } from './components/Link';
+import NavLink from './components/NavLink';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';

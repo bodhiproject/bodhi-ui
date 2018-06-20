@@ -5,7 +5,7 @@ import NProgress from 'nprogress';
 import ReactPlaceholder from 'react-placeholder';
 import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
-import NavBar from '../components/NavBar/index';
+import NavBar from '../components/NavBar';
 
 export default function asyncComponent(importComponent, langHandler, lang) {
   class AsyncFunc extends React.Component {

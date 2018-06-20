@@ -24,8 +24,8 @@ import _ from 'lodash';
 
 import styles from './styles';
 import Config from '../../../../config/app';
-import DepositDialog from '../DepositDialog/index';
-import WithdrawDialog from '../WithdrawDialog/index';
+import DepositDialog from '../DepositDialog';
+import WithdrawDialog from '../WithdrawDialog';
 import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
