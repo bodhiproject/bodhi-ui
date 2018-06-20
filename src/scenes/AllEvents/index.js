@@ -39,7 +39,7 @@ export default class AllEvents extends Component {
   }
 }
 
-const Loading = withStyles(({ classes }) => <Row><_Loading className={classes.loading} text="loading" /></Row>);
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text="loading" /></Row>);
 
 const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
