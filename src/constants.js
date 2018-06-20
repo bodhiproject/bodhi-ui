@@ -26,11 +26,12 @@ module.exports = {
   },
 
   Phases: {
-    bet: 'bet',
-    vote: 'vote',
-    setResult: 'setResult',
-    finalize: 'finalize',
-    withdraw: 'withdraw',
+    BETTING: 'BETTING',
+    VOTING: 'VOTING',
+    RESULT_SETTING: 'RESULT_SETTING',
+    PENDING: 'PENDING',
+    FINALIZING: 'FINALIZING',
+    WITHDRAWING: 'WITHDRAWING',
   },
 
   EventStatus: {
