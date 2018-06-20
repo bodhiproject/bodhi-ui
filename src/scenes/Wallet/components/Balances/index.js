@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Table, { TableBody, TableCell, TableHead, TableRow, TableSortLabel } from 'material-ui/Table';
-import { Tooltip, Button, Snackbar, withStyles, Grid, Paper } from 'material-ui';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
-import { Close as CloseIcon, ContentCopy } from 'material-ui-icons';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Tooltip,
+  Button,
+  Snackbar,
+  withStyles,
+  Grid,
+  Paper,
+  Typography,
+  IconButton,
+} from '@material-ui/core';
+import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';

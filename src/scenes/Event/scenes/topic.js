@@ -3,10 +3,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Typography, Paper, Grid, Button, withStyles } from 'material-ui';
+import {
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  withStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import styles from './styles';
 import Warning from '../../../components/Warning/index';
@@ -29,6 +39,7 @@ import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 import Tracking from '../../../helpers/mixpanelUtil';
+
 
 const pageMessage = defineMessages({
   returnRate: {

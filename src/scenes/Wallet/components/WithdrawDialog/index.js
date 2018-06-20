@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import { MenuItem, Select, TextField, Button, Typography } from 'material-ui';
-import { withStyles } from 'material-ui/styles';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  MenuItem,
+  Select,
+  TextField,
+  Button,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 
@@ -13,6 +22,7 @@ import appActions from '../../../../redux/App/actions';
 import { Token, TransactionType } from '../../../../constants';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
+
 
 const messages = defineMessages({
   to: {
@@ -32,7 +42,6 @@ const messages = defineMessages({
     defaultMessage: 'send to address {address}',
   },
 });
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })

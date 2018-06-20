@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Grid from 'material-ui/Grid';
+
+import { Grid } from '@material-ui/core';
 import Loading from '../Loading';
 
 export default class InfiniteScroll extends Component {

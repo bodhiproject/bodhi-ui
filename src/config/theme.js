@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { createMuiTheme } from 'material-ui/styles';
+import { createMuiTheme } from '@material-ui/core';
 
 /* Brand Variables */
 

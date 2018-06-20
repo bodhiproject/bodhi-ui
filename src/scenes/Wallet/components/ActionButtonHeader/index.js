@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, defineMessages } from 'react-intl';
-import { withStyles, Button, Tooltip } from 'material-ui';
+import {
+  withStyles,
+  Button,
+  Tooltip,
+} from '@material-ui/core';
+
 import EncryptDialog from '../EncryptDialog/index';
 import EncryptStatusDialog from '../EncryptStatusDialog/index';
 import RestoreWalletDialog from '../RestoreWalletDialog/index';
 import ChangePassphraseDialog from '../ChangPassphraseDialog';
 import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
-
 import appActions from '../../../../redux/App/actions';
-
 import styles from './styles';
+
 
 const messages = defineMessages({
   encrypt: {

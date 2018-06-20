@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import Typography from 'material-ui/Typography';
-import EventIcon from 'material-ui-icons/Event';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, Typography } from '@material-ui/core';
+import { Event as EventIcon } from '@material-ui/icons';
 
 import styles from './styles';
 
