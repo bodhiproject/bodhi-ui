@@ -9,7 +9,7 @@ import cx from 'classnames';
 import { MenuItem } from 'material-ui/Menu';
 
 import { Link } from './components/Link/index';
-import { NavLink } from './components/NavLink/index';
+import NavLink from './components/NavLink/index';
 import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';

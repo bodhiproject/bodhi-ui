@@ -1,11 +1,5 @@
 
 const appActions = {
-  SET_APP_LOCATION: 'SET_APP_LOCATION',
-  setAppLocation: (location) => ({
-    type: appActions.SET_APP_LOCATION,
-    location,
-  }),
-
   ENCRYPT_WALLET: 'ENCRYPT_WALLET',
   ENCRYPT_WALLET_RETURN: 'ENCRYPT_WALLET_RETURN',
   encryptWallet: (passphrase) => ({

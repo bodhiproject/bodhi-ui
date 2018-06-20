@@ -21,11 +21,6 @@ export default class AllEvents extends Component {
     this.props.store.allEvents.init();
   }
 
-  /* temporary until we get the other pages in */
-  componentWillUnmount() {
-    this.props.store.ui.location = '';
-  }
-
   render() {
     const { list, loadMoreEvents, loadingMore, loading } = this.props.store.allEvents;
     if (loading) return <Loading />;
