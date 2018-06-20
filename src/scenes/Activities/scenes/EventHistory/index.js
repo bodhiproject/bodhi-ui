@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import Grid from 'material-ui/Grid';
@@ -23,6 +22,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
+import appActions from '../../../../redux/App/actions';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
@@ -52,17 +52,17 @@ const messages = defineMessages({ // eslint-disable-line
   oracles: state.Graphql.get('getOraclesReturn'),
   transactions: state.Graphql.get('getTransactionsReturn'),
 }), (dispatch) => ({
+  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
   getTransactions: (filters, orderBy, limit, skip) =>
     dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
 }))
-@inject('store')
-@observer
 export default class EventHistory extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    setAppLocation: PropTypes.func.isRequired,
     getOracles: PropTypes.func.isRequired,
     oracles: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
@@ -89,7 +89,9 @@ export default class EventHistory extends Component {
   navigating = false
 
   componentDidMount() {
-    this.props.store.ui.location = AppLocation.activityHistory;
+    const { setAppLocation } = this.props;
+
+    setAppLocation(AppLocation.activityHistory);
     this.executeTxsRequest();
   }
 
