@@ -17,15 +17,14 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
-
 import styles from './styles';
-import Warning from '../../../components/Warning';
-import StepperVertRight from '../../../components/StepperVertRight';
-import EventInfo from '../components/EventInfo';
-import EventTxHistory from '../components/EventTxHistory';
-
-import RewardTooltip from '../../../components/RewardTooltip/index';
+import Warning from '../../../components/Warning/index';
+import StepperVertRight from '../../../components/StepperVertRight/index';
+import RewardTooltipContent from '../../../components/RewardTooltipContent/index';
+import EventInfo from '../components/EventInfo/index';
+import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
@@ -271,7 +270,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
-                    <RewardTooltip token="QTUM" resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />
+                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${qtumReturnRate.toFixed(2)}%`}
@@ -281,7 +282,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
-                    <RewardTooltip token="BOT" resultTokenAmount={resultVoteAmount} totalTokenAmount={totalVoteAmount} tokenWinnings={botWinnings} />
+                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="BOT" resultTokenAmount={resultVoteAmount} totalTokenAmount={totalVoteAmount} tokenWinnings={botWinnings} />}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${botReturnRate.toFixed(2)}%`}

@@ -1,15 +1,14 @@
 import React from 'react';
-import { withStyles, Table, TableBody, TableCell, TableRow, Tooltip, Divider } from 'material-ui';
+import { withStyles, Table, TableBody, TableCell, TableRow, Divider } from 'material-ui';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 
 import styles from './styles';
 
-const RewardTooltip = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, classes }) => {
+const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, classes }) => {
   const tokenLosing = totalTokenAmount - resultTokenAmount;
   const tokenProfit = tokenWinnings - resultTokenAmount;
-
-  const getTooltipContent = () => (
+  return (
     <Table className={classes.table}>
       <TableBody>
         <TableRow className={classes.tableRow}>
@@ -55,12 +54,6 @@ const RewardTooltip = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWi
       </TableBody>
     </Table>
   );
-
-  return (
-    <Tooltip id="tooltip-reward" title={getTooltipContent()}>
-      <i className="icon iconfont icon-ic_question" />
-    </Tooltip>
-  );
 };
 
-export default injectIntl(withStyles(styles)(RewardTooltip));
+export default injectIntl(withStyles(styles)(RewardTooltipContent));
