@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as fs from 'fs-extra';
 import { sync as globSync } from 'glob';
 import { sync as mkdirpSync } from 'mkdirp';

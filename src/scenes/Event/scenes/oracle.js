@@ -1,4 +1,3 @@
-/*eslint-disable */
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
 import React, { Component } from 'react';
@@ -6,8 +5,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
-import { CircularProgress } from 'material-ui/Progress';
+import { CircularProgress, Paper, Grid, Button, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
