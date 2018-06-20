@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -14,16 +13,12 @@ import { AppLocation, RouterPath } from '../../constants';
 @withRouter
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  appLocation: state.App.get('appLocation'),
-}))
 @inject('store')
 @observer
 export default class BackButton extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    appLocation: PropTypes.string.isRequired,
   };
 
   render() {
@@ -38,11 +33,9 @@ export default class BackButton extends Component {
   }
 
   onBackClick = () => {
-    const { appLocation, history, store: { ui } } = this.props;
-    const { allEvents } = AppLocation;
-    if (ui.location === allEvents) return history.push(RouterPath.allEvents);
+    const { history, store: { ui } } = this.props;
 
-    switch (appLocation) {
+    switch (ui.location) {
       case AppLocation.activityHistory: {
         history.push(RouterPath.activityHistory);
         break;

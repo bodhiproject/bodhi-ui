@@ -31,9 +31,6 @@ const initState = new Map({
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    case actions.SET_APP_LOCATION: {
-      return state.set('appLocation', action.location);
-    }
     case actions.SET_LAST_USED_ADDRESS: {
       return state.set('lastUsedAddress', action.address);
     }
