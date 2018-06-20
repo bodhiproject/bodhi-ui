@@ -23,12 +23,13 @@ import {
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import Routes from '../../network/routes';
 const { Pending } = TransactionStatus;
-const { bet, vote, setResult, finalize, withdraw } = Phases;
+const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
 
 const messages = defineMessages({
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
   setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
+  pending: { id: 'str.pending', defaultMessage: 'Pending' },
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
@@ -39,11 +40,12 @@ const messages = defineMessages({
  */
 const getPhase = ({ token, status }) => {
   const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return bet;
-  if (BOT && status === 'VOTING') return vote;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return setResult;
-  if (BOT && status === 'WAITRESULT') return finalize;
-  if (((BOT || QTUM) && status === 'WITHDRAW') || (QTUM && status === 'PENDING')) return withdraw;
+  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return BETTING;
+  if (BOT && status === 'VOTING') return VOTING;
+  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+  if ((BOT || QTUM) && status === 'PENDING') return PENDING;
+  if (BOT && status === 'WAITRESULT') return FINALIZING;
+  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 
@@ -55,29 +57,30 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
 
   const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
   const pendingTypes = {
-    bet: [Bet],
-    vote: [ApproveVote, Vote],
-    setResult: [ApproveSetResult, SetResult],
-    finalize: [FinalizeResult],
+    BETTING: [Bet],
+    RESULT_SETTING: [ApproveSetResult, SetResult],
+    VOTING: [ApproveVote, Vote],
+    FINALIZING: [FinalizeResult],
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
-  const isUpcoming = phase === vote && oracle.status === OracleStatus.WaitResult;
+  const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult;
 
   const buttonText = {
-    bet: messages.placeBet,
-    setResult: messages.setResult,
-    vote: messages.arbitrate,
-    finalize: messages.finalizeResult,
-    withdraw: messages.withdraw,
+    BETTING: messages.placeBet,
+    RESULT_SETTING: messages.setResult,
+    VOTING: messages.arbitrate,
+    PENDING: messages.pending,
+    FINALIZING: messages.finalizeResult,
+    WITHDRAWING: messages.withdraw,
   }[phase];
 
   const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
 
   return {
-    amountLabel: phase === finalize ? `${amount} ${oracle.token}` : '',
+    amountLabel: phase === FINALIZING ? `${amount} ${oracle.token}` : '',
     url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
-    endTime: phase === setResult ? oracle.resultSetEndTime : oracle.endTime,
+    endTime: phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime,
     unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
     isUpcoming,
     buttonText,
