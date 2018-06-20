@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Paper, Grid, Button, Typography, withStyles } from 'material-ui';
@@ -95,13 +96,11 @@ const messages = defineMessages({
   lastUsedAddress: state.App.get('lastUsedAddress'),
   walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-  appLocation: state.App.get('appLocation'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
@@ -123,6 +122,8 @@ const messages = defineMessages({
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
+@inject('store')
+@observer
 export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -144,7 +145,6 @@ export default class OraclePage extends Component {
     walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
-    setAppLocation: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
@@ -467,9 +467,10 @@ export default class OraclePage extends Component {
 
   setUnconfirmedConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.bet);
+    if (!ui.location) ui.location = AppLocation.bet;
 
     return {
       eventStatus: EventStatus.Bet,
@@ -488,7 +489,8 @@ export default class OraclePage extends Component {
   };
 
   setBetConfig = () => {
-    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.bet);
+    const { ui } = this.props.store;
+    if (!ui.location) ui.location = AppLocation.bet;
 
     return {
       eventStatus: EventStatus.Bet,
@@ -504,9 +506,10 @@ export default class OraclePage extends Component {
 
   setResultSetConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.resultSet);
+    if (!ui.location) ui.location = AppLocation.resultSet;
 
     return {
       eventStatus: EventStatus.Set,
@@ -526,9 +529,10 @@ export default class OraclePage extends Component {
 
   setVoteConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.vote);
+    if (!ui.location) ui.location = AppLocation.vote;
 
     return {
       eventStatus: EventStatus.Vote,
@@ -548,9 +552,10 @@ export default class OraclePage extends Component {
 
   setFinalizeConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.setAppLocation(AppLocation.finalize);
+    if (!ui.location) ui.location = AppLocation.finalize;
 
     return {
       eventStatus: EventStatus.Finalize,

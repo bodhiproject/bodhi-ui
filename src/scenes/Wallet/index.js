@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 
 import MyBalances from './components/Balances/index';
 import ActionButtonHeader from './components/ActionButtonHeader/index';
 import WalletHistory from './components/History/index';
-import appActions from '../../redux/App/actions';
 import { AppLocation } from '../../constants';
 
-@connect(null, (dispatch) => ({
-  setAppLocation: (location) => dispatch(appActions.setAppLocation(location)),
-}))
+@inject('store')
+@observer
 export default class MyWallet extends Component {
   static propTypes = {
-    setAppLocation: PropTypes.func.isRequired,
+    store: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
-    const { setAppLocation } = this.props;
-
-    setAppLocation(AppLocation.wallet);
+    this.props.store.ui.location = AppLocation.wallet;
   }
 
   render() {
