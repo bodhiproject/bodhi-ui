@@ -465,9 +465,10 @@ export default class OraclePage extends Component {
 
   setUnconfirmedConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.store.ui.location = AppLocation.bet;
+    if (!ui.location) ui.location = AppLocation.bet;
 
     return {
       eventStatus: EventStatus.Bet,
@@ -486,7 +487,8 @@ export default class OraclePage extends Component {
   };
 
   setBetConfig = () => {
-    if (!this.props.appLocation) this.props.store.ui.location = AppLocation.bet;
+    const { ui } = this.props.store;
+    if (!ui.location) ui.location = AppLocation.bet;
 
     return {
       eventStatus: EventStatus.Bet,
@@ -502,9 +504,10 @@ export default class OraclePage extends Component {
 
   setResultSetConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.store.ui.location = AppLocation.resultSet;
+    if (!ui.location) ui.location = AppLocation.resultSet;
 
     return {
       eventStatus: EventStatus.Set,
@@ -524,9 +527,10 @@ export default class OraclePage extends Component {
 
   setVoteConfig = (oracle) => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.store.ui.location = AppLocation.vote;
+    if (!ui.location) ui.location = AppLocation.vote;
 
     return {
       eventStatus: EventStatus.Vote,
@@ -546,9 +550,10 @@ export default class OraclePage extends Component {
 
   setFinalizeConfig = () => {
     const { locale, messages: localeMessages } = this.props.intl;
+    const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!this.props.appLocation) this.props.store.ui.location = AppLocation.finalize;
+    if (!ui.location) ui.location = AppLocation.finalize;
 
     return {
       eventStatus: EventStatus.Finalize,
