@@ -233,9 +233,9 @@ export default class TopicPage extends Component {
     const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
     const losersQtumReward = totalLosingQtumBets / 100;
     const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
-    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum);
+    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
     const totalBotWinningBets = topic.botAmount[topic.resultIdx];
-    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward);
+    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
@@ -278,7 +278,7 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
-                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" qtumWon={_.isNumber(qtumWon) ? qtumWon : 0} botQtumWon={_.isNumber(botQtumWon) ? botQtumWon : 0} resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />}>
+                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" qtumWon={qtumWon} botQtumWon={botQtumWon} resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />}>
                       <i className="icon iconfont icon-ic_question" />
                     </Tooltip>
                   </Typography>

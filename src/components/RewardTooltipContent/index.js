@@ -41,6 +41,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
           </TableCell>
         </TableRow>
         {token === 'BOT' &&
+        (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
               <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
@@ -49,8 +50,10 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
               {tokenProfit}
             </TableCell>
           </TableRow>
+        )
         }
         {token === 'QTUM' &&
+        (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
               <FormattedMessage id="tooltip.qtumWon" defaultMessage="{token} Won" values={{ token }} />
@@ -59,8 +62,10 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
               {qtumWonFixed}
             </TableCell>
           </TableRow>
+        )
         }
         {token === 'QTUM' &&
+        (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
               <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
@@ -69,6 +74,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
               {botQtumWonFixed}
             </TableCell>
           </TableRow>
+        )
         }
         <TableRow className={classes.tableRow}>
           <TableCell className={classes.tableCell}>
