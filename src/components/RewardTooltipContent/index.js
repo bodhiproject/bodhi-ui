@@ -63,7 +63,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
         {token === 'QTUM' &&
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward " values={{ token }} />
+              <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
               {botQtumWonFixed}
