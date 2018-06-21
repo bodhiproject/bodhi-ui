@@ -14,15 +14,16 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
-
 import styles from './styles';
-import Warning from '../../../components/Warning';
-import StepperVertRight from '../../../components/StepperVertRight';
-import EventInfo from '../components/EventInfo';
-import EventTxHistory from '../components/EventTxHistory';
+import Warning from '../../../components/Warning/index';
+import StepperVertRight from '../../../components/StepperVertRight/index';
+import RewardTooltipContent from '../../../components/RewardTooltipContent/index';
+import EventInfo from '../components/EventInfo/index';
+import EventTxHistory from '../components/EventTxHistory/index';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
 import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
@@ -226,6 +227,15 @@ export default class TopicPage extends Component {
     const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
     const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
+
+    const totalQtumWinningBets = topic.qtumAmount[topic.resultIdx];
+    const totalQtumBets = _.sum(topic.qtumAmount);
+    const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
+    const losersQtumReward = totalLosingQtumBets / 100;
+    const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
+    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
+    const totalBotWinningBets = topic.botAmount[topic.resultIdx];
+    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
     return (
       <Paper className={classes.withdrawPaper}>
         <div className={cx(classes.withdrawContainerSection, !botWinnings && !qtumWinnings ? 'last' : '')}>
@@ -268,6 +278,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{qtumWinnings} <span className={classes.withdrawToken}>QTUM</span>
+                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" qtumWon={qtumWon} botQtumWon={botQtumWon} resultTokenAmount={resultBetAmount} totalTokenAmount={totalBetAmount} tokenWinnings={qtumWinnings} />}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${qtumReturnRate.toFixed(2)}%`}
@@ -277,6 +290,9 @@ export default class TopicPage extends Component {
                 <div className={classes.withdrawRewardWrapper}>
                   <Typography variant="display1">
                     +{botWinnings} <span className={classes.withdrawToken}>BOT</span>
+                    <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="BOT" resultTokenAmount={resultVoteAmount} totalTokenAmount={totalVoteAmount} tokenWinnings={botWinnings} />}>
+                      <i className="icon iconfont icon-ic_question" />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="caption">
                     {`${intl.formatMessage(pageMessage.returnRate)} ${botReturnRate.toFixed(2)}%`}
