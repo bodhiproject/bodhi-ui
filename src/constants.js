@@ -13,7 +13,6 @@ module.exports = {
   /* App Constants */
   AppLocation: {
     qtumPrediction: 'QtumPrediction',
-    bet: 'Bet',
     botCourt: 'BotCourt',
     vote: 'Vote',
     wallet: 'Wallet',
