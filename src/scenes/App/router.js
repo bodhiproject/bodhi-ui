@@ -22,7 +22,7 @@ const AppRouter = ({ url }) => {
       <Route
         exact
         path={`${url}${RouterPath.qtumPrediction}`}
-        component={asyncComponent(() => import('../Dashboard/index'))}
+        component={asyncComponent(() => import('../QtumPrediction'))}
       />
       <Route
         exact
@@ -42,27 +42,27 @@ const AppRouter = ({ url }) => {
       <Route
         exact
         path={`${url}${RouterPath.myWallet}`}
-        component={asyncComponent(() => import('../Wallet/index'))}
+        component={asyncComponent(() => import('../Wallet'))}
       />
       <Route
         exact
         path={`${url}${RouterPath.set}`}
-        component={asyncComponent(() => import('../Activities/index'))}
+        component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
         path={`${url}${RouterPath.finalize}`}
-        component={asyncComponent(() => import('../Activities/index'))}
+        component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
         path={`${url}${RouterPath.withdraw}`}
-        component={asyncComponent(() => import('../Activities/index'))}
+        component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
         path={`${url}${RouterPath.activityHistory}`}
-        component={asyncComponent(() => import('../Activities/index'))}
+        component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>
   );

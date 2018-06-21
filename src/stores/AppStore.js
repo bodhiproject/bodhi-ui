@@ -1,6 +1,7 @@
 import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
+import QtumPredictionStore from './QtumPredictionStore';
 import WalletStore from './WalletStore';
 import PubSubStore from './PubSubStore';
 
@@ -25,6 +26,7 @@ class AppStore {
     await this.pubsub.getSyncInfo();
     runInAction(() => {
       this.allEvents = new AllEventsStore(this);
+      this.qtumPrediction = new QtumPredictionStore(this);
       this.loading = false;
     });
   }

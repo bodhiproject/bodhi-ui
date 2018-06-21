@@ -103,7 +103,7 @@ export default class AllEventsStore {
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
       if (oracles.length < limit) this.hasMoreOracles = false;
     }
-    const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy);
+    const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;
   }
 }
