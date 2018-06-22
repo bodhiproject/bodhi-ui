@@ -6,6 +6,7 @@ import Routes from '../network/routes';
 export default class WalletStore {
   @observable addresses = []
   @observable walletEncrypted = false
+  @observable encryptResult = undefined
   @observable error = ''
   @observable passphrase = ''
 
@@ -15,7 +16,7 @@ export default class WalletStore {
       const { data: { result } } = await axios.post(Routes.api.encryptWallet, {
         passphrase,
       });
-      this.result = result;
+      this.encryptResult = result;
     } catch (error) {
       const errorObject = {
         route: Routes.api.encryptWallet,
