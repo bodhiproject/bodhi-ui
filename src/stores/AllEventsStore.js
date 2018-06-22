@@ -41,7 +41,7 @@ export default class AllEventsStore {
     this.app.ui.location = AppLocation.allEvents;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
-      this.skip += this.limit;
+      this.skip += limit;
       this.loading = false;
     });
   }
