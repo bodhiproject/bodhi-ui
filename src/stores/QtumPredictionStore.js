@@ -5,7 +5,7 @@ import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
 
-export default class AllPredictionsStore {
+export default class QtumPredictionStore {
   @observable loading = true
   @observable loadingMore = false
   @observable list = []
