@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
-import { SortBy, TransactionType } from '../constants';
+import { AppLocation, SortBy, TransactionType } from '../constants';
 
 
 export default class WalletHistoryStore {
@@ -21,33 +21,26 @@ export default class WalletHistoryStore {
   // }
   // limit = 50
 
+  constructor(app) {
+    this.app = app;
+  }
+
+  @action.bound
+  init() {
+    this.app.ui.location = AppLocation.wallet;
+  }
+
   @action.bound
   async getTransactions(orderBy, direction, limit, skip) {
     // if (limit === this.limit) {
     //   this.skip = 0;
     // }
-    // this.hasMoreOracles = true;
-    // this.hasMoreTopics = true;
-    // this.app.ui.location = AppLocation.allEvents;
     this.list = await this.queryTransactions(orderBy, direction, limit, skip);
 
     // runInAction(() => {
     //   this.skip += this.limit;
     //   this.loading = false;
     // });
-  }
-
-  @action.bound
-  async loadMoreEvents() {
-    // if (this.hasMore) {
-    //   this.loadingMore = true;
-    //   this.skip += this.limit;
-    //   const nextFewEvents = await this.fetchAllEvents();
-    //   runInAction(() => {
-    //     this.list = [...this.list, ...nextFewEvents];
-    //     this.loadingMore = false;
-    //   });
-    // }
   }
 
   @action.bound

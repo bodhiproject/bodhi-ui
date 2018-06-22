@@ -29,17 +29,16 @@ import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
-
-@inject('store')
-@observer
-@injectIntl
-@withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
   getTransactions: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
 }))
+@inject('store')
+@observer
+@injectIntl
+@withStyles(styles, { withTheme: true })
 export default class WalletHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
