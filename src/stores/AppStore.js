@@ -27,11 +27,9 @@ class AppStore {
     this.walletHistory = new WalletHistoryStore();
     this.pubsub = new PubSubStore(this);
     await this.pubsub.getSyncInfo();
-    runInAction(() => {
-      this.allEvents = new AllEventsStore(this);
-      this.qtumPrediction = new QtumPredictionStore(this);
-      this.loading = false;
-    });
+    this.allEvents = new AllEventsStore(this);
+    this.qtumPrediction = new QtumPredictionStore(this);
+    this.loading = false;
   }
 }
 
