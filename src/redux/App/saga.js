@@ -56,29 +56,6 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
-// Encrypt the wallet
-export function* encryptWalletRequestHandler() {
-  yield takeEvery(actions.ENCRYPT_WALLET, function* encryptWalletRequest(action) {
-    try {
-      const { data: { result } } = yield axios.post(Routes.api.encryptWallet, {
-        passphrase: action.passphrase,
-      });
-      yield put({
-        type: actions.ENCRYPT_WALLET_RETURN,
-        encryptResult: result,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.ENCRYPT_WALLET_RETURN,
-        error: {
-          route: Routes.api.encryptWallet,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
-
 // Change wallet passphrase
 export function* changePassphraseRequestHandler() {
   yield takeEvery(actions.CHANGE_PASSPHRASE, function* changePassphraseRequest(action) {
@@ -242,7 +219,6 @@ export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
-    fork(encryptWalletRequestHandler),
     fork(backupWalletRequestHandler),
     fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),

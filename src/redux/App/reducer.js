@@ -70,12 +70,6 @@ export default function appReducer(state = initState, action) {
     case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
       return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
-    case actions.ENCRYPT_WALLET_RETURN: {
-      if (action.error) {
-        return state.set('encryptResult', action.error);
-      }
-      return state.set('encryptResult', action.encryptResult);
-    }
     case actions.CHANGE_PASSPHRASE_RETURN: {
       if (action.error) {
         return state.set('changePassphraseResult', action.error);
