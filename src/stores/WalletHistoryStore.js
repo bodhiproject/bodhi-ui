@@ -74,6 +74,7 @@ export default class WalletHistoryStore {
       const orderByObj = { field: orderBy, direction };
 
       let result = await queryAllTransactions(filters, orderByObj, limit, skip);
+      result = _.orderBy(result, [orderBy], [direction]);
       result = _.map(result, (tx) => new Transaction(tx));
       return result;
     } catch (error) {
