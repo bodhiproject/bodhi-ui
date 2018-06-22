@@ -2,6 +2,7 @@ import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
+import ResultSettingStore from './activitiesStores/ResultSetting';
 import WalletStore from './WalletStore';
 import PubSubStore from './PubSubStore';
 
@@ -27,6 +28,9 @@ class AppStore {
     runInAction(() => {
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
+      this.activities = {
+        resultSetting: new ResultSettingStore(this),
+      };
       this.loading = false;
     });
   }
