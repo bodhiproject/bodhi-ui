@@ -46,10 +46,7 @@ export default class {
 
   async fetch(limit = this.limit, skip = this.skip) {
     let data = [];
-    const filters = [
-      { token: Token.Qtum, status: OracleStatus.Voting },
-      { token: Token.Qtum, status: OracleStatus.Created },
-    ];
+    const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
     const orderBy = { field: 'endTime', direction: SortBy.Ascending };
     if (this.hasMore) {
       data = await queryAllOracles(filters, orderBy, limit, skip);
