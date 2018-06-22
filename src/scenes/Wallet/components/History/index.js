@@ -32,8 +32,6 @@ import graphqlActions from '../../../../redux/Graphql/actions';
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
   txReturn: state.Graphql.get('txReturn'),
-}), (dispatch) => ({
-  getTransactions: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
 }))
 @inject('store')
 @observer
@@ -42,7 +40,6 @@ import graphqlActions from '../../../../redux/Graphql/actions';
 export default class WalletHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    getTransactions: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     syncBlockNum: PropTypes.number.isRequired,
   };
@@ -56,39 +53,24 @@ export default class WalletHistory extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      transactions,
-      txReturn,
-      syncBlockNum,
-    } = this.props;
+    const { txReturn, syncBlockNum, store: { walletHistory: { getTransactions } } } = this.props;
 
     if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
-      this.getTransactions();
-    }
-
-    if (transactions || nextProps.transactions) {
-      const sorted = _.orderBy(
-        nextProps.transactions ? nextProps.transactions : transactions,
-        [this.state.orderBy],
-        [this.state.order],
-      );
-
-      this.setState({
-        transactions: sorted,
-      });
+      getTransactions();
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { skip } = this.state;
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { skip } = this.state;
 
-    if (skip !== prevState.skip) {
-      this.getTransactions();
-    }
-  }
+  //   if (skip !== prevState.skip) {
+  //     this.getTransactions();
+  //   }
+  // }
 
   render() {
-    const { classes } = this.props;
+    const { classes, store: { walletHistory: { list } } } = this.props;
+    console.log(list);
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -98,7 +80,7 @@ export default class WalletHistory extends Component {
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows()}
+            {this.getTableRows(list)}
             {this.getTableFooter()}
           </Table>
         </Grid>
@@ -106,20 +88,8 @@ export default class WalletHistory extends Component {
     );
   }
 
-  getTransactions = () => {
-    const { orderBy, order, limit, skip } = this.state;
-    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
-
-    this.props.getTransactions(
-      [{ type: TransactionType.Transfer }],
-      { field: orderBy, direction },
-      limit,
-      skip,
-    );
-  }
-
   getTableHeader = () => {
-    const { order, orderBy } = this.state;
+    const { orderBy, direction } = this.props.store.walletHistory;
 
     const headerCols = [
       {
@@ -174,7 +144,7 @@ export default class WalletHistory extends Component {
             <TableCell
               key={column.id}
               numeric={column.numeric}
-              sortDirection={orderBy === column.id ? order : false}
+              sortDirection={orderBy === column.id ? direction.toLowerCase() : false}
             >
               <Tooltip
                 title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
@@ -183,7 +153,7 @@ export default class WalletHistory extends Component {
               >
                 <TableSortLabel
                   active={orderBy === column.id}
-                  direction={order}
+                  direction={direction.toLowerCase()}
                   onClick={this.handleSorting(column.id)}
                 >
                   <FormattedMessage id={column.name} default={column.nameDefault} />
@@ -215,17 +185,13 @@ export default class WalletHistory extends Component {
     });
   }
 
-  getTableRows = () => {
-    const { transactions } = this.state;
-
-    return (
-      <TableBody>
-        {transactions.map((transaction, index) => (
-          this.getTableRow(transaction, index)
-        ))}
-      </TableBody>
-    );
-  }
+  getTableRows = (transactions) => (
+    <TableBody>
+      {transactions.map((transaction, index) => (
+        this.getTableRow(transaction, index)
+      ))}
+    </TableBody>
+  );
 
 
   handleClick = (id) => (event) => { // eslint-disable-line
@@ -282,37 +248,21 @@ export default class WalletHistory extends Component {
   }
 
   getTableFooter = () => {
-    const { transactions, perPage, page } = this.state;
+    const { list, perPage, page, onPageChange, onPerPageChange } = this.props.store.walletHistory;
 
     return (
       <TableFooter>
         <TableRow>
           <TablePagination
             colSpan={12}
-            count={transactions.length}
+            count={list.length}
             rowsPerPage={perPage}
             page={page}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangePerPage}
+            onChangePage={onPageChange}
+            onChangeRowsPerPage={onPerPageChange}
           />
         </TableRow>
       </TableFooter>
     );
-  }
-
-  handleChangePage = (event, page) => {
-    const { transactions, perPage, skip } = this.state;
-    this.setState({ expanded: [] });
-    // Set skip to fetch more txs if last page is reached
-    let newSkip = skip;
-    if (Math.floor(transactions.length / perPage) - 1 === page) {
-      newSkip = transactions.length;
-    }
-
-    this.setState({ page, skip: newSkip });
-  }
-
-  handleChangePerPage = (event) => {
-    this.setState({ perPage: event.target.value });
   }
 }

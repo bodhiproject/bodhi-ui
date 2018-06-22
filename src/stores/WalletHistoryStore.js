@@ -9,7 +9,7 @@ import { AppLocation, SortBy, TransactionType } from '../constants';
 export default class WalletHistoryStore {
   @observable list = []
   @observable orderBy = 'createdTime'
-  @observable direction = SortBy.Descending.toLowerCase()
+  @observable direction = SortBy.Descending
   @observable limit = 50
   @observable skip = 0
   @observable perPage = 10
