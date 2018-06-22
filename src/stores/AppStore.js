@@ -4,6 +4,7 @@ import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
 import ResultSettingStore from './activitiesStores/ResultSetting';
 import FinalizeStore from './activitiesStores/Finalize';
+import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
@@ -38,6 +39,7 @@ class AppStore {
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),
+        withdraw: new WithdrawStore(this),
       };
       this.loading = false;
     });
