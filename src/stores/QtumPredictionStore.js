@@ -25,8 +25,8 @@ export default class QtumPredictionStore {
     );
   }
 
-  @action.bound
-  async init(limit = this.limit) {
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -39,8 +39,8 @@ export default class QtumPredictionStore {
     });
   }
 
-  @action.bound
-  async loadMore() {
+  @action
+  loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;

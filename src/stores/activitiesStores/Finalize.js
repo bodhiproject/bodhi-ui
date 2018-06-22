@@ -16,9 +16,9 @@ export default class {
   constructor(app) {
     this.app = app;
   }
-
-  @action.bound
-  async init(limit = this.limit) {
+  // init to fetch the list
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -30,9 +30,9 @@ export default class {
       this.loading = false;
     });
   }
-
-  @action.bound
-  async loadMore() {
+  // load more
+  @action
+  loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
@@ -43,8 +43,7 @@ export default class {
       });
     }
   }
-
-  async fetch(limit = this.limit, skip = this.skip) {
+  fetch = async (limit = this.limit, skip = this.skip) => {
     let data = [];
     const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
     const orderBy = { field: 'endTime', direction: SortBy.Ascending };

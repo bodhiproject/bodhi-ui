@@ -33,8 +33,8 @@ export default class UiStore {
     );
   }
 
-  @action.bound
-  changeLocale(newLocale) {
+  @action
+  changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
   }
 }

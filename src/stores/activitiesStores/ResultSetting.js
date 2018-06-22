@@ -17,8 +17,8 @@ export default class {
     this.app = app;
   }
 
-  @action.bound
-  async init(limit = this.limit) {
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -31,8 +31,8 @@ export default class {
     });
   }
 
-  @action.bound
-  async loadMore() {
+  @action
+  loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
@@ -44,7 +44,7 @@ export default class {
     }
   }
 
-  async fetch(limit = this.limit, skip = this.skip) {
+  fetch = async (limit = this.limit, skip = this.skip) => {
     let data = [];
     const filters = [
       { token: Token.Qtum, status: OracleStatus.Voting },
