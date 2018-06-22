@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import {
   Table,
@@ -29,6 +30,8 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import graphqlActions from '../../../../redux/Graphql/actions';
 
 
+@inject('store')
+@observer
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
@@ -49,8 +52,8 @@ export default class WalletHistory extends Component {
     txReturn: undefined,
   };
 
-  componentWillMount() {
-    this.getTransactions();
+  componentDidMount() {
+    this.props.store.walletHistory.getTransactions();
   }
 
   componentWillReceiveProps(nextProps) {

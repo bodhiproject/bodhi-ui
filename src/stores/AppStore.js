@@ -3,6 +3,7 @@ import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
 import WalletStore from './WalletStore';
+import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
 
 
@@ -11,6 +12,7 @@ class AppStore {
   @observable sortBy = 'ASC' // might want to move somewhere else
   ui = {} // ui store
   wallet = {} // wallet store
+  walletHistory = {} // walletHistory store
   pubsub = {} // pubsub store
   allEvents = {} // allEvents store
 
@@ -22,6 +24,7 @@ class AppStore {
     this.loading = true;
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
+    this.walletHistory = new WalletHistoryStore();
     this.pubsub = new PubSubStore(this);
     await this.pubsub.getSyncInfo();
     runInAction(() => {

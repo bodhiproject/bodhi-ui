@@ -1,4 +1,4 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action } from 'mobx';
 import _ from 'lodash';
 
 import Transaction from './models/Transaction';
@@ -20,19 +20,6 @@ export default class WalletHistoryStore {
   //   return this.hasMoreOracles || this.hasMoreTopics;
   // }
   // limit = 50
-
-  constructor(app) {
-    this.app = app;
-    reaction(
-      () => this.app.sortBy, // when 'sortBy' changes
-      () => {
-        // and we're on the AllEvents page
-        // if (this.app.ui.location === AppLocation.allEvents) {
-        //   this.init(this.skip); // fetch new events
-        // }
-      }
-    );
-  }
 
   @action.bound
   async getTransactions(orderBy, direction, limit, skip) {
@@ -69,7 +56,7 @@ export default class WalletHistoryStore {
       const orderByObj = { field: orderBy, direction };
 
       let result = await queryAllTransactions(filters, orderByObj, limit, skip);
-      result = _.map(result, (tx) => new Transaction(tx, this.app));
+      result = _.map(result, (tx) => new Transaction(tx));
       return result;
     } catch (error) {
       console.error(error); // eslint-disable-line
