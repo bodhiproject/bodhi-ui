@@ -29,7 +29,7 @@ export default class WalletHistoryStore {
     // this.hasMoreOracles = true;
     // this.hasMoreTopics = true;
     // this.app.ui.location = AppLocation.allEvents;
-    this.list = await this.fetchTransactions(orderBy, direction, limit, skip);
+    this.list = await this.queryTransactions(orderBy, direction, limit, skip);
 
     // runInAction(() => {
     //   this.skip += this.limit;
@@ -48,6 +48,24 @@ export default class WalletHistoryStore {
     //     this.loadingMore = false;
     //   });
     // }
+  }
+
+  @action.bound
+  onPageChange(page) {
+    this.expanded = [];
+
+    let newSkip = this.skip;
+    if (Math.floor(this.list.length / this.perPage) - 1 === page) {
+      newSkip = this.list.length;
+    }
+    this.page = page;
+    this.skip = newSkip;
+  }
+
+  @action.bound
+  onPerPageChange(perPage) {
+    this.expanded = [];
+    this.perPage = perPage;
   }
 
   async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
