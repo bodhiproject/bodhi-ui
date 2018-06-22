@@ -18,9 +18,8 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.sortBy, // when 'sortBy' changes
       () => {
-        // and we're on the AllEvents page
         if (this.app.ui.location === AppLocation.qtumPrediction) {
-          this.init(this.skip); // fetch new events
+          this.init(this.skip);
         }
       }
     );
