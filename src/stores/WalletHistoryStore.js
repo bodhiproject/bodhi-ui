@@ -1,5 +1,7 @@
 import { observable, action, reaction } from 'mobx';
+import _ from 'lodash';
 
+import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
 import { SortBy, TransactionType } from '../constants';
 
@@ -66,8 +68,8 @@ export default class WalletHistoryStore {
       const filters = [{ type: TransactionType.Transfer }];
       const orderByObj = { field: orderBy, direction };
 
-      const result = await queryAllTransactions(filters, orderByObj, limit, skip);
-      // TODO: convert to Transaction class
+      let result = await queryAllTransactions(filters, orderByObj, limit, skip);
+      result = _.map(result, (tx) => new Transaction(tx, this.app));
       return result;
     } catch (error) {
       console.error(error); // eslint-disable-line
