@@ -3,6 +3,7 @@ import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
 import ResultSettingStore from './activitiesStores/ResultSetting';
+import FinalizeStore from './activitiesStores/Finalize';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
@@ -36,6 +37,7 @@ class AppStore {
       this.qtumPrediction = new QtumPredictionStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
+        finalize: new FinalizeStore(this),
       };
       this.loading = false;
     });
