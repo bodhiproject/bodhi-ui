@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import {
   Dialog,
   DialogTitle,
@@ -11,23 +11,15 @@ import {
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
-import appActions from '../../../../redux/App/actions';
-
-
 @injectIntl
-@connect((state) => ({
-  encryptResult: state.App.get('encryptResult'),
-}), (dispatch) => ({
-  encryptWallet: (passphrase) => dispatch(appActions.encryptWallet(passphrase)),
-  clearEncryptResult: () => dispatch(appActions.clearEncryptResult()),
-}))
+@inject('store')
+@observer
 export default class EncryptStatusDialog extends Component {
   static propTypes = {
     encryptResult: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object,
     ]),
-    clearEncryptResult: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -35,7 +27,8 @@ export default class EncryptStatusDialog extends Component {
   };
 
   render() {
-    const { encryptResult } = this.props;
+    const { encryptResult, clearEncryptResult } = this.props.store.wallet;
+    console.log('​EncryptStatusDialog -> render -> encryptResult', encryptResult);
     const isSuccessful = !_.isUndefined(encryptResult) && !_.isObject(encryptResult) && encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.');
 
     return (
@@ -51,7 +44,7 @@ export default class EncryptStatusDialog extends Component {
           {isSuccessful && <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />}
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.clearEncryptResult}>
+          <Button onClick={clearEncryptResult}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
         </DialogActions>

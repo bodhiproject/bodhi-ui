@@ -10,8 +10,8 @@ export default class WalletStore {
   @observable error = ''
   @observable passphrase = ''
 
-  @action.bound
-  async encryptWallet(passphrase) {
+  @action
+  encryptWallet = async (passphrase) => {
     try {
       const { data: { result } } = await axios.post(Routes.api.encryptWallet, {
         passphrase,
@@ -29,5 +29,10 @@ export default class WalletStore {
   @action
   onPassphraseChange = (passphrase) => {
     this.passphrase = passphrase;
+  }
+
+  @action
+  clearEncryptResult = () => {
+    this.encryptResult = undefined;
   }
 }
