@@ -33,7 +33,6 @@ import graphqlActions from '../../../../redux/Graphql/actions';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
   getTransactions: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
@@ -42,25 +41,12 @@ export default class WalletHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getTransactions: PropTypes.func.isRequired,
-    transactions: PropTypes.array,
     txReturn: PropTypes.object,
     syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    transactions: [],
     txReturn: undefined,
-  };
-
-  state = {
-    transactions: [],
-    order: SortBy.Descending.toLowerCase(),
-    orderBy: 'createdTime',
-    perPage: 10,
-    page: 0,
-    limit: 50,
-    skip: 0,
-    expanded: [],
   };
 
   componentWillMount() {
