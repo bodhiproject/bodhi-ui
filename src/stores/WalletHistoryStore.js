@@ -62,6 +62,11 @@ export default class WalletHistoryStore {
     this.perPage = perPage;
   }
 
+  @action.bound
+  onExpandedChange(expanded) {
+    this.expanded = expanded;
+  }
+
   async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
     try {
       const filters = [{ type: TransactionType.Transfer }];

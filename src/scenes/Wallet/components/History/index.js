@@ -70,7 +70,6 @@ export default class WalletHistory extends Component {
 
   render() {
     const { classes, store: { walletHistory: { list } } } = this.props;
-    console.log(list.length);
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -195,21 +194,25 @@ export default class WalletHistory extends Component {
 
 
   handleClick = (id) => (event) => { // eslint-disable-line
-    const { expanded } = this.state;
+    const { expanded, onExpandedChange } = this.props.store.walletHistory;
+
     const expandedIndex = expanded.indexOf(id);
-    let newexpanded = [];
+    let newExpanded = [];
     if (expandedIndex === -1) {
-      newexpanded = [...expanded, id];
+      newExpanded = [...expanded, id];
     } else {
-      newexpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
+      newExpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
     }
-    this.setState({ expanded: newexpanded });
+
+    onExpandedChange(newExpanded);
   };
 
   getTableRow = (transaction) => {
     const { classes } = this.props;
+    const { expanded } = this.props.store.walletHistory;
+
     const result = [];
-    const isExpanded = this.state.expanded.includes(transaction.txid);
+    const isExpanded = expanded.includes(transaction.txid);
     result[0] = (
       <TableRow key={transaction.txid} selected={isExpanded} onClick={this.handleClick(transaction.txid)} className={classes.clickToExpandRow}>
         <TableCell className={classes.summaryRowCell}>
