@@ -64,7 +64,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
   const amount = parseFloat(_.sum(oracle.amounts)).toFixed(2);
 
   return {
-    amountLabel: phase === FINALIZING ? `${amount} ${oracle.token}` : '',
+    amountLabel: phase !== FINALIZING ? `${amount} ${oracle.token}` : '',
     url: `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`,
     endTime: phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime,
     unconfirmed: (!oracle.topicAddress && !oracle.address) || isPending,
