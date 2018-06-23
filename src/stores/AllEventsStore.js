@@ -6,7 +6,7 @@ import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
 
-export default class AllEventsStore {
+export default class {
   @observable loading = true
   @observable loadingMore = false
   @observable list = []

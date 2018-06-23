@@ -46,11 +46,17 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     let data = [];
-    const filters = [
-      { token: Token.Qtum, status: OracleStatus.Voting },
-      { token: Token.Qtum, status: OracleStatus.Created },
-    ];
     const orderBy = { field: 'endTime', direction: SortBy.Ascending };
+    const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
+
+    _.each(this.app.wallet.addresses, (addressObj) => {
+      filters.push({
+        token: Token.Qtum,
+        status: OracleStatus.WaitResult,
+        resultSetterQAddress: addressObj.address,
+      });
+    });
+
     if (this.hasMore) {
       data = await queryAllOracles(filters, orderBy, limit, skip);
       data = _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));

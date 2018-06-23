@@ -2,6 +2,7 @@ import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
+import BotCourtStore from './BotCourtStore';
 import ResultSettingStore from './activitiesStores/ResultSetting';
 import FinalizeStore from './activitiesStores/Finalize';
 import WithdrawStore from './activitiesStores/Withdraw';
@@ -30,6 +31,7 @@ class AppStore {
     runInAction(() => {
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
+      this.botCourt = new BotCourtStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),
