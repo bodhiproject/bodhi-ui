@@ -26,6 +26,9 @@ class AppStore {
     this.wallet = new WalletStore(this);
     this.walletHistory = new WalletHistoryStore();
     this.pubsub = new PubSubStore(this);
+
+    // Stores below need info from syncInfo
+    // TODO: Change this GraphQL syncInfo call?
     await this.pubsub.getSyncInfo();
     this.allEvents = new AllEventsStore(this);
     this.qtumPrediction = new QtumPredictionStore(this);
