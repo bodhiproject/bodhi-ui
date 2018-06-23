@@ -29,11 +29,6 @@ const AppRouter = ({ url }) => {
         path={`${url}${RouterPath.botCourt}`}
         component={asyncComponent(() => import('../BotCourt'))}
       />
-      {/* <Route
-        exact
-        path={`${url}${RouterPath.botCourt}`}
-        component={asyncComponent(() => import('../Dashboard/vote'))}
-      /> */}
       <Route
         exact
         path={`${url}/oracle/:topicAddress/:address/:txid`}

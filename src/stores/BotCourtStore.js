@@ -54,10 +54,12 @@ export default class {
 
   async fetch(limit = this.limit, skip = this.skip) {
     const orderBy = { field: 'endTime', direction: this.app.sortBy };
+    const excludeResultSetterQAddress = this.app.wallet.addresses.map(({ address }) => address);
     const filters = [
-      // betting
-      { token: Token.Qtum, status: OracleStatus.Voting },
-      { token: Token.Qtum, status: OracleStatus.Created },
+      { token: Token.Bot, status: OracleStatus.Voting },
+      { token: Token.Qtum,
+        status: OracleStatus.WaitResult,
+        excludeResultSetterQAddress },
     ];
     let oracles = [];
     if (this.hasMore) {

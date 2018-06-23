@@ -8,6 +8,7 @@ import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import TopActions from '../Dashboard/components/TopActions';
 import _Loading from '../../components/Loading';
+import EventsEmptyBg from '../../components/EventsEmptyBg';
 import styles from './styles';
 
 
@@ -29,12 +30,13 @@ export default class BotCourt extends Component {
     return (
       <Fragment>
         <TopActions />
-        <InfiniteScroll
+        {(events.length < 1) && <EventsEmptyBg />}
+        {(events.length > 1) && <InfiniteScroll
           spacing={theme.padding.sm.value}
           data={events}
           loadMore={loadMore}
           loadingMore={loadingMore}
-        />
+        />}
       </Fragment>
     );
   }
