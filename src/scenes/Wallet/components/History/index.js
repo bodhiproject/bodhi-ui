@@ -196,7 +196,7 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
 
 const TableRows = ({ classes, list, expanded, onRowClick }) => (
   <TableBody>
-    {list.map((transaction, index) => {
+    {list.map((transaction) => {
       const rows = [];
       const isExpanded = expanded.includes(transaction.txid);
       rows[0] = (
