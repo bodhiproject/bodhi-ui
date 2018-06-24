@@ -10,11 +10,13 @@ export default class WalletHistoryStore {
   @observable list = []
   @observable orderBy = 'createdTime'
   @observable direction = SortBy.Descending
-  @observable limit = 50
+  @observable limit = 500
   @observable skip = 0
   @observable perPage = 10
   @observable page = 0
   @observable expanded = []
+
+  fullList = []
 
   // @computed get hasMore() {
   //   return this.hasMoreOracles || this.hasMoreTopics;
@@ -24,21 +26,15 @@ export default class WalletHistoryStore {
   constructor(app) {
     this.app = app;
 
-    reaction(() => this.perPage, () => this.queryTransactions());
+    // reaction(() => this.perPage, async () => {
+    //   console.log('perpaged change');
+    //   await this.queryTransactions();
+    // });
   }
 
   @action.bound
   async getTransactions(orderBy, direction, limit, skip) {
-    // if (limit === this.limit) {
-    //   this.skip = 0;
-    // }
-    const list = await this.queryTransactions(orderBy, direction, limit, skip);
-
-    runInAction(() => {
-      this.list = list;
-      // this.skip += this.limit;
-      // this.loading = false;
-    });
+    await this.queryTransactions(orderBy, direction, limit, skip);
   }
 
   @action.bound
@@ -57,6 +53,7 @@ export default class WalletHistoryStore {
   onPerPageChange(perPage) {
     this.expanded = [];
     this.perPage = perPage;
+    this.list = _.slice(this.fullList, 0, this.perPage);
   }
 
   @action.bound
@@ -64,18 +61,19 @@ export default class WalletHistoryStore {
     this.expanded = expanded;
   }
 
+  @action
   async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
     try {
       const filters = [{ type: TransactionType.Transfer }];
       const orderByObj = { field: orderBy, direction };
 
-      let result = await queryAllTransactions(filters, orderByObj, limit, skip);
-      result = _.orderBy(result, [orderBy], [direction]);
-      result = _.map(result, (tx) => new Transaction(tx));
-      return result;
+      const result = await queryAllTransactions(filters, orderByObj, limit, skip);
+      this.fullList = _.map(result, (tx) => new Transaction(tx));
+      this.list = _.slice(this.fullList, 0, this.perPage);
     } catch (error) {
       console.error(error); // eslint-disable-line
-      return [];
+      this.fullList = [];
+      this.list = [];
     }
   }
 }

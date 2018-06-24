@@ -186,6 +186,7 @@ export default class WalletHistory extends Component {
 
   getTableRows = () => {
     const { store: { walletHistory: { list } } } = this.props;
+    console.log(list);
 
     return (
       <TableBody>
