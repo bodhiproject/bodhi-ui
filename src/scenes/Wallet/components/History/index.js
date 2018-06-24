@@ -264,8 +264,8 @@ export default class WalletHistory extends Component {
             count={list.length}
             rowsPerPage={perPage}
             page={page}
-            onChangePage={onPageChange}
-            onChangeRowsPerPage={onPerPageChange}
+            onChangePage={(e, p) => onPageChange(p)}
+            onChangeRowsPerPage={(e) => onPerPageChange(e.target.value)}
           />
         </TableRow>
       </TableFooter>

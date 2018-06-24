@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
 
 import Transaction from './models/Transaction';
@@ -23,6 +23,8 @@ export default class WalletHistoryStore {
 
   constructor(app) {
     this.app = app;
+
+    reaction(() => this.perPage, () => this.queryTransactions());
   }
 
   @action.bound
