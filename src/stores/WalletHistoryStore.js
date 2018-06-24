@@ -7,6 +7,7 @@ import { AppLocation, SortBy, TransactionType } from '../constants';
 
 
 export default class WalletHistoryStore {
+  @observable fullList = []
   @observable list = []
   @observable orderBy = 'createdTime'
   @observable direction = SortBy.Descending
@@ -16,25 +17,24 @@ export default class WalletHistoryStore {
   @observable page = 0
   @observable expanded = []
 
-  fullList = []
-
-  // @computed get hasMore() {
-  //   return this.hasMoreOracles || this.hasMoreTopics;
-  // }
-  // limit = 50
-
   constructor(app) {
     this.app = app;
-
-    // reaction(() => this.perPage, async () => {
-    //   console.log('perpaged change');
-    //   await this.queryTransactions();
-    // });
   }
 
   @action.bound
-  async getTransactions(orderBy, direction, limit, skip) {
-    await this.queryTransactions(orderBy, direction, limit, skip);
+  async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
+    try {
+      const filters = [{ type: TransactionType.Transfer }];
+      const orderByObj = { field: orderBy, direction };
+
+      const result = await queryAllTransactions(filters, orderByObj, limit, skip);
+      this.fullList = _.map(result, (tx) => new Transaction(tx));
+      this.list = _.slice(this.fullList, 0, this.perPage);
+    } catch (error) {
+      console.error(error); // eslint-disable-line
+      this.fullList = [];
+      this.list = [];
+    }
   }
 
   @action.bound
@@ -56,21 +56,5 @@ export default class WalletHistoryStore {
   @action.bound
   onExpandedChange(expanded) {
     this.expanded = expanded;
-  }
-
-  @action
-  async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
-    try {
-      const filters = [{ type: TransactionType.Transfer }];
-      const orderByObj = { field: orderBy, direction };
-
-      const result = await queryAllTransactions(filters, orderByObj, limit, skip);
-      this.fullList = _.map(result, (tx) => new Transaction(tx));
-      this.list = _.slice(this.fullList, 0, this.perPage);
-    } catch (error) {
-      console.error(error); // eslint-disable-line
-      this.fullList = [];
-      this.list = [];
-    }
   }
 }

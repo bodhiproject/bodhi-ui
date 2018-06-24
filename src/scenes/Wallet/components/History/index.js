@@ -49,24 +49,16 @@ export default class WalletHistory extends Component {
   };
 
   componentDidMount() {
-    this.props.store.walletHistory.getTransactions();
+    this.props.store.walletHistory.queryTransactions();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { txReturn, syncBlockNum, store: { walletHistory: { getTransactions } } } = this.props;
+    const { txReturn, syncBlockNum, store: { walletHistory: { queryTransactions } } } = this.props;
 
     if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
-      getTransactions();
+      queryTransactions();
     }
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { skip } = this.state;
-
-  //   if (skip !== prevState.skip) {
-  //     this.getTransactions();
-  //   }
-  // }
 
   render() {
     const { classes } = this.props;
