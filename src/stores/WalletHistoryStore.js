@@ -17,10 +17,6 @@ export default class WalletHistoryStore {
   @observable page = 0
   @observable expanded = []
 
-  constructor(app) {
-    this.app = app;
-  }
-
   @action.bound
   async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
     try {
