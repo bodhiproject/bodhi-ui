@@ -69,7 +69,7 @@ export default class WalletHistory extends Component {
   // }
 
   render() {
-    const { classes, store: { walletHistory: { list } } } = this.props;
+    const { classes } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -79,7 +79,7 @@ export default class WalletHistory extends Component {
           </Typography>
           <Table className={classes.table}>
             {this.getTableHeader()}
-            {this.getTableRows(list)}
+            {this.getTableRows()}
             {this.getTableFooter()}
           </Table>
         </Grid>
@@ -184,14 +184,17 @@ export default class WalletHistory extends Component {
     });
   }
 
-  getTableRows = (transactions) => (
-    <TableBody>
-      {transactions.map((transaction, index) => (
-        this.getTableRow(transaction, index)
-      ))}
-    </TableBody>
-  );
+  getTableRows = () => {
+    const { store: { walletHistory: { list } } } = this.props;
 
+    return (
+      <TableBody>
+        {list.map((transaction, index) => (
+          this.getTableRow(transaction, index)
+        ))}
+      </TableBody>
+    );
+  }
 
   handleClick = (id) => (event) => { // eslint-disable-line
     const { expanded, onExpandedChange } = this.props.store.walletHistory;
