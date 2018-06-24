@@ -18,16 +18,14 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
 import cx from 'classnames';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
-import { TransactionType, SortBy } from '../../../../constants';
+import { SortBy } from '../../../../constants';
 import Config from '../../../../config/app';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
-import graphqlActions from '../../../../redux/Graphql/actions';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })

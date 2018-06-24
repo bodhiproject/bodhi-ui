@@ -1,9 +1,9 @@
-import { observable, action, reaction, runInAction } from 'mobx';
+import { observable, action } from 'mobx';
 import _ from 'lodash';
 
 import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
-import { AppLocation, SortBy, TransactionType } from '../constants';
+import { SortBy, TransactionType } from '../constants';
 
 
 export default class WalletHistoryStore {

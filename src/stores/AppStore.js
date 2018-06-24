@@ -1,4 +1,4 @@
-import { observable, runInAction } from 'mobx';
+import { observable } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
