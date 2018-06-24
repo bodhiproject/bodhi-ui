@@ -40,13 +40,10 @@ export default class WalletHistoryStore {
   @action.bound
   onPageChange(page) {
     this.expanded = [];
-
-    let newSkip = this.skip;
-    if (Math.floor(this.list.length / this.perPage) - 1 === page) {
-      newSkip = this.list.length;
-    }
     this.page = page;
-    this.skip = newSkip;
+
+    const start = this.page * this.perPage;
+    this.list = _.slice(this.fullList, start, start + this.perPage);
   }
 
   @action.bound

@@ -255,14 +255,14 @@ export default class WalletHistory extends Component {
   }
 
   getTableFooter = () => {
-    const { list, perPage, page, onPageChange, onPerPageChange } = this.props.store.walletHistory;
+    const { fullList, perPage, page, onPageChange, onPerPageChange } = this.props.store.walletHistory;
 
     return (
       <TableFooter>
         <TableRow>
           <TablePagination
             colSpan={12}
-            count={list.length}
+            count={fullList.length}
             rowsPerPage={perPage}
             page={page}
             onChangePage={(e, p) => onPageChange(p)}
