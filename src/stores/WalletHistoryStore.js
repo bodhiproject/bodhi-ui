@@ -57,4 +57,11 @@ export default class WalletHistoryStore {
   onExpandedChange(expanded) {
     this.expanded = expanded;
   }
+
+  @action.bound
+  onSortingChange(orderBy, direction) {
+    this.orderBy = orderBy;
+    this.direction = direction;
+    this.list = _.orderBy(this.list, [orderBy], [direction]);
+  }
 }

@@ -158,27 +158,18 @@ export default class WalletHistory extends Component {
   }
 
   handleSorting = (property) => (event) => { // eslint-disable-line
-    const { transactions } = this.state;
+    const { walletHistory } = this.props.store;
 
-    const orderBy = property;
     let order = SortBy.Descending.toLowerCase();
-
-    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
+    if (walletHistory.orderBy === property && walletHistory.direction === SortBy.Descending.toLowerCase()) {
       order = SortBy.Ascending.toLowerCase();
     }
 
-    const sorted = _.orderBy(transactions, [orderBy], [order]);
-
-    this.setState({
-      transactions: sorted,
-      orderBy,
-      order,
-    });
+    walletHistory.onSortingChange(property, order);
   }
 
   getTableRows = () => {
     const { store: { walletHistory: { list } } } = this.props;
-    console.log(list);
 
     return (
       <TableBody>
