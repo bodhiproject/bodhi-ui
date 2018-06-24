@@ -18,7 +18,7 @@ export default class WalletHistoryStore {
   @observable expanded = []
 
   @action.bound
-  async queryTransactions(orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) {
+  queryTransactions = async (orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) => {
     try {
       const filters = [{ type: TransactionType.Transfer }];
       const orderByObj = { field: orderBy, direction };
@@ -34,7 +34,7 @@ export default class WalletHistoryStore {
   }
 
   @action.bound
-  onPageChange(page) {
+  onPageChange = (page) => {
     this.expanded = [];
     this.page = page;
 
@@ -43,19 +43,19 @@ export default class WalletHistoryStore {
   }
 
   @action.bound
-  onPerPageChange(perPage) {
+  onPerPageChange = (perPage) => {
     this.expanded = [];
     this.perPage = perPage;
     this.list = _.slice(this.fullList, 0, this.perPage);
   }
 
   @action.bound
-  onExpandedChange(expanded) {
+  onExpandedChange = (expanded) => {
     this.expanded = expanded;
   }
 
   @action.bound
-  onSortingChange(orderBy, direction) {
+  onSortingChange = (orderBy, direction) => {
     this.orderBy = orderBy;
     this.direction = direction;
     this.list = _.orderBy(this.list, [orderBy], [direction]);
