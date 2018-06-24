@@ -26,11 +26,6 @@ export default class WalletHistoryStore {
   }
 
   @action.bound
-  init() {
-    this.app.ui.location = AppLocation.wallet;
-  }
-
-  @action.bound
   async getTransactions(orderBy, direction, limit, skip) {
     // if (limit === this.limit) {
     //   this.skip = 0;
