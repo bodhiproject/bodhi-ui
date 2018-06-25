@@ -1,12 +1,5 @@
 
 const appActions = {
-  BACKUP_WALLET: 'BACKUP_WALLET',
-  BACKUP_WALLET_RETURN: 'BACKUP_WALLET_RETURN',
-  backupWallet: (destination) => ({
-    type: appActions.BACKUP_WALLET,
-    destination,
-  }),
-
   CHANGE_PASSPHRASE: 'CHANGE_PASSPHRASE',
   CHANGE_PASSPHRASE_RETURN: 'CHANGE_PASSPHRASE_RETURN',
   changePassphrase: (oldPassphrase, newPassphrase) => ({

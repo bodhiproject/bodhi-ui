@@ -36,4 +36,17 @@ export default class WalletStore {
   clearEncryptResult = () => {
     this.encryptResult = undefined;
   }
+
+  @action
+  backupWallet = async () => {
+    try {
+      await axios.post(Routes.api.backupWallet);
+    } catch (error) {
+      const errorObject = {
+        route: Routes.api.encryptWallet,
+        message: error.message,
+      };
+      this.error = errorObject;
+    }
+  }
 }
