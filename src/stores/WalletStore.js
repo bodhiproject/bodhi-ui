@@ -43,7 +43,7 @@ export default class WalletStore {
       await axios.post(Routes.api.backupWallet);
     } catch (error) {
       const errorObject = {
-        route: Routes.api.encryptWallet,
+        route: Routes.api.backupWallet,
         message: error.message,
       };
       this.error = errorObject;
