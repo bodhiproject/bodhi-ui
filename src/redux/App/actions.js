@@ -1,12 +1,5 @@
 
 const appActions = {
-  ENCRYPT_WALLET: 'ENCRYPT_WALLET',
-  ENCRYPT_WALLET_RETURN: 'ENCRYPT_WALLET_RETURN',
-  encryptWallet: (passphrase) => ({
-    type: appActions.ENCRYPT_WALLET,
-    passphrase,
-  }),
-
   BACKUP_WALLET: 'BACKUP_WALLET',
   BACKUP_WALLET_RETURN: 'BACKUP_WALLET_RETURN',
   backupWallet: (destination) => ({
@@ -124,11 +117,6 @@ const appActions = {
   CLEAR_TX_CONFIRM: 'CLEAR_TX_CONFIRM',
   clearTxConfirm: () => ({
     type: appActions.CLEAR_TX_CONFIRM,
-  }),
-
-  CLEAR_ENCRYPT_RESULT: 'CLEAR_ENCRYPT_RESULT',
-  clearEncryptResult: () => ({
-    type: appActions.CLEAR_ENCRYPT_RESULT,
   }),
 
   CLEAR_CHANGE_PASSPHRASE_RESULT: 'CLEAR_CHANGE_PASSPHRASE_RESULT',

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import {
   Dialog,
   DialogTitle,
@@ -12,46 +12,33 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 
-import appActions from '../../../../redux/App/actions';
-
-
 const messages = defineMessages({
   passphrase: {
     id: 'encrypt.passphrase',
     defaultMessage: 'Passphrse',
   },
 });
-
 @injectIntl
-@connect((state) => ({
-  walletEncrypted: state.App.get('walletEncrypted'),
-}), (dispatch) => ({
-  encryptWallet: (passphrase) => dispatch(appActions.encryptWallet(passphrase)),
-}))
+@inject('store')
+@observer
 export default class EncryptDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     dialogVisible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    encryptWallet: PropTypes.func.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
     openPassphraseChangeDialog: PropTypes.func.isRequired,
   }
 
-  state = {
-    passphrase: '',
-  }
-
   confirmEncrypt = () => {
-    const { passphrase } = this.state;
-    const { encryptWallet, onClose } = this.props;
+    const { encryptWallet, passphrase } = this.props.store.wallet;
+    const { onClose } = this.props;
     encryptWallet(passphrase);
     onClose();
   }
 
   render() {
-    const { dialogVisible, onClose, intl, walletEncrypted } = this.props;
-    const { passphrase } = this.state;
+    const { dialogVisible, onClose, intl } = this.props;
+    const { walletEncrypted, onPassphraseChange, passphrase } = this.props.store.wallet;
     return (
       <Dialog open={dialogVisible} onClose={onClose}>
         <DialogTitle>
@@ -71,7 +58,7 @@ export default class EncryptDialog extends Component {
                 type="password"
                 fullWidth
                 error={_.isEmpty(passphrase)}
-                onChange={(e) => this.setState({ passphrase: e.target.value })}
+                onChange={(e) => onPassphraseChange(e.target.value)}
                 required
               />
             </span>
