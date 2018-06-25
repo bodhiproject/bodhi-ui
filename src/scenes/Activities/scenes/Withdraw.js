@@ -3,26 +3,26 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles } from '@material-ui/core';
 
-import InfiniteScroll from '../../../../components/InfiniteScroll';
-import theme from '../../../../config/theme';
-import EventCard from '../../../../components/EventCard';
-import _Loading from '../../../../components/Loading';
+import InfiniteScroll from '../../../components/InfiniteScroll';
+import theme from '../../../config/theme';
+import EventCard from '../../../components/EventCard';
+import _Loading from '../../../components/Loading';
 import styles from './styles';
 
 
 @inject('store')
 @observer
-export default class ResultSetting extends Component {
+export default class Withdraw extends Component {
   static propTypes = {
     store: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
-    this.props.store.activities.resultSetting.init();
+    this.props.store.activities.withdraw.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loading } = this.props.store.activities.resultSetting;
+    const { list, loadMore, loadingMore, loading } = this.props.store.activities.withdraw;
     if (loading) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
     return (

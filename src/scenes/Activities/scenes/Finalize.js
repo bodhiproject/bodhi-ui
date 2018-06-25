@@ -1,22 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles } from '@material-ui/core';
 
-import InfiniteScroll from '../../../../components/InfiniteScroll';
-import theme from '../../../../config/theme';
-import EventCard from '../../../../components/EventCard';
-import _Loading from '../../../../components/Loading';
+import InfiniteScroll from '../../../components/InfiniteScroll';
+import theme from '../../../config/theme';
+import EventCard from '../../../components/EventCard';
+import _Loading from '../../../components/Loading';
 import styles from './styles';
 
 
 @inject('store')
 @observer
 export default class Finalize extends Component {
-  static propTypes = {
-    store: PropTypes.object.isRequired,
-  }
-
   componentDidMount() {
     this.props.store.activities.finalize.init();
   }
