@@ -18,6 +18,8 @@ export default class HistoryItem extends Component {
     const { transaction } = this.props;
     const { expanded } = this.state;
 
+    console.log(expanded);
+
     return (
       <Fragment>
         <MainRow transaction={transaction} expanded={expanded} onRowClick={this.onRowClick} />

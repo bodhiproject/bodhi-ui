@@ -193,7 +193,7 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
 
 const TableRows = ({ list }) => (
   <TableBody>
-    {list.map((transaction) => <HistoryItem transaction={transaction} />)}
+    {list.map((transaction) => <HistoryItem key={transaction.txid} transaction={transaction} />)}
   </TableBody>
 );
 
