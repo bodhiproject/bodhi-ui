@@ -16,7 +16,7 @@ export default class AllEventsStore {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
   @observable skip = 0
-  limit = 16
+  limit = 50
 
   constructor(app) {
     this.app = app;
