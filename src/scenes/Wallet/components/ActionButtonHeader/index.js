@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, defineMessages } from 'react-intl';
-import { withStyles, Button, Tooltip } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
+import { withStyles, Button, Tooltip } from '@material-ui/core';
 import EncryptDialog from '../EncryptDialog';
 import EncryptStatusDialog from '../EncryptStatusDialog';
 import RestoreWalletDialog from '../RestoreWalletDialog';
@@ -38,10 +38,10 @@ const messages = defineMessages({
   },
 });
 
-@inject('store')
-@observer
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class ActionButtonHeader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
