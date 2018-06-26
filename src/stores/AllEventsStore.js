@@ -6,7 +6,7 @@ import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
 
-export default class AllEventsStore {
+export default class {
   @observable loading = true
   @observable loadingMore = false
   @observable list = []
@@ -31,8 +31,8 @@ export default class AllEventsStore {
     );
   }
 
-  @action.bound
-  async init(limit = this.limit) {
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -46,8 +46,8 @@ export default class AllEventsStore {
     });
   }
 
-  @action.bound
-  async loadMoreEvents() {
+  @action
+  loadMoreEvents = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
@@ -59,7 +59,7 @@ export default class AllEventsStore {
     }
   }
 
-  async fetchAllEvents(limit = this.limit, skip = this.skip) {
+  fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     limit /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [

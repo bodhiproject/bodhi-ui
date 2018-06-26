@@ -12,8 +12,8 @@ export default class PubSubStore {
     this.app = app;
   }
 
-  @action.bound
-  syncInfo({ syncPercent, syncBlockNum, syncBlockTime, addressBalances = [], error }) {
+  @action
+  syncInfo = ({ syncPercent, syncBlockNum, syncBlockTime, addressBalances = [], error }) => {
     if (error) {
       this.error = error;
     } else {
@@ -24,8 +24,8 @@ export default class PubSubStore {
     }
   }
 
-  @action.bound
-  async getSyncInfo() {
+  @action
+  getSyncInfo = async () => {
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);

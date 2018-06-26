@@ -2,6 +2,10 @@ import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
+import BotCourtStore from './BotCourtStore';
+import ResultSettingStore from './activitiesStores/ResultSetting';
+import FinalizeStore from './activitiesStores/Finalize';
+import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import PubSubStore from './PubSubStore';
 
@@ -27,6 +31,12 @@ class AppStore {
     runInAction(() => {
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
+      this.botCourt = new BotCourtStore(this);
+      this.activities = {
+        resultSetting: new ResultSettingStore(this),
+        finalize: new FinalizeStore(this),
+        withdraw: new WithdrawStore(this),
+      };
       this.loading = false;
     });
   }
