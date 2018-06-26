@@ -16,10 +16,6 @@ export default class ResultSetting extends Component {
     this.props.store.activities.resultSetting.init();
   }
 
-  componentWillUnmount() {
-    this.props.store.activities.resultSetting.reset();
-  }
-
   render() {
     const { list, loadMore, loadingMore, loading } = this.props.store.activities.resultSetting;
     if (loading) return <Loading />;
