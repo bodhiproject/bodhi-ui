@@ -16,6 +16,7 @@ export default class {
   constructor(app) {
     this.app = app;
   }
+
   // init to fetch the list
   @action
   init = async (limit = this.limit) => {
@@ -30,6 +31,7 @@ export default class {
       this.loading = false;
     });
   }
+
   // load more
   @action
   loadMore = async () => {
@@ -43,14 +45,16 @@ export default class {
       });
     }
   }
+
   fetch = async (limit = this.limit, skip = this.skip) => {
     let data = [];
-    const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
-    const orderBy = { field: 'endTime', direction: SortBy.Ascending };
     if (this.hasMore) {
+      const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
+      const orderBy = { field: 'endTime', direction: SortBy.Ascending };
+
       data = await queryAllOracles(filters, orderBy, limit, skip);
       data = _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (data.length < limit) this.hasMore = false;
+      if (data.length < skip + limit) this.hasMore = false;
     }
     return data;
   }

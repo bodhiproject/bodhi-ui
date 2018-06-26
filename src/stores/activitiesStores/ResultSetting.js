@@ -46,7 +46,6 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     let data = [];
-    const orderBy = { field: 'endTime', direction: SortBy.Ascending };
     const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
 
     _.each(this.app.wallet.addresses, (addressObj) => {
@@ -58,9 +57,10 @@ export default class {
     });
 
     if (this.hasMore) {
+      const orderBy = { field: 'endTime', direction: SortBy.Ascending };
       data = await queryAllOracles(filters, orderBy, limit, skip);
       data = _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (data.length < limit) this.hasMore = false;
+      if (data.length < skip + limit) this.hasMore = false;
     }
     return data;
   }
