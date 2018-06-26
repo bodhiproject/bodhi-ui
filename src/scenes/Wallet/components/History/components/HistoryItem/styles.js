@@ -1,7 +1,4 @@
 const styles = () => ({
-  clickToExpandRow: {
-    cursor: 'pointer',
-  },
   summaryRowCell: {
     paddingTop: '24px',
     paddingBottom: '24px',
@@ -14,6 +11,7 @@ const styles = () => ({
   },
   arrowSize: {
     fontSize: '8px',
+    cursor: 'pointer',
   },
 });
 

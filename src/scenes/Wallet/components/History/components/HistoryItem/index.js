@@ -12,13 +12,11 @@ export default class HistoryItem extends Component {
     expanded: false,
   }
 
-  onRowClick = () => this.state.expanded = !this.state.expanded
+  onRowClick = () => this.setState({ expanded: !this.state.expanded })
 
   render() {
     const { transaction } = this.props;
     const { expanded } = this.state;
-
-    console.log(expanded);
 
     return (
       <Fragment>
@@ -30,12 +28,7 @@ export default class HistoryItem extends Component {
 }
 
 const MainRow = withStyles(styles)(({ classes, transaction, expanded, onRowClick }) => (
-  <TableRow
-    key={transaction.txid}
-    selected={expanded}
-    onClick={onRowClick}
-    className={classes.clickToExpandRow}
-  >
+  <TableRow key={transaction.txid} selected={expanded}>
     <TableCell className={classes.summaryRowCell}>
       {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
     </TableCell>
@@ -55,17 +48,16 @@ const MainRow = withStyles(styles)(({ classes, transaction, expanded, onRowClick
       {transaction.status}
     </TableCell>
     <TableCell>
-      <i className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} />
+      <i
+        className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)}
+        onClick={onRowClick}
+      />
     </TableCell>
   </TableRow>
 ));
 
 const SecondaryRow = withStyles(styles)(({ classes, transaction, expanded }) => (
-  <TableRow
-    key={`txaddr-${transaction.txid}`}
-    selected
-    className={expanded ? classes.show : classes.hide}
-  >
+  <TableRow key={`txaddr-${transaction.txid}`} selected className={expanded ? classes.show : classes.hide}>
     <TransactionHistoryAddress transaction={transaction} />
     <TableCell />
     <TransactionHistoryID transaction={transaction} />
