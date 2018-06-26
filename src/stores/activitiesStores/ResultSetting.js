@@ -6,33 +6,30 @@ import Oracle from '../models/Oracle';
 
 
 export default class {
-  @observable loading = true
-  @observable loadingMore = false
+  @observable loaded = false // initial loading state
+  @observable loadingMore = false // for laoding icon
   @observable list = []
-  @observable hasMore = true
-  @observable skip = 0
-  limit = 16
+  @observable hasMore = true // we don't have any more to fetch from api, don't make api call
+  @observable offset = 0
+  limit = 10
 
   constructor(app) {
     this.app = app;
     reaction(
       () => this.list,
       () => {
-        if (this.list.length < this.skip) this.hasMore = false;
+        if (this.loaded && this.list.length <= this.offset) this.hasMore = false;
       }
     );
   }
 
   @action
-  init = async (limit = this.limit) => {
-    if (limit === this.limit) {
-      this.skip = 0;
-    }
-    this.app.ui.location = AppLocation.resultSetting;
-    this.list = await this.fetch(limit);
+  init = async () => {
+    const currentLimit = this.limit;
+    this.app.ui.location = AppLocation.resultSetting; // change ui location, for tabs to render correctly
+    this.list = await this.fetch(currentLimit, this.offset);
     runInAction(() => {
-      this.skip += limit;
-      this.loading = false;
+      this.loaded = true;
     });
   }
 
@@ -40,16 +37,16 @@ export default class {
   loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
-      this.skip += this.limit;
-      const nextFewEvents = await this.fetch();
+      this.offset += this.limit; // pump the offset eg. from 0 to 24
+      const nextFewEvents = await this.fetch(this.limit, this.offset);
       runInAction(() => {
-        this.list = [...this.list, ...nextFewEvents];
-        this.loadingMore = false;
+        this.list = [...this.list, ...nextFewEvents]; // push to existing list
+        this.loadingMore = false; // stop showing the loading icon
       });
     }
   }
 
-  fetch = async (limit = this.limit, skip = this.skip) => {
+  fetch = async (limit = this.limit, skip = this.offset) => {
     let data = [];
     const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
 
@@ -61,11 +58,18 @@ export default class {
       });
     });
 
-    if (this.hasMore) {
-      const orderBy = { field: 'endTime', direction: SortBy.Ascending };
-      data = await queryAllOracles(filters, orderBy, limit, skip);
-      data = _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
-    }
-    return data;
+    const orderBy = { field: 'endTime', direction: SortBy.Ascending };
+    data = await queryAllOracles(filters, orderBy, limit, skip);
+    return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
+  }
+
+  @action
+  reset = async () => {
+    this.loaded = false;
+    this.loadingMore = false;
+    this.list = [];
+    this.hasMore = true;
+    this.offset = 0;
+    this.limit = 10;
   }
 }
