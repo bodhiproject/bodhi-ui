@@ -15,7 +15,6 @@ export default class WalletHistoryStore {
   @observable skip = 0
   @observable perPage = 10
   @observable page = 0
-  @observable expanded = []
 
   @action
   queryTransactions = async (orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) => {
@@ -35,7 +34,6 @@ export default class WalletHistoryStore {
 
   @action
   onPageChange = (page) => {
-    this.expanded = [];
     this.page = page;
 
     const start = this.page * this.perPage;
@@ -44,14 +42,8 @@ export default class WalletHistoryStore {
 
   @action
   onPerPageChange = (perPage) => {
-    this.expanded = [];
     this.perPage = perPage;
     this.list = _.slice(this.fullList, 0, this.perPage);
-  }
-
-  @action
-  onExpandedChange = (expanded) => {
-    this.expanded = expanded;
   }
 
   @action

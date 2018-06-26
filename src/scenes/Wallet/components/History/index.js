@@ -54,20 +54,6 @@ export default class WalletHistory extends Component {
     walletHistory.onSortingChange(property, order);
   }
 
-  onRowClick = (id) => (event) => { // eslint-disable-line
-    const { expanded, onExpandedChange } = this.props.store.walletHistory;
-
-    const expandedIndex = expanded.indexOf(id);
-    let newExpanded = [];
-    if (expandedIndex === -1) {
-      newExpanded = [...expanded, id];
-    } else {
-      newExpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
-    }
-
-    onExpandedChange(newExpanded);
-  };
-
   componentDidMount() {
     this.props.store.walletHistory.queryTransactions();
   }
@@ -95,12 +81,7 @@ export default class WalletHistory extends Component {
               direction={walletHistory.direction}
               onSortChange={this.onSortChange}
             />
-            <TableRows
-              classes={classes}
-              list={walletHistory.list}
-              expanded={walletHistory.expanded}
-              onRowClick={this.onRowClick}
-            />
+            <TableRows list={walletHistory.list} />
             <TableFooter
               fullList={walletHistory.fullList}
               perPage={walletHistory.perPage}
