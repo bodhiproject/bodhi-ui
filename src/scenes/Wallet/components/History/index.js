@@ -18,14 +18,11 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import cx from 'classnames';
 
 import styles from './styles';
-import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
-import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
+import HistoryItem from './components/HistoryItem';
 import { SortBy } from '../../../../constants';
 import Config from '../../../../config/app';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -194,56 +191,9 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
   );
 };
 
-const TableRows = ({ classes, list, expanded, onRowClick }) => (
+const TableRows = ({ list }) => (
   <TableBody>
-    {list.map((transaction) => {
-      const rows = [];
-      const isExpanded = expanded.includes(transaction.txid);
-      rows[0] = (
-        <TableRow
-          key={transaction.txid}
-          selected={isExpanded}
-          onClick={onRowClick(transaction.txid)}
-          className={classes.clickToExpandRow}
-        >
-          <TableCell className={classes.summaryRowCell}>
-            {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
-          </TableCell>
-          <TableCell>
-            {transaction.senderAddress}
-          </TableCell>
-          <TableCell>
-            {transaction.receiverAddress}
-          </TableCell>
-          <TableCell numeric>
-            {`${transaction.amount || ''}  ${transaction.amount ? transaction.token : ''}`}
-          </TableCell>
-          <TableCell numeric>
-            {transaction.fee}
-          </TableCell>
-          <TableCell>
-            {transaction.status}
-          </TableCell>
-          <TableCell>
-            <i className={cx(isExpanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} />
-          </TableCell>
-        </TableRow>
-      );
-      rows[1] = (
-        <TableRow
-          key={`txaddr-${transaction.txid}`}
-          selected
-          onClick={onRowClick(transaction.txid)}
-          className={isExpanded ? classes.show : classes.hide}
-        >
-          <TransactionHistoryAddress transaction={transaction} />
-          <TableCell />
-          <TransactionHistoryID transaction={transaction} />
-          <TableCell /><TableCell /><TableCell /><TableCell />
-        </TableRow>
-      );
-      return rows;
-    })}
+    {list.map((transaction) => <HistoryItem transaction={transaction} />)}
   </TableBody>
 );
 
