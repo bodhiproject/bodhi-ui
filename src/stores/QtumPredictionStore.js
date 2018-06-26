@@ -11,7 +11,7 @@ export default class QtumPredictionStore {
   @observable list = []
   @observable hasMore = true
   @observable skip = 0
-  limit = 50
+  limit = 16
 
   constructor(app) {
     this.app = app;

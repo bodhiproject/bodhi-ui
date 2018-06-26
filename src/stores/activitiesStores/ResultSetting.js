@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, AppLocation, SortBy } from '../../constants';
 import { queryAllOracles } from '../../network/graphQuery';
@@ -11,10 +11,16 @@ export default class {
   @observable list = []
   @observable hasMore = true
   @observable skip = 0
-  limit = 50
+  limit = 16
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.list,
+      () => {
+        if (this.list.length < this.skip) this.hasMore = false;
+      }
+    );
   }
 
   @action
@@ -22,7 +28,6 @@ export default class {
     if (limit === this.limit) {
       this.skip = 0;
     }
-    this.hasMore = true;
     this.app.ui.location = AppLocation.resultSetting;
     this.list = await this.fetch(limit);
     runInAction(() => {
@@ -60,7 +65,6 @@ export default class {
       const orderBy = { field: 'endTime', direction: SortBy.Ascending };
       data = await queryAllOracles(filters, orderBy, limit, skip);
       data = _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (data.length < skip + limit) this.hasMore = false;
     }
     return data;
   }

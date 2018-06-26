@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 import { OracleStatus, AppLocation, SortBy } from '../../constants';
 import { queryAllVotes, queryAllTopics } from '../../network/graphQuery';
@@ -10,10 +10,16 @@ export default class {
   @observable list = []
   @observable hasMore = true
   @observable skip = 0
-  limit = 50
+  limit = 16
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.list,
+      () => {
+        if (this.list.length < this.skip) this.hasMore = false;
+      }
+    );
   }
 
   @action
@@ -21,7 +27,6 @@ export default class {
     if (limit === this.limit) {
       this.skip = 0;
     }
-    this.hasMore = true;
     this.app.ui.location = AppLocation.withdraw;
     this.list = await this.fetch(limit);
     runInAction(() => {
@@ -69,7 +74,6 @@ export default class {
     const result = await queryAllTopics(topicFilters, orderBy, limit, skip);
     const topics = _.uniqBy(result, 'txid').map((topic) => new Topic(topic, this.app));
 
-    if (topics.length < limit) this.hasMore = false;
     return topics;
   }
 }

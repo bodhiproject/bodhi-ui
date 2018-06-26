@@ -16,7 +16,7 @@ export default class AllEventsStore {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
   @observable skip = 0
-  limit = 50
+  limit = 16
 
   constructor(app) {
     this.app = app;
@@ -101,7 +101,7 @@ export default class AllEventsStore {
     if (this.hasMoreOracles) {
       oracles = await queryAllOracles(filters, orderBy, limit, skip);
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (oracles.length < skip + limit) this.hasMoreOracles = false;
+      if (oracles.length < skip) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;
