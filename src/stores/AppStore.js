@@ -21,7 +21,7 @@ class AppStore {
   async init() {
     this.loading = true;
     this.ui = new UiStore();
-    this.wallet = new WalletStore();
+    this.wallet = new WalletStore(this);
     this.pubsub = new PubSubStore(this);
     await this.pubsub.getSyncInfo();
     runInAction(() => {

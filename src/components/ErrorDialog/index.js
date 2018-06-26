@@ -57,18 +57,19 @@ export default class ErrorDialog extends Component {
 
   clearError = () => {
     const { error, dispatch } = this.props;
-    const { setError } = this.props.store.ui;
 
-    if (!error.type) return;
-    const clearError = {
-      app: appActions.clearErrorApp,
-      topic: topicActions.clearErrorTopic,
-      graphql: graphqlActions.clearGraphqlError,
-    }[error.type];
-    dispatch(clearError());
+    // Clear old Redux error types
+    if (error && error.type) {
+      const clearError = {
+        app: appActions.clearErrorApp,
+        topic: topicActions.clearErrorTopic,
+        graphql: graphqlActions.clearGraphqlError,
+      }[error.type];
+      dispatch(clearError());
+    }
 
     // Clear error object in MobX store
-    setError(null, null);
+    this.props.store.ui.clearError();
   }
 
   render() {
