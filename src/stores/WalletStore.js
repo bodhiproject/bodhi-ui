@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import axios from '../network/httpRequest';
 import Routes from '../network/routes';
 
@@ -7,8 +7,11 @@ export default class WalletStore {
   @observable addresses = []
   @observable walletEncrypted = false
   @observable encryptResult = undefined
-  @observable error = ''
   @observable passphrase = ''
+
+  constructor(app) {
+    this.app = app;
+  }
 
   @action
   encryptWallet = async (passphrase) => {
@@ -18,11 +21,9 @@ export default class WalletStore {
       });
       this.encryptResult = result;
     } catch (error) {
-      const errorObject = {
-        route: Routes.api.encryptWallet,
-        message: error.message,
-      };
-      this.error = errorObject;
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.encryptWallet);
+      });
     }
   }
 
