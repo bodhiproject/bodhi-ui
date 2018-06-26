@@ -73,7 +73,7 @@ export default class Oracle {
 
     const amount = parseFloat(_.sum(this.amounts).toFixed(2));
 
-    this.amountLabel = this.phase === FINALIZING ? `${amount} ${oracle.token}` : '';
+    this.amountLabel = this.phase !== FINALIZING ? `${amount} ${oracle.token}` : '';
     this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
   }
