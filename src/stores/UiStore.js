@@ -15,12 +15,12 @@ export default class UiStore {
 
   get defaultLocale() {
     let locale = navigator.language || navigator.userLanguage || '';
-    if (locale.startsWith('en')) {
-      locale = 'en-US';
+    if (locale.startsWith('ko')) {
+      locale = 'ko-KR';
     } else if (locale.startsWith('zh')) {
       locale = 'zh-Hans-CN';
-    } else if (locale.startsWith('ko')) {
-      locale = 'ko-KR';
+    } else { // Location Other than ko and zh
+      locale = 'en-US';
     }
     return locale;
   }
