@@ -23,8 +23,8 @@ import graphqlActions from '../../redux/Graphql/actions';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   get error() {
-    let type = '';
-    let error = { message: '', route: '' };
+    let type = null;
+    let error = null;
     if (state.App.get('errorApp')) {
       type = 'app';
       error = state.App.get('errorApp');
@@ -35,7 +35,11 @@ import graphqlActions from '../../redux/Graphql/actions';
       type = 'graphql';
       error = state.Graphql.get('error');
     }
-    return { ...error, type };
+
+    if (type && error) {
+      return { ...error, type };
+    }
+    return null;
   },
 }))
 @inject('store')
@@ -75,14 +79,20 @@ export default class ErrorDialog extends Component {
     // This is temporary until the MobX refactors for all the errorApp, errorTopic, and error Redux state objects are
     // converted to MobX. Convert errorApp, errorTopic, and error to use the UiStore.error.
     // TODO: remove when all replaced
-    const replacedError = error;
-    if (storeError.message && storeError.route) {
-      replacedError.message = storeError.message;
-      replacedError.route = storeError.route;
+    let replacedError = error;
+    if (storeError) {
+      replacedError = {
+        message: storeError.message,
+        route: storeError.route,
+      };
+    }
+
+    if (!replacedError) {
+      return null;
     }
 
     return (
-      <Dialog open={!!replacedError.message}>
+      <Dialog open={Boolean(replacedError)}>
         <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
         <DialogContent>
           <Typography className={classes.errorRoute}>{replacedError.route}</Typography>

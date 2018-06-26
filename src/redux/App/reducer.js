@@ -26,6 +26,7 @@ const initState = new Map({
   txConfirmInfoAndCallback: {},
   addressValidated: false,
   transactionCost: [],
+  errorApp: null,
 });
 
 export default function appReducer(state = initState, action) {
@@ -109,7 +110,7 @@ export default function appReducer(state = initState, action) {
       return state.set('walletUnlockedUntil', action.unlockedUntil);
     }
     case actions.CLEAR_ERROR_APP: {
-      return state.set('errorApp', undefined);
+      return state.set('errorApp', null);
     }
     case actions.TOGGLE_PENDING_TXS_SNACKBAR: {
       return state.set('pendingTxsSnackbarVisible', action.isVisible);
