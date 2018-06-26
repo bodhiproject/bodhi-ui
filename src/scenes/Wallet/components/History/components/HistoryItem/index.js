@@ -29,7 +29,7 @@ export default class HistoryItem extends Component {
   }
 }
 
-const MainRow = withStyles(styles, { withTheme: true })(({ classes, transaction, expanded, onRowClick }) => (
+const MainRow = withStyles(styles)(({ classes, transaction, expanded, onRowClick }) => (
   <TableRow
     key={transaction.txid}
     selected={expanded}
@@ -60,7 +60,7 @@ const MainRow = withStyles(styles, { withTheme: true })(({ classes, transaction,
   </TableRow>
 ));
 
-const SecondaryRow = withStyles(styles, { withTheme: true })(({ classes, transaction, expanded }) => (
+const SecondaryRow = withStyles(styles)(({ classes, transaction, expanded }) => (
   <TableRow
     key={`txaddr-${transaction.txid}`}
     selected
