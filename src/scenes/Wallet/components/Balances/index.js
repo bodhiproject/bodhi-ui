@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
+
 import {
   Table,
   TableBody,
@@ -36,16 +38,16 @@ import { SortBy } from '../../../../constants';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
 }), (dispatch) => ({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
 }))
+@inject('store')
+@observer
 export default class MyBalances extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
   }
@@ -379,7 +381,9 @@ export default class MyBalances extends Component {
   };
 
   onWithdrawClicked(event) {
-    const { walletEncrypted, walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
+    const { walletEncrypted } = this.props.store.wallet;
+
+    const { walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
     } else {
