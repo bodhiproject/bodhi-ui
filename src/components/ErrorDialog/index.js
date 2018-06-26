@@ -75,9 +75,10 @@ export default class ErrorDialog extends Component {
     const { classes, error } = this.props;
     const storeError = this.props.store.ui.error;
 
-    // Temporarily setting UiStore.error as the error if not null.
-    // This is temporary until the MobX refactors for all the errorApp, errorTopic, and error Redux state objects are
-    // converted to MobX. Convert errorApp, errorTopic, and error to use the UiStore.error.
+    // Temporarily replacing the error obj if UiStore.error is not null.
+    // This is temporary until the MobX refactors for `errorApp, errorTopic, and error` Redux state objects are
+    // converted to MobX.
+    // Convert `errorApp, errorTopic, and error` to use UiStore.setError()
     // TODO: remove when all replaced
     let replacedError = error;
     if (storeError) {
@@ -87,11 +88,7 @@ export default class ErrorDialog extends Component {
       };
     }
 
-    if (!replacedError) {
-      return null;
-    }
-
-    return (
+    return replacedError && (
       <Dialog open={Boolean(replacedError)}>
         <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
         <DialogContent>
