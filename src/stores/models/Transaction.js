@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { Token, TransactionType } from '../../constants';
 import { gasToQtum, satoshiToDecimal } from '../../helpers/utility';
 
@@ -30,13 +32,12 @@ export default class Transaction {
     this.fee = gasToQtum(this.gasUsed);
 
     if (this.token === Token.Bot) {
-      if (this.type !== TransactionType.ApproveCreateEvent
-        && this.type !== TransactionType.ApproveSetResult
-        && this.type !== TransactionType.ApproveVote) {
-        this.amount = satoshiToDecimal(this.amount);
-      } else {
+      const { ApproveCreateEvent, ApproveSetResult, ApproveVote } = TransactionType;
+      if (_.includes([ApproveCreateEvent, ApproveSetResult, ApproveVote], this.type)) {
         // Don't show the amount for any approves
         this.amount = undefined;
+      } else {
+        this.amount = satoshiToDecimal(this.amount);
       }
     }
   }

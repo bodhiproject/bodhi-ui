@@ -55,7 +55,7 @@ export default class WalletHistory extends Component {
   }
 
   componentDidMount() {
-    this.props.store.walletHistory.queryTransactions();
+    this.props.store.walletHistory.init();
   }
 
   componentWillReceiveProps(nextProps) {
