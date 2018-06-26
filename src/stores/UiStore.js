@@ -19,7 +19,7 @@ export default class UiStore {
       locale = 'ko-KR';
     } else if (locale.startsWith('zh')) {
       locale = 'zh-Hans-CN';
-    } else { // Location Other than ko and zh
+    } else { // Location Other than ko and zh will now return en-US
       locale = 'en-US';
     }
     return locale;
