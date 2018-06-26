@@ -94,37 +94,6 @@ const massageTopics = (topics) => topics.map((topic) => {
   };
 });
 
-// Send allTopics & allOracles query
-export function* getAllEventsHandler() {
-  yield takeEvery(actions.GET_ALL_EVENTS, function* getAllEventsRequest(action) {
-    try {
-      let { filters, orderBy, limit, skip } = action; // eslint-disable-line prefer-const
-
-      limit /= 2; // since we're making 2 requests
-      const topicsResult = yield call(queryAllTopics, null, orderBy, limit, skip);
-      const topics = _.uniqBy(topicsResult.map(processTopic), 'txid');
-
-      const oraclesResult = yield call(queryAllOracles, filters, orderBy, limit, skip);
-      const oracles = _.uniqBy(oraclesResult.map(processOracle), 'txid');
-
-      // order them all properly
-      const { field, direction } = orderBy;
-      const events = _.orderBy([...massageOracles(oracles), ...massageTopics(topics)], [field], direction);
-
-      yield put({
-        type: actions.GET_ALL_EVENTS_RETURN,
-        value: events,
-      });
-    } catch (error) {
-      console.error(error); // eslint-disable-line
-      yield put({
-        type: actions.GET_ALL_EVENTS_RETURN,
-        value: [],
-      });
-    }
-  });
-}
-
 // Send allTopics query
 export function* getTopicsHandler() {
   yield takeEvery(actions.GET_TOPICS, function* getTopicsRequest(action) {
@@ -631,7 +600,6 @@ export default function* graphqlSaga() {
     fork(getTopicsHandler),
     fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
-    fork(getAllEventsHandler),
     fork(getTransactionsHandler),
     fork(getPendingTransactionsHandler),
     fork(getActionableItemCountHandler),
