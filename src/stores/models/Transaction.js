@@ -24,9 +24,8 @@ export default class Transaction {
   amount = ''
   topic
 
-  constructor(transaction, app) {
+  constructor(transaction) {
     Object.assign(this, transaction);
-    this.app = app;
     this.gasLimit = Number(this.gasLimit);
     this.gasPrice = Number(this.gasPrice);
     this.fee = gasToQtum(this.gasUsed);
