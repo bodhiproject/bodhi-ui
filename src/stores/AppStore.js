@@ -9,7 +9,6 @@ import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
 
-
 class AppStore {
   @observable loading = true;
   @observable sortBy = 'ASC' // might want to move somewhere else

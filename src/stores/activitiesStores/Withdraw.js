@@ -9,7 +9,7 @@ const INIT = {
   loadingMore: false, // for laoding icon?
   list: [], // data list
   hasMore: true, // has more data to fetch?
-  offset: 0, // skip
+  skip: 0, // skip
   limit: 16, // loading batch amount
 };
 
@@ -18,7 +18,7 @@ export default class {
   @observable loadingMore = INIT.loadingMore
   @observable list = INIT.list
   @observable hasMore = INIT.hasMore
-  @observable offset = INIT.offset
+  @observable skip = INIT.skip
   limit = INIT.limit
 
   constructor(app) {
@@ -26,7 +26,7 @@ export default class {
     reaction(
       () => this.list,
       () => {
-        if (this.loaded && this.list.length < this.offset) this.hasMore = false;
+        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
       }
     );
   }
@@ -35,7 +35,7 @@ export default class {
   init = async () => {
     this.reset(); // reset to initial state
     this.app.ui.location = AppLocation.withdraw; // change ui location, for tabs to render correctly
-    this.list = await this.fetch(this.limit, this.offset);
+    this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
     });
@@ -45,8 +45,8 @@ export default class {
   loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
-      this.offset += this.limit; // pump the offset eg. from 0 to 24
-      const nextFewEvents = await this.fetch(this.limit, this.offset);
+      this.skip += this.limit; // pump the skip eg. from 0 to 24
+      const nextFewEvents = await this.fetch(this.limit, this.skip);
       runInAction(() => {
         this.list = [...this.list, ...nextFewEvents]; // push to existing list
         this.loadingMore = false; // stop showing the loading icon
@@ -54,7 +54,7 @@ export default class {
     }
   }
 
-  fetch = async (limit = this.limit, skip = this.offset) => {
+  fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
       const voteFilters = [];
       const topicFilters = [];
@@ -91,7 +91,7 @@ export default class {
     this.loadingMore = INIT.loadingMore;
     this.list = INIT.list;
     this.hasMore = INIT.hasMore;
-    this.offset = INIT.offset;
+    this.skip = INIT.skip;
     this.limit = INIT.limit;
   }
 }
