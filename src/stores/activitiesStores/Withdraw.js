@@ -26,7 +26,7 @@ export default class {
     reaction(
       () => this.list,
       () => {
-        if (this.loaded && this.list.length <= this.offset) this.hasMore = false;
+        if (this.loaded && this.list.length < this.offset) this.hasMore = false;
       }
     );
   }
@@ -34,9 +34,8 @@ export default class {
   @action
   init = async () => {
     this.reset(); // reset to initial state
-    const currentLimit = this.limit;
-    this.app.ui.location = AppLocation.resultSetting; // change ui location, for tabs to render correctly
-    this.list = await this.fetch(currentLimit, this.offset);
+    this.app.ui.location = AppLocation.withdraw; // change ui location, for tabs to render correctly
+    this.list = await this.fetch(this.limit, this.offset);
     runInAction(() => {
       this.loaded = true;
     });
