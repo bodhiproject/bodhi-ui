@@ -43,12 +43,20 @@ export default class WalletHistoryStore {
 
     reaction(
       () => this.orderBy,
-      () => this.list = _.orderBy(this.list, [this.orderBy], [this.direction]),
+      () => {
+        const start = this.page * this.perPage;
+        this.fullList = _.orderBy(this.fullList, [this.orderBy], [this.direction]);
+        this.list = _.slice(this.fullList, start, start + this.perPage);
+      }
     );
 
     reaction(
       () => this.direction,
-      () => this.list = _.orderBy(this.list, [this.orderBy], [this.direction]),
+      () => {
+        const start = this.page * this.perPage;
+        this.fullList = _.orderBy(this.fullList, [this.orderBy], [this.direction]);
+        this.list = _.slice(this.fullList, start, start + this.perPage);
+      }
     );
   }
 
