@@ -10,7 +10,7 @@ const INIT = {
   list: [], // data list
   hasMore: true, // has more data to fetch?
   offset: 0, // skip
-  limit: 16, // loading batch amount
+  limit: 4, // loading batch amount
 };
 
 export default class {
@@ -26,7 +26,8 @@ export default class {
     reaction(
       () => this.list,
       () => {
-        if (this.loaded && this.list.length <= this.offset) this.hasMore = false;
+        console.log(this.list.length, this.offset);
+        if (this.loaded && this.list.length < this.offset) this.hasMore = false;
       }
     );
   }
@@ -34,9 +35,8 @@ export default class {
   @action
   init = async () => {
     this.reset(); // reset to initial state
-    const currentLimit = this.limit;
     this.app.ui.location = AppLocation.resultSetting; // change ui location, for tabs to render correctly
-    this.list = await this.fetch(currentLimit, this.offset);
+    this.list = await this.fetch(this.limit, this.offset);
     runInAction(() => {
       this.loaded = true;
     });
