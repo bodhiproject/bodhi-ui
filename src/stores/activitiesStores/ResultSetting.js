@@ -10,7 +10,7 @@ const INIT = {
   list: [], // data list
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
-  limit: 4, // loading batch amount
+  limit: 16, // loading batch amount
 };
 
 export default class {
@@ -26,7 +26,6 @@ export default class {
     reaction(
       () => this.list,
       () => {
-        console.log(this.list.length, this.skip);
         if (this.loaded && this.list.length < this.skip) this.hasMore = false;
       }
     );
