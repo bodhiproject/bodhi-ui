@@ -10,7 +10,7 @@ const INIT_VALUES = {
   fullList: [],
   list: [],
   orderBy: 'createdTime',
-  direction: SortBy.Descending,
+  direction: SortBy.Descending.toLowerCase(),
   limit: 500,
   skip: 0,
   perPage: 10,
@@ -62,7 +62,7 @@ export default class WalletHistoryStore {
   queryTransactions = async (orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) => {
     try {
       const filters = [{ type: TransactionType.Transfer }];
-      const orderByObj = { field: orderBy, direction };
+      const orderByObj = { field: orderBy, direction: direction.toUpperCase() };
       const result = await queryAllTransactions(filters, orderByObj, limit, skip);
 
       runInAction(() => {
@@ -77,22 +77,6 @@ export default class WalletHistoryStore {
         this.list = [];
       });
     }
-  }
-
-  @action
-  onPageChange = (page) => {
-    this.page = page;
-  }
-
-  @action
-  onPerPageChange = (perPage) => {
-    this.perPage = perPage;
-  }
-
-  @action
-  onSortingChange = (orderBy, direction) => {
-    this.orderBy = orderBy;
-    this.direction = direction;
   }
 
   reset = () => {

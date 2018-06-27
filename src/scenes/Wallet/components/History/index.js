@@ -43,15 +43,24 @@ export default class WalletHistory extends Component {
     txReturn: undefined,
   };
 
+  onPageChange = (page) => {
+    this.props.store.walletHistory.page = page;
+  }
+
+  onPerPageChange = (perPage) => {
+    this.props.store.walletHistory.perPage = perPage;
+  }
+
   onSortChange = (property) => (event) => { // eslint-disable-line
     const { walletHistory } = this.props.store;
 
-    let order = SortBy.Descending.toLowerCase();
-    if (walletHistory.orderBy === property && walletHistory.direction === SortBy.Descending.toLowerCase()) {
-      order = SortBy.Ascending.toLowerCase();
+    if (walletHistory.orderBy !== property) {
+      walletHistory.orderBy = property;
+    } else if (walletHistory.direction === SortBy.Descending.toLowerCase()) {
+      walletHistory.direction = SortBy.Ascending.toLowerCase();
+    } else {
+      walletHistory.direction = SortBy.Descending.toLowerCase();
     }
-
-    walletHistory.onSortingChange(property, order);
   }
 
   componentDidMount() {
@@ -86,8 +95,8 @@ export default class WalletHistory extends Component {
               fullList={walletHistory.fullList}
               perPage={walletHistory.perPage}
               page={walletHistory.page}
-              onPageChange={walletHistory.onPageChange}
-              onPerPageChange={walletHistory.onPerPageChange}
+              onPageChange={this.onPageChange}
+              onPerPageChange={this.onPerPageChange}
             />
           </Table>
         </Grid>
@@ -159,7 +168,7 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
             >
               <TableSortLabel
                 active={orderBy === column.id}
-                direction={direction.toLowerCase()}
+                direction={direction}
                 onClick={onSortChange(column.id)}
               >
                 <FormattedMessage id={column.name} default={column.nameDefault} />
@@ -186,8 +195,8 @@ const TableFooter = ({ fullList, perPage, page, onPageChange, onPerPageChange })
         count={fullList.length}
         rowsPerPage={perPage}
         page={page}
-        onChangePage={(e, p) => onPageChange(p)}
-        onChangeRowsPerPage={(e) => onPerPageChange(e.target.value)}
+        onChangePage={(event, pg) => onPageChange(pg)}
+        onChangeRowsPerPage={(event) => onPerPageChange(event.target.value)}
       />
     </TableRow>
   </_TableFooter>
