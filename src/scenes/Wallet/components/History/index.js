@@ -58,10 +58,10 @@ export default class WalletHistory extends Component {
     this.props.store.walletHistory.init();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { txReturn, syncBlockNum, store: { walletHistory: { queryTransactions } } } = this.props;
+  componentDidUpdate(prevProps) {
+    const { txReturn, syncBlockNum, store: { walletHistory: { queryTransactions } } } = prevProps;
 
-    if ((txReturn && !nextProps.txReturn) || (syncBlockNum !== nextProps.syncBlockNum)) {
+    if ((txReturn && !this.props.txReturn) || (syncBlockNum !== this.props.syncBlockNum)) {
       queryTransactions();
     }
   }
