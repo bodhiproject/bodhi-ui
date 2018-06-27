@@ -11,6 +11,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import cx from 'classnames';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -29,6 +30,10 @@ export default class EventTxHistory extends Component {
     classes: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
+  };
+
+  state = {
+    expanded: [],
   };
 
   render() {
@@ -58,6 +63,8 @@ export default class EventTxHistory extends Component {
                 <TableCell padding="dense">
                   <FormattedMessage id="str.status" defaultMessage="Status" />
                 </TableCell>
+                <TableCell padding="dense">
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -76,12 +83,13 @@ export default class EventTxHistory extends Component {
   }
 
   renderTxRow = (transaction) => {
-    const { intl } = this.props;
+    const { intl, classes } = this.props;
     const { locale, messages: localeMessages } = intl;
+    const isExpanded = this.state.expanded.includes(transaction.txid);
 
     const result = [];
     result[0] = (
-      <TableRow key={transaction.txid}>
+      <TableRow key={transaction.txid} onClick={this.handleClick(transaction.txid)}>
         <TableCell padding="dense">{getShortLocalDateTimeString(transaction.createdTime)}</TableCell>
         <TableCell padding="dense">{getTxTypeString(transaction.type, locale, localeMessages)}</TableCell>
         <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
@@ -89,18 +97,19 @@ export default class EventTxHistory extends Component {
           {!transaction.amount ? '' : `${transaction.amount} ${transaction.token}`}
         </TableCell>
         <TableCell padding="dense">{transaction.status}</TableCell>
+        <TableCell padding="dense"><i className={cx(isExpanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} /></TableCell>
       </TableRow>
     );
     result[1] = (
-      <TableRow key={`txaddr-${transaction.txid}`} selected>
+      <TableRow key={`txaddr-${transaction.txid}`} onClick={this.handleClick(transaction.txid)} className={isExpanded ? classes.show : classes.hide} selected>
         <TransactionHistoryAddress transaction={transaction} />
-        <TableCell /><TableCell /><TableCell /><TableCell />
+        <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
       </TableRow>
     );
     result[2] = (
-      <TableRow key={`txid-${transaction.txid}`} selected>
+      <TableRow key={`txid-${transaction.txid}`} onClick={this.handleClick(transaction.txid)} className={isExpanded ? classes.show : classes.hide} selected>
         <TransactionHistoryID transaction={transaction} />
-        <TableCell /><TableCell /><TableCell /><TableCell />
+        <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
       </TableRow>
     );
 
@@ -127,5 +136,18 @@ export default class EventTxHistory extends Component {
         return undefined;
       }
     }
+  };
+
+  handleClick = (id, topicAddress) => (event) => { // eslint-disable-line
+    const { expanded } = this.state;
+    const expandedIndex = expanded.indexOf(id);
+    let newexpanded = [];
+    if (expandedIndex === -1) {
+      newexpanded = [...expanded, id];
+    } else {
+      newexpanded = [...expanded.slice(0, expandedIndex), ...expanded.slice(expandedIndex + 1)];
+    }
+
+    this.setState({ expanded: newexpanded });
   };
 }
