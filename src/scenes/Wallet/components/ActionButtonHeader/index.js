@@ -8,6 +8,7 @@ import EncryptStatusDialog from '../EncryptStatusDialog';
 import RestoreWalletDialog from '../RestoreWalletDialog';
 import ChangePassphraseDialog from '../ChangPassphraseDialog';
 import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
+import ErrorDialog from '../../../../components/ErrorDialog';
 import styles from './styles';
 
 
@@ -55,7 +56,7 @@ export default class ActionButtonHeader extends Component {
 
   render() {
     const { classes } = this.props;
-    const { encryptResult, backupWallet } = this.props.store.wallet;
+    const { backupWallet } = this.props.store.wallet;
     const { encryptDialogVisible, restoreDialogVisible, passphraseChangeDialogVisible } = this.state;
     return (
       <div className={classes.functionRow}>
@@ -67,14 +68,12 @@ export default class ActionButtonHeader extends Component {
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
           openPassphraseChangeDialog={() => this.setState({ passphraseChangeDialogVisible: true })}
         />
-        <EncryptStatusDialog
-          onClose={() => { this.setState({ encryptDialogVisible: false }); }}
-          encryptResult={encryptResult}
-        />
+        <EncryptStatusDialog />
         <RestoreWalletDialog
           dialogVisible={restoreDialogVisible}
           onClose={() => { this.setState({ restoreDialogVisible: false }); }}
         />
+        <ErrorDialog />
         <ChangePassphraseDialog
           dialogVisible={passphraseChangeDialogVisible}
           onClose={() => this.setState({ passphraseChangeDialogVisible: false })}
