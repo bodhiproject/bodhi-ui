@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
@@ -8,7 +8,6 @@ import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
-
 
 class AppStore {
   @observable loading = true;
