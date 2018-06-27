@@ -7,6 +7,7 @@ import { TransactionType } from '../../constants';
 const initState = new Map({
   betBalances: [],
   voteBalances: [],
+  errorTopic: null,
 });
 
 export default function topicReducer(state = initState, action) {
@@ -31,7 +32,7 @@ export default function topicReducer(state = initState, action) {
         .set('qtumWinnings', _.sumBy(action.value, (item) => item.qtumWon ? item.qtumWon : 0));
     }
     case actions.CLEAR_ERROR_TOPIC: {
-      return state.set('errorTopic', undefined);
+      return state.set('errorTopic', null);
     }
     default: {
       return state;

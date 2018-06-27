@@ -7,9 +7,12 @@ import { AppLocation } from '../constants';
 export default class UiStore {
   @observable location = AppLocation.qtumPrediction
   @observable locale = localStorage.getItem('lang') || this.defaultLocale
+  @observable error = null
+
   get localeMessages() {
     return locales[this.locale].messages;
   }
+
   get defaultLocale() {
     let locale = navigator.language || navigator.userLanguage || '';
     if (locale.startsWith('en')) {
@@ -36,5 +39,15 @@ export default class UiStore {
   @action
   changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
+  }
+
+  @action
+  setError = (message, route) => {
+    this.error = { message, route };
+  }
+
+  @action
+  clearError = () => {
+    this.error = null;
   }
 }
