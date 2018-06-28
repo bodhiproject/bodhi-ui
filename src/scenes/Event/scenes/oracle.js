@@ -241,6 +241,7 @@ export default class OraclePage extends Component {
                       isPrevResult={item.isPrevResult}
                       isFinalizing={item.isFinalizing}
                       walletAddresses={this.props.walletAddresses}
+                      consensusThreshold={oracle.consensusThreshold}
                       lastUsedAddress={lastUsedAddress}
                       skipExpansion={config.predictionAction.skipExpansion}
                       unconfirmedEvent={unconfirmed}
