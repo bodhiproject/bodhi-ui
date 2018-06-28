@@ -22,7 +22,7 @@ export default class TxRow extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
-    transaction: PropTypes.array.isRequired,
+    transaction: PropTypes.object.isRequired,
   };
 
   state = {
@@ -58,7 +58,7 @@ export default class TxRow extends Component {
   };
 
   render() {
-    const { transaction, classes, intl: { locale, localeMessages } } = this.props;
+    const { transaction, classes, intl } = this.props;
     const { txid, createdTime, amount, token, type, status } = transaction;
     const { expanded } = this.state;
 
@@ -66,7 +66,7 @@ export default class TxRow extends Component {
       <Fragment>
         <TableRow key={`tx-${txid}`} onClick={this.toggle}>
           <TableCell padding="dense">{getShortLocalDateTimeString(createdTime)}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(type, locale, localeMessages)}</TableCell>
+          <TableCell padding="dense">{getTxTypeString(type, intl.locale, intl.messages)}</TableCell>
           <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
           <TableCell padding="dense">
             {!amount ? '' : `${amount} ${token}`}

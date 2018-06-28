@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import {
   Table,
   TableBody,
@@ -20,14 +19,14 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 export default class EventTxHistory extends Component {
   static propTypes = {
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, transactions, options } = this.props;
-
+    const { classes, transactions, options, intl } = this.props;
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
@@ -57,8 +56,8 @@ export default class EventTxHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(transactions, (transaction) => (
-                <TxRow transaction={transaction} />
+              {transactions.map((transaction) => (
+                <TxRow key={transaction.txid} transaction={transaction} intl={intl} />
               ))}
             </TableBody>
           </Table>
