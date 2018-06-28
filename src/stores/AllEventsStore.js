@@ -25,7 +25,7 @@ export default class AllEventsStore {
       () => {
         // and we're on the AllEvents page
         if (this.app.ui.location === AppLocation.allEvents) {
-          this.init(this.skip); // fetch new events
+          this.init(); // fetch new events
         }
       }
     );
@@ -33,9 +33,7 @@ export default class AllEventsStore {
 
   @action
   init = async (limit = this.limit) => {
-    if (limit === this.limit) {
-      this.skip = 0;
-    }
+    this.skip = 0;
     this.hasMoreOracles = true;
     this.hasMoreTopics = true;
     this.app.ui.location = AppLocation.allEvents;
@@ -48,15 +46,13 @@ export default class AllEventsStore {
 
   @action
   loadMoreEvents = async () => {
-    if (this.hasMore) {
-      this.loadingMore = true;
-      this.skip += this.limit;
-      const nextFewEvents = await this.fetchAllEvents();
-      runInAction(() => {
-        this.list = [...this.list, ...nextFewEvents];
-        this.loadingMore = false;
-      });
-    }
+    this.loadingMore = true;
+    this.skip += this.limit;
+    const nextFewEvents = await this.fetchAllEvents();
+    runInAction(() => {
+      this.list = [...this.list, ...nextFewEvents];
+      this.loadingMore = false;
+    });
   }
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
@@ -88,7 +84,11 @@ export default class AllEventsStore {
       // Filter votes
       let votes = await queryAllVotes(voteFilters);
       // Filter out unique votes by voter address, topic address, and option index.
-      votes = _.uniqBy(votes, ['voterQAddress', 'topicAddress', 'optionIdx']);
+      votes = votes.reduce((accumulator, vote) => {
+        const { voterQAddress, topicAddress, optionIdx } = vote;
+        if (!_.find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
+        return accumulator;
+      }, []);
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
@@ -101,7 +101,7 @@ export default class AllEventsStore {
     if (this.hasMoreOracles) {
       oracles = await queryAllOracles(filters, orderBy, limit, skip);
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (oracles.length < skip) this.hasMoreOracles = false;
+      if (oracles.length < limit) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;
