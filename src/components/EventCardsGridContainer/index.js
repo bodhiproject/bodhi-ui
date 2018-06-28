@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { withStyles } from '@material-ui/core';
 
 import styles from './styles';
@@ -13,7 +12,7 @@ import EventCard from '../EventCard';
 import EventsEmptyBg from '../EventsEmptyBg';
 import InfiniteScroll from '../InfiniteScroll';
 
-const LIMIT = 50;
+const LIMIT = 24;
 const SKIP = 0;
 
 
@@ -26,14 +25,11 @@ const SKIP = 0;
   walletAddresses: state.App.get('walletAddresses'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  getActionableTopics: (walletAddresses, orderBy, limit, skip) =>
-    dispatch(graphqlActions.getActionableTopics(walletAddresses, orderBy, limit, skip)),
   getOracles: (filters, orderBy, limit, skip, exclude) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip, exclude)),
 }))
 export default class EventCardsGrid extends Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
-    getActionableTopics: PropTypes.func.isRequired,
     topics: PropTypes.array,
     getOracles: PropTypes.func,
     oracles: PropTypes.array,
@@ -88,40 +84,10 @@ export default class EventCardsGrid extends Component {
   }
 
   executeGraphRequest(eventStatusIndex, sortBy, limit, skip, walletAddresses) {
-    const { getActionableTopics, getOracles } = this.props;
+    const { getOracles } = this.props;
 
     const sortDirection = sortBy || SortBy.Ascending;
     switch (eventStatusIndex) {
-      case EventStatus.Bet: {
-        getOracles(
-          [
-            { token: Token.Qtum, status: OracleStatus.Voting },
-            { token: Token.Qtum, status: OracleStatus.Created },
-          ],
-          { field: 'endTime', direction: sortDirection },
-          limit,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Set: {
-        const filters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
-        _.each(walletAddresses, (addressObj) => {
-          filters.push({
-            token: Token.Qtum,
-            status: OracleStatus.WaitResult,
-            resultSetterQAddress: addressObj.address,
-          });
-        });
-
-        getOracles(
-          filters,
-          { field: 'resultSetEndTime', direction: sortDirection },
-          limit,
-          skip,
-        );
-        break;
-      }
       case EventStatus.Vote: {
         const excludeResultSetterQAddress = walletAddresses.map(({ address }) => address);
         getOracles(
@@ -132,26 +98,6 @@ export default class EventCardsGrid extends Component {
               excludeResultSetterQAddress },
           ],
           { field: 'endTime', direction: sortDirection },
-          limit,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Finalize: {
-        getOracles(
-          [
-            { token: Token.Bot, status: OracleStatus.WaitResult },
-          ],
-          { field: 'endTime', direction: sortDirection },
-          limit,
-          skip,
-        );
-        break;
-      }
-      case EventStatus.Withdraw: {
-        getActionableTopics(
-          walletAddresses,
-          { field: 'blockNum', direction: sortDirection },
           limit,
           skip,
         );

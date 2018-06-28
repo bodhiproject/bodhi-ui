@@ -31,8 +31,8 @@ export default class AllEventsStore {
     );
   }
 
-  @action.bound
-  async init(limit = this.limit) {
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -46,8 +46,8 @@ export default class AllEventsStore {
     });
   }
 
-  @action.bound
-  async loadMoreEvents() {
+  @action
+  loadMoreEvents = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
@@ -59,7 +59,7 @@ export default class AllEventsStore {
     }
   }
 
-  async fetchAllEvents(limit = this.limit, skip = this.skip) {
+  fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     limit /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [
@@ -101,7 +101,7 @@ export default class AllEventsStore {
     if (this.hasMoreOracles) {
       oracles = await queryAllOracles(filters, orderBy, limit, skip);
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (oracles.length < limit) this.hasMoreOracles = false;
+      if (oracles.length < skip) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;

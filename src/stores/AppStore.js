@@ -1,11 +1,13 @@
-import { observable } from 'mobx';
+import { observable, runInAction } from 'mobx';
 import UiStore from './UiStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
+import ResultSettingStore from './activitiesStores/ResultSetting';
+import FinalizeStore from './activitiesStores/Finalize';
+import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import PubSubStore from './PubSubStore';
-
 
 class AppStore {
   @observable loading = true;
@@ -30,9 +32,16 @@ class AppStore {
     // Stores below need info from syncInfo
     // TODO: Change this GraphQL syncInfo call?
     await this.pubsub.getSyncInfo();
-    this.allEvents = new AllEventsStore(this);
-    this.qtumPrediction = new QtumPredictionStore(this);
-    this.loading = false;
+    runInAction(() => {
+      this.allEvents = new AllEventsStore(this);
+      this.qtumPrediction = new QtumPredictionStore(this);
+      this.activities = {
+        resultSetting: new ResultSettingStore(this),
+        finalize: new FinalizeStore(this),
+        withdraw: new WithdrawStore(this),
+      };
+      this.loading = false;
+    });
   }
 }
 

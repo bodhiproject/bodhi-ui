@@ -11,7 +11,7 @@ export default class QtumPredictionStore {
   @observable list = []
   @observable hasMore = true
   @observable skip = 0
-  limit = 50
+  limit = 16
 
   constructor(app) {
     this.app = app;
@@ -25,8 +25,8 @@ export default class QtumPredictionStore {
     );
   }
 
-  @action.bound
-  async init(limit = this.limit) {
+  @action
+  init = async (limit = this.limit) => {
     if (limit === this.limit) {
       this.skip = 0;
     }
@@ -39,8 +39,8 @@ export default class QtumPredictionStore {
     });
   }
 
-  @action.bound
-  async loadMore() {
+  @action
+  loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
