@@ -488,6 +488,12 @@ apollo-utilities@^1.0.14:
   dependencies:
     fast-json-stable-stringify "^2.0.0"
 
+apollo-utilities@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.15.tgz#8f1ba6e4ed9b92cb0de2ce7c032315a768860aae"
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
+
 app-root-path@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/app-root-path/-/app-root-path-2.0.1.tgz#cd62dcf8e4fd5a417efc664d2e5b10653c651b46"
@@ -9496,8 +9502,8 @@ yargs@~3.10.0:
     window-size "0.1.0"
 
 yarn@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.7.0.tgz#0076b9fde6010e01950526a609bc53bc175ef925"
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.8.0.tgz#ce80ad0ffb0af445624ca34e98a05d427e1419d6"
 
 zen-observable-ts@^0.8.9:
   version "0.8.9"
