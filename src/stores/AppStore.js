@@ -1,4 +1,4 @@
-import { observable, runInAction, action } from 'mobx';
+import { observable, runInAction } from 'mobx';
 
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
@@ -53,13 +53,8 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.finishLoading();
+      this.loading = false; // finish loading
     });
-  }
-
-  @action
-  finishLoading() {
-    this.loading = false;
   }
 }
 
