@@ -8,7 +8,6 @@ import EncryptStatusDialog from '../EncryptStatusDialog';
 import RestoreWalletDialog from '../RestoreWalletDialog';
 import ChangePassphraseDialog from '../ChangPassphraseDialog';
 import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
-import ErrorDialog from '../../../../components/ErrorDialog';
 import styles from './styles';
 
 
@@ -73,7 +72,6 @@ export default class ActionButtonHeader extends Component {
           dialogVisible={restoreDialogVisible}
           onClose={() => { this.setState({ restoreDialogVisible: false }); }}
         />
-        <ErrorDialog />
         <ChangePassphraseDialog
           dialogVisible={passphraseChangeDialogVisible}
           onClose={() => this.setState({ passphraseChangeDialogVisible: false })}
