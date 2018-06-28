@@ -140,7 +140,6 @@ export default class OraclePage extends Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos

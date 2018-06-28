@@ -109,7 +109,6 @@ export default class TopicPage extends Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
-    walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
