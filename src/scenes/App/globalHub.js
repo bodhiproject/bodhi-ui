@@ -28,7 +28,6 @@ const messages = defineMessages({
   ...state.App.toJS(),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  checkWalletEncrypted: () => dispatch(appActions.checkWalletEncrypted()),
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
@@ -47,7 +46,6 @@ export default class GlobalHub extends Component {
     syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    checkWalletEncrypted: PropTypes.func.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
@@ -63,11 +61,11 @@ export default class GlobalHub extends Component {
 
   componentWillMount() {
     const {
-      checkWalletEncrypted,
       getSyncInfo,
       syncPercent,
       getPendingTransactions,
     } = this.props;
+    const { checkWalletEncrypted } = this.props.store.wallet;
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();

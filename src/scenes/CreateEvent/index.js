@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
@@ -193,7 +194,6 @@ const validate = (values, props) => {
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   addressValidated: state.App.get('addressValidated'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   walletAddresses: state.App.get('walletAddresses'),
@@ -234,10 +234,11 @@ const validate = (values, props) => {
   fields,
   validate,
 })
+@inject('store')
+@observer
 export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
     addressValidated: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -333,14 +334,13 @@ export default class CreateEvent extends Component {
 
   checkWalletAndConfirmAction = (values) => {
     const {
-      walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
     } = this.props;
-
+    const { walletEncrypted } = this.props.store.wallet;
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
     } else {

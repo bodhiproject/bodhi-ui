@@ -93,7 +93,6 @@ const messages = defineMessages({
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
@@ -314,13 +313,13 @@ export default class OraclePage extends Component {
     } = this.state;
 
     const {
-      walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       intl,
       lastUsedAddress,
     } = this.props;
+    const { walletEncrypted } = this.props.store.wallet;
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);

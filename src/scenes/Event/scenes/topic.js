@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { inject, observer } from 'mobx-react';
 import {
   Typography,
   Paper,
@@ -62,7 +63,6 @@ const pageMessage = defineMessages({
 @connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -86,6 +86,8 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
+@inject('store')
+@observer
 export default class TopicPage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -551,11 +553,11 @@ export default class TopicPage extends Component {
   onWithdrawClicked(event) {
     const {
       createWithdrawTx,
-      walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
     } = this.props;
     const { topic } = this.state;
+    const { walletEncrypted } = this.props.store.wallet;
 
     const senderAddress = event.currentTarget.getAttribute('data-address');
     const type = event.currentTarget.getAttribute('data-type');

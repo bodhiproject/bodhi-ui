@@ -28,19 +28,14 @@ export default class EncryptStatusDialog extends Component {
 
   render() {
     const { encryptResult, clearEncryptResult } = this.props.store.wallet;
-    const isSuccessful = !_.isUndefined(encryptResult) && !_.isObject(encryptResult) && encryptResult.includes('wallet encrypted; Qtum server stopping, restart to run with encrypted wallet.');
 
     return (
       <Dialog open={!_.isUndefined(encryptResult)}>
         <DialogTitle>
-          {isSuccessful ? (
-            <FormattedMessage id="encrypt.success" defaultMessage="Encrypt Wallet Successful." />
-          ) : (
-            <FormattedMessage id="encrypt:fail" defaultMessage="Encrypt Wallet Failed." />
-          )}
+          <FormattedMessage id="encrypt.success" defaultMessage="Encrypt Wallet Successful." />
         </DialogTitle>
         <DialogContent>
-          {isSuccessful && <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />}
+          <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />
         </DialogContent>
         <DialogActions>
           <Button onClick={clearEncryptResult}>

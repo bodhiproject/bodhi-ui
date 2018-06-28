@@ -77,9 +77,6 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('changePassphraseResult', action.changePassphraseResult);
     }
-    case actions.BACKUP_WALLET_RETURN: {
-      return state.set('backupWallet', action.backupResult);
-    }
     case actions.IMPORT_WALLET_RETURN: {
       if (action.error) return state.set('errorApp', action.error);
       return state;
