@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import {
   Collapse,
   withStyles,
@@ -26,6 +27,7 @@ import { toFixed } from '../../../../helpers/utility';
 
 
 @withStyles(styles, { withTheme: true })
+@inject('store')
 export default class EventOption extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -40,7 +42,6 @@ export default class EventOption extends Component {
     onOptionChange: PropTypes.func.isRequired,
     onAmountChange: PropTypes.func.isRequired,
     onWalletChange: PropTypes.func.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     skipExpansion: PropTypes.bool.isRequired,
     unconfirmedEvent: PropTypes.bool.isRequired,
@@ -54,7 +55,6 @@ export default class EventOption extends Component {
     voteAmount: 0,
   };
 
-
   handleAmountBlur = ({ target: { value } }) => {
     let { phase, amount, consensusThreshold, onAmountChange } = this.props; // eslint-disable-line
     if (phase === Phases.VOTING) {
@@ -64,81 +64,6 @@ export default class EventOption extends Component {
         onAmountChange(val);
       }
     }
-  }
-
-  handleAmountChange = (event) => {
-    const { onAmountChange } = this.props;
-    onAmountChange(parseFloat(event.target.value));
-  }
-
-  renderAmountInput = () => {
-    const { classes, voteAmount, token, amountInputDisabled } = this.props;
-
-    return (
-      <ExpansionPanelDetails>
-        <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
-          <div className={classes.eventOptionIcon}>
-            <i className="icon iconfont icon-ic_token"></i>
-          </div>
-          <FormControl fullWidth>
-            <InputLabel htmlFor="amount" shrink>
-              AMOUNT
-            </InputLabel>
-            <Input
-              id="vote-amount"
-              value={voteAmount}
-              type="number"
-              placeholder="0.00"
-              className={classes.eventOptionInput}
-              onChange={this.handleAmountChange}
-              endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
-              onBlur={this.handleAmountBlur}
-              disabled={amountInputDisabled}
-            />
-          </FormControl>
-        </div>
-      </ExpansionPanelDetails>
-    );
-  }
-
-  handleAddrChange = (event) => {
-    const { onWalletChange } = this.props;
-    onWalletChange(event.target.value);
-  }
-
-  renderAddrSelect = () => {
-    const { classes, walletAddresses, lastUsedAddress } = this.props;
-
-    return (
-      <ExpansionPanelDetails>
-        <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
-          <div className={classes.eventOptionIcon}>
-            <i className="icon iconfont icon-ic_wallet"></i>
-          </div>
-          <FormControl fullWidth>
-            <InputLabel htmlFor="address" shrink>
-              ADDRESS
-            </InputLabel>
-            <Select
-              value={lastUsedAddress}
-              onChange={this.handleAddrChange}
-              inputProps={{ id: 'address' }}
-            >
-              {walletAddresses.map((item) => (
-                <MenuItem key={item.address} value={item.address}>
-                  {`${item.address} (${item.qtum ? item.qtum.toFixed(2) : 0} QTUM, ${item.bot ? item.bot.toFixed(2) : 0} BOT)`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-      </ExpansionPanelDetails>
-    );
-  }
-
-  handleExpansionChange = (event, expanded) => {
-    const { optionIdx, onOptionChange } = this.props;
-    onOptionChange(expanded ? optionIdx : -1);
   }
 
   render() {
@@ -155,6 +80,14 @@ export default class EventOption extends Component {
       showAmountInput,
       isPrevResult,
       isFinalizing,
+      token,
+      voteAmount,
+      amountInputDisabled,
+      lastUsedAddress,
+      onAmountChange,
+      onWalletChange,
+      onOptionChange,
+      store,
     } = this.props;
 
     return (
@@ -167,7 +100,7 @@ export default class EventOption extends Component {
         >
           <ExpansionPanel
             expanded={optionIdx === currentOptionIdx || skipExpansion}
-            onChange={this.handleExpansionChange}
+            onChange={(e, expanded) => onOptionChange(expanded ? optionIdx : -1)}
             disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -190,11 +123,73 @@ export default class EventOption extends Component {
                 </Typography>
               </div>
             </ExpansionPanelSummary>
-            {showAmountInput && this.renderAmountInput()}
-            {showAmountInput && this.renderAddrSelect()}
+            {showAmountInput && (
+              <Fragment>
+                <AmountInput
+                  token={token}
+                  disabled={amountInputDisabled}
+                  classes={classes}
+                  value={voteAmount}
+                  onChange={e => onAmountChange(parseFloat(e.target.value))}
+                  onBlur={this.handleAmountBlur}
+                />
+                <AddressSelect
+                  wallet={store.wallet}
+                  token={token}
+                  classes={classes}
+                  value={lastUsedAddress}
+                  onChange={e => onWalletChange(e.target.value)}
+                />
+              </Fragment>
+            )}
           </ExpansionPanel>
         </div>
       </Collapse>
     );
   }
 }
+
+const AmountInput = ({ classes, token, ...props }) => (
+  <ExpansionPanelDetails>
+    <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
+      <div className={classes.eventOptionIcon}>
+        <i className="icon iconfont icon-ic_token"></i>
+      </div>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="amount" shrink>
+          AMOUNT
+        </InputLabel>
+        <Input
+          id="vote-amount"
+          type="number"
+          placeholder="0.00"
+          className={classes.eventOptionInput}
+          endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
+          {...props}
+        />
+      </FormControl>
+    </div>
+  </ExpansionPanelDetails>
+);
+
+const AddressSelect = observer(({ classes, wallet, ...props }) => (
+  <ExpansionPanelDetails>
+    <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
+      <div className={classes.eventOptionIcon}>
+        <i className="icon iconfont icon-ic_wallet"></i>
+      </div>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="address" shrink>
+          ADDRESS
+        </InputLabel>
+        <Select inputProps={{ id: 'address' }} {...props}>
+          {wallet.addresses.map(({ address, bot, qtum }) => (
+            <MenuItem key={address} value={address}>
+              {`${address} (${qtum ? Number(qtum).toFixed(2) : 0} QTUM, ${bot ? Number(bot).toFixed(2) : 0} BOT)`}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+  </ExpansionPanelDetails>
+));
