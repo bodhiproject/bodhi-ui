@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { AppLocation } from 'constants';
 
 import MyBalances from './components/Balances';
 import ActionButtonHeader from './components/ActionButtonHeader';
 import WalletHistory from './components/History';
-import { AppLocation } from '../../constants';
 
 @inject('store')
 @observer

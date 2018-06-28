@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router-dom';
+import { AppLocation, RouterPath } from 'constants';
 import { Link } from '../Link';
-import { AppLocation, RouterPath } from '../../../../constants';
 
 
 const NavLink = observer(({ to, store: { ui }, ...props }) => {

@@ -9,10 +9,10 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { TransactionType } from 'constants';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
-import { TransactionType } from '../../constants';
 
 
 const messages = defineMessages({

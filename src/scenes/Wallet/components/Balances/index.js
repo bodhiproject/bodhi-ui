@@ -19,6 +19,7 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
+import { SortBy } from 'constants';
 import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -31,7 +32,6 @@ import WithdrawDialog from '../WithdrawDialog';
 import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
-import { SortBy } from '../../../../constants';
 
 
 @injectIntl

@@ -21,6 +21,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { Token, TransactionType } from 'constants';
 
 import ImportantNote from '../../components/ImportantNote';
 import EventWarning from '../../components/EventWarning';
@@ -31,7 +32,6 @@ import SelectAddressDialog from '../../components/SelectAddressDialog';
 import graphqlActions from '../../redux/Graphql/actions';
 import appActions from '../../redux/App/actions';
 import styles from './styles';
-import { Token, TransactionType } from '../../constants';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
 

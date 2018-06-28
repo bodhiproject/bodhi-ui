@@ -1,9 +1,9 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
+import { SortBy, TransactionType } from 'constants';
 
 import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
-import { SortBy, TransactionType } from '../constants';
 
 
 const INIT_VALUES = {

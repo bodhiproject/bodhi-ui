@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation, SortBy } from '../../constants';
+import { Token, OracleStatus, AppLocation, SortBy } from 'constants';
 import { queryAllOracles } from '../../network/graphQuery';
 import Oracle from '../models/Oracle';
 

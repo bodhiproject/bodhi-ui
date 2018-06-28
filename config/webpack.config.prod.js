@@ -15,6 +15,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
+const sources = location => path.join(__dirname, location);
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -98,6 +99,8 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
+      components$: sources('../src/components'),
+      constants$: sources('../src/constants'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).

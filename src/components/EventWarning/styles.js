@@ -1,4 +1,4 @@
-import { EventWarningType } from '../../constants';
+import { EventWarningType } from 'constants';
 
 const styles = (theme) => ({
   warningWrapper: {
