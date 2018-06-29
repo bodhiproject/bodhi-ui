@@ -80,23 +80,6 @@ export function* changePassphraseRequestHandler() {
   });
 }
 
-// Backup the wallet
-export function* backupWalletRequestHandler() {
-  yield takeEvery(actions.BACKUP_WALLET, function* backupWalletRequest() {
-    try {
-      yield axios.post(Routes.api.backupWallet);
-    } catch (error) {
-      yield put({
-        type: actions.BACKUP_WALLET_RETURN,
-        error: {
-          route: Routes.api.backupWallet,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
-
 // Import the wallet
 export function* importWalletRequestHandler() {
   yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
@@ -219,7 +202,6 @@ export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
-    fork(backupWalletRequestHandler),
     fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),
     fork(checkWalletEncryptedRequestHandler),

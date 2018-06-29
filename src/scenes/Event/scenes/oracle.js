@@ -10,6 +10,16 @@ import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 import NP from 'number-precision';
+import {
+  Token,
+  OracleStatus,
+  TransactionStatus,
+  TransactionType,
+  EventWarningType,
+  SortBy,
+  AppLocation,
+  EventStatus,
+} from 'constants';
 
 import styles from './styles';
 import {
@@ -30,16 +40,6 @@ import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { maxTransactionFee } from '../../../config/app';
-import {
-  Token,
-  OracleStatus,
-  TransactionStatus,
-  TransactionType,
-  EventWarningType,
-  SortBy,
-  AppLocation,
-  EventStatus,
-} from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 
@@ -93,7 +93,6 @@ const messages = defineMessages({
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
@@ -141,7 +140,6 @@ export default class OraclePage extends Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -242,6 +240,7 @@ export default class OraclePage extends Component {
                       isPrevResult={item.isPrevResult}
                       isFinalizing={item.isFinalizing}
                       walletAddresses={this.props.walletAddresses}
+                      consensusThreshold={oracle.consensusThreshold}
                       lastUsedAddress={lastUsedAddress}
                       skipExpansion={config.predictionAction.skipExpansion}
                       unconfirmedEvent={unconfirmed}
@@ -314,13 +313,13 @@ export default class OraclePage extends Component {
     } = this.state;
 
     const {
-      walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       intl,
       lastUsedAddress,
     } = this.props;
+    const { walletEncrypted } = this.props.store.wallet;
 
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);

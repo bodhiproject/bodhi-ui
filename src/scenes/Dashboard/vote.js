@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core';
+import { EventStatus, SortBy, AppLocation } from 'constants';
 
 import TopActions from './components/TopActions';
 import EventCardsGridContainer from '../../components/EventCardsGridContainer';
-import { EventStatus, SortBy, AppLocation } from '../../constants';
 import styles from './styles';
 
 

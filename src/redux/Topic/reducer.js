@@ -1,8 +1,8 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+import { TransactionType } from 'constants';
 
 import actions from './actions';
-import { TransactionType } from '../../constants';
 
 const initState = new Map({
   betBalances: [],

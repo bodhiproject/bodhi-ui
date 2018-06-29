@@ -1,6 +1,7 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import { defineMessages } from 'react-intl';
 import _ from 'lodash';
+import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from 'constants';
 
 import actions from './actions';
 import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphQuery';
@@ -21,7 +22,6 @@ import {
   processOracle,
   getPhase,
 } from '../../helpers/utility';
-import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import Routes from '../../network/routes';
 const { Pending } = TransactionStatus;
 const { RESULT_SETTING, FINALIZING } = Phases;

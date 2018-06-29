@@ -1,7 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { TransactionType } from 'constants';
 
 import { getIntlProvider } from './i18nUtil';
-import { TransactionType } from '../constants';
 
 const strings = defineMessages({
   resetApproval: {

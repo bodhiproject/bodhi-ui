@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { inject, observer } from 'mobx-react';
 import {
   Typography,
   Paper,
@@ -18,6 +19,13 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
+import {
+  Token,
+  OracleStatus,
+  TransactionType,
+  TransactionStatus,
+  SortBy,
+} from 'constants';
 import styles from './styles';
 import Warning from '../../../components/Warning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
@@ -29,13 +37,6 @@ import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import {
-  Token,
-  OracleStatus,
-  TransactionType,
-  TransactionStatus,
-  SortBy,
-} from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
@@ -62,7 +63,6 @@ const pageMessage = defineMessages({
 @connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  walletEncrypted: state.App.get('walletEncrypted'),
   walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
@@ -86,6 +86,8 @@ const pageMessage = defineMessages({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
+@inject('store')
+@observer
 export default class TopicPage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
@@ -107,7 +109,6 @@ export default class TopicPage extends Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
-    walletEncrypted: PropTypes.bool.isRequired,
     walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -552,11 +553,11 @@ export default class TopicPage extends Component {
   onWithdrawClicked(event) {
     const {
       createWithdrawTx,
-      walletEncrypted,
       walletUnlockedUntil,
       toggleWalletUnlockDialog,
     } = this.props;
     const { topic } = this.state;
+    const { walletEncrypted } = this.props.store.wallet;
 
     const senderAddress = event.currentTarget.getAttribute('data-address');
     const type = event.currentTarget.getAttribute('data-type');

@@ -18,10 +18,10 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { SortBy } from 'constants';
 
 import styles from './styles';
 import HistoryItem from './components/HistoryItem';
-import { SortBy } from '../../../../constants';
 import Config from '../../../../config/app';
 
 @injectIntl

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+import { SortBy } from 'constants';
 
-import { SortBy } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
 import actions from './actions';
@@ -76,9 +76,6 @@ export default function appReducer(state = initState, action) {
         return state.set('changePassphraseResult', action.error);
       }
       return state.set('changePassphraseResult', action.changePassphraseResult);
-    }
-    case actions.BACKUP_WALLET_RETURN: {
-      return state.set('backupWallet', action.backupResult);
     }
     case actions.IMPORT_WALLET_RETURN: {
       if (action.error) return state.set('errorApp', action.error);

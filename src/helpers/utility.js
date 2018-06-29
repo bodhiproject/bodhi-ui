@@ -2,9 +2,9 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
+import { OracleStatus, SortBy, Phases } from 'constants';
 
 import { getIntlProvider } from './i18nUtil';
-import { OracleStatus, SortBy, Phases } from '../constants';
 import Zhlang from '../languageProvider/entries/zh-Hans-CN';
 const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
 

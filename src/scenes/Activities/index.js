@@ -4,10 +4,12 @@ import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { RouterPath, EventStatus, AppLocation } from 'constants';
 
-import EventCardsGridContainer from '../../components/EventCardsGridContainer';
+import ResultSetting from './scenes/ResultSetting';
+import Finalize from './scenes/Finalize';
+import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
-import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 const { set, finalize, withdraw, activityHistory } = RouterPath;
 
@@ -144,9 +146,9 @@ export default class Activities extends Component {
           <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
-          {this.tabIdx === TAB_SET && <EventCardsGridContainer eventStatusIndex={EventStatus.Set} />}
-          {this.tabIdx === TAB_FINALIZE && <EventCardsGridContainer eventStatusIndex={EventStatus.Finalize} />}
-          {this.tabIdx === TAB_WITHDRAW && <EventCardsGridContainer eventStatusIndex={EventStatus.Withdraw} />}
+          {this.tabIdx === TAB_SET && <ResultSetting />}
+          {this.tabIdx === TAB_FINALIZE && <Finalize />}
+          {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
           {this.tabIdx === TAB_HISTORY && <EventHistory history={history} />}
         </div>
       </div>

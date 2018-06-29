@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 import _ from 'lodash';
-import { TransactionType, TransactionStatus, Phases } from '../../constants';
+import { TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
 const { Pending } = TransactionStatus;
 

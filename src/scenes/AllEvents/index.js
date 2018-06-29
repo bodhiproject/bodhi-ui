@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles } from '@material-ui/core';
 
@@ -14,10 +13,6 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class AllEvents extends Component {
-  static propTypes = {
-    store: PropTypes.object.isRequired,
-  }
-
   componentDidMount() {
     this.props.store.allEvents.init();
   }

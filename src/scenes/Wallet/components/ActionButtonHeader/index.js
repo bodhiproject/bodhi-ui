@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl, defineMessages } from 'react-intl';
+import { inject, observer } from 'mobx-react';
 import { withStyles, Button, Tooltip } from '@material-ui/core';
-
 import EncryptDialog from '../EncryptDialog';
 import EncryptStatusDialog from '../EncryptStatusDialog';
 import RestoreWalletDialog from '../RestoreWalletDialog';
 import ChangePassphraseDialog from '../ChangPassphraseDialog';
 import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
-import appActions from '../../../../redux/App/actions';
 import styles from './styles';
 
 
@@ -42,23 +40,11 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  encryptResult: state.App.get('encryptResult'),
-}), (dispatch) => ({
-  backupWallet: () => dispatch(appActions.backupWallet()),
-}))
+@inject('store')
+@observer
 export default class ActionButtonHeader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    backupWallet: PropTypes.func.isRequired,
-    encryptResult: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.object,
-    ]),
-  }
-
-  static defaultProps = {
-    encryptResult: undefined,
   }
 
   state = {
@@ -68,22 +54,20 @@ export default class ActionButtonHeader extends Component {
   }
 
   render() {
-    const { classes, encryptResult } = this.props;
+    const { classes } = this.props;
+    const { backupWallet } = this.props.store.wallet;
     const { encryptDialogVisible, restoreDialogVisible, passphraseChangeDialogVisible } = this.state;
     return (
       <div className={classes.functionRow}>
         <Tip onClick={() => { this.setState({ encryptDialogVisible: true }); }}>encrypt</Tip>
-        <Tip onClick={this.props.backupWallet}>backup</Tip>
+        <Tip onClick={backupWallet}>backup</Tip>
         <Tip onClick={() => { this.setState({ restoreDialogVisible: true }); }}>restore</Tip>
         <EncryptDialog
           dialogVisible={encryptDialogVisible}
           onClose={() => { this.setState({ encryptDialogVisible: false }); }}
           openPassphraseChangeDialog={() => this.setState({ passphraseChangeDialogVisible: true })}
         />
-        <EncryptStatusDialog
-          onClose={() => { this.setState({ encryptDialogVisible: false }); }}
-          encryptResult={encryptResult}
-        />
+        <EncryptStatusDialog />
         <RestoreWalletDialog
           dialogVisible={restoreDialogVisible}
           onClose={() => { this.setState({ restoreDialogVisible: false }); }}

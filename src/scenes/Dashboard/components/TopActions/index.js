@@ -14,11 +14,11 @@ import {
   Card,
   withStyles,
 } from '@material-ui/core';
+import { SortBy } from 'constants';
 
 import appActions from '../../../../redux/App/actions';
 import dashboardActions from '../../../../redux/Dashboard/actions';
 import topicActions from '../../../../redux/Topic/actions';
-import { SortBy } from '../../../../constants';
 import Tracking from '../../../../helpers/mixpanelUtil';
 import styles from './styles';
 import sportStyles from './sportStyles';

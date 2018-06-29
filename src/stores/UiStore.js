@@ -1,7 +1,7 @@
 import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
+import { AppLocation } from 'constants';
 import locales from '../languageProvider';
-import { AppLocation } from '../constants';
 
 
 export default class UiStore {
