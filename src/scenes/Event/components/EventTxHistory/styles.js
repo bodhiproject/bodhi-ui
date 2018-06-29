@@ -5,12 +5,6 @@ const styles = (theme) => ({
   detailTxTitle: {
     marginBottom: theme.padding.xs.px,
   },
-  hide: {
-    display: 'none',
-  },
-  show: {
-    display: 'table-row',
-  },
   arrowSize: {
     fontSize: '8px',
   },
