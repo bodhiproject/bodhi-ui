@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
-import { OracleStatus, TransactionType, TransactionStatus, Phases } from 'constants';
+import { OracleStatus, TransactionType, TransactionStatus, Phases } from '../../constants';
 import { satoshiToDecimal, getPhase } from '../../helpers/utility';
 const { PENDING } = TransactionStatus;
 const { RESULT_SETTING, FINALIZING } = Phases;
