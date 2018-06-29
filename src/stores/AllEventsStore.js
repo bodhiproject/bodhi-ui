@@ -5,18 +5,27 @@ import { queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graph
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
+const INIT = {
+  loading: true, // initial loading state
+  loadingMore: false, // for scroll laoding animation
+  list: [], // data list
+  hasMoreTopics: true, // has more topics to fetch?
+  hasMoreOracles: true, // has more oracles to fetch?
+  skip: 0, // skip
+};
 
-export default class AllEventsStore {
-  @observable loading = true
-  @observable loadingMore = false
-  @observable list = []
-  @observable hasMoreTopics = true
-  @observable hasMoreOracles = true
+
+export default class {
+  @observable loading = INIT.loading
+  @observable loadingMore = INIT.loadingMore
+  @observable list = INIT.list
+  @observable hasMoreTopics = INIT.hasMoreTopics
+  @observable hasMoreOracles = INIT.hasMoreOracles
   @computed get hasMore() {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
-  @observable skip = 0
-  limit = 50
+  @observable skip = INIT.skip
+  limit = 24
 
   constructor(app) {
     this.app = app;
@@ -33,9 +42,7 @@ export default class AllEventsStore {
 
   @action
   init = async (limit = this.limit) => {
-    this.skip = 0;
-    this.hasMoreOracles = true;
-    this.hasMoreTopics = true;
+    Object.assign(this, INIT); // reset all properties
     this.app.ui.location = AppLocation.allEvents;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
