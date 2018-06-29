@@ -10,6 +10,16 @@ import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
 import NP from 'number-precision';
+import {
+  Token,
+  OracleStatus,
+  TransactionStatus,
+  TransactionType,
+  EventWarningType,
+  SortBy,
+  AppLocation,
+  EventStatus,
+} from 'constants';
 
 import styles from './styles';
 import {
@@ -30,16 +40,6 @@ import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
 import { maxTransactionFee } from '../../../config/app';
-import {
-  Token,
-  OracleStatus,
-  TransactionStatus,
-  TransactionType,
-  EventWarningType,
-  SortBy,
-  AppLocation,
-  EventStatus,
-} from '../../../constants';
 import { getIntlProvider, i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 

@@ -4,12 +4,12 @@ import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { RouterPath, EventStatus, AppLocation } from 'constants';
 
 import ResultSetting from './scenes/ResultSetting';
 import Finalize from './scenes/Finalize';
 import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
-import { RouterPath, EventStatus, AppLocation } from '../../constants';
 import styles from './styles';
 const { set, finalize, withdraw, activityHistory } = RouterPath;
 

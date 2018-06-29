@@ -15,11 +15,11 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
+import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
 import graphqlActions from '../../../../redux/Graphql/actions';
 import appActions from '../../../../redux/App/actions';
-import { Token, TransactionType } from '../../../../constants';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 

@@ -14,10 +14,10 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import cx from 'classnames';
+import { RouterPath, AppLocation, EventStatus } from 'constants';
 
 import { Link } from './components/Link';
 import NavLink from './components/NavLink';
-import { RouterPath, AppLocation, EventStatus } from '../../constants';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import sportStyles from './sportStyles';

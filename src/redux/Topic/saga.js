@@ -1,12 +1,12 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import _ from 'lodash';
+import { TransactionType } from 'constants';
 
 import actions from './actions';
 import axios from '../../network/httpRequest';
 import { queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
-import { TransactionType } from '../../constants';
 
 export function* getEventEscrowAmountHandler() {
   yield takeEvery(actions.GET_EVENT_ESCROW_AMOUNT, function* getEventEscrowAmountRequest(action) {

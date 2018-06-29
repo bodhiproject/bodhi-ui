@@ -11,8 +11,8 @@ import {
   withStyles,
   Typography,
 } from '@material-ui/core';
+import { Token } from 'constants';
 
-import { Token } from '../../../../constants';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../../helpers/localizeInvalidOption';

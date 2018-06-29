@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
+import { EventStatus } from 'constants';
 
 import actions from './actions';
-import { EventStatus } from '../../constants';
 
 
 const initState = new Map({

@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core';
+import { Token, OracleStatus, SortBy, EventStatus } from 'constants';
 
 import styles from './styles';
-import { Token, OracleStatus, SortBy, EventStatus } from '../../constants';
 import graphqlActions from '../../redux/Graphql/actions';
 import EventCard from '../EventCard';
 import EventsEmptyBg from '../EventsEmptyBg';

@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { TransactionType, SortBy, AppLocation } from 'constants';
 
 import styles from './styles';
 import Config from '../../../config/app';
@@ -28,7 +29,6 @@ import graphqlActions from '../../../redux/Graphql/actions';
 import { getShortLocalDateTimeString, getDetailPagePath } from '../../../helpers/utility';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../helpers/stringUtil';
-import { TransactionType, SortBy, AppLocation } from '../../../constants';
 
 
 const messages = defineMessages({ // eslint-disable-line

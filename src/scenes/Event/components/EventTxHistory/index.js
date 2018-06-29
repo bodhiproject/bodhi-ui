@@ -11,6 +11,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import { TransactionType } from 'constants';
 
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
@@ -18,7 +19,6 @@ import TransactionHistoryAddress from '../../../../components/TransactionHistory
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { localizeInvalidOption } from '../../../../helpers/localizeInvalidOption';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { TransactionType } from '../../../../constants';
 
 
 @injectIntl

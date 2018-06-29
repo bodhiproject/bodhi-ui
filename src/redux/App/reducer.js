@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+import { SortBy } from 'constants';
 
-import { SortBy } from '../../constants';
 import { getDefaultPath } from '../../helpers/urlSync';
 import { satoshiToDecimal } from '../../helpers/utility';
 import actions from './actions';

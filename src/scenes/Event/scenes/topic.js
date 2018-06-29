@@ -19,6 +19,13 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import cx from 'classnames';
+import {
+  Token,
+  OracleStatus,
+  TransactionType,
+  TransactionStatus,
+  SortBy,
+} from 'constants';
 import styles from './styles';
 import Warning from '../../../components/Warning/index';
 import StepperVertRight from '../../../components/StepperVertRight/index';
@@ -30,13 +37,6 @@ import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
 import graphqlActions from '../../../redux/Graphql/actions';
-import {
-  Token,
-  OracleStatus,
-  TransactionType,
-  TransactionStatus,
-  SortBy,
-} from '../../../constants';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { localizeInvalidOption } from '../../../helpers/localizeInvalidOption';
 import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
