@@ -114,12 +114,12 @@ export default class EventOption extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
-                  {isPrevResult ?
+                  {isPrevResult ? (
                     <FormattedMessage
                       id="oracle.optionIsPrevResult"
                       defaultMessage="This option was set as the result in the previous round"
-                    /> : amount
-                  }
+                    />
+                  ) : amount}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

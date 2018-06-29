@@ -77,4 +77,7 @@ export default class Oracle {
     this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
   }
+
+  // bet = async (amount) => {
+  // }
 }

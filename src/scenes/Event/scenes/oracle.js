@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
@@ -207,7 +207,7 @@ export default class OraclePage extends Component {
     const { id, message, values, warningType, disabled } = this.getActionButtonConfig();
 
     return (
-      <div>
+      <Fragment>
         <BackButton />
         <Paper className={classes.eventDetailPaper}>
           <Grid container spacing={0}>
@@ -281,7 +281,7 @@ export default class OraclePage extends Component {
             </Grid>
           </Grid>
         </Paper>
-      </div>
+      </Fragment>
     );
   }
 
