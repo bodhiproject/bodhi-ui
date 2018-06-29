@@ -103,6 +103,9 @@ const styles = (theme) => ({
   withdrawn: {
     color: theme.palette.primary.main,
   },
+  wrapText: {
+    wordBreak: 'break-all',
+  },
 });
 
 export default styles;

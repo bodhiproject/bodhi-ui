@@ -354,6 +354,7 @@ export default class TopicPage extends Component {
 
   renderWinningWithdrawRow = (withdrawableAddress, index) => {
     const { id, message, warningTypeClass, disabled, show } = this.getActionButtonConfig(withdrawableAddress);
+    const { classes } = this.props;
 
     if (!show) {
       return null;
@@ -365,7 +366,7 @@ export default class TopicPage extends Component {
     return (
       <TableRow key={index}>
         <TableCell padding="dense">
-          <div>{withdrawableAddress.address}</div>
+          <div className={classes.wrapText}>{withdrawableAddress.address}</div>
           {id && message && <Warning id={id} message={message} className={warningTypeClass} />}
         </TableCell>
         <TableCell padding="dense">{this.getLocalizedTypeString(withdrawableAddress.type)}</TableCell>

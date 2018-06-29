@@ -5,6 +5,9 @@ const styles = (theme) => ({
   detailTxTitle: {
     marginBottom: theme.padding.xs.px,
   },
+  arrowSize: {
+    fontSize: '8px',
+  },
 });
 
 export default styles;
