@@ -18,22 +18,28 @@ export default class AllEvents extends Component {
   }
 
   render() {
-    const { list, loadMoreEvents, loadingMore, loading } = this.props.store.allEvents;
-    if (loading) return <Loading />;
-    const events = (list || []).map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
+    const { allEvents } = this.props.store;
     return (
       <Fragment>
         <TopActions noCreateEventButton />
-        <InfiniteScroll
-          spacing={theme.padding.sm.value}
-          data={events}
-          loadMore={loadMoreEvents}
-          loadingMore={loadingMore}
-        />
+        <Events allEvents={allEvents} />
       </Fragment>
     );
   }
 }
+
+const Events = observer(({ allEvents: { list, loadMoreEvents, loading, loadingMore } }) => {
+  if (loading) return <Loading />;
+  const events = (list || []).map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
+  return (
+    <InfiniteScroll
+      spacing={theme.padding.sm.value}
+      data={events}
+      loadMore={loadMoreEvents}
+      loadingMore={loadingMore}
+    />
+  );
+});
 
 const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text="loading" /></Row>);
 
