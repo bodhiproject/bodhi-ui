@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core';
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
-import TopActions from '../Dashboard/components/TopActions';
+import TopActions from '../../components/TopActions';
 import _Loading from '../../components/Loading';
 import styles from './styles';
 
