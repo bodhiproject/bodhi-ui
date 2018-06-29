@@ -1,11 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import {
-  TableCell,
-  TableRow,
-  withStyles,
-} from '@material-ui/core';
+import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 
 import styles from './styles';
@@ -35,10 +31,10 @@ export default class TxRow extends Component {
     this.setState({ expanded: !this.state.expanded });
   };
 
-  getDescription = (tx) => {
-    const { optionIdx, topic } = tx;
-    const { intl } = this.props;
-    switch (tx.type) {
+  get name() {
+    const { transaction, intl } = this.props;
+    const { optionIdx, topic, type } = transaction;
+    switch (type) {
       case TransactionType.Bet:
       case TransactionType.ApproveSetResult:
       case TransactionType.SetResult:
@@ -46,8 +42,8 @@ export default class TxRow extends Component {
       case TransactionType.Vote:
       case TransactionType.FinalizeResult: {
         if (optionIdx && topic) {
-          const invalidOption = localizeInvalidOption(tx.topic.options[tx.optionIdx], intl);
-          return `#${tx.optionIdx + 1} ${tx.topic.options[tx.optionIdx] === 'Invalid' ? invalidOption : tx.topic.options[tx.optionIdx]}`;
+          const invalidOption = localizeInvalidOption(topic.options[optionIdx], intl);
+          return `#${optionIdx + 1} ${topic.options[optionIdx] === 'Invalid' ? invalidOption : topic.options[optionIdx]}`;
         }
         return '';
       }
@@ -55,11 +51,11 @@ export default class TxRow extends Component {
         return undefined;
       }
     }
-  };
+  }
 
   render() {
-    const { transaction, classes, intl } = this.props;
-    const { txid, createdTime, amount, token, type, status } = transaction;
+    const { classes, intl, transaction } = this.props;
+    const { status, txid, createdTime, amount, token, type } = transaction;
     const { expanded } = this.state;
 
     return (
@@ -67,11 +63,11 @@ export default class TxRow extends Component {
         <TableRow key={`tx-${txid}`} onClick={this.toggle}>
           <TableCell padding="dense">{getShortLocalDateTimeString(createdTime)}</TableCell>
           <TableCell padding="dense">{getTxTypeString(type, intl.locale, intl.messages)}</TableCell>
-          <TableCell padding="dense">{this.getDescription(transaction)}</TableCell>
+          <TableCell padding="dense">{this.name}</TableCell>
           <TableCell padding="dense">
             {!amount ? '' : `${amount} ${token}`}
           </TableCell>
-          <TableCell padding="dense">{status}</TableCell>
+          <TableCell padding="dense">{intl.formatMessage({ id: `str.${status.toLowerCase()}` })}</TableCell>
           <TableCell padding="dense"><i className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} /></TableCell>
         </TableRow>
         {expanded && (

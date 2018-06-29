@@ -11,7 +11,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-import TxRow from './txRow';
+import TxRow from './TxRow';
 import styles from './styles';
 
 
@@ -19,14 +19,13 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 export default class EventTxHistory extends Component {
   static propTypes = {
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, transactions, options, intl } = this.props;
+    const { classes, transactions, options } = this.props;
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>
@@ -57,7 +56,7 @@ export default class EventTxHistory extends Component {
             </TableHead>
             <TableBody>
               {transactions.map((transaction) => (
-                <TxRow key={transaction.txid} transaction={transaction} intl={intl} />
+                <TxRow key={transaction.txid} transaction={transaction/* Temporary change for adapting some outdated part. Duplicated object will be removed. */} />
               ))}
             </TableBody>
           </Table>

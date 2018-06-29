@@ -303,7 +303,7 @@ export default class EventHistory extends Component {
   };
 
   getTableRow = (transaction) => {
-    const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
+    const { name, topic, type, txid, amount, token, fee, status, createdTime, senderAddress } = transaction;
     const { intl, classes } = this.props;
     const { locale, messages: localeMessages } = intl;
     const result = [];
