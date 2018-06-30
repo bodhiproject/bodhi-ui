@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import { withStyles, Snackbar, Typography, Grid } from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import appActions from '../../redux/App/actions';
 import { TransactionType } from '../../constants';
 
 
@@ -60,17 +58,12 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-}), (dispatch) => ({
-  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
-}))
 @inject('store')
 @observer
 export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
-    togglePendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
   getEventName = (key) => {
@@ -105,10 +98,6 @@ export default class PendingTransactionsSnackbar extends Component {
         return undefined;
       }
     }
-  }
-
-  onCloseClicked = () => {
-    this.props.togglePendingTxsSnackbar(false);
   }
 
   componentDidMount() {
@@ -170,7 +159,10 @@ export default class PendingTransactionsSnackbar extends Component {
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
+              <i
+                className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')}
+                onClick={() => this.props.store.pendingTxsSnackbar.isVisible = false}
+              />
             </Grid>
           </Grid>
         }
