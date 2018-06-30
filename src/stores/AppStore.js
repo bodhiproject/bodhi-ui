@@ -11,6 +11,7 @@ import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
 import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
+import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
 
 class AppStore {
   @observable loading = true; // TODO: move these to GlobalStore
@@ -23,6 +24,7 @@ class AppStore {
   allEvents = {}
   globalSnackbar = {}
   walletUnlockDialog = {}
+  pendingTxsSnackbar = {}
 
   constructor() {
     this.init();
@@ -36,6 +38,7 @@ class AppStore {
     this.walletHistory = new WalletHistoryStore();
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
+    this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
