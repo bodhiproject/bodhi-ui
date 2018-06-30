@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
-import {
-  withStyles,
-  Snackbar,
-  Typography,
-  Grid,
-} from '@material-ui/core';
+import { withStyles, Snackbar, Typography, Grid } from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TransactionType } from 'constants';
 
 import styles from './styles';
 import appActions from '../../redux/App/actions';
+import { TransactionType } from '../../constants';
 
 
 const messages = defineMessages({
@@ -65,68 +61,17 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
 }), (dispatch) => ({
   togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
 }))
+@inject('store')
+@observer
 export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
-    getPendingTransactionsReturn: PropTypes.object.isRequired,
-    pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
     togglePendingTxsSnackbar: PropTypes.func.isRequired,
   };
-
-  render() {
-    const {
-      classes,
-      getPendingTransactionsReturn,
-      pendingTxsSnackbarVisible,
-      intl,
-    } = this.props;
-    const pendingTxs = getPendingTransactionsReturn;
-
-    if (pendingTxs.count === 0) {
-      return null;
-    }
-
-    return (
-      <Snackbar
-        className={classes.snackbar}
-        open={pendingTxs.count > 0 && pendingTxsSnackbarVisible}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        message={
-          <Grid container>
-            <Grid item xs={11}>
-              <Typography variant="caption" className={classes.totalCountText}>
-                {`${intl.formatMessage(messages.youHave)} ${pendingTxs.count} ${intl.formatMessage(messages.pendingTransactions)}`}
-              </Typography>
-              {
-                Object.keys(pendingTxs).map((key) => {
-                  if (key !== 'count') {
-                    const amount = pendingTxs[key].length;
-                    if (amount > 0) {
-                      return <Typography variant="caption" key={key}>{`${this.getEventName(key)}: ${amount}`}</Typography>;
-                    }
-                    return null;
-                  }
-                  return null;
-                })
-              }
-              <Typography variant="caption" className={classes.balanceExplanation}>
-                {`* ${intl.formatMessage(messages.balanceExplanation)}`}
-              </Typography>
-            </Grid>
-            <Grid item xs={1}>
-              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
-            </Grid>
-          </Grid>
-        }
-      />
-    );
-  }
 
   getEventName = (key) => {
     const { intl } = this.props;
@@ -160,9 +105,76 @@ export default class PendingTransactionsSnackbar extends Component {
         return undefined;
       }
     }
-  };
+  }
 
   onCloseClicked = () => {
     this.props.togglePendingTxsSnackbar(false);
-  };
+  }
+
+  componentDidMount() {
+    this.props.store.pendingTxsSnackbar.init();
+  }
+
+  render() {
+    const {
+      isVisible,
+      count,
+      pendingCreateEvents,
+      pendingBets,
+      pendingSetResults,
+      pendingVotes,
+      pendingFinalizeResults,
+      pendingWithdraws,
+      pendingTransfers,
+      pendingResetApproves,
+    } = this.props.store.pendingTxsSnackbar;
+    const { classes, intl } = this.props;
+
+    const pendingCounts = {
+      [TransactionType.CreateEvent]: pendingCreateEvents,
+      [TransactionType.Bet]: pendingBets,
+      [TransactionType.SetResult]: pendingSetResults,
+      [TransactionType.Vote]: pendingVotes,
+      [TransactionType.FinalizeResult]: pendingFinalizeResults,
+      [TransactionType.Withdraw]: pendingWithdraws,
+      [TransactionType.Transfer]: pendingTransfers,
+      [TransactionType.ResetApprove]: pendingResetApproves,
+    };
+
+    if (count === 0) {
+      return null;
+    }
+
+    return (
+      <Snackbar
+        className={classes.snackbar}
+        open={isVisible}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message={
+          <Grid container>
+            <Grid item xs={11}>
+              <Typography variant="caption" className={classes.totalCountText}>
+                {`${intl.formatMessage(messages.youHave)} ${count} ${intl.formatMessage(messages.pendingTransactions)}`}
+              </Typography>
+              {
+                Object.keys(pendingCounts).map((key) => {
+                  const amount = pendingCounts[key].length;
+                  if (amount > 0) {
+                    return <Typography variant="caption" key={key}>{`${this.getEventName(key)}: ${amount}`}</Typography>;
+                  }
+                  return null;
+                })
+              }
+              <Typography variant="caption" className={classes.balanceExplanation}>
+                {`* ${intl.formatMessage(messages.balanceExplanation)}`}
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
+            </Grid>
+          </Grid>
+        }
+      />
+    );
+  }
 }
