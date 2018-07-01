@@ -1,4 +1,5 @@
 import { observable, action, runInAction } from 'mobx';
+
 import { querySyncInfo } from '../network/graphQuery';
 
 
@@ -29,6 +30,7 @@ export default class GlobalStore {
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
+
       runInAction(() => {
         this.syncInfo(syncInfo);
       });

@@ -20,7 +20,6 @@ let syncInfoInterval;
   ...state.App.toJS(),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
@@ -31,7 +30,6 @@ let syncInfoInterval;
 export default class GlobalHub extends Component {
   static propTypes = {
     client: PropTypes.object,
-    getSyncInfo: PropTypes.func.isRequired,
     onSyncInfo: PropTypes.func.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -47,8 +45,8 @@ export default class GlobalHub extends Component {
   };
 
   componentWillMount() {
-    const { getSyncInfo, getPendingTransactions } = this.props;
-    const { syncPercent } = this.props.store.global;
+    const { getPendingTransactions } = this.props;
+    const { getSyncInfo, syncPercent } = this.props.store.global;
     const { checkWalletEncrypted } = this.props.store.wallet;
 
     // Checks to see if any txs will require unlocking the wallet
@@ -106,11 +104,7 @@ export default class GlobalHub extends Component {
   }
 
   fetchSyncInfo = () => {
-    const { getSyncInfo, store } = this.props;
-    const { syncPercent } = this.props.store.global;
-
-    getSyncInfo(syncPercent);
-    store.global.getSyncInfo();
+    this.props.store.global.getSyncInfo();
   };
 
   subscribeSyncInfo = () => {
