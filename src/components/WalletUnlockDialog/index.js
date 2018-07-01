@@ -28,7 +28,6 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  walletUnlockDialogVisibility: state.App.get('walletUnlockDialogVisibility'),
 }), (dispatch) => ({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   unlockWallet: (passphrase, timeout) => dispatch(appActions.unlockWallet(passphrase, timeout)),
@@ -36,7 +35,6 @@ const messages = defineMessages({
 export default class WalletUnlockDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    walletUnlockDialogVisibility: PropTypes.bool.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     unlockWallet: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -58,10 +56,11 @@ export default class WalletUnlockDialog extends Component {
   }
 
   render() {
-    const { intl, classes, walletUnlockDialogVisibility } = this.props;
+    const { intl, classes } = this.props;
+    const { isVisible } = this.props.store.walletUnlockDialog;
 
     return (
-      <Dialog open={walletUnlockDialogVisibility} onClose={this.onOkClicked}>
+      <Dialog open={isVisible} onClose={this.onOkClicked}>
         <DialogTitle>
           <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>

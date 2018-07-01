@@ -7,16 +7,19 @@ import FinalizeStore from './activitiesStores/Finalize';
 import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
+import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PubSubStore from './PubSubStore';
 
 class AppStore {
   @observable loading = true;
   @observable sortBy = 'ASC' // might want to move somewhere else
+
   ui = {} // ui store
   wallet = {} // wallet store
   walletHistory = {} // walletHistory store
   pubsub = {} // pubsub store
   allEvents = {} // allEvents store
+  walletUnlockDialog = {}
 
   constructor() {
     this.init();
@@ -27,6 +30,7 @@ class AppStore {
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
     this.walletHistory = new WalletHistoryStore();
+    this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pubsub = new PubSubStore(this);
 
     // Stores below need info from syncInfo
