@@ -45,12 +45,6 @@ const appActions = {
     isVisible,
   }),
 
-  CHECK_WALLET_ENCRYPTED: 'CHECK_WALLET_ENCRYPTED',
-  CHECK_WALLET_ENCRYPTED_RETURN: 'CHECK_WALLET_ENCRYPTED_RETURN',
-  checkWalletEncrypted: () => ({
-    type: appActions.CHECK_WALLET_ENCRYPTED,
-  }),
-
   VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
   VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
   validateAddress: (address) => ({
