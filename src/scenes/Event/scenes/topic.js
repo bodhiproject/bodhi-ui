@@ -549,16 +549,14 @@ export default class TopicPage extends Component {
   }
 
   onWithdrawClicked(event) {
-    const { createWithdrawTx, toggleWalletUnlockDialog } = this.props;
+    const { createWithdrawTx, toggleWalletUnlockDialog, store: { wallet } } = this.props;
     const { topic } = this.state;
-    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
 
-    const senderAddress = event.currentTarget.getAttribute('data-address');
-    const type = event.currentTarget.getAttribute('data-type');
-
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(wallet)) {
       toggleWalletUnlockDialog(true);
     } else {
+      const senderAddress = event.currentTarget.getAttribute('data-address');
+      const type = event.currentTarget.getAttribute('data-type');
       createWithdrawTx(type, topic.version, topic.address, senderAddress);
       Tracking.track('topicDetail-withdraw');
     }

@@ -379,10 +379,9 @@ export default class MyBalances extends Component {
   };
 
   onWithdrawClicked(event) {
-    const { toggleWalletUnlockDialog } = this.props;
-    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
+    const { toggleWalletUnlockDialog, store: { wallet } } = this.props;
 
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(wallet)) {
       toggleWalletUnlockDialog(true);
     } else {
       this.setState({

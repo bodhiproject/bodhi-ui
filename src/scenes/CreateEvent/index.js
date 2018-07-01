@@ -336,10 +336,10 @@ export default class CreateEvent extends Component {
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
+      store: { wallet },
     } = this.props;
-    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
 
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
+    if (doesUserNeedToUnlockWallet(wallet)) {
       toggleWalletUnlockDialog(true);
     } else {
       const self = this;
