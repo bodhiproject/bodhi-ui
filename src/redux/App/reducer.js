@@ -16,7 +16,6 @@ const initState = new Map({
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
-  walletUnlockDialogVisibility: false,
   walletEncrypted: false,
   pendingTxsSnackbarVisible: true,
   globalSnackbarVisible: false,
@@ -66,9 +65,6 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_INSIGHT_TOTALS_RETURN: {
       return state.set('averageBlockTime', action.timeBetweenBlocks);
-    }
-    case actions.TOGGLE_WALLET_UNLOCK_DIALOG: {
-      return state.set('walletUnlockDialogVisibility', action.isVisible);
     }
     case actions.CHANGE_PASSPHRASE_RETURN: {
       if (action.error) {

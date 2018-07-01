@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   withStyles,
   TextField,
@@ -14,7 +13,6 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import appActions from '../../redux/App/actions';
 import Config from '../../config/app';
 
 const messages = defineMessages({
@@ -27,16 +25,9 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-}), (dispatch) => ({
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-  unlockWallet: (passphrase, timeout) => dispatch(appActions.unlockWallet(passphrase, timeout)),
-}))
 export default class WalletUnlockDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
-    unlockWallet: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
@@ -51,8 +42,14 @@ export default class WalletUnlockDialog extends Component {
 
   unlock = () => {
     const { passphrase, unlockMinutes } = this.state;
-    this.props.unlockWallet(passphrase, unlockMinutes);
-    this.props.toggleWalletUnlockDialog(false);
+    const { walletUnlockDialog } = this.props.store;
+
+    this.closeDialog();
+    walletUnlockDialog.unlockWallet(passphrase, unlockMinutes);
+  }
+
+  closeDialog = () => {
+    this.props.store.walletUnlockDialog.isVisible = false;
   }
 
   render() {
@@ -82,7 +79,7 @@ export default class WalletUnlockDialog extends Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.toggleWalletUnlockDialog(false)}>
+          <Button onClick={this.closeDialog}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.unlock}>

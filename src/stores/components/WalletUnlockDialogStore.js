@@ -11,14 +11,12 @@ export default class WalletUnlockDialogStore {
   }
 
   @action
-  unlockWallet = async () => {
+  unlockWallet = async (passphrase, timeoutMins) => {
     try {
-      const timeoutSec = action.timeout * 60;
-
       // Unlock the wallet
       await axios.post(Routes.api.unlockWallet, {
-        passphrase: action.passphrase,
-        timeout: timeoutSec,
+        passphrase,
+        timeout: timeoutMins * 60,
       });
 
       // Get the unlocked_until timestamp
