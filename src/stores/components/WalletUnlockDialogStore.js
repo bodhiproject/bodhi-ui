@@ -2,21 +2,25 @@ import { observable, action, runInAction } from 'mobx';
 
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
+import Config from '../../config/app';
 
 export default class WalletUnlockDialogStore {
   @observable isVisible = false
+  @observable passphrase = ''
+
+  unlockMinutes = Config.defaults.unlockWalletMins
 
   constructor(app) {
     this.app = app;
   }
 
   @action
-  unlockWallet = async (passphrase, timeoutMins) => {
+  unlockWallet = async () => {
     try {
       // Unlock the wallet
       await axios.post(Routes.api.unlockWallet, {
-        passphrase,
-        timeout: timeoutMins * 60,
+        passphrase: this.passphrase,
+        timeout: this.unlockMinutes * 60,
       });
 
       // Get the unlocked_until timestamp

@@ -13,7 +13,6 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import Config from '../../config/app';
 
 const messages = defineMessages({
   walletPassphrase: {
@@ -31,33 +30,28 @@ export default class WalletUnlockDialog extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  state = {
-    passphrase: '',
-    unlockMinutes: Config.defaults.unlockWalletMins,
-  }
-
   handleChange = (name) => ({ target: { value } }) => {
     this.setState({ [name]: value });
   }
 
   unlock = () => {
-    const { passphrase, unlockMinutes } = this.state;
-    const { walletUnlockDialog } = this.props.store;
-
+    this.props.store.walletUnlockDialog.unlockWallet();
     this.closeDialog();
-    walletUnlockDialog.unlockWallet(passphrase, unlockMinutes);
   }
 
   closeDialog = () => {
-    this.props.store.walletUnlockDialog.isVisible = false;
+    const { walletUnlockDialog } = this.props.store;
+
+    walletUnlockDialog.passphrase = '';
+    walletUnlockDialog.isVisible = false;
   }
 
   render() {
     const { intl, classes } = this.props;
-    const { isVisible } = this.props.store.walletUnlockDialog;
+    const { walletUnlockDialog } = this.props.store;
 
     return (
-      <Dialog open={isVisible} onClose={this.onOkClicked}>
+      <Dialog open={walletUnlockDialog.isVisible}>
         <DialogTitle>
           <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>
@@ -75,7 +69,7 @@ export default class WalletUnlockDialog extends Component {
             label={intl.formatMessage(messages.walletPassphrase)}
             type="password"
             fullWidth
-            onChange={this.handleChange('passphrase')}
+            onChange={(e) => walletUnlockDialog.passphrase = e.target.value}
           />
         </DialogContent>
         <DialogActions>
