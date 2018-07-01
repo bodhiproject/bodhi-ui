@@ -17,7 +17,7 @@ module.exports = {
     vote: 'Vote',
     wallet: 'Wallet',
     myActivities: 'MyActivities',
-    resultSetting: 'ResultSetting',
+    resultSet: 'ResultSetting',
     finalize: 'Finalize',
     withdraw: 'Withdraw',
     activityHistory: 'ActivityHistory',

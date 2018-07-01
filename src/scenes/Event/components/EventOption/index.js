@@ -17,6 +17,7 @@ import {
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import { Phases } from 'constants';
 
 import Progress from '../Progress';
 import styles from './styles';
@@ -53,10 +54,12 @@ export default class EventOption extends Component {
 
 
   handleAmountBlur = ({ target: { value } }) => {
-    let { amount, consensusThreshold, onAmountChange } = this.props; // eslint-disable-line
-    [amount, consensusThreshold] = [parseInt(amount, 10), parseInt(consensusThreshold, 10)];
-    if (amount + value > consensusThreshold) {
-      onAmountChange(consensusThreshold - amount);
+    let { phase, amount, consensusThreshold, onAmountChange } = this.props; // eslint-disable-line
+    if (phase === Phases.VOTING) {
+      [amount, consensusThreshold] = [parseInt(amount, 10), parseInt(consensusThreshold, 10)];
+      if (amount + value > consensusThreshold) {
+        onAmountChange(consensusThreshold - amount);
+      }
     }
   }
 
