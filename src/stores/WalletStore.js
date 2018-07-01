@@ -11,6 +11,10 @@ export default class WalletStore {
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
 
+  constructor(app) {
+    this.app = app;
+  }
+
   @action
   checkWalletEncrypted = async () => {
     try {
@@ -25,10 +29,6 @@ export default class WalletStore {
         this.app.ui.setError(error.message, Routes.api.getWalletInfo);
       });
     }
-  }
-
-  constructor(app) {
-    this.app = app;
   }
 
   @action
