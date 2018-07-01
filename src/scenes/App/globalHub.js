@@ -33,7 +33,6 @@ export default class GlobalHub extends Component {
     client: PropTypes.object,
     getSyncInfo: PropTypes.func.isRequired,
     onSyncInfo: PropTypes.func.isRequired,
-    syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
@@ -48,11 +47,8 @@ export default class GlobalHub extends Component {
   };
 
   componentWillMount() {
-    const {
-      getSyncInfo,
-      syncPercent,
-      getPendingTransactions,
-    } = this.props;
+    const { getSyncInfo, getPendingTransactions } = this.props;
+    const { syncPercent } = this.props.store.global;
     const { checkWalletEncrypted } = this.props.store.wallet;
 
     // Checks to see if any txs will require unlocking the wallet
@@ -73,7 +69,6 @@ export default class GlobalHub extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      syncPercent,
       syncBlockNum,
       getActionableItemCount,
       walletAddresses,
@@ -81,6 +76,7 @@ export default class GlobalHub extends Component {
       togglePendingTxsSnackbar,
       getPendingTransactions,
     } = this.props;
+    const { syncPercent } = this.props.store.global;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     if (syncPercent >= 100) {
@@ -110,7 +106,9 @@ export default class GlobalHub extends Component {
   }
 
   fetchSyncInfo = () => {
-    const { getSyncInfo, syncPercent, store } = this.props;
+    const { getSyncInfo, store } = this.props;
+    const { syncPercent } = this.props.store.global;
+
     getSyncInfo(syncPercent);
     store.global.getSyncInfo();
   };

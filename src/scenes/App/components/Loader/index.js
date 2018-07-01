@@ -12,7 +12,6 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 @withStyles(styles)
 @connect((state) => ({
-  syncPercent: state.App.get('syncPercent'),
   syncBlockNum: state.App.get('syncBlockNum'),
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
@@ -20,14 +19,14 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 export default class Loader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     syncBlockTime: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, syncPercent, syncBlockNum, syncBlockTime, walletAddresses } = this.props;
+    const { classes, syncBlockNum, syncBlockTime, walletAddresses } = this.props;
+    const { syncPercent } = this.props.store.global;
     const hideLoader = !AppConfig.debug.showAppLoad || (syncPercent >= 100 && !_.isEmpty(walletAddresses));
 
     return (
