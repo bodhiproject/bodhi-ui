@@ -112,7 +112,7 @@ export default class GlobalHub extends Component {
   fetchSyncInfo = () => {
     const { getSyncInfo, syncPercent, store } = this.props;
     getSyncInfo(syncPercent);
-    store.pubsub.getSyncInfo();
+    store.global.getSyncInfo();
   };
 
   subscribeSyncInfo = () => {
@@ -122,12 +122,12 @@ export default class GlobalHub extends Component {
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next({ data }) {
-        store.pubsub.syncInfo(data.onSyncInfo);
+        store.global.syncInfo(data.onSyncInfo);
         onSyncInfo(data.onSyncInfo);
       },
       error(err) {
         onSyncInfo({ error: err.message });
-        store.pubsub.syncInfo({ error: err.message });
+        store.global.syncInfo({ error: err.message });
       },
     });
   };

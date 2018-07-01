@@ -2,7 +2,7 @@ import { observable, action, runInAction } from 'mobx';
 import { querySyncInfo } from '../network/graphQuery';
 
 
-export default class PubSubStore {
+export default class GlobalStore {
   @observable syncPercent = 0
   @observable syncBlockNum
   @observable syncBlockTime = ''
