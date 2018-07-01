@@ -3,21 +3,13 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Snackbar, Typography, Grid } from '@material-ui/core';
 import cx from 'classnames';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl, intlShape, defineMessages, FormattedMessage } from 'react-intl';
 
 import styles from './styles';
 import { TransactionType } from '../../constants';
 
 
 const messages = defineMessages({
-  youHave: {
-    id: 'pendingTxsSnackbar.youHave',
-    defaultMessage: 'You have',
-  },
-  pendingTransactions: {
-    id: 'pendingTxsSnackbar.pendingTransactions',
-    defaultMessage: 'pending transactions.',
-  },
   createEvent: {
     id: 'str.createEvent',
     defaultMessage: 'Create Event',
@@ -143,7 +135,11 @@ export default class PendingTransactionsSnackbar extends Component {
           <Grid container>
             <Grid item xs={11}>
               <Typography variant="caption" className={classes.totalCountText}>
-                {`${intl.formatMessage(messages.youHave)} ${count} ${intl.formatMessage(messages.pendingTransactions)}`}
+                <FormattedMessage
+                  id="pendingTxsSnackbar.youHaveXPendingTransactions"
+                  defaultMessage="You have {numOfTxs} pending transaction(s)."
+                  values={{ numOfTxs: count }}
+                />
               </Typography>
               {
                 Object.keys(pendingCounts).map((key) => {
