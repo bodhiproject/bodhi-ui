@@ -19,11 +19,11 @@ export default class WalletStore {
   checkWalletEncrypted = async () => {
     try {
       const { data: { result } } = await axios.get(Routes.api.getWalletInfo);
-      const isEncrypted = result && !_.isUndefined(result.unlocked_until);
-      // TODO : unlockUntil
-      const unlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
-      this.walletEncrypted = isEncrypted;
-      this.walletUnlockedUntil = unlockedUntil;
+
+      runInAction(() => {
+        this.walletEncrypted = result && !_.isUndefined(result.unlocked_until);
+        this.walletUnlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
+      });
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.getWalletInfo);
