@@ -58,12 +58,6 @@ const appActions = {
     type: appActions.CLEAR_ERROR_APP,
   }),
 
-  TOGGLE_PENDING_TXS_SNACKBAR: 'TOGGLE_PENDING_TXS_SNACKBAR',
-  togglePendingTxsSnackbar: (isVisible) => ({
-    type: appActions.TOGGLE_PENDING_TXS_SNACKBAR,
-    isVisible,
-  }),
-
   TOGGLE_CREATE_EVENT_DIALOG: 'TOGGLE_CREATE_EVENT_DIALOG',
   toggleCreateEventDialog: (isVisible) => ({
     type: appActions.TOGGLE_CREATE_EVENT_DIALOG,

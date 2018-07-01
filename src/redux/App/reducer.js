@@ -16,7 +16,6 @@ const initState = new Map({
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
-  pendingTxsSnackbarVisible: true,
   createEventDialogVisible: false,
   txConfirmInfoAndCallback: {},
   addressValidated: false,
@@ -87,9 +86,6 @@ export default function appReducer(state = initState, action) {
     }
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', null);
-    }
-    case actions.TOGGLE_PENDING_TXS_SNACKBAR: {
-      return state.set('pendingTxsSnackbarVisible', action.isVisible);
     }
     case actions.TOGGLE_CREATE_EVENT_DIALOG: {
       return state.set('createEventDialogVisible', action.isVisible);

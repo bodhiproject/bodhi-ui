@@ -22,7 +22,6 @@ let syncInfoInterval;
 }), (dispatch) => ({
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
-  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
   getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 }))
@@ -39,7 +38,6 @@ export default class GlobalHub extends Component {
     getActionableItemCount: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
     getPendingTransactions: PropTypes.func.isRequired,
-    togglePendingTxsSnackbar: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -74,7 +72,6 @@ export default class GlobalHub extends Component {
       getActionableItemCount,
       walletAddresses,
       txReturn,
-      togglePendingTxsSnackbar,
       getPendingTransactions,
     } = this.props;
 
@@ -91,7 +88,7 @@ export default class GlobalHub extends Component {
 
     // Tx was executed, show the pending txs snackbar again
     if (!txReturn && nextProps.txReturn) {
-      togglePendingTxsSnackbar(true);
+      this.props.store.pendingTxsSnackbar.isVisible = true;
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block

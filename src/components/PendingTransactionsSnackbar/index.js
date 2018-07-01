@@ -62,8 +62,8 @@ const messages = defineMessages({
 @observer
 export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   getEventName = (key) => {
