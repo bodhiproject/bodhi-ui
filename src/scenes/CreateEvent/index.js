@@ -195,7 +195,6 @@ const validate = (values, props) => {
   },
   txReturn: state.Graphql.get('txReturn'),
   addressValidated: state.App.get('addressValidated'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   walletAddresses: state.App.get('walletAddresses'),
   createEventDialogVisible: state.App.get('createEventDialogVisible'),
   eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
@@ -240,7 +239,6 @@ export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     addressValidated: PropTypes.bool.isRequired,
-    walletUnlockedUntil: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
@@ -334,13 +332,13 @@ export default class CreateEvent extends Component {
 
   checkWalletAndConfirmAction = (values) => {
     const {
-      walletUnlockedUntil,
       toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
     } = this.props;
-    const { walletEncrypted } = this.props.store.wallet;
+    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
+
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
     } else {

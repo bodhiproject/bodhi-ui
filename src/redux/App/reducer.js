@@ -18,7 +18,6 @@ const initState = new Map({
   syncBlockTime: 0,
   walletUnlockDialogVisibility: false,
   walletEncrypted: false,
-  walletUnlockedUntil: 0,
   pendingTxsSnackbarVisible: true,
   globalSnackbarVisible: false,
   globalSnackbarMessage: '',
