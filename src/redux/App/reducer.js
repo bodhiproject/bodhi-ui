@@ -87,12 +87,6 @@ export default function appReducer(state = initState, action) {
       }
       return state.set('transactionCost', action.value);
     }
-    case actions.UNLOCK_WALLET_RETURN: {
-      if (action.error) {
-        return state.set('errorApp', action.error);
-      }
-      return state.set('walletUnlockedUntil', action.unlockedUntil);
-    }
     case actions.CLEAR_ERROR_APP: {
       return state.set('errorApp', null);
     }

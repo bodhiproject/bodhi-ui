@@ -53,14 +53,6 @@ const appActions = {
     txInfo,
   }),
 
-  UNLOCK_WALLET: 'UNLOCK_WALLET',
-  UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
-  unlockWallet: (passphrase, timeout) => ({
-    type: appActions.UNLOCK_WALLET,
-    passphrase,
-    timeout,
-  }),
-
   CLEAR_ERROR_APP: 'CLEAR_ERROR_APP',
   clearErrorApp: () => ({
     type: appActions.CLEAR_ERROR_APP,

@@ -29,7 +29,6 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog';
 import WithdrawDialog from '../WithdrawDialog';
-import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 
@@ -38,7 +37,6 @@ import Tracking from '../../../../helpers/mixpanelUtil';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch) => ({
 }))
 @inject('store')
 @observer
