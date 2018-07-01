@@ -38,7 +38,6 @@ import Tracking from '../../../../helpers/mixpanelUtil';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
 }), (dispatch) => ({
   toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
 }))
@@ -48,7 +47,6 @@ export default class MyBalances extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
   }
 
@@ -381,9 +379,9 @@ export default class MyBalances extends Component {
   };
 
   onWithdrawClicked(event) {
-    const { walletEncrypted } = this.props.store.wallet;
+    const { toggleWalletUnlockDialog } = this.props;
+    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
 
-    const { walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
     if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
       toggleWalletUnlockDialog(true);
     } else {
