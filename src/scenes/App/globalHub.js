@@ -23,7 +23,6 @@ let syncInfoInterval;
   getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
   onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
-  getPendingTransactions: () => dispatch(graphqlActions.getPendingTransactions()),
 }))
 @inject('store')
 @observer
@@ -37,7 +36,6 @@ export default class GlobalHub extends Component {
     walletAddresses: PropTypes.array.isRequired,
     getActionableItemCount: PropTypes.func.isRequired,
     txReturn: PropTypes.object,
-    getPendingTransactions: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -46,8 +44,9 @@ export default class GlobalHub extends Component {
   };
 
   componentWillMount() {
-    const { getSyncInfo, syncPercent, getPendingTransactions } = this.props;
+    const { getSyncInfo, syncPercent } = this.props;
     const { checkWalletEncrypted } = this.props.store.wallet;
+    const { queryPendingTransactions } = this.props.store.pendingTxsSnackbar;
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();
@@ -62,7 +61,7 @@ export default class GlobalHub extends Component {
     this.subscribeSyncInfo();
 
     // Get all pending txs to show snackbar
-    getPendingTransactions();
+    queryPendingTransactions();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,8 +71,8 @@ export default class GlobalHub extends Component {
       getActionableItemCount,
       walletAddresses,
       txReturn,
-      getPendingTransactions,
     } = this.props;
+    const { pendingTxsSnackbar } = this.props.store;
 
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     if (syncPercent >= 100) {
@@ -88,13 +87,13 @@ export default class GlobalHub extends Component {
 
     // Tx was executed, show the pending txs snackbar again
     if (!txReturn && nextProps.txReturn) {
-      this.props.store.pendingTxsSnackbar.isVisible = true;
+      pendingTxsSnackbar.isVisible = true;
     }
 
     // Refresh the pending txs snackbar when a tx is created or on a new block
     if ((!txReturn && nextProps.txReturn)
       || (syncPercent === 100 && syncBlockNum !== nextProps.syncBlockNum)) {
-      getPendingTransactions();
+      pendingTxsSnackbar.queryPendingTransactions();
     }
   }
 

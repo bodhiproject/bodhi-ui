@@ -5,7 +5,6 @@ import actions from './actions';
 
 
 const initState = new Map({
-  getPendingTransactionsReturn: { count: 0 },
   actionableItemCount: {
     [EventStatus.Set]: 0,
     [EventStatus.Finalize]: 0,
@@ -59,9 +58,6 @@ export default function graphqlReducer(state = initState, action) {
 
       // Not first page, add to existing data
       return state.set('getTransactionsReturn', [...state.get('getTransactionsReturn'), ...action.value]);
-    }
-    case actions.GET_PENDING_TRANSACTIONS_RETURN: {
-      return state.set('getPendingTransactionsReturn', action.value);
     }
     case actions.GET_ACTIONABLE_ITEM_COUNT_RETURN: {
       return state.set('actionableItemCount', action.value);

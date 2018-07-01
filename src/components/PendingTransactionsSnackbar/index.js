@@ -130,6 +130,8 @@ export default class PendingTransactionsSnackbar extends Component {
       [TransactionType.ResetApprove]: pendingResetApproves,
     };
 
+    console.log(isVisible, count);
+
     if (count === 0) {
       return null;
     }
