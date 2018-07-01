@@ -98,7 +98,6 @@ const messages = defineMessages({
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   getOracles: (filters, orderBy, limit, skip) => dispatch(graphqlActions.getOracles(filters, orderBy, limit, skip)),
   getTransactions: (filters, orderBy) => dispatch(graphqlActions.getTransactions(filters, orderBy)),
   createBetTx: (version, topicAddress, oracleAddress, index, amount, senderAddress) =>
@@ -139,7 +138,6 @@ export default class OraclePage extends Component {
     walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
@@ -310,15 +308,14 @@ export default class OraclePage extends Component {
       topicAddress,
     } = this.state;
     const {
-      toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       intl,
       lastUsedAddress,
-      store: { wallet },
+      store: { wallet, walletUnlockDialog },
     } = this.props;
 
     if (doesUserNeedToUnlockWallet(wallet)) {
-      toggleWalletUnlockDialog(true);
+      walletUnlockDialog.isVisible = true;
     } else {
       const self = this;
       switch (config.eventStatus) {

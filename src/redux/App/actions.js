@@ -39,12 +39,6 @@ const appActions = {
     type: appActions.GET_INSIGHT_TOTALS,
   }),
 
-  TOGGLE_WALLET_UNLOCK_DIALOG: 'TOGGLE_WALLET_UNLOCK_DIALOG',
-  toggleWalletUnlockDialog: (isVisible) => ({
-    type: appActions.TOGGLE_WALLET_UNLOCK_DIALOG,
-    isVisible,
-  }),
-
   VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
   VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
   validateAddress: (address) => ({

@@ -220,7 +220,6 @@ const validate = (values, props) => {
     escrowAmount,
     creatorAddress,
   )),
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   validateAddress: (address) => dispatch(appActions.validateAddress(address)),
@@ -250,7 +249,6 @@ export default class CreateEvent extends Component {
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     toggleCreateEventDialog: PropTypes.func.isRequired,
     createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
@@ -332,15 +330,14 @@ export default class CreateEvent extends Component {
 
   checkWalletAndConfirmAction = (values) => {
     const {
-      toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
-      store: { wallet },
+      store: { wallet, walletUnlockDialog },
     } = this.props;
 
     if (doesUserNeedToUnlockWallet(wallet)) {
-      toggleWalletUnlockDialog(true);
+      walletUnlockDialog.isVisible = true;
     } else {
       const self = this;
       setTxConfirmInfoAndCallback(

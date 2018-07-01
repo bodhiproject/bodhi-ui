@@ -82,7 +82,6 @@ const pageMessage = defineMessages({
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
 @inject('store')
@@ -108,7 +107,6 @@ export default class TopicPage extends Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
   };
@@ -549,11 +547,11 @@ export default class TopicPage extends Component {
   }
 
   onWithdrawClicked(event) {
-    const { createWithdrawTx, toggleWalletUnlockDialog, store: { wallet } } = this.props;
+    const { createWithdrawTx, store: { wallet, walletUnlockDialog } } = this.props;
     const { topic } = this.state;
 
     if (doesUserNeedToUnlockWallet(wallet)) {
-      toggleWalletUnlockDialog(true);
+      walletUnlockDialog.isVisible = true;
     } else {
       const senderAddress = event.currentTarget.getAttribute('data-address');
       const type = event.currentTarget.getAttribute('data-type');
