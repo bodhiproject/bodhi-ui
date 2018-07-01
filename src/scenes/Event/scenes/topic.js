@@ -63,7 +63,6 @@ const pageMessage = defineMessages({
 @connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
@@ -109,7 +108,6 @@ export default class TopicPage extends Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
-    walletUnlockedUntil: PropTypes.number.isRequired,
     toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
@@ -551,13 +549,9 @@ export default class TopicPage extends Component {
   }
 
   onWithdrawClicked(event) {
-    const {
-      createWithdrawTx,
-      walletUnlockedUntil,
-      toggleWalletUnlockDialog,
-    } = this.props;
+    const { createWithdrawTx, toggleWalletUnlockDialog } = this.props;
     const { topic } = this.state;
-    const { walletEncrypted } = this.props.store.wallet;
+    const { walletEncrypted, walletUnlockedUntil } = this.props.store.wallet;
 
     const senderAddress = event.currentTarget.getAttribute('data-address');
     const type = event.currentTarget.getAttribute('data-type');
