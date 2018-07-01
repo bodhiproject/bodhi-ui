@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { withApollo } from 'react-apollo';
 import _ from 'lodash';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';

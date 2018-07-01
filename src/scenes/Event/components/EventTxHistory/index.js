@@ -10,7 +10,6 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import { TransactionType } from 'constants';
 
 import TxRow from './TxRow';
 import styles from './styles';

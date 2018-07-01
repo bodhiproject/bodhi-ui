@@ -1,5 +1,4 @@
 import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
-import _ from 'lodash';
 
 import actions from './actions';
 import axios from '../../network/httpRequest';
@@ -141,38 +140,6 @@ export function* getTransactionCostRequestHandler() {
   });
 }
 
-// Unlocks your encrypted wallet with the passphrase
-export function* unlockWalletRequestHandler() {
-  yield takeEvery(actions.UNLOCK_WALLET, function* unlockWalletRequest(action) {
-    try {
-      const timeoutSec = action.timeout * 60;
-
-      // Unlock the wallet
-      yield axios.post(Routes.api.unlockWallet, {
-        passphrase: action.passphrase,
-        timeout: timeoutSec,
-      });
-
-      // Get the unlocked_until timestamp
-      const { data: { result } } = yield axios.get(Routes.api.getWalletInfo);
-      const unlockedUntil = result.unlocked_until;
-
-      yield put({
-        type: actions.UNLOCK_WALLET_RETURN,
-        unlockedUntil,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.UNLOCK_WALLET_RETURN,
-        error: {
-          route: Routes.api.unlockWallet,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
-
 export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
@@ -180,7 +147,6 @@ export default function* appSaga() {
     fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),
     fork(validateAddressRequestHandler),
-    fork(unlockWalletRequestHandler),
     fork(getTransactionCostRequestHandler),
     fork(changePassphraseRequestHandler),
   ]);
