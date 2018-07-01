@@ -30,10 +30,6 @@ export default class WalletUnlockDialog extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  handleChange = (name) => ({ target: { value } }) => {
-    this.setState({ [name]: value });
-  }
-
   unlock = () => {
     this.props.store.walletUnlockDialog.unlockWallet();
     this.closeDialog();

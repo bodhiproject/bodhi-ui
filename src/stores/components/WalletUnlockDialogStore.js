@@ -6,8 +6,8 @@ import Config from '../../config/app';
 
 export default class WalletUnlockDialogStore {
   @observable isVisible = false
-  @observable passphrase = ''
 
+  passphrase = ''
   unlockMinutes = Config.defaults.unlockWalletMins
 
   constructor(app) {
