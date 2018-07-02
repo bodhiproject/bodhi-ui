@@ -72,19 +72,6 @@ export default class {
       const data = await queryAllOracles(filters, orderBy, limit, skip);
       return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
-<<<<<<< HEAD
     return INIT_VALUES.list;
-=======
-    return INIT.list;
-  }
-
-  reset = () => {
-    this.loaded = INIT.loaded;
-    this.loadingMore = INIT.loadingMore;
-    this.list = INIT.list;
-    this.hasMore = INIT.hasMore;
-    this.skip = INIT.skip;
-    this.limit = INIT.limit;
->>>>>>> update mutiple components including QtumPredictionStore
   }
 }
