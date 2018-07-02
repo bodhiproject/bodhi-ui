@@ -34,9 +34,7 @@ class AppStore {
     this.walletHistory = new WalletHistoryStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
 
-    // Stores below need info from syncInfo
-    // TODO: Change this GraphQL syncInfo call?
-    await this.global.getSyncInfo();
+    await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
