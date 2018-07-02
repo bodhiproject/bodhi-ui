@@ -118,8 +118,8 @@ export default class GlobalHub extends Component {
         onSyncInfo(data.onSyncInfo);
       },
       error(err) {
-        onSyncInfo({ error: err.message });
         store.global.onSyncInfo({ error: err.message });
+        onSyncInfo({ error: err.message });
       },
     });
   };

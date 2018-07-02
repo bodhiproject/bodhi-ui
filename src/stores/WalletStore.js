@@ -1,11 +1,13 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
+
 import axios from '../network/httpRequest';
 import Routes from '../network/routes';
 
 
 export default class WalletStore {
   @observable addresses = []
+  @observable lastUsedAddress = ''
   @observable walletEncrypted = false
   @observable encryptResult = undefined
   @observable passphrase = ''
@@ -13,6 +15,16 @@ export default class WalletStore {
 
   constructor(app) {
     this.app = app;
+
+    // Set a default lastUsedAddress if there was none selected before
+    reaction(
+      () => this.addresses,
+      () => {
+        if (_.isEmpty(this.lastUsedAddress) && !_.isEmpty(this.addresses)) {
+          this.lastUsedAddress = this.addresses[0].address;
+        }
+      }
+    );
   }
 
   @action

@@ -14,16 +14,16 @@ export default class GlobalStore {
   }
 
   @action
-  onSyncInfo = (syncInfoObj) => {
-    if (syncInfoObj.error) {
-      console.log(syncInfoObj.error.message); // eslint-disable-line no-console
+  onSyncInfo = (syncInfo) => {
+    if (syncInfo.error) {
+      console.log(syncInfo.error.message); // eslint-disable-line no-console
     } else {
+      const { percent, blockNum, blockTime, balances } = new SyncInfo(syncInfo);
       runInAction(() => {
-        this.syncInfo = new SyncInfo(syncInfoObj);
-        this.syncPercent = this.syncInfo.percent;
-        this.syncBlockNum = this.syncInfo.blockNum;
-        this.syncBlockTime = this.syncInfo.blockTime;
-        this.app.wallet.addresses = this.syncInfo.balances;
+        this.syncPercent = percent;
+        this.syncBlockNum = blockNum;
+        this.syncBlockTime = blockTime;
+        this.app.wallet.addresses = balances;
       });
     }
   }
