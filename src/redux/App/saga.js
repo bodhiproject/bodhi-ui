@@ -1,8 +1,28 @@
-import { all, takeEvery, put, fork } from 'redux-saga/effects';
+import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
+import { querySyncInfo } from '../../network/graphQuery';
+
+export function* syncInfoRequestHandler() {
+  yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {
+    try {
+      const includeBalances = action.syncPercent === 0 || action.syncPercent >= 98;
+      const result = yield call(querySyncInfo, includeBalances);
+
+      yield put({
+        type: actions.SYNC_INFO_RETURN,
+        syncInfo: result,
+      });
+    } catch (error) {
+      yield put({
+        type: actions.SYNC_INFO_RETURN,
+        error: error.message,
+      });
+    }
+  });
+}
 
 export function* onSyncInfoHandler() {
   yield takeEvery(actions.ON_SYNC_INFO, function* onSyncInfo(action) {
@@ -122,6 +142,7 @@ export function* getTransactionCostRequestHandler() {
 
 export default function* appSaga() {
   yield all([
+    fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),

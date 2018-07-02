@@ -21,6 +21,11 @@ const appActions = {
     address,
   }),
 
+  GET_SYNC_INFO: 'GET_SYNC_INFO',
+  getSyncInfo: (syncPercent) => ({
+    type: appActions.GET_SYNC_INFO,
+    syncPercent,
+  }),
   ON_SYNC_INFO: 'ON_SYNC_INFO',
   onSyncInfo: (syncInfo) => ({
     type: appActions.ON_SYNC_INFO,

@@ -13,6 +13,7 @@ const initState = new Map({
   walletAddresses: [],
   lastUsedAddress: '',
   changePassphraseResult: undefined,
+  syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
   pendingTxsSnackbarVisible: true,
