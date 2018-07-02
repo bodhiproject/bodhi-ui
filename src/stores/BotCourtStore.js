@@ -26,7 +26,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy,
       () => {
-        if (this.app.ui.location === AppLocation.botCourt) {
+        if (this.app.global.location === AppLocation.botCourt) {
           this.init(this.skip);
         }
       }
