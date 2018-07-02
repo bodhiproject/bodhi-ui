@@ -46,7 +46,7 @@ export default class GlobalHub extends Component {
 
   componentWillMount() {
     const { getPendingTransactions } = this.props;
-    const { getSyncInfo, syncPercent } = this.props.store.global;
+    const { getSyncInfo } = this.props.store.global;
     const { checkWalletEncrypted } = this.props.store.wallet;
 
     // Checks to see if any txs will require unlocking the wallet
@@ -54,7 +54,7 @@ export default class GlobalHub extends Component {
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
-    getSyncInfo(syncPercent);
+    getSyncInfo();
     syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
 
     // Subscribe to syncInfo subscription

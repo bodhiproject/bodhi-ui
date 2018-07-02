@@ -6,7 +6,7 @@ import SyncInfo from './models/SyncInfo';
 
 export default class GlobalStore {
   @observable syncPercent = 0
-  @observable syncBlockNum
+  @observable syncBlockNum = 0
   @observable syncBlockTime = ''
 
   constructor(app) {
