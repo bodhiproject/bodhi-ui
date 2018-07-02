@@ -52,7 +52,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.loaded = false;
+      this.loading = false;
     });
   }
 }
