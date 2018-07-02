@@ -28,7 +28,7 @@ export default class {
     reaction(
       () => addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.withdraw) {
+        if (this.app.global.location === AppLocation.withdraw) {
           this.init();
         }
       }
