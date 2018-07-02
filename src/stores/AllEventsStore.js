@@ -46,7 +46,7 @@ export default class {
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
       this.skip += limit;
-      this.loading = false;
+      this.loaded = false;
     });
   }
 
