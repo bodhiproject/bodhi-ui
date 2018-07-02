@@ -23,6 +23,16 @@ export default class {
 
   constructor(app) {
     this.app = app;
+    const { wallet: { addresses } } = this.app;
+    const { syncBlockNum } = this.global;
+    reaction(
+      () => addresses + syncBlockNum,
+      () => {
+        if (this.app.ui.location === AppLocation.withdraw) {
+          this.init();
+        }
+      }
+    );
     reaction(
       () => this.list,
       () => {

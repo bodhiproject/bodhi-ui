@@ -23,11 +23,13 @@ export default class QtumPredictionStore {
 
   constructor(app) {
     this.app = app;
+    const { sortBy, wallet: { addresses } } = this.app;
+    const { syncBlockNum } = this.global;
     reaction(
-      () => this.app.sortBy,
+      () => sortBy + addresses + syncBlockNum,
       () => {
         if (this.app.ui.location === AppLocation.qtumPrediction) {
-          this.init(this.skip);
+          this.init();
         }
       }
     );
@@ -40,10 +42,10 @@ export default class QtumPredictionStore {
   }
 
   @action
-  init = async (limit = this.limit) => {
+  init = async () => {
     this.reset();
     this.app.ui.location = AppLocation.qtumPrediction;
-    this.list = await this.fetchQtumPredictions(limit);
+    this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = false;
     });
@@ -54,7 +56,7 @@ export default class QtumPredictionStore {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
-      const nextFewEvents = await this.fetchQtumPredictions();
+      const nextFewEvents = await this.fetch(this.limit, this.skip);
       runInAction(() => {
         this.list = [...this.list, ...nextFewEvents];
         this.loadingMore = false;
@@ -62,7 +64,7 @@ export default class QtumPredictionStore {
     }
   }
 
-  async fetchQtumPredictions(limit = this.limit, skip = this.skip) {
+  async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
       const filters = [
