@@ -1,27 +1,28 @@
 import { observable, action, runInAction } from 'mobx';
 
 import { querySyncInfo } from '../network/graphQuery';
+import SyncInfo from './models/SyncInfo';
 
 
 export default class GlobalStore {
+  @observable syncInfo
   @observable syncPercent = 0
   @observable syncBlockNum
   @observable syncBlockTime = ''
-  @observable error = ''
 
   constructor(app) {
     this.app = app;
   }
 
   @action
-  syncInfo = ({ syncPercent, syncBlockNum, syncBlockTime, addressBalances = [], error }) => {
-    if (error) {
-      this.error = error;
+  onSyncInfo = (syncInfoObj) => {
+    if (syncInfoObj.error) {
+      console.log(syncInfoObj.error.message); // eslint-disable-line no-console
     } else {
-      this.syncPercent = syncPercent;
-      this.syncBlockNum = syncBlockNum;
-      this.syncBlockTime = syncBlockTime;
-      this.app.wallet.addresses = addressBalances;
+      runInAction(() => {
+        this.syncInfo = new SyncInfo(syncInfoObj);
+        this.app.wallet.addresses = this.syncInfo.balances;
+      });
     }
   }
 
@@ -30,12 +31,9 @@ export default class GlobalStore {
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
-
-      runInAction(() => {
-        this.syncInfo(syncInfo);
-      });
+      this.onSyncInfo(syncInfo);
     } catch (err) {
-      this.error = err.message;
+      this.onSyncInfo({ error: err.message });
     }
   }
 }
