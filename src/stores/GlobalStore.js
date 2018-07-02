@@ -5,7 +5,6 @@ import SyncInfo from './models/SyncInfo';
 
 
 export default class GlobalStore {
-  @observable syncInfo
   @observable syncPercent = 0
   @observable syncBlockNum
   @observable syncBlockTime = ''
@@ -21,6 +20,9 @@ export default class GlobalStore {
     } else {
       runInAction(() => {
         this.syncInfo = new SyncInfo(syncInfoObj);
+        this.syncPercent = this.syncInfo.percent;
+        this.syncBlockNum = this.syncInfo.blockNum;
+        this.syncBlockTime = this.syncInfo.blockTime;
         this.app.wallet.addresses = this.syncInfo.balances;
       });
     }
