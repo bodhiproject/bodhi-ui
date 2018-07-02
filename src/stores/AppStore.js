@@ -43,6 +43,7 @@ class AppStore {
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
+      // these store are designed for "components"
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
       this.botCourt = new BotCourtStore(this);
@@ -51,7 +52,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.loaded = false;
+      this.loading = false;
     });
   }
 }
