@@ -29,7 +29,6 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog';
 import WithdrawDialog from '../WithdrawDialog';
-import appActions from '../../../../redux/App/actions';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 
@@ -38,9 +37,6 @@ import Tracking from '../../../../helpers/mixpanelUtil';
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   walletAddresses: state.App.get('walletAddresses'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
-}), (dispatch) => ({
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
 }))
 @inject('store')
 @observer
@@ -48,8 +44,6 @@ export default class MyBalances extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     walletAddresses: PropTypes.array.isRequired,
-    walletUnlockedUntil: PropTypes.number.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -381,11 +375,10 @@ export default class MyBalances extends Component {
   };
 
   onWithdrawClicked(event) {
-    const { walletEncrypted } = this.props.store.wallet;
+    const { wallet, walletUnlockDialog } = this.props.store;
 
-    const { walletUnlockedUntil, toggleWalletUnlockDialog } = this.props;
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
-      toggleWalletUnlockDialog(true);
+    if (doesUserNeedToUnlockWallet(wallet)) {
+      walletUnlockDialog.isVisible = true;
     } else {
       this.setState({
         selectedAddress: event.currentTarget.getAttribute('data-address'),

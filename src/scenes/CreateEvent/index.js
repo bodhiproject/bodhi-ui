@@ -195,7 +195,6 @@ const validate = (values, props) => {
   },
   txReturn: state.Graphql.get('txReturn'),
   addressValidated: state.App.get('addressValidated'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   walletAddresses: state.App.get('walletAddresses'),
   createEventDialogVisible: state.App.get('createEventDialogVisible'),
   eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
@@ -221,7 +220,6 @@ const validate = (values, props) => {
     escrowAmount,
     creatorAddress,
   )),
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
   getInsightTotals: () => dispatch(appActions.getInsightTotals()),
   validateAddress: (address) => dispatch(appActions.validateAddress(address)),
@@ -240,7 +238,6 @@ export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     addressValidated: PropTypes.bool.isRequired,
-    walletUnlockedUntil: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
@@ -252,7 +249,6 @@ export default class CreateEvent extends Component {
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     changeFormFieldValue: PropTypes.func.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     toggleCreateEventDialog: PropTypes.func.isRequired,
     createEventDialogVisible: PropTypes.bool.isRequired,
     eventEscrowAmount: PropTypes.number,
@@ -334,15 +330,14 @@ export default class CreateEvent extends Component {
 
   checkWalletAndConfirmAction = (values) => {
     const {
-      walletUnlockedUntil,
-      toggleWalletUnlockDialog,
       setTxConfirmInfoAndCallback,
       eventEscrowAmount,
       intl,
+      store: { wallet, walletUnlockDialog },
     } = this.props;
-    const { walletEncrypted } = this.props.store.wallet;
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
-      toggleWalletUnlockDialog(true);
+
+    if (doesUserNeedToUnlockWallet(wallet)) {
+      walletUnlockDialog.isVisible = true;
     } else {
       const self = this;
       setTxConfirmInfoAndCallback(

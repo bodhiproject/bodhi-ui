@@ -147,21 +147,22 @@ export function shortenAddress(text, maxLength) {
 
 /**
  * Checks to see if the unlocked until timestamp is before the current UNIX time.
- * @param isEncrypted {Boolean} Is the wallet encrypted.
- * @param unlockedUntil {Number|String} The UNIX timestamp in seconds to compare to.
+ * @param walletStore {Object} The wallet store containing the variables needed.
  * @return {Boolean} If the user needs to unlock their wallet.
  */
-export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
-  if (!isEncrypted) {
+export function doesUserNeedToUnlockWallet(walletStore) {
+  const { walletEncrypted, walletUnlockedUntil } = walletStore;
+
+  if (!walletEncrypted) {
     return false;
   }
 
-  if (unlockedUntil === 0) {
+  if (walletUnlockedUntil === 0) {
     return true;
   }
 
   const now = moment();
-  const unlocked = moment.unix(unlockedUntil).subtract(1, 'hours');
+  const unlocked = moment.unix(walletUnlockedUntil).subtract(1, 'hours');
   return now.isSameOrAfter(unlocked);
 }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   withStyles,
   TextField,
@@ -14,8 +13,6 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 
 import styles from './styles';
-import appActions from '../../redux/App/actions';
-import Config from '../../config/app';
 
 const messages = defineMessages({
   walletPassphrase: {
@@ -27,41 +24,30 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  walletUnlockDialogVisibility: state.App.get('walletUnlockDialogVisibility'),
-}), (dispatch) => ({
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
-  unlockWallet: (passphrase, timeout) => dispatch(appActions.unlockWallet(passphrase, timeout)),
-}))
 export default class WalletUnlockDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    walletUnlockDialogVisibility: PropTypes.bool.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
-    unlockWallet: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  state = {
-    passphrase: '',
-    unlockMinutes: Config.defaults.unlockWalletMins,
-  }
-
-  handleChange = (name) => ({ target: { value } }) => {
-    this.setState({ [name]: value });
-  }
-
   unlock = () => {
-    const { passphrase, unlockMinutes } = this.state;
-    this.props.unlockWallet(passphrase, unlockMinutes);
-    this.props.toggleWalletUnlockDialog(false);
+    this.props.store.walletUnlockDialog.unlockWallet();
+    this.closeDialog();
+  }
+
+  closeDialog = () => {
+    const { walletUnlockDialog } = this.props.store;
+
+    walletUnlockDialog.passphrase = '';
+    walletUnlockDialog.isVisible = false;
   }
 
   render() {
-    const { intl, classes, walletUnlockDialogVisibility } = this.props;
+    const { intl, classes } = this.props;
+    const { walletUnlockDialog } = this.props.store;
 
     return (
-      <Dialog open={walletUnlockDialogVisibility} onClose={this.onOkClicked}>
+      <Dialog open={walletUnlockDialog.isVisible}>
         <DialogTitle>
           <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>
@@ -79,11 +65,11 @@ export default class WalletUnlockDialog extends Component {
             label={intl.formatMessage(messages.walletPassphrase)}
             type="password"
             fullWidth
-            onChange={this.handleChange('passphrase')}
+            onChange={(e) => walletUnlockDialog.passphrase = e.target.value}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.toggleWalletUnlockDialog(false)}>
+          <Button onClick={this.closeDialog}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.unlock}>

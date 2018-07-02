@@ -63,7 +63,6 @@ const pageMessage = defineMessages({
 @connect((state) => ({
   syncBlockTime: state.App.get('syncBlockTime'),
   walletAddresses: state.App.get('walletAddresses'),
-  walletUnlockedUntil: state.App.get('walletUnlockedUntil'),
   getTopicsReturn: state.Graphql.get('getTopicsReturn'),
   getTransactionsReturn: state.Graphql.get('getTransactionsReturn'),
   txReturn: state.Graphql.get('txReturn'),
@@ -83,7 +82,6 @@ const pageMessage = defineMessages({
   createWithdrawTx: (type, version, topicAddress, senderAddress) =>
     dispatch(graphqlActions.createWithdrawTx(type, version, topicAddress, senderAddress)),
   clearTxReturn: () => dispatch(graphqlActions.clearTxReturn()),
-  toggleWalletUnlockDialog: (isVisible) => dispatch(appActions.toggleWalletUnlockDialog(isVisible)),
   setLastUsedAddress: (address) => dispatch(appActions.setLastUsedAddress(address)),
 }))
 @inject('store')
@@ -109,8 +107,6 @@ export default class TopicPage extends Component {
     txReturn: PropTypes.object,
     clearTxReturn: PropTypes.func.isRequired,
     syncBlockTime: PropTypes.number,
-    walletUnlockedUntil: PropTypes.number.isRequired,
-    toggleWalletUnlockDialog: PropTypes.func.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
   };
@@ -551,20 +547,14 @@ export default class TopicPage extends Component {
   }
 
   onWithdrawClicked(event) {
-    const {
-      createWithdrawTx,
-      walletUnlockedUntil,
-      toggleWalletUnlockDialog,
-    } = this.props;
+    const { createWithdrawTx, store: { wallet, walletUnlockDialog } } = this.props;
     const { topic } = this.state;
-    const { walletEncrypted } = this.props.store.wallet;
 
-    const senderAddress = event.currentTarget.getAttribute('data-address');
-    const type = event.currentTarget.getAttribute('data-type');
-
-    if (doesUserNeedToUnlockWallet(walletEncrypted, walletUnlockedUntil)) {
-      toggleWalletUnlockDialog(true);
+    if (doesUserNeedToUnlockWallet(wallet)) {
+      walletUnlockDialog.isVisible = true;
     } else {
+      const senderAddress = event.currentTarget.getAttribute('data-address');
+      const type = event.currentTarget.getAttribute('data-type');
       createWithdrawTx(type, topic.version, topic.address, senderAddress);
       Tracking.track('topicDetail-withdraw');
     }

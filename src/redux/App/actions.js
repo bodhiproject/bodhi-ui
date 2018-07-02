@@ -39,18 +39,6 @@ const appActions = {
     type: appActions.GET_INSIGHT_TOTALS,
   }),
 
-  TOGGLE_WALLET_UNLOCK_DIALOG: 'TOGGLE_WALLET_UNLOCK_DIALOG',
-  toggleWalletUnlockDialog: (isVisible) => ({
-    type: appActions.TOGGLE_WALLET_UNLOCK_DIALOG,
-    isVisible,
-  }),
-
-  CHECK_WALLET_ENCRYPTED: 'CHECK_WALLET_ENCRYPTED',
-  CHECK_WALLET_ENCRYPTED_RETURN: 'CHECK_WALLET_ENCRYPTED_RETURN',
-  checkWalletEncrypted: () => ({
-    type: appActions.CHECK_WALLET_ENCRYPTED,
-  }),
-
   VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
   VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
   validateAddress: (address) => ({
@@ -63,14 +51,6 @@ const appActions = {
   getTransactionCost: (txInfo) => ({
     type: appActions.GET_TRANSACTION_COST,
     txInfo,
-  }),
-
-  UNLOCK_WALLET: 'UNLOCK_WALLET',
-  UNLOCK_WALLET_RETURN: 'UNLOCK_WALLET_RETURN',
-  unlockWallet: (passphrase, timeout) => ({
-    type: appActions.UNLOCK_WALLET,
-    passphrase,
-    timeout,
   }),
 
   CLEAR_ERROR_APP: 'CLEAR_ERROR_APP',
