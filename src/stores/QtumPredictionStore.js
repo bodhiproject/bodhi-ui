@@ -45,7 +45,7 @@ export default class QtumPredictionStore {
     this.app.ui.location = AppLocation.qtumPrediction;
     this.list = await this.fetchQtumPredictions(limit);
     runInAction(() => {
-      this.loading = false;
+      this.loaded = false;
     });
   }
 

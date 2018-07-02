@@ -48,7 +48,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.loading = false;
+      this.loaded = false;
     });
   }
 }
