@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import {
   withStyles,
   TextField,
@@ -24,6 +25,8 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class WalletUnlockDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
