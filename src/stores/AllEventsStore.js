@@ -29,6 +29,16 @@ export default class {
 
   constructor(app) {
     this.app = app;
+    const { sortBy, wallet: { addresses } } = this.app;
+    const { syncBlockNum } = this.global;
+    reaction(
+      () => sortBy + addresses + syncBlockNum,
+      () => {
+        if (this.app.ui.location === AppLocation.qtumPrediction) {
+          this.init();
+        }
+      }
+    );
     reaction(
       () => this.app.sortBy,
       () => {
