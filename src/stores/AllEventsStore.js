@@ -30,9 +30,8 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy, // when 'sortBy' changes
+      () => this.app.sortBy,
       () => {
-        // and we're on the AllEvents page
         if (this.app.ui.location === AppLocation.allEvents) {
           this.init(); // fetch new events
         }

@@ -4,37 +4,47 @@ import { Token, OracleStatus, AppLocation } from 'constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
+const INIT = {
+  loaded: false, // loading state?
+  loadingMore: false, // for laoding icon?
+  list: [], // data list
+  hasMore: true, // has more data to fetch?
+  skip: 0, // skip
+  limit: 16, // loading batch amount
+};
 
 export default class QtumPredictionStore {
-  @observable loading = true
-  @observable loadingMore = false
-  @observable list = []
-  @observable hasMore = true
-  @observable skip = 0
-  limit = 16
+  @observable loaded = INIT.loaded
+  @observable loadingMore = INIT.loadingMore
+  @observable list = INIT.list
+  @observable hasMore = INIT.hasMore
+  @observable skip = INIT.skip
+  limit = INIT.limit
 
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy, // when 'sortBy' changes
+      () => this.app.sortBy,
       () => {
         if (this.app.ui.location === AppLocation.qtumPrediction) {
           this.init(this.skip);
         }
       }
     );
+    reaction(
+      () => this.list,
+      () => {
+        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
+      }
+    );
   }
 
   @action
   init = async (limit = this.limit) => {
-    if (limit === this.limit) {
-      this.skip = 0;
-    }
-    this.hasMore = true;
+    this.reset();
     this.app.ui.location = AppLocation.qtumPrediction;
     this.list = await this.fetchQtumPredictions(limit);
     runInAction(() => {
-      this.skip += limit;
       this.loading = false;
     });
   }
@@ -53,19 +63,26 @@ export default class QtumPredictionStore {
   }
 
   async fetchQtumPredictions(limit = this.limit, skip = this.skip) {
-    const orderBy = { field: 'endTime', direction: this.app.sortBy };
-    const filters = [
-      // betting
-      { token: Token.Qtum, status: OracleStatus.Voting },
-      { token: Token.Qtum, status: OracleStatus.Created },
-    ];
-    let oracles = [];
     if (this.hasMore) {
+      const orderBy = { field: 'endTime', direction: this.app.sortBy };
+      const filters = [
+        { token: Token.Qtum, status: OracleStatus.Voting },
+        { token: Token.Qtum, status: OracleStatus.Created },
+      ];
+      let oracles = [];
       oracles = await queryAllOracles(filters, orderBy, limit, skip);
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      if (oracles.length < limit) this.hasMore = false;
+      return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
-    const qtumPrediction = _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
-    return qtumPrediction;
+    return INIT.list;
+  }
+
+  reset = () => {
+    this.loaded = INIT.loaded;
+    this.loadingMore = INIT.loadingMore;
+    this.list = INIT.list;
+    this.hasMore = INIT.hasMore;
+    this.skip = INIT.skip;
+    this.limit = INIT.limit;
   }
 }
