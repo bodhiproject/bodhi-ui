@@ -28,7 +28,7 @@ export default class QtumPredictionStore {
     reaction(
       () => sortBy + addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.qtumPrediction) {
+        if (this.app.global.location === AppLocation.qtumPrediction) {
           this.init();
         }
       }

@@ -28,8 +28,8 @@ export default class BotCourtStore {
     reaction(
       () => sortBy + addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.finalize) {
-          this.init();
+        if (this.app.global.location === AppLocation.botCourt) {
+          this.init(this.skip);
         }
       }
     );
