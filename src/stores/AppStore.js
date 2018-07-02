@@ -9,6 +9,7 @@ import FinalizeStore from './activitiesStores/Finalize';
 import WithdrawStore from './activitiesStores/Withdraw';
 import WalletStore from './WalletStore';
 import WalletHistoryStore from './WalletHistoryStore';
+import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 
 class AppStore {
@@ -20,6 +21,7 @@ class AppStore {
   wallet = {}
   walletHistory = {}
   allEvents = {}
+  globalSnackbar = {}
   walletUnlockDialog = {}
 
   constructor() {
@@ -32,6 +34,7 @@ class AppStore {
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
     this.walletHistory = new WalletHistoryStore();
+    this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
