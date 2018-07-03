@@ -38,7 +38,7 @@ class AppStore {
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
-    this.refreshing = new RefreshingStore(this);
+    this.refreshing = new RefreshingStore();
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
