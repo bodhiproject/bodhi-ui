@@ -88,13 +88,6 @@ export default class WalletHistoryStore {
   }
 
   reset = () => {
-    this.fullList = INIT_VALUES.fullList;
-    this.list = INIT_VALUES.list;
-    this.orderBy = INIT_VALUES.orderBy;
-    this.direction = INIT_VALUES.direction;
-    this.limit = INIT_VALUES.limit;
-    this.skip = INIT_VALUES.skip;
-    this.perPage = INIT_VALUES.perPage;
-    this.page = INIT_VALUES.page;
+    Object.assign(this, INIT_VALUES);
   }
 }
