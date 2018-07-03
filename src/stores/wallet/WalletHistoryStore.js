@@ -62,7 +62,7 @@ export default class {
 
   @action
   init = async () => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     await this.queryTransactions();
   }
 
@@ -85,16 +85,5 @@ export default class {
         this.list = [];
       });
     }
-  }
-
-  reset = () => {
-    this.fullList = INIT_VALUES.fullList;
-    this.list = INIT_VALUES.list;
-    this.orderBy = INIT_VALUES.orderBy;
-    this.direction = INIT_VALUES.direction;
-    this.limit = INIT_VALUES.limit;
-    this.skip = INIT_VALUES.skip;
-    this.perPage = INIT_VALUES.perPage;
-    this.page = INIT_VALUES.page;
   }
 }
