@@ -59,7 +59,7 @@ const px = (value) => value.toString().concat('px');
 
 // Material Theme for Bodhi
 
-const bodhiTheme = createMuiTheme({
+export const theme = {
   /* material variables */
   palette: {
     primary: {
@@ -271,6 +271,8 @@ const bodhiTheme = createMuiTheme({
   },
   border: 'solid 1px '.concat(borderColor),
   borderRadius: px(borderRadius),
-});
+};
+
+const bodhiTheme = createMuiTheme(theme);
 
 export default bodhiTheme;
