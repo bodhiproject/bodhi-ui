@@ -85,6 +85,7 @@
   "eventInfo.predictionFund": "Prediction Fund",
   "eventInfo.voteVolumn": "Votting Volume",
   "help": "Help",
+  "invalid": "Invalid",
   "language.select": "中文",
   "loader.blockNum": "Latest Block Number",
   "loader.blockTime": "Latest Block Time",
