@@ -30,7 +30,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
         if (this.app.ui.location === AppLocation.allEvents) {
           this.init(); // fetch new events

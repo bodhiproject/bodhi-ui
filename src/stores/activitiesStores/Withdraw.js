@@ -86,10 +86,10 @@ export default class {
       _.each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
-      const result = await queryAllTopics(topicFilters, orderBy, limit, skip);
-      const topics = _.uniqBy(result, 'txid').map((topic) => new Topic(topic, this.app));
-
-      return topics;
+      const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
+      const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+      if (result.length < limit) this.hasMore = false;
+      return result;
     }
     return INIT_VALUES.list; // default return
   }

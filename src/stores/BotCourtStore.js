@@ -26,7 +26,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.finalize) {
+        if (this.app.ui.location === AppLocation.botCourt) {
           this.init();
         }
       }
@@ -73,10 +73,11 @@ export default class BotCourtStore {
           excludeResultSetterQAddress,
         },
       ];
-      let oracles = [];
-      oracles = await queryAllOracles(filters, orderBy, limit, skip);
-      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
+      let result = [];
+      result = await queryAllOracles(filters, orderBy, limit, skip);
+      result = _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      if (result.length < limit) this.hasMore = false;
+      return _.orderBy(result, ['endTime'], this.app.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }

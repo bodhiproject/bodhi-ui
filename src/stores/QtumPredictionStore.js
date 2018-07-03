@@ -24,7 +24,7 @@ export default class QtumPredictionStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
         if (this.app.ui.location === AppLocation.qtumPrediction) {
           this.init();
@@ -69,10 +69,11 @@ export default class QtumPredictionStore {
         { token: Token.Qtum, status: OracleStatus.Voting },
         { token: Token.Qtum, status: OracleStatus.Created },
       ];
-      let oracles = [];
-      oracles = await queryAllOracles(filters, orderBy, limit, skip);
-      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
+      let result = [];
+      result = await queryAllOracles(filters, orderBy, limit, skip);
+      result = _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      if (result.length < limit) this.hasMore = false;
+      return _.orderBy(result, ['endTime'], this.app.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }
