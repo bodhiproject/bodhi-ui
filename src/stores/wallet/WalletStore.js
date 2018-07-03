@@ -1,8 +1,8 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 
-import axios from '../network/httpRequest';
-import Routes from '../network/routes';
+import axios from '../../network/httpRequest';
+import Routes from '../../network/routes';
 
 
 export default class WalletStore {
