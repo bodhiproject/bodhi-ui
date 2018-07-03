@@ -224,6 +224,7 @@ export default class OraclePage extends Component {
                   return (
                     <EventOption
                       key={index}
+                      phase={item.phase}
                       isLast={index === eventOptions.length - 1}
                       currentOptionIdx={this.state.currentOptionIdx}
                       optionIdx={index}
@@ -711,6 +712,7 @@ export default class OraclePage extends Component {
           percent: totalBalance === 0 ? totalBalance : _.round((optionAmount / totalBalance) * 100),
           isPrevResult: false,
           isFinalizing: false,
+          phase: oracle.phase,
         };
       });
     }
@@ -729,6 +731,7 @@ export default class OraclePage extends Component {
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
         isPrevResult,
         isFinalizing: token === Token.Bot && status === OracleStatus.WaitResult,
+        phase: oracle.phase,
       };
     });
   }

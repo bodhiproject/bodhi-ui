@@ -36,7 +36,7 @@ export default class UiStore {
     );
   }
 
-  @action
+  @action // this setter is only here so we don't have to import `locales` into other files
   changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
   }
