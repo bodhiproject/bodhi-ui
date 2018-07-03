@@ -67,8 +67,9 @@ export default class {
     if (this.hasMore) {
       const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
       const orderBy = { field: 'endTime', direction: SortBy.Ascending };
-      const data = await queryAllOracles(filters, orderBy, limit, skip);
-      return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      const result = await queryAllOracles(filters, orderBy, limit, skip);
+      if (result.length < limit) this.hasMore = false;
+      return _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
     return INIT_VALUES.list;
   }

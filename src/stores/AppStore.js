@@ -2,6 +2,7 @@ import { observable, runInAction } from 'mobx';
 
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
+import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
 import BotCourtStore from './BotCourtStore';
@@ -37,6 +38,7 @@ class AppStore {
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
+    this.refreshing = new RefreshingStore(this);
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {

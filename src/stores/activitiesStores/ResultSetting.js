@@ -42,7 +42,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = AppLocation.resultSet; // change ui location, for tabs to render correctly
+    this.app.ui.location = AppLocation.resultSetting; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;

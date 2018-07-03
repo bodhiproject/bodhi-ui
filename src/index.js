@@ -16,7 +16,7 @@ render(
 
 // Hot Module Replacement API
 if (module.hot) {
-  console.log('hot reloading...'); // eslint-disable-line
+  // console.log('hot reloading...'); // eslint-disable-line
 }
 
 // Unregister the service worker since we don't want to cache.
