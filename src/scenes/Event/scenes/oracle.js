@@ -31,7 +31,7 @@ import {
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight';
 import EventWarning from '../../../components/EventWarning';
-import ImportantNote from '../../../components/ImportantNote';
+import { ImportantNote } from '../../../components/ImportantNote';
 import EventOption from '../components/EventOption';
 import EventInfo from '../components/EventInfo';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
