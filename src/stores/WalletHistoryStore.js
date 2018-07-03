@@ -62,7 +62,7 @@ export default class WalletHistoryStore {
 
   @action
   init = async () => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     await this.queryTransactions();
   }
 
@@ -85,9 +85,5 @@ export default class WalletHistoryStore {
         this.list = [];
       });
     }
-  }
-
-  reset = () => {
-    Object.assign(this, INIT_VALUES);
   }
 }

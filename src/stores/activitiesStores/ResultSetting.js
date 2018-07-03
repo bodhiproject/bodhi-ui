@@ -43,7 +43,7 @@ export default class {
 
   @action
   init = async () => {
-    this.reset(); // reset to initial state
+    Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = AppLocation.resultSet; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
@@ -80,9 +80,5 @@ export default class {
       return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
     return INIT_VALUES.list; // default return
-  }
-
-  reset = () => {
-    Object.assign(this, INIT_VALUES);
   }
 }

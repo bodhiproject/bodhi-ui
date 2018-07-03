@@ -43,7 +43,7 @@ export default class {
 
   @action
   init = async () => {
-    this.reset(); // reset to initial state
+    Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = AppLocation.withdraw; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
@@ -94,9 +94,5 @@ export default class {
       return topics;
     }
     return INIT_VALUES.list; // default return
-  }
-
-  reset = () => {
-    Object.assign(this, INIT_VALUES);
   }
 }

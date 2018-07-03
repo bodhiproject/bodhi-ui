@@ -43,7 +43,7 @@ export default class BotCourtStore {
 
   @action
   init = async (limit = this.limit) => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     this.app.ui.location = AppLocation.botCourt;
     this.list = await this.fetch(limit);
     runInAction(() => {
@@ -81,9 +81,5 @@ export default class BotCourtStore {
       return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
-  }
-
-  reset = () => {
-    Object.assign(this, INIT_VALUES);
   }
 }

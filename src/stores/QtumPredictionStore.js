@@ -43,7 +43,7 @@ export default class QtumPredictionStore {
 
   @action
   init = async () => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     this.app.ui.location = AppLocation.qtumPrediction;
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
@@ -77,9 +77,5 @@ export default class QtumPredictionStore {
       return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
-  }
-
-  reset = () => {
-    Object.assign(this, INIT_VALUES);
   }
 }
