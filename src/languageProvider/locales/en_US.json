@@ -7,6 +7,7 @@
   "bottomBar.blockTime": "Current Block Time",
   "bottomBar.offline": "Offline",
   "bottomBar.online": "Online",
+  "bottomBar.peers": "peers",
   "bottomButtonText.arbitrate": "Arbitrate",
   "bottomButtonText.placeBet": "Place Bet",
   "bottomButtonText.vote": "Place Vote",
