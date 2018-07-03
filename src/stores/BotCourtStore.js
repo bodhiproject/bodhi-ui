@@ -23,10 +23,8 @@ export default class BotCourtStore {
 
   constructor(app) {
     this.app = app;
-    const { wallet: { addresses }, sortBy } = this.app;
-    const { syncBlockNum } = this.global;
     reaction(
-      () => sortBy + addresses + syncBlockNum,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === AppLocation.finalize) {
           this.init();

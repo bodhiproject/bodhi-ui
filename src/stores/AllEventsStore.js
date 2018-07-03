@@ -6,7 +6,7 @@ import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
 const INIT_VALUES = {
-  loading: true, // initial loading state
+  loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
   hasMoreTopics: true, // has more topics to fetch?
@@ -16,7 +16,7 @@ const INIT_VALUES = {
 
 
 export default class {
-  @observable loading = INIT_VALUES.loading
+  @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
   @observable hasMoreTopics = INIT_VALUES.hasMoreTopics
@@ -29,18 +29,8 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    const { sortBy, wallet: { addresses } } = this.app;
-    const { syncBlockNum } = this.global;
     reaction(
-      () => sortBy + addresses + syncBlockNum,
-      () => {
-        if (this.app.ui.location === AppLocation.qtumPrediction) {
-          this.init();
-        }
-      }
-    );
-    reaction(
-      () => this.app.sortBy,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === AppLocation.allEvents) {
           this.init(); // fetch new events
