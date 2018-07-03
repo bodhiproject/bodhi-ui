@@ -12,6 +12,7 @@ var gql = (strings, ...vars) => {
   return graph(string)();
 }
 
+
 export default class {
   @observable loading = true
   @observable oracle = {}

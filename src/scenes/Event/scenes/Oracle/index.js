@@ -1,12 +1,15 @@
 /* eslint-disable */
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Typography, Grid, Paper } from '@material-ui/core';
+import { Button as _Button, Typography, Grid, Paper } from '@material-ui/core';
 import Option from '../../components/Option';
 import BackButton from '../../../../components/BackButton';
+import { ImportantNote } from '../../../../components/ImportantNote';
+
+
 
 @withRouter
 @inject('store')
@@ -42,32 +45,6 @@ export default class OraclePage extends Component {
   }
 }
 
-const Row = styled(({ children, ...props }) => (
-  <Paper {...props}>
-    <Grid container spacing={0}>{children}</Grid>
-  </Paper>
-))`
-  box-shadow: none;
-  border-radius: ${props => props.theme.borderRadius};
-`;
-
-const Content = styled(Grid).attrs({ item: true, xs: 12, md: 8 })`
-  padding: ${props => props.theme.padding.lg.px};
-  overflow-x: hidden;
-`;
-
-const Sidebar = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
-  padding: ${props => props.theme.padding.lg.px};
-  overflow-x: hidden;
-  border-left: ${props => props.theme.border};
-  text-align: right;
-`;
-
-const Title = styled(Typography).attrs({ variant: 'display1' })`
-  margin-bottom: ${props => props.theme.padding.md.px};
-`;
-
-
 const BetOracle = observer(({ oracle }) => (
   <Row>
     <Content>
@@ -89,8 +66,8 @@ const BetOracle = observer(({ oracle }) => (
 ))
 
 
-const BetOptions = injectIntl(observer(({ oracle, intl }) => (
-  <Fragment>
+const BetOptions = observer(({ oracle, intl }) => (
+  <Grid item xs={12} lg={9}>
     {oracle.options.map((option, i) => (
       <Option
         key={i}
@@ -102,12 +79,10 @@ const BetOptions = injectIntl(observer(({ oracle, intl }) => (
         amountInputDisabled={false}
       />
     ))}
-  </Fragment>
-)))
+  </Grid>
+))
 
-const BetButton = props => (
-  <Button {...props}><FormattedMessage id="str.bet" defaultMessage="Bet" /></Button>
-)
+const BetButton = props => <Button {...props}><FormattedMessage id="str.bet" defaultMessage="Bet" /></Button>
 
 
 // const ResultSettingOptions = injectIntl(observer(({ oracle, intl }) => (
@@ -141,3 +116,34 @@ const BetButton = props => (
 //     })}
 //   </Fragment>
 // )))
+
+const Row = styled(({ children, ...props }) => (
+  <Paper {...props}>
+    <Grid container spacing={0}>{children}</Grid>
+  </Paper>
+))`
+  box-shadow: none !important; // TODO: fix this
+  border-radius: ${props => props.theme.borderRadius};
+`;
+
+const Content = styled(Grid).attrs({ item: true, xs: 12, md: 8 })`
+  padding: ${props => props.theme.padding.lg.px};
+  overflow-x: hidden;
+`;
+
+const Sidebar = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
+  padding: ${props => props.theme.padding.lg.px};
+  overflow-x: hidden;
+  border-left: ${props => props.theme.border};
+  text-align: right;
+`;
+
+const Title = styled(Typography).attrs({ variant: 'display1' })`
+  margin-bottom: ${props => props.theme.padding.md.px};
+`;
+
+const Button = styled(_Button).attrs({ variant: 'raised', fullWidth: true, size: 'large', color: 'primary' })`
+  margin-top: ${props => props.theme.padding.md.px};
+  background-color: ${props => props.theme.palette.primary.main} !important; // TODO: fix
+  color: white !important; // TODO fix
+`
