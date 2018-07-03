@@ -23,10 +23,8 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    const { wallet: { addresses } } = this.app;
-    const { syncBlockNum } = this.global;
     reaction(
-      () => addresses + syncBlockNum,
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === AppLocation.resultSetting) {
           this.init();
