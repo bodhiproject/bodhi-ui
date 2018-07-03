@@ -2,8 +2,8 @@ import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
 import { SortBy, TransactionType } from 'constants';
 
-import Transaction from './models/Transaction';
-import { queryAllTransactions } from '../network/graphQuery';
+import Transaction from '../models/Transaction';
+import { queryAllTransactions } from '../../network/graphQuery';
 
 
 const INIT_VALUES = {
@@ -17,7 +17,7 @@ const INIT_VALUES = {
   page: 0,
 };
 
-export default class WalletHistoryStore {
+export default class {
   @observable fullList = INIT_VALUES.fullList
   @observable list = INIT_VALUES.list
   @observable orderBy = INIT_VALUES.orderBy
@@ -62,7 +62,7 @@ export default class WalletHistoryStore {
 
   @action
   init = async () => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     await this.queryTransactions();
   }
 
@@ -85,16 +85,5 @@ export default class WalletHistoryStore {
         this.list = [];
       });
     }
-  }
-
-  reset = () => {
-    this.fullList = INIT_VALUES.fullList;
-    this.list = INIT_VALUES.list;
-    this.orderBy = INIT_VALUES.orderBy;
-    this.direction = INIT_VALUES.direction;
-    this.limit = INIT_VALUES.limit;
-    this.skip = INIT_VALUES.skip;
-    this.perPage = INIT_VALUES.perPage;
-    this.page = INIT_VALUES.page;
   }
 }

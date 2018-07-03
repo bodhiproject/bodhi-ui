@@ -7,8 +7,7 @@ import QtumPredictionStore from './QtumPredictionStore';
 import ResultSettingStore from './activitiesStores/ResultSetting';
 import FinalizeStore from './activitiesStores/Finalize';
 import WithdrawStore from './activitiesStores/Withdraw';
-import WalletStore from './WalletStore';
-import WalletHistoryStore from './WalletHistoryStore';
+import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
@@ -20,7 +19,6 @@ class AppStore {
   global = {}
   ui = {}
   wallet = {}
-  walletHistory = {}
   allEvents = {}
   globalSnackbar = {}
   walletUnlockDialog = {}
@@ -35,7 +33,6 @@ class AppStore {
     this.global = new GlobalStore(this);
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
-    this.walletHistory = new WalletHistoryStore();
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();

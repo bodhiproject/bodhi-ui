@@ -44,31 +44,31 @@ export default class WalletHistory extends Component {
   };
 
   onPageChange = (page) => {
-    this.props.store.walletHistory.page = page;
+    this.props.store.wallet.history.page = page;
   }
 
   onPerPageChange = (perPage) => {
-    this.props.store.walletHistory.perPage = perPage;
+    this.props.store.wallet.history.perPage = perPage;
   }
 
   onSortChange = (property) => (event) => { // eslint-disable-line
-    const { walletHistory } = this.props.store;
+    const { wallet: { history } } = this.props.store;
 
-    if (walletHistory.orderBy !== property) {
-      walletHistory.orderBy = property;
-    } else if (walletHistory.direction === SortBy.Descending.toLowerCase()) {
-      walletHistory.direction = SortBy.Ascending.toLowerCase();
+    if (history.orderBy !== property) {
+      history.orderBy = property;
+    } else if (history.direction === SortBy.Descending.toLowerCase()) {
+      history.direction = SortBy.Ascending.toLowerCase();
     } else {
-      walletHistory.direction = SortBy.Descending.toLowerCase();
+      history.direction = SortBy.Descending.toLowerCase();
     }
   }
 
   componentDidMount() {
-    this.props.store.walletHistory.init();
+    this.props.store.wallet.history.init();
   }
 
   componentDidUpdate(prevProps) {
-    const { txReturn, syncBlockNum, store: { walletHistory: { queryTransactions } } } = prevProps;
+    const { txReturn, syncBlockNum, store: { wallet: { history: { queryTransactions } } } } = prevProps;
 
     if ((txReturn && !this.props.txReturn) || (syncBlockNum !== this.props.syncBlockNum)) {
       queryTransactions();
@@ -76,7 +76,7 @@ export default class WalletHistory extends Component {
   }
 
   render() {
-    const { classes, store: { walletHistory } } = this.props;
+    const { classes, store: { wallet: { history } } } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>
@@ -86,15 +86,15 @@ export default class WalletHistory extends Component {
           </Typography>
           <Table className={classes.table}>
             <TableHeader
-              orderBy={walletHistory.orderBy}
-              direction={walletHistory.direction}
+              orderBy={history.orderBy}
+              direction={history.direction}
               onSortChange={this.onSortChange}
             />
-            <TableRows list={walletHistory.list} />
+            <TableRows list={history.list} />
             <TableFooter
-              fullList={walletHistory.fullList}
-              perPage={walletHistory.perPage}
-              page={walletHistory.page}
+              fullList={history.fullList}
+              perPage={history.perPage}
+              page={history.page}
               onPageChange={this.onPageChange}
               onPerPageChange={this.onPerPageChange}
             />
