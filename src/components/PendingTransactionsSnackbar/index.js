@@ -1,168 +1,91 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import {
-  withStyles,
-  Snackbar,
-  Typography,
-  Grid,
-} from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
+import { withStyles, Snackbar, Typography, Grid } from '@material-ui/core';
 import cx from 'classnames';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TransactionType } from 'constants';
+import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 
 import styles from './styles';
-import appActions from '../../redux/App/actions';
 
-
-const messages = defineMessages({
-  youHave: {
-    id: 'pendingTxsSnackbar.youHave',
-    defaultMessage: 'You have',
-  },
-  pendingTransactions: {
-    id: 'pendingTxsSnackbar.pendingTransactions',
-    defaultMessage: 'pending transactions.',
-  },
-  createEvent: {
-    id: 'str.createEvent',
-    defaultMessage: 'Create Event',
-  },
-  bet: {
-    id: 'str.bet',
-    defaultMessage: 'Bet',
-  },
-  setResult: {
-    id: 'str.setResult',
-    defaultMessage: 'Set Result',
-  },
-  vote: {
-    id: 'str.vote',
-    defaultMessage: 'Vote',
-  },
-  finalizeResult: {
-    id: 'str.finalizeResult',
-    defaultMessage: 'Finalize Result',
-  },
-  withdraw: {
-    id: 'str.withdraw',
-    defaultMessage: 'Withdraw',
-  },
-  transferTokens: {
-    id: 'str.transferTokens',
-    defaultMessage: 'Transfer Tokens',
-  },
-  resetApproval: {
-    id: 'tx.resetApproval',
-    defaultMessage: 'Reset Approval',
-  },
-  balanceExplanation: {
-    id: 'pendingTxsSnackbar.balanceExplanation',
-    defaultMessage: 'Pending transactions will affect your wallet balances.',
-  },
-});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  pendingTxsSnackbarVisible: state.App.get('pendingTxsSnackbarVisible'),
-  getPendingTransactionsReturn: state.Graphql.get('getPendingTransactionsReturn'),
-}), (dispatch) => ({
-  togglePendingTxsSnackbar: (isVisible) => dispatch(appActions.togglePendingTxsSnackbar(isVisible)),
-}))
+@inject('store')
+@observer
 export default class PendingTransactionsSnackbar extends Component {
   static propTypes = {
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
-    getPendingTransactionsReturn: PropTypes.object.isRequired,
-    pendingTxsSnackbarVisible: PropTypes.bool.isRequired,
-    togglePendingTxsSnackbar: PropTypes.func.isRequired,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
+
+  componentDidMount() {
+    this.props.store.pendingTxsSnackbar.init();
+  }
 
   render() {
     const {
-      classes,
-      getPendingTransactionsReturn,
-      pendingTxsSnackbarVisible,
-      intl,
-    } = this.props;
-    const pendingTxs = getPendingTransactionsReturn;
+      isVisible,
+      count,
+      pendingCreateEvents,
+      pendingBets,
+      pendingSetResults,
+      pendingVotes,
+      pendingFinalizeResults,
+      pendingWithdraws,
+      pendingTransfers,
+      pendingResetApproves,
+    } = this.props.store.pendingTxsSnackbar;
+    const { classes, intl } = this.props;
 
-    if (pendingTxs.count === 0) {
+    const pendingCounts = {
+      'str.createEvent': pendingCreateEvents,
+      'str.bet': pendingBets,
+      'str.setResult': pendingSetResults,
+      'str.vote': pendingVotes,
+      'str.finalizeResult': pendingFinalizeResults,
+      'str.withdraw': pendingWithdraws,
+      'str.transferTokens': pendingTransfers,
+      'tx.resetApproval': pendingResetApproves,
+    };
+
+    if (count === 0) {
       return null;
     }
 
     return (
       <Snackbar
         className={classes.snackbar}
-        open={pendingTxs.count > 0 && pendingTxsSnackbarVisible}
+        open={isVisible}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         message={
           <Grid container>
             <Grid item xs={11}>
               <Typography variant="caption" className={classes.totalCountText}>
-                {`${intl.formatMessage(messages.youHave)} ${pendingTxs.count} ${intl.formatMessage(messages.pendingTransactions)}`}
+                <FormattedMessage
+                  id="pendingTxsSnackbar.youHaveXPendingTransactions"
+                  defaultMessage="You have {numOfTxs} pending transaction(s)."
+                  values={{ numOfTxs: count }}
+                />
               </Typography>
-              {
-                Object.keys(pendingTxs).map((key) => {
-                  if (key !== 'count') {
-                    const amount = pendingTxs[key].length;
-                    if (amount > 0) {
-                      return <Typography variant="caption" key={key}>{`${this.getEventName(key)}: ${amount}`}</Typography>;
-                    }
-                    return null;
-                  }
-                  return null;
-                })
-              }
+              {Object.entries(pendingCounts).map(([id, amounts]) => amounts.length > 0 && (
+                <Typography variant="caption" key={id}>{`${intl.formatMessage({ id })}: ${amounts.length}`}</Typography>
+              ))}
               <Typography variant="caption" className={classes.balanceExplanation}>
-                {`* ${intl.formatMessage(messages.balanceExplanation)}`}
+                <FormattedMessage
+                  id="pendingTxsSnackbar.balanceExplanation"
+                  defaultMessage="Pending transactions will affect your wallet balances."
+                />
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              <i className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')} onClick={this.onCloseClicked} />
+              <i
+                className={cx(classes.closeIcon, 'icon iconfont icon-ic_close')}
+                onClick={() => this.props.store.pendingTxsSnackbar.isVisible = false}
+              />
             </Grid>
           </Grid>
         }
       />
     );
   }
-
-  getEventName = (key) => {
-    const { intl } = this.props;
-
-    switch (key) {
-      case TransactionType.CreateEvent: {
-        return intl.formatMessage(messages.createEvent);
-      }
-      case TransactionType.Bet: {
-        return intl.formatMessage(messages.bet);
-      }
-      case TransactionType.SetResult: {
-        return intl.formatMessage(messages.setResult);
-      }
-      case TransactionType.Vote: {
-        return intl.formatMessage(messages.vote);
-      }
-      case TransactionType.FinalizeResult: {
-        return intl.formatMessage(messages.finalizeResult);
-      }
-      case TransactionType.Withdraw: {
-        return intl.formatMessage(messages.withdraw);
-      }
-      case TransactionType.Transfer: {
-        return intl.formatMessage(messages.transferTokens);
-      }
-      case TransactionType.ResetApprove: {
-        return intl.formatMessage(messages.resetApproval);
-      }
-      default: {
-        return undefined;
-      }
-    }
-  };
-
-  onCloseClicked = () => {
-    this.props.togglePendingTxsSnackbar(false);
-  };
 }

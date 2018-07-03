@@ -231,44 +231,6 @@ export function* getTransactionsHandler() {
   });
 }
 
-// Send allTransactions query for pending txs only
-export function* getPendingTransactionsHandler() {
-  yield takeEvery(actions.GET_PENDING_TRANSACTIONS, function* getPendingTransactionsRequest() {
-    try {
-      const filters = [{ status: TransactionStatus.Pending }];
-      const result = yield call(queryAllTransactions, filters);
-      const txs = _.map(result, processTransaction);
-
-      const pendingTxsObj = {
-        count: txs.length,
-        CREATEEVENT: _.filter(txs, (tx) =>
-          tx.type === TransactionType.ApproveCreateEvent || tx.type === TransactionType.CreateEvent),
-        BET: _.filter(txs, { type: TransactionType.Bet }),
-        SETRESULT: _.filter(txs, (tx) =>
-          tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult),
-        VOTE: _.filter(txs, (tx) =>
-          tx.type === TransactionType.ApproveVote || tx.type === TransactionType.Vote),
-        FINALIZERESULT: _.filter(txs, { type: TransactionType.FinalizeResult }),
-        WITHDRAW: _.filter(txs, (tx) =>
-          tx.type === TransactionType.Withdraw || tx.type === TransactionType.WithdrawEscrow),
-        TRANSFER: _.filter(txs, { type: TransactionType.Transfer }),
-        RESETAPPROVE: _.filter(txs, { type: TransactionType.ResetApprove }),
-      };
-
-      yield put({
-        type: actions.GET_PENDING_TRANSACTIONS_RETURN,
-        value: pendingTxsObj,
-      });
-    } catch (error) {
-      console.error(error); // eslint-disable-line
-      yield put({
-        type: actions.GET_PENDING_TRANSACTIONS_RETURN,
-        value: [],
-      });
-    }
-  });
-}
-
 function processTransaction(tx) {
   if (!tx) {
     return undefined;
@@ -601,7 +563,6 @@ export default function* graphqlSaga() {
     fork(getActionableTopicsHandler),
     fork(getOraclesHandler),
     fork(getTransactionsHandler),
-    fork(getPendingTransactionsHandler),
     fork(getActionableItemCountHandler),
     fork(createTopicTxHandler),
     fork(createBetTxHandler),
