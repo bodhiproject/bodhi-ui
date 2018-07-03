@@ -78,16 +78,5 @@ export default class PendingTransactionsSnackbarStore {
     }
   }
 
-  reset = () => {
-    this.isVisible = INIT_VALUES.isVisible;
-    this.count = INIT_VALUES.count;
-    this.pendingCreateEvents = INIT_VALUES.pendingCreateEvents;
-    this.pendingBets = INIT_VALUES.pendingBets;
-    this.pendingSetResults = INIT_VALUES.pendingSetResults;
-    this.pendingVotes = INIT_VALUES.pendingVotes;
-    this.pendingFinalizeResults = INIT_VALUES.pendingFinalizeResults;
-    this.pendingWithdraws = INIT_VALUES.pendingWithdraws;
-    this.pendingTransfers = INIT_VALUES.pendingTransfers;
-    this.pendingResetApproves = INIT_VALUES.pendingResetApproves;
-  }
+  reset = () => Object.assign(this, INIT_VALUES)
 }
