@@ -23,7 +23,7 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Token, TransactionType } from 'constants';
 
-import ImportantNote from '../../components/ImportantNote';
+import { ImportantNote } from '../../components/ImportantNote';
 import EventWarning from '../../components/EventWarning';
 import CreateEventDatePicker from './components/CreateEventDatePicker';
 import CreateEventOutcomes from './components/CreateEventOutcomes';
