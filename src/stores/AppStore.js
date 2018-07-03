@@ -12,8 +12,8 @@ import WalletHistoryStore from './WalletHistoryStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 
 class AppStore {
-  @observable loading = true;
-  @observable sortBy = 'ASC' // might want to move somewhere else
+  @observable loading = true; // TODO: move these to GlobalStore
+  @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
 
   global = {}
   ui = {}
