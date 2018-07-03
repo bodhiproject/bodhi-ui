@@ -28,15 +28,7 @@ export default class {
     reaction(
       () => addresses + syncBlockNum,
       () => {
-<<<<<<< HEAD
-<<<<<<< HEAD
         if (this.app.ui.location === AppLocation.resultSetting) {
-=======
-        if (this.app.global.location === AppLocation.qtumPrediction) {
->>>>>>> change this.app.ui to this.app.global
-=======
-        if (this.app.ui.location === AppLocation.resultSetting) {
->>>>>>> update ui.location
           this.init();
         }
       }
@@ -87,14 +79,6 @@ export default class {
       const data = await queryAllOracles(filters, orderBy, limit, skip);
       return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
-<<<<<<< HEAD
     return INIT_VALUES.list; // default return
-=======
-    return INIT.list; // default return
-  }
-
-  reset = () => {
-    Object.assign(this, INIT);
->>>>>>> update reset with INIT_VALUES
   }
 }
