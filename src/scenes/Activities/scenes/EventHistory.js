@@ -15,13 +15,11 @@ import {
   TableFooter,
   TablePagination,
   Tooltip,
-  withStyles,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TransactionType, SortBy, AppLocation } from 'constants';
 
-import styles from './styles';
 import Config from '../../../config/app';
 import TransactionHistoryID from '../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../components/TransactionHistoryAddressAndID/address';
@@ -48,7 +46,6 @@ const messages = defineMessages({ // eslint-disable-line
 
 
 @injectIntl
-@withStyles(styles, { withTheme: true })
 @connect((state) => ({
   syncBlockNum: state.App.get('syncBlockNum'),
   oracles: state.Graphql.get('getOraclesReturn'),
@@ -407,8 +404,8 @@ export default class EventHistory extends Component {
   }
 }
 
-const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
+const NameLinkCell = ({ classes, clickable, topic, ...props }) => (
   <TableCell>
     <span className={clickable && classes.viewEventLink} {...props} />
   </TableCell>
-));
+);

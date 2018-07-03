@@ -1,12 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withStyles } from '@material-ui/core';
 
 import InfiniteScroll from '../../../components/InfiniteScroll';
 import theme from '../../../config/theme';
 import EventCard from '../../../components/EventCard';
-import _Loading from '../../../components/Loading';
-import styles from './styles';
+import Loading from '../../../components/EventListLoading';
 
 
 @inject('store')
@@ -32,9 +30,3 @@ export default class ResultSetting extends Component {
     );
   }
 }
-
-const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text="loading" /></Row>);
-
-const Row = withStyles(styles)(({ classes, ...props }) => (
-  <div className={classes.row} {...props} />
-));
