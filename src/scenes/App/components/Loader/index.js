@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { withStyles, Typography, Grid, LinearProgress } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
@@ -11,24 +11,18 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 
 @withStyles(styles)
-@connect((state) => ({
-  syncPercent: state.App.get('syncPercent'),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-  walletAddresses: state.App.get('walletAddresses'),
-}))
+@inject('store')
+@observer
 export default class Loader extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    syncPercent: PropTypes.number.isRequired,
-    syncBlockNum: PropTypes.number.isRequired,
-    syncBlockTime: PropTypes.number.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, syncPercent, syncBlockNum, syncBlockTime, walletAddresses } = this.props;
-    const hideLoader = !AppConfig.debug.showAppLoad || (syncPercent >= 100 && !_.isEmpty(walletAddresses));
+    const { classes } = this.props;
+    const { syncPercent, syncBlockNum, syncBlockTime } = this.props.store.global;
+    const { addresses } = this.props.store.wallet;
+    const hideLoader = !AppConfig.debug.showAppLoad || (syncPercent >= 100 && !_.isEmpty(addresses));
 
     return (
       <div
@@ -43,7 +37,7 @@ export default class Loader extends Component {
             <img className={classes.loaderGif} src="/images/loader.gif" alt="Loading..." />
           </div>
           <div className={classes.loaderPercentWrapper}>
-            <Typography variant="display1" className={classes.loaderPercent}>{syncPercent || 0}</Typography>%
+            <Typography variant="display1" className={classes.loaderPercent}>{syncPercent}</Typography>%
             <p>
               <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing..." />
               &nbsp;

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -13,21 +13,11 @@ import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  ...state.App.toJS(),
-  syncBlockNum: state.App.get('syncBlockNum'),
-  syncBlockTime: state.App.get('syncBlockTime'),
-}))
+@inject('store')
+@observer
 export default class BottomBar extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    syncBlockNum: PropTypes.number,
-    syncBlockTime: PropTypes.number,
-  }
-
-  static defaultProps = {
-    syncBlockNum: undefined,
-    syncBlockTime: undefined,
   }
 
   state = { // this state is used to re-render the dom here when going online/offline
@@ -47,11 +37,13 @@ export default class BottomBar extends Component {
   }
 
   render() {
-    const { classes, syncBlockTime, syncBlockNum } = this.props;
+    const { classes } = this.props;
+    const { syncBlockNum, syncBlockTime } = this.props.store.global;
+
     return (
       <Paper className={classes.bottomBarWrapper}>
         <NetworkConnection />
-        {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
+        <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />
       </Paper>
     );
   }

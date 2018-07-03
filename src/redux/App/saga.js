@@ -2,8 +2,8 @@ import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 
 import actions from './actions';
 import axios from '../../network/httpRequest';
-import { querySyncInfo } from '../../network/graphQuery';
 import Routes from '../../network/routes';
+import { querySyncInfo } from '../../network/graphQuery';
 
 export function* syncInfoRequestHandler() {
   yield takeEvery(actions.GET_SYNC_INFO, function* syncInfoRequest(action) {

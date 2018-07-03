@@ -48,11 +48,7 @@ export default class GlobalHub extends Component {
   };
 
   componentWillMount() {
-    const {
-      getSyncInfo,
-      syncPercent,
-      getPendingTransactions,
-    } = this.props;
+    const { getSyncInfo, syncPercent, getPendingTransactions } = this.props;
     const { checkWalletEncrypted } = this.props.store.wallet;
 
     // Checks to see if any txs will require unlocking the wallet
@@ -110,9 +106,10 @@ export default class GlobalHub extends Component {
   }
 
   fetchSyncInfo = () => {
-    const { getSyncInfo, syncPercent, store } = this.props;
+    const { getSyncInfo, syncPercent } = this.props;
+
     getSyncInfo(syncPercent);
-    store.pubsub.getSyncInfo();
+    this.props.store.global.getSyncInfo();
   };
 
   subscribeSyncInfo = () => {
@@ -122,12 +119,12 @@ export default class GlobalHub extends Component {
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next({ data }) {
-        store.pubsub.syncInfo(data.onSyncInfo);
+        store.global.onSyncInfo(data.onSyncInfo);
         onSyncInfo(data.onSyncInfo);
       },
       error(err) {
+        store.global.onSyncInfo({ error: err.message });
         onSyncInfo({ error: err.message });
-        store.pubsub.syncInfo({ error: err.message });
       },
     });
   };
