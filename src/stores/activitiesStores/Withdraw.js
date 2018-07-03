@@ -4,7 +4,7 @@ import { OracleStatus, AppLocation, SortBy } from 'constants';
 import { queryAllVotes, queryAllTopics } from '../../network/graphQuery';
 import Topic from '../models/Topic';
 
-const INIT = {
+const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
   list: [], // data list
@@ -14,12 +14,12 @@ const INIT = {
 };
 
 export default class {
-  @observable loaded = INIT.loaded
-  @observable loadingMore = INIT.loadingMore
-  @observable list = INIT.list
-  @observable hasMore = INIT.hasMore
-  @observable skip = INIT.skip
-  limit = INIT.limit
+  @observable loaded = INIT_VALUES.loaded
+  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable list = INIT_VALUES.list
+  @observable hasMore = INIT_VALUES.hasMore
+  @observable skip = INIT_VALUES.skip
+  limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
@@ -93,10 +93,10 @@ export default class {
 
       return topics;
     }
-    return INIT.list; // default return
+    return INIT_VALUES.list; // default return
   }
 
   reset = () => {
-    Object.assign(this, INIT);
+    Object.assign(this, INIT_VALUES);
   }
 }
