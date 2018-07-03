@@ -4,7 +4,7 @@ import { Token, OracleStatus, AppLocation } from '../constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
-const INIT = {
+const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
   list: [], // data list
@@ -14,20 +14,22 @@ const INIT = {
 };
 
 export default class BotCourtStore {
-  @observable loaded = INIT.loaded
-  @observable loadingMore = INIT.loadingMore
-  @observable list = INIT.list
-  @observable hasMore = INIT.hasMore
-  @observable skip = INIT.skip
-  limit = INIT.limit
+  @observable loaded = INIT_VALUES.loaded
+  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable list = INIT_VALUES.list
+  @observable hasMore = INIT_VALUES.hasMore
+  @observable skip = INIT_VALUES.skip
+  limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
+    const { wallet: { addresses }, sortBy } = this.app;
+    const { syncBlockNum } = this.global;
     reaction(
-      () => this.app.sortBy,
+      () => sortBy + addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.botCourt) {
-          this.init(this.skip);
+        if (this.app.ui.location === AppLocation.finalize) {
+          this.init();
         }
       }
     );
@@ -41,7 +43,7 @@ export default class BotCourtStore {
 
   @action
   init = async (limit = this.limit) => {
-    this.reset(); // reset to initial state
+    this.reset();
     this.app.ui.location = AppLocation.botCourt;
     this.list = await this.fetch(limit);
     runInAction(() => {
@@ -78,10 +80,10 @@ export default class BotCourtStore {
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
       return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
-    return INIT.list;
+    return INIT_VALUES.list;
   }
 
   reset = () => {
-    Object.assign(this, INIT);
+    Object.assign(this, INIT_VALUES);
   }
 }
