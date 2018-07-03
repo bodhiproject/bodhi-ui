@@ -34,7 +34,7 @@ export default class {
     reaction(
       () => sortBy + addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.allEvents) {
+        if (this.app.ui.location === AppLocation.qtumPrediction) {
           this.init();
         }
       }
@@ -43,11 +43,7 @@ export default class {
       () => this.app.sortBy,
       () => {
         if (this.app.ui.location === AppLocation.allEvents) {
-<<<<<<< HEAD
-          this.init(); // fetch new events
-=======
           this.init();
->>>>>>> update ui.location
         }
       }
     );

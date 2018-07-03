@@ -80,11 +80,6 @@ export default class QtumPredictionStore {
   }
 
   reset = () => {
-    this.loaded = INIT.loaded;
-    this.loadingMore = INIT.loadingMore;
-    this.list = INIT.list;
-    this.hasMore = INIT.hasMore;
-    this.skip = INIT.skip;
-    this.limit = INIT.limit;
+    Object.assign(this, INIT);
   }
 }
