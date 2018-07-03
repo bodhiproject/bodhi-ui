@@ -41,7 +41,7 @@ export default class PendingTransactionsSnackbarStore {
 
   @action
   init = async () => {
-    this.reset();
+    Object.assign(this, INIT_VALUES);
     await this.queryPendingTransactions();
   }
 
@@ -73,7 +73,7 @@ export default class PendingTransactionsSnackbarStore {
       console.error(error); // eslint-disable-line
 
       runInAction(() => {
-        this.reset();
+        Object.assign(this, INIT_VALUES);
       });
     }
   }
