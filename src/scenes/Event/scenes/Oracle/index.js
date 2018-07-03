@@ -8,6 +8,7 @@ import { Button as _Button, Typography, Grid, Paper } from '@material-ui/core';
 import Option from '../../components/Option';
 import BackButton from '../../../../components/BackButton';
 import { ImportantNote } from '../../../../components/ImportantNote';
+import Transactions from '../../components/EventTxHistory';
 
 
 
@@ -53,7 +54,7 @@ const BetOracle = observer(({ oracle }) => (
       <BetOptions oracle={oracle} />
       {/* <ConsensusThreshold /> */}
       <BetButton onClick={oracle.bet} />
-      {/* <Transactions /> */}
+      <Transactions transactions={oracle.transactions} options={oracle.options} />
     </Content>
     <Sidebar>
       SIDEBAR
@@ -66,7 +67,7 @@ const BetOracle = observer(({ oracle }) => (
 ))
 
 
-const BetOptions = observer(({ oracle, intl }) => (
+const BetOptions = observer(({ oracle }) => (
   <Grid item xs={12} lg={9}>
     {oracle.options.map((option, i) => (
       <Option
