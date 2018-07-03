@@ -34,7 +34,7 @@ export default class {
     reaction(
       () => sortBy + addresses + syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.allEvents) {
+        if (this.app.ui.location === AppLocation.qtumPrediction) {
           this.init();
         }
       }

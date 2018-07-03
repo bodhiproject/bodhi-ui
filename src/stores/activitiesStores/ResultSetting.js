@@ -87,6 +87,14 @@ export default class {
       const data = await queryAllOracles(filters, orderBy, limit, skip);
       return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
+<<<<<<< HEAD
     return INIT_VALUES.list; // default return
+=======
+    return INIT.list; // default return
+  }
+
+  reset = () => {
+    Object.assign(this, INIT);
+>>>>>>> update reset with INIT_VALUES
   }
 }

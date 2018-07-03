@@ -80,6 +80,14 @@ export default class BotCourtStore {
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
       return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
+<<<<<<< HEAD
     return INIT_VALUES.list;
+=======
+    return INIT.list;
+  }
+
+  reset = () => {
+    Object.assign(this, INIT);
+>>>>>>> update reset with INIT_VALUES
   }
 }
