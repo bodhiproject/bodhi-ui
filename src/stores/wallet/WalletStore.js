@@ -1,11 +1,12 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 
+import WalletHistoryStore from './WalletHistoryStore';
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
 
 
-export default class WalletStore {
+export default class {
   @observable addresses = []
   @observable lastUsedAddress = ''
   @observable walletEncrypted = false
@@ -13,8 +14,11 @@ export default class WalletStore {
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
 
+  history = {}
+
   constructor(app) {
     this.app = app;
+    this.history = new WalletHistoryStore();
 
     // Set a default lastUsedAddress if there was none selected before
     reaction(

@@ -17,7 +17,7 @@ const INIT_VALUES = {
   page: 0,
 };
 
-export default class WalletHistoryStore {
+export default class {
   @observable fullList = INIT_VALUES.fullList
   @observable list = INIT_VALUES.list
   @observable orderBy = INIT_VALUES.orderBy
