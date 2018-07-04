@@ -64,7 +64,7 @@ const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
         {navigator.onLine ? (
           <Fragment>
             <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
-            :&nbsp;{peerNodeCount}&nbsp;
+            {`: ${peerNodeCount} `}
             <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
           </Fragment>
         ) : (
