@@ -33,10 +33,10 @@ export default class BottomBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncBlockTime, syncBlockNum, peerNodeNum } = this.props.store.global || { syncBlockTime: 1, syncBlockNum: 1, peerNodeNum: 1 };
+    const { syncBlockTime, syncBlockNum, peerNodeCount } = this.props.store.global || { syncBlockTime: 1, syncBlockNum: 1, peerNodeCount: 1 };
     return (
       <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection peerNum={peerNodeNum} />
+        <NetworkConnection peerNodeCount={peerNodeCount} />
         {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
       </Paper>
     );
@@ -52,7 +52,7 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   </Grid>
 ));
 
-const NetworkConnection = withStyles(styles)(({ classes, peerNum }) => (
+const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
   <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
     <Typography variant="body1">
       {navigator.onLine ? (
@@ -64,7 +64,7 @@ const NetworkConnection = withStyles(styles)(({ classes, peerNum }) => (
         {navigator.onLine ? (
           <Fragment>
             <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
-            :&nbsp;{peerNum}&nbsp;
+            :&nbsp;{peerNodeCount}&nbsp;
             <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
           </Fragment>
         ) : (
