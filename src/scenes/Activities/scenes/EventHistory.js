@@ -135,17 +135,17 @@ export default class EventHistory extends Component {
 
     return (
       <Grid container spacing={0}>
-        {
-          transactions.length ?
-            (<Table>
-              {this.getTableHeader()}
-              {this.getTableRows()}
-              {this.getTableFooter()}
-            </Table>) :
-            (<Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-            </Typography>)
-        }
+        {transactions.length ? (
+          <Table>
+            {this.getTableHeader()}
+            {this.getTableRows()}
+            {this.getTableFooter()}
+          </Table>
+        ) : (
+          <Typography variant="body1">
+            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+          </Typography>
+        )}
       </Grid>
     );
   }
