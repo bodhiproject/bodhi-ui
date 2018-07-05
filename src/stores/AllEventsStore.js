@@ -5,8 +5,8 @@ import { queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graph
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
-const INIT = {
-  loading: true, // initial loading state
+const INIT_VALUES = {
+  loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
   hasMoreTopics: true, // has more topics to fetch?
@@ -16,25 +16,24 @@ const INIT = {
 
 
 export default class {
-  @observable loading = INIT.loading
-  @observable loadingMore = INIT.loadingMore
-  @observable list = INIT.list
-  @observable hasMoreTopics = INIT.hasMoreTopics
-  @observable hasMoreOracles = INIT.hasMoreOracles
+  @observable loaded = INIT_VALUES.loaded
+  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable list = INIT_VALUES.list
+  @observable hasMoreTopics = INIT_VALUES.hasMoreTopics
+  @observable hasMoreOracles = INIT_VALUES.hasMoreOracles
   @computed get hasMore() {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
-  @observable skip = INIT.skip
+  @observable skip = INIT_VALUES.skip
   limit = 24
 
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy, // when 'sortBy' changes
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
-        // and we're on the AllEvents page
         if (this.app.ui.location === AppLocation.allEvents) {
-          this.init(); // fetch new events
+          this.init();
         }
       }
     );
@@ -42,12 +41,12 @@ export default class {
 
   @action
   init = async (limit = this.limit) => {
-    Object.assign(this, INIT); // reset all properties
+    Object.assign(this, INIT_VALUES); // reset all properties
     this.app.ui.location = AppLocation.allEvents;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
       this.skip += limit;
-      this.loading = false;
+      this.loaded = false;
     });
   }
 

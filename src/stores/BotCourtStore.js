@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from 'constants';
+import { Token, OracleStatus, AppLocation } from '../constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
@@ -13,7 +13,7 @@ const INIT_VALUES = {
   limit: 16, // loading batch amount
 };
 
-export default class QtumPredictionStore {
+export default class BotCourtStore {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
@@ -24,9 +24,9 @@ export default class QtumPredictionStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.qtumPrediction) {
+        if (this.app.ui.location === AppLocation.botCourt) {
           this.init();
         }
       }
@@ -40,10 +40,10 @@ export default class QtumPredictionStore {
   }
 
   @action
-  init = async () => {
+  init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = AppLocation.qtumPrediction;
-    this.list = await this.fetch(this.limit, this.skip);
+    this.app.ui.location = AppLocation.botCourt;
+    this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = false;
     });
@@ -54,7 +54,7 @@ export default class QtumPredictionStore {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
-      const nextFewEvents = await this.fetch(this.limit, this.skip);
+      const nextFewEvents = await this.fetch();
       runInAction(() => {
         this.list = [...this.list, ...nextFewEvents];
         this.loadingMore = false;
@@ -65,9 +65,13 @@ export default class QtumPredictionStore {
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
+      const excludeResultSetterQAddress = this.app.wallet.addresses.map(({ address }) => address);
       const filters = [
-        { token: Token.Qtum, status: OracleStatus.Voting },
-        { token: Token.Qtum, status: OracleStatus.Created },
+        { token: Token.Bot, status: OracleStatus.Voting },
+        { token: Token.Qtum,
+          status: OracleStatus.WaitResult,
+          excludeResultSetterQAddress,
+        },
       ];
       let result = [];
       result = await queryAllOracles(filters, orderBy, limit, skip);

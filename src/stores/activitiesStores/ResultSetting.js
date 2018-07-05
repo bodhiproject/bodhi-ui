@@ -4,7 +4,7 @@ import { Token, OracleStatus, AppLocation, SortBy } from 'constants';
 import { queryAllOracles } from '../../network/graphQuery';
 import Oracle from '../models/Oracle';
 
-const INIT = {
+const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
   list: [], // data list
@@ -14,15 +14,23 @@ const INIT = {
 };
 
 export default class {
-  @observable loaded = INIT.loaded
-  @observable loadingMore = INIT.loadingMore
-  @observable list = INIT.list
-  @observable hasMore = INIT.hasMore
-  @observable skip = INIT.skip
-  limit = INIT.limit
+  @observable loaded = INIT_VALUES.loaded
+  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable list = INIT_VALUES.list
+  @observable hasMore = INIT_VALUES.hasMore
+  @observable skip = INIT_VALUES.skip
+  limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => {
+        if (this.app.ui.location === AppLocation.resultSetting) {
+          this.init();
+        }
+      }
+    );
     reaction(
       () => this.list,
       () => {
@@ -33,8 +41,8 @@ export default class {
 
   @action
   init = async () => {
-    this.reset(); // reset to initial state
-    this.app.ui.location = AppLocation.resultSet; // change ui location, for tabs to render correctly
+    Object.assign(this, INIT_VALUES); // reset to initial state
+    this.app.ui.location = AppLocation.resultSetting; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
@@ -69,15 +77,6 @@ export default class {
       const data = await queryAllOracles(filters, orderBy, limit, skip);
       return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
-    return INIT.list; // default return
-  }
-
-  reset = () => {
-    this.loaded = INIT.loaded;
-    this.loadingMore = INIT.loadingMore;
-    this.list = INIT.list;
-    this.hasMore = INIT.hasMore;
-    this.skip = INIT.skip;
-    this.limit = INIT.limit;
+    return INIT_VALUES.list; // default return
   }
 }

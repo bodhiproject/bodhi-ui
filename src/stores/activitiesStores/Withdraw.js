@@ -4,7 +4,7 @@ import { OracleStatus, AppLocation, SortBy } from 'constants';
 import { queryAllVotes, queryAllTopics } from '../../network/graphQuery';
 import Topic from '../models/Topic';
 
-const INIT = {
+const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
   list: [], // data list
@@ -14,15 +14,23 @@ const INIT = {
 };
 
 export default class {
-  @observable loaded = INIT.loaded
-  @observable loadingMore = INIT.loadingMore
-  @observable list = INIT.list
-  @observable hasMore = INIT.hasMore
-  @observable skip = INIT.skip
-  limit = INIT.limit
+  @observable loaded = INIT_VALUES.loaded
+  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable list = INIT_VALUES.list
+  @observable hasMore = INIT_VALUES.hasMore
+  @observable skip = INIT_VALUES.skip
+  limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => {
+        if (this.app.ui.location === AppLocation.withdraw) {
+          this.init();
+        }
+      }
+    );
     reaction(
       () => this.list,
       () => {
@@ -33,7 +41,7 @@ export default class {
 
   @action
   init = async () => {
-    this.reset(); // reset to initial state
+    Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = AppLocation.withdraw; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
@@ -78,20 +86,11 @@ export default class {
       _.each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
       });
-      const result = await queryAllTopics(topicFilters, orderBy, limit, skip);
-      const topics = _.uniqBy(result, 'txid').map((topic) => new Topic(topic, this.app));
-
-      return topics;
+      const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
+      const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+      if (result.length < limit) this.hasMore = false;
+      return result;
     }
-    return INIT.list; // default return
-  }
-
-  reset = () => {
-    this.loaded = INIT.loaded;
-    this.loadingMore = INIT.loadingMore;
-    this.list = INIT.list;
-    this.hasMore = INIT.hasMore;
-    this.skip = INIT.skip;
-    this.limit = INIT.limit;
+    return INIT_VALUES.list; // default return
   }
 }

@@ -9,13 +9,13 @@ import Loading from '../../components/EventListLoading';
 
 @inject('store')
 @observer
-export default class QtumPrediction extends Component {
+export default class BotCourt extends Component {
   componentDidMount() {
-    this.props.store.qtumPrediction.init();
+    this.props.store.botCourt.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loading } = this.props.store.qtumPrediction;
+    const { list, loadMore, loadingMore, loading } = this.props.store.botCourt;
     if (loading) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} {...event} />); // eslint-disable-line
     return (
