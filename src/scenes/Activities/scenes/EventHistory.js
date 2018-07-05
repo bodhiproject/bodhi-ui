@@ -317,7 +317,7 @@ export default class EventHistory extends Component {
         <TableCell>
           {getTxTypeString(type, locale, localeMessages)}
         </TableCell>
-        <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
+        <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)} classes>
           {name || (topic && topic.name)}
         </NameLinkCell>
         <TableCell numeric>
