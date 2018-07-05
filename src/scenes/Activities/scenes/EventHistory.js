@@ -131,21 +131,22 @@ export default class EventHistory extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { transactions } = this.state;
 
     return (
       <Grid container spacing={0}>
-        {transactions.length ? (
-          <Table>
-            {this.getTableHeader()}
-            {this.getTableRows()}
-            {this.getTableFooter()}
-          </Table>
-        ) : (
-          <Typography variant="body1">
-            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-          </Typography>
-        )}
+        {
+          transactions.length ?
+            (<Table className={classes.historyTable}>
+              {this.getTableHeader()}
+              {this.getTableRows()}
+              {this.getTableFooter()}
+            </Table>) :
+            (<Typography variant="body1">
+              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+            </Typography>)
+        }
       </Grid>
     );
   }
@@ -309,8 +310,8 @@ export default class EventHistory extends Component {
     const isExpanded = this.state.expanded.includes(txid);
 
     result[0] = (
-      <TableRow key={txid} selected={isExpanded} onClick={this.handleClick(txid)}>
-        <TableCell>
+      <TableRow key={txid} selected={isExpanded} onClick={this.handleClick(txid)} className={classes.clickToExpandRow} >
+        <TableCell className={classes.summaryRowCell}>
           {getShortLocalDateTimeString(createdTime)}
         </TableCell>
         <TableCell>
@@ -337,7 +338,7 @@ export default class EventHistory extends Component {
     );
     result[1] = (
       <TableRow key={`txaddr-${txid}`} selected onClick={this.handleClick(txid)} className={isExpanded ? classes.show : classes.hide}>
-        <TransactionHistoryAddress transaction={transaction} />
+        <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
         <TableCell /><TransactionHistoryID transaction={transaction} />
         <TableCell />
         <TableCell /><TableCell /><TableCell />
@@ -406,8 +407,8 @@ export default class EventHistory extends Component {
   }
 }
 
-const NameLinkCell = ({ clickable, topic, ...props }) => (
+const NameLinkCell = ({ classes, clickable, topic, ...props }) => (
   <TableCell>
-    <span className={clickable} {...props} />
+    <span className={clickable && classes.viewEventLink} {...props} />
   </TableCell>
 );
