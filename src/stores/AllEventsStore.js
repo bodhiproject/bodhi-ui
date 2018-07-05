@@ -45,8 +45,7 @@ export default class {
     this.app.ui.location = AppLocation.allEvents;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
-      this.skip += limit;
-      this.loaded = false;
+      this.loading = false;
     });
   }
 
@@ -63,6 +62,7 @@ export default class {
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     limit /= 2; // eslint-disable-line
+    skip /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [
       // finalizing
