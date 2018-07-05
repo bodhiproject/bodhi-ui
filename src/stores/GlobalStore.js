@@ -24,7 +24,7 @@ export default class GlobalStore {
         this.syncPercent = percent;
         this.syncBlockNum = blockNum;
         this.syncBlockTime = blockTime;
-        this.peerNodeCount = peerNodeCount + 1;
+        this.peerNodeCount = peerNodeCount;
         this.app.wallet.addresses = balances;
       });
     }
