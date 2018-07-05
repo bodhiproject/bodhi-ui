@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unused-state */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
@@ -16,10 +15,6 @@ import { getShortLocalDateTimeString } from '../../helpers/utility';
 @inject('store')
 @observer
 export default class BottomBar extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-  }
-
   state = { // this state is used to re-render the dom here when going online/offline
     online: true,
   }
@@ -38,12 +33,11 @@ export default class BottomBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncBlockNum, syncBlockTime } = this.props.store.global;
-
+    const { syncBlockTime, syncBlockNum, peerNodeCount } = this.props.store.global || { syncBlockTime: 1, syncBlockNum: 1, peerNodeCount: 1 };
     return (
       <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection />
-        <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />
+        <NetworkConnection peerNodeCount={peerNodeCount} />
+        {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
       </Paper>
     );
   }
@@ -52,13 +46,13 @@ export default class BottomBar extends Component {
 const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
     <Typography variant="body1">
-      <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />: {blockNum}</span>
+      <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
       <FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? getShortLocalDateTimeString(blockTime) : ''}
     </Typography>
   </Grid>
 ));
 
-const NetworkConnection = withStyles(styles)(({ classes }) => (
+const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
   <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
     <Typography variant="body1">
       {navigator.onLine ? (
@@ -68,7 +62,11 @@ const NetworkConnection = withStyles(styles)(({ classes }) => (
       )}
       <span>
         {navigator.onLine ? (
-          <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
+          <Fragment>
+            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
+            :&nbsp;{peerNodeCount}&nbsp;
+            <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
+          </Fragment>
         ) : (
           <FormattedMessage id="bottomBar.offline" defaultMessage="Offline" />
         )}
