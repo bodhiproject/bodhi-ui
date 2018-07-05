@@ -19,12 +19,20 @@ export default class GlobalStore {
     if (syncInfo.error) {
       console.log(syncInfo.error.message); // eslint-disable-line no-console
     } else {
+<<<<<<< HEAD
       const { percent, blockNum, blockTime, balances, peerNodeCount } = new SyncInfo(syncInfo);
+=======
+      const { percent, blockNum, blockTime, peerNodeCount, balances } = new SyncInfo(syncInfo);
+>>>>>>> update parser schema of graphQL
       runInAction(() => {
         this.syncPercent = percent;
         this.syncBlockNum = blockNum;
         this.syncBlockTime = blockTime;
+<<<<<<< HEAD
         this.peerNodeCount = peerNodeCount;
+=======
+        this.peerNodeCount = peerNodeCount + 1;
+>>>>>>> update parser schema of graphQL
         this.app.wallet.addresses = balances;
       });
     }

@@ -75,6 +75,7 @@ class GraphParser {
       'syncBlockNum',
       'syncBlockTime',
       'syncPercent',
+      'peerNodeCount',
       'addressBalances',
     ]);
   }
