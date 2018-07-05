@@ -16,10 +16,10 @@ export default class SyncInfo {
     this.percent = syncInfo.syncPercent;
     this.blockNum = syncInfo.syncBlockNum;
     this.blockTime = Number(syncInfo.syncBlockTime);
-    this.balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
-    this.peerNodeCount = syncInfo.peerNodeCount;
+    this.peerCount = Number(syncInfo);
+    const balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
 
     // Sort by qtum balance
-    this.balances = _.orderBy(this.balances, ['qtum'], [SortBy.Descending.toLowerCase()]);
+    this.balances = _.orderBy(balances, ['qtum'], [SortBy.Descending.toLowerCase()]);
   }
 }
