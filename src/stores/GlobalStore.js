@@ -35,7 +35,6 @@ export default class GlobalStore {
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
-      console.log('syncInfo', syncInfo);
       this.onSyncInfo(syncInfo);
     } catch (err) {
       this.onSyncInfo({ error: err.message });
