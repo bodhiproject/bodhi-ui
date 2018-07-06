@@ -20,13 +20,11 @@ export default class GlobalStore {
       console.log(syncInfo.error.message); // eslint-disable-line no-console
     } else {
       const { percent, blockNum, blockTime, peerNodeCount, balances } = new SyncInfo(syncInfo);
-      runInAction(() => {
-        this.syncPercent = percent;
-        this.syncBlockNum = blockNum;
-        this.syncBlockTime = blockTime;
-        this.peerNodeCount = peerNodeCount;
-        this.app.wallet.addresses = balances;
-      });
+      this.syncPercent = percent;
+      this.syncBlockNum = blockNum;
+      this.syncBlockTime = blockTime;
+      this.peerNodeCount = peerNodeCount;
+      this.app.wallet.addresses = balances;
     }
   }
 
