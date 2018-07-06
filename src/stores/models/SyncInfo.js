@@ -9,6 +9,7 @@ export default class SyncInfo {
   blockNum = 0
   blockTime = ''
   balances = []
+  peerNodeCount = 0
 
   constructor(syncInfo) {
     Object.assign(this, syncInfo);
@@ -16,6 +17,7 @@ export default class SyncInfo {
     this.blockNum = syncInfo.syncBlockNum;
     this.blockTime = Number(syncInfo.syncBlockTime);
     this.balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
+    this.peerNodeCount = syncInfo.peerNodeCount;
 
     // Sort by qtum balance
     this.balances = _.orderBy(this.balances, ['qtum'], [SortBy.Descending.toLowerCase()]);

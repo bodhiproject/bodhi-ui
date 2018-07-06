@@ -5,6 +5,7 @@ import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
+import PropTypes from 'prop-types';
 
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
@@ -15,6 +16,10 @@ import { getShortLocalDateTimeString } from '../../helpers/utility';
 @inject('store')
 @observer
 export default class BottomBar extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  }
+
   state = { // this state is used to re-render the dom here when going online/offline
     online: true,
   }
@@ -33,7 +38,7 @@ export default class BottomBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncBlockTime, syncBlockNum, peerNodeCount } = this.props.store.global || { syncBlockTime: 1, syncBlockNum: 1, peerNodeCount: 1 };
+    const { syncBlockTime, syncBlockNum, peerNodeCount } = this.props.store.global;
     return (
       <Paper className={classes.bottomBarWrapper}>
         <NetworkConnection peerNodeCount={peerNodeCount} />
@@ -64,7 +69,7 @@ const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
         {navigator.onLine ? (
           <Fragment>
             <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
-            :&nbsp;{peerNodeCount}&nbsp;
+            {`: ${peerNodeCount} `}
             <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
           </Fragment>
         ) : (

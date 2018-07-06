@@ -8,6 +8,7 @@ export default class GlobalStore {
   @observable syncPercent = 0
   @observable syncBlockNum = 0
   @observable syncBlockTime = ''
+  @observable peerNodeCount = 0
 
   constructor(app) {
     this.app = app;
@@ -18,11 +19,12 @@ export default class GlobalStore {
     if (syncInfo.error) {
       console.log(syncInfo.error.message); // eslint-disable-line no-console
     } else {
-      const { percent, blockNum, blockTime, balances } = new SyncInfo(syncInfo);
+      const { percent, blockNum, blockTime, balances, peerNodeCount } = new SyncInfo(syncInfo);
       runInAction(() => {
         this.syncPercent = percent;
         this.syncBlockNum = blockNum;
         this.syncBlockTime = blockTime;
+        this.peerNodeCount = peerNodeCount;
         this.app.wallet.addresses = balances;
       });
     }
