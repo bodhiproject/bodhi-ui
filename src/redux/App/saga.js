@@ -10,6 +10,7 @@ export function* syncInfoRequestHandler() {
     try {
       const includeBalances = action.syncPercent === 0 || action.syncPercent >= 98;
       const result = yield call(querySyncInfo, includeBalances);
+      console.log('syncInfoRequest', result);
 
       yield put({
         type: actions.SYNC_INFO_RETURN,

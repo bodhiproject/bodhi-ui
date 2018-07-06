@@ -29,6 +29,8 @@ export default function appReducer(state = initState, action) {
       return state.set('lastUsedAddress', action.address);
     }
     case actions.SYNC_INFO_RETURN: {
+      console.log('reducer syncInfoReturn', action.syncInfo);
+
       if (action.error) {
         return state.set('syncInfoError', action.error);
       }
