@@ -33,7 +33,7 @@ const App = observer(({ classes, match: { url }, store }) => (
         <TransactionSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
-        <TxConfirmDialog txDesc="hey" txAmount={10} txToken="QTUM" />
+        <TxConfirmDialog txDesc="" txAmount={10} txToken="QTUM" />
         <TutorialCarouselDialog />
       </Fragment>
     )}
