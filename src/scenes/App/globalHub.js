@@ -115,7 +115,7 @@ export default class GlobalHub extends Component {
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next({ data, errors }) {
-        if (errors.length > 0) {
+        if (errors && errors.length > 0) {
           store.global.onSyncInfo({ error: errors[0] });
           onSyncInfo({ error: errors[0] });
         } else {

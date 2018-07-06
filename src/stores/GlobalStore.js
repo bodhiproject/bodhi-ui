@@ -15,7 +15,6 @@ export default class GlobalStore {
 
   @action
   onSyncInfo = (syncInfo) => {
-    console.log('mobx onSyncInfo', syncInfo);
     if (syncInfo.error) {
       console.log(syncInfo.error.message); // eslint-disable-line no-console
     } else {
@@ -34,7 +33,6 @@ export default class GlobalStore {
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
-      console.log('mobx getSyncInfo', syncInfo);
       this.onSyncInfo(syncInfo);
     } catch (err) {
       this.onSyncInfo({ error: err.message });
