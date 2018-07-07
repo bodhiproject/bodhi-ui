@@ -326,6 +326,7 @@ export default class CreateEvent extends Component {
       creatorAddress,
     );
     this.props.reset(FORM_NAME);
+    this.props.store.refreshing.trigger();
   }
 
   checkWalletAndConfirmAction = (values) => {
@@ -472,7 +473,7 @@ export default class CreateEvent extends Component {
 
     return (
       <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
-        <Form onSubmit={() => { this.props.store.refreshing.trigger(); handleSubmit(this.checkWalletAndConfirmAction); }}>
+        <Form onSubmit={handleSubmit(this.checkWalletAndConfirmAction)}>
           <DialogContent>
             <Grid container>
               <Grid item xs={3}>
