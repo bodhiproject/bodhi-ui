@@ -12,16 +12,16 @@ module.exports = {
 
   /* App Constants */
   AppLocation: {
-    qtumPrediction: 'QtumPrediction',
-    botCourt: 'BotCourt',
-    vote: 'Vote',
-    wallet: 'Wallet',
-    myActivities: 'MyActivities',
-    resultSetting: 'ResultSetting',
-    finalize: 'Finalize',
-    withdraw: 'Withdraw',
-    activityHistory: 'ActivityHistory',
-    allEvents: 'AllEvents',
+    qtumPrediction: 'QTUM_PREDICTION',
+    botCourt: 'BOT_COURT',
+    vote: 'VOTE',
+    wallet: 'WALLET',
+    myActivities: 'MY_ACTIVITIES',
+    resultSetting: 'RESULT_SETTING',
+    finalize: 'FINALIZE',
+    withdraw: 'WITHDRAW',
+    activityHistory: 'ACTIVITY_HISTORY',
+    allEvents: 'ALL_EVENTS',
   },
 
   Phases: {

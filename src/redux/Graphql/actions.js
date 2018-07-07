@@ -57,6 +57,7 @@ const graphqlActions = {
     resultSettingEndTime,
     escrowAmount,
     senderAddress,
+    callBack,
   ) => ({
     type: graphqlActions.CREATE_TOPIC_TX,
     params: {
@@ -69,6 +70,7 @@ const graphqlActions = {
       resultSettingEndTime,
       escrowAmount,
       senderAddress,
+      callBack,
     },
   }),
 
