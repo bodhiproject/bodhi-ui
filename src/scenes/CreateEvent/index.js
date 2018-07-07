@@ -326,6 +326,7 @@ export default class CreateEvent extends Component {
       creatorAddress,
     );
     this.props.reset(FORM_NAME);
+    this.props.store.refreshing.trigger();
   }
 
   checkWalletAndConfirmAction = (values) => {
@@ -355,7 +356,6 @@ export default class CreateEvent extends Component {
         },
         () => {
           self.submitCreateEvent(values);
-          self.props.store.refreshing.trigger();
         }
       );
     }
