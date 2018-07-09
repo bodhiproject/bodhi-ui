@@ -179,15 +179,20 @@ export default class OraclePage extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { oracles, getTransactionsReturn, syncBlockTime, txReturn } = nextProps;
+    console.log('​OraclePage -> componentWillReceiveProps -> this.props', this.props);
+    console.log('​OraclePage -> componentWillReceiveProps -> nextProps', nextProps);
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
       this.executeOracleAndTxsRequest();
+      console.log('hehre');
     }
 
     // Construct page config
-    if (oracles) {
+    console.log('​OraclePage -> componentWillReceiveProps -> oracles', oracles);
+    if (oracles !== this.props.oracles) {
       this.constructOracleAndConfig(syncBlockTime, oracles);
+      console.log('there');
     }
 
     this.setState({ transactions: getTransactionsReturn });
@@ -196,8 +201,13 @@ export default class OraclePage extends Component {
   render() {
     const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
-
+    console.log('​OraclePage -> render -> oracle', oracle);
+    console.log('​OraclePage -> render -> oracles', oracles);
+    console.log('touch');
     if (!oracle || !config) {
+      console.log('​OraclePage -> render -> config', config);
+      console.log('​OraclePage -> render -> oracle', oracle);
+      console.log('hhehre');
       return null;
     }
 
@@ -401,6 +411,7 @@ export default class OraclePage extends Component {
       ]);
     } else {
       // Find real Oracle based on topicAddress
+      console.log('transaction called');
       this.props.getOracles([
         { topicAddress },
       ]);
@@ -417,13 +428,13 @@ export default class OraclePage extends Component {
 
     let oracle;
     let oracles = oraclesData;
+    console.log('​OraclePage -> constructOracleAndConfig -> oraclesData', oraclesData);
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
       oracles = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
     } else {
       oracle = _.find(oracles, { txid });
     }
-
     let config;
 
     if (oracle) {
@@ -439,10 +450,15 @@ export default class OraclePage extends Component {
         config = this.setVoteConfig(oracle);
       } else if (token === Token.BOT && status === OracleStatus.WAIT_RESULT) {
         config = this.setFinalizeConfig();
+      } else if (token === Token.Qtum && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
+        config = this.setBetConfig();
+      } else if (token === Token.Bot && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
+        config = this.setVoteConfig(oracle);
       }
     }
-
-    if (oracle && !config) {
+    console.log('​OraclePage -> constructOracleAndConfig -> config', config);
+    console.log('​OraclePage -> constructOracleAndConfig -> oracle', oracle);
+    if (oracle && !config && this.props.store.ui.location !== AppLocation.allEvents) {
       const path = getDetailPagePath(oracles);
       if (path) {
         // Oracle stage changed, route to correct detail page
@@ -453,7 +469,18 @@ export default class OraclePage extends Component {
       }
       return;
     }
-
+    if (oracle && !config && this.props.store.ui.location === AppLocation.allEvents) {
+      const path = this.props.match.url;
+      if (path) {
+        // Oracle stage changed, route to correct detail page
+        this.props.history.push(path);
+      } else {
+        // Couldn't get proper path, route to dashboard
+        this.props.history.push('/');
+      }
+      return;
+    }
+    console.log('set state');
     this.setState({ oracle, oracles, config });
   }
 
