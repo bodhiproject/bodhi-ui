@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action } from 'mobx';
 
 import { querySyncInfo } from '../network/graphQuery';
 import SyncInfo from './models/SyncInfo';
@@ -8,26 +8,10 @@ export default class GlobalStore {
   @observable syncPercent = 0
   @observable syncBlockNum = 0
   @observable syncBlockTime = ''
-  @observable peerNodeCount = 0
+  @observable peerNodeCount = 1
 
   constructor(app) {
     this.app = app;
-  }
-
-  @action
-  onSyncInfo = (syncInfo) => {
-    if (syncInfo.error) {
-      console.error(syncInfo.error.message); // eslint-disable-line no-console
-    } else {
-      const { percent, blockNum, blockTime, balances, peerNodeCount } = new SyncInfo(syncInfo);
-      runInAction(() => {
-        this.syncPercent = percent;
-        this.syncBlockNum = blockNum;
-        this.syncBlockTime = blockTime;
-        this.peerNodeCount = peerNodeCount;
-        this.app.wallet.addresses = balances;
-      });
-    }
   }
 
   @action
@@ -38,6 +22,20 @@ export default class GlobalStore {
       this.onSyncInfo(syncInfo);
     } catch (error) {
       this.onSyncInfo({ error });
+    }
+  }
+
+  @action
+  onSyncInfo = (syncInfo) => {
+    if (syncInfo.error) {
+      console.error(syncInfo.error.message); // eslint-disable-line no-console
+    } else {
+      const { percent, blockNum, blockTime, balances, peerNodeCount } = new SyncInfo(syncInfo);
+      this.syncPercent = percent;
+      this.syncBlockNum = blockNum;
+      this.syncBlockTime = blockTime;
+      this.peerNodeCount = peerNodeCount || 1;
+      this.app.wallet.addresses = balances;
     }
   }
 }
