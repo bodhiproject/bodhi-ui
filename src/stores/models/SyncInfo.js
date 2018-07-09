@@ -16,7 +16,7 @@ export default class SyncInfo {
     this.percent = syncInfo.syncPercent;
     this.blockNum = syncInfo.syncBlockNum;
     this.blockTime = Number(syncInfo.syncBlockTime);
-    this.peerCount = Number(syncInfo);
+    this.peerCount = Number(syncInfo.peerNodeCount);
     const balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
 
     // Sort by qtum balance
