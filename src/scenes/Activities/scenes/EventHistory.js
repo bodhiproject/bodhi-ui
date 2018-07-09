@@ -15,11 +15,13 @@ import {
   TableFooter,
   TablePagination,
   Tooltip,
+  withStyles,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TransactionType, SortBy, AppLocation } from 'constants';
 
+import styles from './styles';
 import Config from '../../../config/app';
 import TransactionHistoryID from '../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../components/TransactionHistoryAddressAndID/address';
@@ -55,6 +57,7 @@ const messages = defineMessages({ // eslint-disable-line
   getTransactions: (filters, orderBy, limit, skip) =>
     dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
 }))
+@withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
 export default class EventHistory extends Component {
@@ -314,7 +317,7 @@ export default class EventHistory extends Component {
         <TableCell>
           {getTxTypeString(type, locale, localeMessages)}
         </TableCell>
-        <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
+        <NameLinkCell clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)} className={classes.viewEventLink}>
           {name || (topic && topic.name)}
         </NameLinkCell>
         <TableCell numeric>
@@ -404,8 +407,8 @@ export default class EventHistory extends Component {
   }
 }
 
-const NameLinkCell = ({ classes, clickable, topic, ...props }) => (
+const NameLinkCell = ({ className, clickable, topic, ...props }) => (
   <TableCell>
-    <span className={clickable && classes.viewEventLink} {...props} />
+    <span className={clickable && className.viewEventLink} {...props} />
   </TableCell>
 );

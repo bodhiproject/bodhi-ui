@@ -90,6 +90,7 @@ const TYPE_DEF = {
     syncBlockNum
     syncBlockTime
     syncPercent
+    peerNodeCount
     addressBalances {
       address
       qtum
