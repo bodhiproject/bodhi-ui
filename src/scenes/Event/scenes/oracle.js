@@ -256,23 +256,25 @@ export default class OraclePage extends Component {
                     message={config.importantNote && config.importantNote.message}
                   />
                 </div>
-                {!unconfirmed && !isArchived && (
+                {!unconfirmed && (
                   <div>
-                    <Button
-                      variant="raised"
-                      fullWidth
-                      size="large"
-                      color="primary"
-                      disabled={disabled}
-                      onClick={this.handleConfirmClick}
-                      className={classes.eventActionButton}
-                    >
-                      {
-                        this.state.isApproving ?
-                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                          config.predictionAction.btnText
-                      }
-                    </Button>
+                    {!isArchived && (
+                      <Button
+                        variant="raised"
+                        fullWidth
+                        size="large"
+                        color="primary"
+                        disabled={disabled}
+                        onClick={this.handleConfirmClick}
+                        className={classes.eventActionButton}
+                      >
+                        {
+                          this.state.isApproving ?
+                            <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
+                            config.predictionAction.btnText
+                        }
+                      </Button>
+                    )}
                     {showResultHistory && <EventResultHistory oracles={oracles} />}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
