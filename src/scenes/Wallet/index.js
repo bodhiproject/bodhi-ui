@@ -10,7 +10,7 @@ import WalletHistory from './components/History';
 @observer
 export default class MyWallet extends Component {
   componentWillMount() {
-    this.props.store.ui.location = AppLocation.wallet;
+    this.props.store.ui.location = AppLocation.myWallet;
   }
 
   render() {

@@ -14,7 +14,7 @@ module.exports = {
   AppLocation: {
     qtumPrediction: 'QTUM_PREDICTION',
     botCourt: 'BOT_COURT',
-    wallet: 'WALLET',
+    myWallet: 'WALLET',
     myActivities: 'MY_ACTIVITIES',
     resultSetting: 'RESULT_SETTING',
     finalize: 'FINALIZE',
