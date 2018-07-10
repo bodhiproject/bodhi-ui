@@ -16,17 +16,17 @@ const AppRouter = ({ url }) => {
     <Switch>
       <Route
         exact
-        path={`${url}${AppLocation.allEvents}`}
+        path={`${url}${AppLocation.ALL_EVENTS}`}
         component={asyncComponent(() => import('../AllEvents'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.qtumPrediction}`}
+        path={`${url}${AppLocation.QTUM_PREDICTION}`}
         component={asyncComponent(() => import('../QtumPrediction'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.botCourt}`}
+        path={`${url}${AppLocation.BOT_COURT}`}
         component={asyncComponent(() => import('../BotCourt'))}
       />
       <Route
@@ -41,27 +41,27 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${AppLocation.myWallet}`}
+        path={`${url}${AppLocation.WALLET}`}
         component={asyncComponent(() => import('../Wallet'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.set}`}
+        path={`${url}${AppLocation.SET}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.finalize}`}
+        path={`${url}${AppLocation.FINALIZE}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.withdraw}`}
+        path={`${url}${AppLocation.WITHDRAW}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.activityHistory}`}
+        path={`${url}${AppLocation.ACTIVITY_HISTORY}`}
         component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>

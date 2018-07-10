@@ -48,7 +48,7 @@ export default class PendingTransactionsSnackbarStore {
   @action
   queryPendingTransactions = async () => {
     try {
-      const filters = [{ status: TransactionStatus.Pending }];
+      const filters = [{ status: TransactionStatus.PENDING }];
       const result = await queryAllTransactions(filters);
       const txs = _.map(result, (tx) => new Transaction(tx));
 
@@ -56,18 +56,18 @@ export default class PendingTransactionsSnackbarStore {
         this.count = txs.length;
         this.pendingCreateEvents = _.filter(
           txs,
-          (tx) => tx.type === TransactionType.ApproveCreateEvent || tx.type === TransactionType.CreateEvent
+          (tx) => tx.type === TransactionType.APPROVE_CREATE_EVENT || tx.type === TransactionType.APPROVE_CREATE_EVENT
         );
-        this.pendingBets = _.filter(txs, { type: TransactionType.Bet });
+        this.pendingBets = _.filter(txs, { type: TransactionType.BET });
         this.pendingSetResults = _.filter(txs, (tx) =>
-          tx.type === TransactionType.ApproveSetResult || tx.type === TransactionType.SetResult);
+          tx.type === TransactionType.APPROVE_SET_RESULT || tx.type === TransactionType.SET_RESULT);
         this.pendingVotes = _.filter(txs, (tx) =>
-          tx.type === TransactionType.ApproveVote || tx.type === TransactionType.Vote);
-        this.pendingFinalizeResults = _.filter(txs, { type: TransactionType.FinalizeResult });
+          tx.type === TransactionType.APPROVE_VOTE || tx.type === TransactionType.VOTE);
+        this.pendingFinalizeResults = _.filter(txs, { type: TransactionType.FINALIZE_RESULT });
         this.pendingWithdraws = _.filter(txs, (tx) =>
-          tx.type === TransactionType.Withdraw || tx.type === TransactionType.WithdrawEscrow);
-        this.pendingTransfers = _.filter(txs, { type: TransactionType.Transfer });
-        this.pendingResetApproves = _.filter(txs, { type: TransactionType.ResetApprove });
+          tx.type === TransactionType.WITHDRAW || tx.type === TransactionType.WITHDRAW_ESCROW);
+        this.pendingTransfers = _.filter(txs, { type: TransactionType.TRANSFER });
+        this.pendingResetApproves = _.filter(txs, { type: TransactionType.RESET_APPROVE });
       });
     } catch (error) {
       console.error(error); // eslint-disable-line

@@ -56,10 +56,10 @@ export default class WalletHistory extends Component {
 
     if (history.orderBy !== property) {
       history.orderBy = property;
-    } else if (history.direction === SortBy.Descending.toLowerCase()) {
-      history.direction = SortBy.Ascending.toLowerCase();
+    } else if (history.direction === SortBy.DESCENDING.toLowerCase()) {
+      history.direction = SortBy.ASCENDING.toLowerCase();
     } else {
-      history.direction = SortBy.Descending.toLowerCase();
+      history.direction = SortBy.DESCENDING.toLowerCase();
     }
   }
 

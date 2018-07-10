@@ -201,10 +201,10 @@ export default class OraclePage extends Component {
       return null;
     }
 
-    const cOracle = _.find(oracles, { token: Token.Qtum });
-    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
+    const cOracle = _.find(oracles, { token: Token.QTUM });
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
 
-    const showResultHistory = config.eventStatus === EventStatus.Vote || config.eventStatus === EventStatus.Finalize;
+    const showResultHistory = config.eventStatus === EventStatus.VOTE || config.eventStatus === EventStatus.FINALIZE;
     const eventOptions = this.getEventOptionsInfo();
     const { id, message, values, warningType, disabled } = this.getActionButtonConfig();
 
@@ -232,8 +232,8 @@ export default class OraclePage extends Component {
                       amount={`${item.value}`}
                       maxAmount={item.maxAmount}
                       percent={item.percent}
-                      voteAmount={config.eventStatus === EventStatus.Set ? oracle.consensusThreshold : this.state.voteAmount}
-                      token={config.eventStatus === EventStatus.Set ? Token.Bot : oracle.token}
+                      voteAmount={config.eventStatus === EventStatus.SET ? oracle.consensusThreshold : this.state.voteAmount}
+                      token={config.eventStatus === EventStatus.SET ? Token.BOT : oracle.token}
                       isPrevResult={item.isPrevResult}
                       isFinalizing={item.isFinalizing}
                       walletAddresses={this.props.walletAddresses}
@@ -320,14 +320,14 @@ export default class OraclePage extends Component {
     } else {
       const self = this;
       switch (config.eventStatus) {
-        case EventStatus.Bet: {
+        case EventStatus.BET: {
           setTxConfirmInfoAndCallback(
             intl.formatMessage(messages.confirmBetMsg, { option: oracle.options[currentOptionIdx] }),
             voteAmount,
-            Token.Qtum,
+            Token.QTUM,
             {
-              type: TransactionType.Bet,
-              token: Token.Qtum,
+              type: TransactionType.BET,
+              token: Token.QTUM,
               amount: voteAmount,
               optionIdx: currentOptionIdx,
               topicAddress,
@@ -340,14 +340,14 @@ export default class OraclePage extends Component {
           );
           break;
         }
-        case EventStatus.Set: {
+        case EventStatus.SET: {
           setTxConfirmInfoAndCallback(
             intl.formatMessage(messages.confirmSetMsg, { option: oracle.options[currentOptionIdx] }),
             oracle.consensusThreshold,
-            Token.Bot,
+            Token.BOT,
             {
-              type: TransactionType.ApproveSetResult,
-              token: Token.Bot,
+              type: TransactionType.APPROVE_SET_RESULT,
+              token: Token.BOT,
               amount: oracle.consensusThreshold,
               optionIdx: currentOptionIdx,
               topicAddress,
@@ -360,14 +360,14 @@ export default class OraclePage extends Component {
           );
           break;
         }
-        case EventStatus.Vote: {
+        case EventStatus.VOTE: {
           setTxConfirmInfoAndCallback(
             intl.formatMessage(messages.confirmVoteMsg, { option: oracle.options[currentOptionIdx] }),
             voteAmount,
-            Token.Bot,
+            Token.BOT,
             {
-              type: TransactionType.ApproveVote,
-              token: Token.Bot,
+              type: TransactionType.APPROVE_VOTE,
+              token: Token.BOT,
               amount: voteAmount,
               optionIdx: currentOptionIdx,
               topicAddress,
@@ -380,7 +380,7 @@ export default class OraclePage extends Component {
           );
           break;
         }
-        case EventStatus.Finalize: {
+        case EventStatus.FINALIZE: {
           this.finalizeResult();
           break;
         }
@@ -397,7 +397,7 @@ export default class OraclePage extends Component {
     if (unconfirmed) {
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
       this.props.getOracles([
-        { txid, status: OracleStatus.Created },
+        { txid, status: OracleStatus.CREATED },
       ]);
     } else {
       // Find real Oracle based on topicAddress
@@ -408,7 +408,7 @@ export default class OraclePage extends Component {
 
     this.props.getTransactions(
       [{ topicAddress }],
-      { field: 'createdTime', direction: SortBy.Descending },
+      { field: 'createdTime', direction: SortBy.DESCENDING },
     );
   }
 
@@ -419,7 +419,7 @@ export default class OraclePage extends Component {
     let oracles = oraclesData;
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
-      oracles = _.orderBy(oracles, ['blockNum'], [SortBy.Descending.toLowerCase()]);
+      oracles = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
     } else {
       oracle = _.find(oracles, { txid });
     }
@@ -429,15 +429,15 @@ export default class OraclePage extends Component {
     if (oracle) {
       const { token, status } = oracle;
 
-      if (token === Token.Qtum && status === OracleStatus.Created && unconfirmed) {
+      if (token === Token.QTUM && status === OracleStatus.CREATED && unconfirmed) {
         config = this.setUnconfirmedConfig();
-      } else if (token === Token.Qtum && status === OracleStatus.Voting) {
+      } else if (token === Token.QTUM && status === OracleStatus.VOTING) {
         config = this.setBetConfig();
-      } else if (token === Token.Qtum && (status === OracleStatus.WaitResult || status === OracleStatus.OpenResultSet)) {
+      } else if (token === Token.QTUM && (status === OracleStatus.WAIT_RESULT || status === OracleStatus.OPEN_RESULT_SET)) {
         config = this.setResultSetConfig(oracle);
-      } else if (token === Token.Bot && status === OracleStatus.Voting) {
+      } else if (token === Token.BOT && status === OracleStatus.VOTING) {
         config = this.setVoteConfig(oracle);
-      } else if (token === Token.Bot && status === OracleStatus.WaitResult) {
+      } else if (token === Token.BOT && status === OracleStatus.WAIT_RESULT) {
         config = this.setFinalizeConfig();
       }
     }
@@ -465,7 +465,7 @@ export default class OraclePage extends Component {
     if (!ui.location) ui.location = AppLocation.bet;
 
     return {
-      eventStatus: EventStatus.Bet,
+      eventStatus: EventStatus.BET,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       predictionAction: {
         skipExpansion: false,
@@ -485,7 +485,7 @@ export default class OraclePage extends Component {
     if (!ui.location) ui.location = AppLocation.bet;
 
     return {
-      eventStatus: EventStatus.Bet,
+      eventStatus: EventStatus.BET,
       breadcrumbLabel: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       predictionAction: {
         skipExpansion: false,
@@ -501,10 +501,10 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.resultSet;
+    if (!ui.location) ui.location = AppLocation.SET;
 
     return {
-      eventStatus: EventStatus.Set,
+      eventStatus: EventStatus.SET,
       breadcrumbLabel: <FormattedMessage id="str.setting" defaultMessage="Setting" />,
       predictionAction: {
         skipExpansion: false,
@@ -524,10 +524,10 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.botCourt;
+    if (!ui.location) ui.location = AppLocation.BOT_COURT;
 
     return {
-      eventStatus: EventStatus.Vote,
+      eventStatus: EventStatus.VOTE,
       breadcrumbLabel: <FormattedMessage id="str.voting" defaultMessage="Voting" />,
       predictionAction: {
         skipExpansion: false,
@@ -547,10 +547,10 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.finalize;
+    if (!ui.location) ui.location = AppLocation.FINALIZE;
 
     return {
-      eventStatus: EventStatus.Finalize,
+      eventStatus: EventStatus.FINALIZE,
       breadcrumbLabel: <FormattedMessage id="str.finalizing" defaultMessage="Finalizing" />,
       predictionAction: {
         skipExpansion: true,
@@ -571,21 +571,21 @@ export default class OraclePage extends Component {
     const { token, status, resultSetterQAddress } = oracle;
     const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
-    const isBettingPhase = token === Token.Qtum && status === OracleStatus.Voting;
-    const isVotingPhase = token === Token.Bot && status === OracleStatus.Voting;
-    const isOpenResultSettingPhase = token === Token.Qtum && status === OracleStatus.OpenResultSet;
-    const isOracleResultSettingPhase = token === Token.Qtum && status === OracleStatus.WaitResult;
-    const isFinalizePhase = token === Token.Bot && status === OracleStatus.WaitResult;
+    const isBettingPhase = token === Token.QTUM && status === OracleStatus.VOTING;
+    const isVotingPhase = token === Token.BOT && status === OracleStatus.VOTING;
+    const isOpenResultSettingPhase = token === Token.QTUM && status === OracleStatus.OPEN_RESULT_SET;
+    const isOracleResultSettingPhase = token === Token.QTUM && status === OracleStatus.WAIT_RESULT;
+    const isFinalizePhase = token === Token.BOT && status === OracleStatus.WAIT_RESULT;
     const notEnoughQtum = totalQtum < maxTransactionFee;
 
     // Already have a pending tx for this Oracle
-    const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.Pending });
+    const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.PENDING });
     if (pendingTxs.length > 0) {
       return {
         disabled: true,
         id: 'str.pendingTransactionDisabledMsg',
         message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
-        warningType: EventWarningType.Highlight,
+        warningType: EventWarningType.HIGHLIGHT,
       };
     }
 
@@ -595,7 +595,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.betStartTimeDisabledText',
         message: 'The betting start time has not started yet.',
-        warningType: EventWarningType.Info,
+        warningType: EventWarningType.INFO,
       };
     }
 
@@ -606,7 +606,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.setStartTimeDisabledText',
         message: 'The result setting start time has not started yet.',
-        warningType: EventWarningType.Info,
+        warningType: EventWarningType.INFO,
       };
     }
 
@@ -616,7 +616,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.cOracleDisabledText',
         message: 'You are not the result setter for this Event. You must wait until they set the result, or until the Open Result Set start time begins.',
-        warningType: EventWarningType.Info,
+        warningType: EventWarningType.INFO,
       };
     }
 
@@ -631,7 +631,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughQtumAndBot',
         message: 'You don\'t have enough QTUM or BOT',
-        warningType: EventWarningType.Error,
+        warningType: EventWarningType.ERROR,
       };
     }
 
@@ -641,7 +641,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughQtum',
         message: 'You do\'t have enough QTUM',
-        warningType: EventWarningType.Error,
+        warningType: EventWarningType.ERROR,
       };
     }
 
@@ -652,7 +652,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'str.notEnoughBot',
         message: 'You don\'t have enough BOT',
-        warningType: EventWarningType.Error,
+        warningType: EventWarningType.ERROR,
       };
     }
 
@@ -662,7 +662,7 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.selectResultDisabledText',
         message: 'Please click and select one of the options.',
-        warningType: EventWarningType.Info,
+        warningType: EventWarningType.INFO,
       };
     }
 
@@ -672,16 +672,16 @@ export default class OraclePage extends Component {
         disabled: true,
         id: 'oracle.enterAmountDisabledText',
         message: 'Please entered a valid amount.',
-        warningType: EventWarningType.Info,
+        warningType: EventWarningType.INFO,
       };
     }
 
     // Trying to vote over the consensus threshold
     const optionAmount = oracle.amounts[currentOptionIdx];
-    const maxVote = token === Token.Bot && status === OracleStatus.Voting
+    const maxVote = token === Token.BOT && status === OracleStatus.VOTING
       ? NP.minus(oracle.consensusThreshold, optionAmount) : 0;
-    if (token === Token.Bot
-      && status === OracleStatus.Voting
+    if (token === Token.BOT
+      && status === OracleStatus.VOTING
       && currentOptionIdx >= 0
       && voteAmount > maxVote) {
       return {
@@ -689,7 +689,7 @@ export default class OraclePage extends Component {
         id: 'oracle.maxVoteText',
         message: 'You can only vote up to the Consensus Threshold for any one outcome. Current max vote is {amount} BOT.',
         values: { amount: toFixed(maxVote) },
-        warningTypeClass: EventWarningType.Error,
+        warningTypeClass: EventWarningType.ERROR,
       };
     }
 
@@ -703,7 +703,7 @@ export default class OraclePage extends Component {
     const { token, status } = oracle;
     const totalBalance = _.sum(oracle.amounts);
 
-    if (token === Token.Qtum) {
+    if (token === Token.QTUM) {
       return _.map(oracle.options, (optionName, index) => {
         const optionAmount = oracle.amounts[index] || 0;
         return {
@@ -721,7 +721,7 @@ export default class OraclePage extends Component {
       const isPrevResult = !oracle.optionIdxs.includes(index);
       const optionAmount = oracle.amounts[index] || 0;
       const threshold = isPrevResult ? 0 : oracle.consensusThreshold;
-      const maxAmount = token === Token.Bot && status === OracleStatus.Voting
+      const maxAmount = token === Token.BOT && status === OracleStatus.VOTING
         ? oracle.consensusThreshold - optionAmount : undefined;
 
       return {
@@ -730,7 +730,7 @@ export default class OraclePage extends Component {
         maxAmount,
         percent: threshold === 0 ? threshold : _.round((optionAmount / threshold) * 100),
         isPrevResult,
-        isFinalizing: token === Token.Bot && status === OracleStatus.WaitResult,
+        isFinalizing: token === Token.BOT && status === OracleStatus.WAIT_RESULT,
         phase: oracle.phase,
       };
     });

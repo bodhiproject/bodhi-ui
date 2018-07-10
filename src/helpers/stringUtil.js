@@ -50,36 +50,36 @@ export function getTxTypeString(txType, locale, localeMessages) {
   const { formatMessage } = getIntlProvider(locale, localeMessages);
 
   switch (txType) {
-    case TransactionType.ApproveCreateEvent:
-    case TransactionType.ApproveSetResult:
-    case TransactionType.ApproveVote: {
+    case TransactionType.APPROVE_CREATE_EVENT:
+    case TransactionType.APPROVE_SET_RESULT:
+    case TransactionType.APPROVE_VOTE: {
       return formatMessage(strings.approveBotTransfer);
     }
-    case TransactionType.CreateEvent: {
+    case TransactionType.CREATE_EVENT: {
       return formatMessage(strings.createEvent);
     }
-    case TransactionType.Bet: {
+    case TransactionType.BET: {
       return formatMessage(strings.bet);
     }
-    case TransactionType.SetResult: {
+    case TransactionType.SET_RESULT: {
       return formatMessage(strings.setResult);
     }
-    case TransactionType.Vote: {
+    case TransactionType.VOTE: {
       return formatMessage(strings.vote);
     }
-    case TransactionType.FinalizeResult: {
+    case TransactionType.FINALIZE_RESULT: {
       return formatMessage(strings.finalizeResult);
     }
-    case TransactionType.Withdraw: {
+    case TransactionType.WITHDRAW: {
       return formatMessage(strings.withdraw);
     }
-    case TransactionType.WithdrawEscrow: {
+    case TransactionType.WITHDRAW_ESCROW: {
       return formatMessage(strings.withdrawEscrow);
     }
-    case TransactionType.Transfer: {
+    case TransactionType.TRANSFER: {
       return formatMessage(strings.transfer);
     }
-    case TransactionType.ResetApprove: {
+    case TransactionType.RESET_APPROVE: {
       return formatMessage(strings.resetApproval);
     }
     default: {

@@ -79,7 +79,7 @@ export default class NavBar extends Component {
 }
 
 const BodhiLogo = ({ classes }) => (
-  <Link to={AppLocation.qtumPrediction}>
+  <Link to={AppLocation.QTUM_PREDICTION}>
     <img
       src="/images/sports-logo.svg"
       alt="bodhi-logo"
@@ -89,12 +89,12 @@ const BodhiLogo = ({ classes }) => (
 );
 
 const QtumPrediction = observer(({ classes, store: { ui } }) => (
-  <NavLink to={AppLocation.qtumPrediction}>
+  <NavLink to={AppLocation.QTUM_PREDICTION}>
     <Button
-      data-index={EventStatus.Bet}
+      data-index={EventStatus.BET}
       className={cx(
         classes.navEventsButton,
-        ui.location === AppLocation.qtumPrediction || ui.location === AppLocation.bet ? 'selected' : '',
+        ui.location === AppLocation.QTUM_PREDICTION || ui.location === AppLocation.bet ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
@@ -103,12 +103,12 @@ const QtumPrediction = observer(({ classes, store: { ui } }) => (
 ));
 
 const BotCourt = observer(({ classes, store: { ui } }) => (
-  <NavLink to={AppLocation.botCourt}>
+  <NavLink to={AppLocation.BOT_COURT}>
     <Button
-      data-index={EventStatus.Vote}
+      data-index={EventStatus.VOTE}
       className={cx(
         classes.navEventsButton,
-        ui.location === AppLocation.botCourt || ui.location === AppLocation.botCourt ? 'selected' : '',
+        ui.location === AppLocation.BOT_COURT || ui.location === AppLocation.BOT_COURT ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
@@ -120,7 +120,7 @@ const Wallet = ({ classes, walletAddresses }) => {
   const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
   const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
-    <NavLink to="/my-wallet">
+    <NavLink to={AppLocation.WALLET}>
       <Button className={classes.marginRightButton}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
         {`${totalQTUM} QTUM / ${totalBOT} BOT`}
@@ -138,7 +138,7 @@ const MyActivities = ({ classes, actionableItemCount }) => {
   if (actionableItemCount.totalCount > 0) {
     children = <Badge badgeContent={actionableItemCount.totalCount} color="secondary">{children}</Badge>;
   }
-  return <NavLink to={AppLocation.set}>{children}</NavLink>;
+  return <NavLink to={AppLocation.SET}>{children}</NavLink>;
 };
 
 const HelpButton = ({ classes, intl }) => (
@@ -168,7 +168,7 @@ const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) =
 )));
 
 const AllEvents = ({ classes }) => (
-  <NavLink to={AppLocation.allEvents}>
+  <NavLink to={AppLocation.ALL_EVENTS}>
     <Button className={classes.marginRightButton}>
       <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>

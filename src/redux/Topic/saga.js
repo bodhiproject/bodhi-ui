@@ -128,7 +128,7 @@ export function* getWithdrawableAddressesHandler() {
         // Add escrow withdraw object if is event creator
         if (item.address === topic.creatorAddress) {
           withdrawableAddresses.push({
-            type: TransactionType.WithdrawEscrow,
+            type: TransactionType.WITHDRAW_ESCROW,
             address: item.address,
             botWon: topic.escrowAmount,
             qtumWon: 0,
@@ -163,7 +163,7 @@ export function* getWithdrawableAddressesHandler() {
         // return only winning addresses
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
-            type: TransactionType.Withdraw,
+            type: TransactionType.WITHDRAW,
             address: vote.voterQAddress,
             botWon,
             qtumWon,

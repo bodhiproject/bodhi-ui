@@ -26,7 +26,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.withdraw) {
+        if (this.app.ui.location === AppLocation.WITHDRAW) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = AppLocation.withdraw; // change ui location, for tabs to render correctly
+    this.app.ui.location = AppLocation.WITHDRAW; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
@@ -66,12 +66,12 @@ export default class {
     if (this.hasMore) {
       const voteFilters = [];
       const topicFilters = [];
-      const orderBy = { field: 'endTime', direction: SortBy.Ascending };
+      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
 
       // Get all votes for all your addresses
       _.each(this.app.wallet.addresses, (item) => {
         voteFilters.push({ voterQAddress: item.address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
 
       // Filter votes
@@ -84,7 +84,7 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
       const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));

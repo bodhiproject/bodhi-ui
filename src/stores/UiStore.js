@@ -5,7 +5,7 @@ import locales from '../languageProvider';
 
 
 export default class UiStore {
-  @observable location = AppLocation.qtumPrediction
+  @observable location = AppLocation.QTUM_PREDICTION
   @observable locale = localStorage.getItem('lang') || this.defaultLocale
   @observable error = null
 

@@ -11,7 +11,7 @@ import Finalize from './scenes/Finalize';
 import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
 import styles from './styles';
-const { set, finalize, withdraw, activityHistory } = AppLocation;
+const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = AppLocation;
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
@@ -60,18 +60,18 @@ export default class Activities extends Component {
   }
 
   tabIdx = { // Determine tab index based on path
-    [set]: TAB_SET,
-    [finalize]: TAB_FINALIZE,
-    [withdraw]: TAB_WITHDRAW,
-    [activityHistory]: TAB_HISTORY,
+    [SET]: TAB_SET,
+    [FINALIZE]: TAB_FINALIZE,
+    [WITHDRAW]: TAB_WITHDRAW,
+    [ACTIVITY_HISTORY]: TAB_HISTORY,
   }[this.props.match.path]
 
   componentDidMount() {
     const locations = {
-      [set]: AppLocation.resultSet,
-      [finalize]: AppLocation.finalize,
-      [withdraw]: AppLocation.withdraw,
-      [activityHistory]: AppLocation.activityHistory,
+      [SET]: AppLocation.SET,
+      [FINALIZE]: AppLocation.FINALIZE,
+      [WITHDRAW]: AppLocation.WITHDRAW,
+      [ACTIVITY_HISTORY]: AppLocation.ACTIVITY_HISTORY,
     };
     const appLocation = locations[this.props.match.path];
     this.props.store.ui.location = appLocation;
@@ -83,19 +83,19 @@ export default class Activities extends Component {
     let label;
     let count;
     switch (eventStatusIndex) {
-      case EventStatus.Set: {
+      case EventStatus.SET: {
         label = intl.formatMessage(messages.set);
-        count = actionableItemCount[EventStatus.Set];
+        count = actionableItemCount[EventStatus.SET];
         break;
       }
-      case EventStatus.Finalize: {
+      case EventStatus.FINALIZE: {
         label = intl.formatMessage(messages.finalize);
-        count = actionableItemCount[EventStatus.Finalize];
+        count = actionableItemCount[EventStatus.FINALIZE];
         break;
       }
-      case EventStatus.Withdraw: {
+      case EventStatus.WITHDRAW: {
         label = intl.formatMessage(messages.withdraw);
-        count = actionableItemCount[EventStatus.Withdraw];
+        count = actionableItemCount[EventStatus.WITHDRAW];
         break;
       }
       default: {
@@ -113,19 +113,19 @@ export default class Activities extends Component {
   handleTabChange = (event, value) => {
     switch (value) {
       case TAB_SET: {
-        this.props.history.push(AppLocation.set);
+        this.props.history.push(AppLocation.SET);
         break;
       }
       case TAB_FINALIZE: {
-        this.props.history.push(AppLocation.finalize);
+        this.props.history.push(AppLocation.FINALIZE);
         break;
       }
       case TAB_WITHDRAW: {
-        this.props.history.push(AppLocation.withdraw);
+        this.props.history.push(AppLocation.WITHDRAW);
         break;
       }
       case TAB_HISTORY: {
-        this.props.history.push(AppLocation.activityHistory);
+        this.props.history.push(AppLocation.ACTIVITY_HISTORY);
         break;
       }
       default: {
@@ -140,9 +140,9 @@ export default class Activities extends Component {
     return (
       <div>
         <Tabs indicatorColor="primary" value={this.tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.getTabLabel(EventStatus.Set)} className={classes.activitiesTabButton} />
-          <Tab label={this.getTabLabel(EventStatus.Finalize)} className={classes.activitiesTabButton} />
-          <Tab label={this.getTabLabel(EventStatus.Withdraw)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.SET)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.FINALIZE)} className={classes.activitiesTabButton} />
+          <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.activitiesTabButton} />
           <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>

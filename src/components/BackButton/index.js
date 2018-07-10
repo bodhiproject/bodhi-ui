@@ -35,37 +35,37 @@ export default class BackButton extends Component {
     const { history, store: { ui } } = this.props;
 
     switch (ui.location) {
-      case AppLocation.activityHistory: {
-        history.push(AppLocation.activityHistory);
+      case AppLocation.ACTIVITY_HISTORY: {
+        history.push(AppLocation.ACTIVITY_HISTORY);
         break;
       }
-      case AppLocation.allEvents: {
-        history.push(AppLocation.allEvents);
+      case AppLocation.ALL_EVENTS: {
+        history.push(AppLocation.ALL_EVENTS);
         break;
       }
-      case AppLocation.qtumPrediction:
+      case AppLocation.QTUM_PREDICTION:
       case AppLocation.bet: {
-        history.push(AppLocation.qtumPrediction);
+        history.push(AppLocation.QTUM_PREDICTION);
         break;
       }
-      case AppLocation.botCourt: {
-        history.push(AppLocation.botCourt);
+      case AppLocation.BOT_COURT: {
+        history.push(AppLocation.BOT_COURT);
         break;
       }
-      case AppLocation.resultSet: {
-        history.push(AppLocation.set);
+      case AppLocation.SET: {
+        history.push(AppLocation.SET);
         break;
       }
-      case AppLocation.finalize: {
-        history.push(AppLocation.finalize);
+      case AppLocation.FINALIZE: {
+        history.push(AppLocation.FINALIZE);
         break;
       }
-      case AppLocation.withdraw: {
-        history.push(AppLocation.withdraw);
+      case AppLocation.WITHDRAW: {
+        history.push(AppLocation.WITHDRAW);
         break;
       }
       default: {
-        history.push(AppLocation.qtumPrediction);
+        history.push(AppLocation.QTUM_PREDICTION);
         break;
       }
     }

@@ -26,7 +26,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.finalize) {
+        if (this.app.ui.location === AppLocation.FINALIZE) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = AppLocation.finalize; // change ui location, for tabs to render correctly
+    this.app.ui.location = AppLocation.FINALIZE; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
@@ -65,8 +65,8 @@ export default class {
   fetch = async (limit = this.limit, skip = this.skip) => {
     // we want to fetch all *Oracles* which is related to BOT token and waitResult status
     if (this.hasMore) {
-      const filters = [{ token: Token.Bot, status: OracleStatus.WaitResult }];
-      const orderBy = { field: 'endTime', direction: SortBy.Ascending };
+      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
+      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
       const result = await queryAllOracles(filters, orderBy, limit, skip);
       if (result.length < limit) this.hasMore = false;
       return _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));

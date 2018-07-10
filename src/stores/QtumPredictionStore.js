@@ -26,7 +26,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
-        if (this.app.ui.location === AppLocation.qtumPrediction) {
+        if (this.app.ui.location === AppLocation.QTUM_PREDICTION) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class QtumPredictionStore {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = AppLocation.qtumPrediction;
+    this.app.ui.location = AppLocation.QTUM_PREDICTION;
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = false;
@@ -66,8 +66,8 @@ export default class QtumPredictionStore {
     if (this.hasMore) {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
       const filters = [
-        { token: Token.Qtum, status: OracleStatus.Voting },
-        { token: Token.Qtum, status: OracleStatus.Created },
+        { token: Token.QTUM, status: OracleStatus.VOTING },
+        { token: Token.QTUM, status: OracleStatus.CREATED },
       ];
       let result = [];
       result = await queryAllOracles(filters, orderBy, limit, skip);

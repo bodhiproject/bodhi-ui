@@ -7,14 +7,14 @@ import { Link } from '../Link';
 
 const NavLink = observer(({ to, store: { ui }, ...props }) => {
   const location = {
-    [AppLocation.bet]: AppLocation.qtumPrediction,
-    [AppLocation.botCourt]: AppLocation.botCourt,
-    [AppLocation.allEvents]: AppLocation.allEvents,
+    [AppLocation.bet]: AppLocation.QTUM_PREDICTION,
+    [AppLocation.BOT_COURT]: AppLocation.BOT_COURT,
+    [AppLocation.ALL_EVENTS]: AppLocation.ALL_EVENTS,
     // so all the routes under /activities keep the pointer under it
-    [AppLocation.resultSet]: AppLocation.set,
-    [AppLocation.finalize]: AppLocation.set,
-    [AppLocation.withdraw]: AppLocation.set,
-    [AppLocation.activityHistory]: AppLocation.set,
+    [AppLocation.SET]: AppLocation.SET,
+    [AppLocation.FINALIZE]: AppLocation.SET,
+    [AppLocation.WITHDRAW]: AppLocation.SET,
+    [AppLocation.ACTIVITY_HISTORY]: AppLocation.SET,
   }[ui.location];
   return (
     <Route exact path={to}>

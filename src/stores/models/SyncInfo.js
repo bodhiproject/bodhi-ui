@@ -20,6 +20,6 @@ export default class SyncInfo {
     const balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
 
     // Sort by qtum balance
-    this.balances = _.orderBy(balances, ['qtum'], [SortBy.Descending.toLowerCase()]);
+    this.balances = _.orderBy(balances, ['qtum'], [SortBy.DESCENDING.toLowerCase()]);
   }
 }

@@ -50,7 +50,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
-  const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult;
+  const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WAIT_RESULT;
 
   const buttonText = {
     BETTING: messages.placeBet,
@@ -79,7 +79,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
 * Adds computed properties to each topic used throughout the app
 */
 const massageTopics = (topics) => topics.map((topic) => {
-  const pendingTypes = [TransactionType.WithdrawEscrow, TransactionType.Withdraw];
+  const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
   const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
   const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
@@ -140,7 +140,7 @@ export function* getActionableTopicsHandler() {
       // Get all votes for all your addresses
       _.each(action.walletAddresses, (item) => {
         voteFilters.push({ voterQAddress: item.address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
 
       // Filter votes
@@ -149,7 +149,7 @@ export function* getActionableTopicsHandler() {
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       const result = yield call(queryAllTopics, topicFilters, action.orderBy, action.limit, action.skip);
       const topics = _.map(result, processTopic);
@@ -241,10 +241,10 @@ function processTransaction(tx) {
   newTx.gasPrice = Number(tx.gasPrice);
   newTx.fee = gasToQtum(tx.gasUsed);
 
-  if (tx.token && tx.token === Token.Bot) {
-    if (tx.type !== TransactionType.ApproveCreateEvent
-      && tx.type !== TransactionType.ApproveSetResult
-      && tx.type !== TransactionType.ApproveVote) {
+  if (tx.token && tx.token === Token.BOT) {
+    if (tx.type !== TransactionType.APPROVE_CREATE_EVENT
+      && tx.type !== TransactionType.APPROVE_SET_RESULT
+      && tx.type !== TransactionType.APPROVE_VOTE) {
       newTx.amount = satoshiToDecimal(tx.amount);
     } else {
       // Don't show the amount for any approves
@@ -258,9 +258,9 @@ function processTransaction(tx) {
 export function* getActionableItemCountHandler() {
   yield takeEvery(actions.GET_ACTIONABLE_ITEM_COUNT, function* getActionableItemCountRequest(action) {
     const actionItems = {
-      [EventStatus.Set]: 0,
-      [EventStatus.Finalize]: 0,
-      [EventStatus.Withdraw]: 0,
+      [EventStatus.SET]: 0,
+      [EventStatus.FINALIZE]: 0,
+      [EventStatus.WITHDRAW]: 0,
       totalCount: 0,
     };
 
@@ -271,7 +271,7 @@ export function* getActionableItemCountHandler() {
       // Get all votes for all your addresses
       _.each(action.walletAddresses, (item) => {
         voteFilters.push({ voterQAddress: item.address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
 
       // Filter votes
@@ -280,32 +280,32 @@ export function* getActionableItemCountHandler() {
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       let result = yield call(queryAllTopics, topicFilters);
-      actionItems[EventStatus.Withdraw] = result.length;
+      actionItems[EventStatus.WITHDRAW] = result.length;
       actionItems.totalCount += result.length;
 
       // Get result set items
-      const oracleSetFilters = [{ token: Token.Qtum, status: OracleStatus.OpenResultSet }];
+      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
       _.each(action.walletAddresses, (item) => {
         oracleSetFilters.push({
-          token: Token.Qtum,
-          status: OracleStatus.WaitResult,
+          token: Token.QTUM,
+          status: OracleStatus.WAIT_RESULT,
           resultSetterQAddress: item.address,
         });
       });
 
       result = yield call(queryAllOracles, oracleSetFilters);
-      actionItems[EventStatus.Set] = result.length;
+      actionItems[EventStatus.SET] = result.length;
       actionItems.totalCount += result.length;
 
       // Get finalize items
       const oracleFinalizeFilters = [
-        { token: Token.Bot, status: OracleStatus.WaitResult },
+        { token: Token.BOT, status: OracleStatus.WAIT_RESULT },
       ];
       result = yield call(queryAllOracles, oracleFinalizeFilters);
-      actionItems[EventStatus.Finalize] = result.length;
+      actionItems[EventStatus.FINALIZE] = result.length;
       actionItems.totalCount += result.length;
 
       yield put({
@@ -317,9 +317,9 @@ export function* getActionableItemCountHandler() {
       yield put({
         type: actions.GET_ACTIONABLE_ITEM_COUNT_RETURN,
         value: {
-          [EventStatus.Set]: 0,
-          [EventStatus.Finalize]: 0,
-          [EventStatus.Withdraw]: 0,
+          [EventStatus.SET]: 0,
+          [EventStatus.FINALIZE]: 0,
+          [EventStatus.WITHDRAW]: 0,
           totalCount: 0,
         },
       });
