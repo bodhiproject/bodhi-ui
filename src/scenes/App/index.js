@@ -12,7 +12,7 @@ import GlobalSnackbar from '../../components/GlobalSnackbar';
 import TransactionSentDialog from '../../components/TransactionSentDialog';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
-import TxConfirmDialog from '../../components/TxConfirmDialog';
+import TxConfirmDialog from '../../components/TxConfirmDialog/old';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 import Loader from './components/Loader';
 
