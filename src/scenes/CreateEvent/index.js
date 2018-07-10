@@ -459,7 +459,6 @@ export default class CreateEvent extends Component {
     const {
       intl: { formatMessage },
       classes,
-      walletAddresses,
       changeFormFieldValue,
       handleSubmit,
       submitting,
