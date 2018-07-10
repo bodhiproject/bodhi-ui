@@ -4,14 +4,14 @@ import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { AppLocation, EventStatus } from 'constants';
+import { Routes, EventStatus } from 'constants';
 
 import ResultSetting from './scenes/ResultSetting';
 import Finalize from './scenes/Finalize';
 import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
 import styles from './styles';
-const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = AppLocation;
+const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
@@ -68,13 +68,13 @@ export default class Activities extends Component {
 
   componentDidMount() {
     const locations = {
-      [SET]: AppLocation.SET,
-      [FINALIZE]: AppLocation.FINALIZE,
-      [WITHDRAW]: AppLocation.WITHDRAW,
-      [ACTIVITY_HISTORY]: AppLocation.ACTIVITY_HISTORY,
+      [SET]: Routes.SET,
+      [FINALIZE]: Routes.FINALIZE,
+      [WITHDRAW]: Routes.WITHDRAW,
+      [ACTIVITY_HISTORY]: Routes.ACTIVITY_HISTORY,
     };
-    const appLocation = locations[this.props.match.path];
-    this.props.store.ui.location = appLocation;
+    const Route = locations[this.props.match.path];
+    this.props.store.ui.location = Route;
   }
 
   getTabLabel = (eventStatusIndex) => {
@@ -113,19 +113,19 @@ export default class Activities extends Component {
   handleTabChange = (event, value) => {
     switch (value) {
       case TAB_SET: {
-        this.props.history.push(AppLocation.SET);
+        this.props.history.push(Routes.SET);
         break;
       }
       case TAB_FINALIZE: {
-        this.props.history.push(AppLocation.FINALIZE);
+        this.props.history.push(Routes.FINALIZE);
         break;
       }
       case TAB_WITHDRAW: {
-        this.props.history.push(AppLocation.WITHDRAW);
+        this.props.history.push(Routes.WITHDRAW);
         break;
       }
       case TAB_HISTORY: {
-        this.props.history.push(AppLocation.ACTIVITY_HISTORY);
+        this.props.history.push(Routes.ACTIVITY_HISTORY);
         break;
       }
       default: {

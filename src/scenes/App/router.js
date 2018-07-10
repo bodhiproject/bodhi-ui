@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { AppLocation } from 'constants';
+import { Routes } from 'constants';
 
 import asyncComponent from '../../helpers/AsyncFunc';
 
@@ -16,17 +16,17 @@ const AppRouter = ({ url }) => {
     <Switch>
       <Route
         exact
-        path={`${url}${AppLocation.ALL_EVENTS}`}
+        path={`${url}${Routes.ALL_EVENTS}`}
         component={asyncComponent(() => import('../AllEvents'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.QTUM_PREDICTION}`}
+        path={`${url}${Routes.QTUM_PREDICTION}`}
         component={asyncComponent(() => import('../QtumPrediction'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.BOT_COURT}`}
+        path={`${url}${Routes.BOT_COURT}`}
         component={asyncComponent(() => import('../BotCourt'))}
       />
       <Route
@@ -41,27 +41,27 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${AppLocation.WALLET}`}
+        path={`${url}${Routes.WALLET}`}
         component={asyncComponent(() => import('../Wallet'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.SET}`}
+        path={`${url}${Routes.SET}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.FINALIZE}`}
+        path={`${url}${Routes.FINALIZE}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.WITHDRAW}`}
+        path={`${url}${Routes.WITHDRAW}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${AppLocation.ACTIVITY_HISTORY}`}
+        path={`${url}${Routes.ACTIVITY_HISTORY}`}
         component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>

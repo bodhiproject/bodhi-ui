@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation, SortBy } from 'constants';
+import { Token, OracleStatus, Routes, SortBy } from 'constants';
 import { queryAllOracles } from '../../network/graphQuery';
 import Oracle from '../models/Oracle';
 
@@ -26,7 +26,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.FINALIZE) {
+        if (this.app.ui.location === Routes.FINALIZE) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = AppLocation.FINALIZE; // change ui location, for tabs to render correctly
+    this.app.ui.location = Routes.FINALIZE; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;

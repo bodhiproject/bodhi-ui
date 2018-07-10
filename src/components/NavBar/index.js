@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import {
   AppBar,
   Toolbar,
@@ -14,7 +13,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import cx from 'classnames';
-import { AppLocation, EventStatus } from 'constants';
+import { Routes, EventStatus } from 'constants';
 
 import { Link } from './components/Link';
 import NavLink from './components/NavLink';
@@ -44,17 +43,6 @@ const messages = defineMessages({
 }))
 @inject('store')
 export default class NavBar extends Component {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    classes: PropTypes.object.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
-    actionableItemCount: PropTypes.object,
-  }
-
-  static defaultProps = {
-    actionableItemCount: undefined,
-  }
-
   render() {
     const { classes } = this.props;
     return (
@@ -79,7 +67,7 @@ export default class NavBar extends Component {
 }
 
 const BodhiLogo = ({ classes }) => (
-  <Link to={AppLocation.QTUM_PREDICTION}>
+  <Link to={Routes.QTUM_PREDICTION}>
     <img
       src="/images/sports-logo.svg"
       alt="bodhi-logo"
@@ -89,12 +77,12 @@ const BodhiLogo = ({ classes }) => (
 );
 
 const QtumPrediction = observer(({ classes, store: { ui } }) => (
-  <NavLink to={AppLocation.QTUM_PREDICTION}>
+  <NavLink to={Routes.QTUM_PREDICTION}>
     <Button
       data-index={EventStatus.BET}
       className={cx(
         classes.navEventsButton,
-        ui.location === AppLocation.QTUM_PREDICTION || ui.location === AppLocation.bet ? 'selected' : '',
+        ui.location === Routes.QTUM_PREDICTION || ui.location === Routes.bet ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
@@ -103,12 +91,12 @@ const QtumPrediction = observer(({ classes, store: { ui } }) => (
 ));
 
 const BotCourt = observer(({ classes, store: { ui } }) => (
-  <NavLink to={AppLocation.BOT_COURT}>
+  <NavLink to={Routes.BOT_COURT}>
     <Button
       data-index={EventStatus.VOTE}
       className={cx(
         classes.navEventsButton,
-        ui.location === AppLocation.BOT_COURT ? 'selected' : '',
+        ui.location === Routes.BOT_COURT ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
@@ -120,7 +108,7 @@ const Wallet = ({ classes, walletAddresses }) => {
   const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
   const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
-    <NavLink to={AppLocation.WALLET}>
+    <NavLink to={Routes.WALLET}>
       <Button className={classes.marginRightButton}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
         {`${totalQTUM} QTUM / ${totalBOT} BOT`}
@@ -129,16 +117,16 @@ const Wallet = ({ classes, walletAddresses }) => {
   );
 };
 
-const MyActivities = ({ classes, actionableItemCount }) => {
+const MyActivities = ({ classes, store }) => {
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
     </Button>
   );
-  if (actionableItemCount.totalCount > 0) {
-    children = <Badge badgeContent={actionableItemCount.totalCount} color="secondary">{children}</Badge>;
+  if (store.navBar.myActivitesCount > 0) {
+    children = <Badge badgeContent={store.navBar.myActivitesCount} color="secondary">{children}</Badge>;
   }
-  return <NavLink to={AppLocation.SET}>{children}</NavLink>;
+  return <NavLink to={Routes.SET}>{children}</NavLink>;
 };
 
 const HelpButton = ({ classes, intl }) => (
@@ -168,7 +156,7 @@ const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) =
 )));
 
 const AllEvents = ({ classes }) => (
-  <NavLink to={AppLocation.ALL_EVENTS}>
+  <NavLink to={Routes.ALL_EVENTS}>
     <Button className={classes.marginRightButton}>
       <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>

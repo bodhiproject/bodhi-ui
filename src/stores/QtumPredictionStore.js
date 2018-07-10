@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from 'constants';
+import { Token, OracleStatus, Routes } from 'constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
@@ -26,7 +26,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
-        if (this.app.ui.location === AppLocation.QTUM_PREDICTION) {
+        if (this.app.ui.location === Routes.QTUM_PREDICTION) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class QtumPredictionStore {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = AppLocation.QTUM_PREDICTION;
+    this.app.ui.location = Routes.QTUM_PREDICTION;
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = false;

@@ -1,4 +1,4 @@
-import { observable, runInAction } from 'mobx';
+import { observable, runInAction, action } from 'mobx';
 
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
@@ -13,6 +13,7 @@ import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
+import NavBarStore from '../components/NavBar/store';
 
 class AppStore {
   @observable loading = true; // TODO: move these to GlobalStore
@@ -39,6 +40,7 @@ class AppStore {
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
     this.refreshing = new RefreshingStore();
+    this.navBar = new NavBarStore();
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
@@ -51,8 +53,13 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.loading = false;
+      this.finishLoading();
     });
+  }
+
+  @action
+  finishLoading() {
+    this.loading = false;
   }
 }
 

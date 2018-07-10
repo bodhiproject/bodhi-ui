@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from '../constants';
+import { Token, OracleStatus, Routes } from '../constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
@@ -26,7 +26,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.BOT_COURT) {
+        if (this.app.ui.location === Routes.BOT_COURT) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class BotCourtStore {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = AppLocation.BOT_COURT;
+    this.app.ui.location = Routes.BOT_COURT;
     this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = false;

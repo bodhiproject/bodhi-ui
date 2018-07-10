@@ -1,5 +1,5 @@
 module.exports = {
-  AppLocation: {
+  Routes: {
     QTUM_PREDICTION: '/',
     BOT_COURT: '/bot-court',
     WALLET: '/wallet',

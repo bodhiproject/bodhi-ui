@@ -1,6 +1,6 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from 'constants';
+import { Token, OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
@@ -32,7 +32,7 @@ export default class {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
-        if (this.app.ui.location === AppLocation.ALL_EVENTS) {
+        if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES); // reset all properties
-    this.app.ui.location = AppLocation.ALL_EVENTS;
+    this.app.ui.location = Routes.ALL_EVENTS;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
       this.loading = false;

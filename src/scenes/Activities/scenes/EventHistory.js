@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TransactionType, SortBy, AppLocation } from 'constants';
+import { TransactionType, SortBy, Routes } from 'constants';
 
 import styles from './styles';
 import Config from '../../../config/app';
@@ -91,7 +91,7 @@ export default class EventHistory extends Component {
   navigating = false
 
   componentDidMount() {
-    this.props.store.ui.location = AppLocation.ACTIVITY_HISTORY;
+    this.props.store.ui.location = Routes.ACTIVITY_HISTORY;
     this.executeTxsRequest();
   }
 

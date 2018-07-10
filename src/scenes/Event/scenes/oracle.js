@@ -17,7 +17,7 @@ import {
   TransactionType,
   EventWarningType,
   SortBy,
-  AppLocation,
+  Routes,
   EventStatus,
 } from 'constants';
 
@@ -462,7 +462,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.bet;
+    if (!ui.location) ui.location = Routes.bet;
 
     return {
       eventStatus: EventStatus.BET,
@@ -482,7 +482,7 @@ export default class OraclePage extends Component {
 
   setBetConfig = () => {
     const { ui } = this.props.store;
-    if (!ui.location) ui.location = AppLocation.bet;
+    if (!ui.location) ui.location = Routes.bet;
 
     return {
       eventStatus: EventStatus.BET,
@@ -501,7 +501,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.SET;
+    if (!ui.location) ui.location = Routes.SET;
 
     return {
       eventStatus: EventStatus.SET,
@@ -524,7 +524,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.BOT_COURT;
+    if (!ui.location) ui.location = Routes.BOT_COURT;
 
     return {
       eventStatus: EventStatus.VOTE,
@@ -547,7 +547,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.FINALIZE;
+    if (!ui.location) ui.location = Routes.FINALIZE;
 
     return {
       eventStatus: EventStatus.FINALIZE,
