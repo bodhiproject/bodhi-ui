@@ -65,8 +65,8 @@ module.exports = {
 
   TransactionStatus: {
     PENDING: 'PENDING',
-    Success: 'SUCCESS',
-    Fail: 'FAIL', // not used
+    SUCCESS: 'SUCCESS',
+    FAIL: 'FAIL', // not used
   },
 
   SortBy: {
