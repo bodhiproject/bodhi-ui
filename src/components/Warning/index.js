@@ -7,9 +7,9 @@ import cx from 'classnames';
 import styles from './styles';
 
 
-const Warning = ({ classes, id, message, values, className, type, intl, theme, ...props }) => !message ? null : (
+const Warning = ({ classes, id, amount, className, type, intl, theme, ...props }) => !id ? null : (
   <div {...props} className={cx(className, classes[type])}>
-    {intl.formatMessage({ id, message }, values)}
+    {intl.formatMessage({ id }, { amount })}
   </div>
 );
 
@@ -19,14 +19,14 @@ Warning.propTypes = {
   message: PropTypes.string,
   theme: PropTypes.object,
   id: PropTypes.string,
-  values: PropTypes.object,
+  amount: PropTypes.string,
   intl: intlShape.isRequired, // eslint-disable-line
   type: PropTypes.string,
 };
 
 Warning.defaultProps = {
   message: undefined,
-  values: {},
+  amount: '',
   id: '',
   className: undefined,
   theme: undefined,

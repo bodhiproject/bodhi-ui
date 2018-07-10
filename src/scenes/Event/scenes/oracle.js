@@ -195,12 +195,15 @@ export default class OraclePage extends Component {
     const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
+    // console.log('ORACLES: ', oracles);
     if (!oracle || !config) {
       return null;
     }
 
-    const cOracle = _.find(oracles, { token: Token.QTUM });
-    const dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+    const cOracle = _.find(oracles, { token: Token.Qtum });
+    // console.log('C oracle: ', cOracle);
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
+    // console.log('D oracles: ', dOracles);
 
     const showResultHistory = config.eventStatus === EventStatus.VOTE || config.eventStatus === EventStatus.FINALIZE;
     const eventOptions = this.getEventOptionsInfo();

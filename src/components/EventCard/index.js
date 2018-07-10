@@ -43,6 +43,7 @@ export default class EventCard extends PureComponent {
     endTime: PropTypes.string,
     buttonText: PropTypes.object,
     unconfirmed: PropTypes.bool.isRequired,
+    isPending: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     isUpcoming: PropTypes.bool.isRequired,
   };
@@ -63,6 +64,7 @@ export default class EventCard extends PureComponent {
       endTime,
       buttonText,
       unconfirmed,
+      isPending,
       isUpcoming,
     } = this.props;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
@@ -72,7 +74,7 @@ export default class EventCard extends PureComponent {
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+              {(unconfirmed || isPending) && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
