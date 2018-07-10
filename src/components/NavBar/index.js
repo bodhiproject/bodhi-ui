@@ -67,11 +67,7 @@ export default class NavBar extends Component {
 }
 
 const BodhiLogo = ({ classes }) => (
-<<<<<<< HEAD
   <Link to={Routes.QTUM_PREDICTION}>
-=======
-  <Link to={AppLocation.QTUM_PREDICTION}>
->>>>>>> change all, all testing passed
     <img
       src="/images/sports-logo.svg"
       alt="bodhi-logo"
@@ -81,20 +77,12 @@ const BodhiLogo = ({ classes }) => (
 );
 
 const QtumPrediction = observer(({ classes, store: { ui } }) => (
-<<<<<<< HEAD
   <NavLink to={Routes.QTUM_PREDICTION}>
-=======
-  <NavLink to={AppLocation.QTUM_PREDICTION}>
->>>>>>> change all, all testing passed
     <Button
       data-index={EventStatus.BET}
       className={cx(
         classes.navEventsButton,
-<<<<<<< HEAD
         ui.location === Routes.QTUM_PREDICTION || ui.location === Routes.bet ? 'selected' : '',
-=======
-        ui.location === AppLocation.QTUM_PREDICTION || ui.location === AppLocation.bet ? 'selected' : '',
->>>>>>> change all, all testing passed
       )}
     >
       <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
@@ -103,20 +91,12 @@ const QtumPrediction = observer(({ classes, store: { ui } }) => (
 ));
 
 const BotCourt = observer(({ classes, store: { ui } }) => (
-<<<<<<< HEAD
   <NavLink to={Routes.BOT_COURT}>
-=======
-  <NavLink to={AppLocation.BOT_COURT}>
->>>>>>> change all, all testing passed
     <Button
       data-index={EventStatus.VOTE}
       className={cx(
         classes.navEventsButton,
-<<<<<<< HEAD
         ui.location === Routes.BOT_COURT ? 'selected' : '',
-=======
-        ui.location === AppLocation.BOT_COURT || ui.location === AppLocation.BOT_COURT ? 'selected' : '',
->>>>>>> change all, all testing passed
       )}
     >
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
@@ -128,11 +108,7 @@ const Wallet = ({ classes, walletAddresses }) => {
   const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
   const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
-<<<<<<< HEAD
     <NavLink to={Routes.WALLET}>
-=======
-    <NavLink to={AppLocation.WALLET}>
->>>>>>> change all, all testing passed
       <Button className={classes.marginRightButton}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
         {`${totalQTUM} QTUM / ${totalBOT} BOT`}
@@ -150,11 +126,7 @@ const MyActivities = ({ classes, store }) => {
   if (store.navBar.myActivitesCount > 0) {
     children = <Badge badgeContent={store.navBar.myActivitesCount} color="secondary">{children}</Badge>;
   }
-<<<<<<< HEAD
   return <NavLink to={Routes.SET}>{children}</NavLink>;
-=======
-  return <NavLink to={AppLocation.SET}>{children}</NavLink>;
->>>>>>> change all, all testing passed
 };
 
 const HelpButton = ({ classes, intl }) => (
@@ -184,11 +156,7 @@ const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) =
 )));
 
 const AllEvents = ({ classes }) => (
-<<<<<<< HEAD
   <NavLink to={Routes.ALL_EVENTS}>
-=======
-  <NavLink to={AppLocation.ALL_EVENTS}>
->>>>>>> change all, all testing passed
     <Button className={classes.marginRightButton}>
       <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>
