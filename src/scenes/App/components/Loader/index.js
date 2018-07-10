@@ -38,7 +38,9 @@ export default class Loader extends Component {
           <div className={classes.loaderPercentWrapper}>
             <Typography variant="display1" className={classes.loaderPercent}>{syncPercent}</Typography>
             <span>%</span>
-            <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing with {peers} peers..." values={{ peers: peerNodeCount }} />
+            <div>
+              <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing with {peers} peers..." values={{ peers: peerNodeCount }} />
+            </div>
           </div>
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
