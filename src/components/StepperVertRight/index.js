@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  withStyles,
-} from '@material-ui/core';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { inject, observer } from 'mobx-react';
+import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import styles from './styles';
@@ -18,44 +12,17 @@ const POS_BETTING = 1;
 const POS_ORACLE_RESULT_SETTING = 2;
 const POS_OPEN_RESULT_SETTING = 3;
 
-const messages = defineMessages({
-  block: {
-    id: 'str.block',
-    defaultMessage: 'Block',
-  },
-  to: {
-    id: 'cardInfo.to',
-    defaultMessage: 'To',
-  },
-  anytime: {
-    id: 'str.anytime',
-    defaultMessage: 'anytime',
-  },
-});
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class StepperVertRight extends Component {
-  static propTypes = {
-    intl: intlShape.isRequired, // eslint-disable-line
-    classes: PropTypes.object.isRequired,
-    blockTime: PropTypes.number.isRequired,
-    cOracle: PropTypes.object,
-    dOracles: PropTypes.array.isRequired,
-    isTopicDetail: PropTypes.bool.isRequired,
-  }
-
-  static defaultProps = {
-    cOracle: {},
-  }
-
   render() {
-    const { classes, blockTime, cOracle } = this.props;
+    const { global: { syncBlockTime }, oraclePage: { cOracle } } = this.props.store;
+    const { classes } = this.props;
 
-    if (!blockTime && !cOracle) {
-      return null;
-    }
+    if (!syncBlockTime && !cOracle) return null;
 
     const steps = this.getSteps();
 
@@ -79,20 +46,21 @@ export default class StepperVertRight extends Component {
 
   getSteps = () => {
     const {
-      intl: { formatMessage },
-      blockTime,
-      cOracle,
-      dOracles,
-      isTopicDetail,
-    } = this.props;
+      global: { syncBlockTime },
+      oraclePage: {
+        cOracle,
+        dOracles,
+      },
+    } = this.props.store;
+    const { intl: { formatMessage }, isTopicDetail = false } = this.props;
 
-    const RANGE_SEPARATOR = formatMessage(messages.to);
-    const ANYTIME = formatMessage(messages.anytime);
+    const RANGE_SEPARATOR = formatMessage({ id: 'cardInfo.to' });
+    const ANYTIME = formatMessage({ id: 'str.anytime' });
 
     // Init all events with these steps
     const value = [{
       title: <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />,
-      description: `${formatMessage(messages.block)}: ${cOracle.blockNum || ''}`,
+      description: `${formatMessage({ id: 'str.block' })}: ${cOracle.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       description: `${getShortLocalDateTimeString(cOracle.startTime)}
@@ -123,7 +91,7 @@ export default class StepperVertRight extends Component {
           description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
-        if (blockTime >= lastDOracle.endTime) {
+        if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight withdrawal
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
@@ -136,10 +104,10 @@ export default class StepperVertRight extends Component {
           description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
-        if (blockTime >= lastDOracle.startTime && blockTime < lastDOracle.endTime) {
+        if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
           // Highlight last DecentralizedOracle voting
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles;
-        } else if (blockTime >= lastDOracle.endTime) {
+        } else if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight finalizing
           current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
@@ -154,13 +122,13 @@ export default class StepperVertRight extends Component {
       });
 
       // Set step number
-      if (blockTime < cOracle.startTime) {
+      if (syncBlockTime < cOracle.startTime) {
         current = POS_TOPIC_CREATED;
-      } else if (blockTime >= cOracle.startTime && blockTime < cOracle.resultSetStartTime) {
+      } else if (syncBlockTime >= cOracle.startTime && syncBlockTime < cOracle.resultSetStartTime) {
         current = POS_BETTING;
-      } else if (blockTime >= cOracle.resultSetStartTime && blockTime < cOracle.resultSetEndTime) {
+      } else if (syncBlockTime >= cOracle.resultSetStartTime && syncBlockTime < cOracle.resultSetEndTime) {
         current = POS_ORACLE_RESULT_SETTING;
-      } else if (blockTime >= cOracle.resultSetEndTime) {
+      } else if (syncBlockTime >= cOracle.resultSetEndTime) {
         current = POS_OPEN_RESULT_SETTING;
       } else {
         current = null;
