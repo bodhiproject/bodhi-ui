@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { RouterPath } from 'constants';
+import { AppLocation } from 'constants';
 
 import asyncComponent from '../../helpers/AsyncFunc';
 
@@ -16,17 +16,17 @@ const AppRouter = ({ url }) => {
     <Switch>
       <Route
         exact
-        path={`${url}${RouterPath.allEvents}`}
+        path={`${url}${AppLocation.allEvents}`}
         component={asyncComponent(() => import('../AllEvents'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.qtumPrediction}`}
+        path={`${url}${AppLocation.qtumPrediction}`}
         component={asyncComponent(() => import('../QtumPrediction'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.botCourt}`}
+        path={`${url}${AppLocation.botCourt}`}
         component={asyncComponent(() => import('../BotCourt'))}
       />
       <Route
@@ -41,27 +41,27 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${RouterPath.myWallet}`}
+        path={`${url}${AppLocation.myWallet}`}
         component={asyncComponent(() => import('../Wallet'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.set}`}
+        path={`${url}${AppLocation.set}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.finalize}`}
+        path={`${url}${AppLocation.finalize}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.withdraw}`}
+        path={`${url}${AppLocation.withdraw}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-        path={`${url}${RouterPath.activityHistory}`}
+        path={`${url}${AppLocation.activityHistory}`}
         component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>

@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { withStyles, Button } from '@material-ui/core';
 import { ChevronLeft } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { AppLocation, RouterPath } from 'constants';
+import { AppLocation } from 'constants';
 
 import styles from './styles';
 
@@ -36,36 +36,36 @@ export default class BackButton extends Component {
 
     switch (ui.location) {
       case AppLocation.activityHistory: {
-        history.push(RouterPath.activityHistory);
+        history.push(AppLocation.activityHistory);
         break;
       }
       case AppLocation.allEvents: {
-        history.push(RouterPath.allEvents);
+        history.push(AppLocation.allEvents);
         break;
       }
       case AppLocation.qtumPrediction:
       case AppLocation.bet: {
-        history.push(RouterPath.qtumPrediction);
+        history.push(AppLocation.qtumPrediction);
         break;
       }
       case AppLocation.botCourt: {
-        history.push(RouterPath.botCourt);
+        history.push(AppLocation.botCourt);
         break;
       }
       case AppLocation.resultSet: {
-        history.push(RouterPath.set);
+        history.push(AppLocation.set);
         break;
       }
       case AppLocation.finalize: {
-        history.push(RouterPath.finalize);
+        history.push(AppLocation.finalize);
         break;
       }
       case AppLocation.withdraw: {
-        history.push(RouterPath.withdraw);
+        history.push(AppLocation.withdraw);
         break;
       }
       default: {
-        history.push(RouterPath.qtumPrediction);
+        history.push(AppLocation.qtumPrediction);
         break;
       }
     }

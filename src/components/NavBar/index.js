@@ -14,7 +14,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import cx from 'classnames';
-import { RouterPath, AppLocation, EventStatus } from 'constants';
+import { AppLocation, EventStatus } from 'constants';
 
 import { Link } from './components/Link';
 import NavLink from './components/NavLink';
@@ -79,7 +79,7 @@ export default class NavBar extends Component {
 }
 
 const BodhiLogo = ({ classes }) => (
-  <Link to={RouterPath.qtumPrediction}>
+  <Link to={AppLocation.qtumPrediction}>
     <img
       src="/images/sports-logo.svg"
       alt="bodhi-logo"
@@ -89,7 +89,7 @@ const BodhiLogo = ({ classes }) => (
 );
 
 const QtumPrediction = observer(({ classes, store: { ui } }) => (
-  <NavLink to={RouterPath.qtumPrediction}>
+  <NavLink to={AppLocation.qtumPrediction}>
     <Button
       data-index={EventStatus.Bet}
       className={cx(
@@ -103,7 +103,7 @@ const QtumPrediction = observer(({ classes, store: { ui } }) => (
 ));
 
 const BotCourt = observer(({ classes, store: { ui } }) => (
-  <NavLink to={RouterPath.botCourt}>
+  <NavLink to={AppLocation.botCourt}>
     <Button
       data-index={EventStatus.Vote}
       className={cx(
@@ -138,7 +138,7 @@ const MyActivities = ({ classes, actionableItemCount }) => {
   if (actionableItemCount.totalCount > 0) {
     children = <Badge badgeContent={actionableItemCount.totalCount} color="secondary">{children}</Badge>;
   }
-  return <NavLink to={RouterPath.set}>{children}</NavLink>;
+  return <NavLink to={AppLocation.set}>{children}</NavLink>;
 };
 
 const HelpButton = ({ classes, intl }) => (
@@ -168,7 +168,7 @@ const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) =
 )));
 
 const AllEvents = ({ classes }) => (
-  <NavLink to={RouterPath.allEvents}>
+  <NavLink to={AppLocation.allEvents}>
     <Button className={classes.marginRightButton}>
       <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
     </Button>

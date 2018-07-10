@@ -4,14 +4,14 @@ import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { RouterPath, EventStatus, AppLocation } from 'constants';
+import { AppLocation, EventStatus } from 'constants';
 
 import ResultSetting from './scenes/ResultSetting';
 import Finalize from './scenes/Finalize';
 import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
 import styles from './styles';
-const { set, finalize, withdraw, activityHistory } = RouterPath;
+const { set, finalize, withdraw, activityHistory } = AppLocation;
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
@@ -113,19 +113,19 @@ export default class Activities extends Component {
   handleTabChange = (event, value) => {
     switch (value) {
       case TAB_SET: {
-        this.props.history.push(RouterPath.set);
+        this.props.history.push(AppLocation.set);
         break;
       }
       case TAB_FINALIZE: {
-        this.props.history.push(RouterPath.finalize);
+        this.props.history.push(AppLocation.finalize);
         break;
       }
       case TAB_WITHDRAW: {
-        this.props.history.push(RouterPath.withdraw);
+        this.props.history.push(AppLocation.withdraw);
         break;
       }
       case TAB_HISTORY: {
-        this.props.history.push(RouterPath.activityHistory);
+        this.props.history.push(AppLocation.activityHistory);
         break;
       }
       default: {
