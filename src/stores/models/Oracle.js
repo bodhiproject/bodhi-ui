@@ -60,7 +60,7 @@ export default class Oracle {
     const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
     this.unconfirmed = (!oracle.topicAddress && !oracle.address) || isPending;
 
-    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult && (app.wallet.addresses.filter((addr) => (addr['address']) && (addr.address === this.resultSetterQAddress)).length === 0);
+    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult && (app.wallet.addresses.filter((addr) => (addr.address === this.resultSetterQAddress)).length === 0);
 
     this.buttonText = {
       BETTING: messages.placeBet,
