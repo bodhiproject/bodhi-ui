@@ -17,6 +17,7 @@ module.exports = {
     PENDING: 'PENDING',
     FINALIZING: 'FINALIZING',
     WITHDRAWING: 'WITHDRAWING',
+    ARCHIVED: 'ARCHIVED',
   },
 
   EventStatus: {

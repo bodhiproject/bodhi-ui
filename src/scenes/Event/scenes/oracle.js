@@ -170,6 +170,7 @@ export default class OraclePage extends Component {
       transactions: [],
       voteAmount: 0,
       currentOptionIdx: -1,
+      isArchived: false,
     };
   }
 
@@ -179,20 +180,15 @@ export default class OraclePage extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { oracles, getTransactionsReturn, syncBlockTime, txReturn } = nextProps;
-    console.log('​OraclePage -> componentWillReceiveProps -> this.props', this.props);
-    console.log('​OraclePage -> componentWillReceiveProps -> nextProps', nextProps);
 
     // Update page on new block
     if (syncBlockTime !== this.props.syncBlockTime || (this.props.txReturn && !txReturn)) {
       this.executeOracleAndTxsRequest();
-      console.log('hehre');
     }
 
     // Construct page config
-    console.log('​OraclePage -> componentWillReceiveProps -> oracles', oracles);
-    if (oracles !== this.props.oracles) {
+    if (oracles) {
       this.constructOracleAndConfig(syncBlockTime, oracles);
-      console.log('there');
     }
 
     this.setState({ transactions: getTransactionsReturn });
@@ -200,14 +196,8 @@ export default class OraclePage extends Component {
 
   render() {
     const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
-    const { oracle, oracles, config, transactions, unconfirmed } = this.state;
-    console.log('​OraclePage -> render -> oracle', oracle);
-    console.log('​OraclePage -> render -> oracles', oracles);
-    console.log('touch');
+    const { oracle, oracles, config, transactions, unconfirmed, isArchived } = this.state;
     if (!oracle || !config) {
-      console.log('​OraclePage -> render -> config', config);
-      console.log('​OraclePage -> render -> oracle', oracle);
-      console.log('hhehre');
       return null;
     }
 
@@ -256,6 +246,7 @@ export default class OraclePage extends Component {
                       onOptionChange={this.handleOptionChange}
                       onAmountChange={this.handleAmountChange}
                       onWalletChange={this.handleWalletChange}
+                      isArchived={isArchived}
                     />
                   );
                 })}
@@ -265,7 +256,7 @@ export default class OraclePage extends Component {
                     message={config.importantNote && config.importantNote.message}
                   />
                 </div>
-                {!unconfirmed && (
+                {!unconfirmed && !isArchived && (
                   <div>
                     <Button
                       variant="raised"
@@ -411,7 +402,6 @@ export default class OraclePage extends Component {
       ]);
     } else {
       // Find real Oracle based on topicAddress
-      console.log('transaction called');
       this.props.getOracles([
         { topicAddress },
       ]);
@@ -428,7 +418,6 @@ export default class OraclePage extends Component {
 
     let oracle;
     let oracles = oraclesData;
-    console.log('​OraclePage -> constructOracleAndConfig -> oraclesData', oraclesData);
     if (!unconfirmed) {
       oracle = _.find(oracles, { address });
       oracles = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
@@ -452,12 +441,12 @@ export default class OraclePage extends Component {
         config = this.setFinalizeConfig();
       } else if (token === Token.Qtum && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
         config = this.setBetConfig();
+        this.setState({ isArchived: true });
       } else if (token === Token.Bot && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
         config = this.setVoteConfig(oracle);
+        this.setState({ isArchived: true });
       }
     }
-    console.log('​OraclePage -> constructOracleAndConfig -> config', config);
-    console.log('​OraclePage -> constructOracleAndConfig -> oracle', oracle);
     if (oracle && !config && this.props.store.ui.location !== AppLocation.allEvents) {
       const path = getDetailPagePath(oracles);
       if (path) {
@@ -480,7 +469,6 @@ export default class OraclePage extends Component {
       }
       return;
     }
-    console.log('set state');
     this.setState({ oracle, oracles, config });
   }
 
@@ -594,7 +582,7 @@ export default class OraclePage extends Component {
 
   getActionButtonConfig = () => {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
-    const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
+    const { address, oracle, transactions, currentOptionIdx, voteAmount, isArchived } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
     const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
@@ -684,7 +672,7 @@ export default class OraclePage extends Component {
     }
 
     // Did not select a result
-    if (!isFinalizePhase && currentOptionIdx === -1) {
+    if (!isFinalizePhase && currentOptionIdx === -1 && !isArchived) {
       return {
         disabled: true,
         id: 'oracle.selectResultDisabledText',

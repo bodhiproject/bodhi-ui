@@ -6,7 +6,7 @@ import { OracleStatus, SortBy, Phases } from 'constants';
 
 import { getIntlProvider } from './i18nUtil';
 import Zhlang from '../languageProvider/entries/zh-Hans-CN';
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
+const { BETTING, VOTING, RESULT_SETTING, FINALIZING, ARCHIVED } = Phases;
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01; // eslint-disable-line
@@ -198,9 +198,9 @@ export const getPhase = ({ token, status }) => {
   if (QTUM && ['VOTING', 'CREATED'].includes(status)) return BETTING;
   if (BOT && status === 'VOTING') return VOTING;
   if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING;
+  if ((BOT || QTUM) && status === 'PENDING') return ARCHIVED;
   if (BOT && status === 'WAITRESULT') return FINALIZING;
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
+  if ((BOT || QTUM) && status === 'WITHDRAW') return ARCHIVED;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 
