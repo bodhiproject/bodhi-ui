@@ -112,7 +112,6 @@ class GraphQuery {
         }
       }
     `;
-
     return query;
   }
 

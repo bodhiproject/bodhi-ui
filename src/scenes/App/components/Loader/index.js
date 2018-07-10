@@ -20,10 +20,9 @@ export default class Loader extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncPercent, syncBlockNum, syncBlockTime } = this.props.store.global;
+    const { syncPercent, syncBlockNum, syncBlockTime, peerNodeCount } = this.props.store.global;
     const { addresses } = this.props.store.wallet;
     const hideLoader = !AppConfig.debug.showAppLoad || (syncPercent >= 100 && !_.isEmpty(addresses));
-
     return (
       <div
         className={classes.loaderBg}
@@ -37,12 +36,11 @@ export default class Loader extends Component {
             <img className={classes.loaderGif} src="/images/loader.gif" alt="Loading..." />
           </div>
           <div className={classes.loaderPercentWrapper}>
-            <Typography variant="display1" className={classes.loaderPercent}>{syncPercent}</Typography>%
-            <p>
-              <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing..." />
-              &nbsp;
-              <FormattedMessage id="str.wait" defaultMessage="Please wait." />
-            </p>
+            <Typography variant="display1" className={classes.loaderPercent}>{syncPercent}</Typography>
+            <span>%</span>
+            <div>
+              <FormattedMessage id="str.blockSync" defaultMessage="Blockchain syncing with {peers} peers..." values={{ peers: peerNodeCount }} />
+            </div>
           </div>
           <div className={classes.loaderProgressWrapper}>
             <LinearProgress className={classes.loaderProgress} variant="determinate" value={syncPercent} />
