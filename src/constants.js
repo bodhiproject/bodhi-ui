@@ -1,4 +1,5 @@
 module.exports = {
+<<<<<<< HEAD
   Routes: {
     QTUM_PREDICTION: '/',
     BOT_COURT: '/bot-court',
@@ -8,6 +9,30 @@ module.exports = {
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
     ALL_EVENTS: '/all-events',
+=======
+  RouterPath: {
+    qtumPrediction: '/',
+    botCourt: '/bot-court',
+    myWallet: '/my-wallet',
+    set: '/activities/set',
+    finalize: '/activities/finalize',
+    withdraw: '/activities/withdraw',
+    activityHistory: '/activities/history',
+    allEvents: '/all-events',
+  },
+
+  /* App Constants */
+  AppLocation: {
+    qtumPrediction: 'QTUM_PREDICTION',
+    botCourt: 'BOT_COURT',
+    myWallet: 'WALLET',
+    myActivities: 'MY_ACTIVITIES',
+    resultSetting: 'RESULT_SETTING',
+    finalize: 'FINALIZE',
+    withdraw: 'WITHDRAW',
+    activityHistory: 'ACTIVITY_HISTORY',
+    allEvents: 'ALL_EVENTS',
+>>>>>>> remove wallet
   },
 
   Phases: {
