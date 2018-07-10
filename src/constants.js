@@ -1,5 +1,6 @@
 module.exports = {
 <<<<<<< HEAD
+<<<<<<< HEAD
   Routes: {
     QTUM_PREDICTION: '/',
     BOT_COURT: '/bot-court',
@@ -11,6 +12,9 @@ module.exports = {
     ALL_EVENTS: '/all-events',
 =======
   RouterPath: {
+=======
+  AppLocation: {
+>>>>>>> remove RouterPath
     qtumPrediction: '/',
     botCourt: '/bot-court',
     myWallet: '/my-wallet',
@@ -21,6 +25,7 @@ module.exports = {
     allEvents: '/all-events',
   },
 
+<<<<<<< HEAD
   /* App Constants */
   AppLocation: {
     qtumPrediction: 'QTUM_PREDICTION',
@@ -35,6 +40,8 @@ module.exports = {
 >>>>>>> remove wallet
   },
 
+=======
+>>>>>>> remove RouterPath
   Phases: {
     BETTING: 'BETTING',
     VOTING: 'VOTING',
