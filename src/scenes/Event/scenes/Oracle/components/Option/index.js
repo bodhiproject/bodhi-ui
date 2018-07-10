@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { observable } from 'mobx';
 import { withRouter } from 'react-router-dom';
 import {
   Collapse,
@@ -22,13 +21,15 @@ import cx from 'classnames';
 import { injectIntl } from 'react-intl';
 import NP from 'number-precision';
 
-import { toFixed } from '../../../../helpers/utility';
-import Progress from '../Progress';
+import { toFixed } from '../../../../../../helpers/utility';
+import Progress from '../../../../components/Progress';
 import styles from './styles';
 
 
 /**
  * The new EventOption
+ * TODO: this needs to be refactored...
+ * logic is hard to follow
  */
 @withRouter
 @injectIntl
@@ -36,14 +37,13 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class Option extends Component {
-  @observable expanded = false
-
   static defaultProps = {
     voteAmount: 0,
   };
 
   handleAmountBlur = ({ target: { value } }) => {
-    let { amount, oracle: { consensusThreshold }, onAmountChange, store: { oraclePage } } = this.props; // eslint-disable-line
+    let { oraclePage } = this.props.store;
+    let { amount, oracle: { consensusThreshold } } = oraclePage;
     [amount, consensusThreshold] = [parseFloat(amount, 10), parseFloat(consensusThreshold, 10)];
     if (amount + Number(value) > consensusThreshold) {
       oraclePage.amount = toFixed(NP.minus(consensusThreshold, amount));
@@ -57,36 +57,31 @@ export default class Option extends Component {
       showAmountInput,
       amountInputDisabled,
       store,
-      oracle,
       option,
       intl,
-      i,
     } = this.props;
-    const { topicAddress, address, txid } = this.props.match.params;
-    const unconfirmed = Boolean(topicAddress === 'null' && address === 'null' && txid);
-    const isLast = i === oracle.options.length - 1;
-    const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
-    const amount = `${option.value}`;
-    const { isPrevResult, isFinalizing, percent } = option;
-    const { oraclePage, wallet } = store;
 
+    const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
+    const { isPrevResult, isFinalizing, percent, isLast, isFirst, amount, isExpanded, idx, value } = option;
+    const { oraclePage, wallet } = store;
+    const { selectedOptionIdx, oracle } = oraclePage;
 
     return (
-      <Collapse in={this.expanded || skipExpansion}>
+      <Collapse in={isExpanded || selectedOptionIdx == -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
-            last: isLast || this.expanded,
-            first: i === 0 || this.expanded,
+            last: isLast || isExpanded,
+            first: isFirst || isExpanded,
           })}
         >
           <ExpansionPanel
-            expanded={this.expanded || skipExpansion}
-            onChange={() => this.expanded = !this.expanded}
-            disabled={unconfirmed || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
+            expanded={isExpanded || skipExpansion}
+            onChange={option.toggleExpansion}
+            disabled={option.disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>
-                <div className={classes.eventOptionNum}>{i + 1}</div>
+                <div className={classes.eventOptionNum}>{idx + 1}</div>
                 <Typography variant="title">
                   {name}
                 </Typography>
@@ -95,7 +90,7 @@ export default class Option extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
-                  {isPrevResult ? intl.formatMessage({ id: 'oracle.optionIsPrevResult' }) : amount}
+                  {isPrevResult ? intl.formatMessage({ id: 'oracle.optionIsPrevResult' }) : value}
                 </Typography>
               </div>
             </ExpansionPanelSummary>
