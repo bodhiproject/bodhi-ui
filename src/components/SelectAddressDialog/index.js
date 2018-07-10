@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import {
   withStyles,
@@ -13,19 +14,19 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 
 
+@inject('store')
+@observer
 class SelectAddressDialog extends Component {
   static propTypes = {
-    dialogVisible: PropTypes.bool.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
     onClosed: PropTypes.func.isRequired,
   };
 
   render() {
-    const { dialogVisible, walletAddresses } = this.props;
+    const { selectAddressDialog: { isVisible }, wallet: { addresses } } = this.props.store;
 
     return (
       <Dialog
-        open={dialogVisible}
+        open={isVisible}
         onClose={this.handleClose}
       >
         <DialogTitle>
@@ -33,7 +34,7 @@ class SelectAddressDialog extends Component {
         </DialogTitle>
         <div>
           <List>
-            {walletAddresses.map((item) => (
+            {addresses.map((item) => (
               <ListItem
                 button
                 onClick={() => this.handleListItemClick(item.address)}
