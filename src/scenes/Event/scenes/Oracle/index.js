@@ -1,18 +1,8 @@
-// /* eslint-disable */
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-// import { FormattedMessage } from 'react-intl';
 import { BettingOracle } from './BettingOracle';
-// import { Button as _Button, Typography, Grid, Paper } from '@material-ui/core';
-// import Option from '../../components/Option';
 import BackButton from '../../../../components/BackButton';
-// import { ImportantNote } from '../../../../components/ImportantNote';
-// import Transactions from '../../components/EventTxHistory';
-// import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
-// import TxConfirmDialog from '../../../../components/TxConfirmDialog';
-
-// import { StepperVertRight } from 'components';
 
 const VotingOracle = () => <div />;
 const ResultSettingOracle = () => <div />;
