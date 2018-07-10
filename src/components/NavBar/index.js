@@ -108,7 +108,7 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
       data-index={EventStatus.VOTE}
       className={cx(
         classes.navEventsButton,
-        ui.location === AppLocation.BOT_COURT || ui.location === AppLocation.BOT_COURT ? 'selected' : '',
+        ui.location === AppLocation.BOT_COURT ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
