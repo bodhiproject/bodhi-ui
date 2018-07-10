@@ -48,7 +48,7 @@ export default class BackButton extends Component {
         history.push(RouterPath.qtumPrediction);
         break;
       }
-      case AppLocation.vote: {
+      case AppLocation.botCourt: {
         history.push(RouterPath.botCourt);
         break;
       }

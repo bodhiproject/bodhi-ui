@@ -524,7 +524,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-    if (!ui.location) ui.location = AppLocation.vote;
+    if (!ui.location) ui.location = AppLocation.botCourt;
 
     return {
       eventStatus: EventStatus.Vote,
