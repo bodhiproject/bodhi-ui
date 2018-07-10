@@ -14,6 +14,7 @@ module.exports = {
   RouterPath: {
 =======
   AppLocation: {
+<<<<<<< HEAD
 >>>>>>> remove RouterPath
     qtumPrediction: '/',
     botCourt: '/bot-court',
@@ -23,6 +24,16 @@ module.exports = {
     withdraw: '/activities/withdraw',
     activityHistory: '/activities/history',
     allEvents: '/all-events',
+=======
+    QTUM_PREDICTION: '/',
+    BOT_COURT: '/bot-court',
+    WALLET: '/wallet',
+    SET: '/activities/set',
+    FINALIZE: '/activities/finalize',
+    WITHDRAW: '/activities/withdraw',
+    ACTIVITY_HISTORY: '/activities/history',
+    ALL_EVENTS: '/all-events',
+>>>>>>> change all, all testing passed
   },
 
 <<<<<<< HEAD
@@ -97,8 +108,13 @@ module.exports = {
 
   TransactionStatus: {
     PENDING: 'PENDING',
+<<<<<<< HEAD
     SUCCESS: 'SUCCESS',
     FAIL: 'FAIL', // not used
+=======
+    Success: 'SUCCESS',
+    Fail: 'FAIL', // not used
+>>>>>>> change all, all testing passed
   },
 
   SortBy: {

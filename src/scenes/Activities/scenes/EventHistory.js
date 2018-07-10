@@ -91,7 +91,11 @@ export default class EventHistory extends Component {
   navigating = false
 
   componentDidMount() {
+<<<<<<< HEAD
     this.props.store.ui.location = Routes.ACTIVITY_HISTORY;
+=======
+    this.props.store.ui.location = AppLocation.ACTIVITY_HISTORY;
+>>>>>>> change all, all testing passed
     this.executeTxsRequest();
   }
 

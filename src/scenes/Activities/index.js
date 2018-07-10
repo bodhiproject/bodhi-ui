@@ -12,7 +12,11 @@ import Finalize from './scenes/Finalize';
 import Withdraw from './scenes/Withdraw';
 import EventHistory from './scenes/EventHistory';
 import styles from './styles';
+<<<<<<< HEAD
 const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
+=======
+const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = AppLocation;
+>>>>>>> change all, all testing passed
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
@@ -68,7 +72,18 @@ export default class Activities extends Component {
   }[this.props.match.path]
 
   componentDidMount() {
+<<<<<<< HEAD
     this.props.store.ui.location = _.invert(Routes)[this.props.match.path];
+=======
+    const locations = {
+      [SET]: AppLocation.SET,
+      [FINALIZE]: AppLocation.FINALIZE,
+      [WITHDRAW]: AppLocation.WITHDRAW,
+      [ACTIVITY_HISTORY]: AppLocation.ACTIVITY_HISTORY,
+    };
+    const appLocation = locations[this.props.match.path];
+    this.props.store.ui.location = appLocation;
+>>>>>>> change all, all testing passed
   }
 
   getTabLabel = (eventStatusIndex) => {
@@ -107,6 +122,7 @@ export default class Activities extends Component {
   handleTabChange = (event, value) => {
     switch (value) {
       case TAB_SET: {
+<<<<<<< HEAD
         this.props.history.push(Routes.SET);
         break;
       }
@@ -120,6 +136,21 @@ export default class Activities extends Component {
       }
       case TAB_HISTORY: {
         this.props.history.push(Routes.ACTIVITY_HISTORY);
+=======
+        this.props.history.push(AppLocation.SET);
+        break;
+      }
+      case TAB_FINALIZE: {
+        this.props.history.push(AppLocation.FINALIZE);
+        break;
+      }
+      case TAB_WITHDRAW: {
+        this.props.history.push(AppLocation.WITHDRAW);
+        break;
+      }
+      case TAB_HISTORY: {
+        this.props.history.push(AppLocation.ACTIVITY_HISTORY);
+>>>>>>> change all, all testing passed
         break;
       }
       default: {
