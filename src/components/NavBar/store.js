@@ -15,6 +15,5 @@ export default class NavBarStore {
 
   // @action.bound
   // async getMyActivitiesCount() {
-
   // }
 }
