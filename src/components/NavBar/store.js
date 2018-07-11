@@ -1,8 +1,6 @@
 import { observable, action, computed, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
-import Topic from '../../stores/models/Topic';
-import Oracle from '../../stores/models/Oracle';
 
 import { queryAllTopics, queryAllOracles, queryAllVotes } from '../../network/graphQuery';
 
@@ -59,9 +57,8 @@ export default class {
       _.each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
-      let topics = await queryAllTopics(topicFilters);
-      topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
-      this.WithdrawCount = topics.length;
+      const topicsForVotes = await queryAllTopics(topicFilters);
+      this.WithdrawCount = topicsForVotes.length;
 
       // Get result set items
       const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
@@ -72,15 +69,13 @@ export default class {
           resultSetterQAddress: item.address,
         });
       });
-      let oracles = await queryAllOracles(oracleSetFilters);
-      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-      this.ResultSettingCount = oracles.length;
+      const oraclesForResultset = await queryAllOracles(oracleSetFilters);
+      this.ResultSettingCount = oraclesForResultset.length;
 
       // Get finalize items
       const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
       const oraclesForFinalize = await queryAllOracles(oracleFinalizeFilters);
-      oracles = _.uniqBy(oraclesForFinalize, 'txid').map((o) => new Oracle(o, this.app));
-      this.FinalizeCount = oracles.length;
+      this.FinalizeCount = oraclesForFinalize.length;
     } catch (err) {
       console.error(err); // eslint-disable-line
     }

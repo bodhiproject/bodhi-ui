@@ -44,7 +44,6 @@ class AppStore {
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
     this.refreshing = new RefreshingStore();
-    this.navBar = new NavBarStore();
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
@@ -57,7 +56,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-      this.navBar = new NavBarStore();
+      this.navBar = new NavBarStore(this);
       this.loading = false; // finishing loading
     });
   }

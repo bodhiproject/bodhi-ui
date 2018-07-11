@@ -37,8 +37,10 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
-@observer
 export default class NavBar extends Component {
+  componentDidMount() {
+    this.props.store.navBar.init();
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -113,7 +115,7 @@ const Wallet = ({ classes, store: { wallet } }) => {
   );
 };
 
-const MyActivities = ({ classes, store }) => {
+const MyActivities = observer(({ classes, store }) => {
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
@@ -123,7 +125,7 @@ const MyActivities = ({ classes, store }) => {
     children = <Badge badgeContent={store.navBar.totalCount} color="secondary">{children}</Badge>;
   }
   return <NavLink to={Routes.SET}>{children}</NavLink>;
-};
+});
 
 const HelpButton = ({ classes, intl }) => (
   <Button
