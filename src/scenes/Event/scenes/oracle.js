@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { CircularProgress, Paper, Grid, Button, Typography, withStyles } from '@material-ui/core';
+import { Paper, Grid, Button, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
@@ -26,7 +26,6 @@ import {
   getShortLocalDateTimeString,
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
-  getDetailPagePath,
   toFixed,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight';
@@ -123,7 +122,6 @@ const messages = defineMessages({
 export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getOracles: PropTypes.func,
     oracles: PropTypes.array,
@@ -170,6 +168,7 @@ export default class OraclePage extends Component {
       transactions: [],
       voteAmount: 0,
       currentOptionIdx: -1,
+      isArchived: false,
     };
   }
 
@@ -195,8 +194,7 @@ export default class OraclePage extends Component {
 
   render() {
     const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
-    const { oracle, oracles, config, transactions, unconfirmed } = this.state;
-
+    const { oracle, oracles, config, transactions, unconfirmed, isArchived } = this.state;
     if (!oracle || !config) {
       return null;
     }
@@ -246,6 +244,7 @@ export default class OraclePage extends Component {
                       onOptionChange={this.handleOptionChange}
                       onAmountChange={this.handleAmountChange}
                       onWalletChange={this.handleWalletChange}
+                      isArchived={isArchived}
                     />
                   );
                 })}
@@ -257,21 +256,19 @@ export default class OraclePage extends Component {
                 </div>
                 {!unconfirmed && (
                   <div>
-                    <Button
-                      variant="raised"
-                      fullWidth
-                      size="large"
-                      color="primary"
-                      disabled={disabled}
-                      onClick={this.handleConfirmClick}
-                      className={classes.eventActionButton}
-                    >
-                      {
-                        this.state.isApproving ?
-                          <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                          config.predictionAction.btnText
-                      }
-                    </Button>
+                    {!isArchived && (
+                      <Button
+                        variant="raised"
+                        fullWidth
+                        size="large"
+                        color="primary"
+                        disabled={disabled}
+                        onClick={this.handleConfirmClick}
+                        className={classes.eventActionButton}
+                      >
+                        {config.predictionAction.btnText}
+                      </Button>
+                    )}
                     {showResultHistory && <EventResultHistory oracles={oracles} />}
                     <EventTxHistory transactions={transactions} options={oracle.options} />
                   </div>
@@ -423,7 +420,6 @@ export default class OraclePage extends Component {
     } else {
       oracle = _.find(oracles, { txid });
     }
-
     let config;
 
     if (oracle) {
@@ -439,21 +435,14 @@ export default class OraclePage extends Component {
         config = this.setVoteConfig(oracle);
       } else if (token === Token.BOT && status === OracleStatus.WAIT_RESULT) {
         config = this.setFinalizeConfig();
+      } else if (token === Token.QTUM && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
+        config = this.setBetConfig();
+        this.setState({ isArchived: true });
+      } else if (token === Token.BOT && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
+        config = this.setVoteConfig(oracle);
+        this.setState({ isArchived: true });
       }
     }
-
-    if (oracle && !config) {
-      const path = getDetailPagePath(oracles);
-      if (path) {
-        // Oracle stage changed, route to correct detail page
-        this.props.history.push(path);
-      } else {
-        // Couldn't get proper path, route to dashboard
-        this.props.history.push('/');
-      }
-      return;
-    }
-
     this.setState({ oracle, oracles, config });
   }
 
@@ -567,7 +556,7 @@ export default class OraclePage extends Component {
 
   getActionButtonConfig = () => {
     const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
-    const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
+    const { address, oracle, transactions, currentOptionIdx, voteAmount, isArchived } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
     const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
@@ -577,6 +566,13 @@ export default class OraclePage extends Component {
     const isOracleResultSettingPhase = token === Token.QTUM && status === OracleStatus.WAIT_RESULT;
     const isFinalizePhase = token === Token.BOT && status === OracleStatus.WAIT_RESULT;
     const notEnoughQtum = totalQtum < maxTransactionFee;
+
+    // Return disabled directly if the oracle is archived
+    if (isArchived) {
+      return {
+        disabled: false,
+      };
+    }
 
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.PENDING });
