@@ -12,7 +12,6 @@ const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
-  archived: { id: 'str.archived', defaultMessage: 'Archived' },
 });
 
 
@@ -70,7 +69,6 @@ export default class Oracle {
       PENDING: messages.pending,
       FINALIZING: messages.finalizeResult,
       WITHDRAWING: messages.withdraw,
-      ARCHIVED: messages.archived,
     }[this.phase];
 
     const amount = parseFloat(_.sum(this.amounts).toFixed(2));
