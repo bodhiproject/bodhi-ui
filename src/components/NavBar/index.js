@@ -38,8 +38,8 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 export default class NavBar extends Component {
-  componentDidMount() {
-    this.props.store.navBar.init();
+  componentWillMount() {
+    this.props.store.global.getUserData();
   }
   render() {
     const { classes } = this.props;
@@ -115,14 +115,15 @@ const Wallet = observer(({ classes, store: { wallet } }) => {
   );
 });
 
-const MyActivities = observer(({ classes, store: { navBar } }) => {
+const MyActivities = observer(({ classes, store: { global } }) => {
+  console.log(global.userData.resultSettingCount);
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
     </Button>
   );
-  if (navBar.totalCount > 0) {
-    children = <Badge badgeContent={navBar.totalCount} color="secondary">{children}</Badge>;
+  if (global.userData.totalCount > 0) {
+    children = <Badge badgeContent={global.userData.totalCount} color="secondary">{children}</Badge>;
   }
   return <NavLink to={Routes.SET}>{children}</NavLink>;
 });
