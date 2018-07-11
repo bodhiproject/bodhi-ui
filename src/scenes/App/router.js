@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-<<<<<<< HEAD
 import { Routes } from 'constants';
-=======
-import { AppLocation } from 'constants';
->>>>>>> remove RouterPath
 
 import asyncComponent from '../../helpers/AsyncFunc';
 
@@ -20,41 +16,17 @@ const AppRouter = ({ url }) => {
     <Switch>
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.ALL_EVENTS}`}
-=======
-        path={`${url}${AppLocation.allEvents}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.ALL_EVENTS}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../AllEvents'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.QTUM_PREDICTION}`}
-=======
-        path={`${url}${AppLocation.qtumPrediction}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.QTUM_PREDICTION}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../QtumPrediction'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.BOT_COURT}`}
-=======
-        path={`${url}${AppLocation.botCourt}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.BOT_COURT}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../BotCourt'))}
       />
       <Route
@@ -69,67 +41,27 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.WALLET}`}
-=======
-        path={`${url}${AppLocation.myWallet}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.WALLET}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../Wallet'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.SET}`}
-=======
-        path={`${url}${AppLocation.set}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.SET}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.FINALIZE}`}
-=======
-        path={`${url}${AppLocation.finalize}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.FINALIZE}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.WITHDRAW}`}
-=======
-        path={`${url}${AppLocation.withdraw}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.WITHDRAW}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
-<<<<<<< HEAD
-<<<<<<< HEAD
         path={`${url}${Routes.ACTIVITY_HISTORY}`}
-=======
-        path={`${url}${AppLocation.activityHistory}`}
->>>>>>> remove RouterPath
-=======
-        path={`${url}${AppLocation.ACTIVITY_HISTORY}`}
->>>>>>> change all, all testing passed
         component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>
