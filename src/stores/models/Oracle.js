@@ -54,13 +54,13 @@ export default class Oracle {
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
 
-    const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+    const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
     const pendingTypes = {
-      BETTING: [Bet],
-      RESULT_SETTING: [ApproveSetResult, SetResult],
-      VOTING: [ApproveVote, Vote],
-      FINALIZING: [FinalizeResult],
-    }[this.phase] || [];
+      BETTING: [BET],
+      RESULT_SETTING: [APPROVE_SET_RESULT, SET_RESULT],
+      VOTING: [APPROVE_VOTE, VOTE],
+      FINALIZING: [FINALIZE_RESULT],
+    }[this.phase];
     this.isPending = this.app.oraclePage.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
     this.unconfirmed = (!oracle.topicAddress && !oracle.address);
 

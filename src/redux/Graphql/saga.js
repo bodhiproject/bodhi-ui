@@ -41,12 +41,12 @@ const messages = defineMessages({
 const massageOracles = (oracles) => oracles.map((oracle) => {
   const phase = getPhase(oracle);
 
-  const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+  const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
   const pendingTypes = {
-    BETTING: [Bet],
-    RESULT_SETTING: [ApproveSetResult, SetResult],
-    VOTING: [ApproveVote, Vote],
-    FINALIZING: [FinalizeResult],
+    BETTING: [BET],
+    RESULT_SETTING: [APPROVE_SET_RESULT, SET_RESULT],
+    VOTING: [APPROVE_VOTE, VOTE],
+    FINALIZING: [FINALIZE_RESULT],
   }[phase] || [];
   const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
