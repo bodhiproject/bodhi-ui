@@ -438,7 +438,7 @@ export default class OraclePage extends Component {
       } else if (token === Token.QTUM && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
         config = this.setBetConfig();
         this.setState({ isArchived: true });
-      } else if (token === Token.Bot && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
+      } else if (token === Token.BOT && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
         config = this.setVoteConfig(oracle);
         this.setState({ isArchived: true });
       }
