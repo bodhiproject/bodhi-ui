@@ -57,10 +57,6 @@ export default class Activities extends Component {
     [ACTIVITY_HISTORY]: TAB_HISTORY,
   }[this.props.match.path]
 
-  componentDidMount() {
-    this.props.store.ui.location = _.invert(Routes)[this.props.match.path];
-  }
-
   getTabLabel = (eventStatusIndex) => {
     const { store: { global }, intl } = this.props;
 

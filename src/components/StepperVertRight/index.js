@@ -1,8 +1,10 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { Token, SortBy } from 'constants';
 
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
@@ -45,14 +47,18 @@ export default class StepperVertRight extends Component {
   }
 
   getSteps = () => {
-    const {
-      global: { syncBlockTime },
-      oraclePage: {
-        cOracle,
-        dOracles,
-      },
-    } = this.props.store;
     const { intl: { formatMessage }, isTopicDetail = false } = this.props;
+    let { syncBlockTime } = this.props.store.global;
+    let cOracle, dOracles
+    if (isTopicDetail) {
+      // TODO: temporary workaround until we do `topic.js`. This is broken right now for `topic.js`.
+      const { oracles } = this.props.store.oraclePage;
+      cOracle = _.find(oracles, { token: Token.QTUM }) || {};
+      dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+    } else {
+      cOracle =  this.props.store.oraclePage.cOracle;
+      dOracles =  this.props.store.oraclePage.dOracles;
+    }
 
     const RANGE_SEPARATOR = formatMessage({ id: 'cardInfo.to' });
     const ANYTIME = formatMessage({ id: 'str.anytime' });
