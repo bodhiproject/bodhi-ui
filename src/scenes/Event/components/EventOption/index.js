@@ -155,7 +155,6 @@ export default class EventOption extends Component {
       showAmountInput,
       isPrevResult,
       isFinalizing,
-      isArchived,
     } = this.props;
 
     return (
@@ -169,7 +168,7 @@ export default class EventOption extends Component {
           <ExpansionPanel
             expanded={optionIdx === currentOptionIdx || skipExpansion}
             onChange={this.handleExpansionChange}
-            disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult) || isArchived}
+            disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>
