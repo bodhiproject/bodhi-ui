@@ -102,7 +102,7 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-const Wallet = ({ classes, store: { wallet } }) => {
+const Wallet = observer(({ classes, store: { wallet } }) => {
   const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
   const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
@@ -113,16 +113,16 @@ const Wallet = ({ classes, store: { wallet } }) => {
       </Button>
     </NavLink>
   );
-};
+});
 
-const MyActivities = observer(({ classes, store }) => {
+const MyActivities = observer(({ classes, store: { navBar } }) => {
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
     </Button>
   );
-  if (store.navBar.totalCount > 0) {
-    children = <Badge badgeContent={store.navBar.totalCount} color="secondary">{children}</Badge>;
+  if (navBar.totalCount > 0) {
+    children = <Badge badgeContent={navBar.totalCount} color="secondary">{children}</Badge>;
   }
   return <NavLink to={Routes.SET}>{children}</NavLink>;
 });
