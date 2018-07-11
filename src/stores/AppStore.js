@@ -58,7 +58,7 @@ class AppStore {
         withdraw: new WithdrawStore(this),
       };
       this.navBar = new NavBarStore();
-      this.loading = false;
+      this.loading = false; // finishing loading
     });
   }
 }
