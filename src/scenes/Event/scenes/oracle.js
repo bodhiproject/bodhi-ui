@@ -435,10 +435,10 @@ export default class OraclePage extends Component {
         config = this.setVoteConfig(oracle);
       } else if (token === Token.BOT && status === OracleStatus.WAIT_RESULT) {
         config = this.setFinalizeConfig();
-      } else if (token === Token.Qtum && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
+      } else if (token === Token.QTUM && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
         config = this.setBetConfig();
         this.setState({ isArchived: true });
-      } else if (token === Token.Bot && (status === OracleStatus.Pending || status === OracleStatus.Withdraw)) {
+      } else if (token === Token.Bot && (status === OracleStatus.PENDING || status === OracleStatus.WITHDRAW)) {
         config = this.setVoteConfig(oracle);
         this.setState({ isArchived: true });
       }
