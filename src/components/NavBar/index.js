@@ -116,7 +116,6 @@ const Wallet = observer(({ classes, store: { wallet } }) => {
 });
 
 const MyActivities = observer(({ classes, store: { global } }) => {
-  console.log(global.userData.resultSettingCount);
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
