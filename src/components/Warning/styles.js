@@ -2,15 +2,15 @@ import { EventWarningType } from 'constants';
 
 
 const styles = (theme) => ({
-  [EventWarningType.Info]: {
+  [EventWarningType.INFO]: {
     color: theme.palette.primary.main,
     fontSize: theme.sizes.font.meta,
   },
-  [EventWarningType.Error]: {
+  [EventWarningType.ERROR]: {
     color: theme.palette.error.main,
     fontSize: theme.sizes.font.meta,
   },
-  [EventWarningType.Highlight]: {
+  [EventWarningType.HIGHLIGHT]: {
     color: theme.palette.secondary.main,
     fontSize: theme.sizes.font.meta,
   },

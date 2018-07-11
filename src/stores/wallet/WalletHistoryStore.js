@@ -10,7 +10,7 @@ const INIT_VALUES = {
   fullList: [],
   list: [],
   orderBy: 'createdTime',
-  direction: SortBy.Descending.toLowerCase(),
+  direction: SortBy.DESCENDING.toLowerCase(),
   limit: 500,
   skip: 0,
   perPage: 10,
@@ -69,7 +69,7 @@ export default class {
   @action
   queryTransactions = async (orderBy = this.orderBy, direction = this.direction, limit = this.limit, skip = this.skip) => {
     try {
-      const filters = [{ type: TransactionType.Transfer }];
+      const filters = [{ type: TransactionType.TRANSFER }];
       const orderByObj = { field: orderBy, direction: direction.toUpperCase() };
       const result = await queryAllTransactions(filters, orderByObj, limit, skip);
 

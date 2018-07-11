@@ -9,7 +9,7 @@ const messages = defineMessages({
 });
 
 export default class Topic {
-  phase = Phases.withdraw
+  phase = Phases.WITHDRAWING
   status = ''
   txid = ''
   address = ''
@@ -38,7 +38,7 @@ export default class Topic {
       amounts: oracle.amounts.map(satoshiToDecimal),
       consensusThreshold: satoshiToDecimal(oracle.consensusThreshold),
     }));
-    const pendingTypes = [TransactionType.WithdrawEscrow, TransactionType.Withdraw];
+    const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
     this.isPending = this.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
 
     const totalQTUM = parseFloat(_.sum(this.qtumAmount).toFixed(2));

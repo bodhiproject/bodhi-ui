@@ -7,15 +7,15 @@ const styles = (theme) => ({
     padding: `${theme.padding.unit.px} ${theme.padding.xs.px}`,
     marginBottom: theme.padding.sm.px,
   },
-  [EventWarningType.Info]: {
+  [EventWarningType.INFO]: {
     background: theme.palette.primary.light,
     border: `solid 1px ${theme.palette.primary.main}`,
   },
-  [EventWarningType.Error]: {
+  [EventWarningType.ERROR]: {
     background: theme.palette.error.light,
     border: `solid 1px ${theme.palette.error.main}`,
   },
-  [EventWarningType.Highlight]: {
+  [EventWarningType.HIGHLIGHT]: {
     background: theme.palette.secondary.light,
     border: `solid 1px ${theme.palette.secondary.main}`,
   },

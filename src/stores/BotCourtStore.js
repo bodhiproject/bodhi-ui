@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from '../constants';
+import { Token, OracleStatus, Routes } from '../constants';
 import { queryAllOracles } from '../network/graphQuery';
 import Oracle from './models/Oracle';
 
@@ -26,7 +26,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === AppLocation.botCourt) {
+        if (this.app.ui.location === Routes.BOT_COURT) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class BotCourtStore {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = AppLocation.botCourt;
+    this.app.ui.location = Routes.BOT_COURT;
     this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = false;
@@ -67,9 +67,9 @@ export default class BotCourtStore {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
       const excludeResultSetterQAddress = this.app.wallet.addresses.map(({ address }) => address);
       const filters = [
-        { token: Token.Bot, status: OracleStatus.Voting },
-        { token: Token.Qtum,
-          status: OracleStatus.WaitResult,
+        { token: Token.BOT, status: OracleStatus.VOTING },
+        { token: Token.QTUM,
+          status: OracleStatus.WAIT_RESULT,
           excludeResultSetterQAddress,
         },
       ];

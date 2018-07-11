@@ -1,11 +1,11 @@
 import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
-import { AppLocation } from 'constants';
+import { Routes } from 'constants';
 import locales from '../languageProvider';
 
 
 export default class UiStore {
-  @observable location = AppLocation.qtumPrediction
+  @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('lang') || this.defaultLocale
   @observable error = null
 

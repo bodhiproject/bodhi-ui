@@ -49,7 +49,7 @@ export default class TopActions extends Component {
   };
 
   static defaultProps = {
-    sortBy: SortBy.Ascending,
+    sortBy: SortBy.ASCENDING,
     sortOrderChanged: undefined,
     noCreateEventButton: false,
   };
@@ -98,8 +98,8 @@ export default class TopActions extends Component {
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
               <Select disableUnderline value={sortBy} onChange={this.onSortOptionSelected}>
-                <MenuItem value={SortBy.Ascending}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
-                <MenuItem value={SortBy.Descending}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
+                <MenuItem value={SortBy.ASCENDING}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
+                <MenuItem value={SortBy.DESCENDING}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
               </Select>
             </FormControl>
           </Card>

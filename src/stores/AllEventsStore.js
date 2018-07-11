@@ -1,6 +1,6 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, AppLocation } from 'constants';
+import { Token, OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
@@ -32,7 +32,7 @@ export default class {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
-        if (this.app.ui.location === AppLocation.allEvents) {
+        if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();
         }
       }
@@ -42,7 +42,7 @@ export default class {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES); // reset all properties
-    this.app.ui.location = AppLocation.allEvents;
+    this.app.ui.location = Routes.ALL_EVENTS;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
       this.loading = false;
@@ -66,15 +66,15 @@ export default class {
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     const filters = [
       // finalizing
-      { token: Token.Bot, status: OracleStatus.WaitResult },
+      { token: Token.BOT, status: OracleStatus.WAIT_RESULT },
       // voting
-      { token: Token.Bot, status: OracleStatus.Voting },
+      { token: Token.BOT, status: OracleStatus.VOTING },
       // betting
-      { token: Token.Qtum, status: OracleStatus.Voting },
-      { token: Token.Qtum, status: OracleStatus.Created },
+      { token: Token.QTUM, status: OracleStatus.VOTING },
+      { token: Token.QTUM, status: OracleStatus.CREATED },
       // result setting
-      { token: Token.Qtum, status: OracleStatus.OpenResultSet },
-      { token: Token.Qtum, status: OracleStatus.WaitResult },
+      { token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET },
+      { token: Token.QTUM, status: OracleStatus.WAIT_RESULT },
     ];
     let topics = [];
     if (this.hasMoreTopics) {
@@ -84,7 +84,7 @@ export default class {
       // Get all votes for all your addresses
       _.each(this.app.wallet.addresses, ({ address }) => {
         voteFilters.push({ voterQAddress: address });
-        topicFilters.push({ status: OracleStatus.Withdraw, creatorAddress: address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: address });
       });
 
       // Filter votes
@@ -97,7 +97,7 @@ export default class {
       }, []);
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.Withdraw, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
       topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));

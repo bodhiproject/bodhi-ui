@@ -50,7 +50,7 @@ export default class MyBalances extends Component {
     super(props);
 
     this.state = {
-      order: SortBy.Ascending.toLowerCase(),
+      order: SortBy.ASCENDING.toLowerCase(),
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
       selectedAddress: undefined,
@@ -250,13 +250,13 @@ export default class MyBalances extends Component {
 
   handleSorting = (property) => (event) => { // eslint-disable-line
     const orderBy = property;
-    let order = SortBy.Descending.toLowerCase();
+    let order = SortBy.DESCENDING.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
-      order = SortBy.Ascending.toLowerCase();
+    if (this.state.orderBy === property && this.state.order === SortBy.DESCENDING.toLowerCase()) {
+      order = SortBy.ASCENDING.toLowerCase();
     }
 
-    if (order === SortBy.Descending.toLowerCase()) {
+    if (order === SortBy.DESCENDING.toLowerCase()) {
       this.props.walletAddresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
     } else {
       this.props.walletAddresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));

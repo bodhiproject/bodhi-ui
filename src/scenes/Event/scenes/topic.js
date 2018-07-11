@@ -154,7 +154,7 @@ export default class TopicPage extends Component {
 
     const topics = nextProps.getTopicsReturn ? nextProps.getTopicsReturn : getTopicsReturn;
     const topic = _.find(topics, { address });
-    if (topic && topic.status === OracleStatus.Withdraw) {
+    if (topic && topic.status === OracleStatus.WITHDRAW) {
       this.setState({ topic });
     }
   }
@@ -172,11 +172,11 @@ export default class TopicPage extends Component {
       return null;
     }
 
-    const cOracle = _.find(topic.oracles, (item) => item.token === Token.Qtum);
+    const cOracle = _.find(topic.oracles, (item) => item.token === Token.QTUM);
     const dOracles = _.orderBy(
-      _.filter(topic.oracles, (item) => item.token === Token.Bot),
+      _.filter(topic.oracles, (item) => item.token === Token.BOT),
       ['blockNum'],
-      [SortBy.Ascending.toLowerCase()],
+      [SortBy.ASCENDING.toLowerCase()],
     );
 
     return (
@@ -356,8 +356,8 @@ export default class TopicPage extends Component {
       return null;
     }
 
-    const botWonText = withdrawableAddress.botWon ? `${withdrawableAddress.botWon} ${Token.Bot}` : '';
-    const qtumWonText = withdrawableAddress.qtumWon ? `${withdrawableAddress.qtumWon} ${Token.Qtum}` : '';
+    const botWonText = withdrawableAddress.botWon ? `${withdrawableAddress.botWon} ${Token.BOT}` : '';
+    const qtumWonText = withdrawableAddress.qtumWon ? `${withdrawableAddress.qtumWon} ${Token.QTUM}` : '';
 
     return (
       <TableRow key={index}>
@@ -388,12 +388,12 @@ export default class TopicPage extends Component {
 
   getLocalizedTypeString = (type) => {
     switch (type) {
-      case TransactionType.WithdrawEscrow: {
+      case TransactionType.WITHDRAW_ESCROW: {
         return (<FormattedMessage id="str.escrow" defaultMessage="Escrow">
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>);
       }
-      case TransactionType.Withdraw: {
+      case TransactionType.WITHDRAW: {
         return (<FormattedMessage id="str.winnings" defaultMessage="Winnings">
           {(txt) => i18nToUpperCase(txt)}
         </FormattedMessage>);
@@ -416,7 +416,7 @@ export default class TopicPage extends Component {
 
     // GraphQL calls
     getTopics([{ address }], undefined, 1, 0);
-    getTransactions([{ topicAddress: address }], { field: 'createdTime', direction: SortBy.Descending });
+    getTransactions([{ topicAddress: address }], { field: 'createdTime', direction: SortBy.DESCENDING });
 
     // API calls
     getBetAndVoteBalances(address, walletAddresses);
@@ -430,7 +430,7 @@ export default class TopicPage extends Component {
     // Already have a pending tx for this Topic
     let pendingTxs = _.filter(getTransactionsReturn, {
       type: withdrawableAddress.type,
-      status: TransactionStatus.Pending,
+      status: TransactionStatus.PENDING,
       topicAddress: address,
       senderAddress: withdrawableAddress.address,
     });
@@ -447,7 +447,7 @@ export default class TopicPage extends Component {
     // Already withdrawn with this address
     pendingTxs = _.filter(getTransactionsReturn, {
       type: withdrawableAddress.type,
-      status: TransactionStatus.Success,
+      status: TransactionStatus.SUCCESS,
       topicAddress: address,
       senderAddress: withdrawableAddress.address,
     });

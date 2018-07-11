@@ -6,9 +6,9 @@ import actions from './actions';
 
 const initState = new Map({
   actionableItemCount: {
-    [EventStatus.Set]: 0,
-    [EventStatus.Finalize]: 0,
-    [EventStatus.Withdraw]: 0,
+    [EventStatus.SET]: 0,
+    [EventStatus.FINALIZE]: 0,
+    [EventStatus.WITHDRAW]: 0,
     totalCount: 0,
   },
   getOraclesReturn: [],

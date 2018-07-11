@@ -173,12 +173,12 @@ export function doesUserNeedToUnlockWallet(walletStore) {
  */
 export function getDetailPagePath(oracles) {
   if (oracles.length) {
-    const sorted = _.orderBy(oracles, ['blockNum'], [SortBy.Descending.toLowerCase()]);
+    const sorted = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
     const latestOracle = sorted[0];
 
     // construct url for oracle or topic
     let url;
-    if (latestOracle.status !== OracleStatus.Withdraw) {
+    if (latestOracle.status !== OracleStatus.WITHDRAW) {
       url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
     } else {
       url = `/topic/${latestOracle.topicAddress}`;

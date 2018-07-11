@@ -35,12 +35,12 @@ export default class TxRow extends Component {
     const { transaction, intl } = this.props;
     const { optionIdx, topic, type } = transaction;
     switch (type) {
-      case TransactionType.Bet:
-      case TransactionType.ApproveSetResult:
-      case TransactionType.SetResult:
-      case TransactionType.ApproveVote:
-      case TransactionType.Vote:
-      case TransactionType.FinalizeResult: {
+      case TransactionType.BET:
+      case TransactionType.APPROVE_SET_RESULT:
+      case TransactionType.SET_RESULT:
+      case TransactionType.APPROVE_VOTE:
+      case TransactionType.VOTE:
+      case TransactionType.FINALIZE_RESULT: {
         if (optionIdx && topic) {
           const invalidOption = localizeInvalidOption(topic.options[optionIdx], intl);
           return `#${optionIdx + 1} ${topic.options[optionIdx] === 'Invalid' ? invalidOption : topic.options[optionIdx]}`;

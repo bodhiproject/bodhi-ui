@@ -29,7 +29,7 @@ export default class EventResultHistory extends Component {
   };
 
   getTypeText(oracle, index) {
-    if (oracle.token === Token.Qtum) {
+    if (oracle.token === Token.QTUM) {
       return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;

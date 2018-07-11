@@ -344,10 +344,10 @@ export default class CreateEvent extends Component {
       setTxConfirmInfoAndCallback(
         intl.formatMessage(messages.confirmCreateMsg),
         eventEscrowAmount,
-        Token.Bot,
+        Token.BOT,
         {
-          type: TransactionType.ApproveCreateEvent,
-          token: Token.Bot,
+          type: TransactionType.APPROVE_CREATE_EVENT,
+          token: Token.BOT,
           amount: eventEscrowAmount,
           optionIdx: undefined,
           topicAddress: undefined,

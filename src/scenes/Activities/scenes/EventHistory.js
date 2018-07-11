@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TransactionType, SortBy, AppLocation } from 'constants';
+import { TransactionType, SortBy, Routes } from 'constants';
 
 import styles from './styles';
 import Config from '../../../config/app';
@@ -79,7 +79,7 @@ export default class EventHistory extends Component {
 
   state = {
     transactions: [],
-    order: SortBy.Descending.toLowerCase(),
+    order: SortBy.DESCENDING.toLowerCase(),
     orderBy: 'createdTime',
     perPage: 10,
     page: 0,
@@ -91,7 +91,7 @@ export default class EventHistory extends Component {
   navigating = false
 
   componentDidMount() {
-    this.props.store.ui.location = AppLocation.activityHistory;
+    this.props.store.ui.location = Routes.ACTIVITY_HISTORY;
     this.executeTxsRequest();
   }
 
@@ -153,21 +153,21 @@ export default class EventHistory extends Component {
 
   executeTxsRequest = () => {
     const { orderBy, order, limit, skip } = this.state;
-    const direction = order === SortBy.Descending.toLowerCase() ? SortBy.Descending : SortBy.Ascending;
+    const direction = order === SortBy.DESCENDING.toLowerCase() ? SortBy.DESCENDING : SortBy.ASCENDING;
 
     this.props.getTransactions(
       [
-        { type: TransactionType.ApproveCreateEvent },
-        { type: TransactionType.CreateEvent },
-        { type: TransactionType.Bet },
-        { type: TransactionType.ApproveSetResult },
-        { type: TransactionType.SetResult },
-        { type: TransactionType.ApproveVote },
-        { type: TransactionType.Vote },
-        { type: TransactionType.FinalizeResult },
-        { type: TransactionType.Withdraw },
-        { type: TransactionType.WithdrawEscrow },
-        { type: TransactionType.ResetApprove },
+        { type: TransactionType.APPROVE_CREATE_EVENT },
+        { type: TransactionType.APPROVE_CREATE_EVENT },
+        { type: TransactionType.BET },
+        { type: TransactionType.APPROVE_SET_RESULT },
+        { type: TransactionType.SET_RESULT },
+        { type: TransactionType.APPROVE_VOTE },
+        { type: TransactionType.VOTE },
+        { type: TransactionType.FINALIZE_RESULT },
+        { type: TransactionType.WITHDRAW },
+        { type: TransactionType.WITHDRAW_ESCROW },
+        { type: TransactionType.RESET_APPROVE },
       ],
       { field: orderBy, direction },
       limit,
@@ -290,7 +290,7 @@ export default class EventHistory extends Component {
         [
           { topicAddress },
         ],
-        { field: 'endTime', direction: SortBy.Descending },
+        { field: 'endTime', direction: SortBy.DESCENDING },
       );
       this.navigating = true;
     } else if (expandedIndex === -1) {
@@ -391,10 +391,10 @@ export default class EventHistory extends Component {
     const { transactions } = this.state;
 
     const orderBy = property;
-    let order = SortBy.Descending.toLowerCase();
+    let order = SortBy.DESCENDING.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === SortBy.Descending.toLowerCase()) {
-      order = SortBy.Ascending.toLowerCase();
+    if (this.state.orderBy === property && this.state.order === SortBy.DESCENDING.toLowerCase()) {
+      order = SortBy.ASCENDING.toLowerCase();
     }
 
     const sorted = _.orderBy(transactions, [orderBy], [order]);

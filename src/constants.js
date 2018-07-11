@@ -1,27 +1,13 @@
 module.exports = {
-  RouterPath: {
-    qtumPrediction: '/',
-    botCourt: '/bot-court',
-    myWallet: '/my-wallet',
-    set: '/activities/set',
-    finalize: '/activities/finalize',
-    withdraw: '/activities/withdraw',
-    activityHistory: '/activities/history',
-    allEvents: '/all-events',
-  },
-
-  /* App Constants */
-  AppLocation: {
-    qtumPrediction: 'QTUM_PREDICTION',
-    botCourt: 'BOT_COURT',
-    vote: 'VOTE',
-    wallet: 'WALLET',
-    myActivities: 'MY_ACTIVITIES',
-    resultSetting: 'RESULT_SETTING',
-    finalize: 'FINALIZE',
-    withdraw: 'WITHDRAW',
-    activityHistory: 'ACTIVITY_HISTORY',
-    allEvents: 'ALL_EVENTS',
+  Routes: {
+    QTUM_PREDICTION: '/',
+    BOT_COURT: '/bot-court',
+    WALLET: '/wallet',
+    SET: '/activities/set',
+    FINALIZE: '/activities/finalize',
+    WITHDRAW: '/activities/withdraw',
+    ACTIVITY_HISTORY: '/activities/history',
+    ALL_EVENTS: '/all-events',
   },
 
   Phases: {
@@ -34,59 +20,57 @@ module.exports = {
   },
 
   EventStatus: {
-    Bet: 0,
-    Set: 1,
-    Vote: 2,
-    Finalize: 3,
-    Withdraw: 4,
-    AllEvents: 5,
-    Default: 0,
+    BET: 0,
+    SET: 1,
+    VOTE: 2,
+    FINALIZE: 3,
+    WITHDRAW: 4,
   },
 
   EventWarningType: {
-    Info: 'info',
-    Error: 'error',
-    Highlight: 'highlight',
+    INFO: 'INFO',
+    ERROR: 'ERROR',
+    HIGHLIGHT: 'HIGHLIGHT',
   },
 
   /* GraphQL Constants */
   Token: {
-    Qtum: 'QTUM',
-    Bot: 'BOT',
+    QTUM: 'QTUM',
+    BOT: 'BOT',
   },
 
   OracleStatus: {
-    Created: 'CREATED',
-    Voting: 'VOTING',
-    WaitResult: 'WAITRESULT',
-    OpenResultSet: 'OPENRESULTSET',
-    Pending: 'PENDING',
-    Withdraw: 'WITHDRAW',
+    CREATED: 'CREATED',
+    VOTING: 'VOTING',
+    WAIT_RESULT: 'WAITRESULT',
+    OPEN_RESULT_SET: 'OPENRESULTSET',
+    PENDING: 'PENDING', // not used
+    WITHDRAW: 'WITHDRAW',
   },
 
   TransactionType: {
-    ApproveCreateEvent: 'APPROVECREATEEVENT',
-    CreateEvent: 'CREATEEVENT',
-    Bet: 'BET',
-    ApproveSetResult: 'APPROVESETRESULT',
-    SetResult: 'SETRESULT',
-    ApproveVote: 'APPROVEVOTE',
-    Vote: 'VOTE',
-    FinalizeResult: 'FINALIZERESULT',
-    Withdraw: 'WITHDRAW',
-    WithdrawEscrow: 'WITHDRAWESCROW',
-    Transfer: 'TRANSFER',
-    ResetApprove: 'RESETAPPROVE',
+    APPROVE_CREATE_EVENT: 'APPROVECREATEEVENT',
+    CREATE_EVENT: 'CREATEEVENT',
+    BET: 'BET',
+    APPROVE_SET_RESULT: 'APPROVESETRESULT',
+    SET_RESULT: 'SETRESULT',
+    APPROVE_VOTE: 'APPROVEVOTE',
+    VOTE: 'VOTE',
+    FINALIZE_RESULT: 'FINALIZERESULT',
+    WITHDRAW: 'WITHDRAW',
+    WITHDRAW_ESCROW: 'WITHDRAWESCROW',
+    TRANSFER: 'TRANSFER',
+    RESET_APPROVE: 'RESETAPPROVE',
   },
 
   TransactionStatus: {
-    Pending: 'PENDING',
-    Success: 'SUCCESS',
-    Fail: 'FAIL',
+    PENDING: 'PENDING',
+    SUCCESS: 'SUCCESS',
+    FAIL: 'FAIL', // not used
   },
 
   SortBy: {
-    Ascending: 'ASC',
-    Descending: 'DESC',
+    ASCENDING: 'ASC',
+    DESCENDING: 'DESC',
   },
 };

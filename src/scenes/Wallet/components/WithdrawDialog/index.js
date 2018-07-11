@@ -75,7 +75,7 @@ export default class WithdrawDialog extends Component {
   state = {
     toAddress: '',
     withdrawAmount: 0,
-    selectedToken: Token.Qtum,
+    selectedToken: Token.QTUM,
   };
 
   render() {
@@ -146,11 +146,11 @@ export default class WithdrawDialog extends Component {
 
     let withdrawLimit = 0;
     switch (selectedToken) {
-      case Token.Qtum: {
+      case Token.QTUM: {
         withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
         break;
       }
-      case Token.Bot: {
+      case Token.BOT: {
         withdrawLimit = botAmount;
         break;
       }
@@ -179,8 +179,8 @@ export default class WithdrawDialog extends Component {
             onChange={this.onTokenChange}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
-            <MenuItem value={Token.Qtum}>QTUM</MenuItem>
-            <MenuItem value={Token.Bot}>BOT</MenuItem>
+            <MenuItem value={Token.QTUM}>QTUM</MenuItem>
+            <MenuItem value={Token.BOT}>BOT</MenuItem>
           </Select>
         </div>
         <Typography variant="body1">
@@ -213,7 +213,7 @@ export default class WithdrawDialog extends Component {
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
     let amount = withdrawAmount;
-    if (selectedToken === Token.Bot) {
+    if (selectedToken === Token.BOT) {
       amount = decimalToSatoshi(withdrawAmount);
     }
 
@@ -233,7 +233,7 @@ export default class WithdrawDialog extends Component {
       withdrawAmount,
       selectedToken,
       {
-        type: TransactionType.Transfer,
+        type: TransactionType.TRANSFER,
         token: selectedToken,
         amount: withdrawAmount,
         optionIdx: undefined,
