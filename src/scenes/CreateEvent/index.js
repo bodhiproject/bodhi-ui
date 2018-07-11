@@ -263,7 +263,6 @@ export default class CreateEvent extends Component {
   }
 
   state = {
-    selectAddressDialogVisibility: false,
     notEnoughQtumError: {},
     hasEnoughQtum: true,
   }
@@ -362,15 +361,13 @@ export default class CreateEvent extends Component {
   }
 
   onSelectResultSetterAddress = () => {
-    this.setState({
-      selectAddressDialogVisibility: true,
-    });
+    const { store: { selectAddressDialog } } = this.props;
+    selectAddressDialog.setVisibility(true);
   }
 
   onSelectResultSetterAddressDialogClosed = (address) => {
-    this.setState({
-      selectAddressDialogVisibility: false,
-    });
+    const { store: { selectAddressDialog } } = this.props;
+    selectAddressDialog.setVisibility(false);
 
     this.props.changeFormFieldValue(ID_RESULT_SETTER, address);
     this.props.untouchForm(ID_RESULT_SETTER);
@@ -462,7 +459,6 @@ export default class CreateEvent extends Component {
     const {
       intl: { formatMessage },
       classes,
-      walletAddresses,
       changeFormFieldValue,
       handleSubmit,
       submitting,
@@ -535,8 +531,6 @@ export default class CreateEvent extends Component {
               </Button>
             </Section>
             <SelectAddressDialog
-              dialogVisible={this.state.selectAddressDialogVisibility}
-              walletAddresses={walletAddresses}
               onClosed={this.onSelectResultSetterAddressDialogClosed}
             />
           </DialogContent>
