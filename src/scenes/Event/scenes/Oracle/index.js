@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { BettingOracle } from './BettingOracle';
+import BettingOracle from './BettingOracle';
+import VotingOracle from './VotingOracle';
+import ResultSettingOracle from './ResultSettingOracle';
+import FinalizingOracle from './FinalizingOracle';
 import BackButton from '../../../../components/BackButton';
-
-const VotingOracle = () => <div />;
-const ResultSettingOracle = () => <div />;
-const FinalizingOracle = () => <div />;
 
 
 @withRouter
@@ -25,7 +24,6 @@ export default class OraclePage extends Component {
     const { oraclePage } = this.props.store;
     if (oraclePage.loading) return 'LOADING';
     const { oracle } = oraclePage;
-    // console.log('ORACLE: ', oracle);
     const Oracle = {
       BETTING: BettingOracle,
       UNCONFIRMED: BettingOracle,

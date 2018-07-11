@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { observable, computed } from 'mobx';
+import { observable } from 'mobx';
 import { defineMessages } from 'react-intl';
 import { OracleStatus, TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal, getPhase } from '../../helpers/utility';
@@ -46,9 +46,6 @@ export default class Oracle {
   address = ''
   topicAddress = ''
   @observable txFees = []
-  @computed get selectedOption() {
-    return this.options[this.app.oraclePage.selectedOptionIdx] || {};
-  }
 
   constructor(oracle, app) {
     Object.assign(this, oracle);

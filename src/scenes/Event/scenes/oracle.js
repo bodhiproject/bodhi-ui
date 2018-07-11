@@ -200,9 +200,9 @@ export default class OraclePage extends Component {
       return null;
     }
 
-    const cOracle = _.find(oracles, { token: Token.Qtum });
+    const cOracle = _.find(oracles, { token: Token.QTUM });
     // console.log('C oracle: ', cOracle);
-    const dOracles = _.orderBy(_.filter(oracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
+    const dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
     // console.log('D oracles: ', dOracles);
 
     const showResultHistory = config.eventStatus === EventStatus.VOTE || config.eventStatus === EventStatus.FINALIZE;

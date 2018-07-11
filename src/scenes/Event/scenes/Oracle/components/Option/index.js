@@ -53,9 +53,9 @@ export default class Option extends Component {
   render() {
     const {
       classes,
-      skipExpansion,
-      showAmountInput,
-      amountInputDisabled,
+      skipExpansion = false,
+      showAmountInput = true,
+      amountInputDisabled = false,
       store,
       option,
       intl,

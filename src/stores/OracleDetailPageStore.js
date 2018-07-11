@@ -1,26 +1,28 @@
-/* eslint-disable */
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import graphql from 'graphql.js';
-import { SortBy, OracleStatus, TransactionType, TransactionStatus, EventWarningType, Token } from 'constants';
+import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token } from 'constants';
 import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
+import NP from 'number-precision';
+
 import Tracking from '../helpers/mixpanelUtil';
 import { toFixed } from '../helpers/utility';
-import { createBetTx } from '../network/graphMutation';
-import Routes from '../network/routes';
+import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx } from '../network/graphMutation';
+import networkRoutes from '../network/routes';
 
 import Oracle from './models/Oracle';
 import { queryAllTransactions } from '../network/graphQuery';
 import { maxTransactionFee } from '../config/app';
 
-var graph = graphql("http://127.0.0.1:8989/graphql", {
+const graph = graphql('http://127.0.0.1:8989/graphql', {
   asJSON: true,
-})
-var gql = (strings, ...vars) => {
+});
+
+const gql = (strings, ...vars) => {
   const string = strings.reduce((acc, str, i) => vars[i] ? acc + str + vars[i] : acc + str, '');
   return graph(string)();
-}
+};
 
 const INIT = {
   loading: true,
@@ -52,31 +54,24 @@ export default class {
     return this.topicAddress === 'null' && this.address === 'null';
   }
   @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
-    return this.oracles.filter(({ token }) => token == Token.BOT);
+    return this.oracles.filter(({ token }) => token === Token.BOT);
   }
   @computed get cOracle() {
     // [QTUM] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
     // mainly: BETTING & RESULT SETTING phases
-    return _.find(this.oracles, { token: Token.QTUM });
+    return _.find(this.oracles, { token: Token.QTUM }) || {};
   }
   @computed get oracle() {
-    if (this.unconfirmed) return _.find(this.oracles, { txid: this.txid })
-    return _.find(this.oracles, { address: this.address }) || {}
+    if (this.unconfirmed) return _.find(this.oracles, { txid: this.txid });
+    return _.find(this.oracles, { address: this.address }) || {};
   }
+  @computed get selectedOption() {
+    return this.oracle.options[this.selectedOptionIdx] || {};
+  }
+
 
   constructor(app) {
     this.app = app;
-  }
-
-  confirm = () => {
-    const action = {
-      BETTING: this.bet,
-      RESULT_SETTING: this.setResult,
-      VOTING: this.vote,
-      FINALIZING: this.finalize,
-    }[this.oracle.phase];
-    if (_.isUndefined(action)) console.error('NO ACTION');
-    action();
   }
 
   @action
@@ -85,10 +80,10 @@ export default class {
     this.topicAddress = topicAddress;
     this.address = address;
     this.txid = txid;
-    console.log('TP ADDR: ', topicAddress, 'ADDR: ', address, 'TXID: ', txid);
+    // console.log('TP ADDR: ', topicAddress, 'ADDR: ', address, 'TXID: ', txid);
     if (topicAddress === 'null' && address === 'null' && txid) { // unconfirmed
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
-      let { allOracles } = await gql`
+      const { allOracles } = await gql`
         query {
           allOracles(filter: { txid: "${txid}", status: CREATED }) {
             txid
@@ -118,18 +113,11 @@ export default class {
         }
       `;
       runInAction(() => {
-        // this.dOracles = _.orderBy(allOracles
-        //   .filter(({ token }) => token === Token.Bot)
-        //   .map(o => new Oracle(o, this.app))
-        // ['blockNum'], [SortBy.Ascending.toLowerCase()])
-        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.Ascending.toLowerCase()])
-        // console.log('dOracles: ', this.dOracles);
-        // this.oracle = new Oracle(oracle, this.app);
-        // this.transactions = transactions;
+        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
         this.loading = false;
       });
     } else {
-      let { allOracles } = await gql`
+      const { allOracles } = await gql`
         query {
           allOracles(filter: { topicAddress: "${topicAddress}" }) {
             txid
@@ -160,14 +148,7 @@ export default class {
       `;
       const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
       runInAction(() => {
-        // console.log('ALL ORACLES: ', allOracles);
-        // this.dOracles = _.orderBy(_.filter(allOracles, { token: Token.Bot }), ['blockNum'], [SortBy.Ascending.toLowerCase()]);
-        // this.dOracles = _.orderBy(allOracles
-        //   .filter(({ token }) => token === Token.Bot)
-        //   .map(o => new Oracle(o, this.app))
-        // ['blockNum'], [SortBy.Ascending.toLowerCase()])
-        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()])
-        // this.oracle = new Oracle(oracle, this.app);
+        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
         this.transactions = transactions;
         this.loading = false;
       });
@@ -190,7 +171,7 @@ export default class {
           return;
         }
 
-        if (phase == 'BETTING' && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
+        if (phase === 'BETTING' && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -199,7 +180,7 @@ export default class {
 
 
         // Has not reached result setting start time
-        if ((phase == 'RESULT_SETTING')
+        if ((phase === 'RESULT_SETTING')
           && currBlockTime.isBefore(moment.unix(this.oracle.resultSetStartTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
@@ -208,7 +189,7 @@ export default class {
         }
 
         // User is not the result setter
-        if (phase == 'RESULT_SETTING' && resultSetterQAddress !== wallet.lastUsedAddress) {
+        if (phase === 'RESULT_SETTING' && resultSetterQAddress !== wallet.lastUsedAddress) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -219,8 +200,8 @@ export default class {
         const filteredAddress = _.filter(wallet.addresses, { address: wallet.lastUsedAddress });
         const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
         if ((
-          (phase == 'VOTING' && currentBot < this.amount)
-          || (phase == 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
+          (phase === 'VOTING' && currentBot < this.amount)
+          || (phase === 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
         ) && notEnoughQtum) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
@@ -230,7 +211,7 @@ export default class {
 
         // ALL
         // Trying to bet more qtum than you have or you just don't have enough QTUM period
-        if ((phase == 'BETTING' && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
+        if ((phase === 'BETTING' && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
           this.eventWarningMessageId = 'str.notEnoughQtum';
@@ -239,8 +220,8 @@ export default class {
 
 
         // Not enough bot for setting the result or voting
-        if ((phase == 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
-          || (phase == 'VOTING' && currentBot < this.amount)) {
+        if ((phase === 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
+          || (phase === 'VOTING' && currentBot < this.amount)) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
           this.eventWarningMessageId = 'str.notEnoughBot';
@@ -248,7 +229,7 @@ export default class {
         }
 
         // Did not select a result
-        if (phase != 'FINALIZING' && this.selectedOptionIdx == -1) {
+        if (phase !== 'FINALIZING' && this.selectedOptionIdx === -1) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.selectResultDisabledText';
@@ -264,9 +245,9 @@ export default class {
         }
 
         // Trying to vote over the consensus threshold
-        const optionAmount = this.oracle.selectedOption.amount;
-        const maxVote = phase == 'VOTING' ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
-        if (phase == 'VOTING' && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
+        const optionAmount = this.selectedOption.amount;
+        const maxVote = phase === 'VOTING' ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
+        if (phase === 'VOTING' && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
           this.buttonDisabled = true;
           this.amount = toFixed(maxVote);
           this.warningType = EventWarningType.ERROR;
@@ -279,21 +260,32 @@ export default class {
         this.warningType = '';
       },
       { fireImmediately: true },
-    )
+    );
   }
 
+  // used by confirm tx modal
+  confirm = () => {
+    const actionToPerform = {
+      BETTING: this.bet,
+      RESULT_SETTING: this.setResult,
+      VOTING: this.vote,
+      FINALIZING: this.finalize,
+    }[this.oracle.phase];
+    if (_.isUndefined(action)) console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
+    actionToPerform();
+  }
+
+  @action
   prepareBet = async () => {
-    const txType = {
+    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
       type: TransactionType.BET,
       token: this.oracle.token,
       amount: Number(this.amount),
-      // amount: this.consensusThreshold, // RESULT SETTING
       optionIdx: this.selectedOptionIdx,
       topicAddress: this.oracle.topicAddress,
       oracleAddress: this.oracle.address,
       senderAddress: this.app.wallet.lastUsedAddress,
-    }
-    const { data: { result } } = await axios.post(Routes.api.transactionCost, txType);
+    });
     runInAction(() => {
       // console.log('RES: ', result);
       this.oracle.txFees = result;
@@ -302,29 +294,51 @@ export default class {
   }
 
   prepareSetResult = async () => {
+    const txType = {
+      type: TransactionType.APPROVESETRESULT,
+      token: this.oracle.token,
+      amount: this.oracle.consensusThreshold,
+      optionIdx: this.selectedOptionIdx,
+      topicAddress: this.oracle.topicAddress,
+      oracleAddress: this.oracle.address,
+      senderAddress: this.app.wallet.lastUsedAddress,
+    };
+    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, txType);
+    runInAction(() => {
+      // console.log('RES: ', result);
+      this.oracle.txFees = result;
+      this.confirmDialogOpen = true;
+    });
   }
 
+  // TODO: this is same logic as this.prepareBet(), maybe combine? idk...
   prepareVote = async () => {
+    const txType = {
+      type: TransactionType.BET,
+      token: this.oracle.token,
+      amount: Number(this.amount),
+      optionIdx: this.selectedOptionIdx,
+      topicAddress: this.oracle.topicAddress,
+      oracleAddress: this.oracle.address,
+      senderAddress: this.app.wallet.lastUsedAddress,
+    };
+    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, txType);
+    runInAction(() => {
+      // console.log('RES: ', result);
+      this.oracle.txFees = result;
+      this.confirmDialogOpen = true;
+    });
   }
 
   @action
   bet = async () => {
-    // const { createBetTx, lastUsedAddress } = this.props;
     const { lastUsedAddress } = this.app.wallet;
-    const { topicAddress, oracle, selectedOptionIdx, amount } = this.app.oraclePage;
+    const { selectedOptionIdx, amount } = this;
+    const { topicAddress, version, address } = this.option;
 
-    console.log('ORACLE VERSION: ', oracle.version);
+    await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
 
-    await createBetTx(
-      oracle.version,
-      topicAddress,
-      oracle.address,
-      selectedOptionIdx,
-      amount, // should already be a string
-      lastUsedAddress,
-    );
-
-    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.Descending });
+    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
       this.app.oraclePage.confirmDialogOpen = false;
       this.transactions = transactions;
@@ -333,46 +347,54 @@ export default class {
     Tracking.track('oracleDetail-bet');
   }
 
-  // setResult = () => {
-  //   const { createSetResultTx, lastUsedAddress } = this.props;
-  //   const { oracle, currentOptionIdx } = this.state;
+  @action
+  setResult = async () => {
+    const { lastUsedAddress } = this.app.wallet;
+    const { selectedOptionIdx } = this;
+    const { version, topicAddress, address, consensusThreshold } = this.oracle;
 
-  //   createSetResultTx(
-  //     oracle.version,
-  //     oracle.topicAddress,
-  //     oracle.address,
-  //     currentOptionIdx,
-  //     oracle.consensusThreshold,
-  //     lastUsedAddress,
-  //   );
+    await createSetResultTx(version, topicAddress, address, selectedOptionIdx, consensusThreshold, lastUsedAddress);
 
-  //   Tracking.track('oracleDetail-set');
-  // }
+    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    runInAction(() => {
+      this.app.oraclePage.confirmDialogOpen = false;
+      this.transactions = transactions;
+    });
 
-  // vote = (amount) => {
-  //   const { createVoteTx, lastUsedAddress } = this.props;
-  //   const { oracle, currentOptionIdx } = this.state;
+    Tracking.track('oracleDetail-set');
+  }
 
-  //   createVoteTx(
-  //     oracle.version,
-  //     oracle.topicAddress,
-  //     oracle.address,
-  //     currentOptionIdx,
-  //     amount,
-  //     lastUsedAddress,
-  //   );
+  @action
+  vote = async () => {
+    const { lastUsedAddress } = this.app.wallet;
+    const { version, topicAddress, address } = this.oracle;
+    const { amount, selectedOptionIdx } = this;
 
-  //   Tracking.track('oracleDetail-vote');
-  // }
+    await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
 
-  // finalizeResult = () => {
-  //   const { createFinalizeResultTx, lastUsedAddress } = this.props;
-  //   const { oracle } = this.state;
+    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    runInAction(() => {
+      this.app.oraclePage.confirmDialogOpen = false;
+      this.transactions = transactions;
+    });
 
-  //   createFinalizeResultTx(oracle.version, oracle.topicAddress, oracle.address, lastUsedAddress);
+    Tracking.track('oracleDetail-vote');
+  }
 
-  //   Tracking.track('oracleDetail-finalize');
-  // }
+  finalize = async () => {
+    const { lastUsedAddress } = this.app.wallet;
+    const { version, topicAddress, address } = this.oracle;
+
+    await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+
+    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    runInAction(() => {
+      this.app.oraclePage.confirmDialogOpen = false;
+      this.transactions = transactions;
+    });
+
+    Tracking.track('oracleDetail-finalize');
+  }
 
   @action
   reset = () => Object.assign(this, INIT)
