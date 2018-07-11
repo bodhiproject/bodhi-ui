@@ -37,6 +37,7 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
+@observer
 export default class NavBar extends Component {
   render() {
     const { classes } = this.props;

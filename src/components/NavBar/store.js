@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
 import Topic from '../../stores/models/Topic';
@@ -7,7 +7,9 @@ import Oracle from '../../stores/models/Oracle';
 import { queryAllTopics, queryAllOracles, queryAllVotes } from '../../network/graphQuery';
 
 const INIT_VALUES = {
-  myActivitesCount: 0, // INIT_VALUESial loaded state
+  ResultSettingCount: 0,
+  FinalizeCount: 0,
+  WithdrawCount: 0,
 };
 
 
@@ -21,6 +23,12 @@ export default class {
 
   constructor(app) {
     this.app = app;
+    reaction(
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => {
+        this.init();
+      }
+    );
   }
 
   @action
