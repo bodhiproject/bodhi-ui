@@ -64,18 +64,16 @@ export default class {
     limit /= 2; // eslint-disable-line
     skip /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
-    const filters = [];
     let topics = [];
     if (this.hasMoreTopics) {
-      const topicFilters = [];
-      topicFilters.push({ status: OracleStatus.Withdraw });
+      const topicFilters = [{ status: OracleStatus.Withdraw }];
       topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
       topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
       if (topics.length < limit) this.hasMoreTopics = false;
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      oracles = await queryAllOracles(filters, orderBy, limit, skip);
+      oracles = await queryAllOracles(undefined, orderBy, limit, skip);
       oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
       if (oracles.length < limit) this.hasMoreOracles = false;
     }

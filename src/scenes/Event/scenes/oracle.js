@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { CircularProgress, Paper, Grid, Button, Typography, withStyles } from '@material-ui/core';
+import { Paper, Grid, Button, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import moment from 'moment';
@@ -26,7 +26,6 @@ import {
   getShortLocalDateTimeString,
   getEndTimeCountDownString,
   doesUserNeedToUnlockWallet,
-  getDetailPagePath,
   toFixed,
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight';
@@ -123,7 +122,6 @@ const messages = defineMessages({
 export default class OraclePage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getOracles: PropTypes.func,
     oracles: PropTypes.array,
@@ -268,11 +266,7 @@ export default class OraclePage extends Component {
                         onClick={this.handleConfirmClick}
                         className={classes.eventActionButton}
                       >
-                        {
-                          this.state.isApproving ?
-                            <CircularProgress className={classes.progress} size={30} style={{ color: 'white' }} /> :
-                            config.predictionAction.btnText
-                        }
+                        {config.predictionAction.btnText}
                       </Button>
                     )}
                     {showResultHistory && <EventResultHistory oracles={oracles} />}
@@ -449,28 +443,6 @@ export default class OraclePage extends Component {
         this.setState({ isArchived: true });
       }
     }
-    if (oracle && !config && this.props.store.ui.location !== AppLocation.allEvents) {
-      const path = getDetailPagePath(oracles);
-      if (path) {
-        // Oracle stage changed, route to correct detail page
-        this.props.history.push(path);
-      } else {
-        // Couldn't get proper path, route to dashboard
-        this.props.history.push('/');
-      }
-      return;
-    }
-    if (oracle && !config && this.props.store.ui.location === AppLocation.allEvents) {
-      const path = this.props.match.url;
-      if (path) {
-        // Oracle stage changed, route to correct detail page
-        this.props.history.push(path);
-      } else {
-        // Couldn't get proper path, route to dashboard
-        this.props.history.push('/');
-      }
-      return;
-    }
     this.setState({ oracle, oracles, config });
   }
 
@@ -595,6 +567,13 @@ export default class OraclePage extends Component {
     const isFinalizePhase = token === Token.BOT && status === OracleStatus.WAIT_RESULT;
     const notEnoughQtum = totalQtum < maxTransactionFee;
 
+    // Return disabled directly if the oracle is archived
+    if (isArchived) {
+      return {
+        disabled: false,
+      };
+    }
+
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(transactions, { oracleAddress: address, status: TransactionStatus.PENDING });
     if (pendingTxs.length > 0) {
@@ -674,7 +653,7 @@ export default class OraclePage extends Component {
     }
 
     // Did not select a result
-    if (!isFinalizePhase && currentOptionIdx === -1 && !isArchived) {
+    if (!isFinalizePhase && currentOptionIdx === -1) {
       return {
         disabled: true,
         id: 'oracle.selectResultDisabledText',
