@@ -76,11 +76,9 @@ export default class {
 
   @action
   async init({ topicAddress, address, txid }) {
-    // console.log('A: ', address)
     this.topicAddress = topicAddress;
     this.address = address;
     this.txid = txid;
-    // console.log('TP ADDR: ', topicAddress, 'ADDR: ', address, 'TXID: ', txid);
     if (topicAddress === 'null' && address === 'null' && txid) { // unconfirmed
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
       const { allOracles } = await gql`
@@ -153,6 +151,8 @@ export default class {
         this.loading = false;
       });
     }
+
+    // when we get a new block or transactions are updated, react to it
     reaction(
       () => this.app.global.syncBlockTime + this.transactions,
       () => {
@@ -287,14 +287,14 @@ export default class {
       senderAddress: this.app.wallet.lastUsedAddress,
     });
     runInAction(() => {
-      // console.log('RES: ', result);
       this.oracle.txFees = result;
       this.confirmDialogOpen = true;
     });
   }
 
+  @action
   prepareSetResult = async () => {
-    const txType = {
+    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
       type: TransactionType.APPROVESETRESULT,
       token: this.oracle.token,
       amount: this.oracle.consensusThreshold,
@@ -302,18 +302,17 @@ export default class {
       topicAddress: this.oracle.topicAddress,
       oracleAddress: this.oracle.address,
       senderAddress: this.app.wallet.lastUsedAddress,
-    };
-    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, txType);
+    });
     runInAction(() => {
-      // console.log('RES: ', result);
       this.oracle.txFees = result;
       this.confirmDialogOpen = true;
     });
   }
 
   // TODO: this is same logic as this.prepareBet(), maybe combine? idk...
+  @action
   prepareVote = async () => {
-    const txType = {
+    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
       type: TransactionType.BET,
       token: this.oracle.token,
       amount: Number(this.amount),
@@ -321,10 +320,8 @@ export default class {
       topicAddress: this.oracle.topicAddress,
       oracleAddress: this.oracle.address,
       senderAddress: this.app.wallet.lastUsedAddress,
-    };
-    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, txType);
+    });
     runInAction(() => {
-      // console.log('RES: ', result);
       this.oracle.txFees = result;
       this.confirmDialogOpen = true;
     });
