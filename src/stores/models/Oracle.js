@@ -64,7 +64,7 @@ export default class Oracle {
     this.isPending = this.app.oraclePage.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
     this.unconfirmed = (!oracle.topicAddress && !oracle.address);
 
-    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult && (app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0);
+    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WAIT_RESULT && (app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0);
 
     this.buttonText = { // TODO: will move into each oracle component
       BETTING: messages.placeBet,
