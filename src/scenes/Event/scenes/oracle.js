@@ -501,11 +501,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-<<<<<<< HEAD
     if (!ui.location) ui.location = Routes.SET;
-=======
-    if (!ui.location) ui.location = AppLocation.SET;
->>>>>>> change all, all testing passed
 
     return {
       eventStatus: EventStatus.SET,
@@ -528,11 +524,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-<<<<<<< HEAD
     if (!ui.location) ui.location = Routes.BOT_COURT;
-=======
-    if (!ui.location) ui.location = AppLocation.BOT_COURT;
->>>>>>> change all, all testing passed
 
     return {
       eventStatus: EventStatus.VOTE,
@@ -555,11 +547,7 @@ export default class OraclePage extends Component {
     const { ui } = this.props.store;
     const intl = getIntlProvider(locale, localeMessages);
 
-<<<<<<< HEAD
     if (!ui.location) ui.location = Routes.FINALIZE;
-=======
-    if (!ui.location) ui.location = AppLocation.FINALIZE;
->>>>>>> change all, all testing passed
 
     return {
       eventStatus: EventStatus.FINALIZE,
