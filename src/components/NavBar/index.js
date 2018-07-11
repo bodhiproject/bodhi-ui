@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import {

@@ -33,6 +33,7 @@ class AppStore {
     this.init();
   }
 
+  @action
   async init() {
     this.loading = true;
     this.global = new GlobalStore(this);
