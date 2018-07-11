@@ -277,12 +277,14 @@ export function* getActionableItemCountHandler() {
       // Filter votes
       let votes = yield call(queryAllVotes, voteFilters);
       votes = getUniqueVotes(votes);
+      console.log('votes', votes); // eslint-disable-line
 
       // Fetch topics against votes that have the winning result index
       _.each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       let result = yield call(queryAllTopics, topicFilters);
+      console.log(result); // eslint-disable-line
       actionItems[EventStatus.WITHDRAW] = result.length;
       actionItems.totalCount += result.length;
 

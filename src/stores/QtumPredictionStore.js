@@ -26,11 +26,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
-<<<<<<< HEAD
         if (this.app.ui.location === Routes.QTUM_PREDICTION) {
-=======
-        if (this.app.ui.location === AppLocation.QTUM_PREDICTION) {
->>>>>>> change all, all testing passed
           this.init();
         }
       }
@@ -46,11 +42,7 @@ export default class QtumPredictionStore {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-<<<<<<< HEAD
     this.app.ui.location = Routes.QTUM_PREDICTION;
-=======
-    this.app.ui.location = AppLocation.QTUM_PREDICTION;
->>>>>>> change all, all testing passed
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = false;

@@ -26,11 +26,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-<<<<<<< HEAD
         if (this.app.ui.location === Routes.BOT_COURT) {
-=======
-        if (this.app.ui.location === AppLocation.BOT_COURT) {
->>>>>>> change all, all testing passed
           this.init();
         }
       }
@@ -46,11 +42,7 @@ export default class BotCourtStore {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-<<<<<<< HEAD
     this.app.ui.location = Routes.BOT_COURT;
-=======
-    this.app.ui.location = AppLocation.BOT_COURT;
->>>>>>> change all, all testing passed
     this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = false;

@@ -26,11 +26,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-<<<<<<< HEAD
         if (this.app.ui.location === Routes.FINALIZE) {
-=======
-        if (this.app.ui.location === AppLocation.FINALIZE) {
->>>>>>> change all, all testing passed
           this.init();
         }
       }
@@ -46,11 +42,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-<<<<<<< HEAD
     this.app.ui.location = Routes.FINALIZE; // change ui location, for tabs to render correctly
-=======
-    this.app.ui.location = AppLocation.FINALIZE; // change ui location, for tabs to render correctly
->>>>>>> change all, all testing passed
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;

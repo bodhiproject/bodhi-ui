@@ -15,10 +15,6 @@ import SelectAddressDialogStore from './components/SelectAddressDialogStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
 import NavBarStore from '../components/NavBar/store';
-<<<<<<< HEAD
-=======
-
->>>>>>> update store
 
 class AppStore {
   @observable loading = true; // TODO: move these to GlobalStore
@@ -60,20 +56,9 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
       };
-<<<<<<< HEAD
-=======
       this.navBar = new NavBarStore();
->>>>>>> update store
-      this.finishLoading();
+      this.loading = false;
     });
-  }
-
-<<<<<<< HEAD
-  @action
-=======
->>>>>>> update store
-  finishLoading() {
-    this.loading = false;
   }
 }
 

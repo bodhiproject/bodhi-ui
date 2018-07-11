@@ -37,10 +37,6 @@ const messages = defineMessages({
 @withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
 @injectIntl
-@connect((state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-}))
 @inject('store')
 export default class NavBar extends Component {
   render() {
@@ -104,9 +100,9 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-const Wallet = ({ classes, walletAddresses }) => {
-  const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
-  const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
+const Wallet = ({ classes, store: { wallet } }) => {
+  const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
+  const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
     <NavLink to={Routes.WALLET}>
       <Button className={classes.marginRightButton}>
@@ -123,8 +119,8 @@ const MyActivities = ({ classes, store }) => {
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
     </Button>
   );
-  if (store.navBar.myActivitesCount > 0) {
-    children = <Badge badgeContent={store.navBar.myActivitesCount} color="secondary">{children}</Badge>;
+  if (store.navBar.totalCount > 0) {
+    children = <Badge badgeContent={store.navBar.totalCount} color="secondary">{children}</Badge>;
   }
   return <NavLink to={Routes.SET}>{children}</NavLink>;
 };

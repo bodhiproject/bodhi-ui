@@ -32,11 +32,7 @@ export default class {
     reaction(
       () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
-<<<<<<< HEAD
         if (this.app.ui.location === Routes.ALL_EVENTS) {
-=======
-        if (this.app.ui.location === AppLocation.ALL_EVENTS) {
->>>>>>> change all, all testing passed
           this.init();
         }
       }
@@ -46,11 +42,7 @@ export default class {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES); // reset all properties
-<<<<<<< HEAD
     this.app.ui.location = Routes.ALL_EVENTS;
-=======
-    this.app.ui.location = AppLocation.ALL_EVENTS;
->>>>>>> change all, all testing passed
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
       this.loading = false;
