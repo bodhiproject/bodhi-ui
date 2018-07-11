@@ -48,8 +48,8 @@ import { injectIntl } from 'react-intl';
 export const ImportantNote = injectIntl(({ heading, message, intl }) => !!(heading && message) && (
   <Wrapper>
     <Icon />
-    <Heading>{intl.formatMessage({ id: heading })}</Heading>
-    <Message>{intl.formatMessage({ id: message })}</Message>
+    <Heading>{heading}</Heading>
+    <Message>{message}</Message>
   </Wrapper>
 ))
 
