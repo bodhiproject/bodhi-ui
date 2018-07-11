@@ -10,21 +10,24 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 
 import TxRow from './TxRow';
 import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class EventTxHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    transactions: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, transactions, options } = this.props;
+    const { classes, options, type, store: { oraclePage } } = this.props;
+    const { transactions } = type === 'oracle' ? oraclePage : this.props;
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>

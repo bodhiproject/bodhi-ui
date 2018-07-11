@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import { observable } from 'mobx';
 import { defineMessages } from 'react-intl';
 import { OracleStatus, TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal, getPhase } from '../../helpers/utility';
+import Option from './Option';
 const { Pending } = TransactionStatus;
 const { RESULT_SETTING, FINALIZING } = Phases;
 
@@ -16,10 +18,9 @@ const messages = defineMessages({
 
 
 export default class Oracle {
-  phase = ''
+  @observable phase = ''
   status = ''
   txid = ''
-  address = ''
   amounts = []
   blockNum
   consensusThreshold = ''
@@ -33,15 +34,18 @@ export default class Oracle {
   resultSetEndTime = ''
   resultSetterAddress = ''
   resultSetterQAddress = ''
-  token = '' // BOT or QTUM
-  topicAddress = ''
   transactions = []
   version
   // for UI
   buttonText = ''
-  unconfirmed = false // switch to isPending
+  unconfirmed = false
+  isPending = false
   amountLabel = ''
   url = ''
+  token = '' // BOT or QTUM
+  address = ''
+  topicAddress = ''
+  @observable txFees = []
 
   constructor(oracle, app) {
     Object.assign(this, oracle);
@@ -57,24 +61,27 @@ export default class Oracle {
       VOTING: [ApproveVote, Vote],
       FINALIZING: [FinalizeResult],
     }[this.phase] || [];
-    const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
-    this.unconfirmed = (!oracle.topicAddress && !oracle.address) || isPending;
+    this.isPending = this.app.oraclePage.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+    this.unconfirmed = (!oracle.topicAddress && !oracle.address);
 
-    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult && (app.wallet.addresses.filter((addr) => (addr.address === this.resultSetterQAddress)).length === 0);
+    this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WAIT_RESULT && (app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0);
 
-    this.buttonText = {
+    this.buttonText = { // TODO: will move into each oracle component
       BETTING: messages.placeBet,
       RESULT_SETTING: messages.setResult,
       VOTING: messages.arbitrate,
       PENDING: messages.pending,
       FINALIZING: messages.finalizeResult,
       WITHDRAWING: messages.withdraw,
+      UNCONFIRMED: { id: 'str.unconfirmed' },
     }[this.phase];
 
     const amount = parseFloat(_.sum(this.amounts).toFixed(2));
 
-    this.amountLabel = this.phase !== FINALIZING ? `${amount} ${oracle.token}` : '';
+    this.amountLabel = this.phase !== FINALIZING ? `${amount} ${oracle.token}` : ''; // TODO: will move into Finalize Oracle component
     this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
+
+    this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
   }
 }

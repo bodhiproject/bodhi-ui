@@ -23,7 +23,7 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Token, TransactionType } from 'constants';
 
-import ImportantNote from '../../components/ImportantNote';
+// import { ImportantNote } from '../../components/ImportantNote';
 import EventWarning from '../../components/EventWarning';
 import CreateEventDatePicker from './components/CreateEventDatePicker';
 import CreateEventOutcomes from './components/CreateEventOutcomes';
@@ -480,11 +480,15 @@ export default class CreateEvent extends Component {
               </Grid>
             </Grid>
             <div className={classes.importantNoteContainer}>
-              <ImportantNote
+              {/* <ImportantNote
                 className={classes.createEscrowNote}
-                heading={formatMessage(messages.escrowNoteTitle, { amount: eventEscrowAmount })}
-                message={formatMessage(messages.escrowNoteDesc, { amount: eventEscrowAmount })}
-              />
+                heading={{ id: 'create.escrowNoteTitle', values: { amount: eventEscrowAmount } }}
+                headingId=''
+                headingVal={}
+                messageId=''
+                messageVal={}
+                // message={{ id: 'create.escrowNoteDesc', values: { amount: eventEscrowAmount } }}
+              /> */}
             </div>
           </DialogContent>
           <DialogContent>

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Routes, EventStatus } from 'constants';
-import _ from 'lodash';
 
 import ResultSetting from './scenes/ResultSetting';
 import Finalize from './scenes/Finalize';
@@ -66,10 +65,6 @@ export default class Activities extends Component {
     [WITHDRAW]: TAB_WITHDRAW,
     [ACTIVITY_HISTORY]: TAB_HISTORY,
   }[this.props.match.path]
-
-  componentDidMount() {
-    this.props.store.ui.location = _.invert(Routes)[this.props.match.path];
-  }
 
   getTabLabel = (eventStatusIndex) => {
     const { actionableItemCount, intl } = this.props;
