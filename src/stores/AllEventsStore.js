@@ -66,7 +66,7 @@ export default class {
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     let topics = [];
     if (this.hasMoreTopics) {
-      const topicFilters = [{ status: OracleStatus.Withdraw }];
+      const topicFilters = [{ status: OracleStatus.WITHDRAW }];
       topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
       topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
       if (topics.length < limit) this.hasMoreTopics = false;
