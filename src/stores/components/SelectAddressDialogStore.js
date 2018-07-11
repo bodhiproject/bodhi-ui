@@ -5,7 +5,7 @@ export default class SelectAddressDialogStore {
   @observable isVisible = false;
 
   @action
-  setVisibility(visibility) {
+  setVisibility = (visibility) => {
     this.isVisible = visibility;
   }
 }
