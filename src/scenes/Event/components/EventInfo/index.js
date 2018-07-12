@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -8,7 +8,7 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-export default class EventInfo extends Component {
+export default class EventInfo extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     infoObjs: PropTypes.array.isRequired,
@@ -18,7 +18,7 @@ export default class EventInfo extends Component {
     const { classes, infoObjs } = this.props;
 
     if (!infoObjs || infoObjs.length === 0) {
-      return null;
+      return <Fragment></Fragment>;
     }
 
     return (

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import {
@@ -37,12 +36,11 @@ const messages = defineMessages({
 @withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
 @injectIntl
-@connect((state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-}))
 @inject('store')
 export default class NavBar extends Component {
+  componentDidMount() {
+    this.props.store.global.getUserData();
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -104,9 +102,9 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-const Wallet = ({ classes, walletAddresses }) => {
-  const totalQTUM = _.sumBy(walletAddresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
-  const totalBOT = _.sumBy(walletAddresses, ({ bot }) => bot).toFixed(2) || '0.00';
+const Wallet = observer(({ classes, store: { wallet } }) => {
+  const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
+  const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (
     <NavLink to={Routes.WALLET}>
       <Button className={classes.marginRightButton}>
@@ -115,19 +113,19 @@ const Wallet = ({ classes, walletAddresses }) => {
       </Button>
     </NavLink>
   );
-};
+});
 
-const MyActivities = ({ classes, store }) => {
+const MyActivities = observer(({ classes, store: { global } }) => {
   let children = (
     <Button className={cx(classes.navEventsButton, classes.dark)}>
       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
     </Button>
   );
-  if (store.navBar.myActivitesCount > 0) {
-    children = <Badge badgeContent={store.navBar.myActivitesCount} color="secondary">{children}</Badge>;
+  if (global.userData.totalCount > 0) {
+    children = <Badge badgeContent={global.userData.totalCount} color="secondary">{children}</Badge>;
   }
   return <NavLink to={Routes.SET}>{children}</NavLink>;
-};
+});
 
 const HelpButton = ({ classes, intl }) => (
   <Button

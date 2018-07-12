@@ -23,14 +23,14 @@ import {
   getPhase,
 } from '../../helpers/utility';
 import Routes from '../../network/routes';
-const { Pending } = TransactionStatus;
+const { PENDING } = TransactionStatus;
 const { RESULT_SETTING, FINALIZING } = Phases;
 
 const messages = defineMessages({
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
   setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
-  pending: { id: 'str.pending', defaultMessage: 'Pending' },
+  pending: { id: 'str.pending', defaultMessage: 'PENDING' },
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
@@ -41,14 +41,14 @@ const messages = defineMessages({
 const massageOracles = (oracles) => oracles.map((oracle) => {
   const phase = getPhase(oracle);
 
-  const { ApproveSetResult, SetResult, ApproveVote, Vote, FinalizeResult, Bet } = TransactionType;
+  const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
   const pendingTypes = {
-    BETTING: [Bet],
-    RESULT_SETTING: [ApproveSetResult, SetResult],
-    VOTING: [ApproveVote, Vote],
-    FINALIZING: [FinalizeResult],
+    BETTING: [BET],
+    RESULT_SETTING: [APPROVE_SET_RESULT, SET_RESULT],
+    VOTING: [APPROVE_VOTE, VOTE],
+    FINALIZING: [FINALIZE_RESULT],
   }[phase] || [];
-  const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+  const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
 
   const isUpcoming = phase === RESULT_SETTING && oracle.status === OracleStatus.WAIT_RESULT;
 
@@ -80,7 +80,7 @@ const massageOracles = (oracles) => oracles.map((oracle) => {
 */
 const massageTopics = (topics) => topics.map((topic) => {
   const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
-  const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+  const isPending = topic.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
 
   const totalQTUM = parseFloat(_.sum(topic.qtumAmount).toFixed(2));
   const totalBOT = parseFloat(_.sum(topic.botAmount).toFixed(2));
