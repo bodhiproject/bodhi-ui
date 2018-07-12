@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -10,8 +10,8 @@ import {
   withStyles,
 } from '@material-ui/core';
 import cx from 'classnames';
-import EventWarning from '../EventWarning';
 
+import EventWarning from '../EventWarning';
 import styles from './styles';
 import sportStyles from './sportStyles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
@@ -35,7 +35,7 @@ const cardMessages = defineMessages({
 @injectIntl
 @withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
-export default class EventCard extends Component {
+export default class EventCard extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
