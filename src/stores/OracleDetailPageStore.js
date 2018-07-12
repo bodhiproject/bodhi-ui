@@ -32,7 +32,8 @@ const INIT = {
   topicAddress: '',
   transactions: [],
   selectedOptionIdx: -1,
-  confirmDialogOpen: false,
+  txConfirmDialogOpen: false,
+  txSentDialogOpen: false,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
@@ -46,8 +47,9 @@ export default class {
   @observable topicAddress = INIT.topicAddress
   @observable transactions = INIT.transactions
   @observable selectedOptionIdx = INIT.selectedOptionIdx // option selected for a oracle
-  @observable confirmDialogOpen = INIT.confirmDialogOpen
-  @observable buttonDisabled = INIT.buttonDisabled // TODO: in INIT
+  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
+  @observable txSentDialogOpen = INIT.txSentDialogOpen
+  @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @computed get unconfirmed() {
@@ -271,8 +273,8 @@ export default class {
       VOTING: this.vote,
       FINALIZING: this.finalize,
     }[this.oracle.phase];
-    if (_.isUndefined(action)) console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
-    actionToPerform();
+    if (!_.isUndefined(actionToPerform)) return actionToPerform();
+    console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
   @action
@@ -288,7 +290,7 @@ export default class {
     });
     runInAction(() => {
       this.oracle.txFees = result;
-      this.confirmDialogOpen = true;
+      this.txConfirmDialogOpen = true;
     });
   }
 
@@ -305,7 +307,7 @@ export default class {
     });
     runInAction(() => {
       this.oracle.txFees = result;
-      this.confirmDialogOpen = true;
+      this.txConfirmDialogOpen = true;
     });
   }
 
@@ -323,7 +325,7 @@ export default class {
     });
     runInAction(() => {
       this.oracle.txFees = result;
-      this.confirmDialogOpen = true;
+      this.txConfirmDialogOpen = true;
     });
   }
 
@@ -331,13 +333,14 @@ export default class {
   bet = async () => {
     const { lastUsedAddress } = this.app.wallet;
     const { selectedOptionIdx, amount } = this;
-    const { topicAddress, version, address } = this.option;
+    const { topicAddress, version, address } = this.oracle;
 
     await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      this.app.oraclePage.confirmDialogOpen = false;
+      this.txConfirmDialogOpen = false;
+      this.txSentDialogOpen = true;
       this.transactions = transactions;
     });
 
@@ -354,7 +357,8 @@ export default class {
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      this.app.oraclePage.confirmDialogOpen = false;
+      this.txConfirmDialogOpen = false;
+      this.txSentDialogOpen = true;
       this.transactions = transactions;
     });
 
@@ -371,7 +375,8 @@ export default class {
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      this.app.oraclePage.confirmDialogOpen = false;
+      this.txConfirmDialogOpen = false;
+      this.txSentDialogOpen = true;
       this.transactions = transactions;
     });
 
@@ -386,7 +391,8 @@ export default class {
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      this.app.oraclePage.confirmDialogOpen = false;
+      this.txConfirmDialogOpen = false;
+      this.txSentDialogOpen = true;
       this.transactions = transactions;
     });
 

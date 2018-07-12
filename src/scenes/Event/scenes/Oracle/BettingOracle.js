@@ -15,13 +15,10 @@ const BettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } 
       <Title>{oracle.name}</Title>
       {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
       <Options oracle={oracle} />
-      {/* ImportantNote <ConsensusThreshold /> RESULT SET */}
-      {/* UNCOFIRMED, RESULST SET, VOTE, FINALIZE */}
       {oracle.unconfirmed && <EventUnconfirmedNote />}
       {(!oracle.unconfirmed || oracle.phase !== 'UNCONFIRMED') && (
         <Fragment>
-          <BetButton onClick={oraclePage.prepareBet} disabled={oraclePage.isPending} />
-          {/* <EventResultHistory oracles={oracles} /> ONLY VOTE & FINALIZE */}
+          <BetButton onClick={oraclePage.prepareBet} disabled={oraclePage.buttonDisabled} />
           <Transactions type='oracle' options={oracle.options} />
         </Fragment>
       )}

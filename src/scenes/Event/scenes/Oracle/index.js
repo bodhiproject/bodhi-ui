@@ -1,6 +1,8 @@
+/* eslint-disable */
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
+import { TxSentDialog } from 'components';
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
@@ -37,7 +39,16 @@ export default class OraclePage extends Component {
       <Fragment>
         <BackButton />
         <Oracle oracle={oracle} oraclePage={oraclePage} />
+        <EventTxSuccessDialog eventPage={oraclePage} />
       </Fragment>
     );
   }
 }
+
+const EventTxSuccessDialog = ({ eventPage }) => (
+  <TxSentDialog
+    txid={eventPage.oracle.txid}
+    open={eventPage.txSentDialogOpen}
+    onClose={() => eventPage.txSentDialogOpen = false}
+  />
+);
