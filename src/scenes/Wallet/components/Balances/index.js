@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { inject, observer } from 'mobx-react';
 
 import {
@@ -35,15 +34,11 @@ import Tracking from '../../../../helpers/mixpanelUtil';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-}))
 @inject('store')
 @observer
 export default class MyBalances extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    walletAddresses: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -118,10 +113,11 @@ export default class MyBalances extends Component {
   }
 
   getTotalsGrid() {
-    const { classes, walletAddresses } = this.props;
+    const { classes, store: { wallet } } = this.props;
 
     let totalQtum = 0;
     let totalBot = 0;
+    const walletAddresses = wallet.addresses;
     if (walletAddresses && walletAddresses.length) {
       totalQtum = _.sumBy(walletAddresses, (address) => address.qtum ? address.qtum : 0);
       totalBot = _.sumBy(walletAddresses, (address) => address.bot ? address.bot : 0);
@@ -251,15 +247,16 @@ export default class MyBalances extends Component {
   handleSorting = (property) => (event) => { // eslint-disable-line
     const orderBy = property;
     let order = SortBy.DESCENDING.toLowerCase();
+    const { store: { wallet } } = this.props;
 
     if (this.state.orderBy === property && this.state.order === SortBy.DESCENDING.toLowerCase()) {
       order = SortBy.ASCENDING.toLowerCase();
     }
 
     if (order === SortBy.DESCENDING.toLowerCase()) {
-      this.props.walletAddresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
+      wallet.addresses.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1));
     } else {
-      this.props.walletAddresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      wallet.addresses.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
     }
 
     this.setState({
@@ -269,11 +266,11 @@ export default class MyBalances extends Component {
   }
 
   getTableBody() {
-    const { classes, walletAddresses } = this.props;
+    const { classes, store: { wallet } } = this.props;
 
     return (
       <TableBody>
-        {walletAddresses.map((item, index) =>
+        {wallet.addresses.map((item, index) =>
           (<TableRow key={item.address} selected={index % 2 !== 0}>
             <TableCell>
               <Typography variant="body1">{item.address}</Typography>
