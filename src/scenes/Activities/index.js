@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Routes, EventStatus } from 'constants';
@@ -41,10 +40,6 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  ...state.App.toJS(),
-  actionableItemCount: state.Graphql.get('actionableItemCount'),
-}))
 @inject('store')
 @observer
 export default class Activities extends Component {
@@ -53,11 +48,6 @@ export default class Activities extends Component {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
-    actionableItemCount: PropTypes.object,
-  }
-
-  static defaultProps = {
-    actionableItemCount: undefined,
   }
 
   tabIdx = { // Determine tab index based on path
@@ -72,24 +62,24 @@ export default class Activities extends Component {
   }
 
   getTabLabel = (eventStatusIndex) => {
-    const { actionableItemCount, intl } = this.props;
+    const { store: { global }, intl } = this.props;
 
     let label;
     let count;
     switch (eventStatusIndex) {
       case EventStatus.SET: {
         label = intl.formatMessage(messages.set);
-        count = actionableItemCount[EventStatus.SET];
+        count = global.userData.resultSettingCount;
         break;
       }
       case EventStatus.FINALIZE: {
         label = intl.formatMessage(messages.finalize);
-        count = actionableItemCount[EventStatus.FINALIZE];
+        count = global.userData.finalizeCount;
         break;
       }
       case EventStatus.WITHDRAW: {
         label = intl.formatMessage(messages.withdraw);
-        count = actionableItemCount[EventStatus.WITHDRAW];
+        count = global.userData.withdrawCount;
         break;
       }
       default: {
