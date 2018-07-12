@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { defineMessages } from 'react-intl';
 import { OracleStatus, TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal, getPhase } from '../../helpers/utility';
-const { Pending } = TransactionStatus;
+const { PENDING } = TransactionStatus;
 const { RESULT_SETTING, FINALIZING } = Phases;
 
 const messages = defineMessages({
@@ -57,7 +57,7 @@ export default class Oracle {
       VOTING: [ApproveVote, Vote],
       FINALIZING: [FinalizeResult],
     }[this.phase] || [];
-    const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+    const isPending = oracle.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
     this.unconfirmed = (!oracle.topicAddress && !oracle.address) || isPending;
 
     this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WaitResult && (app.wallet.addresses.filter((addr) => (addr.address === this.resultSetterQAddress)).length === 0);

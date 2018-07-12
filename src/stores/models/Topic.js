@@ -2,7 +2,7 @@ import { defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
-const { Pending } = TransactionStatus;
+const { PENDING } = TransactionStatus;
 
 const messages = defineMessages({
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
@@ -39,7 +39,7 @@ export default class Topic {
       consensusThreshold: satoshiToDecimal(oracle.consensusThreshold),
     }));
     const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
-    this.isPending = this.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === Pending);
+    this.isPending = this.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
 
     const totalQTUM = parseFloat(_.sum(this.qtumAmount).toFixed(2));
     const totalBOT = parseFloat(_.sum(this.botAmount).toFixed(2));
