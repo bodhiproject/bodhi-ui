@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Collapse,
@@ -26,7 +26,7 @@ import { toFixed } from '../../../../helpers/utility';
 
 
 @withStyles(styles, { withTheme: true })
-export default class EventOption extends Component {
+export default class EventOption extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     isLast: PropTypes.bool.isRequired,
