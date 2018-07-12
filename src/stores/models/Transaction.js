@@ -31,8 +31,8 @@ export default class Transaction {
     this.fee = gasToQtum(this.gasUsed);
 
     if (this.token === Token.BOT) {
-      const { ApproveCreateEvent, ApproveSetResult, ApproveVote } = TransactionType;
-      if (_.includes([ApproveCreateEvent, ApproveSetResult, ApproveVote], this.type)) {
+      const { APPROVE_CREATE_EVENT, APPROVE_SET_RESULT, APPROVE_VOTE } = TransactionType;
+      if (_.includes([APPROVE_CREATE_EVENT, APPROVE_SET_RESULT, APPROVE_VOTE], this.type)) {
         // Don't show the amount for any approves
         this.amount = undefined;
       } else {
