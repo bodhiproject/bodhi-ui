@@ -13,6 +13,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Token, TransactionType } from 'constants';
@@ -45,13 +46,13 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch) => ({
+@connect(null, (dispatch) => ({
   createTransferTx: (senderAddress, receiverAddress, token, amount) =>
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
+@inject('store')
+@observer
 export default class WithdrawDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -62,7 +63,6 @@ export default class WithdrawDialog extends Component {
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
     createTransferTx: PropTypes.func,
-    walletAddresses: PropTypes.array.isRequired,
     setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
@@ -140,14 +140,14 @@ export default class WithdrawDialog extends Component {
       classes,
       intl,
       botAmount,
-      walletAddresses,
+      store: { wallet },
     } = this.props;
     const { withdrawAmount, selectedToken } = this.state;
 
     let withdrawLimit = 0;
     switch (selectedToken) {
       case Token.QTUM: {
-        withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
+        withdrawLimit = _.sumBy(wallet.addresses, (w) => w.qtum ? w.qtum : 0);
         break;
       }
       case Token.BOT: {
