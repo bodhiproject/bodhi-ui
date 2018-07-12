@@ -4,7 +4,7 @@ import _ from 'lodash';
 import WalletHistoryStore from './WalletHistoryStore';
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
-
+import { createTransferTx } from '../../network/graphMutation';
 
 export default class {
   @observable addresses = []
@@ -80,5 +80,10 @@ export default class {
         this.app.ui.setError(error.message, Routes.api.backupWallet);
       });
     }
+  }
+
+  @action
+  createTransferTx(walletAddress, toAddress, selectedToken, amount) {
+    createTransferTx(walletAddress, toAddress, selectedToken, amount);
   }
 }

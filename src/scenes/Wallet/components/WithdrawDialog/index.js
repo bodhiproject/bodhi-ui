@@ -47,8 +47,6 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect(null, (dispatch) => ({
-  createTransferTx: (senderAddress, receiverAddress, token, amount) =>
-    dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
 @inject('store')
@@ -62,14 +60,12 @@ export default class WithdrawDialog extends Component {
     botAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
-    createTransferTx: PropTypes.func,
     setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     walletAddress: undefined,
     botAmount: undefined,
-    createTransferTx: undefined,
   };
 
   state = {
@@ -209,15 +205,14 @@ export default class WithdrawDialog extends Component {
   };
 
   submitSend = () => {
-    const { walletAddress, createTransferTx } = this.props;
+    const { walletAddress, store: { wallet } } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
     let amount = withdrawAmount;
     if (selectedToken === Token.BOT) {
       amount = decimalToSatoshi(withdrawAmount);
     }
-
-    createTransferTx(walletAddress, toAddress, selectedToken, amount);
+    wallet.createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
 
     Tracking.track('myWallet-withdraw');
