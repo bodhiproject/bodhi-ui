@@ -9,6 +9,7 @@ import BotCourtStore from './BotCourtStore';
 import ResultSettingStore from './activitiesStores/ResultSetting';
 import FinalizeStore from './activitiesStores/Finalize';
 import WithdrawStore from './activitiesStores/Withdraw';
+import ActivityHistoryStore from './activitiesStores/ActivityHistoryStore';
 import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import SelectAddressDialogStore from './components/SelectAddressDialogStore';
@@ -54,6 +55,7 @@ class AppStore {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
+        activityHistory: new ActivityHistoryStore(this),
       };
       this.loading = false; // finishing loading
     });
