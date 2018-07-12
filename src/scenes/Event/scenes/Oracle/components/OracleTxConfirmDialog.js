@@ -9,10 +9,10 @@ export const OracleTxConfirmDialog = inject('store')(injectIntl(observer(({ stor
   const { oracle } = oraclePage;
   return (
     <TxConfirmDialog
-      onClose={() => oraclePage.confirmDialogOpen = false /* eslint-disable-line no-param-reassign */}
+      onClose={() => oraclePage.txConfirmDialogOpen = false /* eslint-disable-line no-param-reassign */}
       onConfirm={oraclePage.confirm}
       txFees={oracle.txFees}
-      open={oraclePage.confirmDialogOpen}
+      open={oraclePage.txConfirmDialogOpen}
       txToken={oracle.token}
       txAmount={oraclePage.amount}
       txDesc={intl.formatMessage({ id }, { option: oraclePage.selectedOption.name })}
