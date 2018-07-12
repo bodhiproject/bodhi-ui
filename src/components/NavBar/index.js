@@ -38,7 +38,7 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 export default class NavBar extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.store.global.getUserData();
   }
   render() {
