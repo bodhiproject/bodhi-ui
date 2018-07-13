@@ -53,7 +53,7 @@ export default class EventHistory extends Component {
 
   render() {
     const { classes, history } = this.props;
-    const { transactions, order, orderBy, page, perPage, pageChange, perPageChange } = this.props.store.activities.activityHistory;
+    const { transactions, order, orderBy, page, perPage } = this.props.store.activities.activityHistory;
     const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
     const headerCols = [
       {
@@ -123,8 +123,12 @@ export default class EventHistory extends Component {
                 fullList={transactions}
                 perPage={perPage}
                 page={page}
-                onPageChange={pageChange}
-                onPerPageChange={perPageChange}
+                onPageChange={(event, page) => { // eslint-disable-line
+                  this.props.store.activities.activityHistory.page = page;
+                }}
+                onPerPageChange={(event) => {
+                  this.props.store.activities.activityHistory.perPage = event.target.value;
+                }}
               />
             </Table>) :
             (<Typography variant="body1">
@@ -136,7 +140,7 @@ export default class EventHistory extends Component {
   }
 
   createSortHandler = (property) => (event) => {
-    this.props.store.activities.activityHistory.sortClick(event, property);
+    this.props.store.activities.activityHistory.sortClick(property);
   }
 }
 

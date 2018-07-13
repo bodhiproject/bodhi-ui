@@ -24,7 +24,6 @@ export default class {
   @observable skip = INIT_VALUES.skip
   @observable limit = INIT_VALUES.limit
   @observable perLimit = INIT_VALUES.perLimit
-  txs = INIT_VALUES.transactions
 
   constructor(app) {
     this.app = app;
@@ -75,37 +74,26 @@ export default class {
   @action
   fetchHistory = async (orderBy = this.orderBy, order = this.order, limit = this.limit, skip = this.skip) => {
     const direction = order === SortBy.DESCENDING.toLowerCase() ? SortBy.DESCENDING : SortBy.ASCENDING;
+    const { APPROVE_CREATE_EVENT, CREATE_EVENT, BET, APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, WITHDRAW, WITHDRAW_ESCROW, RESET_APPROVE } = TransactionType;
     const filters = [
-      { type: TransactionType.APPROVE_CREATE_EVENT },
-      { type: TransactionType.CREATE_EVENT },
-      { type: TransactionType.BET },
-      { type: TransactionType.APPROVE_SET_RESULT },
-      { type: TransactionType.SET_RESULT },
-      { type: TransactionType.APPROVE_VOTE },
-      { type: TransactionType.VOTE },
-      { type: TransactionType.FINALIZE_RESULT },
-      { type: TransactionType.WITHDRAW },
-      { type: TransactionType.WITHDRAW_ESCROW },
-      { type: TransactionType.RESET_APPROVE },
+      { type: APPROVE_CREATE_EVENT },
+      { type: CREATE_EVENT },
+      { type: BET },
+      { type: APPROVE_SET_RESULT },
+      { type: SET_RESULT },
+      { type: APPROVE_VOTE },
+      { type: VOTE },
+      { type: FINALIZE_RESULT },
+      { type: WITHDRAW },
+      { type: WITHDRAW_ESCROW },
+      { type: RESET_APPROVE },
     ];
     const orderBySect = { field: orderBy, direction };
-    const txs = await queryAllTransactions(filters, orderBySect, limit, skip);
-    return txs;
+    return queryAllTransactions(filters, orderBySect, limit, skip);
   }
 
   @action
-  pageChange = (event, page) => { // eslint-disable-line
-    this.page = page;
-  }
-
-  @action
-  perPageChange = (event) => {
-    this.perPage = event.target.value;
-  }
-
-  @action
-  sortClick = (event, property) => { // eslint-disable-line
-
+  sortClick = (property) => {
     if (this.orderBy === property && this.order === SortBy.DESCENDING.toLowerCase()) {
       this.order = SortBy.ASCENDING.toLowerCase();
     } else {
