@@ -139,7 +139,7 @@ export default class EventHistory extends Component {
     );
   }
 
-  createSortHandler = (property) => (event) => {
+  createSortHandler = (property) => (event) => { // eslint-disable-line
     this.props.store.activities.activityHistory.sortClick(property);
   }
 }
