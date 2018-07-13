@@ -59,7 +59,6 @@ export default class Oracle {
     const { token, status } = this;
     const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
     if (QTUM && ['PENDING', 'WITHDRAW'].includes(status)) return true; // BETTING
-    // if (BOT && status === 'VOTING') return 'CURRENT' // VOTING
     if (BOT && ['PENDING', 'WITHDRAW'].includes(status)) return true; // VOTING
     return false;
   }
@@ -92,10 +91,6 @@ export default class Oracle {
     this.app = app;
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-
-    // this.unconfirmed = (!oracle.topicAddress && !oracle.address);
-
-    // this.isUpcoming = this.phase === RESULT_SETTING && oracle.status === OracleStatus.WAIT_RESULT && (app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0);
 
     this.buttonText = { // TODO: will move into each oracle component
       BETTING: messages.placeBet,
