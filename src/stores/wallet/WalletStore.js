@@ -93,7 +93,6 @@ export default class {
       history.fullList = _.orderBy(history.fullList, [history.orderBy], [history.direction]);
       const start = history.page * history.perPage;
       history.list = _.slice(history.fullList, start, start + history.perPage);
-      console.log('fullList', history.list); // eslint-disable-line
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
