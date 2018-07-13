@@ -13,5 +13,6 @@ export default class {
   trigger = (type = '') => {
     this.status = !this.status;
     this.type = type;
+    console.log(type);
   }
 }

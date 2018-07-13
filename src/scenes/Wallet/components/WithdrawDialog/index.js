@@ -19,7 +19,6 @@ import _ from 'lodash';
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import graphqlActions from '../../../../redux/Graphql/actions';
 import appActions from '../../../../redux/App/actions';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';

@@ -5,6 +5,8 @@ import WalletHistoryStore from './WalletHistoryStore';
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
 import { createTransferTx } from '../../network/graphMutation';
+import Transaction from '../models/Transaction';
+
 
 export default class {
   @observable addresses = []
@@ -83,7 +85,14 @@ export default class {
   }
 
   @action
-  createTransferTx(walletAddress, toAddress, selectedToken, amount) {
-    createTransferTx(walletAddress, toAddress, selectedToken, amount);
+  createTransferTx = async (walletAddress, toAddress, selectedToken, amount) => {
+    try {
+      const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
+      this.app.wallet.history.fullList.push(new Transaction(transfer));
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
   }
 }

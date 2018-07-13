@@ -58,6 +58,13 @@ export default class {
         this.list = _.slice(this.fullList, start, start + this.perPage);
       }
     );
+
+    reaction(
+      () => this.list,
+      () => {
+        this.list = _.orderBy(this.list, ['createdTime'], this.orderBy.toLowerCase());
+      }
+    );
   }
 
   @action

@@ -181,13 +181,13 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
   );
 };
 
-const TableRows = ({ list }) => (
+const TableRows = observer(({ list }) => (
   <TableBody>
     {list.map((transaction) => <HistoryItem key={transaction.txid} transaction={transaction} />)}
   </TableBody>
-);
+));
 
-const TableFooter = ({ fullList, perPage, page, onPageChange, onPerPageChange }) => (
+const TableFooter = observer(({ fullList, perPage, page, onPageChange, onPerPageChange }) => (
   <_TableFooter>
     <TableRow>
       <TablePagination
@@ -200,4 +200,4 @@ const TableFooter = ({ fullList, perPage, page, onPageChange, onPerPageChange })
       />
     </TableRow>
   </_TableFooter>
-);
+));
