@@ -39,15 +39,10 @@ export default class EventCard extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.object,
-    unconfirmed: PropTypes.bool.isRequired,
-    isPending: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
