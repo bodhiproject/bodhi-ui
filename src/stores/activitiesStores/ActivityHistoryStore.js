@@ -1,8 +1,11 @@
 import { observable, action, reaction } from 'mobx';
 import { TransactionType, SortBy, Routes } from 'constants';
+import _ from 'lodash';
 
 import { getDetailPagePath } from '../../helpers/utility';
 import { queryAllTransactions, queryAllOracles } from '../../network/graphQuery';
+import Transaction from '../models/Transaction';
+import Oracle from '../models/Oracle';
 
 const INIT_VALUES = {
   transactions: [],
@@ -59,7 +62,7 @@ export default class {
 
     if (topicAddress) {
       const targetoracle = await queryAllOracles(filters, orderBy);
-      const path = getDetailPagePath(targetoracle);
+      const path = getDetailPagePath(_.map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
       if (path) history.push(path);
     }
   }
@@ -89,7 +92,8 @@ export default class {
       { type: RESET_APPROVE },
     ];
     const orderBySect = { field: orderBy, direction };
-    return queryAllTransactions(filters, orderBySect, limit, skip);
+    const result = await queryAllTransactions(filters, orderBySect, limit, skip);
+    return _.map(result, (tx) => new Transaction(tx));
   }
 
   @action

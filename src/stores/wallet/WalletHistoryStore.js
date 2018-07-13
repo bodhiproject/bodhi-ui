@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { SortBy, TransactionType } from 'constants';
 
 import Transaction from '../models/Transaction';
+import Oracle from '../models/Oracle';
 import { queryAllTransactions } from '../../network/graphQuery';
 
 
