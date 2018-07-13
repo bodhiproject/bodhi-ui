@@ -1,6 +1,5 @@
 import { observable, action, reaction } from 'mobx';
 import { TransactionType, SortBy, Routes } from 'constants';
-import _ from 'lodash';
 
 import { getDetailPagePath } from '../../helpers/utility';
 import { queryAllTransactions, queryAllOracles } from '../../network/graphQuery';
@@ -32,17 +31,13 @@ export default class {
     reaction( // Update page on new block
       () => this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          this.init();
-        }
+        this.init();
       }
     );
     reaction( // Sort while order changes
       () => this.order + this.orderBy,
       async () => {
-        if (this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          this.transactions = await this.fetchHistory();
-        }
+        this.transactions = await this.fetchHistory();
       }
     );
     reaction( // Refresh when need more data
@@ -99,7 +94,7 @@ export default class {
   }
 
   @action
-  pageChange = (event, page) => {
+  pageChange = (event, page) => { // eslint-disable-line
     this.page = page;
   }
 
