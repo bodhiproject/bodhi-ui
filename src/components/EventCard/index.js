@@ -60,15 +60,17 @@ export default class EventCard extends PureComponent {
     const {
       classes,
       index,
-      url,
-      name,
-      amountLabel,
-      endTime,
-      buttonText,
       unconfirmed,
+    } = this.props;
+    const {
+      buttonText,
+      name,
       isPending,
       isUpcoming,
-    } = this.props;
+      url,
+      amountLabel,
+      endTime,
+    } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>

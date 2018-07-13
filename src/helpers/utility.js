@@ -204,6 +204,51 @@ export const getPhase = ({ token, status }) => {
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 
+/**
+ * ORACLE:
+ * phase
+ * - BETTING
+ *   - token: QTUM
+ *   - b/e status: VOTING
+ * - VOTING
+ *   - token: BOT
+ *   - b/e status: VOTING
+ * - RESULT SETTING
+ *   - token: QTUM
+ *   - b/e status: WAITRESULT or OPENRESULTSET
+ * - WITHDRAWING
+ *   - token: BOT or QTUM
+ *   - b/e status: WITHDRAW
+ * - FINALIZING
+ *   - token: BOT
+ *   - b/e status: WAITRESULT
+ * f/e status
+ * - pending
+ *   - phase: BETTING
+ *     - b/e oracle status: PENDING
+ *
+ *   -
+ * - archived
+ * - unconfirmed
+ */
+
+
+/*
+  TransactionType: {
+    APPROVE_CREATE_EVENT: 'APPROVECREATEEVENT',
+    CREATE_EVENT: 'CREATEEVENT',
+    BET: 'BET',
+    APPROVE_SET_RESULT: 'APPROVESETRESULT',
+    SET_RESULT: 'SETRESULT',
+    APPROVE_VOTE: 'APPROVEVOTE',
+    VOTE: 'VOTE',
+    FINALIZE_RESULT: 'FINALIZERESULT',
+    WITHDRAW: 'WITHDRAW',
+    WITHDRAW_ESCROW: 'WITHDRAWESCROW',
+    TRANSFER: 'TRANSFER',
+    RESET_APPROVE: 'RESETAPPROVE',
+  },
+*/
 export function processTopic(topic) {
   if (!topic) {
     return undefined;
