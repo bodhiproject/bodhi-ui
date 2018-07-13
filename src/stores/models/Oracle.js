@@ -14,7 +14,7 @@ const messages = defineMessages({
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
-  withdraw: { id: 'str.withdraw', defaultMessage: 'Archived' },
+  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archive: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
 

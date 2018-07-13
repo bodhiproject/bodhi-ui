@@ -13,13 +13,12 @@ const BettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } 
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.isPending && !oracle.isArchived && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
       <Options oracle={oracle} />
-      {oracle.unconfirmed && <EventUnconfirmedNote />}
-      {(!oracle.unconfirmed || oracle.phase !== 'UNCONFIRMED') && (
+      {oracle.isPending && <EventUnconfirmedNote />}
+      {!oracle.isPending && (
         <Fragment>
           {!oracle.isArchived && <BetButton onClick={oraclePage.prepareBet} disabled={oraclePage.isPending} />}
-          {/* <EventResultHistory oracles={oracles} /> ONLY VOTE & FINALIZE */}
           <Transactions type='oracle' options={oracle.options} />
         </Fragment>
       )}
@@ -35,7 +34,7 @@ const EventUnconfirmedNote = injectIntl(({ intl: { formatMessage } }) => (
 
 const Options = observer(({ oracle }) => (
   <Grid item xs={12} lg={9}>
-    {oracle.options.map((option, i) => <Option key={i} option={option} />)}
+    {oracle.options.map((option, i) => <Option key={i} option={option} disabled={oracle.isArchived} />)}
   </Grid>
 ));
 
