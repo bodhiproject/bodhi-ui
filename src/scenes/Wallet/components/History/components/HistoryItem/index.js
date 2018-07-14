@@ -65,4 +65,4 @@ const SecondaryRow = withStyles(styles)(({ classes, transaction, expanded }) => 
   </TableRow>
 ));
 
-const moneyNum = (num) => (Math.floor(Number(num) * 100000) / 100000).toFixed(6); // eslint-disable-line
+const moneyNum = (num) => (Math.floor(Number(num) * 1000000) / 1000000).toFixed(6); // eslint-disable-line
