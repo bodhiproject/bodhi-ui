@@ -37,15 +37,10 @@ export default class EventCard extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.object,
-    unconfirmed: PropTypes.bool.isRequired,
-    isPending: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -58,15 +53,17 @@ export default class EventCard extends PureComponent {
     const {
       classes,
       index,
-      url,
-      name,
-      amountLabel,
-      endTime,
-      buttonText,
       unconfirmed,
+    } = this.props;
+    const {
+      buttonText,
+      name,
       isPending,
       isUpcoming,
-    } = this.props;
+      url,
+      amountLabel,
+      endTime,
+    } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
