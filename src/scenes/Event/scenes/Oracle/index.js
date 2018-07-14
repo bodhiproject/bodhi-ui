@@ -5,8 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { TxSentDialog } from 'components';
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
-import ResultSettingOracle from './ResultSettingOracle';
 import FinalizingOracle from './FinalizingOracle';
+import ResultSettingOracle from './ResultSettingOracle';
 import BackButton from '../../../../components/BackButton';
 
 
@@ -28,9 +28,7 @@ export default class OraclePage extends Component {
     const { oracle } = oraclePage;
     const Oracle = {
       BETTING: BettingOracle,
-      UNCONFIRMED: BettingOracle,
       VOTING: VotingOracle,
-      PENDING: VotingOracle,
       RESULT_SETTING: ResultSettingOracle,
       FINALIZING: FinalizingOracle,
     }[oracle.phase];

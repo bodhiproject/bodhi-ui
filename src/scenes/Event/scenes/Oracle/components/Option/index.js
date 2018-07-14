@@ -59,6 +59,7 @@ export default class Option extends Component {
       store,
       option,
       intl,
+      disabled,
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
@@ -77,7 +78,7 @@ export default class Option extends Component {
           <ExpansionPanel
             expanded={isExpanded || skipExpansion}
             onChange={option.toggleExpansion}
-            disabled={option.disabled}
+            disabled={option.disabled || disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>

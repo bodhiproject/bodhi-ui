@@ -13,10 +13,12 @@ const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
-      <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending} />
+      {!oracle.isArchived && (
+        <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending} />
+      )}
       {/* <EventResultHistory oracles={oracles} /> ONLY VOTE & FINALIZE */}
       <Transactions type='oracle' options={oracle.options} />
     </Content>
@@ -31,9 +33,9 @@ const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
   return <ImportantNote heading={heading} message={message} />;
 });
 
-const Options = observer(({ oracle }) => (
+const Options = observer(({ oracle: { options, isArchived } }) => (
   <Grid item xs={12} lg={9}>
-    {oracle.options.map((option, i) => <Option key={i} option={option} />)}
+    {options.map((option, i) => <Option key={i} disabled={isArchived} option={option} />)}
   </Grid>
 ));
 
