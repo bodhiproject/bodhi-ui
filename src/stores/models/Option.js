@@ -20,10 +20,6 @@ export default class Option {
   }
 
   constructor(optionName, i, oracle, app) {
-    // console.log('NAME: ', optionName);
-    // console.log('I: ', i);
-    // console.log('ORACLE IN OPTION: ', oracle);
-    // console.log('APP: ', app);
     this.app = app;
     this.idx = i;
     this.amount = oracle.amounts[i] || 0;

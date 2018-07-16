@@ -26,7 +26,7 @@ export default class TxRow extends Component {
   }
 
   toggle = () => {
-    // probably need some logic here for not expanding when clicking on
+    // TODO: probably need some logic here for not expanding when clicking on
     // the Name link field
     this.setState({ expanded: !this.state.expanded });
   };
