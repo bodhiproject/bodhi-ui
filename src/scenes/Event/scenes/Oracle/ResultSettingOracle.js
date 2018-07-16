@@ -19,7 +19,7 @@ const ResultSettingOracle = observer(({ store: { oraclePage, oraclePage: { oracl
       {/* UNCOFIRMED, RESULST SET, VOTE, FINALIZE */}
       {/* {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />} */}
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
-      <SetResultButton onClick={oraclePage.prepareSetResult} disabled={oraclePage.isPending} />
+      <SetResultButton onClick={oraclePage.prepareSetResult} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       <Transactions type='oracle' options={oracle.options} />
     </Content>
     <Sidebar oracle={oracle} />

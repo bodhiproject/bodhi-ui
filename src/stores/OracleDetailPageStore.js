@@ -7,7 +7,7 @@ import axios from 'axios';
 import NP from 'number-precision';
 
 import Tracking from '../helpers/mixpanelUtil';
-import { toFixed } from '../helpers/utility';
+import { toFixed, decimalToSatoshi } from '../helpers/utility';
 import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx } from '../network/graphMutation';
 import networkRoutes from '../network/routes';
 
@@ -70,7 +70,6 @@ export default class {
   @computed get selectedOption() {
     return this.oracle.options[this.selectedOptionIdx] || {};
   }
-
 
   constructor(app) {
     this.app = app;
@@ -154,9 +153,20 @@ export default class {
       });
     }
 
+    reaction(
+      () => this.oracle.phase,
+      () => {
+        this.amount = '0';
+        if (this.oracle.phase === 'RESULT_SETTING') {
+          this.amount = '100';
+        }
+      },
+      { fireImmediately: true } // for when we go to a result setting page directly
+    );
+
     // when we get a new block or transactions are updated, react to it
     reaction(
-      () => this.app.global.syncBlockTime + this.transactions,
+      () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
       () => {
         const { phase, resultSetterQAddress } = this.oracle;
         const { global: { syncBlockTime }, wallet } = this.app;
@@ -179,7 +189,6 @@ export default class {
           this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
           return;
         }
-
 
         // Has not reached result setting start time
         if ((phase === 'RESULT_SETTING')
@@ -297,7 +306,7 @@ export default class {
   @action
   prepareSetResult = async () => {
     const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-      type: TransactionType.APPROVESETRESULT,
+      type: TransactionType.APPROVE_SET_RESULT,
       token: this.oracle.token,
       amount: this.oracle.consensusThreshold,
       optionIdx: this.selectedOptionIdx,
@@ -350,13 +359,14 @@ export default class {
   @action
   setResult = async () => {
     const { lastUsedAddress } = this.app.wallet;
-    const { selectedOptionIdx } = this;
-    const { version, topicAddress, address, consensusThreshold } = this.oracle;
+    const { selectedOptionIdx, amount } = this;
+    const { version, topicAddress, address } = this.oracle;
 
-    await createSetResultTx(version, topicAddress, address, selectedOptionIdx, consensusThreshold, lastUsedAddress);
+    const test = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
+      console.log('TEST: ', test);
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions = transactions;

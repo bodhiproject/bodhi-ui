@@ -16,7 +16,7 @@ const FinalizingOracle = observer(({ store: { oraclePage, oraclePage: { oracle }
       {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
-      <FinalizeButton onClick={oraclePage.finalize} disabled={oraclePage.isPending} />
+      <FinalizeButton onClick={oraclePage.finalize} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       {/* <EventResultHistory oracles={oracles} /> */}
       <Transactions type='oracle' options={oracle.options} />
     </Content>

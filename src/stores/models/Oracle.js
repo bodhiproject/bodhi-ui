@@ -39,7 +39,6 @@ export default class Oracle {
   version
   // for UI
   buttonText = ''
-  unconfirmed = false
   amountLabel = ''
   url = ''
   token = '' // BOT or QTUM
@@ -73,10 +72,12 @@ export default class Oracle {
       FINALIZING: [FINALIZE_RESULT],
     }[this.phase];
     const isPending = transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING); // eslint-disable-line
-    const unconfirmed = !this.topicAddress && !this.address;
-    if (isPending || unconfirmed) return true;
+    if (isPending) return true;
     if (QTUM && status === 'CREATED') return true; // BETTING (used to be UNCONFIRMED)
     return false;
+  }
+  @computed get unconfirmed() {
+    return !this.topicAddress && !this.address;
   }
   @computed get isUpcoming() {
     return (
