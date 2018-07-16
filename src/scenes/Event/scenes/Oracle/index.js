@@ -43,10 +43,10 @@ export default class OraclePage extends Component {
   }
 }
 
-const EventTxSuccessDialog = ({ eventPage }) => (
+const EventTxSuccessDialog = observer(({ eventPage }) => (
   <TxSentDialog
     txid={eventPage.oracle.txid}
     open={eventPage.txSentDialogOpen}
     onClose={() => eventPage.txSentDialogOpen = false}
   />
-);
+));

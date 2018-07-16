@@ -174,7 +174,6 @@ export default class {
         const currBlockTime = moment.unix(syncBlockTime);
         const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
         const notEnoughQtum = totalQtum < maxTransactionFee;
-        // console.log('SYNC B TIEM: ', syncBlockTime);
         // Already have a pending tx for this Oracle
         const pendingTxs = _.filter(this.transactions, { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING });
         if (pendingTxs.length > 0) {
@@ -380,6 +379,8 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
 
+    // console.log('AMT ', amount);
+    // console.log('DTS AMT: ', decimalToSatoshi(amount));
     let { data: { createSetResult: newTx } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
     newTx = { // TODO: add `token` type and `options` in return from backend
       ...newTx,
@@ -390,13 +391,10 @@ export default class {
     };
 
     // console.log('SET RESULT TX: ', newTx);
-    // const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions.unshift(new Transaction(newTx));
-      // this.transactions = this.transactions.map(tx => tx.txid === newTx.txid ? newTx : tx);
-      // this.transactions = transactions;
     });
 
     Tracking.track('oracleDetail-set');
@@ -406,15 +404,24 @@ export default class {
   vote = async () => {
     const { lastUsedAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
-    const { amount, selectedOptionIdx } = this;
+    const { selectedOptionIdx } = this;
+    const amount = decimalToSatoshi(this.amount);
+    // console.log('VOTE AMT: ', amount);
 
-    await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    let { data: { createVote: newTx } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    newTx = { // TODO: move this logic to the backend
+      ...newTx,
+      token: 'BOT',
+      topic: {
+        options: this.oracle.options.map(({ name }) => name),
+      },
+    };
 
-    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    // console.log('VOTE TX: ', newTx);
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
-      this.transactions = transactions;
+      this.transactions.unshift(new Transaction(newTx));
     });
 
     Tracking.track('oracleDetail-vote');

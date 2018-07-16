@@ -22,7 +22,7 @@ const TxSentDialog = ({ txid, open, onClose, intl, classes }) => (
     </DialogContent>
     <DialogActions>
       <Button color="primary" onClick={onClose}>
-        {intl.formatMessage({ id: 'str.transactionId' })}
+        {intl.formatMessage({ id: 'str.ok' })}
       </Button>
     </DialogActions>
   </Dialog>
