@@ -12,6 +12,7 @@ import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx } 
 import networkRoutes from '../network/routes';
 
 import Oracle from './models/Oracle';
+import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
 import { maxTransactionFee } from '../config/app';
 
@@ -148,7 +149,7 @@ export default class {
       const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
       runInAction(() => {
         this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
-        this.transactions = transactions;
+        this.transactions = transactions.map(tx => new Transaction(tx));
         this.loading = false;
       });
     }
@@ -260,12 +261,13 @@ export default class {
         const maxVote = phase === 'VOTING' ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
         if (phase === 'VOTING' && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
           this.buttonDisabled = true;
-          this.amount = toFixed(maxVote);
+          this.amount = String(toFixed(maxVote));
+          // TODO: this get's called everytime we change the amount, since we
+          // autocorrect it above, this warning never get's shown
           this.warningType = EventWarningType.ERROR;
           this.eventWarningMessageId = 'oracle.maxVoteText';
           return;
         }
-
         this.buttonDisabled = false;
         this.eventWarningMessageId = '';
         this.warningType = '';
@@ -274,10 +276,14 @@ export default class {
     );
   }
 
-  // @action
-  // changeAmount = (amount) => {
-
-  // }
+  @action // used in the VotingOracle onBlur
+  fixAmount = () => {
+    if (this.oracle.phase !== 'VOTING') return;
+    const [inputAmount, consensusThreshold] = [parseFloat(this.amount, 10), parseFloat(this.oracle.consensusThreshold, 10)];
+    if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
+      this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
+    }
+  }
 
   // used by confirm tx modal
   confirm = () => {
@@ -349,13 +355,20 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
 
-    await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    let { data: { createBet: newTx } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    newTx = { // TODO: add `token` type and `options` in return from backend
+      ...newTx,
+      token: 'QTUM',
+      topic: {
+        options: this.oracle.options.map(({ name }) => name),
+      },
+    };
 
-    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    // console.log('BET TX: ', newTx);
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
-      this.transactions = transactions;
+      this.transactions.unshift(new Transaction(newTx));
     });
 
     Tracking.track('oracleDetail-bet');
@@ -367,14 +380,23 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
 
-    const test = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
+    let { data: { createSetResult: newTx } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
+    newTx = { // TODO: add `token` type and `options` in return from backend
+      ...newTx,
+      token: 'BOT',
+      topic: {
+        options: this.oracle.options.map(({ name }) => name),
+      },
+    };
 
-    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+    // console.log('SET RESULT TX: ', newTx);
+    // const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      // console.log('TEST: ', test);
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
-      this.transactions = transactions;
+      this.transactions.unshift(new Transaction(newTx));
+      // this.transactions = this.transactions.map(tx => tx.txid === newTx.txid ? newTx : tx);
+      // this.transactions = transactions;
     });
 
     Tracking.track('oracleDetail-set');

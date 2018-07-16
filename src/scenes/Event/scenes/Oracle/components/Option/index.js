@@ -41,21 +41,6 @@ export default class Option extends Component {
     voteAmount: 0,
   };
 
-  handleAmountBlur = ({ target: { value } }) => {
-    let { oraclePage } = this.props.store;
-    let { amount, oracle: { consensusThreshold } } = oraclePage;
-    [amount, consensusThreshold] = [parseFloat(amount, 10), parseFloat(consensusThreshold, 10)];
-    // console.log('AMT: ', amount);
-    // console.log('VAL: ', value);
-    // console.log('CONS - AMT = ', NP.minus(consensusThreshold, amount));
-    // let adjustedAmt = ''
-    if (amount + Number(value) > consensusThreshold) {
-      oraclePage.amount = String(toFixed(NP.minus(consensusThreshold, amount)));
-    } else {
-      oraclePage.amount = value
-    }
-  }
-
   render() {
     const {
       classes,
@@ -109,7 +94,7 @@ export default class Option extends Component {
                   classes={classes}
                   value={oraclePage.amount}
                   onChange={({ target: { value }}) => oraclePage.amount = value}
-                  onBlur={this.handleAmountBlur}
+                  onBlur={oraclePage.fixAmount}
                 />
                 <AddressSelect
                   wallet={wallet}
