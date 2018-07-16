@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
@@ -19,9 +18,7 @@ import {
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl } from 'react-intl';
-import NP from 'number-precision';
 
-import { toFixed } from '../../../../../../helpers/utility';
 import Progress from '../../../../components/Progress';
 import styles from './styles';
 
@@ -54,12 +51,12 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
-    const { isPrevResult, isFinalizing, percent, isLast, isFirst, amount, isExpanded, idx, value } = option;
+    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value } = option;
     const { oraclePage, wallet } = store;
     const { selectedOptionIdx, oracle } = oraclePage;
 
     return (
-      <Collapse in={isExpanded || selectedOptionIdx == -1 || skipExpansion}>
+      <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
             last: isLast || isExpanded,
@@ -93,7 +90,7 @@ export default class Option extends Component {
                   disabled={amountInputDisabled}
                   classes={classes}
                   value={oraclePage.amount}
-                  onChange={({ target: { value }}) => oraclePage.amount = value}
+                  onChange={({ target }) => oraclePage.amount = target.value}
                   onBlur={oraclePage.fixAmount}
                 />
                 <AddressSelect

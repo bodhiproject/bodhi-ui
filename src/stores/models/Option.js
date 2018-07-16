@@ -22,6 +22,7 @@ export default class Option {
   constructor(optionName, i, oracle, app) {
     this.app = app;
     this.idx = i;
+    // console.log('AMTT: ', oracle.amounts[i]);
     this.amount = oracle.amounts[i] || 0;
     this.isLast = i === oracle.options.length - 1;
     this.isFirst = i === 0;
