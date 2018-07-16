@@ -274,6 +274,11 @@ export default class {
     );
   }
 
+  // @action
+  // changeAmount = (amount) => {
+
+  // }
+
   // used by confirm tx modal
   confirm = () => {
     const actionToPerform = {
@@ -366,7 +371,7 @@ export default class {
 
     const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
-      console.log('TEST: ', test);
+      // console.log('TEST: ', test);
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions = transactions;
