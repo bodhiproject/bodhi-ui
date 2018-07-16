@@ -1,4 +1,4 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action, reaction, computed } from 'mobx';
 import { TransactionType, SortBy, Routes } from 'constants';
 import _ from 'lodash';
 
@@ -32,15 +32,11 @@ export default class {
     this.app = app;
     reaction( // Update page on new block
       () => this.app.global.syncBlockNum,
-      () => {
-        this.init();
-      }
+      async () => this.transactions = await this.fetchHistory()
     );
     reaction( // Sort while order changes
       () => this.order + this.orderBy,
-      async () => {
-        this.transactions = await this.fetchHistory();
-      }
+      async () => this.transactions = await this.fetchHistory()
     );
     reaction( // Refresh when need more data
       () => this.page + this.perPage,
@@ -55,55 +51,54 @@ export default class {
     );
   }
 
+  @computed
+  get displayedTxs() {
+    const start = this.page * this.perPage;
+    const end = (this.page * this.perPage) + this.perPage;
+    return this.transactions.slice(start, end);
+  }
+
   @action
-  oracleJump = async (topicAddress, history) => {
+  getOracleAddress = async (topicAddress) => {
     const orderBy = { field: 'endTime', direction: SortBy.DESCENDING };
     const filters = [{ topicAddress }];
 
     if (topicAddress) {
       const targetoracle = await queryAllOracles(filters, orderBy);
       const path = getDetailPagePath(_.map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
-      if (path) history.push(path);
+      if (path) return path;
     }
   }
 
   @action
   init = async () => {
+    // reset to initial values
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.ACTIVITY_HISTORY;
     this.transactions = await this.fetchHistory();
   }
 
-  @action
   fetchHistory = async (orderBy = this.orderBy, order = this.order, limit = this.limit, skip = this.skip) => {
     const direction = order === SortBy.DESCENDING.toLowerCase() ? SortBy.DESCENDING : SortBy.ASCENDING;
-    const { APPROVE_CREATE_EVENT, CREATE_EVENT, BET, APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, WITHDRAW, WITHDRAW_ESCROW, RESET_APPROVE } = TransactionType;
-    const filters = [
-      { type: APPROVE_CREATE_EVENT },
-      { type: CREATE_EVENT },
-      { type: BET },
-      { type: APPROVE_SET_RESULT },
-      { type: SET_RESULT },
-      { type: APPROVE_VOTE },
-      { type: VOTE },
-      { type: FINALIZE_RESULT },
-      { type: WITHDRAW },
-      { type: WITHDRAW_ESCROW },
-      { type: RESET_APPROVE },
-    ];
+    const filters = _.values(_.omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
     const orderBySect = { field: orderBy, direction };
     const result = await queryAllTransactions(filters, orderBySect, limit, skip);
     return _.map(result, (tx) => new Transaction(tx));
   }
 
   @action
-  sortClick = (property) => {
-    if (this.orderBy === property && this.order === SortBy.DESCENDING.toLowerCase()) {
-      this.order = SortBy.ASCENDING.toLowerCase();
+  sort = (columnName) => {
+    /*
+    const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
+    if (this.orderBy !== columnName) {
+      this.order = descending;
     } else {
-      this.order = SortBy.DESCENDING.toLowerCase();
+      this.order = this.order === descending ? ascending : descending;
     }
-
-    this.orderBy = property;
+    this.orderBy = columnName;
+    */
+    const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
+    this.orderBy = columnName;
+    this.order = this.order === descending ? ascending : descending;
   }
 }

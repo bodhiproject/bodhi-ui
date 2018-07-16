@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import {
   TableBody,
@@ -17,31 +18,17 @@ import { getShortLocalDateTimeString } from '../../../helpers/utility';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../helpers/stringUtil';
 
-@injectIntl
-@withStyles(styles, { withTheme: true })
-export default class EventRows extends Component {
-  static propTypes = {
-    txs: PropTypes.array,
-    history: PropTypes.object.isRequired,
-  };
+const EventRows = observer(({ displayedTxs }) => (
+  <TableBody>
+    {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
+  </TableBody>
+));
 
-  static defaultProps = {
-    txs: undefined,
-  };
-
-  render() {
-    const { txs, history } = this.props;
-
-    return (
-      <TableBody>
-        {txs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} history={history} />))}
-      </TableBody>
-    );
-  }
-}
+export default EventRows;
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@withRouter
 @inject('store')
 @observer
 class EventRow extends Component {
@@ -56,11 +43,12 @@ class EventRow extends Component {
       expanded: false,
     }
 
-    handleClick = (txid, topicAddress) => (event) => { // eslint-disable-line
+    handleClick = (txid, topicAddress) => async (event) => { // eslint-disable-line
       if (topicAddress) {
-        const { activities: { activityHistory: { oracleJump } } } = this.props.store;
+        const { activities: { history: { getOracleAddress } } } = this.props.store;
         const { history } = this.props;
-        oracleJump(topicAddress, history);
+        const nextAddress = await getOracleAddress(topicAddress);
+        if (nextAddress) history.push(nextAddress);
       }
     }
 
@@ -72,7 +60,7 @@ class EventRow extends Component {
 
       return (
         <Fragment>
-          <TableRow selected={expanded} onClick={() => this.setState({ expanded: !this.state.expanded })} className={classes.clickToExpandRow}>
+          <TableRow selected={expanded} onClick={() => this.setState({ expanded: !expanded })} className={classes.clickToExpandRow}>
             <TableCell className={classes.summaryRowCell}>{getShortLocalDateTimeString(createdTime)}</TableCell>
             <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
             <NameLinkCell className={classes.viewEventLink} clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
@@ -90,7 +78,7 @@ class EventRow extends Component {
             </TableCell>
           </TableRow>
           <CollapsableItem expanded={expanded}>
-            <TableRow key={`txaddr-${txid}`} selected onClick={() => this.setState({ expanded: !this.state.expanded })} className={expanded ? classes.show : classes.hide}>
+            <TableRow key={`txaddr-${txid}`} selected onClick={() => this.setState({ expanded: !expanded })} className={expanded ? classes.show : classes.hide}>
               <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
               <TableCell /><TransactionHistoryID transaction={transaction} />
               <TableCell />

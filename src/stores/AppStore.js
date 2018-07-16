@@ -55,7 +55,7 @@ class AppStore {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
-        activityHistory: new ActivityHistoryStore(this),
+        history: new ActivityHistoryStore(this),
       };
       this.loading = false; // finishing loading
     });

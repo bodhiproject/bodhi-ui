@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import _ from 'lodash';
 import {
   Typography,
   Table,
@@ -36,7 +35,7 @@ const messages = defineMessages({ // eslint-disable-line
   },
 });
 
-
+// @withRouter
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
@@ -48,13 +47,17 @@ export default class EventHistory extends Component {
   };
 
   componentDidMount() {
-    this.props.store.activities.activityHistory.init();
+    this.props.store.activities.history.init();
+  }
+
+  createSortHandler = (property) => (event) => { // eslint-disable-line
+    this.props.store.activities.history.sort(property);
   }
 
   render() {
-    const { classes, history } = this.props;
-    const { transactions, order, orderBy, page, perPage } = this.props.store.activities.activityHistory;
-    const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
+    const { classes } = this.props;
+    const { transactions, order, orderBy, page, perPage } = this.props.store.activities.history;
+    const { displayedTxs } = this.props.store.activities.history;
     const headerCols = [
       {
         id: 'createdTime',
@@ -111,36 +114,35 @@ export default class EventHistory extends Component {
       <Grid container spacing={0}>
         {
           transactions.length ?
-            (<Table className={classes.historyTable}>
-              <TableHeader
-                onSortChange={this.createSortHandler}
-                cols={headerCols}
-                order={order}
-                orderBy={orderBy}
-              />
-              <EventRows txs={slicedTxs} history={history} />
-              <EventHistoryFooter
-                fullList={transactions}
-                perPage={perPage}
-                page={page}
-                onPageChange={(event, page) => { // eslint-disable-line
-                  this.props.store.activities.activityHistory.page = page;
-                }}
-                onPerPageChange={(event) => {
-                  this.props.store.activities.activityHistory.perPage = event.target.value;
-                }}
-              />
-            </Table>) :
-            (<Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-            </Typography>)
+            (
+              <Table className={classes.historyTable}>
+                <TableHeader
+                  onSortChange={this.createSortHandler}
+                  cols={headerCols}
+                  order={order}
+                  orderBy={orderBy}
+                />
+                <EventRows displayedTxs={displayedTxs} />
+                <EventHistoryFooter
+                  fullList={transactions}
+                  perPage={perPage}
+                  page={page}
+                  onPageChange={(event, page) => { // eslint-disable-line
+                    this.props.store.activities.history.page = page;
+                  }}
+                  onPerPageChange={(event) => {
+                    this.props.store.activities.history.perPage = event.target.value;
+                  }}
+                />
+              </Table>
+            ) : (
+              <Typography variant="body1">
+                <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+              </Typography>
+            )
         }
       </Grid>
     );
-  }
-
-  createSortHandler = (property) => (event) => { // eslint-disable-line
-    this.props.store.activities.activityHistory.sortClick(property);
   }
 }
 
