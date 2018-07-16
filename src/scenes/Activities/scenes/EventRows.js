@@ -24,8 +24,6 @@ const EventRows = observer(({ displayedTxs }) => (
   </TableBody>
 ));
 
-export default EventRows;
-
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @withRouter
@@ -101,3 +99,5 @@ const CollapsableItem = withStyles(styles)(({ expanded, children }) => (
     { expanded && children }
   </Fragment>
 ));
+
+export default EventRows;

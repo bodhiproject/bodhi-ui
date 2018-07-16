@@ -51,7 +51,7 @@ export default class EventHistory extends Component {
   }
 
   createSortHandler = (property) => (event) => { // eslint-disable-line
-    this.props.store.activities.history.sort(property);
+    this.props.store.activities.history.sortClick(property);
   }
 
   render() {
@@ -112,35 +112,32 @@ export default class EventHistory extends Component {
 
     return (
       <Grid container spacing={0}>
-        {
-          transactions.length ?
-            (
-              <Table className={classes.historyTable}>
-                <TableHeader
-                  onSortChange={this.createSortHandler}
-                  cols={headerCols}
-                  order={order}
-                  orderBy={orderBy}
-                />
-                <EventRows displayedTxs={displayedTxs} />
-                <EventHistoryFooter
-                  fullList={transactions}
-                  perPage={perPage}
-                  page={page}
-                  onPageChange={(event, page) => { // eslint-disable-line
-                    this.props.store.activities.history.page = page;
-                  }}
-                  onPerPageChange={(event) => {
-                    this.props.store.activities.history.perPage = event.target.value;
-                  }}
-                />
-              </Table>
-            ) : (
-              <Typography variant="body1">
-                <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-              </Typography>
-            )
-        }
+        {transactions.length ? (
+          <Table className={classes.historyTable}>
+            <TableHeader
+              onSortChange={this.createSortHandler}
+              cols={headerCols}
+              order={order}
+              orderBy={orderBy}
+            />
+            <EventRows displayedTxs={displayedTxs} />
+            <EventHistoryFooter
+              fullList={transactions}
+              perPage={perPage}
+              page={page}
+              onPageChange={(event, page) => { // eslint-disable-line
+                this.props.store.activities.history.page = page;
+              }}
+              onPerPageChange={(event) => {
+                this.props.store.activities.history.perPage = event.target.value;
+              }}
+            />
+          </Table>
+        ) : (
+          <Typography variant="body1">
+            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+          </Typography>
+        )}
       </Grid>
     );
   }

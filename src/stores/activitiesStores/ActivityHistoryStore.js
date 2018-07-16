@@ -14,8 +14,6 @@ const INIT_VALUES = {
   perPage: 10,
   page: 0,
   limit: 50,
-  perLimit: 50,
-  skip: 0,
 };
 
 export default class {
@@ -24,31 +22,36 @@ export default class {
   @observable orderBy = INIT_VALUES.orderBy
   @observable perPage = INIT_VALUES.perPage
   @observable page = INIT_VALUES.page
-  @observable skip = INIT_VALUES.skip
   @observable limit = INIT_VALUES.limit
-  @observable perLimit = INIT_VALUES.perLimit
 
   constructor(app) {
     this.app = app;
-    reaction( // Update page on new block
-      () => this.app.global.syncBlockNum,
-      async () => this.transactions = await this.fetchHistory()
-    );
     reaction( // Sort while order changes
+      () => this.app.global.syncBlockNum,
+      async () => this.getMoreData()
+    );
+    reaction( // Sort while order changes - may be different from the reaction with syncBlockNum in future
       () => this.order + this.orderBy,
-      async () => this.transactions = await this.fetchHistory()
+      async () => this.sort()
     );
     reaction( // Refresh when need more data
       () => this.page + this.perPage,
       async () => {
-        // Set skip to fetch more txs if last page is reached - it seems to be ugly?
-        if (Math.floor(this.transactions.length / this.perPage) - 1 === this.page) {
-          const moreData = await this.fetchHistory(this.orderBy, this.order, this.perLimit, this.transactions.length);
-          this.transactions = [...this.transactions, ...moreData];
-          this.limit = this.transactions.length;
+        // Set skip to fetch more txs if last page is reached
+        const needMoreFetch = (this.perPage * (this.page + 1)) >= this.transactions.length;
+        if (needMoreFetch) {
+          this.limit = this.perPage;
+          this.getMoreData();
         }
       }
     );
+  }
+
+  @action
+  getMoreData = async () => {
+    const moreData = await this.fetchHistory(this.transactions.length);
+    this.transactions = [...this.transactions, ...moreData];
+    this.sort();
   }
 
   @computed
@@ -78,8 +81,9 @@ export default class {
     this.transactions = await this.fetchHistory();
   }
 
-  fetchHistory = async (orderBy = this.orderBy, order = this.order, limit = this.limit, skip = this.skip) => {
-    const direction = order === SortBy.DESCENDING.toLowerCase() ? SortBy.DESCENDING : SortBy.ASCENDING;
+  fetchHistory = async (skip = 0, limit = this.limit, orderBy = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
+    // order default by DESC
+    const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
     const filters = _.values(_.omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
     const orderBySect = { field: orderBy, direction };
     const result = await queryAllTransactions(filters, orderBySect, limit, skip);
@@ -87,18 +91,14 @@ export default class {
   }
 
   @action
-  sort = (columnName) => {
-    /*
-    const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
-    if (this.orderBy !== columnName) {
-      this.order = descending;
-    } else {
-      this.order = this.order === descending ? ascending : descending;
-    }
-    this.orderBy = columnName;
-    */
+  sortClick = (columnName) => {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
     this.orderBy = columnName;
     this.order = this.order === descending ? ascending : descending;
+  }
+
+  @action
+  sort = () => {
+    this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order]);
   }
 }
