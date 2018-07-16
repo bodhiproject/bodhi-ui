@@ -39,7 +39,7 @@ const MainRow = withStyles(styles)(({ classes, transaction, expanded, onRowClick
       {transaction.receiverAddress}
     </TableCell>
     <TableCell numeric>
-      {`${transaction.amount || ''}  ${transaction.amount ? transaction.token : ''}`}
+      <b>{`${moneyNum(transaction.amount) || ''}  ${transaction.amount ? transaction.token : ''}`}</b>
     </TableCell>
     <TableCell numeric>
       {transaction.fee}
@@ -64,3 +64,5 @@ const SecondaryRow = withStyles(styles)(({ classes, transaction, expanded }) => 
     <TableCell /><TableCell /><TableCell /><TableCell />
   </TableRow>
 ));
+
+const moneyNum = (num) => (Math.floor(Number(num) * 1000000) / 1000000).toFixed(6); // eslint-disable-line

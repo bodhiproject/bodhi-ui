@@ -4,6 +4,8 @@ import _ from 'lodash';
 import WalletHistoryStore from './WalletHistoryStore';
 import axios from '../../network/httpRequest';
 import Routes from '../../network/routes';
+import { createTransferTx } from '../../network/graphMutation';
+import Transaction from '../models/Transaction';
 
 
 export default class {
@@ -18,7 +20,7 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    this.history = new WalletHistoryStore();
+    this.history = new WalletHistoryStore(app);
 
     // Set a default lastUsedAddress if there was none selected before
     reaction(
@@ -78,6 +80,22 @@ export default class {
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.backupWallet);
+      });
+    }
+  }
+
+  @action
+  createTransferTx = async (walletAddress, toAddress, selectedToken, amount) => {
+    try {
+      const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
+      const { history } = this.app.wallet;
+      history.fullList.push(new Transaction(transfer));
+      history.fullList = _.orderBy(history.fullList, [history.orderBy], [history.direction]);
+      const start = history.page * history.perPage;
+      history.list = _.slice(history.fullList, start, start + history.perPage);
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
   }

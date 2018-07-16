@@ -1,10 +1,9 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
-import { SortBy, TransactionType } from 'constants';
+import { SortBy, TransactionType, Routes } from 'constants';
 
 import Transaction from '../models/Transaction';
 import { queryAllTransactions } from '../../network/graphQuery';
-
 
 const INIT_VALUES = {
   fullList: [],
@@ -27,7 +26,18 @@ export default class {
   @observable perPage = INIT_VALUES.perPage
   @observable page = INIT_VALUES.page
 
-  constructor() {
+  constructor(app) {
+    this.app = app;
+
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => {
+        if (this.app.ui.location === Routes.WALLET) {
+          this.init();
+        }
+      }
+    );
+
     reaction(
       () => this.page,
       () => {
@@ -71,10 +81,10 @@ export default class {
     try {
       const filters = [{ type: TransactionType.TRANSFER }];
       const orderByObj = { field: orderBy, direction: direction.toUpperCase() };
-      const result = await queryAllTransactions(filters, orderByObj, limit, skip);
+      const transations = await queryAllTransactions(filters, orderByObj, limit, skip);
 
       runInAction(() => {
-        this.fullList = _.map(result, (tx) => new Transaction(tx));
+        this.fullList = _.map(transations, (tx) => new Transaction(tx));
         this.list = _.slice(this.fullList, 0, this.perPage);
       });
     } catch (error) {
