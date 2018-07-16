@@ -17,7 +17,7 @@ const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
       {!oracle.isArchived && (
-        <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending} />
+        <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       )}
       {/* <EventResultHistory oracles={oracles} /> ONLY VOTE & FINALIZE */}
       <Transactions type='oracle' options={oracle.options} />
