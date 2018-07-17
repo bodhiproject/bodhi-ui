@@ -363,7 +363,6 @@ export default class {
       },
     };
 
-    // console.log('BET TX: ', newTx);
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
@@ -379,8 +378,6 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
 
-    // console.log('AMT ', amount);
-    // console.log('DTS AMT: ', decimalToSatoshi(amount));
     let { data: { createSetResult: newTx } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
     newTx = { // TODO: add `token` type and `options` in return from backend
       ...newTx,
@@ -390,7 +387,6 @@ export default class {
       },
     };
 
-    // console.log('SET RESULT TX: ', newTx);
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
@@ -406,10 +402,9 @@ export default class {
     const { version, topicAddress, address } = this.oracle;
     const { selectedOptionIdx } = this;
     const amount = decimalToSatoshi(this.amount);
-    // console.log('VOTE AMT: ', amount);
 
     let { data: { createVote: newTx } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
-    newTx = { // TODO: move this logic to the backend
+    newTx = { // TODO: move this logic to backend, add `token` and `options`
       ...newTx,
       token: 'BOT',
       topic: {
@@ -417,7 +412,6 @@ export default class {
       },
     };
 
-    // console.log('VOTE TX: ', newTx);
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
@@ -431,13 +425,19 @@ export default class {
     const { lastUsedAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
 
-    await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+    let { data: { finalizeResult: newTx } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+    newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
+      ...newTx,
+      optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
+      topic: {
+        options: this.oracle.options.map(({ name }) => name),
+      },
+    };
 
-    const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
-      this.transactions = transactions;
+      this.transactions.unshift(new Transaction(newTx));
     });
 
     Tracking.track('oracleDetail-finalize');
