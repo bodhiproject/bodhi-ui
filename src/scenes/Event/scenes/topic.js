@@ -32,7 +32,7 @@ import StepperVertRight from '../../../components/StepperVertRight/index';
 import RewardTooltipContent from '../../../components/RewardTooltipContent/index';
 import EventInfo from '../components/EventInfo/index';
 import EventTxHistory from '../components/EventTxHistory/index';
-import EventResultHistory from '../components/EventTxHistory/resultHistory';
+import EventResultHistory from '../components/EventTxHistory/_resultHistory';
 import BackButton from '../../../components/BackButton';
 import appActions from '../../../redux/App/actions';
 import topicActions from '../../../redux/Topic/actions';
