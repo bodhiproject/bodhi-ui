@@ -13,12 +13,12 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import graphqlActions from '../../../../redux/Graphql/actions';
 import appActions from '../../../../redux/App/actions';
 import { decimalToSatoshi } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
@@ -45,13 +45,11 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch) => ({
-  createTransferTx: (senderAddress, receiverAddress, token, amount) =>
-    dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
+@connect(null, (dispatch) => ({
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
+@inject('store')
+@observer
 export default class WithdrawDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -61,15 +59,12 @@ export default class WithdrawDialog extends Component {
     botAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
-    createTransferTx: PropTypes.func,
-    walletAddresses: PropTypes.array.isRequired,
     setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     walletAddress: undefined,
     botAmount: undefined,
-    createTransferTx: undefined,
   };
 
   state = {
@@ -140,14 +135,14 @@ export default class WithdrawDialog extends Component {
       classes,
       intl,
       botAmount,
-      walletAddresses,
+      store: { wallet },
     } = this.props;
     const { withdrawAmount, selectedToken } = this.state;
 
     let withdrawLimit = 0;
     switch (selectedToken) {
       case Token.QTUM: {
-        withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
+        withdrawLimit = _.sumBy(wallet.addresses, (w) => w.qtum ? w.qtum : 0);
         break;
       }
       case Token.BOT: {
@@ -209,15 +204,14 @@ export default class WithdrawDialog extends Component {
   };
 
   submitSend = () => {
-    const { walletAddress, createTransferTx } = this.props;
+    const { walletAddress, store: { wallet } } = this.props;
     const { toAddress, withdrawAmount, selectedToken } = this.state;
 
     let amount = withdrawAmount;
     if (selectedToken === Token.BOT) {
       amount = decimalToSatoshi(withdrawAmount);
     }
-
-    createTransferTx(walletAddress, toAddress, selectedToken, amount);
+    wallet.createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
 
     Tracking.track('myWallet-withdraw');

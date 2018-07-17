@@ -11,7 +11,6 @@ import {
   createSetResultTx,
   createVoteTx,
   createFinalizeResultTx,
-  createWithdrawTx,
   createTransferTx,
 } from '../../network/graphMutation';
 import {
@@ -501,34 +500,6 @@ export function* createFinalizeResultTxHandler() {
   });
 }
 
-// Send withdraw mutation
-export function* createWithdrawTxHandler() {
-  yield takeEvery(actions.CREATE_WITHDRAW_TX, function* createWithdrawTxRequest(action) {
-    try {
-      const tx = yield call(
-        createWithdrawTx,
-        action.params.type,
-        action.params.version,
-        action.params.topicAddress,
-        action.params.senderAddress,
-      );
-
-      yield put({
-        type: actions.CREATE_WITHDRAW_TX_RETURN,
-        value: tx.data.withdraw,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CREATE_WITHDRAW_TX_RETURN,
-        error: {
-          ...error,
-          route: `${Routes.graphql.http}/createWithdrawTx`,
-        },
-      });
-    }
-  });
-}
-
 // Send transfer mutation
 export function* createTransferTxHandler() {
   yield takeEvery(actions.CREATE_TRANSFER_TX, function* createTransferTxRequest(action) {
@@ -569,7 +540,6 @@ export default function* graphqlSaga() {
     fork(createSetResultTxHandler),
     fork(createVoteTxHandler),
     fork(createFinalizeResultTxHandler),
-    fork(createWithdrawTxHandler),
     fork(createTransferTxHandler),
   ]);
 }
