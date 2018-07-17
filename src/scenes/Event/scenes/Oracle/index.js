@@ -1,14 +1,22 @@
 /* eslint-disable */
 import React, { Component, Fragment } from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { TxSentDialog } from 'components';
+import { TxSentDialog, Loading as _Loading } from 'components';
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
 import BackButton from '../../../../components/BackButton';
 
+const Loading = styled(_Loading)`
+  margin-top: 25rem;
+  .animation {
+    width: 5rem;
+    height: 5rem;
+  }
+`;
 
 @withRouter
 @inject('store')
@@ -24,7 +32,7 @@ export default class OraclePage extends Component {
 
   render() {
     const { oraclePage } = this.props.store;
-    if (oraclePage.loading) return 'LOADING';
+    if (oraclePage.loading) return <Loading text='Loading Oracle...' />
     const { oracle } = oraclePage;
     const Oracle = {
       BETTING: BettingOracle,

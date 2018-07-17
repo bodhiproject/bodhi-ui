@@ -362,6 +362,7 @@ export default class {
         options: this.oracle.options.map(({ name }) => name),
       },
     };
+    // console.log('BET TX: ', newTx);
 
     runInAction(() => {
       this.txConfirmDialogOpen = false;
