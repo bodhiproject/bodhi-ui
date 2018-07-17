@@ -35,14 +35,12 @@ const messages = defineMessages({ // eslint-disable-line
   },
 });
 
-// @withRouter
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
 export default class EventHistory extends Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
   };
 
@@ -51,13 +49,12 @@ export default class EventHistory extends Component {
   }
 
   createSortHandler = (property) => (event) => { // eslint-disable-line
-    this.props.store.activities.history.sortClick(property);
+    this.props.store.activities.history.sort(property);
   }
 
   render() {
     const { classes } = this.props;
-    const { transactions, order, orderBy, page, perPage } = this.props.store.activities.history;
-    const { displayedTxs } = this.props.store.activities.history;
+    const { transactions, order, orderBy, page, perPage, displayedTxs } = this.props.store.activities.history;
     const headerCols = [
       {
         id: 'createdTime',

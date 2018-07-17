@@ -128,7 +128,7 @@ export default class Activities extends Component {
           {this.tabIdx === TAB_SET && <ResultSetting />}
           {this.tabIdx === TAB_FINALIZE && <Finalize />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
-          {this.tabIdx === TAB_HISTORY && <EventHistory history={history} />}
+          {this.tabIdx === TAB_HISTORY && <EventHistory />}
         </div>
       </div>
     );

@@ -26,17 +26,17 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    reaction( // Sort while order changes
+    reaction( // Try to fetch more when need more data OR got new block
       () => this.app.global.syncBlockNum,
-      async () => this.getMoreData()
+      () => this.getMoreData()
     );
     reaction( // Sort while order changes - may be different from the reaction with syncBlockNum in future
       () => this.order + this.orderBy,
-      async () => this.sort()
+      () => this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order])
     );
-    reaction( // Refresh when need more data
+    reaction( // Try to fetch more when need more data OR got new block
       () => this.page + this.perPage,
-      async () => {
+      () => {
         // Set skip to fetch more txs if last page is reached
         const needMoreFetch = (this.perPage * (this.page + 1)) >= this.transactions.length;
         if (needMoreFetch) {
@@ -51,7 +51,7 @@ export default class {
   getMoreData = async () => {
     const moreData = await this.fetchHistory(this.transactions.length);
     this.transactions = [...this.transactions, ...moreData];
-    this.sort();
+    this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order]);
   }
 
   @computed
@@ -91,14 +91,9 @@ export default class {
   }
 
   @action
-  sortClick = (columnName) => {
+  sort = (columnName) => {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
     this.orderBy = columnName;
     this.order = this.order === descending ? ascending : descending;
-  }
-
-  @action
-  sort = () => {
-    this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order]);
   }
 }

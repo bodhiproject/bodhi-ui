@@ -45,8 +45,8 @@ class EventRow extends Component {
       if (topicAddress) {
         const { activities: { history: { getOracleAddress } } } = this.props.store;
         const { history } = this.props;
-        const nextAddress = await getOracleAddress(topicAddress);
-        if (nextAddress) history.push(nextAddress);
+        const nextLocation = await getOracleAddress(topicAddress);
+        if (nextLocation) history.push(nextLocation);
       }
     }
 
