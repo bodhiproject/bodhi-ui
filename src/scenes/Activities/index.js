@@ -45,7 +45,6 @@ export default class Activities extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     match: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
   }
 
@@ -114,7 +113,7 @@ export default class Activities extends Component {
   }
 
   render() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
 
     return (
       <div>

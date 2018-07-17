@@ -14,26 +14,12 @@ import {
   Tooltip,
   withStyles,
 } from '@material-ui/core';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 import Config from '../../../config/app';
 import EventRows from './EventRows';
 
-const messages = defineMessages({ // eslint-disable-line
-  statusSuccess: {
-    id: 'str.success',
-    defaultMessage: 'Success',
-  },
-  statusPending: {
-    id: 'str.pending',
-    defaultMessage: 'Pending',
-  },
-  statusFail: {
-    id: 'str.fail',
-    defaultMessage: 'Fail',
-  },
-});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -53,8 +39,8 @@ export default class EventHistory extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { transactions, order, orderBy, page, perPage, displayedTxs } = this.props.store.activities.history;
+    const { classes, store: { activities: { history } } } = this.props;
+    const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
     const headerCols = [
       {
         id: 'createdTime',
@@ -122,12 +108,8 @@ export default class EventHistory extends Component {
               fullList={transactions}
               perPage={perPage}
               page={page}
-              onPageChange={(event, page) => { // eslint-disable-line
-                this.props.store.activities.history.page = page;
-              }}
-              onPerPageChange={(event) => {
-                this.props.store.activities.history.perPage = event.target.value;
-              }}
+              onChangePage={(event, pg) => history.page = pg}
+              onChangeRowsPerPage={(event) => history.perPage = event.target.value}
             />
           </Table>
         ) : (
@@ -140,7 +122,7 @@ export default class EventHistory extends Component {
   }
 }
 
-const EventHistoryFooter = withStyles(styles)(({ fullList, perPage, page, onPageChange, onPerPageChange }) => (
+const EventHistoryFooter = ({ fullList, perPage, page, ...props }) => (
   <TableFooter>
     <TableRow>
       <TablePagination
@@ -148,14 +130,13 @@ const EventHistoryFooter = withStyles(styles)(({ fullList, perPage, page, onPage
         count={fullList.length}
         rowsPerPage={perPage}
         page={page}
-        onChangePage={onPageChange}
-        onChangeRowsPerPage={onPerPageChange}
+        {...props}
       />
     </TableRow>
   </TableFooter>
-));
+);
 
-const TableHeader = withStyles(styles)(({ cols, order, orderBy, onSortChange }) => (
+const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
   <TableHead>
     <TableRow>
       {cols.map((column) => column.sortable ? (
@@ -185,4 +166,4 @@ const TableHeader = withStyles(styles)(({ cols, order, orderBy, onSortChange }) 
       ))}
     </TableRow>
   </TableHead>
-));
+);
