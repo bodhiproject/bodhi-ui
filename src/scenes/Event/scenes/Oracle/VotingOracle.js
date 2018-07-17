@@ -5,7 +5,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 import Transactions from '../../components/EventTxHistory';
-import EventResultHistory from '../../components/EventTxHistory/resultHistory';
+import ResultHistory from '../../components/EventTxHistory/resultHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
 
@@ -20,7 +20,7 @@ const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }
       {!oracle.isArchived && (
         <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       )}
-      <EventResultHistory oracles={oraclePage.oracles} />
+      <ResultHistory oracles={oraclePage.oracles} />
       <Transactions type='oracle' options={oracle.options} />
     </Content>
     <Sidebar oracle={oracle} />
