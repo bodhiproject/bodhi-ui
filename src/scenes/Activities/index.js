@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Routes, EventStatus } from 'constants';
-import _ from 'lodash';
 
 import ResultSetting from './scenes/ResultSetting';
 import Finalize from './scenes/Finalize';
@@ -46,7 +45,6 @@ export default class Activities extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     match: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
   }
 
@@ -56,10 +54,6 @@ export default class Activities extends Component {
     [WITHDRAW]: TAB_WITHDRAW,
     [ACTIVITY_HISTORY]: TAB_HISTORY,
   }[this.props.match.path]
-
-  componentDidMount() {
-    this.props.store.ui.location = _.invert(Routes)[this.props.match.path];
-  }
 
   getTabLabel = (eventStatusIndex) => {
     const { store: { global }, intl } = this.props;
@@ -119,7 +113,7 @@ export default class Activities extends Component {
   }
 
   render() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
 
     return (
       <div>
@@ -133,7 +127,7 @@ export default class Activities extends Component {
           {this.tabIdx === TAB_SET && <ResultSetting />}
           {this.tabIdx === TAB_FINALIZE && <Finalize />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
-          {this.tabIdx === TAB_HISTORY && <EventHistory history={history} />}
+          {this.tabIdx === TAB_HISTORY && <EventHistory />}
         </div>
       </div>
     );
