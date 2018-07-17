@@ -362,12 +362,12 @@ export default class {
         options: this.oracle.options.map(({ name }) => name),
       },
     };
-    // console.log('BET TX: ', newTx);
 
     runInAction(() => {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions.unshift(new Transaction(newTx));
+      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
     });
 
     Tracking.track('oracleDetail-bet');
@@ -391,6 +391,7 @@ export default class {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions.unshift(new Transaction(newTx));
+      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
     });
 
     Tracking.track('oracleDetail-set');
@@ -415,6 +416,7 @@ export default class {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions.unshift(new Transaction(newTx));
+      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
     });
 
     Tracking.track('oracleDetail-vote');
@@ -437,6 +439,7 @@ export default class {
       this.txConfirmDialogOpen = false;
       this.txSentDialogOpen = true;
       this.transactions.unshift(new Transaction(newTx));
+      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
     });
 
     Tracking.track('oracleDetail-finalize');
