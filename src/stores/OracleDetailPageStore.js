@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import graphql from 'graphql.js';
-import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token } from 'constants';
+import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
@@ -15,6 +15,7 @@ import Oracle from './models/Oracle';
 import Transaction from './models/Transaction';
 import { queryAllTransactions } from '../network/graphQuery';
 import { maxTransactionFee } from '../config/app';
+const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
 
 const graph = graphql('http://127.0.0.1:8989/graphql', {
   asJSON: true,
@@ -158,7 +159,7 @@ export default class {
       () => this.oracle.phase,
       () => {
         this.amount = '0';
-        if (this.oracle.phase === 'RESULT_SETTING') {
+        if (this.oracle.phase === RESULT_SETTING) {
           this.amount = '100';
         }
       },
@@ -183,7 +184,7 @@ export default class {
           return;
         }
 
-        if (phase === 'BETTING' && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
+        if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -191,7 +192,7 @@ export default class {
         }
 
         // Has not reached result setting start time
-        if ((phase === 'RESULT_SETTING')
+        if ((phase === RESULT_SETTING)
           && currBlockTime.isBefore(moment.unix(this.oracle.resultSetStartTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
@@ -200,7 +201,7 @@ export default class {
         }
 
         // User is not the result setter
-        if (phase === 'RESULT_SETTING' && resultSetterQAddress !== wallet.lastUsedAddress) {
+        if (phase === RESULT_SETTING && resultSetterQAddress !== wallet.lastUsedAddress) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -211,8 +212,8 @@ export default class {
         const filteredAddress = _.filter(wallet.addresses, { address: wallet.lastUsedAddress });
         const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
         if ((
-          (phase === 'VOTING' && currentBot < this.amount)
-          || (phase === 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
+          (phase === VOTING && currentBot < this.amount)
+          || (phase === RESULT_SETTING && currentBot < this.oracle.consensusThreshold)
         ) && notEnoughQtum) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
@@ -222,7 +223,7 @@ export default class {
 
         // ALL
         // Trying to bet more qtum than you have or you just don't have enough QTUM period
-        if ((phase === 'BETTING' && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
+        if ((phase === BETTING && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
           this.eventWarningMessageId = 'str.notEnoughQtum';
@@ -231,8 +232,8 @@ export default class {
 
 
         // Not enough bot for setting the result or voting
-        if ((phase === 'RESULT_SETTING' && currentBot < this.oracle.consensusThreshold)
-          || (phase === 'VOTING' && currentBot < this.amount)) {
+        if ((phase === RESULT_SETTING && currentBot < this.oracle.consensusThreshold)
+          || (phase === VOTING && currentBot < this.amount)) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
           this.eventWarningMessageId = 'str.notEnoughBot';
@@ -240,7 +241,7 @@ export default class {
         }
 
         // Did not select a result
-        if (phase !== 'FINALIZING' && this.selectedOptionIdx === -1) {
+        if (phase !== FINALIZING && this.selectedOptionIdx === -1) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.selectResultDisabledText';
@@ -248,7 +249,7 @@ export default class {
         }
 
         // Did not enter an amount
-        if (['BETTING', 'VOTING'].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+        if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
@@ -257,8 +258,8 @@ export default class {
 
         // Trying to vote over the consensus threshold
         const optionAmount = this.selectedOption.amount;
-        const maxVote = phase === 'VOTING' ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
-        if (phase === 'VOTING' && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
+        const maxVote = phase === VOTING ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
+        if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
           this.buttonDisabled = true;
           this.amount = String(toFixed(maxVote));
           // TODO: this get's called everytime we change the amount, since we
@@ -277,7 +278,7 @@ export default class {
 
   @action // used in the VotingOracle onBlur
   fixAmount = () => {
-    if (this.oracle.phase !== 'VOTING') return;
+    if (this.oracle.phase !== VOTING) return;
     const [inputAmount, consensusThreshold] = [parseFloat(this.amount, 10), parseFloat(this.oracle.consensusThreshold, 10)];
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
       this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
