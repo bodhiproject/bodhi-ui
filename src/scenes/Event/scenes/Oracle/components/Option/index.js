@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import {
   Collapse,
   withStyles,
@@ -17,95 +17,60 @@ import {
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
-import { FormattedMessage } from 'react-intl';
-import { Phases } from 'constants';
-import NP from 'number-precision';
+import { injectIntl } from 'react-intl';
 
-import Progress from '../Progress';
+import Progress from '../../../../components/Progress';
 import styles from './styles';
-import { toFixed } from '../../../../helpers/utility';
 
 
+/**
+ * The new EventOption
+ * TODO: this needs to be refactored...
+ * logic is hard to follow
+ */
+@withRouter
+@injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
-export default class EventOption extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    isLast: PropTypes.bool.isRequired,
-    currentOptionIdx: PropTypes.number.isRequired,
-    optionIdx: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    amount: PropTypes.string.isRequired,
-    percent: PropTypes.number.isRequired,
-    voteAmount: PropTypes.number,
-    token: PropTypes.string.isRequired,
-    onOptionChange: PropTypes.func.isRequired,
-    onAmountChange: PropTypes.func.isRequired,
-    onWalletChange: PropTypes.func.isRequired,
-    lastUsedAddress: PropTypes.string.isRequired,
-    skipExpansion: PropTypes.bool.isRequired,
-    unconfirmedEvent: PropTypes.bool.isRequired,
-    showAmountInput: PropTypes.bool.isRequired,
-    amountInputDisabled: PropTypes.bool.isRequired,
-    isPrevResult: PropTypes.bool.isRequired,
-    isFinalizing: PropTypes.bool.isRequired,
-  };
-
+@observer
+export default class Option extends Component {
   static defaultProps = {
     voteAmount: 0,
   };
 
-  handleAmountBlur = ({ target: { value } }) => {
-    let { phase, amount, consensusThreshold, onAmountChange } = this.props; // eslint-disable-line
-    if (phase === Phases.VOTING) {
-      [amount, consensusThreshold] = [parseFloat(amount, 10), parseFloat(consensusThreshold, 10)];
-      if (amount + Number(value) > consensusThreshold) {
-        const val = toFixed(NP.minus(consensusThreshold, amount));
-        onAmountChange(val);
-      }
-    }
-  }
-
   render() {
     const {
       classes,
-      isLast,
-      currentOptionIdx,
-      optionIdx,
-      name,
-      amount,
-      percent,
-      skipExpansion,
-      unconfirmedEvent,
-      showAmountInput,
-      isPrevResult,
-      isFinalizing,
-      token,
-      voteAmount,
-      amountInputDisabled,
-      lastUsedAddress,
-      onAmountChange,
-      onWalletChange,
-      onOptionChange,
+      skipExpansion = false,
+      showAmountInput = true,
+      amountInputDisabled = false,
       store,
+      option,
+      intl,
+      disabled,
     } = this.props;
 
+    const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
+    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token } = option;
+    const { oraclePage, wallet } = store;
+    const { selectedOptionIdx } = oraclePage;
+
     return (
-      <Collapse in={(optionIdx === currentOptionIdx || currentOptionIdx === -1) || skipExpansion}>
+      <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
-            last: isLast || optionIdx === currentOptionIdx,
-            first: optionIdx === 0 || optionIdx === currentOptionIdx,
+            last: isLast || isExpanded,
+            first: isFirst || isExpanded,
           })}
         >
           <ExpansionPanel
-            expanded={optionIdx === currentOptionIdx || skipExpansion}
-            onChange={(e, expanded) => onOptionChange(expanded ? optionIdx : -1)}
-            disabled={unconfirmedEvent || (!isFinalizing && isPrevResult) || (isFinalizing && !isPrevResult)}
+            expanded={isExpanded || skipExpansion}
+            onChange={option.toggleExpansion}
+            disabled={option.disabled || disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>
-                <div className={classes.eventOptionNum}>{optionIdx + 1}</div>
+                <div className={classes.eventOptionNum}>{idx + 1}</div>
                 <Typography variant="title">
                   {name}
                 </Typography>
@@ -114,12 +79,7 @@ export default class EventOption extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
-                  {isPrevResult ? (
-                    <FormattedMessage
-                      id="oracle.optionIsPrevResult"
-                      defaultMessage="This option was set as the result in the previous round"
-                    />
-                  ) : amount}
+                  {isPrevResult ? intl.formatMessage({ id: 'oracle.optionIsPrevResult' }) : value}
                 </Typography>
               </div>
             </ExpansionPanelSummary>
@@ -129,16 +89,16 @@ export default class EventOption extends Component {
                   token={token}
                   disabled={amountInputDisabled}
                   classes={classes}
-                  value={voteAmount}
-                  onChange={e => onAmountChange(parseFloat(e.target.value))}
-                  onBlur={this.handleAmountBlur}
+                  value={oraclePage.amount}
+                  onChange={({ target }) => oraclePage.amount = target.value}
+                  onBlur={oraclePage.fixAmount}
                 />
                 <AddressSelect
-                  wallet={store.wallet}
+                  wallet={wallet}
                   token={token}
                   classes={classes}
-                  value={lastUsedAddress}
-                  onChange={e => onWalletChange(e.target.value)}
+                  value={wallet.lastUsedAddress}
+                  onChange={e => wallet.lastUsedAddress = e.target.value}
                 />
               </Fragment>
             )}

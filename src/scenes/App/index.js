@@ -9,10 +9,10 @@ import BottomBar from '../../components/BottomBar';
 import CreateEvent from '../CreateEvent';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
 import GlobalSnackbar from '../../components/GlobalSnackbar';
-import TransactionSentDialog from '../../components/TransactionSentDialog';
+import TxSentDialog from '../../components/TxSentDialog/old';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
-import TxConfirmDialog from '../../components/TxConfirmDialog';
+import TxConfirmDialog from '../../components/TxConfirmDialog/old';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 import Loader from './components/Loader';
 
@@ -30,7 +30,7 @@ const App = observer(({ classes, match: { url }, store }) => (
         <CreateEvent />
         <PendingTransactionsSnackbar />
         <GlobalSnackbar />
-        <TransactionSentDialog />
+        <TxSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
         <TxConfirmDialog txDesc="" txAmount={10} txToken="QTUM" />

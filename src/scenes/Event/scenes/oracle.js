@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */ // Disable "Do not use Array index in keys" for options since they dont have unique identifier
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { connect } from 'react-redux';
@@ -31,7 +31,7 @@ import {
 } from '../../../helpers/utility';
 import StepperVertRight from '../../../components/StepperVertRight';
 import EventWarning from '../../../components/EventWarning';
-import ImportantNote from '../../../components/ImportantNote';
+import { ImportantNote } from '../../../components/ImportantNote';
 import EventOption from '../components/EventOption';
 import EventInfo from '../components/EventInfo';
 import EventResultHistory from '../components/EventTxHistory/resultHistory';
@@ -91,7 +91,6 @@ const messages = defineMessages({
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
   lastUsedAddress: state.App.get('lastUsedAddress'),
   syncBlockTime: state.App.get('syncBlockTime'),
   oracles: state.Graphql.get('getOraclesReturn'),
@@ -135,7 +134,6 @@ export default class OraclePage extends Component {
     createFinalizeResultTx: PropTypes.func,
     txReturn: PropTypes.object,
     syncBlockTime: PropTypes.number,
-    walletAddresses: PropTypes.array.isRequired,
     lastUsedAddress: PropTypes.string.isRequired,
     setLastUsedAddress: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -197,19 +195,22 @@ export default class OraclePage extends Component {
     const { classes, lastUsedAddress, syncBlockTime, intl } = this.props;
     const { oracle, oracles, config, transactions, unconfirmed } = this.state;
 
+    // console.log('ORACLES: ', oracles);
     if (!oracle || !config) {
       return null;
     }
 
     const cOracle = _.find(oracles, { token: Token.QTUM });
+    // console.log('C oracle: ', cOracle);
     const dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+    // console.log('D oracles: ', dOracles);
 
     const showResultHistory = config.eventStatus === EventStatus.VOTE || config.eventStatus === EventStatus.FINALIZE;
     const eventOptions = this.getEventOptionsInfo();
     const { id, message, values, warningType, disabled } = this.getActionButtonConfig();
 
     return (
-      <div>
+      <Fragment>
         <BackButton />
         <Paper className={classes.eventDetailPaper}>
           <Grid container spacing={0}>
@@ -236,7 +237,6 @@ export default class OraclePage extends Component {
                       token={config.eventStatus === EventStatus.SET ? Token.BOT : oracle.token}
                       isPrevResult={item.isPrevResult}
                       isFinalizing={item.isFinalizing}
-                      walletAddresses={this.props.walletAddresses}
                       consensusThreshold={oracle.consensusThreshold}
                       lastUsedAddress={lastUsedAddress}
                       skipExpansion={config.predictionAction.skipExpansion}
@@ -284,7 +284,7 @@ export default class OraclePage extends Component {
             </Grid>
           </Grid>
         </Paper>
-      </div>
+      </Fragment>
     );
   }
 
@@ -566,10 +566,10 @@ export default class OraclePage extends Component {
   };
 
   getActionButtonConfig = () => {
-    const { syncBlockTime, walletAddresses, lastUsedAddress } = this.props;
+    const { syncBlockTime, store: { wallet }, lastUsedAddress } = this.props;
     const { address, oracle, transactions, currentOptionIdx, voteAmount } = this.state;
     const { token, status, resultSetterQAddress } = oracle;
-    const totalQtum = _.sumBy(walletAddresses, ({ qtum }) => qtum);
+    const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
     const currBlockTime = moment.unix(syncBlockTime);
     const isBettingPhase = token === Token.QTUM && status === OracleStatus.VOTING;
     const isVotingPhase = token === Token.BOT && status === OracleStatus.VOTING;
@@ -621,7 +621,7 @@ export default class OraclePage extends Component {
     }
 
     // Trying to set result or vote when not enough QTUM or BOT
-    const filteredAddress = _.filter(walletAddresses, { address: lastUsedAddress });
+    const filteredAddress = _.filter(wallet.addresses, { address: lastUsedAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
     if ((
       (isVotingPhase && currentBot < voteAmount)
