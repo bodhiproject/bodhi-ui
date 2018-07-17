@@ -49,7 +49,6 @@ const messages = defineMessages({ // eslint-disable-line
 
 @injectIntl
 @connect((state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
   oracles: state.Graphql.get('getOraclesReturn'),
   transactions: state.Graphql.get('getTransactionsReturn'),
 }), (dispatch) => ({
@@ -68,13 +67,10 @@ export default class EventHistory extends Component {
     getOracles: PropTypes.func.isRequired,
     oracles: PropTypes.array,
     getTransactions: PropTypes.func.isRequired,
-    transactions: PropTypes.array,
-    syncBlockNum: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
     oracles: undefined,
-    transactions: undefined,
   };
 
   state = {
@@ -91,29 +87,8 @@ export default class EventHistory extends Component {
   navigating = false
 
   componentDidMount() {
-    this.props.store.ui.location = Routes.ACTIVITY_HISTORY;
+    this.props.store.activities.history.init();
     this.executeTxsRequest();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { transactions, syncBlockNum } = this.props;
-
-    // Update page on new block
-    if (nextProps.syncBlockNum !== syncBlockNum) {
-      this.executeTxsRequest();
-    }
-
-    if (nextProps.transactions || transactions) {
-      const sorted = _.orderBy(
-        nextProps.transactions ? nextProps.transactions : transactions,
-        [this.state.orderBy],
-        [this.state.order],
-      );
-
-      this.setState({
-        transactions: sorted,
-      });
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
