@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import {
   Typography,
   Table,
@@ -19,14 +18,13 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TransactionType, SortBy, Routes } from 'constants';
+import { SortBy } from 'constants';
 
 import styles from './styles';
 import Config from '../../../config/app';
 import TransactionHistoryID from '../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../components/TransactionHistoryAddressAndID/address';
-import graphqlActions from '../../../redux/Graphql/actions';
-import { getShortLocalDateTimeString, getDetailPagePath } from '../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../helpers/utility';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../helpers/stringUtil';
 
@@ -48,14 +46,6 @@ const messages = defineMessages({ // eslint-disable-line
 
 
 @injectIntl
-@connect((state) => ({
-  oracles: state.Graphql.get('getOraclesReturn'),
-  transactions: state.Graphql.get('getTransactionsReturn'),
-}), (dispatch) => ({
-  getOracles: (filters, orderBy) => dispatch(graphqlActions.getOracles(filters, orderBy)),
-  getTransactions: (filters, orderBy, limit, skip) =>
-    dispatch(graphqlActions.getTransactions(filters, orderBy, limit, skip)),
-}))
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
@@ -64,23 +54,9 @@ export default class EventHistory extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     history: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
-    getOracles: PropTypes.func.isRequired,
-    oracles: PropTypes.array,
-    getTransactions: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    oracles: undefined,
   };
 
   state = {
-    transactions: [],
-    order: SortBy.DESCENDING.toLowerCase(),
-    orderBy: 'createdTime',
-    perPage: 10,
-    page: 0,
-    limit: 50,
-    skip: 0,
     expanded: [],
   };
 
@@ -88,26 +64,25 @@ export default class EventHistory extends Component {
 
   componentDidMount() {
     this.props.store.activities.history.init();
-    this.executeTxsRequest();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { skip } = this.state;
-    const { oracles, history } = this.props;
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { skip } = this.state;
+  //   const { oracles, history } = this.props;
 
-    if (skip !== prevState.skip) {
-      this.executeTxsRequest();
-    }
+  //   if (skip !== prevState.skip) {
+  //     this.executeTxsRequest();
+  //   }
 
-    if (prevProps.oracles !== oracles && this.navigating) {
-      const path = getDetailPagePath(oracles);
-      if (path) history.push(path);
-    }
-  }
+  //   if (prevProps.oracles !== oracles && this.navigating) {
+  //     const path = getDetailPagePath(oracles);
+  //     if (path) history.push(path);
+  //   }
+  // }
 
   render() {
     const { classes } = this.props;
-    const { transactions } = this.state;
+    const { transactions } = this.props.store.activities.history;
 
     return (
       <Grid container spacing={0}>
@@ -123,30 +98,6 @@ export default class EventHistory extends Component {
             </Typography>)
         }
       </Grid>
-    );
-  }
-
-  executeTxsRequest = () => {
-    const { orderBy, order, limit, skip } = this.state;
-    const direction = order === SortBy.DESCENDING.toLowerCase() ? SortBy.DESCENDING : SortBy.ASCENDING;
-
-    this.props.getTransactions(
-      [
-        { type: TransactionType.APPROVE_CREATE_EVENT },
-        { type: TransactionType.APPROVE_CREATE_EVENT },
-        { type: TransactionType.BET },
-        { type: TransactionType.APPROVE_SET_RESULT },
-        { type: TransactionType.SET_RESULT },
-        { type: TransactionType.APPROVE_VOTE },
-        { type: TransactionType.VOTE },
-        { type: TransactionType.FINALIZE_RESULT },
-        { type: TransactionType.WITHDRAW },
-        { type: TransactionType.WITHDRAW_ESCROW },
-        { type: TransactionType.RESET_APPROVE },
-      ],
-      { field: orderBy, direction },
-      limit,
-      skip,
     );
   }
 
@@ -213,12 +164,12 @@ export default class EventHistory extends Component {
   }
 
   getSortableCell = (column) => {
-    const { order, orderBy } = this.state;
+    const { order, orderBy } = this.props.store.activities.history;
     return (
       <TableCell
         key={column.id}
         numeric={column.numeric}
-        sortDirection={orderBy === column.id ? order : false}
+        sortDirection={orderBy.toLowerCase() === column.id.toLowerCase() ? order.toLowerCase() : false}
       >
         <Tooltip
           title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
@@ -226,8 +177,8 @@ export default class EventHistory extends Component {
           placement={column.numeric ? 'bottom-end' : 'bottom-start'}
         >
           <TableSortLabel
-            active={orderBy === column.id}
-            direction={order}
+            active={orderBy.toLowerCase() === column.id.toLowerCase()}
+            direction={order.toLowerCase()}
             onClick={this.createSortHandler(column.id)}
           >
             <FormattedMessage id={column.name} default={column.nameDefault} />
@@ -244,7 +195,7 @@ export default class EventHistory extends Component {
   )
 
   getTableRows = () => {
-    const { transactions, page, perPage } = this.state;
+    const { transactions, page, perPage } = this.props.store.activities.history;
     const slicedTxs = _.slice(transactions, page * perPage, (page * perPage) + perPage);
 
     return (
@@ -261,12 +212,6 @@ export default class EventHistory extends Component {
     const expandedIndex = expanded.indexOf(id);
     let newexpanded = [];
     if (topicAddress) {
-      this.props.getOracles(
-        [
-          { topicAddress },
-        ],
-        { field: 'endTime', direction: SortBy.DESCENDING },
-      );
       this.navigating = true;
     } else if (expandedIndex === -1) {
       newexpanded = [...expanded, id];
@@ -324,7 +269,7 @@ export default class EventHistory extends Component {
   }
 
   getTableFooter = () => {
-    const { transactions, perPage, page } = this.state;
+    const { transactions, perPage, page } = this.props.store.activities.history;
 
     return (
       <TableFooter>
@@ -343,7 +288,7 @@ export default class EventHistory extends Component {
   }
 
   handleChangePage = (event, page) => {
-    const { transactions, perPage, skip } = this.state;
+    const { transactions, perPage, skip } = this.props.store.activities.history;
     this.setState({ expanded: [] });
     // Set skip to fetch more txs if last page is reached
     let newSkip = skip;
@@ -351,11 +296,12 @@ export default class EventHistory extends Component {
       newSkip = transactions.length;
     }
 
-    this.setState({ page, skip: newSkip });
+    this.props.store.activities.history.page = page;
+    this.props.store.activities.history.skip = newSkip;
   }
 
   handleChangePerPage = (event) => {
-    this.setState({ perPage: event.target.value });
+    this.props.store.activities.history.perPage = event.target.value;
   }
 
   createSortHandler = (property) => (event) => {
@@ -363,22 +309,18 @@ export default class EventHistory extends Component {
   }
 
   handleSorting = (event, property) => {
-    const { transactions } = this.state;
+    const { transactions, orderBy, order } = this.props.store.activities.history;
 
-    const orderBy = property;
-    let order = SortBy.DESCENDING.toLowerCase();
+    let orderBySymbol = SortBy.DESCENDING.toLowerCase();
 
-    if (this.state.orderBy === property && this.state.order === SortBy.DESCENDING.toLowerCase()) {
-      order = SortBy.ASCENDING.toLowerCase();
+    if (orderBy === property && order === SortBy.DESCENDING.toLowerCase()) {
+      orderBySymbol = SortBy.ASCENDING.toLowerCase();
     }
 
-    const sorted = _.orderBy(transactions, [orderBy], [order]);
-
-    this.setState({
-      transactions: sorted,
-      orderBy,
-      order,
-    });
+    const sorted = _.orderBy(transactions, [property], [orderBySymbol]);
+    this.props.store.activities.history.transactions = sorted;
+    this.props.store.activities.history.orderBy = property;
+    this.props.store.activities.history.order = orderBySymbol;
   }
 }
 
