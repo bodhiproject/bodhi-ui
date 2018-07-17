@@ -168,6 +168,7 @@ const MUTATIONS = {
       optionIdx
       amount
       senderAddress
+      token
     `,
   },
 
@@ -191,6 +192,7 @@ const MUTATIONS = {
       optionIdx
       amount
       senderAddress
+      token
     `,
   },
 
@@ -214,6 +216,7 @@ const MUTATIONS = {
       optionIdx
       amount
       senderAddress
+      token
     `,
   },
 

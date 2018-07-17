@@ -355,10 +355,9 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
 
-    let { data: { createBet: newTx } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
-    newTx = { // TODO: add `token` type and `options` in return from backend
-      ...newTx,
-      token: 'QTUM',
+    const { data: { createBet } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    const newTx = { // TODO: add `options` in return from backend
+      ...createBet,
       topic: {
         options: this.oracle.options.map(({ name }) => name),
       },
@@ -379,10 +378,9 @@ export default class {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
 
-    let { data: { createSetResult: newTx } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
-    newTx = { // TODO: add `token` type and `options` in return from backend
-      ...newTx,
-      token: 'BOT',
+    const { data: { setResult } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
+    const newTx = { // TODO: add `options` in return from backend
+      ...setResult,
       topic: {
         options: this.oracle.options.map(({ name }) => name),
       },
@@ -404,10 +402,9 @@ export default class {
     const { selectedOptionIdx } = this;
     const amount = decimalToSatoshi(this.amount);
 
-    let { data: { createVote: newTx } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
-    newTx = { // TODO: move this logic to backend, add `token` and `options`
-      ...newTx,
-      token: 'BOT',
+    const { data: { createVote } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+    const newTx = { // TODO: move this logic to backend, add `options`
+      ...createVote,
       topic: {
         options: this.oracle.options.map(({ name }) => name),
       },
@@ -426,9 +423,9 @@ export default class {
     const { lastUsedAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
 
-    let { data: { finalizeResult: newTx } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
-    newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
-      ...newTx,
+    const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+    const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
+      ...finalizeResult,
       optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
       topic: {
         options: this.oracle.options.map(({ name }) => name),
