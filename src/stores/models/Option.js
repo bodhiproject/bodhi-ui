@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { action, computed } from 'mobx';
-import { Token, OracleStatus, Phases } from 'constants';
+import { Token, OracleStatus } from 'constants';
 
 
 export default class Option {
@@ -28,7 +28,7 @@ export default class Option {
     this.isFirst = i === 0;
     const totalBalance = _.sum(oracle.amounts);
     this.name = optionName;
-    this.token = oracle.phase === Phases.RESULT_SETTING ? Token.BOT : oracle.token;
+    this.token = oracle.token;
     if (oracle.token === Token.QTUM) {
       this.value = `${this.amount} ${this.token}`;
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
