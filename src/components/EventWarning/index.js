@@ -16,14 +16,14 @@ EventWarning.propTypes = {
   message: PropTypes.string,
   theme: PropTypes.object,
   id: PropTypes.string,
-  values: PropTypes.object,
+  amount: PropTypes.string,
   type: PropTypes.string,
   intl: intlShape.isRequired, // eslint-disable-line
 };
 
 EventWarning.defaultProps = {
   message: undefined,
-  values: {},
+  amount: '',
   id: '',
   className: undefined,
   theme: undefined,

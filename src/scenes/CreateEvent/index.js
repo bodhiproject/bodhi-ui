@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -23,7 +23,7 @@ import {
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Token, TransactionType } from 'constants';
 
-import ImportantNote from '../../components/ImportantNote';
+// import { ImportantNote } from '../../components/ImportantNote';
 import EventWarning from '../../components/EventWarning';
 import CreateEventDatePicker from './components/CreateEventDatePicker';
 import CreateEventOutcomes from './components/CreateEventOutcomes';
@@ -34,6 +34,7 @@ import appActions from '../../redux/App/actions';
 import styles from './styles';
 import { maxTransactionFee } from '../../config/app';
 import { doesUserNeedToUnlockWallet } from '../../helpers/utility';
+import TxSentDialog from '../../components/TxSentDialog';
 
 
 const MAX_LEN_EVENTNAME_HEX = 640;
@@ -194,7 +195,6 @@ const validate = (values, props) => {
     outcomes: ['', ''],
   },
   txReturn: state.Graphql.get('txReturn'),
-  addressValidated: state.App.get('addressValidated'),
   walletAddresses: state.App.get('walletAddresses'),
   createEventDialogVisible: state.App.get('createEventDialogVisible'),
   eventEscrowAmount: state.Topic.get('eventEscrowAmount'),
@@ -221,8 +221,6 @@ const validate = (values, props) => {
     creatorAddress,
   )),
   toggleCreateEventDialog: (isVisible) => dispatch(appActions.toggleCreateEventDialog(isVisible)),
-  getInsightTotals: () => dispatch(appActions.getInsightTotals()),
-  validateAddress: (address) => dispatch(appActions.validateAddress(address)),
   changeFormFieldValue: (field, value) => dispatch(change(FORM_NAME, field, value)),
   untouchForm: (field) => dispatch(untouch(FORM_NAME, field)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
@@ -237,12 +235,9 @@ const validate = (values, props) => {
 export default class CreateEvent extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    addressValidated: PropTypes.bool.isRequired,
     walletAddresses: PropTypes.array.isRequired,
     txReturn: PropTypes.object,
     createTopicTx: PropTypes.func,
-    getInsightTotals: PropTypes.func,
-    validateAddress: PropTypes.func.isRequired,
     untouchForm: PropTypes.func.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     handleSubmit: PropTypes.func.isRequired,
@@ -258,7 +253,6 @@ export default class CreateEvent extends Component {
   static defaultProps = {
     createTopicTx: undefined,
     txReturn: undefined,
-    getInsightTotals: undefined,
     eventEscrowAmount: undefined,
   }
 
@@ -285,10 +279,10 @@ export default class CreateEvent extends Component {
   }
 
   validateResultSetterAddress = (value) => {
-    const { intl, validateAddress } = this.props;
+    const { intl, store: { createEvent } } = this.props;
 
     if (!_.isUndefined(value)) {
-      validateAddress(value);
+      createEvent.validateAddress(value);
     } else {
       return intl.formatMessage(messages.required);
     }
@@ -324,6 +318,8 @@ export default class CreateEvent extends Component {
       eventEscrowAmount,
       creatorAddress,
     );
+    this.props.store.createEvent.createTopicTxFake();
+
     this.props.reset(FORM_NAME);
     this.props.store.refreshing.trigger();
   }
@@ -402,7 +398,7 @@ export default class CreateEvent extends Component {
   }
 
   componentWillMount() {
-    this.props.getInsightTotals();
+    this.props.store.createEvent.getInsightTotals();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -411,7 +407,7 @@ export default class CreateEvent extends Component {
       this.onClose();
     }
 
-    if (!_.isUndefined(nextProps.addressValidated)) {
+    if (!_.isUndefined(this.props.store.createEvent.addressValidated)) {
       this.resultSetterField();
     }
   }
@@ -431,12 +427,12 @@ export default class CreateEvent extends Component {
   }
 
   resultSetterTextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => {
-    const { intl, addressValidated } = this.props;
+    const { intl, store: { createEvent } } = this.props;
     let errorMsg = null;
     if (touched) {
       if (error) {
         errorMsg = error;
-      } else if (!addressValidated) {
+      } else if (!createEvent.addressValidated) {
         errorMsg = intl.formatMessage(messages.invalidAddress);
       }
     }
@@ -464,82 +460,94 @@ export default class CreateEvent extends Component {
       submitting,
       createEventDialogVisible,
       eventEscrowAmount,
+      store: { createEvent },
     } = this.props;
     const { hasEnoughQtum, notEnoughQtumError: { id, message } } = this.state;
 
     return (
-      <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
-        <Form onSubmit={handleSubmit(this.checkWalletAndConfirmAction)}>
-          <DialogContent>
-            <Grid container>
-              <Grid item xs={3}>
-                <DialogTitle className={classes.title}>{formatMessage(messages.dialogTitle)}</DialogTitle>
+      <Fragment>
+        <TxSentDialog
+          txid={createEvent.lastTransaction.txid}
+          open={createEvent.txSentDialogOpen}
+          onClose={() => createEvent.txSentDialogOpen = false}
+        />
+        <Dialog fullWidth maxWidth="md" open={createEventDialogVisible && _.isNumber(eventEscrowAmount)} onEnter={this.onEnter} onClose={this.onClose}>
+          <Form onSubmit={handleSubmit(this.checkWalletAndConfirmAction)}>
+            <DialogContent>
+              <Grid container>
+                <Grid item xs={3}>
+                  <DialogTitle className={classes.title}>{formatMessage(messages.dialogTitle)}</DialogTitle>
+                </Grid>
+                <Grid item xs={9}>
+                  {!hasEnoughQtum && <EventWarning id={id} message={message} type="error" />}
+                </Grid>
               </Grid>
-              <Grid item xs={9}>
-                {!hasEnoughQtum && <EventWarning id={id} message={message} type="error" />}
-              </Grid>
-            </Grid>
-            <div className={classes.importantNoteContainer}>
-              <ImportantNote
-                className={classes.createEscrowNote}
-                heading={formatMessage(messages.escrowNoteTitle, { amount: eventEscrowAmount })}
-                message={formatMessage(messages.escrowNoteDesc, { amount: eventEscrowAmount })}
+              <div className={classes.importantNoteContainer}>
+                {/* <ImportantNote
+                  className={classes.createEscrowNote}
+                  heading={{ id: 'create.escrowNoteTitle', values: { amount: eventEscrowAmount } }}
+                  headingId=''
+                  headingVal={}
+                  messageId=''
+                  messageVal={}
+                  // message={{ id: 'create.escrowNoteDesc', values: { amount: eventEscrowAmount } }}
+                /> */}
+              </div>
+            </DialogContent>
+            <DialogContent>
+              <Section title={messages.title}>
+                <Grid item xs={12}>
+                  <Field
+                    name={ID_NAME}
+                    placeholder={formatMessage(messages.namePlaceholder)}
+                    validate={[this.validateTitleLength]}
+                    component={TextField}
+                  />
+                </Grid>
+              </Section>
+              <Section title={messages.creator}>
+                <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} eventEscrowAmount={eventEscrowAmount} changeFormFieldValue={changeFormFieldValue} />
+              </Section>
+              <Section title={messages.betStartTime}>
+                <CreateEventDatePicker name={ID_BETTING_START_TIME} />
+              </Section>
+              <Section title={messages.betEndTime}>
+                <CreateEventDatePicker name={ID_BETTING_END_TIME} />
+              </Section>
+              <Section title={messages.resultSetStartTime}>
+                <CreateEventDatePicker name={ID_RESULT_SETTING_START_TIME} />
+              </Section>
+              <Section title={messages.resultSetEndTime}>
+                <CreateEventDatePicker name={ID_RESULT_SETTING_END_TIME} />
+              </Section>
+              <Section title={messages.outcomes}>
+                <CreateEventOutcomes name={ID_OUTCOMES} />
+              </Section>
+              <Section title={messages.resultSetter}>
+                {this.resultSetterField()}
+                <Button
+                  className={classes.inputButton}
+                  variant="raised"
+                  onClick={this.onSelectResultSetterAddress}
+                >
+                  {formatMessage(messages.selectMyAddress)}
+                </Button>
+              </Section>
+              <SelectAddressDialog
+                onClosed={this.onSelectResultSetterAddressDialogClosed}
               />
-            </div>
-          </DialogContent>
-          <DialogContent>
-            <Section title={messages.title}>
-              <Grid item xs={12}>
-                <Field
-                  name={ID_NAME}
-                  placeholder={formatMessage(messages.namePlaceholder)}
-                  validate={[this.validateTitleLength]}
-                  component={TextField}
-                />
-              </Grid>
-            </Section>
-            <Section title={messages.creator}>
-              <CreateEventCreatorPicker name={ID_CREATOR_ADDRESS} eventEscrowAmount={eventEscrowAmount} changeFormFieldValue={changeFormFieldValue} />
-            </Section>
-            <Section title={messages.betStartTime}>
-              <CreateEventDatePicker name={ID_BETTING_START_TIME} />
-            </Section>
-            <Section title={messages.betEndTime}>
-              <CreateEventDatePicker name={ID_BETTING_END_TIME} />
-            </Section>
-            <Section title={messages.resultSetStartTime}>
-              <CreateEventDatePicker name={ID_RESULT_SETTING_START_TIME} />
-            </Section>
-            <Section title={messages.resultSetEndTime}>
-              <CreateEventDatePicker name={ID_RESULT_SETTING_END_TIME} />
-            </Section>
-            <Section title={messages.outcomes}>
-              <CreateEventOutcomes name={ID_OUTCOMES} />
-            </Section>
-            <Section title={messages.resultSetter}>
-              {this.resultSetterField()}
-              <Button
-                className={classes.inputButton}
-                variant="raised"
-                onClick={this.onSelectResultSetterAddress}
-              >
-                {formatMessage(messages.selectMyAddress)}
+            </DialogContent>
+            <DialogActions className={classes.buttonContainer}>
+              <Button color="primary" onClick={this.onClose}>
+                <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
               </Button>
-            </Section>
-            <SelectAddressDialog
-              onClosed={this.onSelectResultSetterAddressDialogClosed}
-            />
-          </DialogContent>
-          <DialogActions className={classes.buttonContainer}>
-            <Button color="primary" onClick={this.onClose}>
-              <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
-            </Button>
-            <Button type="submit" color="primary" disabled={submitting || !hasEnoughQtum} variant="raised">
-              <FormattedMessage id="create.publish" defaultMessage="Publish" />
-            </Button>
-          </DialogActions>
-        </Form>
-      </Dialog>
+              <Button type="submit" color="primary" disabled={submitting || !hasEnoughQtum} variant="raised">
+                <FormattedMessage id="create.publish" defaultMessage="Publish" />
+              </Button>
+            </DialogActions>
+          </Form>
+        </Dialog>
+      </Fragment>
     );
   }
 }

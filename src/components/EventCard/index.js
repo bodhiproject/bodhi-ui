@@ -39,14 +39,10 @@ export default class EventCard extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     amountLabel: PropTypes.string,
     endTime: PropTypes.string,
     buttonText: PropTypes.object,
-    unconfirmed: PropTypes.bool.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    isUpcoming: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -59,14 +55,17 @@ export default class EventCard extends PureComponent {
     const {
       classes,
       index,
-      url,
+      unconfirmed,
+    } = this.props;
+    const {
+      buttonText,
       name,
+      isPending,
+      isUpcoming,
+      url,
       amountLabel,
       endTime,
-      buttonText,
-      unconfirmed,
-      isUpcoming,
-    } = this.props;
+    } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -74,7 +73,7 @@ export default class EventCard extends PureComponent {
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {unconfirmed && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+              {(unconfirmed || isPending) && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}

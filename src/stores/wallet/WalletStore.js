@@ -15,6 +15,8 @@ export default class {
   @observable encryptResult = undefined
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
+  @observable txSentDialogOpen = false
+  @observable lastTransaction = undefined
 
   history = {}
 
@@ -28,6 +30,14 @@ export default class {
       () => {
         if (_.isEmpty(this.lastUsedAddress) && !_.isEmpty(this.addresses)) {
           this.lastUsedAddress = this.addresses[0].address;
+        }
+      }
+    );
+    reaction(
+      () => this.lastTransaction,
+      () => {
+        if (!_.isUndefined(this.lastTransaction)) {
+          this.txSentDialogOpen = true;
         }
       }
     );
@@ -89,7 +99,8 @@ export default class {
     try {
       const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
       const { history } = this.app.wallet;
-      history.fullList.push(new Transaction(transfer));
+      this.lastTransaction = new Transaction(transfer);
+      history.fullList.push(this.lastTransaction);
       history.fullList = _.orderBy(history.fullList, [history.orderBy], [history.direction]);
       const start = history.page * history.perPage;
       history.list = _.slice(history.fullList, start, start + history.perPage);
