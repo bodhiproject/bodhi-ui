@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import graphql from 'graphql.js';
-import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases, OracleStatus } from 'constants';
+import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
