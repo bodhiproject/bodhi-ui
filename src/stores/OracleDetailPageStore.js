@@ -335,7 +335,7 @@ export default class {
   @action
   prepareVote = async () => {
     const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-      type: TransactionType.BET,
+      type: TransactionType.VOTE,
       token: this.oracle.token,
       amount: Number(this.amount),
       optionIdx: this.selectedOptionIdx,
