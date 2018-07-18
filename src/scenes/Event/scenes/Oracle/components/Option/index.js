@@ -61,6 +61,7 @@ export default class Option extends Component {
           className={cx(classes.eventOptionCollapse, {
             last: isLast || isExpanded,
             first: isFirst || isExpanded,
+            is_result: isPrevResult,
           })}
         >
           <ExpansionPanel

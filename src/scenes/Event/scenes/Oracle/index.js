@@ -10,13 +10,6 @@ import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
 import BackButton from '../../../../components/BackButton';
 
-const Loading = styled(_Loading)`
-  margin-top: 25rem;
-  .animation {
-    width: 5rem;
-    height: 5rem;
-  }
-`;
 
 @withRouter
 @inject('store')
@@ -34,6 +27,10 @@ export default class OraclePage extends Component {
     const { oraclePage } = this.props.store;
     if (oraclePage.loading) return <Loading text='Loading Oracle...' />
     const { oracle } = oraclePage;
+    // if (!oracle) { // TODO: workaround for now, there's gotta be a better way
+    //   window.location = '/';
+    //   return;
+    // }
     const Oracle = {
       BETTING: BettingOracle,
       VOTING: VotingOracle,
@@ -50,6 +47,14 @@ export default class OraclePage extends Component {
     );
   }
 }
+
+const Loading = styled(_Loading)`
+  margin-top: 25rem;
+  .animation {
+    width: 5rem;
+    height: 5rem;
+  }
+`;
 
 const EventTxSuccessDialog = observer(({ eventPage }) => (
   <TxSentDialog

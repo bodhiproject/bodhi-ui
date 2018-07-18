@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import graphql from 'graphql.js';
-import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
+import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases, OracleStatus } from 'constants';
 import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
@@ -84,72 +84,16 @@ export default class {
     this.txid = txid;
     if (topicAddress === 'null' && address === 'null' && txid) { // unconfirmed
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
-      const { allOracles } = await gql`
-        query {
-          allOracles(filter: { txid: "${txid}", status: CREATED }) {
-            txid
-            version
-            address
-            topicAddress
-            status
-            token
-            name
-            options
-            optionIdxs
-            amounts
-            resultIdx
-            blockNum
-            startTime
-            endTime
-            resultSetStartTime
-            resultSetEndTime
-            resultSetterAddress
-            resultSetterQAddress
-            consensusThreshold
-            transactions {
-              type
-              status
-            }
-          }
-        }
-      `;
+      const oracles = await this.getOraclesBeforeConfirmed(txid);
       runInAction(() => {
-        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+        this.oracles = oracles;
         this.loading = false;
       });
     } else {
-      const { allOracles } = await gql`
-        query {
-          allOracles(filter: { topicAddress: "${topicAddress}" }) {
-            txid
-            version
-            address
-            topicAddress
-            status
-            token
-            name
-            options
-            optionIdxs
-            amounts
-            resultIdx
-            blockNum
-            startTime
-            endTime
-            resultSetStartTime
-            resultSetEndTime
-            resultSetterAddress
-            resultSetterQAddress
-            consensusThreshold
-            transactions {
-              type
-              status
-            }
-          }
-        }
-      `;
+      const oracles = await this.getAllOracles(topicAddress);
       const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
       runInAction(() => {
-        this.oracles = _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+        this.oracles = oracles;
         this.transactions = transactions.map(tx => new Transaction(tx));
         this.loading = false;
       });
@@ -158,7 +102,6 @@ export default class {
     reaction(
       () => this.oracle.phase,
       () => {
-        this.amount = '0';
         if (this.oracle.phase === RESULT_SETTING) {
           this.amount = '100';
         }
@@ -166,11 +109,39 @@ export default class {
       { fireImmediately: true } // for when we go to a result setting page directly
     );
 
+    // reaction( // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
+    //   () => this.app.global.syncBlockTime,
+    //   async () => {
+    //     console.log('triggered');
+    //     if (topicAddress === 'null' && address === 'null' && txid) {
+    //       const oracles = await this.getOraclesBeforeConfirmed(txid);
+    //       console.log('oracles: ', this.oracles);
+    //       if (oracles.length > 0) {
+    //         const latestOracle = oracles[0];
+
+    //         const { topicAddress: tpcAddress, address: addr, txid: id } = latestOracle;
+    //         console.log('topicAddress: ', tpcAddress);
+    //         console.log('address: ', addr);
+    //         console.log('txid: ', id);
+    //         // construct url for oracle or topic
+    //         let url;
+    //         if (latestOracle.status !== OracleStatus.WITHDRAW) {
+    //           url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
+    //         } else {
+    //           url = `/topic/${latestOracle.topicAddress}`;
+    //         }
+    //         console.log('URL: ', url);
+    //         // window.location = url;
+    //       }
+    //     }
+    //   }
+    // );
+
     // when we get a new block or transactions are updated, react to it
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
       () => {
-        const { phase, resultSetterQAddress } = this.oracle;
+        const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
         const { global: { syncBlockTime }, wallet } = this.app;
         const currBlockTime = moment.unix(syncBlockTime);
         const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
@@ -184,6 +155,7 @@ export default class {
           return;
         }
 
+        // Has not reached betting start time
         if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
@@ -192,8 +164,7 @@ export default class {
         }
 
         // Has not reached result setting start time
-        if ((phase === RESULT_SETTING)
-          && currBlockTime.isBefore(moment.unix(this.oracle.resultSetStartTime))) {
+        if ((phase === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -201,7 +172,7 @@ export default class {
         }
 
         // User is not the result setter
-        if (phase === RESULT_SETTING && resultSetterQAddress !== wallet.lastUsedAddress) {
+        if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.lastUsedAddress) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.INFO;
           this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -213,7 +184,7 @@ export default class {
         const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
         if ((
           (phase === VOTING && currentBot < this.amount)
-          || (phase === RESULT_SETTING && currentBot < this.oracle.consensusThreshold)
+          || (phase === RESULT_SETTING && currentBot < consensusThreshold)
         ) && notEnoughQtum) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
@@ -232,7 +203,7 @@ export default class {
 
 
         // Not enough bot for setting the result or voting
-        if ((phase === RESULT_SETTING && currentBot < this.oracle.consensusThreshold)
+        if ((phase === RESULT_SETTING && currentBot < consensusThreshold)
           || (phase === VOTING && currentBot < this.amount)) {
           this.buttonDisabled = true;
           this.warningType = EventWarningType.ERROR;
@@ -258,7 +229,7 @@ export default class {
 
         // Trying to vote over the consensus threshold
         const optionAmount = this.selectedOption.amount;
-        const maxVote = phase === VOTING ? NP.minus(this.oracle.consensusThreshold, optionAmount) : 0;
+        const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
         if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
           this.buttonDisabled = true;
           this.amount = String(toFixed(maxVote));
@@ -443,6 +414,72 @@ export default class {
     });
 
     Tracking.track('oracleDetail-finalize');
+  }
+
+  getOraclesBeforeConfirmed = async (txid) => {
+    const { allOracles } = await gql`
+      query {
+        allOracles(filter: { txid: "${txid}", status: CREATED }) {
+          txid
+          version
+          address
+          topicAddress
+          status
+          token
+          name
+          options
+          optionIdxs
+          amounts
+          resultIdx
+          blockNum
+          startTime
+          endTime
+          resultSetStartTime
+          resultSetEndTime
+          resultSetterAddress
+          resultSetterQAddress
+          consensusThreshold
+          transactions {
+            type
+            status
+          }
+        }
+      }
+    `;
+    return _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
+  }
+
+  getAllOracles = async (topicAddress) => {
+    const { allOracles } = await gql`
+      query {
+        allOracles(filter: { topicAddress: "${topicAddress}" }) {
+          txid
+          version
+          address
+          topicAddress
+          status
+          token
+          name
+          options
+          optionIdxs
+          amounts
+          resultIdx
+          blockNum
+          startTime
+          endTime
+          resultSetStartTime
+          resultSetEndTime
+          resultSetterAddress
+          resultSetterQAddress
+          consensusThreshold
+          transactions {
+            type
+            status
+          }
+        }
+      }
+    `;
+    return _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
   }
 
   @action

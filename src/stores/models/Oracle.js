@@ -54,6 +54,9 @@ export default class Oracle {
     if (BOT && status === 'WAITRESULT') return FINALIZING;
     return WITHDRAWING; // only for topic
   }
+  @computed get isOpenResultSetting() {
+    return this.token === 'QTUM' && this.status === 'OPENRESULTSET';
+  }
   @computed get isArchived() {
     const { token, status } = this;
     const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
