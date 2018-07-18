@@ -360,8 +360,6 @@ export function* createTopicTxHandler() {
         action.params.senderAddress
       );
 
-      console.log(tx);
-
       yield put({
         type: actions.CREATE_TOPIC_TX_RETURN,
         value: tx.data.createTopic,

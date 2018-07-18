@@ -47,7 +47,6 @@ export default class GlobalHub extends Component {
     const { getSyncInfo, syncPercent } = this.props;
     const { checkWalletEncrypted } = this.props.store.wallet;
     const { queryPendingTransactions } = this.props.store.pendingTxsSnackbar;
-    console.log(this.props.store);
 
     // Checks to see if any txs will require unlocking the wallet
     checkWalletEncrypted();
