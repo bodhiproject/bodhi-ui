@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -8,8 +8,6 @@ import { Grid, FormControl, FormHelperText, TextField } from '@material-ui/core'
 import { Field } from 'redux-form';
 
 import { calculateBlock } from '../../../../helpers/utility';
-import { defaults } from '../../../../config/app';
-
 
 const messages = defineMessages({
   datePast: {
@@ -19,21 +17,12 @@ const messages = defineMessages({
 });
 
 @injectIntl
-@connect((state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  averageBlockTime: state.App.get('averageBlockTime'),
-}))
+@inject('store')
+@observer
 export default class CreateEventDatePicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    syncBlockNum: PropTypes.number,
-    averageBlockTime: PropTypes.number,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-  };
-
-  static defaultProps = {
-    syncBlockNum: undefined,
-    averageBlockTime: defaults.averageBlockTime,
   };
 
   validateTimeAfterNow = (value) => {
@@ -58,12 +47,11 @@ export default class CreateEventDatePicker extends Component {
 
     if (!input.value || input.value !== '') {
       const {
-        syncBlockNum,
-        averageBlockTime,
+        store: { createEvent, global },
       } = this.props;
 
       const localDate = moment(input.value).local();
-      blockNum = calculateBlock(syncBlockNum, localDate, averageBlockTime);
+      blockNum = calculateBlock(global.syncBlockNum, localDate, createEvent.averageBlockTime);
     }
 
     return (
