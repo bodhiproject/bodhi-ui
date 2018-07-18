@@ -13,6 +13,8 @@ export default class {
   @observable encryptResult = undefined
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
+  @observable txSentDialogOpen = false
+  @observable lastTransaction = undefined
 
   history = {}
 
@@ -80,5 +82,10 @@ export default class {
         this.app.ui.setError(error.message, Routes.api.backupWallet);
       });
     }
+  }
+
+  @action
+  createTransferTx = async (walletAddress, toAddress, selectedToken, amount) => {
+    this.lastTransaction = { txid: 'TODO' };
   }
 }

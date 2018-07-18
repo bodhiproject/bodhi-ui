@@ -15,6 +15,7 @@ import SelectAddressDialogStore from './components/SelectAddressDialogStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
 import OraclePageStore from './OracleDetailPageStore';
+import CreateEventStore from './CreateEventStore';
 
 class AppStore {
   @observable loading = true; // TODO: move these to GlobalStore
@@ -28,6 +29,7 @@ class AppStore {
   selectAddressDialog = {}
   walletUnlockDialog = {}
   pendingTxsSnackbar = {}
+  createEvent = {}
 
   constructor() {
     this.init();
@@ -45,6 +47,7 @@ class AppStore {
     this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
     this.refreshing = new RefreshingStore();
     this.oraclePage = new OraclePageStore(this);
+    this.createEvent = new CreateEventStore(this);
 
     await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
