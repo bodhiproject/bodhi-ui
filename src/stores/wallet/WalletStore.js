@@ -31,6 +31,14 @@ export default class {
         }
       }
     );
+    reaction(
+      () => this.lastTransaction,
+      () => {
+        if (!_.isUndefined(this.lastTransaction)) {
+          this.txSentDialogOpen = true;
+        }
+      }
+    );
   }
 
   @action

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -52,6 +53,8 @@ const messages = defineMessages({
     dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
   setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
 }))
+@inject('store')
+@observer
 export default class WithdrawDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -218,6 +221,7 @@ export default class WithdrawDialog extends Component {
     }
 
     createTransferTx(walletAddress, toAddress, selectedToken, amount);
+    this.props.store.wallet.createTransferTx(walletAddress, toAddress, selectedToken, amount);
     this.props.onWithdraw();
 
     Tracking.track('myWallet-withdraw');
