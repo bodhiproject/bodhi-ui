@@ -37,7 +37,7 @@ export default class CreateEventStore {
   @action
   createTopicTx = async (name, results, centralizedOracle, bettingStartTime, bettingEndTime, resultSettingStartTime, resultSettingEndTime, escrowAmount, senderAddress) => {
     try {
-      const texture = await createTopic(
+      const tx = await createTopic(
         name,
         results,
         centralizedOracle,
@@ -48,6 +48,7 @@ export default class CreateEventStore {
         decimalToSatoshi(escrowAmount),
         senderAddress
       );
+      this.lastTransaction = tx.data.createTopic;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
