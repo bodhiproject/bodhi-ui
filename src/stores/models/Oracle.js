@@ -49,7 +49,7 @@ export default class Oracle {
     const { token, status } = this;
     const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
     if (QTUM && ['PENDING', 'WITHDRAW', 'CREATED', 'VOTING'].includes(status)) return BETTING;
-    if (BOT && ['PENDING', 'WITHDRAW', 'VOTING'].includes(status)) return VOTING;
+    if (BOT && ['PENDING', 'VOTING'].includes(status)) return VOTING; // might need WITHDRAW
     if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
     if (BOT && status === 'WAITRESULT') return FINALIZING;
     return WITHDRAWING; // only for topic

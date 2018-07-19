@@ -109,33 +109,39 @@ export default class {
       { fireImmediately: true } // for when we go to a result setting page directly
     );
 
-    // reaction( // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
-    //   () => this.app.global.syncBlockTime,
-    //   async () => {
-    //     console.log('triggered');
-    //     if (topicAddress === 'null' && address === 'null' && txid) {
-    //       const oracles = await this.getOraclesBeforeConfirmed(txid);
-    //       console.log('oracles: ', this.oracles);
-    //       if (oracles.length > 0) {
-    //         const latestOracle = oracles[0];
 
-    //         const { topicAddress: tpcAddress, address: addr, txid: id } = latestOracle;
-    //         console.log('topicAddress: ', tpcAddress);
-    //         console.log('address: ', addr);
-    //         console.log('txid: ', id);
-    //         // construct url for oracle or topic
-    //         let url;
-    //         if (latestOracle.status !== OracleStatus.WITHDRAW) {
-    //           url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
-    //         } else {
-    //           url = `/topic/${latestOracle.topicAddress}`;
-    //         }
-    //         console.log('URL: ', url);
-    //         // window.location = url;
-    //       }
-    //     }
-    //   }
-    // );
+    reaction(
+      () => this.app.global.syncBlockTime,
+      async () => {
+        if (topicAddress === 'null' && address === 'null' && txid) {
+          // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
+          // const oraclez = await this.getOraclesBeforeConfirmed(txid);
+          // console.log('orc: ', oraclez);
+          // const oracles = await this.getAllOracles(oraclez[0].topicAddress);
+          // console.log('oracles: ', oracles);
+          // if (oracles.length > 0) {
+          //   const latestOracle = oracles[0];
+
+          //   const { topicAddress: tpcAddress, address: addr, txid: id } = latestOracle;
+          //   console.log('topicAddress: ', tpcAddress);
+          //   console.log('address: ', addr);
+          //   console.log('txid: ', id);
+          //   // construct url for oracle or topic
+          //   let url;
+          //   if (latestOracle.status !== OracleStatus.WITHDRAW) {
+          //     url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
+          //   } else {
+          //     url = `/topic/${latestOracle.topicAddress}`;
+          //   }
+          //   console.log('URL: ', url);
+          //   // window.location = url;
+          // }
+        }
+        if (topicAddress) { // when a oracle goes from FINALIZING -> WITHDRAWING
+          this.oracles = await this.getAllOracles(topicAddress);
+        }
+      }
+    );
 
     // when we get a new block or transactions are updated, react to it
     reaction(

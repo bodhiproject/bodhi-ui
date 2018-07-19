@@ -31,6 +31,11 @@ export default class OraclePage extends Component {
     //   window.location = '/';
     //   return;
     // }
+    if (oracle.phase === 'WITHDRAWING') {
+      // TODO: make it work w/ history.push
+      // this.props.history.push(`/topic/${oracle.topicAddress}`);
+      window.location = `/topic/${oracle.topicAddress}`;
+    }
     const Oracle = {
       BETTING: BettingOracle,
       VOTING: VotingOracle,
