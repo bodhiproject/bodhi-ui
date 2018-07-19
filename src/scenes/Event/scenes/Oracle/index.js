@@ -31,6 +31,7 @@ export default class OraclePage extends Component {
     //   window.location = '/';
     //   return;
     // }
+    console.log('Phase: ', oracle.phase);
     if (oracle.phase === 'WITHDRAWING') {
       // TODO: make it work w/ history.push
       // this.props.history.push(`/topic/${oracle.topicAddress}`);
