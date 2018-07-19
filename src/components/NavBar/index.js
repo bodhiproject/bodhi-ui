@@ -20,6 +20,7 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import sportStyles from './sportStyles';
 import Tracking from '../../helpers/mixpanelUtil';
+import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 
 
 const messages = defineMessages({
@@ -66,7 +67,8 @@ export default class NavBar extends Component {
 
 const BodhiLogo = ({ classes }) => (
   <Link to={Routes.QTUM_PREDICTION}>
-    <img
+    <ImageLocaleWrapper
+      appliedLanguages={['zh-Hans-CN']}
       src="/images/sports-logo.svg"
       alt="bodhi-logo"
       className={classes.navBarLogo}
