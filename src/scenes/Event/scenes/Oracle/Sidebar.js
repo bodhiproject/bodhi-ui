@@ -39,27 +39,27 @@ const EventInfo = styled.div`
 `;
 
 const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
-  <EventInfoBlockContainer>
+  <Container>
     <Typography variant="body1">
       {intl.formatMessage({ id })}
     </Typography>
-    <EventContent>{content}</EventContent>
+    <Content>{content}</Content>
     {highlight && (
       <Typography variant="body2" color="secondary">
         {highlight}
       </Typography>
     )}
-  </EventInfoBlockContainer>
+  </Container>
 ));
 
-const EventContent = styled(Typography).attrs({ variant: 'title' })`
+const Content = styled(Typography).attrs({ variant: 'title' })`
   margin-top: ${props => props.theme.padding.unit.px};
   word-wrap: break-word;
   padding-left: ${props => props.theme.padding.md.px};
   font-size: ${props => props.theme.typography.fontSize};
 `;
 
-const EventInfoBlockContainer = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
+const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
   margin-bottom: 36px;
 `;
 
