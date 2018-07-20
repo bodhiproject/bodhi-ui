@@ -24,7 +24,7 @@ const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }
       <ResultHistory oracles={oraclePage.oracles} />
       <Transactions type='oracle' options={oracle.options} />
     </Content>
-    <Sidebar oracle={oracle} />
+    <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />
   </Row>
 ));

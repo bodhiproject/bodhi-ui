@@ -21,7 +21,7 @@ const ResultSettingOracle = observer(({ store: { oraclePage, oraclePage: { oracl
       <SetResultButton onClick={oraclePage.prepareSetResult} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       <Transactions type='oracle' options={oracle.options} />
     </Content>
-    <Sidebar oracle={oracle} />
+    <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />
   </Row>
 ));
