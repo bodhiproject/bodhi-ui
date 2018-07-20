@@ -16,6 +16,7 @@ import SelectAddressDialogStore from './components/SelectAddressDialogStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
 import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
 import OraclePageStore from './OracleDetailPageStore';
+import CreateEventStore from '../scenes/CreateEvent/store';
 
 class AppStore {
   @observable loading = true; // TODO: move these to GlobalStore
@@ -52,6 +53,7 @@ class AppStore {
       // these store are designed for "components"
       this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
+      this.createEvent = new CreateEventStore(this);
       this.botCourt = new BotCourtStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),

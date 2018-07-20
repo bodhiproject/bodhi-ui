@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -71,22 +71,35 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, sortBy, noCreateEventButton, fontSize } = this.props;
+    const { classes, sortBy, noCreateEventButton, fontSize, store: { createEvent } } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
           {!noCreateEventButton && (
-            <Button
-              variant="raised"
-              size="medium"
-              color="primary"
-              className={classes.createEventButton}
-              onClick={this.onCreateDialogOpen}
-            >
-              <AddIcon fontSize={fontSize} />
-              <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
-            </Button>
+            <Fragment>
+              <Button
+                variant="raised"
+                size="medium"
+                color="primary"
+                className={classes.createEventButton}
+                onClick={createEvent.open}
+              >
+                <AddIcon fontSize={fontSize} />
+                NEW .
+                <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
+              </Button>
+              <Button
+                variant="raised"
+                size="medium"
+                color="primary"
+                className={classes.createEventButton}
+                onClick={this.onCreateDialogOpen}
+              >
+                <AddIcon fontSize={fontSize} />
+                <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
+              </Button>
+            </Fragment>
           )}
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>

@@ -6,7 +6,8 @@ import styles from './styles';
 import AppRouter from './router';
 import GlobalHub from './globalHub';
 import BottomBar from '../../components/BottomBar';
-import CreateEvent from '../CreateEvent';
+import CreateEvent from '../CreateEvent/old';
+// import CreateEventFormDialog from '../CreateEvent';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
 import GlobalSnackbar from '../../components/GlobalSnackbar';
 import OLDTxSentDialog from '../../components/TxSentDialog/old';
@@ -27,6 +28,7 @@ const App = observer(({ classes, match: { url }, store }) => (
           <AppRouter url={url} />
         </div>
         <BottomBar />
+        {/* <CreateEventFormDialog /> */}
         <CreateEvent />
         <PendingTransactionsSnackbar />
         <GlobalSnackbar />
