@@ -13,7 +13,6 @@ import cx from 'classnames';
 
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import sportStyles from './sportStyles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
 const cardMessages = defineMessages({
@@ -33,7 +32,6 @@ const cardMessages = defineMessages({
 
 
 @injectIntl
-@withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
 export default class EventCard extends PureComponent {
   static propTypes = {

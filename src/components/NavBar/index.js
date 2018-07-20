@@ -18,7 +18,6 @@ import { Link } from './components/Link';
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
-import sportStyles from './sportStyles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 
@@ -34,7 +33,6 @@ const messages = defineMessages({
   },
 });
 
-@withStyles(sportStyles)
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
@@ -69,7 +67,7 @@ const BodhiLogo = ({ classes }) => (
   <Link to={Routes.QTUM_PREDICTION}>
     <ImageLocaleWrapper
       appliedLanguages={['zh-Hans-CN']}
-      src="/images/sports-logo.svg"
+      src="/images/bodhi-logo.svg"
       alt="bodhi-logo"
       className={classes.navBarLogo}
     />
