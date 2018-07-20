@@ -26,7 +26,6 @@ export default {
     importWallet: `${HTTP_ROUTE}/import-wallet`,
     transactionCost: `${HTTP_ROUTE}/transaction-cost`,
     walletPassphraseChange: `${HTTP_ROUTE}/wallet-passphrase-change`,
-    createTransferTx: `${HTTP_ROUTE}/createTransferTx`,
   },
   insight: {
     totals: `${BASE_INSIGHT}/statistics/total`,
