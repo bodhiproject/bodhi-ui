@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
@@ -27,7 +28,7 @@ const FinalizingOracle = observer(({ store: { oraclePage, oraclePage: { oracle }
 ));
 
 const Options = observer(({ oracle }) => (
-  <Grid item xs={12} lg={9}>
+  <Container>
     {oracle.options.map((option, i) => (
       <Option
         key={i}
@@ -36,8 +37,12 @@ const Options = observer(({ oracle }) => (
         skipExpansion
       />
     ))}
-  </Grid>
+  </Container>
 ));
+
+const Container = styled(Grid)`
+  min-width: 75%;
+`;
 
 const FinalizeButton = props => <Button {...props}><FormattedMessage id="str.finalizeResult" defaultMessage="Finalize Result" /></Button>;
 

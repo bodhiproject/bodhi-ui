@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { Fragment } from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
@@ -33,10 +34,14 @@ const EventUnconfirmedNote = injectIntl(({ intl: { formatMessage } }) => (
 ));
 
 const Options = observer(({ oracle }) => (
-  <Grid item xs={12} lg={9}>
+  <Container>
     {oracle.options.map((option, i) => <Option key={i} option={option} disabled={oracle.isArchived} />)}
-  </Grid>
+  </Container>
 ));
+
+const Container = styled(Grid)`
+  min-width: 75%;
+`;
 
 const BetButton = props => <Button {...props}><FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" /></Button>;
 

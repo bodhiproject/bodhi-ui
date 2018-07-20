@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
@@ -35,10 +36,14 @@ const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
 });
 
 const Options = observer(({ oracle: { options, isArchived } }) => (
-  <Grid item xs={12} lg={9}>
+  <Container>
     {options.map((option, i) => <Option key={i} disabled={isArchived} option={option} />)}
-  </Grid>
+  </Container>
 ));
+
+const Container = styled(Grid)`
+  min-width: 75%;
+`;
 
 const VoteButton = props => <Button {...props}><FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" /></Button>;
 
