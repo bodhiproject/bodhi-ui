@@ -25,18 +25,9 @@ export default class OraclePage extends Component {
 
   render() {
     const { oraclePage } = this.props.store;
+    const { topicAddress, address, txid } = this.props.match.params;
     if (oraclePage.loading) return <Loading text='Loading Oracle...' />
     const { oracle } = oraclePage;
-    // if (!oracle) { // TODO: workaround for now, there's gotta be a better way
-    //   window.location = '/';
-    //   return;
-    // }
-    console.log('Phase: ', oracle.phase);
-    if (oracle.phase === 'WITHDRAWING') {
-      // TODO: make it work w/ history.push
-      // this.props.history.push(`/topic/${oracle.topicAddress}`);
-      window.location = `/topic/${oracle.topicAddress}`;
-    }
     const Oracle = {
       BETTING: BettingOracle,
       VOTING: VotingOracle,

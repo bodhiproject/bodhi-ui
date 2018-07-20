@@ -13,7 +13,7 @@ import networkRoutes from '../network/routes';
 
 import Oracle from './models/Oracle';
 import Transaction from './models/Transaction';
-import { queryAllTransactions } from '../network/graphQuery';
+import { queryAllTransactions, queryAllOracles } from '../network/graphQuery';
 import { maxTransactionFee } from '../config/app';
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
 
@@ -77,6 +77,12 @@ export default class {
     this.app = app;
   }
 
+  // TODO: go from /oracle/null/null/:txid -> /oracle/:topicAddress/:address/:txid
+  routeToConfirmedOracle = () => {
+    // const { topicAddress, address, txid } = this;
+    // this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
+  }
+
   @action
   async init({ topicAddress, address, txid }) {
     this.topicAddress = topicAddress;
@@ -88,6 +94,7 @@ export default class {
       runInAction(() => {
         this.oracles = oracles;
         this.loading = false;
+        this.routeToConfirmedOracle();
       });
     } else {
       const oracles = await this.getAllOracles(topicAddress);
@@ -115,30 +122,11 @@ export default class {
       async () => {
         if (topicAddress === 'null' && address === 'null' && txid) {
           // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
-          // const oraclez = await this.getOraclesBeforeConfirmed(txid);
-          // console.log('orc: ', oraclez);
-          // const oracles = await this.getAllOracles(oraclez[0].topicAddress);
-          // console.log('oracles: ', oracles);
-          // if (oracles.length > 0) {
-          //   const latestOracle = oracles[0];
-
-          //   const { topicAddress: tpcAddress, address: addr, txid: id } = latestOracle;
-          //   console.log('topicAddress: ', tpcAddress);
-          //   console.log('address: ', addr);
-          //   console.log('txid: ', id);
-          //   // construct url for oracle or topic
-          //   let url;
-          //   if (latestOracle.status !== OracleStatus.WITHDRAW) {
-          //     url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
-          //   } else {
-          //     url = `/topic/${latestOracle.topicAddress}`;
-          //   }
-          //   console.log('URL: ', url);
-          //   // window.location = url;
-          // }
-        }
-        if (topicAddress) { // when a oracle goes from FINALIZING -> WITHDRAWING
-          this.oracles = await this.getAllOracles(topicAddress);
+          const filters = [{ txid }];
+          this.oracles = await queryAllOracles(filters);
+          if (this.oracles.length > 0) {
+            this.routeToConfirmedOracle();
+          }
         }
       }
     );
@@ -425,7 +413,7 @@ export default class {
   getOraclesBeforeConfirmed = async (txid) => {
     const { allOracles } = await gql`
       query {
-        allOracles(filter: { txid: "${txid}", status: CREATED }) {
+        allOracles(filter: { txid: "${txid}" }) {
           txid
           version
           address
