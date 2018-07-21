@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import AddIcon from '@material-ui/icons/Add';
 
 import { inject, observer } from 'mobx-react';
 
@@ -21,11 +22,8 @@ import topicActions from '../../redux/Topic/actions';
 import { SortBy } from '../../constants';
 import Tracking from '../../helpers/mixpanelUtil';
 import styles from './styles';
-import sportStyles from './sportStyles';
-
 
 @injectIntl
-@withStyles(sportStyles, { withTheme: true })
 @withStyles(styles, { withTheme: true })
 @connect((state) => ({
   lastUsedAddress: state.App.get('lastUsedAddress'),
@@ -73,7 +71,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, sortBy, noCreateEventButton } = this.props;
+    const { classes, sortBy, noCreateEventButton, fontSize } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
@@ -86,7 +84,7 @@ export default class TopActions extends Component {
               className={classes.createEventButton}
               onClick={this.onCreateDialogOpen}
             >
-              <img src="/images/sports-create.svg" alt="create" className={classes.sportCreateIcon} />
+              <AddIcon fontSize={fontSize} />
               <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
             </Button>
           )}

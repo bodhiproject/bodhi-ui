@@ -94,6 +94,7 @@ export default class EventOption extends PureComponent {
               endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
               onBlur={this.handleAmountBlur}
               disabled={amountInputDisabled}
+              inputProps={{ min: 0 }}
             />
           </FormControl>
         </div>
