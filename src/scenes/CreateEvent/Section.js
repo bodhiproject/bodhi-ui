@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Grid } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
-const Section = injectIntl(({ title, children, intl }) => (
+const Section = injectIntl(({ title, children, column = false, intl }) => (
   <SectionContainer>
     <Grid item xs={3}>
-      {intl.formatMessage(title)}
+      {intl.formatMessage({ id: title })}
     </Grid>
-    <Grid item xs={9}>
+    <Grid item xs={9} style={{ flexDirection: column ? 'column' : 'row', display: 'flex' }}>
       {children}
     </Grid>
   </SectionContainer>

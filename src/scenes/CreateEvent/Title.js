@@ -1,37 +1,24 @@
 /* eslint-disable */
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-// import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
-import { FormControl, TextField as _TextField, FormHelperText, InputAdornment } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, InputAdornment } from '@material-ui/core';
 import Section from './Section';
 
 
-const Title = observer(({ store: { createEvent } }) => (
+const Title = observer(({ store: { createEvent }, intl }) => (
   <Section title='create.title'>
-    <TextField
-      placeholder=''
-      value={createEvent.title}
-      onChange={e => createEvent.title = e.target.value}
-      error={createEvent.error.title}
-    />
+    <FormControl fullWidth>
+      <TextField
+        placeholder={intl.formatMessage({ id: 'create.namePlaceholder' })}
+        value={createEvent.title}
+        onChange={e => createEvent.title = e.target.value}
+        error={!!createEvent.error.title}
+        fullWidth
+      />
+      {!!createEvent.error.title && <FormHelperText error>{createEvent.error.title}</FormHelperText>}
+    </FormControl>
   </Section>
 ));
-
-const TextField = ({ input, placeholder, startAdornmentLabel, meta: { touched, error }, ...custom }) => (
-  <FormControl fullWidth>
-    <_TextField
-      {...input}
-      {...custom}
-      fullWidth
-      placeholder={placeholder}
-      error={Boolean(touched && error)}
-      InputProps={{
-        startAdornment: startAdornmentLabel && <InputAdornment position="start">{startAdornmentLabel}</InputAdornment>,
-      }}
-    />
-    {touched && error && <FormHelperText error>{error}</FormHelperText>}
-  </FormControl>
-);
 
 export default injectIntl(inject('store')(Title));

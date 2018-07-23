@@ -2,7 +2,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import Section from './Section';
-import DateRow from './components/DateRow';
+import { DateRow } from './components/DateRow';
 
 
 const PredictionStartTime = observer(({ store: { createEvent } }) => (

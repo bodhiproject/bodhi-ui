@@ -2,12 +2,15 @@ import { observable, computed, reaction, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
+import Web3Utils from 'web3-utils';
 
 import { satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
 
+
+const MAX_LEN_RESULT_HEX = 64;
 
 const INIT = {
   isOpen: false,
@@ -22,17 +25,19 @@ const INIT = {
     startTime: '',
     endTime: '',
   },
-  outcomes: [],
+  outcomes: ['', ''],
   resultSetter: '',
 };
+
 
 export default class CreateEventStore {
   escrowAmount = ''
   averageBlockTime = '' // TODO: maybe move to global store?
   @observable txConfirmDialogOpen = false
   @observable txSentDialogOpen = false
+  @observable resultSetterDialogOpen = false
   // form fields
-  @observable isOpen = INIT.open
+  @observable isOpen = INIT.isOpen
   @observable title = INIT.title
   @observable creator = INIT.creator // address
   prediction = observable(INIT.prediction)
@@ -40,10 +45,10 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @computed get creatorAddresses() {
-    return this.app.wallet.addresses;
+    return this.app.wallet.addresses || [];
   }
   @computed get hasEnoughQtum() {
-    const totalQtum = _.sumBy(this.props.walletAddresses, ({ qtum }) => qtum);
+    const totalQtum = _.sumBy(this.app.wallet.addresses, ({ qtum }) => qtum);
     return totalQtum >= maxTransactionFee;
   }
   @computed get warning() {
@@ -82,7 +87,7 @@ export default class CreateEventStore {
       startTime: '',
       endTime: '',
     },
-    outcomes: '',
+    outcomes: [],
     resultSetter: '',
   })
 
@@ -110,7 +115,7 @@ export default class CreateEventStore {
       insightTotalsRes = await axios.get(Routes.insight.totals);
     } catch (err) {
       // TODO: show an error in a dialog
-      console.error('ERROR: ', {
+      console.error('ERROR: ', { // eslint-disable-line
         route: Routes.api.eventEscrowAmount,
         message: err.message,
       });
@@ -118,8 +123,15 @@ export default class CreateEventStore {
     runInAction(() => {
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
       this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
+      this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
     });
+  }
+
+  @action
+  setResultSetter = (address) => {
+    this.resultSetter = address;
+    this.resultSetterDialogOpen = false;
   }
 
   validateTitle = () => {
@@ -185,7 +197,35 @@ export default class CreateEventStore {
     }
   }
 
-  validateOutcomes = () => {
+  validateOutcome = (i) => {
+    const outcome = (this.outcomes[i] || '').toLowerCase();
+
+    // validate not empty
+    if (!outcome) {
+      this.error.outcomes[i] = 'create.required';
+      return;
+    }
+
+    // Validate hex length
+    const hexString = Web3Utils.toHex(outcome).slice(2); // Remove hex prefix for length validation
+    if (hexString.length > MAX_LEN_RESULT_HEX) {
+      this.error.outcomes[i] = 'create.resultTooLong';
+      return;
+    }
+
+    // Validate cannot name Invalid
+    if (outcome === 'invalid') {
+      this.error.outcomes[i] = 'create.invalidName';
+      return;
+    }
+
+    // Validate no duplicate outcomes
+    const filtered = this.outcomes.filter((item) => (item || '').toLowerCase() === outcome);
+    if (filtered.length > 1) {
+      this.error.outcomes[i] = 'create.duplicateOutcome';
+      return;
+    }
+    this.error.outcomes[i] = '';
   }
 
   validateResultSetter = () => {
@@ -204,7 +244,7 @@ export default class CreateEventStore {
   */
   calculateBlock = (futureDate) => {
     const currentBlock = this.app.global.syncBlockNum;
-    const diffSec = futureDate.unix() - moment().unix();
+    const diffSec = moment(futureDate).unix() - moment().unix();
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
 }
