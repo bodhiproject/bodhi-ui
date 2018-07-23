@@ -38,9 +38,7 @@ const EventInfo = styled.div`
 
 const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
   <Container>
-    <Typography variant="body1">
-      {intl.formatMessage({ id })}
-    </Typography>
+    <Heading>{intl.formatMessage({ id })}</Heading>
     <Content>{content}</Content>
     {highlight && (
       <Typography variant="body2" color="secondary">
@@ -50,13 +48,18 @@ const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
   </Container>
 ));
 
+const Heading = styled(Typography).attrs({ variant: 'body1' })`
+  font-size: 18px;
+  text-transform: uppercase;
+`;
+
 const Content = styled(Typography).attrs({ variant: 'title' })`
-  margin-top: ${props => props.theme.padding.unit.px};
-  word-wrap: break-word;
-  padding-left: ${props => props.theme.padding.md.px};
-  font-size: ${props => props.theme.typography.fontSize};
+  margin-top: ${props => props.theme.padding.unit.px} !important;
+  word-wrap: break-word !important;
+  padding-left: ${props => props.theme.padding.md.px} !important;
+  font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 
 const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
-  margin-bottom: 36px;
+  margin-bottom: 36px !important;
 `;
