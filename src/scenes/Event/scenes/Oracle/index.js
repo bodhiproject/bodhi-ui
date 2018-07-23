@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
@@ -25,8 +24,7 @@ export default class OraclePage extends Component {
 
   render() {
     const { oraclePage } = this.props.store;
-    const { topicAddress, address, txid } = this.props.match.params;
-    if (oraclePage.loading) return <Loading text='Loading Oracle...' />
+    if (oraclePage.loading) return <Loading text='Loading Oracle...' />;
     const { oracle } = oraclePage;
     const Oracle = {
       BETTING: BettingOracle,

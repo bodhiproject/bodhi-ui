@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
@@ -15,6 +14,10 @@ const POS_ORACLE_RESULT_SETTING = 2;
 const POS_OPEN_RESULT_SETTING = 3;
 
 
+/**
+ * TODO:
+ * we should refactor this component. Pretty messy
+ */
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
@@ -48,16 +51,17 @@ export default class StepperVertRight extends Component {
 
   getSteps = () => {
     const { intl: { formatMessage }, isTopicDetail = false } = this.props;
-    let { syncBlockTime } = this.props.store.global;
-    let cOracle, dOracles
+    const { syncBlockTime } = this.props.store.global;
+    let cOracle;
+    let dOracles;
     if (isTopicDetail) {
       // TODO: temporary workaround until we do `topic.js`. This is broken right now for `topic.js`.
       const { oracles } = this.props.store.oraclePage;
       cOracle = _.find(oracles, { token: Token.QTUM }) || {};
       dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
     } else {
-      cOracle =  this.props.store.oraclePage.cOracle;
-      dOracles =  this.props.store.oraclePage.dOracles;
+      cOracle =  this.props.store.oraclePage.cOracle; // eslint-disable-line
+      dOracles =  this.props.store.oraclePage.dOracles; // eslint-disable-line
     }
 
     const RANGE_SEPARATOR = formatMessage({ id: 'cardInfo.to' });

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
@@ -31,7 +30,7 @@ const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }
 
 const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
   const heading = `${intl.formatMessage({ id: 'oracle.consensusThreshold' })} ${consensusThreshold} BOT`;
-  const message = intl.formatMessage({ id: 'oracle.setResultExplanation' })
+  const message = intl.formatMessage({ id: 'oracle.setResultExplanation' });
   return <ImportantNote heading={heading} message={message} />;
 });
 

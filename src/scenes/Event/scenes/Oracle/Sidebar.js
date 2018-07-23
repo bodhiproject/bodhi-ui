@@ -1,13 +1,12 @@
-/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
+import { StepperVertRight } from 'components';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
 import { SidebarContainer } from './components';
-import { StepperVertRight } from 'components';
 
 
 export const Sidebar = inject('store')(observer(({ store: { oraclePage: { oracle } } }) => (
@@ -20,7 +19,6 @@ export const Sidebar = inject('store')(observer(({ store: { oraclePage: { oracle
     <StepperVertRight />
   </SidebarContainer>
 )));
-
 
 const EndDate = injectIntl(({ oracle: { endTime }, intl: { locale, messages } }) => (
   <EventInfoBlock id='eventInfo.endDate' content={getShortLocalDateTimeString(endTime)} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
@@ -62,5 +60,3 @@ const Content = styled(Typography).attrs({ variant: 'title' })`
 const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
   margin-bottom: 36px;
 `;
-
-/* eslint-disable */

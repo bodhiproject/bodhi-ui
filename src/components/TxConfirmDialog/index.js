@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import _ from 'lodash';

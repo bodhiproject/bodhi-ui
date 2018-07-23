@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
@@ -16,7 +15,6 @@ const ResultSettingOracle = observer(({ store: { oraclePage, oraclePage: { oracl
       <Title>{oracle.name}</Title>
       {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
       <Options oracle={oracle} />
-      {/* ImportantNote <ConsensusThreshold /> RESULT SET */}
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
       <SetResultButton onClick={oraclePage.prepareSetResult} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
       <Transactions type='oracle' options={oracle.options} />
@@ -28,7 +26,7 @@ const ResultSettingOracle = observer(({ store: { oraclePage, oraclePage: { oracl
 
 const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => {
   const heading = `${intl.formatMessage({ id: 'oracle.consensusThreshold' })} ${consensusThreshold} BOT`;
-  const message = intl.formatMessage({ id: 'oracle.setResultExplanation' })
+  const message = intl.formatMessage({ id: 'oracle.setResultExplanation' });
   return <ImportantNote heading={heading} message={message} />;
 });
 
