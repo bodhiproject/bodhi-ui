@@ -2,11 +2,11 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
-import { OracleStatus, SortBy, Phases } from 'constants';
 
 import { getIntlProvider } from './i18nUtil';
+import { OracleStatus, SortBy, Phases } from '../constants';
 import Zhlang from '../languageProvider/entries/zh-Hans-CN';
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING } = Phases;
+const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01; // eslint-disable-line
@@ -147,22 +147,21 @@ export function shortenAddress(text, maxLength) {
 
 /**
  * Checks to see if the unlocked until timestamp is before the current UNIX time.
- * @param walletStore {Object} The wallet store containing the variables needed.
+ * @param isEncrypted {Boolean} Is the wallet encrypted.
+ * @param unlockedUntil {Number|String} The UNIX timestamp in seconds to compare to.
  * @return {Boolean} If the user needs to unlock their wallet.
  */
-export function doesUserNeedToUnlockWallet(walletStore) {
-  const { walletEncrypted, walletUnlockedUntil } = walletStore;
-
-  if (!walletEncrypted) {
+export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
+  if (!isEncrypted) {
     return false;
   }
 
-  if (walletUnlockedUntil === 0) {
+  if (unlockedUntil === 0) {
     return true;
   }
 
   const now = moment();
-  const unlocked = moment.unix(walletUnlockedUntil).subtract(1, 'hours');
+  const unlocked = moment.unix(unlockedUntil).subtract(1, 'hours');
   return now.isSameOrAfter(unlocked);
 }
 
@@ -195,10 +194,11 @@ export function getDetailPagePath(oracles) {
  */
 export const getPhase = ({ token, status }) => {
   const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && ['VOTING', 'CREATED'].includes(status)) return BETTING;
+  if (QTUM && status === 'CREATED') return UNCONFIRMED; // BETTING
+  if (QTUM && status === 'VOTING') return BETTING;
   if (BOT && status === 'VOTING') return VOTING;
   if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING;
+  if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
   if (BOT && status === 'WAITRESULT') return FINALIZING;
   if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);

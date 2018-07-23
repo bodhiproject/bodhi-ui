@@ -4,6 +4,7 @@
     "transform-decorators-legacy",
     [ "react-intl", {
         "messagesDir": "build/messages"
-    }]
+    }],
+    "babel-plugin-styled-components"
   ]
 }

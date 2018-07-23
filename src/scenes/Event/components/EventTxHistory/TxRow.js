@@ -8,9 +8,7 @@ import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
-import { localizeInvalidOption } from '../../../../helpers/localizeInvalidOption';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { TransactionType } from '../../../../constants';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -26,31 +24,17 @@ export default class TxRow extends Component {
   }
 
   toggle = () => {
-    // probably need some logic here for not expanding when clicking on
+    // TODO: probably need some logic here for not expanding when clicking on
     // the Name link field
     this.setState({ expanded: !this.state.expanded });
   };
 
   get name() {
-    const { transaction, intl } = this.props;
-    const { optionIdx, topic, type } = transaction;
-    switch (type) {
-      case TransactionType.BET:
-      case TransactionType.APPROVE_SET_RESULT:
-      case TransactionType.SET_RESULT:
-      case TransactionType.APPROVE_VOTE:
-      case TransactionType.VOTE:
-      case TransactionType.FINALIZE_RESULT: {
-        if (optionIdx && topic) {
-          const invalidOption = localizeInvalidOption(topic.options[optionIdx], intl);
-          return `#${optionIdx + 1} ${topic.options[optionIdx] === 'Invalid' ? invalidOption : topic.options[optionIdx]}`;
-        }
-        return '';
-      }
-      default: {
-        return undefined;
-      }
+    const { intl: { formatMessage }, transaction: { optionIdx, topic, name } } = this.props;
+    if (topic) {
+      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage({ id: 'invalid' }) : name}`;
     }
+    return '';
   }
 
   render() {

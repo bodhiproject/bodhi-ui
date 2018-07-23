@@ -1,4 +1,5 @@
 {
+  "Loading Oracle...": "加载Oracle中...",
   "activitiesTab.Finalize": "结束",
   "activitiesTab.History": "历史记录",
   "activitiesTab.Set": "设置结果",
@@ -9,6 +10,7 @@
   "bottomBar.online": "在线",
   "bottomBar.peers": "节点",
   "bottomButtonText.arbitrate": "仲裁",
+  "bottomButtonText.archived": "存档",
   "bottomButtonText.placeBet": "投注",
   "bottomButtonText.vote": "投票",
   "button.backup": "备份钱包",
@@ -85,6 +87,7 @@
   "eventInfo.predictionFund": "预测总金额",
   "eventInfo.voteVolumn": "仲裁总金额",
   "help": "帮助",
+  "invalid": "无效",
   "language.select": "English",
   "loader.blockNum": "最新区块数",
   "loader.blockTime": "最新区块时间",

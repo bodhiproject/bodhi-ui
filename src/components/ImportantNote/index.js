@@ -1,43 +1,34 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core';
-import { injectIntl } from 'react-intl';
-import cx from 'classnames';
-
-import styles from './styles';
+import React from 'react';
+import styled, { css } from 'styled-components';
 
 
-@injectIntl
-@withStyles(styles, { withTheme: true })
-export default class ImportantNote extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    heading: PropTypes.string,
-    message: PropTypes.string,
-  };
+export const ImportantNote = ({ heading, message }) => !!(heading && message) && (
+  <Wrapper>
+    <Icon />
+    <Heading>{heading}</Heading>
+    <Message>{message}</Message>
+  </Wrapper>
+);
 
-  static defaultProps = {
-    heading: undefined,
-    message: undefined,
-  };
+const Wrapper = styled.div`
+  ${({ theme: { padding } }) => css`
+    margin: ${padding.xs.px} ${padding.xs.px} 0px ${padding.xs.px};
+  `}
+`;
 
-  render() {
-    const {
-      classes,
-      heading,
-      message,
-    } = this.props;
+const Heading = styled.span`
+  font-size: ${props => props.theme.sizes.font.textMd};
+  font-weight: ${props => props.theme.typography.fontWeightBold};
+  color: ${props => props.theme.palette.text.primary};
+`;
 
-    if (!heading && !message) {
-      return null;
-    }
+const Message = styled.p`
+  font-size: ${props => props.theme.sizes.font.textSm};
+  color: ${props => props.theme.palette.text.secondary};
+`;
 
-    return (
-      <div>
-        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_info')}></i>
-        <span className={classes.headingText}>{heading}</span>
-        <p className={classes.messageText}>{message}</p>
-      </div>
-    );
-  }
-}
+const Icon = styled.i.attrs({ className: 'icon iconfont icon-ic_info' })`
+  font-size: ${props => props.theme.sizes.font.textMd};
+  color: ${props => props.theme.palette.primary.main};
+  margin-right: ${props => props.theme.padding.unit.px};
+`;

@@ -8,6 +8,12 @@ const styles = (theme) => ({
     '&.last': {
       paddingBottom: theme.padding.unit.px,
     },
+    '&.is_result span': {
+      display: 'none !important',
+    },
+    '&.is_result.first': {
+      paddingTop: 1,
+    },
   },
   eventOptionWrapper: {
     width: '100%',
