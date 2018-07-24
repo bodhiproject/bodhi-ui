@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { Dialog, DialogContent, DialogActions, DialogTitle as _DialogTitle, Button } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { TxConfirmDialog, TxSentDialog } from 'components';
+import { TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
 import { Token } from 'constants';
 
 import EventWarning from '../../components/EventWarning';
@@ -20,10 +20,9 @@ import ResultSetter from './ResultSetter';
 const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warning, hasEnoughQtum, isOpen } } }) => (
   <Fragment>
     <Dialog fullWidth maxWidth='md' open={isOpen} >
-      {/* <DialogContent> */}
       <DialogTitle>Create an event</DialogTitle>
       {!hasEnoughQtum && <EventWarning id={warning.id} message={warning.message} type='error' />}
-      {/* </DialogContent> */}
+      <EscrowAmountNote amount={createEvent.escrowAmount} />
       <DialogContent>
         <Title />
         <CreatorDropdown />
@@ -54,6 +53,17 @@ const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warni
 
 const DialogTitle = styled(_DialogTitle)`
   padding: 0px;
+`;
+
+const EscrowAmountNote = injectIntl(({ amount, intl }) => {
+  const heading = intl.formatMessage({ id: 'create.escrowNoteTitle' }, { amount });
+  const message = intl.formatMessage({ id: 'create.escrowNoteDesc' }, { amount });
+  return <ImportantNote heading={heading} message={message} />;
+});
+
+const ImportantNote = styled(_ImportantNote)`
+  margin-left: 35px;
+  margin-bottom: ${props => props.theme.padding.xs.px};
 `;
 
 const CancelButton = observer(({ createEvent }) => (

@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 
-export const ImportantNote = ({ heading, message }) => !!(heading && message) && (
-  <Wrapper>
+export const ImportantNote = ({ heading, message, ...props }) => !!(heading && message) && (
+  <Wrapper {...props}>
     <Icon />
     <Heading>{heading}</Heading>
     <Message>{message}</Message>

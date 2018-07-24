@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import AddIcon from '@material-ui/icons/Add';
@@ -40,29 +40,16 @@ export default class TopActions extends Component {
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={8}>
           {!noCreateEventButton && (
-            <Fragment>
-              <Button
-                variant="raised"
-                size="medium"
-                color="primary"
-                className={classes.createEventButton}
-                onClick={createEvent.open}
-              >
-                <AddIcon fontSize={fontSize} />
-                NEW .
-                <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
-              </Button>
-              <Button
-                variant="raised"
-                size="medium"
-                color="primary"
-                className={classes.createEventButton}
-                onClick={this.onCreateDialogOpen}
-              >
-                <AddIcon fontSize={fontSize} />
-                <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
-              </Button>
-            </Fragment>
+            <Button
+              variant="raised"
+              size="medium"
+              color="primary"
+              className={classes.createEventButton}
+              onClick={createEvent.open}
+            >
+              <AddIcon fontSize={fontSize} />
+              <FormattedMessage id="create.dialogTitle" defaultMessage="Create an event" />
+            </Button>
           )}
         </Grid>
         <Grid item xs={4} className={classes.dashboardActionsRight}>

@@ -162,7 +162,6 @@ export default class CreateEventStore {
 
   @action
   validateTitle = () => {
-    console.log('validate title');
     if (!this.title) {
       this.error.title = 'create.required';
     } else {
@@ -179,7 +178,6 @@ export default class CreateEventStore {
 
   @action
   validateCreator = () => {
-    console.log('validate creator');
     const { app: { wallet }, escrowAmount, creator } = this;
     const checkingAddresses = _.filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
@@ -235,7 +233,6 @@ export default class CreateEventStore {
 
   @action
   validateOutcome = (i) => {
-    console.log('validate outcome: ', i);
     const outcome = (this.outcomes[i] || '').toLowerCase();
 
     // validate not empty
@@ -293,12 +290,12 @@ export default class CreateEventStore {
       oracleAddress: undefined,
       senderAddress: this.creator,
     };
-    // console.log('CREATE EVENT TX INFO: ', txInfo);
     const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
     runInAction(() => {
       this.txFees = result;
       this.txConfirmDialogOpen = true;
     });
+    // TODO: do we need this?
     // const { wallet } = this.app;
     // if (wallet.needsToBeUnlocked) {
     //   wallet.unlockDialogOpen = true;
