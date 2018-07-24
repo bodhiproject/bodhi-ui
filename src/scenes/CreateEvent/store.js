@@ -127,6 +127,14 @@ export default class CreateEventStore {
         }
       }
     );
+    reaction(
+      () => this.resultSetterDialogOpen,
+      () => {
+        if (!this.resultSetterDialogOpen) {
+          this.validateResultSetter();
+        }
+      }
+    );
   }
 
   @action
@@ -147,6 +155,10 @@ export default class CreateEventStore {
       });
     }
     runInAction(() => {
+      this.prediction.startTime = nowPlus(15);
+      this.prediction.endTime = nowPlus(45);
+      this.resultSetting.startTime = nowPlus(45);
+      this.resultSetting.endTime = nowPlus(75);
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
       this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
       this.creator = this.app.wallet.lastUsedAddress;
@@ -335,7 +347,7 @@ export default class CreateEventStore {
         // optimistically add the oracle to the qtum prediction page list
         // this.app.qtumPrediction.list.push(new Oracle(data.createTopic));
         this.txConfirmDialogOpen = false;
-        this.txid = data.txid;
+        this.txid = data.createTopic.txid;
         this.txSentDialogOpen = true;
       });
     } catch (error) {

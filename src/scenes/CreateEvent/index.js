@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { Dialog, DialogContent, DialogActions, DialogTitle as _DialogTitle, Button } from '@material-ui/core';
+import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
+import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
 import { Token } from 'constants';
 
-import EventWarning from '../../components/EventWarning';
 import Title from './Title';
 import CreatorDropdown from './CreatorDropdown';
 import PredictionStartTime from './PredictionStartTime';
@@ -23,7 +22,7 @@ const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warni
       <DialogTitle>Create an event</DialogTitle>
       {!hasEnoughQtum && <EventWarning id={warning.id} message={warning.message} type='error' />}
       <EscrowAmountNote amount={createEvent.escrowAmount} />
-      <DialogContent>
+      <Content>
         <Title />
         <CreatorDropdown />
         <PredictionStartTime />
@@ -32,11 +31,11 @@ const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warni
         <ResultSetEndTime />
         <Outcomes />
         <ResultSetter />
-      </DialogContent>
-      <DialogActions>
+      </Content>
+      <Footer>
         <CancelButton createEvent={createEvent} />
         <PublishButton createEvent={createEvent} />
-      </DialogActions>
+      </Footer>
     </Dialog>
     {createEvent.txConfirmDialogOpen && (
       <CreateEventTxConfirmDialog createEvent={createEvent} />
@@ -61,16 +60,20 @@ const EscrowAmountNote = injectIntl(({ amount, intl }) => {
   return <ImportantNote heading={heading} message={message} />;
 });
 
+const Footer = styled(DialogActions)`
+  margin: 18px 14px !important;
+`;
+
 const ImportantNote = styled(_ImportantNote)`
   margin-left: 35px;
   margin-bottom: ${props => props.theme.padding.xs.px};
 `;
 
-const CancelButton = observer(({ createEvent }) => (
+const CancelButton = ({ createEvent }) => (
   <Button onClick={createEvent.close} color='primary'>
     <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
   </Button>
-));
+);
 
 const PublishButton = observer(({ createEvent }) => (
   <Button onClick={createEvent.prepareToCreateEvent} disabled={createEvent.submitting || !createEvent.hasEnoughQtum} color="primary" variant="raised">
