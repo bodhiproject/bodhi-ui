@@ -1,7 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { FormControl, TextField, FormHelperText, Button } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, Button as _Button } from '@material-ui/core';
 import Section from './Section';
 import SelectAddressDialog from './components/SelectAddressDialog';
 
@@ -32,5 +33,10 @@ const SelectAddressButton = injectIntl(({ intl, ...props }) => (
     {intl.formatMessage({ id: 'create.selectMyAddress' })}
   </Button>
 ));
+
+const Button = styled(_Button).attrs({ variant: 'raised' })`
+  margin-top: ${props => props.theme.padding.unit.px} !important;
+  width: 200px;
+`;
 
 export default inject('store')(ResultSetter);

@@ -3,8 +3,9 @@ import _ from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
+import { TransactionType, Token } from 'constants';
 
-import { satoshiToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
@@ -15,8 +16,14 @@ const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm')
 const MAX_LEN_RESULT_HEX = 64;
 
 const INIT = {
+  escrowAmount: '', // type: number
+  averageBlockTime: '',
+  txFees: [],
+  txid: '',
   isOpen: false,
-  escrowAmount: null, // type: number
+  txConfirmDialogOpen: false,
+  txSentDialogOpen: false,
+  resultSetterDialogOpen: false,
   title: '',
   creator: '',
   prediction: {
@@ -49,11 +56,13 @@ const INIT = {
 
 
 export default class CreateEventStore {
-  escrowAmount = ''
-  averageBlockTime = '' // TODO: maybe move to global store?
-  @observable txConfirmDialogOpen = false
-  @observable txSentDialogOpen = false
-  @observable resultSetterDialogOpen = false
+  escrowAmount = INIT.escrowAmount
+  averageBlockTime = INIT.averageBlockTime // TODO: maybe move to global store?
+  txFees = INIT.txFees
+  txid = INIT.txid // used in txSentDialog
+  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
+  @observable txSentDialogOpen = INIT.txSentDialogOpen
+  @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
   // form fields
   @observable isOpen = INIT.isOpen
   @observable title = INIT.title
@@ -63,9 +72,6 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   error = observable(INIT.error)
-  @computed get creatorAddresses() {
-    return this.app.wallet.addresses || [];
-  }
   @computed get hasEnoughQtum() {
     const totalQtum = _.sumBy(this.app.wallet.addresses, ({ qtum }) => qtum);
     return totalQtum >= maxTransactionFee;
@@ -174,8 +180,8 @@ export default class CreateEventStore {
   @action
   validateCreator = () => {
     console.log('validate creator');
-    const { creatorAddresses, escrowAmount, creator } = this;
-    const checkingAddresses = _.filter(creatorAddresses, { address: creator });
+    const { app: { wallet }, escrowAmount, creator } = this;
+    const checkingAddresses = _.filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
       this.error.creator = 'str.notEnoughBot';
     } else if (!creator) {
@@ -275,14 +281,28 @@ export default class CreateEventStore {
   }
 
   @action
-  prepareToCreateEvent = () => {
+  prepareToCreateEvent = async () => {
     this.validateAll();
     if (!this.isAllValid) return;
+    const txInfo = {
+      type: TransactionType.APPROVE_CREATE_EVENT,
+      token: Token.BOT,
+      amount: this.escrowAmount,
+      optionIdx: undefined,
+      topicAddress: undefined,
+      oracleAddress: undefined,
+      senderAddress: this.creator,
+    };
+    // console.log('CREATE EVENT TX INFO: ', txInfo);
+    const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
+    runInAction(() => {
+      this.txFees = result;
+      this.txConfirmDialogOpen = true;
+    });
     // const { wallet } = this.app;
     // if (wallet.needsToBeUnlocked) {
     //   wallet.unlockDialogOpen = true;
     // } else {
-    this.txConfirmDialogOpen = true;
     // }
   }
 
@@ -306,18 +326,20 @@ export default class CreateEventStore {
         this.title,
         this.outcomes,
         this.resultSetter,
-
         moment(this.prediction.startTime).utc().unix().toString(),
         moment(this.prediction.endTime).utc().unix().toString(),
         moment(this.resultSetting.startTime).utc().unix().toString(),
         moment(this.resultSetting.endTime).utc().unix().toString(),
-        this.escrowAmount,
+        decimalToSatoshi(this.escrowAmount),
         this.creator, // address
       );
-      console.log('CREATE EVENT TX: ', data.createTopic);
+      // console.log('CREATE EVENT TX: ', data.createTopic);
       runInAction(() => {
         // optimistically add the oracle to the qtum prediction page list
         // this.app.qtumPrediction.list.push(new Oracle(data.createTopic));
+        this.txConfirmDialogOpen = false;
+        this.txid = data.txid;
+        this.txSentDialogOpen = true;
       });
     } catch (error) {
       console.error('ERROR: ', { // eslint-disable-line

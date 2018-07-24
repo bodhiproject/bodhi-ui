@@ -25,7 +25,9 @@ const AddButton = injectIntl(({ intl, ...props }) => (
 ));
 
 const Button = styled(_Button).attrs({ variant: 'raised' })`
-  margin-top: ${props => props.theme.padding.unit.px};
+  margin-top: ${props => props.theme.padding.unit.px} !important;
+  width: 150px;
+  /* margin-top: 12px; */
 `;
 
 const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
