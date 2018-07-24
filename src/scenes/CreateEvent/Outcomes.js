@@ -29,7 +29,7 @@ const Button = styled(_Button).attrs({ variant: 'raised' })`
 `;
 
 const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
-  <li>
+  <div>
     <FormControl fullWidth>
       <TextField
         fullWidth
@@ -39,21 +39,21 @@ const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
         placeholder={intl.formatMessage({ id: 'create.outcomeName' })}
         error={Boolean(createEvent.error.outcomes[i])}
         InputProps={{
-          startAdornment: <InputAdornment position="start">#{i}</InputAdornment>,
+          startAdornment: <InputAdornment position="start">#{i + 1}</InputAdornment>,
         }}
       />
-      {createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
+      {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
     </FormControl>
     {createEvent.outcomes.length > MIN_OPTION_NUMBER && (
       <RemoveIcon onClick={() => createEvent.outcomes.splice(i, 1)} />
     )}
-  </li>
+  </div>
 )));
 
 const RemoveIcon = styled.i.attrs({ className: 'icon iconfont icon-close' })`
   position: absolute;
-  top: ${props => props.theme.padding.unit.px};
-  right: 0px;
+  right: 25px;
+  margin-top: 9px;
   cursor: pointer;
 `;
 

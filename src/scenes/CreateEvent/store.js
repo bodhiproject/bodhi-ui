@@ -8,8 +8,10 @@ import { satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
+import { createTopic } from '../../network/graphMutation';
 
 
+const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
 const MAX_LEN_RESULT_HEX = 64;
 
 const INIT = {
@@ -18,15 +20,31 @@ const INIT = {
   title: '',
   creator: '',
   prediction: {
-    startTime: '',
-    endTime: '',
+    startTime: nowPlus(15),
+    endTime: nowPlus(45),
   },
   resultSetting: {
-    startTime: '',
-    endTime: '',
+    startTime: nowPlus(45),
+    endTime: nowPlus(75),
   },
   outcomes: ['', ''],
   resultSetter: '',
+  // if one of these in error is set, the form
+  // field will display the associated error message
+  error: {
+    title: '',
+    creator: '',
+    prediction: {
+      startTime: '',
+      endTime: '',
+    },
+    resultSetting: {
+      startTime: '',
+      endTime: '',
+    },
+    outcomes: ['', ''],
+    resultSetter: '',
+  },
 };
 
 
@@ -44,6 +62,7 @@ export default class CreateEventStore {
   resultSetting = observable(INIT.resultSetting)
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
+  error = observable(INIT.error)
   @computed get creatorAddresses() {
     return this.app.wallet.addresses || [];
   }
@@ -73,23 +92,24 @@ export default class CreateEventStore {
       },
     };
   }
-
-  // if one of these is set, the form field will display the
-  // associated error message
-  error = observable({
-    title: '',
-    creator: '',
-    prediction: {
-      startTime: '',
-      endTime: '',
-    },
-    resultSetting: {
-      startTime: '',
-      endTime: '',
-    },
-    outcomes: [],
-    resultSetter: '',
-  })
+  @computed get isAllValid() {
+    const { title, creator, prediction, resultSetting, outcomes, resultSetter } = this.error;
+    return (
+      // all fields set
+      this.title
+      && this.outcomes.every(outcome => !!outcome)
+      && this.resultSetter
+      // no errors
+      && !title
+      && !creator
+      && !prediction.startTime
+      && !prediction.endTime
+      && !resultSetting.startTime
+      && !resultSetting.endTime
+      && outcomes.every(outcome => !outcome)
+      && !resultSetter
+    );
+  }
 
   constructor(app) {
     this.app = app;
@@ -134,15 +154,26 @@ export default class CreateEventStore {
     this.resultSetterDialogOpen = false;
   }
 
+  @action
   validateTitle = () => {
+    console.log('validate title');
     if (!this.title) {
       this.error.title = 'create.required';
     } else {
       this.error.title = '';
     }
+    // let hexString = _.isUndefined(value) ? '' : value;
+
+    // // Remove hex prefix for length validation
+    // hexString = Web3Utils.toHex(hexString).slice(2);
+    // if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
+    //   return intl.formatMessage(messages.nameLong);
+    // }
   }
 
+  @action
   validateCreator = () => {
+    console.log('validate creator');
     const { creatorAddresses, escrowAmount, creator } = this;
     const checkingAddresses = _.filter(creatorAddresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
@@ -154,50 +185,51 @@ export default class CreateEventStore {
     }
   }
 
-  isAfterNow = (value) => {
+  isBeforeNow = (value) => {
     const valueTime = moment(value);
     const now = moment();
-
     return _.isUndefined(valueTime) || now.unix() > valueTime.unix();
-    // if (_.isUndefined(valueTime) || now.unix() > valueTime.unix()) {
-    //   // return 'create.datePast';
-    // }
-    // return '';
   }
 
+  @action
   validatePredictionStartTime = () => {
-    if (this.isAfterNow(this.prediction.starTime)) {
+    if (this.isBeforeNow(this.prediction.starTime)) {
       this.error.prediction.startTime = 'create.datePast';
     } else {
       this.error.prediction.startTime = '';
     }
   }
 
+  @action
   validatePredictionEndTime = () => {
-    if (this.isAfterNow(this.prediction.endTime)) {
+    if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = 'create.datePast';
     } else {
       this.error.prediction.endTime = '';
     }
   }
 
+  @action
   validateResultSettingStartTime = () => {
-    if (this.isAfterNow(this.resultSetting.starTime)) {
+    if (this.isBeforeNow(this.resultSetting.starTime)) {
       this.error.resultSetting.starTime = 'create.datePast';
     } else {
       this.error.resultSetting.starTime = '';
     }
   }
 
+  @action
   validateResultSettingEndTime = () => {
-    if (this.isAfterNow(this.resultSetting.endTime)) {
+    if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = 'create.datePast';
     } else {
       this.error.resultSetting.endTime = '';
     }
   }
 
+  @action
   validateOutcome = (i) => {
+    console.log('validate outcome: ', i);
     const outcome = (this.outcomes[i] || '').toLowerCase();
 
     // validate not empty
@@ -228,10 +260,72 @@ export default class CreateEventStore {
     this.error.outcomes[i] = '';
   }
 
-  validateResultSetter = () => {
+  @action
+  validateResultSetter = async () => {
+    if (await this.isValidAddress()) {
+      this.error.resultSetter = '';
+    } else {
+      this.error.resultSetter = 'create.required';
+    }
   }
 
-  prepareToCreateEvent = () => {}
+  isValidAddress = async () => {
+    const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
+    return result.isvalid;
+  }
+
+  @action
+  prepareToCreateEvent = () => {
+    this.validateAll();
+    if (!this.isAllValid) return;
+    // const { wallet } = this.app;
+    // if (wallet.needsToBeUnlocked) {
+    //   wallet.unlockDialogOpen = true;
+    // } else {
+    this.txConfirmDialogOpen = true;
+    // }
+  }
+
+  validateAll = () => {
+    this.validateTitle();
+    this.validateCreator();
+    this.validatePredictionStartTime();
+    this.validatePredictionEndTime();
+    this.validateResultSettingStartTime();
+    this.validateResultSettingEndTime();
+    for (var i in this.outcomes) { // eslint-disable-line
+      this.validateOutcome(i);
+    }
+    this.validateResultSetter();
+  }
+
+  @action
+  submit = async () => {
+    try {
+      const { data } = await createTopic(
+        this.title,
+        this.outcomes,
+        this.resultSetter,
+
+        moment(this.prediction.startTime).utc().unix().toString(),
+        moment(this.prediction.endTime).utc().unix().toString(),
+        moment(this.resultSetting.startTime).utc().unix().toString(),
+        moment(this.resultSetting.endTime).utc().unix().toString(),
+        this.escrowAmount,
+        this.creator, // address
+      );
+      console.log('CREATE EVENT TX: ', data.createTopic);
+      runInAction(() => {
+        // optimistically add the oracle to the qtum prediction page list
+        // this.app.qtumPrediction.list.push(new Oracle(data.createTopic));
+      });
+    } catch (error) {
+      console.error('ERROR: ', { // eslint-disable-line
+        ...error,
+        route: `${Routes.graphql.http}/createTopicTx`,
+      });
+    }
+  }
 
   close = () => Object.assign(this, INIT)
 

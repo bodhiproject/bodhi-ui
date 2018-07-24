@@ -1,5 +1,6 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, computed } from 'mobx';
 import _ from 'lodash';
+import moment from 'moment';
 
 import WalletHistoryStore from './WalletHistoryStore';
 import axios from '../../network/httpRequest';
@@ -13,8 +14,17 @@ export default class {
   @observable encryptResult = undefined
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
+  @observable unlockDialogOpen = false
 
   history = {}
+
+  @computed get needsToBeUnlocked() {
+    if (this.walletEncrypted) return false;
+    if (this.walletUnlockedUntil === 0) return true;
+    const now = moment();
+    const unlocked = moment.unix(this.walletUnlockedUntil).subtract(1, 'hours');
+    return now.isSameOrAfter(unlocked);
+  }
 
   constructor(app) {
     this.app = app;

@@ -1,39 +1,35 @@
-/* eslint-disable */
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import _ from 'lodash';
-import { MenuItem, FormControl, FormHelperText, Select } from '@material-ui/core';
-import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormControl, FormHelperText, Select } from '@material-ui/core';
+import { injectIntl } from 'react-intl';
 import Section from './Section';
 
 
-const CreatorDropdown = observer(({ store: { createEvent } }) => (
+const CreatorDropdown = observer(({ store: { createEvent, wallet }, intl }) => (
   <Section title='str.creator'>
     <FormControl fullWidth>
       <Select
+        native
         fullWidth
         error={Boolean(createEvent.error.creator)}
         value={createEvent.creator}
-        onChange={e => {
-          console.log('VAL: ', e.target.value);
-          createEvent.creator = e.target.value
-        }}
+        onChange={e => createEvent.creator = e.target.value}
         onBlur={createEvent.validateCreator}
       >
-        {createEvent.creatorAddresses.map(creator => <CreatorItem key={creator.address} creator={creator} />)}
+        {wallet.addresses.map(creator => <CreatorItem key={creator.address} {...creator} />)}
       </Select>
       {Boolean(createEvent.error.creator) && (
-        <FormHelperText error>{createEvent.error.creator}</FormHelperText>
+        <FormHelperText error>{intl.formatMessage({ id: createEvent.error.creator })}</FormHelperText>
       )}
     </FormControl>
   </Section>
 ));
 
-const CreatorItem = observer(({ creator: { address, qtum, bot } }) => (
-  <MenuItem value={address}>
+const CreatorItem = observer(({ address, qtum, bot }) => (
+  <option value={address}>
     {`${address}`}
     {` (${qtum ? qtum.toFixed(2) : 0} QTUM, ${bot ? bot.toFixed(2) : 0} BOT)`}
-  </MenuItem>
+  </option>
 ));
 
-export default inject('store')(CreatorDropdown);
+export default injectIntl(inject('store')(CreatorDropdown));

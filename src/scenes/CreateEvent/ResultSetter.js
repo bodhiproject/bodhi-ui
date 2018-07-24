@@ -20,9 +20,10 @@ const Input = injectIntl(observer(({ intl, createEvent }) => (
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
       placeholder={intl.formatMessage({ id: 'create.resultSetterPlaceholder' })}
+      onBlur={createEvent.validateResultSetter}
       error={!!createEvent.error.resultSetter}
     />
-    {!!createEvent.error.resultSetter && <FormHelperText error>{createEvent.error.resultSetter}</FormHelperText>}
+    {!!createEvent.error.resultSetter && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.resultSetter })}</FormHelperText>}
   </FormControl>
 )));
 

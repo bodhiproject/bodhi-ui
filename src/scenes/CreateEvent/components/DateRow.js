@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
 import { Grid, FormControl, FormHelperText, TextField } from '@material-ui/core';
+import { injectIntl } from 'react-intl';
 
 
-export const DateRow = ({ error, blockNum, ...props }) => (
+export const DateRow = injectIntl(({ error, blockNum, intl, ...props }) => (
   <Fragment>
     <Grid item xs={6}>
       <FormControl fullWidth>
@@ -12,7 +13,7 @@ export const DateRow = ({ error, blockNum, ...props }) => (
           type="datetime-local"
           {...props}
         />
-        {Boolean(error) && <FormHelperText error>{error}</FormHelperText>}
+        {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
       </FormControl>
     </Grid>
     <Grid item xs={6}>
@@ -24,4 +25,4 @@ export const DateRow = ({ error, blockNum, ...props }) => (
       />
     </Grid>
   </Fragment>
-);
+));
