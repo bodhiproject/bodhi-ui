@@ -119,7 +119,7 @@ export default class CreateEventStore {
 
   constructor(app) {
     this.app = app;
-    reaction(
+    reaction( // when we add the creator, update our last used address
       () => this.creator,
       () => {
         if (this.creator) {
@@ -127,7 +127,7 @@ export default class CreateEventStore {
         }
       }
     );
-    reaction(
+    reaction( // make sure there are no errors when closing the result setter dialog
       () => this.resultSetterDialogOpen,
       () => {
         if (!this.resultSetterDialogOpen) {
