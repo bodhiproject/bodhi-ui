@@ -1,6 +1,6 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   Dialog,
   DialogTitle,
@@ -13,15 +13,12 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
-import { Token, TransactionType } from 'constants';
+import { Token } from 'constants';
 
 import styles from './styles';
-import graphqlActions from '../../../../redux/Graphql/actions';
-import appActions from '../../../../redux/App/actions';
-import { decimalToSatoshi } from '../../../../helpers/utility';
-import Tracking from '../../../../helpers/mixpanelUtil';
 
 
 const messages = defineMessages({
@@ -45,13 +42,8 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  walletAddresses: state.App.get('walletAddresses'),
-}), (dispatch) => ({
-  createTransferTx: (senderAddress, receiverAddress, token, amount) =>
-    dispatch(graphqlActions.createTransferTx(senderAddress, receiverAddress, token, amount)),
-  setTxConfirmInfoAndCallback: (txDesc, txAmount, txToken, txInfo, confirmCallback) => dispatch(appActions.setTxConfirmInfoAndCallback(txDesc, txAmount, txToken, txInfo, confirmCallback)),
-}))
+@inject('store')
+@observer
 export default class WithdrawDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
@@ -61,25 +53,16 @@ export default class WithdrawDialog extends Component {
     botAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
-    createTransferTx: PropTypes.func,
-    walletAddresses: PropTypes.array.isRequired,
-    setTxConfirmInfoAndCallback: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     walletAddress: undefined,
     botAmount: undefined,
-    createTransferTx: undefined,
   };
 
-  state = {
-    toAddress: '',
-    withdrawAmount: 0,
-    selectedToken: Token.QTUM,
-  };
 
   render() {
-    const { dialogVisible, walletAddress, onClose } = this.props;
+    const { dialogVisible, walletAddress, onClose, store: { wallet } } = this.props;
 
     if (!walletAddress) {
       return null;
@@ -101,7 +84,7 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={this.confirmSend}>
+          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)}>
             <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
@@ -110,8 +93,8 @@ export default class WithdrawDialog extends Component {
   }
 
   getFromToFields = () => {
-    const { classes, walletAddress, intl } = this.props;
-    const { toAddress } = this.state;
+    const { classes, walletAddress, intl, store: { wallet } } = this.props;
+    const { toAddress } = wallet;
 
     return (
       <div>
@@ -127,7 +110,7 @@ export default class WithdrawDialog extends Component {
           type="string"
           fullWidth
           className={classes.toAddress}
-          onChange={this.onToAddressChange}
+          onChange={wallet.onToAddressChange.bind(this, event)} // eslint-disable-line
           error={_.isEmpty(toAddress)}
           required
         />
@@ -140,14 +123,14 @@ export default class WithdrawDialog extends Component {
       classes,
       intl,
       botAmount,
-      walletAddresses,
+      store: { wallet },
     } = this.props;
-    const { withdrawAmount, selectedToken } = this.state;
+    const { withdrawAmount, selectedToken } = wallet;
 
     let withdrawLimit = 0;
     switch (selectedToken) {
       case Token.QTUM: {
-        withdrawLimit = _.sumBy(walletAddresses, (wallet) => wallet.qtum ? wallet.qtum : 0);
+        withdrawLimit = _.sumBy(wallet.addresses, (w) => w.qtum ? w.qtum : 0);
         break;
       }
       case Token.BOT: {
@@ -170,13 +153,13 @@ export default class WithdrawDialog extends Component {
             label={intl.formatMessage(messages.amount)}
             type="number"
             className={classes.amountInput}
-            onChange={this.onAmountChange}
+            onChange={wallet.onAmountChange.bind(this, event)} // eslint-disable-line
             error={withdrawAmount < 0 || _.isEmpty(withdrawAmount)}
             required
           />
           <Select
             value={selectedToken}
-            onChange={this.onTokenChange}
+            onChange={wallet.onTokenChange.bind(this, event)} // eslint-disable-line
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
             <MenuItem value={Token.QTUM}>QTUM</MenuItem>
@@ -189,61 +172,4 @@ export default class WithdrawDialog extends Component {
       </div>
     );
   };
-
-  onToAddressChange = (event) => {
-    this.setState({
-      toAddress: event.target.value,
-    });
-  };
-
-  onAmountChange = (event) => {
-    this.setState({
-      withdrawAmount: event.target.value,
-    });
-  };
-
-  onTokenChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  submitSend = () => {
-    const { walletAddress, createTransferTx } = this.props;
-    const { toAddress, withdrawAmount, selectedToken } = this.state;
-
-    let amount = withdrawAmount;
-    if (selectedToken === Token.BOT) {
-      amount = decimalToSatoshi(withdrawAmount);
-    }
-
-    createTransferTx(walletAddress, toAddress, selectedToken, amount);
-    this.props.onWithdraw();
-
-    Tracking.track('myWallet-withdraw');
-  };
-
-  confirmSend = () => {
-    const { toAddress, withdrawAmount, selectedToken } = this.state;
-    const { walletAddress, intl, setTxConfirmInfoAndCallback } = this.props;
-    const self = this;
-
-    setTxConfirmInfoAndCallback(
-      intl.formatMessage(messages.confirmSendMsg, { address: toAddress }),
-      withdrawAmount,
-      selectedToken,
-      {
-        type: TransactionType.TRANSFER,
-        token: selectedToken,
-        amount: withdrawAmount,
-        optionIdx: undefined,
-        topicAddress: undefined,
-        oracleAddress: undefined,
-        senderAddress: walletAddress,
-      },
-      () => {
-        self.submitSend();
-      }
-    );
-  }
 }

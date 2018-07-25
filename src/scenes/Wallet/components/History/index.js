@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { connect } from 'react-redux';
 import {
   Table,
   Paper,
@@ -21,26 +20,16 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { SortBy } from 'constants';
 
 import styles from './styles';
-import HistoryItem from './components/HistoryItem';
+import HistoryItem from './HistoryItem';
 import Config from '../../../../config/app';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@connect((state) => ({
-  syncBlockNum: state.App.get('syncBlockNum'),
-  txReturn: state.Graphql.get('txReturn'),
-}))
 @inject('store')
 @observer
 export default class WalletHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    txReturn: PropTypes.object,
-    syncBlockNum: PropTypes.number.isRequired,
-  };
-
-  static defaultProps = {
-    txReturn: undefined,
   };
 
   onPageChange = (page) => {
@@ -65,14 +54,6 @@ export default class WalletHistory extends Component {
 
   componentDidMount() {
     this.props.store.wallet.history.init();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { txReturn, syncBlockNum, store: { wallet: { history: { queryTransactions } } } } = prevProps;
-
-    if ((txReturn && !this.props.txReturn) || (syncBlockNum !== this.props.syncBlockNum)) {
-      queryTransactions();
-    }
   }
 
   render() {
@@ -181,13 +162,13 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
   );
 };
 
-const TableRows = ({ list }) => (
+const TableRows = observer(({ list }) => (
   <TableBody>
     {list.map((transaction) => <HistoryItem key={transaction.txid} transaction={transaction} />)}
   </TableBody>
-);
+));
 
-const TableFooter = ({ fullList, perPage, page, onPageChange, onPerPageChange }) => (
+const TableFooter = observer(({ fullList, perPage, page, onPageChange, onPerPageChange }) => (
   <_TableFooter>
     <TableRow>
       <TablePagination
@@ -200,4 +181,4 @@ const TableFooter = ({ fullList, perPage, page, onPageChange, onPerPageChange })
       />
     </TableRow>
   </_TableFooter>
-);
+));
