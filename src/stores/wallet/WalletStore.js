@@ -112,14 +112,13 @@ export default class {
     }
   }
 
-
   @action
   confirm = (onWithdraw) => {
     let amount = this.withdrawAmount;
     if (this.selectedToken === Token.BOT) {
       amount = decimalToSatoshi(this.withdrawAmount);
     }
-    createTransferTx(this.walletAddress, this.toAddress, this.selectedToken, amount);
+    this.createTransferTransaction(this.walletAddress, this.toAddress, this.selectedToken, amount);
     runInAction(() => {
       onWithdraw();
       this.txConfirmDialogOpen = false;
@@ -146,11 +145,10 @@ export default class {
   }
 
   @action
-  createTransferTx = async (walletAddress, toAddress, selectedToken, amount) => {
+  createTransferTransaction = async (walletAddress, toAddress, selectedToken, amount) => {
     try {
       const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
       const { history } = this.app.wallet;
-      console.log(transfer);
       history.fullList.push(new Transaction(transfer));
       history.fullList = _.orderBy(history.fullList, [history.orderBy], [history.direction]);
       const start = history.page * history.perPage;
