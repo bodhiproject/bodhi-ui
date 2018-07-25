@@ -62,10 +62,6 @@ export default function appReducer(state = initState, action) {
     case actions.GET_INSIGHT_TOTALS_RETURN: {
       return state.set('averageBlockTime', action.timeBetweenBlocks);
     }
-    case actions.IMPORT_WALLET_RETURN: {
-      if (action.error) return state.set('errorApp', action.error);
-      return state;
-    }
     case actions.VALIDATE_ADDRESS_RETURN: {
       if (action.error) {
         return state.set('errorApp', action.error);

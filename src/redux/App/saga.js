@@ -55,23 +55,6 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
-// Import the wallet
-export function* importWalletRequestHandler() {
-  yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
-    try {
-      yield axios.post(Routes.api.importWallet);
-    } catch (error) {
-      yield put({
-        type: actions.IMPORT_WALLET_RETURN,
-        error: {
-          route: Routes.api.importWallet,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
-
 // Checks if the address is valid
 export function* validateAddressRequestHandler() {
   yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
@@ -120,7 +103,6 @@ export default function* appSaga() {
   yield all([
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
-    fork(importWalletRequestHandler),
     fork(getInsightTotalsRequestHandler),
     fork(validateAddressRequestHandler),
     fork(getTransactionCostRequestHandler),

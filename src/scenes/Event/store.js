@@ -324,54 +324,72 @@ export default class EventStore {
 
   @action
   prepareBet = async () => {
-    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-      type: TransactionType.BET,
-      token: this.oracle.token,
-      amount: Number(this.amount),
-      optionIdx: this.selectedOptionIdx,
-      topicAddress: this.oracle.topicAddress,
-      oracleAddress: this.oracle.address,
-      senderAddress: this.app.wallet.lastUsedAddress,
-    });
-    runInAction(() => {
-      this.oracle.txFees = result;
-      this.txConfirmDialogOpen = true;
-    });
+    try {
+      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+        type: TransactionType.BET,
+        token: this.oracle.token,
+        amount: Number(this.amount),
+        optionIdx: this.selectedOptionIdx,
+        topicAddress: this.oracle.topicAddress,
+        oracleAddress: this.oracle.address,
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      runInAction(() => {
+        this.oracle.txFees = result;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
+      });
+    }
   }
 
   @action
   prepareSetResult = async () => {
-    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-      type: TransactionType.APPROVE_SET_RESULT,
-      token: this.oracle.token,
-      amount: this.oracle.consensusThreshold,
-      optionIdx: this.selectedOptionIdx,
-      topicAddress: this.oracle.topicAddress,
-      oracleAddress: this.oracle.address,
-      senderAddress: this.app.wallet.lastUsedAddress,
-    });
-    runInAction(() => {
-      this.oracle.txFees = result;
-      this.txConfirmDialogOpen = true;
-    });
+    try {
+      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+        type: TransactionType.APPROVE_SET_RESULT,
+        token: this.oracle.token,
+        amount: this.oracle.consensusThreshold,
+        optionIdx: this.selectedOptionIdx,
+        topicAddress: this.oracle.topicAddress,
+        oracleAddress: this.oracle.address,
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      runInAction(() => {
+        this.oracle.txFees = result;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
+      });
+    }
   }
 
   // TODO: this is same logic as this.prepareBet(), maybe combine? idk...
   @action
   prepareVote = async () => {
-    const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-      type: TransactionType.VOTE,
-      token: this.oracle.token,
-      amount: Number(this.amount),
-      optionIdx: this.selectedOptionIdx,
-      topicAddress: this.oracle.topicAddress,
-      oracleAddress: this.oracle.address,
-      senderAddress: this.app.wallet.lastUsedAddress,
-    });
-    runInAction(() => {
-      this.oracle.txFees = result;
-      this.txConfirmDialogOpen = true;
-    });
+    try {
+      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+        type: TransactionType.VOTE,
+        token: this.oracle.token,
+        amount: Number(this.amount),
+        optionIdx: this.selectedOptionIdx,
+        topicAddress: this.oracle.topicAddress,
+        oracleAddress: this.oracle.address,
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      runInAction(() => {
+        this.oracle.txFees = result;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
+      });
+    }
   }
 
   @action
@@ -379,21 +397,26 @@ export default class EventStore {
     const { lastUsedAddress } = this.app.wallet;
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
+    try {
+      const { data: { createBet } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+      const newTx = { // TODO: add `options` in return from backend
+        ...createBet,
+        topic: {
+          options: this.oracle.options.map(({ name }) => name),
+        },
+      };
 
-    const { data: { createBet } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
-    const newTx = { // TODO: add `options` in return from backend
-      ...createBet,
-      topic: {
-        options: this.oracle.options.map(({ name }) => name),
-      },
-    };
-
-    runInAction(() => {
-      this.txConfirmDialogOpen = false;
-      this.txSentDialogOpen = true;
-      this.transactions.unshift(new Transaction(newTx));
-      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    });
+      runInAction(() => {
+        this.txConfirmDialogOpen = false;
+        this.txSentDialogOpen = true;
+        this.transactions.unshift(new Transaction(newTx));
+        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createBetTx`);
+      });
+    }
 
     Tracking.track('oracleDetail-bet');
   }
@@ -403,21 +426,26 @@ export default class EventStore {
     const { lastUsedAddress } = this.app.wallet;
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
+    try {
+      const { data: { setResult } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
+      const newTx = { // TODO: add `options` in return from backend
+        ...setResult,
+        topic: {
+          options: this.oracle.options.map(({ name }) => name),
+        },
+      };
 
-    const { data: { setResult } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
-    const newTx = { // TODO: add `options` in return from backend
-      ...setResult,
-      topic: {
-        options: this.oracle.options.map(({ name }) => name),
-      },
-    };
-
-    runInAction(() => {
-      this.txConfirmDialogOpen = false;
-      this.txSentDialogOpen = true;
-      this.transactions.unshift(new Transaction(newTx));
-      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    });
+      runInAction(() => {
+        this.txConfirmDialogOpen = false;
+        this.txSentDialogOpen = true;
+        this.transactions.unshift(new Transaction(newTx));
+        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createSetResultTx`);
+      });
+    }
 
     Tracking.track('oracleDetail-set');
   }
@@ -428,21 +456,26 @@ export default class EventStore {
     const { version, topicAddress, address } = this.oracle;
     const { selectedOptionIdx } = this;
     const amount = decimalToSatoshi(this.amount);
+    try {
+      const { data: { createVote } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+      const newTx = { // TODO: move this logic to backend, add `options`
+        ...createVote,
+        topic: {
+          options: this.oracle.options.map(({ name }) => name),
+        },
+      };
 
-    const { data: { createVote } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
-    const newTx = { // TODO: move this logic to backend, add `options`
-      ...createVote,
-      topic: {
-        options: this.oracle.options.map(({ name }) => name),
-      },
-    };
-
-    runInAction(() => {
-      this.txConfirmDialogOpen = false;
-      this.txSentDialogOpen = true;
-      this.transactions.unshift(new Transaction(newTx));
-      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    });
+      runInAction(() => {
+        this.txConfirmDialogOpen = false;
+        this.txSentDialogOpen = true;
+        this.transactions.unshift(new Transaction(newTx));
+        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createVoteTx`);
+      });
+    }
 
     Tracking.track('oracleDetail-vote');
   }
@@ -450,23 +483,27 @@ export default class EventStore {
   finalize = async () => {
     const { lastUsedAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
+    try {
+      const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+      const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
+        ...finalizeResult,
+        optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
+        topic: {
+          options: this.oracle.options.map(({ name }) => name),
+        },
+      };
 
-    const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
-    const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
-      ...finalizeResult,
-      optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
-      topic: {
-        options: this.oracle.options.map(({ name }) => name),
-      },
-    };
-
-    runInAction(() => {
-      this.txConfirmDialogOpen = false;
-      this.txSentDialogOpen = true;
-      this.transactions.unshift(new Transaction(newTx));
-      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    });
-
+      runInAction(() => {
+        this.txConfirmDialogOpen = false;
+        this.txSentDialogOpen = true;
+        this.transactions.unshift(new Transaction(newTx));
+        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createFinalizeResultTx`);
+      });
+    }
     Tracking.track('oracleDetail-finalize');
   }
 
