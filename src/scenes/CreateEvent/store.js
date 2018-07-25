@@ -14,6 +14,10 @@ import { createTopic } from '../../network/graphMutation';
 
 const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
 const MAX_LEN_RESULT_HEX = 64;
+let TIME_GAP_MIN_SEC = 30 * 60;
+if (process.env.REACT_APP_ENV === 'dev') {
+  TIME_GAP_MIN_SEC = 2 * 60;
+}
 
 const INIT = {
   escrowAmount: '', // type: number
@@ -224,8 +228,12 @@ export default class CreateEventStore {
 
   @action
   validatePredictionEndTime = () => {
+    const predictionStart = moment(this.prediction.startTime);
+    const predictionEnd = moment(this.prediction.endTime);
     if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = 'create.datePast';
+    } else if (predictionEnd.unix() - predictionStart.unix() < TIME_GAP_MIN_SEC) {
+      this.error.prediction.endTime = 'create.validBetEnd';
     } else {
       this.error.prediction.endTime = '';
     }
@@ -233,8 +241,12 @@ export default class CreateEventStore {
 
   @action
   validateResultSettingStartTime = () => {
+    const predictionEnd = moment(this.prediction.endTime);
+    const resultSettingStart = moment(this.resultSetting.startTime);
     if (this.isBeforeNow(this.resultSetting.starTime)) {
       this.error.resultSetting.starTime = 'create.datePast';
+    } else if (predictionEnd.unix() > resultSettingStart.unix()) {
+      this.error.prediction.endTime = 'create.validResultSetStart';
     } else {
       this.error.resultSetting.starTime = '';
     }
@@ -242,8 +254,12 @@ export default class CreateEventStore {
 
   @action
   validateResultSettingEndTime = () => {
+    const resultSettingStart = moment(this.resultSetting.startTime);
+    const resultSettingEnd = moment(this.resultSetting.endTime);
     if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = 'create.datePast';
+    } else if (resultSettingEnd.unix() - resultSettingStart.unix() < TIME_GAP_MIN_SEC) {
+      this.error.prediction.endTime = 'create.validResultSetEnd';
     } else {
       this.error.resultSetting.endTime = '';
     }
