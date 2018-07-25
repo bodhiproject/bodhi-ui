@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { FormControl, TextField, FormHelperText, Button as _Button } from '@material-ui/core';
-import Section from './Section';
-import SelectAddressDialog from './components/SelectAddressDialog';
+import { Section, SelectAddressDialog } from './components';
 
 
 const ResultSetter = observer(({ store: { createEvent } }) => (

@@ -2,7 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FormControl, FormHelperText, Select } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
-import Section from './Section';
+import { Section } from './components';
 
 
 const CreatorDropdown = observer(({ store: { createEvent, wallet }, intl }) => (

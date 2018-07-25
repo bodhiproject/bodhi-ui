@@ -173,6 +173,12 @@ export default class CreateEventStore {
   }
 
   @action
+  addOutcome = (outcome = '') => {
+    this.outcomes.push(outcome);
+    this.error.outcomes.push(outcome);
+  }
+
+  @action
   validateTitle = () => {
     if (!this.title) {
       this.error.title = 'create.required';

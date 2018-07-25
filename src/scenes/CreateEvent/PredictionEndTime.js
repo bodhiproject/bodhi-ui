@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import Section from './Section';
-import { DateRow } from './components/DateRow';
+import { DateRow, Section } from './components';
 
 
 const PredictionEndTime = observer(({ store: { createEvent } }) => (

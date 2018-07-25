@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { TextField, InputAdornment, FormControl, FormHelperText, Button as _Button } from '@material-ui/core';
-import Section from './Section';
+import { Section } from './components';
 
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
@@ -15,7 +15,7 @@ const Outcomes = observer(({ store: { createEvent } }) => (
       <Outcome key={i} outcome={outcome} createEvent={createEvent} i={i} />
     ))}
     {createEvent.outcomes.length < MAX_OPTION_NUMBER && (
-      <AddButton onClick={() => createEvent.outcomes.push('')} />
+      <AddButton onClick={() => createEvent.addOutcome('')} />
     )}
   </Section>
 ));
@@ -43,18 +43,18 @@ const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
           startAdornment: <InputAdornment position="start">#{i + 1}</InputAdornment>,
         }}
       />
+      {createEvent.outcomes.length > MIN_OPTION_NUMBER && (
+        <RemoveIcon onClick={() => createEvent.outcomes.splice(i, 1)} />
+      )}
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
     </FormControl>
-    {createEvent.outcomes.length > MIN_OPTION_NUMBER && (
-      <RemoveIcon onClick={() => createEvent.outcomes.splice(i, 1)} />
-    )}
   </div>
 )));
 
 const RemoveIcon = styled.i.attrs({ className: 'icon iconfont icon-close' })`
   position: absolute;
-  right: 25px;
-  margin-top: 9px;
+  right: 5px;
+  top: 8px;
   cursor: pointer;
 `;
 

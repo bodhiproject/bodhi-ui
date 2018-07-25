@@ -2,7 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { FormControl, TextField, FormHelperText } from '@material-ui/core';
-import Section from './Section';
+import { Section } from './components';
 
 
 const Title = observer(({ store: { createEvent }, intl }) => (
