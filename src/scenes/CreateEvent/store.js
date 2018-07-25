@@ -244,11 +244,11 @@ export default class CreateEventStore {
     const predictionEnd = moment(this.prediction.endTime);
     const resultSettingStart = moment(this.resultSetting.startTime);
     if (this.isBeforeNow(this.resultSetting.starTime)) {
-      this.error.resultSetting.starTime = 'create.datePast';
+      this.error.resultSetting.startTime = 'create.datePast';
     } else if (predictionEnd.unix() > resultSettingStart.unix()) {
-      this.error.prediction.endTime = 'create.validResultSetStart';
+      this.error.resultSetting.startTime = 'create.validResultSetStart';
     } else {
-      this.error.resultSetting.starTime = '';
+      this.error.resultSetting.startTime = '';
     }
   }
 
@@ -259,7 +259,7 @@ export default class CreateEventStore {
     if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = 'create.datePast';
     } else if (resultSettingEnd.unix() - resultSettingStart.unix() < TIME_GAP_MIN_SEC) {
-      this.error.prediction.endTime = 'create.validResultSetEnd';
+      this.error.resultSetting.endTime = 'create.validResultSetEnd';
     } else {
       this.error.resultSetting.endTime = '';
     }
