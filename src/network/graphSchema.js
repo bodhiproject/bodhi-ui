@@ -144,6 +144,7 @@ const MUTATIONS = {
       version
       type
       status
+      token
       senderAddress
     `,
   },
