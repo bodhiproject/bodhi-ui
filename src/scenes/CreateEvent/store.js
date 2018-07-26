@@ -10,6 +10,7 @@ import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
 import { createTopic } from '../../network/graphMutation';
+import Oracle from '../../stores/models/Oracle';
 
 
 const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
@@ -152,7 +153,7 @@ export default class CreateEventStore {
       });
       insightTotalsRes = await axios.get(Routes.insight.totals);
     } catch (err) {
-      // TODO: show an error in a dialog
+      // TODO: HENRY - show an error in a dialog
       console.error('ERROR: ', { // eslint-disable-line
         route: Routes.api.eventEscrowAmount,
         message: err.message,
@@ -184,18 +185,15 @@ export default class CreateEventStore {
 
   @action
   validateTitle = () => {
+    // Remove hex prefix for length validation
+    const hexString = Web3Utils.toHex(this.title || '').slice(2);
     if (!this.title) {
       this.error.title = 'create.required';
+    } else if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
+      this.error.title = 'create.nameLong';
     } else {
       this.error.title = '';
     }
-    // let hexString = _.isUndefined(value) ? '' : value;
-
-    // // Remove hex prefix for length validation
-    // hexString = Web3Utils.toHex(hexString).slice(2);
-    // if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
-    //   return intl.formatMessage(messages.nameLong);
-    // }
   }
 
   @action
@@ -219,7 +217,7 @@ export default class CreateEventStore {
 
   @action
   validatePredictionStartTime = () => {
-    if (this.isBeforeNow(this.prediction.starTime)) {
+    if (this.isBeforeNow(this.prediction.startTime)) {
       this.error.prediction.startTime = 'create.datePast';
     } else {
       this.error.prediction.startTime = '';
@@ -243,7 +241,7 @@ export default class CreateEventStore {
   validateResultSettingStartTime = () => {
     const predictionEnd = moment(this.prediction.endTime);
     const resultSettingStart = moment(this.resultSetting.startTime);
-    if (this.isBeforeNow(this.resultSetting.starTime)) {
+    if (this.isBeforeNow(this.resultSetting.startTime)) {
       this.error.resultSetting.startTime = 'create.datePast';
     } else if (predictionEnd.unix() > resultSettingStart.unix()) {
       this.error.resultSetting.startTime = 'create.validResultSetStart';
@@ -329,7 +327,7 @@ export default class CreateEventStore {
       this.txFees = result;
       this.txConfirmDialogOpen = true;
     });
-    // TODO: do we need this?
+    // TODO: ANDY - need to do for wallet mobx refactor
     // const { wallet } = this.app;
     // if (wallet.needsToBeUnlocked) {
     //   wallet.unlockDialogOpen = true;
@@ -364,15 +362,29 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
         this.creator, // address
       );
-      // console.log('CREATE EVENT TX: ', data.createTopic);
+      const oracle = { // TODO: we should return this from the backend when making the createTopic api call
+        ...data.createTopic,
+        optionIdxs: Array.from({ length: this.outcomes.length }, (x, i) => i),
+        resultSetStartTime: moment(this.resultSetting.startTime).utc().unix().toString(),
+        resultSetEndTime: moment(this.resultSetting.endTime).utc().unix().toString(),
+        startTime: moment(this.prediction.startTime).utc().unix().toString(),
+        endTime: moment(this.prediction.endTime).utc().unix().toString(),
+        options: this.outcomes,
+        name: this.title,
+        amounts: [],
+        token: 'QTUM',
+        status: 'CREATED',
+        topicAddress: null,
+        address: null,
+      };
       runInAction(() => {
-        // optimistically add the oracle to the qtum prediction page list
-        // this.app.qtumPrediction.list.push(new Oracle(data.createTopic));
+        this.app.qtumPrediction.list.unshift(new Oracle(oracle, this.app));
         this.txConfirmDialogOpen = false;
-        this.txid = data.createTopic.txid;
+        this.txid = oracle.txid;
         this.txSentDialogOpen = true;
       });
     } catch (error) {
+      // TODO: HENRY - show an error in a dialog
       console.error('ERROR: ', { // eslint-disable-line
         ...error,
         route: `${Routes.graphql.http}/createTopicTx`,
