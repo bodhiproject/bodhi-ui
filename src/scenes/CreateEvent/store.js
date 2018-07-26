@@ -63,7 +63,7 @@ const INIT = {
 export default class CreateEventStore {
   escrowAmount = INIT.escrowAmount
   averageBlockTime = INIT.averageBlockTime // TODO: maybe move to global store?
-  txFees = INIT.txFees
+  txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
@@ -72,11 +72,11 @@ export default class CreateEventStore {
   @observable isOpen = INIT.isOpen
   @observable title = INIT.title
   @observable creator = INIT.creator // address
-  prediction = observable(INIT.prediction)
-  resultSetting = observable(INIT.resultSetting)
+  @observable prediction = INIT.prediction
+  @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
-  error = observable(INIT.error)
+  @observable error = INIT.error
   @computed get hasEnoughQtum() {
     const totalQtum = _.sumBy(this.app.wallet.addresses, ({ qtum }) => qtum);
     return totalQtum >= maxTransactionFee;
