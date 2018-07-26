@@ -7,7 +7,7 @@ import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
-import BackButton from '../../../../components/BackButton';
+import BackButton from '../../components/BackButton';
 
 
 @withRouter

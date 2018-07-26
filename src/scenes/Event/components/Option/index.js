@@ -19,7 +19,7 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl } from 'react-intl';
 
-import Progress from '../../../../components/Progress';
+import Progress from '../Progress';
 import styles from './styles';
 
 

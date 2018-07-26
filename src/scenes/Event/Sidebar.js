@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
-import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 import { SidebarContainer } from './components';
 
 
