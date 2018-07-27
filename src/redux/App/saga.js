@@ -55,30 +55,6 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
-// Change wallet passphrase
-export function* changePassphraseRequestHandler() {
-  yield takeEvery(actions.CHANGE_PASSPHRASE, function* changePassphraseRequest(action) {
-    try {
-      const changePassphraseResult = yield axios.post(Routes.api.walletPassphraseChange, {
-        oldPassphrase: action.oldPassphrase,
-        newPassphrase: action.newPassphrase,
-      });
-      yield put({
-        type: actions.CHANGE_PASSPHRASE_RETURN,
-        changePassphraseResult,
-      });
-    } catch (error) {
-      yield put({
-        type: actions.CHANGE_PASSPHRASE_RETURN,
-        error: {
-          route: Routes.api.walletPassphraseChange,
-          message: error.message,
-        },
-      });
-    }
-  });
-}
-
 // Import the wallet
 export function* importWalletRequestHandler() {
   yield takeEvery(actions.IMPORT_WALLET, function* importWalletRequest() {
@@ -148,6 +124,5 @@ export default function* appSaga() {
     fork(getInsightTotalsRequestHandler),
     fork(validateAddressRequestHandler),
     fork(getTransactionCostRequestHandler),
-    fork(changePassphraseRequestHandler),
   ]);
 }

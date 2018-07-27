@@ -20,6 +20,7 @@ export default class {
   @observable passphrase = ''
   @observable walletUnlockedUntil = 0
   @observable unlockDialogOpen = false
+  @observable changePassphraseResult = undefined;
 
   history = {}
 
@@ -156,6 +157,23 @@ export default class {
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
+  }
+
+  @action
+  changePassphrase = async (oldPassphrase, newPassphrase) => {
+    try {
+      const changePassphraseResult = await axios.post(Routes.api.walletPassphraseChange, {
+        oldPassphrase,
+        newPassphrase,
+      });
+      runInAction(() => {
+        this.changePassphraseResult = changePassphraseResult;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.walletPassphraseChange);
       });
     }
   }

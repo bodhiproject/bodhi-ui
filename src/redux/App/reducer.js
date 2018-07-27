@@ -62,12 +62,6 @@ export default function appReducer(state = initState, action) {
     case actions.GET_INSIGHT_TOTALS_RETURN: {
       return state.set('averageBlockTime', action.timeBetweenBlocks);
     }
-    case actions.CHANGE_PASSPHRASE_RETURN: {
-      if (action.error) {
-        return state.set('changePassphraseResult', action.error);
-      }
-      return state.set('changePassphraseResult', action.changePassphraseResult);
-    }
     case actions.IMPORT_WALLET_RETURN: {
       if (action.error) return state.set('errorApp', action.error);
       return state;
@@ -104,9 +98,6 @@ export default function appReducer(state = initState, action) {
     }
     case actions.CLEAR_ENCRYPT_RESULT: {
       return state.set('encryptResult', undefined);
-    }
-    case actions.CLEAR_CHANGE_PASSPHRASE_RESULT: {
-      return state.set('changePassphraseResult', undefined);
     }
     default: {
       return state;

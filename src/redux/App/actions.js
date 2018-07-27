@@ -1,13 +1,5 @@
 
 const appActions = {
-  CHANGE_PASSPHRASE: 'CHANGE_PASSPHRASE',
-  CHANGE_PASSPHRASE_RETURN: 'CHANGE_PASSPHRASE_RETURN',
-  changePassphrase: (oldPassphrase, newPassphrase) => ({
-    type: appActions.CHANGE_PASSPHRASE,
-    oldPassphrase,
-    newPassphrase,
-  }),
-
   IMPORT_WALLET: 'IMPORT_WALLET',
   IMPORT_WALLET_RETURN: 'IMPORT_WALLET_RETURN',
   importWallet: (destination) => ({
@@ -77,11 +69,6 @@ const appActions = {
   CLEAR_TX_CONFIRM: 'CLEAR_TX_CONFIRM',
   clearTxConfirm: () => ({
     type: appActions.CLEAR_TX_CONFIRM,
-  }),
-
-  CLEAR_CHANGE_PASSPHRASE_RESULT: 'CLEAR_CHANGE_PASSPHRASE_RESULT',
-  clearChangePassphraseResult: () => ({
-    type: appActions.CLEAR_CHANGE_PASSPHRASE_RESULT,
   }),
 };
 export default appActions;

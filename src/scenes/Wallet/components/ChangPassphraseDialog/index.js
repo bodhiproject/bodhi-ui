@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   Dialog,
   DialogTitle,
@@ -13,8 +12,6 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
-
-import appActions from '../../../../redux/App/actions';
 
 const messages = defineMessages({
   oldPassphrase: {
@@ -30,16 +27,12 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(null, { withTheme: true })
-@connect(null, (dispatch) => ({
-  changePassphrase: (oldPassphrase, newPassphrase) => (dispatch(appActions.changePassphrase(oldPassphrase, newPassphrase))),
-}))
 export default class ChangePassphraseDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     dialogVisible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     closeEncryptDialog: PropTypes.func.isRequired,
-    changePassphrase: PropTypes.func.isRequired,
   };
 
   state = {
@@ -49,7 +42,7 @@ export default class ChangePassphraseDialog extends Component {
 
   submitPasswordChange = () => {
     const { oldPassphrase, newPassphrase } = this.state;
-    const { changePassphrase, closeEncryptDialog, onClose } = this.props;
+    const { closeEncryptDialog, onClose, store: { wallet: { changePassphrase } } } = this.props;
     changePassphrase(oldPassphrase, newPassphrase);
     closeEncryptDialog();
     onClose();
