@@ -3,12 +3,12 @@ import { Dialog, DialogTitle, DialogActions, Button } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
-import { inject, observe } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 
 @injectIntl
 @inject('store')
-@observe
+@observer
 export default class ChangePassphraseStatusDialog extends Component {
   render() {
     const { changePassphraseResult } = this.props.store.wallet;
@@ -24,7 +24,7 @@ export default class ChangePassphraseStatusDialog extends Component {
           )}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={() => this.store.wallet.changePassphraseResult = undefined}>
+          <Button onClick={() => this.props.store.wallet.changePassphraseResult = undefined}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
         </DialogActions>

@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
+import { inject, observer } from 'mobx-react';
 
 const messages = defineMessages({
   oldPassphrase: {
@@ -27,6 +28,8 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(null, { withTheme: true })
+@inject('store')
+@observer
 export default class ChangePassphraseDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
