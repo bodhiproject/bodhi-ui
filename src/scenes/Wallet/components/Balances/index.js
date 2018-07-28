@@ -28,6 +28,7 @@ import styles from './styles';
 import Config from '../../../../config/app';
 import DepositDialog from '../DepositDialog';
 import WithdrawDialog from '../WithdrawDialog';
+import WithdrawTxConfirmDialog from '../WithdrawTxConfirmDialog';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 
@@ -107,6 +108,7 @@ export default class MyBalances extends Component {
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
           />
+          <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id='txConfirmMsg.send' />
         </Grid>
       </Paper>
     );

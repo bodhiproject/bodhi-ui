@@ -1,31 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Dialog, DialogTitle, DialogActions, Button } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
-import appActions from '../../../../redux/App/actions';
+import { inject, observer } from 'mobx-react';
 
 
 @injectIntl
-@connect((state) => ({
-  changePassphraseResult: state.App.get('changePassphraseResult'),
-}), (dispatch) => ({
-  clearChangePassphraseResult: () => dispatch(appActions.clearChangePassphraseResult()),
-}))
+@inject('store')
+@observer
 export default class ChangePassphraseStatusDialog extends Component {
-  static propTypes = {
-    changePassphraseResult: PropTypes.object,
-    clearChangePassphraseResult: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    changePassphraseResult: undefined,
-  };
-
   render() {
-    const { changePassphraseResult } = this.props;
+    const { changePassphraseResult } = this.props.store.wallet;
     const isSuccessful = !_.isUndefined(changePassphraseResult) && _.has(changePassphraseResult, 'status');
 
     return (
@@ -38,7 +24,7 @@ export default class ChangePassphraseStatusDialog extends Component {
           )}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={this.props.clearChangePassphraseResult}>
+          <Button onClick={() => this.props.store.wallet.changePassphraseResult = undefined}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
         </DialogActions>
