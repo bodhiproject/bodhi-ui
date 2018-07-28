@@ -128,7 +128,7 @@ export default class WithdrawDialog extends Component {
     const { withdrawAmount, selectedToken } = wallet;
 
     let withdrawLimit = 0;
-    switch (selectedToken) {
+    switch (wallet.selectedToken) {
       case Token.QTUM: {
         withdrawLimit = _.sumBy(wallet.addresses, (w) => w.qtum ? w.qtum : 0);
         break;
@@ -138,7 +138,7 @@ export default class WithdrawDialog extends Component {
         break;
       }
       default: {
-        throw new Error(`Invalid selectedToken ${selectedToken}`);
+        throw new Error(`Invalid selectedToken ${wallet.selectedToken}`);
       }
     }
 

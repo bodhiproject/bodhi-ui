@@ -12,15 +12,30 @@ import { decimalToSatoshi } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 
 
+const INIT_VALUE = {
+  addresses: [],
+  lastUsedAddress: '',
+  walletEncrypted: false,
+  encryptResult: undefined,
+  passphrase: '',
+  walletUnlockedUntil: 0,
+  unlockDialogOpen: false,
+  selectedToken: Token.QTUM,
+  changePassphraseResult: undefined,
+  txConfirmDialogOpen: false,
+};
+
 export default class {
-  @observable addresses = []
-  @observable lastUsedAddress = ''
-  @observable walletEncrypted = false
-  @observable encryptResult = undefined
-  @observable passphrase = ''
-  @observable walletUnlockedUntil = 0
-  @observable unlockDialogOpen = false
-  @observable changePassphraseResult = undefined;
+  @observable addresses = INIT_VALUE.addresses;
+  @observable lastUsedAddress = INIT_VALUE.lastUsedAddress;
+  @observable walletEncrypted = INIT_VALUE.walletEncrypted;
+  @observable encryptResult = INIT_VALUE.encryptResult;
+  @observable passphrase = INIT_VALUE.passphrase;
+  @observable walletUnlockedUntil = INIT_VALUE.walletUnlockedUntil;
+  @observable unlockDialogOpen = INIT_VALUE.unlockDialogOpen;
+  @observable selectedToken = INIT_VALUE.selectedToken;
+  @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
+  @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
 
   history = {}
 
