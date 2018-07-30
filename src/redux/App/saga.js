@@ -55,29 +55,6 @@ export function* getInsightTotalsRequestHandler() {
   });
 }
 
-// Checks if the address is valid
-export function* validateAddressRequestHandler() {
-  yield takeEvery(actions.VALIDATE_ADDRESS, function* validateAddressRequest(action) {
-    try {
-      const { data: { result } } = yield axios.post(Routes.api.validateAddress, {
-        address: action.address,
-      });
-      yield put({
-        type: actions.VALIDATE_ADDRESS_RETURN,
-        value: result.isvalid,
-      });
-    } catch (err) {
-      yield put({
-        type: actions.VALIDATE_ADDRESS_RETURN,
-        error: {
-          route: Routes.api.validateAddress,
-          message: err.message,
-        },
-      });
-    }
-  });
-}
-
 // Get transaction cost
 export function* getTransactionCostRequestHandler() {
   yield takeEvery(actions.GET_TRANSACTION_COST, function* getTransactionCostRequest(action) {
@@ -104,7 +81,6 @@ export default function* appSaga() {
     fork(syncInfoRequestHandler),
     fork(onSyncInfoHandler),
     fork(getInsightTotalsRequestHandler),
-    fork(validateAddressRequestHandler),
     fork(getTransactionCostRequestHandler),
   ]);
 }

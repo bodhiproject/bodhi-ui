@@ -24,13 +24,6 @@ const appActions = {
     type: appActions.GET_INSIGHT_TOTALS,
   }),
 
-  VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
-  VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
-  validateAddress: (address) => ({
-    type: appActions.VALIDATE_ADDRESS,
-    address,
-  }),
-
   GET_TRANSACTION_COST: 'GET_TRANSACTION_COST',
   GET_TRANSACTION_COST_RETURN: 'GET_TRANSACTION_COST_RETURN',
   getTransactionCost: (txInfo) => ({

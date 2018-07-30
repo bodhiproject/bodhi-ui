@@ -145,19 +145,25 @@ export default class {
   @action
   prepareWithdraw = async (walletAddress) => {
     this.walletAddress = walletAddress;
-    const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-      type: TransactionType.TRANSFER,
-      token: this.selectedToken,
-      amount: Number(this.withdrawAmount),
-      optionIdx: undefined,
-      topicAddress: undefined,
-      oracleAddress: undefined,
-      senderAddress: walletAddress,
-    });
-    runInAction(() => {
-      this.txFees = result;
-      this.txConfirmDialogOpen = true;
-    });
+    try {
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+        type: TransactionType.TRANSFER,
+        token: this.selectedToken,
+        amount: Number(this.withdrawAmount),
+        optionIdx: undefined,
+        topicAddress: undefined,
+        oracleAddress: undefined,
+        senderAddress: walletAddress,
+      });
+      runInAction(() => {
+        this.txFees = result;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
   }
 
   @action
