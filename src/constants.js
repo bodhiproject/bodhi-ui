@@ -7,6 +7,7 @@ module.exports = {
     FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
+    FAVORITE: '/activities/favorite',
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
   },

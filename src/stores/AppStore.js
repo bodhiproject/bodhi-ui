@@ -4,10 +4,10 @@ import { RouterStore } from 'mobx-react-router';
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
-import QryptoStore from './QryptoStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
+import FavoriteStore from './activitiesStores/FavoriteStore';
 import BotCourtStore from './BotCourtStore';
 import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
@@ -55,7 +55,6 @@ class AppStore {
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
-    this.qrypto = new QryptoStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
@@ -79,6 +78,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
+        favorite: new FavoriteStore(this),
       };
       this.myWallet = {
         history: new WalletHistoryStore(this),

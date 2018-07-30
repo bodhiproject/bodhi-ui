@@ -74,6 +74,11 @@ const AppRouter = ({ url }) => {
         path={`${url}${Routes.ACTIVITY_HISTORY}`}
         component={asyncComponent(() => import('../Activities'))}
       />
+      <Route
+        exact
+        path={`${url}${Routes.FAVORITE}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
     </Switch>
   );
 };

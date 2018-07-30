@@ -19,6 +19,7 @@ export default class Withdraw extends Component {
     const { currentAddress } = this.props.store.wallet;
     const { list, loadMore, loadingMore, loading } = this.props.store.activities.withdraw;
     if (loading) return <Loading />;
+    console.log(list);
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
       <Fragment>
