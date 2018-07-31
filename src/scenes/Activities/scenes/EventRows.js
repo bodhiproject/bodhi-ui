@@ -42,6 +42,7 @@ class EventRow extends Component {
     }
 
     handleClick = (txid, topicAddress) => async (event) => { // eslint-disable-line
+      event.stopPropagation();
       if (topicAddress) {
         const { activities: { history: { getOracleAddress } } } = this.props.store;
         const { history } = this.props;
