@@ -11,14 +11,13 @@ import Loading from '../../../components/EventListLoading';
 @observer
 export default class Favorite extends Component {
   componentDidMount() {
-    this.props.store.activities.favorite.init();
+    this.props.store.activities.myFavorite.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loading } = this.props.store.activities.favorite;
+    const { list, loadMore, loadingMore, loading } = this.props.store.activities.myFavorite;
     if (loading) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
-    console.log(events);
     return (
       <Fragment>
         <InfiniteScroll

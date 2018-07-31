@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 import { OracleStatus, Routes, SortBy } from 'constants';
-import { queryAllVotes, queryAllTopics } from '../../network/graphQuery';
+import { queryAllTopics } from '../../network/graphQuery';
 import Topic from '../models/Topic';
 
 const INIT_VALUES = {
@@ -11,15 +11,13 @@ const INIT_VALUES = {
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
   limit: 16, // loading batch amount
-  currList: ['83549c7fe8f09ed2d2855032dbcafacbc457edf1'],
 };
 
 export default class {
-  @observable loaded = INIT_VALUES.list
+  @observable loaded = INIT_VALUES.loaded
   @observable list = INIT_VALUES.list
-  @observable currList = INIT_VALUES.currList
 
-  @observable hasMore = INIT_VALUES.list
+  @observable hasMore = INIT_VALUES.hasMore
   @observable loadingMore = INIT_VALUES.loadingMore
 
   constructor(app) {
@@ -38,15 +36,15 @@ export default class {
       }
     );
     reaction(
-      () => this.currList,
-      () => {
-        // this.list = this.fetchFav(Infinity, Infinity);
+      () => this.app.favorite.currList,
+      async () => {
+        this.list = await this.fetchFav(Infinity, Infinity);
       }
     );
   }
 
   @action
-  loadingMore = async () => {
+  loadMore = async () => {
     // TODO
   }
 
@@ -58,11 +56,11 @@ export default class {
   }
 
   fetchFav = async (skip = this.skip, limit = this.limit) => {
-    // if no favorite topic then return default one
-    if (this.currList.length === 0) return this.list;
+    if (this.app.favorite.currList.length === 0) return [];
+    console.log('fetchFav');
     // Get all topics at favorite topic address list "currList"
     const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-    const filters = this.currList.map(topicAddress => ({ address: topicAddress }));
+    const filters = this.app.favorite.currList.map(topicAddress => ({ address: topicAddress }));
     const topics = await queryAllTopics(filters, orderBy, limit, skip);
     const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
     runInAction(() => {

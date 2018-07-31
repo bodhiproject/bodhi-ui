@@ -7,13 +7,13 @@ import RefreshingStore from './RefreshingStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
-import FavoriteStore from './activitiesStores/FavoriteStore';
 import BotCourtStore from './BotCourtStore';
 import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
+import MyFavoriteStore from './activitiesStores/MyFavoriteStore';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
@@ -33,6 +33,7 @@ class AppStore {
   ui = {}
   wallet = {}
   transaction = {}
+  favorite = {}
   globalSnackbar = {}
   pendingTxsSnackbar = {}
   globalDialog = {}
@@ -57,6 +58,7 @@ class AppStore {
     this.ui = new UiStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
+    this.favorite = new FavoriteStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
@@ -78,7 +80,7 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
-        favorite: new FavoriteStore(this),
+        myFavorite: new MyFavoriteStore(this),
       };
       this.myWallet = {
         history: new WalletHistoryStore(this),
