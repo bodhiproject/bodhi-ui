@@ -15,7 +15,10 @@ export default class {
   @action
   setFavorite = (topicAddress) => {
     if (this.isInFavorite(topicAddress)) this.currList = this.currList.filter(x => x !== topicAddress);
-    else this.currList.push(topicAddress);
+    else {
+      this.currList.push(topicAddress);
+      this.currList.replace(this.currList);
+    }
   }
 
   @action

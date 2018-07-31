@@ -18,8 +18,10 @@ class FavoriteButton extends Component {
   }
 
   componentDidMount() {
+    // Oracle.topicAddress or Topic.address. May changes once Topic got renewal with MobX.
     const topicAddress = this.props.event.topicAddress || this.props.event.address;
-    this.setState({ isFavorite: this.props.store.favorite.isInFavorite(topicAddress) });
+    const updatedFavorite = this.props.store.favorite.isInFavorite(topicAddress);
+    this.setState({ isFavorite: updatedFavorite });
   }
 
   handleClick = () => (event) => { // eslint-disable-line
@@ -33,10 +35,12 @@ class FavoriteButton extends Component {
 
   render() {
     const { isFavorite } = this.state;
+    const { store, event } = this.props;
+    const topicAddress = event.topicAddress || event.address;
 
     return (
       <Fragment>
-        <span onClick={this.handleClick()}>{isFavorite ? <Favorite color='error' /> : <FavoriteBorder />}</span>
+        <span onClick={this.handleClick()}>{store.favorite.isInFavorite(topicAddress) ? <Favorite color='error' /> : <FavoriteBorder />}</span>
       </Fragment>
     );
   }
