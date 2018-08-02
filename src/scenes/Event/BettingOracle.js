@@ -9,16 +9,16 @@ import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './co
 import { Sidebar } from './Sidebar';
 
 
-const BettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
+const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
       <Options oracle={oracle} />
       {oracle.unconfirmed && <EventUnconfirmedNote />}
       {!oracle.unconfirmed && (
         <Fragment>
-          {!oracle.isArchived && <BetButton onClick={oraclePage.prepareBet} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />}
+          {!oracle.isArchived && <BetButton onClick={eventPage.prepareBet} disabled={eventPage.isPending || eventPage.buttonDisabled} />}
           <Transactions type='oracle' options={oracle.options} />
         </Fragment>
       )}

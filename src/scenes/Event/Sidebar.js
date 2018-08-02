@@ -9,7 +9,7 @@ import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../he
 import { SidebarContainer } from './components';
 
 
-export const Sidebar = inject('store')(observer(({ store: { oraclePage: { oracle } } }) => (
+export const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
   <SidebarContainer>
     <EventInfo>
       <EndDate oracle={oracle} />

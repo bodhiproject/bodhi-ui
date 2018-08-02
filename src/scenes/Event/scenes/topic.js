@@ -389,14 +389,18 @@ export default class TopicPage extends Component {
   getLocalizedTypeString = (type) => {
     switch (type) {
       case TransactionType.WITHDRAW_ESCROW: {
-        return (<FormattedMessage id="str.escrow" defaultMessage="Escrow">
-          {(txt) => i18nToUpperCase(txt)}
-        </FormattedMessage>);
+        return (
+          <FormattedMessage id="str.escrow" defaultMessage="Escrow">
+            {(txt) => i18nToUpperCase(txt)}
+          </FormattedMessage>
+        );
       }
       case TransactionType.WITHDRAW: {
-        return (<FormattedMessage id="str.winnings" defaultMessage="Winnings">
-          {(txt) => i18nToUpperCase(txt)}
-        </FormattedMessage>);
+        return (
+          <FormattedMessage id="str.winnings" defaultMessage="Winnings">
+            {(txt) => i18nToUpperCase(txt)}
+          </FormattedMessage>
+        );
       }
       default: {
         return '';

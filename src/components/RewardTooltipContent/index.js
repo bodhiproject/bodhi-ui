@@ -7,6 +7,7 @@ import _ from 'lodash';
 import styles from './styles';
 
 const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, qtumWon, botQtumWon, classes }) => {
+  console.log(token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, qtumWon, botQtumWon, classes);
   function atMostEightDigits(num) {
     let numToString = _.toString(num);
     const numArr = numToString.split('.');

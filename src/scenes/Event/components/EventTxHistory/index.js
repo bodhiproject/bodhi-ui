@@ -26,8 +26,8 @@ export default class EventTxHistory extends Component {
   };
 
   render() {
-    const { classes, options, type, store: { oraclePage } } = this.props;
-    const { transactions } = type === 'oracle' ? oraclePage : this.props;
+    const { classes, options, store: { eventPage } } = this.props;
+    const { transactions } = eventPage;
     return (
       <div className={classes.detailTxWrapper}>
         <Typography variant="headline" className={classes.detailTxTitle}>

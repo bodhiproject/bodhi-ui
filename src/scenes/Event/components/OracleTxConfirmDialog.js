@@ -4,17 +4,17 @@ import { injectIntl } from 'react-intl';
 import { TxConfirmDialog } from 'components';
 
 
-export const OracleTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { oraclePage }, intl, id }) => {
-  const { oracle } = oraclePage;
+export const OracleTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { eventPage }, intl, id }) => {
+  const { oracle } = eventPage;
   return (
     <TxConfirmDialog
-      onClose={() => oraclePage.txConfirmDialogOpen = false}
-      onConfirm={oraclePage.confirm}
+      onClose={() => eventPage.txConfirmDialogOpen = false}
+      onConfirm={eventPage.confirm}
       txFees={oracle.txFees}
-      open={oraclePage.txConfirmDialogOpen}
+      open={eventPage.txConfirmDialogOpen}
       txToken={oracle.token}
-      txAmount={oraclePage.amount}
-      txDesc={intl.formatMessage({ id }, { option: oraclePage.selectedOption.name })}
+      txAmount={eventPage.amount}
+      txDesc={intl.formatMessage({ id }, { option: eventPage.selectedOption.name })}
     />
   );
 })));

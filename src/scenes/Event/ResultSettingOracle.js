@@ -9,14 +9,14 @@ import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './co
 import { Sidebar } from './Sidebar';
 
 
-const ResultSettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
+const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.unconfirmed && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
-      <SetResultButton onClick={oraclePage.prepareSetResult} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
+      <SetResultButton onClick={eventPage.prepareSetResult} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       <Transactions type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />

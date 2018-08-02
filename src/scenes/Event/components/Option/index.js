@@ -52,8 +52,8 @@ export default class Option extends Component {
 
     const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token } = option;
-    const { oraclePage, wallet } = store;
-    const { selectedOptionIdx } = oraclePage;
+    const { eventPage, wallet } = store;
+    const { selectedOptionIdx } = eventPage;
 
     return (
       <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
@@ -90,9 +90,9 @@ export default class Option extends Component {
                   token={token}
                   disabled={amountInputDisabled}
                   classes={classes}
-                  value={oraclePage.amount}
-                  onChange={({ target }) => oraclePage.amount = target.value}
-                  onBlur={oraclePage.fixAmount}
+                  value={eventPage.amount}
+                  onChange={({ target }) => eventPage.amount = target.value}
+                  onBlur={eventPage.fixAmount}
                 />
                 <AddressSelect
                   wallet={wallet}
