@@ -623,7 +623,7 @@ export default class EventStore {
 
     // Get all winning votes for this Topic
     const voteFilters = [];
-    let escrowClaim = 0;
+    let escrowClaim = 0; // eslint-disable-line
     _.each(wallet.addresses, (item) => {
       voteFilters.push({
         topicAddress: topic.address,

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import styled, { css } from 'styled-components';
-import _ from 'lodash';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Paper } from '@material-ui/core';

@@ -1,4 +1,3 @@
-import { computed } from 'mobx';
 import { defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { TransactionType, TransactionStatus, Phases } from 'constants';

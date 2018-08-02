@@ -10,7 +10,7 @@ import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
-const WithdrawTo = observer(({ store: { eventPage, eventPage: { topic, withdrawableAddresses } } }) => (
+const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => (
   <Container>
     <WalletIcon />
     <WithdrawToLabel />

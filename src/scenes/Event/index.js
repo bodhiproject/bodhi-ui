@@ -17,7 +17,6 @@ import BackButton from '../../components/BackButton';
 export default class EventPage extends Component {
   componentDidMount() {
     const type = this.props.match.path === '/topic/:address' ? 'topic' : 'oracle';
-    console.log('PROPS: ', this.props);
     this.props.store.eventPage.init({ ...this.props.match.params, type });
   }
 
