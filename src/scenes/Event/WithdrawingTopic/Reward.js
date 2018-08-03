@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { RewardTooltipContent } from 'components';
@@ -27,31 +27,34 @@ const Reward = ({ eventPage, topic }) => {
   const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
   const totalBotWinningBets = topic.botAmount[topic.resultIdx];
   const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
-  return (
-    <Container>
-      <RewardIcon />
-      <RewardTitle />
-      <Row>
-        <QtumUsed
-          qtumWinnings={eventPage.qtumWinnings}
-          qtumWon={qtumWon}
-          botQtumWon={botQtumWon}
-          resultTokenAmount={resultBetAmount}
-          totalTokenAmount={totalBetAmount}
-          tokenWinnings={qtumWinnings}
-          qtumReturnRate={qtumReturnRate}
-        />
-        <Separator />
-        <BotUsed
-          botWinnings={eventPage.botWinnings}
-          resultTokenAmount={resultVoteAmount}
-          totalTokenAmount={totalVoteAmount}
-          tokenWinnings={botWinnings}
-          botReturnRate={botReturnRate}
-        />
-      </Row>
-    </Container>
-  );
+  if (botQtumWon > 0 || qtumWon > 0) {
+    return (
+      <Container>
+        <RewardIcon />
+        <RewardTitle />
+        <Row>
+          <QtumUsed
+            qtumWinnings={eventPage.qtumWinnings}
+            qtumWon={qtumWon}
+            botQtumWon={botQtumWon}
+            resultTokenAmount={resultBetAmount}
+            totalTokenAmount={totalBetAmount}
+            tokenWinnings={qtumWinnings}
+            qtumReturnRate={qtumReturnRate}
+          />
+          <Separator />
+          <BotUsed
+            botWinnings={eventPage.botWinnings}
+            resultTokenAmount={resultVoteAmount}
+            totalTokenAmount={totalVoteAmount}
+            tokenWinnings={botWinnings}
+            botReturnRate={botReturnRate}
+          />
+        </Row>
+      </Container>
+    );
+  }
+  return <Fragment />;
 };
 
 const RewardIcon = () => <Icon type='token' />;

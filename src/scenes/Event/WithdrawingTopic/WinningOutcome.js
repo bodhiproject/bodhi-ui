@@ -10,11 +10,11 @@ import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 const WinningOutcome = injectIntl(({ eventPage, intl }) => (
   <Container>
     <WinningIcon />
-    <WinningReward />
-    <OutcomeTitle>{eventPage.selectedOption}</OutcomeTitle>
+    <WinningOutcomeTitle />
+    <OutcomeOption>{eventPage.selectedOption}</OutcomeOption>
     {(eventPage.totalBetAmount || eventPage.totalVoteAmount) ? (
       <Typography variant="caption">
-        {intl.formatMessage({ id: 'str.winningOutcome' }, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
+        {intl.formatMessage({ id: 'withdrawDetail.youBetYouVote' }, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
       </Typography>
     ) : (
       <Typography variant="caption">
@@ -29,19 +29,19 @@ const WinningOutcome = injectIntl(({ eventPage, intl }) => (
 
 const WinningIcon = () => <Icon type='reward' />;
 
-const WinningReward = () => (
+const WinningOutcomeTitle = () => (
   <Label variant="body2">
-    <FormattedMessage id="withdrawDetail.reward" defaultMessage="REWARD">
+    <FormattedMessage id="str.winningOutcome" defaultMessage="Wining Outcome">
       {(txt) => i18nToUpperCase(txt)}
     </FormattedMessage>
   </Label>
 );
 
-const OutcomeTitle = styled(Typography)`
-  color: ${props => props.theme.palette.primary.main};
-  font-size: ${props => props.theme.sizes.font.titleSm};
-  font-weight: ${props => props.theme.typography.fontWeightBold};
-  margin-bottom: ${props => props.theme.padding.unit.px};
+const OutcomeOption = styled(Typography)`
+  color: ${props => props.theme.palette.primary.main} !important;
+  font-size: ${props => props.theme.sizes.font.titleSm} !important;
+  font-weight: ${props => props.theme.typography.fontWeightBold} !important;
+  margin-bottom: ${props => props.theme.padding.unit.px} !important;
 `;
 
 export default WinningOutcome;

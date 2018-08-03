@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { TransactionStatus, TransactionType, Token } from 'constants';
@@ -10,13 +10,16 @@ import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
-const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => (
-  <Container>
-    <WalletIcon />
-    <WithdrawToLabel />
-    <WithdrawList withdrawableAddresses={withdrawableAddresses} />
-  </Container>
-));
+const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => {
+  if (withdrawableAddresses.length > 0) {
+    return (<Container>
+      <WalletIcon />
+      <WithdrawToLabel />
+      <WithdrawList withdrawableAddresses={withdrawableAddresses} />
+    </Container>);
+  }
+  return <Fragment />;
+});
 
 const WalletIcon = () => <Icon type='wallet' />;
 
@@ -60,33 +63,6 @@ const TableHeader = () => (
 const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, botWon, qtumWon }, store }) => {
   const { eventPage } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig({ type, address }, eventPage.withdrawableAddresses, eventPage.transactions, eventPage.address);
-  // TODO: the below commented out code is how this should be done
-  // const { transactions, withdrawableAddresses, address: topicAddress } = eventPage;
-  // // Already have a pending tx for this Topic
-  // const isPending = _.filter(transactions, {
-  //   type,
-  //   status: TransactionStatus.PENDING,
-  //   topicAddress: address,
-  //   senderAddress: address,
-  // }).length > 0;
-  // console.log('IS PENDING: ', isPending);
-
-  // // Already withdrawn with this address
-  // const alreadyWithdrawn = _.filter(transactions, {
-  //   type,
-  //   status: TransactionStatus.SUCCESS,
-  //   topicAddress,
-  //   senderAddress: address,
-  // }).length > 0;
-  // console.log('ALREADY WITHDRAWN: ', alreadyWithdrawn);
-
-  // const canWithdraw = !_.isEmpty(_.find(withdrawableAddresses, { type, address }));
-  // console.log('CAN WITHDRAW: ', canWithdraw);
-  // const disabled = !canWithdraw || isPending || alreadyWithdrawn;
-  // const id = isPending ? 'str.pendingTransactionDisabledMsg' : 'withdrawDetail.alreadyWithdrawn';
-  // const message = isPending ? 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.' : 'You have already withdrawn with this address.';
-  // const warningType = isPending ? 'pending' : 'withdrawn';
-
   const botWonText = botWon ? `${botWon} ${Token.BOT}` : '';
   const qtumWonText = qtumWon ? `${qtumWon} ${Token.QTUM}` : '';
 
