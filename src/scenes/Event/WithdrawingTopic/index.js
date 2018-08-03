@@ -7,7 +7,7 @@ import { Paper } from '@material-ui/core';
 import Transactions from '../components/EventTxHistory';
 import ResultHistory from '../components/EventTxHistory/resultHistory';
 import { Row, Content, Title } from '../components';
-import { Sidebar } from '../Sidebar';
+import { Sidebar } from './Sidebar';
 import WinningOutcome from './WinningOutcome';
 import WithdrawTo from './WithdrawTo';
 import Reward from './Reward';
@@ -32,7 +32,7 @@ const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, esc
       <ResultHistory oracles={eventPage.oracles} />
       <Transactions type='oracle' options={topic.options} />
     </Content>
-    <Sidebar />
+    <Sidebar topic={topic} />
   </Row>
 ));
 

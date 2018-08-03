@@ -14,7 +14,7 @@ const WinningOutcome = injectIntl(({ eventPage, intl }) => (
     <OutcomeTitle>{eventPage.selectedOption}</OutcomeTitle>
     {(eventPage.totalBetAmount || eventPage.totalVoteAmount) ? (
       <Typography variant="caption">
-        {intl.formatMessage({ id: 'withdrawDetail.youBetYouVote' }, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
+        {intl.formatMessage({ id: 'str.winningOutcome' }, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
       </Typography>
     ) : (
       <Typography variant="caption">
