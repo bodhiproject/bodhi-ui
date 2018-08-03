@@ -79,7 +79,7 @@ const QtumUsed = injectIntl(({ qtumWinnings, qtumReturnRate, intl, ...props }) =
       <Row>
         +{qtumWinnings} <Token>QTUM</Token>
         <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
-          <Icon type='question' />
+          <i className="icon iconfont icon-ic_question" />
         </Tooltip>
       </Row>
     </Typography>
@@ -95,7 +95,8 @@ const BotUsed = injectIntl(({ botWinnings, botReturnRate, intl, ...props }) => (
       <Row>
         +{botWinnings} <Token>BOT</Token>
         <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
-          <Icon type='question' />
+          {/* <Icon type='question' /> not working with Icon, can investigate later  */}
+          <i className="icon iconfont icon-ic_question" />
         </Tooltip>
       </Row>
     </Typography>
