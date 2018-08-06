@@ -537,7 +537,7 @@ export default class TopicPage extends Component {
         label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="Prediction Fund" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: `${qtumTotal} QTUM`,
       }, {
-        label: <FormattedMessage id="eventInfo.voteVolumn" defaultMessage="Votting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
+        label: <FormattedMessage id="eventInfo.voteVolume" defaultMessage="Voting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
         content: `${botTotal} BOT`,
       }, {
         label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,

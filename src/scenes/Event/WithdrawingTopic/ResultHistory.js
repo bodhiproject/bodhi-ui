@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { Token } from 'constants';
 import { Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+
 import { getShortLocalDateTimeString, i18nToUpperCase, localizeInvalidOption } from '../../../helpers';
 
 const ResultHistory = injectIntl(({ intl, oracles }) => {
@@ -48,7 +50,7 @@ const ResultHistory = injectIntl(({ intl, oracles }) => {
               return (
                 <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                   <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
-                  <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
+                  <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
                   <TableCell padding="dense">
                     {index !== sortedOracles.length - 1 && index !== 0
                       ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx]}`
@@ -62,13 +64,20 @@ const ResultHistory = injectIntl(({ intl, oracles }) => {
           </TableBody>
         </Table>
       ) : (
-        <Typography variant="body1">
-          <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-        </Typography>
+        <Fragment />
       )}
     </DetailTxWrapper>
   );
 });
+
+const getTypeText = (oracle, index) => {
+  if (oracle.token === Token.QTUM) {
+    return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
+  } else if (index === 1) {
+    return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
+  }
+  return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
+};
 
 const DetailTxTitle = styled(Typography).attrs({
   variant: 'headline',

@@ -60,14 +60,14 @@ const TableHeader = () => (
 );
 
 
-const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, botWon, qtumWon }, store }) => {
+const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, botWon, qtumWon }, store, key }) => {
   const { eventPage } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig({ type, address }, eventPage.withdrawableAddresses, eventPage.transactions, eventPage.address);
   const botWonText = botWon ? `${botWon} ${Token.BOT}` : '';
   const qtumWonText = qtumWon ? `${qtumWon} ${Token.QTUM}` : '';
 
   return (
-    <TableRow>
+    <TableRow key={key}>
       <TableCell padding="dense">
         <Address>{address}</Address>
         {disabled && <Warning id={id} message={message} className={warningType} />}

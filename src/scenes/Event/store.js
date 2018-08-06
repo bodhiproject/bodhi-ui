@@ -123,10 +123,10 @@ export default class EventStore {
       const { bets, votes } = await this.getBetAndVoteBalances();
       const withdrawableAddresses = await this.getWithdrawableAddresses();
       const oracles = await this.getAllOracles(address);
-      // console.log('ADDRESSES: ', withdrawableAddresses);
       runInAction(() => {
-        // this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
         this.topics = topics.map(topic => new Topic(topic, this.app));
+        const { 0: t } = this.topics;
+        console.log('t', t);
         this.transactions = transactions.map(tx => new Transaction(tx, this.app));
         this.oracles = oracles;
         this.betBalances = bets;

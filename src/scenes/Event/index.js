@@ -20,10 +20,6 @@ export default class EventPage extends Component {
     this.props.store.eventPage.init({ ...this.props.match.params, type });
   }
 
-  componentWillUnmount() {
-    // this.props.store.eventPage.reset();
-  }
-
   render() {
     const { eventPage } = this.props.store;
     if (eventPage.loading) return <Loading text='Loading Oracle...' />;

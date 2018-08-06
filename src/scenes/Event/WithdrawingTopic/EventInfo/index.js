@@ -17,9 +17,7 @@ export default class EventInfo extends PureComponent {
   render() {
     const { classes, infoObjs } = this.props;
 
-    if (!infoObjs || infoObjs.length === 0) {
-      return <Fragment></Fragment>;
-    }
+    if (_.isEmpty(infoObjs)) return <Fragment></Fragment>;
 
     return (
       <div className={classes.eventInfoWrapper}>

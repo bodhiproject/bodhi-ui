@@ -9,7 +9,7 @@ import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 
-// TODO: fix the tooltip next to QtumUsed and BotUsed
+// TODO: fix the tooltip next to QtumReturn and BotUsed
 const Reward = ({ eventPage, topic }) => {
   const { qtumWinnings, botWinnings, betBalances, voteBalances } = eventPage;
   const totalBetAmount = _.sum(betBalances);
@@ -33,7 +33,7 @@ const Reward = ({ eventPage, topic }) => {
         <RewardIcon />
         <RewardTitle />
         <Row>
-          <QtumUsed
+          <QtumReturn
             qtumWinnings={eventPage.qtumWinnings}
             qtumWon={qtumWon}
             botQtumWon={botQtumWon}
@@ -76,7 +76,7 @@ const Separator = styled.div`
   margin-right: ${props => props.theme.padding.md.px};
 `;
 
-const QtumUsed = injectIntl(({ qtumWinnings, qtumReturnRate, intl, ...props }) => (
+const QtumReturn = injectIntl(({ qtumWinnings, qtumReturnRate, intl, ...props }) => (
   <Wrapper>
     <Typography variant="display1">
       <Row>
@@ -98,7 +98,6 @@ const BotUsed = injectIntl(({ botWinnings, botReturnRate, intl, ...props }) => (
       <Row>
         +{botWinnings} <Token>BOT</Token>
         <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
-          {/* <Icon type='question' /> not working with Icon, can investigate later  */}
           <i className="icon iconfont icon-ic_question" />
         </Tooltip>
       </Row>

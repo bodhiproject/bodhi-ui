@@ -19,7 +19,7 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class EventTxHistory extends Component {
+export default class TransactionHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     options: PropTypes.array.isRequired,
