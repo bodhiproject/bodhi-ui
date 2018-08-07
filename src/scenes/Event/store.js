@@ -60,7 +60,7 @@ export default class EventStore {
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
-  @observable escrowClaim = INI.escrowClaim
+  @observable escrowClaim = INIT.escrowClaim
   // topic
   @observable topics = []
   withdrawableAddresses = []
