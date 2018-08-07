@@ -28,14 +28,14 @@ export default class Oracle {
   amounts = [] // QTUM or BOT amounts array for each result index.
   blockNum // Block number when this Oracle was created.
   consensusThreshold = '' // Amount needed to validate a result.
-  startTime = '' // Depends on the type of Oracle. CentralizedOracle = betting start time. DecentralizedOracle = arbitration start time.
-  endTime = '' // Depends on the type of Oracle. CentralizedOracle = betting end time. DecentralizedOracle = arbitration end time.
   name = '' // Name of the event.
   optionIdxs = [] // Allowed options to vote on. CentralizedOracle will have all the options. DecentralizedOracle will be missing the index of the previous rounds result.
   options = [] // Option names.
   resultIdx // Result index of current result.
-  resultSetStartTime = '' // Only for CentralizedOracle. Result setting start time.
-  resultSetEndTime = '' // Only for CentralizedOracle. Result setting end time.
+  startTime = '' // CentralizedOracle = betting start time. DecentralizedOracle = arbitration start time. UNIX timestamp.
+  endTime = '' // CentralizedOracle = betting end time. DecentralizedOracle = arbitration end time. UNIX timestamp.
+  resultSetStartTime = '' // Only for CentralizedOracle. UNIX timestamp result setting start time.
+  resultSetEndTime = '' // Only for CentralizedOracle. UNIX timestamp result setting end time.
   resultSetterAddress = '' // Result setter's encoded hex address. Qtum address encoded to hex.
   resultSetterQAddress = '' // Result setters Qtum address.
   transactions = [] // Transaction objects tied to this Event.
