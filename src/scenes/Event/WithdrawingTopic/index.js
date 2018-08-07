@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Paper } from '@material-ui/core';
 import TransactionHistory from '../components/TransactionHistory';
-import ResultHistory from '../components/EventTxHistory/resultHistory';
+import ResultHistory from '../components/ResultHistory';
 import { Row, Content, Title } from '../components';
 import { Sidebar } from './Sidebar';
 import WinningOutcome from './WinningOutcome';
