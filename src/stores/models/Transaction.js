@@ -2,8 +2,15 @@ import _ from 'lodash';
 
 import { Token, TransactionType } from 'constants';
 import { gasToQtum, satoshiToDecimal } from '../../helpers/utility';
+
 const { APPROVE_CREATE_EVENT, APPROVE_SET_RESULT, APPROVE_VOTE, BET, VOTE, SET_RESULT, FINALIZE_RESULT } = TransactionType;
 
+
+/*
+* Model for Transactions.
+* Represents pending actions to contracts that are awaiting acceptance by the blockchain.
+* Transactions are currently local to each user's machine.
+*/
 export default class Transaction {
   type = '' // One of: [CREATEEVENT, APPROVECREATEEVENT, BET, SETRESULT, APPROVESETRESULT, VOTE, APPROVEVOTE, FINALIZERESULT, WITHDRAW, WITHDRAWESCROW, TRANSFER]
   txid = '' // Transaction ID assigned by the blockchain.

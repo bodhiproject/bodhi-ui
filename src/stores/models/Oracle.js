@@ -19,6 +19,11 @@ const messages = defineMessages({
 });
 
 
+/*
+* Model for CentralizedOracles and DecentralizedOracles.
+* Oracles are created to handle the betting and voting rounds in a TopicEvent.
+* But, all the actual funds are stored in a TopicEvent.
+*/
 export default class Oracle {
   address = '' // Contract address.
   topicAddress = '' // TopicEvent address that created this Oracle.

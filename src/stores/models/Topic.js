@@ -9,6 +9,11 @@ const messages = defineMessages({
 });
 
 
+/*
+* Model for TopicEvents.
+* TopicEvents can be thought of as the primary point in an Event. Oracles are stored within TopicEvents.
+* All funds bet and voted are stored in a TopicEvent contract, which is why withdrawing takes place here.
+*/
 export default class Topic {
   address = '' // Contract address.
   txid = '' // Transaction ID that this Topic was created.
