@@ -6,3 +6,5 @@ export * from './Title';
 export * from './OracleTxConfirmDialog';
 export * from './Icon';
 export { default as Option } from './Option';
+export { default as TransactionHistory } from './TransactionHistory';
+export { default as ResultHistory } from './ResultHistory';

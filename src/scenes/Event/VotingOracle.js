@@ -4,9 +4,8 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import Transactions from './components/EventTxHistory';
-import ResultHistory from './components/EventTxHistory/resultHistory';
-import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
+
+import { Row, Content, Title, Button, Option, ResultHistory, TransactionHistory, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
 
 
@@ -14,14 +13,16 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
+      {!oracle.unconfirmed && !oracle.isArchived && (
+        <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
+      )}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
       {!oracle.isArchived && (
         <VoteButton onClick={eventPage.prepareVote} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       )}
       <ResultHistory oracles={eventPage.oracles} />
-      <Transactions type='oracle' options={oracle.options} />
+      <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />
@@ -44,6 +45,8 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const VoteButton = props => <Button {...props}><FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" /></Button>;
+const VoteButton = props => (
+  <Button {...props}><FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" /></Button>
+);
 
 export default injectIntl(inject('store')(VotingOracle));
