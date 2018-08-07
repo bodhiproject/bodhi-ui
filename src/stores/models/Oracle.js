@@ -23,7 +23,7 @@ export default class Oracle {
   address = '' // Contract address.
   topicAddress = '' // TopicEvent address that created this Oracle.
   txid = '' // Transaction ID that this Oracle was created.
-  status = '' // Stage the Oracle is in. Can be one of: [BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING]
+  status = '' // Stage the Oracle is in. Can be one of: [CREATED, VOTING, WAITRESULT, OPENRESULTSET, PENDING, WITHDRAW]
   token = '' // BOT or QTUM
   amounts = [] // QTUM or BOT amounts array for each result index.
   blockNum // Block number when this Oracle was created.
