@@ -56,8 +56,4 @@ export default class Topic {
     this.buttonText = messages.withdraw;
     this.unconfirmed = this.isPending;
   }
-
-  withdraw() {
-    /* TODO */
-  }
 }
