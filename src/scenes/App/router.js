@@ -41,11 +41,6 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}/old-topic/:address`}
-        component={asyncComponent(() => import('../Event/scenes/topic'))}
-      />
-      <Route
-        exact
         path={`${url}${Routes.WALLET}`}
         component={asyncComponent(() => import('../Wallet'))}
       />
