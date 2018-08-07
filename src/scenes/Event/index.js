@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { TxSentDialog, Loading as _Loading } from 'components';
+
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';

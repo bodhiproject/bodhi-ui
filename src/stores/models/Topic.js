@@ -8,22 +8,29 @@ const messages = defineMessages({
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
 });
 
+
+/*
+* Model for TopicEvents.
+* TopicEvents can be thought of as the primary point in an Event. Oracles are stored within TopicEvents.
+* All funds bet and voted are stored in a TopicEvent contract, which is why withdrawing takes place here.
+*/
 export default class Topic {
-  phase = Phases.WITHDRAWING
-  status = ''
-  txid = ''
-  address = ''
-  blockNum
-  creatorAddress = ''
-  escrowAmount = ''
-  name = ''
-  options = []
-  oracles = []
-  botAmount = []
-  qtumAmount = []
-  resultIdx
-  transactions = []
-  version
+  address = '' // Contract address.
+  txid = '' // Transaction ID that this Topic was created.
+  phase = Phases.WITHDRAWING // Stage the Topic is in. For the UI, users will only see the Withdrawing phase.
+  status = '' // Status of the Topic. Can be one of: [CREATED, WITHDRAW]
+  blockNum // Block number when this Topic was created.
+  creatorAddress = '' // Creator address in Qtum format.
+  escrowAmount = '' // Escrow amount needed to create the Event.
+  name = '' // Name of the Event.
+  options = [] // Option names.
+  oracles = [] // Oracle objects for the Event.
+  botAmount = [] // Total amount of BOT voted in all the rounds.
+  qtumAmount = [] // Total amount of QTUM voted in all the rounds.
+  resultIdx // Result index of the current result.
+  transactions = [] // Transaction objects tied to this Event.
+  version // Current version of the contract. To manage deprecations later.
+
   // for UI
   isPending = false // change to this instead of 'unconfirmed'
 
@@ -48,9 +55,5 @@ export default class Topic {
     this.isUpcoming = false;
     this.buttonText = messages.withdraw;
     this.unconfirmed = this.isPending;
-  }
-
-  withdraw() {
-    /* TODO */
   }
 }

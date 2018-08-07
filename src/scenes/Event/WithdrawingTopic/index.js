@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Paper } from '@material-ui/core';
-import TransactionHistory from '../components/TransactionHistory';
-import ResultHistory from '../components/EventTxHistory/resultHistory';
-import { Row, Content, Title } from '../components';
+
+import { Row, Content, Title, ResultHistory, TransactionHistory } from '../components';
 import { Sidebar } from './Sidebar';
 import WinningOutcome from './WinningOutcome';
 import WithdrawTo from './WithdrawTo';

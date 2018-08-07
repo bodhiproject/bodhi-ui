@@ -19,32 +19,38 @@ const messages = defineMessages({
 });
 
 
+/*
+* Model for CentralizedOracles and DecentralizedOracles.
+* Oracles are created to handle the betting and voting rounds in a TopicEvent.
+* But, all the actual funds are stored in a TopicEvent.
+*/
 export default class Oracle {
-  status = ''
-  txid = ''
-  amounts = []
-  blockNum
-  consensusThreshold = ''
-  startTime = ''
-  endTime = ''
-  name = ''
-  optionIdxs = []
-  options = []
-  resultIdx
-  resultSetStartTime = ''
-  resultSetEndTime = ''
-  resultSetterAddress = ''
-  resultSetterQAddress = ''
-  transactions = []
-  version
-  // for UI
-  buttonText = ''
-  amountLabel = ''
-  url = ''
+  address = '' // Contract address.
+  topicAddress = '' // TopicEvent address that created this Oracle.
+  txid = '' // Transaction ID that this Oracle was created.
+  status = '' // Stage the Oracle is in. Can be one of: [CREATED, VOTING, WAITRESULT, OPENRESULTSET, PENDING, WITHDRAW]
   token = '' // BOT or QTUM
-  address = ''
-  topicAddress = ''
-  @observable txFees = []
+  amounts = [] // QTUM or BOT amounts array for each result index.
+  blockNum // Block number when this Oracle was created.
+  consensusThreshold = '' // Amount needed to validate a result.
+  name = '' // Name of the event.
+  optionIdxs = [] // Allowed options to vote on. CentralizedOracle will have all the options. DecentralizedOracle will be missing the index of the previous rounds result.
+  options = [] // Option names.
+  resultIdx // Result index of current result.
+  startTime = '' // CentralizedOracle = betting start time. DecentralizedOracle = arbitration start time. UNIX timestamp.
+  endTime = '' // CentralizedOracle = betting end time. DecentralizedOracle = arbitration end time. UNIX timestamp.
+  resultSetStartTime = '' // Only for CentralizedOracle. UNIX timestamp result setting start time.
+  resultSetEndTime = '' // Only for CentralizedOracle. UNIX timestamp result setting end time.
+  resultSetterAddress = '' // Result setter's encoded hex address. Qtum address encoded to hex.
+  resultSetterQAddress = '' // Result setters Qtum address.
+  transactions = [] // Transaction objects tied to this Event.
+  version // Current version of the contract. To manage deprecations later.
+
+  // for UI
+  buttonText = '' // Text to show on the CTA button.
+  amountLabel = '' // Shows the amount raised on the Event card.
+  url = '' // Internal URL for routing within UI.
+  @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
   @computed get phase() { // BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING
     const { token, status } = this;
     const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
@@ -54,17 +60,17 @@ export default class Oracle {
     if (BOT && status === 'WAITRESULT') return FINALIZING;
     return WITHDRAWING; // only for topic
   }
-  @computed get isOpenResultSetting() {
+  @computed get isOpenResultSetting() { // OpenResultSetting means the Result Setter did not set the result in time so anyone can set the result now.
     return this.token === 'QTUM' && this.status === 'OPENRESULTSET';
   }
-  @computed get isArchived() {
+  @computed get isArchived() { // Archived Oracles mean their purpose has been served. eg. Betting Oracle finished betting round.
     const { token, status } = this;
     const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
     if (QTUM && ['PENDING', 'WITHDRAW'].includes(status)) return true; // BETTING
     if (BOT && ['PENDING', 'WITHDRAW'].includes(status)) return true; // VOTING
     return false;
   }
-  @computed get isPending() {
+  @computed get isPending() { // Pending if there is a tx waiting to be accepted by the blockchain. Users can only do one tx at a time.
     const { token, status, transactions } = this;
     const [QTUM] = [token === 'QTUM'];
     const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
@@ -79,10 +85,10 @@ export default class Oracle {
     if (QTUM && status === 'CREATED') return true; // BETTING (used to be UNCONFIRMED)
     return false;
   }
-  @computed get unconfirmed() {
+  @computed get unconfirmed() { // Unconfirmed Oracles need to be confirmed by the blockchain before being able to acted on.
     return !this.topicAddress && !this.address;
   }
-  @computed get isUpcoming() {
+  @computed get isUpcoming() { // Upcoming is for showing upcoming Events in BOT Court so users don't lose track of an Event while it is in the Result Setting phase.
     return (
       this.phase === RESULT_SETTING
       && this.status === OracleStatus.WAIT_RESULT
