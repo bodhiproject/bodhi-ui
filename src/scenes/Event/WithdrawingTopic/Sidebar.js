@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
 import { i18nToUpperCase } from '../../../helpers';
-import { SidebarContainer } from '../components';
+import { SidebarContainer } from '../components/Sidebar';
 import EventInfo from './EventInfo';
 
 export const Sidebar = inject('store')(observer(({ topic }) => (

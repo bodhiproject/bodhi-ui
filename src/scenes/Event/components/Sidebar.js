@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
-import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../../helpers';
+import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers';
 
 
 export const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
@@ -69,3 +69,5 @@ const Content = styled(Typography).attrs({ variant: 'title' })`
 const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
   margin-bottom: 36px !important;
 `;
+
+export { SidebarContainer };

@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import TransactionHistory from './components/TransactionHistory';
-import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
-import { Sidebar } from './Sidebar';
+import TransactionHistory from '../components/TransactionHistory';
+import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
+import { Sidebar } from '../components/Sidebar';
 
 
 const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
