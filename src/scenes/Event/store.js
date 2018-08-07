@@ -125,8 +125,8 @@ export default class EventStore {
       const oracles = await this.getAllOracles(address);
       runInAction(() => {
         this.topics = topics.map(topic => new Topic(topic, this.app));
-        const { 0: t } = this.topics;
-        console.log('t', t);
+        // const { 0: t } = this.topics;
+        // console.log('t', t);
         this.transactions = transactions.map(tx => new Transaction(tx, this.app));
         this.oracles = oracles;
         this.betBalances = bets;

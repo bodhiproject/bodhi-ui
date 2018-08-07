@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import Transactions from './components/EventTxHistory';
+import TransactionHistory from './components/TransactionHistory';
 import ResultHistory from './components/EventTxHistory/resultHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
@@ -19,7 +19,7 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
       <FinalizeButton onClick={eventPage.finalize} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       <ResultHistory oracles={eventPage.oracles} />
-      <Transactions type='oracle' options={oracle.options} />
+      <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />

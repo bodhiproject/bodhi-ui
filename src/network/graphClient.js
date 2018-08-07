@@ -5,7 +5,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 
-import Routes from '../network/routes';
+import Routes from './routes';
 
 const httpLink = new HttpLink({
   uri: Routes.graphql.http,

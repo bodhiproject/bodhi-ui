@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import Transactions from './components/EventTxHistory';
+import TransactionHistory from './components/TransactionHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
 
@@ -17,7 +17,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
       <SetResultButton onClick={eventPage.prepareSetResult} disabled={eventPage.isPending || eventPage.buttonDisabled} />
-      <Transactions type='oracle' options={oracle.options} />
+      <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />
