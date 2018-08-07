@@ -13,13 +13,13 @@ import Reward from './Reward';
 import Options from './Options';
 
 
-const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, escrowAmount, botWinnings, qtumWinnings } } }) => (
+const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, escrowClaim, botWinnings, qtumWinnings } } }) => (
   <Row>
     <Content>
       <Title>{topic.name}</Title>
       <Container>
         <WinningOutcome eventPage={eventPage} />
-        {Boolean(escrowAmount || botWinnings || qtumWinnings) && (
+        {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
           <Fragment>
             <Reward topic={topic} eventPage={eventPage} />
             <WithdrawTo />

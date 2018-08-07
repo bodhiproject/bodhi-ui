@@ -40,6 +40,7 @@ const INIT = {
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
+  escrowClaim: 0,
 };
 
 /**
@@ -59,6 +60,7 @@ export default class EventStore {
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
+  @observable escrowClaim = INI.escrowClaim
   // topic
   @observable topics = []
   withdrawableAddresses = []
@@ -623,7 +625,6 @@ export default class EventStore {
 
     // Get all winning votes for this Topic
     const voteFilters = [];
-    let escrowClaim = 0; // eslint-disable-line
     _.each(wallet.addresses, (item) => {
       voteFilters.push({
         topicAddress: topic.address,
@@ -639,7 +640,7 @@ export default class EventStore {
           botWon: topic.escrowAmount,
           qtumWon: 0,
         });
-        escrowClaim = topic.escrowAmount;
+        this.escrowClaim = topic.escrowAmount;
       }
     });
 
