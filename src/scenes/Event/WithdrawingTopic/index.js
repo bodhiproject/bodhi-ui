@@ -13,29 +13,26 @@ import Reward from './Reward';
 import Options from './Options';
 
 
-const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, escrowAmount, botWinnings, qtumWinnings } } }) => {
-  console.log('eventPage', eventPage);
-  return (
-    <Row>
-      <Content>
-        <Title>{topic.name}</Title>
-        <Container>
-          <WinningOutcome eventPage={eventPage} />
-          {Boolean(escrowAmount || botWinnings || qtumWinnings) && (
-            <Fragment>
-              <Reward topic={topic} eventPage={eventPage} />
-              <WithdrawTo />
-            </Fragment>
-          )}
-        </Container>
-        <Options eventPage={eventPage} />
-        <ResultHistory oracles={eventPage.oracles} />
-        <TransactionHistory options={topic.options} />
-      </Content>
-      <Sidebar topic={topic} />
-    </Row>
-  );
-});
+const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, escrowAmount, botWinnings, qtumWinnings } } }) => (
+  <Row>
+    <Content>
+      <Title>{topic.name}</Title>
+      <Container>
+        <WinningOutcome eventPage={eventPage} />
+        {Boolean(escrowAmount || botWinnings || qtumWinnings) && (
+          <Fragment>
+            <Reward topic={topic} eventPage={eventPage} />
+            <WithdrawTo />
+          </Fragment>
+        )}
+      </Container>
+      <Options eventPage={eventPage} />
+      <ResultHistory oracles={eventPage.oracles} />
+      <TransactionHistory options={topic.options} />
+    </Content>
+    <Sidebar topic={topic} />
+  </Row>
+));
 
 const Container = styled(Paper)`
   padding: ${props => props.theme.padding.md.px};
