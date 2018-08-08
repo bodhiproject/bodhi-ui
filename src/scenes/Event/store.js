@@ -508,21 +508,27 @@ export default class EventStore {
   }
 
   withdraw = async (senderAddress, type) => {
-    const { version, address } = this.topic;
-    const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
-    const newTx = { // TODO: move this logic ot teh backend
-      ...withdraw,
-      optionIdx: this.selectedOptionIdx,
-      topic: {
-        options: this.topic.options,
-      },
-    };
+    try {
+      const { version, address } = this.topic;
+      const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
+      const newTx = { // TODO: move this logic ot teh backend
+        ...withdraw,
+        optionIdx: this.selectedOptionIdx,
+        topic: {
+          options: this.topic.options,
+        },
+      };
 
-    runInAction(() => {
-      this.txSentDialogOpen = true;
-      this.transactions.unshift(new Transaction(newTx));
-      this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    });
+      runInAction(() => {
+        this.txSentDialogOpen = true;
+        this.transactions.unshift(new Transaction(newTx));
+        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createWithdrawTx`);
+      });
+    }
     Tracking.track('topicDetail-withdraw');
   }
 
@@ -593,128 +599,146 @@ export default class EventStore {
   }
 
   getBetAndVoteBalances = async () => {
-    const { address: contractAddress, app: { wallet } } = this;
+    try {
+      const { address: contractAddress, app: { wallet } } = this;
 
-    // Get all votes for this Topic
-    const voteFilters = [];
-    _.each(wallet.addresses, (item) => {
-      voteFilters.push({
-        topicAddress: contractAddress,
-        voterQAddress: item.address,
+      // Get all votes for this Topic
+      const voteFilters = [];
+      _.each(wallet.addresses, (item) => {
+        voteFilters.push({
+          topicAddress: contractAddress,
+          voterQAddress: item.address,
+        });
       });
-    });
 
-    // Filter unique votes
-    const allVotes = await queryAllVotes(voteFilters);
-    const uniqueVotes = [];
-    _.each(allVotes, (vote) => {
-      const { voterQAddress, topicAddress } = vote;
-      if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
-        uniqueVotes.push(vote);
+      // Filter unique votes
+      const allVotes = await queryAllVotes(voteFilters);
+      const uniqueVotes = [];
+      _.each(allVotes, (vote) => {
+        const { voterQAddress, topicAddress } = vote;
+        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
+          uniqueVotes.push(vote);
+        }
+      });
+
+      // Call bet and vote balances for each unique vote address and get arrays for each address
+      const betArrays = [];
+      const voteArrays = [];
+      for (let i = 0; i < uniqueVotes.length; i++) {
+        const voteObj = uniqueVotes[i];
+
+        const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
+
+        const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
       }
-    });
 
-    // Call bet and vote balances for each unique vote address and get arrays for each address
-    const betArrays = [];
-    const voteArrays = [];
-    for (let i = 0; i < uniqueVotes.length; i++) {
-      const voteObj = uniqueVotes[i];
-
-      const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
-        contractAddress,
-        senderAddress: voteObj.voterQAddress,
+      // Sum all arrays by index into one array
+      const bets = _.map(_.unzip(betArrays), _.sum);
+      const votes = _.map(_.unzip(voteArrays), _.sum);
+      return { bets, votes };
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
       });
-      betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
-
-      const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
-        contractAddress,
-        senderAddress: voteObj.voterQAddress,
-      });
-      voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
     }
-
-    // Sum all arrays by index into one array
-    const bets = _.map(_.unzip(betArrays), _.sum);
-    const votes = _.map(_.unzip(voteArrays), _.sum);
-    return { bets, votes };
   }
 
   getEscrowAmount = async () => {
-    const escrowRes = await axios.post(networkRoutes.api.eventEscrowAmount, {
-      senderAddress: this.app.wallet.lastUsedAddress,
-    });
-    const eventEscrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
+    try {
+      const escrowRes = await axios.post(networkRoutes.api.eventEscrowAmount, {
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      const eventEscrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
     return eventEscrowAmount;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
+      });
+    }
   }
 
   getWithdrawableAddresses = async () => {
-    const { address: eventAddress, app: { wallet } } = this;
-    const withdrawableAddresses = [];
+    try {
+      const { address: eventAddress, app: { wallet } } = this;
+      const withdrawableAddresses = [];
 
-    // Fetch Topic
-    const topics = await queryAllTopics([{ address: eventAddress }]);
-    let topic;
-    if (!_.isEmpty(topics)) {
-      topic = processTopic(topics[0]);
-    } else {
-      throw new Error(`Unable to find topic ${eventAddress}`);
-    }
+      // Fetch Topic
+      const topics = await queryAllTopics([{ address: eventAddress }]);
+      let topic;
+      if (!_.isEmpty(topics)) {
+        topic = processTopic(topics[0]);
+      } else {
+        throw new Error(`Unable to find topic ${eventAddress}`);
+      }
 
-    // Get all winning votes for this Topic
-    const voteFilters = [];
-    _.each(wallet.addresses, (item) => {
-      voteFilters.push({
-        topicAddress: topic.address,
-        optionIdx: topic.resultIdx,
-        voterQAddress: item.address,
+      // Get all winning votes for this Topic
+      const voteFilters = [];
+      _.each(wallet.addresses, (item) => {
+        voteFilters.push({
+          topicAddress: topic.address,
+          optionIdx: topic.resultIdx,
+          voterQAddress: item.address,
+        });
+
+        // Add escrow withdraw object if is event creator
+        if (item.address === topic.creatorAddress) {
+          withdrawableAddresses.push({
+            type: TransactionType.WITHDRAW_ESCROW,
+            address: item.address,
+            botWon: topic.escrowAmount,
+            qtumWon: 0,
+          });
+          this.escrowClaim = topic.escrowAmount;
+        }
       });
 
-      // Add escrow withdraw object if is event creator
-      if (item.address === topic.creatorAddress) {
-        withdrawableAddresses.push({
-          type: TransactionType.WITHDRAW_ESCROW,
-          address: item.address,
-          botWon: topic.escrowAmount,
-          qtumWon: 0,
-        });
-        this.escrowClaim = topic.escrowAmount;
-      }
-    });
-
-    // Filter unique votes
-    const votes = await queryAllVotes(voteFilters);
-    const filtered = [];
-    _.each(votes, (vote) => {
-      if (!_.find(filtered, {
-        voterQAddress: vote.voterQAddress,
-        topicAddress: vote.topicAddress,
-      })) {
-        filtered.push(vote);
-      }
-    });
-
-    // Calculate winnings for each winning vote
-    for (let i = 0; i < filtered.length; i++) {
-      const vote = filtered[i];
-
-      const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
-        contractAddress: topic.address,
-        senderAddress: vote.voterQAddress,
+      // Filter unique votes
+      const votes = await queryAllVotes(voteFilters);
+      const filtered = [];
+      _.each(votes, (vote) => {
+        if (!_.find(filtered, {
+          voterQAddress: vote.voterQAddress,
+          topicAddress: vote.topicAddress,
+        })) {
+          filtered.push(vote);
+        }
       });
-      const botWon = result ? satoshiToDecimal(result['0']) : 0;
-      const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
 
-      // return only winning addresses
-      if (botWon || qtumWon) {
-        withdrawableAddresses.push({
-          type: TransactionType.WITHDRAW,
-          address: vote.voterQAddress,
-          botWon,
-          qtumWon,
+      // Calculate winnings for each winning vote
+      for (let i = 0; i < filtered.length; i++) {
+        const vote = filtered[i];
+
+        const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
+          contractAddress: topic.address,
+          senderAddress: vote.voterQAddress,
         });
+        const botWon = result ? satoshiToDecimal(result['0']) : 0;
+        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
+
+        // return only winning addresses
+        if (botWon || qtumWon) {
+          withdrawableAddresses.push({
+            type: TransactionType.WITHDRAW,
+            address: vote.voterQAddress,
+            botWon,
+            qtumWon,
+          });
+        }
       }
+      return withdrawableAddresses;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.winnings);
+      });
     }
-    return withdrawableAddresses;
   }
 
   reset = () => Object.assign(this, INIT)
