@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import AppConfig from '../../../../config/app';
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { getShortLocalDateTimeString } from '../../../../helpers';
 
 
 @withStyles(styles)

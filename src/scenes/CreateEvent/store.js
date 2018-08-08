@@ -327,12 +327,12 @@ export default class CreateEventStore {
       this.txFees = result;
       this.txConfirmDialogOpen = true;
     });
-    // TODO: ANDY - need to do for wallet mobx refactor
-    // const { wallet } = this.app;
-    // if (wallet.needsToBeUnlocked) {
-    //   wallet.unlockDialogOpen = true;
-    // } else {
-    // }
+    const { wallet } = this.app;
+    if (wallet.needsToBeUnlocked) {
+      wallet.unlockDialogOpen = true;
+    } else {
+      wallet.unlockDialogOpen = false;
+    }
   }
 
   validateAll = () => {

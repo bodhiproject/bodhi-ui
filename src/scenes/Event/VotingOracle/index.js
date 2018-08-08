@@ -4,24 +4,24 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import Transactions from '../../components/EventTxHistory';
-import ResultHistory from '../../components/EventTxHistory/resultHistory';
-import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
-import { Sidebar } from './Sidebar';
+import TransactionHistory from '../components/TransactionHistory';
+import ResultHistory from '../components/ResultHistory';
+import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
+import { Sidebar } from '../components/Sidebar';
 
 
-const VotingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
+const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.unconfirmed && !oracle.isArchived && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
       {!oracle.isArchived && (
-        <VoteButton onClick={oraclePage.prepareVote} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
+        <VoteButton onClick={eventPage.prepareVote} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       )}
-      <ResultHistory oracles={oraclePage.oracles} />
-      <Transactions type='oracle' options={oracle.options} />
+      <ResultHistory oracles={eventPage.oracles} />
+      <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id='txConfirmMsg.set' />
