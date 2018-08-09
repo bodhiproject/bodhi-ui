@@ -8,7 +8,7 @@ import { StepperVertRight } from 'components';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers';
 
 
-export const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
+const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
   <SidebarContainer>
     <EventInfo>
       <EndDate oracle={oracle} />
@@ -70,4 +70,4 @@ const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
   margin-bottom: 36px !important;
 `;
 
-export { SidebarContainer };
+export { SidebarContainer, Sidebar };
