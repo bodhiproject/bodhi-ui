@@ -1,12 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 import TransactionHistory from '../components/TransactionHistory';
 import { Sidebar, Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
 
+const messages = defineMessages({
+  consensusThreshold: {
+    id: 'oracle.consensusThreshold',
+    defaultMessage: 'Consensus Threshold',
+  },
+  setResultExplanation: {
+    id: 'oracle.setResultExplanation',
+    defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
+  },
+  txConfirmMsgSetMsg: {
+    id: 'txConfirmMsg.set',
+    defaultMessage: 'set the result as {option}',
+  },
+});
 
 const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
@@ -19,13 +33,13 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id='txConfirmMsg.set' />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
   </Row>
 ));
 
 const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage({ id: 'oracle.consensusThreshold' })} ${consensusThreshold} BOT`;
-  const message = intl.formatMessage({ id: 'oracle.setResultExplanation' });
+  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} BOT`;
+  const message = intl.formatMessage(messages.setResultExplanation);
   return <ImportantNote heading={heading} message={message} />;
 });
 

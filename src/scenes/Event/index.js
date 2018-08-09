@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { TxSentDialog, Loading as _Loading } from 'components';
+import { defineMessages } from 'react-intl';
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
@@ -10,6 +11,13 @@ import ResultSettingOracle from './ResultSettingOracle';
 import WithdrawingTopic from './WithdrawingTopic';
 import BackButton from '../../components/BackButton';
 
+
+const messages = defineMessages({
+  loadOracleMsg: {
+    id: 'load.oracle',
+    defaultMessage: 'Loading Oracle...',
+  },
+});
 
 @withRouter
 @inject('store')
@@ -22,7 +30,7 @@ export default class EventPage extends Component {
 
   render() {
     const { eventPage } = this.props.store;
-    if (eventPage.loading) return <Loading text='Loading Oracle...' />;
+    if (eventPage.loading) return <Loading text={messages.loadOracleMsg} />;
     const { event } = eventPage;
     const Event = {
       BETTING: BettingOracle,

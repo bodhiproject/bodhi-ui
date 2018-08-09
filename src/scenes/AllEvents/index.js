@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withStyles } from '@material-ui/core';
+import { defineMessages } from 'react-intl';
 
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
@@ -9,6 +10,13 @@ import TopActions from '../../components/TopActions';
 import _Loading from '../../components/Loading';
 import styles from './styles';
 
+
+const messages = defineMessages({
+  loadAllEventsMsg: {
+    id: 'load.allEvents',
+    defaultMessage: 'loading',
+  },
+});
 
 @inject('store')
 @observer
@@ -41,7 +49,7 @@ const Events = observer(({ allEvents: { list, loadMoreEvents, loading, loadingMo
   );
 });
 
-const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text="loading" /></Row>);
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllEventsMsg} /></Row>);
 
 const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
