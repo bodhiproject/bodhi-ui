@@ -1,11 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Typography } from '@material-ui/core';
 import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
+const messages = defineMessages({
+  withdrawDetailYouBetYouVoteMsg: {
+    id: 'withdrawDetail.youBetYouVote',
+    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
+  },
+});
 
 const WinningOutcome = injectIntl(({ eventPage, intl }) => (
   <Container>
@@ -14,7 +20,7 @@ const WinningOutcome = injectIntl(({ eventPage, intl }) => (
     <OutcomeOption>{eventPage.selectedOption}</OutcomeOption>
     {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
       <Typography variant="caption">
-        {intl.formatMessage({ id: 'withdrawDetail.youBetYouVote' }, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
+        {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
       </Typography>
     ) : (
       <Typography variant="caption">
