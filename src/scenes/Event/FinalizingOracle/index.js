@@ -7,7 +7,7 @@ import { EventWarning, ImportantNote } from 'components';
 import TransactionHistory from '../components/TransactionHistory';
 import ResultHistory from '../components/ResultHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
-import { Sidebar } from '../components/Sidebar';
+import Sidebar from '../components/Sidebar';
 
 
 const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
