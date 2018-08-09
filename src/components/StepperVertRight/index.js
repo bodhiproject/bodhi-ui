@@ -39,7 +39,7 @@ const messages = defineMessages({
 @observer
 export default class StepperVertRight extends Component {
   render() {
-    const { global: { syncBlockTime }, oraclePage: { cOracle } } = this.props.store;
+    const { global: { syncBlockTime }, eventPage: { cOracle } } = this.props.store;
     const { classes } = this.props;
 
     if (!syncBlockTime && !cOracle) return null;
@@ -71,12 +71,12 @@ export default class StepperVertRight extends Component {
     let dOracles;
     if (isTopicDetail) {
       // TODO: temporary workaround until we do `topic.js`. This is broken right now for `topic.js`.
-      const { oracles } = this.props.store.oraclePage;
+      const { oracles } = this.props.store.eventPage;
       cOracle = _.find(oracles, { token: Token.QTUM }) || {};
       dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
     } else {
-      cOracle =  this.props.store.oraclePage.cOracle; // eslint-disable-line
-      dOracles =  this.props.store.oraclePage.dOracles; // eslint-disable-line
+      cOracle =  this.props.store.eventPage.cOracle; // eslint-disable-line
+      dOracles =  this.props.store.eventPage.dOracles; // eslint-disable-line
     }
 
     const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);

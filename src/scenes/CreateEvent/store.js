@@ -196,10 +196,12 @@ export default class CreateEventStore {
       });
       insightTotalsRes = await axios.get(Routes.insight.totals);
     } catch (err) {
-      // TODO: HENRY - show an error in a dialog
       console.error('ERROR: ', { // eslint-disable-line
         route: Routes.api.eventEscrowAmount,
         message: err.message,
+      });
+      runInAction(() => {
+        this.app.ui.setError(err.message, Routes.api.eventEscrowAmount);
       });
     }
     runInAction(() => {
@@ -348,34 +350,46 @@ export default class CreateEventStore {
   }
 
   isValidAddress = async () => {
-    const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
-    return result.isvalid;
+    try {
+      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
+      return result.isvalid;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.validateAddress);
+      });
+    }
   }
 
   @action
   prepareToCreateEvent = async () => {
     this.validateAll();
     if (!this.isAllValid) return;
-    const txInfo = {
-      type: TransactionType.APPROVE_CREATE_EVENT,
-      token: Token.BOT,
-      amount: this.escrowAmount,
-      optionIdx: undefined,
-      topicAddress: undefined,
-      oracleAddress: undefined,
-      senderAddress: this.creator,
-    };
-    const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
-    runInAction(() => {
-      this.txFees = result;
-      this.txConfirmDialogOpen = true;
-    });
-    // TODO: ANDY - need to do for wallet mobx refactor
-    // const { wallet } = this.app;
-    // if (wallet.needsToBeUnlocked) {
-    //   wallet.unlockDialogOpen = true;
-    // } else {
-    // }
+    try {
+      const txInfo = {
+        type: TransactionType.APPROVE_CREATE_EVENT,
+        token: Token.BOT,
+        amount: this.escrowAmount,
+        optionIdx: undefined,
+        topicAddress: undefined,
+        oracleAddress: undefined,
+        senderAddress: this.creator,
+      };
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
+      runInAction(() => {
+        this.txFees = result;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+    const { wallet } = this.app;
+    if (wallet.needsToBeUnlocked) {
+      wallet.unlockDialogOpen = true;
+    } else {
+      wallet.unlockDialogOpen = false;
+    }
   }
 
   validateAll = () => {
@@ -427,10 +441,12 @@ export default class CreateEventStore {
         this.txSentDialogOpen = true;
       });
     } catch (error) {
-      // TODO: HENRY - show an error in a dialog
       console.error('ERROR: ', { // eslint-disable-line
         ...error,
         route: `${Routes.graphql.http}/createTopicTx`,
+      });
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
       });
     }
   }

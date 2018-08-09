@@ -32,12 +32,12 @@ const AppRouter = ({ url }) => {
       <Route
         exact
         path={`${url}/oracle/:topicAddress/:address/:txid`}
-        component={asyncComponent(() => import('../Event/scenes/Oracle'))}
+        component={asyncComponent(() => import('../Event'))}
       />
       <Route
         exact
         path={`${url}/topic/:address`}
-        component={asyncComponent(() => import('../Event/scenes/topic'))}
+        component={asyncComponent(() => import('../Event'))}
       />
       <Route
         exact

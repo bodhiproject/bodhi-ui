@@ -19,7 +19,7 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
 
-import Progress from '../../../../components/Progress';
+import Progress from '../Progress';
 import styles from './styles';
 
 const messages = defineMessages({
@@ -62,8 +62,8 @@ export default class Option extends Component {
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token } = option;
-    const { oraclePage, wallet } = store;
-    const { selectedOptionIdx } = oraclePage;
+    const { eventPage, wallet } = store;
+    const { selectedOptionIdx } = eventPage;
 
     return (
       <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
@@ -100,9 +100,9 @@ export default class Option extends Component {
                   token={token}
                   disabled={amountInputDisabled}
                   classes={classes}
-                  value={oraclePage.amount}
-                  onChange={({ target }) => oraclePage.amount = target.value}
-                  onBlur={oraclePage.fixAmount}
+                  value={eventPage.amount}
+                  onChange={({ target }) => eventPage.amount = target.value}
+                  onBlur={eventPage.fixAmount}
                 />
                 <AddressSelect
                   wallet={wallet}

@@ -8,7 +8,8 @@ import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
-import BackButton from '../../../../components/BackButton';
+import WithdrawingTopic from './WithdrawingTopic';
+import BackButton from '../../components/BackButton';
 
 
 const messages = defineMessages({
@@ -21,31 +22,42 @@ const messages = defineMessages({
 @withRouter
 @inject('store')
 @observer
-export default class OraclePage extends Component {
+export default class EventPage extends Component {
   componentDidMount() {
-    this.props.store.oraclePage.init(this.props.match.params);
-  }
-
-  componentWillUnmount() {
-    this.props.store.oraclePage.reset();
+    const type = this.props.match.path === '/topic/:address' ? 'topic' : 'oracle';
+    this.props.store.eventPage.init({ ...this.props.match.params, type });
   }
 
   render() {
-    const { oraclePage } = this.props.store;
-    if (oraclePage.loading) return <Loading text={messages.loadOracleMsg} />;
-    const { oracle } = oraclePage;
-    const Oracle = {
+    const { eventPage } = this.props.store;
+    if (eventPage.loading) return <Loading text={messages.loadOracleMsg} />;
+    const { event } = eventPage;
+    const Event = {
       BETTING: BettingOracle,
       VOTING: VotingOracle,
       RESULT_SETTING: ResultSettingOracle,
       FINALIZING: FinalizingOracle,
-    }[oracle.phase];
+      WITHDRAWING: WithdrawingTopic,
+    }[event.phase];
+
+    // TODO: can probably remove this eventually, but
+    // need to update all Oracles pages to accept `event` prop instead of `oracle`
+    let props = {};
+    if (event.type === 'oracle') {
+      props = {
+        oracle: event,
+      };
+    } else {
+      props = {
+        event,
+      };
+    }
 
     return (
       <Fragment>
         <BackButton />
-        <Oracle oracle={oracle} oraclePage={oraclePage} />
-        <EventTxSuccessDialog eventPage={oraclePage} />
+        <Event {...props} eventPage={eventPage} />
+        <EventTxSuccessDialog eventPage={eventPage} />
       </Fragment>
     );
   }
@@ -61,7 +73,7 @@ const Loading = styled(_Loading)`
 
 const EventTxSuccessDialog = observer(({ eventPage }) => (
   <TxSentDialog
-    txid={eventPage.oracle.txid}
+    txid={eventPage.event.txid}
     open={eventPage.txSentDialogOpen}
     onClose={() => eventPage.txSentDialogOpen = false}
   />

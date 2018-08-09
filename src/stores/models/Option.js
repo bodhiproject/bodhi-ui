@@ -17,7 +17,7 @@ export default class Option {
   idx
 
   @computed get isExpanded() {
-    return this.app.oraclePage.selectedOptionIdx === this.idx;
+    return this.app.eventPage.selectedOptionIdx === this.idx;
   }
 
   constructor(optionName, i, oracle, app) {
@@ -45,11 +45,11 @@ export default class Option {
 
   @action
   toggleExpansion = () => {
-    const { oraclePage } = this.app;
-    if (oraclePage.selectedOptionIdx == this.idx) { // eslint-disable-line
-      oraclePage.selectedOptionIdx = -1;
+    const { eventPage } = this.app;
+    if (eventPage.selectedOptionIdx == this.idx) { // eslint-disable-line
+      eventPage.selectedOptionIdx = -1;
     } else {
-      oraclePage.selectedOptionIdx = this.idx;
+      eventPage.selectedOptionIdx = this.idx;
     }
   }
 }

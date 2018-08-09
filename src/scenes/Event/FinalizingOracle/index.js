@@ -4,10 +4,10 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import Transactions from '../../components/EventTxHistory';
-import ResultHistory from '../../components/EventTxHistory/resultHistory';
-import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
-import { Sidebar } from './Sidebar';
+import TransactionHistory from '../components/TransactionHistory';
+import ResultHistory from '../components/ResultHistory';
+import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
+import Sidebar from '../components/Sidebar';
 
 const messages = defineMessages({
   txConfirmMsgSetMsg: {
@@ -17,16 +17,16 @@ const messages = defineMessages({
 });
 
 
-const FinalizingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
+const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={oraclePage.eventWarningMessageId} amount={oraclePage.amount} type={oraclePage.warningType} />}
+      {!oracle.unconfirmed && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
-      <FinalizeButton onClick={oraclePage.finalize} disabled={oraclePage.isPending || oraclePage.buttonDisabled} />
-      <ResultHistory oracles={oraclePage.oracles} />
-      <Transactions type='oracle' options={oracle.options} />
+      <FinalizeButton onClick={eventPage.finalize} disabled={eventPage.isPending || eventPage.buttonDisabled} />
+      <ResultHistory oracles={eventPage.oracles} />
+      <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
