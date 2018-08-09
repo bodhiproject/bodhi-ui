@@ -5,3 +5,4 @@ export * from './Title';
 export * from './OracleTxConfirmDialog';
 export * from './Icon';
 export { default as Option } from './Option';
+export * from './Sidebar';
