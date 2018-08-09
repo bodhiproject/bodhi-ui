@@ -1,12 +1,5 @@
 
 const appActions = {
-  IMPORT_WALLET: 'IMPORT_WALLET',
-  IMPORT_WALLET_RETURN: 'IMPORT_WALLET_RETURN',
-  importWallet: (destination) => ({
-    type: appActions.IMPORT_WALLET,
-    destination,
-  }),
-
   SET_LAST_USED_ADDRESS: 'SET_LAST_USED_ADDRESS',
   setLastUsedAddress: (address) => ({
     type: appActions.SET_LAST_USED_ADDRESS,
@@ -29,13 +22,6 @@ const appActions = {
   GET_INSIGHT_TOTALS_RETURN: 'GET_INSIGHT_TOTALS_RETURN',
   getInsightTotals: () => ({
     type: appActions.GET_INSIGHT_TOTALS,
-  }),
-
-  VALIDATE_ADDRESS: 'VALIDATE_ADDRESS',
-  VALIDATE_ADDRESS_RETURN: 'VALIDATE_ADDRESS_RETURN',
-  validateAddress: (address) => ({
-    type: appActions.VALIDATE_ADDRESS,
-    address,
   }),
 
   GET_TRANSACTION_COST: 'GET_TRANSACTION_COST',
