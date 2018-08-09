@@ -56,6 +56,14 @@ const pageMessage = defineMessages({
     id: 'withdrawDetail.totalBetTotalVote',
     defaultMessage: 'Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.',
   },
+  strPendingTransactionDisabledMsg: {
+    id: 'str.pendingTransactionDisabledMsg',
+    defaultMessage: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
+  },
+  withdrawDetailAlreadyWithdrawnMsg: {
+    id: 'withdrawDetail.alreadyWithdrawn',
+    defaultMessage: 'You have already withdrawn with this address.',
+  },
 });
 
 @injectIntl
@@ -438,8 +446,8 @@ export default class TopicPage extends Component {
       return {
         show: true,
         disabled: true,
-        id: 'str.pendingTransactionDisabledMsg',
-        message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
+        id: pageMessage.strPendingTransactionDisabledMsg.id,
+        message: pageMessage.strPendingTransactionDisabledMsg.defaultMessage,
         warningTypeClass: classes.pending,
       };
     }
@@ -455,8 +463,8 @@ export default class TopicPage extends Component {
       return {
         show: true,
         disabled: true,
-        id: 'withdrawDetail.alreadyWithdrawn',
-        message: 'You have already withdrawn with this address.',
+        id: pageMessage.withdrawDetailAlreadyWithdrawnMsg.id,
+        message: pageMessage.withdrawDetailAlreadyWithdrawnMsg.defaultMessage,
         warningTypeClass: classes.withdrawn,
       };
     }

@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { TransactionType, Token } from 'constants';
+import { defineMessages } from 'react-intl';
 
 import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
@@ -12,6 +13,48 @@ import { maxTransactionFee } from '../../config/app';
 import { createTopic } from '../../network/graphMutation';
 import Oracle from '../../stores/models/Oracle';
 
+const messages = defineMessages({
+  createDatePastMsg: {
+    id: 'create.datePast',
+    defaultMessage: 'Cannot be in the past',
+  },
+  createValidBetEndMsg: {
+    id: 'create.validBetEnd',
+    defaultMessage: 'Must be at least 30 minutes after Prediction Start Time',
+  },
+  createValidResultSetStartMsg: {
+    id: 'create.validResultSetStart',
+    defaultMessage: 'Must be greater than or equal to Prediction End Time',
+  },
+  createValidResultSetEndMsg: {
+    id: 'create.validResultSetEnd',
+    defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
+  },
+  strNotEnoughBotMsg: {
+    id: 'str.notEnoughBot',
+    defaultMessage: "You don't have enough BOT",
+  },
+  createRequiredMsg: {
+    id: 'create.required',
+    defaultMessage: 'Required',
+  },
+  createResultTooLongMsg: {
+    id: 'create.resultTooLong',
+    defaultMessage: 'Result name is too long.',
+  },
+  createInvalidNameMsg: {
+    id: 'create.invalidName',
+    defaultMessage: "Cannot name the outcome 'Invalid'",
+  },
+  createDuplicateOutcomeMsg: {
+    id: 'create.duplicateOutcome',
+    defaultMessage: 'Duplicate outcomes are not allowed.',
+  },
+  createNameLongMsg: {
+    id: 'create.nameLong',
+    defaultMessage: 'Event name is too long.',
+  },
+});
 
 const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
 const MAX_LEN_RESULT_HEX = 64;
@@ -188,9 +231,9 @@ export default class CreateEventStore {
     // Remove hex prefix for length validation
     const hexString = Web3Utils.toHex(this.title || '').slice(2);
     if (!this.title) {
-      this.error.title = 'create.required';
+      this.error.title = messages.createRequiredMsg.id;
     } else if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
-      this.error.title = 'create.nameLong';
+      this.error.title = messages.createNameLongMsg.id;
     } else {
       this.error.title = '';
     }
@@ -201,9 +244,9 @@ export default class CreateEventStore {
     const { app: { wallet }, escrowAmount, creator } = this;
     const checkingAddresses = _.filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
-      this.error.creator = 'str.notEnoughBot';
+      this.error.creator = messages.strNotEnoughBotMsg.id;
     } else if (!creator) {
-      this.error.creator = 'create.required';
+      this.error.creator = messages.createRequiredMsg.id;
     } else {
       this.error.creator = '';
     }
@@ -218,7 +261,7 @@ export default class CreateEventStore {
   @action
   validatePredictionStartTime = () => {
     if (this.isBeforeNow(this.prediction.startTime)) {
-      this.error.prediction.startTime = 'create.datePast';
+      this.error.prediction.startTime = messages.createDatePastMsg.id;
     } else {
       this.error.prediction.startTime = '';
     }
@@ -229,9 +272,9 @@ export default class CreateEventStore {
     const predictionStart = moment(this.prediction.startTime);
     const predictionEnd = moment(this.prediction.endTime);
     if (this.isBeforeNow(this.prediction.endTime)) {
-      this.error.prediction.endTime = 'create.datePast';
+      this.error.prediction.endTime = messages.createDatePastMsg.id;
     } else if (predictionEnd.unix() - predictionStart.unix() < TIME_GAP_MIN_SEC) {
-      this.error.prediction.endTime = 'create.validBetEnd';
+      this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
       this.error.prediction.endTime = '';
     }
@@ -242,9 +285,9 @@ export default class CreateEventStore {
     const predictionEnd = moment(this.prediction.endTime);
     const resultSettingStart = moment(this.resultSetting.startTime);
     if (this.isBeforeNow(this.resultSetting.startTime)) {
-      this.error.resultSetting.startTime = 'create.datePast';
+      this.error.resultSetting.startTime = messages.createDatePastMsg.id;
     } else if (predictionEnd.unix() > resultSettingStart.unix()) {
-      this.error.resultSetting.startTime = 'create.validResultSetStart';
+      this.error.resultSetting.startTime = messages.createValidResultSetStartMsg.id;
     } else {
       this.error.resultSetting.startTime = '';
     }
@@ -255,9 +298,9 @@ export default class CreateEventStore {
     const resultSettingStart = moment(this.resultSetting.startTime);
     const resultSettingEnd = moment(this.resultSetting.endTime);
     if (this.isBeforeNow(this.resultSetting.endTime)) {
-      this.error.resultSetting.endTime = 'create.datePast';
+      this.error.resultSetting.endTime = messages.createDatePastMsg.id;
     } else if (resultSettingEnd.unix() - resultSettingStart.unix() < TIME_GAP_MIN_SEC) {
-      this.error.resultSetting.endTime = 'create.validResultSetEnd';
+      this.error.resultSetting.endTime = messages.createValidResultSetEndMsg.id;
     } else {
       this.error.resultSetting.endTime = '';
     }
@@ -269,27 +312,27 @@ export default class CreateEventStore {
 
     // validate not empty
     if (!outcome) {
-      this.error.outcomes[i] = 'create.required';
+      this.error.outcomes[i] = messages.createRequiredMsg.id;
       return;
     }
 
     // Validate hex length
     const hexString = Web3Utils.toHex(outcome).slice(2); // Remove hex prefix for length validation
     if (hexString.length > MAX_LEN_RESULT_HEX) {
-      this.error.outcomes[i] = 'create.resultTooLong';
+      this.error.outcomes[i] = messages.createResultTooLongMsg.id;
       return;
     }
 
     // Validate cannot name Invalid
     if (outcome === 'invalid') {
-      this.error.outcomes[i] = 'create.invalidName';
+      this.error.outcomes[i] = messages.createInvalidNameMsg.id;
       return;
     }
 
     // Validate no duplicate outcomes
     const filtered = this.outcomes.filter((item) => (item || '').toLowerCase() === outcome);
     if (filtered.length > 1) {
-      this.error.outcomes[i] = 'create.duplicateOutcome';
+      this.error.outcomes[i] = messages.createDuplicateOutcomeMsg.id;
       return;
     }
     this.error.outcomes[i] = '';
@@ -300,7 +343,7 @@ export default class CreateEventStore {
     if (await this.isValidAddress()) {
       this.error.resultSetter = '';
     } else {
-      this.error.resultSetter = 'create.required';
+      this.error.resultSetter = messages.createRequiredMsg.id;
     }
   }
 

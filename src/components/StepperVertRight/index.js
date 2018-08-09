@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Token, SortBy } from 'constants';
 
@@ -13,6 +13,21 @@ const POS_BETTING = 1;
 const POS_ORACLE_RESULT_SETTING = 2;
 const POS_OPEN_RESULT_SETTING = 3;
 
+
+const messages = defineMessages({
+  cardInfoMsg: {
+    id: 'cardInfo.to',
+    defaultMessage: 'To',
+  },
+  anytimeMsg: {
+    id: 'str.anytime',
+    defaultMessage: 'anytime',
+  },
+  blockMsg: {
+    id: 'str.block',
+    defaultMessage: 'Block',
+  },
+});
 
 /**
  * TODO:
@@ -64,13 +79,13 @@ export default class StepperVertRight extends Component {
       dOracles =  this.props.store.oraclePage.dOracles; // eslint-disable-line
     }
 
-    const RANGE_SEPARATOR = formatMessage({ id: 'cardInfo.to' });
-    const ANYTIME = formatMessage({ id: 'str.anytime' });
+    const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);
+    const ANYTIME = formatMessage(messages.anytimeMsg);
 
     // Init all events with these steps
     const value = [{
       title: <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />,
-      description: `${formatMessage({ id: 'str.block' })}: ${cOracle.blockNum || ''}`,
+      description: `${formatMessage(messages.blockMsg)}: ${cOracle.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
       description: `${getShortLocalDateTimeString(cOracle.startTime)}

@@ -3,12 +3,20 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { TxSentDialog, Loading as _Loading } from 'components';
+import { defineMessages } from 'react-intl';
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
 import BackButton from '../../../../components/BackButton';
 
+
+const messages = defineMessages({
+  loadOracleMsg: {
+    id: 'load.oracle',
+    defaultMessage: 'Loading Oracle...',
+  },
+});
 
 @withRouter
 @inject('store')
@@ -24,7 +32,7 @@ export default class OraclePage extends Component {
 
   render() {
     const { oraclePage } = this.props.store;
-    if (oraclePage.loading) return <Loading text='Loading Oracle...' />;
+    if (oraclePage.loading) return <Loading text={messages.loadOracleMsg} />;
     const { oracle } = oraclePage;
     const Oracle = {
       BETTING: BettingOracle,

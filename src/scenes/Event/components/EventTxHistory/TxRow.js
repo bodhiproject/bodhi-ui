@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, intlShape, defineMessages, FormattedMessage } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 
@@ -8,7 +8,15 @@ import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
+
+const messages = defineMessages({
+  invalidMsg: {
+    id: 'invalid',
+    defaultMessage: 'Invalid',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -32,7 +40,7 @@ export default class TxRow extends Component {
   get name() {
     const { intl: { formatMessage }, transaction: { optionIdx, topic, name } } = this.props;
     if (topic) {
-      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage({ id: 'invalid' }) : name}`;
+      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage(messages.invalidMsg) : name}`;
     }
     return '';
   }
@@ -51,7 +59,11 @@ export default class TxRow extends Component {
           <TableCell padding="dense">
             {!amount ? '' : `${amount} ${token}`}
           </TableCell>
-          <TableCell padding="dense">{intl.formatMessage({ id: `str.${status.toLowerCase()}` })}</TableCell>
+          <TableCell padding="dense">
+            <FormattedMessage id={`str.${status}`.toLowerCase()}>
+              {(txt) => i18nToUpperCase(txt)}
+            </FormattedMessage>
+          </TableCell>
           <TableCell padding="dense"><i className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} /></TableCell>
         </TableRow>
         {expanded && (

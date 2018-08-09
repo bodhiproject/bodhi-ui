@@ -1,12 +1,22 @@
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import styled, { keyframes } from 'styled-components';
 
+const messages = defineMessages({
+  unconfirmedMessage: {
+    id: 'str.unconfirmed',
+    defaultMessage: 'Unconfirmed',
+  },
+  eventUnconfirmedMessage: {
+    id: 'oracle.eventUnconfirmed',
+    defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
+  },
+});
 
 export const Loading = injectIntl(({ text, intl, ...props }) => (
   <Col {...props}>
     <Animation className='animation' />
-    {text && intl.formatMessage({ id: text })}
+    {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </Col>
 ));
 

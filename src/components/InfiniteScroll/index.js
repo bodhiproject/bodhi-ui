@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from '@material-ui/core';
+import { defineMessages } from 'react-intl';
 
 import { Loading } from '../Loading';
+
+const messages = defineMessages({
+  loadMoreMsg: {
+    id: 'load.more',
+    defaultMessage: 'loading more',
+  },
+});
 
 export default class InfiniteScroll extends Component {
   static propTypes = {
@@ -50,7 +58,7 @@ export default class InfiniteScroll extends Component {
   }
 }
 
-const LoadingMore = () => <Row><Loading text="loadingMore" /></Row>;
+const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 
 const Row = (props) => (
   <div

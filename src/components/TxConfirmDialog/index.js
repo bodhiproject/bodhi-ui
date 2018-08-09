@@ -14,9 +14,35 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import styles from './styles';
 
+const messages = defineMessages({
+  txConfirmMessageMsg: {
+    id: 'txConfirm.message',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
+  },
+  txConfirmMessageWithFeeMsg: {
+    id: 'txConfirm.messageWithFee',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}, with fee for {txFee} QTUM. Please click OK to continue.',
+  },
+  strTypeMsg: {
+    id: 'str.type',
+    defaultMessage: 'Type',
+  },
+  strAmountMsg: {
+    id: 'str.amount',
+    defaultMessage: 'Amount',
+  },
+  strFeeMsg: {
+    id: 'str.fee',
+    defaultMessage: 'Gas Fee (QTUM)',
+  },
+  strGasLimitMsg: {
+    id: 'str.gasLimit',
+    defaultMessage: 'Gas Limit',
+  },
+});
 
 /**
  * USED IN:
@@ -33,8 +59,8 @@ export default class TxConfirmDialog extends Component {
     const { open, txFees, onConfirm, onClose, txAmount, txToken, txDesc } = this.props;
     const { classes, intl: { formatMessage } } = this.props;
     const txFee = _.sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
-    let confirmMessage = formatMessage({ id: 'txConfirm.message' }, { txDesc, txAmount, txToken });
-    if (txFee) confirmMessage = formatMessage({ id: 'txConfirm.messageWithFee' }, { txDesc, txAmount, txToken, txFee });
+    let confirmMessage = formatMessage(messages.txConfirmMessageMsg, { txDesc, txAmount, txToken });
+    if (txFee) confirmMessage = formatMessage(messages.txConfirmMessageWithFeeMsg, { txDesc, txAmount, txToken, txFee });
     if (!open) return null;
     return (
       <Dialog open={open}>
@@ -47,10 +73,10 @@ export default class TxConfirmDialog extends Component {
             <Table className={classes.costTable}>
               <TableHead>
                 <TableRow>
-                  <Cell id="str.type" defaultMessage="Type" />
-                  <Cell id="str.amount" defaultMessage="Amount" />
-                  <Cell id="str.fee" defaultMessage="Gas Fee (QTUM)" />
-                  <Cell id="str.gasLimit" defaultMessage="Gas Limit" />
+                  <Cell id={messages.strTypeMsg.id} defaultMessage={messages.strTypeMsg.defaultMessage} />
+                  <Cell id={messages.strAmountMsg.id} defaultMessage={messages.strAmountMsg.defaultMessage} />
+                  <Cell id={messages.strFeeMsg.id} defaultMessage={messages.strFeeMsg.defaultMessage} />
+                  <Cell id={messages.strGasLimitMsg.id} defaultMessage={messages.strGasLimitMsg.defaultMessage} />
                 </TableRow>
               </TableHead>
               <TableBody>

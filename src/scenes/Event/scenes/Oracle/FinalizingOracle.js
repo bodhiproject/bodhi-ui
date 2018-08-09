@@ -1,13 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 import Transactions from '../../components/EventTxHistory';
 import ResultHistory from '../../components/EventTxHistory/resultHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
+
+const messages = defineMessages({
+  txConfirmMsgSetMsg: {
+    id: 'txConfirmMsg.set',
+    defaultMessage: 'set the result as {option}',
+  },
+});
 
 
 const FinalizingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
@@ -22,7 +29,7 @@ const FinalizingOracle = observer(({ store: { oraclePage, oraclePage: { oracle }
       <Transactions type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id='txConfirmMsg.set' />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
   </Row>
 ));
 

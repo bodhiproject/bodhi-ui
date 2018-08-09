@@ -17,11 +17,21 @@ import {
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 
 import Progress from '../../../../components/Progress';
 import styles from './styles';
 
+const messages = defineMessages({
+  oracleOptionIsPrevResultMsg: {
+    id: 'oracle.optionIsPrevResult',
+    defaultMessage: 'This option was set as the result in the previous round',
+  },
+  invalidMsg: {
+    id: 'invalid',
+    defaultMessage: 'Invalid',
+  },
+});
 
 /**
  * The new EventOption
@@ -50,7 +60,7 @@ export default class Option extends Component {
       disabled,
     } = this.props;
 
-    const name = option.name === 'Invalid' ? intl.formatMessage({ id: 'invalid' }) : option.name;
+    const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token } = option;
     const { oraclePage, wallet } = store;
     const { selectedOptionIdx } = oraclePage;
@@ -80,7 +90,7 @@ export default class Option extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body1">
-                  {isPrevResult ? intl.formatMessage({ id: 'oracle.optionIsPrevResult' }) : value}
+                  {isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

@@ -1,13 +1,27 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 import Transactions from '../../components/EventTxHistory';
 import { Row, Content, Title, Button, Option, OracleTxConfirmDialog } from './components';
 import { Sidebar } from './Sidebar';
 
+const messages = defineMessages({
+  unconfirmedMessage: {
+    id: 'str.unconfirmed',
+    defaultMessage: 'Unconfirmed',
+  },
+  eventUnconfirmedMessage: {
+    id: 'oracle.eventUnconfirmed',
+    defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
+  },
+  txConfirmMsgBetMsg: {
+    id: 'txConfirmMsg.bet',
+    defaultMessage: 'bet on {option}',
+  },
+});
 
 const BettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } }) => (
   <Row>
@@ -24,12 +38,12 @@ const BettingOracle = observer(({ store: { oraclePage, oraclePage: { oracle } } 
       )}
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id='txConfirmMsg.bet' />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgBetMsg.id} />
   </Row>
 ));
 
 const EventUnconfirmedNote = injectIntl(({ intl: { formatMessage } }) => (
-  <ImportantNote heading={formatMessage({ id: 'str.unconfirmed' })} message={formatMessage({ id: 'oracle.eventUnconfirmed' })} />
+  <ImportantNote heading={formatMessage(messages.unconfirmedMessage)} message={formatMessage(messages.eventUnconfirmedMessage)} />
 ));
 
 const Options = observer(({ oracle }) => (
