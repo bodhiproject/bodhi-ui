@@ -56,7 +56,7 @@ export default class PendingTransactionsSnackbarStore {
         this.count = txs.length;
         this.pendingCreateEvents = _.filter(
           txs,
-          (tx) => tx.type === TransactionType.APPROVE_CREATE_EVENT || tx.type === TransactionType.APPROVE_CREATE_EVENT
+          (tx) => tx.type === TransactionType.APPROVE_CREATE_EVENT || tx.type === TransactionType.CREATE_EVENT
         );
         this.pendingBets = _.filter(txs, { type: TransactionType.BET });
         this.pendingSetResults = _.filter(txs, (tx) =>
