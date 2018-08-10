@@ -2,12 +2,18 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { RewardTooltipContent } from 'components';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Typography, Tooltip } from '@material-ui/core';
 import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
+const messages = defineMessages({
+  withdrawDetailReturnRateMsg: {
+    id: 'withdrawDetail.returnRate',
+    defaultMessage: 'Return rate:',
+  },
+});
 
 // TODO: fix the tooltip next to QtumReturn and BotUsed
 const Reward = ({ eventPage, topic }) => {
@@ -87,7 +93,7 @@ const QtumReturn = injectIntl(({ qtumWinnings, qtumReturnRate, intl, ...props })
       </Row>
     </Typography>
     <Typography variant="caption">
-      {`${intl.formatMessage({ id: 'withdrawDetail.returnRate' })} ${qtumReturnRate.toFixed(2)}%`}
+      {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${qtumReturnRate.toFixed(2)}%`}
     </Typography>
   </Wrapper>
 ));
@@ -103,7 +109,7 @@ const BotUsed = injectIntl(({ botWinnings, botReturnRate, intl, ...props }) => (
       </Row>
     </Typography>
     <Typography variant="caption">
-      {`${intl.formatMessage({ id: 'withdrawDetail.returnRate' })} ${botReturnRate.toFixed(2)}%`}
+      {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${botReturnRate.toFixed(2)}%`}
     </Typography>
   </Wrapper>
 ));

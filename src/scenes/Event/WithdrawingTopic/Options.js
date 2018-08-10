@@ -1,8 +1,19 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import _ from 'lodash';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { Typography } from '@material-ui/core';
+
+const messages = defineMessages({
+  withdrawDetailTotalBetTotalVoteMsg: {
+    id: 'withdrawDetail.totalBetTotalVote',
+    defaultMessage: 'Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.',
+  },
+  withdrawDetailYouBetYouVoteMsg: {
+    id: 'withdrawDetail.youBetYouVote',
+    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
+  },
+});
 
 const Options = ({ eventPage }) => (
   <Wrapper>
@@ -17,14 +28,14 @@ const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic 
       {option}
     </Typog>
     <Typography variant="caption">
-      {intl.formatMessage({ id: 'withdrawDetail.totalBetTotalVote' }, {
+      {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {
         qtum: topic.qtumAmount[index], bot: topic.botAmount[index],
       })}
     </Typography>
     {!!(eventPage.betBalances[index] || eventPage.voteBalances[index]) && (
       <div>
         <Typography variant="caption">
-          {intl.formatMessage({ id: 'withdrawDetail.youBetYouVote' }, { qtum: eventPage.betBalances[index], bot: eventPage.voteBalances[index] })}
+          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.betBalances[index], bot: eventPage.voteBalances[index] })}
         </Typography>
       </div>
     )}
