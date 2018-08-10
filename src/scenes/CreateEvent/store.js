@@ -56,8 +56,9 @@ const messages = defineMessages({
   },
 });
 
-const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
+const nowPlus = seconds => moment().add(seconds, 's').format('YYYY-MM-DDTHH:mm');
 const MAX_LEN_RESULT_HEX = 64;
+const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 let TIME_GAP_MIN_SEC = 30 * 60;
 if (process.env.REACT_APP_ENV === 'dev') {
   TIME_GAP_MIN_SEC = 2 * 60;
@@ -75,12 +76,12 @@ const INIT = {
   title: '',
   creator: '',
   prediction: {
-    startTime: nowPlus(15),
-    endTime: nowPlus(45),
+    startTime: nowPlus(TIME_DELAY_FROM_NOW_SEC),
+    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC),
   },
   resultSetting: {
-    startTime: nowPlus(45),
-    endTime: nowPlus(75),
+    startTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC),
+    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2)),
   },
   outcomes: ['', ''],
   resultSetter: '',
@@ -205,10 +206,10 @@ export default class CreateEventStore {
       });
     }
     runInAction(() => {
-      this.prediction.startTime = nowPlus(15);
-      this.prediction.endTime = nowPlus(45);
-      this.resultSetting.startTime = nowPlus(45);
-      this.resultSetting.endTime = nowPlus(75);
+      this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
+      this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+      this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
       this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
       this.creator = this.app.wallet.lastUsedAddress;
