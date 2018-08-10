@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import { SortBy } from 'constants';
 import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
@@ -32,6 +32,12 @@ import WithdrawTxConfirmDialog from '../WithdrawTxConfirmDialog';
 import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
 import Tracking from '../../../../helpers/mixpanelUtil';
 
+const messages = defineMessages({
+  txConfirmMsgSendMsg: {
+    id: 'txConfirmMsg.send',
+    defaultMessage: 'send to address {address}',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -108,7 +114,7 @@ export default class MyBalances extends Component {
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
           />
-          <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id='txConfirmMsg.send' />
+          <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         </Grid>
       </Paper>
     );

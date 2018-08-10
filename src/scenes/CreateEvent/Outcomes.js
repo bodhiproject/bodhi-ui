@@ -1,16 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { TextField, InputAdornment, FormControl, FormHelperText, Button as _Button } from '@material-ui/core';
 import { Section } from './components';
 
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 
+const messages = defineMessages({
+  createAddOutcomeMsg: {
+    id: 'create.addOutcome',
+    defaultMessage: 'Add Outcome',
+  },
+  createOutcomeNameMsg: {
+    id: 'create.outcomeName',
+    defaultMessage: 'Outcome Name',
+  },
+  strOutcomesMsg: {
+    id: 'str.outcomes',
+    defaultMessage: 'Outcomes',
+  },
+});
 
 const Outcomes = observer(({ store: { createEvent } }) => (
-  <Section column title='str.outcomes'>
+  <Section column title={messages.strOutcomesMsg}>
     {createEvent.outcomes.map((outcome, i) => (
       <Outcome key={i} outcome={outcome} createEvent={createEvent} i={i} />
     ))}
@@ -21,7 +35,7 @@ const Outcomes = observer(({ store: { createEvent } }) => (
 ));
 
 const AddButton = injectIntl(({ intl, ...props }) => (
-  <Button {...props}>+ {intl.formatMessage({ id: 'create.addOutcome' })}</Button>
+  <Button {...props}>+ {intl.formatMessage(messages.createAddOutcomeMsg)}</Button>
 ));
 
 const Button = styled(_Button).attrs({ variant: 'raised' })`
@@ -37,7 +51,7 @@ const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
         value={outcome}
         onChange={e => createEvent.outcomes[i] = e.target.value}
         onBlur={() => createEvent.validateOutcome(i)}
-        placeholder={intl.formatMessage({ id: 'create.outcomeName' })}
+        placeholder={intl.formatMessage(messages.createOutcomeNameMsg)}
         error={Boolean(createEvent.error.outcomes[i])}
         InputProps={{
           startAdornment: <InputAdornment position="start">#{i + 1}</InputAdornment>,
