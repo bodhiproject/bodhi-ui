@@ -5,12 +5,12 @@ import BasePicker from 'material-ui-pickers/_shared/BasePicker';
 import Calendar from 'material-ui-pickers/DatePicker/Calendar';
 import TimePickerView from 'material-ui-pickers/TimePicker/TimePickerView';
 
-export const DateTimePickerDialog = injectIntl(({ date, ...props }) => (
+export const DateTimePickerDialog = injectIntl(({ value, ...props }) => (
   <Fragment>
-    <Dialog aria-labelledby="simple-dialog-title">
+    <Dialog aria-labelledby="simple-dialog-title" open>
       <DialogTitle id="simple-dialog-title">Date Select</DialogTitle>
       <DialogContent>
-        <BasePicker value={date}>
+        <BasePicker value={value}>
           {
             ({
               handleAccept,
@@ -23,10 +23,10 @@ export const DateTimePickerDialog = injectIntl(({ date, ...props }) => (
             }) => (
               <div>
                 <div className="picker">
-                  <Calendar date={date} onChange={handleChange} />
+                  <Calendar date={value} onChange={handleChange} />
                 </div>
                 <TimePickerView
-                  date={date}
+                  date={value}
                   ampm={false}
                   onHourChange={handleChange}
                   type="hours"
