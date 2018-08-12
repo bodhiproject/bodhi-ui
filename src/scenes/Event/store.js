@@ -50,11 +50,11 @@ export default class EventStore {
   @observable type = 'oracle'
   @observable loading = INIT.loading
   @observable oracles = []
-  @observable amount = INIT.amount // input amount to bet, vote, etc. for each event option
+  @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
   @observable transactions = INIT.transactions
-  @observable selectedOptionIdx = INIT.selectedOptionIdx // option selected for a oracle
+  @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
   @observable buttonDisabled = INIT.buttonDisabled
@@ -81,7 +81,7 @@ export default class EventStore {
   @computed get topic() {
     return _.find(this.topics, { address: this.address }) || {};
   }
-  // oracle
+  // For Oracle only
   @computed get unconfirmed() {
     return this.topicAddress === 'null' && this.address === 'null';
   }
@@ -189,110 +189,118 @@ export default class EventStore {
     // when we get a new block or transactions are updated, react to it
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
-      () => {
-        const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
-        const { global: { syncBlockTime }, wallet } = this.app;
-        const currBlockTime = moment.unix(syncBlockTime);
-        const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
-        const notEnoughQtum = totalQtum < maxTransactionFee;
-        // Already have a pending tx for this Oracle
-        const pendingTxs = _.filter(this.transactions, { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING });
-        if (pendingTxs.length > 0) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.HIGHLIGHT;
-          this.eventWarningMessageId = 'str.pendingTransactionDisabledMsg';
-          return;
-        }
-
-        // Has not reached betting start time
-        if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.INFO;
-          this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
-          return;
-        }
-
-        // Has not reached result setting start time
-        if ((phase === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.INFO;
-          this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
-          return;
-        }
-
-        // User is not the result setter
-        if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.lastUsedAddress) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.INFO;
-          this.eventWarningMessageId = 'oracle.cOracleDisabledText';
-          return;
-        }
-
-        // Trying to set result or vote when not enough QTUM or BOT
-        const filteredAddress = _.filter(wallet.addresses, { address: wallet.lastUsedAddress });
-        const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
-        if ((
-          (phase === VOTING && currentBot < this.amount)
-          || (phase === RESULT_SETTING && currentBot < consensusThreshold)
-        ) && notEnoughQtum) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.ERROR;
-          this.eventWarningMessageId = 'str.notEnoughQtumAndBot';
-          return;
-        }
-
-        // ALL
-        // Trying to bet more qtum than you have or you just don't have enough QTUM period
-        if ((phase === BETTING && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.ERROR;
-          this.eventWarningMessageId = 'str.notEnoughQtum';
-          return;
-        }
-
-        // Not enough bot for setting the result or voting
-        if ((phase === RESULT_SETTING && currentBot < consensusThreshold)
-          || (phase === VOTING && currentBot < this.amount)) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.ERROR;
-          this.eventWarningMessageId = 'str.notEnoughBot';
-          return;
-        }
-
-        // Did not select a result
-        if (phase !== FINALIZING && this.selectedOptionIdx === -1) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.INFO;
-          this.eventWarningMessageId = 'oracle.selectResultDisabledText';
-          return;
-        }
-
-        // Did not enter an amount
-        if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
-          this.buttonDisabled = true;
-          this.warningType = EventWarningType.INFO;
-          this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
-          return;
-        }
-
-        // Trying to vote over the consensus threshold
-        const optionAmount = this.selectedOption.amount;
-        const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
-        if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
-          this.buttonDisabled = true;
-          this.amount = String(toFixed(maxVote));
-          // TODO: this get's called everytime we change the amount, since we
-          // autocorrect it above, this warning never get's shown
-          this.warningType = EventWarningType.ERROR;
-          this.eventWarningMessageId = 'oracle.maxVoteText';
-          return;
-        }
-        this.buttonDisabled = false;
-        this.eventWarningMessageId = '';
-        this.warningType = '';
-      },
+      () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
+  }
+
+  /**
+   * These checks represent specific cases where we need to disable the CTA and show a warning message.
+   * Blocks the user from doing a tx for this event if any of the cases are hit.
+   */
+  @action
+  disableEventActionsIfNecessary = () => {
+    const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
+    const { global: { syncBlockTime }, wallet } = this.app;
+    const currBlockTime = moment.unix(syncBlockTime);
+    const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
+    const notEnoughQtum = totalQtum < maxTransactionFee;
+
+    // Already have a pending tx for this Oracle
+    const pendingTxs = _.filter(this.transactions, { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING });
+    if (pendingTxs.length > 0) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.HIGHLIGHT;
+      this.eventWarningMessageId = 'str.pendingTransactionDisabledMsg';
+      return;
+    }
+
+    // Has not reached betting start time
+    if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.INFO;
+      this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
+      return;
+    }
+
+    // Has not reached result setting start time
+    if ((phase === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.INFO;
+      this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
+      return;
+    }
+
+    // User is not the result setter
+    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.lastUsedAddress) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.INFO;
+      this.eventWarningMessageId = 'oracle.cOracleDisabledText';
+      return;
+    }
+
+    // Trying to set result or vote when not enough QTUM or BOT
+    const filteredAddress = _.filter(wallet.addresses, { address: wallet.lastUsedAddress });
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
+    if ((
+      (phase === VOTING && currentBot < this.amount)
+      || (phase === RESULT_SETTING && currentBot < consensusThreshold)
+    ) && notEnoughQtum) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'str.notEnoughQtumAndBot';
+      return;
+    }
+
+    // ALL
+    // Trying to bet more qtum than you have or you just don't have enough QTUM period
+    if ((phase === BETTING && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'str.notEnoughQtum';
+      return;
+    }
+
+    // Not enough bot for setting the result or voting
+    if ((phase === RESULT_SETTING && currentBot < consensusThreshold)
+      || (phase === VOTING && currentBot < this.amount)) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'str.notEnoughBot';
+      return;
+    }
+
+    // Did not select a result
+    if (phase !== FINALIZING && this.selectedOptionIdx === -1) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.INFO;
+      this.eventWarningMessageId = 'oracle.selectResultDisabledText';
+      return;
+    }
+
+    // Did not enter an amount
+    if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.INFO;
+      this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
+      return;
+    }
+
+    // Trying to vote over the consensus threshold
+    const optionAmount = this.selectedOption.amount;
+    const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
+    if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
+      this.buttonDisabled = true;
+      this.amount = String(toFixed(maxVote));
+      // TODO: this get's called everytime we change the amount, since we
+      // autocorrect it above, this warning never get's shown
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'oracle.maxVoteText';
+      return;
+    }
+    this.buttonDisabled = false;
+    this.eventWarningMessageId = '';
+    this.warningType = '';
   }
 
   // TODO: go from /oracle/null/null/:txid -> /oracle/:topicAddress/:address/:txid
