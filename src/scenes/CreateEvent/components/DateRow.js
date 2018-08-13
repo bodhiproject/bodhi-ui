@@ -2,13 +2,10 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Grid, TextField } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 
 import { DateTimePickerCombo } from './DateTimePickerCombo';
-import { DateTimePickerDialog } from './DateTimePickerDialog';
 
-@inject('store')
-@observer
-@injectIntl
 export class DateRow extends Component {
   render() {
     const { error, blockNum, intl, isOpen, ...props } = this.props;
@@ -29,10 +26,6 @@ export class DateRow extends Component {
             value={blockNum ? `Block: ${blockNum}` : ''}
           />
         </Grid>
-        <DateTimePickerDialog
-          open={isOpen}
-          {...props}
-        />
       </Fragment>
     );
   }
