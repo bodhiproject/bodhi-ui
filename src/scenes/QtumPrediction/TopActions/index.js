@@ -33,8 +33,8 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store } = this.props;
-    const { sortBy, createEvent } = store;
+    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction } } = this.props;
+    const { createEvent } = store;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
@@ -58,9 +58,8 @@ export default class TopActions extends Component {
           </span>
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
-              <Select disableUnderline value={sortBy} onChange={e => store.sortBy = e.target.value}>
-                <MenuItem value={SortBy.ASCENDING}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
-                <MenuItem value={SortBy.DESCENDING}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
+              <Select disableUnderline value={qtumPrediction.sortBy} onChange={e => qtumPrediction.sortBy = e.target.value}>
+                <MenuItem value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
               </Select>
             </FormControl>
           </Card>
