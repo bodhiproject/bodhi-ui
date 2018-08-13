@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import {
   Grid,
   Card,
@@ -15,6 +15,7 @@ import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
 
+<<<<<<< HEAD
 const cardMessages = defineMessages({
   raise: {
     id: 'str.raised',
@@ -30,6 +31,8 @@ const cardMessages = defineMessages({
   },
 });
 
+=======
+>>>>>>> update EventCard hover shadow
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -80,6 +83,13 @@ export default class EventCard extends PureComponent {
                 {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getShortLocalDateTimeString(endTime)}`}
               </div>
               <div className={classes.eventCardInfo}>
+                <div className={classes.eventCardInfoItem}>
+                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
+                  {endTime !== undefined
+                    ? `${endTime !== undefined && `${this.state.countDown}`}`
+                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
+                  }
+                </div>
                 {amountLabel && (
                   <div>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
@@ -87,6 +97,7 @@ export default class EventCard extends PureComponent {
                     {` ${amountLabel}`}
                   </div>
                 )}
+<<<<<<< HEAD
                 <div>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
@@ -94,6 +105,8 @@ export default class EventCard extends PureComponent {
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>
+=======
+>>>>>>> update EventCard hover shadow
               </div>
             </div>
             <Divider />
