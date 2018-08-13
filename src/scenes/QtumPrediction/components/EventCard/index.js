@@ -13,26 +13,8 @@ import cx from 'classnames';
 
 import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
-import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
+import { getEndTimeCountDownString } from '../../../../helpers';
 
-<<<<<<< HEAD
-const cardMessages = defineMessages({
-  raise: {
-    id: 'str.raised',
-    defaultMessage: 'Raised',
-  },
-  ends: {
-    id: 'str.ends',
-    defaultMessage: 'Ends',
-  },
-  upcoming: {
-    id: 'str.upcoming',
-    defaultMessage: 'Upcoming',
-  },
-});
-
-=======
->>>>>>> update EventCard hover shadow
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -52,6 +34,25 @@ export default class EventCard extends PureComponent {
     endTime: undefined,
   };
 
+  constructor() {
+    super();
+    this.state = {
+      countDown: 0,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      countDown: getEndTimeCountDownString(this.props.event.endTime),
+    });
+  }
+
+  componentWillReceiveProps(next) {
+    this.setState({
+      countDown: getEndTimeCountDownString(next.event.endTime),
+    });
+  }
+
   render() {
     const {
       classes,
@@ -67,7 +68,7 @@ export default class EventCard extends PureComponent {
       amountLabel,
       endTime,
     } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const { formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -79,9 +80,6 @@ export default class EventCard extends PureComponent {
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
-              <div className={classes.dashboardTime}>
-                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getShortLocalDateTimeString(endTime)}`}
-              </div>
               <div className={classes.eventCardInfo}>
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
@@ -91,22 +89,12 @@ export default class EventCard extends PureComponent {
                   }
                 </div>
                 {amountLabel && (
-                  <div>
+                  <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
+                    {`${amountLabel} `}
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                    {` ${amountLabel}`}
                   </div>
                 )}
-<<<<<<< HEAD
-                <div>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
-                  {endTime !== undefined
-                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
-                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
-                  }
-                </div>
-=======
->>>>>>> update EventCard hover shadow
               </div>
             </div>
             <Divider />
