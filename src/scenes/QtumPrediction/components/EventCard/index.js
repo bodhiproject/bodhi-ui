@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import {
   Grid,
   Card,
@@ -14,6 +14,21 @@ import cx from 'classnames';
 import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../../../helpers';
+
+const cardMessages = defineMessages({
+  raise: {
+    id: 'str.raised',
+    defaultMessage: 'Raised',
+  },
+  ends: {
+    id: 'str.endIn',
+    defaultMessage: 'Ends In',
+  },
+  upcoming: {
+    id: 'str.upcoming',
+    defaultMessage: 'Upcoming',
+  },
+});
 
 
 @injectIntl
@@ -77,17 +92,13 @@ export default class EventCard extends PureComponent {
             <div className={cx(classes.eventCardSection, 'top')}>
               {(unconfirmed || isPending) && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
+              <div className={classes.dashboardTime}>
+                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)} ${this.state.countDown}`}
+              </div>
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
               <div className={classes.eventCardInfo}>
-                <div className={classes.eventCardInfoItem}>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
-                  {endTime !== undefined
-                    ? `${endTime !== undefined && `${this.state.countDown}`}`
-                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
-                  }
-                </div>
                 {amountLabel && (
                   <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
@@ -95,6 +106,13 @@ export default class EventCard extends PureComponent {
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
                   </div>
                 )}
+                {/* <div className={classes.eventCardInfoItem}>
+                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
+                  {endTime !== undefined
+                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
+                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
+                  }
+                </div> */}
               </div>
             </div>
             <Divider />
