@@ -1,10 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-<<<<<<< HEAD:src/scenes/QtumPrediction/store.js
 import { SortBy, Token, OracleStatus, Routes } from 'constants';
-=======
-import { Token, OracleStatus, Routes } from 'constants';
->>>>>>> move QtumPrediction Store:src/scenes/QtumPrediction/store.js
+
 import { queryAllOracles } from '../../network/graphQuery';
 import Oracle from '../../stores/models/Oracle';
 
