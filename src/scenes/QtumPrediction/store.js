@@ -1,5 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
+
 import { SortBy, Token, OracleStatus, Routes } from 'constants';
 
 import { queryAllOracles } from '../../network/graphQuery';
