@@ -3,9 +3,15 @@ import { inject, observer } from 'mobx-react';
 
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
+<<<<<<< HEAD
 import Loading from '../../components/EventListLoading';
 import EventCard from './components/EventCard';
 import TopActions from './components/TopActions';
+=======
+import EventCard from '../../components/EventCard';
+import Loading from '../../components/EventListLoading';
+import TopActions from './TopActions';
+>>>>>>> move TopActions
 
 @inject('store')
 @observer
