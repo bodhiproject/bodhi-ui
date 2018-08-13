@@ -18,7 +18,6 @@ export default class QtumPrediction extends Component {
       secondlyHeartBeat: 0,
     };
   }
-
   componentDidMount() {
     this.props.store.qtumPrediction.init();
     const interval = 1;

@@ -13,7 +13,7 @@ import cx from 'classnames';
 
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../helpers/utility';
+import { getEndTimeCountDownString } from '../../helpers/utility';
 
 const cardMessages = defineMessages({
   raise: {
@@ -21,8 +21,8 @@ const cardMessages = defineMessages({
     defaultMessage: 'Raised',
   },
   ends: {
-    id: 'str.ends',
-    defaultMessage: 'Ends',
+    id: 'str.endIn',
+    defaultMessage: 'Ends In',
   },
   upcoming: {
     id: 'str.upcoming',
@@ -49,6 +49,25 @@ export default class EventCard extends PureComponent {
     endTime: undefined,
   };
 
+  constructor() {
+    super();
+    this.state = {
+      countDown: 0,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      countDown: getEndTimeCountDownString(this.props.event.endTime),
+    });
+  }
+
+  componentWillReceiveProps(next) {
+    this.setState({
+      countDown: getEndTimeCountDownString(next.event.endTime),
+    });
+  }
+
   render() {
     const {
       classes,
@@ -64,7 +83,7 @@ export default class EventCard extends PureComponent {
       amountLabel,
       endTime,
     } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const { formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -73,27 +92,27 @@ export default class EventCard extends PureComponent {
             <div className={cx(classes.eventCardSection, 'top')}>
               {(unconfirmed || isPending) && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
+              <div className={classes.dashboardTime}>
+                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)} ${this.state.countDown}`}
+              </div>
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
-              <div className={classes.dashboardTime}>
-                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getShortLocalDateTimeString(endTime)}`}
-              </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
-                  <div>
+                  <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
+                    {`${amountLabel} `}
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                    {` ${amountLabel}`}
                   </div>
                 )}
-                <div>
+                {/* <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
                     ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
-                </div>
+                </div> */}
               </div>
             </div>
             <Divider />
