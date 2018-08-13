@@ -10,14 +10,33 @@ import TopActions from './TopActions';
 @inject('store')
 @observer
 export default class QtumPrediction extends Component {
+  counterInterval = undefined;
+
+  constructor() {
+    super();
+    this.state = {
+      secondlyHeartBeat: 0,
+    };
+  }
   componentDidMount() {
     this.props.store.qtumPrediction.init();
+    const interval = 1;
+    this.counterInterval = setInterval(() => {
+      const { secondlyHeartBeat } = this.state;
+      this.setState({
+        secondlyHeartBeat: secondlyHeartBeat + interval,
+      });
+    }, interval * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.counterInterval);
   }
 
   render() {
     const { list, loadMore, loadingMore, loading } = this.props.store.qtumPrediction;
     if (loading) return <Loading />;
-    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} secondlyHeartBeat={this.state.secondlyHeartBeat} />); // eslint-disable-line
     return (
       <Fragment>
         <TopActions />
