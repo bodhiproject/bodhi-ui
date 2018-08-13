@@ -3,9 +3,9 @@ import { inject, observer } from 'mobx-react';
 
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
-import EventCard from '../../components/EventCard';
 import Loading from '../../components/EventListLoading';
-import TopActions from './TopActions';
+import EventCard from './components/EventCard';
+import TopActions from './components/TopActions';
 
 @inject('store')
 @observer
@@ -18,6 +18,7 @@ export default class QtumPrediction extends Component {
       secondlyHeartBeat: 0,
     };
   }
+
   componentDidMount() {
     this.props.store.qtumPrediction.init();
     const interval = 1;

@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 
-import EventWarning from '../EventWarning';
+import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers/utility';
+import { getEndTimeCountDownString } from '../../../../helpers';
 
 const cardMessages = defineMessages({
   raise: {
