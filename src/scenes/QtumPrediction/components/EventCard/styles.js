@@ -1,6 +1,12 @@
 const styles = (theme) => ({
   eventCard: {
     position: 'relative',
+    borderRadius: '5px',
+    '&:hover': {
+      boxShadow: '0px 5px 20px 1px rgba(0,0,0,0.25)',
+      transform: 'translateY(-3px)',
+      transition: '.2s all ease-in-out',
+    },
   },
   eventCardSection: {
     position: 'relative',
@@ -33,6 +39,7 @@ const styles = (theme) => ({
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    fontWeight: '600',
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
