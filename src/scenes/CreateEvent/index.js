@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
 import { Token } from 'constants';
 
@@ -15,6 +15,20 @@ import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
 
+const messages = defineMessages({
+  createEscrowNoteTitleMsg: {
+    id: 'create.escrowNoteTitle',
+    defaultMessage: '{amount} BOT Escrow',
+  },
+  createEscrowNoteDescMsg: {
+    id: 'create.escrowNoteDesc',
+    defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
+  },
+  txConfirmMsgCreateMsg: {
+    id: 'txConfirmMsg.create',
+    defaultMessage: 'create an event',
+  },
+});
 
 const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warning, hasEnoughQtum, isOpen } } }) => (
   <Fragment>
@@ -55,8 +69,8 @@ const DialogTitle = styled(_DialogTitle)`
 `;
 
 const EscrowAmountNote = injectIntl(({ amount, intl }) => {
-  const heading = intl.formatMessage({ id: 'create.escrowNoteTitle' }, { amount });
-  const message = intl.formatMessage({ id: 'create.escrowNoteDesc' }, { amount });
+  const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount });
+  const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount });
   return <ImportantNote heading={heading} message={message} />;
 });
 
@@ -89,7 +103,7 @@ const CreateEventTxConfirmDialog = injectIntl(({ createEvent, intl }) => (
     open={createEvent.txConfirmDialogOpen}
     txToken={Token.BOT}
     txAmount={createEvent.escrowAmount}
-    txDesc={intl.formatMessage({ id: 'txConfirmMsg.create' })}
+    txDesc={intl.formatMessage(messages.txConfirmMsgCreateMsg)}
   />
 ));
 

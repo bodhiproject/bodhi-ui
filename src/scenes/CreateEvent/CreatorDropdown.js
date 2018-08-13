@@ -1,12 +1,18 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FormControl, FormHelperText, Select } from '@material-ui/core';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { Section } from './components';
 
+const messages = defineMessages({
+  strCreatorMsg: {
+    id: 'str.creator',
+    defaultMessage: 'Creator',
+  },
+});
 
 const CreatorDropdown = observer(({ store: { createEvent, wallet }, intl }) => (
-  <Section title='str.creator'>
+  <Section title={messages.strCreatorMsg}>
     <FormControl fullWidth>
       <Select
         native

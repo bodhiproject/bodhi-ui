@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 export const Section = injectIntl(({ title, children, column = false, intl }) => (
   <SectionContainer>
     <Grid item xs={3}>
-      {intl.formatMessage({ id: title })}
+      {intl.formatMessage(title)}
     </Grid>
     <Grid item xs={9} style={{ flexDirection: column ? 'column' : 'row', display: 'flex' }}>
       {children}

@@ -1,12 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
 import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers';
 
+const message = defineMessages({
+  eventInfoEndDateMsg: {
+    id: 'eventInfo.endDate',
+    defaultMessage: 'Ending Date',
+  },
+  eventInfoFundMsg: {
+    id: 'eventInfo.fund',
+    defaultMessage: 'Funding',
+  },
+  strResultSetterMsg: {
+    id: 'str.resultSetter',
+    defaultMessage: 'Result Setter',
+  },
+});
 
 const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
   <SidebarContainer>
@@ -27,15 +41,15 @@ const SidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
 `;
 
 const EndDate = injectIntl(({ oracle: { endTime }, intl: { locale, messages } }) => (
-  <EventInfoBlock id='eventInfo.endDate' content={getShortLocalDateTimeString(endTime)} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
+  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getShortLocalDateTimeString(endTime)} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
 ));
 
 const Funding = ({ oracle: { amounts, token } }) => (
-  <EventInfoBlock id='eventInfo.fund' content={`${parseFloat(_.sum(amounts).toFixed(5)).toString()} ${token}`} />
+  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${parseFloat(_.sum(amounts).toFixed(5)).toString()} ${token}`} />
 );
 
 const ResultSetter = ({ oracle }) => (
-  <EventInfoBlock id='str.resultSetter' content={oracle.resultSetterQAddress} />
+  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterQAddress} />
 );
 
 const EventInfo = styled.div`

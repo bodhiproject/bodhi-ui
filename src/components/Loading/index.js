@@ -2,11 +2,10 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import styled, { keyframes } from 'styled-components';
 
-
 export const Loading = injectIntl(({ text, intl, ...props }) => (
   <Col {...props}>
     <Animation className='animation' />
-    {text && intl.formatMessage({ id: text })}
+    {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </Col>
 ));
 

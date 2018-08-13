@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 
@@ -9,6 +9,25 @@ import TransactionHistoryID from '../../../../components/TransactionHistoryAddre
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
+
+const messages = defineMessages({
+  invalidMsg: {
+    id: 'invalid',
+    defaultMessage: 'Invalid',
+  },
+  strPendingMsg: {
+    id: 'str.pending',
+    defaultMessage: 'Pending',
+  },
+  strSuccessMsg: {
+    id: 'str.success',
+    defaultMessage: 'Success',
+  },
+  strFailMsg: {
+    id: 'str.fail',
+    defaultMessage: 'Fail',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -32,7 +51,7 @@ export default class TxRow extends Component {
   get name() {
     const { intl: { formatMessage }, transaction: { optionIdx, topic, name } } = this.props;
     if (topic) {
-      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage({ id: 'invalid' }) : name}`;
+      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage(messages.invalidMsg) : name}`;
     }
     return '';
   }
@@ -41,6 +60,13 @@ export default class TxRow extends Component {
     const { classes, intl, transaction } = this.props;
     const { status, txid, createdTime, amount, token, type } = transaction;
     const { expanded } = this.state;
+    const statusMsg = (() => {
+      switch (status) {
+        case 'PENDING': return messages.strPendingMsg;
+        case 'SUCCESS': return messages.strSuccessMsg;
+        default: return messages.strFailMsg;
+      }
+    })();
 
     return (
       <Fragment>
@@ -51,7 +77,7 @@ export default class TxRow extends Component {
           <TableCell padding="dense">
             {!amount ? '' : `${amount} ${token}`}
           </TableCell>
-          <TableCell padding="dense">{intl.formatMessage({ id: `str.${status.toLowerCase()}` })}</TableCell>
+          <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
           <TableCell padding="dense"><i className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} /></TableCell>
         </TableRow>
         {expanded && (
