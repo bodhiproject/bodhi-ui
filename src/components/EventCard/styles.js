@@ -19,6 +19,9 @@ const styles = (theme) => ({
   },
   dashboardTime: {
     color: theme.palette.text.hint,
+    fontWeight: '600',
+    display: 'block',
+    paddingBottom: '10px',
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
@@ -48,7 +51,9 @@ const styles = (theme) => ({
     bottom: theme.padding.sm.px,
     color: theme.palette.text.primary,
   },
-  eventCardBg: {},
+  eventCardInfoItem: {
+    padding: '3px 0px',
+  },
 });
 
 export default styles;
