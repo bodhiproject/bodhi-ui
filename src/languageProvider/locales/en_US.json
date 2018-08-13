@@ -122,6 +122,7 @@
   "selectAddressDialog.selectResultSetter": "Select Result Setter",
   "sort.asc": "Ascending",
   "sort.ascEndTime": "End Earliest",
+  "sort.byEndTime": "End Time",
   "sort.desc": "Descending",
   "sort.descEndTime": "End Latest",
   "sort.label": "Sort By",
