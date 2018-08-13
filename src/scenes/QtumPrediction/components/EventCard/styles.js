@@ -2,15 +2,10 @@ const styles = (theme) => ({
   eventCard: {
     position: 'relative',
     borderRadius: '5px',
-    boxShadow: '0px 0px 20px 0px rgba(0,0,0,0.05)',
-    border: '2px solid rgba(0,0,0,0.075)',
     '&:hover': {
-      boxShadow: '0px 5px 20px 3px rgba(0,0,0,0.1)',
-      transform: 'translateY(-2px)',
-      transition: '.1s all ease-in-out',
-    },
-    '&:active': {
-      opacity: '0.9',
+      boxShadow: '0px 5px 20px 1px rgba(0,0,0,0.25)',
+      transform: 'translateY(-3px)',
+      transition: '.2s all ease-in-out',
     },
   },
   eventCardSection: {
@@ -44,8 +39,7 @@ const styles = (theme) => ({
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    fontWeight: '700',
-    color: 'rgba(0,0,0,0.75)',
+    fontWeight: '600',
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
