@@ -37,7 +37,7 @@ const styles = (theme) => ({
   eventCardName: {
     marginBottom: theme.padding.xs.px,
     display: '-webkit-box',
-    maxWidth: '700px',
+    maxWidth: '400px',
     maxHeight: '160px',
     margin: '0 auto',
     WebkitLineClamp: 5,
