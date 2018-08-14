@@ -110,12 +110,13 @@ const INIT = {
 
 export default class CreateEventStore {
   escrowAmount = INIT.escrowAmount
-  averageBlockTime = INIT.averageBlockTime // TODO: maybe move to global store?
+  averageBlockTime = INIT.averageBlockTime
   txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
+
   // form fields
   @observable isOpen = INIT.isOpen
   @observable title = INIT.title
