@@ -81,13 +81,6 @@ export default class EventCard extends PureComponent {
                 {name}
               </Typography>
               <div className={classes.eventCardInfo}>
-                <div className={classes.eventCardInfoItem}>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
-                  {endTime !== undefined
-                    ? `${endTime !== undefined && `${this.state.countDown}`}`
-                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
-                  }
-                </div>
                 {amountLabel && (
                   <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
@@ -95,6 +88,13 @@ export default class EventCard extends PureComponent {
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
                   </div>
                 )}
+                <div className={classes.eventCardInfoItem}>
+                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
+                  {endTime !== undefined
+                    ? `${endTime !== undefined && `${this.state.countDown}`}`
+                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
+                  }
+                </div>
               </div>
             </div>
             <Divider />
