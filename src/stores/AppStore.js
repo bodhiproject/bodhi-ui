@@ -13,7 +13,7 @@ import ActivityHistoryStore from './activitiesStores/ActivityHistoryStore';
 import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import SelectAddressDialogStore from './components/SelectAddressDialogStore';
-import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
+import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
