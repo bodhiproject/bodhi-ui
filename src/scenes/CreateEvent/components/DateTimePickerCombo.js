@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { TextField, FormControl, FormHelperText, InputAdornment, IconButton } from '@material-ui/core';
 import { Event as EventIcon } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 
 import { DateTimePickerDialog } from './DateTimePickerDialog';
 
@@ -27,7 +28,7 @@ export class DateTimePickerCombo extends Component {
         <FormControl fullWidth={fullWidth}>
           <TextField
             fullWidth={fullWidth}
-            value={value}
+            value={moment.unix(value).format('YYYY-MM-DDTHH:mm')}
             error={Boolean(error)}
             type="datetime-local"
             InputProps={{

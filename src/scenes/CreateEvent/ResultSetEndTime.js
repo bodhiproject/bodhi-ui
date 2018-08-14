@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages } from 'react-intl';
+import moment from 'moment';
 import { DateRow, Section } from './components';
 
 const messages = defineMessages({
@@ -14,7 +15,7 @@ const ResultSetEndTime = observer(({ store: { createEvent } }) => (
   <Section title={messages.createResultSetEndTimeMsg}>
     <DateRow
       error={createEvent.error.resultSetting.endTime}
-      onChange={e => createEvent.resultSetting.endTime = e.target.value}
+      onChange={e => createEvent.resultSetting.endTime = moment(e.target.value).utc().unix()}
       value={createEvent.resultSetting.endTime}
       blockNum={createEvent.blockNum.resultSetting.endTime}
     />

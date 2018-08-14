@@ -56,7 +56,7 @@ const messages = defineMessages({
   },
 });
 
-const nowPlus = seconds => moment().add(seconds, 's').format('YYYY-MM-DDTHH:mm');
+const nowPlus = seconds => moment().add(seconds, 's').unix();
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 let TIME_GAP_MIN_SEC = 30 * 60;
@@ -187,21 +187,21 @@ export default class CreateEventStore {
     reaction( // check date valiation when date changed
       () => this.prediction.startTime,
       () => {
-        if (moment(this.prediction.startTime).utc().unix() - moment(this.prediction.endTime).utc().unix() > -TIME_GAP_MIN_SEC) this.prediction.endTime = moment(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').format('YYYY-MM-DDTHH:mm');
+        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
         this.validatePredictionStartTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.prediction.endTime,
       () => {
-        if (moment(this.prediction.endTime).utc().unix() - moment(this.resultSetting.startTime).utc().unix() > -TIME_GAP_MIN_SEC) this.resultSetting.startTime = moment(this.prediction.endTime).format('YYYY-MM-DDTHH:mm');
+        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
         this.validatePredictionEndTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.resultSetting.startTime,
       () => {
-        if (moment(this.resultSetting.startTime).utc().unix() - moment(this.resultSetting.endTime).utc().unix() > -TIME_GAP_MIN_SEC) this.resultSetting.endTime = moment(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').format('YYYY-MM-DDTHH:mm');
+        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
         this.validateResultSettingStartTime();
       }
     );
@@ -282,11 +282,7 @@ export default class CreateEventStore {
     }
   }
 
-  isBeforeNow = (value) => {
-    const valueTime = moment(value);
-    const now = moment();
-    return _.isUndefined(valueTime) || now.unix() > valueTime.unix();
-  }
+  isBeforeNow = (valueUnix) => _.isUndefined(valueUnix) || moment().unix() > valueUnix
 
   @action
   validatePredictionStartTime = () => {
@@ -299,11 +295,9 @@ export default class CreateEventStore {
 
   @action
   validatePredictionEndTime = () => {
-    const predictionStart = moment(this.prediction.startTime);
-    const predictionEnd = moment(this.prediction.endTime);
     if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = messages.createDatePastMsg.id;
-    } else if (predictionEnd.unix() - predictionStart.unix() < TIME_GAP_MIN_SEC) {
+    } else if (this.prediction.endTime - this.prediction.startTime < TIME_GAP_MIN_SEC) {
       this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
       this.error.prediction.endTime = '';
@@ -312,11 +306,9 @@ export default class CreateEventStore {
 
   @action
   validateResultSettingStartTime = () => {
-    const predictionEnd = moment(this.prediction.endTime);
-    const resultSettingStart = moment(this.resultSetting.startTime);
     if (this.isBeforeNow(this.resultSetting.startTime)) {
       this.error.resultSetting.startTime = messages.createDatePastMsg.id;
-    } else if (predictionEnd.unix() > resultSettingStart.unix()) {
+    } else if (this.prediction.endTime > this.resultSetting.startTime) {
       this.error.resultSetting.startTime = messages.createValidResultSetStartMsg.id;
     } else {
       this.error.resultSetting.startTime = '';
@@ -325,11 +317,9 @@ export default class CreateEventStore {
 
   @action
   validateResultSettingEndTime = () => {
-    const resultSettingStart = moment(this.resultSetting.startTime);
-    const resultSettingEnd = moment(this.resultSetting.endTime);
     if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = messages.createDatePastMsg.id;
-    } else if (resultSettingEnd.unix() - resultSettingStart.unix() < TIME_GAP_MIN_SEC) {
+    } else if (this.resultSetting.endTime - this.resultSetting.startTime < TIME_GAP_MIN_SEC) {
       this.error.resultSetting.endTime = messages.createValidResultSetEndMsg.id;
     } else {
       this.error.resultSetting.endTime = '';
@@ -440,20 +430,20 @@ export default class CreateEventStore {
         this.title,
         this.outcomes,
         this.resultSetter,
-        moment(this.prediction.startTime).utc().unix().toString(),
-        moment(this.prediction.endTime).utc().unix().toString(),
-        moment(this.resultSetting.startTime).utc().unix().toString(),
-        moment(this.resultSetting.endTime).utc().unix().toString(),
+        this.prediction.startTime.toString(),
+        this.prediction.endTime.toString(),
+        this.resultSetting.startTime.toString(),
+        this.resultSetting.endTime.toString(),
         decimalToSatoshi(this.escrowAmount),
         this.creator, // address
       );
       const oracle = { // TODO: we should return this from the backend when making the createTopic api call
         ...data.createTopic,
         optionIdxs: Array.from({ length: this.outcomes.length }, (x, i) => i),
-        resultSetStartTime: moment(this.resultSetting.startTime).utc().unix().toString(),
-        resultSetEndTime: moment(this.resultSetting.endTime).utc().unix().toString(),
-        startTime: moment(this.prediction.startTime).utc().unix().toString(),
-        endTime: moment(this.prediction.endTime).utc().unix().toString(),
+        resultSetStartTime: this.resultSetting.startTime.toString(),
+        resultSetEndTime: this.resultSetting.endTime.toString(),
+        startTime: this.prediction.startTime.toString(),
+        endTime: this.prediction.endTime.toString(),
         options: this.outcomes,
         name: this.title,
         amounts: [],
@@ -488,9 +478,9 @@ export default class CreateEventStore {
   * @param averageBlockTime {Number} The average block time in seconds.
   * @return {Number} Returns a number of the estimated future block.
   */
-  calculateBlock = (futureDate) => {
+  calculateBlock = (futureDateUnix) => {
     const currentBlock = this.app.global.syncBlockNum;
-    const diffSec = moment(futureDate).unix() - moment().unix();
+    const diffSec = futureDateUnix - moment().unix();
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
 }

@@ -19,7 +19,7 @@ import styles from './styles';
 export class DateTimePickerDialog extends Component {
   componentDidMount() {
     const { value } = this.props;
-    this.setDateTime(moment(value));
+    this.setDateTime(moment.unix(value));
   }
 
   state = {
