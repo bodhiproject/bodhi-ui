@@ -48,7 +48,6 @@ class AppStore {
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
 
-    await this.global.getSyncInfo(); // Inits the wallet addresses
     runInAction(() => {
       // these store are designed for "components"
       this.allEvents = new AllEventsStore(this);

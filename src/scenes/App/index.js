@@ -4,7 +4,6 @@ import { CssBaseline, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 import AppRouter from './router';
-import GlobalHub from './globalHub';
 import BottomBar from '../../components/BottomBar';
 import CreateEventFormDialog from '../CreateEvent';
 import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
@@ -19,7 +18,6 @@ import Loader from './components/Loader';
 
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
-    <GlobalHub />
     <Loader />
     {!store.loading && (
       <Fragment>
