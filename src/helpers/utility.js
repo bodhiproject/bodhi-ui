@@ -119,9 +119,9 @@ export function getShortLocalDateTimeString(unixSeconds) {
   return dateTime.format(FORMAT_SHORT_DATE_TIME);
 }
 
-export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
+export function getEndTimeCountDownString(now, unixSeconds, locale, localeMessages) {
   const { day, hour, minute, second, end } = messages;
-  const nowUnix = moment().unix();
+  const nowUnix = now || moment().unix();
   const unixDiff = unixSeconds - nowUnix;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);

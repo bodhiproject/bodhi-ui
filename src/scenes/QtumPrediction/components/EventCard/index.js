@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import moment from 'moment';
 import {
   Grid,
   Card,
@@ -19,6 +20,7 @@ import { getEndTimeCountDownString } from '../../../../helpers';
 @injectIntl
 @withStyles(styles, { withTheme: true })
 export default class EventCard extends PureComponent {
+  now = moment().unix();
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
@@ -33,25 +35,6 @@ export default class EventCard extends PureComponent {
     amountLabel: undefined,
     endTime: undefined,
   };
-
-  constructor() {
-    super();
-    this.state = {
-      countDown: 0,
-    };
-  }
-
-  componentDidMount() {
-    this.setState({
-      countDown: getEndTimeCountDownString(this.props.event.endTime),
-    });
-  }
-
-  componentWillReceiveProps(next) {
-    this.setState({
-      countDown: getEndTimeCountDownString(next.event.endTime),
-    });
-  }
 
   render() {
     const {
@@ -91,7 +74,7 @@ export default class EventCard extends PureComponent {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? `${endTime !== undefined && `${this.state.countDown}`}`
+                    ? <Fragment>{getEndTimeCountDownString(this.now, this.props.event.endTime - this.props.increasingCount)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>
@@ -99,7 +82,10 @@ export default class EventCard extends PureComponent {
             </div>
             <Divider />
             <div className={cx(classes.eventCardSection, 'button')}>
-              {isUpcoming ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" /> : formatMessage(buttonText)}
+              {isUpcoming
+                ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" />
+                : formatMessage(buttonText)
+              }
             </div>
           </Card>
         </Link>
