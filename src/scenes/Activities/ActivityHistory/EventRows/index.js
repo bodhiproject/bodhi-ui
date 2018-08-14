@@ -12,11 +12,11 @@ import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import styles from './styles';
-import TransactionHistoryID from '../../../components/TransactionHistoryAddressAndID/id';
-import TransactionHistoryAddress from '../../../components/TransactionHistoryAddressAndID/address';
-import { getShortLocalDateTimeString } from '../../../helpers/utility';
-import { i18nToUpperCase } from '../../../helpers/i18nUtil';
-import { getTxTypeString } from '../../../helpers/stringUtil';
+import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
+import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
+import { getTxTypeString } from '../../../../helpers/stringUtil';
 
 const EventRows = observer(({ displayedTxs }) => (
   <TableBody>

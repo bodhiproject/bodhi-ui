@@ -1,8 +1,9 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
-import { queryAllOracles } from '../../network/graphQuery';
-import Oracle from '../models/Oracle';
+import { Oracle } from 'models';
+
+import { queryAllOracles } from '../../../network/graphQuery';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -26,7 +27,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === Routes.SET) {
+        if (this.app.ui.location === Routes.FINALIZE) {
           this.init();
         }
       }
@@ -42,7 +43,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = Routes.SET; // change ui location, for tabs to render correctly
+    this.app.ui.location = Routes.FINALIZE; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
@@ -63,20 +64,14 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
+    // we want to fetch all *Oracles* which is related to BOT token and waitResult status
     if (this.hasMore) {
-      const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
-      _.each(this.app.wallet.addresses, (addressObj) => {
-        filters.push({
-          token: Token.QTUM,
-          status: OracleStatus.WAIT_RESULT,
-          resultSetterQAddress: addressObj.address,
-        });
-      });
+      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const data = await queryAllOracles(filters, orderBy, limit, skip);
-      return _.uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      const result = await queryAllOracles(filters, orderBy, limit, skip);
+      if (result.length < limit) this.hasMore = false;
+      return _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
-    return INIT_VALUES.list; // default return
+    return INIT_VALUES.list;
   }
 }

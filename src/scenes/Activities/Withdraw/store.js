@@ -1,8 +1,9 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, Routes, SortBy } from 'constants';
-import { queryAllOracles } from '../../network/graphQuery';
-import Oracle from '../models/Oracle';
+import { OracleStatus, Routes, SortBy } from 'constants';
+import { Topic } from 'models';
+
+import { queryAllVotes, queryAllTopics } from '../../../network/graphQuery';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -26,7 +27,7 @@ export default class {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === Routes.FINALIZE) {
+        if (this.app.ui.location === Routes.WITHDRAW) {
           this.init();
         }
       }
@@ -42,7 +43,7 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
-    this.app.ui.location = Routes.FINALIZE; // change ui location, for tabs to render correctly
+    this.app.ui.location = Routes.WITHDRAW; // change ui location, for tabs to render correctly
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
@@ -63,14 +64,34 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // we want to fetch all *Oracles* which is related to BOT token and waitResult status
     if (this.hasMore) {
-      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
+      const voteFilters = [];
+      const topicFilters = [];
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const result = await queryAllOracles(filters, orderBy, limit, skip);
+
+      // Get all votes for all your addresses
+      _.each(this.app.wallet.addresses, (item) => {
+        voteFilters.push({ voterQAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
+      });
+
+      // Filter votes
+      let votes = await queryAllVotes(voteFilters);
+      votes = votes.reduce((accumulator, vote) => {
+        const { voterQAddress, topicAddress, optionIdx } = vote;
+        if (!_.find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
+        return accumulator;
+      }, []);
+
+      // Fetch topics against votes that have the winning result index
+      _.each(votes, ({ topicAddress, optionIdx }) => {
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
+      });
+      const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
+      const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
       if (result.length < limit) this.hasMore = false;
-      return _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      return result;
     }
-    return INIT_VALUES.list;
+    return INIT_VALUES.list; // default return
   }
 }

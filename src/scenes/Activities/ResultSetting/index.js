@@ -1,21 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import InfiniteScroll from '../../../components/InfiniteScroll';
 import theme from '../../../config/theme';
+import InfiniteScroll from '../../../components/InfiniteScroll';
 import EventCard from '../../../components/EventCard';
 import Loading from '../../../components/EventListLoading';
 
 
 @inject('store')
 @observer
-export default class Withdraw extends Component {
+export default class ResultSetting extends Component {
   componentDidMount() {
-    this.props.store.activities.withdraw.init();
+    this.props.store.activities.resultSetting.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loading } = this.props.store.activities.withdraw;
+    const { list, loadMore, loadingMore, loading } = this.props.store.activities.resultSetting;
     if (loading) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (

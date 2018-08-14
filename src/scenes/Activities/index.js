@@ -5,10 +5,10 @@ import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Routes, EventStatus } from 'constants';
 
-import ResultSetting from './scenes/ResultSetting';
-import Finalize from './scenes/Finalize';
-import Withdraw from './scenes/Withdraw';
-import EventHistory from './scenes/EventHistory';
+import ResultSetting from './ResultSetting';
+import Finalize from './Finalize';
+import Withdraw from './Withdraw';
+import ActivityHistory from './ActivityHistory';
 import styles from './styles';
 const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
 
@@ -127,7 +127,7 @@ export default class Activities extends Component {
           {this.tabIdx === TAB_SET && <ResultSetting />}
           {this.tabIdx === TAB_FINALIZE && <Finalize />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
-          {this.tabIdx === TAB_HISTORY && <EventHistory />}
+          {this.tabIdx === TAB_HISTORY && <ActivityHistory />}
         </div>
       </div>
     );

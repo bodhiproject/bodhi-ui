@@ -1,6 +1,10 @@
 const styles = () => ({
-  historyTable: {
-    overflowX: 'scroll',
+  clickToExpandRow: {
+    cursor: 'pointer',
+  },
+  summaryRowCell: {
+    paddingTop: '24px',
+    paddingBottom: '24px',
   },
   viewEventLink: {
     '&:hover': {
@@ -9,21 +13,14 @@ const styles = () => ({
     },
     textDecoration: 'underline',
   },
-  clickToExpandRow: {
-    cursor: 'pointer',
-  },
-  summaryRowCell: {
-    paddingTop: '24px',
-    paddingBottom: '24px',
-  },
-  hide: {
-    display: 'none',
+  arrowSize: {
+    fontSize: '8px',
   },
   show: {
     display: 'table-row',
   },
-  arrowSize: {
-    fontSize: '8px',
+  hide: {
+    display: 'none',
   },
 });
 

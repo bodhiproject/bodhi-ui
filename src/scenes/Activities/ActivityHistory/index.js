@@ -25,7 +25,7 @@ import EventRows from './EventRows';
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class EventHistory extends Component {
+export default class ActivityHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
   };

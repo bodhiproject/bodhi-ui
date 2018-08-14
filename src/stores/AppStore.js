@@ -6,10 +6,10 @@ import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
 import QtumPredictionStore from './QtumPredictionStore';
 import BotCourtStore from './BotCourtStore';
-import ResultSettingStore from './activitiesStores/ResultSetting';
-import FinalizeStore from './activitiesStores/Finalize';
-import WithdrawStore from './activitiesStores/Withdraw';
-import ActivityHistoryStore from './activitiesStores/ActivityHistoryStore';
+import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
+import FinalizeStore from '../scenes/Activities/Finalize/store';
+import WithdrawStore from '../scenes/Activities/Withdraw/store';
+import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
@@ -41,6 +41,7 @@ class AppStore {
 
   @action
   async init() {
+    // block content until all stores are initialized
     this.loading = true;
 
     this.global = new GlobalStore(this);
@@ -53,7 +54,6 @@ class AppStore {
     this.eventPage = new EventPageStore(this);
 
     runInAction(() => {
-      // these store are designed for "components"
       this.qtumPrediction = new QtumPredictionStore(this);
       this.botCourt = new BotCourtStore(this);
       this.createEvent = new CreateEventStore(this);
@@ -65,7 +65,8 @@ class AppStore {
         history: new ActivityHistoryStore(this),
       };
 
-      this.loading = false; // finishing loading
+      // finished loading all stores, show UI
+      this.loading = false;
     });
   }
 }
