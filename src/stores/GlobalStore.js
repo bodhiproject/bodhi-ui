@@ -1,10 +1,12 @@
-
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
 
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
 import SyncInfo from './models/SyncInfo';
+import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
+import getSubscription, { channels } from '../network/graphSubscription';
+import apolloClient from '../network/graphClient';
+import AppConfig from '../config/app';
 
 
 const INIT_VALUES = {
@@ -19,6 +21,7 @@ const INIT_VALUES = {
     totalCount: 0,
   },
 };
+let syncInfoInterval;
 
 export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
@@ -42,17 +45,13 @@ export default class GlobalStore {
         this.getUserData();
       }
     );
-  }
 
-  @action
-  getSyncInfo = async () => {
-    try {
-      const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
-      const syncInfo = await querySyncInfo(includeBalances);
-      this.onSyncInfo(syncInfo);
-    } catch (error) {
-      this.onSyncInfo({ error });
-    }
+    // Call syncInfo once to init the wallet addresses used by other stores
+    this.getSyncInfo();
+
+    // Start syncInfo long polling
+    // We use this to update the percentage of the loading screen
+    syncInfoInterval = setInterval(this.getSyncInfo(), AppConfig.intervals.syncInfo);
   }
 
   @action
@@ -67,6 +66,38 @@ export default class GlobalStore {
       this.peerNodeCount = peerNodeCount || 1;
       this.app.wallet.addresses = balances;
     }
+  }
+
+  @action
+  getSyncInfo = async () => {
+    try {
+      const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
+      const syncInfo = await querySyncInfo(includeBalances);
+      this.onSyncInfo(syncInfo);
+    } catch (error) {
+      this.onSyncInfo({ error });
+    }
+  }
+
+  /**
+   * Subscribe to syncInfo subscription
+   * This returns only after the initial sync is done, and every new block that is returned.
+   */
+  subscribeSyncInfo = () => {
+    apolloClient.subscribe({
+      query: getSubscription(channels.ON_SYNC_INFO),
+    }).subscribe({
+      next({ data, errors }) {
+        if (errors && errors.length > 0) {
+          this.onSyncInfo({ error: errors[0] });
+        } else {
+          this.onSyncInfo(data.onSyncInfo);
+        }
+      },
+      error(err) {
+        this.onSyncInfo({ error: err.message });
+      },
+    });
   }
 
   @action.bound

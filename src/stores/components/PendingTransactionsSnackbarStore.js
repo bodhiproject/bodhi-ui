@@ -37,6 +37,8 @@ export default class PendingTransactionsSnackbarStore {
       () => this.count,
       () => this.isVisible = this.count > 0
     );
+
+    this.init();
   }
 
   @action

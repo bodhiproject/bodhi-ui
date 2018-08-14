@@ -6,12 +6,7 @@ import { withApollo } from 'react-apollo';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 
-import appActions from '../../redux/App/actions';
 import graphqlActions from '../../redux/Graphql/actions';
-import getSubscription, { channels } from '../../network/graphSubscription';
-import AppConfig from '../../config/app';
-
-let syncInfoInterval;
 
 
 @injectIntl
@@ -20,17 +15,12 @@ let syncInfoInterval;
   ...state.App.toJS(),
   txReturn: state.Graphql.get('txReturn'),
 }), (dispatch) => ({
-  getSyncInfo: (syncPercent) => dispatch(appActions.getSyncInfo(syncPercent)),
-  onSyncInfo: (syncInfo) => dispatch(appActions.onSyncInfo(syncInfo)),
   getActionableItemCount: (walletAddresses) => dispatch(graphqlActions.getActionableItemCount(walletAddresses)),
 }))
 @inject('store')
 @observer
 export default class GlobalHub extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    getSyncInfo: PropTypes.func.isRequired,
-    onSyncInfo: PropTypes.func.isRequired,
     syncPercent: PropTypes.number.isRequired,
     syncBlockNum: PropTypes.number.isRequired,
     walletAddresses: PropTypes.array.isRequired,
@@ -39,30 +29,8 @@ export default class GlobalHub extends Component {
   };
 
   static defaultProps = {
-    client: undefined,
     txReturn: undefined,
   };
-
-  componentWillMount() {
-    const { getSyncInfo, syncPercent } = this.props;
-    const { checkWalletEncrypted } = this.props.store.wallet;
-    const { queryPendingTransactions } = this.props.store.pendingTxsSnackbar;
-
-    // Checks to see if any txs will require unlocking the wallet
-    checkWalletEncrypted();
-
-    // Start syncInfo long polling
-    // We use this to update the percentage of the loading screen
-    getSyncInfo(syncPercent);
-    syncInfoInterval = setInterval(this.fetchSyncInfo, AppConfig.intervals.syncInfo);
-
-    // Subscribe to syncInfo subscription
-    // This returns only after the initial sync is done, and every new block that is returned
-    this.subscribeSyncInfo();
-
-    // Get all pending txs to show snackbar
-    queryPendingTransactions();
-  }
 
   componentWillReceiveProps(nextProps) {
     const {
@@ -100,33 +68,4 @@ export default class GlobalHub extends Component {
   render() {
     return null;
   }
-
-  fetchSyncInfo = () => {
-    const { getSyncInfo, syncPercent } = this.props;
-
-    getSyncInfo(syncPercent);
-    this.props.store.global.getSyncInfo();
-  };
-
-  subscribeSyncInfo = () => {
-    const { client, onSyncInfo, store } = this.props;
-
-    client.subscribe({
-      query: getSubscription(channels.ON_SYNC_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          store.global.onSyncInfo({ error: errors[0] });
-          onSyncInfo({ error: errors[0] });
-        } else {
-          store.global.onSyncInfo(data.onSyncInfo);
-          onSyncInfo(data.onSyncInfo);
-        }
-      },
-      error(err) {
-        store.global.onSyncInfo({ error: err.message });
-        onSyncInfo({ error: err.message });
-      },
-    });
-  };
 }
