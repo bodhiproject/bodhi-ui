@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { Dialog, DialogContent } from '@material-ui/core';
-import { injectIntl } from 'react-intl';
+import { Dialog, DialogContent, DialogTitle, DialogActions, Button, withStyles } from '@material-ui/core';
+import { KeyboardArrowRight as KeyboardArrowRightIcon, KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import BasePicker from 'material-ui-pickers/_shared/BasePicker';
 import Calendar from 'material-ui-pickers/DatePicker/Calendar';
@@ -8,9 +9,13 @@ import TimePickerView from 'material-ui-pickers/TimePicker/TimePickerView';
 import * as pickerViewType from 'material-ui-pickers/constants/date-picker-view';
 import moment from 'moment';
 
+import { DateTimePickerDialogTab } from './DateTimePickerDialogTab';
+import styles from './styles';
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-@injectIntl
 export class DateTimePickerDialog extends Component {
   componentDidMount() {
     const { value } = this.props;
@@ -46,41 +51,44 @@ export class DateTimePickerDialog extends Component {
 
   handleMinutesChange = (dateTime) => {
     this.setDateTime(dateTime);
-    this.handleClose();
   }
 
   handleSecondsChange = (dateTime) => {
     this.setDateTime(dateTime);
-    this.handleClose();
   }
+
+  handleTabChange = (pickerView) => this.setPickerView(pickerView);
 
   render() {
     const { dateTime, pickerView } = this.state;
+    const { classes } = this.props;
     return (
       <Fragment>
         <Dialog open>
-          <DialogContent>
-            <BasePicker value={dateTime}>
-              {
-                ({
-                  handleAccept,
-                  handleChange,
-                  handleClear,
-                  handleDismiss,
-                  handleSetTodayDate,
-                  handleTextFieldChange,
-                  pick12hOr24hFormat,
-                }) => (
-                  <div>
-                    { pickerView === pickerViewType.DATE &&
-                    <div className="picker">
+          <DialogTitle>
+            <DateTimePickerDialogTab
+              className={classes.pickerTab}
+              onChange={this.handleTabChange}
+              pickerView={pickerView}
+              date={dateTime}
+            />
+          </DialogTitle>
+          <DialogContent className={classes.pickerPaper}>
+            <BasePicker value={dateTime}>{
+              () => (
+                <div>
+                  {pickerView === pickerViewType.DATE && (
+                    <div className={classes.pickerCalendar}>
                       <Calendar
                         date={dateTime}
                         onChange={this.handleDateChange}
+                        leftArrowIcon={<KeyboardArrowLeftIcon />}
+                        rightArrowIcon={<KeyboardArrowRightIcon />}
                       />
                     </div>
-                    }
-                    { (pickerView === pickerViewType.HOUR || pickerView === pickerViewType.MINUTES) &&
+                  )
+                  }
+                  {(pickerView === pickerViewType.HOUR || pickerView === pickerViewType.MINUTES) && (
                     <TimePickerView
                       date={dateTime}
                       ampm={false}
@@ -89,12 +97,17 @@ export class DateTimePickerDialog extends Component {
                       onMinutesChange={this.handleMinutesChange}
                       onSecondsChange={this.handleSecondsChange}
                     />
-                    }
-                  </div>
-                )
-              }
+                  )}
+                </div>
+              )
+            }
             </BasePicker>
           </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              <FormattedMessage id="str.ok" defaultMessage="OK" />
+            </Button>
+          </DialogActions>
         </Dialog>
       </Fragment>
     );
