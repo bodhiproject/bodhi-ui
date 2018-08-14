@@ -31,6 +31,8 @@ export default class Transaction {
   topic // The Topic object associated with the Transaction
   version = 0 // Current version of the contract. To manage deprecations later.
 
+  // for invalid option
+  localizedInvalid = {};
   constructor(transaction) {
     Object.assign(this, transaction);
     this.gasLimit = Number(this.gasLimit);
@@ -50,5 +52,10 @@ export default class Transaction {
         this.amount = satoshiToDecimal(this.amount);
       }
     }
+    this.localizedInvalid = {
+      en: 'Invalid',
+      zh: '无效',
+      ko: '무효의',
+    };
   }
 }

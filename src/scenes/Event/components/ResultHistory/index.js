@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { Token, Phases, OracleStatus } from 'constants';
 
-import { getShortLocalDateTimeString, i18nToUpperCase, localizeInvalidOption } from '../../../../helpers';
+import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
 
@@ -34,11 +34,6 @@ export default class EventResultHistory extends Component {
     }
     return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
   }
-
-  getInvalid(oracle, intl) {
-    return localizeInvalidOption(oracle.options[oracle.resultIdx].name, intl);
-  }
-
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);

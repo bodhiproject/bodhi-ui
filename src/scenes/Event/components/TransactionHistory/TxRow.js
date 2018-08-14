@@ -12,10 +12,6 @@ import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
 const messages = defineMessages({
-  invalidMsg: {
-    id: 'invalid',
-    defaultMessage: 'Invalid',
-  },
   strPendingMsg: {
     id: 'str.pending',
     defaultMessage: 'Pending',
