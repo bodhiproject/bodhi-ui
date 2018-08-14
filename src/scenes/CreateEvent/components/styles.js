@@ -1,16 +1,29 @@
 const styles = (theme) => ({
-  pickerTab: {
+  pickerTabx: {
     background: theme.palette.background.default,
   },
   pickerPaper: {
-    width: 400,
-    height: 330,
+    width: 350,
+    height: 300,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pickerTab: {
+    margin: 0,
+    marginTop: 0,
+    paddingTop: 10,
+    padding: 10,
+    flexGrow: 1,
   },
   pickerCalendar: {
-    background: theme.palette.background.default,
+    marginTop: 28,
     overflow: 'hidden',
     paddingLeft: 0,
     paddingRight: 0,
+  },
+  dialogAction: {
+    marginTop: -16,
   },
 });
 

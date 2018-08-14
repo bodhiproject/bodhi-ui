@@ -65,21 +65,20 @@ export class DateTimePickerDialog extends Component {
     return (
       <Fragment>
         <Dialog open>
-          <DialogTitle>
-            <DateTimePickerDialogTab
-              className={classes.pickerTab}
-              onChange={this.handleTabChange}
-              pickerView={pickerView}
-              date={dateTime}
-            />
-          </DialogTitle>
-          <DialogContent className={classes.pickerPaper}>
+          <DateTimePickerDialogTab
+            className={classes.pickerTab}
+            onChange={this.handleTabChange}
+            pickerView={pickerView}
+            date={dateTime}
+          />
+          <div className={classes.pickerPaper}>
             <BasePicker value={dateTime}>{
               () => (
                 <div>
                   {pickerView === pickerViewType.DATE && (
                     <div className={classes.pickerCalendar}>
                       <Calendar
+                        classes={{ transitionContainer: classes.pickersCalendarHeader }}
                         date={dateTime}
                         onChange={this.handleDateChange}
                         leftArrowIcon={<KeyboardArrowLeftIcon />}
@@ -89,21 +88,23 @@ export class DateTimePickerDialog extends Component {
                   )
                   }
                   {(pickerView === pickerViewType.HOUR || pickerView === pickerViewType.MINUTES) && (
-                    <TimePickerView
-                      date={dateTime}
-                      ampm={false}
-                      onHourChange={this.handleHourChange}
-                      type={pickerView}
-                      onMinutesChange={this.handleMinutesChange}
-                      onSecondsChange={this.handleSecondsChange}
-                    />
+                    <div>
+                      <TimePickerView
+                        date={dateTime}
+                        ampm={false}
+                        onHourChange={this.handleHourChange}
+                        type={pickerView}
+                        onMinutesChange={this.handleMinutesChange}
+                        onSecondsChange={this.handleSecondsChange}
+                      />
+                    </div>
                   )}
                 </div>
               )
             }
             </BasePicker>
-          </DialogContent>
-          <DialogActions>
+          </div>
+          <DialogActions className={classes.dialogAction}>
             <Button onClick={this.handleClose} color="primary">
               <FormattedMessage id="str.ok" defaultMessage="OK" />
             </Button>

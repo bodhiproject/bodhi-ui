@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab, withStyles } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import * as pickerViewType from 'material-ui-pickers/constants/date-picker-view';
 
+import styles from './styles';
 
+@injectIntl
+@withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-@injectIntl
 export class DateTimePickerDialogTab extends Component {
   pickerViewToIndex = (pickerView) => {
     if (pickerView === pickerViewType.DATE || pickerView === pickerViewType.YEAR) {
@@ -25,7 +27,7 @@ export class DateTimePickerDialogTab extends Component {
   handleChange = (event, value) => this.props.onChange(this.indexToPickerView(value));
 
   render() {
-    const { pickerView, date } = this.props;
+    const { pickerView, date, classes } = this.props;
     return (
       <Tabs
         color="primary"
@@ -33,8 +35,16 @@ export class DateTimePickerDialogTab extends Component {
         value={this.pickerViewToIndex(pickerView)}
         onChange={this.handleChange}
       >
-        <Tab value='date' label={this.momentToDate(date)} />
-        <Tab value='time' label={this.momentToTime(date)} />
+        <Tab
+          value='date'
+          label={this.momentToDate(date)}
+          className={classes.pickerTab}
+        />
+        <Tab
+          value='time'
+          label={this.momentToTime(date)}
+          className={classes.pickerTab}
+        />
       </Tabs>
     );
   }
