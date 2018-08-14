@@ -18,16 +18,22 @@ import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 
 class AppStore {
-  @observable loading = true; // TODO: move these to GlobalStore
+  @observable loading = true;
   @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
 
   global = {}
   ui = {}
   wallet = {}
-  allEvents = {}
   globalSnackbar = {}
   walletUnlockDialog = {}
   pendingTxsSnackbar = {}
+  refreshing = {}
+  eventPage = {}
+  qtumPrediction = {}
+  botCourt = {}
+  createEvent = {}
+  allEvents = {}
+  activities = {}
 
   constructor() {
     this.init();
@@ -36,6 +42,7 @@ class AppStore {
   @action
   async init() {
     this.loading = true;
+
     this.global = new GlobalStore(this);
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
@@ -47,16 +54,17 @@ class AppStore {
 
     runInAction(() => {
       // these store are designed for "components"
-      this.allEvents = new AllEventsStore(this);
       this.qtumPrediction = new QtumPredictionStore(this);
-      this.createEvent = new CreateEventStore(this);
       this.botCourt = new BotCourtStore(this);
+      this.createEvent = new CreateEventStore(this);
+      this.allEvents = new AllEventsStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
       };
+
       this.loading = false; // finishing loading
     });
   }
