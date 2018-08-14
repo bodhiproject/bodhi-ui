@@ -45,6 +45,7 @@ export default class GlobalStore {
       () => this.syncPercent,
       () => {
         if (this.syncPercent >= 100) {
+          console.log('synced! ', this.syncPercent);
           clearInterval(syncInfoInterval);
         }
       },
@@ -61,6 +62,7 @@ export default class GlobalStore {
 
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
+    this.subscribeSyncInfo();
 
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
@@ -102,18 +104,19 @@ export default class GlobalStore {
    * This subscription will return a syncInfo on every new block.
    */
   subscribeSyncInfo = () => {
+    const self = this;
     apolloClient.subscribe({
       query: getSubscription(channels.ON_SYNC_INFO),
     }).subscribe({
       next({ data, errors }) {
         if (errors && errors.length > 0) {
-          this.onSyncInfo({ error: errors[0] });
+          self.onSyncInfo({ error: errors[0] });
         } else {
-          this.onSyncInfo(data.onSyncInfo);
+          self.onSyncInfo(data.onSyncInfo);
         }
       },
       error(err) {
-        this.onSyncInfo({ error: err.message });
+        self.onSyncInfo({ error: err.message });
       },
     });
   }
