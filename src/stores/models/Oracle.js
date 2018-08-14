@@ -52,6 +52,8 @@ export default class Oracle {
   url = '' // Internal URL for routing within UI.
   @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
 
+  // for invalid option
+  localizedInvalid = {};
   // BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING
   @computed get phase() {
     const { token, status } = this;
@@ -124,5 +126,11 @@ export default class Oracle {
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
 
     this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
+
+    this.localizedInvalid = {
+      en: 'Invalid',
+      zh: '无效',
+      ko: '무효의',
+    };
   }
 }

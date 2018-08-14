@@ -24,7 +24,7 @@ export default class Transaction {
   receiverAddress = '' // Receiver's address. Only used for TRANSFER types.
   topicAddress = '' // Topic contract address associated with Transaction
   oracleAddress = '' // Oracle contract address associated with Transaction
-  name = '' // Nave of the event
+  name = '' // Name of the event
   optionIdx = 0 // Result index used for Transaction. eg. For a bet, this would be the result index the user bet on.
   token = '' // Token type used for Transaction. QTUM for BET. BOT for VOTE.
   amount = '' // Amount of token used

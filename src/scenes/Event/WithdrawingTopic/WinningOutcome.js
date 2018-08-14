@@ -17,7 +17,7 @@ const WinningOutcome = injectIntl(({ eventPage, intl }) => (
   <Container>
     <WinningIcon />
     <WinningOutcomeTitle />
-    <OutcomeOption>{eventPage.selectedOption}</OutcomeOption>
+    <OutcomeOption>{eventPage.selectedOption === 'Invalid' ? eventPage.topic.localizedInvalid[intl.locale.slice(0, 2)] : eventPage.selectedOption}</OutcomeOption>
     {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
       <Typography variant="caption">
         {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}

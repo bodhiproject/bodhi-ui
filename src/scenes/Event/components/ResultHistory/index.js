@@ -79,8 +79,11 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(filteredOracles, (oracle, index) => {
-                const invalidOption = localizeInvalidOption(oracle.options[oracle.resultIdx], intl);
+              {_.map(sortedOracles, (oracle, index) => {
+                let invalidOption = 'Invalid';
+                if (oracle.localizedInvalid !== undefined) {
+                  invalidOption = oracle.localizedInvalid[intl.locale.slice(0, 2)];
+                }
                 return (
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>

@@ -33,6 +33,9 @@ export default class Topic {
   // for UI
   isPending = false // change to this instead of 'unconfirmed'
 
+  // for invalid option
+  localizedInvalid = {};
+
   constructor(topic, app) {
     Object.assign(this, topic);
     this.app = app;
@@ -54,5 +57,10 @@ export default class Topic {
     this.isUpcoming = false;
     this.buttonText = messages.withdraw;
     this.unconfirmed = this.isPending;
+    this.localizedInvalid = {
+      en: 'Invalid',
+      zh: '无效',
+      ko: '무효의',
+    };
   }
 }
