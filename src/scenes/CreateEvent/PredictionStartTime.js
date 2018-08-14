@@ -13,7 +13,6 @@ const messages = defineMessages({
 const PredictionStartTime = observer(({ store: { createEvent } }) => (
   <Section title={messages.createBetStartTimeMsg}>
     <DateRow
-      isOpen
       error={createEvent.error.prediction.startTime}
       onChange={e => createEvent.prediction.startTime = e.target.value}
       value={createEvent.prediction.startTime}
