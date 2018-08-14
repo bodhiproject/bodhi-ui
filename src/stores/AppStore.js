@@ -4,7 +4,7 @@ import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
-import QtumPredictionStore from '../scenes/QtumPrediction/store';
+import QtumPredictionStore from './QtumPredictionStore';
 import BotCourtStore from './BotCourtStore';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
