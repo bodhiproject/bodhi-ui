@@ -45,9 +45,10 @@ const messages = defineMessages({
 });
 
 /**
+ * Shows the transactions that the user is approving before executing them. Some txs require 2 different txs.
  * USED IN:
  * - wallet
- * - oracle detail page
+ * - event page
  * - create event
  */
 @injectIntl
@@ -58,10 +59,16 @@ export default class TxConfirmDialog extends Component {
   render() {
     const { open, txFees, onConfirm, onClose, txAmount, txToken, txDesc } = this.props;
     const { classes, intl: { formatMessage } } = this.props;
+
     const txFee = _.sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
     let confirmMessage = formatMessage(messages.txConfirmMessageMsg, { txDesc, txAmount, txToken });
-    if (txFee) confirmMessage = formatMessage(messages.txConfirmMessageWithFeeMsg, { txDesc, txAmount, txToken, txFee });
-    if (!open) return null;
+    if (txFee) {
+      confirmMessage = formatMessage(messages.txConfirmMessageWithFeeMsg, { txDesc, txAmount, txToken, txFee });
+    }
+    if (!open) {
+      return null;
+    }
+
     return (
       <Dialog open={open}>
         <DialogTitle>

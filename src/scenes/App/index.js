@@ -11,7 +11,6 @@ import GlobalSnackbar from '../../components/GlobalSnackbar';
 import OLDTxSentDialog from '../../components/TxSentDialog/old';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
-import OLDTxConfirmDialog from '../../components/TxConfirmDialog/old';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 import Loader from './components/Loader';
 
@@ -31,7 +30,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <OLDTxSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
-        <OLDTxConfirmDialog txDesc="" txAmount={10} txToken="QTUM" />
         <TutorialCarouselDialog />
       </Fragment>
     )}
