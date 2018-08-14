@@ -16,7 +16,6 @@ const ResultSetStartTime = observer(({ store: { createEvent } }) => (
       error={createEvent.error.resultSetting.startTime}
       onChange={e => createEvent.resultSetting.startTime = e.target.value}
       value={createEvent.resultSetting.startTime}
-      onBlur={createEvent.validateResultSettingStartTime}
       blockNum={createEvent.blockNum.resultSetting.startTime}
     />
   </Section>

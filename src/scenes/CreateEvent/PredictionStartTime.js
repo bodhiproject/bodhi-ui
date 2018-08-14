@@ -16,7 +16,6 @@ const PredictionStartTime = observer(({ store: { createEvent } }) => (
       error={createEvent.error.prediction.startTime}
       onChange={e => createEvent.prediction.startTime = e.target.value}
       value={createEvent.prediction.startTime}
-      onBlur={createEvent.validatePredictionStartTime}
       blockNum={createEvent.blockNum.prediction.startTime}
     />
   </Section>
