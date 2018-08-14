@@ -22,9 +22,6 @@ const styles = (theme) => ({
     paddingLeft: 0,
     paddingRight: 0,
   },
-  dialogAction: {
-    marginTop: -16,
-  },
 });
 
 export default styles;
