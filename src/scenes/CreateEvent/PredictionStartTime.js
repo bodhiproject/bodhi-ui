@@ -15,7 +15,7 @@ const PredictionStartTime = observer(({ store: { createEvent } }) => (
   <Section title={messages.createBetStartTimeMsg}>
     <DateRow
       error={createEvent.error.prediction.startTime}
-      onChange={e => createEvent.prediction.startTime = moment(e.target.value).utc().unix()}
+      onChange={e => moment(e.target.value).isValid && (createEvent.prediction.startTime = moment(e.target.value).utc().unix())}
       value={createEvent.prediction.startTime}
       blockNum={createEvent.blockNum.prediction.startTime}
     />

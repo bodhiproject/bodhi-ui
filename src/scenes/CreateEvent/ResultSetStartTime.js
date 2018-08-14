@@ -15,7 +15,7 @@ const ResultSetStartTime = observer(({ store: { createEvent } }) => (
   <Section title={messages.createResultSetStartTimeMsg}>
     <DateRow
       error={createEvent.error.resultSetting.startTime}
-      onChange={e => createEvent.resultSetting.startTime = moment(e.target.value).utc().unix()}
+      onChange={e => moment(e.target.value).isValid && (createEvent.resultSetting.startTime = moment(e.target.value).utc().unix())}
       value={createEvent.resultSetting.startTime}
       blockNum={createEvent.blockNum.resultSetting.startTime}
     />

@@ -104,7 +104,7 @@ export class DateTimePickerDialog extends Component {
             }
             </BasePicker>
           </div>
-          <DialogActions className={classes.dialogAction}>
+          <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               <FormattedMessage id="str.ok" defaultMessage="OK" />
             </Button>
