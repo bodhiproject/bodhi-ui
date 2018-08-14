@@ -21,7 +21,7 @@ import { SortBy } from 'constants';
 
 import styles from './styles';
 import HistoryItem from './HistoryItem';
-import Config from '../../../../config/app';
+import Config from '../../../config/app';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -33,15 +33,15 @@ export default class WalletHistory extends Component {
   };
 
   onPageChange = (page) => {
-    this.props.store.wallet.history.page = page;
+    this.props.store.myWallet.history.page = page;
   }
 
   onPerPageChange = (perPage) => {
-    this.props.store.wallet.history.perPage = perPage;
+    this.props.store.myWallet.history.perPage = perPage;
   }
 
   onSortChange = (property) => (event) => { // eslint-disable-line
-    const { wallet: { history } } = this.props.store;
+    const { myWallet: { history } } = this.props.store;
 
     if (history.orderBy !== property) {
       history.orderBy = property;
@@ -53,11 +53,11 @@ export default class WalletHistory extends Component {
   }
 
   componentDidMount() {
-    this.props.store.wallet.history.init();
+    this.props.store.myWallet.history.init();
   }
 
   render() {
-    const { classes, store: { wallet: { history } } } = this.props;
+    const { classes, store: { myWallet: { history } } } = this.props;
 
     return (
       <Paper className={classes.txHistoryPaper}>

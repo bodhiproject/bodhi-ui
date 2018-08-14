@@ -10,12 +10,13 @@ import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
-import WalletStore from './wallet/WalletStore';
+import WalletStore from './WalletStore';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
+import WalletHistoryStore from '../scenes/Wallet/History/store';
 
 class AppStore {
   @observable loading = true;
@@ -63,6 +64,9 @@ class AppStore {
         finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
+      };
+      this.myWallet = {
+        history: new WalletHistoryStore(this),
       };
 
       // finished loading all stores, show UI

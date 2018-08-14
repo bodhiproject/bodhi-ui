@@ -3,9 +3,9 @@ import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../../../../helpers/utility';
-import TransactionHistoryID from '../../../../../components/TransactionHistoryAddressAndID/id';
-import TransactionHistoryAddress from '../../../../../components/TransactionHistoryAddressAndID/address';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
+import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
+import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 
 export default class HistoryItem extends Component {
   state = {

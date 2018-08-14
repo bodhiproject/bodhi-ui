@@ -3,13 +3,12 @@ import _ from 'lodash';
 import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 
-import WalletHistoryStore from './WalletHistoryStore';
-import axios from '../../network/httpRequest';
-import Routes from '../../network/routes';
-import { createTransferTx } from '../../network/graphMutation';
-import Transaction from '../models/Transaction';
-import { decimalToSatoshi } from '../../helpers/utility';
-import Tracking from '../../helpers/mixpanelUtil';
+import axios from '../network/httpRequest';
+import Routes from '../network/routes';
+import { createTransferTx } from '../network/graphMutation';
+import Transaction from './models/Transaction';
+import { decimalToSatoshi } from '../helpers/utility';
+import Tracking from '../helpers/mixpanelUtil';
 
 
 const INIT_VALUE = {
@@ -37,8 +36,6 @@ export default class {
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
 
-  history = {}
-
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
     if (this.walletUnlockedUntil === 0) return true;
@@ -49,7 +46,6 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    this.history = new WalletHistoryStore(app);
 
     // Set a default lastUsedAddress if there was none selected before
     reaction(
@@ -170,11 +166,7 @@ export default class {
   createTransferTransaction = async (walletAddress, toAddress, selectedToken, amount) => {
     try {
       const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
-      const { history } = this.app.wallet;
-      history.fullList.push(new Transaction(transfer));
-      history.fullList = _.orderBy(history.fullList, [history.orderBy], [history.direction]);
-      const start = history.page * history.perPage;
-      history.list = _.slice(history.fullList, start, start + history.perPage);
+      this.app.myWallet.history.addTransaction(new Transaction(transfer));
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);

@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Button, Tooltip } from '@material-ui/core';
-import EncryptDialog from '../EncryptDialog';
-import EncryptStatusDialog from '../EncryptStatusDialog';
-import RestoreWalletDialog from '../RestoreWalletDialog';
-import ChangePassphraseDialog from '../ChangPassphraseDialog';
-import ChangePassphraseStatusDialog from '../ChangePassphraseStatusDialog';
+
 import styles from './styles';
+import EncryptDialog from './EncryptDialog';
+import EncryptStatusDialog from './EncryptStatusDialog';
+import RestoreWalletDialog from './RestoreWalletDialog';
+import ChangePassphraseDialog from './ChangePassphraseDialog';
+import ChangePassphraseStatusDialog from './ChangePassphraseStatusDialog';
 
 
 const messages = defineMessages({

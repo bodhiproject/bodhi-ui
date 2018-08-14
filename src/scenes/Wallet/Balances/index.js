@@ -25,12 +25,12 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
 
 import styles from './styles';
-import Config from '../../../../config/app';
-import DepositDialog from '../DepositDialog';
-import WithdrawDialog from '../WithdrawDialog';
-import WithdrawTxConfirmDialog from '../WithdrawTxConfirmDialog';
-import { doesUserNeedToUnlockWallet } from '../../../../helpers/utility';
-import Tracking from '../../../../helpers/mixpanelUtil';
+import DepositDialog from './DepositDialog';
+import WithdrawDialog from './WithdrawDialog';
+import WithdrawTxConfirmDialog from './WithdrawTxConfirmDialog';
+import Config from '../../../config/app';
+import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
+import Tracking from '../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
   txConfirmMsgSendMsg: {

@@ -1,9 +1,9 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
 import { SortBy, TransactionType } from 'constants';
+import { Transaction } from 'models';
 
-import Transaction from '../models/Transaction';
-import { queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTransactions } from '../../../network/graphQuery';
 
 
 const INIT_VALUES = {
@@ -85,5 +85,14 @@ export default class {
         this.list = [];
       });
     }
+  }
+
+  @action
+  addTransaction = (tx) => {
+    this.fullList.push(tx);
+    this.fullList = _.orderBy(this.fullList, [this.orderBy], [this.direction]);
+
+    const start = this.page * this.perPage;
+    this.list = _.slice(this.fullList, start, start + this.perPage);
   }
 }
