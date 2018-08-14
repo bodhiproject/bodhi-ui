@@ -7,5 +7,6 @@ export function localizeInvalidOption(txt, intl) {
       invalidOption = '무효의';
     }
   }
+
   return invalidOption;
 }

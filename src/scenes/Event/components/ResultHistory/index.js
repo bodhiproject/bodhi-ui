@@ -35,6 +35,11 @@ export default class EventResultHistory extends Component {
     return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
   }
 
+  getInvalid(oracle, intl) {
+    console.log(oracle.options[oracle.resultIdx]);
+    return localizeInvalidOption(oracle.options[oracle.resultIdx].name, intl);
+  }
+
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);
