@@ -45,7 +45,6 @@ export default class GlobalStore {
       () => this.syncPercent,
       () => {
         if (this.syncPercent >= 100) {
-          console.log('synced! ', this.syncPercent);
           clearInterval(syncInfoInterval);
         }
       },
