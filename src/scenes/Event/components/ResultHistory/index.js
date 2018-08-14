@@ -36,7 +36,6 @@ export default class EventResultHistory extends Component {
   }
 
   getInvalid(oracle, intl) {
-    console.log(oracle.options[oracle.resultIdx]);
     return localizeInvalidOption(oracle.options[oracle.resultIdx].name, intl);
   }
 
