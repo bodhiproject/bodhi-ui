@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogActions, Button, withStyles } from '@material-ui/core';
+import { Dialog, DialogActions, Button, withStyles } from '@material-ui/core';
 import { KeyboardArrowRight as KeyboardArrowRightIcon, KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
