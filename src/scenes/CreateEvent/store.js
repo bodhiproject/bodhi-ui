@@ -4,14 +4,14 @@ import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { TransactionType, Token } from 'constants';
+import { Oracle, TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
-import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
 import { createTopic } from '../../network/graphMutation';
-import Oracle from '../../stores/models/Oracle';
 
 const messages = defineMessages({
   createDatePastMsg: {
@@ -193,6 +193,7 @@ export default class CreateEventStore {
   @action
   open = async () => {
     Tracking.track('dashboard-createEventClick');
+
     let escrowRes;
     let insightTotalsRes;
     try {
@@ -214,7 +215,7 @@ export default class CreateEventStore {
       this.prediction.endTime = nowPlus(45);
       this.resultSetting.startTime = nowPlus(45);
       this.resultSetting.endTime = nowPlus(75);
-      this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
+      this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
       this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
@@ -375,15 +376,16 @@ export default class CreateEventStore {
       const txInfo = {
         type: TransactionType.APPROVE_CREATE_EVENT,
         token: Token.BOT,
-        amount: this.escrowAmount,
+        amount: decimalToSatoshi(this.escrowAmount),
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
         senderAddress: this.creator,
       };
       const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
+      const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
-        this.txFees = result;
+        this.txFees = txFees;
         this.txConfirmDialogOpen = true;
       });
     } catch (error) {

@@ -145,7 +145,7 @@ export default class {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
-        amount: Number(this.withdrawAmount),
+        amount: this.withdrawAmount,
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
