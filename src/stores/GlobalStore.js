@@ -1,10 +1,12 @@
-
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
 
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
 import SyncInfo from './models/SyncInfo';
+import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
+import getSubscription, { channels } from '../network/graphSubscription';
+import apolloClient from '../network/graphClient';
+import AppConfig from '../config/app';
 
 
 const INIT_VALUES = {
@@ -19,6 +21,7 @@ const INIT_VALUES = {
     totalCount: 0,
   },
 };
+let syncInfoInterval;
 
 export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
@@ -36,23 +39,33 @@ export default class GlobalStore {
 
   constructor(app) {
     this.app = app;
+
+    // Disable the syncInfo polling since we will get new syncInfo from the subscription
+    reaction(
+      () => this.syncPercent,
+      () => {
+        if (this.syncPercent >= 100) {
+          clearInterval(syncInfoInterval);
+        }
+      },
+    );
+    // Update the actionable item count when the addresses or block number changes
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        this.getUserData();
-      }
+        if (this.syncPercent >= 100) {
+          this.getActionableItemCount();
+        }
+      },
     );
-  }
 
-  @action
-  getSyncInfo = async () => {
-    try {
-      const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
-      const syncInfo = await querySyncInfo(includeBalances);
-      this.onSyncInfo(syncInfo);
-    } catch (error) {
-      this.onSyncInfo({ error });
-    }
+    // Call syncInfo once to init the wallet addresses used by other stores
+    this.getSyncInfo();
+    this.subscribeSyncInfo();
+
+    // Start syncInfo long polling
+    // We use this to update the percentage of the loading screen
+    syncInfoInterval = setInterval(this.getSyncInfo(), AppConfig.intervals.syncInfo);
   }
 
   @action
@@ -69,8 +82,51 @@ export default class GlobalStore {
     }
   }
 
-  @action.bound
-  async getUserData() {
+  /**
+   * Queries syncInfo by GraphQL call.
+   * This is long-polled in the beginning while the server is syncing the blockchain.
+   */
+  @action
+  getSyncInfo = async () => {
+    try {
+      const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
+      const syncInfo = await querySyncInfo(includeBalances);
+      this.onSyncInfo(syncInfo);
+    } catch (error) {
+      this.onSyncInfo({ error });
+    }
+  }
+
+  /**
+   * Subscribe to syncInfo subscription.
+   * This is meant to be used after the long-polling getSyncInfo is finished.
+   * This subscription will return a syncInfo on every new block.
+   */
+  subscribeSyncInfo = () => {
+    const self = this;
+    apolloClient.subscribe({
+      query: getSubscription(channels.ON_SYNC_INFO),
+    }).subscribe({
+      next({ data, errors }) {
+        if (errors && errors.length > 0) {
+          self.onSyncInfo({ error: errors[0] });
+        } else {
+          self.onSyncInfo(data.onSyncInfo);
+        }
+      },
+      error(err) {
+        self.onSyncInfo({ error: err.message });
+      },
+    });
+  }
+
+  /**
+   * Gets the actionable item count for all the addresses the user owns.
+   * Actionable item count means the number of items the user can take action on.
+   * eg. This user can do 4 set results, 10 finalizes, and 5 withdraws
+   */
+  @action
+  getActionableItemCount = async () => {
     try {
       const voteFilters = [];
       const topicFilters = [];

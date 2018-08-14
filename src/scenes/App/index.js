@@ -4,22 +4,19 @@ import { CssBaseline, withStyles } from '@material-ui/core';
 
 import styles from './styles';
 import AppRouter from './router';
-import GlobalHub from './globalHub';
 import BottomBar from '../../components/BottomBar';
 import CreateEventFormDialog from '../CreateEvent';
-import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
+import PendingTxsSnackbar from '../../components/PendingTxsSnackbar';
 import GlobalSnackbar from '../../components/GlobalSnackbar';
 import OLDTxSentDialog from '../../components/TxSentDialog/old';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
-import OLDTxConfirmDialog from '../../components/TxConfirmDialog/old';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 import Loader from './components/Loader';
 
 
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
-    <GlobalHub />
     <Loader />
     {!store.loading && (
       <Fragment>
@@ -28,12 +25,11 @@ const App = observer(({ classes, match: { url }, store }) => (
         </div>
         <BottomBar />
         <CreateEventFormDialog />
-        <PendingTransactionsSnackbar />
+        <PendingTxsSnackbar />
         <GlobalSnackbar />
         <OLDTxSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
-        <OLDTxConfirmDialog txDesc="" txAmount={10} txToken="QTUM" />
         <TutorialCarouselDialog />
       </Fragment>
     )}

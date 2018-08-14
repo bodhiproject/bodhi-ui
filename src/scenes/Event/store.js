@@ -7,15 +7,15 @@ import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { Oracle, Transaction, Topic } from 'models';
+import { Oracle, Transaction, Topic, TransactionCost } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
 import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../../network/graphMutation';
 import networkRoutes from '../../network/routes';
-
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphQuery';
 import { maxTransactionFee } from '../../config/app';
+
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
 
 const graph = graphql('http://127.0.0.1:8989/graphql', {
@@ -342,8 +342,9 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
-        this.oracle.txFees = result;
+        this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
       });
     } catch (error) {
@@ -365,8 +366,9 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
-        this.oracle.txFees = result;
+        this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
       });
     } catch (error) {
@@ -376,21 +378,21 @@ export default class EventStore {
     }
   }
 
-  // TODO: this is same logic as this.prepareBet(), maybe combine? idk...
   @action
   prepareVote = async () => {
     try {
       const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
-        type: TransactionType.VOTE,
+        type: TransactionType.APPROVE_VOTE,
         token: this.oracle.token,
-        amount: Number(this.amount),
+        amount: decimalToSatoshi(this.amount), // Convert to Botoshi
         optionIdx: this.selectedOptionIdx,
         topicAddress: this.oracle.topicAddress,
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
-        this.oracle.txFees = result;
+        this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
       });
     } catch (error) {
@@ -463,7 +465,8 @@ export default class EventStore {
     const { lastUsedAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
     const { selectedOptionIdx } = this;
-    const amount = decimalToSatoshi(this.amount);
+    const amount = decimalToSatoshi(this.amount); // Convert to Botoshi
+
     try {
       const { data: { createVote } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
       const newTx = { // TODO: move this logic to backend, add `options`
