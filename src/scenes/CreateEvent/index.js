@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button } from '@material-ui/core';
+import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
 import { Token } from 'constants';
 
+import styles from './styles';
 import Title from './Title';
 import CreatorDropdown from './CreatorDropdown';
 import PredictionStartTime from './PredictionStartTime';
@@ -30,9 +31,11 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warning, hasEnoughQtum, isOpen } } }) => (
+const CreateEventDialog = withStyles(styles)(observer(({
+  classes, store: { createEvent, createEvent: { warning, hasEnoughQtum, isOpen } },
+}) => (
   <Fragment>
-    <Dialog fullWidth maxWidth='md' open={isOpen} >
+    <Dialog className={classes.createDialog} fullWidth maxWidth='md' open={isOpen}>
       <DialogTitle>Create an event</DialogTitle>
       {!hasEnoughQtum && <EventWarning id={warning.id} message={warning.message} type='error' />}
       <EscrowAmountNote amount={createEvent.escrowAmount} />
@@ -62,7 +65,7 @@ const CreateEventDialog = observer(({ store: { createEvent, createEvent: { warni
       />
     )}
   </Fragment>
-));
+)));
 
 const DialogTitle = styled(_DialogTitle)`
   padding: 0px;

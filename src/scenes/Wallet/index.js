@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Routes } from 'constants';
 
-import MyBalances from './components/Balances';
-import ActionButtonHeader from './components/ActionButtonHeader';
-import WalletHistory from './components/History';
+import ActionButtonHeader from './ActionButtonHeader';
+import Balances from './Balances';
+import History from './History';
 
 @inject('store')
 @observer
@@ -17,8 +17,8 @@ export default class MyWallet extends Component {
     return (
       <div>
         <ActionButtonHeader />
-        <MyBalances />
-        <WalletHistory />
+        <Balances />
+        <History />
       </div>
     );
   }

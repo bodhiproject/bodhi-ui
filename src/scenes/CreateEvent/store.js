@@ -4,14 +4,14 @@ import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { TransactionType, Token } from 'constants';
+import { Oracle, TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
-import { satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
 import { createTopic } from '../../network/graphMutation';
-import Oracle from '../../stores/models/Oracle';
 
 const messages = defineMessages({
   createDatePastMsg: {
@@ -54,9 +54,14 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
+  invalidAddress: {
+    id: 'create.invalidAddress',
+    defaultMessage: 'Invalid address',
+  },
 });
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
+const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 let TIME_GAP_MIN_SEC = 30 * 60;
@@ -106,12 +111,13 @@ const INIT = {
 
 export default class CreateEventStore {
   escrowAmount = INIT.escrowAmount
-  averageBlockTime = INIT.averageBlockTime // TODO: maybe move to global store?
+  averageBlockTime = INIT.averageBlockTime
   txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
+
   // form fields
   @observable isOpen = INIT.isOpen
   @observable title = INIT.title
@@ -216,6 +222,7 @@ export default class CreateEventStore {
   @action
   open = async () => {
     Tracking.track('dashboard-createEventClick');
+
     let escrowRes;
     let insightTotalsRes;
     try {
@@ -237,7 +244,7 @@ export default class CreateEventStore {
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
+      this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
       this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
@@ -262,7 +269,7 @@ export default class CreateEventStore {
     const hexString = Web3Utils.toHex(this.title || '').slice(2);
     if (!this.title) {
       this.error.title = messages.createRequiredMsg.id;
-    } else if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
+    } else if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
       this.error.title = messages.createNameLongMsg.id;
     } else {
       this.error.title = '';
@@ -360,10 +367,12 @@ export default class CreateEventStore {
 
   @action
   validateResultSetter = async () => {
-    if (await this.isValidAddress()) {
-      this.error.resultSetter = '';
-    } else {
+    if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
+    } else if (!(await this.isValidAddress())) {
+      this.error.resultSetter = messages.invalidAddress.id;
+    } else {
+      this.error.resultSetter = '';
     }
   }
 
@@ -386,15 +395,16 @@ export default class CreateEventStore {
       const txInfo = {
         type: TransactionType.APPROVE_CREATE_EVENT,
         token: Token.BOT,
-        amount: this.escrowAmount,
+        amount: decimalToSatoshi(this.escrowAmount),
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
         senderAddress: this.creator,
       };
       const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
+      const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
-        this.txFees = result;
+        this.txFees = txFees;
         this.txConfirmDialogOpen = true;
       });
     } catch (error) {
