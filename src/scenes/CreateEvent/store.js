@@ -54,9 +54,14 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
+  invalidAddress: {
+    id: 'create.invalidAddress',
+    defaultMessage: 'Invalid address',
+  },
 });
 
 const nowPlus = minutes => moment().add(minutes, 'm').format('YYYY-MM-DDTHH:mm');
+const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 let TIME_GAP_MIN_SEC = 30 * 60;
 if (process.env.REACT_APP_ENV === 'dev') {
@@ -234,7 +239,7 @@ export default class CreateEventStore {
     const hexString = Web3Utils.toHex(this.title || '').slice(2);
     if (!this.title) {
       this.error.title = messages.createRequiredMsg.id;
-    } else if (hexString && hexString.length > MAX_LEN_RESULT_HEX) {
+    } else if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
       this.error.title = messages.createNameLongMsg.id;
     } else {
       this.error.title = '';
@@ -342,10 +347,12 @@ export default class CreateEventStore {
 
   @action
   validateResultSetter = async () => {
-    if (await this.isValidAddress()) {
-      this.error.resultSetter = '';
-    } else {
+    if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
+    } else if (!(await this.isValidAddress())) {
+      this.error.resultSetter = messages.invalidAddress.id;
+    } else {
+      this.error.resultSetter = '';
     }
   }
 

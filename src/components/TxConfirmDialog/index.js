@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
   txConfirmMessageWithFeeMsg: {
     id: 'txConfirm.messageWithFee',
-    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}, with fee for {txFee} QTUM. Please click OK to continue.',
+    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
   },
   strTypeMsg: {
     id: 'str.type',
