@@ -184,6 +184,33 @@ export default class CreateEventStore {
         }
       }
     );
+    reaction( // check date valiation when date changed
+      () => this.prediction.startTime,
+      () => {
+        if (moment(this.prediction.startTime).utc().unix() - moment(this.prediction.endTime).utc().unix() > -TIME_GAP_MIN_SEC) this.prediction.endTime = moment(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').format('YYYY-MM-DDTHH:mm');
+        this.validatePredictionStartTime();
+      }
+    );
+    reaction( // check date valiation when date changed
+      () => this.prediction.endTime,
+      () => {
+        if (moment(this.prediction.endTime).utc().unix() - moment(this.resultSetting.startTime).utc().unix() > -TIME_GAP_MIN_SEC) this.resultSetting.startTime = moment(this.prediction.endTime).format('YYYY-MM-DDTHH:mm');
+        this.validatePredictionEndTime();
+      }
+    );
+    reaction( // check date valiation when date changed
+      () => this.resultSetting.startTime,
+      () => {
+        if (moment(this.resultSetting.startTime).utc().unix() - moment(this.resultSetting.endTime).utc().unix() > -TIME_GAP_MIN_SEC) this.resultSetting.endTime = moment(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').format('YYYY-MM-DDTHH:mm');
+        this.validateResultSettingStartTime();
+      }
+    );
+    reaction( // check date valiation when date changed
+      () => this.resultSetting.endTime,
+      () => {
+        this.validateResultSettingEndTime();
+      }
+    );
   }
 
   @action
