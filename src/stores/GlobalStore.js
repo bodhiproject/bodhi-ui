@@ -81,6 +81,10 @@ export default class GlobalStore {
     }
   }
 
+  /**
+   * Queries syncInfo by GraphQL call.
+   * This is long-polled in the beginning while the server is syncing the blockchain.
+   */
   @action
   getSyncInfo = async () => {
     try {
@@ -93,8 +97,9 @@ export default class GlobalStore {
   }
 
   /**
-   * Subscribe to syncInfo subscription
-   * This returns only after the initial sync is done, and every new block that is returned.
+   * Subscribe to syncInfo subscription.
+   * This is meant to be used after the long-polling getSyncInfo is finished.
+   * This subscription will return a syncInfo on every new block.
    */
   subscribeSyncInfo = () => {
     apolloClient.subscribe({
@@ -113,8 +118,13 @@ export default class GlobalStore {
     });
   }
 
-  @action.bound
-  async getActionableItemCount() {
+  /**
+   * Gets the actionable item count for all the addresses the user owns.
+   * Actionable item count means the number of items the user can take action on.
+   * eg. This user can do 4 set results, 10 finalizes, and 5 withdraws
+   */
+  @action
+  getActionableItemCount = async () => {
     try {
       const voteFilters = [];
       const topicFilters = [];
