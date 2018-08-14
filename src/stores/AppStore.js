@@ -44,7 +44,7 @@ class AppStore {
     this.globalSnackbar = new GlobalSnackbarStore();
     this.selectAddressDialog = new SelectAddressDialogStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
-    this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore();
+    this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
 

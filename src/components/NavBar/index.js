@@ -38,7 +38,7 @@ const messages = defineMessages({
 @inject('store')
 export default class NavBar extends Component {
   componentDidMount() {
-    this.props.store.global.getUserData();
+    this.props.store.global.getActionableItemCount();
   }
   render() {
     const { classes } = this.props;

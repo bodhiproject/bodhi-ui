@@ -32,10 +32,22 @@ export default class PendingTransactionsSnackbarStore {
   pendingTransfers = INIT_VALUES.pendingTransfers
   pendingResetApproves = INIT_VALUES.pendingResetApproves
 
-  constructor() {
+  constructor(app) {
+    this.app = app;
+
+    // Hide/show the snackbar when the pending count changes
     reaction(
       () => this.count,
       () => this.isVisible = this.count > 0
+    );
+    // Query pending txs on new blocks
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => {
+        if (this.app.global.syncPercent >= 100) {
+          this.queryPendingTransactions();
+        }
+      },
     );
 
     this.init();

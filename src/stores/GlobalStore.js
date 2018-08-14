@@ -39,11 +39,24 @@ export default class GlobalStore {
 
   constructor(app) {
     this.app = app;
+
+    // Disable the syncInfo polling since we will get new syncInfo from the subscription
+    reaction(
+      () => this.syncPercent,
+      () => {
+        if (this.syncPercent >= 100) {
+          clearInterval(syncInfoInterval);
+        }
+      },
+    );
+    // Update the actionable item count when the addresses or block number changes
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
-        this.getUserData();
-      }
+        if (this.syncPercent >= 100) {
+          this.getActionableItemCount();
+        }
+      },
     );
 
     // Call syncInfo once to init the wallet addresses used by other stores
@@ -101,7 +114,7 @@ export default class GlobalStore {
   }
 
   @action.bound
-  async getUserData() {
+  async getActionableItemCount() {
     try {
       const voteFilters = [];
       const topicFilters = [];
