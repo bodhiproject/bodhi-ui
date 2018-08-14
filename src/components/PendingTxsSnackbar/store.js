@@ -19,7 +19,7 @@ const INIT_VALUES = {
   pendingResetApproves: 0,
 };
 
-export default class PendingTransactionsSnackbarStore {
+export default class PendingTxsSnackbarStore {
   @observable isVisible = INIT_VALUES.isVisible
   @observable count = INIT_VALUES.count
 

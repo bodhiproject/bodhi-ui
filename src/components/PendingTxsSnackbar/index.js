@@ -12,7 +12,7 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class PendingTransactionsSnackbar extends Component {
+export default class PendingTxsSnackbar extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos

@@ -6,7 +6,7 @@ import styles from './styles';
 import AppRouter from './router';
 import BottomBar from '../../components/BottomBar';
 import CreateEventFormDialog from '../CreateEvent';
-import PendingTransactionsSnackbar from '../../components/PendingTransactionsSnackbar';
+import PendingTxsSnackbar from '../../components/PendingTxsSnackbar';
 import GlobalSnackbar from '../../components/GlobalSnackbar';
 import OLDTxSentDialog from '../../components/TxSentDialog/old';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
@@ -25,7 +25,7 @@ const App = observer(({ classes, match: { url }, store }) => (
         </div>
         <BottomBar />
         <CreateEventFormDialog />
-        <PendingTransactionsSnackbar />
+        <PendingTxsSnackbar />
         <GlobalSnackbar />
         <OLDTxSentDialog />
         <WalletUnlockDialog />

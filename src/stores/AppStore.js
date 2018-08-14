@@ -14,7 +14,7 @@ import WalletStore from './wallet/WalletStore';
 import GlobalSnackbarStore from './components/GlobalSnackbarStore';
 import SelectAddressDialogStore from './components/SelectAddressDialogStore';
 import WalletUnlockDialogStore from './components/WalletUnlockDialogStore';
-import PendingTransactionsSnackbarStore from './components/PendingTransactionsSnackbarStore';
+import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 
@@ -44,7 +44,7 @@ class AppStore {
     this.globalSnackbar = new GlobalSnackbarStore();
     this.selectAddressDialog = new SelectAddressDialogStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
-    this.pendingTxsSnackbar = new PendingTransactionsSnackbarStore(this);
+    this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
 
