@@ -131,7 +131,7 @@ For string inside placeholder or previous method can not handle, define messages
 
 Then put `this.props.intl.formatMessage(messages.greeting, { {name: 'Eric'}})` at the place where you want to put the text, also support variables by putting variables within `{}`
 
-Run `npm run build:langs`
+Run `run build:langs`
 
 update the translated string in the corresponding language file
 
