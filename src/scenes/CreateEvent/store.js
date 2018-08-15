@@ -465,6 +465,7 @@ export default class CreateEventStore {
 
       runInAction(() => {
         this.app.qtumPrediction.list.unshift(new Oracle(oracle, this.app));
+        this.app.pendingTxsSnackbar.init(); // Show pending txs snackbar
         this.txConfirmDialogOpen = false;
         this.txid = oracle.txid;
         this.txSentDialogOpen = true;
