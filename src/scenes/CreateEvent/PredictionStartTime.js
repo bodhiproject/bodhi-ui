@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages } from 'react-intl';
+import moment from 'moment';
 import { DateRow, Section } from './components';
 
 const messages = defineMessages({
@@ -14,9 +15,8 @@ const PredictionStartTime = observer(({ store: { createEvent } }) => (
   <Section title={messages.createBetStartTimeMsg}>
     <DateRow
       error={createEvent.error.prediction.startTime}
-      onChange={e => createEvent.prediction.startTime = e.target.value}
+      onChange={e => moment(e.target.value).isValid && (createEvent.prediction.startTime = moment(e.target.value).utc().unix())}
       value={createEvent.prediction.startTime}
-      onBlur={createEvent.validatePredictionStartTime}
       blockNum={createEvent.blockNum.prediction.startTime}
     />
   </Section>

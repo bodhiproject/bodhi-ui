@@ -1,20 +1,17 @@
 import React, { Fragment } from 'react';
-import { Grid, FormControl, FormHelperText, TextField } from '@material-ui/core';
-import { injectIntl } from 'react-intl';
+import { Grid, TextField } from '@material-ui/core';
+
+import { DateTimePickerCombo } from './DateTimePickerCombo';
 
 
-export const DateRow = injectIntl(({ error, blockNum, intl, ...props }) => (
+export const DateRow = ({ error, blockNum, intl, isOpen, ...props }) => (
   <Fragment>
     <Grid item xs={6}>
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          error={Boolean(error)}
-          type="datetime-local"
-          {...props}
-        />
-        {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
-      </FormControl>
+      <DateTimePickerCombo
+        fullWidth
+        error={error}
+        {...props}
+      />
     </Grid>
     <Grid item xs={6}>
       <TextField
@@ -25,4 +22,5 @@ export const DateRow = injectIntl(({ error, blockNum, intl, ...props }) => (
       />
     </Grid>
   </Fragment>
-));
+);
+
