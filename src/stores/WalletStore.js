@@ -168,6 +168,9 @@ export default class {
     try {
       const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
       this.app.myWallet.history.addTransaction(new Transaction(transfer));
+      runInAction(() => {
+        this.app.pendingTxsSnackbar.init();
+      });
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);

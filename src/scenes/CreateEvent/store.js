@@ -467,6 +467,7 @@ export default class CreateEventStore {
         this.txConfirmDialogOpen = false;
         this.txid = oracle.txid;
         this.txSentDialogOpen = true;
+        this.app.pendingTxsSnackbar.init();
       });
     } catch (error) {
       console.error('ERROR: ', { // eslint-disable-line
