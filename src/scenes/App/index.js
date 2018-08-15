@@ -8,7 +8,6 @@ import BottomBar from '../../components/BottomBar';
 import CreateEventFormDialog from '../CreateEvent';
 import PendingTxsSnackbar from '../../components/PendingTxsSnackbar';
 import GlobalSnackbar from '../../components/GlobalSnackbar';
-import TxSentDialog from '../../components/TxSentDialog';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
@@ -27,7 +26,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <CreateEventFormDialog />
         <PendingTxsSnackbar />
         <GlobalSnackbar />
-        <TxSentDialog />
         <WalletUnlockDialog />
         <ErrorDialog />
         <TutorialCarouselDialog />
