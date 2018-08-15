@@ -53,7 +53,7 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { name, topic, type, txid, amount, token, fee, status, createdTime, localizedInvalid } = transaction;
+      const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
       const { locale, messages: localeMessages } = intl;
       const { expanded } = this.state;
 
