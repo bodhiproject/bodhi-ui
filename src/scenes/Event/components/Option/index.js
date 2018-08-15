@@ -18,6 +18,7 @@ import {
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
+import { Phases, Token } from 'constants';
 
 import Progress from '../Progress';
 import styles from './styles';
@@ -61,7 +62,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token } = option;
+    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
     const { eventPage, wallet } = store;
     const { selectedOptionIdx } = eventPage;
 
@@ -98,6 +99,7 @@ export default class Option extends Component {
               <Fragment>
                 <AmountInput
                   token={token}
+                  phase={phase}
                   disabled={amountInputDisabled}
                   classes={classes}
                   value={eventPage.amount}
@@ -120,7 +122,7 @@ export default class Option extends Component {
   }
 }
 
-const AmountInput = ({ classes, token, ...props }) => (
+const AmountInput = ({ classes, token, phase, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
       <div className={classes.eventOptionIcon}>
@@ -135,7 +137,9 @@ const AmountInput = ({ classes, token, ...props }) => (
           type="number"
           placeholder="0.00"
           className={classes.eventOptionInput}
-          endAdornment={<InputAdornment position="end">{token}</InputAdornment>}
+          endAdornment={
+            <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.BOT : token}</InputAdornment>
+          }
           {...props}
         />
       </FormControl>

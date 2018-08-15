@@ -160,10 +160,9 @@ export default class EventStore {
         this.transactions = transactions.map(tx => new Transaction(tx));
         this.loading = false;
 
-        // Set the amount field since we know the amount will be the consensus threshold
         if (this.oracle.phase === RESULT_SETTING) {
+          // Set the amount field since we know the amount will be the consensus threshold
           this.amount = this.oracle.consensusThreshold.toString();
-          this.oracle.token = ''
         }
       });
     }
