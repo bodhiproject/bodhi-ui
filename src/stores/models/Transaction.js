@@ -37,6 +37,7 @@ export default class Transaction {
     this.gasPrice = Number(this.gasPrice);
     this.fee = gasToQtum(this.gasUsed);
     const { topic, type, optionIdx } = transaction;
+    console.log(transaction);
     if (topic && [APPROVE_SET_RESULT, APPROVE_VOTE, BET, VOTE, SET_RESULT, FINALIZE_RESULT].includes(type)) {
       this.name = topic.options[optionIdx];
     } else if ([WITHDRAW, WITHDRAW_ESCROW].includes(type)) {
