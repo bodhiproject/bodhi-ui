@@ -4,7 +4,7 @@ import { TransactionType, SortBy, Routes } from 'constants';
 import { Transaction, Oracle } from 'models';
 
 import { getDetailPagePath } from '../../../helpers/utility';
-import { queryAllTransactions, queryAllOracles } from '../../../network/graphQuery';
+import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
   transactions: [],

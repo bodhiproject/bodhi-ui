@@ -3,9 +3,9 @@ import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
 
 import SyncInfo from './models/SyncInfo';
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphQuery';
-import getSubscription, { channels } from '../network/graphSubscription';
-import apolloClient from '../network/graphClient';
+import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
+import getSubscription, { channels } from '../network/graphql/subscriptions';
+import apolloClient from '../network/graphql';
 import AppConfig from '../config/app';
 
 

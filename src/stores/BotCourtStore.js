@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, Routes } from '../constants';
-import { queryAllOracles } from '../network/graphQuery';
+import { queryAllOracles } from '../network/graphql/queries';
 import Oracle from './models/Oracle';
 
 const INIT_VALUES = {

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
 
-import client from './graphClient';
-import GraphParser from './graphParser';
-import { TYPE, isValidEnum, getTypeDef } from './graphSchema';
+import client from '.';
+import GraphParser from './parser';
+import { TYPE, isValidEnum, getTypeDef } from './schema';
 
 if (process.env.REACT_APP_ENV === 'dev') {
   window.queries = '';

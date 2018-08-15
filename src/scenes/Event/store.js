@@ -8,9 +8,9 @@ import { Oracle, Transaction, Topic, TransactionCost } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
-import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../../network/graphMutation';
+import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../../network/graphql/mutations';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphQuery';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;

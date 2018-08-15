@@ -11,7 +11,7 @@ import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { maxTransactionFee } from '../../config/app';
-import { createTopic } from '../../network/graphMutation';
+import { createTopic } from '../../network/graphql/mutations';
 
 const messages = defineMessages({
   createDatePastMsg: {

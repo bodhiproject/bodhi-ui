@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
 import { Transaction } from 'models';
 
-import { queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTransactions } from '../../network/graphql/queries';
 
 
 const INIT_VALUES = {
