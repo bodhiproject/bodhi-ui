@@ -1,10 +1,9 @@
-import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
-import graphql from 'graphql.js';
-import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
+import { observable, runInAction, action, computed, reaction } from 'mobx';
 import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
+import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import { Oracle, Transaction, Topic, TransactionCost } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
@@ -15,15 +14,6 @@ import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } 
 import { maxTransactionFee } from '../../config/app';
 
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
-
-const graph = graphql('http://127.0.0.1:8989/graphql', {
-  asJSON: true,
-});
-
-const gql = (strings, ...vars) => {
-  const string = strings.reduce((acc, str, i) => vars[i] ? acc + str + vars[i] : acc + str, '');
-  return graph(string)();
-};
 
 const INIT = {
   loading: true,
