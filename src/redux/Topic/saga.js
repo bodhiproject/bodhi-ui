@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { TransactionType } from 'constants';
 
 import actions from './actions';
-import axios from '../../network/httpRequest';
+import axios from '../../network/api';
 import { queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { satoshiToDecimal, processTopic } from '../../helpers/utility';
 import Routes from '../../network/routes';
