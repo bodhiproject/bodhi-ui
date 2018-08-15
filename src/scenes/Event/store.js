@@ -117,7 +117,8 @@ export default class EventStore {
     this.address = address;
     this.txid = txid;
     this.type = type;
-    if (type === 'topic') {
+
+    if (type === 'topic') { // Handle Topic
       // GraphQL calls
       this.escrowAmount = await this.getEscrowAmount();
       const topics = await queryAllTopics([{ address }], undefined, 1, 0);
@@ -127,6 +128,7 @@ export default class EventStore {
       const { bets, votes } = await this.getBetAndVoteBalances();
       const withdrawableAddresses = await this.getWithdrawableAddresses();
       const oracles = await this.getAllOracles(address);
+
       runInAction(() => {
         this.topics = topics.map(topic => new Topic(topic, this.app));
         this.transactions = transactions.map(tx => new Transaction(tx, this.app));
@@ -142,8 +144,7 @@ export default class EventStore {
         this.loading = false;
       });
       return;
-    }
-    if (topicAddress === 'null' && address === 'null' && txid) { // unconfirmed
+    } else if (topicAddress === 'null' && address === 'null' && txid) { // Handle unconfirmed Oracle
       // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
       const oracles = await this.getOraclesBeforeConfirmed(txid);
       runInAction(() => {
@@ -158,19 +159,13 @@ export default class EventStore {
         this.oracles = oracles;
         this.transactions = transactions.map(tx => new Transaction(tx));
         this.loading = false;
+
+        // Set the amount field since we know the amount will be the consensus threshold
+        if (this.oracle.phase === RESULT_SETTING) {
+          this.amount = this.oracle.consensusThreshold.toString();
+        }
       });
     }
-
-    reaction(
-      () => this.oracle.phase,
-      () => {
-        if (this.oracle.phase === RESULT_SETTING) {
-          this.amount = '100';
-        }
-      },
-      { fireImmediately: true } // for when we go to a result setting page directly
-    );
-
 
     reaction(
       () => this.app.global.syncBlockTime,

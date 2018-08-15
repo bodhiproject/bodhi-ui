@@ -462,6 +462,7 @@ export default class CreateEventStore {
         topicAddress: null,
         address: null,
       };
+      console.log('new Oracle', oracle);
       runInAction(() => {
         this.app.qtumPrediction.list.unshift(new Oracle(oracle, this.app));
         this.txConfirmDialogOpen = false;
