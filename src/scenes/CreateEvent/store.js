@@ -447,7 +447,7 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
         this.creator, // address
       );
-      const oracle = { // TODO: we should return this from the backend when making the createTopic api call
+      const oracle = new Oracle({ // TODO: we should return this from the backend when making the createTopic api call
         ...data.createTopic,
         optionIdxs: Array.from({ length: this.outcomes.length }, (x, i) => i),
         resultSetStartTime: this.resultSetting.startTime.toString(),
@@ -461,10 +461,10 @@ export default class CreateEventStore {
         status: 'CREATED',
         topicAddress: null,
         address: null,
-      };
+      }, this.app);
 
       runInAction(() => {
-        this.app.qtumPrediction.list.unshift(new Oracle(oracle, this.app));
+        this.app.qtumPrediction.list.unshift(oracle);
         this.app.pendingTxsSnackbar.init(); // Show pending txs snackbar
         this.txConfirmDialogOpen = false;
         this.txid = oracle.txid;

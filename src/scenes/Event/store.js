@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import graphql from 'graphql.js';
 import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
@@ -118,11 +116,15 @@ export default class EventStore {
     this.txid = txid;
     this.type = type;
 
-    if (type === 'topic') { // Handle Topic
-      // GraphQL calls
+    if (topicAddress === 'null' && address === 'null' && txid) { // Handle unconfirmed Oracle
+      // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
+      const res = await queryAllOracles([{ txid }]);
+      this.oracles = _.map(res, (o) => new Oracle(o, this.app));
+      this.loading = false;
+    } else if (type === 'topic') { // Handle Topic
       this.escrowAmount = await this.getEscrowAmount();
       const topics = await queryAllTopics([{ address }], undefined, 1, 0);
-      const transactions = await queryAllTransactions([{ topicAddress: address }], { field: 'createdTime', direction: SortBy.DESCENDING });
+      this.queryTransactions();
 
       // API calls
       const { bets, votes } = await this.getBetAndVoteBalances();
@@ -131,7 +133,6 @@ export default class EventStore {
 
       runInAction(() => {
         this.topics = topics.map(topic => new Topic(topic, this.app));
-        this.transactions = transactions.map(tx => new Transaction(tx, this.app));
         this.oracles = oracles;
         this.betBalances = bets;
         this.voteBalances = votes;
@@ -144,20 +145,12 @@ export default class EventStore {
         this.loading = false;
       });
       return;
-    } else if (topicAddress === 'null' && address === 'null' && txid) { // Handle unconfirmed Oracle
-      // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
-      const oracles = await this.getOraclesBeforeConfirmed(txid);
-      runInAction(() => {
-        this.oracles = oracles;
-        this.loading = false;
-        this.routeToConfirmedOracle();
-      });
-    } else {
+    } else { // Handle Oracle
       const oracles = await this.getAllOracles(topicAddress);
-      const transactions = await queryAllTransactions([{ topicAddress }], { field: 'createdTime', direction: SortBy.DESCENDING });
+      this.queryTransactions();
+
       runInAction(() => {
         this.oracles = oracles;
-        this.transactions = transactions.map(tx => new Transaction(tx));
         this.loading = false;
 
         if (this.oracle.phase === RESULT_SETTING) {
@@ -167,12 +160,17 @@ export default class EventStore {
       });
     }
 
+    this.setReactions();
+  }
+
+  setReactions = () => {
+    // Unconfirmed to confirmed Oracle
     reaction(
-      () => this.app.global.syncBlockTime,
+      () => this.app.global.syncBlockNum,
       async () => {
-        if (topicAddress === 'null' && address === 'null' && txid) {
+        if (this.topicAddress === 'null' && this.address === 'null' && this.txid) {
           // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
-          const filters = [{ txid }];
+          const filters = [{ txid: this.txid }];
           this.oracles = await queryAllOracles(filters);
           if (this.oracles.length > 0) {
             this.routeToConfirmedOracle();
@@ -181,12 +179,27 @@ export default class EventStore {
       }
     );
 
-    // when we get a new block or transactions are updated, react to it
+    // Toggle CTA on new block, transaction change, amount input change, option selected
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
+
+    // Fetch transactions during new block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => this.queryTransactions(),
+    );
+  }
+
+  @action
+  queryTransactions = async () => {
+    const res = await queryAllTransactions(
+      [{ topicAddress: this.topicAddress }],
+      { field: 'createdTime', direction: SortBy.DESCENDING }
+    );
+    this.transactions = res.map((tx) => new Transaction(tx, this.app));
   }
 
   /**
@@ -202,7 +215,10 @@ export default class EventStore {
     const notEnoughQtum = totalQtum < maxTransactionFee;
 
     // Already have a pending tx for this Oracle
-    const pendingTxs = _.filter(this.transactions, { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING });
+    const pendingTxs = _.filter(
+      this.transactions,
+      { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING }
+    );
     if (pendingTxs.length > 0) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.HIGHLIGHT;
@@ -293,6 +309,7 @@ export default class EventStore {
       this.eventWarningMessageId = 'oracle.maxVoteText';
       return;
     }
+
     this.buttonDisabled = false;
     this.eventWarningMessageId = '';
     this.warningType = '';
@@ -663,7 +680,7 @@ export default class EventStore {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
       const eventEscrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
-    return eventEscrowAmount;
+      return eventEscrowAmount;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);

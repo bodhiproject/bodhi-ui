@@ -30,7 +30,10 @@ export default class EventPage extends Component {
 
   render() {
     const { eventPage } = this.props.store;
-    if (eventPage.loading) return <Loading text={messages.loadOracleMsg} />;
+    if (eventPage.loading) {
+      return <Loading text={messages.loadOracleMsg} />;
+    }
+
     const { event } = eventPage;
     const Event = {
       BETTING: BettingOracle,
@@ -39,6 +42,7 @@ export default class EventPage extends Component {
       FINALIZING: FinalizingOracle,
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
+    // TODO: crashes here because event.phase is undefined.
 
     // TODO: can probably remove this eventually, but
     // need to update all Oracles pages to accept `event` prop instead of `oracle`
