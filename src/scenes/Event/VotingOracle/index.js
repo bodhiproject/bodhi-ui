@@ -33,7 +33,7 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
       {!oracle.isArchived && (
         <VoteButton onClick={eventPage.prepareVote} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       )}
-      <ResultHistory oracles={eventPage.oracles} />
+      <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
       <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />

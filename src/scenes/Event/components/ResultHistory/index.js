@@ -11,7 +11,7 @@ import {
   withStyles,
   Typography,
 } from '@material-ui/core';
-import { Token } from 'constants';
+import { Token, Phases } from 'constants';
 
 import { getShortLocalDateTimeString, i18nToUpperCase, localizeInvalidOption } from '../../../../helpers';
 import styles from './styles';
@@ -36,7 +36,7 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { classes, oracles, intl } = this.props;
+    const { classes, currentEvent, oracles, intl } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);
     if (sortedOracles.length) {
       const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
@@ -76,6 +76,7 @@ export default class EventResultHistory extends Component {
             <TableBody>
               {_.map(sortedOracles, (oracle, index) => {
                 const invalidOption = localizeInvalidOption(oracle.options[oracle.resultIdx], intl);
+                if (currentEvent.phase === Phases.VOTING && index === sortedOracles.length - 1) return;
                 return (
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
