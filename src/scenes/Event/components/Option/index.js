@@ -76,7 +76,7 @@ export default class Option extends Component {
         >
           <ExpansionPanel
             expanded={isExpanded || skipExpansion}
-            onChange={option.toggleExpansion}
+            onChange={skipExpansion ? null : option.toggleExpansion}
             disabled={option.disabled || disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
