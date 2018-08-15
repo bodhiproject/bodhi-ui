@@ -59,7 +59,6 @@ export default class TxConfirmDialog extends Component {
   render() {
     const { open, txFees, onConfirm, onClose, txAmount, txToken, txDesc } = this.props;
     const { classes, intl: { formatMessage } } = this.props;
-
     const txFee = _.sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
     let confirmMessage = formatMessage(messages.txConfirmMessageMsg, { txDesc, txAmount, txToken });
     if (txFee) {
