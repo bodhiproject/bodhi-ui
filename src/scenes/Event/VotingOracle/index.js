@@ -17,9 +17,9 @@ const messages = defineMessages({
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
   },
-  txConfirmMsgSetMsg: {
-    id: 'txConfirmMsg.set',
-    defaultMessage: 'set the result as {option}',
+  txConfirmMsgVoteMsg: {
+    id: 'txConfirmMsg.vote',
+    defaultMessage: 'vote on {option}',
   },
 });
 
@@ -37,7 +37,7 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
       <TransactionHistory type='oracle' options={oracle.options} />
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgVoteMsg.id} />
   </Row>
 ));
 
