@@ -63,7 +63,7 @@ class EventRow extends Component {
             <TableCell className={classes.summaryRowCell}>{getShortLocalDateTimeString(createdTime)}</TableCell>
             <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
             <NameLinkCell className={classes.viewEventLink} clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
-              {name || (topic && topic.name)}
+              {(topic && topic.name) || name}
             </NameLinkCell>
             <TableCell numeric>{`${amount || ''}  ${amount ? token : ''}`}</TableCell>
             <TableCell numeric>{fee}</TableCell>
