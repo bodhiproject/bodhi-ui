@@ -4,6 +4,7 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 
+import { TransactionType } from 'constants';
 import styles from './styles';
 import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
 import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
@@ -29,6 +30,8 @@ const messages = defineMessages({
   },
 });
 
+const { WITHDRAW, WITHDRAW_ESCROW } = TransactionType;
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 export default class TxRow extends Component {
@@ -49,9 +52,11 @@ export default class TxRow extends Component {
   };
 
   get name() {
-    const { intl: { formatMessage }, transaction: { optionIdx, topic, name } } = this.props;
-    if (topic) {
-      return `#${optionIdx + 1} ${name === 'Invalid' ? formatMessage(messages.invalidMsg) : name}`;
+    const { intl, transaction: { optionIdx, topic, name } } = this.props;
+    if ([WITHDRAW, WITHDRAW_ESCROW].includes(name)) {
+      return getTxTypeString(name, intl.locale, intl.messages);
+    } else if (topic) {
+      return `#${optionIdx + 1} ${name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : name}`;
     }
     return '';
   }
