@@ -14,8 +14,12 @@ global.localStorage = localStorageMock;
 
 // start test
 describe('UiStore', () => {
+  let store;
+  beforeEach(() => {
+    store = new UiStore();
+  });
+
   it('change locale', () => {
-    const store = new UiStore();
     store.changeLocale('ko-KR');
     expect(store.locale).toBe('ko-KR');
   });

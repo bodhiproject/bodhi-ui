@@ -124,7 +124,7 @@ module.exports = {
   // setupFiles: [],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  // setupTestFrameworkScriptFile: null,
+  setupTestFrameworkScriptFile: '<rootDir>/test/setup/setupEnzyme.js',
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -139,10 +139,10 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.js?(x)",
-  //   "**/?(*.)+(spec|test).js?(x)"
-  // ],
+  testMatch: [
+    '**/tests/**/*.js?(x)',
+    '**/?(*.)+(spec|test).js?(x)',
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -165,7 +165,9 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: null,
+  transform: {
+    '^.+\\.jsx?$': 'babel-jest',
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
@@ -180,8 +182,4 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-  setupTestFrameworkScriptFile: '<rootDir>__test__/setup/setupEnzyme.js',
-  transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-  },
 };
