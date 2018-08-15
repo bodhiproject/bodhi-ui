@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import { observable, computed } from 'mobx';
 import { defineMessages } from 'react-intl';
-import { OracleStatus, TransactionType, TransactionStatus, Phases } from 'constants';
+
+import { OracleStatus, TransactionType, TransactionStatus, Phases, Token } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
 import Option from './Option';
-const { BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING } = Phases;
 
+const { BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING } = Phases;
 const { PENDING } = TransactionStatus;
 
 const messages = defineMessages({
@@ -54,7 +55,7 @@ export default class Oracle {
   // BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING
   @computed get phase() {
     const { token, status } = this;
-    const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
+    const [BOT, QTUM] = [token === Token.BOT, token === Token.QTUM];
     if (QTUM && ['PENDING', 'WITHDRAW', 'CREATED', 'VOTING'].includes(status)) return BETTING;
     if (BOT && ['PENDING', 'VOTING', 'WITHDRAW'].includes(status)) return VOTING;
     if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
@@ -63,12 +64,12 @@ export default class Oracle {
   }
   // OpenResultSetting means the Result Setter did not set the result in time so anyone can set the result now.
   @computed get isOpenResultSetting() {
-    return this.token === 'QTUM' && this.status === 'OPENRESULTSET';
+    return this.token === Token.QTUM && this.status === 'OPENRESULTSET';
   }
   // Archived Oracles mean their purpose has been served. eg. Betting Oracle finished betting round.
   @computed get isArchived() {
     const { token, status } = this;
-    const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
+    const [BOT, QTUM] = [token === Token.BOT, token === Token.QTUM];
     if (QTUM && ['PENDING', 'WITHDRAW'].includes(status)) return true; // BETTING
     if (BOT && ['PENDING', 'WITHDRAW'].includes(status)) return true; // VOTING
     return false;
@@ -76,7 +77,7 @@ export default class Oracle {
   // Pending if there is a tx waiting to be accepted by the blockchain. Users can only do one tx at a time.
   @computed get isPending() {
     const { token, status, transactions } = this;
-    const [QTUM] = [token === 'QTUM'];
+    const [QTUM] = [token === Token.QTUM];
     const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
     const pendingTypes = {
       BETTING: [BET],

@@ -163,6 +163,7 @@ export default class EventStore {
         // Set the amount field since we know the amount will be the consensus threshold
         if (this.oracle.phase === RESULT_SETTING) {
           this.amount = this.oracle.consensusThreshold.toString();
+          this.oracle.token = ''
         }
       });
     }
