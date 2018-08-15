@@ -1,4 +1,4 @@
-import { observable, runInAction, action, computed, reaction } from 'mobx';
+import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import graphql from 'graphql.js';
 import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import moment from 'moment';
@@ -116,51 +116,59 @@ export default class EventStore {
     this.txid = txid;
     this.type = type;
 
-    if (topicAddress === 'null' && address === 'null' && txid) { // Handle unconfirmed Oracle
-      // Find mutated Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress
-      const res = await queryAllOracles([{ txid }]);
-      this.oracles = _.map(res, (o) => new Oracle(o, this.app));
-      this.loading = false;
-    } else if (type === 'topic') { // Handle Topic
-      this.escrowAmount = await this.getEscrowAmount();
-      const topics = await queryAllTopics([{ address }], undefined, 1, 0);
-      this.queryTransactions();
-
-      // API calls
-      const { bets, votes } = await this.getBetAndVoteBalances();
-      const withdrawableAddresses = await this.getWithdrawableAddresses();
-      const oracles = await this.getAllOracles(address);
-
-      runInAction(() => {
-        this.topics = topics.map(topic => new Topic(topic, this.app));
-        this.oracles = oracles;
-        this.betBalances = bets;
-        this.voteBalances = votes;
-        this.withdrawableAddresses = withdrawableAddresses;
-        this.botWinnings = _.sumBy(withdrawableAddresses, a => (
-          a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
-        ));
-        this.qtumWinnings = _.sumBy(withdrawableAddresses, ({ qtumWon }) => qtumWon);
-        this.selectedOptionIdx = this.topic.resultIdx;
-        this.loading = false;
-      });
-      return;
-    } else { // Handle Oracle
-      const oracles = await this.getAllOracles(topicAddress);
-      this.queryTransactions();
-
-      runInAction(() => {
-        this.oracles = oracles;
-        this.loading = false;
-
-        if (this.oracle.phase === RESULT_SETTING) {
-          // Set the amount field since we know the amount will be the consensus threshold
-          this.amount = this.oracle.consensusThreshold.toString();
-        }
-      });
+    if (topicAddress === 'null' && address === 'null' && txid) {
+      await this.initUnconfirmedOracle();
+    } else if (type === 'topic') {
+      await this.initTopic();
+    } else {
+      await this.initOracle();
     }
 
     this.setReactions();
+  }
+
+  /**
+   * Show unconfirmed Oracle page.
+   * Find unconfirmed Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress.
+   */
+  @action
+  initUnconfirmedOracle = async () => {
+    const res = await queryAllOracles([{ txid: this.txid }], undefined, 1);
+    this.oracles = _.map(res, o => new Oracle(o, this.app));
+    this.loading = false;
+  }
+
+  @action
+  initTopic = async () => {
+    // GraphQL calls
+    await this.queryTopics();
+    await this.queryOracles(this.address);
+    await this.queryTransactions(this.address);
+
+    // API calls
+    await this.getEscrowAmount();
+    await this.getBetAndVoteBalances();
+    await this.getWithdrawableAddresses();
+
+    this.botWinnings = _.sumBy(this.withdrawableAddresses, a => (
+      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
+    ));
+    this.qtumWinnings = _.sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
+    this.selectedOptionIdx = this.topic.resultIdx;
+    this.loading = false;
+  }
+
+  @action
+  initOracle = async () => {
+    // GraphQL calls
+    await this.queryOracles(this.topicAddress);
+    await this.queryTransactions(this.topicAddress);
+
+    if (this.oracle.phase === RESULT_SETTING) {
+      // Set the amount field since we know the amount will be the consensus threshold
+      this.amount = this.oracle.consensusThreshold.toString();
+    }
+    this.loading = false;
   }
 
   setReactions = () => {
@@ -194,12 +202,169 @@ export default class EventStore {
   }
 
   @action
-  queryTransactions = async () => {
+  queryTopics = async () => {
+    const res = await queryAllTopics([{ address: this.address }], undefined, 1);
+    this.topics = res.map(topic => new Topic(topic, this.app));
+  }
+
+  @action
+  queryOracles = async (address) => {
+    const res = await queryAllOracles([{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    this.oracles = res.map(oracle => new Oracle(oracle, this.app));
+  }
+
+  @action
+  queryTransactions = async (address) => {
     const res = await queryAllTransactions(
-      [{ topicAddress: this.topicAddress }],
-      { field: 'createdTime', direction: SortBy.DESCENDING }
+      [{ topicAddress: address }],
+      { field: 'createdTime', direction: SortBy.DESCENDING },
     );
-    this.transactions = res.map((tx) => new Transaction(tx, this.app));
+    this.transactions = res.map(tx => new Transaction(tx, this.app));
+  }
+
+  @action
+  getEscrowAmount = async () => {
+    try {
+      const res = await axios.post(networkRoutes.api.eventEscrowAmount, {
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      this.escrowAmount = satoshiToDecimal(res.data.result[0]);
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
+      });
+    }
+  }
+
+  @action
+  getBetAndVoteBalances = async () => {
+    try {
+      const { address: contractAddress, app: { wallet } } = this;
+
+      // Get all votes for this Topic
+      const voteFilters = [];
+      _.each(wallet.addresses, (item) => {
+        voteFilters.push({
+          topicAddress: contractAddress,
+          voterQAddress: item.address,
+        });
+      });
+
+      // Filter unique votes
+      const allVotes = await queryAllVotes(voteFilters);
+      const uniqueVotes = [];
+      _.each(allVotes, (vote) => {
+        const { voterQAddress, topicAddress } = vote;
+        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
+          uniqueVotes.push(vote);
+        }
+      });
+
+      // Call bet and vote balances for each unique vote address and get arrays for each address
+      const betArrays = [];
+      const voteArrays = [];
+      for (let i = 0; i < uniqueVotes.length; i++) {
+        const voteObj = uniqueVotes[i];
+
+        const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
+
+        const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
+          contractAddress,
+          senderAddress: voteObj.voterQAddress,
+        });
+        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
+      }
+
+      // Sum all arrays by index into one array
+      this.betBalances = _.map(_.unzip(betArrays), _.sum);
+      this.voteBalances = _.map(_.unzip(voteArrays), _.sum);
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
+      });
+    }
+  }
+
+  @action
+  getWithdrawableAddresses = async () => {
+    try {
+      const { address: eventAddress, app: { wallet } } = this;
+      const withdrawableAddresses = [];
+
+      // Fetch Topic
+      const topics = await queryAllTopics([{ address: eventAddress }]);
+      let topic;
+      if (!_.isEmpty(topics)) {
+        topic = processTopic(topics[0]);
+      } else {
+        throw new Error(`Unable to find topic ${eventAddress}`);
+      }
+
+      // Get all winning votes for this Topic
+      const voteFilters = [];
+      _.each(wallet.addresses, (item) => {
+        voteFilters.push({
+          topicAddress: topic.address,
+          optionIdx: topic.resultIdx,
+          voterQAddress: item.address,
+        });
+
+        // Add escrow withdraw object if is event creator
+        if (item.address === topic.creatorAddress) {
+          withdrawableAddresses.push({
+            type: TransactionType.WITHDRAW_ESCROW,
+            address: item.address,
+            botWon: topic.escrowAmount,
+            qtumWon: 0,
+          });
+          this.escrowClaim = topic.escrowAmount;
+        }
+      });
+
+      // Filter unique votes
+      const votes = await queryAllVotes(voteFilters);
+      const filtered = [];
+      _.each(votes, (vote) => {
+        if (!_.find(filtered, {
+          voterQAddress: vote.voterQAddress,
+          topicAddress: vote.topicAddress,
+        })) {
+          filtered.push(vote);
+        }
+      });
+
+      // Calculate winnings for each winning vote
+      for (let i = 0; i < filtered.length; i++) {
+        const vote = filtered[i];
+
+        const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
+          contractAddress: topic.address,
+          senderAddress: vote.voterQAddress,
+        });
+        const botWon = result ? satoshiToDecimal(result['0']) : 0;
+        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
+
+        // return only winning addresses
+        if (botWon || qtumWon) {
+          withdrawableAddresses.push({
+            type: TransactionType.WITHDRAW,
+            address: vote.voterQAddress,
+            botWon,
+            qtumWon,
+          });
+        }
+      }
+
+      this.withdrawableAddresses = withdrawableAddresses;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.winnings);
+      });
+    }
   }
 
   /**
@@ -553,215 +718,6 @@ export default class EventStore {
       });
     }
     Tracking.track('topicDetail-withdraw');
-  }
-
-  getOraclesBeforeConfirmed = async (txid) => {
-    const { allOracles } = await gql`
-      query {
-        allOracles(filter: { txid: "${txid}" }) {
-          txid
-          version
-          address
-          topicAddress
-          status
-          token
-          name
-          options
-          optionIdxs
-          amounts
-          resultIdx
-          blockNum
-          startTime
-          endTime
-          resultSetStartTime
-          resultSetEndTime
-          resultSetterAddress
-          resultSetterQAddress
-          consensusThreshold
-          transactions {
-            type
-            status
-          }
-        }
-      }
-    `;
-    return _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
-  }
-
-  getAllOracles = async (topicAddress) => {
-    const { allOracles } = await gql`
-      query {
-        allOracles(filter: { topicAddress: "${topicAddress}" }) {
-          txid
-          version
-          address
-          topicAddress
-          status
-          token
-          name
-          options
-          optionIdxs
-          amounts
-          resultIdx
-          blockNum
-          startTime
-          endTime
-          resultSetStartTime
-          resultSetEndTime
-          resultSetterAddress
-          resultSetterQAddress
-          consensusThreshold
-          transactions {
-            type
-            status
-          }
-        }
-      }
-    `;
-    return _.orderBy(allOracles.map(o => new Oracle(o, this.app)), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
-  }
-
-  getBetAndVoteBalances = async () => {
-    try {
-      const { address: contractAddress, app: { wallet } } = this;
-
-      // Get all votes for this Topic
-      const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: contractAddress,
-          voterQAddress: item.address,
-        });
-      });
-
-      // Filter unique votes
-      const allVotes = await queryAllVotes(voteFilters);
-      const uniqueVotes = [];
-      _.each(allVotes, (vote) => {
-        const { voterQAddress, topicAddress } = vote;
-        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
-          uniqueVotes.push(vote);
-        }
-      });
-
-      // Call bet and vote balances for each unique vote address and get arrays for each address
-      const betArrays = [];
-      const voteArrays = [];
-      for (let i = 0; i < uniqueVotes.length; i++) {
-        const voteObj = uniqueVotes[i];
-
-        const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterQAddress,
-        });
-        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
-
-        const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterQAddress,
-        });
-        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
-      }
-
-      // Sum all arrays by index into one array
-      const bets = _.map(_.unzip(betArrays), _.sum);
-      const votes = _.map(_.unzip(voteArrays), _.sum);
-      return { bets, votes };
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
-      });
-    }
-  }
-
-  getEscrowAmount = async () => {
-    try {
-      const escrowRes = await axios.post(networkRoutes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.lastUsedAddress,
-      });
-      const eventEscrowAmount = satoshiToDecimal(escrowRes.data.result[0]);
-      return eventEscrowAmount;
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
-      });
-    }
-  }
-
-  getWithdrawableAddresses = async () => {
-    try {
-      const { address: eventAddress, app: { wallet } } = this;
-      const withdrawableAddresses = [];
-
-      // Fetch Topic
-      const topics = await queryAllTopics([{ address: eventAddress }]);
-      let topic;
-      if (!_.isEmpty(topics)) {
-        topic = processTopic(topics[0]);
-      } else {
-        throw new Error(`Unable to find topic ${eventAddress}`);
-      }
-
-      // Get all winning votes for this Topic
-      const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: topic.address,
-          optionIdx: topic.resultIdx,
-          voterQAddress: item.address,
-        });
-
-        // Add escrow withdraw object if is event creator
-        if (item.address === topic.creatorAddress) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW_ESCROW,
-            address: item.address,
-            botWon: topic.escrowAmount,
-            qtumWon: 0,
-          });
-          this.escrowClaim = topic.escrowAmount;
-        }
-      });
-
-      // Filter unique votes
-      const votes = await queryAllVotes(voteFilters);
-      const filtered = [];
-      _.each(votes, (vote) => {
-        if (!_.find(filtered, {
-          voterQAddress: vote.voterQAddress,
-          topicAddress: vote.topicAddress,
-        })) {
-          filtered.push(vote);
-        }
-      });
-
-      // Calculate winnings for each winning vote
-      for (let i = 0; i < filtered.length; i++) {
-        const vote = filtered[i];
-
-        const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
-          contractAddress: topic.address,
-          senderAddress: vote.voterQAddress,
-        });
-        const botWon = result ? satoshiToDecimal(result['0']) : 0;
-        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
-
-        // return only winning addresses
-        if (botWon || qtumWon) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW,
-            address: vote.voterQAddress,
-            botWon,
-            qtumWon,
-          });
-        }
-      }
-      return withdrawableAddresses;
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.winnings);
-      });
-    }
   }
 
   reset = () => Object.assign(this, INIT)
