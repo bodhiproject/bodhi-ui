@@ -12,8 +12,8 @@ const WithdrawTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { 
       onConfirm={wallet.confirm.bind(this, onWithdraw) /* eslint-disable-line no-param-reassign */}
       txFees={wallet.txFees}
       open={wallet.txConfirmDialogOpen}
-      txToken={wallet.token}
-      txAmount={wallet.amount}
+      txToken={wallet.selectedToken}
+      txAmount={wallet.withdrawAmount}
       txDesc={intl.formatMessage({ id }, { address: wallet.toAddress })}
     />
   );
