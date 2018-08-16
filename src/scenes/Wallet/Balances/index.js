@@ -360,23 +360,27 @@ export default class MyBalances extends Component {
   }
 
   onDepositClicked(event) {
+    const { wallet } = this.props.store;
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
       selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
       selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
       depositDialogVisible: true,
     });
+    wallet.selectedAddressBot = event.currentTarget.getAttribute('data-bot');
 
     Tracking.track('myWallet-depositDialogOpen');
   }
 
   handleDepositDialogClose = () => {
+    const { wallet } = this.props.store;
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,
       selectedAddressBot: undefined,
       depositDialogVisible: false,
     });
+    wallet.selectedAddressBot = undefined;
   };
 
   onWithdrawClicked(event) {
@@ -391,18 +395,21 @@ export default class MyBalances extends Component {
         selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
         withdrawDialogVisible: true,
       });
+      wallet.selectedAddressBot = event.currentTarget.getAttribute('data-bot');
 
       Tracking.track('myWallet-withdrawDialogOpen');
     }
   }
 
   handleWithdrawDialogClose = () => {
+    const { wallet } = this.props.store;
     this.setState({
       selectedAddress: undefined,
       selectedAddressQtum: undefined,
       selectedAddressBot: undefined,
       withdrawDialogVisible: false,
     });
+    wallet.selectedAddressBot = undefined;
   };
 
   onWithdraw() {

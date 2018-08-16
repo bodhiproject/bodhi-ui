@@ -61,7 +61,7 @@ export default class WithdrawDialog extends Component {
   };
 
   render() {
-    const { dialogVisible, walletAddress, onClose, store: { wallet } } = this.props;
+    const { dialogVisible, walletAddress, botAmount, onClose, store: { wallet } } = this.props;
 
     if (!walletAddress) {
       return null;
@@ -70,14 +70,15 @@ export default class WithdrawDialog extends Component {
     return (
       <Dialog
         open={dialogVisible}
+        onEnter={wallet.resetWithdrawDialog}
         onClose={onClose}
       >
         <DialogTitle>
           <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw QTUM/BOT" />
         </DialogTitle>
         <DialogContent>
-          {this.getFromToFields()}
-          {this.getAmountFields()}
+          <FromToField />
+          <AmountField />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>
@@ -90,8 +91,14 @@ export default class WithdrawDialog extends Component {
       </Dialog>
     );
   }
+}
 
-  getFromToFields = () => {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
+class FromToField extends Component {
+  render() {
     const { classes, walletAddress, intl, store: { wallet } } = this.props;
     const { toAddress } = wallet;
 
@@ -109,37 +116,28 @@ export default class WithdrawDialog extends Component {
           type="string"
           fullWidth
           className={classes.toAddress}
-          onChange={wallet.onToAddressChange.bind(this, event)} // eslint-disable-line
+          value={toAddress}
+          onChange={e => wallet.toAddress = e.target.value} //onChange={wallet.onToAddressChange.bind(this, event)}
+          onBlur={wallet.validateWithdrawDialogWalletAddress}
           error={wallet.withdrawDialogError.walletAddress !== ''} // 
           required
         />
       </div>
     );
-  };
+  }  
+}
 
-  getAmountFields = () => {
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
+class AmountField extends Component {
+  render() {
     const {
       classes,
       intl,
-      botAmount,
       store: { wallet },
     } = this.props;
-    const { withdrawAmount, selectedToken } = wallet;
-
-    let withdrawLimit = 0;
-    switch (wallet.selectedToken) {
-      case Token.QTUM: {
-        withdrawLimit = _.sumBy(wallet.addresses, (w) => w.qtum ? w.qtum : 0);
-        break;
-      }
-      case Token.BOT: {
-        withdrawLimit = botAmount;
-        break;
-      }
-      default: {
-        throw new Error(`Invalid selectedToken ${wallet.selectedToken}`);
-      }
-    }
 
     const withdrawAmountText = intl.formatMessage(messages.youCanWithdraw);
 
@@ -152,13 +150,15 @@ export default class WithdrawDialog extends Component {
             label={intl.formatMessage(messages.amount)}
             type="number"
             className={classes.amountInput}
-            onChange={wallet.onAmountChange.bind(this, event)} // eslint-disable-line
-            error={wallet.withdrawDialogError.botAmount !== ''} // 
+            value={wallet.withdrawAmount}
+            onChange={e => wallet.withdrawAmount = e.target.value} // onChange={wallet.onAmountChange.bind(this, event)} // eslint-disable-line
+            onBlur={wallet.validateWithdrawDialogAmount}
+            error={wallet.withdrawDialogError.withdrawAmount !== ''} // 
             required
           />
           <Select
-            value={selectedToken}
-            onChange={wallet.onTokenChange.bind(this, event)} // eslint-disable-line
+            value={wallet.selectedToken}
+            onChange={e => wallet.selectedToken = event.target.value} // eslint-disable-line
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
             <MenuItem value={Token.QTUM}>QTUM</MenuItem>
@@ -166,9 +166,9 @@ export default class WithdrawDialog extends Component {
           </Select>
         </div>
         <Typography variant="body1">
-          {`${withdrawAmountText} ${withdrawLimit}`}
+          {`${withdrawAmountText} ${wallet.withdrawLimit}`}
         </Typography>
       </div>
     );
-  };
+  }
 }

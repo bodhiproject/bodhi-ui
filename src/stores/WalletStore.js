@@ -19,13 +19,17 @@ const INIT_VALUE = {
   passphrase: '',
   walletUnlockedUntil: 0,
   unlockDialogOpen: false,
-  selectedToken: Token.QTUM,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
+  selectedAddressBot: undefined,
+};
+
+const INIT_VALUE_DIALOG = {
+  selectedToken: Token.QTUM,
   toAddress: '',
   withdrawAmount: '',
   withdrawDialogError: {
-    botAmount: '',
+    withdrawAmount: '',
     walletAddress: '',
   },
 };
@@ -38,12 +42,13 @@ export default class {
   @observable passphrase = INIT_VALUE.passphrase;
   @observable walletUnlockedUntil = INIT_VALUE.walletUnlockedUntil;
   @observable unlockDialogOpen = INIT_VALUE.unlockDialogOpen;
-  @observable selectedToken = INIT_VALUE.selectedToken;
+  @observable selectedToken = INIT_VALUE_DIALOG.selectedToken;
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
-  @observable withdrawDialogError = INIT_VALUE.withdrawDialogError;
-  @observable withdrawAmount = INIT_VALUE.withdrawAmount;
-  @observable toAddress = INIT_VALUE.toAddress;
+  @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
+  @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
+  @observable toAddress = INIT_VALUE_DIALOG.toAddress;
+  @observable selectedAddressBot = INIT_VALUE.selectedAddressBot;
 
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
@@ -51,6 +56,20 @@ export default class {
     const now = moment();
     const unlocked = moment.unix(this.walletUnlockedUntil).subtract(1, 'hours');
     return now.isSameOrAfter(unlocked);
+  }
+
+  @computed get withdrawLimit() {
+    switch (this.selectedToken) {
+      case Token.QTUM: {
+        return _.sumBy(this.addresses, (w) => w.qtum ? w.qtum : 0);
+      }
+      case Token.BOT: {
+        return this.selectedAddressBot;
+      }
+      default: {
+        throw new Error(`Invalid selectedToken ${this.selectedToken}`);
+      }
+    }
   }
 
   constructor(app) {
@@ -108,8 +127,8 @@ export default class {
   }
 
   @action
-  validateWithdrawDialogWalletAddress = (toAddress) => {
-    if (_.isEmpty(toAddress)) {
+  validateWithdrawDialogWalletAddress = () => {
+    if (_.isEmpty(this.toAddress)) {
       this.withdrawDialogError.walletAddress = 'TODO: ERROR TEXT';
     } else {
       this.withdrawDialogError.walletAddress = '';
@@ -118,41 +137,18 @@ export default class {
   }
 
   @action
-  validateWithdrawDialogAmount = (botAmount) => {
-    if (_.isEmpty(botAmount)) {
-      this.withdrawDialogError.botAmount = 'TODO: ERROR TEXT';
-    } else if (botAmount <= 0) {
-      this.withdrawDialogError.botAmount = 'TODO: ERROR TEXT';
+  validateWithdrawDialogAmount = () => {
+    if (_.isEmpty(this.withdrawAmount)) {
+      this.withdrawDialogError.withdrawAmount = 'TODO: ERROR TEXT';
+    } else if (this.withdrawAmount <= 0) {
+      this.withdrawDialogError.withdrawAmount = 'TODO: ERROR TEXT';
     } else {
-      this.withdrawDialogError.botAmount = '';
+      this.withdrawDialogError.withdrawAmount = '';
     }
   }
 
   @action
-  resetWithdrawDialog = () => {
-    this.toAddress = INIT_VALUE.toAddress;
-    this.withdrawAmount = INIT_VALUE.withdrawAmount;
-    this.selectedToken = INIT_VALUE.selectedToken;
-    this.validateWithdrawDialogWalletAddress(this.toAddress);
-    this.validateWithdrawDialogAmount(this.withdrawAmount);
-  }
-
-  @action
-  onToAddressChange = (self, event) => {
-    this.toAddress = event.target.value;
-    this.validateWithdrawDialogWalletAddress(this.toAddress);
-  };
-
-  @action
-  onAmountChange = (self, event) => {
-    this.withdrawAmount = event.target.value;
-    this.validateWithdrawDialogAmount(this.withdrawAmount);
-  };
-
-  @action
-  onTokenChange = (self, event) => {
-    this.selectedToken = event.target.value;
-  };
+  resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
   backupWallet = async () => {
