@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
+import { defineMessages } from 'react-intl';
 
 import axios from '../network/httpRequest';
 import Routes from '../network/routes';
@@ -10,6 +11,25 @@ import { createTransferTx } from '../network/graphMutation';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 
+// TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
+const messages = defineMessages({
+  withdrawDialogInvalidAddressMsg: {
+    id: 'withdrawDialog.invalidAddress',
+    defaultMessage: 'Invalid address',
+  },
+  withdrawDialogAmountLargerThanZeroMsg: {
+    id: 'withdrawDialog.amountLargerThanZero',
+    defaultMessage: 'Amount should be larger than 0',
+  },
+  withdrawDialogAmountExceedLimitMsg: {
+    id: 'withdrawDialog.amountExceedLimit',
+    defaultMessage: 'Amount exceed the limit',
+  },
+  withdrawDialogRequiredMsg: {
+    id: 'withdrawDialog.required',
+    defaultMessage: 'Required',
+  },
+});
 
 const INIT_VALUE = {
   addresses: [],
@@ -19,9 +39,19 @@ const INIT_VALUE = {
   passphrase: '',
   walletUnlockedUntil: 0,
   unlockDialogOpen: false,
-  selectedToken: Token.QTUM,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
+  selectedAddressBot: undefined,
+};
+
+const INIT_VALUE_DIALOG = {
+  selectedToken: Token.QTUM,
+  toAddress: '',
+  withdrawAmount: '',
+  withdrawDialogError: {
+    withdrawAmount: '',
+    walletAddress: '',
+  },
 };
 
 export default class {
@@ -32,9 +62,13 @@ export default class {
   @observable passphrase = INIT_VALUE.passphrase;
   @observable walletUnlockedUntil = INIT_VALUE.walletUnlockedUntil;
   @observable unlockDialogOpen = INIT_VALUE.unlockDialogOpen;
-  @observable selectedToken = INIT_VALUE.selectedToken;
+  @observable selectedToken = INIT_VALUE_DIALOG.selectedToken;
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
+  @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
+  @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
+  @observable toAddress = INIT_VALUE_DIALOG.toAddress;
+  @observable selectedAddressBot = INIT_VALUE.selectedAddressBot;
 
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
@@ -42,6 +76,26 @@ export default class {
     const now = moment();
     const unlocked = moment.unix(this.walletUnlockedUntil).subtract(1, 'hours');
     return now.isSameOrAfter(unlocked);
+  }
+
+  @computed get withdrawDialogHasError() {
+    if (this.withdrawDialogError.withdrawAmount) return true;
+    if (this.withdrawDialogError.walletAddress) return true;
+    return false;
+  }
+
+  @computed get withdrawLimit() {
+    switch (this.selectedToken) {
+      case Token.QTUM: {
+        return _.sumBy(this.addresses, (w) => w.qtum ? w.qtum : 0);
+      }
+      case Token.BOT: {
+        return this.selectedAddressBot;
+      }
+      default: {
+        throw new Error(`Invalid selectedToken ${this.selectedToken}`);
+      }
+    }
   }
 
   constructor(app) {
@@ -98,20 +152,43 @@ export default class {
     this.encryptResult = undefined;
   }
 
-  @action
-  onToAddressChange = (self, event) => {
-    this.toAddress = event.target.value;
-  };
+  isValidAddress = async (addressToVerify) => {
+    try {
+      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
+      return result.isvalid;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.validateAddress);
+      });
+    }
+  }
 
   @action
-  onAmountChange = (self, event) => {
-    this.withdrawAmount = event.target.value;
-  };
+  validateWithdrawDialogWalletAddress = async () => {
+    if (_.isEmpty(this.toAddress)) {
+      this.withdrawDialogError.walletAddress = messages.withdrawDialogRequiredMsg.id;
+    } else if (!(await this.isValidAddress(this.toAddress))) {
+      this.withdrawDialogError.walletAddress = messages.withdrawDialogAmountLargerThanZeroMsg.id;
+    } else {
+      this.withdrawDialogError.walletAddress = '';
+    }
+  }
 
   @action
-  onTokenChange = (self, event) => {
-    this.selectedToken = event.target.value;
-  };
+  validateWithdrawDialogAmount = () => {
+    if (_.isEmpty(this.withdrawAmount)) {
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogRequiredMsg.id;
+    } else if (Number(this.withdrawAmount) <= 0) {
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountLargerThanZeroMsg.id;
+    } else if (Number(this.withdrawAmount) > Number(this.withdrawLimit)) { // Automatically switch by token
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountExceedLimitMsg.id;
+    } else {
+      this.withdrawDialogError.withdrawAmount = '';
+    }
+  }
+
+  @action
+  resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
   backupWallet = async () => {
@@ -145,7 +222,7 @@ export default class {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
-        amount: Number(this.withdrawAmount),
+        amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
