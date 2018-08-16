@@ -22,6 +22,12 @@ const INIT_VALUE = {
   selectedToken: Token.QTUM,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
+  toAddress: '',
+  withdrawAmount: '',
+  withdrawDialogError: {
+    botAmount: '',
+    walletAddress: '',
+  },
 };
 
 export default class {
@@ -35,6 +41,9 @@ export default class {
   @observable selectedToken = INIT_VALUE.selectedToken;
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
+  @observable withdrawDialogError = INIT_VALUE.withdrawDialogError;
+  @observable withdrawAmount = INIT_VALUE.withdrawAmount;
+  @observable toAddress = INIT_VALUE.toAddress;
 
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
@@ -99,13 +108,45 @@ export default class {
   }
 
   @action
+  validateWithdrawDialogWalletAddress(toAddress) {
+    if (_.isEmpty(toAddress)) {
+      this.withdrawDialogError.walletAddress = 'TODO: ERROR TEXT';
+    } else {
+      this.withdrawDialogError.walletAddress = '';
+    }
+    // TODO: ADDRESS VALIDATION LOGIC?
+  }
+
+  @action
+  validateWithdrawDialogAmount(botAmount) {
+    if (_.isEmpty(botAmount)) {
+      this.withdrawDialogError.botAmount = 'TODO: ERROR TEXT';
+    } else if (botAmount <= 0) {
+      this.withdrawDialogError.botAmount = 'TODO: ERROR TEXT';
+    } else {
+      this.withdrawDialogError.botAmount = '';
+    }
+  }
+
+  @action
+  resetWithdrawDialog = () => {
+    this.toAddress = INIT_VALUE.toAddress;
+    this.withdrawAmount = INIT_VALUE.withdrawAmount;
+    this.selectedToken = INIT_VALUE.selectedToken;
+    this.validateWithdrawDialogWalletAddress(this.toAddress);
+    this.validateWithdrawDialogAmount(this.withdrawAmount);
+  }
+
+  @action
   onToAddressChange = (self, event) => {
     this.toAddress = event.target.value;
+    this.validateWithdrawDialogWalletAddress(this.toAddress);
   };
 
   @action
   onAmountChange = (self, event) => {
     this.withdrawAmount = event.target.value;
+    this.validateWithdrawDialogAmount(this.withdrawAmount);
   };
 
   @action

@@ -17,7 +17,9 @@ import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Token } from 'constants';
+import axios from 'axios';
 
+import Routes from '../../../../network/routes';
 import styles from './styles';
 
 
@@ -60,6 +62,16 @@ export default class WithdrawDialog extends Component {
     botAmount: undefined,
   };
 
+  isValidAddress = async (address) => {
+    try {
+      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address });
+      return result.isvalid;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.validateAddress);
+      });
+    }
+  }
 
   render() {
     const { dialogVisible, walletAddress, onClose, store: { wallet } } = this.props;
@@ -71,6 +83,7 @@ export default class WithdrawDialog extends Component {
     return (
       <Dialog
         open={dialogVisible}
+        onEntered={wallet.resetWithdrawDialog}
         onClose={onClose}
       >
         <DialogTitle>
@@ -111,7 +124,7 @@ export default class WithdrawDialog extends Component {
           fullWidth
           className={classes.toAddress}
           onChange={wallet.onToAddressChange.bind(this, event)} // eslint-disable-line
-          error={_.isEmpty(toAddress)}
+          error={wallet.withdrawDialogError.walletAddress !== ''} // 
           required
         />
       </div>
@@ -154,7 +167,7 @@ export default class WithdrawDialog extends Component {
             type="number"
             className={classes.amountInput}
             onChange={wallet.onAmountChange.bind(this, event)} // eslint-disable-line
-            error={withdrawAmount < 0 || _.isEmpty(withdrawAmount)}
+            error={wallet.withdrawDialogError.botAmount !== ''} // 
             required
           />
           <Select
