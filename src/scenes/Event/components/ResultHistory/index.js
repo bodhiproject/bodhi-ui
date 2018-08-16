@@ -82,7 +82,7 @@ export default class EventResultHistory extends Component {
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                     <TableCell padding="dense">
-                      { (currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
+                      {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
                         ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
                         : ''
                       }
