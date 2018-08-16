@@ -79,8 +79,8 @@ export default class {
   }
 
   @computed get withdrawDialogHasError() {
-    if (this.withdrawDialogError.withdrawAmount !== '') return true;
-    if (this.withdrawDialogError.walletAddress !== '') return true;
+    if (this.withdrawDialogError.withdrawAmount) return true;
+    if (this.withdrawDialogError.walletAddress) return true;
     return false;
   }
 
