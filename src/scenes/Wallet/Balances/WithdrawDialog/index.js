@@ -17,9 +17,7 @@ import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Token } from 'constants';
-import axios from 'axios';
 
-import Routes from '../../../../network/routes';
 import styles from './styles';
 
 
@@ -61,17 +59,6 @@ export default class WithdrawDialog extends Component {
     walletAddress: undefined,
     botAmount: undefined,
   };
-
-  isValidAddress = async (address) => {
-    try {
-      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address });
-      return result.isvalid;
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.validateAddress);
-      });
-    }
-  }
 
   render() {
     const { dialogVisible, walletAddress, onClose, store: { wallet } } = this.props;
