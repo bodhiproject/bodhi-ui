@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 
-import EventWarning from '../EventWarning';
+import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers/utility';
+import { getEndTimeCountDownString } from '../../../../helpers';
 
 
 @injectIntl
@@ -49,7 +49,7 @@ export default class EventCard extends PureComponent {
       amountLabel,
       endTime,
     } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const { formatMessage } = this.props.intl;
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -63,16 +63,16 @@ export default class EventCard extends PureComponent {
               </Typography>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
-                  <div>
+                  <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
+                    {`${amountLabel} `}
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                    {` ${amountLabel}`}
                   </div>
                 )}
-                <div>
+                <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - this.props.increasingCount)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>
@@ -80,7 +80,10 @@ export default class EventCard extends PureComponent {
             </div>
             <Divider />
             <div className={cx(classes.eventCardSection, 'button')}>
-              {isUpcoming ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" /> : formatMessage(buttonText)}
+              {isUpcoming
+                ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" />
+                : formatMessage(buttonText)
+              }
             </div>
           </Card>
         </Link>

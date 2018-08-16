@@ -71,6 +71,7 @@ module.exports = {
   },
 
   SortBy: {
+    DEFAULT: 'DESC',
     ASCENDING: 'ASC',
     DESCENDING: 'DESC',
   },
