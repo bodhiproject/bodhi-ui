@@ -31,6 +31,10 @@ const messages = defineMessages({
     id: 'str.m',
     defaultMessage: 'm',
   },
+  second: {
+    id: 'str.s',
+    defaultMessage: 's',
+  },
   left: {
     id: 'str.left',
     defaultMessage: 'Left',
@@ -116,7 +120,7 @@ export function getShortLocalDateTimeString(unixSeconds) {
 }
 
 export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
-  const { day, hour, minute, end } = messages;
+  const { day, hour, minute, second, end } = messages;
   const nowUnix = moment().unix();
   const unixDiff = unixSeconds - nowUnix;
 
@@ -125,7 +129,7 @@ export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
     return formatMessage(end);
   }
 
-  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}]`);
+  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}] s[${formatMessage(second)}]`);
 }
 
 /**
