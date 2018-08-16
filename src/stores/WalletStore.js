@@ -11,7 +11,7 @@ import { createTransferTx } from '../network/graphMutation';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 
-// TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS
+// TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
   withdrawDialogInvalidAddressMsg: {
     id: 'withdrawDialog.invalidAddress',
