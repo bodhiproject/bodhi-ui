@@ -37,12 +37,7 @@ export default class EventResultHistory extends Component {
 
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
-    console.log(oracles);
     const sortedOracles = _.orderBy(oracles, ['endTime']);
-    console.log('f');
-    console.log(filteredOracles);
-    console.log('s');
-    console.log(sortedOracles);
     if (sortedOracles.length) {
       const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
       const { endTime, token } = sortedOracles[1];
@@ -53,8 +48,6 @@ export default class EventResultHistory extends Component {
       sortedOracles.splice(1, 0, resultSettingRound);
     }
     const filteredOracles = _.filter(sortedOracles, (oracle) => oracle.status !== OracleStatus.VOTING);
-    console.log('t');
-    console.log(filteredOracles);
 
     return (
       <div className={classes.detailTxWrapper}>
