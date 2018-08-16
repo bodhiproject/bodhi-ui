@@ -11,7 +11,7 @@ import {
   withStyles,
   Typography,
 } from '@material-ui/core';
-import { Token, Phases } from 'constants';
+import { Token, Phases, OracleStatus } from 'constants';
 
 import { getShortLocalDateTimeString, i18nToUpperCase, localizeInvalidOption } from '../../../../helpers';
 import styles from './styles';
@@ -37,7 +37,12 @@ export default class EventResultHistory extends Component {
 
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
+    console.log(oracles);
     const sortedOracles = _.orderBy(oracles, ['endTime']);
+    console.log('f');
+    console.log(filteredOracles);
+    console.log('s');
+    console.log(sortedOracles);
     if (sortedOracles.length) {
       const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
       const { endTime, token } = sortedOracles[1];
@@ -47,6 +52,9 @@ export default class EventResultHistory extends Component {
       resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
       sortedOracles.splice(1, 0, resultSettingRound);
     }
+    const filteredOracles = _.filter(sortedOracles, (oracle) => oracle.status !== OracleStatus.VOTING);
+    console.log('t');
+    console.log(filteredOracles);
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -55,7 +63,7 @@ export default class EventResultHistory extends Component {
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
         </Typography>
-        {sortedOracles.length ? (
+        {filteredOracles.length ? (
           <Table>
             <TableHead>
               <TableRow>
@@ -74,15 +82,14 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(sortedOracles, (oracle, index) => {
+              {_.map(filteredOracles, (oracle, index) => {
                 const invalidOption = localizeInvalidOption(oracle.options[oracle.resultIdx], intl);
-                if (currentEvent.phase === Phases.VOTING && index === sortedOracles.length - 1) return;
                 return (
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                     <TableCell padding="dense">
-                      {index !== sortedOracles.length - 1 && index !== 0
+                      { (currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
                         ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
                         : ''
                       }
