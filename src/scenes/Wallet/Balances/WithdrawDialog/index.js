@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import _ from 'lodash';
 import { Token } from 'constants';
 
 import styles from './styles';
@@ -61,7 +60,7 @@ export default class WithdrawDialog extends Component {
   };
 
   render() {
-    const { dialogVisible, walletAddress, botAmount, onClose, store: { wallet } } = this.props;
+    const { dialogVisible, walletAddress, onClose, store: { wallet } } = this.props;
 
     if (!walletAddress) {
       return null;
@@ -84,7 +83,7 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)}>
+          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)} disabled={wallet.withdrawDialogHasError}>
             <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
@@ -117,9 +116,9 @@ class FromToField extends Component {
           fullWidth
           className={classes.toAddress}
           value={toAddress}
-          onChange={e => wallet.toAddress = e.target.value} //onChange={wallet.onToAddressChange.bind(this, event)}
+          onChange={e => wallet.toAddress = e.target.value}
           onBlur={wallet.validateWithdrawDialogWalletAddress}
-          error={wallet.withdrawDialogError.walletAddress !== ''} // 
+          error={wallet.withdrawDialogError.walletAddress !== ''}
           required
         />
       </div>
@@ -151,14 +150,14 @@ class AmountField extends Component {
             type="number"
             className={classes.amountInput}
             value={wallet.withdrawAmount}
-            onChange={e => wallet.withdrawAmount = e.target.value} // onChange={wallet.onAmountChange.bind(this, event)} // eslint-disable-line
+            onChange={e => wallet.withdrawAmount = e.target.value}
             onBlur={wallet.validateWithdrawDialogAmount}
-            error={wallet.withdrawDialogError.withdrawAmount !== ''} // 
+            error={wallet.withdrawDialogError.withdrawAmount !== ''}
             required
           />
           <Select
             value={wallet.selectedToken}
-            onChange={e => wallet.selectedToken = event.target.value} // eslint-disable-line
+            onChange={e => wallet.selectedToken = e.target.value} // eslint-disable-line
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
             <MenuItem value={Token.QTUM}>QTUM</MenuItem>

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
+import { defineMessages } from 'react-intl';
 
 import axios from '../network/httpRequest';
 import Routes from '../network/routes';
@@ -10,6 +11,25 @@ import { createTransferTx } from '../network/graphMutation';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 
+// TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS
+const messages = defineMessages({
+  withdrawDialogInvalidAddressMsg: {
+    id: 'withdrawDialog.invalidAddress',
+    defaultMessage: 'Invalid address',
+  },
+  withdrawDialogAmountLargerThanZeroMsg: {
+    id: 'withdrawDialog.amountLargerThanZero',
+    defaultMessage: 'Amount should be larger than 0',
+  },
+  withdrawDialogAmountExceedLimitMsg: {
+    id: 'withdrawDialog.amountExceedLimit',
+    defaultMessage: 'Amount exceed the limit',
+  },
+  withdrawDialogRequiredMsg: {
+    id: 'withdrawDialog.required',
+    defaultMessage: 'Required',
+  },
+});
 
 const INIT_VALUE = {
   addresses: [],
@@ -56,6 +76,12 @@ export default class {
     const now = moment();
     const unlocked = moment.unix(this.walletUnlockedUntil).subtract(1, 'hours');
     return now.isSameOrAfter(unlocked);
+  }
+
+  @computed get withdrawDialogHasError() {
+    if (this.withdrawDialogError.withdrawAmount !== '') return true;
+    if (this.withdrawDialogError.walletAddress !== '') return true;
+    return false;
   }
 
   @computed get withdrawLimit() {
@@ -126,22 +152,36 @@ export default class {
     this.encryptResult = undefined;
   }
 
+  isValidAddress = async (addressToVerify) => {
+    try {
+      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
+      return result.isvalid;
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.validateAddress);
+      });
+    }
+  }
+
   @action
-  validateWithdrawDialogWalletAddress = () => {
+  validateWithdrawDialogWalletAddress = async () => {
     if (_.isEmpty(this.toAddress)) {
-      this.withdrawDialogError.walletAddress = 'TODO: ERROR TEXT';
+      this.withdrawDialogError.walletAddress = messages.withdrawDialogRequiredMsg.id;
+    } else if (!(await this.isValidAddress(this.toAddress))) {
+      this.withdrawDialogError.walletAddress = messages.withdrawDialogAmountLargerThanZeroMsg.id;
     } else {
       this.withdrawDialogError.walletAddress = '';
     }
-    // TODO: ADDRESS VALIDATION LOGIC?
   }
 
   @action
   validateWithdrawDialogAmount = () => {
     if (_.isEmpty(this.withdrawAmount)) {
-      this.withdrawDialogError.withdrawAmount = 'TODO: ERROR TEXT';
-    } else if (this.withdrawAmount <= 0) {
-      this.withdrawDialogError.withdrawAmount = 'TODO: ERROR TEXT';
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogRequiredMsg.id;
+    } else if (Number(this.withdrawAmount) <= 0) {
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountLargerThanZeroMsg.id;
+    } else if (Number(this.withdrawAmount) > Number(this.withdrawLimit)) { // Automatically switch by token
+      this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountExceedLimitMsg.id;
     } else {
       this.withdrawDialogError.withdrawAmount = '';
     }
@@ -182,7 +222,7 @@ export default class {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
-        amount: Number(this.withdrawAmount),
+        amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
