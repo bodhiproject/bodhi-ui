@@ -26,7 +26,7 @@ const WithdrawingTopic = observer(({ store: { eventPage, eventPage: { topic, esc
         )}
       </Container>
       <Options eventPage={eventPage} />
-      <ResultHistory oracles={eventPage.oracles} />
+      <ResultHistory oracles={eventPage.oracles} currentEvent={topic} />
       <TransactionHistory options={topic.options} />
     </Content>
     <Sidebar topic={topic} />
