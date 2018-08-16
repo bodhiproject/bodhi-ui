@@ -108,7 +108,7 @@ export default class {
   }
 
   @action
-  validateWithdrawDialogWalletAddress(toAddress) {
+  validateWithdrawDialogWalletAddress = (toAddress) => {
     if (_.isEmpty(toAddress)) {
       this.withdrawDialogError.walletAddress = 'TODO: ERROR TEXT';
     } else {
@@ -118,7 +118,7 @@ export default class {
   }
 
   @action
-  validateWithdrawDialogAmount(botAmount) {
+  validateWithdrawDialogAmount = (botAmount) => {
     if (_.isEmpty(botAmount)) {
       this.withdrawDialogError.botAmount = 'TODO: ERROR TEXT';
     } else if (botAmount <= 0) {

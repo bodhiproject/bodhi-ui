@@ -70,7 +70,6 @@ export default class WithdrawDialog extends Component {
     return (
       <Dialog
         open={dialogVisible}
-        onEntered={wallet.resetWithdrawDialog}
         onClose={onClose}
       >
         <DialogTitle>
