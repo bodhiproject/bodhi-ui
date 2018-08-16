@@ -85,7 +85,7 @@ export default class EventResultHistory extends Component {
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                     <TableCell padding="dense">
                       {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
-                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
+                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx].name === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
                         : ''
                       }
                     </TableCell>

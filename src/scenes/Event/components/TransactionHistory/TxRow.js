@@ -48,11 +48,11 @@ export default class TxRow extends Component {
   };
 
   get name() {
-    const { intl, transaction: { optionIdx, topic, name } } = this.props;
+    const { intl, transaction: { optionIdx, topic, name, localizedInvalid } } = this.props;
     if ([WITHDRAW, WITHDRAW_ESCROW].includes(name)) {
       return getTxTypeString(name, intl.locale, intl.messages);
     } else if (topic) {
-      return `#${optionIdx + 1} ${name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : name}`;
+      return `#${optionIdx + 1} ${name === 'Invalid' && localizedInvalid !== undefined ? localizedInvalid.parse(intl.locale) : name}`;
     }
     return '';
   }
