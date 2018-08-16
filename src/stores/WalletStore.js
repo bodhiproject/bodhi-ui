@@ -155,8 +155,6 @@ export default class {
       runInAction(() => {
         this.txFees = txFees;
         this.txConfirmDialogOpen = true;
-        this.txToken = this.selectedToken;
-        this.txAmount = Number(this.withdrawAmount);
       });
     } catch (error) {
       runInAction(() => {
