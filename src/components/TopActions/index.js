@@ -43,7 +43,6 @@ export default class TopActions extends Component {
             <Button
               variant="raised"
               size="medium"
-              color="primary"
               className={classes.createEventButton}
               onClick={createEvent.open}
             >
