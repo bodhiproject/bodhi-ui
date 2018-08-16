@@ -20,7 +20,6 @@ import { getEndTimeCountDownString } from '../../../../helpers';
 @injectIntl
 @withStyles(styles, { withTheme: true })
 export default class EventCard extends PureComponent {
-  now = moment().unix();
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
@@ -74,7 +73,7 @@ export default class EventCard extends PureComponent {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(this.now, this.props.event.endTime - this.props.increasingCount)}</Fragment>
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - this.props.increasingCount)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>

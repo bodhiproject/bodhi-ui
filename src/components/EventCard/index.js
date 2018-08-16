@@ -76,9 +76,6 @@ export default class EventCard extends PureComponent {
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
-              <div className={classes.dashboardTime}>
-                {endTime !== undefined && `${this.props.intl.formatMessage(cardMessages.ends)}: ${getShortLocalDateTimeString(endTime)}`}
-              </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
                   <div>
