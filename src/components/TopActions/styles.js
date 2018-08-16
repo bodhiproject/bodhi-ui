@@ -5,6 +5,10 @@ const styles = (theme) => ({
   createEventButton: {
     padding: `12px ${theme.padding.sm.px}`,
     verticalAlign: 'middle',
+    '&:hover': {
+      background: '#585AFA',
+      color: 'white',
+    },
   },
   dashboardActionsRight: {
     textAlign: 'right',
