@@ -158,6 +158,7 @@ class AmountField extends Component {
           <Select
             value={wallet.selectedToken}
             onChange={e => wallet.selectedToken = e.target.value} // eslint-disable-line
+            onBlur={wallet.validateWithdrawDialogAmount}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
             <MenuItem value={Token.QTUM}>QTUM</MenuItem>
