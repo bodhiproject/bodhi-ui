@@ -4,8 +4,7 @@ const styles = (theme) => ({
   },
   navBarWrapper: {
     display: 'flex',
-    padding: `${theme.padding.sm.px}`,
-    paddingRight: '0',
+    padding: `0 ${theme.padding.sm.px}`,
     'align-items': 'center',
     height: '70px',
     'justify-content': 'space-between',
@@ -59,18 +58,6 @@ const styles = (theme) => ({
     color: 'white',
     paddingTop: 3,
     marginLeft: 25,
-  },
-  navbarDropdown: {
-    background: 'red',
-    '>ul': {
-      display: 'none',
-    },
-    'input[type=checkbox]:checked ~ ul': {
-      display: 'block',
-    },
-  },
-  navbarCheckboxToggle: {
-    marginTop: '50',
   },
 });
 
