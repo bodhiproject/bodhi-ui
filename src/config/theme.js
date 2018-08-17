@@ -159,14 +159,14 @@ export const theme = {
       root: {
         borderRadius: px(paddingLg),
         textTransform: 'none',
-        '&:hover': {
-          background: primaryColor,
-          color: white,
-        },
       },
       raised: {
         backgroundColor: 'white',
         color: primaryColor,
+        '&:hover': {
+          background: primaryColor,
+          color: white,
+        },
       },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),

@@ -17,7 +17,6 @@ const styles = (theme) => ({
   dashboardActionsSortLabel: {
     marginRight: theme.padding.sm.px,
   },
-  sportCreateIcon: {}, // TODO: remove after world cup
 });
 
 export default styles;
