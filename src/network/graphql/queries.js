@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
 
-import client from '.';
+import client from './index';
 import GraphParser from './parser';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
 
