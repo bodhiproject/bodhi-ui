@@ -159,6 +159,10 @@ export const theme = {
       root: {
         borderRadius: px(paddingLg),
         textTransform: 'none',
+        '&:hover': {
+          background: primaryColor,
+          color: white,
+        },
       },
       raised: {
         backgroundColor: 'white',
