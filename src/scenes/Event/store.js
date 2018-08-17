@@ -3,7 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
+import { Routes, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import { Oracle, Transaction, Topic, TransactionCost } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
@@ -131,6 +131,7 @@ export default class EventStore {
   @action
   initTopic = async () => {
     // GraphQL calls
+    this.app.ui.location = Routes.TOPIC;
     await this.queryTopics();
     await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
@@ -151,6 +152,7 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
+    this.app.ui.location = Routes.ORACLE;
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
 
@@ -162,10 +164,14 @@ export default class EventStore {
   }
 
   setReactions = () => {
-    // Unconfirmed to confirmed Oracle
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
+        // Fetch transactions during new block
+        if (this.app.ui.location === Routes.TOPIC) this.queryTransactions(this.address);
+        if (this.app.ui.location === Routes.ORACLE) this.queryTransactions(this.topicAddress);
+
+        // Unconfirmed to confirmed Oracle
         if (this.topicAddress === 'null' && this.address === 'null' && this.txid) {
           // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
           const filters = [{ txid: this.txid }];
@@ -180,14 +186,10 @@ export default class EventStore {
     // Toggle CTA on new block, transaction change, amount input change, option selected
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
-      () => this.disableEventActionsIfNecessary(),
+      () => {
+        if (this.app.ui.location === Routes.TOPIC || this.app.ui.location === Routes.ORACLE) this.disableEventActionsIfNecessary();
+      },
       { fireImmediately: true },
-    );
-
-    // Fetch transactions during new block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      () => this.queryTransactions(),
     );
   }
 

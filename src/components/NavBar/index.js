@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
@@ -50,13 +52,23 @@ export default class NavBar extends Component {
             <QtumPrediction {...this.props} />
             <BotCourt {...this.props} />
           </NavSection>
-          <NavSection>
+          <div className={classes.navbarDropdown}>
+            <button type="checkbox" className={classes.navbarCheckboxToggle}>
+              click
+            </button>
+            <ul>
+              <li><a href="#">Link One</a></li>
+              <li><a href="#">Link Two</a></li>
+              <li><a href="#">Link Three</a></li>
+            </ul>
+          </div>
+          {/* <NavSection>
             <Wallet {...this.props} />
             <MyActivities {...this.props} />
             <HelpButton {...this.props} />
             <LanguageSelector {...this.props} />
             <AllEvents {...this.props} />
-          </NavSection>
+          </NavSection> */}
         </Toolbar>
       </AppBar>
     );

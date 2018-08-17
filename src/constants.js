@@ -8,6 +8,8 @@ module.exports = {
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
     ALL_EVENTS: '/all-events',
+    TOPIC: '/topic',
+    ORACLE: '/oracle',
   },
 
   Phases: {
