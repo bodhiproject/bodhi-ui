@@ -25,7 +25,7 @@ const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic 
   <OptionWrapper>
     <OptionNumber>{index + 1}</OptionNumber>
     <Typog variant="title" data-small={topic.resultIdx === index}>
-      {option}
+      {option === 'Invalid' ? topic.localizedInvalid.parse(intl.locale) : option}
     </Typog>
     <Typography variant="caption">
       {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {

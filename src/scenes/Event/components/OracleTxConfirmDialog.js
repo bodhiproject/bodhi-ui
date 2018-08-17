@@ -14,7 +14,7 @@ export const OracleTxConfirmDialog = inject('store')(injectIntl(observer(({ stor
       open={eventPage.txConfirmDialogOpen}
       txToken={oracle.token}
       txAmount={eventPage.amount}
-      txDesc={intl.formatMessage({ id }, { option: eventPage.selectedOption.name })}
+      txDesc={intl.formatMessage({ id }, { option: eventPage.selectedOption.name === 'Invalid' ? oracle.localizedInvalid.parse(intl.locale) : eventPage.selectedOption.name })}
     />
   );
 })));

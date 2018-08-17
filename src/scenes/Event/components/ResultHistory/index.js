@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { Token, Phases, OracleStatus } from 'constants';
 
-import { getShortLocalDateTimeString, i18nToUpperCase, localizeInvalidOption } from '../../../../helpers';
+import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
 
@@ -34,7 +34,6 @@ export default class EventResultHistory extends Component {
     }
     return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
   }
-
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
     const sortedOracles = _.orderBy(oracles, ['endTime']);
@@ -75,15 +74,18 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(filteredOracles, (oracle, index) => {
-                const invalidOption = localizeInvalidOption(oracle.options[oracle.resultIdx], intl);
+              {_.map(sortedOracles, (oracle, index) => {
+                let invalidOption = 'Invalid';
+                if (oracle.localizedInvalid !== undefined) {
+                  invalidOption = oracle.localizedInvalid.parse(intl.locale);
+                }
                 return (
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                     <TableCell padding="dense">
                       {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
-                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx] === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
+                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx].name === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
                         : ''
                       }
                     </TableCell>
