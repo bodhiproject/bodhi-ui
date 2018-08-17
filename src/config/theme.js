@@ -163,6 +163,10 @@ export const theme = {
       raised: {
         backgroundColor: 'white',
         color: primaryColor,
+        '&:hover': {
+          background: primaryColor,
+          color: white,
+        },
       },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),

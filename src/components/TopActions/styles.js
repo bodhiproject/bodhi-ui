@@ -5,10 +5,6 @@ const styles = (theme) => ({
   createEventButton: {
     padding: `12px ${theme.padding.sm.px}`,
     verticalAlign: 'middle',
-    '&:hover': {
-      background: '#585AFA',
-      color: 'white',
-    },
   },
   dashboardActionsRight: {
     textAlign: 'right',
@@ -21,7 +17,6 @@ const styles = (theme) => ({
   dashboardActionsSortLabel: {
     marginRight: theme.padding.sm.px,
   },
-  sportCreateIcon: {}, // TODO: remove after world cup
 });
 
 export default styles;
