@@ -1,7 +1,6 @@
 {
   "name": "bodhi-ui",
-  "version": "1.1.0",
-  "private": true,
+  "version": "1.0.0",
   "dependencies": {
     "@material-ui/core": "^1.2.2",
     "@material-ui/icons": "^1.1.0",
@@ -151,6 +150,9 @@
       "git add"
     ]
   },
+  "files": [
+    "build/"
+  ],
   "babel": {
     "presets": [
       "react-app"

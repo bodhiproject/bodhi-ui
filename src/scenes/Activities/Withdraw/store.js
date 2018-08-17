@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { OracleStatus, Routes, SortBy } from 'constants';
 import { Topic } from 'models';
 
-import { queryAllVotes, queryAllTopics } from '../../../network/graphQuery';
+import { queryAllVotes, queryAllTopics } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?

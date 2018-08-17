@@ -11,7 +11,7 @@ import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 
 import App from './scenes/App';
 import bodhiTheme, { theme as styledTheme } from './config/theme';
-import graphClient from './network/graphClient';
+import graphqlClient from './network/graphql';
 import '../src/style/styles.less';
 
 
@@ -25,7 +25,7 @@ export const AppProvider = observer(({ xstore, store }) => (
       <MobxProvider store={xstore}>
         <MuiThemeProvider theme={bodhiTheme}>
           <IntlProvider locale={xstore.ui.locale} messages={xstore.ui.localeMessages}>
-            <ApolloProvider client={graphClient}>
+            <ApolloProvider client={graphqlClient}>
               <BrowserRouter>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <Route

@@ -1,6 +1,6 @@
 import { observable, action, runInAction } from 'mobx';
 
-import axios from '../../network/httpRequest';
+import axios from '../../network/api';
 import Routes from '../../network/routes';
 import Config from '../../config/app';
 

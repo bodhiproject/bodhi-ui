@@ -5,9 +5,9 @@ import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
-import axios from '../network/httpRequest';
+import axios from '../network/api';
 import Routes from '../network/routes';
-import { createTransferTx } from '../network/graphMutation';
+import { createTransferTx } from '../network/graphql/mutations';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 

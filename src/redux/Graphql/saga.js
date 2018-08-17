@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Token, OracleStatus, EventStatus, TransactionType, TransactionStatus, Phases } from 'constants';
 
 import actions from './actions';
-import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphQuery';
+import { queryAllTopics, queryAllOracles, queryAllVotes, queryAllTransactions } from '../../network/graphql/queries';
 import {
   createTopic,
   createBetTx,
@@ -13,7 +13,7 @@ import {
   createFinalizeResultTx,
   createWithdrawTx,
   createTransferTx,
-} from '../../network/graphMutation';
+} from '../../network/graphql/mutations';
 import {
   decimalToSatoshi,
   satoshiToDecimal,

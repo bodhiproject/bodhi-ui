@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import _ from 'lodash';
 
-import client from './graphClient';
-import { TYPE, getMutation, isValidEnum } from './graphSchema';
+import client from '.';
+import { TYPE, getMutation, isValidEnum } from './schema';
 
 if (process.env.REACT_APP_ENV === 'dev') {
   window.mutations = '';

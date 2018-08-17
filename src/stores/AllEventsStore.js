@@ -1,7 +1,7 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
 import { OracleStatus, Routes } from 'constants';
-import { queryAllTopics, queryAllOracles } from '../network/graphQuery';
+import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
 import Topic from './models/Topic';
 import Oracle from './models/Oracle';
 
