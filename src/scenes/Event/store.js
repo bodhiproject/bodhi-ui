@@ -29,6 +29,7 @@ const INIT = {
   warningType: '',
   eventWarningMessageId: '',
   escrowClaim: 0,
+  currentType: '',
 };
 
 /**
@@ -49,6 +50,7 @@ export default class EventStore {
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
+  currentType = INIT.currentType
   // topic
   @observable topics = []
   withdrawableAddresses = []
@@ -131,7 +133,7 @@ export default class EventStore {
   @action
   initTopic = async () => {
     // GraphQL calls
-    this.app.ui.location = Routes.TOPIC;
+    this.currentType = Routes.TOPIC;
     await this.queryTopics();
     await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
@@ -152,7 +154,7 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
-    this.app.ui.location = Routes.ORACLE;
+    this.currentType = Routes.ORACLE;
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
 
@@ -168,8 +170,8 @@ export default class EventStore {
       () => this.app.global.syncBlockNum,
       async () => {
         // Fetch transactions during new block
-        if (this.app.ui.location === Routes.TOPIC) this.queryTransactions(this.address);
-        if (this.app.ui.location === Routes.ORACLE) this.queryTransactions(this.topicAddress);
+        if (this.currentType === Routes.TOPIC) this.queryTransactions(this.address);
+        if (this.currentType === Routes.ORACLE) this.queryTransactions(this.topicAddress);
 
         // Unconfirmed to confirmed Oracle
         if (this.topicAddress === 'null' && this.address === 'null' && this.txid) {
@@ -187,7 +189,7 @@ export default class EventStore {
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
       () => {
-        if (this.app.ui.location === Routes.TOPIC || this.app.ui.location === Routes.ORACLE) this.disableEventActionsIfNecessary();
+        if (this.currentType === Routes.TOPIC || this.currentType === Routes.ORACLE) this.disableEventActionsIfNecessary();
       },
       { fireImmediately: true },
     );
@@ -712,5 +714,5 @@ export default class EventStore {
     Tracking.track('topicDetail-withdraw');
   }
 
-  reset = () => Object.assign(this, INIT)
+  reset = () => Object.assign(this, INIT);
 }
