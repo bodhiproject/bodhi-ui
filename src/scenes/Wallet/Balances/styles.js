@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   myBalancePaper: {
     minWidth: theme.sizes.table.minWidth,
-    overflowX: 'scroll',
+    overflowX: 'visible',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
     background: theme.palette.background.paper,
