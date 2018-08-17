@@ -96,7 +96,7 @@ export default class Option extends Component {
               </div>
             </ExpansionPanelSummary>
             {showAmountInput && (
-              <Fragment>
+              <div>
                 <AmountInput
                   token={token}
                   phase={phase}
@@ -113,7 +113,7 @@ export default class Option extends Component {
                   value={wallet.lastUsedAddress}
                   onChange={e => wallet.lastUsedAddress = e.target.value}
                 />
-              </Fragment>
+              </div>
             )}
           </ExpansionPanel>
         </div>
