@@ -8,7 +8,6 @@
     "es6": true
   },
   "plugins": [
-    "redux-saga",
     "react",
     "jsx-a11y"
   ],
@@ -103,8 +102,6 @@
       0
     ],
     "react/prefer-stateless-function": 1,
-    "redux-saga/no-yield-in-race": 2,
-    "redux-saga/yield-effects": 2,
     "react/jsx-closing-tag-location": 0,
     "require-yield": 0,
     "import/no-webpack-loader-syntax": 0,

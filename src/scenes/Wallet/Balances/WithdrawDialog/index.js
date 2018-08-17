@@ -118,7 +118,7 @@ class FromToField extends Component {
           value={toAddress}
           onChange={e => wallet.toAddress = e.target.value}
           onBlur={wallet.validateWithdrawDialogWalletAddress}
-          error={wallet.withdrawDialogError.walletAddress}
+          error={wallet.withdrawDialogError.walletAddress !== ''}
           required
         />
       </div>
@@ -152,7 +152,7 @@ class AmountField extends Component {
             value={wallet.withdrawAmount}
             onChange={e => wallet.withdrawAmount = e.target.value}
             onBlur={wallet.validateWithdrawDialogAmount}
-            error={wallet.withdrawDialogError.withdrawAmount}
+            error={wallet.withdrawDialogError.withdrawAmount !== ''}
             required
           />
           <Select
