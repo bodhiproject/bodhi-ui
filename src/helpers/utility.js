@@ -149,7 +149,7 @@ export function shortenAddress(text, maxLength) {
     : text;
 }
 
-/** TODO: moved to wallet store
+/**
  * Checks to see if the unlocked until timestamp is before the current UNIX time.
  * @param isEncrypted {Boolean} Is the wallet encrypted.
  * @param unlockedUntil {Number|String} The UNIX timestamp in seconds to compare to.
