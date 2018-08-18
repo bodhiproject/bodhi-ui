@@ -1,12 +1,8 @@
-import { defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
-const { PENDING } = TransactionStatus;
 
-const messages = defineMessages({
-  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
-});
+const { PENDING } = TransactionStatus;
 
 /*
 * Model for TopicEvents.
@@ -55,7 +51,6 @@ export default class Topic {
     this.amountLabel = `${totalQTUM} QTUM, ${totalBOT} BOT`;
     this.url = `/topic/${this.address}`;
     this.isUpcoming = false;
-    this.buttonText = messages.withdraw;
     this.unconfirmed = this.isPending;
     this.localizedInvalid = {
       en: 'Invalid',
