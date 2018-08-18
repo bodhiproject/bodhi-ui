@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
+import { sum } from 'lodash';
 import { Phases } from 'constants';
 
 import EventWarning from '../EventWarning';
@@ -29,14 +30,36 @@ export default class EventCard extends PureComponent {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     index: PropTypes.number.isRequired,
-    amountLabel: PropTypes.string,
     endTime: PropTypes.string,
   };
 
   static defaultProps = {
-    amountLabel: undefined,
     endTime: undefined,
   };
+
+  getAmountLabel = () => {
+    const { phase, token, amounts, qtumAmount, botAmount } = this.props.event;
+    switch (phase) {
+      case BETTING:
+      case RESULT_SETTING:
+      case VOTING: {
+        const amount = parseFloat(sum(amounts).toFixed(2));
+        return `${amount} ${token}`;
+      }
+      case FINALIZING: {
+        return '';
+      }
+      case WITHDRAWING: {
+        const totalQTUM = parseFloat(sum(qtumAmount).toFixed(2));
+        const totalBOT = parseFloat(sum(botAmount).toFixed(2));
+        return `${totalQTUM} QTUM, ${totalBOT} BOT`;
+      }
+      default: {
+        console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
+        break;
+      }
+    }
+  }
 
   getButtonText = () => {
     const { phase } = this.props.event;
@@ -52,8 +75,9 @@ export default class EventCard extends PureComponent {
 
   render() {
     const { classes, index, unconfirmed } = this.props;
-    const { name, isPending, isUpcoming, url, amountLabel, endTime } = this.props.event;
+    const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const amountLabel = this.getAmountLabel();
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>

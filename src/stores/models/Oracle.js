@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { observable, computed } from 'mobx';
 import { OracleStatus, TransactionType, TransactionStatus, Phases, Token } from 'constants';
 
@@ -36,7 +35,6 @@ export default class Oracle {
   version // Current version of the contract. To manage deprecations later.
 
   // for UI
-  amountLabel = '' // Shows the amount raised on the Event card.
   url = '' // Internal URL for routing within UI.
   @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
 
@@ -98,14 +96,9 @@ export default class Oracle {
     this.app = app;
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-
-    const amount = parseFloat(_.sum(this.amounts).toFixed(2));
-    this.amountLabel = this.phase !== FINALIZING ? `${amount} ${oracle.token}` : ''; // TODO: will move into Finalize Oracle component
     this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
-
     this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
-
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',

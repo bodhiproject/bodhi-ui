@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
 
@@ -45,10 +44,6 @@ export default class Topic {
     }));
     const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
     this.isPending = this.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
-
-    const totalQTUM = parseFloat(_.sum(this.qtumAmount).toFixed(2));
-    const totalBOT = parseFloat(_.sum(this.botAmount).toFixed(2));
-    this.amountLabel = `${totalQTUM} QTUM, ${totalBOT} BOT`;
     this.url = `/topic/${this.address}`;
     this.isUpcoming = false;
     this.unconfirmed = this.isPending;
