@@ -171,7 +171,10 @@ export default class EventStore {
       async () => {
         // Fetch transactions during new block
         if (this.currentType === Routes.TOPIC) this.queryTransactions(this.address);
-        if (this.currentType === Routes.ORACLE) this.queryTransactions(this.topicAddress);
+        if (this.currentType === Routes.ORACLE) {
+          this.queryTransactions(this.topicAddress);
+          await this.queryOracles(this.topicAddress);
+        }
 
         // Unconfirmed to confirmed Oracle
         if (this.topicAddress === 'null' && this.address === 'null' && this.txid) {
