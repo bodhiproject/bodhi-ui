@@ -35,9 +35,8 @@ const messages = defineMessages({
 });
 
 /**
- * The new EventOption
- * TODO: this needs to be refactored...
- * logic is hard to follow
+ * Component for displaying the Event options that can be selected, bet on, etc.
+ * TODO: this needs to be refactored... logic is hard to follow
  */
 @withRouter
 @injectIntl
