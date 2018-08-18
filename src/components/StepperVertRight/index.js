@@ -7,12 +7,8 @@ import { isEmpty, each } from 'lodash';
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
-const POS_TOPIC_CREATED = 0;
-const POS_BETTING = 1;
-const POS_ORACLE_RESULT_SETTING = 2;
-const POS_OPEN_RESULT_SETTING = 3;
-
-
+// Current step positions. Index defines which step the Event is in.
+const [TOPIC_CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING] = [0, 1, 2, 3];
 const messages = defineMessages({
   cardInfoMsg: {
     id: 'cardInfo.to',
@@ -108,7 +104,7 @@ export default class StepperVertRight extends Component {
 
         if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight withdrawal
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
+          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
           current = null;
         }
@@ -121,10 +117,10 @@ export default class StepperVertRight extends Component {
 
         if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
           // Highlight last DecentralizedOracle voting
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles;
+          current = ORACLE_RESULT_SETTING + numOfDOracles;
         } else if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight finalizing
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
+          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
           current = null;
         }
@@ -138,13 +134,13 @@ export default class StepperVertRight extends Component {
 
       // Set step number
       if (syncBlockTime < cOracle.startTime) {
-        current = POS_TOPIC_CREATED;
+        current = TOPIC_CREATED;
       } else if (syncBlockTime >= cOracle.startTime && syncBlockTime < cOracle.resultSetStartTime) {
-        current = POS_BETTING;
+        current = BETTING;
       } else if (syncBlockTime >= cOracle.resultSetStartTime && syncBlockTime < cOracle.resultSetEndTime) {
-        current = POS_ORACLE_RESULT_SETTING;
+        current = ORACLE_RESULT_SETTING;
       } else if (syncBlockTime >= cOracle.resultSetEndTime) {
-        current = POS_OPEN_RESULT_SETTING;
+        current = OPEN_RESULT_SETTING;
       } else {
         current = null;
       }
