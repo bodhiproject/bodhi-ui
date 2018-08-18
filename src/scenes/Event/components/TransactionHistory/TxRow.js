@@ -89,11 +89,11 @@ export default class TxRow extends Component {
         </TableRow>
         {expanded && (
           <Fragment>
-            <TableRow selected onClick={this.toggle} key={`txaddr-${txid}`}>
+            <TableRow selected key={`txaddr-${txid}`}>
               <TransactionHistoryID transaction={transaction} />
               <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
             </TableRow>
-            <TableRow selected onClick={this.toggle} key={`txid-${txid}`}>
+            <TableRow selected key={`txid-${txid}`}>
               <TransactionHistoryAddress transaction={transaction} />
               <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
             </TableRow>
