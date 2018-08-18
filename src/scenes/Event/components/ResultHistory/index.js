@@ -33,17 +33,29 @@ export default class EventResultHistory extends Component {
   }
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
+    console.log('event', currentEvent);
+    console.log('oracles', oracles);
     const sortedOracles = _.orderBy(oracles, ['endTime']);
-    if (sortedOracles.length) {
-      const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
-      const { endTime, token } = sortedOracles[1];
-      const resultSettingRound = { endTime, token, resultIdx, options };
-      resultSettingRound.amounts = _.clone(amounts);
+
+    // Add Result Setting round
+    if (sortedOracles.length >= 2) {
+      const resultSettingRound = _.clone(sortedOracles[0]);
+
+      // Set the amount to display the consensus threshold
       resultSettingRound.amounts.fill(0);
-      resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
+      resultSettingRound.amounts[resultSettingRound.resultIdx] = resultSettingRound.consensusThreshold;
+
+      // Set the endTime and token
+      resultSettingRound.endTime = sortedOracles[1].endTime;
+      resultSettingRound.token = sortedOracles[1].token;
+
+      // Insert row after Betting round
       sortedOracles.splice(1, 0, resultSettingRound);
     }
+
+    console.log('sorted', sortedOracles);
     const filteredOracles = _.filter(sortedOracles, (oracle) => oracle.status !== OracleStatus.VOTING);
+    console.log('filtered', filteredOracles);
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -74,21 +86,24 @@ export default class EventResultHistory extends Component {
               {_.map(sortedOracles, (oracle, index) => {
                 const { resultIdx, options } = oracle;
 
-                // Localize Invalid name
-                let invalidOption = 'Invalid';
-                if (oracle.localizedInvalid !== undefined) {
-                  invalidOption = oracle.localizedInvalid.parse(intl.locale);
+                let winningOutcome;
+                if (resultIdx != null && oracle.phase !== Phases.BETTING) {
+                  winningOutcome = options[resultIdx].name;
+
+                  // Localize Invalid name
+                  if (winningOutcome === 'Invalid') {
+                    winningOutcome = oracle.localizedInvalid.parse(intl.locale);
+                  }
+
+                  // Append outcome number
+                  winningOutcome = `#${resultIdx + 1} ${winningOutcome}`;
                 }
+
                 return (
                   <TableRow key={`result-${index}`} selected={index % 2 === 1}>
                     <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
-                    <TableCell padding="dense">
-                      {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
-                        ? `#${resultIdx + 1} ${options[resultIdx].name === 'Invalid' ? invalidOption : options[resultIdx].name}`
-                        : ''
-                      }
-                    </TableCell>
+                    <TableCell padding="dense">{winningOutcome}</TableCell>
                     <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
                   </TableRow>
                 );
