@@ -64,7 +64,7 @@ export default class EventResultHistory extends Component {
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
         </Typography>
-        {filteredOracles.length ? (
+        {filteredOracles.length && (
           <Table>
             <TableHead>
               <TableRow>
@@ -110,10 +110,6 @@ export default class EventResultHistory extends Component {
               })}
             </TableBody>
           </Table>
-        ) : (
-          <Typography variant="body1">
-            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-          </Typography>
         )}
       </div>
     );
