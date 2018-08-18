@@ -46,7 +46,6 @@ export default class EventPage extends Component {
       FINALIZING: FinalizingOracle,
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
-    // TODO: crashes here because event.phase is undefined.
 
     // TODO: can probably remove this eventually, but
     // need to update all Oracles pages to accept `event` prop instead of `oracle`
