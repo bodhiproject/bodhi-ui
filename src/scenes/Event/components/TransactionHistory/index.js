@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  withStyles,
-} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 
 import TxRow from './TxRow';
@@ -58,7 +50,7 @@ export default class TransactionHistory extends Component {
             </TableHead>
             <TableBody>
               {transactions.map((transaction) => (
-                <TxRow key={transaction.txid} transaction={transaction/* Temporary change for adapting some outdated part. Duplicated object will be removed. */} />
+                <TxRow key={transaction.txid} transaction={transaction} />
               ))}
             </TableBody>
           </Table>

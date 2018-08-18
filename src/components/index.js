@@ -6,4 +6,5 @@ export { default as TxSentDialog } from './TxSentDialog';
 export * from './Loading';
 export { default as RewardTooltipContent } from './RewardTooltipContent';
 export { default as Warning } from './Warning';
-
+export { default as TransactionHistoryID } from './TransactionHistoryAddressAndID/id';
+export { default as TransactionHistoryAddress } from './TransactionHistoryAddressAndID/address';

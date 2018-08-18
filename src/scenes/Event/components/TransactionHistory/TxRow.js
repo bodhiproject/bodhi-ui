@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-
+import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 import { TransactionType } from 'constants';
+
 import styles from './styles';
-import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
-import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
@@ -42,8 +41,6 @@ export default class TxRow extends Component {
   }
 
   toggle = () => {
-    // TODO: probably need some logic here for not expanding when clicking on
-    // the Name link field
     this.setState({ expanded: !this.state.expanded });
   };
 

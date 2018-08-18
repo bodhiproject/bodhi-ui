@@ -1,20 +1,18 @@
 const styles = () => ({
-  clickToExpandRow: {
-    cursor: 'pointer',
-  },
   summaryRowCell: {
     paddingTop: '24px',
     paddingBottom: '24px',
   },
-  viewEventLink: {
+  eventNameText: {
+    textDecoration: 'underline',
     '&:hover': {
       color: '#585AFA',
       cursor: 'pointer',
     },
-    textDecoration: 'underline',
   },
-  arrowSize: {
+  arrowIcon: {
     fontSize: '8px',
+    cursor: 'pointer',
   },
   show: {
     display: 'table-row',

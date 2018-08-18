@@ -2,17 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  withStyles,
-  Typography,
-} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { Token, Phases, OracleStatus } from 'constants';
-
 import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
@@ -32,7 +23,13 @@ export default class EventResultHistory extends Component {
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
     }
-    return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
+    return (
+      <FormattedMessage
+        id="str.arbitrationRoundX"
+        defaultMessage="Arbitration Round {idx}"
+        values={{ idx: index - 1 }}
+      />
+    );
   }
   render() {
     const { classes, currentEvent, oracles, intl } = this.props;
@@ -74,7 +71,10 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(filteredOracles, (oracle, index) => {
+              {_.map(sortedOracles, (oracle, index) => {
+                const { resultIdx, options } = oracle;
+
+                // Localize Invalid name
                 let invalidOption = 'Invalid';
                 if (oracle.localizedInvalid !== undefined) {
                   invalidOption = oracle.localizedInvalid.parse(intl.locale);
@@ -85,7 +85,7 @@ export default class EventResultHistory extends Component {
                     <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
                     <TableCell padding="dense">
                       {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
-                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx].name === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
+                        ? `#${resultIdx + 1} ${options[resultIdx].name === 'Invalid' ? invalidOption : options[resultIdx].name}`
                         : ''
                       }
                     </TableCell>
