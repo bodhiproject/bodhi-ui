@@ -6,7 +6,8 @@ import { TxConfirmDialog } from 'components';
 
 export const OracleTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { eventPage }, intl, id }) => {
   const { oracle } = eventPage;
-  return (
+
+  return eventPage.txConfirmDialogOpen && (
     <TxConfirmDialog
       onClose={() => eventPage.txConfirmDialogOpen = false}
       onConfirm={eventPage.confirm}

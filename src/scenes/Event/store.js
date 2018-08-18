@@ -89,7 +89,7 @@ export default class EventStore {
   }
   // both
   @computed get selectedOption() {
-    return this.event.options[this.selectedOptionIdx] || {};
+    return (this.event.options && this.event.options[this.selectedOptionIdx]) || {};
   }
   @computed get event() {
     if (this.type === 'topic') return this.topic;
