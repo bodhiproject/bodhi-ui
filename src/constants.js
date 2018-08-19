@@ -10,6 +10,12 @@ module.exports = {
     ALL_EVENTS: '/all-events',
   },
 
+  EventType: {
+    UNCONFIRMED: 'UNCONFIRMED',
+    TOPIC: 'TOPIC',
+    ORACLE: 'ORACLE',
+  },
+
   Phases: {
     UNCONFIRMED: 'UNCONFIRMED', // BETTING
     BETTING: 'BETTING',

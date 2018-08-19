@@ -36,7 +36,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
           {!oracle.isArchived
             && <BetButton onClick={eventPage.prepareBet} disabled={eventPage.isPending || eventPage.buttonDisabled} />
           }
-          <TransactionHistory type='oracle' options={oracle.options} />
+          <TransactionHistory options={oracle.options} />
         </Fragment>
       )}
     </Content>

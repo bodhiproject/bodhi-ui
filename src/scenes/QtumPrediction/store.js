@@ -46,7 +46,12 @@ export default class QtumPredictionStore {
   init = async () => {
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.QTUM_PREDICTION;
-    this.list = await this.fetch(this.limit, this.skip);
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = false;
     });

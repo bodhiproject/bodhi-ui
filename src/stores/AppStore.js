@@ -1,4 +1,5 @@
-import { observable, runInAction, action } from 'mobx';
+import { observable, runInAction } from 'mobx';
+import { RouterStore } from 'mobx-react-router';
 
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
@@ -37,14 +38,10 @@ class AppStore {
   activities = {}
 
   constructor() {
-    this.init();
-  }
-
-  @action
-  async init() {
     // block content until all stores are initialized
     this.loading = true;
 
+    this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);

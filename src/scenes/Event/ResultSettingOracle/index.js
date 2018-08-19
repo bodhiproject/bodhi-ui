@@ -29,7 +29,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
       <SetResultButton onClick={eventPage.prepareSetResult} disabled={eventPage.isPending || eventPage.buttonDisabled} />
-      <TransactionHistory type='oracle' options={oracle.options} />
+      <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />

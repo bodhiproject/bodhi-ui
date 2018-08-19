@@ -32,7 +32,7 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
         <VoteButton onClick={eventPage.prepareVote} disabled={eventPage.isPending || eventPage.buttonDisabled} />
       )}
       <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
-      <TransactionHistory type='oracle' options={oracle.options} />
+      <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id={messages.txConfirmMsgVoteMsg.id} />
