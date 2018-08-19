@@ -54,6 +54,7 @@ export default class EventPage extends Component {
     }
 
     // Unconfirmed Oracle changed txid so Oracles query comes back empty. Return to Qtum Prediction.
+    // TODO: can remove this when hashedId is implemented and we can get the Oracle by hashedId.
     if (!event) {
       this.props.history.push('/');
       return;
@@ -61,29 +62,16 @@ export default class EventPage extends Component {
 
     const Event = {
       BETTING: BettingOracle,
-      VOTING: VotingOracle,
       RESULT_SETTING: ResultSettingOracle,
+      VOTING: VotingOracle,
       FINALIZING: FinalizingOracle,
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
 
-    // TODO: can probably remove this eventually, but
-    // need to update all Oracles pages to accept `event` prop instead of `oracle`
-    let props = {};
-    if (event.type === EventType.ORACLE) {
-      props = {
-        oracle: event,
-      };
-    } else {
-      props = {
-        event,
-      };
-    }
-
     return (
       <Fragment>
         <BackButton />
-        <Event {...props} eventPage={eventPage} />
+        <Event eventPage={eventPage} />
         <EventTxSuccessDialog eventPage={eventPage} />
       </Fragment>
     );
