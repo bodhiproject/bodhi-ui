@@ -73,9 +73,16 @@ export default class Oracle {
       VOTING: [APPROVE_VOTE, VOTE],
       FINALIZING: [FINALIZE_RESULT],
     }[this.phase];
+
+    // It is pending if it has a pending tx in the current phase. eg. Bet tx in Betting phase.
     const isPending = transactions.some(({ type, status: txStatus }) => pendingTypes.includes(type) && txStatus === PENDING);
     if (isPending) return true;
-    if (QTUM && status === 'CREATED') return true; // BETTING (used to be UNCONFIRMED)
+
+    // Include unconfirmed Oracle
+    if (QTUM && status === 'CREATED') {
+      return true;
+    }
+
     return false;
   }
   // Unconfirmed Oracles need to be confirmed by the blockchain before being able to acted on.
