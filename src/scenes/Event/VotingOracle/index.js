@@ -30,7 +30,7 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
       )}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
-      <VoteButton onClick={eventPage.prepareVote} disabled={eventPage.isPending || eventPage.buttonDisabled} />
+      <VoteButton eventpage={eventPage} />
       <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
       <TransactionHistory options={oracle.options} />
     </Content>
@@ -55,8 +55,13 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const VoteButton = props => !props.oracle.isArchived && (
-  <Button {...props}><FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" /></Button>
-);
+const VoteButton = props => {
+  const { oracle, prepareVote, isPending, buttonDisabled } = props.eventpage;
+  return !oracle.isArchived && (
+    <Button {...props} onClick={prepareVote} disabled={isPending || buttonDisabled}>
+      <FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" />
+    </Button>
+  );
+};
 
 export default injectIntl(inject('store')(VotingOracle));

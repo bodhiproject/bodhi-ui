@@ -22,7 +22,7 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
       )}
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
-      <FinalizeButton onClick={eventPage.finalize} disabled={eventPage.isPending || eventPage.buttonDisabled} />
+      <FinalizeButton eventpage={eventPage} />
       <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
       <TransactionHistory options={oracle.options} />
     </Content>
@@ -48,8 +48,13 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const FinalizeButton = props => !props.oracle.isArchived && (
-  <Button {...props}><FormattedMessage id="str.finalizeResult" defaultMessage="Finalize Result" /></Button>
-);
+const FinalizeButton = props => {
+  const { oracle, finalize, isPending, buttonDisabled } = props.eventpage;
+  return !oracle.isArchived && (
+    <Button {...props} onClick={finalize} disabled={isPending || buttonDisabled}>
+      <FormattedMessage id="str.finalizeResult" defaultMessage="Finalize Result" />
+    </Button>
+  );
+};
 
 export default injectIntl(inject('store')(FinalizingOracle));

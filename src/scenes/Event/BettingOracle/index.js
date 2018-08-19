@@ -32,7 +32,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
       {oracle.unconfirmed && <EventUnconfirmedNote />}
       {!oracle.unconfirmed && (
         <Fragment>
-          <BetButton onClick={eventPage.prepareBet} disabled={eventPage.isPending || eventPage.buttonDisabled} />
+          <BetButton eventpage={eventPage} />
           <TransactionHistory options={oracle.options} />
         </Fragment>
       )}
@@ -59,7 +59,13 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const BetButton = props => !props.oracle.isArchived && !props.eventPage.unconfirmed && (
-  <Button {...props}><FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" /></Button>
-);
+const BetButton = props => {
+  const { oracle, unconfirmed, prepareBet, isPending, buttonDisabled } = props.eventpage;
+  return !oracle.isArchived && !unconfirmed && (
+    <Button {...props} onClick={prepareBet} disabled={isPending || buttonDisabled}>
+      <FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" />
+    </Button>
+  );
+};
+
 export default injectIntl(inject('store')(BettingOracle));
