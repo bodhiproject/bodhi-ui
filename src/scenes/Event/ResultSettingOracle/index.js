@@ -25,7 +25,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && (
+      {!oracle.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
       )}
       <Options oracle={oracle} />
