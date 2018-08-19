@@ -26,7 +26,7 @@ export default class Topic {
   version // Current version of the contract. To manage deprecations later.
 
   // for UI
-  isPending = false // change to this instead of 'unconfirmed'
+  isPending = false
 
   // for invalid option
   localizedInvalid = {};

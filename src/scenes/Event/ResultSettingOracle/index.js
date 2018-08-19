@@ -25,10 +25,15 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
+      {!oracle.unconfirmed && (
+        <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
+      )}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
-      <SetResultButton onClick={eventPage.prepareSetResult} disabled={eventPage.isPending || eventPage.buttonDisabled} />
+      <SetResultButton
+        onClick={eventPage.prepareSetResult}
+        disabled={eventPage.isPending || eventPage.buttonDisabled}
+      />
       <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
@@ -52,6 +57,8 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const SetResultButton = props => <Button {...props}><FormattedMessage id="str.setResult" defaultMessage="Set Result" /></Button>;
+const SetResultButton = props => !props.oracle.isArchived && (
+  <Button {...props}><FormattedMessage id="str.setResult" defaultMessage="Set Result" /></Button>
+);
 
 export default injectIntl(inject('store')(ResultSettingOracle));

@@ -73,7 +73,7 @@ export default class Oracle {
       VOTING: [APPROVE_VOTE, VOTE],
       FINALIZING: [FINALIZE_RESULT],
     }[this.phase];
-    const isPending = transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING); // eslint-disable-line
+    const isPending = transactions.some(({ type, status: txStatus }) => pendingTypes.includes(type) && txStatus === PENDING);
     if (isPending) return true;
     if (QTUM && status === 'CREATED') return true; // BETTING (used to be UNCONFIRMED)
     return false;
