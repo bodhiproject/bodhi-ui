@@ -472,19 +472,6 @@ export default class EventStore {
       return;
     }
 
-    // Trying to vote over the consensus threshold
-    const optionAmount = this.selectedOption.amount;
-    const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
-    if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
-      this.buttonDisabled = true;
-      this.amount = String(toFixed(maxVote));
-      // TODO: this get's called everytime we change the amount, since we
-      // autocorrect it above, this warning never get's shown
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'oracle.maxVoteText';
-      return;
-    }
-
     this.buttonDisabled = false;
     this.eventWarningMessageId = '';
     this.warningType = '';
