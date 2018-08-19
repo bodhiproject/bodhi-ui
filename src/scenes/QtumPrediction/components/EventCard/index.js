@@ -74,7 +74,7 @@ export default class EventCard extends PureComponent {
   }
 
   render() {
-    const { classes, index, unconfirmed } = this.props;
+    const { classes, index } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
@@ -85,9 +85,7 @@ export default class EventCard extends PureComponent {
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {(unconfirmed || isPending) && (
-                <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />
-              )}
+              {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
