@@ -193,21 +193,27 @@ export default class CreateEventStore {
     reaction( // check date valiation when date changed
       () => this.prediction.startTime,
       () => {
-        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
+          this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        }
         this.validatePredictionStartTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.prediction.endTime,
       () => {
-        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
+        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
+          this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
+        }
         this.validatePredictionEndTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.resultSetting.startTime,
       () => {
-        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) {
+          this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        }
         this.validateResultSettingStartTime();
       }
     );
@@ -242,12 +248,13 @@ export default class CreateEventStore {
 
     try {
       const res = await axios.get(Routes.insight.totals);
-      this.averageBlockTime = res.data.time_between_blocks || defaults.averageBlockTime;
+      this.averageBlockTime = res.data.time_between_blocks;
     } catch (err) {
       console.error('ERROR: ', { // eslint-disable-line
         route: Routes.insight.totals,
         message: err.message,
       });
+      this.averageBlockTime = defaults.averageBlockTime;
     }
 
     runInAction(() => {
