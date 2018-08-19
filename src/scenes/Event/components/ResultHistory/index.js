@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { Token, Phases } from 'constants';
@@ -33,11 +33,11 @@ export default class EventResultHistory extends Component {
   }
   render() {
     const { classes, oracles } = this.props;
-    let sortedOracles = _.orderBy(oracles, ['endTime']);
+    let sortedOracles = orderBy(oracles, ['endTime']);
 
     // Add Result Setting round
     if (sortedOracles.length >= 2) {
-      const resultSettingRound = _.clone(sortedOracles[0]);
+      const resultSettingRound = cloneDeep(sortedOracles[0]);
 
       // Set the amount to display the consensus threshold
       resultSettingRound.amounts.fill(0);
@@ -53,7 +53,7 @@ export default class EventResultHistory extends Component {
 
     // Remove Oracles in Voting phase since that would be the current detail page.
     // Should only show the history of previously finished Oracles, not current one.
-    sortedOracles = _.filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
+    sortedOracles = filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -90,7 +90,7 @@ export default class EventResultHistory extends Component {
   }
 }
 
-const ResultRows = ({ sortedOracles, intl, getTypeText }) => _.map(sortedOracles, (oracle, index) => {
+const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, (oracle, index) => {
   const { resultIdx, options } = oracle;
 
   // Show winning outcomes on specific rows
@@ -112,7 +112,7 @@ const ResultRows = ({ sortedOracles, intl, getTypeText }) => _.map(sortedOracles
       <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
       <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
       <TableCell padding="dense">{winningOutcome}</TableCell>
-      <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
+      <TableCell padding="dense">{`${sum(oracle.amounts)} ${oracle.token}`}</TableCell>
     </TableRow>
   );
 });
