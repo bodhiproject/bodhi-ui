@@ -1,6 +1,6 @@
 const AUTHORITY = '127.0.0.1:8989';
-const HTTP_ROUTE = `http://${AUTHORITY}`;
-const WS_ROUTE = `ws://${AUTHORITY}`;
+const HTTP_ROUTE = `https://${AUTHORITY}`;
+const WS_ROUTE = `wss://${AUTHORITY}`;
 
 const QTUM_EXPLORER = {
   dev: 'https://testnet.qtum.org',
