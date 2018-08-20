@@ -12,6 +12,8 @@ import {
   Button,
   Typography,
   withStyles,
+  FormControl,
+  FormHelperText,
 } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -76,7 +78,7 @@ export default class WithdrawDialog extends Component {
           <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw QTUM/BOT" />
         </DialogTitle>
         <DialogContent>
-          <FromToField />
+          <FromToField walletAddress={walletAddress} />
           <AmountField />
         </DialogContent>
         <DialogActions>
@@ -107,20 +109,22 @@ class FromToField extends Component {
           <FormattedMessage id="str.from" defaultMessage="From" />
         </Typography>
         <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="toAddress"
-          label={intl.formatMessage(messages.to)}
-          type="string"
-          fullWidth
-          className={classes.toAddress}
-          value={toAddress}
-          onChange={e => wallet.toAddress = e.target.value}
-          onBlur={wallet.validateWithdrawDialogWalletAddress}
-          error={wallet.withdrawDialogError.walletAddress !== ''}
-          required
-        />
+        <div className={classes.toAddressInputContainer}>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="toAddress"
+            label={intl.formatMessage(messages.to)}
+            type="string"
+            fullWidth
+            value={toAddress}
+            onChange={e => wallet.toAddress = e.target.value}
+            onBlur={wallet.validateWithdrawDialogWalletAddress}
+            error={wallet.withdrawDialogError.walletAddress !== ''}
+            required
+          />
+          {!!wallet.withdrawDialogError.walletAddress && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.walletAddress })}</FormHelperText>}
+        </div>
       </div>
     );
   }  
@@ -142,7 +146,7 @@ class AmountField extends Component {
 
     return (
       <div>
-        <div className={classes.inputContainer}>
+        <div className={classes.amountInputContainer}>
           <TextField
             margin="dense"
             id="amount"
@@ -164,6 +168,7 @@ class AmountField extends Component {
             <MenuItem value={Token.QTUM}>QTUM</MenuItem>
             <MenuItem value={Token.BOT}>BOT</MenuItem>
           </Select>
+          {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
         </div>
         <Typography variant="body1">
           {`${withdrawAmountText} ${wallet.withdrawLimit}`}
