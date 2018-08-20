@@ -168,7 +168,7 @@ export default class {
     if (_.isEmpty(this.toAddress)) {
       this.withdrawDialogError.walletAddress = messages.withdrawDialogRequiredMsg.id;
     } else if (!(await this.isValidAddress(this.toAddress))) {
-      this.withdrawDialogError.walletAddress = messages.withdrawDialogAmountLargerThanZeroMsg.id;
+      this.withdrawDialogError.walletAddress = messages.withdrawDialogInvalidAddressMsg.id;
     } else {
       this.withdrawDialogError.walletAddress = '';
     }

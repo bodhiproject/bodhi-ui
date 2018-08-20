@@ -6,16 +6,16 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
     marginBottom: theme.padding.sm.px,
   },
-  toAddress: {
+  toAddressInputContainer: {
     marginBottom: theme.padding.md.px,
   },
-  inputContainer: {
+  amountInputContainer: {
     display: 'inline-block',
+    marginBottom: theme.padding.xs.px,
   },
   amountInput: {
     width: 300,
     marginRight: theme.padding.xs.px,
-    marginBottom: theme.padding.xs.px,
   },
 });
 
