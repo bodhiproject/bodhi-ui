@@ -1,4 +1,4 @@
-const AUTHORITY = '47.75.212.87:8989';
+const AUTHORITY = 'puti.io:8989';
 const HTTP_ROUTE = `https://${AUTHORITY}`;
 const WS_ROUTE = `wss://${AUTHORITY}`;
 
