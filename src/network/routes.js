@@ -1,4 +1,4 @@
-const AUTHORITY = '127.0.0.1:8989';
+const AUTHORITY = '47.75.212.87:8989';
 const HTTP_ROUTE = `http://${AUTHORITY}`;
 const WS_ROUTE = `ws://${AUTHORITY}`;
 
