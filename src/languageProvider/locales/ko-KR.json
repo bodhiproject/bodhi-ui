@@ -87,6 +87,7 @@
   "eventInfo.fund": "기금",
   "eventInfo.predictionFund": "예측 기금",
   "eventInfo.voteVolume": "투표 볼륨",
+  "eventInfo.voteVolumn": "Votting Volume",
   "help": "도움말",
   "invalid": "무효의",
   "language.select": "中文",
@@ -365,6 +366,10 @@
   "withdrawDetail.totalBetTotalVote": "총 베팅 금액 {qtum} QTUM. 총 투표 금액 {bot} BOT.",
   "withdrawDetail.withdrawTo": "철회 대상",
   "withdrawDetail.youBetYouVote": "{qtum} QTUM을 베팅하셨습니다. 당신은 {bot} BOT에 투표했습니다.",
+  "withdrawDialog.amountExceedLimit": "Amount exceed the limit",
+  "withdrawDialog.amountLargerThanZero": "Amount should be larger than 0",
+  "withdrawDialog.invalidAddress": "Invalid address",
+  "withdrawDialog.required": "Required",
   "withdrawDialog.send": "보내다",
   "withdrawDialog.title": "QTUM / BOT 철회",
   "withdrawDialog.youCanWithdraw": "다음 기간내로 인출 할 수 있습니다:"
