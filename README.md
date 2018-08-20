@@ -34,7 +34,7 @@ $ npm install
 
 1. Start the app
   `yarn start` 
-  After the compiled process completed successfully, it will show success commands & redirect to the http://localhost:3000/ of browser where you will find the login screen of the app.
+  After the compiled process completed successfully, it will show success commands & redirect to the http://localhost:4000/ of browser where you will find the login screen of the app.
 2. To create an Optimized Product Build of the app, you need to run a build command in you terminal at app root.
   `yarn build`
 
