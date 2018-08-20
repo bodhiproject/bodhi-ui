@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
+import styled, { css } from 'styled-components';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import {
   AppBar,
@@ -13,8 +14,8 @@ import {
 } from '@material-ui/core';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
+import { Link } from 'react-router-dom';
 
-import { Link } from './components/Link';
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
@@ -37,11 +38,19 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 export default class NavBar extends Component {
+  state = {
+    dropdownDirection: 'down',
+  }
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
   }
+  changeDropDownDirection() {
+    if (this.state.dropdownDirection === 'down') this.setState({ dropdownDirection: 'up' });
+    if (this.state.dropdownDirection === 'up') this.setState({ dropdownDirection: 'down' });
+  }
   render() {
     const { classes } = this.props;
+    this.changeDropDownDirection = this.changeDropDownDirection.bind(this);
     return (
       <AppBar position="fixed" className={classes.navBar}>
         <Toolbar className={classes.navBarWrapper}>
@@ -50,18 +59,89 @@ export default class NavBar extends Component {
             <QtumPrediction {...this.props} />
             <BotCourt {...this.props} />
           </NavSection>
-          <NavSection>
+          <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
+          <Dropdown data-show={this.state.dropdownDirection === 'down'}>
             <Wallet {...this.props} />
-            <MyActivities {...this.props} />
-            <HelpButton {...this.props} />
-            <LanguageSelector {...this.props} />
-            <AllEvents {...this.props} />
-          </NavSection>
+            <Link to={Routes.ACTIVITY_HISTORY}>
+              <Item onClick={this.changeDropDownDirection}>My Activities</Item>
+            </Link>
+            <Link to={Routes.ALL_EVENTS}>
+              <Item onClick={this.changeDropDownDirection}>All Events</Item>
+            </Link>
+            <a href='https://www.bodhi.network/faq' target='_blank'>
+              <Item onClick={this.changeDropDownDirection}>Help</Item>
+            </a>
+            <Link to={Routes.SETTINGS}>
+              <Item onClick={this.changeDropDownDirection}>Settings</Item>
+            </Link>
+          </Dropdown>
         </Toolbar>
       </AppBar>
     );
   }
 }
+
+const Wallet = styled(({ store: { wallet } }) => {
+  const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
+  const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
+  return (<Link to={Routes.WALLET}>
+    <Item>
+      <WalletItem>
+        <i className={cx('icon', 'iconfont', 'icon-ic_wallet')}></i>
+      </WalletItem>
+      <WalletItem>
+        <div style={{ paddingBottom: '10px' }}><b>{totalQTUM}</b> QTUM</div>
+        <div><b>{totalBOT}</b> BOT</div>
+      </WalletItem>
+      <WalletItem>{'>'}</WalletItem>
+    </Item>
+  </Link>);
+})``;
+
+const WalletItem = styled.div``;
+
+const Dropdown = styled.div`
+  background: white;
+  box-shadow: 0px -2px 20px -2px rgba(0,0,0,0.2), 0px -2px 5px rgba(0,0,0,0.1);
+  position: absolute;
+  right: 0px;
+  top: 70px;
+  min-width: 275px;
+  color: black;
+  transition: 0.3s all ease-in-out;
+  ${({ ...props }) => Boolean(props['data-show']) && css`
+    display: none;
+  `}
+`;
+
+const Item = styled.div`
+  background: white;
+  display: flex;
+  text-align: left;
+  padding: 25px;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  justify-content: space-between;
+  &:hover: {
+    background: rgba(0,0,0,0.2);
+  }
+`;
+
+const Toggle = styled.div`
+  text-align: center;
+  background: #4244BB !important;
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    opacity: 1;
+  }
+`;
 
 const BodhiLogo = ({ classes }) => (
   <Link to={Routes.QTUM_PREDICTION}>
@@ -102,63 +182,30 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-const Wallet = observer(({ classes, store: { wallet } }) => {
-  const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
-  const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
-  return (
-    <NavLink to={Routes.WALLET}>
-      <Button className={classes.marginRightButton}>
-        <i className={cx('icon', 'iconfont', 'icon-ic_wallet', classes.navBarWalletIcon)}></i>
-        {`${totalQTUM} QTUM / ${totalBOT} BOT`}
-      </Button>
-    </NavLink>
-  );
-});
+// const MyActivities = observer(({ classes, store: { global } }) => {
+//   let children = (
+//     <Button className={cx(classes.navEventsButton, classes.dark)}>
+//       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+//     </Button>
+//   );
+//   if (global.userData.totalCount > 0) {
+//     children = <Badge badgeContent={global.userData.totalCount} color="secondary">{children}</Badge>;
+//   }
+//   return <NavLink to={Routes.SET}>{children}</NavLink>;
+// });
 
-const MyActivities = observer(({ classes, store: { global } }) => {
-  let children = (
-    <Button className={cx(classes.navEventsButton, classes.dark)}>
-      <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-    </Button>
-  );
-  if (global.userData.totalCount > 0) {
-    children = <Badge badgeContent={global.userData.totalCount} color="secondary">{children}</Badge>;
-  }
-  return <NavLink to={Routes.SET}>{children}</NavLink>;
-});
-
-const HelpButton = ({ classes, intl }) => (
-  <Button
-    className={cx(classes.faq, classes.navEventsButton, classes.dark)}
-    onClick={() => {
-      window.open(faqUrls[intl.locale], '_blank');
-      Tracking.track('navBar-helpClick');
-    }}
-  >
-    <i className={cx('icon iconfont icon-ic_question', classes.questionIcon)} /> {intl.formatMessage(messages.help)}
-  </Button>
-);
-
-const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) => (
-  <Select
-    value={ui.locale}
-    onChange={(e) => ui.changeLocale(e.target.value)}
-    name="lang"
-    disableUnderline
-    className={classes.selectMenu}
-  >
-    <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-    <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-    <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
-  </Select>
-)));
-
-const AllEvents = ({ classes }) => (
-  <NavLink to={Routes.ALL_EVENTS}>
-    <Button className={classes.marginRightButton}>
-      <FormattedMessage id="navbar.allEvents" defaultMessage="All Events" />
-    </Button>
-  </NavLink>
-);
+// const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) => (
+//   <Select
+//     value={ui.locale}
+//     onChange={(e) => ui.changeLocale(e.target.value)}
+//     name="lang"
+//     disableUnderline
+//     className={classes.selectMenu}
+//   >
+//     <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
+//     <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
+//     <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+//   </Select>
+// )));
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);

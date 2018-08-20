@@ -8,6 +8,7 @@ module.exports = {
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
     ALL_EVENTS: '/all-events',
+    SETTINGS: '/settings',
   },
 
   EventType: {
