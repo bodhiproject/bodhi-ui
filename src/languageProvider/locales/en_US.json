@@ -87,6 +87,7 @@
   "eventInfo.fund": "Funding",
   "eventInfo.predictionFund": "Prediction Fund",
   "eventInfo.voteVolume": "Voting Volume",
+  "eventInfo.voteVolumn": "Votting Volume",
   "help": "Help",
   "invalid": "Invalid",
   "language.select": "中文",
@@ -364,6 +365,10 @@
   "withdrawDetail.totalBetTotalVote": "Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.",
   "withdrawDetail.withdrawTo": "WITHDRAW TO",
   "withdrawDetail.youBetYouVote": "You bet {qtum} QTUM. You voted {bot} BOT.",
+  "withdrawDialog.amountExceedLimit": "Amount exceed the limit",
+  "withdrawDialog.amountLargerThanZero": "Amount should be larger than 0",
+  "withdrawDialog.invalidAddress": "Invalid address",
+  "withdrawDialog.required": "Required",
   "withdrawDialog.send": "Send",
   "withdrawDialog.title": "Withdraw QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:"

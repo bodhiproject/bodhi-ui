@@ -87,6 +87,7 @@
   "eventInfo.fund": "资金",
   "eventInfo.predictionFund": "预测总金额",
   "eventInfo.voteVolume": "仲裁总金额",
+  "eventInfo.voteVolumn": "Votting Volume",
   "help": "帮助",
   "invalid": "无效",
   "language.select": "English",
@@ -365,6 +366,10 @@
   "withdrawDetail.totalBetTotalVote": "共投注 {qtum} QTUM. 共筹集 {bot} BOT.",
   "withdrawDetail.withdrawTo": "提现到",
   "withdrawDetail.youBetYouVote": "您投入了 {qtum} QTUM. 您投入了 {bot} BOT.",
+  "withdrawDialog.amountExceedLimit": "Amount exceed the limit",
+  "withdrawDialog.amountLargerThanZero": "Amount should be larger than 0",
+  "withdrawDialog.invalidAddress": "Invalid address",
+  "withdrawDialog.required": "Required",
   "withdrawDialog.send": "发送",
   "withdrawDialog.title": "提现 QTUM/BOT",
   "withdrawDialog.youCanWithdraw": "最多可取出："
