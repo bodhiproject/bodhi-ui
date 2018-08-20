@@ -33,9 +33,6 @@ const INIT = {
   escrowClaim: 0,
 };
 
-/**
- * TODO: this needs to be split up into different oracle stores
- */
 export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading

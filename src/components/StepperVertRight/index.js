@@ -24,9 +24,6 @@ const messages = defineMessages({
   },
 });
 
-/**
- * TODO: we should refactor this component. Pretty messy
- */
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
