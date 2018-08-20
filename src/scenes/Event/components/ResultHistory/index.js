@@ -74,7 +74,7 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(sortedOracles, (oracle, index) => {
+              {_.map(filteredOracles, (oracle, index) => {
                 let invalidOption = 'Invalid';
                 if (oracle.localizedInvalid !== undefined) {
                   invalidOption = oracle.localizedInvalid.parse(intl.locale);
