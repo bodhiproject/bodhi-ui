@@ -6,14 +6,13 @@ import SyncInfo from './models/SyncInfo';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
 import apolloClient from '../network/graphql';
-import AppConfig from '../config/app';
 
 
 const INIT_VALUES = {
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
-  peerNodeCount: 1,
+  peerNodeCount: 0,
   userData: {
     resultSettingCount: 0,
     finalizeCount: 0,
@@ -21,7 +20,6 @@ const INIT_VALUES = {
     totalCount: 0,
   },
 };
-let syncInfoInterval;
 
 export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
@@ -40,15 +38,6 @@ export default class GlobalStore {
   constructor(app) {
     this.app = app;
 
-    // Disable the syncInfo polling since we will get new syncInfo from the subscription
-    reaction(
-      () => this.syncPercent,
-      () => {
-        if (this.syncPercent >= 100) {
-          clearInterval(syncInfoInterval);
-        }
-      },
-    );
     // Update the actionable item count when the addresses or block number changes
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
@@ -62,10 +51,6 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
     this.subscribeSyncInfo();
-
-    // Start syncInfo long polling
-    // We use this to update the percentage of the loading screen
-    syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
   }
 
   @action
