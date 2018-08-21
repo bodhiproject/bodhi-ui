@@ -3,7 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { Routes, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
+import { EventType, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import { Oracle, Transaction, Topic, TransactionCost } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
@@ -13,9 +13,11 @@ import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
+const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
 
 const INIT = {
+  type: undefined,
   loading: true,
   oracles: [],
   amount: '',
@@ -29,14 +31,10 @@ const INIT = {
   warningType: '',
   eventWarningMessageId: '',
   escrowClaim: 0,
-  currentType: '',
 };
 
-/**
- * TODO: this needs to be split up into different oracle stores
- */
 export default class EventStore {
-  @observable type = 'oracle'
+  @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = []
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
@@ -50,12 +48,13 @@ export default class EventStore {
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
-  currentType = INIT.currentType
+
   // topic
   @observable topics = []
   withdrawableAddresses = []
   betBalances = []
   voteBalances = []
+
   @computed get totalBetAmount() {
     return _.sum(this.betBalances);
   }
@@ -92,7 +91,7 @@ export default class EventStore {
     return (this.event.options && this.event.options[this.selectedOptionIdx]) || {};
   }
   @computed get event() {
-    if (this.type === 'topic') return this.topic;
+    if (this.type === TOPIC) return this.topic;
     return this.oracle;
   }
 
@@ -108,9 +107,9 @@ export default class EventStore {
     this.txid = txid;
     this.type = type;
 
-    if (topicAddress === 'null' && address === 'null' && txid) {
+    if (type === UNCONFIRMED) {
       await this.initUnconfirmedOracle();
-    } else if (type === 'topic') {
+    } else if (type === TOPIC) {
       await this.initTopic();
     } else {
       await this.initOracle();
@@ -133,7 +132,6 @@ export default class EventStore {
   @action
   initTopic = async () => {
     // GraphQL calls
-    this.currentType = Routes.TOPIC;
     await this.queryTopics();
     await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
@@ -154,7 +152,6 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
-    this.currentType = Routes.ORACLE;
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
 
@@ -170,19 +167,22 @@ export default class EventStore {
       () => this.app.global.syncBlockNum,
       async () => {
         // Fetch transactions during new block
-        if (this.currentType === Routes.TOPIC) this.queryTransactions(this.address);
-        if (this.currentType === Routes.ORACLE) {
-          this.queryTransactions(this.topicAddress);
-          await this.queryOracles(this.topicAddress);
-        }
-
-        // Unconfirmed to confirmed Oracle
-        if (this.topicAddress === 'null' && this.address === 'null' && this.txid) {
-          // TODO: wip for fixing redirect when oracle switches phases/when an created+unconfirmed oracle becomes confirmed
-          const filters = [{ txid: this.txid }];
-          this.oracles = await queryAllOracles(filters);
-          if (this.oracles.length > 0) {
-            this.routeToConfirmedOracle();
+        switch (this.type) {
+          case UNCONFIRMED: {
+            this.verifyConfirmedOracle();
+            break;
+          }
+          case TOPIC: {
+            this.queryTransactions(this.address);
+            break;
+          }
+          case ORACLE: {
+            await this.queryTransactions(this.topicAddress);
+            await this.queryOracles(this.topicAddress);
+            break;
+          }
+          default: {
+            break;
           }
         }
       }
@@ -192,10 +192,20 @@ export default class EventStore {
     reaction(
       () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx,
       () => {
-        if (this.currentType === Routes.TOPIC || this.currentType === Routes.ORACLE) this.disableEventActionsIfNecessary();
+        if (this.type === TOPIC || this.type === ORACLE) this.disableEventActionsIfNecessary();
       },
       { fireImmediately: true },
     );
+  }
+
+  @action
+  verifyConfirmedOracle = async () => {
+    // TODO: need to implement hashedId on server first so we can fetch the updated Oracle by hashedId as it goes through the approve -> createEvent txs
+    // const res = await queryAllOracles([{ txid: this.txid }]);
+    // const { topicAddress, address, txid } = res[0];
+    // if (address && topicAddress) {
+    //   this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
+    // }
   }
 
   @action
@@ -376,6 +386,18 @@ export default class EventStore {
     const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
     const notEnoughQtum = totalQtum < maxTransactionFee;
 
+    // Trying to vote over the consensus threshold
+    const amountNum = Number(this.amount);
+    if (phase === VOTING && this.amount && this.selectedOptionIdx >= 0) {
+      const maxVote = NP.minus(consensusThreshold, this.selectedOption.amount);
+      if (amountNum > maxVote) {
+        this.buttonDisabled = true;
+        this.warningType = EventWarningType.ERROR;
+        this.eventWarningMessageId = 'oracle.maxVoteText';
+        return;
+      }
+    }
+
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(
       this.transactions,
@@ -459,34 +481,18 @@ export default class EventStore {
       return;
     }
 
-    // Trying to vote over the consensus threshold
-    const optionAmount = this.selectedOption.amount;
-    const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
-    if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
-      this.buttonDisabled = true;
-      this.amount = String(toFixed(maxVote));
-      // TODO: this get's called everytime we change the amount, since we
-      // autocorrect it above, this warning never get's shown
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'oracle.maxVoteText';
-      return;
-    }
-
     this.buttonDisabled = false;
     this.eventWarningMessageId = '';
     this.warningType = '';
   }
 
-  // TODO: go from /oracle/null/null/:txid -> /oracle/:topicAddress/:address/:txid
-  routeToConfirmedOracle = () => {
-    // const { topicAddress, address, txid } = this;
-    // this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
-  }
-
-  @action // used in the VotingOracle onBlur
+  // Auto-fixes the amount field onBlur if trying to vote over the threshold
+  @action
   fixAmount = () => {
     if (this.oracle.phase !== VOTING) return;
-    const [inputAmount, consensusThreshold] = [parseFloat(this.amount, 10), parseFloat(this.oracle.consensusThreshold, 10)];
+
+    const inputAmount = parseFloat(this.amount, 10);
+    const consensusThreshold = parseFloat(this.oracle.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
       this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
     }

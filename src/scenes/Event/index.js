@@ -2,8 +2,10 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { TxSentDialog, Loading as _Loading } from 'components';
 import { defineMessages } from 'react-intl';
+import { TxSentDialog, Loading as _Loading } from 'components';
+import { EventType } from 'constants';
+
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
 import FinalizingOracle from './FinalizingOracle';
@@ -24,8 +26,19 @@ const messages = defineMessages({
 @observer
 export default class EventPage extends Component {
   componentDidMount() {
-    const type = this.props.match.path === '/topic/:address' ? 'topic' : 'oracle';
-    this.props.store.eventPage.init({ ...this.props.match.params, type });
+    let type;
+    const { path, params } = this.props.match;
+    if (path.startsWith('/topic')) {
+      type = EventType.TOPIC;
+    } else if (path.startsWith('/oracle')) {
+      const { address, topicAddress } = params;
+      if (address === 'null' || topicAddress === 'null') {
+        type = EventType.UNCONFIRMED;
+      } else {
+        type = EventType.ORACLE;
+      }
+    }
+    this.props.store.eventPage.init({ ...params, type });
   }
 
   componentWillUnmount() {
@@ -34,37 +47,31 @@ export default class EventPage extends Component {
 
   render() {
     const { eventPage } = this.props.store;
-    if (eventPage.loading) {
+    const { event, loading } = eventPage;
+
+    if (loading) {
       return <Loading text={messages.loadOracleMsg} />;
     }
 
-    const { event } = eventPage;
+    // Unconfirmed Oracle changed txid so Oracles query comes back empty. Return to Qtum Prediction.
+    // TODO: can remove this when hashId is implemented and we can get the Oracle by hashId.
+    if (!event) {
+      this.props.history.push('/');
+      return;
+    }
+
     const Event = {
       BETTING: BettingOracle,
-      VOTING: VotingOracle,
       RESULT_SETTING: ResultSettingOracle,
+      VOTING: VotingOracle,
       FINALIZING: FinalizingOracle,
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
-    // TODO: crashes here because event.phase is undefined.
-
-    // TODO: can probably remove this eventually, but
-    // need to update all Oracles pages to accept `event` prop instead of `oracle`
-    let props = {};
-    if (event.type === 'oracle') {
-      props = {
-        oracle: event,
-      };
-    } else {
-      props = {
-        event,
-      };
-    }
 
     return (
       <Fragment>
         <BackButton />
-        <Event {...props} eventPage={eventPage} />
+        <Event eventPage={eventPage} />
         <EventTxSuccessDialog eventPage={eventPage} />
       </Fragment>
     );

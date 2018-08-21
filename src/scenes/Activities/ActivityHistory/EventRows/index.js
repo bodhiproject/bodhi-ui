@@ -1,28 +1,16 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import PropTypes from 'prop-types';
-import {
-  TableBody,
-  TableCell,
-  TableRow,
-  withStyles,
-} from '@material-ui/core';
-import cx from 'classnames';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
+import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 
 import styles from './styles';
-import TransactionHistoryID from '../../../../components/TransactionHistoryAddressAndID/id';
-import TransactionHistoryAddress from '../../../../components/TransactionHistoryAddressAndID/address';
 import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-
-const EventRows = observer(({ displayedTxs }) => (
-  <TableBody>
-    {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
-  </TableBody>
-));
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -41,7 +29,11 @@ class EventRow extends Component {
       expanded: false,
     }
 
-    handleClick = (txid, topicAddress) => async (event) => { // eslint-disable-line
+    onArrowIconClick = () => {
+      this.setState({ expanded: !this.state.expanded });
+    }
+
+    onEventNameClick = (topicAddress) => async (event) => {
       event.stopPropagation();
       if (topicAddress) {
         const { activities: { history: { getOracleAddress } } } = this.props.store;
@@ -59,10 +51,10 @@ class EventRow extends Component {
 
       return (
         <Fragment>
-          <TableRow selected={expanded} onClick={() => this.setState({ expanded: !expanded })} className={classes.clickToExpandRow}>
+          <TableRow selected={expanded}>
             <TableCell className={classes.summaryRowCell}>{getShortLocalDateTimeString(createdTime)}</TableCell>
             <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
-            <NameLinkCell className={classes.viewEventLink} clickable={topic && topic.address} onClick={this.handleClick(txid, topic && topic.address)}>
+            <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
               {(topic && topic.name) || name}
             </NameLinkCell>
             <TableCell numeric>{`${amount || ''}  ${amount ? token : ''}`}</TableCell>
@@ -73,11 +65,14 @@ class EventRow extends Component {
               </FormattedMessage>
             </TableCell>
             <TableCell>
-              <i className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)} />
+              <i
+                className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowIcon)}
+                onClick={this.onArrowIconClick}
+              />
             </TableCell>
           </TableRow>
           <CollapsableItem expanded={expanded}>
-            <TableRow key={`txaddr-${txid}`} selected onClick={() => this.setState({ expanded: !expanded })} className={expanded ? classes.show : classes.hide}>
+            <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
               <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
               <TableCell /><TransactionHistoryID transaction={transaction} />
               <TableCell />
@@ -89,9 +84,15 @@ class EventRow extends Component {
     }
 }
 
-const NameLinkCell = withStyles(styles)(({ className, clickable, topic, ...props }) => (
+const EventRows = observer(({ displayedTxs }) => (
+  <TableBody>
+    {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
+  </TableBody>
+));
+
+const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
   <TableCell>
-    <span className={clickable && className.viewEventLink} {...props} />
+    <span className={clickable && classes.eventNameText} {...props} />
   </TableCell>
 ));
 

@@ -4,8 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import TransactionHistory from '../components/TransactionHistory';
-import { Sidebar, Row, Content, Title, Button, Option, OracleTxConfirmDialog } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory, OracleTxConfirmDialog } from '../components';
 
 const messages = defineMessages({
   consensusThreshold: {
@@ -26,11 +25,13 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
-      {!oracle.unconfirmed && <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />}
+      {!oracle.isArchived && (
+        <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
+      )}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
-      <SetResultButton onClick={eventPage.prepareSetResult} disabled={eventPage.isPending || eventPage.buttonDisabled} />
-      <TransactionHistory type='oracle' options={oracle.options} />
+      <SetResultButton eventpage={eventPage} />
+      <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
     <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
@@ -53,6 +54,13 @@ const Container = styled(Grid)`
   min-width: 75%;
 `;
 
-const SetResultButton = props => <Button {...props}><FormattedMessage id="str.setResult" defaultMessage="Set Result" /></Button>;
+const SetResultButton = props => {
+  const { oracle, prepareSetResult, isPending, buttonDisabled } = props.eventpage;
+  return !oracle.isArchived && (
+    <Button {...props} onClick={prepareSetResult} disabled={isPending || buttonDisabled}>
+      <FormattedMessage id="str.setResult" defaultMessage="Set Result" />
+    </Button>
+  );
+};
 
 export default injectIntl(inject('store')(ResultSettingOracle));

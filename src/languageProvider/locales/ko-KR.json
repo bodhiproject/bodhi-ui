@@ -112,7 +112,6 @@
   "oracle.enterAmountDisabledText": "유효한 금액을 입력하십시오.",
   "oracle.eventUnconfirmed": "이 생성 된 이벤트는 확인되지 않았습니다. 블록 체인에 의해 확인 될 때까지는 상호 작용할 수 없습니다.",
   "oracle.finalizingExplanation": "누구나 결과를 설정하고 현 중재 라운드를 끝낼 수 있습니다. 최종 결과는 마지막 라운드의 결과로 설정되게 됩니다. 이벤트가 완료되면 승자는 상금을 인출할 수 있습니다.",
-  "oracle.maxVoteText": "하나의 결과 당 설정된 합의 한계점에만큼만 투표가 가능합니다. 현재 최대 투표수는 {amount} BOT입니다.",
   "oracle.optionIsPrevResult": "이 옵션은 이전 라운드의 결과로 설정되었습니다.",
   "oracle.selectResultDisabledText": "클릭하여 옵션 중 하나를 선택하십시오.",
   "oracle.setResultExplanation": "합의 한계점에에 도달한 후 결과 설정이 가능합니다.",

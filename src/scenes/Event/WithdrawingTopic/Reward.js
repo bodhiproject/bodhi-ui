@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
-import { RewardTooltipContent } from 'components';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Typography, Tooltip } from '@material-ui/core';
+
+import RewardTooltipContent from './RewardTooltipContent';
 import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
@@ -22,7 +23,6 @@ const Reward = ({ eventPage, topic }) => {
   const totalVoteAmount = _.sum(voteBalances);
   const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
   const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
-  // const invalidOption = localizeInvalidOption(topic.options[topic.resultIdx], intl);
   const resultBetAmount = betBalances[topic.resultIdx];
   const resultVoteAmount = voteBalances[topic.resultIdx];
   const totalQtumWinningBets = eventPage.topic.qtumAmount[topic.resultIdx];

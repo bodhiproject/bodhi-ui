@@ -2,18 +2,13 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import _ from 'lodash';
-import { Token, SortBy } from 'constants';
+import { isEmpty, each } from 'lodash';
 
 import styles from './styles';
 import { getShortLocalDateTimeString } from '../../helpers/utility';
 
-const POS_TOPIC_CREATED = 0;
-const POS_BETTING = 1;
-const POS_ORACLE_RESULT_SETTING = 2;
-const POS_OPEN_RESULT_SETTING = 3;
-
-
+// Current step positions. Index defines which step the Event is in.
+const [TOPIC_CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING] = [0, 1, 2, 3];
 const messages = defineMessages({
   cardInfoMsg: {
     id: 'cardInfo.to',
@@ -29,20 +24,16 @@ const messages = defineMessages({
   },
 });
 
-/**
- * TODO:
- * we should refactor this component. Pretty messy
- */
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
 export default class StepperVertRight extends Component {
   render() {
-    const { global: { syncBlockTime }, eventPage: { cOracle } } = this.props.store;
+    const { global: { syncBlockTime }, eventPage: { oracles } } = this.props.store;
     const { classes } = this.props;
 
-    if (!syncBlockTime && !cOracle) return null;
+    if (!syncBlockTime || isEmpty(oracles)) return null;
 
     const steps = this.getSteps();
 
@@ -67,18 +58,10 @@ export default class StepperVertRight extends Component {
   getSteps = () => {
     const { intl: { formatMessage }, isTopicDetail = false } = this.props;
     const { syncBlockTime } = this.props.store.global;
-    let cOracle;
-    let dOracles;
-    if (isTopicDetail) {
-      // TODO: temporary workaround until we do `topic.js`. This is broken right now for `topic.js`.
-      const { oracles } = this.props.store.eventPage;
-      cOracle = _.find(oracles, { token: Token.QTUM }) || {};
-      dOracles = _.orderBy(_.filter(oracles, { token: Token.BOT }), ['blockNum'], [SortBy.ASCENDING.toLowerCase()]);
-    } else {
-      cOracle =  this.props.store.eventPage.cOracle; // eslint-disable-line
-      dOracles =  this.props.store.eventPage.dOracles; // eslint-disable-line
-    }
+    const { cOracle: centralized, dOracles: decentralized } = this.props.store.eventPage;
 
+    const cOracle = centralized;
+    const dOracles = decentralized;
     const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);
     const ANYTIME = formatMessage(messages.anytimeMsg);
 
@@ -97,9 +80,9 @@ export default class StepperVertRight extends Component {
     }];
 
     let current;
-    if (!_.isEmpty(dOracles)) { // DecentralizedOracle and Topic detail
+    if (!isEmpty(dOracles)) { // DecentralizedOracle and Topic detail
       // Add all voting steps of each DecentralizedOracle
-      _.each(dOracles, (item) => {
+      each(dOracles, (item) => {
         value.push({
           title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
           description: `${getShortLocalDateTimeString(item.startTime)}
@@ -118,7 +101,7 @@ export default class StepperVertRight extends Component {
 
         if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight withdrawal
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
+          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
           current = null;
         }
@@ -131,10 +114,10 @@ export default class StepperVertRight extends Component {
 
         if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
           // Highlight last DecentralizedOracle voting
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles;
+          current = ORACLE_RESULT_SETTING + numOfDOracles;
         } else if (syncBlockTime >= lastDOracle.endTime) {
           // Highlight finalizing
-          current = POS_ORACLE_RESULT_SETTING + numOfDOracles + 1;
+          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
         } else {
           current = null;
         }
@@ -148,13 +131,13 @@ export default class StepperVertRight extends Component {
 
       // Set step number
       if (syncBlockTime < cOracle.startTime) {
-        current = POS_TOPIC_CREATED;
+        current = TOPIC_CREATED;
       } else if (syncBlockTime >= cOracle.startTime && syncBlockTime < cOracle.resultSetStartTime) {
-        current = POS_BETTING;
+        current = BETTING;
       } else if (syncBlockTime >= cOracle.resultSetStartTime && syncBlockTime < cOracle.resultSetEndTime) {
-        current = POS_ORACLE_RESULT_SETTING;
+        current = ORACLE_RESULT_SETTING;
       } else if (syncBlockTime >= cOracle.resultSetEndTime) {
-        current = POS_OPEN_RESULT_SETTING;
+        current = OPEN_RESULT_SETTING;
       } else {
         current = null;
       }

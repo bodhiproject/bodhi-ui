@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  withStyles,
-  Typography,
-} from '@material-ui/core';
-import { Token, Phases, OracleStatus } from 'constants';
-
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
+import { Token, Phases } from 'constants';
 import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
@@ -32,21 +23,37 @@ export default class EventResultHistory extends Component {
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
     }
-    return <FormattedMessage id="str.arbitrationRoundX" defaultMessage="Arbitration Round {idx}" values={{ idx: index - 1 }} />;
+    return (
+      <FormattedMessage
+        id="str.arbitrationRoundX"
+        defaultMessage="Arbitration Round {idx}"
+        values={{ idx: index - 1 }}
+      />
+    );
   }
   render() {
-    const { classes, currentEvent, oracles, intl } = this.props;
-    const sortedOracles = _.orderBy(oracles, ['endTime']);
-    if (sortedOracles.length) {
-      const { resultIdx, options, amounts, consensusThreshold } = sortedOracles[0];
-      const { endTime, token } = sortedOracles[1];
-      const resultSettingRound = { endTime, token, resultIdx, options };
-      resultSettingRound.amounts = _.clone(amounts);
+    const { classes, oracles } = this.props;
+    let sortedOracles = orderBy(oracles, ['endTime']);
+
+    // Add Result Setting round
+    if (sortedOracles.length >= 2) {
+      const resultSettingRound = cloneDeep(sortedOracles[0]);
+
+      // Set the amount to display the consensus threshold
       resultSettingRound.amounts.fill(0);
-      resultSettingRound.amounts[resultSettingRound.resultIdx] = consensusThreshold;
+      resultSettingRound.amounts[resultSettingRound.resultIdx] = resultSettingRound.consensusThreshold;
+
+      // Set the endTime and token
+      resultSettingRound.endTime = sortedOracles[1].endTime;
+      resultSettingRound.token = sortedOracles[1].token;
+
+      // Insert row after Betting round
       sortedOracles.splice(1, 0, resultSettingRound);
     }
-    const filteredOracles = _.filter(sortedOracles, (oracle) => oracle.status !== OracleStatus.VOTING);
+
+    // Remove Oracles in Voting phase since that would be the current detail page.
+    // Should only show the history of previously finished Oracles, not current one.
+    sortedOracles = filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
 
     return (
       <div className={classes.detailTxWrapper}>
@@ -55,7 +62,7 @@ export default class EventResultHistory extends Component {
             {(txt) => i18nToUpperCase(txt)}
           </FormattedMessage>
         </Typography>
-        {filteredOracles.length ? (
+        {sortedOracles.length && (
           <Table>
             <TableHead>
               <TableRow>
@@ -74,33 +81,38 @@ export default class EventResultHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(filteredOracles, (oracle, index) => {
-                let invalidOption = 'Invalid';
-                if (oracle.localizedInvalid !== undefined) {
-                  invalidOption = oracle.localizedInvalid.parse(intl.locale);
-                }
-                return (
-                  <TableRow key={`result-${index}`} selected={index % 2 === 1}>
-                    <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
-                    <TableCell padding="dense">{this.getTypeText(oracle, index)}</TableCell>
-                    <TableCell padding="dense">
-                      {(currentEvent.phase === Phases.VOTING || index !== filteredOracles.length - 1) && index !== 0
-                        ? `#${oracle.resultIdx + 1} ${oracle.options[oracle.resultIdx].name === 'Invalid' ? invalidOption : oracle.options[oracle.resultIdx].name}`
-                        : ''
-                      }
-                    </TableCell>
-                    <TableCell padding="dense">{`${_.sum(oracle.amounts)} ${oracle.token}`}</TableCell>
-                  </TableRow>
-                );
-              })}
+              <ResultRows sortedOracles={sortedOracles} getTypeText={this.getTypeText} {...this.props} />
             </TableBody>
           </Table>
-        ) : (
-          <Typography variant="body1">
-            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-          </Typography>
         )}
       </div>
     );
   }
 }
+
+const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, (oracle, index) => {
+  const { resultIdx, options } = oracle;
+
+  // Show winning outcomes on specific rows
+  let winningOutcome;
+  if (resultIdx != null && oracle.phase !== Phases.BETTING) {
+    winningOutcome = options[resultIdx].name;
+
+    // Localize Invalid name
+    if (winningOutcome === 'Invalid') {
+      winningOutcome = oracle.localizedInvalid.parse(intl.locale);
+    }
+
+    // Append outcome number
+    winningOutcome = `#${resultIdx + 1} ${winningOutcome}`;
+  }
+
+  return (
+    <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+      <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
+      <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
+      <TableCell padding="dense">{winningOutcome}</TableCell>
+      <TableCell padding="dense">{`${sum(oracle.amounts)} ${oracle.token}`}</TableCell>
+    </TableRow>
+  );
+});

@@ -4,12 +4,11 @@ import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { AppProvider } from './appProvider';
 import { unregister } from './registerServiceWorker';
-import xstore from './stores/AppStore';
 
 momentDurationFormat(moment);
 
 render(
-  <AppProvider xstore={xstore} />,
+  <AppProvider />,
   document.getElementById('root')
 );
 

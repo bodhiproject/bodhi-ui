@@ -18,6 +18,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
     }
     return numToString;
   }
+
   let qtumWonFixed = qtumWon;
   let botQtumWonFixed = botQtumWon;
   if (_.isNumber(qtumWon)) {
@@ -29,6 +30,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
 
   const tokenLosing = totalTokenAmount - resultTokenAmount;
   const tokenProfit = tokenWinnings - resultTokenAmount;
+
   return (
     <Table className={classes.table}>
       <TableBody>

@@ -1,23 +1,11 @@
-import _ from 'lodash';
 import { observable, computed } from 'mobx';
-import { defineMessages } from 'react-intl';
-
 import { OracleStatus, TransactionType, TransactionStatus, Phases, Token } from 'constants';
+
 import { satoshiToDecimal } from '../../helpers/utility';
 import Option from './Option';
 
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING } = Phases;
 const { PENDING } = TransactionStatus;
-
-const messages = defineMessages({
-  placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
-  setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
-  arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
-  pending: { id: 'str.pending', defaultMessage: 'Pending' },
-  finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
-  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
-  archive: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
-});
 
 /*
 * Model for CentralizedOracles and DecentralizedOracles.
@@ -47,8 +35,6 @@ export default class Oracle {
   version // Current version of the contract. To manage deprecations later.
 
   // for UI
-  buttonText = '' // Text to show on the CTA button.
-  amountLabel = '' // Shows the amount raised on the Event card.
   url = '' // Internal URL for routing within UI.
   @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
 
@@ -87,9 +73,16 @@ export default class Oracle {
       VOTING: [APPROVE_VOTE, VOTE],
       FINALIZING: [FINALIZE_RESULT],
     }[this.phase];
-    const isPending = transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING); // eslint-disable-line
+
+    // It is pending if it has a pending tx in the current phase. eg. Bet tx in Betting phase.
+    const isPending = transactions.some(({ type, status: txStatus }) => pendingTypes.includes(type) && txStatus === PENDING);
     if (isPending) return true;
-    if (QTUM && status === 'CREATED') return true; // BETTING (used to be UNCONFIRMED)
+
+    // Include unconfirmed Oracle
+    if (QTUM && status === 'CREATED') {
+      return true;
+    }
+
     return false;
   }
   // Unconfirmed Oracles need to be confirmed by the blockchain before being able to acted on.
@@ -110,23 +103,9 @@ export default class Oracle {
     this.app = app;
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-
-    this.buttonText = { // TODO: will move into each oracle component
-      BETTING: messages.placeBet,
-      RESULT_SETTING: messages.setResult,
-      VOTING: messages.arbitrate,
-      FINALIZING: messages.finalizeResult,
-      WITHDRAWING: messages.withdraw,
-    }[this.phase];
-    this.buttonText = this.isArchived ? messages.archive : this.buttonText;
-    const amount = parseFloat(_.sum(this.amounts).toFixed(2));
-
-    this.amountLabel = this.phase !== FINALIZING ? `${amount} ${oracle.token}` : ''; // TODO: will move into Finalize Oracle component
     this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
-
     this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
-
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',

@@ -1,12 +1,7 @@
-import { defineMessages } from 'react-intl';
-import _ from 'lodash';
 import { TransactionType, TransactionStatus, Phases } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
-const { PENDING } = TransactionStatus;
 
-const messages = defineMessages({
-  withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
-});
+const { PENDING } = TransactionStatus;
 
 /*
 * Model for TopicEvents.
@@ -31,7 +26,7 @@ export default class Topic {
   version // Current version of the contract. To manage deprecations later.
 
   // for UI
-  isPending = false // change to this instead of 'unconfirmed'
+  isPending = false
 
   // for invalid option
   localizedInvalid = {};
@@ -49,13 +44,8 @@ export default class Topic {
     }));
     const pendingTypes = [TransactionType.WITHDRAW_ESCROW, TransactionType.WITHDRAW];
     this.isPending = this.transactions.some(({ type, status }) => pendingTypes.includes(type) && status === PENDING);
-
-    const totalQTUM = parseFloat(_.sum(this.qtumAmount).toFixed(2));
-    const totalBOT = parseFloat(_.sum(this.botAmount).toFixed(2));
-    this.amountLabel = `${totalQTUM} QTUM, ${totalBOT} BOT`;
     this.url = `/topic/${this.address}`;
     this.isUpcoming = false;
-    this.buttonText = messages.withdraw;
     this.unconfirmed = this.isPending;
     this.localizedInvalid = {
       en: 'Invalid',

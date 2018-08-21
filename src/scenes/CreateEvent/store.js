@@ -4,13 +4,13 @@ import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
 import { TransactionType, Token } from 'constants';
-import { Oracle, TransactionCost } from 'models';
+import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
-import { maxTransactionFee } from '../../config/app';
+import { maxTransactionFee, defaults } from '../../config/app';
 import { createTopic } from '../../network/graphql/mutations';
 
 const messages = defineMessages({
@@ -193,21 +193,27 @@ export default class CreateEventStore {
     reaction( // check date valiation when date changed
       () => this.prediction.startTime,
       () => {
-        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
+          this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        }
         this.validatePredictionStartTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.prediction.endTime,
       () => {
-        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
+        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
+          this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
+        }
         this.validatePredictionEndTime();
       }
     );
     reaction( // check date valiation when date changed
       () => this.resultSetting.startTime,
       () => {
-        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) {
+          this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        }
         this.validateResultSettingStartTime();
       }
     );
@@ -223,13 +229,12 @@ export default class CreateEventStore {
   open = async () => {
     Tracking.track('dashboard-createEventClick');
 
+    // Fetch current escrow amount
     let escrowRes;
-    let insightTotalsRes;
     try {
       escrowRes = await axios.post(Routes.api.eventEscrowAmount, {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      insightTotalsRes = await axios.get(Routes.insight.totals);
     } catch (err) {
       console.error('ERROR: ', { // eslint-disable-line
         route: Routes.api.eventEscrowAmount,
@@ -238,14 +243,26 @@ export default class CreateEventStore {
       runInAction(() => {
         this.app.ui.setError(err.message, Routes.api.eventEscrowAmount);
       });
+      return;
     }
+
+    try {
+      const res = await axios.get(Routes.insight.totals);
+      this.averageBlockTime = res.data.time_between_blocks;
+    } catch (err) {
+      console.error('ERROR: ', { // eslint-disable-line
+        route: Routes.insight.totals,
+        message: err.message,
+      });
+      this.averageBlockTime = defaults.averageBlockTime;
+    }
+
     runInAction(() => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
-      this.averageBlockTime = insightTotalsRes.data.time_between_blocks;
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
     });
@@ -447,27 +464,12 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
         this.creator, // address
       );
-      const oracle = new Oracle({ // TODO: we should return this from the backend when making the createTopic api call
-        ...data.createTopic,
-        optionIdxs: Array.from({ length: this.outcomes.length }, (x, i) => i),
-        resultSetStartTime: this.resultSetting.startTime.toString(),
-        resultSetEndTime: this.resultSetting.endTime.toString(),
-        startTime: this.prediction.startTime.toString(),
-        endTime: this.prediction.endTime.toString(),
-        options: this.outcomes,
-        name: this.title,
-        amounts: [],
-        token: 'QTUM',
-        status: 'CREATED',
-        topicAddress: null,
-        address: null,
-      }, this.app);
 
       runInAction(() => {
-        this.app.qtumPrediction.list.unshift(oracle);
+        this.app.qtumPrediction.loadFirst();
         this.app.pendingTxsSnackbar.init(); // Show pending txs snackbar
         this.txConfirmDialogOpen = false;
-        this.txid = oracle.txid;
+        this.txid = data.createTopic.txid;
         this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
       });

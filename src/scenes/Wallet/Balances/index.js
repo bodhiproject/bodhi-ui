@@ -29,7 +29,6 @@ import DepositDialog from './DepositDialog';
 import WithdrawDialog from './WithdrawDialog';
 import WithdrawTxConfirmDialog from './WithdrawTxConfirmDialog';
 import Config from '../../../config/app';
-import { doesUserNeedToUnlockWallet } from '../../../helpers/utility';
 import Tracking from '../../../helpers/mixpanelUtil';
 
 const messages = defineMessages({
@@ -384,21 +383,17 @@ export default class MyBalances extends Component {
   };
 
   onWithdrawClicked(event) {
-    const { wallet, walletUnlockDialog } = this.props.store;
+    const { wallet } = this.props.store;
 
-    if (doesUserNeedToUnlockWallet(wallet)) {
-      walletUnlockDialog.isVisible = true;
-    } else {
-      this.setState({
-        selectedAddress: event.currentTarget.getAttribute('data-address'),
-        selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-        selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
-        withdrawDialogVisible: true,
-      });
-      wallet.selectedAddressBot = event.currentTarget.getAttribute('data-bot');
+    this.setState({
+      selectedAddress: event.currentTarget.getAttribute('data-address'),
+      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
+      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      withdrawDialogVisible: true,
+    });
+    wallet.selectedAddressBot = event.currentTarget.getAttribute('data-bot');
 
-      Tracking.track('myWallet-withdrawDialogOpen');
-    }
+    Tracking.track('myWallet-withdrawDialogOpen');
   }
 
   handleWithdrawDialogClose = () => {
