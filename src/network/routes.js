@@ -4,8 +4,8 @@ const AUTHORITY = 'puti.io:8989';
 const HTTP_ROUTE = `https://${AUTHORITY}`;
 const WS_ROUTE = `wss://${AUTHORITY}`;
 
-const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
 const QTUM_EXPLORER = isProduction() ? 'https://explorer.qtum.org' : 'https://testnet.qtum.org';
+const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
 
 export default {
   graphql: {
