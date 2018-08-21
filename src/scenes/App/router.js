@@ -46,6 +46,11 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
+        path={`${url}${Routes.SETTINGS}`}
+        component={asyncComponent(() => import('../Settings'))}
+      />
+      <Route
+        exact
         path={`${url}${Routes.SET}`}
         component={asyncComponent(() => import('../Activities'))}
       />
