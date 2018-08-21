@@ -2,37 +2,24 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import styled, { css } from 'styled-components';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import {
   AppBar,
   Toolbar,
   Badge,
   Button,
   withStyles,
-  Select,
-  MenuItem,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
 
 import NavLink from './components/NavLink';
+import ActivityLink from './components/ActivityLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
-
-
-const messages = defineMessages({
-  help: {
-    id: 'help',
-    defaultMessage: 'Help',
-  },
-  allEvents: {
-    id: 'navbar.allEvents',
-    defaultMessage: 'All Events',
-  },
-});
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -59,20 +46,20 @@ export default class NavBar extends Component {
             <QtumPrediction {...this.props} />
             <BotCourt {...this.props} />
           </NavSection>
+          <MyActivities {...this.props} />
           <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
           <Dropdown data-show={this.state.dropdownDirection === 'down'}>
             <Wallet {...this.props} />
-            <Link to={Routes.ACTIVITY_HISTORY}>
-              <Item onClick={this.changeDropDownDirection}>My Activities</Item>
-            </Link>
             <Link to={Routes.ALL_EVENTS}>
-              <Item onClick={this.changeDropDownDirection}>All Events</Item>
+              <Item onClick={this.changeDropDownDirection}>
+                <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
+              </Item>
             </Link>
-            <a href='https://www.bodhi.network/faq' target='_blank'>
-              <Item onClick={this.changeDropDownDirection}>Help</Item>
-            </a>
+            <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
             <Link to={Routes.SETTINGS}>
-              <Item onClick={this.changeDropDownDirection}>Settings</Item>
+              <Item onClick={this.changeDropDownDirection}>
+                <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
+              </Item>
             </Link>
           </Dropdown>
         </Toolbar>
@@ -80,6 +67,49 @@ export default class NavBar extends Component {
     );
   }
 }
+
+const QAButton = ({ intl, changeDropDownDirection }) => (
+  <a
+    onClick={() => {
+      window.open(faqUrls[intl.locale], '_blank');
+      Tracking.track('navBar-helpClick');
+    }}
+  >
+    <Item onClick={changeDropDownDirection}>
+      <FormattedMessage id="help" defaultMessage="Help" />
+    </Item>
+  </a>
+);
+
+const NavBarRightButton = styled.div`
+  height: 70px;
+  line-height: 70px;
+  text-align: center;
+  color: white;
+  position: absolute;
+  right: 70px;
+  top: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-left: 1px solid rgba(0,0,0,0.2);
+`;
+
+const MyActivities = ({ store: { global } }) => {
+  if (global.userData.totalCount > 0) {
+    return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
+      <NavBarRightButton>
+        <Badge badgeContent={global.userData.totalCount} color="secondary">
+          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+        </Badge>
+      </NavBarRightButton>
+    </ActivityLink>);
+  }
+  return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
+    <NavBarRightButton>
+      <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+    </NavBarRightButton>
+  </ActivityLink>);
+};
 
 const Wallet = styled(({ store: { wallet } }) => {
   const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
@@ -119,6 +149,7 @@ const Item = styled.div`
   display: flex;
   text-align: left;
   padding: 25px;
+  cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,0.15);
   justify-content: space-between;
   &:hover: {
