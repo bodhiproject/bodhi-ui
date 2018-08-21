@@ -15,7 +15,6 @@ import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
 
 import NavLink from './components/NavLink';
-import ActivityLink from './components/ActivityLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
@@ -101,7 +100,7 @@ const NavBarRightButton = styled.div`
 
 const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
-    return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
+    return (<Link to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
         <NavBarRightButton>
           <Badge badgeContent={global.userData.totalCount} color="secondary">
@@ -109,15 +108,15 @@ const MyActivities = observer(({ store: { global } }) => {
           </Badge>
         </NavBarRightButton>
       </NavBarRightButtonContainer>
-    </ActivityLink>);
+    </Link>);
   }
-  return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
+  return (<NavLink to={Routes.ACTIVITY_HISTORY}>
     <NavBarRightButtonContainer>
       <NavBarRightButton>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </NavBarRightButton>
     </NavBarRightButtonContainer>
-  </ActivityLink>);
+  </NavLink>);
 });
 
 const Wallet = styled(({ store: { wallet } }) => {
