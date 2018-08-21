@@ -7,7 +7,7 @@ import { i18nToUpperCase } from '../../../helpers';
 import { SidebarContainer } from '../components/Sidebar';
 import EventInfo from './EventInfo';
 
-export const Sidebar = inject('store')(observer(({ topic }) => (
+const Sidebar = inject('store')(observer(({ topic }) => (
   <SidebarContainer>
     <EventInfo infoObjs={getEventInfoObjs(topic)} />
     <StepperVertRight />
@@ -43,3 +43,4 @@ const getEventInfoObjs = (topic) => {
     },
   ];
 };
+export default Sidebar;

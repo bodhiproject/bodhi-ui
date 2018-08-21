@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Paper } from '@material-ui/core';
-import { Sidebar, Row, Content, Title, ResultHistory, TransactionHistory } from '../components';
+import { Row, Content, Title, ResultHistory, TransactionHistory } from '../components';
 import WinningOutcome from './WinningOutcome';
 import WithdrawTo from './WithdrawTo';
 import Reward from './Reward';
 import Options from './Options';
+import Sidebar from './Sidebar';
 
 @inject('store')
 @observer
