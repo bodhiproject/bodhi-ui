@@ -84,7 +84,6 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
     "copy-webpack-plugin": "^4.5.1",
-    "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "dotenv": "4.0.0",
     "enzyme": "^3.4.1",
