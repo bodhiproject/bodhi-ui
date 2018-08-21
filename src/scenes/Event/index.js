@@ -54,7 +54,7 @@ export default class EventPage extends Component {
     }
 
     // Unconfirmed Oracle changed txid so Oracles query comes back empty. Return to Qtum Prediction.
-    // TODO: can remove this when hashedId is implemented and we can get the Oracle by hashedId.
+    // TODO: can remove this when hashId is implemented and we can get the Oracle by hashId.
     if (!event) {
       this.props.history.push('/');
       return;

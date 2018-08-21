@@ -196,19 +196,6 @@ export default class EventStore {
       },
       { fireImmediately: true },
     );
-
-    // Trying to vote over the consensus threshold
-    reaction(
-      () => this.amount,
-      () => {
-        const { phase, consensusThreshold } = this.oracle;
-        const optionAmount = this.selectedOption.amount;
-        const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
-        if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
-          this.amount = String(toFixed(maxVote));
-        }
-      }
-    );
   }
 
   @action
@@ -399,6 +386,18 @@ export default class EventStore {
     const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
     const notEnoughQtum = totalQtum < maxTransactionFee;
 
+    // Trying to vote over the consensus threshold
+    const amountNum = Number(this.amount);
+    if (phase === VOTING && this.amount && this.selectedOptionIdx >= 0) {
+      const maxVote = NP.minus(consensusThreshold, this.selectedOption.amount);
+      if (amountNum > maxVote) {
+        this.buttonDisabled = true;
+        this.warningType = EventWarningType.ERROR;
+        this.eventWarningMessageId = 'oracle.maxVoteText';
+        return;
+      }
+    }
+
     // Already have a pending tx for this Oracle
     const pendingTxs = _.filter(
       this.transactions,
@@ -487,10 +486,13 @@ export default class EventStore {
     this.warningType = '';
   }
 
-  @action // used in the VotingOracle onBlur
+  // Auto-fixes the amount field onBlur if trying to vote over the threshold
+  @action
   fixAmount = () => {
     if (this.oracle.phase !== VOTING) return;
-    const [inputAmount, consensusThreshold] = [parseFloat(this.amount, 10), parseFloat(this.oracle.consensusThreshold, 10)];
+
+    const inputAmount = parseFloat(this.amount, 10);
+    const consensusThreshold = parseFloat(this.oracle.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
       this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
     }
