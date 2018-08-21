@@ -1,13 +1,14 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { Typography, Tooltip } from '@material-ui/core';
+import { Typography, Tooltip, withStyles } from '@material-ui/core';
 
 import RewardTooltipContent from './RewardTooltipContent';
 import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import styles from './styles';
 
 const messages = defineMessages({
   withdrawDetailReturnRateMsg: {
@@ -16,52 +17,56 @@ const messages = defineMessages({
   },
 });
 
-// TODO: fix the tooltip next to QtumReturn and BotUsed
-const Reward = ({ eventPage, topic }) => {
-  const { qtumWinnings, botWinnings, betBalances, voteBalances } = eventPage;
-  const totalBetAmount = _.sum(betBalances);
-  const totalVoteAmount = _.sum(voteBalances);
-  const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
-  const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
-  const resultBetAmount = betBalances[topic.resultIdx];
-  const resultVoteAmount = voteBalances[topic.resultIdx];
-  const totalQtumWinningBets = eventPage.topic.qtumAmount[topic.resultIdx];
-  const totalQtumBets = _.sum(topic.qtumAmount);
-  const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
-  const losersQtumReward = totalLosingQtumBets / 100;
-  const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
-  const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
-  const totalBotWinningBets = topic.botAmount[topic.resultIdx];
-  const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
-  if (botQtumWon > 0 || qtumWon > 0) {
-    return (
-      <Container>
-        <RewardIcon />
-        <RewardTitle />
-        <Row>
-          <QtumReturn
-            qtumWinnings={eventPage.qtumWinnings}
-            qtumWon={qtumWon}
-            botQtumWon={botQtumWon}
-            resultTokenAmount={resultBetAmount}
-            totalTokenAmount={totalBetAmount}
-            tokenWinnings={qtumWinnings}
-            qtumReturnRate={qtumReturnRate}
-          />
-          <Separator />
-          <BotUsed
-            botWinnings={eventPage.botWinnings}
-            resultTokenAmount={resultVoteAmount}
-            totalTokenAmount={totalVoteAmount}
-            tokenWinnings={botWinnings}
-            botReturnRate={botReturnRate}
-          />
-        </Row>
-      </Container>
-    );
+@withStyles(styles)
+@injectIntl
+class Reward extends Component {
+  render() {
+    const { eventPage, topic, classes } = this.props;
+    const { qtumWinnings, botWinnings, betBalances, voteBalances } = eventPage;
+    const totalBetAmount = _.sum(betBalances);
+    const totalVoteAmount = _.sum(voteBalances);
+    const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
+    const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
+    const resultBetAmount = betBalances[topic.resultIdx];
+    const resultVoteAmount = voteBalances[topic.resultIdx];
+    const totalQtumWinningBets = eventPage.topic.qtumAmount[topic.resultIdx];
+    const totalQtumBets = _.sum(topic.qtumAmount);
+    const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
+    const losersQtumReward = totalLosingQtumBets / 100;
+    const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
+    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
+    const totalBotWinningBets = topic.botAmount[topic.resultIdx];
+    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
+    if (botQtumWon > 0 || qtumWon > 0) {
+      return (
+        <Container>
+          <RewardIcon />
+          <RewardTitle />
+          <div className={classes.rowDiv}>
+            <QtumReturn
+              qtumWinnings={eventPage.qtumWinnings}
+              qtumWon={qtumWon}
+              botQtumWon={botQtumWon}
+              resultTokenAmount={resultBetAmount}
+              totalTokenAmount={totalBetAmount}
+              tokenWinnings={qtumWinnings}
+              qtumReturnRate={qtumReturnRate}
+            />
+            <Separator />
+            <BotUsed
+              botWinnings={eventPage.botWinnings}
+              resultTokenAmount={resultVoteAmount}
+              totalTokenAmount={totalVoteAmount}
+              tokenWinnings={botWinnings}
+              botReturnRate={botReturnRate}
+            />
+          </div>
+        </Container>
+      );
+    }
+    return <Fragment />;
   }
-  return <Fragment />;
-};
+}
 
 const RewardIcon = () => <Icon type='token' />;
 
@@ -82,56 +87,50 @@ const Separator = styled.div`
   margin-right: ${props => props.theme.padding.md.px};
 `;
 
-const QtumReturn = injectIntl(({ qtumWinnings, qtumReturnRate, intl, ...props }) => (
-  <Wrapper>
-    <Typography variant="display1">
-      <Row>
-        +{qtumWinnings} <Token>QTUM</Token>
-        <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
-          <i className="icon iconfont icon-ic_question" />
-        </Tooltip>
-      </Row>
-    </Typography>
-    <Typography variant="caption">
-      {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${qtumReturnRate.toFixed(2)}%`}
-    </Typography>
-  </Wrapper>
-));
+@withStyles(styles, { withTheme: true })
+@injectIntl
+class QtumReturn extends Component {
+  render() {
+    const { qtumWinnings, qtumReturnRate, intl, classes, ...props } = this.props;
+    return (
+      <div className={classes.colDiv}>
+        <Typography variant="display1">
+          <div className={classes.rowDiv}>
+            +{qtumWinnings} <div className={classes.tokenDiv}>QTUM</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
+              <i className="icon iconfont icon-ic_question" />
+            </Tooltip>
+          </div>
+        </Typography>
+        <Typography variant="caption">
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${qtumReturnRate.toFixed(2)}%`}
+        </Typography>
+      </div>
+    );
+  }
+}
 
-const BotUsed = injectIntl(({ botWinnings, botReturnRate, intl, ...props }) => (
-  <Wrapper>
-    <Typography variant="display1">
-      <Row>
-        +{botWinnings} <Token>BOT</Token>
-        <Tooltip id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
-          <i className="icon iconfont icon-ic_question" />
-        </Tooltip>
-      </Row>
-    </Typography>
-    <Typography variant="caption">
-      {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${botReturnRate.toFixed(2)}%`}
-    </Typography>
-  </Wrapper>
-));
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-const Col = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Token = styled.div`
-  font-size: ${props => props.theme.sizes.font.textSm};
-  font-weight: ${props => props.theme.typography.fontWeightBold};
-`;
-
-const Wrapper = Col.extend`
-  position: relative;
-  /* display: inline-block; */
-  margin-bottom: ${props => props.theme.padding.unit.px};
-`;
+@withStyles(styles, { withTheme: true })
+@injectIntl
+class BotUsed extends Component {
+  render() {
+    const { botWinnings, botReturnRate, intl, classes, ...props } = this.props;
+    return (
+      <div className={classes.colDiv}>
+        <Typography variant="display1">
+          <div className={classes.rowDiv}>
+            +{botWinnings} <div className={classes.tokenDiv}>BOT</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
+              <i className="icon iconfont icon-ic_question" />
+            </Tooltip>
+          </div>
+        </Typography>
+        <Typography variant="caption">
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${botReturnRate.toFixed(2)}%`}
+        </Typography>
+      </div>
+    );
+  }
+}
 
 export default Reward;
