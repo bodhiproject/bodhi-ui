@@ -196,6 +196,19 @@ export default class EventStore {
       },
       { fireImmediately: true },
     );
+
+    // Trying to vote over the consensus threshold
+    reaction(
+      () => this.amount,
+      () => {
+        const { phase, consensusThreshold } = this.oracle;
+        const optionAmount = this.selectedOption.amount;
+        const maxVote = phase === VOTING ? NP.minus(consensusThreshold, optionAmount) : 0;
+        if (phase === VOTING && this.selectedOptionIdx >= 0 && this.amount > maxVote) {
+          this.amount = String(toFixed(maxVote));
+        }
+      }
+    );
   }
 
   @action
