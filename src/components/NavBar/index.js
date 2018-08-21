@@ -81,7 +81,7 @@ const QAButton = ({ intl, changeDropDownDirection }) => (
   </a>
 );
 
-const NavBarRightButton = styled.div`
+const NavBarRightButtonContainer = styled.div`
   height: 70px;
   line-height: 70px;
   text-align: center;
@@ -93,23 +93,32 @@ const NavBarRightButton = styled.div`
   padding-right: 20px;
   border-left: 1px solid rgba(0,0,0,0.2);
 `;
+const NavBarRightButton = styled.div`
+  height: 30px;
+  margin: 20px auto;
+  line-height: 30px;
+`;
 
-const MyActivities = ({ store: { global } }) => {
+const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
     return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
-      <NavBarRightButton>
-        <Badge badgeContent={global.userData.totalCount} color="secondary">
-          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-        </Badge>
-      </NavBarRightButton>
+      <NavBarRightButtonContainer>
+        <NavBarRightButton>
+          <Badge badgeContent={global.userData.totalCount} color="secondary">
+            <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+          </Badge>
+        </NavBarRightButton>
+      </NavBarRightButtonContainer>
     </ActivityLink>);
   }
   return (<ActivityLink to={Routes.ACTIVITY_HISTORY}>
-    <NavBarRightButton>
-      <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-    </NavBarRightButton>
+    <NavBarRightButtonContainer>
+      <NavBarRightButton>
+        <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+      </NavBarRightButton>
+    </NavBarRightButtonContainer>
   </ActivityLink>);
-};
+});
 
 const Wallet = styled(({ store: { wallet } }) => {
   const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';

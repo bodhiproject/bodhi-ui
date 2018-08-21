@@ -4,9 +4,9 @@ import { Route } from 'react-router-dom';
 import { Link } from '../Link';
 
 
-const ActivityLink = observer(({ to, store: { ui: { location } }, ...props }) => (
+const ActivityLink = observer(({ to, ...props }) => (
   <Route exact path={to}>
-    {({ match }) => <Link to={to} active={!!match || to === location} {...props} />}
+    <Link to={to} {...props} />
   </Route>));
 
 export default inject('store')(ActivityLink);
