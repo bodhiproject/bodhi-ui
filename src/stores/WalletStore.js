@@ -41,7 +41,6 @@ const INIT_VALUE = {
   unlockDialogOpen: false,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
-  selectedAddressBot: undefined,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -68,7 +67,6 @@ export default class {
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
   @observable toAddress = INIT_VALUE_DIALOG.toAddress;
-  @observable selectedAddressBot = INIT_VALUE.selectedAddressBot;
 
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
@@ -84,18 +82,14 @@ export default class {
     return false;
   }
 
-  @computed get withdrawLimit() {
-    switch (this.selectedToken) {
-      case Token.QTUM: {
-        return _.sumBy(this.addresses, (w) => w.qtum ? w.qtum : 0);
-      }
-      case Token.BOT: {
-        return this.selectedAddressBot;
-      }
-      default: {
-        throw new Error(`Invalid selectedToken ${this.selectedToken}`);
-      }
-    }
+  @computed get lastAddressWithdrawLimit() {
+    return { QTUM: this.lastUsedWallet.qtum, BOT: this.lastUsedWallet.bot };
+  }
+
+  @computed get lastUsedWallet() {
+    const res = _.filter(this.addresses, (x) => x.address === this.lastUsedAddress);
+    if (res.length > 0) return res[0];
+    return {};
   }
 
   constructor(app) {
@@ -180,7 +174,7 @@ export default class {
       this.withdrawDialogError.withdrawAmount = messages.withdrawDialogRequiredMsg.id;
     } else if (Number(this.withdrawAmount) <= 0) {
       this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountLargerThanZeroMsg.id;
-    } else if (Number(this.withdrawAmount) > Number(this.withdrawLimit)) { // Automatically switch by token
+    } else if (Number(this.withdrawAmount) > this.lastAddressWithdrawLimit[this.selectedToken]) {
       this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountExceedLimitMsg.id;
     } else {
       this.withdrawDialogError.withdrawAmount = '';

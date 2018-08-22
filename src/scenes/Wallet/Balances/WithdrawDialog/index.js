@@ -171,7 +171,7 @@ class AmountField extends Component {
           {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
         </div>
         <Typography variant="body1">
-          {`${withdrawAmountText} ${wallet.withdrawLimit}`}
+          {`${withdrawAmountText} ${wallet.lastAddressWithdrawLimit[wallet.selectedToken]}`}
         </Typography>
       </div>
     );

@@ -128,8 +128,7 @@ export default class CreateEventStore {
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
   @computed get hasEnoughQtum() {
-    const totalQtum = _.sumBy(this.app.wallet.addresses, ({ qtum }) => qtum);
-    return totalQtum >= maxTransactionFee;
+    return this.app.wallet.lastUsedWallet.qtum >= maxTransactionFee;
   }
   @computed get warning() {
     if (!this.hasEnoughQtum) {

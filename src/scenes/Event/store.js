@@ -383,8 +383,8 @@ export default class EventStore {
     const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const totalQtum = _.sumBy(wallet.addresses, ({ qtum }) => qtum);
-    const notEnoughQtum = totalQtum < maxTransactionFee;
+    const currentWalletQtum = wallet.lastUsedWallet.qtum;
+    const notEnoughQtum = currentWalletQtum < maxTransactionFee;
 
     // Trying to vote over the consensus threshold
     const amountNum = Number(this.amount);
@@ -449,7 +449,7 @@ export default class EventStore {
 
     // ALL
     // Trying to bet more qtum than you have or you just don't have enough QTUM period
-    if ((phase === BETTING && this.amount > totalQtum + maxTransactionFee) || notEnoughQtum) {
+    if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.ERROR;
       this.eventWarningMessageId = 'str.notEnoughQtum';
