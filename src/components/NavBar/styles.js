@@ -5,6 +5,7 @@ const styles = (theme) => ({
   navBarWrapper: {
     display: 'flex',
     padding: `0 ${theme.padding.sm.px}`,
+    paddingRight: '0',
     'align-items': 'center',
     height: '70px',
     'justify-content': 'space-between',

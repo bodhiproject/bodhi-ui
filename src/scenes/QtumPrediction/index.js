@@ -26,7 +26,7 @@ export default class QtumPrediction extends Component {
     this.counterInterval = setInterval(() => {
       const { increasingCount } = this.state;
       this.setState({
-        increasingCount: increasingCount + interval,
+        increasingCount: increasingCount + (interval / 1000000000),
       });
     }, interval * 1000);
   }
