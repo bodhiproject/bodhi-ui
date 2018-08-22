@@ -1,9 +1,9 @@
 import { isProduction } from '../config/app';
 
 const PORT = 8989;
-const HOSTNAME = isProduction() ? `puti.io:${PORT}` : `localhost:${PORT}`;
-const HTTP_ROUTE = `${isProduction() ? 'https' : 'http'}://${HOSTNAME}`;
-const WS_ROUTE = `${isProduction() ? 'wss' : 'ws'}://${HOSTNAME}`;
+const AUTHORITY = isProduction() ? `puti.io:${PORT}` : `localhost:${PORT}`;
+const HTTP_ROUTE = `${isProduction() ? 'https' : 'http'}://${AUTHORITY}`;
+const WS_ROUTE = `${isProduction() ? `wss://${AUTHORITY}/ws` : `ws://${AUTHORITY}/graphql`}`;
 
 const QTUM_EXPLORER = isProduction() ? 'https://explorer.qtum.org' : 'https://testnet.qtum.org';
 const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
@@ -11,7 +11,7 @@ const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
 export default {
   graphql: {
     http: `${HTTP_ROUTE}/graphql`,
-    subs: `${WS_ROUTE}/ws`,
+    subs: WS_ROUTE,
   },
   api: {
     getWalletInfo: `${HTTP_ROUTE}/get-wallet-info`,
