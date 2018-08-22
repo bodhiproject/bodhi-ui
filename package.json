@@ -131,7 +131,8 @@
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations",
     "precommit": "lint-staged",
-    "prepush": "npm run lint:fix"
+    "prepush": "npm run lint:fix",
+    "publish": "scripts/publish.sh"
   },
   "lint-staged": {
     "*.js": [
