@@ -113,7 +113,7 @@
   "oracle.enterAmountDisabledText": "请输入一个有效金额",
   "oracle.eventUnconfirmed": "这个已创建的事件还未确认，您在它确认之前不能进行操作。",
   "oracle.finalizingExplanation": "任何人都可以终结这个结果. 这将会结束仲裁阶段并且设置结果为上一轮的结果，赢家可以提现他们的奖励一旦事件最终结束。",
-  "oracle.maxVoteText": "You can only vote up to the Consensus Threshold for a single outcome.",
+  "oracle.maxVoteText": "您只能为单个结果投票共识阈值上限。",
   "oracle.optionIsPrevResult": "该选项在之前已被选为结果",
   "oracle.selectResultDisabledText": "请选择其中一个结果选项。",
   "oracle.setResultExplanation": "设置结果要求投入共识阈值数量。",
