@@ -1,6 +1,6 @@
 {
   "name": "bodhi-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
     "@material-ui/core": "^1.2.2",
     "@material-ui/icons": "^1.1.0",
@@ -131,8 +131,7 @@
     "manage:translations": "NODE_ENV=production ./node_modules/.bin/babel-node scripts/translator.js",
     "build:langs": "npm run extract-messages && npm run manage:translations",
     "precommit": "lint-staged",
-    "prepush": "npm run lint:fix",
-    "npm:publish": "scripts/publish.sh"
+    "prepush": "npm run lint:fix"
   },
   "lint-staged": {
     "*.js": [
