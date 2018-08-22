@@ -132,7 +132,7 @@
     "build:langs": "npm run extract-messages && npm run manage:translations",
     "precommit": "lint-staged",
     "prepush": "npm run lint:fix",
-    "publish": "scripts/publish.sh"
+    "npm:publish": "scripts/publish.sh"
   },
   "lint-staged": {
     "*.js": [
