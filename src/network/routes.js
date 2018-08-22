@@ -1,8 +1,9 @@
 import { isProduction } from '../config/app';
 
-const AUTHORITY = 'puti.io:8989';
-const HTTP_ROUTE = `https://${AUTHORITY}`;
-const WS_ROUTE = `wss://${AUTHORITY}`;
+const PORT = 8989;
+const HOSTNAME = isProduction() ? `puti.io:${PORT}` : `localhost:${PORT}`;
+const HTTP_ROUTE = `${isProduction() ? 'https' : 'http'}://${HOSTNAME}`;
+const WS_ROUTE = `${isProduction() ? 'wss' : 'ws'}://${HOSTNAME}`;
 
 const QTUM_EXPLORER = isProduction() ? 'https://explorer.qtum.org' : 'https://testnet.qtum.org';
 const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
