@@ -10,7 +10,7 @@ import { defineMessages } from 'react-intl';
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
-import { maxTransactionFee, defaults } from '../../config/app';
+import { isProduction, maxTransactionFee, defaults } from '../../config/app';
 import { createTopic } from '../../network/graphql/mutations';
 
 const messages = defineMessages({
@@ -65,7 +65,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 let TIME_GAP_MIN_SEC = 30 * 60;
-if (process.env.REACT_APP_ENV === 'dev') {
+if (!isProduction()) {
   TIME_GAP_MIN_SEC = 2 * 60;
 }
 
@@ -261,7 +261,7 @@ export default class CreateEventStore {
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
+      this.escrowAmount = satoshiToDecimal(escrowRes.data[0]); // eslint-disable-line
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
     });

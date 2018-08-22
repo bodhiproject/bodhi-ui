@@ -1,4 +1,5 @@
 module.exports = {
+  isProduction: () => process.env.NODE_ENV === 'production',
   intervals: { // in MS
     syncInfo: 5000,
     tooltipDelay: 300,
