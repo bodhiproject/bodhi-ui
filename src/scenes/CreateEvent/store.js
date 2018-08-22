@@ -127,14 +127,14 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
-  @computed get hasEnoughQtum() {
-    return this.app.wallet.lastUsedWallet.qtum >= maxTransactionFee;
+  @computed get hasEnoughFee() {
+    return (this.app.wallet.lastUsedWallet.qtum >= maxTransactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
   }
   @computed get warning() {
-    if (!this.hasEnoughQtum) {
+    if (!this.hasEnoughFee) {
       return {
-        id: 'str.notEnoughQtum',
-        message: 'You don\'t have enough QTUM',
+        id: 'str.notEnoughQtumAndBot',
+        message: 'You don\'t have enough QTUM or BOT',
       };
     }
     return {};
