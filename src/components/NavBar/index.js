@@ -221,30 +221,4 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-// const MyActivities = observer(({ classes, store: { global } }) => {
-//   let children = (
-//     <Button className={cx(classes.navEventsButton, classes.dark)}>
-//       <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-//     </Button>
-//   );
-//   if (global.userData.totalCount > 0) {
-//     children = <Badge badgeContent={global.userData.totalCount} color="secondary">{children}</Badge>;
-//   }
-//   return <NavLink to={Routes.SET}>{children}</NavLink>;
-// });
-
-// const LanguageSelector = inject('store')(observer(({ classes, store: { ui } }) => (
-//   <Select
-//     value={ui.locale}
-//     onChange={(e) => ui.changeLocale(e.target.value)}
-//     name="lang"
-//     disableUnderline
-//     className={classes.selectMenu}
-//   >
-//     <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-//     <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-//     <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
-//   </Select>
-// )));
-
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
