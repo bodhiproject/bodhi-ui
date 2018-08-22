@@ -54,12 +54,12 @@ export default class NavBar extends Component {
                 <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
               </Item>
             </Link>
-            <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
             <Link to={Routes.SETTINGS}>
               <Item onClick={this.changeDropDownDirection}>
                 <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
               </Item>
             </Link>
+            <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
           </Dropdown>
         </Toolbar>
       </AppBar>
