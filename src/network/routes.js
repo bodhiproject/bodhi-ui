@@ -1,11 +1,10 @@
+import { isProduction } from '../config/app';
+
 const AUTHORITY = 'puti.io:8989';
 const HTTP_ROUTE = `https://${AUTHORITY}`;
 const WS_ROUTE = `wss://${AUTHORITY}`;
 
-const QTUM_EXPLORER = {
-  dev: 'https://testnet.qtum.org',
-  prod: 'https://explorer.qtum.org',
-}[process.env.REACT_APP_ENV];
+const QTUM_EXPLORER = isProduction() ? 'https://explorer.qtum.org' : 'https://testnet.qtum.org';
 const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
 
 export default {
