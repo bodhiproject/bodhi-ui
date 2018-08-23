@@ -10,7 +10,7 @@ import { defineMessages } from 'react-intl';
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
-import { maxTransactionFee, defaults } from '../../config/app';
+import { defaults } from '../../config/app';
 import { createTopic } from '../../network/graphql/mutations';
 
 const messages = defineMessages({
