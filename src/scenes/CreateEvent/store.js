@@ -112,7 +112,7 @@ const INIT = {
 export default class CreateEventStore {
   escrowAmount = INIT.escrowAmount
   averageBlockTime = INIT.averageBlockTime
-  txFees = INIT.txFees // used in txConfirmDialog
+  @observable txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
@@ -128,7 +128,8 @@ export default class CreateEventStore {
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
   @computed get hasEnoughFee() {
-    return (this.app.wallet.lastUsedWallet.qtum >= maxTransactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
+    const transactionFee = _.sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
+    return (this.app.wallet.lastUsedWallet.qtum >= transactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
   }
   @computed get warning() {
     if (!this.hasEnoughFee) {
@@ -169,6 +170,32 @@ export default class CreateEventStore {
       && outcomes.every(outcome => !outcome)
       && !resultSetter
     );
+  }
+
+  @action
+  onEnterDialog = async () => {
+    try {
+      const { data: { result } } = await axios.post(
+        Routes.api.transactionCost,
+        {
+          type: TransactionType.APPROVE_CREATE_EVENT,
+          token: Token.BOT,
+          amount: decimalToSatoshi(this.escrowAmount),
+          optionIdx: undefined,
+          topicAddress: undefined,
+          oracleAddress: undefined,
+          senderAddress: this.app.wallet.lastUsedAddress,
+        }
+      );
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.txFees = txFees;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
   }
 
   constructor(app) {

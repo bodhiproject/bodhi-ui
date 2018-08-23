@@ -6,7 +6,7 @@ import locales from '../languageProvider';
 
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
-  @observable locale = localStorage.getItem('lang') || this.defaultLocale
+  @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable error = null
 
   get localeMessages() {
@@ -30,7 +30,7 @@ export default class UiStore {
       () => this.locale,
       () => {
         moment.locale(locales[this.locale].momentlocale);
-        localStorage.setItem('lang', this.locale);
+        localStorage.setItem('bodhi_dapp_lang', this.locale);
       },
       { fireImmediately: true }
     );

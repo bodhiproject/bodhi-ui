@@ -35,7 +35,13 @@ const CreateEventDialog = withStyles(styles)(observer(({
   classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } },
 }) => (
   <Fragment>
-    <Dialog className={classes.createDialog} fullWidth maxWidth='md' open={isOpen}>
+    <Dialog
+      className={classes.createDialog}
+      fullWidth
+      maxWidth='md'
+      open={isOpen}
+      onEnter={createEvent.onEnterDialog}
+    >
       <DialogTitle>Create an event</DialogTitle>
       {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}
       <EscrowAmountNote amount={createEvent.escrowAmount} />

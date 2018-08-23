@@ -118,6 +118,30 @@ export default class EventStore {
     this.setReactions();
   }
 
+  @action
+  async initTxfees() {
+    try {
+      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+        type: TransactionType.BET,
+        token: this.oracle.token,
+        amount: Number(this.amount),
+        optionIdx: this.selectedOptionIdx,
+        topicAddress: this.oracle.topicAddress,
+        oracleAddress: this.oracle.address,
+        senderAddress: this.app.wallet.lastUsedAddress,
+      });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.oracle.txFees = txFees;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
+      });
+    }
+  }
+
   /**
    * Show unconfirmed Oracle page.
    * Find unconfirmed Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress.
