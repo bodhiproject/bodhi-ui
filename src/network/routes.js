@@ -1,12 +1,12 @@
 import { isProduction } from '../config/app';
 
 const PORT = 8989;
-const AUTHORITY = isProduction() ? `puti.io:${PORT}` : `localhost:${PORT}`;
+const AUTHORITY = `${isProduction() ? 'puti.io' : 'localhost'}:${PORT}`;
 const HTTP_ROUTE = `${isProduction() ? 'https' : 'http'}://${AUTHORITY}`;
-const WS_ROUTE = `${isProduction() ? `wss://${AUTHORITY}/ws` : `ws://${AUTHORITY}/graphql`}`;
+const WS_ROUTE = `${isProduction() ? 'wss' : 'ws'}://${AUTHORITY}/graphql`;
 
-const QTUM_EXPLORER = isProduction() ? 'https://explorer.qtum.org' : 'https://testnet.qtum.org';
-const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
+const BASE_QTUM_WEB = `https://${isProduction() ? 'explorer' : 'testnet'}.qtum.org`;
+const BASE_INSIGHT = `${BASE_QTUM_WEB}/insight-api`;
 
 export default {
   graphql: {
