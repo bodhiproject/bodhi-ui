@@ -1,6 +1,6 @@
 import { isProduction } from '../config/app';
 
-const PORT = 8989;
+const PORT = isProduction() ? 8989 : 6767;
 const AUTHORITY = `${isProduction() ? 'puti.io' : 'localhost'}:${PORT}`;
 const HTTP_ROUTE = `${isProduction() ? 'https' : 'http'}://${AUTHORITY}`;
 const WS_ROUTE = `${isProduction() ? 'wss' : 'ws'}://${AUTHORITY}/graphql`;
