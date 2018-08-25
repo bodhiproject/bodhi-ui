@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createMuiTheme } from '@material-ui/core';
+import { rgba } from 'polished';
 
 /* Brand Variables */
 
@@ -159,6 +160,10 @@ export const theme = {
       root: {
         borderRadius: px(paddingLg),
         textTransform: 'none',
+        '&:disabled': {
+          backgroundColor: rgba(0, 0, 0, 0.5),
+          color: white,
+        },
       },
       raised: {
         backgroundColor: 'white',

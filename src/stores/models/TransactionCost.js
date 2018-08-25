@@ -19,5 +19,10 @@ export default class TransactionCost {
     if (this.token === Token.BOT) {
       this.amount = satoshiToDecimal(this.amount);
     }
+
+    // Temp fix to remove amount of approve types for TxConfirmDialog
+    if (this.type === 'approve') {
+      this.amount = undefined;
+    }
   }
 }

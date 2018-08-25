@@ -40,7 +40,6 @@ const CreateEventDialog = withStyles(styles)(observer(({
       fullWidth
       maxWidth='md'
       open={isOpen}
-      onEnter={createEvent.onEnterDialog}
     >
       <DialogTitle>Create an event</DialogTitle>
       {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}

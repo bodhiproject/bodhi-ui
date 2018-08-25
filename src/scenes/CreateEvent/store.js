@@ -172,32 +172,6 @@ export default class CreateEventStore {
     );
   }
 
-  @action
-  onEnterDialog = async () => {
-    try {
-      const { data: { result } } = await axios.post(
-        Routes.api.transactionCost,
-        {
-          type: TransactionType.APPROVE_CREATE_EVENT,
-          token: Token.BOT,
-          amount: decimalToSatoshi(this.escrowAmount),
-          optionIdx: undefined,
-          topicAddress: undefined,
-          oracleAddress: undefined,
-          senderAddress: this.app.wallet.lastUsedAddress,
-        }
-      );
-      const txFees = _.map(result, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
-  }
-
   constructor(app) {
     this.app = app;
     reaction( // when we add the creator, update our last used address
@@ -283,7 +257,7 @@ export default class CreateEventStore {
       this.averageBlockTime = defaults.averageBlockTime;
     }
 
-    runInAction(() => {
+    runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
@@ -291,6 +265,22 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
+      // For txfees init
+      try {
+        const { data: { result } } = await axios.post(
+          Routes.api.transactionCost,
+          {
+            type: TransactionType.APPROVE_CREATE_EVENT,
+            token: Token.BOT,
+            amount: decimalToSatoshi(this.escrowAmount),
+            senderAddress: this.app.wallet.lastUsedAddress,
+          }
+        );
+        const txFees = _.map(result, (item) => new TransactionCost(item));
+        this.txFees = txFees;
+      } catch (error) {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      }
     });
   }
 
@@ -439,9 +429,6 @@ export default class CreateEventStore {
         type: TransactionType.APPROVE_CREATE_EVENT,
         token: Token.BOT,
         amount: decimalToSatoshi(this.escrowAmount),
-        optionIdx: undefined,
-        topicAddress: undefined,
-        oracleAddress: undefined,
         senderAddress: this.creator,
       };
       const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
