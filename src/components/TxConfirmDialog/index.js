@@ -26,6 +26,38 @@ const messages = defineMessages({
     id: 'txConfirm.messageWithFee',
     defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
   },
+  txTypeApprove: {
+    id: 'txType.approve',
+    defaultMessage: 'Approve',
+  },
+  txTypeSetResult: {
+    id: 'txType.setResult',
+    defaultMessage: 'Set result',
+  },
+  txTypeCreateEvent: {
+    id: 'txType.createEvent',
+    defaultMessage: 'Create event',
+  },
+  txTypeVote: {
+    id: 'txType.vote',
+    defaultMessage: 'Vote',
+  },
+  txTypeWithdraw: {
+    id: 'txType.withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  txTypeWithdrawEscrow: {
+    id: 'txType.withdrawEscrow',
+    defaultMessage: 'Withdraw escrow',
+  },
+  txTypeFinalizeResult: {
+    id: 'txType.finalizeResult',
+    defaultMessage: 'Finalize result',
+  },
+  txTypeBet: {
+    id: 'txType.bet',
+    defaultMessage: 'Bet',
+  },
   strTypeMsg: {
     id: 'str.type',
     defaultMessage: 'Type',

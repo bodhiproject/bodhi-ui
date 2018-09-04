@@ -6,10 +6,8 @@ export const Button = withStyles(styles, { withTheme: true })(({ classes, ...pro
   <_Button
     fullWidth
     size='large'
-    color='default'
-    variant='outlined'
+    variant='raised'
     className={classes.oracleButton}
     {...props}
-    disabled={false}
   />
 ));
