@@ -124,6 +124,8 @@
     "start": "node scripts/start.js",
     "start:prod": "node scripts/start.js",
     "build:mainnet": "node scripts/build-mainnet.js",
+    "build:testnet": "node scripts/build-testnet.js",
+    "build:regtest": "node scripts/build-regtest.js",
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
