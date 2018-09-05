@@ -11,12 +11,10 @@ import GlobalSnackbar from '../../components/GlobalSnackbar';
 import WalletUnlockDialog from '../../components/WalletUnlockDialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
-import Loader from './components/Loader';
 
 
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
-    <Loader />
     {!store.loading && (
       <Fragment>
         <div className={classes.container}>

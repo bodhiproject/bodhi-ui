@@ -1,17 +1,25 @@
-const AUTHORITY = '127.0.0.1:8989';
-const HTTP_ROUTE = `http://${AUTHORITY}`;
-const WS_ROUTE = `ws://${AUTHORITY}`;
+/* eslint-disable no-unused-vars */
+const HOSTNAME_MAINNET = 'puti.io';
+const HOSTNAME_TESTNET = 'dev.puti.io';
+const HOSTNAME_REGTEST = 'test.puti.io';
 
-const QTUM_EXPLORER = {
-  dev: 'https://testnet.qtum.org',
-  prod: 'https://explorer.qtum.org',
-}[process.env.REACT_APP_ENV];
-const BASE_INSIGHT = `${QTUM_EXPLORER}/insight-api`;
+const PORT_MAINNET = 8989;
+const PORT_TESTNET = 6767;
+const PORT_REGTEST = 5555;
+/* eslint-enable no-unused-vars */
+
+const PORT = process.env.API_PORT ? Number(process.env.API_PORT) : PORT_REGTEST;
+const HOSTNAME = process.env.API_HOSTNAME ? process.env.API_HOSTNAME : HOSTNAME_REGTEST;
+const HTTP_ROUTE = `https://${HOSTNAME}:${PORT}`;
+const WS_ROUTE = `wss://${HOSTNAME}:${PORT}/graphql`;
+
+const BASE_QTUM_WEB = `https://${HOSTNAME === HOSTNAME_MAINNET ? 'explorer' : 'testnet'}.qtum.org`;
+const BASE_INSIGHT = `${BASE_QTUM_WEB}/insight-api`;
 
 export default {
   graphql: {
     http: `${HTTP_ROUTE}/graphql`,
-    subs: `${WS_ROUTE}/subscriptions`,
+    subs: WS_ROUTE,
   },
   api: {
     getWalletInfo: `${HTTP_ROUTE}/get-wallet-info`,

@@ -4,11 +4,11 @@ import gql from 'graphql-tag';
 import client from './';
 import GraphParser from './parser';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
+import { isProduction } from '../../config/app';
 
-if (process.env.REACT_APP_ENV === 'dev') {
+if (!isProduction()) {
   window.queries = '';
 }
-
 
 class GraphQuery {
   constructor(queryName, type) {
@@ -117,7 +117,9 @@ class GraphQuery {
 
   async execute() {
     const query = this.build();
-    if (process.env.REACT_APP_ENV === 'dev') {
+
+    // Post query to window
+    if (!isProduction()) {
       window.queries += `\n${query}`;
     }
 

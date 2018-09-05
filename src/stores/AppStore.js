@@ -18,6 +18,7 @@ import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
+import { isProduction } from '../config/app';
 
 class AppStore {
   @observable loading = true;
@@ -73,8 +74,9 @@ class AppStore {
 }
 
 const store = new AppStore();
-if (process.env.REACT_APP_ENV === 'dev') {
-  window.xstore = store;
+// Add store to window
+if (!isProduction()) {
+  window.store = store;
 }
 
 export default store;

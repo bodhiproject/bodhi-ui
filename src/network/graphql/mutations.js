@@ -3,8 +3,9 @@ import _ from 'lodash';
 
 import client from './';
 import { TYPE, getMutation, isValidEnum } from './schema';
+import { isProduction } from '../../config/app';
 
-if (process.env.REACT_APP_ENV === 'dev') {
+if (!isProduction()) {
   window.mutations = '';
 }
 
@@ -46,7 +47,9 @@ class GraphMutation {
 
   async execute() {
     const mutation = this.build();
-    if (process.env.REACT_APP_ENV === 'dev') {
+
+    // Post mutation to window
+    if (!isProduction()) {
       window.mutations += `\n${mutation}`;
     }
 
