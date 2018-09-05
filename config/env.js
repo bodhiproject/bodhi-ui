@@ -77,8 +77,12 @@ function getClientEnvironment(publicUrl) {
         OS_USERNAME: os.userInfo().username,
         OS_PLATFORM: os.platform(),
         OS_ARCH: os.arch(),
+        API_HOSTNAME: process.env.API_HOSTNAME,
+        API_PORT: process.env.API_PORT,
       }
     );
+  console.log('Environment Vars:\n', raw);
+
   // Stringify all values so we can feed into Webpack DefinePlugin
   const stringified = {
     'process.env': Object.keys(raw).reduce((env, key) => {
