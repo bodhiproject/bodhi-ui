@@ -54,6 +54,7 @@
   "create.nameLong": "事件名称太长",
   "create.namePlaceholder": "例：谁会是下一任美国总统？",
   "create.outcomeName": "结果名称",
+  "create.pendingExists": "您一次只能创建一个事件。请在您其他事件完成创建后再试。",
   "create.publish": "发布",
   "create.required": "必填",
   "create.resultIndex": "结果",

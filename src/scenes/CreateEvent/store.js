@@ -272,7 +272,10 @@ export default class CreateEventStore {
       if (pendingApproveResult.length > 0) {
         this.app.ui.setGlobalMessage(
           { id: 'str.error', defaultMessage: 'Error' },
-          'You can only create 1 event at a time. Please wait until your other Event is created.', // TODO: REPLACE WITH id & defaultMessage
+          {
+            id: 'create.pendingExists',
+            defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
+          },
           null,
           'INFO',
         );
