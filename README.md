@@ -30,15 +30,20 @@ $ yarn upgrade    // this is important
 $ npm install
 ```
 
-### Usage
-
+### Development Environment
+To run the development server, run the corresponding run script and the API will point to the remote server with the correct port. After compilation, it will show success commands & automatically redirect to the browser. Any code changes will be observed and will hot reload.
 ```bash
-// Run development server.
-// After compilation, it will show success commands & redirect to http://localhost:3000/.
-$ yarn start
+$ yarn start:mainnet
+$ yarn start:testnet
+$ yarn start:regtest
+```
 
-// To create an Optimized Product Build of the app, you need to run a build command in you terminal at app root.
-$ yarn build
+### Production Build
+To create an optimized production build of the app, you need to run a build command in you terminal at app root. Use the build command specific to the chain you want to point to. The build output files will be in `/build`.
+```bash
+$ yarn build:mainnet
+$ yarn build:testnet
+$ yarn build:regtest
 ```
 
 ## Standards
