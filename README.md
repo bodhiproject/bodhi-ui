@@ -33,16 +33,26 @@ $ npm install
 ### Development Environment
 To run the development server, run the corresponding run script and the API will point to the remote server with the correct port. After compilation, it will show success commands & automatically redirect to the browser. Any code changes will be observed and will hot reload.
 ```bash
+// Mainnet chain
 $ yarn start:mainnet
+
+// Testnet chain
 $ yarn start:testnet
+
+// Regtest chain - very fast block mining, can also mine blocks with API call
 $ yarn start:regtest
 ```
 
 ### Production Build
 To create an optimized production build of the app, you need to run a build command in you terminal at app root. Use the build command specific to the chain you want to point to. The build output files will be in `/build`.
 ```bash
+// Mainnet chain
 $ yarn build:mainnet
+
+// Testnet chain
 $ yarn build:testnet
+
+// Regtest chain - very fast block mining, can also mine blocks with API call
 $ yarn build:regtest
 ```
 
@@ -97,4 +107,4 @@ const localizedMessage = this.props.intl.formatMessage(messages.greeting, { { na
 1. Run `npm run build:langs`
 2. Update the newly translated strings in the corresponding language file. The language file is in `./src/languageProvider/locales`.
 
-## [LGPL-3.0 License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)
+**[LGPL-3.0 License](https://github.com/bodhiproject/bodhi-ui/blob/master/LICENSE)**
