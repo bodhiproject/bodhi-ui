@@ -25,7 +25,7 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    reaction( // Try to fetch more when need more data OR got new block
+    reaction( // Try to fetch more when got new block
       () => this.app.global.syncBlockNum,
       () => this.getMoreData()
     );
@@ -33,11 +33,11 @@ export default class {
       () => this.order + this.orderBy,
       () => this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order])
     );
-    reaction( // Try to fetch more when need more data OR got new block
+    reaction( // Try to fetch more when need more data
       () => this.page + this.perPage,
       () => {
-        // Set skip to fetch more txs if last page is reached
-        const needMoreFetch = (this.perPage * (this.page + 1)) >= this.transactions.length;
+        // Set skip to fetch more txs if last page is reached, but no fetch if initial request hasn't been finished (i.e. txs length == 0)
+        const needMoreFetch = this.transactions.length > 0 && (this.perPage * (this.page + 1)) >= this.transactions.length;
         if (needMoreFetch) {
           this.limit = this.perPage;
           this.getMoreData();
