@@ -8,6 +8,7 @@ export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable error = null
+  @observable globalMessage = null
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -42,12 +43,17 @@ export default class UiStore {
   }
 
   @action
-  setError = (message, route) => {
-    this.error = { message, route };
+  setError = (message, additionalMessage) => {
+    this.globalMessage = { title: { id: 'str.error', defaultMessage: 'Error' }, message, additionalMessage, messageType: 'ERROR' };
   }
 
   @action
-  clearError = () => {
-    this.error = null;
+  setGlobalMessage = (title, message, additionalMessage, messageType = 'ERROR') => {
+    this.globalMessage = { title, message, additionalMessage, messageType };
+  }
+
+  @action
+  clearGlobalMessage = () => {
+    this.globalMessage = null;
   }
 }

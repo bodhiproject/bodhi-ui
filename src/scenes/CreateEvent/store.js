@@ -55,6 +55,10 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
+  createPendingExists: {
+    id: 'create.pendingExists',
+    defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
+  },
   invalidAddress: {
     id: 'create.invalidAddress',
     defaultMessage: 'Invalid address',
@@ -260,10 +264,18 @@ export default class CreateEventStore {
 
     // Check whether there's a create event transaction pending
     try {
-      const filters = [{ status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT }];
+      const filters = [
+        { status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT },
+        { status: TransactionStatus.PENDING, type: TransactionType.CREATE_EVENT },
+      ];
       const pendingApproveResult = await queryAllTransactions(filters);
       if (pendingApproveResult.length > 0) {
-        this.app.ui.setError('You can only create 1 event at a time. Please wait until your other Event is created.', null);
+        this.app.ui.setGlobalMessage(
+          { id: 'str.error', defaultMessage: 'Error' },
+          'You can only create 1 event at a time. Please wait until your other Event is created.', // TODO: REPLACE WITH id & defaultMessage
+          null,
+          'INFO',
+        );
         return;
       }
     } catch (error) {

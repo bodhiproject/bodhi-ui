@@ -21,31 +21,28 @@ import styles from './styles';
 export default class ErrorDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    error: PropTypes.object,
   }
 
-  static defaultProps = {
-    error: {},
-  }
-
-  clearError = () => {
+  clearGlobalMessage = () => {
     // Clear error object in MobX store
-    this.props.store.ui.clearError();
+    this.props.store.ui.clearGlobalMessage();
   }
 
   render() {
-    const { classes } = this.props;
-    const storeError = this.props.store.ui.error;
+    const { classes, intl } = this.props;
+    const storeMessage = this.props.store.ui.globalMessage;
 
-    return storeError && (
-      <Dialog open={Boolean(storeError)}>
-        <DialogTitle><FormattedMessage id="str.error" defaultMessage="Error" /></DialogTitle>
+    return storeMessage && (
+      <Dialog open={Boolean(storeMessage)}>
+        <DialogTitle>{storeMessage.title.id ? intl.formatMessage({ id: storeMessage.title.id, defaultMessage: storeMessage.title.defaultMessage }) : storeMessage.title}</DialogTitle>
         <DialogContent>
-          <Typography className={classes.errorRoute}>{storeError.route}</Typography>
-          <Typography className={classes.errorMessage}>{storeError.message}</Typography>
+          {storeMessage.messageType === 'ERROR' && <Typography className={classes.errorRoute}>{storeMessage.additionalMessage}</Typography>}
+          <Typography className={storeMessage.messageType === 'ERROR' ? classes.globalMessageError : classes.globalMessageDefault}>
+            {storeMessage.message.id ? intl.formatMessage({ id: storeMessage.message.id, defaultMessage: storeMessage.message.defaultMessage }) : storeMessage.message}
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={this.clearError}>
+          <Button color="primary" onClick={this.clearGlobalMessage}>
             <FormattedMessage id="str.ok" defaultMessage="OK" />
           </Button>
         </DialogActions>
