@@ -1,8 +1,15 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Select, MenuItem } from '@material-ui/core';
+import { Routes } from 'constants';
 
-export default class Settings extends PureComponent {
+@inject('store')
+@observer
+export default class Settings extends Component {
+  componentDidMount() {
+    this.props.store.ui.location = Routes.HISTORY;
+  }
+
   render() {
     return (<div>
       <h1>Settings</h1>

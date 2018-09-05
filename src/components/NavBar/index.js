@@ -110,13 +110,13 @@ const MyActivities = observer(({ store: { global } }) => {
       </NavBarRightButtonContainer>
     </Link>);
   }
-  return (<NavLink to={Routes.ACTIVITY_HISTORY}>
+  return (<Link to={Routes.ACTIVITY_HISTORY}>
     <NavBarRightButtonContainer>
       <NavBarRightButton>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </NavBarRightButton>
     </NavBarRightButtonContainer>
-  </NavLink>);
+  </Link>);
 });
 
 const Wallet = styled(({ store: { wallet } }) => {
