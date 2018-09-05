@@ -83,8 +83,6 @@ const QAButton = ({ intl, changeDropDownDirection }) => (
 const NavBarRightButtonContainer = styled.div`
   height: 70px;
   line-height: 70px;
-  text-align: center;
-  color: white;
   position: absolute;
   right: 70px;
   top: 0px;
@@ -96,27 +94,29 @@ const NavBarRightButton = styled.div`
   height: 30px;
   margin: 20px auto;
   line-height: 30px;
+  text-align: center;
+  color: white;
 `;
 
 const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
-    return (<Link to={Routes.ACTIVITY_HISTORY}>
-      <NavBarRightButtonContainer>
+    return (<NavBarRightButtonContainer>
+      <NavLink to={Routes.ACTIVITY_HISTORY}>
         <NavBarRightButton>
           <Badge badgeContent={global.userData.totalCount} color="secondary">
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
-      </NavBarRightButtonContainer>
-    </Link>);
+      </NavLink>
+    </NavBarRightButtonContainer>);
   }
-  return (<Link to={Routes.ACTIVITY_HISTORY}>
-    <NavBarRightButtonContainer>
+  return (<NavBarRightButtonContainer>
+    <NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButton>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </NavBarRightButton>
-    </NavBarRightButtonContainer>
-  </Link>);
+    </NavLink>
+  </NavBarRightButtonContainer>);
 });
 
 const Wallet = styled(({ store: { wallet } }) => {
