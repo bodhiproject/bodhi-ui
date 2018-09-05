@@ -160,18 +160,22 @@ export const theme = {
       root: {
         borderRadius: px(paddingLg),
         textTransform: 'none',
-        '&:disabled': {
-          backgroundColor: rgba(0, 0, 0, 0.5),
-          color: white,
-        },
       },
       raised: {
-        backgroundColor: 'white',
-        color: primaryColor,
+        backgroundColor: primaryColor,
+        color: white,
+        boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
         '&:hover': {
-          background: primaryColor,
-          color: white,
+          backgroundColor: primaryColor,
+          boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
         },
+        '&:disabled': {
+          backgroundColor: primaryColor,
+          color: white,
+          opacity: 0.6,
+        },
+      },
+      outlined: {
       },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),
@@ -234,6 +238,15 @@ export const theme = {
       expandIcon: {
         top: px(paddingSm),
         right: 0,
+      },
+    },
+    MuiExpansionPanel: {
+      root: {
+        '&:disabled': {
+          backgroundColor: primaryColor,
+          opacity: 0.1,
+          boxShadow: '0px 0px 4px rgba(0, 0, 0, .2)',
+        },
       },
     },
   },

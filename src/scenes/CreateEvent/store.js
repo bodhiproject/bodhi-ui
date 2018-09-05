@@ -3,7 +3,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { TransactionType, Token } from 'constants';
+import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
@@ -12,6 +12,7 @@ import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
 import { createTopic } from '../../network/graphql/mutations';
+import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
   createDatePastMsg: {
@@ -255,6 +256,18 @@ export default class CreateEventStore {
         message: err.message,
       });
       this.averageBlockTime = defaults.averageBlockTime;
+    }
+
+    // Check whether there's a create event transaction pending
+    try {
+      const filters = [{ status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT }];
+      const pendingApproveResult = await queryAllTransactions(filters);
+      if (pendingApproveResult.length > 0) {
+        this.app.ui.setError('You can only create 1 event at a time. Please wait until your other Event is created.', null);
+        return;
+      }
+    } catch (error) {
+      console.error(error); // eslint-disable-line
     }
 
     runInAction(async () => {
