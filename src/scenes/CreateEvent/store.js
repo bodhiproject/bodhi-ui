@@ -267,7 +267,7 @@ export default class CreateEventStore {
       this.isOpen = true;
       // For txfees init
       try {
-        const { data: { result } } = await axios.post(
+        const { data } = await axios.post(
           Routes.api.transactionCost,
           {
             type: TransactionType.APPROVE_CREATE_EVENT,
@@ -276,7 +276,7 @@ export default class CreateEventStore {
             senderAddress: this.app.wallet.lastUsedAddress,
           }
         );
-        const txFees = _.map(result, (item) => new TransactionCost(item));
+        const txFees = _.map(data, (item) => new TransactionCost(item));
         this.txFees = txFees;
       } catch (error) {
         this.app.ui.setError(error.message, Routes.api.transactionCost);
@@ -411,8 +411,8 @@ export default class CreateEventStore {
 
   isValidAddress = async () => {
     try {
-      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
-      return result.isvalid;
+      const { data } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
+      return data.isvalid;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.validateAddress);
@@ -431,8 +431,8 @@ export default class CreateEventStore {
         amount: decimalToSatoshi(this.escrowAmount),
         senderAddress: this.creator,
       };
-      const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const { data } = await axios.post(Routes.api.transactionCost, txInfo);
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.txFees = txFees;
         this.txConfirmDialogOpen = true;

@@ -513,7 +513,7 @@ export default class EventStore {
   @action
   prepareBet = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.BET,
         token: this.oracle.token,
         amount: Number(this.amount),
@@ -522,7 +522,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
@@ -537,7 +537,7 @@ export default class EventStore {
   @action
   prepareSetResult = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.APPROVE_SET_RESULT,
         token: this.oracle.token,
         amount: this.oracle.consensusThreshold,
@@ -546,7 +546,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
@@ -561,7 +561,7 @@ export default class EventStore {
   @action
   prepareVote = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.APPROVE_VOTE,
         token: this.oracle.token,
         amount: decimalToSatoshi(this.amount), // Convert to Botoshi
@@ -570,7 +570,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;

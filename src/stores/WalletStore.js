@@ -148,8 +148,8 @@ export default class {
 
   isValidAddress = async (addressToVerify) => {
     try {
-      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
-      return result.isvalid;
+      const { data } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
+      return data.isvalid;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.validateAddress);
@@ -213,7 +213,7 @@ export default class {
   prepareWithdraw = async (walletAddress) => {
     this.walletAddress = walletAddress;
     try {
-      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+      const { data } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
         amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
@@ -222,7 +222,7 @@ export default class {
         oracleAddress: undefined,
         senderAddress: walletAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.txFees = txFees;
         this.txConfirmDialogOpen = true;
