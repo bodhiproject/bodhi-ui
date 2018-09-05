@@ -121,7 +121,9 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start:mainnet": "node scripts/start-mainnet.js",
+    "start:testnet": "node scripts/start-testnet.js",
+    "start:regtest": "node scripts/start-regtest.js",
     "build:mainnet": "node scripts/build-mainnet.js",
     "build:testnet": "node scripts/build-testnet.js",
     "build:regtest": "node scripts/build-regtest.js",
