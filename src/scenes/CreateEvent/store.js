@@ -10,7 +10,7 @@ import { defineMessages } from 'react-intl';
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
-import { maxTransactionFee, defaults } from '../../config/app';
+import { defaults } from '../../config/app';
 import { createTopic } from '../../network/graphql/mutations';
 
 const messages = defineMessages({
@@ -112,7 +112,7 @@ const INIT = {
 export default class CreateEventStore {
   escrowAmount = INIT.escrowAmount
   averageBlockTime = INIT.averageBlockTime
-  txFees = INIT.txFees // used in txConfirmDialog
+  @observable txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable txSentDialogOpen = INIT.txSentDialogOpen
@@ -127,14 +127,15 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
-  @computed get hasEnoughQtum() {
-    return this.app.wallet.lastUsedWallet.qtum >= maxTransactionFee;
+  @computed get hasEnoughFee() {
+    const transactionFee = _.sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
+    return (this.app.wallet.lastUsedWallet.qtum >= transactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
   }
   @computed get warning() {
-    if (!this.hasEnoughQtum) {
+    if (!this.hasEnoughFee) {
       return {
-        id: 'str.notEnoughQtum',
-        message: 'You don\'t have enough QTUM',
+        id: 'str.notEnoughQtumAndBot',
+        message: 'You don\'t have enough QTUM or BOT',
       };
     }
     return {};
@@ -256,7 +257,7 @@ export default class CreateEventStore {
       this.averageBlockTime = defaults.averageBlockTime;
     }
 
-    runInAction(() => {
+    runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
@@ -264,6 +265,22 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(escrowRes.data.result[0]); // eslint-disable-line
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
+      // For txfees init
+      try {
+        const { data: { result } } = await axios.post(
+          Routes.api.transactionCost,
+          {
+            type: TransactionType.APPROVE_CREATE_EVENT,
+            token: Token.BOT,
+            amount: decimalToSatoshi(this.escrowAmount),
+            senderAddress: this.app.wallet.lastUsedAddress,
+          }
+        );
+        const txFees = _.map(result, (item) => new TransactionCost(item));
+        this.txFees = txFees;
+      } catch (error) {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      }
     });
   }
 
@@ -412,9 +429,6 @@ export default class CreateEventStore {
         type: TransactionType.APPROVE_CREATE_EVENT,
         token: Token.BOT,
         amount: decimalToSatoshi(this.escrowAmount),
-        optionIdx: undefined,
-        topicAddress: undefined,
-        oracleAddress: undefined,
         senderAddress: this.creator,
       };
       const { data: { result } } = await axios.post(Routes.api.transactionCost, txInfo);

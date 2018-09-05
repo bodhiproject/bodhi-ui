@@ -32,12 +32,17 @@ const messages = defineMessages({
 });
 
 const CreateEventDialog = withStyles(styles)(observer(({
-  classes, store: { createEvent, createEvent: { warning, hasEnoughQtum, isOpen } },
+  classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } },
 }) => (
   <Fragment>
-    <Dialog className={classes.createDialog} fullWidth maxWidth='md' open={isOpen}>
+    <Dialog
+      className={classes.createDialog}
+      fullWidth
+      maxWidth='md'
+      open={isOpen}
+    >
       <DialogTitle>Create an event</DialogTitle>
-      {!hasEnoughQtum && <EventWarning id={warning.id} message={warning.message} type='error' />}
+      {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}
       <EscrowAmountNote amount={createEvent.escrowAmount} />
       <Content>
         <Title />
@@ -93,7 +98,7 @@ const CancelButton = ({ createEvent }) => (
 );
 
 const PublishButton = observer(({ createEvent }) => (
-  <Button onClick={createEvent.prepareToCreateEvent} disabled={createEvent.submitting || !createEvent.hasEnoughQtum} color="primary" variant="raised">
+  <Button onClick={createEvent.prepareToCreateEvent} disabled={createEvent.submitting || !createEvent.hasEnoughFee} color="primary" variant="raised">
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
 ));
