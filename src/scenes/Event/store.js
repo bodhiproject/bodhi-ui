@@ -348,12 +348,12 @@ export default class EventStore {
       for (let i = 0; i < filtered.length; i++) {
         const vote = filtered[i];
 
-        const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
+        const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
           contractAddress: topic.address,
           senderAddress: vote.voterQAddress,
         });
-        const botWon = result ? satoshiToDecimal(result['0']) : 0;
-        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
+        const botWon = data ? satoshiToDecimal(data['0']) : 0;
+        const qtumWon = data ? satoshiToDecimal(data['1']) : 0;
 
         // return only winning addresses
         if (botWon || qtumWon) {
