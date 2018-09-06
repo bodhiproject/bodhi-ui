@@ -254,12 +254,12 @@ export default class {
   @action
   changePassphrase = async (oldPassphrase, newPassphrase) => {
     try {
-      const changePassphraseResult = await axios.post(Routes.api.walletPassphraseChange, {
+      const { data } = await axios.post(Routes.api.walletPassphraseChange, {
         oldPassphrase,
         newPassphrase,
       });
       runInAction(() => {
-        this.changePassphraseResult = changePassphraseResult;
+        this.changePassphraseResult = data;
       });
     } catch (error) {
       runInAction(() => {
