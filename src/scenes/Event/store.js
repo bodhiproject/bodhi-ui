@@ -232,10 +232,10 @@ export default class EventStore {
   @action
   getEscrowAmount = async () => {
     try {
-      const res = await axios.post(networkRoutes.api.eventEscrowAmount, {
+      const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      this.escrowAmount = satoshiToDecimal(res.data.result[0]);
+      this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
