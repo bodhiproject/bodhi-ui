@@ -123,6 +123,7 @@
   "pendingTxsSnackbar.balanceExplanation": "处理中的交易将会影响您的钱包余额",
   "pendingTxsSnackbar.youHaveXPendingTransactions": "您有{numOfTxs}待处理的交易.",
   "selectAddressDialog.selectResultSetter": "选择结果设定者",
+  "settings.settings": "设置",
   "sort.asc": "升序",
   "sort.ascEndTime": "最早截止",
   "sort.byEndTime": "结束时间",

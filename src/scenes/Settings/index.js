@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Select, MenuItem } from '@material-ui/core';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Routes } from 'constants';
 
 @inject('store')
+@injectIntl
 @observer
 export default class Settings extends Component {
   componentDidMount() {
@@ -12,7 +14,7 @@ export default class Settings extends Component {
 
   render() {
     return (<div>
-      <h1>Settings</h1>
+      <h1><FormattedMessage id="settings.settings" defaultMessage="Settings" /></h1>
       <LanguageSelector {...this.props} />
     </div>);
   }

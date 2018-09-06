@@ -123,6 +123,7 @@
   "pendingTxsSnackbar.balanceExplanation": "Pending transactions will affect your wallet balances.",
   "pendingTxsSnackbar.youHaveXPendingTransactions": "You have {numOfTxs} pending transaction(s).",
   "selectAddressDialog.selectResultSetter": "Select Result Setter",
+  "settings.settings": "Settings",
   "sort.asc": "Ascending",
   "sort.ascEndTime": "End Earliest",
   "sort.byEndTime": "End Time",
