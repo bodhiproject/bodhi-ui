@@ -10,8 +10,8 @@ const PORT_REGTEST = 5555;
 
 const PORT = process.env.API_PORT ? Number(process.env.API_PORT) : PORT_REGTEST;
 const HOSTNAME = process.env.API_HOSTNAME ? process.env.API_HOSTNAME : HOSTNAME_REGTEST;
-const HTTP_ROUTE = `https://${HOSTNAME}:${PORT}`;
-const WS_ROUTE = `wss://${HOSTNAME}:${PORT}/graphql`;
+const HTTP_ROUTE = `${process.env.PROTOCOL_HTTP || 'https'}://${HOSTNAME}:${PORT}`;
+const WS_ROUTE = `${process.env.PROTOCOL_WS || 'wss'}://${HOSTNAME}:${PORT}/graphql`;
 
 const BASE_QTUM_WEB = `https://${HOSTNAME === HOSTNAME_MAINNET ? 'explorer' : 'testnet'}.qtum.org`;
 const BASE_INSIGHT = `${BASE_QTUM_WEB}/insight-api`;
