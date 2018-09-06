@@ -24,8 +24,8 @@ export default class WalletUnlockDialogStore {
       });
 
       // Get the unlocked_until timestamp
-      const { data: { result } } = await axios.get(Routes.api.getWalletInfo);
-      const unlockedUntil = result.unlocked_until;
+      const { data } = await axios.get(Routes.api.getWalletInfo);
+      const unlockedUntil = data.unlocked_until;
 
       runInAction(() => {
         this.app.wallet.walletUnlockedUntil = unlockedUntil;

@@ -104,16 +104,18 @@ export default class {
         }
       }
     );
+
+    this.checkWalletEncrypted();
   }
 
   @action
   checkWalletEncrypted = async () => {
     try {
-      const { data: { result } } = await axios.get(Routes.api.getWalletInfo);
+      const { data } = await axios.get(Routes.api.getWalletInfo);
 
       runInAction(() => {
-        this.walletEncrypted = result && !_.isUndefined(result.unlocked_until);
-        this.walletUnlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
+        this.walletEncrypted = data && !_.isUndefined(data.unlocked_until);
+        this.walletUnlockedUntil = data && data.unlocked_until ? data.unlocked_until : 0;
       });
     } catch (error) {
       runInAction(() => {
@@ -125,10 +127,10 @@ export default class {
   @action
   encryptWallet = async (passphrase) => {
     try {
-      const { data: { result } } = await axios.post(Routes.api.encryptWallet, {
+      const { data } = await axios.post(Routes.api.encryptWallet, {
         passphrase,
       });
-      this.encryptResult = result;
+      this.encryptResult = data;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.encryptWallet);
@@ -148,8 +150,8 @@ export default class {
 
   isValidAddress = async (addressToVerify) => {
     try {
-      const { data: { result } } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
-      return result.isvalid;
+      const { data } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
+      return data.isvalid;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.validateAddress);
@@ -213,7 +215,7 @@ export default class {
   prepareWithdraw = async (walletAddress) => {
     this.walletAddress = walletAddress;
     try {
-      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+      const { data } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
         amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
@@ -222,7 +224,7 @@ export default class {
         oracleAddress: undefined,
         senderAddress: walletAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.txFees = txFees;
         this.txConfirmDialogOpen = true;
@@ -252,12 +254,12 @@ export default class {
   @action
   changePassphrase = async (oldPassphrase, newPassphrase) => {
     try {
-      const changePassphraseResult = await axios.post(Routes.api.walletPassphraseChange, {
+      const { data } = await axios.post(Routes.api.walletPassphraseChange, {
         oldPassphrase,
         newPassphrase,
       });
       runInAction(() => {
-        this.changePassphraseResult = changePassphraseResult;
+        this.changePassphraseResult = data;
       });
     } catch (error) {
       runInAction(() => {

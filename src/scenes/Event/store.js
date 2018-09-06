@@ -232,10 +232,10 @@ export default class EventStore {
   @action
   getEscrowAmount = async () => {
     try {
-      const res = await axios.post(networkRoutes.api.eventEscrowAmount, {
+      const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      this.escrowAmount = satoshiToDecimal(res.data.result[0]);
+      this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
@@ -277,13 +277,13 @@ export default class EventStore {
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
-        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
+        betArrays.push(_.map(betBalances.data[0], satoshiToDecimal));
 
         const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
-        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
+        voteArrays.push(_.map(voteBalances.data[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
@@ -348,12 +348,12 @@ export default class EventStore {
       for (let i = 0; i < filtered.length; i++) {
         const vote = filtered[i];
 
-        const { data: { result } } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
+        const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
           contractAddress: topic.address,
           senderAddress: vote.voterQAddress,
         });
-        const botWon = result ? satoshiToDecimal(result['0']) : 0;
-        const qtumWon = result ? satoshiToDecimal(result['1']) : 0;
+        const botWon = data ? satoshiToDecimal(data[0]) : 0;
+        const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
 
         // return only winning addresses
         if (botWon || qtumWon) {
@@ -513,7 +513,7 @@ export default class EventStore {
   @action
   prepareBet = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.BET,
         token: this.oracle.token,
         amount: Number(this.amount),
@@ -522,7 +522,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
@@ -537,7 +537,7 @@ export default class EventStore {
   @action
   prepareSetResult = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.APPROVE_SET_RESULT,
         token: this.oracle.token,
         amount: this.oracle.consensusThreshold,
@@ -546,7 +546,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
@@ -561,7 +561,7 @@ export default class EventStore {
   @action
   prepareVote = async () => {
     try {
-      const { data: { result } } = await axios.post(networkRoutes.api.transactionCost, {
+      const { data } = await axios.post(networkRoutes.api.transactionCost, {
         type: TransactionType.APPROVE_VOTE,
         token: this.oracle.token,
         amount: decimalToSatoshi(this.amount), // Convert to Botoshi
@@ -570,7 +570,7 @@ export default class EventStore {
         oracleAddress: this.oracle.address,
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
+      const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
         this.txConfirmDialogOpen = true;
