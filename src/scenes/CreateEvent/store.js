@@ -262,7 +262,7 @@ export default class CreateEventStore {
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.escrowAmount = satoshiToDecimal(escrowRes.data[0]); // eslint-disable-line
+      this.escrowAmount = satoshiToDecimal(escrowRes.data['0']);
       this.creator = this.app.wallet.lastUsedAddress;
       this.isOpen = true;
       // For txfees init

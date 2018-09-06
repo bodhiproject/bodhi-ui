@@ -235,7 +235,7 @@ export default class EventStore {
       const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      this.escrowAmount = satoshiToDecimal(data[0]);
+      this.escrowAmount = satoshiToDecimal(data['0']);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
@@ -277,13 +277,13 @@ export default class EventStore {
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
-        betArrays.push(_.map(betBalances.data.result[0], satoshiToDecimal));
+        betArrays.push(_.map(betBalances.data[0], satoshiToDecimal));
 
         const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
           contractAddress,
           senderAddress: voteObj.voterQAddress,
         });
-        voteArrays.push(_.map(voteBalances.data.result[0], satoshiToDecimal));
+        voteArrays.push(_.map(voteBalances.data[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
