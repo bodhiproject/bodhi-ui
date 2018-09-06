@@ -14,9 +14,14 @@ global.localStorage = localStorageMock;
 
 describe('AllEventsStore', () => {
   let store;
+  const addr = {
+    address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
+    qtum: 2000,
+    bot: 100,
+  };
   const app = {
     sortBy: 'ASC',
-    wallet: { addresses: 0 },
+    wallet: { addresses: [addr] },
     global: { syncBlockNum: 0 },
     refreshing: false,
     ui: { location: 0 },
@@ -64,7 +69,12 @@ describe('AllEventsStore', () => {
   it('Reaction Wallet Addr', () => {
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
-    app.wallet.addresses = 1;
+    const newAddr = {
+      address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT2',
+      qtum: 200,
+      bot: 10,
+    };
+    app.wallet.addresses.push(newAddr);
     setTimeout(() => {
       expect.assertions(1);
       expect(store.list.length).toBe(store.limit);
