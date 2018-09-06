@@ -235,7 +235,7 @@ export default class EventStore {
       const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
         senderAddress: this.app.wallet.lastUsedAddress,
       });
-      this.escrowAmount = satoshiToDecimal(data['0']);
+      this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
@@ -352,8 +352,8 @@ export default class EventStore {
           contractAddress: topic.address,
           senderAddress: vote.voterQAddress,
         });
-        const botWon = data ? satoshiToDecimal(data['0']) : 0;
-        const qtumWon = data ? satoshiToDecimal(data['1']) : 0;
+        const botWon = data ? satoshiToDecimal(data[0]) : 0;
+        const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
 
         // return only winning addresses
         if (botWon || qtumWon) {
