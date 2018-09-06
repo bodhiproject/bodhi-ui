@@ -1,6 +1,6 @@
 import { Routes } from 'constants';
+import AllEventsStore from './AllEventsStore';
 jest.mock('../network/graphql/queries'); // block and manually mock our backend
-import AllEventsStore from './AllEventsStore'; // eslint-disable-line
 
 /** mock necessary http needed modules */
 const localStorageMock = {
@@ -12,7 +12,6 @@ const navigatorMock = {};
 global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
-/** test */
 describe('AllEventsStore', () => {
   let store;
   const app = {
@@ -32,9 +31,9 @@ describe('AllEventsStore', () => {
     expect(curListNum).toBe(0);
     expect.assertions(4);
     await store.init();
-    expect(app.ui.location).toBe(Routes.ALL_EVENTS); // test webpage location
-    expect(store.list.length).toBe(curListNum + store.limit); // test if list got new cards
-    expect(store.loading).toBe(false); // test runInAction changes
+    expect(app.ui.location).toBe(Routes.ALL_EVENTS);
+    expect(store.list.length).toBe(curListNum + store.limit);
+    expect(store.loading).toBe(false);
   });
 
   it('Load More Events', async () => {
@@ -51,8 +50,8 @@ describe('AllEventsStore', () => {
     expect(store.skip).toBe(curSkip + store.limit);
   });
 
-  /** following test cases test the reaction function */
   it('Reaction SortBy', () => {
+    expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.sortBy = 'Yo';
     setTimeout(() => {
@@ -63,6 +62,7 @@ describe('AllEventsStore', () => {
   });
 
   it('Reaction Wallet Addr', () => {
+    expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.wallet.addresses = 1;
     setTimeout(() => {
@@ -72,6 +72,7 @@ describe('AllEventsStore', () => {
   });
 
   it('Reaction BlockNum', () => {
+    expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.global.syncBlockNum = 1;
     setTimeout(() => {
@@ -81,6 +82,7 @@ describe('AllEventsStore', () => {
   });
 
   it('Reaction Refreshing', () => {
+    expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.refreshing = true;
     setTimeout(() => {
