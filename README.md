@@ -43,6 +43,13 @@ $ yarn start:testnet
 $ yarn start:regtest
 ```
 
+To run the development server and point to a localhost server, run the following:
+```bash
+// Testnet chain on localhost
+// `npm run testnet:local` on bodhi-server
+$ yarn start:local
+```
+
 ### Production Build
 To create an optimized production build of the app, you need to run a build command in you terminal at app root. Use the build command specific to the chain you want to point to. The build output files will be in `/build`.
 ```bash
