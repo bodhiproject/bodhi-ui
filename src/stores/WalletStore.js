@@ -104,16 +104,18 @@ export default class {
         }
       }
     );
+
+    this.checkWalletEncrypted();
   }
 
   @action
   checkWalletEncrypted = async () => {
     try {
-      const { data: { result } } = await axios.get(Routes.api.getWalletInfo);
+      const { data } = await axios.get(Routes.api.getWalletInfo);
 
       runInAction(() => {
-        this.walletEncrypted = result && !_.isUndefined(result.unlocked_until);
-        this.walletUnlockedUntil = result && result.unlocked_until ? result.unlocked_until : 0;
+        this.walletEncrypted = data && !_.isUndefined(data.unlocked_until);
+        this.walletUnlockedUntil = data && data.unlocked_until ? data.unlocked_until : 0;
       });
     } catch (error) {
       runInAction(() => {
