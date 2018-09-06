@@ -47,7 +47,7 @@ const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
 
 const Options = observer(({ oracle: { options, isArchived, consensusThreshold } }) => (
   <Container>
-    {options.map((option, i) => <Option key={i} disabled={isArchived} option={option} amountPlaceholder={consensusThreshold/* TODO: Check the display */} />)}
+    {options.map((option, i) => <Option key={i} disabled={isArchived} option={option} amountPlaceholder={(consensusThreshold - option.amount).toFixed(2).toString()} />)}
   </Container>
 ));
 
