@@ -79,6 +79,8 @@ function getClientEnvironment(publicUrl) {
         OS_ARCH: os.arch(),
         API_HOSTNAME: process.env.API_HOSTNAME,
         API_PORT: process.env.API_PORT,
+        PROTOCOL_HTTP: process.env.PROTOCOL_HTTP,
+        PROTOCOL_WS: process.env.PROTOCOL_WS,
       }
     );
   console.log('Environment Vars:\n', raw);
