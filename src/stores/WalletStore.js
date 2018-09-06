@@ -127,10 +127,10 @@ export default class {
   @action
   encryptWallet = async (passphrase) => {
     try {
-      const { data: { result } } = await axios.post(Routes.api.encryptWallet, {
+      const { data } = await axios.post(Routes.api.encryptWallet, {
         passphrase,
       });
-      this.encryptResult = result;
+      this.encryptResult = data;
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.encryptWallet);
