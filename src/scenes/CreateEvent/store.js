@@ -247,8 +247,8 @@ export default class CreateEventStore {
     }
 
     try {
-      const res = await axios.get(Routes.insight.totals);
-      this.averageBlockTime = res.data.time_between_blocks;
+      const { data } = await axios.get(Routes.insight.totals);
+      this.averageBlockTime = data.time_between_blocks;
     } catch (err) {
       console.error('ERROR: ', { // eslint-disable-line
         route: Routes.insight.totals,
