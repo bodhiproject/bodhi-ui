@@ -14,9 +14,9 @@ let process = execSync('npm run build:mainnet --output=/var/www/bodhi/mainnet');
 pipeLogs(process);
 
 console.log('Building testnet UI...');
-let process = execSync('npm run build:testnet --output=/var/www/bodhi/testnet');
+process = execSync('npm run build:testnet --output=/var/www/bodhi/testnet');
 pipeLogs(process);
 
 console.log('Building regtets UI...');
-let process = execSync('npm run build:regtest --output=/var/www/bodhi/regtest');
+process = execSync('npm run build:regtest --output=/var/www/bodhi/regtest');
 pipeLogs(process);
