@@ -5,13 +5,15 @@ import { searchOracles } from '../../network/graphql/queries';
 import Oracle from '../../stores/models/Oracle';
 export default class SearchStore {
   @observable list = [];
+  @observable phrase = '';
+
   constructor(app) {
     this.app = app;
   }
 
   init = async (phrase) => {
     this.app.ui.location = Routes.SEARCH;
-    this.list = await this.fetch(phrase);
+    this.list = await this.fetch(phrase || this.phrase);
   }
 
   async fetch(phrase) {

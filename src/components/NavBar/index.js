@@ -21,6 +21,7 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
+import Search from '../../scenes/Search';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -45,10 +46,18 @@ export default class NavBar extends Component {
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
   }
+  handleSearchBarKeyDown = event => {
+    switch (event.key) {
+      case 'Enter':
+        this.props.store.search.init();
+        break;
+      default: break;
+    }
+  }
   render() {
     const { classes } = this.props;
     // const { searchBarMode } = this.state;
-    const { ui } = this.props.store;
+    const { ui, search } = this.props.store;
     this.changeDropDownDirection = this.changeDropDownDirection.bind(this);
     return (
       <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
@@ -90,6 +99,9 @@ export default class NavBar extends Component {
                   classes: {
                     input: classes.searchBarInput,
                   },
+                  onKeyDown: (e) => this.handleSearchBarKeyDown(e),
+                  onChange: e => search.phrase = e.target.value,
+                  value: search.phrase,
                 }}
               />
               <div className="icon iconfont icon-ic_close" onClick={this.changeSearchBarMode} />
@@ -98,17 +110,13 @@ export default class NavBar extends Component {
         </Collapse>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchResultWrapper}>
-            <SearchPageFloat />
+            <Search />
           </Toolbar>
         </Collapse>
       </AppBar>
     );
   }
 }
-
-const SearchPageFloat = styled.div`
-  height: 100%;
-`;
 
 const QAButton = ({ intl, changeDropDownDirection }) => (
   <a
