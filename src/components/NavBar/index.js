@@ -44,6 +44,21 @@ export default class NavBar extends Component {
         break;
     }
   }
+  // changeSearchBarMode = () => this.setState({
+  //  searchBarMode: !this.state.searchBarMode,
+  //  dropdownDirection: 'down',
+  // });
+  changeSearchBarMode = () => {
+    this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
+  }
+  handleSearchBarKeyDown = event => {
+    switch (event.key) {
+      case 'Enter':
+        this.props.store.search.init();
+        break;
+      default: break;
+    }
+  }
   render() {
     const { classes } = this.props;
     const { ui, search } = this.props.store;
@@ -162,7 +177,7 @@ const MyActivities = observer(({ store: { global } }) => {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
         <NavBarRightButton>
-          <Badge badgeContent={global.userData.totalCount} color="secondary">
+          <Badge badgeContent={global.userData.totalCount} color="secondary">。
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
