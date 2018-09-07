@@ -120,7 +120,7 @@ export default class TxConfirmDialog extends Component {
               <TableBody>
                 {txFees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
                   <TableRow key={i}>
-                    <TableCell>{type}</TableCell>
+                    <TableCell>{formatMessage({ id: `txType.${type}`, defaultMessage: '' })}</TableCell>
                     <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
                     <TableCell>{gasCost}</TableCell>
                     <TableCell>{gasLimit}</TableCell>

@@ -57,6 +57,7 @@ export default class Option extends Component {
       option,
       intl,
       disabled,
+      amountPlaceholder,
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
@@ -103,6 +104,7 @@ export default class Option extends Component {
                   value={eventPage.amount}
                   onChange={({ target }) => eventPage.amount = target.value}
                   onBlur={eventPage.fixAmount}
+                  amountPlaceholder={amountPlaceholder}
                 />
                 <AddressSelect
                   wallet={wallet}
@@ -120,7 +122,7 @@ export default class Option extends Component {
   }
 }
 
-const AmountInput = ({ classes, token, phase, ...props }) => (
+const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
       <div className={classes.eventOptionIcon}>
@@ -133,7 +135,7 @@ const AmountInput = ({ classes, token, phase, ...props }) => (
         <Input
           id="vote-amount"
           type="number"
-          placeholder="0.00"
+          placeholder={amountPlaceholder || '0.00'}
           className={classes.eventOptionInput}
           endAdornment={
             <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.BOT : token}</InputAdornment>

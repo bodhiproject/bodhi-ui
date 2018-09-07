@@ -457,7 +457,7 @@ export default class EventStore {
     }
 
     // Not enough bot for setting the result or voting
-    if ((phase === RESULT_SETTING && currentBot < consensusThreshold)
+    if ((phase === RESULT_SETTING && currentBot < consensusThreshold && this.selectedOptionIdx !== -1)
       || (phase === VOTING && currentBot < this.amount)) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.ERROR;
