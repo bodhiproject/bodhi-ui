@@ -5,10 +5,12 @@ import styled, { css } from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import {
   AppBar,
+  Collapse,
   Toolbar,
   Badge,
   Button,
   withStyles,
+  TextField,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
@@ -23,9 +25,11 @@ import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
+@observer
 export default class NavBar extends Component {
   state = {
     dropdownDirection: 'down',
+    // searchBarMode: false,
   }
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
@@ -34,38 +38,77 @@ export default class NavBar extends Component {
     if (this.state.dropdownDirection === 'down') this.setState({ dropdownDirection: 'up' });
     if (this.state.dropdownDirection === 'up') this.setState({ dropdownDirection: 'down' });
   }
+  // changeSearchBarMode = () => this.setState({
+  //  searchBarMode: !this.state.searchBarMode,
+  //  dropdownDirection: 'down',
+  // });
+  changeSearchBarMode = () => {
+    this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
+  }
   render() {
     const { classes } = this.props;
+    // const { searchBarMode } = this.state;
+    const { ui } = this.props.store;
     this.changeDropDownDirection = this.changeDropDownDirection.bind(this);
     return (
-      <AppBar position="fixed" className={classes.navBar}>
-        <Toolbar className={classes.navBarWrapper}>
-          <NavSection>
-            <BodhiLogo {...this.props} />
-            <QtumPrediction {...this.props} />
-            <BotCourt {...this.props} />
-          </NavSection>
-          <MyActivities {...this.props} />
-          <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
-          <Dropdown data-show={this.state.dropdownDirection === 'down'}>
-            <Wallet {...this.props} />
-            <Link to={Routes.ALL_EVENTS}>
-              <Item onClick={this.changeDropDownDirection}>
-                <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
-              </Item>
-            </Link>
-            <Link to={Routes.SETTINGS}>
-              <Item onClick={this.changeDropDownDirection}>
-                <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
-              </Item>
-            </Link>
-            <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
-          </Dropdown>
-        </Toolbar>
+      <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
+        <Collapse in={!ui.searchBarMode}>
+          <Toolbar className={classes.navBarWrapper}>
+            <NavSection>
+              <BodhiLogo {...this.props} />
+              <QtumPrediction {...this.props} />
+              <BotCourt {...this.props} />
+            </NavSection>
+            <SearchButton onClick={this.changeSearchBarMode} />
+            <MyActivities {...this.props} />
+            <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
+          </Toolbar>
+        </Collapse>
+        <Dropdown data-show={this.state.dropdownDirection === 'down'}>
+          <Wallet {...this.props} />
+          <Link to={Routes.ALL_EVENTS}>
+            <Item onClick={this.changeDropDownDirection}>
+              <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
+            </Item>
+          </Link>
+          <Link to={Routes.SETTINGS}>
+            <Item onClick={this.changeDropDownDirection}>
+              <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
+            </Item>
+          </Link>
+          <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
+        </Dropdown>
+        <Collapse in={ui.searchBarMode}>
+          <Toolbar className={classes.searchBarWrapper}>
+            <DivCenter>
+              <div className={`icon iconfont icon-ic_search ${classes.SearchBarLeftIcon}`} />
+              <TextField
+                placeholder="Type..."
+                className={classes.searchBarTextField}
+                InputProps={{
+                  disableUnderline: true,
+                  classes: {
+                    input: classes.searchBarInput,
+                  },
+                }}
+              />
+              <div className="icon iconfont icon-ic_close" onClick={this.changeSearchBarMode} />
+            </DivCenter>
+          </Toolbar>
+        </Collapse>
+        <Collapse in={ui.searchBarMode}>
+          <Toolbar className={classes.searchResultWrapper}>
+            <SearchPageFloat />
+          </Toolbar>
+        </Collapse>
       </AppBar>
     );
   }
 }
+
+const SearchPageFloat = styled.div`
+  height: 100%;
+`;
 
 const QAButton = ({ intl, changeDropDownDirection }) => (
   <a
@@ -85,30 +128,38 @@ const NavBarRightButtonContainer = styled.div`
   line-height: 70px;
   text-align: center;
   color: white;
-  position: absolute;
-  right: 70px;
-  top: 0px;
   padding-left: 20px;
   padding-right: 20px;
   border-left: 1px solid rgba(0,0,0,0.2);
+  display: flex;
 `;
 const NavBarRightButton = styled.div`
   height: 30px;
   margin: 20px auto;
   line-height: 30px;
+  display: flex;
+`;
+const DivSearchFont = styled.div`
+  color: rgba(255, 255, 255, 0.65);
+  padding-left: 14px;
+`;
+const DivCenter = styled.div`
+  margin: auto;
+  display: flex;
+  width: 60%;
 `;
 
-const MyActivities = observer(({ store: { global } }) => {
+const MyActivities = observer(({ store: { global }, classes }) => {
   if (global.userData.totalCount > 0) {
-    return (<Link to={Routes.ACTIVITY_HISTORY}>
+    return (<NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
         <NavBarRightButton>
-          <Badge badgeContent={global.userData.totalCount} color="secondary">
+          <Badge badgeContent={global.userData.totalCount} color="secondary">。
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
       </NavBarRightButtonContainer>
-    </Link>);
+    </NavLink>);
   }
   return (<NavLink to={Routes.ACTIVITY_HISTORY}>
     <NavBarRightButtonContainer>
@@ -118,6 +169,17 @@ const MyActivities = observer(({ store: { global } }) => {
     </NavBarRightButtonContainer>
   </NavLink>);
 });
+
+const SearchButton = observer(({ onClick }) => (
+  // <NavLink to={Routes.ACTIVITY_HISTORY}>
+  <NavBarRightButtonContainer onClick={onClick}>
+    <NavBarRightButton>
+      <div className="icon iconfont icon-ic_search" />
+      <DivSearchFont>Search</DivSearchFont>
+    </NavBarRightButton>
+  </NavBarRightButtonContainer>
+  // </NavLink>
+));
 
 const Wallet = styled(({ store: { wallet } }) => {
   const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
