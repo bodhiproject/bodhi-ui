@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
+const { split } = require('lodash');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
@@ -35,10 +36,25 @@ function getServedPath(appPackageJson) {
   return ensureSlash(servedUrl, true);
 }
 
+/**
+ * Returns the commandline specified build folder, or the default build folder.
+ * @returns {string} Path to the build folder..
+ */
+const getBuildFolder = () => {
+  let buildFolder = resolveApp('build');
+  process.argv.forEach((arg) => {
+    // Use build folder specified in commandline argument if found
+    if (arg.startsWith('--output=')) {
+      buildFolder = (split(arg, '=', 2))[1];
+    }
+  });
+  return buildFolder;
+};
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
-  appBuild: resolveApp('build'),
+  appBuild: getBuildFolder(),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.js'),

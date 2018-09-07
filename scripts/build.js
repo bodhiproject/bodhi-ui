@@ -78,15 +78,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
       const appPackage = require(paths.appPackageJson);
       const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
-      
-      let buildFolder = path.relative(process.cwd(), paths.appBuild);
-      process.argv.forEach((arg) => {
-        // Use build folder specified in commandline argument
-        if (arg.startsWith('--output=')) {
-          buildFolder = (split(arg, '=', 2))[1];
-        }
-      });
-
+      const buildFolder = path.relative(process.cwd(), paths.appBuild);
       printHostingInstructions(
         appPackage,
         publicUrl,
