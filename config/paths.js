@@ -38,7 +38,7 @@ function getServedPath(appPackageJson) {
 
 /**
  * Returns the commandline specified build folder, or the default build folder.
- * @returns {string} Path to the build folder..
+ * @returns {string} Path to the build folder.
  */
 const getBuildFolder = () => {
   let buildFolder = resolveApp('build');
