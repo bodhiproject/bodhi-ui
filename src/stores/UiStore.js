@@ -3,12 +3,12 @@ import moment from 'moment';
 import { Routes } from 'constants';
 import locales from '../languageProvider';
 
-
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable error = null
   @observable globalMessage = null
+  @observable searchBarMode = false
 
   get localeMessages() {
     return locales[this.locale].messages;
