@@ -1,18 +1,17 @@
 const { execSync } = require('child_process');
 
-const runProcess = (cmd) => {
-  execSync(cmd, [], function(err, stdout, stderr) {
+const runProcess = (env) => {
+  const cmd = `npm run build:${env}`;
+  const path = `/var/www/bodhi/${env}`;
+
+  console.log(`Building ${env} UI at ${path}`);
+  execSync(cmd, [`--output=${path}`], function(err, stdout, stderr) {
     if (stdout) console.log(stdout);
     if (stderr) console.error(stderr);
     if (err) console.error(err);
   });
 };
 
-console.log('Building mainnet UI...');
-runProcess('npm run build:mainnet --output=/var/www/bodhi/mainnet');
-
-console.log('Building testnet UI...');
-runProcess('npm run build:testnet --output=/var/www/bodhi/testnet');
-
-console.log('Building regtets UI...');
-runProcess('npm run build:regtest --output=/var/www/bodhi/regtest');
+runProcess('mainnet');
+runProcess('testnet');
+runProcess('regtest');
