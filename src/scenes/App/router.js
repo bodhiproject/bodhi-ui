@@ -69,6 +69,11 @@ const AppRouter = ({ url }) => {
         path={`${url}${Routes.ACTIVITY_HISTORY}`}
         component={asyncComponent(() => import('../Activities'))}
       />
+      <Route
+        exact
+        path={`${url}${Routes.SEARCH}`}
+        component={asyncComponent(() => import('../Search'))}
+      />
     </Switch>
   );
 };
