@@ -9,7 +9,6 @@ module.exports = {
     ACTIVITY_HISTORY: '/activities/history',
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
-    SEARCH: '/search',
   },
 
   EventType: {
