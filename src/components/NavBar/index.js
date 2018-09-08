@@ -50,6 +50,8 @@ export default class NavBar extends Component {
   // });
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
+    this.props.store.search.phrase = '';
+    this.props.store.search.list = [];
   }
   handleSearchBarKeyDown = event => {
     switch (event.key) {
