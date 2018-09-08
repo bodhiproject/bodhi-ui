@@ -45,6 +45,8 @@ export default class NavBar extends Component {
   // });
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
+    this.props.store.search.phrase = '';
+    this.props.store.search.list = [];
   }
   handleSearchBarKeyDown = event => {
     switch (event.key) {
@@ -95,20 +97,26 @@ export default class NavBar extends Component {
                 placeholder="Type..."
                 className={classes.searchBarTextField}
                 InputProps={{
+                  autoFocus: true,
                   disableUnderline: true,
                   classes: {
                     input: classes.searchBarInput,
                   },
                   onKeyDown: (e) => this.handleSearchBarKeyDown(e),
-                  onChange: e => search.phrase = e.target.value,
+                  onChange: e => {
+                    search.phrase = e.target.value;
+                    search.loading = true;
+                    _.debounce(search.init, 1500)();
+                  },
                   value: search.phrase,
                 }}
-              />
+              >
+              </TextField>
               <div className="icon iconfont icon-ic_close" onClick={this.changeSearchBarMode} />
             </DivCenter>
           </Toolbar>
         </Collapse>
-        <Collapse in={ui.searchBarMode}>
+        <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
           <Toolbar className={classes.searchResultWrapper}>
             <Search />
           </Toolbar>
