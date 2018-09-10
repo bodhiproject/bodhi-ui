@@ -12,16 +12,6 @@ const styles = () => ({
     margin: '40px',
     padding: '70px 40px 40px 40px',
   },
-  hiddenModal: {
-    display: 'none',
-    visible: 'false',
-  },
-  testFullScreen: {
-    position: 'absolute',
-    height: '100vh',
-    width: '100vw',
-    background: 'yellow',
-  },
 });
 
 export default styles;

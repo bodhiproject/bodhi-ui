@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import {
   Modal,
   withStyles,
+  Collapse,
 } from '@material-ui/core';
 
 import styles from './styles';
@@ -12,14 +13,20 @@ import styles from './styles';
 @observer
 export default class SearchModal extends Component {
   render() {
-    const { store: { ui: { searchBarMode } } } = this.props;
+    const { classes, store: { ui: { searchBarMode } } } = this.props;
     console.log(searchBarMode);
     return (
-      <Modal
-        open={searchBarMode}
-      >
-        <div>???</div>
-      </Modal>
+      <div className={classes.resultWrapper}>
+        <Modal
+          open={searchBarMode}
+          hideBackdrop
+          className={classes.fullScreenModal}
+        >
+          <Collapse in={searchBarMode}>
+            <div />
+          </Collapse>
+        </Modal>
+      </div>
     );
   }
 }

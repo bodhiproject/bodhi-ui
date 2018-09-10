@@ -21,7 +21,6 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
-import SearchModal from './components/SearchModal';
 import SearchResult from './components/SearchResult';
 
 @withStyles(styles, { withTheme: true })
@@ -45,15 +44,17 @@ export default class NavBar extends Component {
         break;
     }
   }
-  // changeSearchBarMode = () => this.setState({
-  //  searchBarMode: !this.state.searchBarMode,
-  //  dropdownDirection: 'down',
-  // });
-
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
-    this.props.store.search.phrase = '';
-    this.props.store.search.list = [];
+    if (this.props.store.ui.searchBarMode) {
+      document.body.style.overflow = 'hidden';
+      document.getElementById('searchEventInput').focus();
+      this.props.store.search.phrase = '';
+      this.props.store.search.list = [];
+    } else document.body.style.overflow = null;
+    this.setState({
+      dropdownDirection: 'down',
+    });
   }
   handleSearchBarKeyDown = event => {
     switch (event.key) {
