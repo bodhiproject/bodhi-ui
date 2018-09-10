@@ -48,6 +48,7 @@ export default class NavBar extends Component {
   //  searchBarMode: !this.state.searchBarMode,
   //  dropdownDirection: 'down',
   // });
+
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
     this.props.store.search.phrase = '';
