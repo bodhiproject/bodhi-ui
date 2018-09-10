@@ -46,7 +46,7 @@ const styles = (theme) => ({
     color: rgba(0, 0, 0, 1),
     'align-items': 'flex-start',
     overflowY: 'scroll',
-    height: '1500px',
+    height: '450px',
   },
   SearchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,

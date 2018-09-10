@@ -21,6 +21,7 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
+import SearchModal from './components/SearchModal';
 import SearchResult from './components/SearchResult';
 
 @withStyles(styles, { withTheme: true })
@@ -180,7 +181,7 @@ const MyActivities = observer(({ store: { global } }) => {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
         <NavBarRightButton>
-          <Badge badgeContent={global.userData.totalCount} color="secondary">。
+          <Badge badgeContent={global.userData.totalCount} color="secondary">
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
