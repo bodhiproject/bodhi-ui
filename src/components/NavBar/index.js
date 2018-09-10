@@ -21,7 +21,8 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
-import Search from '../../scenes/Search';
+import SearchModal from './components/SearchModal';
+import SearchResult from './components/SearchResult';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -118,9 +119,7 @@ export default class NavBar extends Component {
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
-          <Toolbar className={classes.searchResultWrapper}>
-            <Search />
-          </Toolbar>
+          <SearchResult />
         </Collapse>
       </AppBar>
     );
@@ -171,20 +170,20 @@ const MyActivities = observer(({ store: { global } }) => {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
         <NavBarRightButton>
-          <Badge badgeContent={global.userData.totalCount} color="secondary">。
+          <Badge badgeContent={global.userData.totalCount} color="secondary">
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
       </NavBarRightButtonContainer>
     </NavLink>);
   }
-  return (<NavBarRightButtonContainer>
-    <NavLink to={Routes.ACTIVITY_HISTORY}>
+  return (<NavLink to={Routes.ACTIVITY_HISTORY}>
+    <NavBarRightButtonContainer>
       <NavBarRightButton>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </NavBarRightButton>
-    </NavLink>
-  </NavBarRightButtonContainer>);
+    </NavBarRightButtonContainer>
+  </NavLink>);
 });
 
 const SearchButton = observer(({ onClick }) => (
