@@ -120,6 +120,7 @@ const MyActivities = observer(({ store: { global } }) => {
 });
 
 const Wallet = styled(({ store: { wallet } }) => {
+  // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
   if (process.env.LOCAL_WALLET === 'false') {
     return null;
   }
