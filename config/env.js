@@ -81,6 +81,7 @@ function getClientEnvironment(publicUrl) {
         API_PORT: process.env.API_PORT,
         PROTOCOL_HTTP: process.env.PROTOCOL_HTTP,
         PROTOCOL_WS: process.env.PROTOCOL_WS,
+        LOCAL_WALLET: process.env.LOCAL_WALLET,
       }
     );
   console.log('Environment Vars:\n', raw);
