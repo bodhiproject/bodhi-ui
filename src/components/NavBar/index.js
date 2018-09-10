@@ -43,6 +43,7 @@ export default class NavBar extends Component {
   //  searchBarMode: !this.state.searchBarMode,
   //  dropdownDirection: 'down',
   // });
+
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
     this.props.store.search.phrase = '';
@@ -165,7 +166,7 @@ const DivCenter = styled.div`
   width: 60%;
 `;
 
-const MyActivities = observer(({ store: { global }, classes }) => {
+const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButtonContainer>
