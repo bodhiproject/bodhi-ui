@@ -1,6 +1,7 @@
 const { split } = require('lodash');
 
-// Get --chain env var and set vars in process
+// Set chain env vars.
+// The --chain flag must be defined and one of: mainnet, testnet, regtest
 let chain;
 process.argv.forEach((arg) => {
   if (arg.startsWith('--chain=')) {
@@ -38,6 +39,10 @@ process.argv.forEach((arg) => {
 if (!chain) {
   throw Error('--chain= flag must be one of: mainnet, testnet, regtest');
 }
+
+// Set network protocol env vars
+process.env.PROTOCOL_HTTP = process.env.PROTOCOL_HTTP || 'https';
+process.env.PROTOCOL_WS = process.env.PROTOCOL_WS || 'wss';
 
 // Check for --localwallet flag.
 // The localwallet flag lets the UI know that it is using a local wallet (Qtum wallet) to handle transactions.
