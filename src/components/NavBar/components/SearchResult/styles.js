@@ -6,22 +6,11 @@ const styles = () => ({
     background: 'white',
     'align-items': 'flex-start',
     overflowY: 'scroll',
-    height: '100vh',
-    width: '100vw',
+    height: 'calc(100vh - 70px)',
   },
   result: {
     margin: '40px',
     padding: '70px 40px 40px 40px',
-  },
-  hiddenModal: {
-    display: 'none',
-    visible: 'false',
-  },
-  testFullScreen: {
-    position: 'absolute',
-    height: '100vh',
-    width: '100vw',
-    background: 'yellow',
   },
 });
 

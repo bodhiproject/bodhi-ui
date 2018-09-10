@@ -27,14 +27,6 @@ const styles = (theme) => ({
     lineHeight: '70px',
     boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25)',
   },
-  searchResultWrapper: {
-    boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25) inset',
-    background: 'white',
-    color: rgba(0, 0, 0, 1),
-    'align-items': 'flex-start',
-    overflowY: 'scroll',
-    height: '450px',
-  },
   searchBarTextField: {
     padding: '12px 16px 12px 16px',
     borderLeft: '2px solid #9B9B9B',

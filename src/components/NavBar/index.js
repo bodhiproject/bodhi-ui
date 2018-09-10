@@ -21,7 +21,6 @@ import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
-import SearchModal from './components/SearchModal';
 import SearchResult from './components/SearchResult';
 
 @withStyles(styles, { withTheme: true })
@@ -31,7 +30,6 @@ import SearchResult from './components/SearchResult';
 export default class NavBar extends Component {
   state = {
     dropdownDirection: 'down',
-    // searchBarMode: false,
   }
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
@@ -40,15 +38,17 @@ export default class NavBar extends Component {
     if (this.state.dropdownDirection === 'down') this.setState({ dropdownDirection: 'up' });
     if (this.state.dropdownDirection === 'up') this.setState({ dropdownDirection: 'down' });
   }
-  // changeSearchBarMode = () => this.setState({
-  //  searchBarMode: !this.state.searchBarMode,
-  //  dropdownDirection: 'down',
-  // });
-
   changeSearchBarMode = () => {
     this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
-    this.props.store.search.phrase = '';
-    this.props.store.search.list = [];
+    if (this.props.store.ui.searchBarMode) {
+      document.body.style.overflow = 'hidden';
+      document.getElementById('searchEventInput').focus();
+      this.props.store.search.phrase = '';
+      this.props.store.search.list = [];
+    } else document.body.style.overflow = null;
+    this.setState({
+      dropdownDirection: 'down',
+    });
   }
   handleSearchBarKeyDown = event => {
     switch (event.key) {
@@ -96,7 +96,7 @@ export default class NavBar extends Component {
             <DivCenter>
               <div className={`icon iconfont icon-ic_search ${classes.SearchBarLeftIcon}`} />
               <TextField
-                placeholder="Type..."
+                placeholder="Type to begin search"
                 className={classes.searchBarTextField}
                 InputProps={{
                   autoFocus: true,
@@ -111,6 +111,9 @@ export default class NavBar extends Component {
                     _.debounce(search.init, 1500)();
                   },
                   value: search.phrase,
+                  inputProps: {
+                    id: 'searchEventInput',
+                  },
                 }}
               >
               </TextField>
@@ -187,14 +190,12 @@ const MyActivities = observer(({ store: { global } }) => {
 });
 
 const SearchButton = observer(({ onClick }) => (
-  // <NavLink to={Routes.ACTIVITY_HISTORY}>
   <NavBarRightButtonContainer onClick={onClick}>
     <NavBarRightButton>
       <div className="icon iconfont icon-ic_search" />
       <DivSearchFont>Search</DivSearchFont>
     </NavBarRightButton>
   </NavBarRightButtonContainer>
-  // </NavLink>
 ));
 
 const Wallet = styled(({ store: { wallet } }) => {
