@@ -32,7 +32,10 @@ $ npm install
 
 ### Development Environment
 To run the development server, run the corresponding run script and the API will point to the remote server with the correct port. After compilation, it will show success commands & automatically redirect to the browser. Any code changes will be observed and will hot reload.
-```bash
+```
+// Accepted Flags
+--localwallet   // Change compatibility for tx signing with a local wallet program, eg. Qtum Wallet
+
 // Mainnet chain
 $ yarn start:mainnet
 
@@ -44,23 +47,29 @@ $ yarn start:regtest
 ```
 
 To run the development server and point to a localhost server, run the following:
-```bash
+```
 // Testnet chain on localhost
-// `npm run testnet:local` on bodhi-server
-$ yarn start:local
+$ cd bodhi-server
+$ npm run testnet:local   // Runs local testnet bodhi-server
+$ cd bodhi-ui
+$ yarn start:local        // Points to local testnet server
 ```
 
 ### Production Build
 To create an optimized production build of the app, you need to run a build command in you terminal at app root. Use the build command specific to the chain you want to point to. The build output files will be in `/build`.
-```bash
+```
+// Accepted Flags
+--chain=        // Sets the chain env variables. One of: mainnet, testnet, regtest
+--localwallet   // Change compatibility for tx signing with a local wallet program, eg. Qtum Wallet
+
 // Mainnet chain
-$ yarn build:mainnet
+$ yarn build --chain=mainnet
 
 // Testnet chain
-$ yarn build:testnet
+$ yarn build --chain=testnet
 
 // Regtest chain - very fast block mining, can also mine blocks with API call
-$ yarn build:regtest
+$ yarn build --chain=regtest
 ```
 
 ## Standards
