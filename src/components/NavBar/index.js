@@ -116,19 +116,19 @@ const NavBarRightButton = styled.div`
   line-height: 30px;
   display: flex;
 `;
-const DivSearchFont = styled.div`
+const SearchBarFont = styled.div`
   color: rgba(255, 255, 255, 0.65);
   padding-left: 14px;
 `;
-const DivCenter = styled.div`
+const DivSearchBarField = styled.div`
   margin: auto;
   display: flex;
   width: 60%;
 `;
 
 const SearchBarField = ({ intl, classes, store: { search }, onClose, onSearchBarKeyDown }) => (
-  <DivCenter>
-    <div className={`icon iconfont icon-ic_search ${classes.SearchBarLeftIcon}`} />
+  <DivSearchBarField>
+    <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
     <TextField
       placeholder={intl.formatMessage({ id: 'search.placeholder', defaultMessage: 'Type to begin search' })}
       className={classes.searchBarTextField}
@@ -152,7 +152,7 @@ const SearchBarField = ({ intl, classes, store: { search }, onClose, onSearchBar
     >
     </TextField>
     <div className="icon iconfont icon-ic_close" onClick={onClose} />
-  </DivCenter>
+  </DivSearchBarField>
 );
 
 const MyActivities = observer(({ store: { global } }) => {
@@ -180,9 +180,9 @@ const SearchButton = observer(({ onClick }) => (
   <NavBarRightButtonContainer onClick={onClick}>
     <NavBarRightButton>
       <div className="icon iconfont icon-ic_search" />
-      <DivSearchFont>
+      <SearchBarFont>
         <FormattedMessage id="str.search" defaultMessage="Search" />
-      </DivSearchFont>
+      </SearchBarFont>
     </NavBarRightButton>
   </NavBarRightButtonContainer>
 ));

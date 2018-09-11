@@ -37,7 +37,7 @@ const styles = (theme) => ({
   searchBarInput: {
     fontSize: theme.sizes.font.textLg,
   },
-  SearchBarLeftIcon: {
+  searchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,
     color: '#585AFA',
     paddingRight: 24,
