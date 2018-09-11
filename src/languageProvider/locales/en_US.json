@@ -182,6 +182,7 @@
   "str.errorGettingAllowance": "Error getting your allowance.",
   "str.escrow": "Escrow",
   "str.fail": "Fail",
+  "str.favorite": "My Favorite",
   "str.fee": "Gas Fee (QTUM)",
   "str.finalize": "Finalize",
   "str.finalizeResult": "Finalize Result",

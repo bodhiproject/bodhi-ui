@@ -36,6 +36,10 @@ const messages = defineMessages({
     id: 'activitiesTab.History',
     defaultMessage: 'Activities History',
   },
+  favorite: {
+    id: 'str.favorite',
+    defaultMessage: 'My Favorite',
+  },
 });
 
 
@@ -129,7 +133,7 @@ export default class Activities extends Component {
           <Tab label={this.getTabLabel(EventStatus.FINALIZE)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
           <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
           <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
-          <Tab label='FAVORITE' className={classes.activitiesTabButton} />
+          <Tab label={this.props.intl.formatMessage(messages.favorite)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {this.tabIdx === TAB_SET && <ResultSetting />}

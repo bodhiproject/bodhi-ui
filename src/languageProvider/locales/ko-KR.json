@@ -169,6 +169,7 @@
   "str.error": "오류",
   "str.escrow": "조건부 날인 증서",
   "str.fail": "실패",
+  "str.favorite": "서표",
   "str.fee": "Gas 요금 (QTUM)",
   "str.finalize": "마무리",
   "str.finalizeResult": "결과 확정",
