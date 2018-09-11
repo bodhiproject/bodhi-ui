@@ -40,14 +40,6 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
     paddingRight: theme.padding.sm.value,
   },
-  searchResultWrapper: {
-    boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25) inset',
-    background: 'white',
-    color: rgba(0, 0, 0, 1),
-    'align-items': 'flex-start',
-    overflowY: 'scroll',
-    height: '450px',
-  },
   SearchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,
     color: '#585AFA',

@@ -263,15 +263,3 @@ export function searchTopics(phrase) {
   }
   return request.execute();
 }
-
-/*
-* Search for Topics that contains phrase either in title or result setter address
-* @param phrase: String
-*/
-export function searchTopics(phrase) {
-  const request = new GraphQuery('searchTopics', TYPE.topic);
-  if (!_.isEmpty(phrase)) {
-    request.setSearchPhrase(phrase);
-  }
-  return request.execute();
-}
