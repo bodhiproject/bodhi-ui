@@ -72,6 +72,7 @@ const TYPE_DEF = {
       type
       status
     }
+    hashId
   `,
 
   Vote: `
