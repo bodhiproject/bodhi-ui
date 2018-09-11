@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import InfiniteScroll from '../../../components/InfiniteScroll';
 import theme from '../../../config/theme';
+import InfiniteScroll from '../../../components/InfiniteScroll';
 import EventCard from '../../../components/EventCard';
 import Loading from '../../../components/EventListLoading';
 

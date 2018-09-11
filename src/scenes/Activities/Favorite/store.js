@@ -1,5 +1,4 @@
-import { observable, action, reaction } from 'mobx';
-import _ from 'lodash';
+import { observable, action } from 'mobx';
 
 const INIT_VALUES = {
   currList: ['21e389b909c7ab977088c8d43802d459b0eb521a'],

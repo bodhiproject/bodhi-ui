@@ -13,6 +13,7 @@ import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
+import FavoriteStore from '../scenes/Activities/Favorite/store';
 import MyFavoriteStore from './activitiesStores/MyFavoriteStore';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';

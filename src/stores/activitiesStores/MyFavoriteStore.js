@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { OracleStatus, Routes, SortBy } from 'constants';
-import { queryAllTopics } from '../../network/graphQuery';
+import { Routes, SortBy } from 'constants';
+import { queryAllTopics } from '../../network/graphql/queries';
 import Topic from '../models/Topic';
 
 const INIT_VALUES = {
@@ -57,7 +57,6 @@ export default class {
 
   fetchFav = async (skip = this.skip, limit = this.limit) => {
     if (this.app.favorite.currList.length === 0) return [];
-    console.log('fetchFav');
     // Get all topics at favorite topic address list "currList"
     const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
     const filters = this.app.favorite.currList.map(topicAddress => ({ address: topicAddress }));
