@@ -64,8 +64,6 @@ export default class UiStore {
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();
-    this.app.search.phrase = '';
-    this.app.search.list = [];
     this.dropdownDirection = 'down';
   }
 
