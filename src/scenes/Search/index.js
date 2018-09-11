@@ -9,8 +9,9 @@ import EventCard from '../../components/EventCard';
 @observer
 export default class Search extends Component {
   render() {
+    const { ui } = this.props.store;
     const { list, loading } = this.props.store.search;
-    const events = (list || []).map((event, i) => (<EventCard key={i} index={i} event={event} />));
+    const events = (list || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
     const noResult = (
       <Typography variant="body1">
         <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />

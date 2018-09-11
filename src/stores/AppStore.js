@@ -46,7 +46,7 @@ class AppStore {
 
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
-    this.ui = new UiStore();
+    this.ui = new UiStore(this);
     this.wallet = new WalletStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);

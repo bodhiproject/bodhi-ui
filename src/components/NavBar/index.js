@@ -28,27 +28,12 @@ import SearchResult from './components/SearchResult';
 @inject('store')
 @observer
 export default class NavBar extends Component {
-  state = {
-    dropdownDirection: 'down',
-  }
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
   }
-  changeDropDownDirection() {
-    if (this.state.dropdownDirection === 'down') this.setState({ dropdownDirection: 'up' });
-    if (this.state.dropdownDirection === 'up') this.setState({ dropdownDirection: 'down' });
-  }
-  changeSearchBarMode = () => {
-    this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
-    if (this.props.store.ui.searchBarMode) {
-      document.body.style.overflow = 'hidden';
-      document.getElementById('searchEventInput').focus();
-      this.props.store.search.phrase = '';
-      this.props.store.search.list = [];
-    } else document.body.style.overflow = null;
-    this.setState({
-      dropdownDirection: 'down',
-    });
+  changeDropDownDirection = () => {
+    const { ui } = this.props.store;
+    ui.dropdownDirection = ui.dropdownDirection === 'down' ? 'up' : 'down';
   }
   handleSearchBarKeyDown = event => {
     switch (event.key) {
@@ -61,7 +46,6 @@ export default class NavBar extends Component {
   render() {
     const { classes } = this.props;
     const { ui, search } = this.props.store;
-    this.changeDropDownDirection = this.changeDropDownDirection.bind(this);
     return (
       <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
         <Collapse in={!ui.searchBarMode}>
@@ -71,12 +55,12 @@ export default class NavBar extends Component {
               <QtumPrediction {...this.props} />
               <BotCourt {...this.props} />
             </NavSection>
-            <SearchButton onClick={this.changeSearchBarMode} />
+            <SearchButton onClick={ui.enableSearchBarMode} />
             <MyActivities {...this.props} />
-            <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
+            <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${ui.dropdownDirection}`}></div></Toggle>
           </Toolbar>
         </Collapse>
-        <Dropdown data-show={this.state.dropdownDirection === 'down'}>
+        <Dropdown data-show={ui.dropdownDirection === 'down'}>
           <Wallet {...this.props} />
           <Link to={Routes.ALL_EVENTS}>
             <Item onClick={this.changeDropDownDirection}>
@@ -92,7 +76,7 @@ export default class NavBar extends Component {
         </Dropdown>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchBarField {...this.props} onClose={this.changeSearchBarMode} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            <SearchBarField {...this.props} onClose={ui.disableSearchBarMode} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
