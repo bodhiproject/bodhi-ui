@@ -60,7 +60,6 @@ export default class NavBar extends Component {
   }
   render() {
     const { classes } = this.props;
-    // const { searchBarMode } = this.state;
     const { ui, search } = this.props.store;
     this.changeDropDownDirection = this.changeDropDownDirection.bind(this);
     return (
@@ -93,32 +92,7 @@ export default class NavBar extends Component {
         </Dropdown>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <DivCenter>
-              <div className={`icon iconfont icon-ic_search ${classes.SearchBarLeftIcon}`} />
-              <TextField
-                placeholder="Type to begin search"
-                className={classes.searchBarTextField}
-                InputProps={{
-                  autoFocus: true,
-                  disableUnderline: true,
-                  classes: {
-                    input: classes.searchBarInput,
-                  },
-                  onKeyDown: (e) => this.handleSearchBarKeyDown(e),
-                  onChange: e => {
-                    search.phrase = e.target.value;
-                    search.loading = true;
-                    _.debounce(search.init, 1500)();
-                  },
-                  value: search.phrase,
-                  inputProps: {
-                    id: 'searchEventInput',
-                  },
-                }}
-              >
-              </TextField>
-              <div className="icon iconfont icon-ic_close" onClick={this.changeSearchBarMode} />
-            </DivCenter>
+            <SearchBarField {...this.props} onClose={this.changeSearchBarMode} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
@@ -168,6 +142,35 @@ const DivCenter = styled.div`
   width: 60%;
 `;
 
+const SearchBarField = ({ intl, classes, store: { search }, onClose, onSearchBarKeyDown }) => (
+  <DivCenter>
+    <div className={`icon iconfont icon-ic_search ${classes.SearchBarLeftIcon}`} />
+    <TextField
+      placeholder={intl.formatMessage({ id: 'search.placeholder', defaultMessage: 'Type to begin search' })}
+      className={classes.searchBarTextField}
+      InputProps={{
+        autoFocus: true,
+        disableUnderline: true,
+        classes: {
+          input: classes.searchBarInput,
+        },
+        onKeyDown: (e) => onSearchBarKeyDown(e),
+        onChange: e => {
+          search.phrase = e.target.value;
+          search.loading = true;
+          _.debounce(search.init, 1500)();
+        },
+        value: search.phrase,
+        inputProps: {
+          id: 'searchEventInput',
+        },
+      }}
+    >
+    </TextField>
+    <div className="icon iconfont icon-ic_close" onClick={onClose} />
+  </DivCenter>
+);
+
 const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
@@ -193,7 +196,9 @@ const SearchButton = observer(({ onClick }) => (
   <NavBarRightButtonContainer onClick={onClick}>
     <NavBarRightButton>
       <div className="icon iconfont icon-ic_search" />
-      <DivSearchFont>Search</DivSearchFont>
+      <DivSearchFont>
+        <FormattedMessage id="str.search" defaultMessage="Search" />
+      </DivSearchFont>
     </NavBarRightButton>
   </NavBarRightButtonContainer>
 ));

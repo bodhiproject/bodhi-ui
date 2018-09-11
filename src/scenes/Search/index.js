@@ -13,7 +13,7 @@ export default class Search extends Component {
     const events = (list || []).map((event, i) => (<EventCard key={i} index={i} event={event} />));
     const noResult = (
       <Typography variant="body1">
-        <FormattedMessage id="str.emptySearchResult" defaultMessage="Oops, your search has no results." />
+        <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
       </Typography>
     );
     return (
