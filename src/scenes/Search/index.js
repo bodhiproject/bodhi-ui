@@ -12,7 +12,6 @@ export default class Search extends Component {
     const { ui } = this.props.store;
     const { list, loading } = this.props.store.search;
     const events = (list || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-
     return (
       <Fragment>
         <Grid container spacing={theme.padding.sm.value}>
