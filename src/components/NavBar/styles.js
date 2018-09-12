@@ -16,6 +16,9 @@ const styles = (theme) => ({
   navBarLogo: {
     height: '38px',
     verticalAlign: 'middle',
+    [theme.breakpoints.down('sm')]: {
+      width: 70,
+    },
   },
   navBarWalletIcon: {
     marginRight: theme.padding.unit.px,
@@ -44,6 +47,26 @@ const styles = (theme) => ({
     '&:hover': {
       color: 'white',
     },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 12,
+      padding: 0,
+    },
+  },
+  myActivitiesWrapper: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 12,
+      padding: 5,
+      right: 30,
+    },
+  },
+  navToggle: {
+    [theme.breakpoints.down('sm')]: {
+      width: 30,
+      fontSize: 12,
+    },
+  },
+  navToggleIcon: {
+    fontSize: 12,
   },
   faq: {
     marginLeft: 10,
