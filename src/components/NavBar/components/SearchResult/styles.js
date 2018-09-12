@@ -13,8 +13,9 @@ const styles = (theme) => ({
     padding: '0px 40px 40px 40px',
   },
   searchTabWrapper: {
+    position: 'sticky',
     background: theme.palette.background.paper,
-    top: theme.sizes.navHeight,
+    top: 0,
     left: 0,
     right: 0,
     height: '56px',
