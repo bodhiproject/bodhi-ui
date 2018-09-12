@@ -127,7 +127,7 @@ const DivSearchBarField = styled.div`
   width: 60%;
 `;
 
-const SearchBarField = ({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
+const SearchBarField = inject('store')(({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
   <DivSearchBarField>
     <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
     <TextField
@@ -138,6 +138,7 @@ const SearchBarField = ({ intl, classes, store: { search, ui }, onSearchBarKeyDo
         disableUnderline: true,
         classes: {
           input: classes.searchBarInput,
+          root: classes.searchBarInputBase,
         },
         onKeyDown: (e) => onSearchBarKeyDown(e),
         onChange: e => {
@@ -154,7 +155,7 @@ const SearchBarField = ({ intl, classes, store: { search, ui }, onSearchBarKeyDo
     </TextField>
     <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
-);
+));
 
 const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
