@@ -14,7 +14,7 @@ const INIT_VALUES_FAVPAGE = {
 };
 
 export default class {
-  @observable currList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: '21e389b909c7ab977088c8d43802d459b0eb521a'
+  @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: '21e389b909c7ab977088c8d43802d459b0eb521a'
 
   @observable loaded = INIT_VALUES_FAVPAGE.loaded
   @observable list = INIT_VALUES_FAVPAGE.list
@@ -37,7 +37,7 @@ export default class {
       }
     );
     reaction(
-      () => this.currList,
+      () => this.favList,
       async () => {
         this.list = await this.fetchFav(Infinity, Infinity);
       }
@@ -45,21 +45,21 @@ export default class {
   }
 
   updateLocalStorageFavList() {
-    localStorage.setItem('bodhi_dapp_favList', JSON.stringify(this.currList));
+    localStorage.setItem('bodhi_dapp_favList', JSON.stringify(this.favList));
   }
 
   @action
   setFavorite = (topicAddress) => {
-    if (this.isInFavorite(topicAddress)) this.currList = this.currList.filter(x => x !== topicAddress);
+    if (this.isInFavorite(topicAddress)) this.favList = this.favList.filter(x => x !== topicAddress);
     else {
-      this.currList.push(topicAddress);
-      this.currList.replace(this.currList);
+      this.favList.push(topicAddress);
+      this.favList.replace(this.favList);
     }
     this.updateLocalStorageFavList();
   }
 
   @action
-  isInFavorite = (topicAddress) => this.currList.some(x => x === topicAddress)
+  isInFavorite = (topicAddress) => this.favList.some(x => x === topicAddress)
 
   @action
   loadMore = async () => {
@@ -74,11 +74,11 @@ export default class {
   }
 
   fetchFav = async (skip = this.skip, limit = this.limit) => {
-    if (this.currList.length === 0) return [];
-    // Get all topics at favorite topic address list "currList"
+    if (this.favList.length === 0) return [];
+    // Get all topics at favorite topic address list "favList"
     const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-    const filters = this.currList.map(topicAddress => ({ address: topicAddress }));
-    const topics = await queryAllTopics(filters, orderBy, limit, skip);
+    const topicFilters = this.favList.map(topicAddress => ({ address: topicAddress }));
+    const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
     const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
     runInAction(() => {
       this.hasMore = false;
