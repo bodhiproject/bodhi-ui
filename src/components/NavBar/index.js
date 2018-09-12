@@ -120,6 +120,11 @@ const MyActivities = observer(({ store: { global } }) => {
 });
 
 const Wallet = styled(({ store: { wallet } }) => {
+  // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
+  if (process.env.LOCAL_WALLET === 'false') {
+    return null;
+  }
+
   const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
   const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
   return (<Link to={Routes.WALLET}>

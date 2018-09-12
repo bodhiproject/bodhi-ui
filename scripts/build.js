@@ -1,4 +1,53 @@
+const { split } = require('lodash');
 
+// Set chain env vars.
+// The --chain flag must be defined and one of: mainnet, testnet, regtest
+let chain;
+process.argv.forEach((arg) => {
+  if (arg.startsWith('--chain=')) {
+    chain = (split(arg, '=', 2))[1];
+    if (!['mainnet', 'testnet', 'regtest'].some(item => item === chain)) {
+      throw Error('--chain= flag must be one of: mainnet, testnet, regtest');
+    }
+
+    let hostname;
+    let apiPort;
+    switch (chain) {
+      case 'mainnet': {
+        hostname = 'puti.io';
+        apiPort = 8989;
+        break;
+      }
+      case 'testnet': {
+        hostname = 'dev.puti.io';
+        apiPort = 6767;
+        break;
+      }
+      case 'regtest': {
+        hostname = 'test.puti.io';
+        apiPort = 5555;
+        break;
+      }
+      default: {
+        throw Error(`Invalid chain type: ${chain}`);
+      }
+    }
+    process.env.API_HOSTNAME = hostname;
+    process.env.API_PORT = apiPort;
+  }
+});
+if (!chain) {
+  throw Error('--chain= flag must be one of: mainnet, testnet, regtest');
+}
+
+// Set network protocol env vars
+process.env.PROTOCOL_HTTP = process.env.PROTOCOL_HTTP || 'https';
+process.env.PROTOCOL_WS = process.env.PROTOCOL_WS || 'wss';
+
+// Check for --localwallet flag.
+// The localwallet flag lets the UI know that it is using a local wallet (Qtum wallet) to handle transactions.
+// Default logic is to use Qrypto for transactions.
+process.env.LOCAL_WALLET = process.argv.includes('--localwallet') ? true : false;
 
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'production';

@@ -1,4 +1,7 @@
-
+// Check for --localwallet flag.
+// The localwallet flag lets the UI know that it is using a local wallet (Qtum wallet) to handle transactions.
+// Default logic is to use Qrypto for transactions.
+process.env.LOCAL_WALLET = process.argv.includes('--localwallet') ? true : false;
 
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'development';
