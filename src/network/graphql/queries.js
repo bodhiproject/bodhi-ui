@@ -249,6 +249,7 @@ export function searchOracles(phrase) {
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
   }
+  request.addParam('limit', 1000); // how to do unlimited search??
   return request.execute();
 }
 
@@ -261,5 +262,6 @@ export function searchTopics(phrase) {
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
   }
+  request.addParam('limit', 1000);
   return request.execute();
 }

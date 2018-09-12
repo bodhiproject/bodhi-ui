@@ -1,9 +1,8 @@
-import React, { Component, Fragment, observable } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Grid, Typography, Tabs, Tab, withStyles } from '@material-ui/core';
-import { Routes, EventStatus, Phases } from 'constants';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { Grid, Typography, Tabs, Tab } from '@material-ui/core';
+import { EventStatus } from 'constants';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 
@@ -39,46 +38,36 @@ const messages = defineMessages({
 @inject('store')
 @observer
 export default class Search extends Component {
-  bets = [];
-  votes = [];
-  sets = [];
-  withdraws = [];
-  finalizes = [];
-  // events = [];
-  state = {
-    tabIdx: TAB_BET,
-    events: [],
-  };
-
+  showEvents = [];
   getTabLabel = (eventStatusIndex) => {
-    const { store: { global }, intl } = this.props;
-
+    const { intl } = this.props;
+    const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
     let label;
     let count;
     switch (eventStatusIndex) {
       case EventStatus.BET: {
         label = intl.formatMessage(messages.bet);
-        count = this.bets.length;
+        count = bets.length;
         break;
       }
       case EventStatus.VOTE: {
         label = intl.formatMessage(messages.vote);
-        count = this.votes.length;
+        count = votes.length;
         break;
       }
       case EventStatus.SET: {
         label = intl.formatMessage(messages.set);
-        count = this.sets.length;
+        count = sets.length;
         break;
       }
       case EventStatus.FINALIZE: {
         label = intl.formatMessage(messages.finalize);
-        count = this.finalizes.length;
+        count = finalizes.length;
         break;
       }
       case EventStatus.WITHDRAW: {
         label = intl.formatMessage(messages.withdraw);
-        count = this.withdraws.length;
+        count = withdraws.length;
         break;
       }
       default: {
@@ -93,36 +82,27 @@ export default class Search extends Component {
   }
 
   handleTabChange = (event, value) => {
-    this.setState({ tabIdx: value });
+    const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
+    this.props.store.search.tabIdx = value;
     switch (value) {
       case TAB_BET: {
-        this.setState({ events: [...this.bets] });
-        // this.events = this.bets;
-        // this.props.history.push(Routes.SET);
+        this.props.store.search.events = bets;
         break;
       }
       case TAB_VOTE: {
-        this.setState({ events: [...this.votes] });
-        // this.events = this.votes;
-        // this.props.history.push(Routes.SET);
+        this.props.store.search.events = votes;
         break;
       }
       case TAB_SET: {
-        this.setState({ events: [...this.sets] });
-        // this.events = this.sets;
-        // this.props.history.push(Routes.SET);
+        this.props.store.search.events = sets;
         break;
       }
       case TAB_FINALIZE: {
-        this.setState({ events: [...this.finalizes] });
-        // this.events = this.finalizes;
-        // this.props.history.push(Routes.FINALIZE);
+        this.props.store.search.events = finalizes;
         break;
       }
       case TAB_WITHDRAW: {
-        this.setState({ events: [...this.withdraws] });
-        // this.events = this.withdraws;
-        // this.props.history.push(Routes.WITHDRAW);
+        this.props.store.search.events = withdraws;
         break;
       }
       default: {
@@ -134,24 +114,17 @@ export default class Search extends Component {
   render() {
     const { classes } = this.props;
     const { ui } = this.props.store;
-    const { list, loading } = this.props.store.search;
-    this.bets = (list.filter(event => event.phase === Phases.BETTING) || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    this.votes = (list.filter(event => event.phase === Phases.VOTING) || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    this.sets = (list.filter(event => event.phase === Phases.RESULT_SETTING) || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    this.withdraws = (list.filter(event => event.phase === Phases.WITHDRAWING) || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    this.finalizes = (list.filter(event => event.phase === Phases.FINALIZING) || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    // this.state.events = this.bets;
-    // this.setState({ events: [...this.bets] });
+    const { list, loading, tabIdx, events } = this.props.store.search;
+    this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
     const noResult = (
       <Typography variant="body1">
         <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
       </Typography>
     );
-
     return (
       <Fragment>
         <div>
-          <Tabs indicatorColor="primary" value={this.state.tabIdx} onChange={this.handleTabChange} className={classes.searchTabWrapper}>
+          <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.searchTabWrapper}>
             <Tab label={this.getTabLabel(EventStatus.BET)} className={classes.searchTabButton} />
             <Tab label={this.getTabLabel(EventStatus.VOTE)} className={classes.searchTabButton} />
             <Tab label={this.getTabLabel(EventStatus.SET)} className={classes.searchTabButton} />
@@ -160,7 +133,7 @@ export default class Search extends Component {
           </Tabs>
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.sm.value}>
-              {list.length === 0 && !loading ? noResult : this.state.events}
+              {list.length === 0 && !loading ? noResult : this.showEvents}
             </Grid>
           </div>
         </div>
