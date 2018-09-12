@@ -40,7 +40,8 @@ export default class NavBar extends Component {
       case 'Enter':
         this.props.store.search.init();
         break;
-      default: break;
+      default:
+        break;
     }
   }
   render() {
@@ -55,7 +56,7 @@ export default class NavBar extends Component {
               <QtumPrediction {...this.props} />
               <BotCourt {...this.props} />
             </NavSection>
-            <SearchButton onClick={ui.enableSearchBarMode} />
+            <SearchButton />
             <MyActivities {...this.props} />
             <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${ui.dropdownDirection}`}></div></Toggle>
           </Toolbar>
@@ -76,7 +77,7 @@ export default class NavBar extends Component {
         </Dropdown>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchBarField {...this.props} onClose={ui.disableSearchBarMode} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            <SearchBarField {...this.props} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
@@ -126,7 +127,7 @@ const DivSearchBarField = styled.div`
   width: 60%;
 `;
 
-const SearchBarField = ({ intl, classes, store: { search }, onClose, onSearchBarKeyDown }) => (
+const SearchBarField = ({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
   <DivSearchBarField>
     <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
     <TextField
@@ -151,7 +152,7 @@ const SearchBarField = ({ intl, classes, store: { search }, onClose, onSearchBar
       }}
     >
     </TextField>
-    <div className="icon iconfont icon-ic_close" onClick={onClose} />
+    <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
 );
 
@@ -176,8 +177,8 @@ const MyActivities = observer(({ store: { global } }) => {
   </NavLink>);
 });
 
-const SearchButton = observer(({ onClick }) => (
-  <NavBarRightButtonContainer onClick={onClick}>
+const SearchButton = inject('store')(observer(({ store: { ui } }) => (
+  <NavBarRightButtonContainer onClick={ui.enableSearchBarMode}>
     <NavBarRightButton>
       <div className="icon iconfont icon-ic_search" />
       <SearchBarFont>
@@ -185,7 +186,7 @@ const SearchButton = observer(({ onClick }) => (
       </SearchBarFont>
     </NavBarRightButton>
   </NavBarRightButtonContainer>
-));
+)));
 
 const Wallet = styled(({ store: { wallet } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
