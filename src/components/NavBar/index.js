@@ -46,7 +46,9 @@ export default class NavBar extends Component {
             <BotCourt {...this.props} />
           </NavSection>
           <MyActivities {...this.props} />
-          <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
+          <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
+            <div className={cx(classes.navToggleIcon, `icon iconfont icon-ic_${this.state.dropdownDirection}`)}></div>
+          </Toggle>
           <Dropdown data-show={this.state.dropdownDirection === 'down'}>
             <Wallet {...this.props} />
             <Link to={Routes.ALL_EVENTS}>
@@ -98,9 +100,9 @@ const NavBarRightButton = styled.div`
   color: white;
 `;
 
-const MyActivities = observer(({ store: { global } }) => {
+const MyActivities = observer(({ classes, store: { global } }) => {
   if (global.userData.totalCount > 0) {
-    return (<NavBarRightButtonContainer>
+    return (<NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
       <NavLink to={Routes.ACTIVITY_HISTORY}>
         <NavBarRightButton>
           <Badge badgeContent={global.userData.totalCount} color="secondary">
@@ -110,7 +112,7 @@ const MyActivities = observer(({ store: { global } }) => {
       </NavLink>
     </NavBarRightButtonContainer>);
   }
-  return (<NavBarRightButtonContainer>
+  return (<NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
     <NavLink to={Routes.ACTIVITY_HISTORY}>
       <NavBarRightButton>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />

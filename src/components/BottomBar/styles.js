@@ -8,6 +8,10 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  bottomBarNetworkWrapper: {
+    flexBasis: 120,
   },
   bottomBarNetworkIcon: {
     marginBottom: '-2px',
@@ -22,10 +26,14 @@ const styles = (theme) => ({
     },
   },
   bottomBarBlockInfoWrapper: {
+    flexBasis: 380,
     textAlign: 'right',
   },
   bottomBarBlockNum: {
-    marginRight: theme.padding.xs.px,
+
+  },
+  bottomBarBlockTime: {
+    marginLeft: theme.padding.xs.px,
   },
 });
 
