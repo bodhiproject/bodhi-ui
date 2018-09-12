@@ -1,5 +1,3 @@
-import { rgba } from 'polished';
-
 const styles = (theme) => ({
   navBar: {
     boxShadow: 'none',
@@ -11,26 +9,25 @@ const styles = (theme) => ({
     display: 'flex',
     padding: `0 ${theme.padding.sm.px}`,
     paddingRight: '0',
-    'align-items': 'center',
+    alignItems: 'center',
     height: '70px',
-    'justify-content': 'space-between',
+    justifyContent: 'space-between',
   },
   searchBarWrapper: {
     display: 'flex',
-    padding: `0 ${theme.padding.sm.px}`,
-    paddingRight: '0',
-    'align-items': 'center',
+    padding: `0 0 0 ${theme.padding.sm.px}`,
+    alignItems: 'center',
     height: '70px',
-    'justify-content': 'space-between',
+    justifyContent: 'space-between',
     background: 'white',
-    color: rgba(0, 0, 0, 1),
+    color: 'rgba(0, 0, 0, 1)',
     lineHeight: '70px',
     boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25)',
   },
   searchBarTextField: {
-    padding: '12px 16px 12px 16px',
-    borderLeft: '2px solid #9B9B9B',
-    margin: '10px 0px 10px 0px',
+    padding: '12px 16px',
+    borderLeft: `2px solid ${theme.palette.text.hint}`,
+    margin: '10px 0px',
     height: '48px',
     width: '100%',
   },
@@ -39,8 +36,8 @@ const styles = (theme) => ({
   },
   searchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,
-    color: '#585AFA',
-    paddingRight: 24,
+    color: theme.palette.primary.main,
+    paddingRight: theme.padding.sm.value,
   },
   navSection: {
     display: 'flex',

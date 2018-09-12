@@ -12,17 +12,19 @@ export default class Search extends Component {
     const { ui } = this.props.store;
     const { list, loading } = this.props.store.search;
     const events = (list || []).map((event, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={event} />));
-    const noResult = (
-      <Typography variant="body1">
-        <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
-      </Typography>
-    );
+
     return (
       <Fragment>
         <Grid container spacing={theme.padding.sm.value}>
-          {list.length === 0 && !loading ? noResult : events}
+          {list.length === 0 && !loading ? <NoResult /> : events}
         </Grid>
       </Fragment>
     );
   }
 }
+
+const NoResult = () => (
+  <Typography variant="body1">
+    <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
+  </Typography>
+);

@@ -123,7 +123,7 @@
   "pendingTxsSnackbar.balanceExplanation": "处理中的交易将会影响您的钱包余额",
   "pendingTxsSnackbar.youHaveXPendingTransactions": "您有{numOfTxs}待处理的交易.",
   "search.emptySearchResult": "抱歉，您的搜索没有任何结果。",
-  "search.placeholder": "输入开始搜索",
+  "search.placeholder": "输入开始搜索：事件名称、结果设置者地址...",
   "selectAddressDialog.selectResultSetter": "选择结果设定者",
   "settings.settings": "设置",
   "sort.asc": "升序",

@@ -239,10 +239,11 @@ export function querySyncInfo(includeBalance) {
   return request.execute();
 }
 
-/*
-* Search for Oracles that contains phrase either in title or result setter address
-* @param phrase: String
-*/
+/**
+ * Search for Oracles that contains phrase either in title or result setter address
+ * @param {String} Phrase The keyword param for search
+ * @return {Promise} Search result from graphql
+ */
 export function searchOracles(phrase) {
   const request = new GraphQuery('searchOracles', TYPE.oracle);
   if (!_.isEmpty(phrase)) {

@@ -4,7 +4,7 @@ const styles = () => ({
   resultWrapper: {
     boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25) inset',
     background: 'white',
-    'align-items': 'flex-start',
+    alignItems: 'flex-start',
     overflowY: 'scroll',
     height: 'calc(100vh - 70px)',
   },
