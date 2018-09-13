@@ -103,7 +103,7 @@ export default class Oracle {
     this.app = app;
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-    this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
+    this.url = this.unconfirmed ? `/oracle/${oracle.hashId}` : `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
     this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
     this.localizedInvalid = {

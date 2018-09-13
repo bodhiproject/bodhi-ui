@@ -31,6 +31,7 @@ const INIT = {
   warningType: '',
   eventWarningMessageId: '',
   escrowClaim: 0,
+  hashId: '',
 };
 
 export default class EventStore {
@@ -48,6 +49,7 @@ export default class EventStore {
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
+  @observable hashId = INIT.hashId
 
   // topic
   @observable topics = []
@@ -72,7 +74,7 @@ export default class EventStore {
   }
   // For Oracle only
   @computed get unconfirmed() {
-    return this.topicAddress === 'null' && this.address === 'null';
+    return _.isUndefined(this.topicAddress) && _.isUndefined(this.address);
   }
   @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
     return this.oracles.filter(({ token }) => token === Token.BOT);
@@ -83,7 +85,9 @@ export default class EventStore {
     return _.find(this.oracles, { token: Token.QTUM }) || {};
   }
   @computed get oracle() {
-    if (this.unconfirmed) return _.find(this.oracles, { txid: this.txid });
+    if (this.unconfirmed) {
+      return _.find(this.oracles, { hashId: this.hashId });
+    }
     return _.find(this.oracles, { address: this.address }) || {};
   }
   // both
@@ -100,12 +104,13 @@ export default class EventStore {
   }
 
   @action
-  async init({ topicAddress, address, txid, type }) {
+  async init({ topicAddress, address, txid, type, hashId }) {
     this.reset();
     this.topicAddress = topicAddress;
     this.address = address;
     this.txid = txid;
     this.type = type;
+    this.hashId = hashId;
 
     if (type === UNCONFIRMED) {
       await this.initUnconfirmedOracle();
@@ -124,8 +129,8 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    const res = await queryAllOracles([{ txid: this.txid }], undefined, 1);
-    this.oracles = _.map(res, o => new Oracle(o, this.app));
+    const res = await queryAllOracles([{ hashId: this.hashId }], undefined, 1);
+    this.oracles = res.map(oracle => new Oracle(oracle, this.app));
     this.loading = false;
   }
 
@@ -200,12 +205,11 @@ export default class EventStore {
 
   @action
   verifyConfirmedOracle = async () => {
-    // TODO: need to implement hashedId on server first so we can fetch the updated Oracle by hashedId as it goes through the approve -> createEvent txs
-    // const res = await queryAllOracles([{ txid: this.txid }]);
-    // const { topicAddress, address, txid } = res[0];
-    // if (address && topicAddress) {
-    //   this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
-    // }
+    const res = await queryAllOracles([{ hashId: this.hashId }]);
+    if (!_.isNull(res[0].topicAddress)) {
+      const { topicAddress, address, txid } = res[0];
+      this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
+    }
   }
 
   @action

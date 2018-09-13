@@ -31,8 +31,8 @@ export default class EventPage extends Component {
     if (path.startsWith('/topic')) {
       type = EventType.TOPIC;
     } else if (path.startsWith('/oracle')) {
-      const { address, topicAddress } = params;
-      if (address === 'null' || topicAddress === 'null') {
+      const { hashId } = params;
+      if (hashId) {
         type = EventType.UNCONFIRMED;
       } else {
         type = EventType.ORACLE;
@@ -51,13 +51,6 @@ export default class EventPage extends Component {
 
     if (loading) {
       return <Loading text={messages.loadOracleMsg} />;
-    }
-
-    // Unconfirmed Oracle changed txid so Oracles query comes back empty. Return to Qtum Prediction.
-    // TODO: can remove this when hashId is implemented and we can get the Oracle by hashId.
-    if (!event) {
-      this.props.history.push('/');
-      return;
     }
 
     const Event = {

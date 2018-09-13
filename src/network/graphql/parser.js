@@ -54,6 +54,7 @@ class GraphParser {
       consensusThreshold: entry.consensusThreshold,
       blockNum: entry.blockNum,
       transactions: entry.transactions,
+      hashId: entry.hashId,
     }));
   }
 
