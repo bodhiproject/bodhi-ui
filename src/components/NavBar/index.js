@@ -44,26 +44,6 @@ export default class NavBar extends Component {
         break;
     }
   }
-  changeSearchBarMode = () => {
-    this.props.store.ui.searchBarMode = !this.props.store.ui.searchBarMode;
-    if (this.props.store.ui.searchBarMode) {
-      document.body.style.overflow = 'hidden';
-      document.getElementById('searchEventInput').focus();
-      this.props.store.search.phrase = '';
-      this.props.store.search.list = [];
-    } else document.body.style.overflow = null;
-    this.setState({
-      dropdownDirection: 'down',
-    });
-  }
-  handleSearchBarKeyDown = event => {
-    switch (event.key) {
-      case 'Enter':
-        this.props.store.search.init();
-        break;
-      default: break;
-    }
-  }
   render() {
     const { classes } = this.props;
     const { ui, search } = this.props.store;
@@ -268,7 +248,6 @@ const Toggle = styled.div`
   line-height: 70px;
   cursor: pointer;
   user-select: none;
-
   &:hover {
     opacity: 0.8;
   }

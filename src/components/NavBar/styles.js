@@ -1,5 +1,3 @@
-import { rgba } from 'polished';
-
 const styles = (theme) => ({
   navBar: {
     boxShadow: 'none',
@@ -39,11 +37,6 @@ const styles = (theme) => ({
     fontSize: theme.sizes.font.textLg,
     color: theme.palette.primary.main,
     paddingRight: theme.padding.sm.value,
-  },
-  SearchBarLeftIcon: {
-    fontSize: theme.sizes.font.textLg,
-    color: '#585AFA',
-    paddingRight: 24,
   },
   navSection: {
     display: 'flex',

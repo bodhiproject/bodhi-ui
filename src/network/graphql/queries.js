@@ -253,10 +253,11 @@ export function searchOracles(phrase) {
   return request.execute();
 }
 
-/*
-* Search for Topics that contains phrase either in title or result setter address
-* @param phrase: String
-*/
+/**
+ * Search for Topics that contains phrase either in title or result setter address
+ * @param {String} Phrase The keyword param for search
+ * @return {Promise} Search result from graphql
+ */
 export function searchTopics(phrase) {
   const request = new GraphQuery('searchTopics', TYPE.topic);
   if (!_.isEmpty(phrase)) {
