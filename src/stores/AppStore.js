@@ -19,6 +19,7 @@ import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
 import { isProduction } from '../config/app';
+import SearchStore from '../scenes/Search/store';
 
 class AppStore {
   @observable loading = true;
@@ -37,6 +38,7 @@ class AppStore {
   createEvent = {}
   allEvents = {}
   activities = {}
+  search = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -44,7 +46,7 @@ class AppStore {
 
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
-    this.ui = new UiStore();
+    this.ui = new UiStore(this);
     this.wallet = new WalletStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
@@ -67,6 +69,7 @@ class AppStore {
         history: new WalletHistoryStore(this),
       };
 
+      this.search = new SearchStore(this);
       // finished loading all stores, show UI
       this.loading = false;
     });

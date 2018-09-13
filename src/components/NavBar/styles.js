@@ -2,16 +2,45 @@ const styles = (theme) => ({
   navBar: {
     boxShadow: 'none',
   },
+  navBarShadow: {
+    boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.25)',
+  },
   navBarWrapper: {
     display: 'flex',
     padding: `0 ${theme.padding.sm.px}`,
     paddingRight: '0',
-    'align-items': 'center',
-    height: '70px',
-    'justify-content': 'space-between',
+    alignItems: 'center',
+    height: theme.sizes.navHeight,
+    justifyContent: 'space-between',
+  },
+  searchBarWrapper: {
+    height: theme.sizes.navHeight,
+    lineHeight: theme.sizes.navHeight,
+    background: 'white',
+    color: 'rgba(0, 0, 0, 1)',
+  },
+  searchBarTextField: {
+    width: '100%',
+    margin: 'auto',
+    verticalAlign: 'middle',
+  },
+  searchBarInputBase: {
+    height: '48px',
+    lineHeight: '48px',
+    padding: `0px ${theme.padding.xs.px}`,
+    borderLeft: `2px solid ${theme.palette.text.hint}`,
+  },
+  searchBarInput: {
+    fontSize: theme.sizes.font.textLg,
+  },
+  searchBarLeftIcon: {
+    fontSize: theme.sizes.font.textLg,
+    color: theme.palette.primary.main,
+    paddingRight: theme.padding.sm.value,
   },
   navSection: {
     display: 'flex',
+    flexGrow: 1,
   },
   navBarLogo: {
     height: '38px',

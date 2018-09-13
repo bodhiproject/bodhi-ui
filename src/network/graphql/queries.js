@@ -17,6 +17,7 @@ class GraphQuery {
     this.filters = undefined;
     this.orderBy = undefined;
     this.params = {};
+    this.searchPhrase = undefined;
   }
 
   setFilters(filters) {
@@ -25,6 +26,10 @@ class GraphQuery {
 
   setOrderBy(orderBy) {
     this.orderBy = orderBy;
+  }
+
+  setSearchPhrase(phrase) {
+    this.searchPhrase = phrase;
   }
 
   addParam(key, value) {
@@ -77,6 +82,14 @@ class GraphQuery {
     return _.isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
   }
 
+  getSearchPhraseString() {
+    let phraseStr = '';
+    if (this.searchPhrase) {
+      phraseStr = JSON.stringify(this.searchPhrase);
+    }
+    return _.isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
+  }
+
   getParamsString() {
     let str = '';
     const keys = Object.keys(this.params);
@@ -95,8 +108,9 @@ class GraphQuery {
   build() {
     const filterStr = this.getFilterString();
     const orderByStr = this.getOrderByString();
+    const searchPhraseStr = this.getSearchPhraseString();
     const paramsStr = this.getParamsString();
-    const needsParentheses = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) || !_.isEmpty(paramsStr);
+    const needsParentheses = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) || !_.isEmpty(paramsStr) || !_.isEmpty(searchPhraseStr);
 
     const parenthesesOpen = needsParentheses ? '(' : '';
     const parenthesesClose = needsParentheses ? ')' : '';
@@ -105,6 +119,7 @@ class GraphQuery {
       query {
         ${this.queryName}${parenthesesOpen}
           ${filterStr}
+          ${searchPhraseStr}
           ${orderByStr}
           ${paramsStr}
         ${parenthesesClose} {
@@ -117,7 +132,6 @@ class GraphQuery {
 
   async execute() {
     const query = this.build();
-
     // Post query to window
     if (!isProduction()) {
       window.queries += `\n${query}`;
@@ -222,5 +236,33 @@ export function querySyncInfo(includeBalance) {
   if (includeBalance) {
     request.addParam('includeBalance', includeBalance);
   }
+  return request.execute();
+}
+
+/**
+ * Search for Oracles that contains phrase either in title or result setter address
+ * @param {String} phrase The keyword param for search
+ * @return {Promise} Search result from graphql
+ */
+export function searchOracles(phrase) {
+  const request = new GraphQuery('searchOracles', TYPE.oracle);
+  if (!_.isEmpty(phrase)) {
+    request.setSearchPhrase(phrase);
+  }
+  request.addParam('limit', 1000); // how to do unlimited search??
+  return request.execute();
+}
+
+/**
+ * Search for Topics that contains phrase either in title or result setter address
+ * @param {String} phrase The keyword param for search
+ * @return {Promise} Search result from graphql
+ */
+export function searchTopics(phrase) {
+  const request = new GraphQuery('searchTopics', TYPE.topic);
+  if (!_.isEmpty(phrase)) {
+    request.setSearchPhrase(phrase);
+  }
+  request.addParam('limit', 1000);
   return request.execute();
 }

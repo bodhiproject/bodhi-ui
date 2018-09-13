@@ -3,12 +3,13 @@ import moment from 'moment';
 import { Routes } from 'constants';
 import locales from '../languageProvider';
 
-
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable error = null
   @observable globalMessage = null
+  @observable searchBarMode = false
+  @observable dropdownDirection = 'down'
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -26,7 +27,8 @@ export default class UiStore {
     return locale;
   }
 
-  constructor() {
+  constructor(app) {
+    this.app = app;
     reaction( // whenever the locale changes, update locale in local storage and moment
       () => this.locale,
       () => {
@@ -55,5 +57,19 @@ export default class UiStore {
   @action
   clearGlobalMessage = () => {
     this.globalMessage = null;
+  }
+
+  @action
+  enableSearchBarMode = () => {
+    this.searchBarMode = true;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('searchEventInput').focus();
+    this.dropdownDirection = 'down';
+  }
+
+  @action
+  disableSearchBarMode = () => {
+    this.searchBarMode = false;
+    document.body.style.overflow = null;
   }
 }
