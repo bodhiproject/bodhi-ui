@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { Grid, Typography, Tabs, Tab } from '@material-ui/core';
+import { Grid, Typography, Tabs, Tab, withStyles } from '@material-ui/core';
 import { EventStatus } from 'constants';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
+import styles from './styles';
 
 const TAB_BET = 0;
 const TAB_VOTE = 1;
@@ -34,6 +35,7 @@ const messages = defineMessages({
     defaultMessage: 'Voting',
   },
 });
+@withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
 @observer

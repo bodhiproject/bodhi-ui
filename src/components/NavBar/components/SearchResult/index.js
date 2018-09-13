@@ -14,7 +14,7 @@ export default class SearchResult extends Component {
     return (
       <div className={classes.resultWrapper}>
         <div className={classes.result}>
-          <Search {...this.props} />
+          <Search />
         </div>
       </div>
     );
