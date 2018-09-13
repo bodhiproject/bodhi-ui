@@ -77,7 +77,7 @@ export default class NavBar extends Component {
         </Dropdown>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchBarField {...this.props} onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            <SearchBarField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
@@ -127,7 +127,7 @@ const DivSearchBarField = styled.div`
   width: 90%;
 `;
 
-const SearchBarField = inject('store')(({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
+const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject('store')(({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
   <DivSearchBarField>
     <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
     <TextField
@@ -155,7 +155,7 @@ const SearchBarField = inject('store')(({ intl, classes, store: { search, ui }, 
     </TextField>
     <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
-));
+))));
 
 const MyActivities = observer(({ store: { global } }) => {
   if (global.userData.totalCount > 0) {
