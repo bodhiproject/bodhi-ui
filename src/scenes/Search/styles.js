@@ -6,6 +6,7 @@ const styles = (theme) => ({
     left: 0,
     right: 0,
     height: '56px',
+    width: '90%',
   },
   searchTabButton: {
     marginTop: '0px',

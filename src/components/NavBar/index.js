@@ -124,7 +124,7 @@ const SearchBarFont = styled.div`
 const DivSearchBarField = styled.div`
   margin: auto;
   display: flex;
-  width: 60%;
+  width: 90%;
 `;
 
 const SearchBarField = inject('store')(({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
