@@ -241,7 +241,7 @@ export function querySyncInfo(includeBalance) {
 
 /**
  * Search for Oracles that contains phrase either in title or result setter address
- * @param {String} Phrase The keyword param for search
+ * @param {String} phrase The keyword param for search
  * @return {Promise} Search result from graphql
  */
 export function searchOracles(phrase) {
@@ -255,7 +255,7 @@ export function searchOracles(phrase) {
 
 /**
  * Search for Topics that contains phrase either in title or result setter address
- * @param {String} Phrase The keyword param for search
+ * @param {String} phrase The keyword param for search
  * @return {Promise} Search result from graphql
  */
 export function searchTopics(phrase) {
