@@ -61,6 +61,7 @@ To create an optimized production build of the app, you need to run a build comm
 // Accepted Flags
 --chain=        // Sets the chain env variables. One of: mainnet, testnet, regtest
 --localwallet   // Change compatibility for tx signing with a local wallet program, eg. Qtum Wallet
+--output=       // Sets the output folder of the build files
 
 // Mainnet chain
 $ yarn build --chain=mainnet
