@@ -23,7 +23,7 @@ export default class {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
   @observable skip = INIT_VALUES.skip
-  limit = 24
+  @observable limit = 24
 
   constructor(app) {
     this.app = app;
