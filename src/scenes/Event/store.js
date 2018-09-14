@@ -179,6 +179,7 @@ export default class EventStore {
           }
           case TOPIC: {
             this.queryTransactions(this.address);
+            this.disableEventActionsIfNecessary();
             break;
           }
           case ORACLE: {
