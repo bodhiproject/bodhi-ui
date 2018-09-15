@@ -179,11 +179,13 @@ export default class EventStore {
           }
           case TOPIC: {
             this.queryTransactions(this.address);
+            this.disableEventActionsIfNecessary();
             break;
           }
           case ORACLE: {
             await this.queryTransactions(this.topicAddress);
             await this.queryOracles(this.topicAddress);
+            this.disableEventActionsIfNecessary();
             break;
           }
           default: {
@@ -195,9 +197,11 @@ export default class EventStore {
 
     // Toggle CTA on new block, transaction change, amount input change, option selected
     reaction(
-      () => this.app.global.syncBlockTime + this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.lastUsedAddress,
+      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.lastUsedAddress,
       () => {
-        if (this.type === TOPIC || this.type === ORACLE) this.disableEventActionsIfNecessary();
+        if (this.type === TOPIC || this.type === ORACLE) {
+          this.disableEventActionsIfNecessary();
+        }
       },
       { fireImmediately: true },
     );
