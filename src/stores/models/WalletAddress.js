@@ -1,16 +1,14 @@
-import { observable } from 'mobx';
-
 import { satoshiToDecimal } from '../../helpers/utility';
 
 export default class WalletAddress {
-  @observable address = '';
-  @observable qtum = 0
-  @observable bot = 0
+  address = ''
+  qtum = ''
+  bot = ''
 
-  constructor(args, convertToDecimal = true) {
-    Object.assign(this, args);
+  constructor(addressBalance) {
+    Object.assign(this, addressBalance);
     this.address = this.address;
-    this.qtum = convertToDecimal ? satoshiToDecimal(args.qtum) : args.qtum;
-    this.bot = convertToDecimal ? satoshiToDecimal(args.bot) : args.bot;
+    this.qtum = satoshiToDecimal(addressBalance.qtum);
+    this.bot = satoshiToDecimal(addressBalance.bot);
   }
 }
