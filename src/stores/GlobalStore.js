@@ -40,9 +40,6 @@ export default class GlobalStore {
   constructor(app) {
     this.app = app;
 
-    // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
-    this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
-
     // Update the actionable item count when the addresses or block number changes
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum,
@@ -53,9 +50,39 @@ export default class GlobalStore {
       },
     );
 
+    // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
+    this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
+    this.registerQrypto();
+
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
     this.subscribeSyncInfo();
+  }
+
+  /**
+   * Registers with Qrypto and sets event handler if not using a local wallet.
+   */
+  registerQrypto = () => {
+    if (!this.localWallet) {
+      console.log('Registering with Qrypto...'); // eslint-disable-line
+      window.addEventListener('message', this.handleQryptoAccountChange, false);
+      window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
+    }
+  }
+
+  /**
+   * Handles the event when Qrypto posts an account change message.
+   * @param {MessageEvent} event Message event to handle.
+   */
+  handleQryptoAccountChange = (event) => {
+    if (event.data.message && event.data.message.type === 'ACCOUNT_CHANGED') {
+      if (event.data.message.payload.error) {
+        console.error(event.data.message.payload.error); // eslint-disable-line
+        return;
+      }
+
+      this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
+    }
   }
 
   @action
