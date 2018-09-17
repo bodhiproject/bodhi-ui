@@ -84,4 +84,8 @@ export default class TransactionStore {
     this.senderAddress = this.app.wallet.currentAddress;
     this.showConfirmDialog();
   }
+
+  onTxConfirmed = () => {
+    console.log('confirmed');
+  }
 }
