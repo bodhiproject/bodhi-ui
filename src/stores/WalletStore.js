@@ -109,10 +109,32 @@ export default class WalletStore {
   }
 
   /**
+   * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
+   * @param {string} address Address to check the BOT balance of.
+   */
+  fetchBotBalance = async (address) => {
+    try {
+      const { data } = await axios.post(Routes.api.botBalance, {
+        owner: address,
+        senderAddress: address,
+      });
+      if (data.balance) {
+        const index = _.findIndex(this.addresses, { address });
+        if (index !== -1) {
+          this.addresses[index].bot = satoshiToDecimal(data.balance);
+        }
+      }
+    } catch (err) {
+      console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
+    }
+  }
+
+  /**
    * Sets the account sent from Qrypto.
    * @param {object} account Account object.
    */
   @action
+<<<<<<< HEAD
 <<<<<<< HEAD
   onQryptoAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
@@ -218,10 +240,20 @@ export default class WalletStore {
     }
 =======
   onQryptoAccountChange = (account) => {
+=======
+  onQryptoAccountChange = async (account) => {
+>>>>>>> Set BOT balance on qrypto login
     const { loggedIn, address, balance } = account;
     if (!loggedIn) {
       this.addresses = INIT_VALUE.addresses;
       return;
+    }
+
+    // If setting Qrypto's account for the first time, fetch the BOT balance right away.
+    // After the initial BOT balance fetch, it will refetch on every new block.
+    let fetchInitBotBalance = false;
+    if (_.isEmpty(this.addresses)) {
+      fetchInitBotBalance = true;
     }
 
     this.addresses = [new WalletAddress({
@@ -229,7 +261,14 @@ export default class WalletStore {
       qtum: balance,
       bot: 0,
     }, false)];
+<<<<<<< HEAD
 >>>>>>> Fix wallet addr to not convert for qrypto
+=======
+
+    if (fetchInitBotBalance) {
+      this.fetchBotBalance(this.addresses[0].address);
+    }
+>>>>>>> Set BOT balance on qrypto login
   }
 
   @action
