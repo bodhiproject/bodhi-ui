@@ -56,20 +56,22 @@ export default class NavBar extends Component {
               <QtumPrediction {...this.props} />
               <BotCourt {...this.props} />
             </NavSection>
-            <SearchButton />
+            <SearchButton classes={classes} />
             <MyActivities {...this.props} />
-            <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${ui.dropdownDirection}`}></div></Toggle>
+            <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
+              <div className={cx(classes.navToggleIcon, `icon iconfont icon-ic_${ui.dropdownDirection}`)}></div>
+            </Toggle>
           </Toolbar>
         </Collapse>
-        <Dropdown data-show={ui.dropdownDirection === 'down'}>
+        <Dropdown className={classes.navDropdown} data-show={ui.dropdownDirection === 'down'}>
           <Wallet {...this.props} />
           <Link to={Routes.ALL_EVENTS}>
-            <Item onClick={this.changeDropDownDirection}>
+            <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
               <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
             </Item>
           </Link>
           <Link to={Routes.SETTINGS}>
-            <Item onClick={this.changeDropDownDirection}>
+            <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
               <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
             </Item>
           </Link>
@@ -88,14 +90,14 @@ export default class NavBar extends Component {
   }
 }
 
-const QAButton = ({ intl, changeDropDownDirection }) => (
+const QAButton = ({ classes, intl, changeDropDownDirection }) => (
   <a
     onClick={() => {
       window.open(faqUrls[intl.locale], '_blank');
       Tracking.track('navBar-helpClick');
     }}
   >
-    <Item onClick={changeDropDownDirection}>
+    <Item className={classes.navDropdownLinkItem} onClick={changeDropDownDirection}>
       <FormattedMessage id="help" defaultMessage="Help" />
     </Item>
   </a>
@@ -157,12 +159,12 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
   </DivSearchBarField>
 ))));
 
-const MyActivities = observer(({ store: { global } }) => {
+const MyActivities = observer(({ classes, store: { global } }) => {
   if (global.userData.totalCount > 0) {
     return (<NavLink to={Routes.ACTIVITY_HISTORY}>
-      <NavBarRightButtonContainer>
-        <NavBarRightButton>
-          <Badge badgeContent={global.userData.totalCount} color="secondary">
+      <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
+        <NavBarRightButton className={classes.myActivitiesButton}>
+          <Badge badgeContent={global.userData.totalCount} color="secondary" classes={{ badge: classes.myActivitiesBadgeBadge }}>
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Badge>
         </NavBarRightButton>
@@ -170,19 +172,19 @@ const MyActivities = observer(({ store: { global } }) => {
     </NavLink>);
   }
   return (<NavLink to={Routes.ACTIVITY_HISTORY}>
-    <NavBarRightButtonContainer>
-      <NavBarRightButton>
+    <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
+      <NavBarRightButton className={classes.myActivitiesButton}>
         <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
       </NavBarRightButton>
     </NavBarRightButtonContainer>
   </NavLink>);
 });
 
-const SearchButton = inject('store')(observer(({ store: { ui } }) => (
-  <NavBarRightButtonContainer onClick={ui.enableSearchBarMode}>
+const SearchButton = inject('store')(observer(({ classes, store: { ui } }) => (
+  <NavBarRightButtonContainer className={classes.searchButtonWrapper} onClick={ui.enableSearchBarMode}>
     <NavBarRightButton>
       <div className="icon iconfont icon-ic_search" />
-      <SearchBarFont>
+      <SearchBarFont className={classes.searchBarFont}>
         <FormattedMessage id="str.search" defaultMessage="Search" />
       </SearchBarFont>
     </NavBarRightButton>
