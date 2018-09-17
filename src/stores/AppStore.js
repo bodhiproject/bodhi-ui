@@ -13,6 +13,7 @@ import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import WalletStore from './WalletStore';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
+import ExecuteTxDialogStore from '../components/ExecuteTxDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
@@ -29,6 +30,7 @@ class AppStore {
   ui = {}
   wallet = {}
   globalSnackbar = {}
+  executeTxDialog = {}
   walletUnlockDialog = {}
   pendingTxsSnackbar = {}
   refreshing = {}
@@ -49,6 +51,7 @@ class AppStore {
     this.ui = new UiStore(this);
     this.wallet = new WalletStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
+    this.executeTxDialog = new ExecuteTxDialogStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
