@@ -533,7 +533,9 @@ export default class EventStore {
       const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
-        this.txConfirmDialogOpen = true;
+        // this.txConfirmDialogOpen = true;
+        this.app.executeTxDialog.visible = true;
+        this.app.executeTxDialog.txFees = txFees;
       });
     } catch (error) {
       runInAction(() => {
