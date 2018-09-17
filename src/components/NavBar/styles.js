@@ -12,6 +12,9 @@ const styles = (theme) => ({
     alignItems: 'center',
     height: theme.sizes.navHeight,
     justifyContent: 'space-between',
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: theme.padding.unit.px,
+    },
   },
   searchBarWrapper: {
     height: theme.sizes.navHeight,
@@ -32,11 +35,24 @@ const styles = (theme) => ({
   },
   searchBarInput: {
     fontSize: theme.sizes.font.textLg,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
   },
   searchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,
     color: theme.palette.primary.main,
     paddingRight: theme.padding.sm.value,
+  },
+  searchButtonWrapper: {
+    [theme.breakpoints.down('xs')]: {
+      padding: `0 ${theme.padding.unit.px}`,
+    },
+  },
+  searchBarFont: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
   navSection: {
     display: 'flex',
@@ -45,6 +61,9 @@ const styles = (theme) => ({
   navBarLogo: {
     height: '38px',
     verticalAlign: 'middle',
+    [theme.breakpoints.down('xs')]: {
+      width: 64,
+    },
   },
   navBarWalletIcon: {
     marginRight: theme.padding.unit.px,
@@ -72,6 +91,55 @@ const styles = (theme) => ({
     },
     '&:hover': {
       color: 'white',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+      padding: `0 ${theme.padding.unit.px}`,
+    },
+  },
+  myActivitiesWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+      padding: `0 ${theme.padding.unit.px}`,
+      right: 30,
+    },
+  },
+  myActivitiesBadgeBadge: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+      top: -5,
+      width: 18,
+      right: -9,
+      height: 18,
+    },
+  },
+  myActivitiesButton: {
+    height: 'auto',
+    [theme.breakpoints.down('xs')]: {
+      lineHeight: theme.sizes.font.textSm,
+    },
+  },
+  navToggle: {
+    [theme.breakpoints.down('xs')]: {
+      width: 30,
+      fontSize: 12,
+    },
+  },
+  navToggleIcon: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
+  navDropdown: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
+  navDropdownLinkItem: {
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.padding.xs.px,
     },
   },
   faq: {

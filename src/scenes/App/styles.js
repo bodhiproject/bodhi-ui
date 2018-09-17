@@ -5,6 +5,12 @@ const styles = (theme) => ({
   container: {
     padding: `${theme.sizes.navHeight} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
 
+    [theme.breakpoints.down('xs')]: {
+      margin: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+
     [theme.breakpoints.up('xs')]: {
       margin: theme.padding.sm.px,
     },

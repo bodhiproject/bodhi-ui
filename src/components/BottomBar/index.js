@@ -49,33 +49,50 @@ export default class BottomBar extends Component {
 }
 
 const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
-  <Grid item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
-    <Typography variant="body1">
-      <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
-      <FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? getShortLocalDateTimeString(blockTime) : ''}
-    </Typography>
+  <Grid container item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
+    <Grid item xs={12} sm={5}>
+      <Typography variant="body1" className={classes.bottomBarTxt}>
+        <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
+      </Typography>
+    </Grid>
+    <Grid item xs={12} sm={7}>
+      <Typography variant="body1" className={classes.bottomBarTxt}>
+        <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? getShortLocalDateTimeString(blockTime) : ''}</span>
+      </Typography>
+    </Grid>
   </Grid>
 ));
 
 const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
-  <Grid item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
-    <Typography variant="body1">
-      {navigator.onLine ? (
-        <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
-      ) : (
-        <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
-      )}
-      <span>
-        {navigator.onLine ? (
-          <Fragment>
-            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
-            {`: ${peerNodeCount} `}
+  <Grid container item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
+    {navigator.onLine ? (
+      <Fragment>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body1" className={classes.bottomBarTxt}>
+            <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
+            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />:
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body1" className={classes.bottomBarTxt}>
+            {`${peerNodeCount} `}
             <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
-          </Fragment>
-        ) : (
-          <FormattedMessage id="bottomBar.offline" defaultMessage="Offline" />
-        )}
-      </span>
-    </Typography>
+          </Typography>
+        </Grid>
+      </Fragment>
+    ) : (
+      <Fragment>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body1" className={classes.bottomBarTxt}>
+            <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body1" className={classes.bottomBarTxt}>
+            <FormattedMessage id="bottomBar.offline" defaultMessage="Offline" />
+          </Typography>
+        </Grid>
+      </Fragment>
+    )}
   </Grid>
 ));

@@ -13,6 +13,7 @@ import {
   MenuItem,
   Card,
   withStyles,
+  withWidth,
 } from '@material-ui/core';
 
 import { SortBy } from 'constants';
@@ -20,12 +21,14 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@withWidth()
 @inject('store')
 @observer
 export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     noCreateEventButton: PropTypes.bool,
+    width: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -33,33 +36,33 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction } } = this.props;
+    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction }, width } = this.props;
     const { createEvent } = store;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           {!noCreateEventButton && (
             <Button
               variant="raised"
-              size="medium"
+              size={width === 'xs' ? 'small' : 'medium'}
               color="primary"
               className={classes.createEventButton}
               onClick={createEvent.open}
             >
-              <AddIcon fontSize={fontSize} />
+              <AddIcon className={classes.createEventButtonIcon} fontSize={fontSize} />
               <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
             </Button>
           )}
         </Grid>
-        <Grid item xs={4} className={classes.dashboardActionsRight}>
+        <Grid item xs={6} className={classes.dashboardActionsRight}>
           <span className={classes.dashboardActionsSortLabel}>
             <FormattedMessage id="sort.label" defaultMessage="Sort By" />
           </span>
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
-              <Select disableUnderline value={qtumPrediction.sortBy} onChange={e => qtumPrediction.sortBy = e.target.value}>
-                <MenuItem value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
+              <Select disableUnderline className={classes.dashboardActionsSelect} value={qtumPrediction.sortBy} onChange={e => qtumPrediction.sortBy = e.target.value}>
+                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
               </Select>
             </FormControl>
           </Card>
