@@ -2,13 +2,13 @@ import { satoshiToDecimal } from '../../helpers/utility';
 
 export default class WalletAddress {
   address = ''
-  qtum = ''
-  bot = ''
+  qtum = 0
+  bot = 0
 
-  constructor(addressBalance) {
-    Object.assign(this, addressBalance);
+  constructor(args, convertToDecimal = true) {
+    Object.assign(this, args);
     this.address = this.address;
-    this.qtum = satoshiToDecimal(addressBalance.qtum);
-    this.bot = satoshiToDecimal(addressBalance.bot);
+    this.qtum = convertToDecimal ? satoshiToDecimal(args.qtum) : args.qtum;
+    this.bot = convertToDecimal ? satoshiToDecimal(args.bot) : args.bot;
   }
 }

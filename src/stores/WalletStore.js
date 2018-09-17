@@ -10,6 +10,7 @@ import Routes from '../network/routes';
 import { createTransferTx } from '../network/graphql/mutations';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
+import WalletAddress from './models/WalletAddress';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
@@ -125,7 +126,17 @@ export default class {
    */
   @action
   onQryptoAccountChange = (account) => {
-    console.log(account);
+    const { loggedIn, address, balance } = account;
+    if (!loggedIn) {
+      this.addresses = INIT_VALUE.addresses;
+      return;
+    }
+
+    this.addresses = [new WalletAddress({
+      address,
+      qtum: balance,
+      bot: 0,
+    }, false)];
   }
 
   @action
