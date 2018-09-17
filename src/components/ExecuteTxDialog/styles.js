@@ -10,6 +10,10 @@ const styles = (theme) => ({
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
   },
+  txFeesTable: {
+    marginBottom: theme.padding.xs.px,
+    overflowX: 'scroll',
+  },
 });
 
 export default styles;

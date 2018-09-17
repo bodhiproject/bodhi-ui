@@ -39,7 +39,6 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
     </Content>
     <Sidebar />
     <ExecuteTxDialog />
-    {/* <OracleTxConfirmDialog id={messages.txConfirmMsgBetMsg.id} /> */}
   </Row>
 ));
 

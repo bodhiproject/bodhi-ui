@@ -5,10 +5,9 @@ import { defineMessages } from 'react-intl';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
 
+const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
 const SATOSHI_CONVERSION = 10 ** 8;
-const BOT_MIN_VALUE = 0.01; // eslint-disable-line
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
   end: {
