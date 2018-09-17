@@ -9,6 +9,7 @@ import apolloClient from '../network/graphql';
 
 
 const INIT_VALUES = {
+  localWallet: undefined,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
@@ -22,6 +23,7 @@ const INIT_VALUES = {
 };
 
 export default class GlobalStore {
+  @observable localWallet = INIT_VALUES.localWallet
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
@@ -37,6 +39,9 @@ export default class GlobalStore {
 
   constructor(app) {
     this.app = app;
+
+    // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
+    this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
     // Update the actionable item count when the addresses or block number changes
     reaction(
