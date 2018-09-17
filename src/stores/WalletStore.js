@@ -113,6 +113,7 @@ export default class WalletStore {
    * @param {object} account Account object.
    */
   @action
+<<<<<<< HEAD
   onQryptoAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
 
@@ -215,6 +216,20 @@ export default class WalletStore {
     } catch (err) {
       console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
     }
+=======
+  onQryptoAccountChange = (account) => {
+    const { loggedIn, address, balance } = account;
+    if (!loggedIn) {
+      this.addresses = INIT_VALUE.addresses;
+      return;
+    }
+
+    this.addresses = [new WalletAddress({
+      address,
+      qtum: balance,
+      bot: 0,
+    }, false)];
+>>>>>>> Fix wallet addr to not convert for qrypto
   }
 
   @action
