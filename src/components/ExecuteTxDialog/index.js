@@ -10,10 +10,6 @@ import { getTxTypeFormatted } from '../../helpers/utility';
 
 
 const messages = defineMessages({
-  txConfirmMessageWithFeeMsg: {
-    id: 'txConfirm.messageWithFee',
-    defaultMessage: 'You are about to {txDesc} for {amount} {token} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
-  },
   txTypeApprove: {
     id: 'txType.approve',
     defaultMessage: 'Approve',
@@ -67,10 +63,6 @@ const messages = defineMessages({
 @inject('store')
 @observer
 export default class ExecuteTxDialog extends Component {
-  onOkClick = () => {
-
-  }
-
   render() {
     const { visible } = this.props.store.tx;
 
@@ -88,7 +80,7 @@ export default class ExecuteTxDialog extends Component {
           <Button onClick={() => this.props.store.tx.visible = false}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
-          <Button color="primary" onClick={this.onOkClick}>
+          <Button color="primary" onClick={this.props.store.tx.onTxConfirmed}>
             <FormattedMessage id="str.confirm" defaultMessage="OK" />
           </Button>
         </DialogActions>
@@ -154,8 +146,8 @@ const ExplanationMessage = injectIntl(inject('store')(({ intl, store: { tx: { fe
   return (
     <FormattedMessage
       id='txConfirm.messageWithFee'
-      defaultMessage='You are about to {txDesc} for {amount} {token} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.'
-      values={{ txDesc, amount, token, txFee }}
+      defaultMessage='You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.'
+      values={{ txDesc, txAmount: amount, txToken: token, txFee }}
     />
   );
 }));
