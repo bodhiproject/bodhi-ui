@@ -1,6 +1,6 @@
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
-import _ from 'lodash';
+import { each, find } from 'lodash';
 
 import SyncInfo from './models/SyncInfo';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
@@ -157,7 +157,7 @@ export default class GlobalStore {
       const topicFilters = [];
 
       // Get all votes for all your addresses
-      _.each(this.app.wallet.addresses, (item) => {
+      each(this.app.wallet.addresses, (item) => {
         voteFilters.push({ voterQAddress: item.address });
         topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
@@ -166,11 +166,11 @@ export default class GlobalStore {
       let votes = await queryAllVotes(voteFilters);
       votes = votes.reduce((accumulator, vote) => {
         const { voterQAddress, topicAddress, optionIdx } = vote;
-        if (!_.find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
+        if (!find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
         return accumulator;
       }, []);
 
-      _.each(votes, ({ topicAddress, optionIdx }) => {
+      each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       const topicsForVotes = await queryAllTopics(topicFilters);
@@ -178,7 +178,7 @@ export default class GlobalStore {
 
       // Get result set items
       const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
-      _.each(action.walletAddresses, (item) => {
+      each(action.walletAddresses, (item) => {
         oracleSetFilters.push({
           token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
