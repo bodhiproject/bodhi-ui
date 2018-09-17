@@ -118,8 +118,8 @@ class GraphQuery {
     const query = `
       query {
         ${this.queryName}${parenthesesOpen}
-          ${filterStr}
           ${searchPhraseStr}
+          ${filterStr}
           ${orderByStr}
           ${paramsStr}
         ${parenthesesClose} {
@@ -242,12 +242,16 @@ export function querySyncInfo(includeBalance) {
 /**
  * Search for Oracles that contains phrase either in title or result setter address
  * @param {String} phrase The keyword param for search
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
  * @return {Promise} Search result from graphql
  */
-export function searchOracles(phrase) {
+export function searchOracles(phrase, filters) {
   const request = new GraphQuery('searchOracles', TYPE.oracle);
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
+  }
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
   }
   request.addParam('limit', 1000); // how to do unlimited search??
   return request.execute();
@@ -256,12 +260,16 @@ export function searchOracles(phrase) {
 /**
  * Search for Topics that contains phrase either in title or result setter address
  * @param {String} phrase The keyword param for search
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
  * @return {Promise} Search result from graphql
  */
-export function searchTopics(phrase) {
+export function searchTopics(phrase, filters) {
   const request = new GraphQuery('searchTopics', TYPE.topic);
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
+  }
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
   }
   request.addParam('limit', 1000);
   return request.execute();

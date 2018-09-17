@@ -116,9 +116,8 @@ export default class Search extends Component {
   render() {
     const { classes } = this.props;
     const { ui } = this.props.store;
-    const { list, loading, tabIdx, events } = this.props.store.search;
+    const { oracles, withdraws, loading, tabIdx, events } = this.props.store.search;
     this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
-
     return (
       <Fragment>
         <div>
@@ -131,7 +130,7 @@ export default class Search extends Component {
           </Tabs>
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.sm.value}>
-              {list.length === 0 && !loading ? <NoResult /> : this.showEvents}
+              {oracles.length === 0 && withdraws.length === 0 && !loading ? <NoResult /> : this.showEvents}
             </Grid>
           </div>
         </div>
