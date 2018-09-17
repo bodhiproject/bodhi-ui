@@ -119,7 +119,7 @@ export default class WalletStore {
         senderAddress: address,
       });
       if (data.balance) {
-        const index = _.findIndex(this.addresses, { address });
+        const index = findIndex(this.addresses, { address });
         if (index !== -1) {
           this.addresses[index].bot = satoshiToDecimal(data.balance);
         }
@@ -134,8 +134,6 @@ export default class WalletStore {
    * @param {object} account Account object.
    */
   @action
-<<<<<<< HEAD
-<<<<<<< HEAD
   onQryptoAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
 
@@ -238,37 +236,6 @@ export default class WalletStore {
     } catch (err) {
       console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
     }
-=======
-  onQryptoAccountChange = (account) => {
-=======
-  onQryptoAccountChange = async (account) => {
->>>>>>> Set BOT balance on qrypto login
-    const { loggedIn, address, balance } = account;
-    if (!loggedIn) {
-      this.addresses = INIT_VALUE.addresses;
-      return;
-    }
-
-    // If setting Qrypto's account for the first time, fetch the BOT balance right away.
-    // After the initial BOT balance fetch, it will refetch on every new block.
-    let fetchInitBotBalance = false;
-    if (_.isEmpty(this.addresses)) {
-      fetchInitBotBalance = true;
-    }
-
-    this.addresses = [new WalletAddress({
-      address,
-      qtum: balance,
-      bot: 0,
-    }, false)];
-<<<<<<< HEAD
->>>>>>> Fix wallet addr to not convert for qrypto
-=======
-
-    if (fetchInitBotBalance) {
-      this.fetchBotBalance(this.addresses[0].address);
-    }
->>>>>>> Set BOT balance on qrypto login
   }
 
   @action
