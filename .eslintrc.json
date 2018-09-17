@@ -108,7 +108,8 @@
     "semi": [
       2,
       "always"
-    ]
+    ],
+    "linebreak-style": 0
   },
   "overrides": [
   {
