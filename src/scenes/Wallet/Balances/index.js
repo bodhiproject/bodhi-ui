@@ -387,7 +387,7 @@ export default class MyBalances extends Component {
       selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
       withdrawDialogVisible: true,
     });
-    wallet.lastUsedAddress = event.currentTarget.getAttribute('data-address');
+    wallet.setCurrentWalletAddress(event.currentTarget.getAttribute('data-address'));
 
     Tracking.track('myWallet-withdrawDialogOpen');
   }
