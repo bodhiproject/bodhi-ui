@@ -85,6 +85,10 @@ export default class GlobalStore {
     }
   }
 
+  /**
+   * Handle the syncInfo return of a getSyncInfo or a syncInfo subscription message.
+   * @param {object} syncInfo syncInfo object.
+   */
   @action
   onSyncInfo = (syncInfo) => {
     if (syncInfo.error) {
@@ -95,7 +99,11 @@ export default class GlobalStore {
       this.syncBlockNum = blockNum;
       this.syncBlockTime = blockTime;
       this.peerNodeCount = peerNodeCount || 0;
-      this.app.wallet.addresses = balances;
+
+      // Only use the syncInfo balances if using a local wallet. Qrypto will set the addresses differently.
+      if (this.localWallet) {
+        this.app.wallet.addresses = balances;
+      }
     }
   }
 
