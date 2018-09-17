@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
 import { map } from 'lodash';
 import { TransactionType, Token } from 'constants';
@@ -37,6 +37,15 @@ export default class TransactionStore {
 
   constructor(app) {
     this.app = app;
+
+    reaction(
+      () => this.visible,
+      () => {
+        if (!this.visible) {
+          Object.assign(this, INIT_VALUES);
+        }
+      }
+    );
   }
 
   @action
