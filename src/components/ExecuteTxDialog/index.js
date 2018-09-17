@@ -12,7 +12,7 @@ import { getTxTypeFormatted } from '../../helpers/utility';
 const messages = defineMessages({
   txConfirmMessageWithFeeMsg: {
     id: 'txConfirm.messageWithFee',
-    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
+    defaultMessage: 'You are about to {txDesc} for {amount} {token} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
   },
   txTypeApprove: {
     id: 'txType.approve',
@@ -72,7 +72,7 @@ export default class ExecuteTxDialog extends Component {
   }
 
   render() {
-    const { visible } = this.props.store.executeTxDialog;
+    const { visible } = this.props.store.tx;
 
     return (
       <Dialog open={visible}>
@@ -85,7 +85,7 @@ export default class ExecuteTxDialog extends Component {
           <ExplanationMessage />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.store.executeTxDialog.visible = false}>
+          <Button onClick={() => this.props.store.tx.visible = false}>
             <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={this.onOkClick}>
@@ -97,7 +97,7 @@ export default class ExecuteTxDialog extends Component {
   }
 }
 
-const SelectWalletSection = withStyles(styles)(inject('store')(({ classes, store: { executeTxDialog } }) => (
+const SelectWalletSection = withStyles(styles)(inject('store')(({ classes, store: { tx } }) => (
   <Grid container className={classes.selectWalletContainer}>
     <Grid item xs={12} sm={5}>
       <Typography className={classes.selectWalletText}>
@@ -105,7 +105,7 @@ const SelectWalletSection = withStyles(styles)(inject('store')(({ classes, store
       </Typography>
     </Grid>
     <Grid item xs={12} sm={7}>
-      <Select disableUnderline value={executeTxDialog.provider} onChange={e => executeTxDialog.provider = e.target.value}>
+      <Select disableUnderline value={tx.provider} onChange={e => tx.provider = e.target.value}>
         <MenuItem value={WalletProvider.QRYPTO}><FormattedMessage id="str.qrypto" defaultMessage="Qrypto" /></MenuItem>
       </Select>
     </Grid>
@@ -118,8 +118,8 @@ const FormattedMessageCell = injectIntl(({ intl, id, defaultMessage }) => (
   </TableCell>
 ));
 
-const TxFeesTable = withStyles(styles)(injectIntl(inject('store')(({ classes, intl, store: { executeTxDialog: { txFees } } }) => {
-  if (txFees.length === 0) {
+const TxFeesTable = withStyles(styles)(injectIntl(inject('store')(({ classes, intl, store: { tx: { fees } } }) => {
+  if (fees.length === 0) {
     return null;
   }
 
@@ -134,7 +134,7 @@ const TxFeesTable = withStyles(styles)(injectIntl(inject('store')(({ classes, in
         </TableRow>
       </TableHead>
       <TableBody>
-        {txFees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
+        {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
           <TableRow key={i}>
             <TableCell>{intl.formatMessage({ id: `txType.${type}`, defaultMessage: '' })}</TableCell>
             <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
@@ -147,15 +147,15 @@ const TxFeesTable = withStyles(styles)(injectIntl(inject('store')(({ classes, in
   );
 })));
 
-const ExplanationMessage = injectIntl(inject('store')(({ intl, store: { executeTxDialog: { txFees, txAction, txOption, txAmount, txToken } } }) => {
-  const formattedAction = getTxTypeFormatted(txAction, intl);
-  const txDesc = txOption ? `${formattedAction} on ${txOption}` : formattedAction;
-  const txFee = sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
+const ExplanationMessage = injectIntl(inject('store')(({ intl, store: { tx: { fees, type, option, amount, token } } }) => {
+  const txAction = getTxTypeFormatted(type, intl);
+  const txDesc = option ? `${txAction} on ${option.name}` : txAction;
+  const txFee = sumBy(fees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
   return (
     <FormattedMessage
       id='txConfirm.messageWithFee'
-      defaultMessage='You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.'
-      values={{ txDesc, txAmount, txToken, txFee }}
+      defaultMessage='You are about to {txDesc} for {amount} {token} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.'
+      values={{ txDesc, amount, token, txFee }}
     />
   );
 }));

@@ -4,23 +4,23 @@ import { RouterStore } from 'mobx-react-router';
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
+import WalletStore from './WalletStore';
+import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
-import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import BotCourtStore from './BotCourtStore';
+import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
-import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
-import WalletStore from './WalletStore';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
-import ExecuteTxDialogStore from '../components/ExecuteTxDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
+import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
-import { isProduction } from '../config/app';
 import SearchStore from '../scenes/Search/store';
+import { isProduction } from '../config/app';
 
 class AppStore {
   @observable loading = true;
@@ -30,7 +30,7 @@ class AppStore {
   ui = {}
   wallet = {}
   globalSnackbar = {}
-  executeTxDialog = {}
+  transaction = {}
   walletUnlockDialog = {}
   pendingTxsSnackbar = {}
   refreshing = {}
@@ -50,8 +50,8 @@ class AppStore {
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
     this.wallet = new WalletStore(this);
+    this.tx = new TransactionStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
-    this.executeTxDialog = new ExecuteTxDialogStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
