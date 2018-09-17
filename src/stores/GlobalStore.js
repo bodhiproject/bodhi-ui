@@ -1,6 +1,11 @@
 import { observable, action, reaction, toJS } from 'mobx';
 import { OracleStatus, Token } from 'constants';
+<<<<<<< HEAD
 import { each, find, isEmpty } from 'lodash';
+=======
+import { each, find } from 'lodash';
+import { Qweb3 } from 'qweb3';
+>>>>>>> Add qweb3
 
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
@@ -70,6 +75,41 @@ export default class GlobalStore {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Registers with Qrypto and sets event handler if not using a local wallet.
+   */
+  registerQrypto = () => {
+    if (!this.localWallet) {
+      console.log('Registering with Qrypto...'); // eslint-disable-line
+      window.addEventListener('message', this.handleQryptoAccountChange, false);
+      window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
+    }
+  }
+
+  /**
+   * Handles the event when Qrypto posts an account change message.
+   * @param {MessageEvent} event Message event to handle.
+   */
+  @action
+  handleQryptoAccountChange = (event) => {
+    if (event.data.message && event.data.message.type === 'ACCOUNT_CHANGED') {
+      if (event.data.message.payload.error) {
+        console.error(event.data.message.payload.error); // eslint-disable-line
+        return;
+      }
+
+      // Instantiate qweb3 instance on first callback
+      if (!this.qweb3) {
+        this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
+      }
+
+      this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
+    }
+  }
+
+  /**
+>>>>>>> Add qweb3
    * Handle the syncInfo return of a getSyncInfo or a syncInfo subscription message.
    * @param {object} syncInfo syncInfo object.
    */
