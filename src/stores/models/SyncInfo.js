@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import AddressBalance from './AddressBalance';
+import WalletAddress from './WalletAddress';
 import { SortBy } from '../../constants';
 
 
@@ -17,7 +17,7 @@ export default class SyncInfo {
     this.blockNum = syncInfo.syncBlockNum;
     this.blockTime = Number(syncInfo.syncBlockTime);
     this.peerCount = Number(syncInfo.peerNodeCount);
-    const balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
+    const balances = _.map(syncInfo.addressBalances, (addressBalance) => new WalletAddress(addressBalance));
 
     // Sort by qtum balance
     this.balances = _.orderBy(balances, ['qtum'], [SortBy.DESCENDING.toLowerCase()]);
