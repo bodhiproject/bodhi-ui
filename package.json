@@ -36,6 +36,7 @@
     "polished": "^1.9.2",
     "postcss-inline-rtl": "^0.9.8",
     "prop-types": "^15.6.1",
+    "qweb3": "^1.2.0",
     "react": "^16.4.1",
     "react-addons-shallow-compare": "^15.5.2",
     "react-apollo": "^2.1.5",

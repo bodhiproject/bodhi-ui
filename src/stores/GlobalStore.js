@@ -1,6 +1,7 @@
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find } from 'lodash';
+import { Qweb3 } from 'qweb3';
 
 import SyncInfo from './models/SyncInfo';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
@@ -10,6 +11,7 @@ import apolloClient from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: undefined,
+  qweb3: undefined,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
@@ -24,6 +26,7 @@ const INIT_VALUES = {
 
 export default class GlobalStore {
   @observable localWallet = INIT_VALUES.localWallet
+  @observable qweb3 = INIT_VALUES.qweb3
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
@@ -81,11 +84,17 @@ export default class GlobalStore {
    * Handles the event when Qrypto posts an account change message.
    * @param {MessageEvent} event Message event to handle.
    */
+  @action
   handleQryptoAccountChange = (event) => {
     if (event.data.message && event.data.message.type === 'ACCOUNT_CHANGED') {
       if (event.data.message.payload.error) {
         console.error(event.data.message.payload.error); // eslint-disable-line
         return;
+      }
+
+      // Instantiate qweb3 instance on first callback
+      if (!this.qweb3) {
+        this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
       }
 
       this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
