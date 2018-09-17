@@ -8,7 +8,7 @@ import { defineMessages } from 'react-intl';
 import axios from '../network/api';
 import Routes from '../network/routes';
 import { createTransferTx } from '../network/graphql/mutations';
-import { decimalToSatoshi } from '../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 import WalletAddress from './models/WalletAddress';
 
@@ -121,15 +121,43 @@ export default class {
   }
 
   /**
+   * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
+   * @param {string} address Address to check the BOT balance of.
+   */
+  fetchBotBalance = async (address) => {
+    try {
+      const { data } = await axios.post(Routes.api.botBalance, {
+        owner: address,
+        senderAddress: address,
+      });
+      if (data.balance) {
+        const index = _.findIndex(this.addresses, { address });
+        if (index !== -1) {
+          this.addresses[index].bot = satoshiToDecimal(data.balance);
+        }
+      }
+    } catch (err) {
+      console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
+    }
+  }
+
+  /**
    * Sets the account sent from Qrypto.
    * @param {object} account Account object.
    */
   @action
-  onQryptoAccountChange = (account) => {
+  onQryptoAccountChange = async (account) => {
     const { loggedIn, address, balance } = account;
     if (!loggedIn) {
       this.addresses = INIT_VALUE.addresses;
       return;
+    }
+
+    // If setting Qrypto's account for the first time, fetch the BOT balance right away.
+    // After the initial BOT balance fetch, it will refetch on every new block.
+    let fetchInitBotBalance = false;
+    if (_.isEmpty(this.addresses)) {
+      fetchInitBotBalance = true;
     }
 
     this.addresses = [new WalletAddress({
@@ -137,6 +165,10 @@ export default class {
       qtum: balance,
       bot: 0,
     }, false)];
+
+    if (fetchInitBotBalance) {
+      this.fetchBotBalance(this.addresses[0].address);
+    }
   }
 
   @action
