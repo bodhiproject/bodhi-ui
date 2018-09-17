@@ -533,9 +533,12 @@ export default class EventStore {
       const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.oracle.txFees = txFees;
-        // this.txConfirmDialogOpen = true;
         this.app.executeTxDialog.visible = true;
         this.app.executeTxDialog.txFees = txFees;
+        this.app.executeTxDialog.txAction = TransactionType.BET;
+        this.app.executeTxDialog.txOption = this.selectedOption.name;
+        this.app.executeTxDialog.txAmount = this.amount;
+        this.app.executeTxDialog.txToken = this.event.token;
       });
     } catch (error) {
       runInAction(() => {

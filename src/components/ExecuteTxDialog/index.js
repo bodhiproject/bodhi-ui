@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Select, MenuItem, Table, TableHead, TableBody, TableRow, TableCell, Button, Typography, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import { sumBy } from 'lodash';
 
 import styles from './styles';
 import { WalletProvider } from '../../constants';
+import { getTxTypeFormatted } from '../../helpers/utility';
 
 
 const messages = defineMessages({
-  txConfirmMessageMsg: {
-    id: 'txConfirm.message',
-    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
-  },
   txConfirmMessageWithFeeMsg: {
     id: 'txConfirm.messageWithFee',
     defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
@@ -84,6 +82,7 @@ export default class ExecuteTxDialog extends Component {
         <DialogContent>
           <SelectWalletSection />
           <TxFeesTable />
+          <ExplanationMessage />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.props.store.executeTxDialog.visible = false}>
@@ -119,13 +118,13 @@ const FormattedMessageCell = injectIntl(({ intl, id, defaultMessage }) => (
   </TableCell>
 ));
 
-const TxFeesTable = injectIntl(inject('store')(({ intl, store: { executeTxDialog: { txFees } } }) => {
+const TxFeesTable = withStyles(styles)(injectIntl(inject('store')(({ classes, intl, store: { executeTxDialog: { txFees } } }) => {
   if (txFees.length === 0) {
     return null;
   }
 
   return (
-    <Table>
+    <Table className={classes.txFeesTable}>
       <TableHead>
         <TableRow>
           <FormattedMessageCell id={messages.strTypeMsg.id} defaultMessage={messages.strTypeMsg.defaultMessage} />
@@ -145,5 +144,18 @@ const TxFeesTable = injectIntl(inject('store')(({ intl, store: { executeTxDialog
         ))}
       </TableBody>
     </Table>
+  );
+})));
+
+const ExplanationMessage = injectIntl(inject('store')(({ intl, store: { executeTxDialog: { txFees, txAction, txOption, txAmount, txToken } } }) => {
+  const formattedAction = getTxTypeFormatted(txAction, intl);
+  const txDesc = txOption ? `${formattedAction} on ${txOption}` : formattedAction;
+  const txFee = sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
+  return (
+    <FormattedMessage
+      id='txConfirm.messageWithFee'
+      defaultMessage='You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.'
+      values={{ txDesc, txAmount, txToken, txFee }}
+    />
   );
 }));
