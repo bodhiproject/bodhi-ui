@@ -109,27 +109,6 @@ export default class WalletStore {
   }
 
   /**
-   * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
-   * @param {string} address Address to check the BOT balance of.
-   */
-  fetchBotBalance = async (address) => {
-    try {
-      const { data } = await axios.post(Routes.api.botBalance, {
-        owner: address,
-        senderAddress: address,
-      });
-      if (data.balance) {
-        const index = findIndex(this.addresses, { address });
-        if (index !== -1) {
-          this.addresses[index].bot = satoshiToDecimal(data.balance);
-        }
-      }
-    } catch (err) {
-      console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
-    }
-  }
-
-  /**
    * Sets the account sent from Qrypto.
    * @param {object} account Account object.
    */
