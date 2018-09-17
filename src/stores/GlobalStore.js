@@ -40,14 +40,21 @@ export default class GlobalStore {
   constructor(app) {
     this.app = app;
 
-    // Update the actionable item count when the addresses or block number changes
     reaction(
-      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => this.app.wallet.addresses + this.syncBlockNum,
       () => {
         if (this.syncPercent >= 100) {
           this.getActionableItemCount();
         }
       },
+    );
+    reaction(
+      () => this.syncBlockNum,
+      () => {
+        if (this.localWallet === false) {
+          this.app.wallet.fetchBotBalance(this.app.wallet.currentAddress);
+        }
+      }
     );
 
     // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
