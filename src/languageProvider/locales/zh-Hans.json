@@ -106,7 +106,7 @@
   "navBar.activities": "我的活动",
   "navBar.allEvents": "全部事件",
   "navBar.settings": "设置",
-  "navbar.botCourt": "BOT法庭",
+  "navbar.botCourt": "BOT仲裁",
   "navbar.qtumPrediction": "QTUM预测",
   "oracle.betStartTimeDisabledText": "下注开始时间还没到",
   "oracle.cOracleDisabledText": "您不是此项目的结果设定者, 您必须等到他设置结果, 或公开设置结果开始。",
