@@ -1,6 +1,6 @@
 import { satoshiToDecimal } from '../../helpers/utility';
 
-export default class AddressBalance {
+export default class WalletAddress {
   address = ''
   qtum = ''
   bot = ''
