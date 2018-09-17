@@ -519,32 +519,8 @@ export default class EventStore {
   }
 
   @action
-  prepareBet = async () => {
-    try {
-      const { data } = await axios.post(networkRoutes.api.transactionCost, {
-        type: TransactionType.BET,
-        token: this.oracle.token,
-        amount: Number(this.amount),
-        optionIdx: this.selectedOptionIdx,
-        topicAddress: this.oracle.topicAddress,
-        oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.currentAddress,
-      });
-      const txFees = _.map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.oracle.txFees = txFees;
-        this.app.executeTxDialog.visible = true;
-        this.app.executeTxDialog.txFees = txFees;
-        this.app.executeTxDialog.txAction = TransactionType.BET;
-        this.app.executeTxDialog.txOption = this.selectedOption.name;
-        this.app.executeTxDialog.txAmount = this.amount;
-        this.app.executeTxDialog.txToken = this.event.token;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
-      });
-    }
+  prepareBet = () => {
+    this.app.tx.getBetFees(this.amount, this.selectedOption, this.oracle.topicAddress, this.oracle.address);
   }
 
   @action
