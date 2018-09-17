@@ -121,10 +121,44 @@ export default class {
   }
 
   /**
+   * Sets the account sent from Qrypto.
+   * @param {object} account Account object.
+   */
+  @action
+  onQryptoAccountChange = async (account) => {
+    const { loggedIn, address, balance } = account;
+    if (!loggedIn) {
+      this.addresses = INIT_VALUE.addresses;
+      return;
+    }
+
+    // If setting Qrypto's account for the first time or the address changes, fetch the BOT balance right away.
+    // After the initial BOT balance fetch, it will refetch on every new block.
+    let fetchInitBotBalance = false;
+    if (isEmpty(this.addresses) || this.addresses[0].address !== address) {
+      fetchInitBotBalance = true;
+    }
+
+    this.addresses = [new WalletAddress({
+      address,
+      qtum: balance,
+      bot: 0,
+    }, false)];
+
+    if (fetchInitBotBalance) {
+      this.fetchBotBalance(address);
+    }
+  }
+
+  /**
    * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
    * @param {string} address Address to check the BOT balance of.
    */
   fetchBotBalance = async (address) => {
+    if (isEmpty(address)) {
+      return;
+    }
+
     try {
       const { data } = await axios.post(Routes.api.botBalance, {
         owner: address,
@@ -138,36 +172,6 @@ export default class {
       }
     } catch (err) {
       console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
-    }
-  }
-
-  /**
-   * Sets the account sent from Qrypto.
-   * @param {object} account Account object.
-   */
-  @action
-  onQryptoAccountChange = async (account) => {
-    const { loggedIn, address, balance } = account;
-    if (!loggedIn) {
-      this.addresses = INIT_VALUE.addresses;
-      return;
-    }
-
-    // If setting Qrypto's account for the first time, fetch the BOT balance right away.
-    // After the initial BOT balance fetch, it will refetch on every new block.
-    let fetchInitBotBalance = false;
-    if (isEmpty(this.addresses)) {
-      fetchInitBotBalance = true;
-    }
-
-    this.addresses = [new WalletAddress({
-      address,
-      qtum: balance,
-      bot: 0,
-    }, false)];
-
-    if (fetchInitBotBalance) {
-      this.fetchBotBalance(this.addresses[0].address);
     }
   }
 
