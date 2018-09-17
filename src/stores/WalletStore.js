@@ -1,5 +1,5 @@
 import { observable, action, runInAction, reaction, computed } from 'mobx';
-import _ from 'lodash';
+import { isEmpty, find, findIndex, map } from 'lodash';
 import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
@@ -101,7 +101,7 @@ export default class {
     reaction(
       () => this.addresses,
       () => {
-        if (_.isEmpty(this.currentWalletAddress) && !_.isEmpty(this.addresses)) {
+        if (isEmpty(this.currentWalletAddress) && !isEmpty(this.addresses)) {
           [this.currentWalletAddress] = this.addresses;
         }
       }
@@ -117,7 +117,7 @@ export default class {
    * @param {string} address Address to find in the list of wallet addresses.
    */
   setCurrentWalletAddress = (address) => {
-    this.currentWalletAddress = _.find(this.addresses, { address });
+    this.currentWalletAddress = find(this.addresses, { address });
   }
 
   /**
@@ -131,7 +131,7 @@ export default class {
         senderAddress: address,
       });
       if (data.balance) {
-        const index = _.findIndex(this.addresses, { address });
+        const index = findIndex(this.addresses, { address });
         if (index !== -1) {
           this.addresses[index].bot = satoshiToDecimal(data.balance);
         }
@@ -156,7 +156,7 @@ export default class {
     // If setting Qrypto's account for the first time, fetch the BOT balance right away.
     // After the initial BOT balance fetch, it will refetch on every new block.
     let fetchInitBotBalance = false;
-    if (_.isEmpty(this.addresses)) {
+    if (isEmpty(this.addresses)) {
       fetchInitBotBalance = true;
     }
 
@@ -177,7 +177,7 @@ export default class {
       const { data } = await axios.get(Routes.api.getWalletInfo);
 
       runInAction(() => {
-        this.walletEncrypted = data && !_.isUndefined(data.unlocked_until);
+        this.walletEncrypted = data && !data.unlocked_until;
         this.walletUnlockedUntil = data && data.unlocked_until ? data.unlocked_until : 0;
       });
     } catch (error) {
@@ -224,7 +224,7 @@ export default class {
 
   @action
   validateWithdrawDialogWalletAddress = async () => {
-    if (_.isEmpty(this.toAddress)) {
+    if (isEmpty(this.toAddress)) {
       this.withdrawDialogError.walletAddress = messages.withdrawDialogRequiredMsg.id;
     } else if (!(await this.isValidAddress(this.toAddress))) {
       this.withdrawDialogError.walletAddress = messages.withdrawDialogInvalidAddressMsg.id;
@@ -235,7 +235,7 @@ export default class {
 
   @action
   validateWithdrawDialogAmount = () => {
-    if (_.isEmpty(this.withdrawAmount)) {
+    if (isEmpty(this.withdrawAmount)) {
       this.withdrawDialogError.withdrawAmount = messages.withdrawDialogRequiredMsg.id;
     } else if (Number(this.withdrawAmount) <= 0) {
       this.withdrawDialogError.withdrawAmount = messages.withdrawDialogAmountLargerThanZeroMsg.id;
@@ -287,7 +287,7 @@ export default class {
         oracleAddress: undefined,
         senderAddress: walletAddress,
       });
-      const txFees = _.map(data, (item) => new TransactionCost(item));
+      const txFees = map(data, (item) => new TransactionCost(item));
       runInAction(() => {
         this.txFees = txFees;
         this.txConfirmDialogOpen = true;
