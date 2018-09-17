@@ -219,9 +219,9 @@ const SearchButton = inject('store')(observer(({ classes, store: { ui } }) => (
   </NavBarRightButtonContainer>
 )));
 
-const Wallet = styled(({ store: { wallet } }) => {
+const Wallet = styled(({ store: { global, wallet } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
-  if (process.env.LOCAL_WALLET === 'false') {
+  if (!global.localWallet) {
     return null;
   }
 
