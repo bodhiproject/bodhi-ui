@@ -134,7 +134,10 @@ export default class CreateEventStore {
   @observable error = INIT.error
   @computed get hasEnoughFee() {
     const transactionFee = _.sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
-    return (this.app.wallet.lastUsedWallet.qtum >= transactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
+    const { currentWalletAddress } = this.app.wallet;
+    return currentWalletAddress
+      && (currentWalletAddress.qtum >= transactionFee)
+      && (currentWalletAddress.bot >= this.escrowAmount);
   }
   @computed get warning() {
     if (!this.hasEnoughFee) {
@@ -179,11 +182,11 @@ export default class CreateEventStore {
 
   constructor(app) {
     this.app = app;
-    reaction( // when we add the creator, update our last used address
+    reaction( // when we add the creator, update the currentWalletAddress
       () => this.creator,
       () => {
         if (this.creator) {
-          this.app.wallet.lastUsedAddress = this.creator;
+          this.app.wallet.setCurrentWalletAddress(this.creator);
         }
       }
     );
@@ -238,7 +241,7 @@ export default class CreateEventStore {
     let escrowRes;
     try {
       escrowRes = await axios.post(Routes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.lastUsedAddress,
+        senderAddress: this.app.wallet.currentAddress,
       });
     } catch (err) {
       console.error('ERROR: ', { // eslint-disable-line
@@ -291,7 +294,7 @@ export default class CreateEventStore {
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.escrowAmount = satoshiToDecimal(escrowRes.data[0]);
-      this.creator = this.app.wallet.lastUsedAddress;
+      this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
       // For txfees init
       try {
@@ -301,7 +304,7 @@ export default class CreateEventStore {
             type: TransactionType.APPROVE_CREATE_EVENT,
             token: Token.BOT,
             amount: decimalToSatoshi(this.escrowAmount),
-            senderAddress: this.app.wallet.lastUsedAddress,
+            senderAddress: this.app.wallet.currentAddress,
           }
         );
         const txFees = _.map(data, (item) => new TransactionCost(item));

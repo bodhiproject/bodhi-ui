@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 const INIT_VALUE = {
   addresses: [],
-  lastUsedAddress: '',
+  currentWalletAddress: undefined,
   walletEncrypted: false,
   encryptResult: undefined,
   passphrase: '',
@@ -55,7 +55,7 @@ const INIT_VALUE_DIALOG = {
 
 export default class {
   @observable addresses = INIT_VALUE.addresses;
-  @observable lastUsedAddress = INIT_VALUE.lastUsedAddress;
+  @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
   @observable walletEncrypted = INIT_VALUE.walletEncrypted;
   @observable encryptResult = INIT_VALUE.encryptResult;
   @observable passphrase = INIT_VALUE.passphrase;
@@ -67,6 +67,10 @@ export default class {
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
   @observable toAddress = INIT_VALUE_DIALOG.toAddress;
+
+  @computed get currentAddress() {
+    return this.currentWalletAddress ? this.currentWalletAddress.address : '';
+  }
 
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
@@ -83,24 +87,21 @@ export default class {
   }
 
   @computed get lastAddressWithdrawLimit() {
-    return { QTUM: this.lastUsedWallet.qtum, BOT: this.lastUsedWallet.bot };
-  }
-
-  @computed get lastUsedWallet() {
-    const res = _.filter(this.addresses, (x) => x.address === this.lastUsedAddress);
-    if (res.length > 0) return res[0];
-    return {};
+    return {
+      QTUM: this.currentWalletAddress ? this.currentWalletAddress.qtum : 0,
+      BOT: this.currentWalletAddress ? this.currentWalletAddress.bot : 0,
+    };
   }
 
   constructor(app) {
     this.app = app;
 
-    // Set a default lastUsedAddress if there was none selected before
+    // Set a currentWalletAddress if there was none selected before
     reaction(
       () => this.addresses,
       () => {
-        if (_.isEmpty(this.lastUsedAddress) && !_.isEmpty(this.addresses)) {
-          this.lastUsedAddress = this.addresses[0].address;
+        if (_.isEmpty(this.currentWalletAddress) && !_.isEmpty(this.addresses)) {
+          [this.currentWalletAddress] = this.addresses;
         }
       }
     );
@@ -108,6 +109,14 @@ export default class {
     if (this.app.global.localWallet) {
       this.checkWalletEncrypted();
     }
+  }
+
+  /**
+   * Finds and sets the current wallet address based on the address.
+   * @param {string} address Address to find in the list of wallet addresses.
+   */
+  setCurrentWalletAddress = (address) => {
+    this.currentWalletAddress = _.find(this.addresses, { address });
   }
 
   /**

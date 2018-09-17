@@ -110,8 +110,8 @@ export default class Option extends Component {
                   wallet={wallet}
                   token={token}
                   classes={classes}
-                  value={wallet.lastUsedAddress}
-                  onChange={e => wallet.lastUsedAddress = e.target.value}
+                  value={wallet.currentWalletAddress.address}
+                  onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
                 />
               </div>
             )}

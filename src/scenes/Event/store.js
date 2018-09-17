@@ -197,7 +197,7 @@ export default class EventStore {
 
     // Toggle CTA on new block, transaction change, amount input change, option selected
     reaction(
-      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.lastUsedAddress,
+      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
       () => {
         if (this.type === TOPIC || this.type === ORACLE) {
           this.disableEventActionsIfNecessary();
@@ -241,7 +241,7 @@ export default class EventStore {
   getEscrowAmount = async () => {
     try {
       const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.lastUsedAddress,
+        senderAddress: this.app.wallet.currentAddress,
       });
       this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
@@ -391,7 +391,7 @@ export default class EventStore {
     const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const currentWalletQtum = wallet.lastUsedWallet.qtum;
+    const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
     const notEnoughQtum = currentWalletQtum < maxTransactionFee;
 
     // Trying to vote over the consensus threshold
@@ -435,7 +435,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.lastUsedAddress) {
+    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.currentAddress) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -443,7 +443,7 @@ export default class EventStore {
     }
 
     // Trying to set result or vote when not enough QTUM or BOT
-    const filteredAddress = _.filter(wallet.addresses, { address: wallet.lastUsedAddress });
+    const filteredAddress = _.filter(wallet.addresses, { address: wallet.currentAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
     if ((
       (phase === VOTING && currentBot < this.amount)
@@ -528,7 +528,7 @@ export default class EventStore {
         optionIdx: this.selectedOptionIdx,
         topicAddress: this.oracle.topicAddress,
         oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.lastUsedAddress,
+        senderAddress: this.app.wallet.currentAddress,
       });
       const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
@@ -552,7 +552,7 @@ export default class EventStore {
         optionIdx: this.selectedOptionIdx,
         topicAddress: this.oracle.topicAddress,
         oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.lastUsedAddress,
+        senderAddress: this.app.wallet.currentAddress,
       });
       const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
@@ -576,7 +576,7 @@ export default class EventStore {
         optionIdx: this.selectedOptionIdx,
         topicAddress: this.oracle.topicAddress,
         oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.lastUsedAddress,
+        senderAddress: this.app.wallet.currentAddress,
       });
       const txFees = _.map(data, (item) => new TransactionCost(item));
       runInAction(() => {
@@ -592,11 +592,18 @@ export default class EventStore {
 
   @action
   bet = async () => {
-    const { lastUsedAddress } = this.app.wallet;
+    const { currentAddress } = this.app.wallet;
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
     try {
-      const { data: { createBet } } = await createBetTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+      const { data: { createBet } } = await createBetTx(
+        version,
+        topicAddress,
+        address,
+        selectedOptionIdx,
+        amount,
+        currentAddress,
+      );
       const newTx = { // TODO: add `options` in return from backend
         ...createBet,
         topic: {
@@ -621,11 +628,18 @@ export default class EventStore {
 
   @action
   setResult = async () => {
-    const { lastUsedAddress } = this.app.wallet;
+    const { currentAddress } = this.app.wallet;
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
     try {
-      const { data: { setResult } } = await createSetResultTx(version, topicAddress, address, selectedOptionIdx, decimalToSatoshi(amount), lastUsedAddress);
+      const { data: { setResult } } = await createSetResultTx(
+        version,
+        topicAddress,
+        address,
+        selectedOptionIdx,
+        decimalToSatoshi(amount),
+        currentAddress,
+      );
       const newTx = { // TODO: add `options` in return from backend
         ...setResult,
         topic: {
@@ -650,13 +664,20 @@ export default class EventStore {
 
   @action
   vote = async () => {
-    const { lastUsedAddress } = this.app.wallet;
+    const { currentAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
     const { selectedOptionIdx } = this;
     const amount = decimalToSatoshi(this.amount); // Convert to Botoshi
 
     try {
-      const { data: { createVote } } = await createVoteTx(version, topicAddress, address, selectedOptionIdx, amount, lastUsedAddress);
+      const { data: { createVote } } = await createVoteTx(
+        version,
+        topicAddress,
+        address,
+        selectedOptionIdx,
+        amount,
+        currentAddress,
+      );
       const newTx = { // TODO: move this logic to backend, add `options`
         ...createVote,
         topic: {
@@ -680,10 +701,10 @@ export default class EventStore {
   }
 
   finalize = async () => {
-    const { lastUsedAddress } = this.app.wallet;
+    const { currentAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
     try {
-      const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, lastUsedAddress);
+      const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, currentAddress);
       const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
         ...finalizeResult,
         optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
