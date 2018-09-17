@@ -105,7 +105,18 @@ export default class {
       }
     );
 
-    this.checkWalletEncrypted();
+    if (this.app.global.localWallet) {
+      this.checkWalletEncrypted();
+    }
+  }
+
+  /**
+   * Sets the account sent from Qrypto.
+   * @param {object} account Account object.
+   */
+  @action
+  onQryptoAccountChange = (account) => {
+    console.log(account);
   }
 
   @action
