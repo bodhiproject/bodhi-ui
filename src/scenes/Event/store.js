@@ -518,9 +518,8 @@ export default class EventStore {
     console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
-  @action
   prepareBet = () => {
-    this.app.tx.getBetFees(this.amount, this.selectedOption, this.oracle.topicAddress, this.oracle.address);
+    this.app.tx.showBetPrompt(this.amount, this.selectedOption, this.oracle.topicAddress, this.oracle.address);
   }
 
   @action

@@ -69,7 +69,7 @@ export default class ExecuteTxDialog extends Component {
     return (
       <Dialog open={visible}>
         <DialogTitle>
-          <FormattedMessage id="executeTx.executeTx" defaultMessage="Execute Transaction" />
+          <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
           <SelectWalletSection />
@@ -93,7 +93,7 @@ const SelectWalletSection = withStyles(styles)(inject('store')(({ classes, store
   <Grid container className={classes.selectWalletContainer}>
     <Grid item xs={12} sm={5}>
       <Typography className={classes.selectWalletText}>
-        <FormattedMessage id="executeTx.selectWalletProvider" defaultMessage="Select your wallet provider:" />
+        <FormattedMessage id="txConfirm.selectWalletProvider" defaultMessage="Select your wallet provider:" />
       </Typography>
     </Grid>
     <Grid item xs={12} sm={7}>

@@ -77,7 +77,7 @@ export default class TransactionStore {
   }
 
   @action
-  getBetFees = async (amount, option, topicAddress, oracleAddress) => {
+  showBetPrompt = async (amount, option, topicAddress, oracleAddress) => {
     this.type = TransactionType.BET;
     this.token = Token.QTUM;
     this.amount = Number(amount);
@@ -104,5 +104,6 @@ export default class TransactionStore {
 
   onTxConfirmed = async () => {
     await this.confirmedFunc();
+    this.visible = false;
   }
 }
