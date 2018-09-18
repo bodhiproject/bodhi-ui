@@ -6,6 +6,7 @@ import { TransactionType, Token } from 'constants';
 import TransactionCost from './models/TransactionCost';
 import { WalletProvider } from '../constants';
 import networkRoutes from '../network/routes';
+import getContracts from '../config/contracts';
 
 const INIT_VALUES = {
   visible: false,
@@ -19,6 +20,7 @@ const INIT_VALUES = {
   oracleAddress: undefined,
   senderAddress: undefined,
   fees: [],
+  confirmedFunc: undefined,
 };
 
 export default class TransactionStore {
@@ -33,6 +35,7 @@ export default class TransactionStore {
   @observable oracleAddress = INIT_VALUES.oracleAddress;
   @observable senderAddress = INIT_VALUES.senderAddress;
   @observable fees = INIT_VALUES.fees;
+  confirmedFunc = INIT_VALUES.confirmedFunc;
   app = undefined;
 
   constructor(app) {
@@ -82,10 +85,24 @@ export default class TransactionStore {
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
     this.senderAddress = this.app.wallet.currentAddress;
+
+    if (this.app.global.localWallet) {
+      this.confirmedFunc = this.app.eventPage.bet;
+    } else {
+      this.confirmedFunc = async () => {
+        const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
+        contract.send('bet', {
+          methodArgs: [this.option.idx],
+          amount: this.amount,
+          senderAddress: this.senderAddress,
+        });
+      };
+    }
+
     this.showConfirmDialog();
   }
 
-  onTxConfirmed = () => {
-    console.log('confirmed');
+  onTxConfirmed = async () => {
+    await this.confirmedFunc();
   }
 }
