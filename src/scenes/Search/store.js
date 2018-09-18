@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { observable, runInAction, action } from 'mobx';
-import { Phases, OracleStatus } from 'constants';
+import { Phases, OracleStatus, SortBy } from 'constants';
 import { searchOracles, searchTopics } from '../../network/graphql/queries';
 import Oracle from '../../stores/models/Oracle';
 import Topic from '../../stores/models/Topic';
@@ -20,7 +20,6 @@ export default class SearchStore {
   @observable sets = [];
   @observable withdraws = [];
   @observable finalizes = [];
-  topicAddrs = null;
 
   constructor(app) {
     this.app = app;
@@ -28,16 +27,13 @@ export default class SearchStore {
 
   @action
   init = async () => {
-    this.topicAddrs = new Map();
     this.loading = true;
     await this.fetch(this.phrase);
     runInAction(() => {
-      this.loading = false;
-      /** the following is a temp work around as searchAll in backend, since we don't have a combined type of Oracle and Topic */
-      this.finalizes = this.oracles.filter(event => event.phase === Phases.FINALIZING && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING' && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.bets = this.oracles.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING' && !this.topicAddrs.has(event.topicAddress));
+      this.finalizes = this.oracles.filter(event => event.phase === Phases.FINALIZING);
+      this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING);
+      this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING');
+      this.bets = this.oracles.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING');
       switch (this.tabIdx) {
         case TAB_BET: {
           this.events = this.bets;
@@ -63,18 +59,19 @@ export default class SearchStore {
           throw new Error(`Invalid tab index: ${this.tabIdx}`);
         }
       }
+      this.loading = false;
     });
   }
 
   async fetch(phrase) {
     if (_.isEmpty(phrase)) return [];
-    let oracles = await searchOracles(phrase);
-    oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-    const topicFilters = [];
-    topicFilters.push({ status: OracleStatus.WITHDRAW });
-    let topics = await searchTopics(phrase, topicFilters);
-    topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
-    this.withdraws = _.orderBy(topics, ['endTime']);
+    const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+    let oracles = await searchOracles(phrase, null, orderBy);
+    oracles = _.uniqBy(oracles, 'txid');
+    oracles = _.uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
+    const topicFilters = [{ status: OracleStatus.WITHDRAW }];
+    const topics = await searchTopics(phrase, topicFilters);
+    this.withdraws = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
     this.oracles = _.orderBy(oracles, ['endTime']);
   }
 }
