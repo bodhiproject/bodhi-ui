@@ -125,6 +125,7 @@
   "search.bet": "베팅하기",
   "search.emptySearchResult": "죄송합니다. 검색 결과가 없습니다.",
   "search.finalize": "마무리",
+  "search.loading": "검색...",
   "search.placeholder": "검색을 시작하려면 입력하십시오",
   "search.set": "결과 설정",
   "search.vote": "투표하기",

@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { observable, runInAction, action } from 'mobx';
-import { Phases } from 'constants';
+import { observable, runInAction, action, reaction } from 'mobx';
+import { Phases, OracleStatus, SortBy } from 'constants';
 import { searchOracles, searchTopics } from '../../network/graphql/queries';
 import Oracle from '../../stores/models/Oracle';
 import Topic from '../../stores/models/Topic';
@@ -10,9 +10,10 @@ const TAB_SET = 2;
 const TAB_FINALIZE = 3;
 const TAB_WITHDRAW = 4;
 export default class SearchStore {
-  @observable list = [];
+  @observable oracles = [];
   @observable phrase = '';
   @observable loading = false;
+  @observable loaded = false;
   @observable tabIdx = 0;
   @observable events = [];
   @observable bets = [];
@@ -20,25 +21,45 @@ export default class SearchStore {
   @observable sets = [];
   @observable withdraws = [];
   @observable finalizes = [];
-  topicAddrs = null;
 
   constructor(app) {
     this.app = app;
+    reaction( // whenever the locale changes, update locale in local storage and moment
+      () => this.phrase,
+      () => {
+        if (_.isEmpty(this.phrase)) {
+          this.loading = false;
+          this.loaded = false;
+          this.oracles = [];
+          this.withdraws = [];
+          this.events = [];
+          this.bets = [];
+          this.votes = [];
+          this.sets = [];
+          this.finalizes = [];
+        }
+      },
+    );
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => {
+        if (this.app.ui.searchBarMode && !_.isEmpty(this.phrase)) {
+          this.init();
+        }
+      }
+    );
   }
 
   @action
   init = async () => {
-    this.topicAddrs = new Map();
     this.loading = true;
-    this.list = await this.fetch(this.phrase);
+    this.loaded = false;
+    await this.fetch();
     runInAction(() => {
-      this.loading = false;
-      /** the following is a temp work around as searchAll in backend, since we don't have a combined type of Oracle and Topic */
-      this.withdraws = this.list.filter(event => event.phase === Phases.WITHDRAWING && this.topicAddrs.set(event.address, true));
-      this.finalizes = this.list.filter(event => event.phase === Phases.FINALIZING && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.sets = this.list.filter(event => event.phase === Phases.RESULT_SETTING && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.votes = this.list.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING' && !this.topicAddrs.has(event.topicAddress) && this.topicAddrs.set(event.topicAddress, true));
-      this.bets = this.list.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING' && !this.topicAddrs.has(event.topicAddress));
+      this.finalizes = this.oracles.filter(event => event.phase === Phases.FINALIZING);
+      this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING);
+      this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING');
+      this.bets = this.oracles.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING');
       switch (this.tabIdx) {
         case TAB_BET: {
           this.events = this.bets;
@@ -64,17 +85,19 @@ export default class SearchStore {
           throw new Error(`Invalid tab index: ${this.tabIdx}`);
         }
       }
+      this.loading = false;
+      this.loaded = true;
     });
   }
 
-  async fetch(phrase) {
-    let result = [];
-    if (_.isEmpty(phrase)) return result;
-    let oracles = await searchOracles(phrase);
-    oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
-    let topics = await searchTopics(phrase);
-    topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
-    result = [...oracles, ...topics];
-    return _.orderBy(result, ['endTime']);
+  async fetch() {
+    if (_.isEmpty(this.phrase)) return;
+    const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+    let oracles = await searchOracles(this.phrase, null, orderBy);
+    oracles = _.uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
+    const topicFilters = [{ status: OracleStatus.WITHDRAW }];
+    const topics = await searchTopics(this.phrase, topicFilters);
+    this.withdraws = topics.map((topic) => new Topic(topic, this.app));
+    this.oracles = _.orderBy(oracles, ['endTime']);
   }
 }
