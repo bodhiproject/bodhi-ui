@@ -36,7 +36,7 @@ const styles = (theme) => ({
 
   },
   bottomBarBlockTime: {
-    // marginLeft: theme.padding.xs.px,
+
   },
   bottomBarTxt: {
     [theme.breakpoints.down('sm')]: {
