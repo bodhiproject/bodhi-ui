@@ -268,8 +268,8 @@ export default class TransactionStore {
   }
 
   @action
-  onTxConfirmed = async () => {
-    await this.confirmedFunc();
+  onTxConfirmed = () => {
+    this.confirmedFunc();
     this.visible = false;
   }
 }
