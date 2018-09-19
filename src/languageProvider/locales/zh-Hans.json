@@ -125,6 +125,7 @@
   "search.bet": "投注",
   "search.emptySearchResult": "抱歉，您的搜索没有任何结果。",
   "search.finalize": "结束",
+  "search.loading": "搜索中...",
   "search.placeholder": "输入开始搜索：事件名称、结果设置者地址...",
   "search.set": "设置结果",
   "search.vote": "仲裁",

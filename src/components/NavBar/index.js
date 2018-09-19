@@ -143,7 +143,6 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
         onKeyDown: (e) => onSearchBarKeyDown(e),
         onChange: e => {
           search.phrase = e.target.value;
-          search.loading = true;
           _.debounce(search.init, 1500)();
         },
         value: search.phrase,

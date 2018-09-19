@@ -5,6 +5,7 @@ import { Grid, Typography, Tabs, Tab, withStyles } from '@material-ui/core';
 import { EventStatus } from 'constants';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
+import { Loading } from '../../components/Loading';
 import styles from './styles';
 
 const TAB_BET = 0;
@@ -33,6 +34,10 @@ const messages = defineMessages({
   vote: {
     id: 'search.vote',
     defaultMessage: 'Voting',
+  },
+  searchingMsg: {
+    id: 'search.loading',
+    defaultMessage: 'Searching...',
   },
 });
 @withStyles(styles, { withTheme: true })
@@ -116,8 +121,9 @@ export default class Search extends Component {
   render() {
     const { classes } = this.props;
     const { ui } = this.props.store;
-    const { oracles, withdraws, loading, tabIdx, events } = this.props.store.search;
+    const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
     this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
+    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <NoResult /> : this.showEvents;
     return (
       <Fragment>
         <div>
@@ -130,7 +136,7 @@ export default class Search extends Component {
           </Tabs>
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.sm.value}>
-              {oracles.length === 0 && withdraws.length === 0 && !loading ? <NoResult /> : this.showEvents}
+              {loading ? <Row><Loading className={classes.searching} text={messages.searchingMsg} /></Row> : result}
             </Grid>
           </div>
         </div>
@@ -144,3 +150,7 @@ const NoResult = () => (
     <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
   </Typography>
 );
+
+const Row = withStyles(styles)(({ classes, ...props }) => (
+  <div className={classes.row} {...props} />
+));
