@@ -175,6 +175,7 @@ export default class TransactionStore {
       // Create pending tx on server
       if (txid) {
         await createBetTx({
+          type: this.type,
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toString(),
@@ -183,6 +184,7 @@ export default class TransactionStore {
           oracleAddress: this.oracleAddress,
           optionIdx: this.option.idx,
           amount: this.amount,
+          token: this.token,
           version: 0,
         });
       }
@@ -211,11 +213,11 @@ export default class TransactionStore {
       // Create pending tx on server
       if (txid) {
         await createApproveTx({
+          type: this.type,
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toString(),
           senderAddress: this.senderAddress,
-          type: this.type,
           topicAddress: this.topicAddress,
           oracleAddress: this.oracleAddress,
           optionIdx: this.option.idx,
@@ -268,8 +270,8 @@ export default class TransactionStore {
   }
 
   @action
-  onTxConfirmed = () => {
-    this.confirmedFunc();
+  onTxConfirmed = async () => {
+    await this.confirmedFunc();
     this.visible = false;
   }
 }
