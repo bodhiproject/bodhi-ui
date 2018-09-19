@@ -558,7 +558,8 @@ export default class EventStore {
   }
 
   setResult = async () => {
-    const { isAllowanceEnough } = this.app.wallet;
+
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
