@@ -6,6 +6,7 @@ import { TransactionType, Token } from 'constants';
 import TransactionCost from './models/TransactionCost';
 import { WalletProvider } from '../constants';
 import networkRoutes from '../network/routes';
+import { createBetTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 
 const INIT_VALUES = {
@@ -77,13 +78,13 @@ export default class TransactionStore {
   }
 
   @action
-  showBetPrompt = async (amount, option, topicAddress, oracleAddress) => {
+  showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
     this.type = TransactionType.BET;
-    this.token = Token.QTUM;
-    this.amount = Number(amount);
-    this.option = option;
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
+    this.option = option;
+    this.amount = Number(amount);
+    this.token = Token.QTUM;
     this.senderAddress = this.app.wallet.currentAddress;
 
     if (this.app.global.localWallet) {
@@ -91,11 +92,26 @@ export default class TransactionStore {
     } else {
       this.confirmedFunc = async () => {
         const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-        contract.send('bet', {
+        const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
           methodArgs: [this.option.idx],
           amount: this.amount,
           senderAddress: this.senderAddress,
         });
+
+        // Create pending tx on server
+        if (txid) {
+          await createBetTx({
+            txid,
+            gasLimit,
+            gasPrice,
+            version: 0,
+            topicAddress: this.topicAddress,
+            oracleAddress: this.oracleAddress,
+            optionIdx: this.option.idx,
+            amount: this.amount,
+            senderAddress: this.senderAddress,
+          });
+        }
       };
     }
 

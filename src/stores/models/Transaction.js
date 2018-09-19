@@ -33,6 +33,7 @@ export default class Transaction {
 
   // for invalid option
   localizedInvalid = {};
+
   constructor(transaction) {
     Object.assign(this, transaction);
     this.gasLimit = Number(this.gasLimit);

@@ -94,7 +94,9 @@ export default class GlobalStore {
 
       // Instantiate qweb3 instance on first callback
       if (!this.qweb3) {
-        this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
+        if (window.qrypto && window.qrypto.rpcProvider) {
+          this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
+        }
       }
 
       this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
@@ -157,6 +159,44 @@ export default class GlobalStore {
       },
       error(err) {
         self.onSyncInfo({ error: err.message });
+      },
+    });
+  }
+
+  /**
+   * Handles an onApproveSuccess subscription message.
+   * @param {object} data Subscription message payload.
+   */
+  onApproveSuccess = (data) => {
+    if (data.error) {
+      console.error(data.error.message); // eslint-disable-line no-console
+      return;
+    }
+
+    if (!this.localWallet) {
+      // TODO: execute follow up tx
+    }
+  }
+
+  /**
+   * Subscribe to onApproveSuccess subscription.
+   * Receives messages of approve transactions that were successful.
+   * This is used so the UI knows to execute a follow-up tx.
+   */
+  subscribeOnApproveSuccess = () => {
+    const self = this;
+    apolloClient.subscribe({
+      query: getSubscription(channels.ON_APPROVE_SUCCESS),
+    }).subscribe({
+      next({ data, errors }) {
+        if (errors && errors.length > 0) {
+          self.onApproveSuccess({ error: errors[0] });
+        } else {
+          self.onApproveSuccess(data.onApproveSuccess);
+        }
+      },
+      error(err) {
+        self.onApproveSuccess({ error: err.message });
       },
     });
   }
