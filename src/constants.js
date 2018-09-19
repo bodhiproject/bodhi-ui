@@ -79,7 +79,7 @@ module.exports = {
   TransactionStatus: {
     PENDING: 'PENDING',
     SUCCESS: 'SUCCESS',
-    FAIL: 'FAIL', // not used
+    FAIL: 'FAIL',
   },
 
   SortBy: {
