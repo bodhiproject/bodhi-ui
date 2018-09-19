@@ -9,9 +9,12 @@ const styles = (theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      padding: `${theme.padding.unit.px}`,
+    },
   },
   bottomBarNetworkWrapper: {
-    flexBasis: 120,
+    flexBasis: 130,
   },
   bottomBarNetworkIcon: {
     marginBottom: '-2px',
@@ -26,17 +29,17 @@ const styles = (theme) => ({
     },
   },
   bottomBarBlockInfoWrapper: {
-    flexBasis: 380,
+    flexBasis: 490,
     textAlign: 'right',
   },
   bottomBarBlockNum: {
 
   },
   bottomBarBlockTime: {
-    marginLeft: theme.padding.xs.px,
+    // marginLeft: theme.padding.xs.px,
   },
   bottomBarTxt: {
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: 12,
     },
   },

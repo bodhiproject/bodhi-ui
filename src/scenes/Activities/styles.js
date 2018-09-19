@@ -14,6 +14,11 @@ const styles = (theme) => ({
     paddingBottom: '5px',
     height: '56px',
   },
+  activitiesTabLabel: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
   activitiesTabContainer: {
     marginTop: theme.sizes.navHeight,
   },

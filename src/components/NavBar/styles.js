@@ -92,9 +92,11 @@ const styles = (theme) => ({
     '&:hover': {
       color: 'white',
     },
+    [theme.breakpoints.down('sm')]: {
+      padding: `0 ${theme.padding.unit.px}`,
+    },
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
-      padding: `0 ${theme.padding.unit.px}`,
     },
   },
   myActivitiesWrapper: {

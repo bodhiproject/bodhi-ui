@@ -50,12 +50,12 @@ export default class BottomBar extends Component {
 
 const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   <Grid container item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
-    <Grid item xs={12} sm={5}>
+    <Grid item xs={12} sm={6}>
       <Typography variant="body1" className={classes.bottomBarTxt}>
         <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
       </Typography>
     </Grid>
-    <Grid item xs={12} sm={7}>
+    <Grid item xs={12} sm={6}>
       <Typography variant="body1" className={classes.bottomBarTxt}>
         <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? getShortLocalDateTimeString(blockTime) : ''}</span>
       </Typography>
@@ -82,7 +82,7 @@ const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
       </Fragment>
     ) : (
       <Fragment>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2}>
           <Typography variant="body1" className={classes.bottomBarTxt}>
             <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
           </Typography>
