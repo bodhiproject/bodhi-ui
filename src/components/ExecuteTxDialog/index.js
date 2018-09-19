@@ -65,6 +65,7 @@ const messages = defineMessages({
 export default class ExecuteTxDialog extends Component {
   render() {
     const { visible } = this.props.store.tx;
+    console.log(visible);
 
     return (
       <Dialog open={visible}>
