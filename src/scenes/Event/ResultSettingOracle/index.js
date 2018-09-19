@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
-import { EventWarning, ImportantNote } from 'components';
-import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory, OracleTxConfirmDialog } from '../components';
+import { EventWarning, ImportantNote, ExecuteTxDialog } from 'components';
+import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
 
 const messages = defineMessages({
   consensusThreshold: {
@@ -34,7 +34,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
+    <ExecuteTxDialog />
   </Row>
 ));
 

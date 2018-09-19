@@ -65,7 +65,6 @@ export default class TransactionStore {
         senderAddress: this.app.wallet.currentAddress,
       });
       const fees = map(data, (item) => new TransactionCost(item));
-      console.log(fees);
 
       runInAction(() => {
         this.visible = true;
@@ -122,7 +121,6 @@ export default class TransactionStore {
 
   @action
   showApproveSetResultPrompt = async (topicAddress, oracleAddress, option, amount) => {
-    console.log('show prompt');
     this.type = TransactionType.APPROVE_SET_RESULT;
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
