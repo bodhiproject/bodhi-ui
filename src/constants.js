@@ -48,11 +48,6 @@ module.exports = {
     QT_WALLET: 'QT_WALLET',
   },
 
-  WalletProvider: {
-    QRYPTO: 'QRYPTO',
-    QT_WALLET: 'QT_WALLET',
-  },
-
   /* GraphQL Constants */
   Token: {
     QTUM: 'QTUM',

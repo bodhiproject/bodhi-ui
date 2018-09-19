@@ -60,10 +60,6 @@ export default class GlobalStore {
     // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
-    // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
-    this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
-    this.registerQrypto();
-
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
     this.subscribeSyncInfo();
