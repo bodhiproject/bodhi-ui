@@ -1,11 +1,11 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map } from 'lodash';
-import { TransactionType, Token } from 'constants';
+import { map, includes, isEmpty, remove } from 'lodash';
+import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
+import { Transaction, TransactionCost } from 'models';
 
-import TransactionCost from './models/TransactionCost';
-import { WalletProvider } from '../constants';
 import networkRoutes from '../network/routes';
+import { queryAllTransactions } from '../network/graphql/queries';
 import { createApproveTx, createBetTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 
@@ -50,6 +50,69 @@ export default class TransactionStore {
         }
       }
     );
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => this.checkPendingApproves(),
+    );
+  }
+
+  /**
+   * Gets the array of pending approve txs for this client.
+   * @return {array} Array of pending approve txs.
+   */
+  getPendingApproves = () => {
+    const pending = localStorage.getItem('pendingApproves');
+    return pending ? pending.split(',') : [];
+  }
+
+  /**
+   * Stores a txid of a pending approve transaction.
+   * @param {string} txid Transaction ID of a pending approve tx.
+   */
+  addPendingApprove = (txid) => {
+    const pending = this.getPendingApproves();
+    if (!includes(pending, txid)) pending.push(txid);
+    localStorage.setItem('pendingApproves', pending);
+  };
+
+  /**
+   * Removes a txid of a pending approve transaction.
+   * @param {string} txid Transaction ID to remove.
+   */
+  removePendingApprove = (txid) => {
+    const pending = this.getPendingApproves();
+    if (includes(pending, txid)) remove(pending, txid);
+    localStorage.setItem('pendingApproves', pending);
+  };
+
+  /**
+   * Checks for pending approve txs. If approve is successful, show the follow-up tx prompt.
+   */
+  checkPendingApproves = async () => {
+    // Only show one tx confirm screen at a time
+    if (this.visible) {
+      return;
+    }
+
+    const pending = this.getPendingApproves();
+    if (!isEmpty(pending)) {
+      const txid = pending[0];
+      let txs = await queryAllTransactions([{ txid }], undefined, 1);
+      txs = map(txs, (tx) => new Transaction(tx));
+      if (!isEmpty(txs)) {
+        const tx = txs[0];
+        // Remove failed tx
+        if (tx.status === TransactionStatus.FAIL) {
+          this.removePendingApprove(txid);
+          return;
+        }
+        
+        // Execute follow-up tx
+        if (tx.status === TransactionStatus.SUCCESS) {
+
+        }
+      }
+    }
   }
 
   @action
@@ -156,6 +219,7 @@ export default class TransactionStore {
             token: this.token,
             senderAddress: this.senderAddress,
           });
+          this.addPendingApprove(txid);
         }
       };
     }
