@@ -597,14 +597,14 @@ export default class EventStore {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
     try {
-      const { data: { setResult } } = await createSetResultTx(
+      const { data: { setResult } } = await createSetResultTx({
         version,
         topicAddress,
-        address,
-        selectedOptionIdx,
-        decimalToSatoshi(amount),
-        currentAddress,
-      );
+        oracleAddress: address,
+        optionIdx: selectedOptionIdx,
+        amount: decimalToSatoshi(amount),
+        senderAddress: currentAddress,
+      });
       const newTx = { // TODO: add `options` in return from backend
         ...setResult,
         topic: {
