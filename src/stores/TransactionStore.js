@@ -32,6 +32,7 @@ export default class TransactionStore {
       () => {
         if (!this.visible) {
           Object.assign(this, INIT_VALUES);
+          this.checkPendingApproves();
         }
       }
     );
@@ -791,10 +792,11 @@ export default class TransactionStore {
           optionIdx,
           amount: amountSatoshi,
         });
-
-        await this.onTxExecuted(index, tx);
-        Tracking.track('event-vote');
+        this.addPendingApprove(txid);
       }
+      this.showConfirmDialog();
+      await this.onTxExecuted(index, tx);
+      Tracking.track('event-vote');
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
         this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/vote`);
