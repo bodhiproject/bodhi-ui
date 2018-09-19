@@ -40,6 +40,14 @@ export default class SearchStore {
         }
       },
     );
+    reaction(
+      () => this.app.global.syncBlockNum,
+      () => {
+        if (this.app.ui.searchBarMode && !_.isEmpty(this.phrase)) {
+          this.init();
+        }
+      }
+    );
   }
 
   @action
@@ -86,11 +94,10 @@ export default class SearchStore {
     if (_.isEmpty(this.phrase)) return;
     const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
     let oracles = await searchOracles(this.phrase, null, orderBy);
-    oracles = _.uniqBy(oracles, 'txid');
     oracles = _.uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
     const topicFilters = [{ status: OracleStatus.WITHDRAW }];
     const topics = await searchTopics(this.phrase, topicFilters);
-    this.withdraws = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+    this.withdraws = topics.map((topic) => new Topic(topic, this.app));
     this.oracles = _.orderBy(oracles, ['endTime']);
   }
 }

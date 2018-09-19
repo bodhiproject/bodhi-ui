@@ -24,7 +24,7 @@ const styles = (theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    margin: 20,
+    margin: theme.paddingSm,
   },
   searching: {
     width: '5rem',
