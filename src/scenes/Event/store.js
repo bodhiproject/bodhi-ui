@@ -522,7 +522,6 @@ export default class EventStore {
     this.app.tx.showBetPrompt(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
   }
 
-  @action
   prepareSetResult = async () => {
     this.app.tx.showApproveSetResultPrompt(
       this.oracle.topicAddress,
@@ -530,27 +529,6 @@ export default class EventStore {
       this.selectedOption,
       this.amount,
     );
-
-    // try {
-    //   const { data } = await axios.post(networkRoutes.api.transactionCost, {
-    //     type: TransactionType.APPROVE_SET_RESULT,
-    //     token: this.oracle.token,
-    //     amount: this.oracle.consensusThreshold,
-    //     optionIdx: this.selectedOptionIdx,
-    //     topicAddress: this.oracle.topicAddress,
-    //     oracleAddress: this.oracle.address,
-    //     senderAddress: this.app.wallet.currentAddress,
-    //   });
-    //   const txFees = _.map(data, (item) => new TransactionCost(item));
-    //   runInAction(() => {
-    //     this.oracle.txFees = txFees;
-    //     this.txConfirmDialogOpen = true;
-    //   });
-    // } catch (error) {
-    //   runInAction(() => {
-    //     this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
-    //   });
-    // }
   }
 
   @action
