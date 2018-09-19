@@ -160,7 +160,7 @@ export default class TransactionStore {
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
     this.option = option;
-    this.amount = Number(amount);
+    this.amount = amount;
     this.token = Token.QTUM;
     this.senderAddress = this.app.wallet.currentAddress;
     this.confirmedFunc = async () => {
@@ -176,14 +176,14 @@ export default class TransactionStore {
       if (txid) {
         await createBetTx({
           txid,
-          gasLimit,
-          gasPrice,
-          version: 0,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toString(),
+          senderAddress: this.senderAddress,
           topicAddress: this.topicAddress,
           oracleAddress: this.oracleAddress,
           optionIdx: this.option.idx,
           amount: this.amount,
-          senderAddress: this.senderAddress,
+          version: 0,
         });
       }
     };
@@ -201,7 +201,7 @@ export default class TransactionStore {
     this.senderAddress = this.app.wallet.currentAddress;
     this.confirmedFunc = async () => {
       // Execute approve
-      const bodhiToken = getContracts().AddressManager;
+      const bodhiToken = getContracts().BodhiToken;
       const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
         methodArgs: [this.topicAddress, this.amount],
@@ -212,16 +212,16 @@ export default class TransactionStore {
       if (txid) {
         await createApproveTx({
           txid,
-          gasLimit,
-          gasPrice,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toString(),
+          senderAddress: this.senderAddress,
           type: this.type,
-          version: 0,
           topicAddress: this.topicAddress,
           oracleAddress: this.oracleAddress,
           optionIdx: this.option.idx,
           amount: this.amount,
           token: this.token,
-          senderAddress: this.senderAddress,
+          version: 0,
         });
         this.addPendingApprove(txid);
       }

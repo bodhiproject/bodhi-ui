@@ -77,7 +77,6 @@ const TYPE_DEF = {
 
   Vote: `
     txid
-    version
     blockNum
     voterAddress
     voterQAddress
@@ -85,6 +84,7 @@ const TYPE_DEF = {
     oracleAddress
     optionIdx
     amount
+    version
   `,
 
   SyncInfo: `
@@ -101,32 +101,53 @@ const TYPE_DEF = {
 
   Transaction: `
     type
-    txid
     status
+    txid
+    createdBlock
     createdTime
     blockNum
     blockTime
     gasLimit
     gasPrice
     gasUsed
-    version
     senderAddress
     receiverAddress
     topicAddress
     oracleAddress
     name
+    options
     optionIdx
-    token
     amount
+    token
     topic {
       address
       name
       options
     }
+    version
   `,
 };
 
 const MUTATIONS = {
+  approve: {
+    mapping: [
+      'topicAddress',
+      'oracleAddress',
+      'name',
+      'options',
+      'resultSetterAddress',
+      'bettingStartTime',
+      'bettingEndTime',
+      'resultSettingStartTime',
+      'resultSettingEndTime',
+      'optionIdx',
+      'amount',
+      'senderAddress',
+      'version',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
   createTopic: {
     mapping: [
       'name',
@@ -152,26 +173,17 @@ const MUTATIONS = {
 
   createBet: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-      'senderAddress',
+      'version',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   setResult: {
@@ -183,19 +195,7 @@ const MUTATIONS = {
       'amount',
       'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   createVote: {
@@ -207,19 +207,7 @@ const MUTATIONS = {
       'amount',
       'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   finalizeResult: {
@@ -229,15 +217,7 @@ const MUTATIONS = {
       'oracleAddress',
       'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      oracleAddress
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   withdraw: {
@@ -247,15 +227,7 @@ const MUTATIONS = {
       'topicAddress',
       'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   transfer: {
