@@ -251,8 +251,8 @@ export default class TransactionStore {
       if (txid) {
         await createSetResultTx({
           txid,
-          gasLimit,
-          gasPrice,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toString(),
           type: this.type,
           topicAddress: this.topicAddress,
           oracleAddress: this.oracleAddress,
