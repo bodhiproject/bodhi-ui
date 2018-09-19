@@ -1,12 +1,12 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove } from 'lodash';
+import { map, includes, isEmpty, remove, some } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createApproveTx, createBetTx } from '../network/graphql/mutations';
+import { createApproveTx, createBetTx, createSetResultTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 
 const INIT_VALUES = {
@@ -47,6 +47,7 @@ export default class TransactionStore {
       () => {
         if (!this.visible) {
           Object.assign(this, INIT_VALUES);
+          this.checkPendingApproves();
         }
       }
     );
@@ -100,17 +101,30 @@ export default class TransactionStore {
       let txs = await queryAllTransactions([{ txid }], undefined, 1);
       txs = map(txs, (tx) => new Transaction(tx));
       if (!isEmpty(txs)) {
+        const { SUCCESS, FAIL } = TransactionStatus;
         const tx = txs[0];
-        // Remove failed tx
-        if (tx.status === TransactionStatus.FAIL) {
-          this.removePendingApprove(txid);
-          return;
-        }
-        
-        // Execute follow-up tx
-        if (tx.status === TransactionStatus.SUCCESS) {
 
+        // Execute follow-up tx if successful approve
+        if (tx.status === SUCCESS) {
+          switch (tx.type) {
+            case TransactionType.APPROVE_CREATE_EVENT: {
+              break;
+            }
+            case TransactionType.APPROVE_SET_RESULT: {
+              await this.showSetResultPrompt(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
+              break;
+            }
+            case TransactionType.APPROVE_VOTE: {
+              break;
+            }
+            default: {
+              break;
+            }
+          }
         }
+
+        // Remove the pending approve txid from storage
+        if (some([SUCCESS, FAIL], tx.status)) this.removePendingApprove(txid);
       }
     }
   }
@@ -149,36 +163,30 @@ export default class TransactionStore {
     this.amount = Number(amount);
     this.token = Token.QTUM;
     this.senderAddress = this.app.wallet.currentAddress;
+    this.confirmedFunc = async () => {
+      // Execute bet
+      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
+        methodArgs: [this.option.idx],
+        amount: this.amount,
+        senderAddress: this.senderAddress,
+      });
 
-    if (this.app.global.localWallet) {
-      this.confirmedFunc = this.app.eventPage.bet;
-    } else {
-      this.confirmedFunc = async () => {
-        // Execute bet
-        const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-        const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-          methodArgs: [this.option.idx],
+      // Create pending tx on server
+      if (txid) {
+        await createBetTx({
+          txid,
+          gasLimit,
+          gasPrice,
+          version: 0,
+          topicAddress: this.topicAddress,
+          oracleAddress: this.oracleAddress,
+          optionIdx: this.option.idx,
           amount: this.amount,
           senderAddress: this.senderAddress,
         });
-
-        // Create pending tx on server
-        if (txid) {
-          await createBetTx({
-            txid,
-            gasLimit,
-            gasPrice,
-            version: 0,
-            topicAddress: this.topicAddress,
-            oracleAddress: this.oracleAddress,
-            optionIdx: this.option.idx,
-            amount: this.amount,
-            senderAddress: this.senderAddress,
-          });
-        }
-      };
-    }
-
+      }
+    };
     this.showConfirmDialog();
   }
 
@@ -191,39 +199,71 @@ export default class TransactionStore {
     this.amount = amount;
     this.token = Token.BOT;
     this.senderAddress = this.app.wallet.currentAddress;
+    this.confirmedFunc = async () => {
+      // Execute approve
+      const bodhiToken = getContracts().AddressManager;
+      const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
+        methodArgs: [this.topicAddress, this.amount],
+        senderAddress: this.senderAddress,
+      });
 
-    if (this.app.global.localWallet) {
-      this.confirmedFunc = this.app.eventPage.setResult;
-    } else {
-      this.confirmedFunc = async () => {
-        // Execute approve
-        const addressManager = getContracts().AddressManager;
-        const contract = this.app.global.qweb3.Contract(addressManager.address, addressManager.abi);
-        const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-          methodArgs: [this.topicAddress, this.amount],
+      // Create pending tx on server
+      if (txid) {
+        await createApproveTx({
+          txid,
+          gasLimit,
+          gasPrice,
+          type: this.type,
+          version: 0,
+          topicAddress: this.topicAddress,
+          oracleAddress: this.oracleAddress,
+          optionIdx: this.option.idx,
+          amount: this.amount,
+          token: this.token,
           senderAddress: this.senderAddress,
         });
+        this.addPendingApprove(txid);
+      }
+    };
+    this.showConfirmDialog();
+  }
 
-        // Create pending tx on server
-        if (txid) {
-          await createApproveTx({
-            txid,
-            gasLimit,
-            gasPrice,
-            type: this.type,
-            version: 0,
-            topicAddress: this.topicAddress,
-            oracleAddress: this.oracleAddress,
-            optionIdx: this.option.idx,
-            amount: this.amount,
-            token: this.token,
-            senderAddress: this.senderAddress,
-          });
-          this.addPendingApprove(txid);
-        }
-      };
-    }
+  @action
+  showSetResultPrompt = async (topicAddress, oracleAddress, optionIdx, amount) => {
+    this.type = TransactionType.SET_RESULT;
+    this.topicAddress = topicAddress;
+    this.oracleAddress = oracleAddress;
+    this.option = { idx: optionIdx };
+    this.amount = amount;
+    this.token = Token.BOT;
+    this.senderAddress = this.app.wallet.currentAddress;
+    this.confirmedFunc = async () => {
+      // Execute setResult
+      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
+        methodArgs: [this.option.idx],
+        gasLimit: 1500000,
+        senderAddress: this.senderAddress,
+      });
 
+      // Create pending tx on server
+      if (txid) {
+        await createSetResultTx({
+          txid,
+          gasLimit,
+          gasPrice,
+          type: this.type,
+          topicAddress: this.topicAddress,
+          oracleAddress: this.oracleAddress,
+          optionIdx: this.option.idx,
+          amount: this.amount,
+          token: this.token,
+          senderAddress: this.senderAddress,
+          version: 0,
+        });
+      }
+    };
     this.showConfirmDialog();
   }
 
