@@ -8,6 +8,7 @@ import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
 import { createApproveTx, createBetTx, createSetResultTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
+import Tracking from '../helpers/mixpanelUtil';
 
 const INIT_VALUES = {
   visible: false,
@@ -154,6 +155,11 @@ export default class TransactionStore {
     }
   }
 
+  onTxCreated = () => {
+    this.app.pendingTxsSnackbar.init();
+    // TODO: refresh Event page if still in viewing that same page
+  }
+
   @action
   showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
     this.type = TransactionType.BET;
@@ -187,6 +193,8 @@ export default class TransactionStore {
           token: this.token,
           version: 0,
         });
+        this.onTxCreated();
+        Tracking.track('event-bet');
       }
     };
     this.showConfirmDialog();
@@ -226,6 +234,8 @@ export default class TransactionStore {
           version: 0,
         });
         this.addPendingApprove(txid);
+        this.onTxCreated();
+        Tracking.track('event-approveSetResult');
       }
     };
     this.showConfirmDialog();
@@ -264,6 +274,8 @@ export default class TransactionStore {
           senderAddress: this.senderAddress,
           version: 0,
         });
+        this.onTxCreated();
+        Tracking.track('event-setResult');
       }
     };
     this.showConfirmDialog();
