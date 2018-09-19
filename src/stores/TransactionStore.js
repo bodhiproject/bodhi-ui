@@ -6,7 +6,7 @@ import { TransactionType, Token } from 'constants';
 import TransactionCost from './models/TransactionCost';
 import { WalletProvider } from '../constants';
 import networkRoutes from '../network/routes';
-import { createBetTx } from '../network/graphql/mutations';
+import { createApproveTx, createBetTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 
 const INIT_VALUES = {
@@ -65,6 +65,7 @@ export default class TransactionStore {
         senderAddress: this.app.wallet.currentAddress,
       });
       const fees = map(data, (item) => new TransactionCost(item));
+      console.log(fees);
 
       runInAction(() => {
         this.visible = true;
@@ -91,6 +92,7 @@ export default class TransactionStore {
       this.confirmedFunc = this.app.eventPage.bet;
     } else {
       this.confirmedFunc = async () => {
+        // Execute bet
         const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
         const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
           methodArgs: [this.option.idx],
@@ -118,6 +120,52 @@ export default class TransactionStore {
     this.showConfirmDialog();
   }
 
+  @action
+  showApproveSetResultPrompt = async (topicAddress, oracleAddress, option, amount) => {
+    console.log('show prompt');
+    this.type = TransactionType.APPROVE_SET_RESULT;
+    this.topicAddress = topicAddress;
+    this.oracleAddress = oracleAddress;
+    this.option = option;
+    this.amount = amount;
+    this.token = Token.BOT;
+    this.senderAddress = this.app.wallet.currentAddress;
+
+    if (this.app.global.localWallet) {
+      this.confirmedFunc = this.app.eventPage.setResult;
+    } else {
+      this.confirmedFunc = async () => {
+        // Execute approve
+        const addressManager = getContracts().AddressManager;
+        const contract = this.app.global.qweb3.Contract(addressManager.address, addressManager.abi);
+        const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
+          methodArgs: [this.topicAddress, this.amount],
+          senderAddress: this.senderAddress,
+        });
+
+        // Create pending tx on server
+        if (txid) {
+          await createApproveTx({
+            txid,
+            gasLimit,
+            gasPrice,
+            type: this.type,
+            version: 0,
+            topicAddress: this.topicAddress,
+            oracleAddress: this.oracleAddress,
+            optionIdx: this.option.idx,
+            amount: this.amount,
+            token: this.token,
+            senderAddress: this.senderAddress,
+          });
+        }
+      };
+    }
+
+    this.showConfirmDialog();
+  }
+
+  @action
   onTxConfirmed = async () => {
     await this.confirmedFunc();
     this.visible = false;
