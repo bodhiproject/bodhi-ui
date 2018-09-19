@@ -87,16 +87,7 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createBetTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
-  const args = {
-    version,
-    topicAddress,
-    oracleAddress,
-    optionIdx,
-    amount,
-    senderAddress,
-  };
-
+export function createBetTx(args) {
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
 }
 

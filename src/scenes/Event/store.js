@@ -519,7 +519,7 @@ export default class EventStore {
   }
 
   prepareBet = () => {
-    this.app.tx.showBetPrompt(this.amount, this.selectedOption, this.oracle.topicAddress, this.oracle.address);
+    this.app.tx.showBetPrompt(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
   }
 
   @action
@@ -576,14 +576,14 @@ export default class EventStore {
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
     try {
-      const { data: { createBet } } = await createBetTx(
+      const { data: { createBet } } = await createBetTx({
         version,
         topicAddress,
-        address,
-        selectedOptionIdx,
+        oracleAddress: address,
+        optionIdx: selectedOptionIdx,
         amount,
-        currentAddress,
-      );
+        senderAddress: currentAddress,
+      });
       const newTx = { // TODO: add `options` in return from backend
         ...createBet,
         topic: {
