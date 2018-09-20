@@ -354,6 +354,8 @@
   "txConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
   "txConfirm.messageWithFee": "You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.",
   "txConfirm.title": "Please Confirm Your Transaction",
+  "txConfirm.txOne": "Confirmation for transaction 1/2. You will be required to confirm another transaction when this transaction is successful.",
+  "txConfirm.txTwo": "Confirmation for transaction 2/2.",
   "txConfirmMsg.bet": "bet on {option}",
   "txConfirmMsg.create": "create an event",
   "txConfirm.selectWalletProvider": "Select your wallet provider:",

@@ -87,12 +87,12 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createApproveTx(args) {
-  return new GraphMutation('approve', args, TYPE.transaction).execute();
-}
-
 export function createBetTx(args) {
   return new GraphMutation('createBet', args, TYPE.transaction).execute();
+}
+
+export function createApproveSetResultTx(args) {
+  return new GraphMutation('approveSetResult', args, TYPE.transaction).execute();
 }
 
 export function createSetResultTx(args) {

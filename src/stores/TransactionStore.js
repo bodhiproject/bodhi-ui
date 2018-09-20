@@ -6,9 +6,10 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createApproveTx, createBetTx, createSetResultTx } from '../network/graphql/mutations';
+import { createBetTx, createApproveSetResultTx, createSetResultTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
+import { decimalToSatoshi } from '../helpers/utility';
 
 const INIT_VALUES = {
   visible: false,
@@ -48,7 +49,6 @@ export default class TransactionStore {
       () => {
         if (!this.visible) {
           Object.assign(this, INIT_VALUES);
-          this.checkPendingApproves();
         }
       }
     );
@@ -101,6 +101,7 @@ export default class TransactionStore {
       const txid = pending[0];
       let txs = await queryAllTransactions([{ txid }], undefined, 1);
       txs = map(txs, (tx) => new Transaction(tx));
+
       if (!isEmpty(txs)) {
         const { SUCCESS, FAIL } = TransactionStatus;
         const tx = txs[0];
@@ -112,6 +113,7 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
+              console.log(tx);
               await this.showSetResultPrompt(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
               break;
             }
@@ -126,6 +128,9 @@ export default class TransactionStore {
 
         // Remove the pending approve txid from storage
         if (some([SUCCESS, FAIL], tx.status)) this.removePendingApprove(txid);
+      } else {
+        // Couldn't find pending tx in DB, delete from localStorage
+        this.removePendingApprove(txid);
       }
     }
   }
@@ -181,7 +186,6 @@ export default class TransactionStore {
       // Create pending tx on server
       if (txid) {
         await createBetTx({
-          type: this.type,
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -206,7 +210,7 @@ export default class TransactionStore {
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
     this.option = option;
-    this.amount = amount;
+    this.amount = decimalToSatoshi(amount);
     this.token = Token.BOT;
     this.senderAddress = this.app.wallet.currentAddress;
     this.confirmedFunc = async () => {
@@ -220,8 +224,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        await createApproveTx({
-          type: this.type,
+        await createApproveSetResultTx({
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -247,7 +250,7 @@ export default class TransactionStore {
     this.topicAddress = topicAddress;
     this.oracleAddress = oracleAddress;
     this.option = { idx: optionIdx };
-    this.amount = amount;
+    this.amount = decimalToSatoshi(amount);
     this.token = Token.BOT;
     this.senderAddress = this.app.wallet.currentAddress;
     this.confirmedFunc = async () => {
@@ -265,13 +268,12 @@ export default class TransactionStore {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
-          type: this.type,
+          senderAddress: this.senderAddress,
           topicAddress: this.topicAddress,
           oracleAddress: this.oracleAddress,
           optionIdx: this.option.idx,
           amount: this.amount,
           token: this.token,
-          senderAddress: this.senderAddress,
           version: 0,
         });
         this.onTxCreated();
