@@ -1,7 +1,6 @@
-import { Token, TransactionType } from 'constants';
-import { gasToQtum, satoshiToDecimal } from '../../helpers/utility';
+import { Token } from 'constants';
 
-const { APPROVE_CREATE_EVENT, APPROVE_SET_RESULT, APPROVE_VOTE, BET, VOTE, SET_RESULT, FINALIZE_RESULT, WITHDRAW, WITHDRAW_ESCROW } = TransactionType;
+import { gasToQtum, satoshiToDecimal } from '../../helpers/utility';
 
 /**
  * Model for Transactions.
@@ -34,14 +33,6 @@ export default class Transaction {
     this.gasPrice = Number(this.gasPrice);
     this.fee = gasToQtum(this.gasUsed);
     this.amount = this.token === Token.BOT ? satoshiToDecimal(this.amount) : this.amount;
-
-    const { topic, type, optionIdx } = transaction;
-    if (topic && [APPROVE_SET_RESULT, APPROVE_VOTE, BET, VOTE, SET_RESULT, FINALIZE_RESULT].includes(type)) {
-      this.name = topic.options[optionIdx];
-    } else if ([WITHDRAW, WITHDRAW_ESCROW].includes(type)) {
-      this.name = type;
-    }
-
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',
