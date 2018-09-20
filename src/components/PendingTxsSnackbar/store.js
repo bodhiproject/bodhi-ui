@@ -3,6 +3,7 @@ import { filter, isEmpty, reduce } from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
 
 import { queryAllTransactions } from '../../network/graphql/queries';
+import { Transaction } from '../../stores/models';
 
 const {
   APPROVE_CREATE_EVENT,
