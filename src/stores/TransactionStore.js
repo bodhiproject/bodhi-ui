@@ -162,9 +162,12 @@ export default class TransactionStore {
     }
   }
 
-  onTxExecuted = (index) => {
+  onTxExecuted = (index, tx) => {
+    // Refresh detail page if one the same page
+    if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
+      this.app.eventPage.queryTransactions(this.app.eventPage.topicAddress);
+    }
     this.app.pendingTxsSnackbar.init();
-    // TODO: refresh Event page if still in viewing that same page
     this.deleteTx(index);
   }
 
@@ -184,7 +187,8 @@ export default class TransactionStore {
   }
 
   @action
-  executeBet = async (index, { topicAddress, oracleAddress, optionIdx, amount, token, senderAddress }) => {
+  executeBet = async (index, tx) => {
+    const { topicAddress, oracleAddress, optionIdx, amount, token, senderAddress } = tx;
     const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
       methodArgs: [optionIdx],
@@ -207,7 +211,7 @@ export default class TransactionStore {
         version: 0,
       });
 
-      this.onTxExecuted(index);
+      this.onTxExecuted(index, tx);
       Tracking.track('event-bet');
     }
   }
