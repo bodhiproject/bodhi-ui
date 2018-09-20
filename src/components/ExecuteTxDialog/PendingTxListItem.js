@@ -2,6 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
+import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
 import { TransactionType } from 'constants';
 
@@ -135,10 +136,18 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { 
 
 const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, index, store: { tx } }) => (
   <div className={classes.actionButtonsContainer}>
-    <Button color="primary" onClick={() => tx.confirmTx(index)}>
+    <Button
+      className={classes.confirmButton}
+      variant="outlined"
+      color="primary"
+      size="small"
+      onClick={() => tx.confirmTx(index)}
+    >
+      <Check />
       <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
     </Button>
-    <Button onClick={() => tx.deleteTx(index)}>
+    <Button variant="outlined" size="small" onClick={() => tx.deleteTx(index)}>
+      <Clear />
       <FormattedMessage id="str.delete" defaultMessage="Delete" />
     </Button>
   </div>
