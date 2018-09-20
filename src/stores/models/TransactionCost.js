@@ -1,6 +1,4 @@
-import { Token } from 'constants';
 import { satoshiToDecimal } from '../../helpers/utility';
-
 
 /*
 * Model for TransactionCost.
@@ -15,10 +13,7 @@ export default class TransactionCost {
 
   constructor(txCost) {
     Object.assign(this, txCost);
-
-    if (this.token === Token.BOT) {
-      this.amount = satoshiToDecimal(this.amount);
-    }
+    this.amount = satoshiToDecimal(this.amount);
 
     // Temp fix to remove amount of approve types for TxConfirmDialog
     if (this.type === 'approve') {
