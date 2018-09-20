@@ -46,14 +46,13 @@ class EventRow extends Component {
     render() {
       const { transaction, intl, classes } = this.props;
       const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
-      const { locale, messages: localeMessages } = intl;
       const { expanded } = this.state;
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
             <TableCell className={classes.summaryRowCell}>{moment.unix(createdTime).format('LLL')}</TableCell>
-            <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
+            <TableCell>{getTxTypeString(type, intl)}</TableCell>
             <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
               {(topic && topic.name) || name}
             </NameLinkCell>

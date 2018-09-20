@@ -69,7 +69,7 @@ export default class TxRow extends Component {
       <Fragment>
         <TableRow key={`tx-${txid}`}>
           <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(type, intl.locale, intl.messages)}</TableCell>
+          <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
           <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>
           <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
