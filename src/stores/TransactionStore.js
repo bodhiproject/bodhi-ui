@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, some, each, reduce } from 'lodash';
+import { map, includes, isEmpty, remove, each, reduce, findIndex } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
@@ -83,14 +83,17 @@ export default class TransactionStore {
    * @param {string} txid Transaction ID to remove.
    */
   removePendingApprove = (txid) => {
-    const pending = this.getPendingApproves();
-    if (includes(pending, txid)) remove(pending, txid);
-    localStorage.setItem('pendingApproves', pending);
+    let pending = this.getPendingApproves();
+    if (includes(pending, txid)) {
+      pending = remove(pending, txid);
+      localStorage.setItem('pendingApproves', pending);
+    }
   };
 
   /**
    * Checks for successful approve txs. If they are successful, adds a tx to the list of txs to confirm.
    */
+  @action
   checkPendingApproves = async () => {
     const pending = this.getPendingApproves();
     if (!isEmpty(pending)) {
@@ -103,19 +106,15 @@ export default class TransactionStore {
       txs = map(txs, (tx) => new Transaction(tx));
 
       each(txs, async (tx) => {
-        const { SUCCESS, FAIL } = TransactionStatus;
-
-        // Remove the pending approve txid from storage
-        if (some([SUCCESS, FAIL], tx.status)) this.removePendingApprove(tx.txid);
-
-        // Execute follow-up tx if successful approve
-        if (tx.status === SUCCESS) {
+        // Execute follow-up tx if successful approve and not already added
+        const index = findIndex(this.transactions, { approveTxid: tx.txid });
+        if (index === -1 && tx.status === TransactionStatus.SUCCESS) {
           switch (tx.type) {
             case TransactionType.APPROVE_CREATE_EVENT: {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
+              await this.addSetResultTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
               break;
             }
             case TransactionType.APPROVE_VOTE: {
@@ -127,6 +126,11 @@ export default class TransactionStore {
           }
         }
       });
+
+      // Show confirm dialog if there are pending txs
+      if (this.transactions.length > 0) {
+        this.visible = true;
+      }
     }
   }
 
@@ -204,6 +208,11 @@ export default class TransactionStore {
    */
   @action
   deleteTx = (index) => {
+    const tx = this.transactions[index];
+    if (tx.approveTxid) {
+      this.removePendingApprove(tx.approveTxid);
+    }
+
     this.transactions.splice(index, 1);
     if (this.transactions.length === 0) {
       this.visible = false;
@@ -284,7 +293,6 @@ export default class TransactionStore {
       amount: amountSatoshi,
       token: Token.BOT,
     })));
-
     this.showConfirmDialog();
   }
 
@@ -326,20 +334,22 @@ export default class TransactionStore {
 
   /**
    * Shows the confirm dialog when trying to do a set result.
+   * @param {string} approveTxid Txid of the approve.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {Option} option Option of the result being set.
    * @param {string} amount Consensus threshold.
    */
   @action
-  addSetResultTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
+  addSetResultTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amount) => {
     this.transactions.push(observable.object(new Transaction({
+      approveTxid,
       type: TransactionType.SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
       optionIdx,
-      amount: amountSatoshi,
+      amount,
       token: Token.BOT,
     })));
     this.showConfirmDialog();
