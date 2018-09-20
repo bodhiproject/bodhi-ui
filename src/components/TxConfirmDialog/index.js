@@ -18,13 +18,9 @@ import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import styles from './styles';
 
 const messages = defineMessages({
-  txConfirmMessageMsg: {
-    id: 'txConfirm.message',
-    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.',
-  },
   txConfirmMessageWithFeeMsg: {
-    id: 'txConfirm.messageWithFee',
-    defaultMessage: 'You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you. Please click OK to continue.',
+    id: 'txConfirm.txFeeMsg',
+    defaultMessage: 'You are about to {txAction} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you.',
   },
   txTypeApprove: {
     id: 'txType.approve',
@@ -92,10 +88,7 @@ export default class TxConfirmDialog extends Component {
     const { open, txFees, onConfirm, onClose, txAmount, txToken, txDesc } = this.props;
     const { classes, intl: { formatMessage } } = this.props;
     const txFee = _.sumBy(txFees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
-    let confirmMessage = formatMessage(messages.txConfirmMessageMsg, { txDesc, txAmount, txToken });
-    if (txFee) {
-      confirmMessage = formatMessage(messages.txConfirmMessageWithFeeMsg, { txDesc, txAmount, txToken, txFee });
-    }
+    const confirmMessage = formatMessage(messages.txConfirmMessageWithFeeMsg, { txDesc, txAmount, txToken, txFee });
     if (!open) {
       return null;
     }

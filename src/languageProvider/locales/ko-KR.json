@@ -351,8 +351,6 @@
   "tutorial6.title": "분산",
   "tx.approveBotTransfer": "BOT 전송 승인",
   "tx.resetApproval": "승인 재설정",
-  "txConfirm.message": "{txAmount} {txToken}을 {txDesc}하려합니다. 계속하려면 확인을 클릭하십시오.",
-  "txConfirm.messageWithFee": "최대 거래 수수료 {txFee} QTUM으로 {txAmount} {txToken} 분의 {txDesc} 정도입니다. 미사용 거래 수수료는 환불됩니다. 계속하려면 확인을 클릭하십시오.",
   "txConfirm.title": "귀하의 거래를 확인하십시오",
   "txConfirmMsg.bet": "{option}에 베팅",
   "txConfirmMsg.create": "이벤트 생성",
