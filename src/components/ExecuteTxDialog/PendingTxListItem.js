@@ -131,12 +131,12 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { 
   return null;
 })));
 
-const ActionButtons = injectIntl(inject('store')(observer(() => (
+const ActionButtons = injectIntl(inject('store')(({ index, store: { tx } }) => (
   <div>
     <Button color="primary"><FormattedMessage id="str.confirm" defaultMessage="Confirm" /></Button>
-    <Button><FormattedMessage id="str.delete" defaultMessage="Delete" /></Button>
+    <Button onClick={() => tx.deleteTx(index)}><FormattedMessage id="str.delete" defaultMessage="Delete" /></Button>
   </div>
-))));
+)));
 
 const PendingTxListItem = (props) => (
   <div>

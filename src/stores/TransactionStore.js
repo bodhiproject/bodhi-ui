@@ -511,6 +511,7 @@ export default class TransactionStore {
       optionIdx,
       amount,
       token: Token.QTUM,
+      onConfirmed,
     })));
     await this.showConfirmDialog();
   }
@@ -959,6 +960,14 @@ export default class TransactionStore {
       } else {
         this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/transfer`);
       }
+    }
+  }
+
+  @action
+  deleteTx = (index) => {
+    this.transactions.splice(index, 1);
+    if (this.transactions.length === 0) {
+      this.visible = false;
     }
   }
 }
