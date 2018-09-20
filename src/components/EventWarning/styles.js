@@ -3,9 +3,11 @@ import { EventWarningType } from 'constants';
 const styles = (theme) => ({
   warningWrapper: {
     borderRadius: theme.borderRadius,
-    overflow: 'hidden',
-    padding: `${theme.padding.unit.px} ${theme.padding.xs.px}`,
+    padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
     marginBottom: theme.padding.sm.px,
+    [theme.breakpoints.down('xs')]: {
+      margin: 0,
+    },
   },
   [EventWarningType.INFO]: {
     background: theme.palette.primary.light,
