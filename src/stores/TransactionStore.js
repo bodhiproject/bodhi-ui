@@ -9,7 +9,6 @@ import { queryAllTransactions } from '../network/graphql/queries';
 import { createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
-import { decimalToSatoshi } from '../helpers/utility';
 
 const INIT_VALUES = {
   visible: false,
@@ -969,7 +968,7 @@ export default class TransactionStore {
    */
   @action
   executeSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi, token } = tx;
     const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
       methodArgs: [optionIdx],
@@ -987,7 +986,7 @@ export default class TransactionStore {
         topicAddress,
         oracleAddress,
         optionIdx,
-        amount,
+        amount: amountSatoshi,
         token,
         version: 0,
       });
