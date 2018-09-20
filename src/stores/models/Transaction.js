@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { Token, TransactionType } from 'constants';
 import { gasToQtum, satoshiToDecimal } from '../../helpers/utility';
 

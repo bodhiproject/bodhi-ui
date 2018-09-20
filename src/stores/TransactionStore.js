@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, some, each, cloneDeep } from 'lodash';
+import { map, includes, isEmpty, remove, some, each } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
@@ -169,6 +169,33 @@ export default class TransactionStore {
 
   @action
   showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
+    const onConfirmed = async () => {
+      // Execute bet
+      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
+        methodArgs: [this.option.idx],
+        amount: this.amount,
+        senderAddress: this.senderAddress,
+      });
+
+      // Create pending tx on server
+      if (txid) {
+        await createBetTx({
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress: this.senderAddress,
+          topicAddress: this.topicAddress,
+          oracleAddress: this.oracleAddress,
+          optionIdx: this.option.idx,
+          amount: this.amount,
+          token: this.token,
+          version: 0,
+        });
+        this.onTxCreated();
+        Tracking.track('event-bet');
+      }
+    };
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.BET,
       senderAddress: this.app.wallet.currentAddress,
@@ -177,35 +204,9 @@ export default class TransactionStore {
       optionIdx: option.idx,
       amount,
       token: Token.QTUM,
+      onConfirmed,
     })));
 
-    // this.confirmedFunc = async () => {
-    //   // Execute bet
-    //   const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-    //   const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-    //     methodArgs: [this.option.idx],
-    //     amount: this.amount,
-    //     senderAddress: this.senderAddress,
-    //   });
-
-    //   // Create pending tx on server
-    //   if (txid) {
-    //     await createBetTx({
-    //       txid,
-    //       gasLimit: gasLimit.toString(),
-    //       gasPrice: gasPrice.toFixed(8),
-    //       senderAddress: this.senderAddress,
-    //       topicAddress: this.topicAddress,
-    //       oracleAddress: this.oracleAddress,
-    //       optionIdx: this.option.idx,
-    //       amount: this.amount,
-    //       token: this.token,
-    //       version: 0,
-    //     });
-    //     this.onTxCreated();
-    //     Tracking.track('event-bet');
-    //   }
-    // };
     this.showConfirmDialog();
   }
 
@@ -292,5 +293,13 @@ export default class TransactionStore {
   onTxConfirmed = async () => {
     await this.confirmedFunc();
     this.visible = false;
+  }
+
+  @action
+  deleteTx = (index) => {
+    this.transactions.splice(index, 1);
+    if (this.transactions.length === 0) {
+      this.visible = false;
+    }
   }
 }
