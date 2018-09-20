@@ -135,12 +135,6 @@
     "build:langs": "npm run extract-messages && npm run manage:translations",
     "prepush": "npm run lint:fix"
   },
-  "lint-staged": {
-    "*.js": [
-      "npm run lint:fix",
-      "git add"
-    ]
-  },
   "files": [
     "build/"
   ],
