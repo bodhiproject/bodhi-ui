@@ -351,8 +351,6 @@
   "tutorial6.title": "去中心化",
   "tx.approveBotTransfer": "授权BOT转账额度",
   "tx.resetApproval": "重置授权",
-  "txConfirm.message": "您即将{txDesc}，金额为{txAmount} {txToken}。请点击确认完成该交易。",
-  "txConfirm.messageWithFee": "您即将{txDesc}，金额为{txAmount} {txToken}，最高交易费用为{txFee} QTUM，未被使用的部分将会被退回给您。请点击确认完成该交易。",
   "txConfirm.title": "请确认您的交易",
   "txConfirmMsg.bet": "为{option}投注",
   "txConfirmMsg.create": "创建一个事件",
