@@ -129,25 +129,6 @@ const TYPE_DEF = {
 };
 
 const MUTATIONS = {
-  approve: {
-    mapping: [
-      'topicAddress',
-      'oracleAddress',
-      'name',
-      'options',
-      'resultSetterAddress',
-      'bettingStartTime',
-      'bettingEndTime',
-      'resultSettingStartTime',
-      'resultSettingEndTime',
-      'optionIdx',
-      'amount',
-      'senderAddress',
-      'version',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
   createTopic: {
     mapping: [
       'name',
@@ -186,14 +167,34 @@ const MUTATIONS = {
     return: TYPE_DEF.Transaction,
   },
 
-  setResult: {
+  approveSetResult: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
+      'token',
+      'version',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
+  setResult: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
       'senderAddress',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'token',
+      'version',
     ],
     return: TYPE_DEF.Transaction,
   },

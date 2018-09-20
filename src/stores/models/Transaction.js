@@ -45,14 +45,7 @@ export default class Transaction {
     } else if ([WITHDRAW, WITHDRAW_ESCROW].includes(type)) {
       this.name = type;
     }
-    if (this.token === Token.BOT) {
-      if (_.includes([APPROVE_CREATE_EVENT, APPROVE_SET_RESULT, APPROVE_VOTE], this.type)) {
-        // Don't show the amount for any approves
-        this.amount = undefined;
-      } else {
-        this.amount = satoshiToDecimal(this.amount);
-      }
-    }
+    this.amount = this.token === Token.BOT ? satoshiToDecimal(this.amount) : this.amount;
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',
