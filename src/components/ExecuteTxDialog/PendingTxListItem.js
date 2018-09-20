@@ -1,24 +1,69 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
-import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
 import { TransactionType } from 'constants';
 
 import styles from './styles';
-import { getTxTypeString } from '../../helpers/stringUtil';
+import { getTxTypeFormatted } from '../../helpers/utility';
 
 const messages = defineMessages({
-  resetApprove: {
-    id: 'txConfirm.resetApprove',
-    defaultMessage: 'You are trying to use more BOT than your currently approved amount. This will require you to reset the approved amount to 0 first before you can increase it. Or you can change the amount up to the current approved amount.',
+  txTypeApprove: {
+    id: 'txType.approve',
+    defaultMessage: 'Approve',
   },
-  approveNotice: {
-    id: 'txConfirm.approveNotice',
-    defaultMessage: 'The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.',
+  txTypeSetResult: {
+    id: 'txType.setResult',
+    defaultMessage: 'Set result',
+  },
+  txTypeCreateEvent: {
+    id: 'txType.createEvent',
+    defaultMessage: 'Create event',
+  },
+  txTypeVote: {
+    id: 'txType.vote',
+    defaultMessage: 'Vote',
+  },
+  txTypeWithdraw: {
+    id: 'txType.withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  txTypeWithdrawEscrow: {
+    id: 'txType.withdrawEscrow',
+    defaultMessage: 'Withdraw escrow',
+  },
+  txTypeFinalizeResult: {
+    id: 'txType.finalizeResult',
+    defaultMessage: 'Finalize result',
+  },
+  txTypeBet: {
+    id: 'txType.bet',
+    defaultMessage: 'Bet',
+  },
+  strTypeMsg: {
+    id: 'str.type',
+    defaultMessage: 'Type',
+  },
+  strAmountMsg: {
+    id: 'str.amount',
+    defaultMessage: 'Amount',
+  },
+  strFeeMsg: {
+    id: 'str.fee',
+    defaultMessage: 'Gas Fee (QTUM)',
+  },
+  strGasLimitMsg: {
+    id: 'str.gasLimit',
+    defaultMessage: 'Gas Limit',
   },
 });
+
+const FormattedMessageCell = injectIntl(({ intl, id, defaultMessage }) => (
+  <TableCell>
+    {intl.formatMessage({ id, defaultMessage })}
+  </TableCell>
+));
 
 const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => {
   if (!fees || fees.length === 0) {
@@ -29,16 +74,16 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
     <Table className={classes.txFeesTable}>
       <TableHead>
         <TableRow>
-          <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
-          <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
-          <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
-          <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
+          <FormattedMessageCell id={messages.strTypeMsg.id} defaultMessage={messages.strTypeMsg.defaultMessage} />
+          <FormattedMessageCell id={messages.strAmountMsg.id} defaultMessage={messages.strAmountMsg.defaultMessage} />
+          <FormattedMessageCell id={messages.strGasLimitMsg.id} defaultMessage={messages.strGasLimitMsg.defaultMessage} />
+          <FormattedMessageCell id={messages.strFeeMsg.id} defaultMessage={messages.strFeeMsg.defaultMessage} />
         </TableRow>
       </TableHead>
       <TableBody>
         {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
           <TableRow key={i}>
-            <TableCell>{getTxTypeString(type, intl)}</TableCell>
+            <TableCell>{intl.formatMessage({ id: `txType.${type}`, defaultMessage: '' })}</TableCell>
             <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
             <TableCell>{gasLimit}</TableCell>
             <TableCell>{gasCost}</TableCell>
@@ -50,7 +95,7 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
 }))));
 
 const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { type, fees } }) => {
-  const txAction = getTxTypeString(type, intl);
+  const txAction = getTxTypeFormatted(type, intl);
   const txFee = sumBy(fees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
   return (
     <div className={classes.explanationMsgContainer}>
@@ -65,58 +110,31 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
   );
 }))));
 
-const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ intl, tx: { type } }) => {
-  const {
-    RESET_APPROVE,
-    APPROVE_CREATE_EVENT,
-    CREATE_EVENT,
-    APPROVE_SET_RESULT,
-    SET_RESULT,
-    APPROVE_VOTE,
-    VOTE,
-  } = TransactionType;
-  if (type === RESET_APPROVE || type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
-    // Get the localized follow-up tx name
-    const action = {
-      [RESET_APPROVE]: getTxTypeString(RESET_APPROVE, intl),
-      [APPROVE_CREATE_EVENT]: getTxTypeString(CREATE_EVENT, intl),
-      [APPROVE_SET_RESULT]: getTxTypeString(SET_RESULT, intl),
-      [APPROVE_VOTE]: getTxTypeString(VOTE, intl),
-    }[type];
-
-    let message;
-    if (type === RESET_APPROVE) {
-      message = messages.resetApprove;
-    } else {
-      message = messages.approveNotice;
-    }
-
+const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { type } }) => {
+  const { APPROVE_CREATE_EVENT, CREATE_EVENT, APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE } = TransactionType;
+  if (type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
     return (
       <div>
-        <Typography variant="body1">{intl.formatMessage(message, { action })}</Typography>
+        <FormattedMessage
+          id='txConfirm.txOne'
+          defaultMessage='Confirmation for transaction 1/2. You will be required to confirm another transaction when this transaction is successful.'
+        />
+      </div>
+    );
+  } else if (type === CREATE_EVENT || type === SET_RESULT || type === VOTE) {
+    return (
+      <div>
+        <FormattedMessage id='txConfirm.txTwo' defaultMessage='Confirmation for transaction 2/2.' />
       </div>
     );
   }
-
   return null;
 })));
 
-const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, index, store: { tx } }) => (
-  <div className={classes.actionButtonsContainer}>
-    <Button
-      className={classes.confirmButton}
-      variant="raised"
-      color="primary"
-      size="small"
-      onClick={() => tx.confirmTx(index)}
-    >
-      <Check className={classes.buttonIcon} />
-      <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
-    </Button>
-    <Button variant="raised" color="default" size="small" onClick={() => tx.deleteTx(index)}>
-      <Clear className={classes.buttonIcon} />
-      <FormattedMessage id="str.delete" defaultMessage="Delete" />
-    </Button>
+const ActionButtons = injectIntl(inject('store')(observer(() => (
+  <div>
+    <Button color="primary"><FormattedMessage id="str.confirm" defaultMessage="Confirm" /></Button>
+    <Button><FormattedMessage id="str.delete" defaultMessage="Delete" /></Button>
   </div>
 ))));
 
