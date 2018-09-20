@@ -71,6 +71,7 @@ const TransactionFeesTable = ({ classes, intl, store: { tx: { fees } } }) => {
     <Table className={classes.txFeesTable}>
       <TableHead>
         <TableRow>
+          <TableCell>#</TableCell>
           <FormattedMessageCell id={messages.strTypeMsg.id} defaultMessage={messages.strTypeMsg.defaultMessage} />
           <FormattedMessageCell id={messages.strAmountMsg.id} defaultMessage={messages.strAmountMsg.defaultMessage} />
           <FormattedMessageCell id={messages.strFeeMsg.id} defaultMessage={messages.strFeeMsg.defaultMessage} />
@@ -80,6 +81,7 @@ const TransactionFeesTable = ({ classes, intl, store: { tx: { fees } } }) => {
       <TableBody>
         {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
           <TableRow key={i}>
+            <TableCell>{i + 1}</TableCell>
             <TableCell>{intl.formatMessage({ id: `txType.${type}`, defaultMessage: '' })}</TableCell>
             <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
             <TableCell>{gasCost}</TableCell>
