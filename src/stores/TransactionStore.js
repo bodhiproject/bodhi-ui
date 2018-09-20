@@ -162,40 +162,14 @@ export default class TransactionStore {
     }
   }
 
-  onTxCreated = () => {
+  onTxExecuted = (index) => {
     this.app.pendingTxsSnackbar.init();
     // TODO: refresh Event page if still in viewing that same page
+    this.deleteTx(index);
   }
 
   @action
   showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
-    const onConfirmed = async () => {
-      // Execute bet
-      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-        methodArgs: [this.option.idx],
-        amount: this.amount,
-        senderAddress: this.senderAddress,
-      });
-
-      // Create pending tx on server
-      if (txid) {
-        await createBetTx({
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress: this.senderAddress,
-          topicAddress: this.topicAddress,
-          oracleAddress: this.oracleAddress,
-          optionIdx: this.option.idx,
-          amount: this.amount,
-          token: this.token,
-          version: 0,
-        });
-        this.onTxCreated();
-        Tracking.track('event-bet');
-      }
-    };
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.BET,
       senderAddress: this.app.wallet.currentAddress,
@@ -204,10 +178,38 @@ export default class TransactionStore {
       optionIdx: option.idx,
       amount,
       token: Token.QTUM,
-      onConfirmed,
     })));
 
     this.showConfirmDialog();
+  }
+
+  @action
+  executeBet = async (index, { topicAddress, oracleAddress, optionIdx, amount, token, senderAddress }) => {
+    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
+      methodArgs: [optionIdx],
+      amount,
+      senderAddress,
+    });
+
+    if (txid) {
+      // Create pending tx on server
+      await createBetTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amount,
+        token,
+        version: 0,
+      });
+
+      this.onTxExecuted(index);
+      Tracking.track('event-bet');
+    }
   }
 
   @action
@@ -243,7 +245,7 @@ export default class TransactionStore {
           version: 0,
         });
         this.addPendingApprove(txid);
-        this.onTxCreated();
+        this.onTxExecuted();
         Tracking.track('event-approveSetResult');
       }
     };
@@ -282,17 +284,24 @@ export default class TransactionStore {
           token: this.token,
           version: 0,
         });
-        this.onTxCreated();
+        this.onTxExecuted();
         Tracking.track('event-setResult');
       }
     };
     this.showConfirmDialog();
   }
 
-  @action
-  onTxConfirmed = async () => {
-    await this.confirmedFunc();
-    this.visible = false;
+  confirmTx = async (index) => {
+    const tx = this.transactions[index];
+    switch (tx.type) {
+      case TransactionType.BET: {
+        await this.executeBet(index, tx);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   @action

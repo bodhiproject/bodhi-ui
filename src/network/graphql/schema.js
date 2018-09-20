@@ -162,6 +162,7 @@ const MUTATIONS = {
       'oracleAddress',
       'optionIdx',
       'amount',
+      'token',
       'version',
     ],
     return: TYPE_DEF.Transaction,
