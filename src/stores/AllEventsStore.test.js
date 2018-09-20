@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { Routes } from 'constants';
 import AllEventsStore from './AllEventsStore';
-import { queryAllOracles, mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
+import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
 
 jest.mock('../network/graphql/queries'); // block and manually mock our backend
 

@@ -1,7 +1,6 @@
 /** This is a mock module of ../queries.js,
  * so the test files link to this instead of connecting to backend
- * This file simply skip the backend retrival and fake query results and return
- * Current logic is straightforward but good enough to make tests
+ * this mock module is a interface between stores and mockData module.
  * */
 import mockData from './mockData';
 
