@@ -135,6 +135,11 @@ export default class TransactionStore {
           }
         }
       });
+
+      // Show confirm dialog if there are pending txs
+      if (this.transactions.length > 0) {
+        this.visible = true;
+      }
     }
 
     // Show confirm dialog if there are pending txs
@@ -632,7 +637,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
       optionIdx,
-      amount: amountSatoshi,
+      amount,
       token: Token.BOT,
     })));
     await this.showConfirmDialog();
