@@ -9,6 +9,7 @@ import { queryAllTransactions } from '../network/graphql/queries';
 import { createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
+import { decimalToSatoshi } from '../helpers/utility';
 
 const INIT_VALUES = {
   visible: false,
@@ -32,7 +33,6 @@ export default class TransactionStore {
       () => {
         if (!this.visible) {
           Object.assign(this, INIT_VALUES);
-          this.checkPendingApproves();
         }
       }
     );
