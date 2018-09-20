@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withStyles, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, Divider, Typography, Paper } from '@material-ui/core';
+import { withStyles, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, Typography, Paper } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
 import styles from './styles';
