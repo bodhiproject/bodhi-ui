@@ -962,11 +962,38 @@ export default class TransactionStore {
     }
   }
 
+  /**
+   * Executes a set result.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Transaction obj.
+   */
   @action
-  deleteTx = (index) => {
-    this.transactions.splice(index, 1);
-    if (this.transactions.length === 0) {
-      this.visible = false;
+  executeSetResult = async (index, tx) => {
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
+      methodArgs: [optionIdx],
+      gasLimit: 1500000,
+      senderAddress,
+    });
+
+    // Create pending tx on server
+    if (txid) {
+      await createSetResultTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amount,
+        token,
+        version: 0,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-setResult');
     }
   }
 }
