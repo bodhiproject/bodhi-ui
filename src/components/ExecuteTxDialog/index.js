@@ -20,7 +20,7 @@ export default class ExecuteTxDialog extends Component {
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
-          <Typography variant="heading">
+          <Typography variant="body2">
             <FormattedMessage
               id='txConfirm.txFeeReturnMsg'
               defaultMessage='Gas fees are the maximum amount that you will spend for that transaction. Any unused gas fees will be refunded to you.'
@@ -28,7 +28,7 @@ export default class ExecuteTxDialog extends Component {
           </Typography>
           <List>
             {transactions.map((tx, index) => (
-              <ListItem className={classes.listItem}>
+              <ListItem className={classes.listItem} key={index}>
                 <Paper className={classes.listItemPaper}>
                   <div className={classes.listItemTxNumber}>
                     <FormattedMessage
