@@ -14,7 +14,7 @@ export default class ExecuteTxDialog extends Component {
     const { visible } = this.props.store.tx;
 
     return (
-      <Dialog open={visible}>
+      <Dialog open={visible} maxWidth={false}>
         <DialogTitle>
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
