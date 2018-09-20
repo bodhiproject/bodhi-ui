@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, some, each } from 'lodash';
+import { map, includes, isEmpty, remove, some, each, reduce } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
@@ -90,23 +90,24 @@ export default class TransactionStore {
   };
 
   /**
-   * Checks for pending approve txs. If approve is successful, show the follow-up tx prompt.
+   * Checks for successful approve txs. If they are successful, adds a tx to the list of txs to confirm.
    */
   checkPendingApproves = async () => {
-    // Only show one tx confirm screen at a time
-    if (this.visible) {
-      return;
-    }
-
     const pending = this.getPendingApproves();
     if (!isEmpty(pending)) {
-      const txid = pending[0];
-      let txs = await queryAllTransactions([{ txid }], undefined, 1);
+      // Get all txs from DB
+      const filters = reduce(pending, (result, value) => {
+        result.push({ txid: value });
+        return result;
+      }, []);
+      let txs = await queryAllTransactions(filters);
       txs = map(txs, (tx) => new Transaction(tx));
 
-      if (!isEmpty(txs)) {
+      each(txs, async (tx) => {
         const { SUCCESS, FAIL } = TransactionStatus;
-        const tx = txs[0];
+
+        // Remove the pending approve txid from storage
+        if (some([SUCCESS, FAIL], tx.status)) this.removePendingApprove(tx.txid);
 
         // Execute follow-up tx if successful approve
         if (tx.status === SUCCESS) {
@@ -115,7 +116,7 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.showSetResultPrompt(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
+              await this.addSetResultTx(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
               break;
             }
             case TransactionType.APPROVE_VOTE: {
@@ -126,13 +127,7 @@ export default class TransactionStore {
             }
           }
         }
-
-        // Remove the pending approve txid from storage
-        if (some([SUCCESS, FAIL], tx.status)) this.removePendingApprove(txid);
-      } else {
-        // Couldn't find pending tx in DB, delete from localStorage
-        this.removePendingApprove(txid);
-      }
+      });
     }
   }
 
@@ -224,7 +219,7 @@ export default class TransactionStore {
    * @param {string} amount Amount of the bet.
    */
   @action
-  showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
+  addBetTx = async (topicAddress, oracleAddress, option, amount) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.BET,
       senderAddress: this.app.wallet.currentAddress,
@@ -280,7 +275,7 @@ export default class TransactionStore {
    * @param {string} amount Approve amount.
    */
   @action
-  showApproveSetResultPrompt = async (topicAddress, oracleAddress, option, amount) => {
+  addApproveSetResultTx = async (topicAddress, oracleAddress, option, amount) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.APPROVE_SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,
@@ -337,7 +332,7 @@ export default class TransactionStore {
    * @param {string} amount Consensus threshold.
    */
   @action
-  showSetResultPrompt = async (topicAddress, oracleAddress, optionIdx, amount) => {
+  addSetResultTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,

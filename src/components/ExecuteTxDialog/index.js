@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withStyles, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, Divider, Typography } from '@material-ui/core';
+import { withStyles, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, Divider, Typography, Paper } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
 import styles from './styles';
@@ -27,10 +27,9 @@ export default class ExecuteTxDialog extends Component {
             />
           </Typography>
           <List>
-            <Divider />
             {transactions.map((tx, index) => (
-              <div>
-                <ListItem className={classes.listItem}>
+              <ListItem className={classes.listItem}>
+                <Paper className={classes.listItemPaper}>
                   <div className={classes.listItemTxNumber}>
                     <FormattedMessage
                       id="txConfirm.transactionX"
@@ -39,9 +38,8 @@ export default class ExecuteTxDialog extends Component {
                     />
                   </div>
                   <PendingTxListItem tx={tx} index={index} />
-                </ListItem>
-                <Divider />
-              </div>
+                </Paper>
+              </ListItem>
             ))}
           </List>
         </DialogContent>
