@@ -20,7 +20,7 @@ import styles from './styles';
 const messages = defineMessages({
   txConfirmMessageWithFeeMsg: {
     id: 'txConfirm.txFeeMsg',
-    defaultMessage: 'You are about to {txAction} with a maximum transaction fee of {txFee} QTUM. Any unused transaction fees will be refunded to you.',
+    defaultMessage: 'You are about to {txAction} with a maximum transaction fee of {txFee} QTUM.',
   },
   txTypeApprove: {
     id: 'txType.approve',

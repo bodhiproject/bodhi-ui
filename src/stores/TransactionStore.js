@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, some } from 'lodash';
+import { map, includes, isEmpty, remove, some, each, cloneDeep } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
@@ -29,6 +29,8 @@ const INIT_VALUES = {
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
+  @observable transactions = [];
+
   @observable type = INIT_VALUES.type;
   @observable action = INIT_VALUES.action;
   @observable option = INIT_VALUES.option;
@@ -113,7 +115,6 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              console.log(tx);
               await this.showSetResultPrompt(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
               break;
             }
@@ -138,20 +139,21 @@ export default class TransactionStore {
   @action
   showConfirmDialog = async () => {
     try {
-      const { data } = await axios.post(networkRoutes.api.transactionCost, {
-        type: this.type,
-        token: this.token,
-        amount: this.amount,
-        optionIdx: this.option.idx,
-        topicAddress: this.topicAddress,
-        oracleAddress: this.oracleAddress,
-        senderAddress: this.app.wallet.currentAddress,
+      each(this.transactions, async (tx) => {
+        const { data } = await axios.post(networkRoutes.api.transactionCost, {
+          type: tx.type,
+          senderAddress: tx.senderAddress,
+          topicAddress: tx.topicAddress,
+          oracleAddress: tx.oracleAddress,
+          optionIdx: tx.optionIdx,
+          amount: tx.amount,
+          token: tx.token,
+        });
+        tx.fees = map(data, (item) => new TransactionCost(item));
       });
-      const fees = map(data, (item) => new TransactionCost(item));
 
       runInAction(() => {
         this.visible = true;
-        this.fees = fees;
       });
     } catch (error) {
       runInAction(() => {
@@ -167,40 +169,43 @@ export default class TransactionStore {
 
   @action
   showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
-    this.type = TransactionType.BET;
-    this.topicAddress = topicAddress;
-    this.oracleAddress = oracleAddress;
-    this.option = option;
-    this.amount = amount;
-    this.token = Token.QTUM;
-    this.senderAddress = this.app.wallet.currentAddress;
-    this.confirmedFunc = async () => {
-      // Execute bet
-      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-        methodArgs: [this.option.idx],
-        amount: this.amount,
-        senderAddress: this.senderAddress,
-      });
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.BET,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+      optionIdx: option.idx,
+      amount,
+      token: Token.QTUM,
+    })));
 
-      // Create pending tx on server
-      if (txid) {
-        await createBetTx({
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress: this.senderAddress,
-          topicAddress: this.topicAddress,
-          oracleAddress: this.oracleAddress,
-          optionIdx: this.option.idx,
-          amount: this.amount,
-          token: this.token,
-          version: 0,
-        });
-        this.onTxCreated();
-        Tracking.track('event-bet');
-      }
-    };
+    // this.confirmedFunc = async () => {
+    //   // Execute bet
+    //   const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
+    //   const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
+    //     methodArgs: [this.option.idx],
+    //     amount: this.amount,
+    //     senderAddress: this.senderAddress,
+    //   });
+
+    //   // Create pending tx on server
+    //   if (txid) {
+    //     await createBetTx({
+    //       txid,
+    //       gasLimit: gasLimit.toString(),
+    //       gasPrice: gasPrice.toFixed(8),
+    //       senderAddress: this.senderAddress,
+    //       topicAddress: this.topicAddress,
+    //       oracleAddress: this.oracleAddress,
+    //       optionIdx: this.option.idx,
+    //       amount: this.amount,
+    //       token: this.token,
+    //       version: 0,
+    //     });
+    //     this.onTxCreated();
+    //     Tracking.track('event-bet');
+    //   }
+    // };
     this.showConfirmDialog();
   }
 
