@@ -46,11 +46,8 @@ export default class ExecuteTxDialog extends Component {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.store.tx.visible = false}>
-            <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
-          </Button>
-          <Button color="primary" onClick={this.props.store.tx.onTxConfirmed}>
-            <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
+          <Button color="primary" onClick={() => this.props.store.tx.visible = false}>
+            <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
         </DialogActions>
       </Dialog>
