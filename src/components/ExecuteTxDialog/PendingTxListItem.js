@@ -7,41 +7,9 @@ import { sumBy } from 'lodash';
 import { TransactionType } from 'constants';
 
 import styles from './styles';
-import { getTxTypeFormatted } from '../../helpers/utility';
+import { getTxTypeString } from '../../helpers/stringUtil';
 
 const messages = defineMessages({
-  txTypeApprove: {
-    id: 'txType.approve',
-    defaultMessage: 'Approve',
-  },
-  txTypeSetResult: {
-    id: 'txType.setResult',
-    defaultMessage: 'Set result',
-  },
-  txTypeCreateEvent: {
-    id: 'txType.createEvent',
-    defaultMessage: 'Create event',
-  },
-  txTypeVote: {
-    id: 'txType.vote',
-    defaultMessage: 'Vote',
-  },
-  txTypeWithdraw: {
-    id: 'txType.withdraw',
-    defaultMessage: 'Withdraw',
-  },
-  txTypeWithdrawEscrow: {
-    id: 'txType.withdrawEscrow',
-    defaultMessage: 'Withdraw escrow',
-  },
-  txTypeFinalizeResult: {
-    id: 'txType.finalizeResult',
-    defaultMessage: 'Finalize result',
-  },
-  txTypeBet: {
-    id: 'txType.bet',
-    defaultMessage: 'Bet',
-  },
   strTypeMsg: {
     id: 'str.type',
     defaultMessage: 'Type',
@@ -84,7 +52,7 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
       <TableBody>
         {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
           <TableRow key={i}>
-            <TableCell>{intl.formatMessage({ id: `txType.${type}`, defaultMessage: '' })}</TableCell>
+            <TableCell>{getTxTypeString(type, intl)}</TableCell>
             <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
             <TableCell>{gasLimit}</TableCell>
             <TableCell>{gasCost}</TableCell>
@@ -96,7 +64,7 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
 }))));
 
 const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { type, fees } }) => {
-  const txAction = getTxTypeFormatted(type, intl);
+  const txAction = getTxTypeString(type, intl);
   const txFee = sumBy(fees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
   return (
     <div className={classes.explanationMsgContainer}>
