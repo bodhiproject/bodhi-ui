@@ -519,11 +519,11 @@ export default class EventStore {
   }
 
   prepareBet = () => {
-    this.app.tx.showBetPrompt(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
+    this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
   }
 
   prepareSetResult = async () => {
-    this.app.tx.showApproveSetResultPrompt(
+    this.app.tx.addApproveSetResultTx(
       this.oracle.topicAddress,
       this.oracle.address,
       this.selectedOption,

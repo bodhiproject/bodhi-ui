@@ -115,10 +115,12 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { 
   if (type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
     return (
       <div>
-        <FormattedMessage
-          id='txConfirm.txOne'
-          defaultMessage='Confirmation for transaction 1/2. You will be required to confirm another transaction when this transaction is successful.'
-        />
+        <Typography variant="body1">
+          <FormattedMessage
+            id='txConfirm.txOne'
+            defaultMessage='Confirmation for transaction 1/2. You will be required to confirm another transaction when this transaction is successful.'
+          />
+        </Typography>
       </div>
     );
   } else if (type === CREATE_EVENT || type === SET_RESULT || type === VOTE) {
@@ -131,8 +133,8 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { 
   return null;
 })));
 
-const ActionButtons = injectIntl(inject('store')(({ index, store: { tx } }) => (
-  <div>
+const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, index, store: { tx } }) => (
+  <div className={classes.actionButtonsContainer}>
     <Button color="primary" onClick={() => tx.confirmTx(index)}>
       <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
     </Button>
@@ -140,7 +142,7 @@ const ActionButtons = injectIntl(inject('store')(({ index, store: { tx } }) => (
       <FormattedMessage id="str.delete" defaultMessage="Delete" />
     </Button>
   </div>
-)));
+))));
 
 const PendingTxListItem = (props) => (
   <div>

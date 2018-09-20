@@ -16,6 +16,9 @@ const styles = (theme) => ({
     alignItems: 'flex-start',
     padding: `${theme.padding.xs.px} 0`,
   },
+  listItemPaper: {
+    padding: theme.padding.xs.px,
+  },
   listItemTxNumber: {
     fontWeight: theme.typography.fontWeightBold,
     marginBottom: theme.padding.xs.px,
@@ -26,6 +29,9 @@ const styles = (theme) => ({
   },
   explanationMsgContainer: {
     marginBottom: theme.padding.xs.px,
+  },
+  actionButtonsContainer: {
+    marginTop: theme.padding.xs.px,
   },
 });
 
