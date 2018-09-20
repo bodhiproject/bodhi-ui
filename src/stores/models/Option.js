@@ -30,10 +30,8 @@ export default class Option {
     this.name = optionName;
     this.token = oracle.token;
     this.phase = oracle.phase;
-
+    this.value = `${this.amount} ${this.token}`;
     if (oracle.token === QTUM) {
-      this.value = `${this.amount} ${this.token}`;
-
       const totalBalance = _.sum(oracle.amounts);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {
