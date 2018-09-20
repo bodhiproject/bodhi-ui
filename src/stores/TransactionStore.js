@@ -511,7 +511,6 @@ export default class TransactionStore {
       optionIdx,
       amount,
       token: Token.QTUM,
-      onConfirmed,
     })));
     await this.showConfirmDialog();
   }
