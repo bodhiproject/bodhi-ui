@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
 import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
@@ -8,31 +8,6 @@ import { TransactionType } from 'constants';
 
 import styles from './styles';
 import { getTxTypeString } from '../../helpers/stringUtil';
-
-const messages = defineMessages({
-  strTypeMsg: {
-    id: 'str.type',
-    defaultMessage: 'Type',
-  },
-  strAmountMsg: {
-    id: 'str.amount',
-    defaultMessage: 'Amount',
-  },
-  strFeeMsg: {
-    id: 'str.fee',
-    defaultMessage: 'Gas Fee (QTUM)',
-  },
-  strGasLimitMsg: {
-    id: 'str.gasLimit',
-    defaultMessage: 'Gas Limit',
-  },
-});
-
-const FormattedMessageCell = injectIntl(({ intl, id, defaultMessage }) => (
-  <TableCell>
-    {intl.formatMessage({ id, defaultMessage })}
-  </TableCell>
-));
 
 const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => {
   if (!fees || fees.length === 0) {
@@ -43,10 +18,10 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
     <Table className={classes.txFeesTable}>
       <TableHead>
         <TableRow>
-          <FormattedMessageCell id={messages.strTypeMsg.id} defaultMessage={messages.strTypeMsg.defaultMessage} />
-          <FormattedMessageCell id={messages.strAmountMsg.id} defaultMessage={messages.strAmountMsg.defaultMessage} />
-          <FormattedMessageCell id={messages.strGasLimitMsg.id} defaultMessage={messages.strGasLimitMsg.defaultMessage} />
-          <FormattedMessageCell id={messages.strFeeMsg.id} defaultMessage={messages.strFeeMsg.defaultMessage} />
+          <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
+          <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
+          <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
+          <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
