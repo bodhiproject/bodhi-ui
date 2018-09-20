@@ -1,5 +1,8 @@
+import { observable } from 'mobx';
 import { Routes } from 'constants';
 import AllEventsStore from './AllEventsStore';
+import { queryAllOracles, mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
+
 jest.mock('../network/graphql/queries'); // block and manually mock our backend
 
 /** mock necessary http needed modules */
@@ -11,6 +14,7 @@ const localStorageMock = {
 const navigatorMock = {};
 global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
+const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 describe('AllEventsStore', () => {
   let store;
@@ -19,15 +23,30 @@ describe('AllEventsStore', () => {
     qtum: 2000,
     bot: 100,
   };
-  const app = {
+  const app = observable({
     sortBy: 'ASC',
     wallet: { addresses: [addr] },
     global: { syncBlockNum: 0 },
     refreshing: false,
     ui: { location: 0 },
-  }; // mock the appstore
+  }); // mock the appstore
   beforeEach(() => {
     store = new AllEventsStore(app); // create a new instance before each test case
+    mockResetOracleList();
+    mockResetTopicList();
+    for (let i = 0; i < 24; i++) {
+      mockAddTopic({ txid: i });
+      mockAddOracle({
+        txid: i,
+        amounts: [],
+        consensusThreshold: 100,
+        address: '02e91962156da21fae38e65038279c020347e4ff',
+        topicAddress: '4044f951857f2885d66d29a475235dacdaddea84',
+        resultSetEndTime: 10,
+        endTime: 20,
+        options: [],
+      });
+    }
   });
 
   /** all following test cases target specifically to the mock backend, eg. network/graphql/__mocks__/queries.js */
@@ -56,17 +75,20 @@ describe('AllEventsStore', () => {
   });
 
   it('Reaction SortBy', () => {
+    expect.assertions(3);
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.sortBy = 'Yo';
-    setTimeout(() => {
-      expect.assertions(2);
-      expect(store.app.sortBy).toBe('Yo');
-      expect(store.list.length).toBe(store.limit);
-    }, 500);
+    const a = queryAllOracles(null, null, 100, 0);
+    sleep(500);
+    expect(a.length).toBe(store.limit);
+    expect(store.app.location).toBe(Routes.ALL_EVENTS);
+    expect(store.app.sortBy).toBe('Yo');
+    expect(store.list.length).toBe(store.limit);
   });
 
   it('Reaction Wallet Addr', () => {
+    expect.assertions(2);
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     const newAddr = {
@@ -75,29 +97,25 @@ describe('AllEventsStore', () => {
       bot: 10,
     };
     app.wallet.addresses.push(newAddr);
-    setTimeout(() => {
-      expect.assertions(1);
-      expect(store.list.length).toBe(store.limit);
-    }, 500);
+    sleep(500);
+    expect(store.list.length).toBe(store.limit);
   });
 
   it('Reaction BlockNum', () => {
+    expect.assertions(2);
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.global.syncBlockNum = 1;
-    setTimeout(() => {
-      expect.assertions(1);
-      expect(store.list.length).toBe(store.limit);
-    }, 500);
+    sleep(500);
+    expect(store.list.length).toBe(store.limit);
   });
 
   it('Reaction Refreshing', () => {
+    expect.assertions(2);
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     app.refreshing = true;
-    setTimeout(() => {
-      expect.assertions(1);
-      expect(store.list.length).toBe(store.limit);
-    }, 500);
+    sleep(500);
+    expect(store.list.length).toBe(store.limit);
   });
 });

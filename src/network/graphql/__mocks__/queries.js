@@ -3,34 +3,47 @@
  * This file simply skip the backend retrival and fake query results and return
  * Current logic is straightforward but good enough to make tests
  * */
+import mockData from './mockData';
+
+export function mockResetAllList() {
+  mockData.resetAll();
+}
+
+export function mockResetTopicList() {
+  mockData.resetTopics();
+}
+
+export function mockResetOracleList() {
+  mockData.resetOracles();
+}
+
+export function mockAddTopic(newTopic) {
+  mockData.addTopics(newTopic);
+}
+
+export function mockResetTransactionList() {
+  mockData.resetTransactions();
+}
+
+export function mockAddTransaction(newTransaction) {
+  mockData.addTransactions(newTransaction);
+}
+
+export function mockAddOracle(newOracle) {
+  mockData.addOracles(newOracle);
+}
+
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const topics = [];
-  const max = 23;
-  let i;
-  for (i = 0; i < max; i++) {
-    topics.push({ txid: i });
-  }
-  const end = skip + limit <= max ? skip + limit : max;
-  return topics.slice(skip, end);
+  const end = skip + limit <= mockData.topics.length ? skip + limit : mockData.topics.length;
+  return mockData.topics.slice(skip, end);
 }
 
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const oracles = [];
-  const max = 23;
-  let i;
-  for (i = 0; i < max; i++) {
-    const oracle = {
-      txid: i,
-      amounts: [],
-      consensusThreshold: 100,
-      address: '02e91962156da21fae38e65038279c020347e4ff',
-      topicAddress: '4044f951857f2885d66d29a475235dacdaddea84',
-      resultSetEndTime: 10,
-      endTime: 20,
-      options: [],
-    };
-    oracles.push(oracle);
-  }
-  const end = skip + limit <= max ? skip + limit : max;
-  return oracles.slice(skip, end);
+  const end = skip + limit <= mockData.oracles.length ? skip + limit : mockData.oracles.length;
+  return mockData.oracles.slice(skip, end);
+}
+
+export function queryAllTransactions(filters, orderBy, limit, skip) {
+  const end = skip + limit <= mockData.transactions.length ? skip + limit : mockData.transactions.length;
+  return mockData.transactions.slice(skip, end);
 }
