@@ -12,6 +12,11 @@ const styles = (theme) => ({
   messageText: {
     fontSize: theme.sizes.font.textSm,
     color: theme.palette.text.secondary,
+    [theme.breakpoints.down('xs')]: {
+      margin: 0,
+      padding: `${theme.padding.unit.px} 0`,
+      fontSize: 12,
+    },
   },
 });
 
