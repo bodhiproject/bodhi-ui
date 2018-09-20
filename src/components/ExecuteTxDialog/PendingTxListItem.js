@@ -133,8 +133,12 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { 
 
 const ActionButtons = injectIntl(inject('store')(({ index, store: { tx } }) => (
   <div>
-    <Button color="primary"><FormattedMessage id="str.confirm" defaultMessage="Confirm" /></Button>
-    <Button onClick={() => tx.deleteTx(index)}><FormattedMessage id="str.delete" defaultMessage="Delete" /></Button>
+    <Button color="primary" onClick={() => tx.confirmTx(index)}>
+      <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
+    </Button>
+    <Button onClick={() => tx.deleteTx(index)}>
+      <FormattedMessage id="str.delete" defaultMessage="Delete" />
+    </Button>
   </div>
 )));
 
