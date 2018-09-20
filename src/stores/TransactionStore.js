@@ -9,7 +9,6 @@ import { queryAllTransactions } from '../network/graphql/queries';
 import { createBetTx, createApproveSetResultTx, createSetResultTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
-import { decimalToSatoshi } from '../helpers/utility';
 
 const INIT_VALUES = {
   visible: false,
@@ -116,7 +115,7 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amount);
+              await this.addSetResultTx(tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
               break;
             }
             case TransactionType.APPROVE_VOTE: {
@@ -144,7 +143,7 @@ export default class TransactionStore {
           topicAddress: tx.topicAddress,
           oracleAddress: tx.oracleAddress,
           optionIdx: tx.optionIdx,
-          amount: tx.amount,
+          amount: tx.amountSatoshi,
           token: tx.token,
         });
         tx.fees = map(data, (item) => new TransactionCost(item));
@@ -275,16 +274,17 @@ export default class TransactionStore {
    * @param {string} amount Approve amount.
    */
   @action
-  addApproveSetResultTx = async (topicAddress, oracleAddress, option, amount) => {
+  addApproveSetResultTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.APPROVE_SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
       optionIdx: option.idx,
-      amount: decimalToSatoshi(amount),
+      amount: amountSatoshi,
       token: Token.BOT,
     })));
+
     this.showConfirmDialog();
   }
 
@@ -295,11 +295,11 @@ export default class TransactionStore {
    */
   @action
   executeApproveSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi, token } = tx;
     const bodhiToken = getContracts().BodhiToken;
     const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-      methodArgs: [topicAddress, amount],
+      methodArgs: [topicAddress, amountSatoshi],
       senderAddress,
     });
 
@@ -313,7 +313,7 @@ export default class TransactionStore {
         topicAddress,
         oracleAddress,
         optionIdx,
-        amount,
+        amount: amountSatoshi,
         token,
         version: 0,
       });
@@ -332,14 +332,14 @@ export default class TransactionStore {
    * @param {string} amount Consensus threshold.
    */
   @action
-  addSetResultTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
+  addSetResultTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
       optionIdx,
-      amount,
+      amount: amountSatoshi,
       token: Token.BOT,
     })));
     this.showConfirmDialog();
@@ -352,7 +352,7 @@ export default class TransactionStore {
    */
   @action
   executeSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi, token } = tx;
     const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
       methodArgs: [optionIdx],
@@ -370,7 +370,7 @@ export default class TransactionStore {
         topicAddress,
         oracleAddress,
         optionIdx,
-        amount,
+        amount: amountSatoshi,
         token,
         version: 0,
       });
