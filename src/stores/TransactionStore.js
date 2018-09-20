@@ -136,6 +136,9 @@ export default class TransactionStore {
     }
   }
 
+  /**
+   * Gets the tx costs for each tx and shows the confirmation dialog.
+   */
   @action
   showConfirmDialog = async () => {
     try {
@@ -162,6 +165,36 @@ export default class TransactionStore {
     }
   }
 
+  /**
+   * Confirms a tx and executes it.
+   * @param {number} index Index of the tx to execute.
+   */
+  confirmTx = async (index) => {
+    const tx = this.transactions[index];
+    switch (tx.type) {
+      case TransactionType.BET: {
+        await this.executeBet(index, tx);
+        break;
+      }
+      case TransactionType.APPROVE_SET_RESULT: {
+        await this.executeApproveSetResult(index, tx);
+        break;
+      }
+      case TransactionType.SET_RESULT: {
+        await this.executeSetResult(index, tx);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  /**
+   * Logic to execute after a tx has been executed.
+   * @param {number} index Index of the tx that was executed.
+   * @param {Transaction} tx Transaction obj that was executed.
+   */
   onTxExecuted = (index, tx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
@@ -171,6 +204,25 @@ export default class TransactionStore {
     this.deleteTx(index);
   }
 
+  /**
+   * Removes a tx from the transactions array.
+   * @param {number} index Index of the tx to remove.
+   */
+  @action
+  deleteTx = (index) => {
+    this.transactions.splice(index, 1);
+    if (this.transactions.length === 0) {
+      this.visible = false;
+    }
+  }
+
+  /**
+   * Shows the confirm dialog when trying to do a bet.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {Option} option Option obj that is being bet on.
+   * @param {string} amount Amount of the bet.
+   */
   @action
   showBetPrompt = async (topicAddress, oracleAddress, option, amount) => {
     this.transactions.push(observable.object(new Transaction({
@@ -182,10 +234,14 @@ export default class TransactionStore {
       amount,
       token: Token.QTUM,
     })));
-
     this.showConfirmDialog();
   }
 
+  /**
+   * Executes a bet.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Bet tx obj.
+   */
   @action
   executeBet = async (index, tx) => {
     const { topicAddress, oracleAddress, optionIdx, amount, token, senderAddress } = tx;
@@ -216,103 +272,116 @@ export default class TransactionStore {
     }
   }
 
+  /**
+   * Shows the confirm dialog when trying to do a approve for a set result.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {Option} option Option of the result being set.
+   * @param {string} amount Approve amount.
+   */
   @action
   showApproveSetResultPrompt = async (topicAddress, oracleAddress, option, amount) => {
-    this.type = TransactionType.APPROVE_SET_RESULT;
-    this.topicAddress = topicAddress;
-    this.oracleAddress = oracleAddress;
-    this.option = option;
-    this.amount = decimalToSatoshi(amount);
-    this.token = Token.BOT;
-    this.senderAddress = this.app.wallet.currentAddress;
-    this.confirmedFunc = async () => {
-      // Execute approve
-      const bodhiToken = getContracts().BodhiToken;
-      const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-        methodArgs: [this.topicAddress, this.amount],
-        senderAddress: this.senderAddress,
-      });
-
-      // Create pending tx on server
-      if (txid) {
-        await createApproveSetResultTx({
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress: this.senderAddress,
-          topicAddress: this.topicAddress,
-          oracleAddress: this.oracleAddress,
-          optionIdx: this.option.idx,
-          amount: this.amount,
-          token: this.token,
-          version: 0,
-        });
-        this.addPendingApprove(txid);
-        this.onTxExecuted();
-        Tracking.track('event-approveSetResult');
-      }
-    };
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.APPROVE_SET_RESULT,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+      optionIdx: option.idx,
+      amount: decimalToSatoshi(amount),
+      token: Token.BOT,
+    })));
     this.showConfirmDialog();
   }
 
+  /**
+   * Executes an approve for a set result.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Transaction obj.
+   */
   @action
-  showSetResultPrompt = async (topicAddress, oracleAddress, optionIdx, amount) => {
-    this.type = TransactionType.SET_RESULT;
-    this.topicAddress = topicAddress;
-    this.oracleAddress = oracleAddress;
-    this.option = { idx: optionIdx };
-    this.amount = decimalToSatoshi(amount);
-    this.token = Token.BOT;
-    this.senderAddress = this.app.wallet.currentAddress;
-    this.confirmedFunc = async () => {
-      // Execute setResult
-      const contract = this.app.global.qweb3.Contract(this.oracleAddress, getContracts().CentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
-        methodArgs: [this.option.idx],
-        gasLimit: 1500000,
-        senderAddress: this.senderAddress,
+  executeApproveSetResult = async (index, tx) => {
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const bodhiToken = getContracts().BodhiToken;
+    const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
+      methodArgs: [topicAddress, amount],
+      senderAddress,
+    });
+
+    // Create pending tx on server
+    if (txid) {
+      await createApproveSetResultTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amount,
+        token,
+        version: 0,
       });
 
-      // Create pending tx on server
-      if (txid) {
-        await createSetResultTx({
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress: this.senderAddress,
-          topicAddress: this.topicAddress,
-          oracleAddress: this.oracleAddress,
-          optionIdx: this.option.idx,
-          amount: this.amount,
-          token: this.token,
-          version: 0,
-        });
-        this.onTxExecuted();
-        Tracking.track('event-setResult');
-      }
-    };
-    this.showConfirmDialog();
-  }
-
-  confirmTx = async (index) => {
-    const tx = this.transactions[index];
-    switch (tx.type) {
-      case TransactionType.BET: {
-        await this.executeBet(index, tx);
-        break;
-      }
-      default: {
-        break;
-      }
+      this.addPendingApprove(txid);
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-approveSetResult');
     }
   }
 
+  /**
+   * Shows the confirm dialog when trying to do a set result.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {Option} option Option of the result being set.
+   * @param {string} amount Consensus threshold.
+   */
   @action
-  deleteTx = (index) => {
-    this.transactions.splice(index, 1);
-    if (this.transactions.length === 0) {
-      this.visible = false;
+  showSetResultPrompt = async (topicAddress, oracleAddress, optionIdx, amount) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.SET_RESULT,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+      optionIdx,
+      amount,
+      token: Token.BOT,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a set result.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Transaction obj.
+   */
+  @action
+  executeSetResult = async (index, tx) => {
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amount, token } = tx;
+    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
+      methodArgs: [optionIdx],
+      gasLimit: 1500000,
+      senderAddress,
+    });
+
+    // Create pending tx on server
+    if (txid) {
+      await createSetResultTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amount,
+        token,
+        version: 0,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-setResult');
     }
   }
 }
