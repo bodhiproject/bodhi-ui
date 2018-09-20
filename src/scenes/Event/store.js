@@ -527,7 +527,7 @@ export default class EventStore {
       this.oracle.topicAddress,
       this.oracle.address,
       this.selectedOption,
-      this.amount,
+      decimalToSatoshi(this.amount),
     );
   }
 
