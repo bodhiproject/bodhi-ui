@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
-import SelectWalletSection from './SelectWalletSection';
 import TransactionFeesTable from './TransactionFeesTable';
 import ExplanationMessage from './ExplanationMessage';
 import MultipleTransactionMessage from './MultipleTransactionMessage';
@@ -20,7 +19,6 @@ export default class ExecuteTxDialog extends Component {
           <FormattedMessage id="txConfirm.title" defaultMessage="Please Confirm Your Transaction" />
         </DialogTitle>
         <DialogContent>
-          <SelectWalletSection />
           <TransactionFeesTable />
           <ExplanationMessage />
           <MultipleTransactionMessage />

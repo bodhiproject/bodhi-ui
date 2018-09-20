@@ -57,7 +57,7 @@ module.exports = {
     VOTING: 'VOTING',
     WAIT_RESULT: 'WAITRESULT',
     OPEN_RESULT_SET: 'OPENRESULTSET',
-    PENDING: 'PENDING', // not used
+    PENDING: 'PENDING',
     WITHDRAW: 'WITHDRAW',
   },
 
