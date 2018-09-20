@@ -10,6 +10,16 @@ const styles = (theme) => ({
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
   },
+  listItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    padding: `${theme.padding.xs.px} 0`,
+  },
+  listItemTxNumber: {
+    fontWeight: theme.typography.fontWeightBold,
+    marginBottom: theme.padding.xs.px,
+  },
   txFeesTable: {
     marginBottom: theme.padding.xs.px,
     overflowX: 'scroll',
