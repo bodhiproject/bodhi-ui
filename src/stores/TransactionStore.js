@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createBetTx, createApproveSetResultTx, createSetResultTx } from '../network/graphql/mutations';
+import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -182,6 +182,10 @@ export default class TransactionStore {
         await this.executeSetResult(index, tx);
         break;
       }
+      case TransactionType.APPROVE_VOTE: {
+        await this.executeApproveVote(index, tx);
+        break;
+      }
       default: {
         break;
       }
@@ -220,7 +224,23 @@ export default class TransactionStore {
   }
 
   /**
-   * Shows the confirm dialog when trying to do a bet.
+   * Executes an approve.
+   * @param {Transaction} tx Transaction obj.
+   */
+  @action
+  executeApprove = async (tx) => {
+    const { senderAddress, topicAddress, amountSatoshi } = tx;
+    const bodhiToken = getContracts().BodhiToken;
+    const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
+      methodArgs: [topicAddress, amountSatoshi],
+      senderAddress,
+    });
+    return { txid, gasLimit, gasPrice };
+  }
+
+  /**
+   * Adds a bet tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {Option} option Option obj that is being bet on.
@@ -276,7 +296,7 @@ export default class TransactionStore {
   }
 
   /**
-   * Shows the confirm dialog when trying to do a approve for a set result.
+   * Adds an approve set result tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {Option} option Option of the result being set.
@@ -303,13 +323,7 @@ export default class TransactionStore {
    */
   @action
   executeApproveSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi, token } = tx;
-    const bodhiToken = getContracts().BodhiToken;
-    const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-      methodArgs: [topicAddress, amountSatoshi],
-      senderAddress,
-    });
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
 
     // Create pending tx on server
     if (txid) {
@@ -317,12 +331,12 @@ export default class TransactionStore {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
-        senderAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amount: amountSatoshi,
-        token,
+        senderAddress: tx.senderAddress,
+        topicAddress: tx.topicAddress,
+        oracleAddress: tx.oracleAddress,
+        optionIdx: tx.optionIdx,
+        amount: tx.amountSatoshi,
+        token: tx.token,
         version: 0,
       });
 
@@ -333,7 +347,7 @@ export default class TransactionStore {
   }
 
   /**
-   * Shows the confirm dialog when trying to do a set result.
+   * Adds a set result tx to the queue.
    * @param {string} approveTxid Txid of the approve.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
@@ -387,6 +401,57 @@ export default class TransactionStore {
 
       this.onTxExecuted(index, tx);
       Tracking.track('event-setResult');
+    }
+  }
+
+  /**
+   * Adds a approve vote tx to the queue.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {Option} option Option to vote on.
+   * @param {string} amount Approve amount.
+   */
+  @action
+  addApproveVoteTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.APPROVE_VOTE,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+      optionIdx: option.idx,
+      amount: amountSatoshi,
+      token: Token.BOT,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes an approve for a vote.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Transaction obj.
+   */
+  @action
+  executeApproveVote = async (index, tx) => {
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+
+    // Create pending tx on server
+    if (txid) {
+      await createApproveVoteTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress: tx.senderAddress,
+        topicAddress: tx.topicAddress,
+        oracleAddress: tx.oracleAddress,
+        optionIdx: tx.optionIdx,
+        amount: tx.amountSatoshi,
+        token: tx.token,
+        version: 0,
+      });
+
+      this.addPendingApprove(txid);
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-approveVote');
     }
   }
 }

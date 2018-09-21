@@ -99,6 +99,10 @@ export function createSetResultTx(args) {
   return new GraphMutation('setResult', args, TYPE.transaction).execute();
 }
 
+export function createApproveVoteTx(args) {
+  return new GraphMutation('approveVote', args, TYPE.transaction).execute();
+}
+
 export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const args = {
     version,

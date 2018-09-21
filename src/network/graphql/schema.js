@@ -200,14 +200,33 @@ const MUTATIONS = {
     return: TYPE_DEF.Transaction,
   },
 
-  createVote: {
+  approveVote: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
+      'token',
+      'version',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
+  createVote: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
       'senderAddress',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+      'version',
     ],
     return: TYPE_DEF.Transaction,
   },
