@@ -81,7 +81,7 @@ const Content = styled(Typography).attrs({ variant: 'title' })`
   font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 
-const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
+const Container = styled(Grid).attrs({ item: true, xs: 12, sm: 6, md: 12 })`
   margin-bottom: 36px !important;
 `;
 
