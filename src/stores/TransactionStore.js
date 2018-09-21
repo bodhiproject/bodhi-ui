@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx } from '../network/graphql/mutations';
+import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -118,6 +118,7 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_VOTE: {
+              await this.addVoteTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
               break;
             }
             default: {
@@ -186,6 +187,10 @@ export default class TransactionStore {
         await this.executeApproveVote(index, tx);
         break;
       }
+      case TransactionType.VOTE: {
+        await this.executeVote(index, tx);
+        break;
+      }
       default: {
         break;
       }
@@ -200,7 +205,7 @@ export default class TransactionStore {
   onTxExecuted = (index, tx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
-      this.app.eventPage.queryTransactions(this.app.eventPage.topicAddress);
+      this.app.eventPage.queryTransactions(tx.topicAddress);
     }
     this.app.pendingTxsSnackbar.init();
     this.deleteTx(index);
@@ -445,13 +450,67 @@ export default class TransactionStore {
         oracleAddress: tx.oracleAddress,
         optionIdx: tx.optionIdx,
         amount: tx.amountSatoshi,
-        token: tx.token,
-        version: 0,
       });
 
       this.addPendingApprove(txid);
       this.onTxExecuted(index, tx);
       Tracking.track('event-approveVote');
+    }
+  }
+
+  /**
+   * Adds a vote tx to the queue.
+   * @param {string} approveTxid Txid of the approve.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {Option} option Option to vote on.
+   * @param {string} amount Vote amount.
+   */
+  @action
+  addVoteTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amount) => {
+    this.transactions.push(observable.object(new Transaction({
+      approveTxid,
+      type: TransactionType.VOTE,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+      optionIdx,
+      amount,
+      token: Token.BOT,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a vote.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Transaction obj.
+   */
+  @action
+  executeVote = async (index, tx) => {
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
+      methodArgs: [optionIdx, amountSatoshi],
+      gasLimit: 1500000, // TODO: determine gas limit to use
+      senderAddress,
+    });
+
+    // Create pending tx on server
+    if (txid) {
+      await createVoteTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amount: amountSatoshi,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-vote');
     }
   }
 }

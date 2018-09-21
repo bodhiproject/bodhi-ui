@@ -533,26 +533,12 @@ export default class EventStore {
 
   @action
   prepareVote = async () => {
-    try {
-      const { data } = await axios.post(networkRoutes.api.transactionCost, {
-        type: TransactionType.APPROVE_VOTE,
-        token: this.oracle.token,
-        amount: decimalToSatoshi(this.amount), // Convert to Botoshi
-        optionIdx: this.selectedOptionIdx,
-        topicAddress: this.oracle.topicAddress,
-        oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.currentAddress,
-      });
-      const txFees = _.map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.oracle.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
-      });
-    }
+    this.app.tx.addApproveVoteTx(
+      this.oracle.topicAddress,
+      this.oracle.address,
+      this.selectedOption,
+      decimalToSatoshi(this.amount),
+    );
   }
 
   @action
@@ -602,7 +588,7 @@ export default class EventStore {
         topicAddress,
         oracleAddress: address,
         optionIdx: selectedOptionIdx,
-        amount: decimalToSatoshi(amount),
+        amount: decimalToSatoshi(amount), // Convert to Botoshi
         senderAddress: currentAddress,
       });
       const newTx = { // TODO: add `options` in return from backend
@@ -631,18 +617,17 @@ export default class EventStore {
   vote = async () => {
     const { currentAddress } = this.app.wallet;
     const { version, topicAddress, address } = this.oracle;
-    const { selectedOptionIdx } = this;
-    const amount = decimalToSatoshi(this.amount); // Convert to Botoshi
+    const { selectedOptionIdx, amount } = this;
 
     try {
-      const { data: { createVote } } = await createVoteTx(
+      const { data: { createVote } } = await createVoteTx({
         version,
         topicAddress,
-        address,
-        selectedOptionIdx,
-        amount,
+        oracleAddress: address,
+        optionIdx: selectedOptionIdx,
+        amount: decimalToSatoshi(amount), // Convert to Botoshi
         currentAddress,
-      );
+      });
       const newTx = { // TODO: move this logic to backend, add `options`
         ...createVote,
         topic: {

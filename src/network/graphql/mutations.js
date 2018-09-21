@@ -103,16 +103,7 @@ export function createApproveVoteTx(args) {
   return new GraphMutation('approveVote', args, TYPE.transaction).execute();
 }
 
-export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
-  const args = {
-    version,
-    topicAddress,
-    oracleAddress,
-    optionIdx,
-    amount,
-    senderAddress,
-  };
-
+export function createVoteTx(args) {
   return new GraphMutation('createVote', args, TYPE.transaction).execute();
 }
 
