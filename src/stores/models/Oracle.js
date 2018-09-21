@@ -29,8 +29,7 @@ export default class Oracle {
   resultIdx // Result index of current result
   resultSetStartTime = '' // Only for CentralizedOracle. Result setting start time.
   resultSetEndTime = '' // Only for CentralizedOracle. Result setting end time.
-  resultSetterAddress = '' // Result setter's encoded hex address. Qtum address encoded to hex.
-  resultSetterQAddress = '' // Result setters Qtum address.
+  resultSetterAddress = '' // Result setter's Qtum address.
   transactions = [] // Transaction objects tied to this Event.
   version // Current version of the contract. To manage deprecations later.
 
@@ -94,7 +93,7 @@ export default class Oracle {
     return (
       this.phase === RESULT_SETTING
       && this.status === OracleStatus.WAIT_RESULT
-      && (this.app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0)
+      && (this.app.wallet.addresses.filter(({ address }) => (address === this.resultSetterAddress)).length === 0)
     );
   }
 

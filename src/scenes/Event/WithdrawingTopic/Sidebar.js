@@ -22,11 +22,11 @@ const getEventInfoObjs = (topic) => {
   const qtumTotal = _.sum(topic.qtumAmount);
   const botTotal = _.sum(topic.botAmount);
 
-  let resultSetterQAddress;
+  let resultSetterAddress;
   _.map(topic.oracles, (o) => {
-    const setterAddress = o.resultSetterQAddress;
+    const setterAddress = o.resultSetterAddress;
     if (setterAddress) {
-      resultSetterQAddress = setterAddress;
+      resultSetterAddress = setterAddress;
     }
   });
 
@@ -39,7 +39,7 @@ const getEventInfoObjs = (topic) => {
       content: `${botTotal} BOT`,
     }, {
       label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: resultSetterQAddress,
+      content: resultSetterAddress,
     },
   ];
 };

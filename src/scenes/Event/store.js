@@ -390,7 +390,7 @@ export default class EventStore {
    */
   @action
   disableEventActionsIfNecessary = () => {
-    const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
+    const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
     const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
@@ -437,7 +437,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.currentAddress) {
+    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterAddress !== wallet.currentAddress) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';

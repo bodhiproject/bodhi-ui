@@ -238,7 +238,7 @@ export default class GlobalStore {
         oracleSetFilters.push({
           token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
-          resultSetterQAddress: item.address,
+          resultSetterAddress: item.address,
         });
       });
       const oraclesForResultset = await queryAllOracles(oracleSetFilters);

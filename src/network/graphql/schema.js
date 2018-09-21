@@ -39,7 +39,6 @@ const TYPE_DEF = {
       resultSetStartTime
       resultSetEndTime
       resultSetterAddress
-      resultSetterQAddress
       consensusThreshold
     }
     transactions {
@@ -66,7 +65,6 @@ const TYPE_DEF = {
     resultSetStartTime
     resultSetEndTime
     resultSetterAddress
-    resultSetterQAddress
     consensusThreshold
     transactions {
       type

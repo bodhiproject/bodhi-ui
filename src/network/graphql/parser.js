@@ -50,7 +50,6 @@ class GraphParser {
       resultSetStartTime: entry.resultSetStartTime,
       resultSetEndTime: entry.resultSetEndTime,
       resultSetterAddress: entry.resultSetterAddress,
-      resultSetterQAddress: entry.resultSetterQAddress,
       consensusThreshold: entry.consensusThreshold,
       blockNum: entry.blockNum,
       transactions: entry.transactions,

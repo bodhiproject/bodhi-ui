@@ -65,12 +65,12 @@ export default class BotCourtStore {
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
-      const excludeResultSetterQAddress = this.app.wallet.addresses.map(({ address }) => address);
+      const excludeResultSetterAddress = this.app.wallet.addresses.map(({ address }) => address);
       const filters = [
         { token: Token.BOT, status: OracleStatus.VOTING },
         { token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
-          excludeResultSetterQAddress,
+          excludeResultSetterAddress,
         },
       ];
       let result = [];

@@ -50,7 +50,7 @@ const Funding = ({ oracle: { amounts, token } }) => (
 );
 
 const ResultSetter = ({ oracle }) => (
-  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterQAddress} />
+  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterAddress} />
 );
 
 const EventInfo = styled.div`

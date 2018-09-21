@@ -71,7 +71,7 @@ export default class {
         filters.push({
           token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
-          resultSetterQAddress: addressObj.address,
+          resultSetterAddress: addressObj.address,
         });
       });
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
