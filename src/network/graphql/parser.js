@@ -64,7 +64,6 @@ class GraphParser {
       version: entry.version,
       blockNum: entry.blockNum,
       voterAddress: entry.voterAddress,
-      voterQAddress: entry.voterQAddress,
       topicAddress: entry.topicAddress,
       oracleAddress: entry.oracleAddress,
       optionIdx: entry.optionIdx,

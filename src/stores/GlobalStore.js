@@ -214,15 +214,15 @@ export default class GlobalStore {
 
       // Get all votes for all your addresses
       each(this.app.wallet.addresses, (item) => {
-        voteFilters.push({ voterQAddress: item.address });
+        voteFilters.push({ voterAddress: item.address });
         topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
 
       // Filter votes
       let votes = await queryAllVotes(voteFilters);
       votes = votes.reduce((accumulator, vote) => {
-        const { voterQAddress, topicAddress, optionIdx } = vote;
-        if (!find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
+        const { voterAddress, topicAddress, optionIdx } = vote;
+        if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
         return accumulator;
       }, []);
 

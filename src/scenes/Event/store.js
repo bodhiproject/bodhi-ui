@@ -263,7 +263,7 @@ export default class EventStore {
       _.each(wallet.addresses, (item) => {
         voteFilters.push({
           topicAddress: contractAddress,
-          voterQAddress: item.address,
+          voterAddress: item.address,
         });
       });
 
@@ -271,8 +271,8 @@ export default class EventStore {
       const allVotes = await queryAllVotes(voteFilters);
       const uniqueVotes = [];
       _.each(allVotes, (vote) => {
-        const { voterQAddress, topicAddress } = vote;
-        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
+        const { voterAddress, topicAddress } = vote;
+        if (!_.find(uniqueVotes, { voterAddress, topicAddress })) {
           uniqueVotes.push(vote);
         }
       });
@@ -285,13 +285,13 @@ export default class EventStore {
 
         const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
           contractAddress,
-          senderAddress: voteObj.voterQAddress,
+          senderAddress: voteObj.voterAddress,
         });
         betArrays.push(_.map(betBalances.data[0], satoshiToDecimal));
 
         const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
           contractAddress,
-          senderAddress: voteObj.voterQAddress,
+          senderAddress: voteObj.voterAddress,
         });
         voteArrays.push(_.map(voteBalances.data[0], satoshiToDecimal));
       }
@@ -327,7 +327,7 @@ export default class EventStore {
         voteFilters.push({
           topicAddress: topic.address,
           optionIdx: topic.resultIdx,
-          voterQAddress: item.address,
+          voterAddress: item.address,
         });
 
         // Add escrow withdraw object if is event creator
@@ -347,7 +347,7 @@ export default class EventStore {
       const filtered = [];
       _.each(votes, (vote) => {
         if (!_.find(filtered, {
-          voterQAddress: vote.voterQAddress,
+          voterAddress: vote.voterAddress,
           topicAddress: vote.topicAddress,
         })) {
           filtered.push(vote);
@@ -360,7 +360,7 @@ export default class EventStore {
 
         const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
           contractAddress: topic.address,
-          senderAddress: vote.voterQAddress,
+          senderAddress: vote.voterAddress,
         });
         const botWon = data ? satoshiToDecimal(data[0]) : 0;
         const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
@@ -369,7 +369,7 @@ export default class EventStore {
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
             type: TransactionType.WITHDRAW,
-            address: vote.voterQAddress,
+            address: vote.voterAddress,
             botWon,
             qtumWon,
           });

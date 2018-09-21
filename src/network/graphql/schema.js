@@ -79,7 +79,6 @@ const TYPE_DEF = {
     txid
     blockNum
     voterAddress
-    voterQAddress
     topicAddress
     oracleAddress
     optionIdx
@@ -131,6 +130,7 @@ const TYPE_DEF = {
 const MUTATIONS = {
   createTopic: {
     mapping: [
+      'senderAddress',
       'name',
       'options',
       'resultSetterAddress',
@@ -139,17 +139,8 @@ const MUTATIONS = {
       'resultSettingStartTime',
       'resultSettingEndTime',
       'amount',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      token
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   createBet: {
