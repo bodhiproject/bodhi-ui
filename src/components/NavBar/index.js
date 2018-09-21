@@ -11,7 +11,10 @@ import {
   Button,
   withStyles,
   TextField,
+  IconButton,
+  Hidden,
 } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
@@ -53,18 +56,44 @@ export default class NavBar extends Component {
           <Toolbar className={classes.navBarWrapper}>
             <NavSection>
               <BodhiLogo {...this.props} />
-              <QtumPrediction {...this.props} />
-              <BotCourt {...this.props} />
+              <Hidden xsDown>
+                <QtumPrediction {...this.props} />
+                <BotCourt {...this.props} />
+              </Hidden>
             </NavSection>
             <SearchButton classes={classes} />
-            <MyActivities {...this.props} />
-            <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
-              <div className={cx(classes.navToggleIcon, `icon iconfont icon-ic_${ui.dropdownDirection}`)}></div>
-            </Toggle>
+            <Hidden xsDown>
+              <MyActivities {...this.props} />
+              <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
+                <div className={cx(classes.navToggleIcon, `icon iconfont icon-ic_${ui.dropdownDirection}`)}></div>
+              </Toggle>
+            </Hidden>
+            <Hidden smUp>
+              <IconButton className={classes.menuButton} onClick={this.changeDropDownDirection} color="inherit" aria-label="Menu">
+                <MenuIcon />
+              </IconButton>
+            </Hidden>
           </Toolbar>
         </Collapse>
         <Dropdown className={classes.navDropdown} data-show={ui.dropdownDirection === 'down'}>
           <Wallet {...this.props} />
+          <Hidden smUp>
+            <Link to={Routes.QTUM_PREDICTION}>
+              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
+                <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
+              </Item>
+            </Link>
+            <Link to={Routes.BOT_COURT}>
+              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
+                <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+              </Item>
+            </Link>
+            <Link to={Routes.ACTIVITY_HISTORY}>
+              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
+                <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+              </Item>
+            </Link>
+          </Hidden>
           <Link to={Routes.ALL_EVENTS}>
             <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
               <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
