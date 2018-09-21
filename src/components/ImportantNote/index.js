@@ -1,14 +1,16 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { withStyles } from '@material-ui/core';
 
+import styles from './styles';
 
-export const ImportantNote = ({ heading, message, ...props }) => !!(heading && message) && (
+export const ImportantNote = withStyles(styles)(({ classes, heading, message, ...props }) => !!(heading && message) && (
   <Wrapper {...props}>
     <Icon />
     <Heading>{heading}</Heading>
-    <Message>{message}</Message>
+    <Message className={classes.messageText}>{message}</Message>
   </Wrapper>
-);
+));
 
 const Wrapper = styled.div`
   ${({ theme: { padding } }) => css`

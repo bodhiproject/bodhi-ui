@@ -1,19 +1,19 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Grid, TextField } from '@material-ui/core';
 
 import { DateTimePickerCombo } from './DateTimePickerCombo';
 
 
 export const DateRow = ({ error, blockNum, intl, isOpen, ...props }) => (
-  <Fragment>
-    <Grid item xs={6}>
+  <Grid container>
+    <Grid item xs={12} sm={6}>
       <DateTimePickerCombo
         fullWidth
         error={error}
         {...props}
       />
     </Grid>
-    <Grid item xs={6}>
+    <Grid item xs={12} sm={6}>
       <TextField
         fullWidth
         disabled
@@ -21,6 +21,5 @@ export const DateRow = ({ error, blockNum, intl, isOpen, ...props }) => (
         value={blockNum ? `Block: ${blockNum}` : ''}
       />
     </Grid>
-  </Fragment>
+  </Grid>
 );
-

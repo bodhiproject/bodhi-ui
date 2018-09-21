@@ -37,11 +37,12 @@ const CreateEventDialog = withStyles(styles)(observer(({
   <Fragment>
     <Dialog
       className={classes.createDialog}
+      classes={{ paper: classes.createDialogPaper }}
       fullWidth
       maxWidth='md'
       open={isOpen}
     >
-      <DialogTitle>Create an event</DialogTitle>
+      <DialogTitle className={classes.createDialogTitle}>Create an event</DialogTitle>
       {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}
       <EscrowAmountNote amount={createEvent.escrowAmount} />
       <Content>
@@ -73,14 +74,14 @@ const CreateEventDialog = withStyles(styles)(observer(({
 )));
 
 const DialogTitle = styled(_DialogTitle)`
-  padding: 0px;
+
 `;
 
-const EscrowAmountNote = injectIntl(({ amount, intl }) => {
+const EscrowAmountNote = injectIntl(withStyles(styles)(({ classes, amount, intl }) => {
   const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount });
   const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount });
-  return <ImportantNote heading={heading} message={message} />;
-});
+  return <ImportantNote className={classes.EscrowAmountNote} heading={heading} message={message} />;
+}));
 
 const Footer = styled(DialogActions)`
   margin: 18px 14px !important;
