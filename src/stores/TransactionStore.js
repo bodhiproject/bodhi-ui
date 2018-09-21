@@ -126,11 +126,11 @@ export default class TransactionStore {
           }
         }
       });
+    }
 
-      // Show confirm dialog if there are pending txs
-      if (this.transactions.length > 0) {
-        this.visible = true;
-      }
+    // Show confirm dialog if there are pending txs
+    if (this.transactions.length > 0) {
+      this.visible = true;
     }
   }
 
