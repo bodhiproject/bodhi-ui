@@ -78,7 +78,6 @@ export default class QtumPredictionStore {
       ];
       let result = [];
       result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      result = _.uniqBy(result, 'txid');
       if (result.length < limit) this.hasMore = false;
       return _.orderBy(result, ['endTime'], this.sortBy.toLowerCase());
     }
