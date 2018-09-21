@@ -272,7 +272,7 @@ export default class TransactionStore {
    */
   @action
   executeBet = async (index, tx) => {
-    const { topicAddress, oracleAddress, optionIdx, amount, token, senderAddress } = tx;
+    const { topicAddress, oracleAddress, optionIdx, amount, senderAddress } = tx;
     const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
       methodArgs: [optionIdx],
@@ -291,8 +291,6 @@ export default class TransactionStore {
         oracleAddress,
         optionIdx,
         amount,
-        token,
-        version: 0,
       });
 
       this.onTxExecuted(index, tx);
@@ -341,8 +339,6 @@ export default class TransactionStore {
         oracleAddress: tx.oracleAddress,
         optionIdx: tx.optionIdx,
         amount: tx.amountSatoshi,
-        token: tx.token,
-        version: 0,
       });
 
       this.addPendingApprove(txid);
@@ -381,7 +377,7 @@ export default class TransactionStore {
    */
   @action
   executeSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi, token } = tx;
+    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
     const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
       methodArgs: [optionIdx],
@@ -400,8 +396,6 @@ export default class TransactionStore {
         oracleAddress,
         optionIdx,
         amount: amountSatoshi,
-        token,
-        version: 0,
       });
 
       this.onTxExecuted(index, tx);
