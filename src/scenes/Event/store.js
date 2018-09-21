@@ -136,6 +136,8 @@ export default class EventStore {
 
   @action
   initTopic = async () => {
+    this.topicAddress = this.address;
+
     // GraphQL calls
     await this.queryTopics();
     await this.queryOracles(this.address);
