@@ -15,9 +15,9 @@ export default class Favorite extends Component {
   }
 
   render() {
-    const { list, loadMore, loadingMore, loading } = this.props.store.favorite;
+    const { displayList, loadMore, loadingMore, loading } = this.props.store.favorite;
     if (loading) return <Loading />;
-    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
       <Fragment>
         <InfiniteScroll

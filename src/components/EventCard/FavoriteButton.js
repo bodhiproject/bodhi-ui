@@ -34,7 +34,7 @@ class FavoriteButton extends Component {
   }
 
   render() {
-    const { isFavorite } = this.state;
+    const { isFavorite } = this.state; // eslint-disable-line
     const { store, event } = this.props;
     const topicAddress = event.topicAddress || event.address;
 

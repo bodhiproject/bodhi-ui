@@ -1,24 +1,21 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import _ from 'lodash';
-import { Routes, SortBy } from 'constants';
-import { queryAllTopics } from '../../../network/graphql/queries';
+import { Routes, SortBy, OracleStatus } from 'constants';
+import { queryAllTopics, queryAllOracles } from '../../../network/graphql/queries';
 import Topic from '../../../stores/models/Topic';
+import Oracle from '../../../stores/models/Oracle';
 
 const INIT_VALUES_FAVPAGE = {
   loaded: false, // loading state?
-  loadingMore: false, // for laoding icon?
-  list: [], // data list
-  hasMore: true, // has more data to fetch?
-  skip: 0, // skip
-  limit: 16, // loading batch amount
+  loadingMore: true, // for loading icon?
+  displayList: [], // data list
 };
 
 export default class {
   @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: '21e389b909c7ab977088c8d43802d459b0eb521a'
 
   @observable loaded = INIT_VALUES_FAVPAGE.loaded
-  @observable list = INIT_VALUES_FAVPAGE.list
-  @observable hasMore = INIT_VALUES_FAVPAGE.hasMore
+  @observable displayList = INIT_VALUES_FAVPAGE.displayList
   @observable loadingMore = INIT_VALUES_FAVPAGE.loadingMore
 
   constructor(app) {
@@ -32,14 +29,14 @@ export default class {
       }
     );
     reaction(
-      () => this.list,
+      () => this.displayList,
       () => {
       }
     );
     reaction(
       () => this.favList,
       async () => {
-        this.list = await this.fetchFav(Infinity, Infinity);
+        this.displayList = await this.fetchFav();
       }
     );
   }
@@ -70,21 +67,31 @@ export default class {
   init = async () => {
     Object.assign(this, INIT_VALUES_FAVPAGE); // reset to initial state
     this.app.ui.location = Routes.FAVORITE; // change ui location, for tabs to render correctly
-    this.list = await this.fetchFav(Infinity, Infinity);
+    this.displayList = await this.fetchFav();
   }
 
-  fetchFav = async (skip = this.skip, limit = this.limit) => {
+  fetchFav = async () => {
     if (this.favList.length === 0) return [];
-    // Get all topics at favorite topic address list "favList"
-    const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-    const topicFilters = this.favList.map(topicAddress => ({ address: topicAddress }));
-    const topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
-    const result = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+    // Get all event in WITHDRAW phase as Topic at favorite topic address list "favList"
+    const topicOrderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+    const topicFilters = this.favList.map(topicAddress => ({ address: topicAddress, status: OracleStatus.WITHDRAW }));
+    const topics = await queryAllTopics(topicFilters, topicOrderBy, Infinity, Infinity);
+    const topicResult = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+
+    // For those events which is not in WITHDRAW phase, search for the latest oracle
+    const locatedTopics = topicResult.map(topicObject => (topicObject.address));
+    const oracleFilters = _.difference(this.favList, locatedTopics).map(omittedTopicAddress => ({ topicAddress: omittedTopicAddress }));
+    const oracleOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+    const oracles = await queryAllOracles(oracleFilters, oracleOrderBy, Infinity, Infinity);
+    const oracleResult = _.uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
+
+    // Combine both WITHDRAW topics and latest phase oracles into result
+    const result = _.orderBy([...topicResult, ...oracleResult], ['endTime']);
+
     runInAction(() => {
-      this.hasMore = false;
       this.loadingMore = false;
       this.loaded = true;
     });
-    return _.map(result, (tx) => new Topic(tx));
+    return result;
   }
 }
