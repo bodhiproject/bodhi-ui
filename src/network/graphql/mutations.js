@@ -111,14 +111,7 @@ export function createFinalizeResultTx(args) {
   return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
 }
 
-export function createWithdrawTx(type, version, topicAddress, senderAddress) {
-  const args = {
-    type,
-    version,
-    senderAddress,
-    topicAddress,
-  };
-
+export function createWithdrawTx(args) {
   return new GraphMutation('withdraw', args, TYPE.transaction).execute();
 }
 

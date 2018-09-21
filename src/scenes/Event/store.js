@@ -680,28 +680,30 @@ export default class EventStore {
   }
 
   withdraw = async (senderAddress, type) => {
-    try {
-      const { version, address } = this.topic;
-      const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
-      const newTx = { // TODO: move this logic ot teh backend
-        ...withdraw,
-        optionIdx: this.selectedOptionIdx,
-        topic: {
-          options: this.topic.options,
-        },
-      };
+    this.app.tx.addWithdrawTx(type, this.topic.address);
 
-      runInAction(() => {
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createWithdrawTx`);
-      });
-    }
-    Tracking.track('topicDetail-withdraw');
+    // try {
+    //   const { version, address } = this.topic;
+    //   const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
+    //   const newTx = { // TODO: move this logic ot teh backend
+    //     ...withdraw,
+    //     optionIdx: this.selectedOptionIdx,
+    //     topic: {
+    //       options: this.topic.options,
+    //     },
+    //   };
+
+    //   runInAction(() => {
+    //     this.txSentDialogOpen = true;
+    //     this.transactions.unshift(new Transaction(newTx));
+    //     this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+    //   });
+    // } catch (error) {
+    //   runInAction(() => {
+    //     this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createWithdrawTx`);
+    //   });
+    // }
+    // Tracking.track('topicDetail-withdraw');
   }
 
   reset = () => Object.assign(this, INIT);

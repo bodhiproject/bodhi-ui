@@ -237,9 +237,11 @@ const MUTATIONS = {
   withdraw: {
     mapping: [
       'type',
-      'version',
-      'topicAddress',
+      'txid',
+      'gasLimit',
+      'gasPrice',
       'senderAddress',
+      'topicAddress',
     ],
     return: TYPE_DEF.Transaction,
   },

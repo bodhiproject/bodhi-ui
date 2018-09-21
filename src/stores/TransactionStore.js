@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx } from '../network/graphql/mutations';
+import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -195,6 +195,11 @@ export default class TransactionStore {
         await this.executeFinalizeResult(index, tx);
         break;
       }
+      case TransactionType.WITHDRAW:
+      case TransactionType.WITHDRAW_ESCROW: {
+        await this.executeWithdraw(index, tx);
+        break;
+      }
       default: {
         break;
       }
@@ -234,7 +239,7 @@ export default class TransactionStore {
 
   /**
    * Executes an approve.
-   * @param {Transaction} tx Transaction obj.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeApprove = async (tx) => {
@@ -271,8 +276,8 @@ export default class TransactionStore {
 
   /**
    * Executes a bet.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Bet tx obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeBet = async (index, tx) => {
@@ -325,8 +330,8 @@ export default class TransactionStore {
 
   /**
    * Executes an approve for a set result.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Transaction obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeApproveSetResult = async (index, tx) => {
@@ -376,8 +381,8 @@ export default class TransactionStore {
 
   /**
    * Executes a set result.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Transaction obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeSetResult = async (index, tx) => {
@@ -430,8 +435,8 @@ export default class TransactionStore {
 
   /**
    * Executes an approve for a vote.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Transaction obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeApproveVote = async (index, tx) => {
@@ -481,8 +486,8 @@ export default class TransactionStore {
 
   /**
    * Executes a vote.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Transaction obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeVote = async (index, tx) => {
@@ -530,8 +535,8 @@ export default class TransactionStore {
 
   /**
    * Executes a finalize result.
-   * @param {number} index Index of the tx obj.
-   * @param {Transaction} tx Bet tx obj.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
    */
   @action
   executeFinalizeResult = async (index, tx) => {
@@ -555,6 +560,51 @@ export default class TransactionStore {
 
       this.onTxExecuted(index, tx);
       Tracking.track('event-finalizeResult');
+    }
+  }
+
+  /**
+   * Adds a withdraw tx to the queue.
+   * @param {string} topicAddress Address of the TopicEvent.
+   */
+  @action
+  addWithdrawTx = async (type, topicAddress) => {
+    this.transactions.push(observable.object(new Transaction({
+      type,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a withdraw or withdraw escrow..
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
+   */
+  @action
+  executeWithdraw = async (index, tx) => {
+    const { type, senderAddress, topicAddress } = tx;
+    const contract = this.app.global.qweb3.Contract(topicAddress, getContracts().TopicEvent.abi);
+    const methodName = type === TransactionType.WITHDRAW ? 'withdrawWinnings' : 'withdrawEscrow';
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send(methodName, {
+      methodArgs: [],
+      senderAddress,
+    });
+
+    if (txid) {
+      // Create pending tx on server
+      await createWithdrawTx({
+        type,
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-withdraw');
     }
   }
 }
