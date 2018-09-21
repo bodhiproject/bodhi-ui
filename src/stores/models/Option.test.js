@@ -129,7 +129,7 @@ describe('stores/models/Option', () => {
     expect(store.name).toBe(name);
     expect(store.token).toBe(BOT);
     expect(store.phase).toBe(VOTING);
-    expect(store.value).toBe(undefined);
+    expect(store.value).toBe('100 BOT');
     expect(store.percent).toBe(0);
     expect(store.isPrevResult).toBeTruthy();
     expect(store.maxAmount).toBe(0);
@@ -165,7 +165,7 @@ describe('stores/models/Option', () => {
     expect(store.name).toBe(name);
     expect(store.token).toBe(BOT);
     expect(store.phase).toBe(VOTING);
-    expect(store.value).toBe(undefined);
+    expect(store.value).toBe('100 BOT');
     expect(store.percent).toBe(100);
     expect(store.isPrevResult).not.toBeTruthy();
     expect(store.maxAmount).toBe(0);
@@ -201,7 +201,7 @@ describe('stores/models/Option', () => {
     expect(store.name).toBe(name);
     expect(store.token).toBe(BOT);
     expect(store.phase).toBe(FINALIZING);
-    expect(store.value).toBe(undefined);
+    expect(store.value).toBe('100 BOT');
     expect(store.percent).toBe(0);
     expect(store.isPrevResult).toBeTruthy();
     expect(store.maxAmount).toBe(undefined);
@@ -237,7 +237,7 @@ describe('stores/models/Option', () => {
     expect(store.name).toBe(name);
     expect(store.token).toBe(BOT);
     expect(store.phase).toBe(FINALIZING);
-    expect(store.value).toBe(undefined);
+    expect(store.value).toBe('100 BOT');
     expect(store.percent).toBe(100);
     expect(store.isPrevResult).not.toBeTruthy();
     expect(store.maxAmount).toBe(undefined);
