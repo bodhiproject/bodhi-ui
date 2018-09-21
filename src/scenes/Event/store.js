@@ -4,7 +4,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
-import { Oracle, Transaction, Topic, TransactionCost } from 'models';
+import { Oracle, Transaction, Topic } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
@@ -651,30 +651,32 @@ export default class EventStore {
   }
 
   finalize = async () => {
-    const { currentAddress } = this.app.wallet;
-    const { version, topicAddress, address } = this.oracle;
-    try {
-      const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, currentAddress);
-      const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
-        ...finalizeResult,
-        optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
-        topic: {
-          options: this.oracle.options.map(({ name }) => name),
-        },
-      };
+    this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
 
-      runInAction(() => {
-        this.txConfirmDialogOpen = false;
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createFinalizeResultTx`);
-      });
-    }
-    Tracking.track('oracleDetail-finalize');
+    // const { currentAddress } = this.app.wallet;
+    // const { version, topicAddress, address } = this.oracle;
+    // try {
+    //   const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, currentAddress);
+    //   const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
+    //     ...finalizeResult,
+    //     optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
+    //     topic: {
+    //       options: this.oracle.options.map(({ name }) => name),
+    //     },
+    //   };
+
+    //   runInAction(() => {
+    //     this.txConfirmDialogOpen = false;
+    //     this.txSentDialogOpen = true;
+    //     this.transactions.unshift(new Transaction(newTx));
+    //     this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
+    //   });
+    // } catch (error) {
+    //   runInAction(() => {
+    //     this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createFinalizeResultTx`);
+    //   });
+    // }
+    // Tracking.track('oracleDetail-finalize');
   }
 
   withdraw = async (senderAddress, type) => {

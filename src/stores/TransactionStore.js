@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx } from '../network/graphql/mutations';
+import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -189,6 +189,10 @@ export default class TransactionStore {
       }
       case TransactionType.VOTE: {
         await this.executeVote(index, tx);
+        break;
+      }
+      case TransactionType.FINALIZE_RESULT: {
+        await this.executeFinalizeResult(index, tx);
         break;
       }
       default: {
@@ -406,7 +410,7 @@ export default class TransactionStore {
   /**
    * Adds a approve vote tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {string} oracleAddress Address of the DecentralizedOracle.
    * @param {Option} option Option to vote on.
    * @param {string} amount Approve amount.
    */
@@ -456,7 +460,7 @@ export default class TransactionStore {
    * Adds a vote tx to the queue.
    * @param {string} approveTxid Txid of the approve.
    * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
+   * @param {string} oracleAddress Address of the DecentralizedOracle.
    * @param {Option} option Option to vote on.
    * @param {string} amount Vote amount.
    */
@@ -505,6 +509,52 @@ export default class TransactionStore {
 
       this.onTxExecuted(index, tx);
       Tracking.track('event-vote');
+    }
+  }
+
+  /**
+   * Adds a finalize result tx to the queue.
+   * @param {string} topicAddress Address of the TopicEvent.
+   * @param {string} oracleAddress Address of the DecentralizedOracle.
+   */
+  @action
+  addFinalizeResultTx = async (topicAddress, oracleAddress) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.FINALIZE_RESULT,
+      senderAddress: this.app.wallet.currentAddress,
+      topicAddress,
+      oracleAddress,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a finalize result.
+   * @param {number} index Index of the tx obj.
+   * @param {Transaction} tx Bet tx obj.
+   */
+  @action
+  executeFinalizeResult = async (index, tx) => {
+    const { senderAddress, topicAddress, oracleAddress } = tx;
+    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
+      methodArgs: [],
+      senderAddress,
+    });
+
+    if (txid) {
+      // Create pending tx on server
+      await createFinalizeResultTx({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        topicAddress,
+        oracleAddress,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-finalizeResult');
     }
   }
 }

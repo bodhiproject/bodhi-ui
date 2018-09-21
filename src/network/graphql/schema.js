@@ -224,10 +224,12 @@ const MUTATIONS = {
 
   finalizeResult: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
-      'senderAddress',
     ],
     return: TYPE_DEF.Transaction,
   },
