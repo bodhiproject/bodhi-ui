@@ -4,6 +4,7 @@ import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
+import { BigNumber } from 'bignumber.js';
 
 import axios from '../network/api';
 import Routes from '../network/routes';
@@ -168,6 +169,14 @@ export default class {
       console.error(`Error getting allowance: ${err.message}`); // eslint-disable-line
     }
   }
+
+  /**
+   * Checks if the allowance is enough.
+   * @param {string} allowance Current allowance.
+   * @param {string} needed Amount of allowance needed.
+   * @return {boolean} True if the allowance is greater than or equal to needed.
+   */
+  isAllowanceEnough = (allowance, needed) => new BigNumber(allowance).isGreaterThanOrEqualTo(new BigNumber(needed));
 
   /**
    * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
