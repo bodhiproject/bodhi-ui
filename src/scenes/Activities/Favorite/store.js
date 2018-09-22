@@ -59,11 +59,6 @@ export default class {
   isInFavorite = (topicAddress) => this.favList.some(x => x === topicAddress)
 
   @action
-  loadMore = async () => {
-    // TODO
-  }
-
-  @action
   init = async () => {
     Object.assign(this, INIT_VALUES_FAVPAGE); // reset to initial state
     this.app.ui.location = Routes.FAVORITE; // change ui location, for tabs to render correctly

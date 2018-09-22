@@ -7,6 +7,7 @@ import cx from 'classnames';
 import { sum } from 'lodash';
 import { Phases, EventWarningType } from 'constants';
 
+import FavoriteButton from '../../../../components/EventCard/FavoriteButton';
 import EventWarning from '../../../../components/EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../../../helpers';
@@ -88,7 +89,7 @@ export default class EventCard extends PureComponent {
               {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
               <Typography variant="headline" className={classes.eventCardName}>
-                {name}
+                {name}<FavoriteButton event={this.props.event} />
               </Typography>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (

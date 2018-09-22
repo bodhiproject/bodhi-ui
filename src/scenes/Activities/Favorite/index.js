@@ -15,7 +15,7 @@ export default class Favorite extends Component {
   }
 
   render() {
-    const { displayList, loadMore, loadingMore, loading } = this.props.store.favorite;
+    const { displayList, loadingMore, loading } = this.props.store.favorite;
     if (loading) return <Loading />;
     const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
@@ -23,8 +23,8 @@ export default class Favorite extends Component {
         <InfiniteScroll
           spacing={theme.padding.sm.value}
           data={events}
-          loadMore={loadMore}
           loadingMore={loadingMore}
+          loadMore={() => {}}
         />
       </Fragment>
     );

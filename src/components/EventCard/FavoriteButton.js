@@ -14,14 +14,12 @@ import styles from './styles';
 @observer
 class FavoriteButton extends Component {
   state = {
-    isFavorite: false,
+    forceRefreshFlag: false,
   }
 
   componentDidMount() {
     // Oracle.topicAddress or Topic.address. May changes once Topic got renewal with MobX.
-    const topicAddress = this.props.event.topicAddress || this.props.event.address;
-    const updatedFavorite = this.props.store.favorite.isInFavorite(topicAddress);
-    this.setState({ isFavorite: updatedFavorite });
+    this.setState({ forceRefreshFlag: !this.state.forceRefreshFlag });
   }
 
   handleClick = () => (event) => { // eslint-disable-line
@@ -29,12 +27,10 @@ class FavoriteButton extends Component {
     // Oracle.topicAddress or Topic.address. May changes once Topic got renewal with MobX.
     const topicAddress = this.props.event.topicAddress || this.props.event.address;
     this.props.store.favorite.setFavorite(topicAddress);
-    const updatedFavorite = this.props.store.favorite.isInFavorite(topicAddress);
-    this.setState({ isFavorite: updatedFavorite });
+    this.setState({ forceRefreshFlag: !this.state.forceRefreshFlag });
   }
 
   render() {
-    const { isFavorite } = this.state; // eslint-disable-line
     const { store, event } = this.props;
     const topicAddress = event.topicAddress || event.address;
 
