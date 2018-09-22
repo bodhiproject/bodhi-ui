@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { Routes } from 'constants';
+import { Routes, SortBy } from 'constants';
 import AllEventsStore from './AllEventsStore';
 import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
 
@@ -67,7 +67,7 @@ describe('AllEventsStore', () => {
     expect(store.list.length).toBe(store.limit);
     expect(store.loadingMore).toBe(false);
     await store.loadMoreEvents();
-    expect(store.list.length).toBe(36); // mock backend only has 46 events in total
+    expect(store.list.length).toBe(36); // mock backend only has 36 events in total
     expect(store.loadingMore).toBe(false);
     expect(store.hasMore).toBe(false); // no events left in backend
     expect(store.skip).toBe(curSkip + store.limit);
@@ -77,10 +77,11 @@ describe('AllEventsStore', () => {
     expect.assertions(4);
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
-    app.sortBy = 'Yo';
+    const newSortBy = app.sortBy === SortBy.ASCENDING ? SortBy.DESCENDING : SortBy.ASCENDING;
+    app.sortBy = newSortBy;
     await sleep(100);
     expect(store.app.ui.location).toBe(Routes.ALL_EVENTS);
-    expect(store.app.sortBy).toBe('Yo');
+    expect(store.app.sortBy).toBe(newSortBy);
     expect(store.list.length).toBe(store.limit);
   });
 

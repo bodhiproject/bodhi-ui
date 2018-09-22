@@ -20,7 +20,7 @@ const {
   RESET_APPROVE,
 } = TransactionType;
 
-const INIT_VALUES = {
+export const INIT_VALUES = {
   isVisible: false,
   count: 0,
   pendingApproves: 0,

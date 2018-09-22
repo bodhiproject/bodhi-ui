@@ -2,6 +2,8 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
+import moment from 'moment';
+import cryptoRandomString from 'crypto-random-string';
 import mockData from './mockData';
 
 export function createTopic(
@@ -16,10 +18,10 @@ export function createTopic(
   senderAddress,
 ) {
   const newTransaction = {
-    createdTime: '',
+    createdTime: moment.unix(),
     status: 'PENDING',
     token: 'BOT',
-    txid: '',
+    txid: cryptoRandomString(64),
     type: 'APPROVECREATEEVENT',
     createdBlock: 0,
     gasLimit: '100000000',
@@ -45,7 +47,8 @@ export function createTopic(
 export function createBetTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
   const newTransaction = {
     createdBlock: 0,
-    createdTime: 0,
+    createdTime: moment.unix(),
+    txid: cryptoRandomString(64),
     gasLimit: '100000000',
     gasPrice: 0.01,
     senderAddress,
