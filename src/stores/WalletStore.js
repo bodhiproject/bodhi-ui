@@ -151,6 +151,25 @@ export default class {
   }
 
   /**
+   * Checks the Bodhi Token allowance from the owner to spender.
+   * @param {string} owner Approver of the tokens.
+   * @param {string} spender Approvee of the tokens.
+   * @return {string} Amount of the allowance.
+   */
+  checkAllowance = async (owner, spender) => {
+    try {
+      const { data: { remaining } } = await axios.post(Routes.api.allowance, {
+        owner,
+        spender,
+        senderAddress: this.currentAddress,
+      });
+      return remaining;
+    } catch (err) {
+      console.error(`Error getting allowance: ${err.message}`); // eslint-disable-line
+    }
+  }
+
+  /**
    * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
    * @param {string} address Address to check the BOT balance of.
    */
