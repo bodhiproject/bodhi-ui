@@ -520,12 +520,12 @@ export default class EventStore {
     console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
-  prepareBet = () => {
-    this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
+  prepareBet = async () => {
+    await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
   }
 
   prepareSetResult = async () => {
-    this.app.tx.addApproveSetResultTx(
+    await this.app.tx.addApproveSetResultTx(
       this.oracle.topicAddress,
       this.oracle.address,
       this.selectedOption,
@@ -535,7 +535,7 @@ export default class EventStore {
 
   @action
   prepareVote = async () => {
-    this.app.tx.addApproveVoteTx(
+    await this.app.tx.addApproveVoteTx(
       this.oracle.topicAddress,
       this.oracle.address,
       this.selectedOption,
@@ -653,7 +653,7 @@ export default class EventStore {
   }
 
   finalize = async () => {
-    this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
+    await this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
 
     // const { currentAddress } = this.app.wallet;
     // const { version, topicAddress, address } = this.oracle;
@@ -682,7 +682,7 @@ export default class EventStore {
   }
 
   withdraw = async (senderAddress, type) => {
-    this.app.tx.addWithdrawTx(type, this.topic.address);
+    await this.app.tx.addWithdrawTx(type, this.topic.address);
 
     // try {
     //   const { version, address } = this.topic;

@@ -499,7 +499,7 @@ export default class CreateEventStore {
     const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
     const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
     if (isAllowanceEnough(allowance, this.eventEscrowAmount)) {
-      this.app.tx.addCreateEventTx(
+      await this.app.tx.addCreateEventTx(
         undefined,
         this.title,
         this.outcomes,
@@ -511,7 +511,7 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
       );
     } else {
-      this.app.tx.addApproveCreateEventTx(
+      await this.app.tx.addApproveCreateEventTx(
         this.title,
         this.outcomes,
         this.resultSetter,

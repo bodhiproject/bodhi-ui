@@ -201,12 +201,12 @@ export default class TransactionStore {
    * @param {number} index Index of the tx that was executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = (index, tx) => {
+  onTxExecuted = async (index, tx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
-      this.app.eventPage.queryTransactions(tx.topicAddress);
+      await this.app.eventPage.queryTransactions(tx.topicAddress);
     }
-    this.app.pendingTxsSnackbar.init();
+    await this.app.pendingTxsSnackbar.init();
     this.deleteTx(index);
   }
 
@@ -278,7 +278,7 @@ export default class TransactionStore {
       amount: amountSatoshi,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -308,7 +308,7 @@ export default class TransactionStore {
       });
 
       this.addPendingApprove(txid);
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-approveCreateEvent');
     }
   }
@@ -351,7 +351,7 @@ export default class TransactionStore {
       amount,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -408,7 +408,7 @@ export default class TransactionStore {
         token: Token.BOT,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       this.app.qtumPrediction.loadFirst();
       Tracking.track('event-createEvent');
     }
@@ -432,7 +432,7 @@ export default class TransactionStore {
       amount,
       token: Token.QTUM,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -463,7 +463,7 @@ export default class TransactionStore {
         amount,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-bet');
     }
   }
@@ -486,7 +486,7 @@ export default class TransactionStore {
       amount: amountSatoshi,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -512,7 +512,7 @@ export default class TransactionStore {
       });
 
       this.addPendingApprove(txid);
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-approveSetResult');
     }
   }
@@ -537,7 +537,7 @@ export default class TransactionStore {
       amount,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -568,7 +568,7 @@ export default class TransactionStore {
         amount: amountSatoshi,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-setResult');
     }
   }
@@ -591,7 +591,7 @@ export default class TransactionStore {
       amount: amountSatoshi,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -617,7 +617,7 @@ export default class TransactionStore {
       });
 
       this.addPendingApprove(txid);
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-approveVote');
     }
   }
@@ -642,7 +642,7 @@ export default class TransactionStore {
       amount,
       token: Token.BOT,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -673,7 +673,7 @@ export default class TransactionStore {
         amount: amountSatoshi,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-vote');
     }
   }
@@ -691,7 +691,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -719,7 +719,7 @@ export default class TransactionStore {
         oracleAddress,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-finalizeResult');
     }
   }
@@ -735,7 +735,7 @@ export default class TransactionStore {
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
     })));
-    this.showConfirmDialog();
+    await this.showConfirmDialog();
   }
 
   /**
@@ -764,7 +764,7 @@ export default class TransactionStore {
         topicAddress,
       });
 
-      this.onTxExecuted(index, tx);
+      await this.onTxExecuted(index, tx);
       Tracking.track('event-withdraw');
     }
   }
