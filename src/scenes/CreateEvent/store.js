@@ -3,7 +3,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { TransactionType, TransactionStatus, Token } from 'constants';
+import { TransactionType, TransactionStatus, Transaction, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
@@ -11,6 +11,7 @@ import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
+import getContracts from '../../config/contracts';
 import { createTopic } from '../../network/graphql/mutations';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
@@ -496,6 +497,14 @@ export default class CreateEventStore {
 
   @action
   submit = async () => {
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
+    if (isAllowanceEnough(allowance, this.eventEscrowAmount)) {
+      // TODO: create event
+    } else {
+      // TODO: approve
+    }
+
     try {
       const { data } = await createTopic(
         this.title,
@@ -511,7 +520,6 @@ export default class CreateEventStore {
 
       runInAction(() => {
         this.app.qtumPrediction.loadFirst();
-        this.app.pendingTxsSnackbar.init(); // Show pending txs snackbar
         this.txConfirmDialogOpen = false;
         this.txid = data.createTopic.txid;
         this.txSentDialogOpen = true;

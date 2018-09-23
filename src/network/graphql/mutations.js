@@ -61,6 +61,15 @@ class GraphMutation {
   }
 }
 
+/**
+ * Executes a transaction mutation.
+ * @param {string} mutationName Name of the mutation.
+ * @param {object} args Arguments for the mutation.
+ */
+export function createTransaction(mutationName, args) {
+  return new GraphMutation(mutationName, args, TYPE.transaction).execute();
+}
+
 export function createTopic(
   name,
   results,

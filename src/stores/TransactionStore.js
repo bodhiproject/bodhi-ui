@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../network/graphql/mutations';
+import { createTransaction, createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -170,40 +170,18 @@ export default class TransactionStore {
    */
   confirmTx = async (index) => {
     const tx = this.transactions[index];
-    switch (tx.type) {
-      case TransactionType.BET: {
-        await this.executeBet(index, tx);
-        break;
-      }
-      case TransactionType.APPROVE_SET_RESULT: {
-        await this.executeApproveSetResult(index, tx);
-        break;
-      }
-      case TransactionType.SET_RESULT: {
-        await this.executeSetResult(index, tx);
-        break;
-      }
-      case TransactionType.APPROVE_VOTE: {
-        await this.executeApproveVote(index, tx);
-        break;
-      }
-      case TransactionType.VOTE: {
-        await this.executeVote(index, tx);
-        break;
-      }
-      case TransactionType.FINALIZE_RESULT: {
-        await this.executeFinalizeResult(index, tx);
-        break;
-      }
-      case TransactionType.WITHDRAW:
-      case TransactionType.WITHDRAW_ESCROW: {
-        await this.executeWithdraw(index, tx);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+    const confirmFunc = {
+      [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
+      [TransactionType.BET]: this.executeBet,
+      [TransactionType.APPROVE_SET_RESULT]: this.executeApproveSetResult,
+      [TransactionType.SET_RESULT]: this.executeSetResult,
+      [TransactionType.APPROVE_VOTE]: this.executeApproveVote,
+      [TransactionType.VOTE]: this.executeVote,
+      [TransactionType.FINALIZE_RESULT]: this.executeFinalizeResult,
+      [TransactionType.WITHDRAW]: this.executeWithdraw,
+      [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
+    };
+    await confirmFunc[tx.type](index, tx);
   }
 
   /**
@@ -251,6 +229,76 @@ export default class TransactionStore {
       senderAddress,
     });
     return { txid, gasLimit, gasPrice };
+  }
+
+  /**
+   * Adds an approve create event tx to the queue.
+   * @param {string} name Name of the event.
+   * @param {array} options String array of the options for the event.
+   * @param {string} resultSetterAddress Address of the result setter.
+   * @param {string} bettingStartTime Unix timestamp of the betting start time.
+   * @param {string} bettingEndTime Unix timestamp of the betting end time.
+   * @param {string} resultSettingStartTime Unix timestamp of the result setting start time.
+   * @param {string} resultSettingEndTime Unix timestamp of the result setting end time.
+   * @param {string} amountSatoshi Escrow amount.
+   */
+  @action
+  addApproveCreateEventTx = async (
+    name,
+    options,
+    resultSetterAddress,
+    bettingStartTime,
+    bettingEndTime,
+    resultSettingStartTime,
+    resultSettingEndTime,
+    amountSatoshi,
+  ) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.APPROVE_CREATE_EVENT,
+      senderAddress: this.app.wallet.currentAddress,
+      name,
+      options,
+      resultSetterAddress,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      amount: amountSatoshi,
+      token: Token.BOT,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes an approve for a create event.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
+   */
+  @action
+  executeApproveCreateEvent = async (index, tx) => {
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+
+    // Create pending tx on server
+    if (txid) {
+      await createTransaction({
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress: tx.senderAddress,
+        name: tx.name,
+        options: tx.options,
+        resultSetterAddress: tx.resultSetterAddress,
+        bettingStartTime: tx.bettingStartTime,
+        bettingEndTime: tx.bettingEndTime,
+        resultSettingStartTime: tx.resultSettingStartTime,
+        resultSettingEndTime: tx.resultSettingEndTime,
+        amount: tx.amountSatoshi,
+      });
+
+      this.addPendingApprove(txid);
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-approveCreateEvent');
+    }
   }
 
   /**
@@ -312,7 +360,7 @@ export default class TransactionStore {
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {Option} option Option of the result being set.
-   * @param {string} amount Approve amount.
+   * @param {string} amountSatoshi Approve amount.
    */
   @action
   addApproveSetResultTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {
@@ -417,7 +465,7 @@ export default class TransactionStore {
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the DecentralizedOracle.
    * @param {Option} option Option to vote on.
-   * @param {string} amount Approve amount.
+   * @param {string} amountSatoshi Approve amount.
    */
   @action
   addApproveVoteTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {

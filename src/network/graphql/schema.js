@@ -126,6 +126,24 @@ const TYPE_DEF = {
 };
 
 const MUTATIONS = {
+  approveCreateEvent: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'name',
+      'options',
+      'resultSetterAddress',
+      'bettingStartTime',
+      'bettingEndTime',
+      'resultSettingStartTime',
+      'resultSettingEndTime',
+      'amount',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
   createTopic: {
     mapping: [
       'senderAddress',
