@@ -35,10 +35,6 @@ const messages = defineMessages({
     id: 'withdrawDialog.youCanWithdraw',
     defaultMessage: 'You can withdraw up to:',
   },
-  confirmSendMsg: {
-    id: 'txConfirmMsg.send',
-    defaultMessage: 'send to address {address}',
-  },
 });
 
 @injectIntl

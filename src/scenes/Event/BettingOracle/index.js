@@ -15,10 +15,6 @@ const messages = defineMessages({
     id: 'oracle.eventUnconfirmed',
     defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
   },
-  txConfirmMsgBetMsg: {
-    id: 'txConfirmMsg.bet',
-    defaultMessage: 'bet on {option}',
-  },
 });
 
 const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (

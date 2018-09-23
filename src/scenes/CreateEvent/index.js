@@ -24,10 +24,6 @@ const messages = defineMessages({
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
-  txConfirmMsgCreateMsg: {
-    id: 'txConfirmMsg.create',
-    defaultMessage: 'create an event',
-  },
 });
 
 const CreateEventDialog = withStyles(styles)(observer(({

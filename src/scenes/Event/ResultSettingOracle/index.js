@@ -15,10 +15,6 @@ const messages = defineMessages({
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
   },
-  txConfirmMsgSetMsg: {
-    id: 'txConfirmMsg.set',
-    defaultMessage: 'set the result as {option}',
-  },
 });
 
 const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
