@@ -1,42 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Tooltip,
-  Button,
-  Snackbar,
-  withStyles,
-  Grid,
-  Paper,
-  Typography,
-  IconButton,
-} from '@material-ui/core';
-import { SortBy } from 'constants';
+import { Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip, Button, Snackbar, withStyles, Grid, Paper, Typography, IconButton } from '@material-ui/core';
 import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
+import { SortBy } from 'constants';
 
 import styles from './styles';
 import DepositDialog from './DepositDialog';
 import WithdrawDialog from './WithdrawDialog';
-import WithdrawTxConfirmDialog from './WithdrawTxConfirmDialog';
 import Config from '../../../config/app';
 import Tracking from '../../../helpers/mixpanelUtil';
 
-const messages = defineMessages({
-  txConfirmMsgSendMsg: {
-    id: 'txConfirmMsg.send',
-    defaultMessage: 'send to address {address}',
-  },
-});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -113,7 +90,6 @@ export default class MyBalances extends Component {
             qtumAmount={selectedAddressQtum}
             botAmount={selectedAddressBot}
           />
-          <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         </Grid>
       </Paper>
     );

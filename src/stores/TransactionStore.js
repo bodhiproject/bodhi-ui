@@ -192,6 +192,7 @@ export default class TransactionStore {
       [TransactionType.FINALIZE_RESULT]: this.executeFinalizeResult,
       [TransactionType.WITHDRAW]: this.executeWithdraw,
       [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
+      [TransactionType.TRANSFER]: this.executeTransfer,
     };
     await confirmFunc[tx.type](index, tx);
   }
@@ -235,7 +236,6 @@ export default class TransactionStore {
    */
   @action
   executeApprove = async (senderAddress, spender, amountSatoshi) => {
-    // const { senderAddress, topicAddress, amountSatoshi } = tx;
     const bodhiToken = getContracts().BodhiToken;
     const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
@@ -291,10 +291,11 @@ export default class TransactionStore {
   @action
   executeApproveCreateEvent = async (index, tx) => {
     try {
+      const { senderAddress, amountSatoshi } = tx;
       const { txid, gasLimit, gasPrice } = await this.executeApprove(
-        tx.senderAddress,
+        senderAddress,
         getContracts().AddressManager.address,
-        tx.amountSatoshi,
+        amountSatoshi,
       );
       Object.assign(tx, { txid, gasLimit, gasPrice });
 
@@ -304,7 +305,7 @@ export default class TransactionStore {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
-          senderAddress: tx.senderAddress,
+          senderAddress,
           name: tx.name,
           options: tx.options,
           resultSetterAddress: tx.resultSetterAddress,
@@ -312,7 +313,7 @@ export default class TransactionStore {
           bettingEndTime: tx.bettingEndTime,
           resultSettingStartTime: tx.resultSettingStartTime,
           resultSettingEndTime: tx.resultSettingEndTime,
-          amount: tx.amountSatoshi,
+          amount: amountSatoshi,
         });
 
         this.addPendingApprove(txid);
@@ -459,7 +460,7 @@ export default class TransactionStore {
   @action
   executeBet = async (index, tx) => {
     try {
-      const { topicAddress, oracleAddress, optionIdx, amount, senderAddress } = tx;
+      const { oracleAddress, optionIdx, amount, senderAddress } = tx;
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
         methodArgs: [optionIdx],
@@ -475,7 +476,7 @@ export default class TransactionStore {
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
           senderAddress,
-          topicAddress,
+          topicAddress: tx.topicAddress,
           oracleAddress,
           optionIdx,
           amount,
@@ -518,7 +519,8 @@ export default class TransactionStore {
   @action
   executeApproveSetResult = async (index, tx) => {
     try {
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
+      const { senderAddress, topicAddress, amountSatoshi } = tx;
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, topicAddress, amountSatoshi);
       Object.assign(tx, { txid, gasLimit, gasPrice });
 
       // Create pending tx on server
@@ -527,11 +529,11 @@ export default class TransactionStore {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
-          senderAddress: tx.senderAddress,
-          topicAddress: tx.topicAddress,
+          senderAddress,
+          topicAddress,
           oracleAddress: tx.oracleAddress,
           optionIdx: tx.optionIdx,
-          amount: tx.amountSatoshi,
+          amount: amountSatoshi,
         });
 
         this.addPendingApprove(txid);
@@ -574,7 +576,7 @@ export default class TransactionStore {
   @action
   executeSetResult = async (index, tx) => {
     try {
-      const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const { senderAddress, oracleAddress, optionIdx } = tx;
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
         methodArgs: [optionIdx],
@@ -590,10 +592,10 @@ export default class TransactionStore {
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
           senderAddress,
-          topicAddress,
+          topicAddress: tx.topicAddress,
           oracleAddress,
           optionIdx,
-          amount: amountSatoshi,
+          amount: tx.amountSatoshi,
         });
 
         await this.onTxExecuted(index, tx);
@@ -633,11 +635,8 @@ export default class TransactionStore {
   @action
   executeApproveVote = async (index, tx) => {
     try {
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(
-        tx.senderAddress,
-        tx.topicAddress,
-        tx.amountSatoshi,
-      );
+      const { senderAddress, topicAddress, amountSatoshi } = tx;
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, topicAddress, amountSatoshi);
       Object.assign(tx, { txid, gasLimit, gasPrice });
 
       // Create pending tx on server
@@ -646,11 +645,11 @@ export default class TransactionStore {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
-          senderAddress: tx.senderAddress,
-          topicAddress: tx.topicAddress,
+          senderAddress,
+          topicAddress,
           oracleAddress: tx.oracleAddress,
           optionIdx: tx.optionIdx,
-          amount: tx.amountSatoshi,
+          amount: amountSatoshi,
         });
 
         this.addPendingApprove(txid);
@@ -693,7 +692,7 @@ export default class TransactionStore {
   @action
   executeVote = async (index, tx) => {
     try {
-      const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const { senderAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
         methodArgs: [optionIdx, amountSatoshi],
@@ -709,7 +708,7 @@ export default class TransactionStore {
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
           senderAddress,
-          topicAddress,
+          topicAddress: tx.topicAddress,
           oracleAddress,
           optionIdx,
           amount: amountSatoshi,
@@ -747,7 +746,7 @@ export default class TransactionStore {
   @action
   executeFinalizeResult = async (index, tx) => {
     try {
-      const { senderAddress, topicAddress, oracleAddress } = tx;
+      const { senderAddress, oracleAddress } = tx;
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
         methodArgs: [],
@@ -762,7 +761,7 @@ export default class TransactionStore {
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
           senderAddress,
-          topicAddress,
+          topicAddress: tx.topicAddress,
           oracleAddress,
         });
 
@@ -821,6 +820,49 @@ export default class TransactionStore {
       }
     } catch (err) {
       this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/withdraw`);
+    }
+  }
+
+  /**
+   * Adds a transfer tx to the queue.
+   * @param {string} senderAddress Sender of the transfer.
+   * @param {string} receiverAddress Receiver of the transfer.
+   * @param {number|string} amount Amount of the transfer.
+   * @param {string} token Token type.
+   */
+  @action
+  addTransferTx = async (senderAddress, receiverAddress, amount, token) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.TRANSFER,
+      senderAddress,
+      receiverAddress,
+      amount,
+      token,
+    })));
+    await this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a transfer.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
+   */
+  @action
+  executeTransfer = async (index, tx) => {
+    try {
+      const { data: { transfer } } = await createTransaction('transfer', {
+        senderAddress: tx.senderAddress,
+        receiverAddress: tx.receiverAddress,
+        amount: tx.amount,
+        token: tx.token,
+      });
+      const newTx = observable.object(new Transaction(transfer));
+
+      await this.onTxExecuted(index, newTx);
+      await this.app.myWallet.history.addTransaction(newTx);
+      Tracking.track('wallet-transfer');
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/transfer`);
     }
   }
 }

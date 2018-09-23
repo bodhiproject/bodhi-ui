@@ -1,16 +1,13 @@
 import { observable, action, runInAction, reaction, computed } from 'mobx';
-import { isEmpty, find, findIndex, map } from 'lodash';
+import { isEmpty, find, findIndex } from 'lodash';
 import moment from 'moment';
-import { TransactionType, Token } from 'constants';
-import { Transaction, TransactionCost } from 'models';
+import { Token } from 'constants';
 import { defineMessages } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 
 import axios from '../network/api';
 import Routes from '../network/routes';
-import { createTransferTx } from '../network/graphql/mutations';
 import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
-import Tracking from '../helpers/mixpanelUtil';
 import WalletAddress from './models/WalletAddress';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
@@ -55,7 +52,7 @@ const INIT_VALUE_DIALOG = {
   },
 };
 
-export default class {
+export default class WalletStore {
   @observable addresses = INIT_VALUE.addresses;
   @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
   @observable walletEncrypted = INIT_VALUE.walletEncrypted;
@@ -282,66 +279,20 @@ export default class {
   resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
+  withdraw = async (walletAddress) => {
+    this.walletAddress = walletAddress;
+    const amount = this.selectedToken === Token.BOT
+      ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount);
+    await this.app.tx.addTransferTx(this.walletAddress, this.toAddress, amount, this.selectedToken);
+  }
+
+  @action
   backupWallet = async () => {
     try {
       await axios.post(Routes.api.backupWallet);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.backupWallet);
-      });
-    }
-  }
-
-  @action
-  confirm = (onWithdraw) => {
-    let amount = this.withdrawAmount;
-    if (this.selectedToken === Token.BOT) {
-      amount = decimalToSatoshi(this.withdrawAmount);
-    }
-    this.createTransferTransaction(this.walletAddress, this.toAddress, this.selectedToken, amount);
-    runInAction(() => {
-      onWithdraw();
-      this.txConfirmDialogOpen = false;
-      Tracking.track('myWallet-withdraw');
-    });
-  };
-
-  @action
-  prepareWithdraw = async (walletAddress) => {
-    this.walletAddress = walletAddress;
-    try {
-      const { data } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
-        token: this.selectedToken,
-        amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
-        optionIdx: undefined,
-        topicAddress: undefined,
-        oracleAddress: undefined,
-        senderAddress: walletAddress,
-      });
-      const txFees = map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
-  }
-
-  @action
-  createTransferTransaction = async (walletAddress, toAddress, selectedToken, amount) => {
-    try {
-      const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
-      this.app.myWallet.history.addTransaction(new Transaction(transfer));
-      runInAction(() => {
-        this.app.pendingTxsSnackbar.init();
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
   }

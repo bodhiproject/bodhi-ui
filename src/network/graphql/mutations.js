@@ -69,14 +69,3 @@ class GraphMutation {
 export function createTransaction(mutationName, args) {
   return new GraphMutation(mutationName, args, TYPE.transaction).execute();
 }
-
-export function createTransferTx(senderAddress, receiverAddress, token, amount) {
-  const args = {
-    senderAddress,
-    receiverAddress,
-    token,
-    amount,
-  };
-
-  return new GraphMutation('transfer', args, TYPE.transaction).execute();
-}

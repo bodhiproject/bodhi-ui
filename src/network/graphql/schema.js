@@ -268,17 +268,7 @@ const MUTATIONS = {
       'token',
       'amount',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      senderAddress
-      receiverAddress
-      token
-      amount
-    `,
+    return: TYPE_DEF.Transaction,
   },
 };
 
