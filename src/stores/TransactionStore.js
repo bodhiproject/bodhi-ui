@@ -290,33 +290,37 @@ export default class TransactionStore {
    */
   @action
   executeApproveCreateEvent = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(
-      tx.senderAddress,
-      getContracts().AddressManager.address,
-      tx.amountSatoshi,
-    );
-    Object.assign(tx, { txid, gasLimit, gasPrice });
+    try {
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(
+        tx.senderAddress,
+        getContracts().AddressManager.address,
+        tx.amountSatoshi,
+      );
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('approveCreateEvent', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
-        senderAddress: tx.senderAddress,
-        name: tx.name,
-        options: tx.options,
-        resultSetterAddress: tx.resultSetterAddress,
-        bettingStartTime: tx.bettingStartTime,
-        bettingEndTime: tx.bettingEndTime,
-        resultSettingStartTime: tx.resultSettingStartTime,
-        resultSettingEndTime: tx.resultSettingEndTime,
-        amount: tx.amountSatoshi,
-      });
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('approveCreateEvent', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress: tx.senderAddress,
+          name: tx.name,
+          options: tx.options,
+          resultSetterAddress: tx.resultSetterAddress,
+          bettingStartTime: tx.bettingStartTime,
+          bettingEndTime: tx.bettingEndTime,
+          resultSettingStartTime: tx.resultSettingStartTime,
+          resultSettingEndTime: tx.resultSettingEndTime,
+          amount: tx.amountSatoshi,
+        });
 
-      this.addPendingApprove(txid);
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-approveCreateEvent');
+        this.addPendingApprove(txid);
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-approveCreateEvent');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/approve-create-event`);
     }
   }
 
@@ -368,42 +372,8 @@ export default class TransactionStore {
    */
   @action
   executeCreateEvent = async (index, tx) => {
-    const {
-      senderAddress,
-      resultSetterAddress,
-      name,
-      options,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      amountSatoshi,
-    } = tx;
-    const contract = this.app.global.qweb3.Contract(
-      getContracts().EventFactory.address,
-      getContracts().EventFactory.abi,
-    );
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('createTopic', {
-      methodArgs: [
-        resultSetterAddress,
-        name,
-        options,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
-      ],
-      gasLimit: 3500000,
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('createEvent', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
+    try {
+      const {
         senderAddress,
         resultSetterAddress,
         name,
@@ -412,13 +382,51 @@ export default class TransactionStore {
         bettingEndTime,
         resultSettingStartTime,
         resultSettingEndTime,
-        amount: amountSatoshi,
-        token: Token.BOT,
+        amountSatoshi,
+      } = tx;
+      const contract = this.app.global.qweb3.Contract(
+        getContracts().EventFactory.address,
+        getContracts().EventFactory.abi,
+      );
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('createTopic', {
+        methodArgs: [
+          resultSetterAddress,
+          name,
+          options,
+          bettingStartTime,
+          bettingEndTime,
+          resultSettingStartTime,
+          resultSettingEndTime,
+        ],
+        gasLimit: 3500000,
+        senderAddress,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      this.app.qtumPrediction.loadFirst();
-      Tracking.track('event-createEvent');
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('createEvent', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          resultSetterAddress,
+          name,
+          options,
+          bettingStartTime,
+          bettingEndTime,
+          resultSettingStartTime,
+          resultSettingEndTime,
+          amount: amountSatoshi,
+          token: Token.BOT,
+        });
+
+        await this.onTxExecuted(index, tx);
+        this.app.qtumPrediction.loadFirst();
+        Tracking.track('event-createEvent');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/create-event`);
     }
   }
 
@@ -450,30 +458,34 @@ export default class TransactionStore {
    */
   @action
   executeBet = async (index, tx) => {
-    const { topicAddress, oracleAddress, optionIdx, amount, senderAddress } = tx;
-    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-      methodArgs: [optionIdx],
-      amount,
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    if (txid) {
-      // Create pending tx on server
-      await createTransaction('createBet', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
-        senderAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
+    try {
+      const { topicAddress, oracleAddress, optionIdx, amount, senderAddress } = tx;
+      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
+        methodArgs: [optionIdx],
         amount,
+        senderAddress,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-bet');
+      if (txid) {
+        // Create pending tx on server
+        await createTransaction('createBet', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          topicAddress,
+          oracleAddress,
+          optionIdx,
+          amount,
+        });
+
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-bet');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/bet`);
     }
   }
 
@@ -505,25 +517,29 @@ export default class TransactionStore {
    */
   @action
   executeApproveSetResult = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
-    Object.assign(tx, { txid, gasLimit, gasPrice });
+    try {
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('approveSetResult', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
-        senderAddress: tx.senderAddress,
-        topicAddress: tx.topicAddress,
-        oracleAddress: tx.oracleAddress,
-        optionIdx: tx.optionIdx,
-        amount: tx.amountSatoshi,
-      });
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('approveSetResult', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress: tx.senderAddress,
+          topicAddress: tx.topicAddress,
+          oracleAddress: tx.oracleAddress,
+          optionIdx: tx.optionIdx,
+          amount: tx.amountSatoshi,
+        });
 
-      this.addPendingApprove(txid);
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-approveSetResult');
+        this.addPendingApprove(txid);
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-approveSetResult');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/approve-set-result`);
     }
   }
 
@@ -557,30 +573,34 @@ export default class TransactionStore {
    */
   @action
   executeSetResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
-    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
-      methodArgs: [optionIdx],
-      gasLimit: 1500000,
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('setResult', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
+    try {
+      const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
+        methodArgs: [optionIdx],
+        gasLimit: 1500000,
         senderAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amount: amountSatoshi,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-setResult');
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('setResult', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          topicAddress,
+          oracleAddress,
+          optionIdx,
+          amount: amountSatoshi,
+        });
+
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-setResult');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/set-result`);
     }
   }
 
@@ -612,25 +632,33 @@ export default class TransactionStore {
    */
   @action
   executeApproveVote = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
-    Object.assign(tx, { txid, gasLimit, gasPrice });
+    try {
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(
+        tx.senderAddress,
+        tx.topicAddress,
+        tx.amountSatoshi,
+      );
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('approveVote', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
-        senderAddress: tx.senderAddress,
-        topicAddress: tx.topicAddress,
-        oracleAddress: tx.oracleAddress,
-        optionIdx: tx.optionIdx,
-        amount: tx.amountSatoshi,
-      });
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('approveVote', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress: tx.senderAddress,
+          topicAddress: tx.topicAddress,
+          oracleAddress: tx.oracleAddress,
+          optionIdx: tx.optionIdx,
+          amount: tx.amountSatoshi,
+        });
 
-      this.addPendingApprove(txid);
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-approveVote');
+        this.addPendingApprove(txid);
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-approveVote');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/approve-vote`);
     }
   }
 
@@ -664,30 +692,34 @@ export default class TransactionStore {
    */
   @action
   executeVote = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
-    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
-      methodArgs: [optionIdx, amountSatoshi],
-      gasLimit: 1500000, // TODO: determine gas limit to use
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    // Create pending tx on server
-    if (txid) {
-      await createTransaction('createVote', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
+    try {
+      const { senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
+        methodArgs: [optionIdx, amountSatoshi],
+        gasLimit: 1500000, // TODO: determine gas limit to use
         senderAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amount: amountSatoshi,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-vote');
+      // Create pending tx on server
+      if (txid) {
+        await createTransaction('createVote', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          topicAddress,
+          oracleAddress,
+          optionIdx,
+          amount: amountSatoshi,
+        });
+
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-vote');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/vote`);
     }
   }
 
@@ -714,27 +746,31 @@ export default class TransactionStore {
    */
   @action
   executeFinalizeResult = async (index, tx) => {
-    const { senderAddress, topicAddress, oracleAddress } = tx;
-    const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
-      methodArgs: [],
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    if (txid) {
-      // Create pending tx on server
-      await createTransaction('finalizeResult', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
+    try {
+      const { senderAddress, topicAddress, oracleAddress } = tx;
+      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
+        methodArgs: [],
         senderAddress,
-        topicAddress,
-        oracleAddress,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-finalizeResult');
+      if (txid) {
+        // Create pending tx on server
+        await createTransaction('finalizeResult', {
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          topicAddress,
+          oracleAddress,
+        });
+
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-finalizeResult');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/finalize-result`);
     }
   }
 
@@ -759,28 +795,32 @@ export default class TransactionStore {
    */
   @action
   executeWithdraw = async (index, tx) => {
-    const { type, senderAddress, topicAddress } = tx;
-    const contract = this.app.global.qweb3.Contract(topicAddress, getContracts().TopicEvent.abi);
-    const methodName = type === TransactionType.WITHDRAW ? 'withdrawWinnings' : 'withdrawEscrow';
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send(methodName, {
-      methodArgs: [],
-      senderAddress,
-    });
-    Object.assign(tx, { txid, gasLimit, gasPrice });
-
-    if (txid) {
-      // Create pending tx on server
-      await createTransaction('withdraw', {
-        type,
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
+    try {
+      const { type, senderAddress, topicAddress } = tx;
+      const contract = this.app.global.qweb3.Contract(topicAddress, getContracts().TopicEvent.abi);
+      const methodName = type === TransactionType.WITHDRAW ? 'withdrawWinnings' : 'withdrawEscrow';
+      const { txid, args: { gasLimit, gasPrice } } = await contract.send(methodName, {
+        methodArgs: [],
         senderAddress,
-        topicAddress,
       });
+      Object.assign(tx, { txid, gasLimit, gasPrice });
 
-      await this.onTxExecuted(index, tx);
-      Tracking.track('event-withdraw');
+      if (txid) {
+        // Create pending tx on server
+        await createTransaction('withdraw', {
+          type,
+          txid,
+          gasLimit: gasLimit.toString(),
+          gasPrice: gasPrice.toFixed(8),
+          senderAddress,
+          topicAddress,
+        });
+
+        await this.onTxExecuted(index, tx);
+        Tracking.track('event-withdraw');
+      }
+    } catch (err) {
+      this.app.ui.setError(err.message, `${networkRoutes.graphql.http}/withdraw`);
     }
   }
 }
