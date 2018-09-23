@@ -70,32 +70,6 @@ export function createTransaction(mutationName, args) {
   return new GraphMutation(mutationName, args, TYPE.transaction).execute();
 }
 
-export function createTopic(
-  name,
-  results,
-  centralizedOracle,
-  bettingStartTime,
-  bettingEndTime,
-  resultSettingStartTime,
-  resultSettingEndTime,
-  escrowAmount,
-  senderAddress
-) {
-  const args = {
-    name,
-    options: results,
-    resultSetterAddress: centralizedOracle,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    amount: escrowAmount,
-    senderAddress,
-  };
-
-  return new GraphMutation('createTopic', args, TYPE.topic).execute();
-}
-
 export function createTransferTx(senderAddress, receiverAddress, token, amount) {
   const args = {
     senderAddress,

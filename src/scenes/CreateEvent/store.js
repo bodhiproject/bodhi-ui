@@ -3,7 +3,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import { TransactionType, TransactionStatus, Transaction, Token } from 'constants';
+import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
@@ -12,7 +12,6 @@ import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
 import getContracts from '../../config/contracts';
-import { createTopic } from '../../network/graphql/mutations';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
@@ -500,13 +499,8 @@ export default class CreateEventStore {
     const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
     const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
     if (isAllowanceEnough(allowance, this.eventEscrowAmount)) {
-      // TODO: create event
-    } else {
-      // TODO: approve
-    }
-
-    try {
-      const { data } = await createTopic(
+      this.app.tx.addCreateEventTx(
+        undefined,
         this.title,
         this.outcomes,
         this.resultSetter,
@@ -515,25 +509,49 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         decimalToSatoshi(this.escrowAmount),
-        this.creator, // address
       );
-
-      runInAction(() => {
-        this.app.qtumPrediction.loadFirst();
-        this.txConfirmDialogOpen = false;
-        this.txid = data.createTopic.txid;
-        this.txSentDialogOpen = true;
-        this.app.pendingTxsSnackbar.init();
-      });
-    } catch (error) {
-      console.error('ERROR: ', { // eslint-disable-line
-        ...error,
-        route: `${Routes.graphql.http}/createTopicTx`,
-      });
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
-      });
+    } else {
+      this.app.tx.addApproveCreateEventTx(
+        this.title,
+        this.outcomes,
+        this.resultSetter,
+        this.prediction.startTime.toString(),
+        this.prediction.endTime.toString(),
+        this.resultSetting.startTime.toString(),
+        this.resultSetting.endTime.toString(),
+        decimalToSatoshi(this.escrowAmount),
+      );
     }
+
+    // try {
+    //   const { data } = await createTopic(
+    //     this.title,
+    //     this.outcomes,
+    //     this.resultSetter,
+    //     this.prediction.startTime.toString(),
+    //     this.prediction.endTime.toString(),
+    //     this.resultSetting.startTime.toString(),
+    //     this.resultSetting.endTime.toString(),
+    //     decimalToSatoshi(this.escrowAmount),
+    //     this.creator, // address
+    //   );
+
+    //   runInAction(() => {
+    //     this.app.qtumPrediction.loadFirst();
+    //     this.txConfirmDialogOpen = false;
+    //     this.txid = data.createTopic.txid;
+    //     this.txSentDialogOpen = true;
+    //     this.app.pendingTxsSnackbar.init();
+    //   });
+    // } catch (error) {
+    //   console.error('ERROR: ', { // eslint-disable-line
+    //     ...error,
+    //     route: `${Routes.graphql.http}/createTopicTx`,
+    //   });
+    //   runInAction(() => {
+    //     this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
+    //   });
+    // }
   }
 
   close = () => Object.assign(this, INIT)
