@@ -206,7 +206,8 @@ export default class TransactionStore {
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.queryTransactions(tx.topicAddress);
     }
-    this.app.txSentDialog.txid = tx.txid;
+
+    this.app.txSentDialog.open(tx.txid);
     await this.app.pendingTxsSnackbar.init();
     this.deleteTx(index);
   }
@@ -290,6 +291,7 @@ export default class TransactionStore {
   @action
   executeApproveCreateEvent = async (index, tx) => {
     const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -390,6 +392,7 @@ export default class TransactionStore {
       gasLimit: 3500000,
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -450,6 +453,7 @@ export default class TransactionStore {
       amount,
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     if (txid) {
       // Create pending tx on server
@@ -498,6 +502,7 @@ export default class TransactionStore {
   @action
   executeApproveSetResult = async (index, tx) => {
     const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -555,6 +560,7 @@ export default class TransactionStore {
       gasLimit: 1500000,
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -603,6 +609,7 @@ export default class TransactionStore {
   @action
   executeApproveVote = async (index, tx) => {
     const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -660,6 +667,7 @@ export default class TransactionStore {
       gasLimit: 1500000, // TODO: determine gas limit to use
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
     if (txid) {
@@ -708,6 +716,7 @@ export default class TransactionStore {
       methodArgs: [],
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     if (txid) {
       // Create pending tx on server
@@ -753,6 +762,7 @@ export default class TransactionStore {
       methodArgs: [],
       senderAddress,
     });
+    Object.assign(tx, { txid, gasLimit, gasPrice });
 
     if (txid) {
       // Create pending tx on server

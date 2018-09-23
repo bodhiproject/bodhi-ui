@@ -27,5 +27,11 @@ export default class TxSentDialogStore {
   }
 
   @action
+  open = (txid) => {
+    this.txid = txid;
+    this.visible = true;
+  }
+
+  @action
   reset = () => Object.assign(this, INIT_VALUES);
 }
