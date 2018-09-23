@@ -111,6 +111,17 @@ export default class TransactionStore {
         if (index === -1 && tx.status === TransactionStatus.SUCCESS) {
           switch (tx.type) {
             case TransactionType.APPROVE_CREATE_EVENT: {
+              await this.addCreateEventTx(
+                tx.txid,
+                tx.name,
+                tx.options,
+                tx.resultSetterAddress,
+                tx.bettingStartTime,
+                tx.bettingEndTime,
+                tx.resultSettingStartTime,
+                tx.resultSettingEndTime,
+                tx.amountSatoshi,
+              );
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
@@ -172,6 +183,7 @@ export default class TransactionStore {
     const tx = this.transactions[index];
     const confirmFunc = {
       [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
+      [TransactionType.CREATE_EVENT]: this.executeCreateEvent,
       [TransactionType.BET]: this.executeBet,
       [TransactionType.APPROVE_SET_RESULT]: this.executeApproveSetResult,
       [TransactionType.SET_RESULT]: this.executeSetResult,
@@ -298,6 +310,106 @@ export default class TransactionStore {
       this.addPendingApprove(txid);
       this.onTxExecuted(index, tx);
       Tracking.track('event-approveCreateEvent');
+    }
+  }
+
+  /**
+   * Adds a create event tx to the queue.
+   * @param {string} approveTxid Txid of the approve.
+   * @param {string} name Name of the event.
+   * @param {array} options String array of the options for the event.
+   * @param {string} resultSetterAddress Address of the result setter.
+   * @param {string} bettingStartTime Unix timestamp of the betting start time.
+   * @param {string} bettingEndTime Unix timestamp of the betting end time.
+   * @param {string} resultSettingStartTime Unix timestamp of the result setting start time.
+   * @param {string} resultSettingEndTime Unix timestamp of the result setting end time.
+   * @param {string} amount Escrow amount in Botoshi.
+   */
+  @action
+  addCreateEventTx = async (
+    approveTxid,
+    name,
+    options,
+    resultSetterAddress,
+    bettingStartTime,
+    bettingEndTime,
+    resultSettingStartTime,
+    resultSettingEndTime,
+    amount,
+  ) => {
+    this.transactions.push(observable.object(new Transaction({
+      approveTxid,
+      type: TransactionType.CREATE_EVENT,
+      senderAddress: this.app.wallet.currentAddress,
+      name,
+      options,
+      resultSetterAddress,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      amount,
+      token: Token.BOT,
+    })));
+    this.showConfirmDialog();
+  }
+
+  /**
+   * Executes a create event.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
+   */
+  @action
+  executeCreateEvent = async (index, tx) => {
+    const {
+      senderAddress,
+      resultSetterAddress,
+      name,
+      options,
+      bettingStartTime,
+      bettingEndTime,
+      resultSettingStartTime,
+      resultSettingEndTime,
+      amountSatoshi,
+    } = tx;
+    const contract = this.app.global.qweb3.Contract(
+      getContracts().EventFactory.address,
+      getContracts().EventFactory.abi,
+    );
+    const { txid, args: { gasLimit, gasPrice } } = await contract.send('createTopic', {
+      methodArgs: [
+        resultSetterAddress,
+        name,
+        options,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+      ],
+      gasLimit: 3500000,
+      senderAddress,
+    });
+
+    // Create pending tx on server
+    if (txid) {
+      await createTransaction('createEvent', {
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        resultSetterAddress,
+        name,
+        options,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+        amount: amountSatoshi,
+        token: Token.BOT,
+      });
+
+      this.onTxExecuted(index, tx);
+      Tracking.track('event-createEvent');
     }
   }
 
