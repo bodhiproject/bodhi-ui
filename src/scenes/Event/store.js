@@ -23,7 +23,6 @@ const INIT = {
   topicAddress: '',
   transactions: [],
   selectedOptionIdx: -1,
-  txConfirmDialogOpen: false,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
@@ -40,7 +39,6 @@ export default class EventStore {
   @observable topicAddress = INIT.topicAddress
   @observable transactions = INIT.transactions
   @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
-  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
