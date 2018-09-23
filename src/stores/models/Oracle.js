@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx';
+import { computed } from 'mobx';
 import { OracleStatus, TransactionType, TransactionStatus, Phases, Token } from 'constants';
 
 import { satoshiToDecimal } from '../../helpers/utility';
@@ -35,7 +35,6 @@ export default class Oracle {
 
   // for UI
   url = '' // Internal URL for routing within UI.
-  @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
 
   // for invalid option
   localizedInvalid = {};

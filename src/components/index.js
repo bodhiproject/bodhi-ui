@@ -10,7 +10,6 @@ export { default as StepperVertRight } from './StepperVertRight';
 export { default as TransactionHistoryID } from './TransactionHistoryAddressAndID/id';
 export { default as TransactionHistoryAddress } from './TransactionHistoryAddressAndID/address';
 export { default as TutorialCarouselDialog } from './TutorialCarouselDialog';
-export { default as TxConfirmDialog } from './TxConfirmDialog';
 export { default as TxSentDialog } from './TxSentDialog';
 export { default as WalletUnlockDialog } from './WalletUnlockDialog';
 export { default as Warning } from './Warning';
