@@ -6,9 +6,7 @@ import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
 import { Oracle, Transaction, Topic } from 'models';
 
-import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
-import { createTransaction } from '../../network/graphql/mutations';
 import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';

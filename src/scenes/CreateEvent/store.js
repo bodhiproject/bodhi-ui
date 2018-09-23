@@ -294,6 +294,7 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(escrowRes.data[0]);
       this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
+
       // For txfees init
       try {
         const { data } = await axios.post(
@@ -494,9 +495,13 @@ export default class CreateEventStore {
 
   @action
   submit = async () => {
+    this.validateAll();
+    if (!this.isAllValid) return;
+
     const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
     const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
-    if (isAllowanceEnough(allowance, this.eventEscrowAmount)) {
+    const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
+    if (isAllowanceEnough(allowance, escrowAmountSatoshi)) {
       await this.app.tx.addCreateEventTx(
         undefined,
         this.title,
@@ -506,7 +511,7 @@ export default class CreateEventStore {
         this.prediction.endTime.toString(),
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
-        decimalToSatoshi(this.escrowAmount),
+        escrowAmountSatoshi,
       );
     } else {
       await this.app.tx.addApproveCreateEventTx(
@@ -517,9 +522,10 @@ export default class CreateEventStore {
         this.prediction.endTime.toString(),
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
-        decimalToSatoshi(this.escrowAmount),
+        escrowAmountSatoshi,
       );
     }
+
     this.close();
   }
 

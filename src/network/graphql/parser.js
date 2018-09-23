@@ -97,9 +97,15 @@ class GraphParser {
       topicAddress: entry.topicAddress,
       oracleAddress: entry.oracleAddress,
       name: entry.name,
+      options: entry.options,
       optionIdx: entry.optionIdx,
       token: entry.token,
       amount: entry.amount,
+      resultSetterAddress: entry.resultSetterAddress,
+      bettingStartTime: entry.bettingStartTime,
+      bettingEndTime: entry.bettingEndTime,
+      resultSettingStartTime: entry.resultSettingStartTime,
+      resultSettingEndTime: entry.resultSettingEndTime,
       topic: entry.topic,
     }));
   }

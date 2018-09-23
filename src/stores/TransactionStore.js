@@ -234,12 +234,12 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeApprove = async (tx) => {
-    const { senderAddress, topicAddress, amountSatoshi } = tx;
+  executeApprove = async (senderAddress, spender, amountSatoshi) => {
+    // const { senderAddress, topicAddress, amountSatoshi } = tx;
     const bodhiToken = getContracts().BodhiToken;
     const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
     const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-      methodArgs: [topicAddress, amountSatoshi],
+      methodArgs: [spender, amountSatoshi],
       senderAddress,
     });
     return { txid, gasLimit, gasPrice };
@@ -290,7 +290,11 @@ export default class TransactionStore {
    */
   @action
   executeApproveCreateEvent = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(
+      tx.senderAddress,
+      getContracts().AddressManager.address,
+      tx.amountSatoshi,
+    );
     Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
@@ -501,7 +505,7 @@ export default class TransactionStore {
    */
   @action
   executeApproveSetResult = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
     Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server
@@ -608,7 +612,7 @@ export default class TransactionStore {
    */
   @action
   executeApproveVote = async (index, tx) => {
-    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx);
+    const { txid, gasLimit, gasPrice } = await this.executeApprove(tx.senderAddress, tx.topicAddress, tx.amountSatoshi);
     Object.assign(tx, { txid, gasLimit, gasPrice });
 
     // Create pending tx on server

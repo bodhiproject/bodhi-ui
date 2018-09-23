@@ -116,6 +116,11 @@ const TYPE_DEF = {
     optionIdx
     amount
     token
+    resultSetterAddress
+    bettingStartTime
+    bettingEndTime
+    resultSettingStartTime
+    resultSettingEndTime
     topic {
       address
       name
