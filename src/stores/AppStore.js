@@ -12,14 +12,15 @@ import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
-import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
-import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
-import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
 import SearchStore from '../scenes/Search/store';
+import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
+import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
+import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
+import TxSentDialogStore from '../components/TxSentDialog/store';
 import { isProduction } from '../config/app';
 
 class AppStore {
@@ -33,6 +34,7 @@ class AppStore {
   transaction = {}
   walletUnlockDialog = {}
   pendingTxsSnackbar = {}
+  txSentDialog = {}
   refreshing = {}
   eventPage = {}
   qtumPrediction = {}
@@ -54,6 +56,7 @@ class AppStore {
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
+    this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
 

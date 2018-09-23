@@ -211,7 +211,6 @@
   "str.to": "到账地址",
   "str.token": "币种",
   "str.transaction": "交易",
-  "str.transactionId": "交易ID",
   "str.transfer": "转账",
   "str.transferTokens": "代币转账",
   "str.type": "类型",

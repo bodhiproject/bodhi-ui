@@ -1,49 +1,34 @@
 import React from 'react';
-import {
-  Button,
-  Typography,
-  withStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@material-ui/core';
-import { injectIntl, defineMessages } from 'react-intl';
+import { Button, Typography, withStyles, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { FormattedMessage } from 'react-intl';
+import { inject, observer } from 'mobx-react';
 
 import styles from './styles';
 
-const messages = defineMessages({
-  transactionSentDialogSuccessMsg: {
-    id: 'transactionSentDialog.successMsg',
-    defaultMessage: 'Success',
-  },
-  transactionSentDialogWaitingMsg: {
-    id: 'transactionSentDialog.waitingMsg',
-    defaultMessage: 'Transaction sent. Waiting for confirmations.',
-  },
-  transactionIdMsg: {
-    id: 'str.transactionId',
-    defaultMessage: 'Transaction ID',
-  },
-  okMsg: {
-    id: 'str.ok',
-    defaultMessage: 'Ok',
-  },
-});
-
-const TxSentDialog = ({ txid, open, onClose, intl, classes }) => (
-  <Dialog open={open} onClose={onClose}>
-    <DialogTitle>{intl.formatMessage(messages.transactionSentDialogSuccessMsg)}</DialogTitle>
+const TxSentDialog = ({ classes, store: { txSentDialog } }) => (
+  <Dialog open={txSentDialog.visible} onClose={txSentDialog.onClose}>
+    <DialogTitle><FormattedMessage id="transactionSentDialog.successMsg" defaultMessage="Success" /></DialogTitle>
     <DialogContent>
-      <Typography variant="body1" className={classes.bodyPrimary}>{intl.formatMessage(messages.transactionSentDialogWaitingMsg)}</Typography>
-      <Typography variant="body1">{`${intl.formatMessage(messages.transactionIdMsg)}: ${txid}`}</Typography>
+      <Typography variant="body1" className={classes.bodyPrimary}>
+        <FormattedMessage
+          id="transactionSentDialog.waitingMsg"
+          defaultMessage="Transaction sent. Waiting for confirmations."
+        />
+      </Typography>
+      <Typography variant="body1">
+        <FormattedMessage
+          id="str.transactionIdX"
+          defaultMessage="Transaction ID: {txid}"
+          values={{ txid: txSentDialog.txid }}
+        />
+      </Typography>
     </DialogContent>
     <DialogActions>
-      <Button color="primary" onClick={onClose}>
-        {intl.formatMessage(messages.okMsg)}
+      <Button color="primary" onClick={txSentDialog.onClose}>
+        <FormattedMessage id="str.ok" defaultMessage="Ok" />
       </Button>
     </DialogActions>
   </Dialog>
 );
 
-export default withStyles(styles)(injectIntl(TxSentDialog));
+export default withStyles(styles)(inject('store')(observer(TxSentDialog)));

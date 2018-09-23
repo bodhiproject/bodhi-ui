@@ -81,7 +81,6 @@ const INIT = {
   txid: '',
   isOpen: false,
   txConfirmDialogOpen: false,
-  txSentDialogOpen: false,
   resultSetterDialogOpen: false,
   title: '',
   creator: '',
@@ -120,7 +119,6 @@ export default class CreateEventStore {
   @observable txFees = INIT.txFees // used in txConfirmDialog
   txid = INIT.txid // used in txSentDialog
   @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
-  @observable txSentDialogOpen = INIT.txSentDialogOpen
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
 
   // form fields
@@ -522,6 +520,8 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
       );
     }
+
+    this.close();
 
     // try {
     //   const { data } = await createTopic(

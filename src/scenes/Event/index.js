@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { defineMessages } from 'react-intl';
-import { TxSentDialog, Loading as _Loading } from 'components';
+import { Loading as _Loading } from 'components';
 import { EventType } from 'constants';
 
 import BettingOracle from './BettingOracle';
@@ -65,7 +65,6 @@ export default class EventPage extends Component {
       <Fragment>
         <BackButton />
         <Event eventPage={eventPage} />
-        <EventTxSuccessDialog eventPage={eventPage} />
       </Fragment>
     );
   }
@@ -78,11 +77,3 @@ const Loading = styled(_Loading)`
     height: 5rem;
   }
 `;
-
-const EventTxSuccessDialog = observer(({ eventPage }) => (
-  <TxSentDialog
-    txid={eventPage.event.txid}
-    open={eventPage.txSentDialogOpen}
-    onClose={() => eventPage.txSentDialogOpen = false}
-  />
-));

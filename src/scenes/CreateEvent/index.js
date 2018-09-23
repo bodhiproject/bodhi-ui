@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
+import { EventWarning, TxConfirmDialog, ImportantNote as _ImportantNote } from 'components';
 import { Token } from 'constants';
 
 import styles from './styles';
@@ -62,13 +62,6 @@ const CreateEventDialog = withStyles(styles)(observer(({
     </Dialog>
     {createEvent.txConfirmDialogOpen && (
       <CreateEventTxConfirmDialog createEvent={createEvent} />
-    )}
-    {createEvent.txSentDialogOpen && (
-      <TxSentDialog
-        txid={createEvent.txid}
-        open={createEvent.txSentDialogOpen}
-        onClose={createEvent.close}
-      />
     )}
   </Fragment>
 )));

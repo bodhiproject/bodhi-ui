@@ -211,7 +211,6 @@
   "str.to": "수신",
   "str.token": "토큰",
   "str.transaction": "트랜젝션",
-  "str.transactionId": "트랜젝션 ID",
   "str.transfer": "전송",
   "str.transferTokens": "토큰 전송",
   "str.type": "유형",

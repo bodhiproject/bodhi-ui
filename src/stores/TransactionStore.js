@@ -206,6 +206,7 @@ export default class TransactionStore {
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.queryTransactions(tx.topicAddress);
     }
+    this.app.txSentDialog.txid = tx.txid;
     await this.app.pendingTxsSnackbar.init();
     this.deleteTx(index);
   }

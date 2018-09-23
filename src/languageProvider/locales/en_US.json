@@ -214,7 +214,7 @@
   "str.to": "To",
   "str.token": "Token",
   "str.transaction": "TRANSACTIONS",
-  "str.transactionId": "Transaction ID",
+  "str.transactionIdX": "Transaction ID: {txid}",
   "str.transfer": "Transfer",
   "str.transferTokens": "Transfer Tokens",
   "str.type": "Type",
