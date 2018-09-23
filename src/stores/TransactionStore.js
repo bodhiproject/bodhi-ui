@@ -6,7 +6,7 @@ import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createTransaction, createBetTx, createApproveSetResultTx, createSetResultTx, createApproveVoteTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../network/graphql/mutations';
+import { createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -280,7 +280,7 @@ export default class TransactionStore {
 
     // Create pending tx on server
     if (txid) {
-      await createTransaction({
+      await createTransaction('approveCreateEvent', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -339,7 +339,7 @@ export default class TransactionStore {
 
     if (txid) {
       // Create pending tx on server
-      await createBetTx({
+      await createTransaction('createBet', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -387,7 +387,7 @@ export default class TransactionStore {
 
     // Create pending tx on server
     if (txid) {
-      await createApproveSetResultTx({
+      await createTransaction('approveSetResult', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -444,7 +444,7 @@ export default class TransactionStore {
 
     // Create pending tx on server
     if (txid) {
-      await createSetResultTx({
+      await createTransaction('setResult', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -492,7 +492,7 @@ export default class TransactionStore {
 
     // Create pending tx on server
     if (txid) {
-      await createApproveVoteTx({
+      await createTransaction('approveVote', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -549,7 +549,7 @@ export default class TransactionStore {
 
     // Create pending tx on server
     if (txid) {
-      await createVoteTx({
+      await createTransaction('createVote', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -597,7 +597,7 @@ export default class TransactionStore {
 
     if (txid) {
       // Create pending tx on server
-      await createFinalizeResultTx({
+      await createTransaction('finalizeResult', {
         txid,
         gasLimit: gasLimit.toString(),
         gasPrice: gasPrice.toFixed(8),
@@ -642,7 +642,7 @@ export default class TransactionStore {
 
     if (txid) {
       // Create pending tx on server
-      await createWithdrawTx({
+      await createTransaction('withdraw', {
         type,
         txid,
         gasLimit: gasLimit.toString(),

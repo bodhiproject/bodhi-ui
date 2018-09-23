@@ -96,34 +96,6 @@ export function createTopic(
   return new GraphMutation('createTopic', args, TYPE.topic).execute();
 }
 
-export function createBetTx(args) {
-  return new GraphMutation('createBet', args, TYPE.transaction).execute();
-}
-
-export function createApproveSetResultTx(args) {
-  return new GraphMutation('approveSetResult', args, TYPE.transaction).execute();
-}
-
-export function createSetResultTx(args) {
-  return new GraphMutation('setResult', args, TYPE.transaction).execute();
-}
-
-export function createApproveVoteTx(args) {
-  return new GraphMutation('approveVote', args, TYPE.transaction).execute();
-}
-
-export function createVoteTx(args) {
-  return new GraphMutation('createVote', args, TYPE.transaction).execute();
-}
-
-export function createFinalizeResultTx(args) {
-  return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
-}
-
-export function createWithdrawTx(args) {
-  return new GraphMutation('withdraw', args, TYPE.transaction).execute();
-}
-
 export function createTransferTx(senderAddress, receiverAddress, token, amount) {
   const args = {
     senderAddress,

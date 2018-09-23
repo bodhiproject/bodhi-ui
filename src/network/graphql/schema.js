@@ -144,8 +144,11 @@ const MUTATIONS = {
     return: TYPE_DEF.Transaction,
   },
 
-  createTopic: {
+  createEvent: {
     mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
       'senderAddress',
       'name',
       'options',

@@ -8,7 +8,7 @@ import { Oracle, Transaction, Topic } from 'models';
 
 import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
-import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../../network/graphql/mutations';
+import { createTransaction } from '../../network/graphql/mutations';
 import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
@@ -549,7 +549,7 @@ export default class EventStore {
     const { selectedOptionIdx, amount } = this;
     const { topicAddress, version, address } = this.oracle;
     try {
-      const { data: { createBet } } = await createBetTx({
+      const { data: { createBet } } = await createTransaction('createBet', {
         version,
         topicAddress,
         oracleAddress: address,
@@ -585,7 +585,7 @@ export default class EventStore {
     const { selectedOptionIdx, amount } = this;
     const { version, topicAddress, address } = this.oracle;
     try {
-      const { data: { setResult } } = await createSetResultTx({
+      const { data: { setResult } } = await createTransaction('setResult', {
         version,
         topicAddress,
         oracleAddress: address,
@@ -622,7 +622,7 @@ export default class EventStore {
     const { selectedOptionIdx, amount } = this;
 
     try {
-      const { data: { createVote } } = await createVoteTx({
+      const { data: { createVote } } = await createTransaction('createVote', {
         version,
         topicAddress,
         oracleAddress: address,
