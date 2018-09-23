@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { has, includes } from 'lodash';
 
 export const TYPE = {
   topic: 'Topic',
@@ -321,8 +321,8 @@ const ENUMS = {
 };
 
 export function isValidEnum(key, value) {
-  const isEnum = _.has(ENUMS, key);
-  const isValid = _.includes(ENUMS[key], value);
+  const isEnum = has(ENUMS, key);
+  const isValid = includes(ENUMS[key], value);
   return isEnum && isValid;
 }
 

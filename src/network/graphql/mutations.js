@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import _ from 'lodash';
+import { each, isFinite } from 'lodash';
 
 import client from './';
 import { TYPE, getMutation, isValidEnum } from './schema';
@@ -18,9 +18,9 @@ class GraphMutation {
 
   constructMapping() {
     let mappingStr = '';
-    _.each(this.schema.mapping, (key) => {
+    each(this.schema.mapping, (key) => {
       const value = this.args[key];
-      if (isValidEnum(key, value) || _.isFinite(value)) {
+      if (isValidEnum(key, value) || isFinite(value)) {
         // Enums require values without quotes
         mappingStr = mappingStr.concat(`${key}: ${value}\n`);
       } else {
