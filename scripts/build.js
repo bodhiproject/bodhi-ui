@@ -32,6 +32,7 @@ process.argv.forEach((arg) => {
         throw Error(`Invalid chain type: ${chain}`);
       }
     }
+    process.env.CHAIN_NETWORK = chain;
     process.env.API_HOSTNAME = hostname;
     process.env.API_PORT = apiPort;
   }

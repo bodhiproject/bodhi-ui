@@ -50,6 +50,11 @@ const TESTNET = {
   },
 };
 
-const getMetadata = () => TESTNET;
+const getMetadata = () => {
+  if (process.env.CHAIN_NETWORK === 'mainnet') {
+    return MAINNET;
+  }
+  return TESTNET;
+};
 
 module.exports = getMetadata;

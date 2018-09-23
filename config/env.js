@@ -77,6 +77,7 @@ function getClientEnvironment(publicUrl) {
         OS_USERNAME: os.userInfo().username,
         OS_PLATFORM: os.platform(),
         OS_ARCH: os.arch(),
+        CHAIN_NETWORK: process.env.CHAIN_NETWORK,
         API_HOSTNAME: process.env.API_HOSTNAME,
         API_PORT: process.env.API_PORT,
         PROTOCOL_HTTP: process.env.PROTOCOL_HTTP,
