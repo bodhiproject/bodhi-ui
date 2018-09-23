@@ -51,9 +51,9 @@ const Container = styled(Grid)`
 `;
 
 const VoteButton = props => {
-  const { oracle, prepareVote, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, vote, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && (
-    <Button {...props} onClick={prepareVote} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={vote} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" />
     </Button>
   );

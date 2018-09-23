@@ -54,9 +54,9 @@ const Container = styled(Grid)`
 `;
 
 const SetResultButton = props => {
-  const { oracle, prepareSetResult, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, setResult, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && (
-    <Button {...props} onClick={prepareSetResult} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={setResult} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="str.setResult" defaultMessage="Set Result" />
     </Button>
   );

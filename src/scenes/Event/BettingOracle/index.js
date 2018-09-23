@@ -59,9 +59,9 @@ const Container = styled(Grid)`
 `;
 
 const BetButton = props => {
-  const { oracle, unconfirmed, prepareBet, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, unconfirmed, bet, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && !unconfirmed && (
-    <Button {...props} onClick={prepareBet} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={bet} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" />
     </Button>
   );

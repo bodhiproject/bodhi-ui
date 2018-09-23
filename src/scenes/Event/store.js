@@ -514,11 +514,11 @@ export default class EventStore {
     console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
-  prepareBet = async () => {
+  bet = async () => {
     await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
   }
 
-  prepareSetResult = async () => {
+  setResult = async () => {
     await this.app.tx.addApproveSetResultTx(
       this.oracle.topicAddress,
       this.oracle.address,
@@ -527,8 +527,7 @@ export default class EventStore {
     );
   }
 
-  @action
-  prepareVote = async () => {
+  vote = async () => {
     await this.app.tx.addApproveVoteTx(
       this.oracle.topicAddress,
       this.oracle.address,
@@ -537,169 +536,12 @@ export default class EventStore {
     );
   }
 
-  // @action
-  // bet = async () => {
-  //   const { currentAddress } = this.app.wallet;
-  //   const { selectedOptionIdx, amount } = this;
-  //   const { topicAddress, version, address } = this.oracle;
-  //   try {
-  //     const { data: { createBet } } = await createTransaction('createBet', {
-  //       version,
-  //       topicAddress,
-  //       oracleAddress: address,
-  //       optionIdx: selectedOptionIdx,
-  //       amount,
-  //       senderAddress: currentAddress,
-  //     });
-  //     const newTx = { // TODO: add `options` in return from backend
-  //       ...createBet,
-  //       topic: {
-  //         options: this.oracle.options.map(({ name }) => name),
-  //       },
-  //     };
-
-  //     runInAction(() => {
-  //       this.txConfirmDialogOpen = false;
-  //       this.txSentDialogOpen = true;
-  //       this.transactions.unshift(new Transaction(newTx));
-  //       this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-  //     });
-  //   } catch (error) {
-  //     runInAction(() => {
-  //       this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createBetTx`);
-  //     });
-  //   }
-
-  //   Tracking.track('oracleDetail-bet');
-  // }
-
-  // @action
-  // setResult = async () => {
-  //   const { currentAddress } = this.app.wallet;
-  //   const { selectedOptionIdx, amount } = this;
-  //   const { version, topicAddress, address } = this.oracle;
-  //   try {
-  //     const { data: { setResult } } = await createTransaction('setResult', {
-  //       version,
-  //       topicAddress,
-  //       oracleAddress: address,
-  //       optionIdx: selectedOptionIdx,
-  //       amount: decimalToSatoshi(amount), // Convert to Botoshi
-  //       senderAddress: currentAddress,
-  //     });
-  //     const newTx = { // TODO: add `options` in return from backend
-  //       ...setResult,
-  //       topic: {
-  //         options: this.oracle.options.map(({ name }) => name),
-  //       },
-  //     };
-
-  //     runInAction(() => {
-  //       this.txConfirmDialogOpen = false;
-  //       this.txSentDialogOpen = true;
-  //       this.transactions.unshift(new Transaction(newTx));
-  //       this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-  //     });
-  //   } catch (error) {
-  //     runInAction(() => {
-  //       this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createSetResultTx`);
-  //     });
-  //   }
-
-  //   Tracking.track('oracleDetail-set');
-  // }
-
-  // @action
-  // vote = async () => {
-  //   const { currentAddress } = this.app.wallet;
-  //   const { version, topicAddress, address } = this.oracle;
-  //   const { selectedOptionIdx, amount } = this;
-
-  //   try {
-  //     const { data: { createVote } } = await createTransaction('createVote', {
-  //       version,
-  //       topicAddress,
-  //       oracleAddress: address,
-  //       optionIdx: selectedOptionIdx,
-  //       amount: decimalToSatoshi(amount), // Convert to Botoshi
-  //       currentAddress,
-  //     });
-  //     const newTx = { // TODO: move this logic to backend, add `options`
-  //       ...createVote,
-  //       topic: {
-  //         options: this.oracle.options.map(({ name }) => name),
-  //       },
-  //     };
-
-  //     runInAction(() => {
-  //       this.txConfirmDialogOpen = false;
-  //       this.txSentDialogOpen = true;
-  //       this.transactions.unshift(new Transaction(newTx));
-  //       this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-  //     });
-  //   } catch (error) {
-  //     runInAction(() => {
-  //       this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createVoteTx`);
-  //     });
-  //   }
-
-  //   Tracking.track('oracleDetail-vote');
-  // }
-
   finalize = async () => {
     await this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
-
-    // const { currentAddress } = this.app.wallet;
-    // const { version, topicAddress, address } = this.oracle;
-    // try {
-    //   const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, currentAddress);
-    //   const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
-    //     ...finalizeResult,
-    //     optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
-    //     topic: {
-    //       options: this.oracle.options.map(({ name }) => name),
-    //     },
-    //   };
-
-    //   runInAction(() => {
-    //     this.txConfirmDialogOpen = false;
-    //     this.txSentDialogOpen = true;
-    //     this.transactions.unshift(new Transaction(newTx));
-    //     this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    //   });
-    // } catch (error) {
-    //   runInAction(() => {
-    //     this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createFinalizeResultTx`);
-    //   });
-    // }
-    // Tracking.track('oracleDetail-finalize');
   }
 
   withdraw = async (senderAddress, type) => {
     await this.app.tx.addWithdrawTx(type, this.topic.address);
-
-    // try {
-    //   const { version, address } = this.topic;
-    //   const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
-    //   const newTx = { // TODO: move this logic ot teh backend
-    //     ...withdraw,
-    //     optionIdx: this.selectedOptionIdx,
-    //     topic: {
-    //       options: this.topic.options,
-    //     },
-    //   };
-
-    //   runInAction(() => {
-    //     this.txSentDialogOpen = true;
-    //     this.transactions.unshift(new Transaction(newTx));
-    //     this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-    //   });
-    // } catch (error) {
-    //   runInAction(() => {
-    //     this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createWithdrawTx`);
-    //   });
-    // }
-    // Tracking.track('topicDetail-withdraw');
   }
 
   reset = () => Object.assign(this, INIT);
