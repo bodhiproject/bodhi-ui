@@ -1,5 +1,5 @@
 import { observable, computed, reaction, action, runInAction } from 'mobx';
-import _ from 'lodash';
+import { sumBy, map, filter, isUndefined } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
@@ -65,22 +65,17 @@ const messages = defineMessages({
   },
 });
 
-const nowPlus = seconds => moment().add(seconds, 's').unix();
 const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
-let TIME_GAP_MIN_SEC = 30 * 60;
-if (!isProduction()) {
-  TIME_GAP_MIN_SEC = 2 * 60;
-}
+const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
+const nowPlus = seconds => moment().add(seconds, 's').unix();
 
 const INIT = {
-  escrowAmount: '', // type: number
+  isOpen: false,
+  escrowAmount: undefined,
   averageBlockTime: '',
   txFees: [],
-  txid: '',
-  isOpen: false,
-  txConfirmDialogOpen: false,
   resultSetterDialogOpen: false,
   title: '',
   creator: '',
@@ -94,8 +89,7 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
-  // if one of these in error is set, the form
-  // field will display the associated error message
+  // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
     creator: '',
@@ -112,13 +106,10 @@ const INIT = {
   },
 };
 
-
 export default class CreateEventStore {
-  escrowAmount = INIT.escrowAmount
+  escrowAmount = INIT.escrowAmount // decimal number
   averageBlockTime = INIT.averageBlockTime
-  @observable txFees = INIT.txFees // used in txConfirmDialog
-  txid = INIT.txid // used in txSentDialog
-  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
+  @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
 
   // form fields
@@ -130,8 +121,9 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
+
   @computed get hasEnoughFee() {
-    const transactionFee = _.sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
+    const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
     const { currentWalletAddress } = this.app.wallet;
     return currentWalletAddress
       && (currentWalletAddress.qtum >= transactionFee)
@@ -180,7 +172,9 @@ export default class CreateEventStore {
 
   constructor(app) {
     this.app = app;
-    reaction( // when we add the creator, update the currentWalletAddress
+
+    // when we add the creator, update the currentWalletAddress
+    reaction(
       () => this.creator,
       () => {
         if (this.creator) {
@@ -188,7 +182,8 @@ export default class CreateEventStore {
         }
       }
     );
-    reaction( // make sure there are no errors when closing the result setter dialog
+    // make sure there are no errors when closing the result setter dialog
+    reaction(
       () => this.resultSetterDialogOpen,
       () => {
         if (!this.resultSetterDialogOpen) {
@@ -196,7 +191,8 @@ export default class CreateEventStore {
         }
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.prediction.startTime,
       () => {
         if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
@@ -205,7 +201,8 @@ export default class CreateEventStore {
         this.validatePredictionStartTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.prediction.endTime,
       () => {
         if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
@@ -214,7 +211,8 @@ export default class CreateEventStore {
         this.validatePredictionEndTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.resultSetting.startTime,
       () => {
         if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) {
@@ -223,12 +221,24 @@ export default class CreateEventStore {
         this.validateResultSettingStartTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.resultSetting.endTime,
       () => {
         this.validateResultSettingEndTime();
       }
     );
+  }
+
+  /**
+   * Calculates the estimated block based on current block and future date.
+   * @param {number} futureDateUnix Future date in Unix format.
+   * @return {number} Estimated future block.
+   */
+  calculateBlock = (futureDateUnix) => {
+    const currentBlock = this.app.global.syncBlockNum;
+    const diffSec = futureDateUnix - moment().unix();
+    return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
 
   @action
@@ -295,19 +305,15 @@ export default class CreateEventStore {
       this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
 
-      // For txfees init
+      // Determine if user has enough tokens to create an event
       try {
-        const { data } = await axios.post(
-          Routes.api.transactionCost,
-          {
-            type: TransactionType.APPROVE_CREATE_EVENT,
-            token: Token.BOT,
-            amount: decimalToSatoshi(this.escrowAmount),
-            senderAddress: this.app.wallet.currentAddress,
-          }
-        );
-        const txFees = _.map(data, (item) => new TransactionCost(item));
-        this.txFees = txFees;
+        const { data } = await axios.post(Routes.api.transactionCost, {
+          type: TransactionType.APPROVE_CREATE_EVENT,
+          senderAddress: this.app.wallet.currentAddress,
+          amount: decimalToSatoshi(this.escrowAmount),
+          token: Token.BOT,
+        });
+        this.txFees = map(data, (item) => new TransactionCost(item));
       } catch (error) {
         this.app.ui.setError(error.message, Routes.api.transactionCost);
       }
@@ -342,7 +348,7 @@ export default class CreateEventStore {
   @action
   validateCreator = () => {
     const { app: { wallet }, escrowAmount, creator } = this;
-    const checkingAddresses = _.filter(wallet.addresses, { address: creator });
+    const checkingAddresses = filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
       this.error.creator = messages.strNotEnoughBotMsg.id;
     } else if (!creator) {
@@ -352,7 +358,7 @@ export default class CreateEventStore {
     }
   }
 
-  isBeforeNow = (valueUnix) => _.isUndefined(valueUnix) || moment().unix() > valueUnix
+  isBeforeNow = (valueUnix) => isUndefined(valueUnix) || moment().unix() > valueUnix
 
   @action
   validatePredictionStartTime = () => {
@@ -450,36 +456,6 @@ export default class CreateEventStore {
     }
   }
 
-  @action
-  prepareToCreateEvent = async () => {
-    this.validateAll();
-    if (!this.isAllValid) return;
-    try {
-      const txInfo = {
-        type: TransactionType.APPROVE_CREATE_EVENT,
-        token: Token.BOT,
-        amount: decimalToSatoshi(this.escrowAmount),
-        senderAddress: this.creator,
-      };
-      const { data } = await axios.post(Routes.api.transactionCost, txInfo);
-      const txFees = _.map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
-    const { wallet } = this.app;
-    if (wallet.needsToBeUnlocked) {
-      wallet.unlockDialogOpen = true;
-    } else {
-      wallet.unlockDialogOpen = false;
-    }
-  }
-
   validateAll = () => {
     this.validateTitle();
     this.validateCreator();
@@ -530,17 +506,4 @@ export default class CreateEventStore {
   }
 
   close = () => Object.assign(this, INIT)
-
-  /*
-  * Calculates the estimated block based on current block and future date.
-  * @param currentBlock {Number} The current block number.
-  * @param futureDate {Moment} A moment instance (UTC) of the future date to estimate.
-  * @param averageBlockTime {Number} The average block time in seconds.
-  * @return {Number} Returns a number of the estimated future block.
-  */
-  calculateBlock = (futureDateUnix) => {
-    const currentBlock = this.app.global.syncBlockNum;
-    const diffSec = futureDateUnix - moment().unix();
-    return Math.round(diffSec / this.averageBlockTime) + currentBlock;
-  }
 }
