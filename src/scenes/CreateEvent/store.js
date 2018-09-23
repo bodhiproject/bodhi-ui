@@ -520,38 +520,7 @@ export default class CreateEventStore {
         decimalToSatoshi(this.escrowAmount),
       );
     }
-
     this.close();
-
-    // try {
-    //   const { data } = await createTopic(
-    //     this.title,
-    //     this.outcomes,
-    //     this.resultSetter,
-    //     this.prediction.startTime.toString(),
-    //     this.prediction.endTime.toString(),
-    //     this.resultSetting.startTime.toString(),
-    //     this.resultSetting.endTime.toString(),
-    //     decimalToSatoshi(this.escrowAmount),
-    //     this.creator, // address
-    //   );
-
-    //   runInAction(() => {
-    //     this.app.qtumPrediction.loadFirst();
-    //     this.txConfirmDialogOpen = false;
-    //     this.txid = data.createTopic.txid;
-    //     this.txSentDialogOpen = true;
-    //     this.app.pendingTxsSnackbar.init();
-    //   });
-    // } catch (error) {
-    //   console.error('ERROR: ', { // eslint-disable-line
-    //     ...error,
-    //     route: `${Routes.graphql.http}/createTopicTx`,
-    //   });
-    //   runInAction(() => {
-    //     this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
-    //   });
-    // }
   }
 
   close = () => Object.assign(this, INIT)

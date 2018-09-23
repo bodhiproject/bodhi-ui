@@ -4,21 +4,28 @@ import { observable, action, reaction } from 'mobx';
 const INIT_VALUES = {
   visible: false,
   txid: undefined,
+  onCloseFunc: undefined,
 };
 
 export default class TxSentDialogStore {
   @observable visible = INIT_VALUES.visible;
   @observable txid = INIT_VALUES.txid;
+  onCloseFunc = INIT_VALUES.onCloseFunc;
 
   constructor(app) {
     this.app = app;
 
     reaction(
-      () => this.txid,
-      () => this.visible = !!this.txid,
+      () => this.visible,
+      () => {
+        if (!this.visible) {
+          if (this.onCloseFunc) this.onCloseFunc();
+          this.reset();
+        }
+      },
     );
   }
 
   @action
-  onClose = () => this.txid = INIT_VALUES.txid
+  reset = () => Object.assign(this, INIT_VALUES);
 }

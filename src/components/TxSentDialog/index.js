@@ -5,8 +5,9 @@ import { inject, observer } from 'mobx-react';
 
 import styles from './styles';
 
+
 const TxSentDialog = ({ classes, store: { txSentDialog } }) => (
-  <Dialog open={txSentDialog.visible} onClose={txSentDialog.onClose}>
+  <Dialog open={txSentDialog.visible}>
     <DialogTitle><FormattedMessage id="transactionSentDialog.successMsg" defaultMessage="Success" /></DialogTitle>
     <DialogContent>
       <Typography variant="body1" className={classes.bodyPrimary}>
@@ -24,7 +25,7 @@ const TxSentDialog = ({ classes, store: { txSentDialog } }) => (
       </Typography>
     </DialogContent>
     <DialogActions>
-      <Button color="primary" onClick={txSentDialog.onClose}>
+      <Button color="primary" onClick={() => txSentDialog.visible = false}>
         <FormattedMessage id="str.ok" defaultMessage="Ok" />
       </Button>
     </DialogActions>
