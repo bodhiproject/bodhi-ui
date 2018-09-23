@@ -127,6 +127,7 @@ export default class WalletStore {
     const { loggedIn, address, balance } = account;
     if (!loggedIn) {
       this.addresses = INIT_VALUE.addresses;
+      this.currentWalletAddress = INIT_VALUE.currentWalletAddress;
       return;
     }
 
@@ -190,9 +191,17 @@ export default class WalletStore {
         senderAddress: address,
       });
       if (data.balance) {
+        const bot = satoshiToDecimal(data.balance);
+
+        // Update WalletAddress BOT in list of addresses
         const index = findIndex(this.addresses, { address });
         if (index !== -1) {
-          this.addresses[index].bot = satoshiToDecimal(data.balance);
+          this.addresses[index].bot = bot;
+        }
+
+        // Update current WalletAddress BOT if matching address
+        if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
+          this.currentWalletAddress.bot = bot;
         }
       }
     } catch (err) {
