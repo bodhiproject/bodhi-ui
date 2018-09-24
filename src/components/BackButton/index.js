@@ -31,7 +31,7 @@ export default class BackButton extends Component {
   }
 
   onBackClick = () => {
-    const { history, store: { ui: { location } } } = this.props;
-    history.push(location);
+    const { history } = this.props;
+    history.goBack();
   };
 }
