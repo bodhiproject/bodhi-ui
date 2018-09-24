@@ -3,7 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
+import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
 import { Oracle, Transaction, Topic } from 'models';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
@@ -400,18 +400,6 @@ export default class EventStore {
         this.eventWarningMessageId = 'oracle.maxVoteText';
         return;
       }
-    }
-
-    // Already have a pending tx for this Oracle
-    const pendingTxs = _.filter(
-      this.transactions,
-      { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING }
-    );
-    if (pendingTxs.length > 0) {
-      this.buttonDisabled = true;
-      this.warningType = EventWarningType.HIGHLIGHT;
-      this.eventWarningMessageId = 'str.pendingTransactionDisabledMsg';
-      return;
     }
 
     // Has not reached betting start time
