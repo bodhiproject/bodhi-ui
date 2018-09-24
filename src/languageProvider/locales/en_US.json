@@ -108,6 +108,7 @@
   "navBar.settings": "Settings",
   "navbar.botCourt": "BOT Court",
   "navbar.qtumPrediction": "QTUM Prediction",
+  "notLoggedIn.qryptoLogin": "Please login to Qrypto to view this page.",
   "oracle.betStartTimeDisabledText": "The betting start time has not started yet.",
   "oracle.cOracleDisabledText": "You are not the result setter for this Event. You need to wait until they set the result, or until the Open Result Set start time begins.",
   "oracle.consensusThreshold": "Consensus Threshold",
