@@ -23,14 +23,14 @@ const styles = (theme) => ({
     marginTop: theme.sizes.navHeight,
   },
   notLoggedInContainer: {
-    width: '100%',
-    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    padding: theme.padding.lg.px,
   },
   notLoggedInIcon: {
-    fontSize: 100,
+    fontSize: 80,
+    marginBottom: theme.padding.unit.px,
   },
   notLoggedInText: {
     textAlign: 'center',
