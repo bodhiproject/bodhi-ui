@@ -54,26 +54,32 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
   );
 }))));
 
-const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ tx: { type } }) => {
+const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ intl, tx: { type } }) => {
   const { APPROVE_CREATE_EVENT, CREATE_EVENT, APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE } = TransactionType;
   if (type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
+    // Get the localized follow-up tx name
+    let action;
+    if (type === APPROVE_CREATE_EVENT) {
+      action = getTxTypeString(CREATE_EVENT, intl);
+    } else if (type === APPROVE_SET_RESULT) {
+      action = getTxTypeString(SET_RESULT, intl);
+    } else {
+      action = getTxTypeString(VOTE, intl);
+    }
+
     return (
       <div>
         <Typography variant="body1">
           <FormattedMessage
-            id='txConfirm.txOne'
-            defaultMessage='Confirmation for transaction 1/2. You will be required to confirm another transaction when this transaction is successful.'
+            id='txConfirm.approveNotice'
+            defaultMessage='The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.'
+            values={{ action }}
           />
         </Typography>
       </div>
     );
-  } else if (type === CREATE_EVENT || type === SET_RESULT || type === VOTE) {
-    return (
-      <div>
-        <FormattedMessage id='txConfirm.txTwo' defaultMessage='Confirmation for transaction 2/2.' />
-      </div>
-    );
   }
+
   return null;
 })));
 

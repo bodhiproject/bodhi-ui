@@ -435,17 +435,17 @@ export default class TransactionStore {
    * Adds a bet tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {Option} option Option obj that is being bet on.
+   * @param {number} optionIdx Index of the option being bet.
    * @param {string} amount Amount of the bet.
    */
   @action
-  addBetTx = async (topicAddress, oracleAddress, option, amount) => {
+  addBetTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.BET,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
-      optionIdx: option.idx,
+      optionIdx,
       amount,
       token: Token.QTUM,
     })));
@@ -494,17 +494,17 @@ export default class TransactionStore {
    * Adds an approve set result tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {Option} option Option of the result being set.
+   * @param {number} optionIdx Index of the option being set.
    * @param {string} amountSatoshi Approve amount.
    */
   @action
-  addApproveSetResultTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {
+  addApproveSetResultTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.APPROVE_SET_RESULT,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
-      optionIdx: option.idx,
+      optionIdx,
       amount: amountSatoshi,
       token: Token.BOT,
     })));
@@ -550,11 +550,11 @@ export default class TransactionStore {
    * @param {string} approveTxid Txid of the approve.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {Option} option Option of the result being set.
-   * @param {string} amount Consensus threshold.
+   * @param {number} optionIdx Index of the option being set.
+   * @param {string} amountSatoshi Consensus threshold.
    */
   @action
-  addSetResultTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amount) => {
+  addSetResultTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.SET_RESULT,
@@ -562,7 +562,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
       optionIdx,
-      amount,
+      amount: amountSatoshi,
       token: Token.BOT,
     })));
     await this.showConfirmDialog();
@@ -610,17 +610,17 @@ export default class TransactionStore {
    * Adds a approve vote tx to the queue.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the DecentralizedOracle.
-   * @param {Option} option Option to vote on.
+   * @param {number} optionIdx Index of the option being voted on.
    * @param {string} amountSatoshi Approve amount.
    */
   @action
-  addApproveVoteTx = async (topicAddress, oracleAddress, option, amountSatoshi) => {
+  addApproveVoteTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.APPROVE_VOTE,
       senderAddress: this.app.wallet.currentAddress,
       topicAddress,
       oracleAddress,
-      optionIdx: option.idx,
+      optionIdx,
       amount: amountSatoshi,
       token: Token.BOT,
     })));
@@ -666,11 +666,11 @@ export default class TransactionStore {
    * @param {string} approveTxid Txid of the approve.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the DecentralizedOracle.
-   * @param {Option} option Option to vote on.
-   * @param {string} amount Vote amount.
+   * @param {number} optionIdx Index of the option being voted on.
+   * @param {string} amountSatoshi Vote amount.
    */
   @action
-  addVoteTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amount) => {
+  addVoteTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.VOTE,
@@ -678,7 +678,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
       optionIdx,
-      amount,
+      amount: amountSatoshi,
       token: Token.BOT,
     })));
     await this.showConfirmDialog();
