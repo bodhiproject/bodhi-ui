@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import moment from 'moment';
-import _ from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
@@ -18,6 +18,7 @@ const INIT = {
   type: undefined,
   loading: true,
   oracles: [],
+  topics: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -28,12 +29,15 @@ const INIT = {
   eventWarningMessageId: '',
   escrowClaim: 0,
   hashId: '',
+  qtumWinnings: 0,
+  botWinnings: 0,
+  withdrawableAddresses: [],
 };
 
 export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
-  @observable oracles = []
+  @observable oracles = INIT.oracles
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -46,16 +50,18 @@ export default class EventStore {
   @observable hashId = INIT.hashId
 
   // topic
-  @observable topics = []
-  withdrawableAddresses = []
+  @observable topics = INIT.topics
+  @observable qtumWinnings = INIT.qtumWinnings
+  @observable botWinnings = INIT.botWinnings
+  @observable withdrawableAddresses = INIT.withdrawableAddresses
   betBalances = []
   voteBalances = []
 
   @computed get totalBetAmount() {
-    return _.sum(this.betBalances);
+    return sum(this.betBalances);
   }
   @computed get totalVoteAmount() {
-    return _.sum(this.voteBalances);
+    return sum(this.voteBalances);
   }
   @computed get resultBetAmount() {
     return this.betBalances[this.selectedOptionIdx];
@@ -64,11 +70,11 @@ export default class EventStore {
     return this.voteBalances[this.selectedOptionIdx];
   }
   @computed get topic() {
-    return _.find(this.topics, { address: this.address }) || {};
+    return find(this.topics, { address: this.address }) || {};
   }
   // For Oracle only
   @computed get unconfirmed() {
-    return _.isUndefined(this.topicAddress) && _.isUndefined(this.address);
+    return isUndefined(this.topicAddress) && isUndefined(this.address);
   }
   @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
     return this.oracles.filter(({ token }) => token === Token.BOT);
@@ -76,13 +82,13 @@ export default class EventStore {
   @computed get cOracle() {
     // [QTUM] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
     // mainly: BETTING & RESULT SETTING phases
-    return _.find(this.oracles, { token: Token.QTUM }) || {};
+    return find(this.oracles, { token: Token.QTUM }) || {};
   }
   @computed get oracle() {
     if (this.unconfirmed) {
-      return _.find(this.oracles, { hashId: this.hashId });
+      return find(this.oracles, { hashId: this.hashId });
     }
-    return _.find(this.oracles, { address: this.address }) || {};
+    return find(this.oracles, { address: this.address }) || {};
   }
   // both
   @computed get selectedOption() {
@@ -139,13 +145,8 @@ export default class EventStore {
 
     // API calls
     await this.getEscrowAmount();
-    await this.getBetAndVoteBalances();
-    await this.getWithdrawableAddresses();
+    await this.calculateWinnings();
 
-    this.botWinnings = _.sumBy(this.withdrawableAddresses, a => (
-      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
-    ));
-    this.qtumWinnings = _.sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -164,6 +165,16 @@ export default class EventStore {
   }
 
   setReactions = () => {
+    // Handle Topic changes when the address list changes
+    reaction(
+      () => this.app.wallet.addresses,
+      async () => {
+        if (this.type === TOPIC) {
+          this.calculateWinnings();
+        }
+      }
+    );
+
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
@@ -206,7 +217,7 @@ export default class EventStore {
   @action
   verifyConfirmedOracle = async () => {
     const res = await queryAllOracles([{ hashId: this.hashId }]);
-    if (!_.isNull(res[0].topicAddress)) {
+    if (!isNull(res[0].topicAddress)) {
       const { topicAddress, address, txid } = res[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
     }
@@ -248,13 +259,31 @@ export default class EventStore {
   }
 
   @action
+  calculateWinnings = async () => {
+    await this.getBetAndVoteBalances();
+    await this.getWithdrawableAddresses();
+
+    this.botWinnings = sumBy(this.withdrawableAddresses, a => (
+      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
+    ));
+    this.qtumWinnings = sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
+  }
+
+  @action
   getBetAndVoteBalances = async () => {
+    // Address is needed to get bet and vote balances
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.betBalances = fill(Array(this.topic.options.length), 0);
+      this.voteBalances = fill(Array(this.topic.options.length), 0);
+      return;
+    }
+
     try {
       const { address: contractAddress, app: { wallet } } = this;
 
       // Get all votes for this Topic
       const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
+      each(wallet.addresses, (item) => {
         voteFilters.push({
           topicAddress: contractAddress,
           voterAddress: item.address,
@@ -264,9 +293,9 @@ export default class EventStore {
       // Filter unique votes
       const allVotes = await queryAllVotes(voteFilters);
       const uniqueVotes = [];
-      _.each(allVotes, (vote) => {
+      each(allVotes, (vote) => {
         const { voterAddress, topicAddress } = vote;
-        if (!_.find(uniqueVotes, { voterAddress, topicAddress })) {
+        if (!find(uniqueVotes, { voterAddress, topicAddress })) {
           uniqueVotes.push(vote);
         }
       });
@@ -281,18 +310,18 @@ export default class EventStore {
           contractAddress,
           senderAddress: voteObj.voterAddress,
         });
-        betArrays.push(_.map(betBalances.data[0], satoshiToDecimal));
+        betArrays.push(map(betBalances.data[0], satoshiToDecimal));
 
         const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
           contractAddress,
           senderAddress: voteObj.voterAddress,
         });
-        voteArrays.push(_.map(voteBalances.data[0], satoshiToDecimal));
+        voteArrays.push(map(voteBalances.data[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
-      this.betBalances = _.map(_.unzip(betArrays), _.sum);
-      this.voteBalances = _.map(_.unzip(voteArrays), _.sum);
+      this.betBalances = map(unzip(betArrays), sum);
+      this.voteBalances = map(unzip(voteArrays), sum);
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
@@ -302,6 +331,12 @@ export default class EventStore {
 
   @action
   getWithdrawableAddresses = async () => {
+    // Address is needed to get withdrawable addresses
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.withdrawableAddresses = [];
+      return;
+    }
+
     try {
       const { address: eventAddress, app: { wallet } } = this;
       const withdrawableAddresses = [];
@@ -309,7 +344,7 @@ export default class EventStore {
       // Fetch Topic
       const topics = await queryAllTopics([{ address: eventAddress }]);
       let topic;
-      if (!_.isEmpty(topics)) {
+      if (!isEmpty(topics)) {
         topic = processTopic(topics[0]);
       } else {
         throw new Error(`Unable to find topic ${eventAddress}`);
@@ -317,7 +352,7 @@ export default class EventStore {
 
       // Get all winning votes for this Topic
       const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
+      each(wallet.addresses, (item) => {
         voteFilters.push({
           topicAddress: topic.address,
           optionIdx: topic.resultIdx,
@@ -339,8 +374,8 @@ export default class EventStore {
       // Filter unique votes
       const votes = await queryAllVotes(voteFilters);
       const filtered = [];
-      _.each(votes, (vote) => {
-        if (!_.find(filtered, {
+      each(votes, (vote) => {
+        if (!find(filtered, {
           voterAddress: vote.voterAddress,
           topicAddress: vote.topicAddress,
         })) {
@@ -427,7 +462,7 @@ export default class EventStore {
     }
 
     // Trying to set result or vote when not enough QTUM or BOT
-    const filteredAddress = _.filter(wallet.addresses, { address: wallet.currentAddress });
+    const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
     if ((
       (phase === VOTING && currentBot < this.amount)
@@ -498,7 +533,7 @@ export default class EventStore {
       VOTING: this.vote,
       FINALIZING: this.finalize,
     }[this.oracle.phase];
-    if (!_.isUndefined(actionToPerform)) return actionToPerform();
+    if (!isUndefined(actionToPerform)) return actionToPerform();
     console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
