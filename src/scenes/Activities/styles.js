@@ -25,9 +25,9 @@ const styles = (theme) => ({
   notLoggedInContainer: {
     width: '100%',
     height: '100%',
-    alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
   },
   notLoggedInIcon: {
     fontSize: 100,

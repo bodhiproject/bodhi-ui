@@ -1,6 +1,6 @@
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
-import { each, find } from 'lodash';
+import { each, find, isEmpty } from 'lodash';
 import { Qweb3 } from 'qweb3';
 
 import SyncInfo from './models/SyncInfo';
@@ -208,6 +208,14 @@ export default class GlobalStore {
    */
   @action
   getActionableItemCount = async () => {
+    // Address is required for the request filters
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.userData.resultSettingCount = 0;
+      this.userData.finalizeCount = 0;
+      this.userData.withdrawCount = 0;
+      return;
+    }
+
     try {
       const voteFilters = [];
       const topicFilters = [];
