@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { Grid } from '@material-ui/core';
-import { defineMessages } from 'react-intl';
-
+import { Grid, Typography, withWidth, Button } from '@material-ui/core';
+import { defineMessages, FormattedMessage } from 'react-intl';
+import { Routes } from 'constants';
 import { Loading } from '../Loading';
 
 const messages = defineMessages({
@@ -11,7 +12,9 @@ const messages = defineMessages({
     defaultMessage: 'loading more',
   },
 });
-
+@withWidth()
+@inject('store')
+@observer
 export default class InfiniteScroll extends Component {
   static propTypes = {
     hasMore: PropTypes.bool,
@@ -49,11 +52,29 @@ export default class InfiniteScroll extends Component {
   }
 
   render() {
-    return (
-      <Grid container spacing={this.props.spacing}>
-        {this.props.data}
-        {this.props.loadingMore && <LoadingMore />}
+    const { data, spacing, loadingMore, store, width } = this.props;
+    const { createEvent, ui } = store;
+    return data.length > 0 ? (
+      <Grid container spacing={spacing}>
+        {data}
+        {loadingMore && <LoadingMore />}
       </Grid>
+    ) : (
+      <Row>
+        <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
+        <Row><Typography variant="title">
+          <FormattedMessage id="events.empty" defaultMessage="There's no ongoing events currently." />
+        </Typography></Row>
+        {ui.location === Routes.QTUM_PREDICTION &&
+        <Row><Button
+          size={width === 'xs' ? 'small' : 'medium'}
+          color="primary"
+          onClick={createEvent.open}
+        >
+          <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
+        </Button></Row>
+        }
+      </Row>
     );
   }
 }
@@ -63,11 +84,11 @@ const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 const Row = (props) => (
   <div
     style={{
-      display: 'flex',
+      display: 'grid',
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      margin: 20,
+      marginTop: '20px',
     }}
     {...props}
   />

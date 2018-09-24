@@ -20,11 +20,11 @@ const styles = (theme) => ({
     marginTop: theme.sizes.navHeight,
   },
   row: {
-    display: 'flex',
+    display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    margin: theme.paddingSm,
+    margin: '20px',
   },
   searching: {
     width: '5rem',

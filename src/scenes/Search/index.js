@@ -123,7 +123,7 @@ export default class Search extends Component {
     const { ui } = this.props.store;
     const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
     this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
-    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <NoResult /> : this.showEvents;
+    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <NoResult classes /> : this.showEvents;
     return (
       <Fragment>
         <div>
@@ -146,9 +146,12 @@ export default class Search extends Component {
 }
 
 const NoResult = () => (
-  <Typography variant="body1">
-    <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
-  </Typography>
+  <Row>
+    <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
+    <Row><Typography variant="title">
+      <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
+    </Typography></Row>
+  </Row>
 );
 
 const Row = withStyles(styles)(({ classes, ...props }) => (
