@@ -33,6 +33,24 @@ export default class UiStore {
 
     // Extend Moment with DurationFormat here to avoid overwritting of the moment locale
     momentDurationFormat(moment);
+    moment.updateLocale('en', {
+      longDateFormat: {
+        LLL: 'M/D/YY H:mm:ss',
+        LLLL: 'MMM Do, YYYY H:mm:ss',
+      },
+    });
+    moment.updateLocale('ko', {
+      longDateFormat: {
+        LLL: 'M/D/YY H:mm:ss',
+        LLLL: 'MMM Do, YYYY H:mm:ss',
+      },
+    });
+    moment.updateLocale('zh-cn', {
+      longDateFormat: {
+        LLL: 'YY/M/D H:mm:ss',
+        LLLL: 'MMM Do, YYYY H:mm:ss',
+      },
+    });
 
     reaction( // whenever the locale changes, update locale in local storage and moment
       () => this.locale,

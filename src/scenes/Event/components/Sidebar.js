@@ -1,11 +1,12 @@
 import React from 'react';
+import moment from 'moment';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
-import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers';
+import { getEndTimeCountDownString } from '../../../helpers';
 
 const message = defineMessages({
   eventInfoEndDateMsg: {
@@ -41,7 +42,7 @@ const SidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
 `;
 
 const EndDate = injectIntl(({ oracle: { endTime }, intl: { locale, messages } }) => (
-  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getShortLocalDateTimeString(endTime)} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
+  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
 ));
 
 const Funding = ({ oracle: { amounts, token } }) => (

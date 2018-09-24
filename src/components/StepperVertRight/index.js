@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import moment from 'moment';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { isEmpty, each } from 'lodash';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 // Current step positions. Index defines which step the Event is in.
 const [TOPIC_CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING] = [0, 1, 2, 3];
@@ -71,12 +71,12 @@ export default class StepperVertRight extends Component {
       description: `${formatMessage(messages.blockMsg)}: ${cOracle.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      description: `${getShortLocalDateTimeString(cOracle.startTime)}
-        ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(cOracle.endTime)}`,
+      description: `${moment.unix(cOracle.startTime).format('LLL')}
+        ${RANGE_SEPARATOR} ${moment.unix(cOracle.endTime).format('LLL')}`,
     }, {
       title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />,
-      description: `${getShortLocalDateTimeString(cOracle.resultSetStartTime)}
-        ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(cOracle.resultSetEndTime)}`,
+      description: `${moment.unix(cOracle.resultSetStartTime).format('LLL')}
+        ${RANGE_SEPARATOR} ${moment.unix(cOracle.resultSetEndTime).format('LLL')}`,
     }];
 
     let current;
@@ -85,8 +85,8 @@ export default class StepperVertRight extends Component {
       each(dOracles, (item) => {
         value.push({
           title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-          description: `${getShortLocalDateTimeString(item.startTime)}
-            ${RANGE_SEPARATOR} ${getShortLocalDateTimeString(item.endTime)}`,
+          description: `${moment.unix(item.startTime).format('LLL')}
+            ${RANGE_SEPARATOR} ${moment.unix(item.endTime).format('LLL')}`,
         });
       });
 
@@ -96,7 +96,7 @@ export default class StepperVertRight extends Component {
         // Add withdrawing step for TopicEvent
         value.push({
           title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
-          description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
         if (syncBlockTime >= lastDOracle.endTime) {
@@ -109,7 +109,7 @@ export default class StepperVertRight extends Component {
         // Add finalizing step for DecentralizedOracle
         value.push({
           title: <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />,
-          description: `${getShortLocalDateTimeString(lastDOracle.endTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
         });
 
         if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
@@ -126,7 +126,7 @@ export default class StepperVertRight extends Component {
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
-        description: `${getShortLocalDateTimeString(cOracle.resultSetEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${moment.unix(cOracle.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
       // Set step number

@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component, Fragment } from 'react';
+import moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
@@ -8,7 +9,6 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../helpers/utility';
 
 
 @injectIntl
@@ -57,7 +57,7 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
     </Grid>
     <Grid item xs={12} sm={6}>
       <Typography variant="body1" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? getShortLocalDateTimeString(blockTime) : ''}</span>
+        <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? moment.unix(blockTime).format('LLL') : ''}</span>
       </Typography>
     </Grid>
   </Grid>
