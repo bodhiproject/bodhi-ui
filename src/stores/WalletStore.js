@@ -133,16 +133,14 @@ export default class WalletStore {
 
     // If setting Qrypto's account for the first time or the address changes, fetch the BOT balance right away.
     // After the initial BOT balance fetch, it will refetch on every new block.
-    let fetchInitBotBalance = false;
-    if (isEmpty(this.addresses) || this.addresses[0].address !== address) {
-      fetchInitBotBalance = true;
-    }
+    const fetchInitBotBalance = isEmpty(this.addresses);
 
-    this.addresses = [new WalletAddress({
-      address,
-      qtum: balance,
-      bot: 0,
-    }, false)];
+    // Only push the WalletAddress if it is not in the list of addresses
+    if (!find(this.addresses, { address })) {
+      const walletAddress = new WalletAddress({ address, qtum: balance, bot: 0 }, false);
+      this.addresses.push(walletAddress);
+      this.currentWalletAddress = walletAddress;
+    }
 
     if (fetchInitBotBalance) {
       this.fetchBotBalance(address);
