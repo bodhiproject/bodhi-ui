@@ -519,21 +519,49 @@ export default class EventStore {
   }
 
   setResult = async () => {
-    await this.app.tx.addApproveSetResultTx(
-      this.oracle.topicAddress,
-      this.oracle.address,
-      this.selectedOption,
-      decimalToSatoshi(this.amount),
-    );
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const allowance = await checkAllowance(currentAddress, this.oracle.topicAddress);
+    const amount = decimalToSatoshi(this.amount);
+
+    if (isAllowanceEnough(allowance, amount)) {
+      await this.app.tx.addSetResultTx(
+        undefined,
+        this.oracle.topicAddress,
+        this.oracle.address,
+        this.selectedOption,
+        amount,
+      );
+    } else {
+      await this.app.tx.addApproveSetResultTx(
+        this.oracle.topicAddress,
+        this.oracle.address,
+        this.selectedOption,
+        amount,
+      );
+    }
   }
 
   vote = async () => {
-    await this.app.tx.addApproveVoteTx(
-      this.oracle.topicAddress,
-      this.oracle.address,
-      this.selectedOption,
-      decimalToSatoshi(this.amount),
-    );
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const allowance = await checkAllowance(currentAddress, this.oracle.topicAddress);
+    const amount = decimalToSatoshi(this.amount);
+
+    if (isAllowanceEnough(allowance, amount)) {
+      await this.app.tx.addVoteTx(
+        undefined,
+        this.oracle.topicAddress,
+        this.oracle.address,
+        this.selectedOption,
+        amount,
+      );
+    } else {
+      await this.app.tx.addApproveVoteTx(
+        this.oracle.topicAddress,
+        this.oracle.address,
+        this.selectedOption,
+        amount,
+      );
+    }
   }
 
   finalize = async () => {
