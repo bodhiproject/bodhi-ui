@@ -46,7 +46,7 @@ const styles = (theme) => ({
   },
   searchButtonWrapper: {
     [theme.breakpoints.down('xs')]: {
-      padding: `0 ${theme.padding.unit.px}`,
+      borderRight: '1px solid rgba(0,0,0,0.2)',
     },
   },
   searchBarFont: {
@@ -61,9 +61,6 @@ const styles = (theme) => ({
   navBarLogo: {
     height: '38px',
     verticalAlign: 'middle',
-    [theme.breakpoints.down('xs')]: {
-      width: 64,
-    },
   },
   navBarWalletIcon: {
     marginRight: theme.padding.unit.px,
