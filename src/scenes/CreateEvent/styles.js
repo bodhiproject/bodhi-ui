@@ -13,11 +13,8 @@ const styles = (theme) => ({
   createDialogTitle: {
     padding: `${theme.padding.xs.px} ${theme.padding.sm.px} 0 ${theme.padding.sm.px}`,
   },
-  EscrowAmountNote: {
-    [theme.breakpoints.down('xs')]: {
-      margin: 0,
-      padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
-    },
+  escrowAmountNote: {
+    margin: `${theme.padding.sm.px} 0 0 0`,
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
@@ -29,6 +26,9 @@ const styles = (theme) => ({
       fontSize: 12,
       paddingTop: 8,
     },
+  },
+  footer: {
+    margin: theme.padding.sm.px,
   },
 });
 

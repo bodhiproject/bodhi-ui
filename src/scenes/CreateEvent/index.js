@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { Dialog, DialogContent as Content, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning, ImportantNote as _ImportantNote } from 'components';
+import { EventWarning as _EventWarning, ImportantNote } from 'components';
+import { EventWarningType } from 'constants';
 
 import styles from './styles';
 import Title from './Title';
@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = ({ classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } } }) => (
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen } } }) => (
   <Fragment>
     <Dialog
       className={classes.createDialog}
@@ -35,10 +35,12 @@ const CreateEventDialog = ({ classes, store: { createEvent, createEvent: { warni
       maxWidth='md'
       open={isOpen}
     >
-      <DialogTitle className={classes.createDialogTitle}>Create an event</DialogTitle>
-      {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}
-      <EscrowAmountNote amount={createEvent.escrowAmount} />
-      <Content>
+      <DialogTitle className={classes.createDialogTitle}>
+        <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+      </DialogTitle>
+      <DialogContent>
+        <EscrowAmountNote />
+        <EventWarning />
         <Title />
         <CreatorDropdown />
         <PredictionStartTime />
@@ -47,37 +49,32 @@ const CreateEventDialog = ({ classes, store: { createEvent, createEvent: { warni
         <ResultSetEndTime />
         <Outcomes />
         <ResultSetter />
-      </Content>
-      <Footer>
-        <CancelButton createEvent={createEvent} />
-        <PublishButton createEvent={createEvent} />
-      </Footer>
+      </DialogContent>
+      <DialogActions className={classes.footer}>
+        <CancelButton />
+        <PublishButton />
+      </DialogActions>
     </Dialog>
   </Fragment>
 );
 
-const EscrowAmountNote = injectIntl(withStyles(styles)(({ classes, amount, intl }) => {
-  const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount });
-  const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount });
-  return <ImportantNote className={classes.EscrowAmountNote} heading={heading} message={message} />;
-}));
+const EventWarning = inject('store')(observer(({ store: { createEvent: { hasEnoughFee, warning } } }) => (
+  !hasEnoughFee && <_EventWarning id={warning.id} message={warning.message} type={EventWarningType.ERROR} />
+)));
 
-const Footer = styled(DialogActions)`
-  margin: 18px 14px !important;
-`;
+const EscrowAmountNote = injectIntl(withStyles(styles)(inject('store')(observer(({ classes, intl, store: { createEvent: { escrowAmount } } }) => {
+  const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount: escrowAmount });
+  const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount: escrowAmount });
+  return <ImportantNote className={classes.escrowAmountNote} heading={heading} message={message} />;
+}))));
 
-const ImportantNote = styled(_ImportantNote)`
-  margin-left: 35px;
-  margin-bottom: ${props => props.theme.padding.xs.px};
-`;
-
-const CancelButton = ({ createEvent }) => (
+const CancelButton = inject('store')(({ store: { createEvent } }) => (
   <Button onClick={createEvent.close} color='primary'>
     <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
   </Button>
-);
+));
 
-const PublishButton = observer(({ createEvent }) => (
+const PublishButton = inject('store')(observer(({ store: { createEvent } }) => (
   <Button
     onClick={createEvent.submit}
     disabled={createEvent.submitting || !createEvent.hasEnoughFee}
@@ -86,6 +83,6 @@ const PublishButton = observer(({ createEvent }) => (
   >
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
-));
+)));
 
 export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));
