@@ -76,7 +76,7 @@ export default class EventCard extends PureComponent {
   render() {
     const { classes, index } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
-    const { formatMessage } = this.props.intl;
+    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
 
     return (
@@ -101,7 +101,7 @@ export default class EventCard extends PureComponent {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - this.props.increasingCount)}</Fragment>
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - this.props.increasingCount, locale, localeMessages)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>

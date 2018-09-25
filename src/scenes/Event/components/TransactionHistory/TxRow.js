@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
@@ -7,7 +8,6 @@ import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 import { TransactionType } from 'constants';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
 const messages = defineMessages({
@@ -70,7 +70,7 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{getShortLocalDateTimeString(createdTime)}</TableCell>
+          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
           <TableCell padding="dense">{getTxTypeString(type, intl.locale, intl.messages)}</TableCell>
           <TableCell padding="dense">{this.name}</TableCell>
           <TableCell padding="dense">

@@ -5,15 +5,11 @@ import { defineMessages } from 'react-intl';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
-import Zhlang from '../languageProvider/entries/zh-Hans-CN';
 const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
 
 const SATOSHI_CONVERSION = 10 ** 8;
 const BOT_MIN_VALUE = 0.01; // eslint-disable-line
 const GAS_COST = 0.0000004;
-const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
-const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';
-const FORMAT_SHORT_DATE_TIME_CN = 'YY/M/D H:mm:ss';
 const messages = defineMessages({
   end: {
     id: 'str.end',
@@ -99,24 +95,6 @@ export function gasToQtum(gas) {
 
   const gasCostBN = new BigNumber(GAS_COST);
   return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
-}
-
-/*
-* Returns the string formatted date and time based on a unix timestamp.
-* @param dateTime {Moment} A moment instance of the date and time to convert.
-* @return {String} Returns a formatted string.
-*/
-export function getLocalDateTimeString(unixSeconds) {
-  return moment.unix(unixSeconds).format(FORMAT_DATE_TIME);
-}
-
-export function getShortLocalDateTimeString(unixSeconds) {
-  const dateTime = moment.unix(unixSeconds);
-  if (moment.locale() === Zhlang.momentlocale) {
-    return dateTime.format(FORMAT_SHORT_DATE_TIME_CN);
-  }
-
-  return dateTime.format(FORMAT_SHORT_DATE_TIME);
 }
 
 export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
+import moment from 'moment';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
@@ -52,7 +52,7 @@ class EventRow extends Component {
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell className={classes.summaryRowCell}>{getShortLocalDateTimeString(createdTime)}</TableCell>
+            <TableCell className={classes.summaryRowCell}>{moment.unix(createdTime).format('LLL')}</TableCell>
             <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
             <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
               {(topic && topic.name) || name}

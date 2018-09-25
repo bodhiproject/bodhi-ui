@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { Token, Phases } from 'constants';
-import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
+import { i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
 
@@ -109,7 +110,7 @@ const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, 
 
   return (
     <TableRow key={`result-${index}`} selected={index % 2 === 1}>
-      <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
+      <TableCell padding="dense">{moment.unix(oracle.endTime).format('LLL')}</TableCell>
       <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
       <TableCell padding="dense">{winningOutcome}</TableCell>
       <TableCell padding="dense">{`${sum(oracle.amounts)} ${oracle.token}`}</TableCell>

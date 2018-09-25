@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
+import moment from 'moment';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 
 import styles from './styles';
-import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 
 export default class HistoryItem extends Component {
   state = {
@@ -29,7 +29,7 @@ export default class HistoryItem extends Component {
 const MainRow = withStyles(styles)(({ classes, transaction, expanded, onRowClick }) => (
   <TableRow key={transaction.txid} selected={expanded}>
     <TableCell className={classes.summaryRowCell}>
-      {getShortLocalDateTimeString(transaction.blockTime ? transaction.blockTime : transaction.createdTime)}
+      {moment.unix(transaction.blockTime ? transaction.blockTime : transaction.createdTime).format('LLL')}
     </TableCell>
     <TableCell>
       {transaction.senderAddress}
