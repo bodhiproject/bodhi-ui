@@ -41,14 +41,14 @@ export default class UiStore {
     });
     moment.updateLocale('ko', {
       longDateFormat: {
-        LLL: 'M/D/YY H:mm:ss',
-        LLLL: 'MMM Do, YYYY H:mm:ss',
+        LLL: 'YY/M/D H:mm:ss',
+        LLLL: 'YYYY년 M월D일 H:mm:ss',
       },
     });
     moment.updateLocale('zh-cn', {
       longDateFormat: {
         LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'MMM Do, YYYY H:mm:ss',
+        LLLL: 'YYYY年M月D日 H:mm:ss',
       },
     });
 
