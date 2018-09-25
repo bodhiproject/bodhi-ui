@@ -31,7 +31,10 @@ export default class GlobalDialog extends Component {
         </DialogTitle>
         <DialogContent>
           <Typography className={classes.heading}>
-            {heading.id ? intl.formatMessage({ id: heading.id, defaultMessage: heading.defaultMessage }) : heading}
+            {heading && heading.id
+              ? intl.formatMessage({ id: heading.id, defaultMessage: heading.defaultMessage })
+              : heading
+            }
           </Typography>
           <Typography className={classes.body}>
             {body && body.id ? intl.formatMessage({ id: body.id, defaultMessage: body.defaultMessage }) : body}
