@@ -26,10 +26,6 @@ const styles = (theme) => ({
     width: '100%',
     margin: '20px',
   },
-  searching: {
-    width: '5rem',
-    height: '10rem',
-  },
 });
 
 export default styles;

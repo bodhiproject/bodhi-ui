@@ -136,7 +136,7 @@ export default class Search extends Component {
           </Tabs>
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.sm.value}>
-              {loading ? <Row><Loading className={classes.searching} text={messages.searchingMsg} /></Row> : result}
+              {loading ? <Row><Loading text={messages.searchingMsg} /></Row> : result}
             </Grid>
           </div>
         </div>

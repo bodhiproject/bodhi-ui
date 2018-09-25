@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components';
 
 export const Loading = injectIntl(({ text, intl, ...props }) => (
   <Col {...props}>
-    <Animation className='animation' />
+    <Animation className='animation' {...props} />
     {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </Col>
 ));
@@ -17,8 +17,8 @@ const loading = keyframes`
 const Animation = styled.div`
   position: relative;
   box-sizing: border-box;
-  width: 3rem;
-  height: 3rem;
+  width: ${props => props.width || '3rem'};
+  height: ${props => props.height || '3rem'};;
   display: inline-flex;
   margin: 10px 20px;
   border-radius: 100%;
