@@ -7,6 +7,7 @@ import { queryAllOracles } from '../../../network/graphql/queries';
 const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
+  loadingFirst: false,
   list: [], // data list
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
@@ -19,6 +20,7 @@ export default class {
   @observable list = INIT_VALUES.list
   @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
+  @observable loadingFirst = INIT_VALUES.loadingFirst
   limit = INIT_VALUES.limit
 
   constructor(app) {
@@ -43,9 +45,11 @@ export default class {
   init = async () => {
     Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = Routes.FINALIZE; // change ui location, for tabs to render correctly
+    this.loadingFirst = true;
     this.list = await this.fetch(this.limit, this.skip);
     runInAction(() => {
       this.loaded = true;
+      this.loadingFirst = false;
     });
   }
 
