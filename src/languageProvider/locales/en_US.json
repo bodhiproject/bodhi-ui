@@ -123,6 +123,7 @@
   "oracle.voteExplanation": "When a result's total votes reaches the Consensus Threshold, it will become the new result.",
   "pendingTxsSnackbar.balanceExplanation": "Pending transactions will affect your wallet balances.",
   "pendingTxsSnackbar.youHaveXPendingTransactions": "You have {numOfTxs} pending transaction(s).",
+  "qrypto.loggedIntoWrongNetwork": "Logged into wrong network. Switch your Qrypto network.",
   "search.bet": "Betting",
   "search.emptySearchResult": "Oops, your search has no results.",
   "search.finalize": "Finalize",
