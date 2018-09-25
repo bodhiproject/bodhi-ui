@@ -1,5 +1,5 @@
 export { default as BottomBar } from './BottomBar';
-export { default as ErrorDialog } from './ErrorDialog';
+export { default as GlobalDialog } from './GlobalDialog';
 export { default as EventWarning } from './EventWarning';
 export { default as ExecuteTxDialog } from './ExecuteTxDialog';
 export { default as GlobalSnackbar } from './GlobalSnackbar';

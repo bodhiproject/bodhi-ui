@@ -225,7 +225,7 @@ export default class WalletStore {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.getWalletInfo);
+        this.app.components.globalDialog.setError(error.message, Routes.api.getWalletInfo);
       });
     }
   }
@@ -239,7 +239,7 @@ export default class WalletStore {
       this.encryptResult = data;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.encryptWallet);
+        this.app.components.globalDialog.setError(error.message, Routes.api.encryptWallet);
       });
     }
   }
@@ -260,7 +260,7 @@ export default class WalletStore {
       return data.isvalid;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.validateAddress);
+        this.app.components.globalDialog.setError(error.message, Routes.api.validateAddress);
       });
     }
   }
@@ -306,7 +306,7 @@ export default class WalletStore {
       await axios.post(Routes.api.backupWallet);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.backupWallet);
+        this.app.components.globalDialog.setError(error.message, Routes.api.backupWallet);
       });
     }
   }
@@ -323,7 +323,7 @@ export default class WalletStore {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.walletPassphraseChange);
+        this.app.components.globalDialog.setError(error.message, Routes.api.walletPassphraseChange);
       });
     }
   }

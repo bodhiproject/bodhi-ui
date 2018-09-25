@@ -257,7 +257,7 @@ export default class CreateEventStore {
         message: err.message,
       });
       runInAction(() => {
-        this.app.ui.setError(err.message, Routes.api.eventEscrowAmount);
+        this.app.components.globalDialog.setError(err.message, Routes.api.eventEscrowAmount);
       });
       return;
     }
@@ -281,15 +281,10 @@ export default class CreateEventStore {
       ];
       const pendingApproveResult = await queryAllTransactions(filters);
       if (pendingApproveResult.length > 0) {
-        this.app.ui.setGlobalMessage(
-          { id: 'str.error', defaultMessage: 'Error' },
-          {
-            id: 'create.pendingExists',
-            defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-          },
-          null,
-          'INFO',
-        );
+        this.app.components.globalDialog.setError({
+          id: 'create.pendingExists',
+          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
+        });
         return;
       }
     } catch (error) {
@@ -315,7 +310,7 @@ export default class CreateEventStore {
         });
         this.txFees = map(data, (item) => new TransactionCost(item));
       } catch (error) {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
+        this.app.components.globalDialog.setError(error.message, Routes.api.transactionCost);
       }
     });
   }
@@ -451,7 +446,7 @@ export default class CreateEventStore {
       return data.isvalid;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.validateAddress);
+        this.app.components.globalDialog.setError(error.message, Routes.api.validateAddress);
       });
     }
   }

@@ -2,14 +2,11 @@ import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
-
 import locales from '../languageProvider';
 
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
-  @observable error = null
-  @observable globalMessage = null
   @observable searchBarMode = false
   @observable dropdownDirection = 'down'
 
@@ -69,26 +66,6 @@ export default class UiStore {
   @action
   changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
-  }
-
-  @action
-  setError = (message, additionalMessage) => {
-    this.globalMessage = {
-      title: { id: 'str.error', defaultMessage: 'Error' },
-      message,
-      additionalMessage,
-      messageType: 'ERROR',
-    };
-  }
-
-  @action
-  setGlobalMessage = (title, message, additionalMessage, messageType = 'ERROR') => {
-    this.globalMessage = { title, message, additionalMessage, messageType };
-  }
-
-  @action
-  clearGlobalMessage = () => {
-    this.globalMessage = null;
   }
 
   @action

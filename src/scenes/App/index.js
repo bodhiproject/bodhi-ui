@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { CssBaseline, withStyles } from '@material-ui/core';
-import { BottomBar, ErrorDialog, ExecuteTxDialog, GlobalSnackbar, TxSentDialog, PendingTxsSnackbar, TutorialCarouselDialog, WalletUnlockDialog } from 'components';
+import { BottomBar, GlobalDialog, ExecuteTxDialog, GlobalSnackbar, TxSentDialog, PendingTxsSnackbar, TutorialCarouselDialog, WalletUnlockDialog } from 'components';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -16,14 +16,15 @@ const App = observer(({ classes, match: { url }, store }) => (
           <AppRouter url={url} />
         </div>
         <BottomBar />
-        <TxSentDialog />
-        <PendingTxsSnackbar />
-        <GlobalSnackbar />
-        <CreateEventFormDialog />
-        <ExecuteTxDialog />
-        <WalletUnlockDialog />
-        <ErrorDialog />
+
         <TutorialCarouselDialog />
+        <GlobalSnackbar />
+        <PendingTxsSnackbar />
+        <GlobalDialog />
+        <ExecuteTxDialog />
+        <TxSentDialog />
+        <CreateEventFormDialog />
+        <WalletUnlockDialog />
       </Fragment>
     )}
     <CssBaseline />

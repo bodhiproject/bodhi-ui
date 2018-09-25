@@ -18,6 +18,7 @@ import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
 import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
+import GlobalDialogStore from '../components/GlobalDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
@@ -30,10 +31,11 @@ class AppStore {
   global = {}
   ui = {}
   wallet = {}
-  globalSnackbar = {}
   transaction = {}
-  walletUnlockDialog = {}
+  globalSnackbar = {}
   pendingTxsSnackbar = {}
+  globalDialog = {}
+  walletUnlockDialog = {}
   txSentDialog = {}
   refreshing = {}
   eventPage = {}
@@ -43,6 +45,7 @@ class AppStore {
   allEvents = {}
   activities = {}
   search = {}
+  components = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -54,11 +57,15 @@ class AppStore {
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
-    this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
+    this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
+
+    this.components = {
+      globalDialog: new GlobalDialogStore(),
+    };
 
     runInAction(() => {
       this.qtumPrediction = new QtumPredictionStore(this);

@@ -1,16 +1,13 @@
 const styles = (theme) => ({
-  errorRoute: {
-    fontSize: theme.sizes.font.textSm,
-    color: theme.palette.error.main,
-    marginBottom: theme.padding.unit.px,
-  },
-  globalMessageError: {
+  heading: {
     fontSize: theme.sizes.font.textSm,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.error.main,
+    marginBottom: theme.padding.unit.px,
   },
-  globalMessageDefault: {
+  body: {
     fontSize: theme.sizes.font.textSm,
+    color: theme.palette.error.main,
   },
 });
 

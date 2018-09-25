@@ -253,7 +253,7 @@ export default class EventStore {
       this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
+        this.app.components.globalDialog.setError(error.message, networkRoutes.api.eventEscrowAmount);
       });
     }
   }
@@ -324,7 +324,10 @@ export default class EventStore {
       this.voteBalances = map(unzip(voteArrays), sum);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
+        this.app.components.globalDialog.setError(
+          error.message,
+          `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`,
+        );
       });
     }
   }
@@ -408,7 +411,7 @@ export default class EventStore {
       this.withdrawableAddresses = withdrawableAddresses;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.winnings);
+        this.app.components.globalDialog.setError(error.message, networkRoutes.api.winnings);
       });
     }
   }
