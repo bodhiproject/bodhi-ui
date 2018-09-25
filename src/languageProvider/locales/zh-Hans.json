@@ -68,7 +68,6 @@
   "create.resultSetStartTime": "结果设置开始时间",
   "create.resultSetter": "结果设置人",
   "create.resultSetterExtra": "此人将会设置结果",
-  "create.resultSetterPlaceholder": "输入结果设置者的地址或选择我的地址",
   "create.resultTooLong": "结果名太长.",
   "create.results": "结果",
   "create.resultsMsg": "结果名称不能为空",

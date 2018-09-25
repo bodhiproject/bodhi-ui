@@ -68,7 +68,7 @@
   "create.resultSetStartTime": "Result Setting Start Time",
   "create.resultSetter": "Centralized Oracle",
   "create.resultSetterExtra": "This person will set the result.",
-  "create.resultSetterPlaceholder": "Enter the address of the result setter or select your own address",
+  "create.resultSetterPlaceholder": "e.g. qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna",
   "create.resultTooLong": "Result name is too long.",
   "create.results": "Results",
   "create.resultsMsg": "Result name cannot be empty.",

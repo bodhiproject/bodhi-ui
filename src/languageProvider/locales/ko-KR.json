@@ -68,7 +68,6 @@
   "create.resultSetStartTime": "결과 설정 시작 시간",
   "create.resultSetter": "중앙 오라클",
   "create.resultSetterExtra": "결과 설정자는 결과를 설정할 수 있습니다.",
-  "create.resultSetterPlaceholder": "결과 세터의 주소를 입력하거나 자신의 주소를 선택하십시오.",
   "create.resultTooLong": "결과 이름이 너무 깁니다.",
   "create.results": "결과",
   "create.resultsMsg": "결과 이름은 비워 둘 수 없습니다.",

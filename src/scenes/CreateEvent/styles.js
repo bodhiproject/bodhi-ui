@@ -27,6 +27,9 @@ const styles = (theme) => ({
       paddingTop: 8,
     },
   },
+  selectAddressButton: {
+    marginBottom: theme.padding.unit.px,
+  },
   footer: {
     margin: theme.padding.sm.px,
   },
