@@ -2,6 +2,7 @@ import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
+
 import locales from '../languageProvider';
 
 export default class UiStore {
@@ -64,14 +65,20 @@ export default class UiStore {
 
   getMomentLocale = () => moment.locale();
 
-  @action // this setter is only here so we don't have to import `locales` into other files
+  // this setter is only here so we don't have to import `locales` into other files
+  @action
   changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
   }
 
   @action
   setError = (message, additionalMessage) => {
-    this.globalMessage = { title: { id: 'str.error', defaultMessage: 'Error' }, message, additionalMessage, messageType: 'ERROR' };
+    this.globalMessage = {
+      title: { id: 'str.error', defaultMessage: 'Error' },
+      message,
+      additionalMessage,
+      messageType: 'ERROR',
+    };
   }
 
   @action

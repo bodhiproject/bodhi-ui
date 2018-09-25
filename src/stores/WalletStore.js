@@ -124,10 +124,17 @@ export default class WalletStore {
    */
   @action
   onQryptoAccountChange = async (account) => {
-    const { loggedIn, address, balance } = account;
+    const { loggedIn, network, address, balance } = account;
+
+    // Reset addresses if logged out
     if (!loggedIn) {
       this.addresses = INIT_VALUE.addresses;
       this.currentWalletAddress = INIT_VALUE.currentWalletAddress;
+      return;
+    }
+
+    // Stop login if the chain network does not match
+    if (network.toLowerCase() !== process.env.CHAIN_NETWORK) {
       return;
     }
 

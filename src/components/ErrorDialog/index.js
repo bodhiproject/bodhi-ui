@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import {
-  withStyles,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@material-ui/core';
+import { withStyles, Typography, Button, Dialog, DialogTitle, DialogContent,DialogActions } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
@@ -34,11 +26,22 @@ export default class ErrorDialog extends Component {
 
     return storeMessage && (
       <Dialog open={Boolean(storeMessage)}>
-        <DialogTitle>{storeMessage.title.id ? intl.formatMessage({ id: storeMessage.title.id, defaultMessage: storeMessage.title.defaultMessage }) : storeMessage.title}</DialogTitle>
+        <DialogTitle>
+          {storeMessage.title.id
+            ? intl.formatMessage({ id: storeMessage.title.id, defaultMessage: storeMessage.title.defaultMessage })
+            : storeMessage.title
+          }
+        </DialogTitle>
         <DialogContent>
-          {storeMessage.messageType === 'ERROR' && <Typography className={classes.errorRoute}>{storeMessage.additionalMessage}</Typography>}
-          <Typography className={storeMessage.messageType === 'ERROR' ? classes.globalMessageError : classes.globalMessageDefault}>
-            {storeMessage.message.id ? intl.formatMessage({ id: storeMessage.message.id, defaultMessage: storeMessage.message.defaultMessage }) : storeMessage.message}
+          {storeMessage.messageType === 'ERROR'
+            && <Typography className={classes.errorRoute}>{storeMessage.additionalMessage}</Typography>}
+          <Typography
+            className={storeMessage.messageType === 'ERROR' ? classes.globalMessageError : classes.globalMessageDefault}
+          >
+            {storeMessage.message.id
+              ? intl.formatMessage({ id: storeMessage.message.id, defaultMessage: storeMessage.message.defaultMessage })
+              : storeMessage.message
+            }
           </Typography>
         </DialogContent>
         <DialogActions>
