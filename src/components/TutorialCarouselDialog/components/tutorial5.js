@@ -30,8 +30,8 @@ const messages = defineMessages({
 });
 
 const Tutorial5 = ({ classes }) => (
-  <div>
-    <Typography variant="display1">
+  <div className={classes.tutorialDialogContentWrapper}>
+    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tutorial5.title" defaultMessage="What Is Blockchain" />
     </Typography>
     <ul className={classes.contentList}>

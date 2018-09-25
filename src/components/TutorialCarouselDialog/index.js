@@ -84,7 +84,7 @@ export default class TutorialCarouselDialog extends Component {
     const CurrentComponentName = this.components[currentIndex];
 
     return (
-      <Dialog open={openTutorial} fullWidth maxWidth="md">
+      <Dialog open={openTutorial} fullWidth maxWidth="md" classes={{ paper: classes.tutorialDialogPaper }}>
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
           <div className={classes.titleTopLine}></div>
           <Select
