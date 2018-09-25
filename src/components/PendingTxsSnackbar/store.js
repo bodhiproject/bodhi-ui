@@ -1,10 +1,9 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { map, filter } from 'lodash';
+import { map, filter, isEmpty } from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
 import { Transaction } from 'models';
 
 import { queryAllTransactions } from '../../network/graphql/queries';
-
 
 const INIT_VALUES = {
   isVisible: false,
@@ -62,6 +61,12 @@ export default class PendingTxsSnackbarStore {
 
   @action
   queryPendingTransactions = async () => {
+    // Address is required for the request filters
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.reset();
+      return;
+    }
+
     try {
       const filters = [{ status: TransactionStatus.PENDING }];
       const result = await queryAllTransactions(filters);
