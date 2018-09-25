@@ -255,9 +255,9 @@ export default class CreateEventStore {
       return;
     }
 
-    if (this.hasPendingCreateTxs()) return;
-    if (!this.getEscrowAmount()) return;
-    this.getAverageBlockTime();
+    if (await this.hasPendingCreateTxs()) return;
+    if (await !this.getEscrowAmount()) return;
+    await this.getAverageBlockTime();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);

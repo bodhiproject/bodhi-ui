@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Dialog, DialogContent as Content, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning, ImportantNote as _ImportantNote } from 'components';
 
@@ -26,9 +26,7 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = withStyles(styles)(observer(({
-  classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } },
-}) => (
+const CreateEventDialog = ({ classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } } }) => (
   <Fragment>
     <Dialog
       className={classes.createDialog}
@@ -56,11 +54,7 @@ const CreateEventDialog = withStyles(styles)(observer(({
       </Footer>
     </Dialog>
   </Fragment>
-)));
-
-const DialogTitle = styled(_DialogTitle)`
-
-`;
+);
 
 const EscrowAmountNote = injectIntl(withStyles(styles)(({ classes, amount, intl }) => {
   const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount });
@@ -94,4 +88,4 @@ const PublishButton = observer(({ createEvent }) => (
   </Button>
 ));
 
-export default inject('store')(CreateEventDialog);
+export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));
