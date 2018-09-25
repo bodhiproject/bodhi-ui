@@ -19,6 +19,17 @@ const styles = (theme) => ({
       padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
     },
   },
+  createEventTextField: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
+  createEventInputAdornment: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+      paddingTop: 8,
+    },
+  },
 });
 
 export default styles;

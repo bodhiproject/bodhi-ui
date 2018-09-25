@@ -2,8 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FormControl, TextField, FormHelperText, Button as _Button } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, Button as _Button, withStyles } from '@material-ui/core';
 import { Section, SelectAddressDialog } from './components';
+
+import styles from './styles';
 
 const messages = defineMessages({
   createResultSetterPlaceholderMsg: {
@@ -28,9 +30,10 @@ const ResultSetter = observer(({ store: { createEvent } }) => (
   </Section>
 ));
 
-const Input = injectIntl(observer(({ intl, createEvent }) => (
+const Input = injectIntl(observer(withStyles(styles, { withTheme: true })(({ classes, intl, createEvent }) => (
   <FormControl fullWidth>
     <TextField
+      InputProps={{ classes: { input: classes.createEventTextField } }}
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
       placeholder={intl.formatMessage(messages.createResultSetterPlaceholderMsg)}
@@ -39,7 +42,7 @@ const Input = injectIntl(observer(({ intl, createEvent }) => (
     />
     {!!createEvent.error.resultSetter && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.resultSetter })}</FormHelperText>}
   </FormControl>
-)));
+))));
 
 const SelectAddressButton = injectIntl(({ intl, ...props }) => (
   <Button {...props}>

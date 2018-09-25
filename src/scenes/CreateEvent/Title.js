@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FormControl, TextField, FormHelperText } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, withStyles } from '@material-ui/core';
 import { Section } from './components';
+
+import styles from './styles';
 
 const messages = defineMessages({
   createNamePlaceholderMsg: {
@@ -19,10 +21,11 @@ const messages = defineMessages({
   },
 });
 
-const Title = observer(({ store: { createEvent }, intl }) => (
+const Title = observer(withStyles(styles, { withTheme: true })(({ classes, store: { createEvent }, intl }) => (
   <Section title={messages.createTitleMsg}>
     <FormControl fullWidth>
       <TextField
+        InputProps={{ classes: { input: classes.createEventTextField } }}
         placeholder={intl.formatMessage(messages.createNamePlaceholderMsg)}
         value={createEvent.title}
         onChange={e => createEvent.title = e.target.value}
@@ -33,6 +36,6 @@ const Title = observer(({ store: { createEvent }, intl }) => (
       {!!createEvent.error.title && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.title })}</FormHelperText>}
     </FormControl>
   </Section>
-));
+)));
 
 export default injectIntl(inject('store')(Title));

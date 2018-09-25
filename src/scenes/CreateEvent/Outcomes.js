@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { TextField, InputAdornment, FormControl, FormHelperText, Button as _Button } from '@material-ui/core';
+import { TextField, InputAdornment, FormControl, FormHelperText, Button as _Button, withStyles } from '@material-ui/core';
 import { Section } from './components';
+import styles from './styles';
 
 const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
@@ -43,7 +44,7 @@ const Button = styled(_Button).attrs({ variant: 'raised' })`
   width: 150px;
 `;
 
-const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
+const Outcome = injectIntl(observer(withStyles(styles, { withTheme: true })(({ classes, outcome, createEvent, i, intl }) => (
   <div>
     <FormControl fullWidth>
       <TextField
@@ -54,7 +55,8 @@ const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
         placeholder={intl.formatMessage(messages.createOutcomeNameMsg)}
         error={Boolean(createEvent.error.outcomes[i])}
         InputProps={{
-          startAdornment: <InputAdornment position="start">#{i + 1}</InputAdornment>,
+          classes: { input: classes.createEventTextField },
+          startAdornment: <InputAdornment position="start" classes={{ positionStart: classes.createEventInputAdornment }}>#{i + 1}</InputAdornment>,
         }}
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && (
@@ -63,7 +65,7 @@ const Outcome = injectIntl(observer(({ outcome, createEvent, i, intl }) => (
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
     </FormControl>
   </div>
-)));
+))));
 
 const RemoveIcon = styled.i.attrs({ className: 'icon iconfont icon-close' })`
   position: absolute;
