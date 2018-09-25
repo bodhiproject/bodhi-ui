@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
 });
 
-const Title = observer(withStyles(styles, { withTheme: true })(({ classes, store: { createEvent }, intl }) => (
+const Title = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent }, intl }) => (
   <Section title={messages.createTitleMsg}>
     <FormControl fullWidth>
       <TextField

@@ -30,7 +30,7 @@ const ResultSetter = observer(({ store: { createEvent } }) => (
   </Section>
 ));
 
-const Input = injectIntl(observer(withStyles(styles, { withTheme: true })(({ classes, intl, createEvent }) => (
+const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, intl, createEvent }) => (
   <FormControl fullWidth>
     <TextField
       InputProps={{ classes: { input: classes.createEventTextField } }}

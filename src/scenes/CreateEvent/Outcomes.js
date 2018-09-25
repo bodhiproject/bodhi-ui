@@ -44,7 +44,7 @@ const Button = styled(_Button).attrs({ variant: 'raised' })`
   width: 150px;
 `;
 
-const Outcome = injectIntl(observer(withStyles(styles, { withTheme: true })(({ classes, outcome, createEvent, i, intl }) => (
+const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, outcome, createEvent, i, intl }) => (
   <div>
     <FormControl fullWidth>
       <TextField
