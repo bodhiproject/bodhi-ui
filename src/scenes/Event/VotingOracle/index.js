@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory, OracleTxConfirmDialog } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory } from '../components';
 
 const messages = defineMessages({
   oracleConsensusThresholdMsg: {
@@ -14,10 +14,6 @@ const messages = defineMessages({
   oracleSetResultExplanationMsg: {
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
-  },
-  txConfirmMsgVoteMsg: {
-    id: 'txConfirmMsg.vote',
-    defaultMessage: 'vote on {option}',
   },
 });
 
@@ -35,7 +31,6 @@ const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) 
       <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
-    <OracleTxConfirmDialog id={messages.txConfirmMsgVoteMsg.id} />
   </Row>
 ));
 
@@ -56,9 +51,9 @@ const Container = styled(Grid)`
 `;
 
 const VoteButton = props => {
-  const { oracle, prepareVote, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, vote, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && (
-    <Button {...props} onClick={prepareVote} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={vote} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" />
     </Button>
   );

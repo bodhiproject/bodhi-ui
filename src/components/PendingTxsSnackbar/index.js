@@ -26,6 +26,7 @@ export default class PendingTxsSnackbar extends Component {
     const {
       isVisible,
       count,
+      pendingApproves,
       pendingCreateEvents,
       pendingBets,
       pendingSetResults,
@@ -38,6 +39,7 @@ export default class PendingTxsSnackbar extends Component {
     const { classes, intl } = this.props;
 
     const pendingCounts = {
+      'tx.approveBotTransfer': pendingApproves,
       'str.createEvent': pendingCreateEvents,
       'str.bet': pendingBets,
       'str.setResult': pendingSetResults,

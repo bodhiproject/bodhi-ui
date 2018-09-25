@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
-import { EventWarning, ImportantNote, ExecuteTxDialog } from 'components';
+import { EventWarning, ImportantNote } from 'components';
 import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
 
 const messages = defineMessages({
@@ -14,10 +14,6 @@ const messages = defineMessages({
   eventUnconfirmedMessage: {
     id: 'oracle.eventUnconfirmed',
     defaultMessage: 'This created Event is unconfirmed. You cannot interact with it until it is confirmed by the blockchain.',
-  },
-  txConfirmMsgBetMsg: {
-    id: 'txConfirmMsg.bet',
-    defaultMessage: 'bet on {option}',
   },
 });
 
@@ -38,7 +34,6 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
       )}
     </Content>
     <Sidebar />
-    <ExecuteTxDialog />
   </Row>
 ));
 
@@ -60,9 +55,9 @@ const Container = styled(Grid)`
 `;
 
 const BetButton = props => {
-  const { oracle, unconfirmed, prepareBet, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, unconfirmed, bet, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && !unconfirmed && (
-    <Button {...props} onClick={prepareBet} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={bet} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" />
     </Button>
   );

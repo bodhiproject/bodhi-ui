@@ -1,6 +1,6 @@
 import { observable, action, reaction } from 'mobx';
 import { OracleStatus, Token } from 'constants';
-import { each, find } from 'lodash';
+import { each, find, isEmpty } from 'lodash';
 import { Qweb3 } from 'qweb3';
 
 import SyncInfo from './models/SyncInfo';
@@ -208,21 +208,29 @@ export default class GlobalStore {
    */
   @action
   getActionableItemCount = async () => {
+    // Address is required for the request filters
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.userData.resultSettingCount = 0;
+      this.userData.finalizeCount = 0;
+      this.userData.withdrawCount = 0;
+      return;
+    }
+
     try {
       const voteFilters = [];
       const topicFilters = [];
 
       // Get all votes for all your addresses
       each(this.app.wallet.addresses, (item) => {
-        voteFilters.push({ voterQAddress: item.address });
+        voteFilters.push({ voterAddress: item.address });
         topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
       });
 
       // Filter votes
       let votes = await queryAllVotes(voteFilters);
       votes = votes.reduce((accumulator, vote) => {
-        const { voterQAddress, topicAddress, optionIdx } = vote;
-        if (!find(accumulator, { voterQAddress, topicAddress, optionIdx })) accumulator.push(vote);
+        const { voterAddress, topicAddress, optionIdx } = vote;
+        if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
         return accumulator;
       }, []);
 
@@ -238,7 +246,7 @@ export default class GlobalStore {
         oracleSetFilters.push({
           token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
-          resultSetterQAddress: item.address,
+          resultSetterAddress: item.address,
         });
       });
       const oraclesForResultset = await queryAllOracles(oracleSetFilters);

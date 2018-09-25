@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
-import { Token } from 'constants';
+import { EventWarning, ImportantNote as _ImportantNote } from 'components';
 
 import styles from './styles';
 import Title from './Title';
@@ -24,10 +23,6 @@ const messages = defineMessages({
   createEscrowNoteDescMsg: {
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
-  },
-  txConfirmMsgCreateMsg: {
-    id: 'txConfirmMsg.create',
-    defaultMessage: 'create an event',
   },
 });
 
@@ -60,16 +55,6 @@ const CreateEventDialog = withStyles(styles)(observer(({
         <PublishButton createEvent={createEvent} />
       </Footer>
     </Dialog>
-    {createEvent.txConfirmDialogOpen && (
-      <CreateEventTxConfirmDialog createEvent={createEvent} />
-    )}
-    {createEvent.txSentDialogOpen && (
-      <TxSentDialog
-        txid={createEvent.txid}
-        open={createEvent.txSentDialogOpen}
-        onClose={createEvent.close}
-      />
-    )}
   </Fragment>
 )));
 
@@ -99,21 +84,14 @@ const CancelButton = ({ createEvent }) => (
 );
 
 const PublishButton = observer(({ createEvent }) => (
-  <Button onClick={createEvent.prepareToCreateEvent} disabled={createEvent.submitting || !createEvent.hasEnoughFee} color="primary" variant="raised">
+  <Button
+    onClick={createEvent.submit}
+    disabled={createEvent.submitting || !createEvent.hasEnoughFee}
+    color="primary"
+    variant="raised"
+  >
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
-));
-
-const CreateEventTxConfirmDialog = injectIntl(({ createEvent, intl }) => (
-  <TxConfirmDialog
-    onClose={() => createEvent.txConfirmDialogOpen = false}
-    onConfirm={createEvent.submit}
-    txFees={createEvent.txFees}
-    open={createEvent.txConfirmDialogOpen}
-    txToken={Token.BOT}
-    txAmount={createEvent.escrowAmount}
-    txDesc={intl.formatMessage(messages.txConfirmMsgCreateMsg)}
-  />
 ));
 
 export default inject('store')(CreateEventDialog);

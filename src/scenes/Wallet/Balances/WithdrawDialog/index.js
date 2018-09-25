@@ -35,10 +35,6 @@ const messages = defineMessages({
     id: 'withdrawDialog.youCanWithdraw',
     defaultMessage: 'You can withdraw up to:',
   },
-  confirmSendMsg: {
-    id: 'txConfirmMsg.send',
-    defaultMessage: 'send to address {address}',
-  },
 });
 
 @injectIntl
@@ -85,7 +81,7 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)} disabled={wallet.withdrawDialogHasError}>
+          <Button color="primary" onClick={() => wallet.withdraw(walletAddress)} disabled={wallet.withdrawDialogHasError}>
             <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>

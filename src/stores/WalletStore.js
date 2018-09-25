@@ -1,15 +1,13 @@
 import { observable, action, runInAction, reaction, computed } from 'mobx';
-import { isEmpty, find, findIndex, map } from 'lodash';
+import { isEmpty, find, findIndex } from 'lodash';
 import moment from 'moment';
-import { TransactionType, Token } from 'constants';
-import { Transaction, TransactionCost } from 'models';
+import { Token } from 'constants';
 import { defineMessages } from 'react-intl';
+import { BigNumber } from 'bignumber.js';
 
 import axios from '../network/api';
 import Routes from '../network/routes';
-import { createTransferTx } from '../network/graphql/mutations';
 import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
-import Tracking from '../helpers/mixpanelUtil';
 import WalletAddress from './models/WalletAddress';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
@@ -54,7 +52,7 @@ const INIT_VALUE_DIALOG = {
   },
 };
 
-export default class {
+export default class WalletStore {
   @observable addresses = INIT_VALUE.addresses;
   @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
   @observable walletEncrypted = INIT_VALUE.walletEncrypted;
@@ -126,29 +124,66 @@ export default class {
    */
   @action
   onQryptoAccountChange = async (account) => {
-    const { loggedIn, address, balance } = account;
+    const { loggedIn, network, address, balance } = account;
+
+    // Reset addresses if logged out
     if (!loggedIn) {
       this.addresses = INIT_VALUE.addresses;
+      this.currentWalletAddress = INIT_VALUE.currentWalletAddress;
+      return;
+    }
+
+    // Stop login if the chain network does not match
+    if (network.toLowerCase() !== process.env.CHAIN_NETWORK) {
+      this.app.components.globalDialog.setError({
+        id: 'qrypto.loggedIntoWrongNetwork',
+        defaultMessage: 'Logged into wrong network. Switch your Qrypto network.',
+      });
       return;
     }
 
     // If setting Qrypto's account for the first time or the address changes, fetch the BOT balance right away.
     // After the initial BOT balance fetch, it will refetch on every new block.
-    let fetchInitBotBalance = false;
-    if (isEmpty(this.addresses) || this.addresses[0].address !== address) {
-      fetchInitBotBalance = true;
-    }
+    const fetchInitBotBalance = isEmpty(this.addresses);
 
-    this.addresses = [new WalletAddress({
-      address,
-      qtum: balance,
-      bot: 0,
-    }, false)];
+    // Only push the WalletAddress if it is not in the list of addresses
+    if (!find(this.addresses, { address })) {
+      const walletAddress = new WalletAddress({ address, qtum: balance, bot: 0 }, false);
+      this.addresses.push(walletAddress);
+      this.currentWalletAddress = walletAddress;
+    }
 
     if (fetchInitBotBalance) {
       this.fetchBotBalance(address);
     }
   }
+
+  /**
+   * Checks the Bodhi Token allowance from the owner to spender.
+   * @param {string} owner Approver of the tokens.
+   * @param {string} spender Approvee of the tokens.
+   * @return {string} Amount of the allowance.
+   */
+  checkAllowance = async (owner, spender) => {
+    try {
+      const { data: { remaining } } = await axios.post(Routes.api.allowance, {
+        owner,
+        spender,
+        senderAddress: this.currentAddress,
+      });
+      return remaining;
+    } catch (err) {
+      console.error(`Error getting allowance: ${err.message}`); // eslint-disable-line
+    }
+  }
+
+  /**
+   * Checks if the allowance is enough.
+   * @param {string} allowance Current allowance.
+   * @param {string} needed Amount of allowance needed.
+   * @return {boolean} True if the allowance is greater than or equal to needed.
+   */
+  isAllowanceEnough = (allowance, needed) => new BigNumber(allowance).isGreaterThanOrEqualTo(new BigNumber(needed));
 
   /**
    * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
@@ -165,9 +200,17 @@ export default class {
         senderAddress: address,
       });
       if (data.balance) {
+        const bot = satoshiToDecimal(data.balance);
+
+        // Update WalletAddress BOT in list of addresses
         const index = findIndex(this.addresses, { address });
         if (index !== -1) {
-          this.addresses[index].bot = satoshiToDecimal(data.balance);
+          this.addresses[index].bot = bot;
+        }
+
+        // Update current WalletAddress BOT if matching address
+        if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
+          this.currentWalletAddress.bot = bot;
         }
       }
     } catch (err) {
@@ -186,7 +229,7 @@ export default class {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.getWalletInfo);
+        this.app.components.globalDialog.setError(error.message, Routes.api.getWalletInfo);
       });
     }
   }
@@ -200,7 +243,7 @@ export default class {
       this.encryptResult = data;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.encryptWallet);
+        this.app.components.globalDialog.setError(error.message, Routes.api.encryptWallet);
       });
     }
   }
@@ -221,7 +264,7 @@ export default class {
       return data.isvalid;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.validateAddress);
+        this.app.components.globalDialog.setError(error.message, Routes.api.validateAddress);
       });
     }
   }
@@ -254,66 +297,20 @@ export default class {
   resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
+  withdraw = async (walletAddress) => {
+    this.walletAddress = walletAddress;
+    const amount = this.selectedToken === Token.BOT
+      ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount);
+    await this.app.tx.addTransferTx(this.walletAddress, this.toAddress, amount, this.selectedToken);
+  }
+
+  @action
   backupWallet = async () => {
     try {
       await axios.post(Routes.api.backupWallet);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.backupWallet);
-      });
-    }
-  }
-
-  @action
-  confirm = (onWithdraw) => {
-    let amount = this.withdrawAmount;
-    if (this.selectedToken === Token.BOT) {
-      amount = decimalToSatoshi(this.withdrawAmount);
-    }
-    this.createTransferTransaction(this.walletAddress, this.toAddress, this.selectedToken, amount);
-    runInAction(() => {
-      onWithdraw();
-      this.txConfirmDialogOpen = false;
-      Tracking.track('myWallet-withdraw');
-    });
-  };
-
-  @action
-  prepareWithdraw = async (walletAddress) => {
-    this.walletAddress = walletAddress;
-    try {
-      const { data } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
-        token: this.selectedToken,
-        amount: this.selectedToken === Token.BOT ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
-        optionIdx: undefined,
-        topicAddress: undefined,
-        oracleAddress: undefined,
-        senderAddress: walletAddress,
-      });
-      const txFees = map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
-  }
-
-  @action
-  createTransferTransaction = async (walletAddress, toAddress, selectedToken, amount) => {
-    try {
-      const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
-      this.app.myWallet.history.addTransaction(new Transaction(transfer));
-      runInAction(() => {
-        this.app.pendingTxsSnackbar.init();
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+        this.app.components.globalDialog.setError(error.message, Routes.api.backupWallet);
       });
     }
   }
@@ -330,7 +327,7 @@ export default class {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.walletPassphraseChange);
+        this.app.components.globalDialog.setError(error.message, Routes.api.walletPassphraseChange);
       });
     }
   }

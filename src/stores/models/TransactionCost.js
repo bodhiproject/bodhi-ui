@@ -15,7 +15,7 @@ export default class TransactionCost {
     Object.assign(this, txCost);
     this.amount = satoshiToDecimal(this.amount);
 
-    // Temp fix to remove amount of approve types for TxConfirmDialog
+    // Temp fix to remove amount of approve types
     if (this.type === 'approve') {
       this.amount = undefined;
     }

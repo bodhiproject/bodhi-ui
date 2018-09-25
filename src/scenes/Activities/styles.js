@@ -22,6 +22,19 @@ const styles = (theme) => ({
   activitiesTabContainer: {
     marginTop: theme.sizes.navHeight,
   },
+  notLoggedInContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: theme.padding.lg.px,
+  },
+  notLoggedInIcon: {
+    fontSize: 80,
+    marginBottom: theme.padding.unit.px,
+  },
+  notLoggedInText: {
+    textAlign: 'center',
+  },
 });
 
 export default styles;

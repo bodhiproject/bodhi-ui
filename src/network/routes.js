@@ -22,6 +22,7 @@ export default {
     subs: WS_ROUTE,
   },
   api: {
+    allowance: `${HTTP_ROUTE}/allowance`,
     botBalance: `${HTTP_ROUTE}/bot-balance`,
     eventEscrowAmount: `${HTTP_ROUTE}/event-escrow-amount`,
     winnings: `${HTTP_ROUTE}/winnings`,

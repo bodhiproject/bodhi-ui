@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import _ from 'lodash';
+import { each, isFinite } from 'lodash';
 
 import client from './';
 import { TYPE, getMutation, isValidEnum } from './schema';
@@ -18,9 +18,9 @@ class GraphMutation {
 
   constructMapping() {
     let mappingStr = '';
-    _.each(this.schema.mapping, (key) => {
+    each(this.schema.mapping, (key) => {
       const value = this.args[key];
-      if (isValidEnum(key, value) || _.isFinite(value)) {
+      if (isValidEnum(key, value) || isFinite(value)) {
         // Enums require values without quotes
         mappingStr = mappingStr.concat(`${key}: ${value}\n`);
       } else {
@@ -61,86 +61,11 @@ class GraphMutation {
   }
 }
 
-export function createTopic(
-  name,
-  results,
-  centralizedOracle,
-  bettingStartTime,
-  bettingEndTime,
-  resultSettingStartTime,
-  resultSettingEndTime,
-  escrowAmount,
-  senderAddress
-) {
-  const args = {
-    name,
-    options: results,
-    resultSetterAddress: centralizedOracle,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    amount: escrowAmount,
-    senderAddress,
-  };
-
-  return new GraphMutation('createTopic', args, TYPE.topic).execute();
-}
-
-export function createBetTx(args) {
-  return new GraphMutation('createBet', args, TYPE.transaction).execute();
-}
-
-export function createApproveSetResultTx(args) {
-  return new GraphMutation('approveSetResult', args, TYPE.transaction).execute();
-}
-
-export function createSetResultTx(args) {
-  return new GraphMutation('setResult', args, TYPE.transaction).execute();
-}
-
-export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) {
-  const args = {
-    version,
-    topicAddress,
-    oracleAddress,
-    optionIdx,
-    amount,
-    senderAddress,
-  };
-
-  return new GraphMutation('createVote', args, TYPE.transaction).execute();
-}
-
-export function createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress) {
-  const args = {
-    version,
-    topicAddress,
-    oracleAddress,
-    senderAddress,
-  };
-
-  return new GraphMutation('finalizeResult', args, TYPE.transaction).execute();
-}
-
-export function createWithdrawTx(type, version, topicAddress, senderAddress) {
-  const args = {
-    type,
-    version,
-    senderAddress,
-    topicAddress,
-  };
-
-  return new GraphMutation('withdraw', args, TYPE.transaction).execute();
-}
-
-export function createTransferTx(senderAddress, receiverAddress, token, amount) {
-  const args = {
-    senderAddress,
-    receiverAddress,
-    token,
-    amount,
-  };
-
-  return new GraphMutation('transfer', args, TYPE.transaction).execute();
+/**
+ * Executes a transaction mutation.
+ * @param {string} mutationName Name of the mutation.
+ * @param {object} args Arguments for the mutation.
+ */
+export function createTransaction(mutationName, args) {
+  return new GraphMutation(mutationName, args, TYPE.transaction).execute();
 }

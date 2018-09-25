@@ -1,14 +1,12 @@
 import { observable, runInAction, action, computed, reaction } from 'mobx';
 import moment from 'moment';
-import _ from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, TransactionStatus, EventWarningType, Token, Phases } from 'constants';
-import { Oracle, Transaction, Topic, TransactionCost } from 'models';
+import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
+import { Oracle, Transaction, Topic } from 'models';
 
-import Tracking from '../../helpers/mixpanelUtil';
 import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
-import { createBetTx, createSetResultTx, createVoteTx, createFinalizeResultTx, createWithdrawTx } from '../../network/graphql/mutations';
 import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
@@ -20,31 +18,31 @@ const INIT = {
   type: undefined,
   loading: true,
   oracles: [],
+  topics: [],
   amount: '',
   address: '',
   topicAddress: '',
   transactions: [],
   selectedOptionIdx: -1,
-  txConfirmDialogOpen: false,
-  txSentDialogOpen: false,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
   escrowClaim: 0,
   hashId: '',
+  qtumWinnings: 0,
+  botWinnings: 0,
+  withdrawableAddresses: [],
 };
 
 export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
-  @observable oracles = []
+  @observable oracles = INIT.oracles
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
   @observable transactions = INIT.transactions
   @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
-  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
-  @observable txSentDialogOpen = INIT.txSentDialogOpen
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
@@ -52,16 +50,18 @@ export default class EventStore {
   @observable hashId = INIT.hashId
 
   // topic
-  @observable topics = []
-  withdrawableAddresses = []
+  @observable topics = INIT.topics
+  @observable qtumWinnings = INIT.qtumWinnings
+  @observable botWinnings = INIT.botWinnings
+  @observable withdrawableAddresses = INIT.withdrawableAddresses
   betBalances = []
   voteBalances = []
 
   @computed get totalBetAmount() {
-    return _.sum(this.betBalances);
+    return sum(this.betBalances);
   }
   @computed get totalVoteAmount() {
-    return _.sum(this.voteBalances);
+    return sum(this.voteBalances);
   }
   @computed get resultBetAmount() {
     return this.betBalances[this.selectedOptionIdx];
@@ -70,11 +70,11 @@ export default class EventStore {
     return this.voteBalances[this.selectedOptionIdx];
   }
   @computed get topic() {
-    return _.find(this.topics, { address: this.address }) || {};
+    return find(this.topics, { address: this.address }) || {};
   }
   // For Oracle only
   @computed get unconfirmed() {
-    return _.isUndefined(this.topicAddress) && _.isUndefined(this.address);
+    return isUndefined(this.topicAddress) && isUndefined(this.address);
   }
   @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
     return this.oracles.filter(({ token }) => token === Token.BOT);
@@ -82,13 +82,13 @@ export default class EventStore {
   @computed get cOracle() {
     // [QTUM] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
     // mainly: BETTING & RESULT SETTING phases
-    return _.find(this.oracles, { token: Token.QTUM }) || {};
+    return find(this.oracles, { token: Token.QTUM }) || {};
   }
   @computed get oracle() {
     if (this.unconfirmed) {
-      return _.find(this.oracles, { hashId: this.hashId });
+      return find(this.oracles, { hashId: this.hashId });
     }
-    return _.find(this.oracles, { address: this.address }) || {};
+    return find(this.oracles, { address: this.address }) || {};
   }
   // both
   @computed get selectedOption() {
@@ -136,6 +136,8 @@ export default class EventStore {
 
   @action
   initTopic = async () => {
+    this.topicAddress = this.address;
+
     // GraphQL calls
     await this.queryTopics();
     await this.queryOracles(this.address);
@@ -143,13 +145,8 @@ export default class EventStore {
 
     // API calls
     await this.getEscrowAmount();
-    await this.getBetAndVoteBalances();
-    await this.getWithdrawableAddresses();
+    await this.calculateWinnings();
 
-    this.botWinnings = _.sumBy(this.withdrawableAddresses, a => (
-      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
-    ));
-    this.qtumWinnings = _.sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -168,6 +165,16 @@ export default class EventStore {
   }
 
   setReactions = () => {
+    // Handle Topic changes when the address list changes
+    reaction(
+      () => this.app.wallet.addresses,
+      async () => {
+        if (this.type === TOPIC) {
+          this.calculateWinnings();
+        }
+      }
+    );
+
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
@@ -210,7 +217,7 @@ export default class EventStore {
   @action
   verifyConfirmedOracle = async () => {
     const res = await queryAllOracles([{ hashId: this.hashId }]);
-    if (!_.isNull(res[0].topicAddress)) {
+    if (!isNull(res[0].topicAddress)) {
       const { topicAddress, address, txid } = res[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
     }
@@ -246,31 +253,49 @@ export default class EventStore {
       this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.eventEscrowAmount);
+        this.app.components.globalDialog.setError(error.message, networkRoutes.api.eventEscrowAmount);
       });
     }
   }
 
   @action
+  calculateWinnings = async () => {
+    await this.getBetAndVoteBalances();
+    await this.getWithdrawableAddresses();
+
+    this.botWinnings = sumBy(this.withdrawableAddresses, a => (
+      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
+    ));
+    this.qtumWinnings = sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
+  }
+
+  @action
   getBetAndVoteBalances = async () => {
+    // Address is needed to get bet and vote balances
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.betBalances = fill(Array(this.topic.options.length), 0);
+      this.voteBalances = fill(Array(this.topic.options.length), 0);
+      return;
+    }
+
     try {
       const { address: contractAddress, app: { wallet } } = this;
 
       // Get all votes for this Topic
       const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
+      each(wallet.addresses, (item) => {
         voteFilters.push({
           topicAddress: contractAddress,
-          voterQAddress: item.address,
+          voterAddress: item.address,
         });
       });
 
       // Filter unique votes
       const allVotes = await queryAllVotes(voteFilters);
       const uniqueVotes = [];
-      _.each(allVotes, (vote) => {
-        const { voterQAddress, topicAddress } = vote;
-        if (!_.find(uniqueVotes, { voterQAddress, topicAddress })) {
+      each(allVotes, (vote) => {
+        const { voterAddress, topicAddress } = vote;
+        if (!find(uniqueVotes, { voterAddress, topicAddress })) {
           uniqueVotes.push(vote);
         }
       });
@@ -283,29 +308,38 @@ export default class EventStore {
 
         const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
           contractAddress,
-          senderAddress: voteObj.voterQAddress,
+          senderAddress: voteObj.voterAddress,
         });
-        betArrays.push(_.map(betBalances.data[0], satoshiToDecimal));
+        betArrays.push(map(betBalances.data[0], satoshiToDecimal));
 
         const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
           contractAddress,
-          senderAddress: voteObj.voterQAddress,
+          senderAddress: voteObj.voterAddress,
         });
-        voteArrays.push(_.map(voteBalances.data[0], satoshiToDecimal));
+        voteArrays.push(map(voteBalances.data[0], satoshiToDecimal));
       }
 
       // Sum all arrays by index into one array
-      this.betBalances = _.map(_.unzip(betArrays), _.sum);
-      this.voteBalances = _.map(_.unzip(voteArrays), _.sum);
+      this.betBalances = map(unzip(betArrays), sum);
+      this.voteBalances = map(unzip(voteArrays), sum);
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`);
+        this.app.components.globalDialog.setError(
+          error.message,
+          `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`,
+        );
       });
     }
   }
 
   @action
   getWithdrawableAddresses = async () => {
+    // Address is needed to get withdrawable addresses
+    if (isEmpty(this.app.wallet.addresses)) {
+      this.withdrawableAddresses = [];
+      return;
+    }
+
     try {
       const { address: eventAddress, app: { wallet } } = this;
       const withdrawableAddresses = [];
@@ -313,7 +347,7 @@ export default class EventStore {
       // Fetch Topic
       const topics = await queryAllTopics([{ address: eventAddress }]);
       let topic;
-      if (!_.isEmpty(topics)) {
+      if (!isEmpty(topics)) {
         topic = processTopic(topics[0]);
       } else {
         throw new Error(`Unable to find topic ${eventAddress}`);
@@ -321,11 +355,11 @@ export default class EventStore {
 
       // Get all winning votes for this Topic
       const voteFilters = [];
-      _.each(wallet.addresses, (item) => {
+      each(wallet.addresses, (item) => {
         voteFilters.push({
           topicAddress: topic.address,
           optionIdx: topic.resultIdx,
-          voterQAddress: item.address,
+          voterAddress: item.address,
         });
 
         // Add escrow withdraw object if is event creator
@@ -343,9 +377,9 @@ export default class EventStore {
       // Filter unique votes
       const votes = await queryAllVotes(voteFilters);
       const filtered = [];
-      _.each(votes, (vote) => {
-        if (!_.find(filtered, {
-          voterQAddress: vote.voterQAddress,
+      each(votes, (vote) => {
+        if (!find(filtered, {
+          voterAddress: vote.voterAddress,
           topicAddress: vote.topicAddress,
         })) {
           filtered.push(vote);
@@ -358,7 +392,7 @@ export default class EventStore {
 
         const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
           contractAddress: topic.address,
-          senderAddress: vote.voterQAddress,
+          senderAddress: vote.voterAddress,
         });
         const botWon = data ? satoshiToDecimal(data[0]) : 0;
         const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
@@ -367,7 +401,7 @@ export default class EventStore {
         if (botWon || qtumWon) {
           withdrawableAddresses.push({
             type: TransactionType.WITHDRAW,
-            address: vote.voterQAddress,
+            address: vote.voterAddress,
             botWon,
             qtumWon,
           });
@@ -377,7 +411,7 @@ export default class EventStore {
       this.withdrawableAddresses = withdrawableAddresses;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.winnings);
+        this.app.components.globalDialog.setError(error.message, networkRoutes.api.winnings);
       });
     }
   }
@@ -388,7 +422,7 @@ export default class EventStore {
    */
   @action
   disableEventActionsIfNecessary = () => {
-    const { phase, resultSetterQAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
+    const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
     const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
@@ -404,18 +438,6 @@ export default class EventStore {
         this.eventWarningMessageId = 'oracle.maxVoteText';
         return;
       }
-    }
-
-    // Already have a pending tx for this Oracle
-    const pendingTxs = _.filter(
-      this.transactions,
-      { oracleAddress: this.oracle.address, status: TransactionStatus.PENDING }
-    );
-    if (pendingTxs.length > 0) {
-      this.buttonDisabled = true;
-      this.warningType = EventWarningType.HIGHLIGHT;
-      this.eventWarningMessageId = 'str.pendingTransactionDisabledMsg';
-      return;
     }
 
     // Has not reached betting start time
@@ -435,7 +457,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterQAddress !== wallet.currentAddress) {
+    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterAddress !== wallet.currentAddress) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -443,7 +465,7 @@ export default class EventStore {
     }
 
     // Trying to set result or vote when not enough QTUM or BOT
-    const filteredAddress = _.filter(wallet.addresses, { address: wallet.currentAddress });
+    const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
     if ((
       (phase === VOTING && currentBot < this.amount)
@@ -514,207 +536,50 @@ export default class EventStore {
       VOTING: this.vote,
       FINALIZING: this.finalize,
     }[this.oracle.phase];
-    if (!_.isUndefined(actionToPerform)) return actionToPerform();
+    if (!isUndefined(actionToPerform)) return actionToPerform();
     console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
   }
 
-  prepareBet = () => {
-    this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption, this.amount);
-  }
-
-  prepareSetResult = async () => {
-    this.app.tx.addApproveSetResultTx(
-      this.oracle.topicAddress,
-      this.oracle.address,
-      this.selectedOption,
-      decimalToSatoshi(this.amount),
-    );
-  }
-
-  @action
-  prepareVote = async () => {
-    try {
-      const { data } = await axios.post(networkRoutes.api.transactionCost, {
-        type: TransactionType.APPROVE_VOTE,
-        token: this.oracle.token,
-        amount: decimalToSatoshi(this.amount), // Convert to Botoshi
-        optionIdx: this.selectedOptionIdx,
-        topicAddress: this.oracle.topicAddress,
-        oracleAddress: this.oracle.address,
-        senderAddress: this.app.wallet.currentAddress,
-      });
-      const txFees = _.map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.oracle.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, networkRoutes.api.transactionCost);
-      });
-    }
-  }
-
-  @action
   bet = async () => {
-    const { currentAddress } = this.app.wallet;
-    const { selectedOptionIdx, amount } = this;
-    const { topicAddress, version, address } = this.oracle;
-    try {
-      const { data: { createBet } } = await createBetTx({
-        version,
-        topicAddress,
-        oracleAddress: address,
-        optionIdx: selectedOptionIdx,
-        amount,
-        senderAddress: currentAddress,
-      });
-      const newTx = { // TODO: add `options` in return from backend
-        ...createBet,
-        topic: {
-          options: this.oracle.options.map(({ name }) => name),
-        },
-      };
-
-      runInAction(() => {
-        this.txConfirmDialogOpen = false;
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createBetTx`);
-      });
-    }
-
-    Tracking.track('oracleDetail-bet');
+    await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption.idx, this.amount);
   }
 
-  @action
   setResult = async () => {
-    const { currentAddress } = this.app.wallet;
-    const { selectedOptionIdx, amount } = this;
-    const { version, topicAddress, address } = this.oracle;
-    try {
-      const { data: { setResult } } = await createSetResultTx({
-        version,
-        topicAddress,
-        oracleAddress: address,
-        optionIdx: selectedOptionIdx,
-        amount: decimalToSatoshi(amount),
-        senderAddress: currentAddress,
-      });
-      const newTx = { // TODO: add `options` in return from backend
-        ...setResult,
-        topic: {
-          options: this.oracle.options.map(({ name }) => name),
-        },
-      };
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { topicAddress } = this.oracle;
+    const oracleAddress = this.oracle.address;
+    const optionIdx = this.selectedOption.idx;
+    const amountSatoshi = decimalToSatoshi(this.amount);
+    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-      runInAction(() => {
-        this.txConfirmDialogOpen = false;
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createSetResultTx`);
-      });
+    if (isAllowanceEnough(allowance, amountSatoshi)) {
+      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
-
-    Tracking.track('oracleDetail-set');
   }
 
-  @action
   vote = async () => {
-    const { currentAddress } = this.app.wallet;
-    const { version, topicAddress, address } = this.oracle;
-    const { selectedOptionIdx } = this;
-    const amount = decimalToSatoshi(this.amount); // Convert to Botoshi
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { topicAddress } = this.oracle;
+    const oracleAddress = this.oracle.address;
+    const optionIdx = this.selectedOption.idx;
+    const amountSatoshi = decimalToSatoshi(this.amount);
+    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-    try {
-      const { data: { createVote } } = await createVoteTx(
-        version,
-        topicAddress,
-        address,
-        selectedOptionIdx,
-        amount,
-        currentAddress,
-      );
-      const newTx = { // TODO: move this logic to backend, add `options`
-        ...createVote,
-        topic: {
-          options: this.oracle.options.map(({ name }) => name),
-        },
-      };
-
-      runInAction(() => {
-        this.txConfirmDialogOpen = false;
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createVoteTx`);
-      });
+    if (isAllowanceEnough(allowance, amountSatoshi)) {
+      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
-
-    Tracking.track('oracleDetail-vote');
   }
 
   finalize = async () => {
-    const { currentAddress } = this.app.wallet;
-    const { version, topicAddress, address } = this.oracle;
-    try {
-      const { data: { finalizeResult } } = await createFinalizeResultTx(version, topicAddress, address, currentAddress);
-      const newTx = { // TODO: move this logic to backend, add `optionIdx` and `options`
-        ...finalizeResult,
-        optionIdx: this.oracle.options.filter(opt => !opt.disabled)[0].idx,
-        topic: {
-          options: this.oracle.options.map(({ name }) => name),
-        },
-      };
-
-      runInAction(() => {
-        this.txConfirmDialogOpen = false;
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createFinalizeResultTx`);
-      });
-    }
-    Tracking.track('oracleDetail-finalize');
+    await this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
   }
 
   withdraw = async (senderAddress, type) => {
-    try {
-      const { version, address } = this.topic;
-      const { data: { withdraw } } = await createWithdrawTx(type, version, address, senderAddress);
-      const newTx = { // TODO: move this logic ot teh backend
-        ...withdraw,
-        optionIdx: this.selectedOptionIdx,
-        topic: {
-          options: this.topic.options,
-        },
-      };
-
-      runInAction(() => {
-        this.txSentDialogOpen = true;
-        this.transactions.unshift(new Transaction(newTx));
-        this.app.pendingTxsSnackbar.init(); // refetch new transactions to display proper notification
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${networkRoutes.graphql.http}/createWithdrawTx`);
-      });
-    }
-    Tracking.track('topicDetail-withdraw');
+    await this.app.tx.addWithdrawTx(type, this.topic.address);
   }
 
   reset = () => Object.assign(this, INIT);

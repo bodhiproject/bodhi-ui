@@ -73,6 +73,9 @@ $ yarn build --chain=testnet
 $ yarn build --chain=regtest
 ```
 
+### Production Build Script
+To create all production versions of the UI on the remote server, run `/scripts/build-server-ui.sh`. It will create deploy it to `/var/www/bodhi/...` and Nginx will handle the serving of the static app.
+
 ## Standards
 
 ### Javascript Standard
