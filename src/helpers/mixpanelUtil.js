@@ -7,6 +7,10 @@ let initialized = false;
 
 export default class Tracking {
   static track(eventName) {
+    if (process.env && process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
     if (_.isEmpty(eventName)) {
       console.error('Mixpanel eventName cannot be empty'); // eslint-disable-line
       return;

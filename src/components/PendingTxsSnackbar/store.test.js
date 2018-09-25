@@ -12,14 +12,14 @@ describe('PendingTxsSnackbarStore', () => {
   }; // mock the appstore
   const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-  describe('Init', () => {
-    beforeEach(() => {
-      store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
-      mockResetTransactionList();
-    });
+  beforeEach(async () => {
+    store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
+    mockResetTransactionList();
+    await store.init();
+  });
 
+  describe('Init', () => {
     it('Init with null tx list', async () => {
-      await store.init();
       expect(store.count).toBe(INIT_VALUES.count);
       expect(store.isVisible).toBe(INIT_VALUES.isVisible);
       expect(store.pendingCreateEvents).toEqual(INIT_VALUES.pendingCreateEvents);
@@ -35,11 +35,6 @@ describe('PendingTxsSnackbarStore', () => {
   });
 
   describe('queryPendingTransactions()', () => {
-    beforeEach(() => {
-      store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
-      mockResetTransactionList();
-    });
-
     it('Fetches all the pending txs and increments the counts', async () => {
       await store.queryPendingTransactions();
       expect(store.count).toBe(0);
@@ -48,13 +43,6 @@ describe('PendingTxsSnackbarStore', () => {
       mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
-      expect(store.pendingBets.length).toBe(0);
-      expect(store.pendingSetResults.length).toBe(0);
-      expect(store.pendingVotes.length).toBe(0);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.pendingCreateEvents.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
@@ -62,130 +50,60 @@ describe('PendingTxsSnackbarStore', () => {
       await store.queryPendingTransactions();
       expect(store.count).toBe(2);
       expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(0);
-      expect(store.pendingSetResults.length).toBe(0);
-      expect(store.pendingVotes.length).toBe(0);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 3, status: TransactionStatus.PENDING, type: TransactionType.BET });
       await store.queryPendingTransactions();
       expect(store.count).toBe(3);
-      expect(store.pendingCreateEvents.length).toBe(2);
       expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(0);
-      expect(store.pendingVotes.length).toBe(0);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 4, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_SET_RESULT });
       await store.queryPendingTransactions();
       expect(store.count).toBe(4);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
       expect(store.pendingSetResults.length).toBe(1);
-      expect(store.pendingVotes.length).toBe(0);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 5, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT });
       await store.queryPendingTransactions();
       expect(store.count).toBe(5);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
       expect(store.pendingSetResults.length).toBe(2);
-      expect(store.pendingVotes.length).toBe(0);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 6, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_VOTE });
       await store.queryPendingTransactions();
       expect(store.count).toBe(6);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
       expect(store.pendingVotes.length).toBe(1);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 7, status: TransactionStatus.PENDING, type: TransactionType.VOTE });
       await store.queryPendingTransactions();
       expect(store.count).toBe(7);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
       expect(store.pendingVotes.length).toBe(2);
-      expect(store.pendingFinalizeResults.length).toBe(0);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 8, status: TransactionStatus.PENDING, type: TransactionType.FINALIZE_RESULT });
       await store.queryPendingTransactions();
       expect(store.count).toBe(8);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
-      expect(store.pendingVotes.length).toBe(2);
       expect(store.pendingFinalizeResults.length).toBe(1);
-      expect(store.pendingWithdraws.length).toBe(0);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 9, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW });
       await store.queryPendingTransactions();
       expect(store.count).toBe(9);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
-      expect(store.pendingVotes.length).toBe(2);
-      expect(store.pendingFinalizeResults.length).toBe(1);
       expect(store.pendingWithdraws.length).toBe(1);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 10, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW_ESCROW });
       await store.queryPendingTransactions();
       expect(store.count).toBe(10);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
-      expect(store.pendingVotes.length).toBe(2);
-      expect(store.pendingFinalizeResults.length).toBe(1);
       expect(store.pendingWithdraws.length).toBe(2);
-      expect(store.pendingTransfers.length).toBe(0);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 11, status: TransactionStatus.PENDING, type: TransactionType.TRANSFER });
       await store.queryPendingTransactions();
       expect(store.count).toBe(11);
-      expect(store.pendingCreateEvents.length).toBe(2);
-      expect(store.pendingBets.length).toBe(1);
-      expect(store.pendingSetResults.length).toBe(2);
-      expect(store.pendingVotes.length).toBe(2);
-      expect(store.pendingFinalizeResults.length).toBe(1);
-      expect(store.pendingWithdraws.length).toBe(2);
       expect(store.pendingTransfers.length).toBe(1);
-      expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(true);
 
       mockAddTransaction({ txid: 12, status: TransactionStatus.PENDING, type: TransactionType.RESET_APPROVE });
@@ -217,32 +135,14 @@ describe('PendingTxsSnackbarStore', () => {
       mockAddTransaction({ txid: 4, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT });
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
-      expect(store.pendingCreateEvents.length).toBe(0);
       expect(store.pendingSetResults.length).toBe(1);
-      expect(store.isVisible).toBe(true);
-    });
-
-    it('Fetches all the pending txs and increments the counts', async () => {
-      await store.queryPendingTransactions();
-      expect(store.count).toBe(0);
-      expect(store.isVisible).toBe(false);
-
-      mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
-      await store.queryPendingTransactions();
-      expect(store.count).toBe(1);
-      expect(store.pendingCreateEvents.length).toBe(1);
       expect(store.isVisible).toBe(true);
     });
   });
 
 
   describe('Reset', () => {
-    beforeEach(() => {
-      store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
-      mockResetTransactionList();
-    });
-
-    it('Run', async () => {
+    it('Reset the values when called', async () => {
       await store.init();
       mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
       await store.queryPendingTransactions();
@@ -263,12 +163,6 @@ describe('PendingTxsSnackbarStore', () => {
 
 
   describe('Reactions', () => {
-    beforeEach(async () => {
-      store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
-      mockResetTransactionList();
-      await store.init();
-    });
-
     it('Visible', async () => {
       expect(store.count).toBe(0);
 
