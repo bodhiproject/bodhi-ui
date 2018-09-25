@@ -1,5 +1,5 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { map, filter, isEmpty } from 'lodash';
+import { map, filter, isEmpty, reduce } from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
 import { Transaction } from 'models';
 
@@ -68,7 +68,11 @@ export default class PendingTxsSnackbarStore {
     }
 
     try {
-      const filters = [{ status: TransactionStatus.PENDING }];
+      const filters = reduce(this.app.wallet.addresses, (result, obj) => {
+        result.push({ status: TransactionStatus.PENDING, senderAddress: obj.address });
+        return result;
+      }, []);
+
       const result = await queryAllTransactions(filters);
       const txs = map(result, (tx) => new Transaction(tx));
       const {
