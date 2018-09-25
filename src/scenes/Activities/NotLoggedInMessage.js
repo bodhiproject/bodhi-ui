@@ -9,7 +9,7 @@ const NotLoggedInMessage = ({ classes }) => (
   <div className={classes.notLoggedInContainer}>
     <Warning className={classes.notLoggedInIcon} />
     <Typography variant="headline" className={classes.notLoggedInText}>
-      <FormattedMessage id="notLoggedIn.qryptoLogin" defaultMessage="Please login to Qrypto to view this page." />
+      <FormattedMessage id="qrypto.loginToView" defaultMessage="Please login to Qrypto to view this page." />
     </Typography>
   </div>
 );

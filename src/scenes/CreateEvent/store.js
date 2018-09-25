@@ -1,5 +1,5 @@
 import { observable, computed, reaction, action, runInAction } from 'mobx';
-import { sumBy, map, filter, isUndefined } from 'lodash';
+import { sumBy, map, filter, isUndefined, isEmpty } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
@@ -245,58 +245,25 @@ export default class CreateEventStore {
   open = async () => {
     Tracking.track('dashboard-createEventClick');
 
-    // Fetch current escrow amount
-    let escrowRes;
-    try {
-      escrowRes = await axios.post(Routes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.currentAddress,
+    // Check if there is a current address
+    if (isEmpty(this.app.wallet.currentAddress)) {
+      this.app.components.globalDialog.setError({
+        id: 'qrypto.loginToView',
+        defaultMessage: 'Please login to Qrypto to view this page.',
       });
-    } catch (err) {
-      console.error('ERROR: ', { // eslint-disable-line
-        route: Routes.api.eventEscrowAmount,
-        message: err.message,
-      });
-      runInAction(() => {
-        this.app.components.globalDialog.setError(err.message, Routes.api.eventEscrowAmount);
-      });
+      this.close();
       return;
     }
 
-    try {
-      const { data } = await axios.get(Routes.insight.totals);
-      this.averageBlockTime = data.time_between_blocks;
-    } catch (err) {
-      console.error('ERROR: ', { // eslint-disable-line
-        route: Routes.insight.totals,
-        message: err.message,
-      });
-      this.averageBlockTime = defaults.averageBlockTime;
-    }
-
-    // Check whether there's a create event transaction pending
-    try {
-      const filters = [
-        { status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT },
-        { status: TransactionStatus.PENDING, type: TransactionType.CREATE_EVENT },
-      ];
-      const pendingApproveResult = await queryAllTransactions(filters);
-      if (pendingApproveResult.length > 0) {
-        this.app.components.globalDialog.setError({
-          id: 'create.pendingExists',
-          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-        });
-        return;
-      }
-    } catch (error) {
-      console.error(error); // eslint-disable-line
-    }
+    if (this.hasPendingCreateTxs()) return;
+    if (!this.getEscrowAmount()) return;
+    this.getAverageBlockTime();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.escrowAmount = satoshiToDecimal(escrowRes.data[0]);
       this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
 
@@ -313,6 +280,62 @@ export default class CreateEventStore {
         this.app.components.globalDialog.setError(error.message, Routes.api.transactionCost);
       }
     });
+  }
+
+  /**
+   * Checks for any pending create event txs for the current wallet address.
+   * @return {boolean} True if the current wallet address has pending create txs.
+   */
+  hasPendingCreateTxs = async () => {
+    try {
+      const { currentAddress } = this.app.wallet;
+      const { PENDING } = TransactionStatus;
+      const filters = [
+        { status: PENDING, type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: currentAddress },
+        { status: PENDING, type: TransactionType.CREATE_EVENT, senderAddress: currentAddress },
+      ];
+      const pendingCreates = await queryAllTransactions(filters);
+      if (pendingCreates.length > 0) {
+        this.app.components.globalDialog.setError({
+          id: 'create.pendingExists',
+          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
+        });
+        this.close();
+        return true;
+      }
+    } catch (error) {
+      console.error(error); // eslint-disable-line
+    }
+    return false;
+  }
+
+  /**
+   * Fetches the escrow amount from the API.
+   * @return {boolean} True if the API call was successful.
+   */
+  getEscrowAmount = async () => {
+    try {
+      const res = await axios.post(Routes.api.eventEscrowAmount, { senderAddress: this.app.wallet.currentAddress });
+      this.escrowAmount = satoshiToDecimal(res.data[0]);
+      return true;
+    } catch (err) {
+      this.app.components.globalDialog.setError(err.message, Routes.api.eventEscrowAmount);
+      this.close();
+    }
+    return false;
+  }
+
+  /**
+   * Gets the average block time from the Insight API.
+   */
+  getAverageBlockTime = async () => {
+    try {
+      const { data } = await axios.get(Routes.insight.totals);
+      this.averageBlockTime = data.time_between_blocks;
+    } catch (err) {
+      console.error(`${Routes.insight.totals}: ${err.message}`); // eslint-disable-line
+      this.averageBlockTime = defaults.averageBlockTime;
+    }
   }
 
   @action
