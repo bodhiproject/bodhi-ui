@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { FormControl, FormHelperText, Select } from '@material-ui/core';
+import { FormControl, FormHelperText, Select, withStyles } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Section } from './components';
+
+import styles from './styles';
 
 const messages = defineMessages({
   strCreatorMsg: {
@@ -11,12 +13,13 @@ const messages = defineMessages({
   },
 });
 
-const CreatorDropdown = observer(({ store: { createEvent, wallet }, intl }) => (
+const CreatorDropdown = observer(withStyles(styles, { withTheme: true })(({ classes, store: { createEvent, wallet }, intl }) => (
   <Section title={messages.strCreatorMsg}>
     <FormControl fullWidth>
       <Select
         native
         fullWidth
+        classes={{ select: classes.createEventTextField }}
         error={Boolean(createEvent.error.creator)}
         value={createEvent.creator}
         onChange={e => createEvent.creator = e.target.value}
@@ -29,7 +32,7 @@ const CreatorDropdown = observer(({ store: { createEvent, wallet }, intl }) => (
       )}
     </FormControl>
   </Section>
-));
+)));
 
 const CreatorItem = observer(({ address, qtum, bot }) => (
   <option value={address}>
