@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import { Error } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
@@ -23,7 +24,10 @@ export default class GlobalDialog extends Component {
     return visible && (
       <Dialog open={visible} onClose={globalDialog.reset}>
         <DialogTitle>
-          {title.id ? intl.formatMessage({ id: title.id, defaultMessage: title.defaultMessage }) : title}
+          <div className={classes.titleContainer}>
+            <Error className={classes.titleIcon} />
+            {title.id ? intl.formatMessage({ id: title.id, defaultMessage: title.defaultMessage }) : title}
+          </div>
         </DialogTitle>
         <DialogContent>
           <Typography className={classes.heading}>
