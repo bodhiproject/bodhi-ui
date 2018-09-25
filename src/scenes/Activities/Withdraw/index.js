@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { InstallQryptoInline } from 'components';
 
+import NotLoggedInMessage from '../NotLoggedInMessage';
 import theme from '../../../config/theme';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 import EventCard from '../../../components/EventCard';
