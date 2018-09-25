@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { defineMessages } from 'react-intl';
@@ -50,7 +49,10 @@ export default class EventPage extends Component {
     const { event, loading } = eventPage;
 
     if (loading) {
-      return <Loading text={messages.loadOracleMsg} />;
+      const loadProps = {
+        marginTop: '10rem',
+      };
+      return <_Loading text={messages.loadOracleMsg} {...loadProps} />;
     }
 
     const Event = {
@@ -69,11 +71,3 @@ export default class EventPage extends Component {
     );
   }
 }
-
-const Loading = styled(_Loading)`
-  margin-top: 25rem;
-  .animation {
-    width: 5rem;
-    height: 5rem;
-  }
-`;

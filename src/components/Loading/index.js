@@ -15,13 +15,16 @@ const loading = keyframes`
 `;
 
 const Animation = styled.div`
-  position: relative;
-  box-sizing: border-box;
+  position: ${props => props.position || 'relative'};
+  box-sizing: ${props => props.boxSizing || 'border-box'};
   width: ${props => props.width || '3rem'};
   height: ${props => props.height || '3rem'};;
-  display: inline-flex;
-  margin: 10px 20px;
-  border-radius: 100%;
+  display: ${props => props.display || 'inline-flex'};
+  margin-top: ${props => props.marginTop || '10px'};
+  margin-right: ${props => props.marginRight || '20px'};
+  margin-bottom: ${props => props.marginBottom || '10px'};
+  margin-left: ${props => props.marginLeft || '20px'};
+  border-radius: ${props => props.borderRadius || '100%'};
   background: linear-gradient(${props => props.theme.palette.primary.main}, #fff);
   animation: ${loading} 2s linear infinite;
   &:before {

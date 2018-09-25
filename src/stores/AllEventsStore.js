@@ -6,6 +6,7 @@ import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
 const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
+  loadingFirst: false,
   list: [], // data list
   hasMoreTopics: true, // has more topics to fetch?
   hasMoreOracles: true, // has more oracles to fetch?
@@ -19,6 +20,7 @@ export default class {
   @observable list = INIT_VALUES.list
   @observable hasMoreTopics = INIT_VALUES.hasMoreTopics
   @observable hasMoreOracles = INIT_VALUES.hasMoreOracles
+  @observable loadingFirst = INIT_VALUES.loadingFirst
   @computed get hasMore() {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
@@ -41,9 +43,10 @@ export default class {
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES); // reset all properties
     this.app.ui.location = Routes.ALL_EVENTS;
+    this.loadingFirst = true;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
-      this.loading = false;
+      this.loadingFirst = false;
     });
   }
 
