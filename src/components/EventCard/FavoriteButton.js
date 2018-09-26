@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import {
-  withStyles,
-} from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import { FavoriteBorder, Favorite } from '@material-ui/icons';
 
 import styles from './styles';
@@ -35,9 +33,7 @@ class FavoriteButton extends Component {
     const topicAddress = event.topicAddress || event.address;
 
     return (
-      <Fragment>
-        <span onClick={this.handleClick()}>{store.favorite.isInFavorite(topicAddress) ? <Favorite color='error' /> : <FavoriteBorder />}</span>
-      </Fragment>
+      <span onClick={this.handleClick()}>{store.favorite.isInFavorite(topicAddress) ? <Favorite color='error' /> : <FavoriteBorder />}</span>
     );
   }
 }

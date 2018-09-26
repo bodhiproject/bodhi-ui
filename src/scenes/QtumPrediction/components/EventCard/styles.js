@@ -37,7 +37,7 @@ const styles = (theme) => ({
   eventCardName: {
     marginBottom: theme.padding.xs.px,
     display: '-webkit-box',
-    maxWidth: '700px',
+    width: '700px',
     maxHeight: '160px',
     margin: '0 auto',
     WebkitLineClamp: 5,
@@ -46,6 +46,9 @@ const styles = (theme) => ({
     textOverflow: 'ellipsis',
     fontWeight: '700',
     color: 'rgba(0,0,0,0.75)',
+  },
+  eventCardNameBundle: {
+    display: 'flex',
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
