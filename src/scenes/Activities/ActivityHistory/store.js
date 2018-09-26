@@ -23,6 +23,13 @@ export default class {
   @observable page = INIT_VALUES.page
   @observable limit = INIT_VALUES.limit
 
+  @computed
+  get displayedTxs() {
+    const start = this.page * this.perPage;
+    const end = (this.page * this.perPage) + this.perPage;
+    return this.transactions.slice(start, end);
+  }
+
   constructor(app) {
     this.app = app;
 
@@ -51,32 +58,6 @@ export default class {
   }
 
   @action
-  getMoreData = async () => {
-    const moreData = await this.fetchHistory(this.transactions.length);
-    this.transactions = [...this.transactions, ...moreData];
-    this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
-  }
-
-  @computed
-  get displayedTxs() {
-    const start = this.page * this.perPage;
-    const end = (this.page * this.perPage) + this.perPage;
-    return this.transactions.slice(start, end);
-  }
-
-  @action
-  getOracleAddress = async (topicAddress) => {
-    const order = { field: 'endTime', direction: SortBy.DESCENDING };
-    const filters = [{ topicAddress }];
-
-    if (topicAddress) {
-      const targetoracle = await queryAllOracles(filters, order);
-      const path = getDetailPagePath(map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
-      if (path) return path;
-    }
-  }
-
-  @action
   init = async () => {
     // reset to initial values
     Object.assign(this, INIT_VALUES);
@@ -94,9 +75,28 @@ export default class {
   }
 
   @action
+  getMoreData = async () => {
+    const moreData = await this.fetchHistory(this.transactions.length);
+    this.transactions = [...this.transactions, ...moreData];
+    this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
+  }
+
+  @action
   sort = (columnName) => {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
     this.orderBy = columnName;
     this.order = this.order === descending ? ascending : descending;
+  }
+
+  @action
+  getOracleAddress = async (topicAddress) => {
+    const order = { field: 'endTime', direction: SortBy.DESCENDING };
+    const filters = [{ topicAddress }];
+
+    if (topicAddress) {
+      const targetoracle = await queryAllOracles(filters, order);
+      const path = getDetailPagePath(map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
+      if (path) return path;
+    }
   }
 }
