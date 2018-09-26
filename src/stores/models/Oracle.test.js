@@ -50,6 +50,7 @@ describe('models/Oracle', () => {
       hashId: 'hahaha',
     });
     oracle = new Oracle(input, app);
+
     expect(oracle.app).toBe(app);
     expect(oracle.amounts.length).toBe(input.amounts.length);
     expect(oracle.amounts[0]).toBe(99);
@@ -83,6 +84,7 @@ describe('models/Oracle', () => {
       hashId: 'hahaha',
     });
     oracle = new Oracle(input, app);
+
     expect(oracle.app).toBe(app);
     expect(oracle.amounts.length).toBe(input.amounts.length);
     expect(oracle.amounts[0]).toBe(99);
@@ -116,6 +118,7 @@ describe('models/Oracle', () => {
       hashId: 'hahaha',
     });
     oracle = new Oracle(input, app);
+
     expect(oracle.app).toBe(app);
     expect(oracle.amounts.length).toBe(input.amounts.length);
     expect(oracle.amounts[0]).toBe(99);
@@ -149,6 +152,7 @@ describe('models/Oracle', () => {
       hashId: 'hahaha',
     });
     oracle = new Oracle(input, app);
+
     expect(oracle.app).toBe(app);
     expect(oracle.amounts.length).toBe(input.amounts.length);
     expect(oracle.amounts[0]).toBe(99);
@@ -182,6 +186,7 @@ describe('models/Oracle', () => {
       hashId: 'hahaha',
     });
     oracle = new Oracle(input, app);
+
     expect(oracle.app).toBe(app);
     expect(oracle.amounts.length).toBe(input.amounts.length);
     expect(oracle.amounts[0]).toBe(99);

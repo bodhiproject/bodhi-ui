@@ -28,7 +28,9 @@ describe('stores/models/Option', () => {
     eventPage: { selectedOptionIdx: 0 },
   }); // mock the appstore
   let store;
+
   beforeEach(() => store = null);
+
   it('Constructor 1: centralized oracle unconfirmed', () => {
     const name = 'cons test 1';
     const i = 0;
@@ -271,6 +273,7 @@ describe('stores/models/Option', () => {
     expect(app.eventPage.selectedOptionIdx).toBe(i);
     expect(store.isExpanded).toBeTruthy();
   });
+
   it('toggleExpansion & unexpand', () => {
     const name = 'cons test 4';
     const i = 1;
