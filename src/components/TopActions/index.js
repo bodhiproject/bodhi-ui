@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles, withWidth } from '@material-ui/core';
-import { AddIcon } from '@material-ui/icons';
+import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 
 import { SortBy } from '../../constants';
@@ -39,7 +39,7 @@ export default class TopActions extends Component {
               className={classes.createEventButton}
               onClick={createEvent.open}
             >
-              <AddIcon className={classes.createEventButtonIcon} fontSize={fontSize} />
+              <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
               <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
             </Button>
           )}
