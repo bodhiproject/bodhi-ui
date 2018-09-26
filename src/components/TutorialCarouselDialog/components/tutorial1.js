@@ -42,7 +42,7 @@ const messages = defineMessages({
 });
 
 const Tutorial1 = ({ classes }) => (
-  <div className={classes.tutorialDialogContentWrapper}>
+  <div>
     <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tutorial1.title" defaultMessage="Bodhi Dapp Uses The Qtum Wallet" />
     </Typography>

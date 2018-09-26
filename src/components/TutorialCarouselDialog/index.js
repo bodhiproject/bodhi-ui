@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   MenuItem,
+  withWidth,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, defineMessages, intlShape } from 'react-intl';
@@ -40,12 +41,14 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@withWidth()
 @inject('store')
 @observer
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line
+    width: PropTypes.string.isRequired,
   }
 
   state = {
@@ -79,7 +82,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes, store: { ui }, intl } = this.props;
+    const { classes, store: { ui }, intl, width } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -99,16 +102,18 @@ export default class TutorialCarouselDialog extends Component {
             <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
           </Select>
           <div className={classes.contentWrapper}>
-            <CurrentComponentName />
+            <div className={classes.tutorialDialogContentWrapper}>
+              <CurrentComponentName />
+            </div>
             <div className={classes.buttonsWrapper}>
               {currentIndex > 0 && (
-                <Button onClick={this.prevSlide} msgId={messages.previous} />
+                <Button onClick={this.prevSlide} msgId={messages.previous} width={width} />
               )}
               {currentIndex < this.components.length - 1 && (
-                <Button onClick={this.nextSlide} msgId={messages.next} />
+                <Button onClick={this.nextSlide} msgId={messages.next} width={width} />
               )}
               {currentIndex === this.components.length - 1 && (
-                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} />
+                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} width={width} />
               )}
             </div>
           </div>
@@ -118,8 +123,8 @@ export default class TutorialCarouselDialog extends Component {
   }
 }
 
-const Button = injectIntl(withStyles(styles)(({ classes, intl, msgId, ...props }) => (
-  <_Button {...props} className={classes.button} variant="raised" size="medium">
+const Button = injectIntl(withStyles(styles)(({ classes, intl, msgId, width, ...props }) => (
+  <_Button {...props} className={classes.button} variant="raised" size={width === 'xs' ? 'small' : 'medium'}>
     {intl.formatMessage(msgId)}
   </_Button>
 )));

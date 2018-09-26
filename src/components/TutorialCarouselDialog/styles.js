@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   tutorialDialogPaper: {
     [theme.breakpoints.down('xs')]: {
-      margin: 0,
+      margin: theme.padding.unit.px,
     },
   },
   tutorialDialog: {
@@ -65,16 +65,16 @@ const styles = (theme) => ({
     marginBottom: theme.padding.xs.px,
   },
   contentWrapper: {
-    padding: `${theme.padding.sm.px} ${theme.padding.md.px} ${theme.padding.sm.px} ${theme.padding.md.px}`,
+    padding: `${theme.padding.sm.px} ${theme.padding.md.px}`,
     [theme.breakpoints.down('xs')]: {
       padding: `${theme.padding.unit.px} ${theme.padding.sm.px} 0 ${theme.padding.sm.px}`,
     },
   },
   tutorialDialogContentWrapper: {
     height: 400,
-    overflowX: 'auto',
+    overflowY: 'auto',
     [theme.breakpoints.down('xs')]: {
-      height: 340,
+      height: 350,
     },
   },
   tutorialDialogContentTitle: {
@@ -104,7 +104,7 @@ const styles = (theme) => ({
     margin: `${theme.padding.unit.px} ${theme.padding.md.px}`,
     display: 'inline-block',
     [theme.breakpoints.down('xs')]: {
-      margin: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
+      margin: `${theme.padding.unit.px} ${theme.padding.unit.px}`,
     },
   },
   buttonTxt: {
@@ -114,6 +114,7 @@ const styles = (theme) => ({
   },
   link: {
     color: theme.palette.primary.main,
+    wordWrap: 'break-word',
   },
   tncWrapper: {
     maxHeight: '300px',
