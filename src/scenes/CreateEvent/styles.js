@@ -34,7 +34,6 @@ const styles = (theme) => ({
     cursor: 'pointer',
   },
   addOutcomeButton: {
-    width: 150,
     marginTop: theme.padding.unit.px,
   },
   selectAddressButton: {
@@ -42,6 +41,10 @@ const styles = (theme) => ({
   },
   footer: {
     margin: theme.padding.sm.px,
+  },
+  buttonIcon: {
+    fontSize: theme.sizes.icon.small,
+    marginRight: 4,
   },
   cancelButton: {
     marginRight: theme.padding.unit.px,

@@ -62,7 +62,8 @@ const paddingLg = paddingUnit * 7; // 56
 
 // Size
 const progressHeight = 12;
-const iconSize = 24;
+const iconSizeLg = 24;
+const iconSizeSm = 18;
 const borderRadius = 4;
 const navHeight = 70;
 const footerHeight = '34.48px';
@@ -290,7 +291,10 @@ export const theme = {
     },
   },
   sizes: {
-    icon: px(iconSize),
+    icon: {
+      large: px(iconSizeLg),
+      small: px(iconSizeSm),
+    },
     font: {
       titleLg: px(fontSizeTitleLg),
       titleMd: px(fontSizeTitleMd),
@@ -307,6 +311,7 @@ export const theme = {
     navHeight: px(navHeight),
     footerHeight,
   },
+
   border: `solid 1px ${borderColor}`,
   borderRadius: px(borderRadius),
 };

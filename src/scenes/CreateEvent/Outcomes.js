@@ -1,8 +1,9 @@
 import React from 'react';
 import cx from 'classnames';
 import { observer, inject } from 'mobx-react';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { TextField, InputAdornment, FormControl, FormHelperText, Button, withStyles } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 
 import { Section } from './components';
 import styles from './styles';
@@ -11,10 +12,6 @@ const MIN_OPTION_NUMBER = 2;
 const MAX_OPTION_NUMBER = 10;
 
 const messages = defineMessages({
-  createAddOutcomeMsg: {
-    id: 'create.addOutcome',
-    defaultMessage: 'Add Outcome',
-  },
   createOutcomeNameMsg: {
     id: 'create.outcomeName',
     defaultMessage: 'Outcome Name',
@@ -31,7 +28,9 @@ const Outcomes = observer(({ store: { createEvent } }) => (
       <Outcome key={i} outcome={outcome} createEvent={createEvent} i={i} />
     ))}
     {createEvent.outcomes.length < MAX_OPTION_NUMBER && (
-      <AddButton onClick={() => createEvent.addOutcome('')} />
+      <div>
+        <AddButton onClick={() => createEvent.addOutcome('')} />
+      </div>
     )}
   </Section>
 ));
@@ -44,13 +43,9 @@ const RemoveIcon = withStyles(styles)(inject('store')(({ classes, index, store: 
 )));
 
 const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) => (
-  <Button
-    className={classes.addOutcomeButton}
-    variant="raised"
-    color="primary"
-    {...props}
-  >
-    + {intl.formatMessage(messages.createAddOutcomeMsg)}
+  <Button className={classes.addOutcomeButton} variant="raised" color="primary" size="small" {...props}>
+    <Add className={classes.buttonIcon} />
+    <FormattedMessage id="create.addOutcome" defaultMessage="Add Outcome" />
   </Button>
 )));
 

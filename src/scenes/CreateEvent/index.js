@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning as _EventWarning, ImportantNote } from 'components';
 import { EventWarningType } from 'constants';
@@ -70,11 +71,12 @@ const EscrowAmountNote = injectIntl(withStyles(styles)(inject('store')(observer(
 
 const CancelButton = withStyles(styles)(inject('store')(({ classes, store: { createEvent } }) => (
   <Button className={classes.cancelButton} onClick={createEvent.close} variant="raised" size="small">
+    <Clear className={classes.buttonIcon} />
     <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
   </Button>
 )));
 
-const PublishButton = inject('store')(observer(({ store: { createEvent } }) => (
+const PublishButton = withStyles(styles)(inject('store')(observer(({ classes, store: { createEvent } }) => (
   <Button
     onClick={createEvent.submit}
     disabled={createEvent.submitting || !createEvent.hasEnoughFee}
@@ -82,8 +84,9 @@ const PublishButton = inject('store')(observer(({ store: { createEvent } }) => (
     variant="raised"
     size="small"
   >
+    <Create className={classes.buttonIcon} />
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
-)));
+))));
 
 export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));

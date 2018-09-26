@@ -92,11 +92,11 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
       size="small"
       onClick={() => tx.confirmTx(index)}
     >
-      <Check />
+      <Check className={classes.buttonIcon} />
       <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
     </Button>
     <Button variant="raised" color="default" size="small" onClick={() => tx.deleteTx(index)}>
-      <Clear />
+      <Clear className={classes.buttonIcon} />
       <FormattedMessage id="str.delete" defaultMessage="Delete" />
     </Button>
   </div>

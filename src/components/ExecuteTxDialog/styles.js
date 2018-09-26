@@ -33,6 +33,10 @@ const styles = (theme) => ({
   actionButtonsContainer: {
     marginTop: theme.padding.xs.px,
   },
+  buttonIcon: {
+    fontSize: theme.sizes.icon.small,
+    marginRight: 4,
+  },
   confirmButton: {
     marginRight: theme.padding.unit.px,
   },
