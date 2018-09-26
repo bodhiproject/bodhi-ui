@@ -162,7 +162,7 @@ export const theme = {
         borderRadius: px(paddingLg),
         textTransform: 'none',
       },
-      raised: {
+      raisedPrimary: {
         backgroundColor: primaryColor,
         color: white,
         boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',

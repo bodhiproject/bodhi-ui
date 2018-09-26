@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
+import cx from 'classnames';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { TextField, InputAdornment, FormControl, FormHelperText, Button as _Button, withStyles } from '@material-ui/core';
+import { TextField, InputAdornment, FormControl, FormHelperText, Button, withStyles } from '@material-ui/core';
+
 import { Section } from './components';
 import styles from './styles';
 
@@ -35,14 +36,23 @@ const Outcomes = observer(({ store: { createEvent } }) => (
   </Section>
 ));
 
-const AddButton = injectIntl(({ intl, ...props }) => (
-  <Button {...props}>+ {intl.formatMessage(messages.createAddOutcomeMsg)}</Button>
-));
+const RemoveIcon = withStyles(styles)(inject('store')(({ classes, index, store: { createEvent } }) => (
+  <i
+    className={cx('icon iconfont icon-close', classes.removeOutcomeIcon)}
+    onClick={() => createEvent.outcomes.splice(index, 1)}
+  />
+)));
 
-const Button = styled(_Button).attrs({ variant: 'raised' })`
-  margin-top: ${props => props.theme.padding.unit.px} !important;
-  width: 150px;
-`;
+const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) => (
+  <Button
+    className={classes.addOutcomeButton}
+    variant="raised"
+    color="primary"
+    {...props}
+  >
+    + {intl.formatMessage(messages.createAddOutcomeMsg)}
+  </Button>
+)));
 
 const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, outcome, createEvent, i, intl }) => (
   <div>
@@ -59,19 +69,10 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
           startAdornment: <InputAdornment position="start" classes={{ positionStart: classes.createEventInputAdornment }}>#{i + 1}</InputAdornment>,
         }}
       />
-      {createEvent.outcomes.length > MIN_OPTION_NUMBER && (
-        <RemoveIcon onClick={() => createEvent.outcomes.splice(i, 1)} />
-      )}
+      {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
     </FormControl>
   </div>
 ))));
-
-const RemoveIcon = styled.i.attrs({ className: 'icon iconfont icon-close' })`
-  position: absolute;
-  right: 5px;
-  top: 8px;
-  cursor: pointer;
-`;
 
 export default inject('store')(Outcomes);

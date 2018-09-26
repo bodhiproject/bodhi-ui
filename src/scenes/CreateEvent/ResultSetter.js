@@ -48,7 +48,7 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
 ))));
 
 const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
-  <Button className={classes.selectAddressButton} variant="raised" {...props}>
+  <Button className={classes.selectAddressButton} variant="raised" color="primary" {...props}>
     {intl.formatMessage(messages.createSelectMyAddressMsg)}
   </Button>
 )));

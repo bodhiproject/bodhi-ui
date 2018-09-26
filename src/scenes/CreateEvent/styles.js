@@ -27,6 +27,16 @@ const styles = (theme) => ({
       paddingTop: 8,
     },
   },
+  removeOutcomeIcon: {
+    position: 'absolute',
+    right: 5,
+    top: 8,
+    cursor: 'pointer',
+  },
+  addOutcomeButton: {
+    width: 150,
+    marginTop: theme.padding.unit.px,
+  },
   selectAddressButton: {
     marginBottom: theme.padding.unit.px,
   },
