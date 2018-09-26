@@ -14,11 +14,7 @@ const styles = (theme) => ({
     color: theme.palette.secondary.main,
     fontSize: theme.sizes.font.meta,
   },
-  pending: {
-    color: theme.palette.secondary.main,
-    fontSize: theme.sizes.font.meta,
-  },
-  upcoming: {
+  [EventWarningType.ORANGE]: {
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.extra.orange,
   },

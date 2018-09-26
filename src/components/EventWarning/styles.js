@@ -21,11 +21,7 @@ const styles = (theme) => ({
     background: theme.palette.secondary.light,
     border: `solid 1px ${theme.palette.secondary.main}`,
   },
-  pending: {
-    background: theme.palette.secondary.light,
-    border: `solid 1px ${theme.palette.secondary.main}`,
-  },
-  upcoming: {
+  [EventWarningType.ORANGE]: {
     background: `${theme.palette.extra.orange}1A`,
     border: `solid 1px ${theme.palette.extra.orange}`,
   },

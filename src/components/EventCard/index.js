@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum } from 'lodash';
-import { Phases } from 'constants';
+import { Phases, EventWarningType } from 'constants';
 
 import EventWarning from '../EventWarning';
 import styles from './styles';
@@ -88,7 +88,7 @@ export default class EventCard extends PureComponent {
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
               {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
-              {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type="upcoming" />}
+              {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
               <Typography variant="headline" className={classes.eventCardName}>
                 {name}
               </Typography>
