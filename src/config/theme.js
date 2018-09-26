@@ -251,6 +251,14 @@ export const theme = {
         fontSize: px(fontSizeMeta),
       },
     },
+    MuiTooltip: {
+      tooltip: {
+        backgroundColor: primaryColor,
+        color: white,
+        fontSize: px(fontSizeMeta),
+        padding: paddingUnit,
+      },
+    },
     MuiExpansionPanelSummary: {
       expandIcon: {
         top: px(paddingSm),
@@ -311,7 +319,6 @@ export const theme = {
     navHeight: px(navHeight),
     footerHeight,
   },
-
   border: `solid 1px ${borderColor}`,
   borderRadius: px(borderRadius),
 };

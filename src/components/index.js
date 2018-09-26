@@ -1,10 +1,10 @@
+export * from './Loading';
 export { default as BottomBar } from './BottomBar';
 export { default as GlobalDialog } from './GlobalDialog';
 export { default as EventWarning } from './EventWarning';
 export { default as ExecuteTxDialog } from './ExecuteTxDialog';
 export { default as GlobalSnackbar } from './GlobalSnackbar';
-export * from './ImportantNote';
-export * from './Loading';
+export { default as ImportantNote } from './ImportantNote';
 export { default as PendingTxsSnackbar } from './PendingTxsSnackbar';
 export { default as StepperVertRight } from './StepperVertRight';
 export { default as TransactionHistoryID } from './TransactionHistoryAddressAndID/id';

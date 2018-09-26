@@ -1,15 +1,22 @@
 import React from 'react';
-import { withStyles, Typography } from '@material-ui/core';
+import { withStyles, IconButton, Tooltip, Typography } from '@material-ui/core';
 import cx from 'classnames';
 
 import styles from './styles';
 
-export const ImportantNote = withStyles(styles)(({ classes, heading, message, ...props }) => !!(heading && message) && (
-  <div {...props}>
-    <div className={classes.iconHeadingContainer}>
-      <i className={cx('icon iconfont icon-ic_info', classes.icon)} />
-      <Typography className={classes.heading}>{heading}</Typography>
+const ImportantNote = ({ classes, heading, message, ...props }) => (
+  heading && message && (
+    <div {...props}>
+      <div className={classes.iconHeadingContainer}>
+        <Tooltip title={<span>{message}</span>}>
+          <IconButton className={classes.iconButton} disableRipple>
+            <i className={cx('icon iconfont icon-ic_info', classes.icon)} />
+          </IconButton>
+        </Tooltip>
+        <Typography className={classes.heading}>{heading}</Typography>
+      </div>
     </div>
-    <Typography className={classes.message}>{message}</Typography>
-  </div>
-));
+  )
+);
+
+export default withStyles(styles)((ImportantNote));
