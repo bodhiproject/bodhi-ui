@@ -35,6 +35,9 @@ const redColor = '#FE4A49';
 const redColorLight = '#FFDEDE';
 const redColorDark = '#960F0E';
 
+// Orange
+const orange = '#F5A623';
+
 // Text
 const textColorDark = '#333333';
 const textColorGrey = '#666666';
@@ -92,6 +95,9 @@ export const theme = {
       secondary: textColorGrey,
       disabled: textColorLight,
       hint: textColorLight,
+    },
+    extra: {
+      orange,
     },
     divider: borderColor,
   },

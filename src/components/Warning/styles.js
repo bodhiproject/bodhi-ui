@@ -15,13 +15,12 @@ const styles = (theme) => ({
     fontSize: theme.sizes.font.meta,
   },
   pending: {
-    color: '#23DAE0',
+    color: theme.palette.secondary.main,
     fontSize: theme.sizes.font.meta,
   },
   upcoming: {
-    fontFamily: 'Lato',
-    fontWeight: 'bold',
-    color: '#F5A623',
+    fontWeight: theme.typography.fontWeightBold,
+    color: theme.palette.extra.orange,
   },
 });
 
