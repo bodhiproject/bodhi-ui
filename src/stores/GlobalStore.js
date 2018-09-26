@@ -74,33 +74,53 @@ export default class GlobalStore {
    */
   registerQrypto = () => {
     if (!this.localWallet) {
-      console.log('Registering with Qrypto...'); // eslint-disable-line
-      window.addEventListener('message', this.handleQryptoAccountChange, false);
+      console.log('Trying to register with Qrypto...'); // eslint-disable-line
+      window.addEventListener('message', this.handleWindowMessage, false);
       window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
     }
   }
 
   /**
+   * Handles all window messages.
+   * @param {MessageEvent} event Message to handle.
+   */
+  handleWindowMessage = (event) => {
+    if (event.data.message && event.data.message.type) {
+      const types = {
+        QRYPTO_INSTALLED_OR_UPDATED: this.handleQryptoInstall,
+        ACCOUNT_CHANGED: this.handleQryptoAccountChange,
+      };
+      const messageAction = types[event.data.message.type];
+      if (messageAction) messageAction(event);
+    }
+  }
+
+  /**
+   * Handles the event when Qrypto posts an install or update message.
+   */
+  handleQryptoInstall = () => {
+    window.location.reload();
+  }
+
+  /**
    * Handles the event when Qrypto posts an account change message.
-   * @param {MessageEvent} event Message event to handle.
+   * @param {MessageEvent} event Message to handle.
    */
   @action
   handleQryptoAccountChange = (event) => {
-    if (event.data.message && event.data.message.type === 'ACCOUNT_CHANGED') {
-      if (event.data.message.payload.error) {
-        console.error(event.data.message.payload.error); // eslint-disable-line
-        return;
-      }
-
-      // Instantiate qweb3 instance on first callback
-      if (!this.qweb3) {
-        if (window.qrypto && window.qrypto.rpcProvider) {
-          this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
-        }
-      }
-
-      this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
+    if (event.data.message.payload.error) {
+      console.error(event.data.message.payload.error); // eslint-disable-line
+      return;
     }
+
+    // Instantiate qweb3 instance on first callback
+    if (!this.qweb3) {
+      if (window.qrypto && window.qrypto.rpcProvider) {
+        this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
+      }
+    }
+
+    this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
   }
 
   /**
