@@ -27,7 +27,7 @@ const messages = defineMessages({
 
 const Tutorial0 = ({ classes }) => (
   <div>
-    <Typography variant="display1">
+    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tutorial0.title" defaultMessage="What Is The Bodhi App" />
     </Typography>
     <ul className={classes.contentList}>

@@ -1,12 +1,19 @@
 const styles = (theme) => ({
+  tutorialDialogPaper: {
+    [theme.breakpoints.down('xs')]: {
+      margin: theme.padding.unit.px,
+    },
+  },
   tutorialDialog: {
     backgroundPosition: 'bottom',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    minHeight: '600px',
-    minWidth: '880px',
+    minHeight: 520,
     padding: '0 !important',
     position: 'relative',
+    [theme.breakpoints.down('xs')]: {
+      minHeight: 470,
+    },
   },
   tutorialDialog0: {
     backgroundImage: 'url(/images/carousel-bg-0.png)',
@@ -58,26 +65,56 @@ const styles = (theme) => ({
     marginBottom: theme.padding.xs.px,
   },
   contentWrapper: {
-    padding: `${theme.padding.sm.px} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px} !important`,
+    padding: `${theme.padding.sm.px} ${theme.padding.md.px}`,
+    [theme.breakpoints.down('xs')]: {
+      padding: `${theme.padding.unit.px} ${theme.padding.sm.px} 0 ${theme.padding.sm.px}`,
+    },
+  },
+  tutorialDialogContentWrapper: {
+    height: 400,
+    overflowY: 'auto',
+    [theme.breakpoints.down('xs')]: {
+      height: 350,
+    },
+  },
+  tutorialDialogContentTitle: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.sizes.font.titleMd,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: theme.sizes.font.textLg,
+    },
   },
   contentList: {
     lineHeight: '28px',
     WebkitPaddingStart: '20px',
+    [theme.breakpoints.down('xs')]: {
+      margin: 0,
+    },
+  },
+  tutorialDialogContentItem: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
   },
   buttonsWrapper: {
     textAlign: 'center',
-    position: 'absolute',
-    bottom: theme.padding.lg.px,
-    left: 0,
-    right: 0,
   },
   button: {
-    marginLeft: '50px',
-    marginRight: '50px',
+    margin: `${theme.padding.unit.px} ${theme.padding.md.px}`,
     display: 'inline-block',
+    [theme.breakpoints.down('xs')]: {
+      margin: `${theme.padding.unit.px} ${theme.padding.unit.px}`,
+    },
+  },
+  buttonTxt: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
   },
   link: {
     color: theme.palette.primary.main,
+    wordWrap: 'break-word',
   },
   tncWrapper: {
     maxHeight: '300px',
@@ -85,16 +122,26 @@ const styles = (theme) => ({
     marginTop: theme.padding.xs.px,
     marginBottom: theme.padding.unit.px,
     padding: theme.padding.sm.px,
+    [theme.breakpoints.down('xs')]: {
+      maxHeight: 260,
+      fontSize: 12,
+    },
   },
   tncAgreement: {
     fontWeight: 'bold',
     color: theme.palette.error.main,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
   },
   langBtn: {
     marginLeft: theme.padding.xs.px,
     padding: `0px ${theme.padding.unit.px}`,
     border: theme.border,
     borderRadius: theme.borderRadius,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
   },
 });
 
