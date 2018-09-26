@@ -13,7 +13,7 @@ global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
 const { QTUM, BOT } = Token;
-const { BETTING, VOTING, FINALIZING, UNCONFIRMED, PENDING, RESULT_SETTING, WITHDRAWING } = Phases;
+const { BETTING, VOTING, RESULT_SETTING } = Phases;
 
 describe('models/Oracle', () => {
   let oracle;
