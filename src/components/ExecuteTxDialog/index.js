@@ -44,7 +44,7 @@ export default class ExecuteTxDialog extends Component {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={() => this.props.store.tx.visible = false}>
+          <Button color="primary" size="small" onClick={() => this.props.store.tx.visible = false}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
         </DialogActions>
