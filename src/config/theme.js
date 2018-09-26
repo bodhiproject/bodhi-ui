@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { createMuiTheme } from '@material-ui/core';
 
-/* Brand Variables */
+// Font
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
-// TODO (LIV): TOO MANY FONT SIZES, TALK TO THE DESIGNERS
+// Font size
 const fontSizeTitleLg = 36;
 const fontSizeTitleMd = 32;
 const fontSizeTitleSm = 24;
@@ -13,44 +13,48 @@ const fontSizeTextMd = 18;
 const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
+// Line height
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
 
-const progressHeight = 12;
-const iconSize = 24;
-
-// neon blue
+// Neon blue
 const primaryColor = '#585AFA';
 const primaryColorDark = '#4244BB';
 const primaryColorLight = '#F0F0FF';
 
-// neo teal
+// Neo teal
 const secondaryColor = '#23DAE0';
 const secondaryColorLight = '#E9FEFE';
 const secondaryColorDark = '#11A5A9';
 
-// white
+// White
 const white = '#FFFFFF';
 
-// red
+// Red
 const redColor = '#FE4A49';
 const redColorLight = '#FFDEDE';
 const redColorDark = '#960F0E';
 
+// Text
 const textColorDark = '#333333';
 const textColorGrey = '#666666';
 const textColorLight = '#9B9B9B';
 
+// Misc
 const backgroundColor = '#F9F9F9';
 const borderColor = '#ECECEC';
-const borderRadius = 4;
 
+// Spacing
 const paddingUnit = 8;
 const paddingXs = paddingUnit * 2; // 16
 const paddingSm = paddingUnit * 3; // 24
 const paddingMd = paddingUnit * 5; // 40
 const paddingLg = paddingUnit * 7; // 56
 
+// Size
+const progressHeight = 12;
+const iconSize = 24;
+const borderRadius = 4;
 const navHeight = 70;
 const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
@@ -58,7 +62,7 @@ const tableHeaderHeight = 40;
 const px = (value) => value.toString().concat('px');
 
 export const theme = {
-  /* material variables */
+  /* Material variables */
   palette: {
     primary: {
       light: primaryColorLight,
@@ -137,7 +141,7 @@ export const theme = {
       color: textColorLight,
     },
   },
-  /* override component globally */
+  /* Component overrides */
   overrides: {
     MuiLinearProgress: {
       root: {
@@ -244,7 +248,7 @@ export const theme = {
       },
     },
   },
-  /* additional variables */
+  /* User-defined */
   padding: {
     unit: {
       value: paddingUnit,
