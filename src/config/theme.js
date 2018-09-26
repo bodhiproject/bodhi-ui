@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createMuiTheme } from '@material-ui/core';
-import { rgba } from 'polished';
 
 /* Brand Variables */
-
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
 // TODO (LIV): TOO MANY FONT SIZES, TALK TO THE DESIGNERS
@@ -21,8 +19,6 @@ const lineHeightSm = '125%';
 const progressHeight = 12;
 const iconSize = 24;
 
-const white = '#FFFFFF';
-
 // neon blue
 const primaryColor = '#585AFA';
 const primaryColorDark = '#4244BB';
@@ -32,6 +28,9 @@ const primaryColorLight = '#F0F0FF';
 const secondaryColor = '#23DAE0';
 const secondaryColorLight = '#E9FEFE';
 const secondaryColorDark = '#11A5A9';
+
+// white
+const white = '#FFFFFF';
 
 // red
 const redColor = '#FE4A49';
@@ -46,19 +45,17 @@ const backgroundColor = '#F9F9F9';
 const borderColor = '#ECECEC';
 const borderRadius = 4;
 
-const spaceUnit = 8;
-const paddingXs = spaceUnit * 2; // 16
-const paddingSm = spaceUnit * 3; // 24
-const paddingMd = spaceUnit * 5; // 40
-const paddingLg = spaceUnit * 7; // 56
+const paddingUnit = 8;
+const paddingXs = paddingUnit * 2; // 16
+const paddingSm = paddingUnit * 3; // 24
+const paddingMd = paddingUnit * 5; // 40
+const paddingLg = paddingUnit * 7; // 56
 
 const navHeight = 70;
 const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
 
 const px = (value) => value.toString().concat('px');
-
-// Material Theme for Bodhi
 
 export const theme = {
   /* material variables */
@@ -146,7 +143,7 @@ export const theme = {
       root: {
         height: px(progressHeight),
         borderRadius: px(progressHeight),
-        backgroundColor: borderColor.concat(' !important'),
+        backgroundColor: `${borderColor} !important`,
       },
     },
     MuiSelect: {
@@ -175,15 +172,12 @@ export const theme = {
           opacity: 0.6,
         },
       },
-      outlined: {
-      },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),
         fontWeight: 700,
         minHeight: px(paddingLg),
       },
     },
-    // TODO (LIVIA): USE A VARIENT INSTEAD OF OVERRIDE
     MuiStepConnector: {
       vertical: {
         padding: '0',
@@ -204,8 +198,8 @@ export const theme = {
     },
     MuiTab: {
       root: {
-        marginTop: px(spaceUnit),
-        marginBottom: px(spaceUnit),
+        marginTop: px(paddingUnit),
+        marginBottom: px(paddingUnit),
       },
       label: {
         fontSize: fontSizeTextSm,
@@ -215,7 +209,7 @@ export const theme = {
     MuiTable: {
       root: {
         background: white,
-        border: 'solid 1px '.concat(borderColor),
+        border: `solid 1px ${borderColor}`,
       },
     },
     MuiTableRow: {
@@ -253,8 +247,8 @@ export const theme = {
   /* additional variables */
   padding: {
     unit: {
-      value: spaceUnit,
-      px: px(spaceUnit),
+      value: paddingUnit,
+      px: px(paddingUnit),
     },
     xs: {
       value: paddingXs,
@@ -291,10 +285,9 @@ export const theme = {
     navHeight: px(navHeight),
     footerHeight,
   },
-  border: 'solid 1px '.concat(borderColor),
+  border: `solid 1px ${borderColor}`,
   borderRadius: px(borderRadius),
 };
 
-const bodhiTheme = createMuiTheme(theme);
-
-export default bodhiTheme;
+export default createMuiTheme(theme);
+/* eslint-enable no-unused-vars */

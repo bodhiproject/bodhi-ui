@@ -87,7 +87,7 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
   <div className={classes.actionButtonsContainer}>
     <Button
       className={classes.confirmButton}
-      variant="outlined"
+      variant="raised"
       color="primary"
       size="small"
       onClick={() => tx.confirmTx(index)}
@@ -95,7 +95,7 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
       <Check />
       <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
     </Button>
-    <Button variant="outlined" size="small" onClick={() => tx.deleteTx(index)}>
+    <Button variant="raised" color="default" size="small" onClick={() => tx.deleteTx(index)}>
       <Clear />
       <FormattedMessage id="str.delete" defaultMessage="Delete" />
     </Button>

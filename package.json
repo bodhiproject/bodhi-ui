@@ -33,7 +33,6 @@
     "moment-duration-format": "^2.2.2",
     "nprogress": "^0.2.0",
     "number-precision": "^1.2.0",
-    "polished": "^1.9.2",
     "postcss-inline-rtl": "^0.9.8",
     "prop-types": "^15.6.1",
     "qweb3": "^1.2.0",
