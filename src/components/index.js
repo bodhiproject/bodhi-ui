@@ -1,5 +1,6 @@
 export * from './Loading';
 export { default as BottomBar } from './BottomBar';
+export { default as CurrentAllowanceNote } from './CurrentAllowanceNote';
 export { default as GlobalDialog } from './GlobalDialog';
 export { default as EventWarning } from './EventWarning';
 export { default as ExecuteTxDialog } from './ExecuteTxDialog';
