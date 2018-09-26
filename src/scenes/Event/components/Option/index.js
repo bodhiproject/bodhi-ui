@@ -1,20 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import {
-  Collapse,
-  withStyles,
-  MenuItem,
-  Select,
-  Typography,
-  FormControl,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  Input,
-  InputLabel,
-  InputAdornment,
-} from '@material-ui/core';
+import { Collapse, withStyles, MenuItem, Select, Typography, FormControl, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Input, InputLabel, InputAdornment } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
@@ -107,8 +94,6 @@ export default class Option extends Component {
                   amountPlaceholder={amountPlaceholder}
                 />
                 <AddressSelect
-                  wallet={wallet}
-                  token={token}
                   classes={classes}
                   value={wallet.currentAddress}
                   onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
@@ -129,9 +114,7 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => 
         <i className="icon iconfont icon-ic_token"></i>
       </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="amount" shrink>
-          AMOUNT
-        </InputLabel>
+        <InputLabel htmlFor="amount" shrink>AMOUNT</InputLabel>
         <Input
           id="vote-amount"
           type="number"
@@ -147,18 +130,16 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => 
   </ExpansionPanelDetails>
 );
 
-const AddressSelect = observer(({ classes, wallet, ...props }) => (
+const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { addresses } }, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
       <div className={classes.eventOptionIcon}>
         <i className="icon iconfont icon-ic_wallet"></i>
       </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="address" shrink>
-          ADDRESS
-        </InputLabel>
+        <InputLabel htmlFor="address" shrink>ADDRESS</InputLabel>
         <Select inputProps={{ id: 'address' }} {...props}>
-          {wallet.addresses.map(({ address, bot, qtum }) => (
+          {addresses.map(({ address, bot, qtum }) => (
             <MenuItem key={address} value={address}>
               {`${address} (${qtum ? Number(qtum).toFixed(2) : 0} QTUM, ${bot ? Number(bot).toFixed(2) : 0} BOT)`}
             </MenuItem>
@@ -167,4 +148,4 @@ const AddressSelect = observer(({ classes, wallet, ...props }) => (
       </FormControl>
     </div>
   </ExpansionPanelDetails>
-));
+)));
