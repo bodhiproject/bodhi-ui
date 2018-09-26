@@ -19,19 +19,19 @@ export default class BackButton extends Component {
     history: PropTypes.object.isRequired,
   };
 
+  onBackClick = () => {
+    const { history } = this.props;
+    history.goBack();
+  };
+
   render() {
     const { classes } = this.props;
 
     return (
-      <Button variant="raised" size="small" className={classes.button} onClick={this.onBackClick}>
+      <Button variant="raised" color="primary" size="small" className={classes.button} onClick={this.onBackClick}>
         <ChevronLeft />
         <FormattedMessage id="str.back" defaultMessage="Back" />
       </Button>
     );
   }
-
-  onBackClick = () => {
-    const { history } = this.props;
-    history.goBack();
-  };
 }
