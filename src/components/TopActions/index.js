@@ -40,7 +40,7 @@ export default class TopActions extends Component {
               onClick={createEvent.open}
             >
               <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
-              <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
+              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
             </Button>
           )}
         </Grid>
