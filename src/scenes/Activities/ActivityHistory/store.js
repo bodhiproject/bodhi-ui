@@ -1,5 +1,5 @@
 import { observable, action, reaction, computed } from 'mobx';
-import _ from 'lodash';
+import { orderBy, map, omit, values } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 import { Transaction, Oracle } from 'models';
 
@@ -25,15 +25,19 @@ export default class {
 
   constructor(app) {
     this.app = app;
-    reaction( // Try to fetch more when got new block
+
+    // Try to fetch more when got new block
+    reaction(
       () => this.app.global.syncBlockNum,
       () => this.getMoreData()
     );
-    reaction( // Sort while order changes - may be different from the reaction with syncBlockNum in future
+    // Sort while order changes - may be different from the reaction with syncBlockNum in future
+    reaction(
       () => this.order + this.orderBy,
-      () => this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order])
+      () => this.transactions = orderBy(this.transactions, [this.orderBy], [this.order])
     );
-    reaction( // Try to fetch more when need more data
+    // Try to fetch more when need more data
+    reaction(
       () => this.page + this.perPage,
       () => {
         // Set skip to fetch more txs if last page is reached, but no fetch if initial request hasn't been finished (i.e. txs length == 0)
@@ -50,7 +54,7 @@ export default class {
   getMoreData = async () => {
     const moreData = await this.fetchHistory(this.transactions.length);
     this.transactions = [...this.transactions, ...moreData];
-    this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order]);
+    this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
   }
 
   @computed
@@ -62,12 +66,12 @@ export default class {
 
   @action
   getOracleAddress = async (topicAddress) => {
-    const orderBy = { field: 'endTime', direction: SortBy.DESCENDING };
+    const order = { field: 'endTime', direction: SortBy.DESCENDING };
     const filters = [{ topicAddress }];
 
     if (topicAddress) {
-      const targetoracle = await queryAllOracles(filters, orderBy);
-      const path = getDetailPagePath(_.map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
+      const targetoracle = await queryAllOracles(filters, order);
+      const path = getDetailPagePath(map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
       if (path) return path;
     }
   }
@@ -80,13 +84,13 @@ export default class {
     this.transactions = await this.fetchHistory();
   }
 
-  fetchHistory = async (skip = 0, limit = this.limit, orderBy = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
+  fetchHistory = async (skip = 0, limit = this.limit, orderByField = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
     // order default by DESC
     const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
-    const filters = _.values(_.omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
-    const orderBySect = { field: orderBy, direction };
+    const filters = values(omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
+    const orderBySect = { field: orderByField, direction };
     const result = await queryAllTransactions(filters, orderBySect, limit, skip);
-    return _.map(result, (tx) => new Transaction(tx));
+    return map(result, (tx) => new Transaction(tx));
   }
 
   @action
