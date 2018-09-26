@@ -1,5 +1,5 @@
 import { observable, action, reaction, computed } from 'mobx';
-import { orderBy, map, omit, values } from 'lodash';
+import { orderBy, map, omit, values, isEmpty, each, merge } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 import { Transaction, Oracle } from 'models';
 
@@ -66,9 +66,19 @@ export default class {
   }
 
   fetchHistory = async (skip = 0, limit = this.limit, orderByField = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
-    // order default by DESC
+    // Address is required for the request filters
+    if (isEmpty(this.app.wallet.addresses)) {
+      return [];
+    }
+
     const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
-    const filters = values(omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
+
+    const txTypes = values(omit(TransactionType, 'TRANSFER'));
+    const filters = [];
+    each(this.app.wallet.addresses, (walletAddress) => {
+      merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
+    });
+
     const orderBySect = { field: orderByField, direction };
     const result = await queryAllTransactions(filters, orderBySect, limit, skip);
     return map(result, (tx) => new Transaction(tx));
