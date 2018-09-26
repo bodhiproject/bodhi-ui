@@ -68,11 +68,11 @@ const EscrowAmountNote = injectIntl(withStyles(styles)(inject('store')(observer(
   return <ImportantNote className={classes.escrowAmountNote} heading={heading} message={message} />;
 }))));
 
-const CancelButton = inject('store')(({ store: { createEvent } }) => (
-  <Button onClick={createEvent.close} color='primary'>
+const CancelButton = withStyles(styles)(inject('store')(({ classes, store: { createEvent } }) => (
+  <Button className={classes.cancelButton} onClick={createEvent.close} variant="raised" size="small">
     <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
   </Button>
-));
+)));
 
 const PublishButton = inject('store')(observer(({ store: { createEvent } }) => (
   <Button
@@ -80,6 +80,7 @@ const PublishButton = inject('store')(observer(({ store: { createEvent } }) => (
     disabled={createEvent.submitting || !createEvent.hasEnoughFee}
     color="primary"
     variant="raised"
+    size="small"
   >
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>

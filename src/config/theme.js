@@ -13,6 +13,12 @@ const fontSizeTextMd = 18;
 const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
+// Font weight
+const fontWeightBold = 700;
+const fontWeightMedium = 700;
+const fontWeightRegular = 400;
+const fontWeightLight = 300;
+
 // Line height
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
@@ -104,21 +110,21 @@ export const theme = {
   typography: {
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 700,
-    fontWeightBold: 700, // additional var
+    fontWeightLight,
+    fontWeightRegular,
+    fontWeightMedium,
+    fontWeightBold, // additional var
     // large headline (i.e. title on prediction title)
     display1: {
       fontSize: px(fontSizeTitleLg),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
     },
     headline: {
       fontSize: px(fontSizeTitleSm),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
@@ -126,19 +132,19 @@ export const theme = {
     // large text (i.e. title on prediction title)
     title: {
       fontSize: px(fontSizeTextMd),
-      fontWeight: 700,
+      fontWeight: fontWeightBold,
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
     body1: {
       fontSize: px(fontSizeMeta),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
     body2: {
       fontSize: px(fontSizeTextSm),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
@@ -184,8 +190,14 @@ export const theme = {
       },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),
-        fontWeight: 700,
-        minHeight: px(paddingLg),
+        fontWeight: fontWeightBold,
+        minHeight: 56,
+      },
+      sizeSmall: {
+        fontSize: px(fontSizeMeta),
+        fontWeight: fontWeightBold,
+        height: 40,
+        padding: `0 ${paddingSm}`,
       },
     },
     MuiStepConnector: {
@@ -234,7 +246,7 @@ export const theme = {
         fontSize: 13,
       },
       head: {
-        fontWeight: 700,
+        fontWeight: fontWeightBold,
         fontSize: px(fontSizeMeta),
       },
     },

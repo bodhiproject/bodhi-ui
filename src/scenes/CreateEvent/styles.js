@@ -43,6 +43,9 @@ const styles = (theme) => ({
   footer: {
     margin: theme.padding.sm.px,
   },
+  cancelButton: {
+    marginRight: theme.padding.unit.px,
+  },
 });
 
 export default styles;
