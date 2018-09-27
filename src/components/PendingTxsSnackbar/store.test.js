@@ -1,7 +1,7 @@
 import { TransactionType, TransactionStatus } from 'constants';
 import { observable } from 'mobx';
 import PendingTxsSnackbarStore, { INIT_VALUES } from './store';
-import { mockResetTransactionList, mockAddTransaction } from '../../network/graphql/queries/';
+import { mockResetTransactionList, mockAddTransaction, MockTransaction } from '../../network/graphql/queries/';
 
 jest.mock('../../network/graphql/queries'); // block and manually mock our backend
 
@@ -40,73 +40,73 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.count).toBe(0);
       expect(store.isVisible).toBe(false);
 
-      mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
+      mockAddTransaction(MockTransaction(1, { type: TransactionType.APPROVE_CREATE_EVENT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
       expect(store.pendingCreateEvents.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 2, status: TransactionStatus.PENDING, type: TransactionType.CREATE_EVENT });
+      mockAddTransaction(MockTransaction(2, { type: TransactionType.CREATE_EVENT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(2);
       expect(store.pendingCreateEvents.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 3, status: TransactionStatus.PENDING, type: TransactionType.BET });
+      mockAddTransaction(MockTransaction(3, { status: TransactionStatus.PENDING, type: TransactionType.BET }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(3);
       expect(store.pendingBets.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 4, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_SET_RESULT });
+      mockAddTransaction(MockTransaction(4, { txid: 4, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_SET_RESULT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(4);
       expect(store.pendingSetResults.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 5, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT });
+      mockAddTransaction(MockTransaction(5, { txid: 5, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(5);
       expect(store.pendingSetResults.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 6, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_VOTE });
+      mockAddTransaction(MockTransaction(6, { txid: 6, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_VOTE }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(6);
       expect(store.pendingVotes.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 7, status: TransactionStatus.PENDING, type: TransactionType.VOTE });
+      mockAddTransaction(MockTransaction(7, { txid: 7, status: TransactionStatus.PENDING, type: TransactionType.VOTE }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(7);
       expect(store.pendingVotes.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 8, status: TransactionStatus.PENDING, type: TransactionType.FINALIZE_RESULT });
+      mockAddTransaction(MockTransaction(8, { txid: 8, status: TransactionStatus.PENDING, type: TransactionType.FINALIZE_RESULT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(8);
       expect(store.pendingFinalizeResults.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 9, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW });
+      mockAddTransaction(MockTransaction(9, { txid: 9, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(9);
       expect(store.pendingWithdraws.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 10, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW_ESCROW });
+      mockAddTransaction(MockTransaction(10, { txid: 10, status: TransactionStatus.PENDING, type: TransactionType.WITHDRAW_ESCROW }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(10);
       expect(store.pendingWithdraws.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 11, status: TransactionStatus.PENDING, type: TransactionType.TRANSFER });
+      mockAddTransaction(MockTransaction(11, { txid: 11, status: TransactionStatus.PENDING, type: TransactionType.TRANSFER }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(11);
       expect(store.pendingTransfers.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockAddTransaction({ txid: 12, status: TransactionStatus.PENDING, type: TransactionType.RESET_APPROVE });
+      mockAddTransaction(MockTransaction(12, { txid: 12, status: TransactionStatus.PENDING, type: TransactionType.RESET_APPROVE }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(12);
       expect(store.pendingCreateEvents.length).toBe(2);
@@ -132,7 +132,7 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(false);
 
-      mockAddTransaction({ txid: 4, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT });
+      mockAddTransaction(MockTransaction(14, { txid: 4, status: TransactionStatus.PENDING, type: TransactionType.SET_RESULT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
       expect(store.pendingSetResults.length).toBe(1);
@@ -144,7 +144,7 @@ describe('PendingTxsSnackbarStore', () => {
   describe('Reset', () => {
     it('Reset the values when called', async () => {
       await store.init();
-      mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
+      mockAddTransaction(MockTransaction(1, { txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT }));
       await store.queryPendingTransactions();
       store.reset();
       expect(store.count).toBe(INIT_VALUES.count);
@@ -166,7 +166,7 @@ describe('PendingTxsSnackbarStore', () => {
     it('Visible', async () => {
       expect(store.count).toBe(0);
 
-      mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
+      mockAddTransaction(MockTransaction(1, { txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
 
@@ -183,7 +183,7 @@ describe('PendingTxsSnackbarStore', () => {
     it('syncBlockNum', async () => {
       expect(store.isVisible).toBe(false);
 
-      mockAddTransaction({ txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT });
+      mockAddTransaction(MockTransaction(1, { txid: 1, status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT }));
       app.global.syncBlockNum = 1;
       await sleep(100);
       expect(store.isVisible).toBe(false);

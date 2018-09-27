@@ -4,6 +4,8 @@
  * */
 import mockData from './mockData';
 
+export { default as MockTransaction } from './dbmodels/transaction';
+
 export function mockResetAllList() {
   mockData.resetAll();
 }
@@ -43,6 +45,7 @@ export function queryAllOracles(app, filters, orderBy, limit, skip) {
 }
 
 export function queryAllTransactions(filters, orderBy, limit, skip) {
+  const result = mockData.transactions.slice();
   const end = skip + limit <= mockData.transactions.length ? skip + limit : mockData.transactions.length;
-  return mockData.transactions.slice(skip, end);
+  return result.slice(skip, end);
 }
