@@ -29,6 +29,7 @@ const INIT = {
   eventWarningMessageId: '',
   escrowClaim: 0,
   hashId: '',
+  allowance: undefined,
   qtumWinnings: 0,
   botWinnings: 0,
   withdrawableAddresses: [],
@@ -48,6 +49,7 @@ export default class EventStore {
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
+  @observable allowance = INIT.allowance;
 
   // topic
   @observable topics = INIT.topics
@@ -156,25 +158,34 @@ export default class EventStore {
     // GraphQL calls
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
+    await this.getAllowanceAmount();
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = this.oracle.consensusThreshold.toString();
     }
+
     this.loading = false;
   }
 
   setReactions = () => {
-    // Handle Topic changes when the address list changes
+    // Wallet addresses list changed
     reaction(
       () => this.app.wallet.addresses,
-      async () => {
+      () => {
         if (this.type === TOPIC) {
           this.calculateWinnings();
         }
       }
     );
 
+    // Current wallet address changed
+    reaction(
+      () => this.app.wallet.currentAddress,
+      () => this.getAllowanceAmount(),
+    );
+
+    // New block
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
@@ -192,6 +203,7 @@ export default class EventStore {
           case ORACLE: {
             await this.queryTransactions(this.topicAddress);
             await this.queryOracles(this.topicAddress);
+            await this.getAllowanceAmount();
             this.disableEventActionsIfNecessary();
             break;
           }
@@ -202,7 +214,7 @@ export default class EventStore {
       }
     );
 
-    // Toggle CTA on new block, transaction change, amount input change, option selected
+    // Tx, amount, selected option, or current wallet address changes
     reaction(
       () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
       () => {
@@ -255,6 +267,13 @@ export default class EventStore {
       runInAction(() => {
         this.app.components.globalDialog.setError(error.message, networkRoutes.api.eventEscrowAmount);
       });
+    }
+  }
+
+  @action
+  getAllowanceAmount = async () => {
+    if (this.oracle.phase === VOTING) {
+      this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
     }
   }
 

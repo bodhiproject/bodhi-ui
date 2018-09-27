@@ -165,6 +165,10 @@ export default class WalletStore {
    * @return {string} Amount of the allowance.
    */
   checkAllowance = async (owner, spender) => {
+    if (!owner || !spender || !this.currentAddress) {
+      return undefined;
+    }
+
     try {
       const { data: { remaining } } = await axios.post(Routes.api.allowance, {
         owner,
