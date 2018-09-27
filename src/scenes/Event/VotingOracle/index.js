@@ -6,6 +6,7 @@ import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
 
 import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory } from '../components';
+import { satoshiToDecimal } from '../../../helpers/utility';
 
 const messages = defineMessages({
   oracleConsensusThresholdMsg: {
@@ -27,7 +28,7 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, allowance } } }
       )}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
-      <CurrentAllowanceNote allowance={allowance} />
+      <CurrentAllowanceNote allowance={satoshiToDecimal(allowance)} />
       <VoteButton eventpage={eventPage} />
       <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
       <TransactionHistory options={oracle.options} />

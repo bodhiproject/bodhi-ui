@@ -5,7 +5,7 @@ import { ImportantNote } from 'components';
 const messages = defineMessages({
   currentAllowanceTitle: {
     id: 'note.currentAllowanceTitle',
-    defaultMessage: 'Current BOT Allowance: {allowance}',
+    defaultMessage: 'Current Allowance: {allowance} BOT',
   },
   currentAllowanceMessage: {
     id: 'note.currentAllowanceMessage',
