@@ -5,6 +5,21 @@ import { Transaction } from 'models';
 
 import { queryAllTransactions } from '../../network/graphql/queries';
 
+const {
+  APPROVE_CREATE_EVENT,
+  CREATE_EVENT,
+  BET,
+  APPROVE_SET_RESULT,
+  SET_RESULT,
+  APPROVE_VOTE,
+  VOTE,
+  FINALIZE_RESULT,
+  WITHDRAW,
+  WITHDRAW_ESCROW,
+  TRANSFER,
+  RESET_APPROVE,
+} = TransactionType;
+
 const INIT_VALUES = {
   isVisible: false,
   count: 0,
@@ -75,20 +90,6 @@ export default class PendingTxsSnackbarStore {
 
       const result = await queryAllTransactions(filters);
       const txs = map(result, (tx) => new Transaction(tx));
-      const {
-        APPROVE_CREATE_EVENT,
-        CREATE_EVENT,
-        BET,
-        APPROVE_SET_RESULT,
-        SET_RESULT,
-        APPROVE_VOTE,
-        VOTE,
-        FINALIZE_RESULT,
-        WITHDRAW,
-        WITHDRAW_ESCROW,
-        TRANSFER,
-        RESET_APPROVE,
-      } = TransactionType;
 
       runInAction(() => {
         this.count = txs.length;

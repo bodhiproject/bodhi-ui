@@ -69,8 +69,8 @@ export default class PendingTxsSnackbar extends Component {
                   values={{ numOfTxs: count }}
                 />
               </Typography>
-              {Object.entries(pendingCounts).map(([id, amounts]) => amounts.length > 0 && (
-                <Typography variant="caption" key={id}>{`${intl.formatMessage({ id })}: ${amounts.length}`}</Typography>
+              {Object.entries(pendingCounts).map(([id, txs]) => txs.length > 0 && (
+                <Typography variant="caption" key={id}>{`${intl.formatMessage({ id })}: ${txs.length}`}</Typography>
               ))}
               <Typography variant="caption" className={classes.balanceExplanation}>
                 <FormattedMessage
