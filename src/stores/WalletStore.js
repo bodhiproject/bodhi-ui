@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction, computed } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { isEmpty, find, findIndex } from 'lodash';
 import moment from 'moment';
 import { Token } from 'constants';
@@ -95,16 +95,6 @@ export default class WalletStore {
   constructor(app) {
     this.app = app;
 
-    // Set a currentWalletAddress if there was none selected before
-    reaction(
-      () => this.addresses,
-      () => {
-        if (isEmpty(this.currentWalletAddress) && !isEmpty(this.addresses)) {
-          [this.currentWalletAddress] = this.addresses;
-        }
-      }
-    );
-
     if (this.app.global.localWallet) {
       this.checkWalletEncrypted();
     }
@@ -128,7 +118,7 @@ export default class WalletStore {
 
     // Reset addresses if logged out
     if (!loggedIn) {
-      this.addresses = INIT_VALUE.addresses;
+      this.addresses.clear();
       this.currentWalletAddress = INIT_VALUE.currentWalletAddress;
       return;
     }

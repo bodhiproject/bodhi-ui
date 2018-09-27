@@ -1,4 +1,4 @@
-import { observable, action, runInAction, computed, reaction } from 'mobx';
+import { observable, action, runInAction, computed, reaction, toJS } from 'mobx';
 import _ from 'lodash';
 import { OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
@@ -30,7 +30,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
         if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();

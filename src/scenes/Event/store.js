@@ -1,4 +1,4 @@
-import { observable, runInAction, action, computed, reaction } from 'mobx';
+import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
 import axios from 'axios';
@@ -171,7 +171,7 @@ export default class EventStore {
   setReactions = () => {
     // Wallet addresses list changed
     reaction(
-      () => this.app.wallet.addresses,
+      () => toJS(this.app.wallet.addresses),
       () => {
         if (this.type === TOPIC) {
           this.calculateWinnings();

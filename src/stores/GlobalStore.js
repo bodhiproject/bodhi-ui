@@ -1,4 +1,4 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action, reaction, toJS } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
 import { Qweb3 } from 'qweb3';
@@ -44,7 +44,7 @@ export default class GlobalStore {
     this.app = app;
 
     reaction(
-      () => this.app.wallet.addresses + this.syncBlockNum,
+      () => toJS(this.app.wallet.addresses) + this.syncBlockNum,
       () => {
         if (this.syncPercent >= 100) {
           this.getActionableItemCount();
