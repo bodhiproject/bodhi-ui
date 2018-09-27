@@ -587,7 +587,7 @@ export default class EventStore {
   }
 
   vote = async () => {
-    const { currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
@@ -595,7 +595,7 @@ export default class EventStore {
 
     if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
       // Has allowance less than the vote amount, needs to reset
-      await this.app.tx.addResetApproveTx(currentAddress, topicAddress);
+      await this.app.tx.addResetApproveTx(topicAddress);
     } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
       // No previous allowance, approve now
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);

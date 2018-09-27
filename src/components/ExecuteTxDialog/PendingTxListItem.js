@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
 import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
@@ -8,6 +8,17 @@ import { TransactionType } from 'constants';
 
 import styles from './styles';
 import { getTxTypeString } from '../../helpers/stringUtil';
+
+const messages = defineMessages({
+  resetApprove: {
+    id: 'txConfirm.resetApprove',
+    defaultMessage: 'You are trying to use more BOT than your currently approved amount. This will require you to reset the approved amount to 0 first before you can increase it. Or you can change the amount up to the current approved amount.',
+  },
+  approveNotice: {
+    id: 'txConfirm.approveNotice',
+    defaultMessage: 'The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.',
+  },
+});
 
 const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => {
   if (!fees || fees.length === 0) {
@@ -55,27 +66,34 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
 }))));
 
 const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ intl, tx: { type } }) => {
-  const { APPROVE_CREATE_EVENT, CREATE_EVENT, APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE } = TransactionType;
-  if (type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
+  const {
+    RESET_APPROVE,
+    APPROVE_CREATE_EVENT,
+    CREATE_EVENT,
+    APPROVE_SET_RESULT,
+    SET_RESULT,
+    APPROVE_VOTE,
+    VOTE,
+  } = TransactionType;
+  if (type === RESET_APPROVE || type === APPROVE_CREATE_EVENT || type === APPROVE_SET_RESULT || type === APPROVE_VOTE) {
     // Get the localized follow-up tx name
-    let action;
-    if (type === APPROVE_CREATE_EVENT) {
-      action = getTxTypeString(CREATE_EVENT, intl);
-    } else if (type === APPROVE_SET_RESULT) {
-      action = getTxTypeString(SET_RESULT, intl);
+    const action = {
+      [RESET_APPROVE]: getTxTypeString(RESET_APPROVE, intl),
+      [APPROVE_CREATE_EVENT]: getTxTypeString(CREATE_EVENT, intl),
+      [APPROVE_SET_RESULT]: getTxTypeString(SET_RESULT, intl),
+      [APPROVE_VOTE]: getTxTypeString(VOTE, intl),
+    }[type];
+
+    let message;
+    if (type === RESET_APPROVE) {
+      message = messages.resetApprove;
     } else {
-      action = getTxTypeString(VOTE, intl);
+      message = messages.approveNotice;
     }
 
     return (
       <div>
-        <Typography variant="body1">
-          <FormattedMessage
-            id='txConfirm.approveNotice'
-            defaultMessage='The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.'
-            values={{ action }}
-          />
-        </Typography>
+        <Typography variant="body1">{intl.formatMessage(message, { action })}</Typography>
       </div>
     );
   }

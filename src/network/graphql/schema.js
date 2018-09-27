@@ -127,15 +127,21 @@ const TYPE_DEF = {
       options
     }
     version
-    approve {
-      owner
-      spender
-      amount
-    }
   `,
 };
 
 const MUTATIONS = {
+  resetApprove: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'receiverAddress',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
   approveCreateEvent: {
     mapping: [
       'txid',

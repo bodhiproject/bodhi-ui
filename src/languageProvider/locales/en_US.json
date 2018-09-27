@@ -357,6 +357,7 @@
   "tx.approveBotTransfer": "Approve BOT Transfer",
   "tx.resetApproval": "Reset Approval",
   "txConfirm.approveNotice": "The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.",
+  "txConfirm.resetApprove": "You are trying to use more BOT than your currently approved amount. This will require you to reset the approved amount to 0 first before you can increase it. Or you can change the amount up to the current approved amount.",
   "txConfirm.title": "Please Confirm Your Transaction",
   "txConfirm.txFeeMsg": "You are about to {txAction} with a maximum transaction fee of {txFee} QTUM.",
   "txConfirm.selectWalletProvider": "Select your wallet provider:",
