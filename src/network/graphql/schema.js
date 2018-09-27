@@ -127,6 +127,11 @@ const TYPE_DEF = {
       options
     }
     version
+    approve {
+      owner
+      spender
+      amount
+    }
   `,
 };
 

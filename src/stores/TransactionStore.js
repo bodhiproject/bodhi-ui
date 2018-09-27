@@ -237,12 +237,12 @@ export default class TransactionStore {
    */
   @action
   addResetApproveTx = async (owner, spender) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.RESET_APPROVE,
-      senderAddress: this.app.wallet.currentAddress,
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
+    // this.transactions.push(observable.object(new Transaction({
+    //   type: TransactionType.RESET_APPROVE,
+    //   senderAddress: this.app.wallet.currentAddress,
+    //   token: Token.BOT,
+    // })));
+    // await this.showConfirmDialog();
   }
 
   /**
