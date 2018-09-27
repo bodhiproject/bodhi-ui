@@ -6,17 +6,15 @@ import Topic from '../../../stores/models/Topic';
 import Oracle from '../../../stores/models/Oracle';
 
 const INIT_VALUES_FAVPAGE = {
-  loaded: false, // loading state?
-  loadingMore: true, // for loading icon?
   displayList: [], // data list
+  loading: true,
 };
 
 export default class FavoriteStore {
   @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: '21e389b909c7ab977088c8d43802d459b0eb521a'
 
-  @observable loaded = INIT_VALUES_FAVPAGE.loaded
   @observable displayList = INIT_VALUES_FAVPAGE.displayList
-  @observable loadingMore = INIT_VALUES_FAVPAGE.loadingMore
+  @observable loading = INIT_VALUES_FAVPAGE.loading
 
   constructor(app) {
     this.app = app;
@@ -58,6 +56,7 @@ export default class FavoriteStore {
     Object.assign(this, INIT_VALUES_FAVPAGE); // reset to initial state
     this.app.ui.location = Routes.FAVORITE; // change ui location, for tabs to render correctly
     this.displayList = await this.fetchFav();
+    this.loading = false;
   }
 
   fetchFav = async () => {
@@ -77,11 +76,6 @@ export default class FavoriteStore {
 
     // Combine both WITHDRAW topics and latest phase oracles into result
     const result = orderBy([...topicResult, ...oracleResult], ['endTime']);
-
-    runInAction(() => {
-      this.loadingMore = false;
-      this.loaded = true;
-    });
     return result;
   }
 }

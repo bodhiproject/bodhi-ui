@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 import { withStyles } from '@material-ui/core';
@@ -16,7 +16,6 @@ class FavoriteButton extends Component {
   }
 
   componentDidMount() {
-    // Oracle.topicAddress or Topic.address. May changes once Topic got renewal with MobX.
     this.setState({ forceRefreshFlag: !this.state.forceRefreshFlag });
   }
 
