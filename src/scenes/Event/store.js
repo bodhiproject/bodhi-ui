@@ -214,9 +214,9 @@ export default class EventStore {
       }
     );
 
-    // Tx, amount, selected option, or current wallet address changes
+    // Tx, amount, selected option, current wallet address, or allowance changes
     reaction(
-      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
+      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
       () => {
         if (this.type === TOPIC || this.type === ORACLE) {
           this.disableEventActionsIfNecessary();
@@ -496,6 +496,14 @@ export default class EventStore {
       return;
     }
 
+    // Error getting allowance amount
+    if (phase === VOTING && !this.allowance) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'str.errorGettingAllowance';
+      return;
+    }
+
     // ALL
     // Trying to bet more qtum than you have or you just don't have enough QTUM period
     if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
@@ -579,17 +587,21 @@ export default class EventStore {
   }
 
   vote = async () => {
-    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { currentAddress, isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
     const amountSatoshi = decimalToSatoshi(this.amount);
-    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-    if (isAllowanceEnough(allowance, amountSatoshi)) {
-      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
+    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // Has allowance less than the vote amount, needs to reset
+      await this.app.tx.addResetApproveTx(currentAddress, topicAddress);
+    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // No previous allowance, approve now
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      // Has enough allowance, place vote
+      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
   }
 

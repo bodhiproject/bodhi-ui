@@ -231,6 +231,21 @@ export default class TransactionStore {
   }
 
   /**
+   * Adds a reset approve tx to the queue.
+   * @param {string} owner Owner of the tokens.
+   * @param {string} spender Address to reset the allowance for.
+   */
+  @action
+  addResetApproveTx = async (owner, spender) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.RESET_APPROVE,
+      senderAddress: this.app.wallet.currentAddress,
+      token: Token.BOT,
+    })));
+    await this.showConfirmDialog();
+  }
+
+  /**
    * Executes an approve.
    * @param {Transaction} tx Transaction object.
    */

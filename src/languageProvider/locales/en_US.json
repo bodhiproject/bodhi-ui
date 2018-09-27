@@ -174,6 +174,7 @@
   "str.endIn": "Ends In",
   "str.ends": "Ends In",
   "str.error": "Error",
+  "str.errorGettingAllowance": "Error getting your allowance.",
   "str.escrow": "Escrow",
   "str.fail": "Fail",
   "str.fee": "Gas Fee (QTUM)",
