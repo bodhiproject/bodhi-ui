@@ -11,7 +11,7 @@ const Logo = withStyles(styles)(({ classes }) => (
 ));
 
 const Message = withStyles(styles)(({ classes }) => (
-  <Typography variant="headline" className={classes.message}>
+  <Typography className={classes.message}>
     <FormattedMessage
       id="qrypto.notInstalled"
       defaultMessage="You have not installed Qrypto yet. Qrypto is a Chrome extension wallet that allows you to sign transaction requests from web dapps. It is strongly recommended that you install it to gain the full experience."
@@ -22,7 +22,7 @@ const Message = withStyles(styles)(({ classes }) => (
 const InstallNowButton = () => (
   <Button
     variant="raised"
-    size="large"
+    size="small"
     color="primary"
     onClick={() => window.open(urls.qryptoWebStore, '_blank')}
   >
@@ -33,7 +33,11 @@ const InstallNowButton = () => (
 export const InstallQryptoInline = withStyles(styles)(({ classes }) => (
   <div className={classes.inlineRoot}>
     <Logo />
-    <Message />
+    <Grid container>
+      <Grid item xs></Grid>
+      <Grid item xs={12} sm={6}><Message /></Grid>
+      <Grid item xs></Grid>
+    </Grid>
     <InstallNowButton />
   </div>
 ));
@@ -51,7 +55,7 @@ export const InstallQryptoPopover = withStyles(styles)(({ classes }) => (
       </Grid>
       <Grid container>
         <Grid item xs>
-          <Button size="large" color="primary">
+          <Button size="small" color="primary">
             <FormattedMessage id="qrypto.remindMeLater" defaultMessage="Remind Me Later" />
           </Button>
           <InstallNowButton />

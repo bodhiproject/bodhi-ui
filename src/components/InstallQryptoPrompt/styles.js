@@ -13,11 +13,14 @@ const styles = (theme) => ({
     padding: theme.padding.xs.px,
   },
   logo: {
-    marginBottom: theme.padding.unit.px,
+    width: 48,
+    marginBottom: theme.padding.sm.px,
   },
   message: {
+    fontSize: theme.sizes.font.textLg,
+    lineHeight: '32px',
     textAlign: 'center',
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.md.px,
   },
 });
 
