@@ -1,5 +1,5 @@
 const styles = (theme) => ({
-  root: {
+  inlineRoot: {
     top: 0,
     right: 0,
     bottom: 0,
@@ -8,6 +8,9 @@ const styles = (theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.padding.lg.px,
+  },
+  popoverRoot: {
+    padding: theme.padding.xs.px,
   },
   logo: {
     marginBottom: theme.padding.unit.px,
