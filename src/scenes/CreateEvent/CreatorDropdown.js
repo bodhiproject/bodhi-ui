@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
 });
 
-const CreatorDropdown = observer(withStyles(styles, { withTheme: true })(({ classes, store: { createEvent, wallet }, intl }) => (
+const CreatorDropdown = (({ classes, store: { createEvent, wallet: { addresses } }, intl }) => (
   <Section title={messages.strCreatorMsg}>
     <FormControl fullWidth>
       <Select
@@ -25,14 +25,14 @@ const CreatorDropdown = observer(withStyles(styles, { withTheme: true })(({ clas
         onChange={e => createEvent.creator = e.target.value}
         onBlur={createEvent.validateCreator}
       >
-        {wallet.addresses.map(creator => <CreatorItem key={creator.address} {...creator} />)}
+        {addresses.map(creator => <CreatorItem key={creator.address} {...creator} />)}
       </Select>
       {Boolean(createEvent.error.creator) && (
         <FormHelperText error>{intl.formatMessage({ id: createEvent.error.creator })}</FormHelperText>
       )}
     </FormControl>
   </Section>
-)));
+));
 
 const CreatorItem = observer(({ address, qtum, bot }) => (
   <option value={address}>
@@ -41,4 +41,4 @@ const CreatorItem = observer(({ address, qtum, bot }) => (
   </option>
 ));
 
-export default injectIntl(inject('store')(CreatorDropdown));
+export default withStyles(styles)(injectIntl(inject('store')(observer(CreatorDropdown))));

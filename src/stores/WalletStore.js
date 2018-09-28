@@ -146,11 +146,19 @@ export default class WalletStore {
     // After the initial BOT balance fetch, it will refetch on every new block.
     const fetchInitBotBalance = isEmpty(this.addresses);
 
-    // Only push the WalletAddress if it is not in the list of addresses
-    if (!find(this.addresses, { address })) {
+    const index = findIndex(this.addresses, { address });
+    if (index === -1) {
+      // Push the WalletAddress if it is not in the list of addresses
       const walletAddress = new WalletAddress({ address, qtum: balance, bot: 0 }, false);
       this.addresses.push(walletAddress);
       this.currentWalletAddress = walletAddress;
+    } else {
+      // Update existing balances
+      const walletAddress = this.addresses[index];
+      walletAddress.qtum = balance;
+      if (this.currentWalletAddress.address === address) {
+        this.currentWalletAddress.qtum = balance;
+      }
     }
 
     if (fetchInitBotBalance) {
