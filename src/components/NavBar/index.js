@@ -112,20 +112,4 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
   </DivSearchBarField>
 ))));
 
-const Toggle = styled.div`
-  text-align: center;
-  background: #4244BB !important;
-  height: 70px;
-  width: 70px;
-  line-height: 70px;
-  cursor: pointer;
-  user-select: none;
-  &:hover {
-    opacity: 0.8;
-  }
-  &:active {
-    opacity: 1;
-  }
-`;
-
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);

@@ -24,7 +24,7 @@ const styles = (theme) => ({
     height: '38px',
     verticalAlign: 'middle',
   },
-  navText: {
+  navButton: {
     fontSize: theme.sizes.font.textSm,
     fontWeight: 400,
     color: 'rgba(255,255,255,0.65)',
@@ -93,9 +93,6 @@ const styles = (theme) => ({
       display: 'none',
     },
   },
-  walletButton: {
-    color: theme.palette.background.paper,
-  },
   myActivitiesWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -125,9 +122,6 @@ const styles = (theme) => ({
       width: 30,
       fontSize: 12,
     },
-  },
-  navDropdownButton: {
-    color: 'white',
   },
   navDropdown: {
     minWidth: 275,

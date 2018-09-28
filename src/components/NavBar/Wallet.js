@@ -14,7 +14,7 @@ const Wallet = ({ classes, store: { global, installQryptoPrompt } }) => {
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.walletButton} onClick={() => installQryptoPrompt.popoverOpen = true}>
+      <IconButton className={classes.navButton} onClick={() => installQryptoPrompt.popoverOpen = true}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
       </IconButton>
     </div>

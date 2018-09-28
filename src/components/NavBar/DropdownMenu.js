@@ -11,7 +11,7 @@ import styles from './styles';
 
 export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <div className={classes.rightButtonContainer}>
-    <IconButton className={classes.navDropdownButton} onClick={ui.toggleDropdownMenu}>
+    <IconButton className={classes.navButton} onClick={ui.toggleDropdownMenu}>
       {ui.dropdownMenuOpen ? <ExpandLess /> : <ExpandMore />}
     </IconButton>
   </div>

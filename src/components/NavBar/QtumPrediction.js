@@ -14,7 +14,7 @@ const QtumPrediction = observer(({ classes, store: { ui } }) => (
     <Button
       data-index={EventStatus.BET}
       className={cx(
-        classes.navText,
+        classes.navButton,
         ui.location === Routes.QTUM_PREDICTION || ui.location === Routes.bet ? 'selected' : '',
       )}
     >

@@ -14,7 +14,7 @@ const BotCourt = ({ classes, store: { ui } }) => (
     <Button
       data-index={EventStatus.VOTE}
       className={cx(
-        classes.navText,
+        classes.navButton,
         ui.location === Routes.BOT_COURT ? 'selected' : '',
       )}
     >

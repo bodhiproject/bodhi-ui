@@ -19,7 +19,7 @@ const MyActivities = ({ classes, store: { global, ui } }) => {
         <div className={cx(classes.rightButtonContainer, classes.myActivitiesWrapper)}>
           <div className={classes.myActivitiesButton}>
             <Badge badgeContent={global.userData.totalCount} color="secondary" classes={{ badge: classes.myActivitiesBadgeBadge }}>
-              <Typography className={cx(classes.navText, selected)}>
+              <Typography className={cx(classes.navButton, selected)}>
                 <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
               </Typography>
             </Badge>
@@ -32,7 +32,7 @@ const MyActivities = ({ classes, store: { global, ui } }) => {
     <NavLink to={Routes.ACTIVITY_HISTORY}>
       <div className={cx(classes.rightButtonContainer, classes.myActivitiesWrapper)}>
         <div className={classes.myActivitiesButton}>
-          <Typography className={cx(classes.navText, selected)}>
+          <Typography className={cx(classes.navButton, selected)}>
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Typography>
         </div>
