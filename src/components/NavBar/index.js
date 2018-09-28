@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import styled, { css } from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { AppBar, Collapse, Toolbar, Badge, Button, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
+import { AppBar, Collapse, Toolbar, Button, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 
 import Wallet from './Wallet';
 import SearchButton from './SearchButton';
+import MyActivities from './MyActivities';
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
@@ -128,22 +129,6 @@ const QAButton = ({ classes, intl, changeDropDownDirection }) => (
   </a>
 );
 
-const NavBarRightButtonContainer = styled.div`
-  height: 70px;
-  line-height: 70px;
-  text-align: center;
-  color: white;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-left: 1px solid rgba(0,0,0,0.2);
-  display: flex;
-`;
-const NavBarRightButton = styled.div`
-  height: 30px;
-  margin: 20px auto;
-  line-height: 30px;
-  display: flex;
-`;
 const DivSearchBarField = styled.div`
   margin: auto;
   display: flex;
@@ -178,36 +163,6 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
     <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
 ))));
-
-const MyActivities = observer(({ classes, store: { global } }) => {
-  const routes = [Routes.ACTIVITY_HISTORY, Routes.SET, Routes.FINALIZE, Routes.WITHDRAW];
-  if (global.userData.totalCount > 0) {
-    return (
-      <NavLink to={Routes.ACTIVITY_HISTORY} routes={routes}>
-        <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
-          <NavBarRightButton className={classes.myActivitiesButton}>
-            <Badge
-              badgeContent={global.userData.totalCount}
-              color="secondary"
-              classes={{ badge: classes.myActivitiesBadgeBadge }}
-            >
-              <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-            </Badge>
-          </NavBarRightButton>
-        </NavBarRightButtonContainer>
-      </NavLink>
-    );
-  }
-  return (
-    <NavLink to={Routes.ACTIVITY_HISTORY} routes={routes}>
-      <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
-        <NavBarRightButton className={classes.myActivitiesButton}>
-          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-        </NavBarRightButton>
-      </NavBarRightButtonContainer>
-    </NavLink>
-  );
-});
 
 const Dropdown = styled.div`
   background: white;
