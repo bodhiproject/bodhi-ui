@@ -7,6 +7,11 @@ export default class InstallQryptoPromptStore {
   @observable popoverOpen = false;
 
   @action
+  open = () => {
+    this.popoverOpen = true;
+  }
+
+  @action
   onInstallClick = () => {
     window.open(urls.qryptoWebStore, '_blank');
     this.popoverOpen = false;
