@@ -89,9 +89,11 @@ export default class EventCard extends PureComponent {
               {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
               <div className={classes.eventCardNameBundle}>
-                <Typography variant="headline" className={classes.eventCardName}>
-                  {name}
-                </Typography>
+                <div className={classes.eventCardNameFlex}>
+                  <Typography variant="headline" className={classes.eventCardName}>
+                    {name}
+                  </Typography>
+                </div>
                 <FavoriteButton event={this.props.event} />
               </div>
               <div className={classes.eventCardInfo}>

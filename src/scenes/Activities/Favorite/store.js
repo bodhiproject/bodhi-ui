@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 import { uniqBy, difference, orderBy } from 'lodash';
 import { Routes, SortBy, OracleStatus } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../../../network/graphql/queries';
@@ -11,8 +11,7 @@ const INIT_VALUES_FAVPAGE = {
 };
 
 export default class FavoriteStore {
-  @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: '21e389b909c7ab977088c8d43802d459b0eb521a'
-
+  @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: ['21e389b909c7ab977088c8d43802d459b0eb521a', ...]
   @observable displayList = INIT_VALUES_FAVPAGE.displayList
   @observable loading = INIT_VALUES_FAVPAGE.loading
 
@@ -39,7 +38,7 @@ export default class FavoriteStore {
   }
 
   @action
-  setFavorite = (topicAddress) => {
+  setFavorite = async (topicAddress) => {
     if (this.isInFavorite(topicAddress)) {
       this.favList = this.favList.filter(x => x !== topicAddress);
     } else {
@@ -48,8 +47,7 @@ export default class FavoriteStore {
     this.updateLocalStorageFavList();
   }
 
-  @action
-  isInFavorite = (topicAddress) => this.favList.find(x => x === topicAddress)
+  isInFavorite = (topicAddress) => !!this.favList.find(x => x === topicAddress);
 
   @action
   init = async () => {
@@ -59,6 +57,7 @@ export default class FavoriteStore {
     this.loading = false;
   }
 
+  @action
   fetchFav = async () => {
     if (this.favList.length === 0) return [];
     // Get all event in WITHDRAW phase as Topic at favorite topic address list "favList"

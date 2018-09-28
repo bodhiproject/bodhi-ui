@@ -11,28 +11,18 @@ import styles from './styles';
 @inject('store')
 @observer
 class FavoriteButton extends Component {
-  state = {
-    forceRefreshFlag: false,
-  }
-
-  componentDidMount() {
-    this.setState({ forceRefreshFlag: !this.state.forceRefreshFlag });
-  }
-
-  handleClick = () => (event) => { // eslint-disable-line
+  handleClick = (event) => { // eslint-disable-line
     event.preventDefault();
     // Oracle.topicAddress or Topic.address. May changes once Topic got renewal with MobX.
     const topicAddress = this.props.event.topicAddress || this.props.event.address;
     this.props.store.favorite.setFavorite(topicAddress);
-    this.setState({ forceRefreshFlag: !this.state.forceRefreshFlag });
   }
 
   render() {
     const { store, event } = this.props;
     const topicAddress = event.topicAddress || event.address;
-
     return (
-      <span onClick={this.handleClick()}>{store.favorite.isInFavorite(topicAddress) ? <Favorite color='error' /> : <FavoriteBorder />}</span>
+      <span onClick={this.handleClick}>{store.favorite.isInFavorite(topicAddress) ? <Favorite color='error' /> : <FavoriteBorder />}</span>
     );
   }
 }
