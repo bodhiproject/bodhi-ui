@@ -24,9 +24,13 @@ const styles = (theme) => ({
     height: '38px',
     verticalAlign: 'middle',
   },
+  navText: {
+    fontSize: theme.sizes.font.textSm,
+    color: theme.palette.background.paper,
+  },
   rightButtonContainer: {
-    height: 70,
-    lineHeight: 70,
+    height: theme.sizes.navHeight,
+    lineHeight: theme.sizes.navHeight,
     color: theme.palette.background.paper,
     paddingLeft: theme.padding.xs.px,
     paddingRight: theme.padding.xs.px,
@@ -85,6 +89,7 @@ const styles = (theme) => ({
     },
   },
   searchBarFont: {
+    paddingLeft: theme.padding.unit.px,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },

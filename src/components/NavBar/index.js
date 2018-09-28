@@ -10,6 +10,7 @@ import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
 
 import Wallet from './Wallet';
+import SearchButton from './SearchButton';
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
@@ -143,10 +144,6 @@ const NavBarRightButton = styled.div`
   line-height: 30px;
   display: flex;
 `;
-const SearchBarFont = styled.div`
-  color: rgba(255, 255, 255, 0.65);
-  padding-left: 14px;
-`;
 const DivSearchBarField = styled.div`
   margin: auto;
   display: flex;
@@ -211,17 +208,6 @@ const MyActivities = observer(({ classes, store: { global } }) => {
     </NavLink>
   );
 });
-
-const SearchButton = inject('store')(observer(({ classes, store: { ui } }) => (
-  <NavBarRightButtonContainer className={classes.searchButtonWrapper} onClick={ui.enableSearchBarMode}>
-    <NavBarRightButton>
-      <div className="icon iconfont icon-ic_search" />
-      <SearchBarFont className={classes.searchBarFont}>
-        <FormattedMessage id="str.search" defaultMessage="Search" />
-      </SearchBarFont>
-    </NavBarRightButton>
-  </NavBarRightButtonContainer>
-)));
 
 const Dropdown = styled.div`
   background: white;
