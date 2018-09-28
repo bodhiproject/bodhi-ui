@@ -82,11 +82,6 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
     paddingRight: theme.padding.sm.value,
   },
-  searchButtonWrapper: {
-    [theme.breakpoints.down('xs')]: {
-      borderRight: '1px solid rgba(0,0,0,0.2)',
-    },
-  },
   searchBarFont: {
     paddingLeft: theme.padding.unit.px,
     [theme.breakpoints.down('sm')]: {
@@ -120,12 +115,6 @@ const styles = (theme) => ({
     height: 'auto',
     [theme.breakpoints.down('xs')]: {
       lineHeight: theme.sizes.font.textSm,
-    },
-  },
-  navToggle: {
-    [theme.breakpoints.down('xs')]: {
-      width: 30,
-      fontSize: 12,
     },
   },
   navDropdown: {
