@@ -3,6 +3,7 @@ import { withStyles, Typography, Button, Popover, Grid } from '@material-ui/core
 import { FormattedMessage } from 'react-intl';
 
 import styles from './styles';
+import { urls } from '../../config/app';
 
 
 const Logo = withStyles(styles)(({ classes }) => (
@@ -18,15 +19,22 @@ const Message = withStyles(styles)(({ classes }) => (
   </Typography>
 ));
 
+const InstallNowButton = () => (
+  <Button
+    variant="raised"
+    size="large"
+    color="primary"
+    onClick={() => window.open(urls.qryptoWebStore, '_blank')}
+  >
+    <FormattedMessage id="qrypto.installNow" defaultMessage="Install Now" />
+  </Button>
+);
+
 export const InstallQryptoInline = withStyles(styles)(({ classes }) => (
   <div className={classes.inlineRoot}>
     <Logo />
     <Message />
-    <div className={classes.buttonContainer}>
-      <Button variant="raised" size="large" color="primary">
-        <FormattedMessage id="qrypto.installNow" defaultMessage="Install Now" />
-      </Button>
-    </div>
+    <InstallNowButton />
   </div>
 ));
 
@@ -46,9 +54,7 @@ export const InstallQryptoPopover = withStyles(styles)(({ classes }) => (
           <Button size="large" color="primary">
             <FormattedMessage id="qrypto.remindMeLater" defaultMessage="Remind Me Later" />
           </Button>
-          <Button variant="raised" size="large" color="primary">
-            <FormattedMessage id="qrypto.installNow" defaultMessage="Install Now" />
-          </Button>
+          <InstallNowButton />
         </Grid>
       </Grid>
     </div>

@@ -19,9 +19,6 @@ const styles = (theme) => ({
     textAlign: 'center',
     marginBottom: theme.padding.unit.px,
   },
-  buttonContainer: {
-
-  },
 });
 
 export default styles;
