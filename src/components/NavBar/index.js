@@ -3,16 +3,17 @@ import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import styled, { css } from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { AppBar, Collapse, Toolbar, Button, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
+import { AppBar, Collapse, Toolbar, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
-import { Routes, EventStatus } from 'constants';
+import { Routes } from 'constants';
 import { Link } from 'react-router-dom';
 
+import QtumPrediction from './QtumPrediction';
+import BotCourt from './BotCourt';
 import Wallet from './Wallet';
 import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
-import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
@@ -217,33 +218,5 @@ const BodhiLogo = ({ classes }) => (
     />
   </Link>
 );
-
-const QtumPrediction = observer(({ classes, store: { ui } }) => (
-  <NavLink to={Routes.QTUM_PREDICTION}>
-    <Button
-      data-index={EventStatus.BET}
-      className={cx(
-        classes.navEventsButton,
-        ui.location === Routes.QTUM_PREDICTION || ui.location === Routes.bet ? 'selected' : '',
-      )}
-    >
-      <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
-    </Button>
-  </NavLink>
-));
-
-const BotCourt = observer(({ classes, store: { ui } }) => (
-  <NavLink to={Routes.BOT_COURT}>
-    <Button
-      data-index={EventStatus.VOTE}
-      className={cx(
-        classes.navEventsButton,
-        ui.location === Routes.BOT_COURT ? 'selected' : '',
-      )}
-    >
-      <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
-    </Button>
-  </NavLink>
-));
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);

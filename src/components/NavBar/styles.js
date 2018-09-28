@@ -26,22 +26,8 @@ const styles = (theme) => ({
   },
   navText: {
     fontSize: theme.sizes.font.textSm,
-    color: theme.palette.background.paper,
-  },
-  rightButtonContainer: {
-    height: theme.sizes.navHeight,
-    lineHeight: theme.sizes.navHeight,
-    color: theme.palette.background.paper,
-    paddingLeft: theme.padding.xs.px,
-    paddingRight: theme.padding.xs.px,
-    borderLeft: '1px solid rgba(0,0,0,0.2)',
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  navEventsButton: {
-    color: 'rgba(255,255,255,0.65)',
     fontWeight: 400,
+    color: 'rgba(255,255,255,0.65)',
     '&.selected': {
       color: 'white',
     },
@@ -54,6 +40,17 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
     },
+  },
+  rightButtonContainer: {
+    height: theme.sizes.navHeight,
+    lineHeight: theme.sizes.navHeight,
+    color: theme.palette.background.paper,
+    paddingLeft: theme.padding.xs.px,
+    paddingRight: theme.padding.xs.px,
+    borderLeft: '1px solid rgba(0,0,0,0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   searchBarWrapper: {
     height: theme.sizes.navHeight,
