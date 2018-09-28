@@ -8,6 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
+import { InstallQryptoPopover } from 'components';
 
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
@@ -24,10 +25,12 @@ export default class NavBar extends Component {
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
   }
+
   changeDropDownDirection = () => {
     const { ui } = this.props.store;
     ui.dropdownDirection = ui.dropdownDirection === 'down' ? 'up' : 'down';
   }
+
   handleSearchBarKeyDown = event => {
     switch (event.key) {
       case 'Enter':
@@ -37,6 +40,7 @@ export default class NavBar extends Component {
         break;
     }
   }
+
   render() {
     const { classes } = this.props;
     const { ui, search } = this.props.store;
@@ -51,7 +55,8 @@ export default class NavBar extends Component {
                 <BotCourt {...this.props} />
               </Hidden>
             </NavSection>
-            <SearchButton classes={classes} />
+            <SearchButton id="searchbtn" classes={classes} />
+            <InstallQryptoPopover />
             <Hidden xsDown>
               <MyActivities {...this.props} />
               <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>

@@ -10,7 +10,8 @@ const styles = (theme) => ({
     padding: theme.padding.lg.px,
   },
   popoverRoot: {
-    padding: theme.padding.xs.px,
+    maxWidth: 532,
+    padding: theme.padding.sm.px,
   },
   logo: {
     width: 48,
@@ -19,8 +20,20 @@ const styles = (theme) => ({
   message: {
     fontSize: theme.sizes.font.textLg,
     lineHeight: '32px',
-    textAlign: 'center',
-    marginBottom: theme.padding.md.px,
+    marginBottom: theme.padding.sm.px,
+    '&.left': {
+      textAlign: 'left',
+    },
+    '&.center': {
+      textAlign: 'center',
+    },
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  remindButton: {
+    marginRight: theme.padding.xs.px,
   },
 });
 
