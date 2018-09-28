@@ -15,10 +15,9 @@ import BotCourt from './BotCourt';
 import Wallet from './Wallet';
 import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
-import { faqUrls } from '../../config/app';
-import styles from './styles';
-import Tracking from '../../helpers/mixpanelUtil';
+import HelpButton from './HelpButton';
 import SearchResult from './components/SearchResult';
+import styles from './styles';
 
 
 @withStyles(styles, { withTheme: true })
@@ -103,7 +102,7 @@ export default class NavBar extends Component {
               <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
             </Item>
           </Link>
-          <QAButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
+          <HelpButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
         </Dropdown>
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
@@ -117,19 +116,6 @@ export default class NavBar extends Component {
     );
   }
 }
-
-const QAButton = ({ classes, intl, changeDropDownDirection }) => (
-  <a
-    onClick={() => {
-      window.open(faqUrls[intl.locale], '_blank');
-      Tracking.track('navBar-helpClick');
-    }}
-  >
-    <Item className={classes.navDropdownLinkItem} onClick={changeDropDownDirection}>
-      <FormattedMessage id="help" defaultMessage="Help" />
-    </Item>
-  </a>
-);
 
 const DivSearchBarField = styled.div`
   margin: auto;

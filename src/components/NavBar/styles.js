@@ -135,6 +135,16 @@ const styles = (theme) => ({
     },
   },
   navDropdownLinkItem: {
+    background: 'white',
+    display: 'flex',
+    textAlign: 'left',
+    padding: theme.padding.sm.px,
+    cursor: 'pointer',
+    borderBottom: theme.border,
+    justifyContent: 'space-between',
+    '&:hover': {
+      background: theme.palette.background.grey,
+    },
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
     },
