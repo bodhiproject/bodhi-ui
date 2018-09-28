@@ -3,17 +3,7 @@ import { inject, observer } from 'mobx-react';
 import _ from 'lodash';
 import styled, { css } from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import {
-  AppBar,
-  Collapse,
-  Toolbar,
-  Badge,
-  Button,
-  withStyles,
-  TextField,
-  IconButton,
-  Hidden,
-} from '@material-ui/core';
+import { AppBar, Collapse, Toolbar, Badge, Button, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
@@ -188,24 +178,33 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
 ))));
 
 const MyActivities = observer(({ classes, store: { global } }) => {
+  const routes = [Routes.ACTIVITY_HISTORY, Routes.SET, Routes.FINALIZE, Routes.WITHDRAW];
   if (global.userData.totalCount > 0) {
-    return (<NavLink to={Routes.ACTIVITY_HISTORY}>
+    return (
+      <NavLink to={Routes.ACTIVITY_HISTORY} routes={routes}>
+        <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
+          <NavBarRightButton className={classes.myActivitiesButton}>
+            <Badge
+              badgeContent={global.userData.totalCount}
+              color="secondary"
+              classes={{ badge: classes.myActivitiesBadgeBadge }}
+            >
+              <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+            </Badge>
+          </NavBarRightButton>
+        </NavBarRightButtonContainer>
+      </NavLink>
+    );
+  }
+  return (
+    <NavLink to={Routes.ACTIVITY_HISTORY} routes={routes}>
       <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
         <NavBarRightButton className={classes.myActivitiesButton}>
-          <Badge badgeContent={global.userData.totalCount} color="secondary" classes={{ badge: classes.myActivitiesBadgeBadge }}>
-            <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-          </Badge>
+          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
         </NavBarRightButton>
       </NavBarRightButtonContainer>
-    </NavLink>);
-  }
-  return (<NavLink to={Routes.ACTIVITY_HISTORY}>
-    <NavBarRightButtonContainer className={classes.myActivitiesWrapper}>
-      <NavBarRightButton className={classes.myActivitiesButton}>
-        <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-      </NavBarRightButton>
-    </NavBarRightButtonContainer>
-  </NavLink>);
+    </NavLink>
+  );
 });
 
 const SearchButton = inject('store')(observer(({ classes, store: { ui } }) => (

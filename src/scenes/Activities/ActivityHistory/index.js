@@ -1,25 +1,65 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import {
-  Typography,
-  Table,
-  Grid,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  TableFooter,
-  TablePagination,
-  Tooltip,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, Table, Grid, TableCell, TableHead, TableRow, TableSortLabel, TableFooter, TablePagination, Tooltip, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
-import Config from '../../../config/app';
 import EventRows from './EventRows';
+import NotLoggedInMessage from '../NotLoggedInMessage';
+import Config from '../../../config/app';
 
+const headerCols = [
+  {
+    id: 'createdTime',
+    name: 'str.time',
+    nameDefault: 'Time',
+    numeric: false,
+    sortable: true,
+  },
+  {
+    id: 'type',
+    name: 'str.type',
+    nameDefault: 'Type',
+    numeric: false,
+    sortable: true,
+  },
+  {
+    id: 'name',
+    name: 'str.name',
+    nameDefault: 'Name',
+    numeric: false,
+    sortable: false,
+  },
+  {
+    id: 'amount',
+    name: 'str.amount',
+    nameDefault: 'Amount',
+    numeric: true,
+    sortable: true,
+  },
+  {
+    id: 'fee',
+    name: 'str.fee',
+    nameDefault: 'Gas Fee (QTUM)',
+    numeric: true,
+    sortable: true,
+  },
+  {
+    id: 'status',
+    name: 'str.status',
+    nameDefault: 'Status',
+    numeric: false,
+    sortable: true,
+  },
+  {
+    id: 'actions',
+    name: 'str.empty',
+    nameDefault: '',
+    numeric: false,
+    sortable: false,
+  },
+];
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -39,85 +79,40 @@ export default class ActivityHistory extends Component {
   }
 
   render() {
-    const { classes, store: { activities: { history } } } = this.props;
+    const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
     const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
-    const headerCols = [
-      {
-        id: 'createdTime',
-        name: 'str.time',
-        nameDefault: 'Time',
-        numeric: false,
-        sortable: true,
-      },
-      {
-        id: 'type',
-        name: 'str.type',
-        nameDefault: 'Type',
-        numeric: false,
-        sortable: true,
-      },
-      {
-        id: 'name',
-        name: 'str.name',
-        nameDefault: 'Name',
-        numeric: false,
-        sortable: false,
-      },
-      {
-        id: 'amount',
-        name: 'str.amount',
-        nameDefault: 'Amount',
-        numeric: true,
-        sortable: true,
-      },
-      {
-        id: 'fee',
-        name: 'str.fee',
-        nameDefault: 'Gas Fee (QTUM)',
-        numeric: true,
-        sortable: true,
-      },
-      {
-        id: 'status',
-        name: 'str.status',
-        nameDefault: 'Status',
-        numeric: false,
-        sortable: true,
-      },
-      {
-        id: 'actions',
-        name: 'str.empty',
-        nameDefault: '',
-        numeric: false,
-        sortable: false,
-      },
-    ];
 
     return (
-      <Grid container spacing={0}>
-        {transactions.length ? (
-          <Table className={classes.historyTable}>
-            <TableHeader
-              onSortChange={this.createSortHandler}
-              cols={headerCols}
-              order={order}
-              orderBy={orderBy}
-            />
-            <EventRows displayedTxs={displayedTxs} />
-            <EventHistoryFooter
-              fullList={transactions}
-              perPage={perPage}
-              page={page}
-              onChangePage={(event, pg) => history.page = pg}
-              onChangeRowsPerPage={(event) => history.perPage = event.target.value}
-            />
-          </Table>
+      <div>
+        {currentAddress ? (
+          <Grid container spacing={0}>
+            {transactions.length ? (
+              <Table className={classes.historyTable}>
+                <TableHeader
+                  onSortChange={this.createSortHandler}
+                  cols={headerCols}
+                  order={order}
+                  orderBy={orderBy}
+                />
+                <EventRows displayedTxs={displayedTxs} />
+                <EventHistoryFooter
+                  fullList={transactions}
+                  perPage={perPage}
+                  page={page}
+                  onChangePage={(event, pg) => history.page = pg}
+                  onChangeRowsPerPage={(event) => history.perPage = event.target.value}
+                />
+              </Table>
+            ) : (
+              <Typography variant="body1">
+                <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+              </Typography>
+            )}
+          </Grid>
         ) : (
-          <Typography variant="body1">
-            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-          </Typography>
+          <NotLoggedInMessage />
         )}
-      </Grid>
+      </div>
     );
   }
 }
