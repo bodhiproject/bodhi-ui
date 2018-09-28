@@ -9,7 +9,7 @@ import styles from './styles';
 import NavLink from './components/NavLink';
 
 
-const BotCourt = observer(({ classes, store: { ui } }) => (
+const BotCourt = ({ classes, store: { ui } }) => (
   <NavLink to={Routes.BOT_COURT}>
     <Button
       data-index={EventStatus.VOTE}
@@ -21,6 +21,6 @@ const BotCourt = observer(({ classes, store: { ui } }) => (
       <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
     </Button>
   </NavLink>
-));
+);
 
 export default withStyles(styles, { withTheme: true })(inject('store')(observer(BotCourt)));

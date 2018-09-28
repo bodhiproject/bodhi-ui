@@ -9,6 +9,7 @@ import cx from 'classnames';
 import { Routes } from 'constants';
 import { Link } from 'react-router-dom';
 
+import BodhiLogo from './Logo';
 import QtumPrediction from './QtumPrediction';
 import BotCourt from './BotCourt';
 import Wallet from './Wallet';
@@ -17,8 +18,8 @@ import MyActivities from './MyActivities';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
 import Tracking from '../../helpers/mixpanelUtil';
-import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 import SearchResult from './components/SearchResult';
+
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -207,16 +208,5 @@ const Toggle = styled.div`
     opacity: 1;
   }
 `;
-
-const BodhiLogo = ({ classes }) => (
-  <Link to={Routes.QTUM_PREDICTION}>
-    <ImageLocaleWrapper
-      appliedLanguages={['zh-Hans-CN']}
-      src="/images/bodhi-logo.svg"
-      alt="bodhi-logo"
-      className={classes.navBarLogo}
-    />
-  </Link>
-);
 
 const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
