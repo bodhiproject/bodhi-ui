@@ -47,10 +47,12 @@ const styles = (theme) => ({
     color: theme.palette.background.paper,
     paddingLeft: theme.padding.xs.px,
     paddingRight: theme.padding.xs.px,
-    borderLeft: '1px solid rgba(0,0,0,0.2)',
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
+    [theme.breakpoints.up('sm')]: {
+      borderLeft: '1px solid rgba(0,0,0,0.2)',
+    },
   },
   searchBarWrapper: {
     height: theme.sizes.navHeight,
@@ -124,18 +126,27 @@ const styles = (theme) => ({
       fontSize: 12,
     },
   },
-  navToggleIcon: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
+  navDropdownButton: {
+    color: 'white',
   },
   navDropdown: {
+    minWidth: 275,
+    background: theme.palette.background.paper,
+    boxShadow: '0px -2px 20px -2px rgba(0,0,0,0.2), 0px -2px 5px rgba(0,0,0,0.1)',
+    position: 'absolute',
+    right: 0,
+    top: theme.sizes.navHeight,
+    transition: '0.3s all ease-in-out',
+    '&.hide': {
+      display: 'none',
+    },
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
     },
   },
   navDropdownLinkItem: {
-    background: 'white',
+    color: theme.palette.text.primary,
+    background: theme.palette.background.paper,
     display: 'flex',
     textAlign: 'left',
     padding: theme.padding.sm.px,

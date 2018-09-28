@@ -2,13 +2,16 @@ import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
+
 import locales from '../languageProvider';
+import { faqUrls } from '../config/app';
+import Tracking from '../helpers/mixpanelUtil';
 
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
-  @observable dropdownDirection = 'down'
+  @observable dropdownMenuOpen = false;
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -73,12 +76,21 @@ export default class UiStore {
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();
-    this.dropdownDirection = 'down';
   }
 
   @action
   disableSearchBarMode = () => {
     this.searchBarMode = false;
     document.body.style.overflow = null;
+  }
+
+  @action
+  toggleDropdownMenu = () => this.dropdownMenuOpen = !this.dropdownMenuOpen
+
+  @action
+  onHelpButtonClick = () => {
+    window.open(faqUrls[this.locale], '_blank');
+    Tracking.track('navBar-helpClick');
+    this.toggleDropdownMenu();
   }
 }

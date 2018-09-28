@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import _ from 'lodash';
-import styled, { css } from 'styled-components';
-import { FormattedMessage, injectIntl } from 'react-intl';
 import { AppBar, Collapse, Toolbar, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import cx from 'classnames';
-import { Routes } from 'constants';
-import { Link } from 'react-router-dom';
+import { Menu } from '@material-ui/icons';
+import { injectIntl } from 'react-intl';
+import styled from 'styled-components';
+import _ from 'lodash';
 
 import BodhiLogo from './Logo';
 import QtumPrediction from './QtumPrediction';
@@ -15,7 +12,7 @@ import BotCourt from './BotCourt';
 import Wallet from './Wallet';
 import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
-import HelpButton from './HelpButton';
+import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import styles from './styles';
 
@@ -27,11 +24,6 @@ import styles from './styles';
 export default class NavBar extends Component {
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
-  }
-
-  changeDropDownDirection = () => {
-    const { ui } = this.props.store;
-    ui.dropdownDirection = ui.dropdownDirection === 'down' ? 'up' : 'down';
   }
 
   handleSearchBarKeyDown = event => {
@@ -59,51 +51,19 @@ export default class NavBar extends Component {
               </Hidden>
             </NavSection>
             <SearchButton classes={classes} />
-            <Wallet />
             <Hidden xsDown>
+              <Wallet />
               <MyActivities {...this.props} />
-              <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
-                <div className={cx(classes.navToggleIcon, `icon iconfont icon-ic_${ui.dropdownDirection}`)}></div>
-              </Toggle>
+              <DropdownMenuButton />
             </Hidden>
             <Hidden smUp>
-              <IconButton className={classes.menuButton} onClick={this.changeDropDownDirection} color="inherit" aria-label="Menu">
-                <MenuIcon />
+              <IconButton className={classes.menuButton} onClick={ui.toggleDropdownMenu} color="inherit" aria-label="Menu">
+                <Menu />
               </IconButton>
             </Hidden>
           </Toolbar>
         </Collapse>
-        <Dropdown className={classes.navDropdown} data-show={ui.dropdownDirection === 'down'}>
-          <Hidden smUp>
-            <Wallet />
-            <Link to={Routes.QTUM_PREDICTION}>
-              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
-                <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
-              </Item>
-            </Link>
-            <Link to={Routes.BOT_COURT}>
-              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
-                <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
-              </Item>
-            </Link>
-            <Link to={Routes.ACTIVITY_HISTORY}>
-              <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
-                <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
-              </Item>
-            </Link>
-          </Hidden>
-          <Link to={Routes.ALL_EVENTS}>
-            <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
-              <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
-            </Item>
-          </Link>
-          <Link to={Routes.SETTINGS}>
-            <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
-              <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
-            </Item>
-          </Link>
-          <HelpButton {...this.props} changeDropDownDirection={this.changeDropDownDirection} />
-        </Dropdown>
+        <DropdownMenu />
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
             <SearchBarField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
@@ -151,33 +111,6 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
     <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
 ))));
-
-const Dropdown = styled.div`
-  background: white;
-  box-shadow: 0px -2px 20px -2px rgba(0,0,0,0.2), 0px -2px 5px rgba(0,0,0,0.1);
-  position: absolute;
-  right: 0px;
-  top: 70px;
-  min-width: 275px;
-  color: black;
-  transition: 0.3s all ease-in-out;
-  ${({ ...props }) => Boolean(props['data-show']) && css`
-    display: none;
-  `}
-`;
-
-const Item = styled.div`
-  background: white;
-  display: flex;
-  text-align: left;
-  padding: 25px;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,0.15);
-  justify-content: space-between;
-  &:hover: {
-    background: rgba(0,0,0,0.2);
-  }
-`;
 
 const Toggle = styled.div`
   text-align: center;
