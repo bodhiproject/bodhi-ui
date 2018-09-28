@@ -8,8 +8,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import cx from 'classnames';
 import { Routes, EventStatus } from 'constants';
 import { Link } from 'react-router-dom';
-import { InstallQryptoPopover } from 'components';
 
+import Wallet from './Wallet';
 import NavLink from './components/NavLink';
 import { faqUrls } from '../../config/app';
 import styles from './styles';
@@ -55,8 +55,8 @@ export default class NavBar extends Component {
                 <BotCourt {...this.props} />
               </Hidden>
             </NavSection>
-            <SearchButton id="searchbtn" classes={classes} />
-            <InstallQryptoPopover />
+            <SearchButton classes={classes} />
+            <Wallet />
             <Hidden xsDown>
               <MyActivities {...this.props} />
               <Toggle className={classes.navToggle} onClick={this.changeDropDownDirection}>
@@ -71,8 +71,8 @@ export default class NavBar extends Component {
           </Toolbar>
         </Collapse>
         <Dropdown className={classes.navDropdown} data-show={ui.dropdownDirection === 'down'}>
-          <Wallet {...this.props} />
           <Hidden smUp>
+            <Wallet />
             <Link to={Routes.QTUM_PREDICTION}>
               <Item className={classes.navDropdownLinkItem} onClick={this.changeDropDownDirection}>
                 <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
@@ -222,30 +222,6 @@ const SearchButton = inject('store')(observer(({ classes, store: { ui } }) => (
     </NavBarRightButton>
   </NavBarRightButtonContainer>
 )));
-
-const Wallet = styled(({ store: { global, wallet } }) => {
-  // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
-  if (!global.localWallet) {
-    return null;
-  }
-
-  const totalQTUM = _.sumBy(wallet.addresses, ({ qtum }) => qtum).toFixed(2) || '0.00';
-  const totalBOT = _.sumBy(wallet.addresses, ({ bot }) => bot).toFixed(2) || '0.00';
-  return (<Link to={Routes.WALLET}>
-    <Item>
-      <WalletItem>
-        <i className={cx('icon', 'iconfont', 'icon-ic_wallet')}></i>
-      </WalletItem>
-      <WalletItem>
-        <div style={{ paddingBottom: '10px' }}><b>{totalQTUM}</b> QTUM</div>
-        <div><b>{totalBOT}</b> BOT</div>
-      </WalletItem>
-      <WalletItem>{'>'}</WalletItem>
-    </Item>
-  </Link>);
-})``;
-
-const WalletItem = styled.div``;
 
 const Dropdown = styled.div`
   background: white;

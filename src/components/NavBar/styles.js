@@ -16,6 +16,41 @@ const styles = (theme) => ({
       paddingLeft: theme.padding.unit.px,
     },
   },
+  navSection: {
+    display: 'flex',
+    flexGrow: 1,
+  },
+  navBarLogo: {
+    height: '38px',
+    verticalAlign: 'middle',
+  },
+  rightButtonContainer: {
+    height: 70,
+    lineHeight: 70,
+    color: theme.palette.background.paper,
+    paddingLeft: theme.padding.xs.px,
+    paddingRight: theme.padding.xs.px,
+    borderLeft: '1px solid rgba(0,0,0,0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  navEventsButton: {
+    color: 'rgba(255,255,255,0.65)',
+    fontWeight: 400,
+    '&.selected': {
+      color: 'white',
+    },
+    '&:hover': {
+      color: 'white',
+    },
+    [theme.breakpoints.down('sm')]: {
+      padding: `0 ${theme.padding.unit.px}`,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
   searchBarWrapper: {
     height: theme.sizes.navHeight,
     lineHeight: theme.sizes.navHeight,
@@ -54,47 +89,8 @@ const styles = (theme) => ({
       display: 'none',
     },
   },
-  navSection: {
-    display: 'flex',
-    flexGrow: 1,
-  },
-  navBarLogo: {
-    height: '38px',
-    verticalAlign: 'middle',
-  },
-  navBarWalletIcon: {
-    marginRight: theme.padding.unit.px,
-    verticalAlign: 'middle',
-  },
-  marginRightButton: {
-    color: 'white',
-    fontWeight: 400,
-    marginRight: theme.padding.sm.px,
-  },
-  sides: {
-    marginRight: theme.padding.unit.px,
-    marginLeft: '32px',
-  },
-  dark: {
-    color: 'white !important',
-    fontWeight: 400,
-    background: theme.palette.primary.dark,
-  },
-  navEventsButton: {
-    color: 'rgba(255,255,255,0.65)',
-    fontWeight: 400,
-    '&.selected': {
-      color: 'white',
-    },
-    '&:hover': {
-      color: 'white',
-    },
-    [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.padding.unit.px}`,
-    },
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
+  walletButton: {
+    color: theme.palette.background.paper,
   },
   myActivitiesWrapper: {
     display: 'flex',
@@ -140,21 +136,6 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
     },
-  },
-  faq: {
-    marginLeft: 10,
-    color: 'white',
-  },
-  questionIcon: {
-    marginRight: 2,
-    '&:before': {
-      fontSize: theme.sizes.icon.large,
-    },
-  },
-  selectMenu: {
-    color: 'white',
-    paddingTop: 3,
-    marginLeft: 25,
   },
 });
 
