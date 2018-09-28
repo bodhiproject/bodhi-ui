@@ -3,7 +3,7 @@ import { TransactionStatus } from 'constants';
 /*
 * DbModel for Transaction mocks.
 */
-export default class Transaction {
+export default class MockTransaction {
   txid = '' // Transaction ID assigned by the blockchain
   blockNum = 0 // Block number when Transaction was recorded on blockchain
   blockTime = '' // Block timestamp for blockNum
@@ -33,7 +33,7 @@ export default class Transaction {
 
   triggerListOnSuccess = []
   triggerListOnFailed = []
-  triggetListOnCreate = []
+  triggerListOnCreate = []
 
   setSuccess = () => {
     this.status = TransactionStatus.SUCCESS;

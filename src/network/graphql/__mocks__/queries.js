@@ -2,9 +2,10 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
+import { orderBy as lodashOrderBy, flatten, uniqBy, forEach, filter as lodashFilter } from 'lodash';
 import mockData from './mockData';
 
-export { default as MockTransaction } from './dbmodels/transaction';
+import MockTransaction from './dbmodels/mockTransaction';
 
 export function mockResetAllList() {
   mockData.resetAll();
@@ -26,8 +27,10 @@ export function mockResetTransactionList() {
   mockData.resetTransactions();
 }
 
-export function mockAddTransaction(newTransaction) {
+export function mockAddTransaction(txid, transinit) {
+  const newTransaction = new MockTransaction(txid, transinit);
   mockData.addTransactions(newTransaction);
+  return newTransaction;
 }
 
 export function mockAddOracle(newOracle) {
@@ -44,8 +47,15 @@ export function queryAllOracles(app, filters, orderBy, limit, skip) {
   return mockData.oracles.slice(skip, end);
 }
 
-export function queryAllTransactions(filters, orderBy, limit, skip) {
-  const result = mockData.transactions.slice();
-  const end = skip + limit <= mockData.transactions.length ? skip + limit : mockData.transactions.length;
+export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {
+  const filteredTxs = uniqBy(flatten(filters.map((filter) => lodashFilter(mockData.transactions, filter))), 'txid');
+  const orderFields = [];
+  const orderDirections = [];
+  forEach(orderBy, (order) => {
+    orderDirections.push(order.direction);
+    orderFields.push(order.field);
+  });
+  const result = lodashOrderBy(filteredTxs, orderFields, orderDirections);
+  const end = skip + (limit > 0 && limit <= mockData.transactions.length) ? skip + limit : mockData.transactions.length;
   return result.slice(skip, end);
 }
