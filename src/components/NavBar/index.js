@@ -43,13 +43,13 @@ export default class NavBar extends Component {
       <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
         <Collapse in={!ui.searchBarMode}>
           <Toolbar className={classes.navBarWrapper}>
-            <NavSection>
+            <div className={classes.navSection} {...this.props}>
               <BodhiLogo {...this.props} />
               <Hidden xsDown>
                 <QtumPrediction {...this.props} />
                 <BotCourt {...this.props} />
               </Hidden>
-            </NavSection>
+            </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>
               <Wallet />
@@ -111,5 +111,3 @@ const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject
     <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
   </DivSearchBarField>
 ))));
-
-const NavSection = withStyles(styles)(({ classes, ...props }) => <div {...props} className={classes.navSection} />);
