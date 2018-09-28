@@ -1,7 +1,7 @@
 import { TransactionType, TransactionStatus } from 'constants';
 import { observable } from 'mobx';
 import PendingTxsSnackbarStore, { INIT_VALUES } from './store';
-import { mockResetTransactionList, mockAddTransaction, queryAllTransactions } from '../../network/graphql/queries/';
+import { mockResetTransactionList, mockAddTransaction } from '../../network/graphql/queries/';
 
 jest.mock('../../network/graphql/queries'); // block and manually mock our backend
 
