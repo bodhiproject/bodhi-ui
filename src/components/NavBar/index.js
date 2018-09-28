@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { AppBar, Collapse, Toolbar, withStyles, TextField, IconButton, Hidden } from '@material-ui/core';
+import { AppBar, Collapse, Toolbar, withStyles, IconButton, Hidden } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import BodhiLogo from './Logo';
 import QtumPrediction from './QtumPrediction';
 import BotCourt from './BotCourt';
 import Wallet from './Wallet';
-import SearchButton from './SearchButton';
+import { SearchButton, SearchBarField } from './Search';
 import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
@@ -39,6 +38,7 @@ export default class NavBar extends Component {
   render() {
     const { classes } = this.props;
     const { ui, search } = this.props.store;
+
     return (
       <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
         <Collapse in={!ui.searchBarMode}>
@@ -69,45 +69,10 @@ export default class NavBar extends Component {
             <SearchBarField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
-        <Collapse in={ui.searchBarMode && !_.isEmpty(search.phrase)}>
+        <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>
           <SearchResult />
         </Collapse>
       </AppBar>
     );
   }
 }
-
-const DivSearchBarField = styled.div`
-  margin: auto;
-  display: flex;
-  width: 90%;
-`;
-
-const SearchBarField = injectIntl(withStyles(styles, { withTheme: true })(inject('store')(({ intl, classes, store: { search, ui }, onSearchBarKeyDown }) => (
-  <DivSearchBarField>
-    <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
-    <TextField
-      placeholder={intl.formatMessage({ id: 'search.placeholder', defaultMessage: 'Type to begin search' })}
-      className={classes.searchBarTextField}
-      InputProps={{
-        autoFocus: true,
-        disableUnderline: true,
-        classes: {
-          input: classes.searchBarInput,
-          root: classes.searchBarInputBase,
-        },
-        onKeyDown: (e) => onSearchBarKeyDown(e),
-        onChange: e => {
-          search.phrase = e.target.value;
-          _.debounce(search.init, 1500)();
-        },
-        value: search.phrase,
-        inputProps: {
-          id: 'searchEventInput',
-        },
-      }}
-    >
-    </TextField>
-    <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
-  </DivSearchBarField>
-))));

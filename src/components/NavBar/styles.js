@@ -93,6 +93,11 @@ const styles = (theme) => ({
       display: 'none',
     },
   },
+  searchBarField: {
+    margin: 'auto',
+    display: 'flex',
+    width: '90%',
+  },
   myActivitiesWrapper: {
     display: 'flex',
     alignItems: 'center',
