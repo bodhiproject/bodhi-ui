@@ -6,11 +6,14 @@ import { urls } from '../config/app';
 export default class QryptoStore {
   @observable loggedIn = false;
   @observable popoverOpen = false;
+  @observable popoverMessageId = undefined;
 
   constructor(app) {
     this.app = app;
     this.registerQrypto();
   }
+
+  isInstalled = () => !!window.qrypto
 
   /**
    * Registers with Qrypto and sets the event handler if not using a local wallet.
@@ -68,8 +71,18 @@ export default class QryptoStore {
   }
 
   @action
-  openPopover = () => {
+  openPopover = (messageId) => {
     this.popoverOpen = true;
+
+    if (messageId) {
+      this.popoverMessageId = messageId;
+    } else if (!this.isInstalled) {
+      this.popoverMessageId = 'qrypto.notInstalled';
+    } else if (!this.loggedIn) {
+      this.popoverMessageId = 'qrypto.notLoggedIn';
+    } else {
+      this.popoverMessageId = 'qrypto.loggedIn';
+    }
   }
 
   @action

@@ -27,6 +27,9 @@ const styles = (theme) => ({
     '&.center': {
       textAlign: 'center',
     },
+    '&.marginLeft': {
+      marginLeft: theme.padding.sm.px,
+    },
   },
   buttonContainer: {
     display: 'flex',

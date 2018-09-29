@@ -13,7 +13,7 @@ const Wallet = ({ classes, store: { global, qrypto } }) => {
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.navButton} onClick={qrypto.openPopover}>
+      <IconButton className={classes.navButton} onClick={() => qrypto.openPopover()}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
       </IconButton>
     </div>
