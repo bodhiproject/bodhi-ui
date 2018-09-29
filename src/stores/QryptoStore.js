@@ -4,6 +4,7 @@ import { Qweb3 } from 'qweb3';
 import { urls } from '../config/app';
 
 export default class QryptoStore {
+  @observable loggedIn = false;
   @observable popoverOpen = false;
 
   constructor(app) {
@@ -62,6 +63,7 @@ export default class QryptoStore {
       }
     }
 
+    this.loggedIn = event.data.message.payload.account.loggedIn;
     this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
   }
 
