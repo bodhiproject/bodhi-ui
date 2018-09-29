@@ -15,7 +15,6 @@ import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import styles from './styles';
 
-
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
@@ -43,7 +42,7 @@ export default class NavBar extends Component {
       <AppBar className={ui.searchBarMode ? classes.navBarShadow : classes.navBar}>
         <Collapse in={!ui.searchBarMode}>
           <Toolbar className={classes.navBarWrapper}>
-            <div className={classes.navSection} {...this.props}>
+            <div className={classes.navSection}>
               <BodhiLogo {...this.props} />
               <Hidden xsDown>
                 <QtumPrediction {...this.props} />
