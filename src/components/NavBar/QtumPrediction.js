@@ -8,7 +8,6 @@ import cx from 'classnames';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-
 const QtumPrediction = observer(({ classes, store: { ui } }) => (
   <NavLink to={Routes.QTUM_PREDICTION}>
     <Button

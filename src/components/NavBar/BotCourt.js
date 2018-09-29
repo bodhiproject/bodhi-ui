@@ -8,7 +8,6 @@ import cx from 'classnames';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-
 const BotCourt = ({ classes, store: { ui } }) => (
   <NavLink to={Routes.BOT_COURT}>
     <Button

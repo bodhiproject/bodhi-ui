@@ -7,7 +7,6 @@ import { debounce } from 'lodash';
 
 import styles from './styles';
 
-
 export const SearchButton = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <div className={classes.rightButtonContainer} onClick={ui.enableSearchBarMode}>
     <div className="icon iconfont icon-ic_search" />

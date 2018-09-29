@@ -6,7 +6,6 @@ import { Routes } from 'constants';
 import styles from './styles';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 
-
 const BodhiLogo = ({ classes }) => (
   <Link to={Routes.QTUM_PREDICTION}>
     <ImageLocaleWrapper

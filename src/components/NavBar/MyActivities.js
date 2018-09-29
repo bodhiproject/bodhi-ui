@@ -9,7 +9,6 @@ import { includes } from 'lodash';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-
 const MyActivities = ({ classes, store: { global, ui } }) => {
   const selected = includes([Routes.SET, Routes.FINALIZE, Routes.WITHDRAW, Routes.ACTIVITY_HISTORY], ui.location) ? 'selected' : '';
 

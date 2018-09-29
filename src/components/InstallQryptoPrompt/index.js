@@ -6,7 +6,6 @@ import cx from 'classnames';
 
 import styles from './styles';
 
-
 const Logo = withStyles(styles)(({ classes }) => (
   <img src="/images/qrypto-logo.png" alt="Qrypto Logo" className={classes.logo} />
 ));

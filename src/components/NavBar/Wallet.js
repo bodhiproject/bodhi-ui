@@ -5,7 +5,6 @@ import cx from 'classnames';
 
 import styles from './styles';
 
-
 const Wallet = ({ classes, store: { global, installQryptoPrompt } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
   if (global.localWallet) {
