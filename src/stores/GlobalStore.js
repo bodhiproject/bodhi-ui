@@ -88,7 +88,7 @@ export default class GlobalStore {
     if (event.data.message && event.data.message.type) {
       const types = {
         QRYPTO_INSTALLED_OR_UPDATED: this.handleQryptoInstall,
-        ACCOUNT_CHANGED: this.handleQryptoAccountChange,
+        QRYPTO_ACCOUNT_CHANGED: this.handleQryptoAccountChange,
       };
       const messageAction = types[event.data.message.type];
       if (messageAction) messageAction(event);
