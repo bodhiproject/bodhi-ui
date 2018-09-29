@@ -46,7 +46,7 @@ export const InstallQryptoInline = withStyles(styles)(({ classes }) => (
 export const InstallQryptoPopover = withStyles(styles)(inject('store')(observer(({ classes, store: { installQryptoPrompt } }) => (
   <Popover
     open={installQryptoPrompt.popoverOpen}
-    anchorOrigin={{ horizontal: 'center' }}
+    anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
     transformOrigin={{ horizontal: 'center', vertical: 'center' }}
   >
     <div className={classes.popoverRoot}>

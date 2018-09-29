@@ -7,7 +7,6 @@ import styles from './styles';
 import AppRouter from './router';
 import CreateEventFormDialog from '../CreateEvent';
 
-
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
     {!store.loading && (
@@ -24,8 +23,8 @@ const App = observer(({ classes, match: { url }, store }) => (
         <ExecuteTxDialog />
         <TxSentDialog />
         <CreateEventFormDialog />
-        <WalletUnlockDialog />
         <InstallQryptoPopover />
+        <WalletUnlockDialog />
       </Fragment>
     )}
     <CssBaseline />
