@@ -23,6 +23,10 @@ const messages = defineMessages({
     id: 'qrypto.notLoggedIn',
     defaultMessage: 'You are not logged into Qrypto.',
   },
+  'qrypto.loggedIntoWrongNetwork': {
+    id: 'qrypto.loggedIntoWrongNetwork',
+    defaultMessage: 'Logged into wrong network. Switch your Qrypto network.',
+  },
 });
 
 const Logo = withStyles(styles)(({ classes }) => (

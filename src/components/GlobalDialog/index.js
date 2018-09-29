@@ -12,14 +12,6 @@ const messages = defineMessages({
     id: 'str.error',
     defaultMessage: 'Error',
   },
-  'qrypto.loggedIntoWrongNetwork': {
-    id: 'qrypto.loggedIntoWrongNetwork',
-    defaultMessage: 'Logged into wrong network. Switch your Qrypto network.',
-  },
-  'qrypto.loginToView': {
-    id: 'qrypto.loginToView',
-    defaultMessage: 'Please login to Qrypto to view this page.',
-  },
   'create.pendingExists': {
     id: 'create.pendingExists',
     defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',

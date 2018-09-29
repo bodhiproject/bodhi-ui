@@ -28,7 +28,7 @@ const styles = (theme) => ({
       textAlign: 'center',
     },
     '&.marginLeft': {
-      marginLeft: theme.padding.sm.px,
+      marginLeft: theme.padding.xs.px,
     },
   },
   buttonContainer: {
