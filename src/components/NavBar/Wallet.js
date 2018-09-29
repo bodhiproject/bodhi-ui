@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 import styles from './styles';
 
-const Wallet = ({ classes, store: { global, components: { qryptoPrompt } } }) => {
+const Wallet = ({ classes, store: { global, qrypto } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
   if (global.localWallet) {
     return null;
@@ -13,7 +13,7 @@ const Wallet = ({ classes, store: { global, components: { qryptoPrompt } } }) =>
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.navButton} onClick={qryptoPrompt.open}>
+      <IconButton className={classes.navButton} onClick={qrypto.openPopover}>
         <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
       </IconButton>
     </div>

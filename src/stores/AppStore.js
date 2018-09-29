@@ -4,6 +4,7 @@ import { RouterStore } from 'mobx-react-router';
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
+import QryptoStore from './QryptoStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
@@ -22,7 +23,6 @@ import GlobalDialogStore from '../components/GlobalDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
-import QryptoPromptStore from '../components/QryptoPrompt/store';
 import { isProduction } from '../config/app';
 
 class AppStore {
@@ -55,6 +55,7 @@ class AppStore {
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
+    this.qrypto = new QryptoStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
@@ -66,7 +67,6 @@ class AppStore {
 
     this.components = {
       globalDialog: new GlobalDialogStore(),
-      qryptoPrompt: new QryptoPromptStore(),
     };
 
     runInAction(() => {
