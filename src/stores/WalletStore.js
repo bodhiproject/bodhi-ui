@@ -125,10 +125,7 @@ export default class WalletStore {
 
     // Stop login if the chain network does not match
     if (network.toLowerCase() !== process.env.CHAIN_NETWORK) {
-      this.app.components.globalDialog.setError({
-        id: 'qrypto.loggedIntoWrongNetwork',
-        defaultMessage: 'Logged into wrong network. Switch your Qrypto network.',
-      });
+      this.app.qrypto.openPopover('qrypto.loggedIntoWrongNetwork');
       return;
     }
 

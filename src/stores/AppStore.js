@@ -4,6 +4,7 @@ import { RouterStore } from 'mobx-react-router';
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
+import QryptoStore from './QryptoStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
@@ -54,6 +55,7 @@ class AppStore {
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
+    this.qrypto = new QryptoStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();

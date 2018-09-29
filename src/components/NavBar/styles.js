@@ -16,6 +16,44 @@ const styles = (theme) => ({
       paddingLeft: theme.padding.unit.px,
     },
   },
+  navSection: {
+    display: 'flex',
+    flexGrow: 1,
+  },
+  navBarLogo: {
+    height: '38px',
+    verticalAlign: 'middle',
+  },
+  navButton: {
+    fontSize: theme.sizes.font.textSm,
+    fontWeight: 400,
+    color: 'rgba(255,255,255,0.65)',
+    '&.selected': {
+      color: 'white',
+    },
+    '&:hover': {
+      color: 'white',
+    },
+    [theme.breakpoints.down('sm')]: {
+      padding: `0 ${theme.padding.unit.px}`,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 12,
+    },
+  },
+  rightButtonContainer: {
+    height: theme.sizes.navHeight,
+    lineHeight: theme.sizes.navHeight,
+    color: theme.palette.background.paper,
+    paddingLeft: theme.padding.xs.px,
+    paddingRight: theme.padding.xs.px,
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
+    [theme.breakpoints.up('sm')]: {
+      borderLeft: '1px solid rgba(0,0,0,0.2)',
+    },
+  },
   searchBarWrapper: {
     height: theme.sizes.navHeight,
     lineHeight: theme.sizes.navHeight,
@@ -44,57 +82,16 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
     paddingRight: theme.padding.sm.value,
   },
-  searchButtonWrapper: {
-    [theme.breakpoints.down('xs')]: {
-      borderRight: '1px solid rgba(0,0,0,0.2)',
-    },
-  },
   searchBarFont: {
+    paddingLeft: theme.padding.unit.px,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
   },
-  navSection: {
+  searchBarField: {
+    margin: 'auto',
     display: 'flex',
-    flexGrow: 1,
-  },
-  navBarLogo: {
-    height: '38px',
-    verticalAlign: 'middle',
-  },
-  navBarWalletIcon: {
-    marginRight: theme.padding.unit.px,
-    verticalAlign: 'middle',
-  },
-  marginRightButton: {
-    color: 'white',
-    fontWeight: 400,
-    marginRight: theme.padding.sm.px,
-  },
-  sides: {
-    marginRight: theme.padding.unit.px,
-    marginLeft: '32px',
-  },
-  dark: {
-    color: 'white !important',
-    fontWeight: 400,
-    background: theme.palette.primary.dark,
-  },
-  navEventsButton: {
-    color: 'rgba(255,255,255,0.65)',
-    fontWeight: 400,
-    '&.selected': {
-      color: 'white',
-    },
-    '&:hover': {
-      color: 'white',
-    },
-    [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.padding.unit.px}`,
-    },
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
+    width: '90%',
   },
   myActivitiesWrapper: {
     display: 'flex',
@@ -120,41 +117,36 @@ const styles = (theme) => ({
       lineHeight: theme.sizes.font.textSm,
     },
   },
-  navToggle: {
-    [theme.breakpoints.down('xs')]: {
-      width: 30,
-      fontSize: 12,
-    },
-  },
-  navToggleIcon: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
-  },
   navDropdown: {
+    minWidth: 275,
+    background: theme.palette.background.paper,
+    boxShadow: '0px -2px 20px -2px rgba(0,0,0,0.2), 0px -2px 5px rgba(0,0,0,0.1)',
+    position: 'absolute',
+    right: 0,
+    top: theme.sizes.navHeight,
+    transition: '0.3s all ease-in-out',
+    '&.hide': {
+      display: 'none',
+    },
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
     },
   },
   navDropdownLinkItem: {
+    color: theme.palette.text.primary,
+    background: theme.palette.background.paper,
+    display: 'flex',
+    textAlign: 'left',
+    padding: theme.padding.sm.px,
+    cursor: 'pointer',
+    borderBottom: theme.border,
+    justifyContent: 'space-between',
+    '&:hover': {
+      background: theme.palette.background.grey,
+    },
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
     },
-  },
-  faq: {
-    marginLeft: 10,
-    color: 'white',
-  },
-  questionIcon: {
-    marginRight: 2,
-    '&:before': {
-      fontSize: theme.sizes.icon.large,
-    },
-  },
-  selectMenu: {
-    color: 'white',
-    paddingTop: 3,
-    marginLeft: 25,
   },
 });
 

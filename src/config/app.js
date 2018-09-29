@@ -15,6 +15,9 @@ module.exports = {
     'en-US': 'https://www.bodhi.network/faq',
     'zh-Hans-CN': 'https://cn.bodhi.network/faq',
   },
+  urls: {
+    qryptoWebStore: 'https://chrome.google.com/webstore/detail/qrypto/hdmjdgjbehedbnjmljikggbmmbnbmlnd',
+  },
   debug: {
     // Set to false if in test environment and Insight API is down
     // and loading screen is blocking the view.

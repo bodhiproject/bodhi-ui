@@ -1,13 +1,11 @@
 import { observable, action, reaction, toJS } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
-import { Qweb3 } from 'qweb3';
 
 import SyncInfo from './models/SyncInfo';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
 import apolloClient from '../network/graphql';
-
 
 const INIT_VALUES = {
   localWallet: undefined,
@@ -62,65 +60,10 @@ export default class GlobalStore {
 
     // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
-    this.registerQrypto();
 
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
     this.subscribeSyncInfo();
-  }
-
-  /**
-   * Registers with Qrypto and sets event handler if not using a local wallet.
-   */
-  registerQrypto = () => {
-    if (!this.localWallet) {
-      console.log('Trying to register with Qrypto...'); // eslint-disable-line
-      window.addEventListener('message', this.handleWindowMessage, false);
-      window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
-    }
-  }
-
-  /**
-   * Handles all window messages.
-   * @param {MessageEvent} event Message to handle.
-   */
-  handleWindowMessage = (event) => {
-    if (event.data.message && event.data.message.type) {
-      const types = {
-        QRYPTO_INSTALLED_OR_UPDATED: this.handleQryptoInstall,
-        QRYPTO_ACCOUNT_CHANGED: this.handleQryptoAccountChange,
-      };
-      const messageAction = types[event.data.message.type];
-      if (messageAction) messageAction(event);
-    }
-  }
-
-  /**
-   * Handles the event when Qrypto posts an install or update message.
-   */
-  handleQryptoInstall = () => {
-    window.location.reload();
-  }
-
-  /**
-   * Handles the event when Qrypto posts an account change message.
-   * @param {MessageEvent} event Message to handle.
-   */
-  @action
-  handleQryptoAccountChange = (event) => {
-    if (event.data.message.payload.error) {
-      console.error(event.data.message.payload.error); // eslint-disable-line
-      return;
-    }
-
-    // Instantiate qweb3 instance on first callback
-    if (!this.qweb3) {
-      if (window.qrypto && window.qrypto.rpcProvider) {
-        this.qweb3 = new Qweb3(window.qrypto.rpcProvider);
-      }
-    }
-
-    this.app.wallet.onQryptoAccountChange(event.data.message.payload.account);
   }
 
   /**

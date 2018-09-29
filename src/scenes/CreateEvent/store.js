@@ -247,10 +247,7 @@ export default class CreateEventStore {
 
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
-      this.app.components.globalDialog.setError({
-        id: 'qrypto.loginToView',
-        defaultMessage: 'Please login to Qrypto to view this page.',
-      });
+      this.app.qrypto.openPopover('qrypto.loginToView');
       this.close();
       return;
     }
