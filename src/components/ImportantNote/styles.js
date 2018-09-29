@@ -6,8 +6,8 @@ const styles = (theme) => ({
     margin: `${theme.padding.xs.px} 0 ${theme.padding.unit.px} 0`,
   },
   iconButton: {
-    width: 24,
-    height: 24,
+    width: theme.sizes.icon.large,
+    height: theme.sizes.icon.large,
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: 'transparent',
