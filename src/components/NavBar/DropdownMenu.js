@@ -17,7 +17,7 @@ export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({
   </div>
 ))));
 
-export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, installQryptoPrompt } }) => (
+export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, components: { qryptoPrompt } } }) => (
   <div className={cx(classes.navDropdown, ui.dropdownMenuOpen ? '' : 'hide')}>
     <Hidden smUp>
       <Link to={Routes.QTUM_PREDICTION}>
@@ -46,7 +46,7 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         className={classes.navDropdownLinkItem}
         onClick={() => {
           ui.toggleDropdownMenu();
-          installQryptoPrompt.open();
+          qryptoPrompt.open();
         }}
       >
         <FormattedMessage id="str.wallet" defaultMessage="Wallet" />

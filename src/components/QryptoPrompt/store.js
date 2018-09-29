@@ -2,7 +2,7 @@ import { action, observable } from 'mobx';
 
 import { urls } from '../../config/app';
 
-export default class InstallQryptoPromptStore {
+export default class QryptoPromptStore {
   @observable popoverOpen = false;
 
   @action

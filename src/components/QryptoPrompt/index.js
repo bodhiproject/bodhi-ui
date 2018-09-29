@@ -19,12 +19,12 @@ const Message = withStyles(styles)(({ classes, textAlign }) => (
   </Typography>
 ));
 
-const InstallNowButton = inject('store')(({ store: { installQryptoPrompt } }) => (
+const InstallNowButton = inject('store')(({ store: { components: { qryptoPrompt } } }) => (
   <Button
     variant="raised"
     size="small"
     color="primary"
-    onClick={installQryptoPrompt.onInstallClick}
+    onClick={qryptoPrompt.onInstallClick}
   >
     <FormattedMessage id="qrypto.installNow" defaultMessage="Install Now" />
   </Button>
@@ -42,9 +42,9 @@ export const InstallQryptoInline = withStyles(styles)(({ classes }) => (
   </div>
 ));
 
-export const InstallQryptoPopover = withStyles(styles)(inject('store')(observer(({ classes, store: { installQryptoPrompt } }) => (
+export const InstallQryptoPopover = withStyles(styles)(inject('store')(observer(({ classes, store: { components: { qryptoPrompt } } }) => (
   <Popover
-    open={installQryptoPrompt.popoverOpen}
+    open={qryptoPrompt.popoverOpen}
     anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
     transformOrigin={{ horizontal: 'center', vertical: 'center' }}
   >
@@ -59,7 +59,7 @@ export const InstallQryptoPopover = withStyles(styles)(inject('store')(observer(
             size="small"
             color="primary"
             className={classes.remindButton}
-            onClick={() => installQryptoPrompt.popoverOpen = false}
+            onClick={() => qryptoPrompt.popoverOpen = false}
           >
             <FormattedMessage id="qrypto.remindMeLater" defaultMessage="Remind Me Later" />
           </Button>

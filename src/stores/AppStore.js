@@ -22,7 +22,7 @@ import GlobalDialogStore from '../components/GlobalDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
-import InstallQryptoPromptStore from '../components/InstallQryptoPrompt/store';
+import QryptoPromptStore from '../components/QryptoPrompt/store';
 import { isProduction } from '../config/app';
 
 class AppStore {
@@ -47,7 +47,6 @@ class AppStore {
   activities = {}
   search = {}
   components = {}
-  installQryptoPrompt = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -64,10 +63,10 @@ class AppStore {
     this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
-    this.installQryptoPrompt = new InstallQryptoPromptStore();
 
     this.components = {
       globalDialog: new GlobalDialogStore(),
+      qryptoPrompt: new QryptoPromptStore(),
     };
 
     runInAction(() => {
