@@ -10,6 +10,13 @@ const subscriptions = {
       }
     }
   `,
+  onApproveSuccess: `
+    subscription OnApproveSuccess {
+      onApproveSuccess {
+        ${getTypeDef('Transaction')}
+      }
+    }
+  `,
 };
 
 function getSubscription(name) {
@@ -19,4 +26,5 @@ function getSubscription(name) {
 export default getSubscription;
 export const channels = {
   ON_SYNC_INFO: 'onSyncInfo',
+  ON_APPROVE_SUCCESS: 'onApproveSuccess',
 };

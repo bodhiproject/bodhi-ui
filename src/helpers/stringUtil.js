@@ -46,8 +46,8 @@ const strings = defineMessages({
   },
 });
 
-export function getTxTypeString(txType, locale, localeMessages) {
-  const { formatMessage } = getIntlProvider(locale, localeMessages);
+export function getTxTypeString(txType, intl) {
+  const { formatMessage } = getIntlProvider(intl.locale, intl.messages);
 
   switch (txType) {
     case TransactionType.APPROVE_CREATE_EVENT:

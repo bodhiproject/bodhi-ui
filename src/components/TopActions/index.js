@@ -1,20 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import AddIcon from '@material-ui/icons/Add';
-
+import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles, withWidth } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
-
-import {
-  Button,
-  Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  Card,
-  withStyles,
-  withWidth,
-} from '@material-ui/core';
 
 import { SortBy } from '../../constants';
 import styles from './styles';
@@ -50,8 +39,8 @@ export default class TopActions extends Component {
               className={classes.createEventButton}
               onClick={createEvent.open}
             >
-              <AddIcon className={classes.createEventButtonIcon} fontSize={fontSize} />
-              <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
+              <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
+              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
             </Button>
           )}
         </Grid>
@@ -61,9 +50,18 @@ export default class TopActions extends Component {
           </span>
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
-              <Select disableUnderline className={classes.dashboardActionsSelect} value={sortBy} onChange={e => store.sortBy = e.target.value}>
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.ASCENDING}><FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" /></MenuItem>
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}><FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" /></MenuItem>
+              <Select
+                disableUnderline
+                className={classes.dashboardActionsSelect}
+                value={sortBy}
+                onChange={e => store.sortBy = e.target.value}
+              >
+                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.ASCENDING}>
+                  <FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" />
+                </MenuItem>
+                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}>
+                  <FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" />
+                </MenuItem>
               </Select>
             </FormControl>
           </Card>

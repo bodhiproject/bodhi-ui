@@ -39,6 +39,12 @@ module.exports = {
     INFO: 'INFO',
     ERROR: 'ERROR',
     HIGHLIGHT: 'HIGHLIGHT',
+    ORANGE: 'ORANGE',
+  },
+
+  WalletProvider: {
+    QRYPTO: 'QRYPTO',
+    QT_WALLET: 'QT_WALLET',
   },
 
   /* GraphQL Constants */
@@ -52,7 +58,7 @@ module.exports = {
     VOTING: 'VOTING',
     WAIT_RESULT: 'WAITRESULT',
     OPEN_RESULT_SET: 'OPENRESULTSET',
-    PENDING: 'PENDING', // not used
+    PENDING: 'PENDING',
     WITHDRAW: 'WITHDRAW',
   },
 
@@ -74,7 +80,7 @@ module.exports = {
   TransactionStatus: {
     PENDING: 'PENDING',
     SUCCESS: 'SUCCESS',
-    FAIL: 'FAIL', // not used
+    FAIL: 'FAIL',
   },
 
   SortBy: {

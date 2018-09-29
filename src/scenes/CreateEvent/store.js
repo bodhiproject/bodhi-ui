@@ -1,5 +1,5 @@
 import { observable, computed, reaction, action, runInAction } from 'mobx';
-import _ from 'lodash';
+import { sumBy, map, filter, isUndefined, isEmpty } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
@@ -11,7 +11,7 @@ import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
-import { createTopic } from '../../network/graphql/mutations';
+import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
@@ -65,23 +65,17 @@ const messages = defineMessages({
   },
 });
 
-const nowPlus = seconds => moment().add(seconds, 's').unix();
 const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
-let TIME_GAP_MIN_SEC = 30 * 60;
-if (!isProduction()) {
-  TIME_GAP_MIN_SEC = 2 * 60;
-}
+const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
+const nowPlus = seconds => moment().add(seconds, 's').unix();
 
 const INIT = {
-  escrowAmount: '', // type: number
+  isOpen: false,
+  escrowAmount: undefined,
   averageBlockTime: '',
   txFees: [],
-  txid: '',
-  isOpen: false,
-  txConfirmDialogOpen: false,
-  txSentDialogOpen: false,
   resultSetterDialogOpen: false,
   title: '',
   creator: '',
@@ -95,8 +89,7 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
-  // if one of these in error is set, the form
-  // field will display the associated error message
+  // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
     creator: '',
@@ -113,14 +106,10 @@ const INIT = {
   },
 };
 
-
 export default class CreateEventStore {
-  escrowAmount = INIT.escrowAmount
+  escrowAmount = INIT.escrowAmount // decimal number
   averageBlockTime = INIT.averageBlockTime
-  @observable txFees = INIT.txFees // used in txConfirmDialog
-  txid = INIT.txid // used in txSentDialog
-  @observable txConfirmDialogOpen = INIT.txConfirmDialogOpen
-  @observable txSentDialogOpen = INIT.txSentDialogOpen
+  @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
 
   // form fields
@@ -132,9 +121,13 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
+
   @computed get hasEnoughFee() {
-    const transactionFee = _.sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
-    return (this.app.wallet.lastUsedWallet.qtum >= transactionFee) && (this.app.wallet.lastUsedWallet.bot >= this.escrowAmount);
+    const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
+    const { currentWalletAddress } = this.app.wallet;
+    return currentWalletAddress
+      && (currentWalletAddress.qtum >= transactionFee)
+      && (currentWalletAddress.bot >= this.escrowAmount);
   }
   @computed get warning() {
     if (!this.hasEnoughFee) {
@@ -179,15 +172,18 @@ export default class CreateEventStore {
 
   constructor(app) {
     this.app = app;
-    reaction( // when we add the creator, update our last used address
+
+    // when we add the creator, update the currentWalletAddress
+    reaction(
       () => this.creator,
       () => {
         if (this.creator) {
-          this.app.wallet.lastUsedAddress = this.creator;
+          this.app.wallet.setCurrentWalletAddress(this.creator);
         }
       }
     );
-    reaction( // make sure there are no errors when closing the result setter dialog
+    // make sure there are no errors when closing the result setter dialog
+    reaction(
       () => this.resultSetterDialogOpen,
       () => {
         if (!this.resultSetterDialogOpen) {
@@ -195,7 +191,8 @@ export default class CreateEventStore {
         }
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.prediction.startTime,
       () => {
         if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
@@ -204,7 +201,8 @@ export default class CreateEventStore {
         this.validatePredictionStartTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.prediction.endTime,
       () => {
         if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
@@ -213,7 +211,8 @@ export default class CreateEventStore {
         this.validatePredictionEndTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.resultSetting.startTime,
       () => {
         if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) {
@@ -222,7 +221,8 @@ export default class CreateEventStore {
         this.validateResultSettingStartTime();
       }
     );
-    reaction( // check date valiation when date changed
+    // check date valiation when date changed
+    reaction(
       () => this.resultSetting.endTime,
       () => {
         this.validateResultSettingEndTime();
@@ -230,86 +230,112 @@ export default class CreateEventStore {
     );
   }
 
+  /**
+   * Calculates the estimated block based on current block and future date.
+   * @param {number} futureDateUnix Future date in Unix format.
+   * @return {number} Estimated future block.
+   */
+  calculateBlock = (futureDateUnix) => {
+    const currentBlock = this.app.global.syncBlockNum;
+    const diffSec = futureDateUnix - moment().unix();
+    return Math.round(diffSec / this.averageBlockTime) + currentBlock;
+  }
+
   @action
   open = async () => {
     Tracking.track('dashboard-createEventClick');
 
-    // Fetch current escrow amount
-    let escrowRes;
-    try {
-      escrowRes = await axios.post(Routes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.lastUsedAddress,
+    // Check if there is a current address
+    if (isEmpty(this.app.wallet.currentAddress)) {
+      this.app.components.globalDialog.setError({
+        id: 'qrypto.loginToView',
+        defaultMessage: 'Please login to Qrypto to view this page.',
       });
-    } catch (err) {
-      console.error('ERROR: ', { // eslint-disable-line
-        route: Routes.api.eventEscrowAmount,
-        message: err.message,
-      });
-      runInAction(() => {
-        this.app.ui.setError(err.message, Routes.api.eventEscrowAmount);
-      });
+      this.close();
       return;
     }
 
-    try {
-      const { data } = await axios.get(Routes.insight.totals);
-      this.averageBlockTime = data.time_between_blocks;
-    } catch (err) {
-      console.error('ERROR: ', { // eslint-disable-line
-        route: Routes.insight.totals,
-        message: err.message,
-      });
-      this.averageBlockTime = defaults.averageBlockTime;
-    }
-
-    // Check whether there's a create event transaction pending
-    try {
-      const filters = [
-        { status: TransactionStatus.PENDING, type: TransactionType.APPROVE_CREATE_EVENT },
-        { status: TransactionStatus.PENDING, type: TransactionType.CREATE_EVENT },
-      ];
-      const pendingApproveResult = await queryAllTransactions(filters);
-      if (pendingApproveResult.length > 0) {
-        this.app.ui.setGlobalMessage(
-          { id: 'str.error', defaultMessage: 'Error' },
-          {
-            id: 'create.pendingExists',
-            defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-          },
-          null,
-          'INFO',
-        );
-        return;
-      }
-    } catch (error) {
-      console.error(error); // eslint-disable-line
-    }
+    if (await this.hasPendingCreateTxs()) return;
+    if (await !this.getEscrowAmount()) return;
+    await this.getAverageBlockTime();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.escrowAmount = satoshiToDecimal(escrowRes.data[0]);
-      this.creator = this.app.wallet.lastUsedAddress;
+      this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
-      // For txfees init
+
+      // Determine if user has enough tokens to create an event
       try {
-        const { data } = await axios.post(
-          Routes.api.transactionCost,
-          {
-            type: TransactionType.APPROVE_CREATE_EVENT,
-            token: Token.BOT,
-            amount: decimalToSatoshi(this.escrowAmount),
-            senderAddress: this.app.wallet.lastUsedAddress,
-          }
-        );
-        const txFees = _.map(data, (item) => new TransactionCost(item));
-        this.txFees = txFees;
+        const { data } = await axios.post(Routes.api.transactionCost, {
+          type: TransactionType.APPROVE_CREATE_EVENT,
+          senderAddress: this.app.wallet.currentAddress,
+          amount: decimalToSatoshi(this.escrowAmount),
+          token: Token.BOT,
+        });
+        this.txFees = map(data, (item) => new TransactionCost(item));
       } catch (error) {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
+        this.app.components.globalDialog.setError(error.message, Routes.api.transactionCost);
       }
     });
+  }
+
+  /**
+   * Checks for any pending create event txs for the current wallet address.
+   * @return {boolean} True if the current wallet address has pending create txs.
+   */
+  hasPendingCreateTxs = async () => {
+    try {
+      const { currentAddress } = this.app.wallet;
+      const { PENDING } = TransactionStatus;
+      const filters = [
+        { status: PENDING, type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: currentAddress },
+        { status: PENDING, type: TransactionType.CREATE_EVENT, senderAddress: currentAddress },
+      ];
+      const pendingCreates = await queryAllTransactions(filters);
+      if (pendingCreates.length > 0) {
+        this.app.components.globalDialog.setError({
+          id: 'create.pendingExists',
+          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
+        });
+        this.close();
+        return true;
+      }
+    } catch (error) {
+      console.error(error); // eslint-disable-line
+    }
+    return false;
+  }
+
+  /**
+   * Fetches the escrow amount from the API.
+   * @return {boolean} True if the API call was successful.
+   */
+  getEscrowAmount = async () => {
+    try {
+      const res = await axios.post(Routes.api.eventEscrowAmount, { senderAddress: this.app.wallet.currentAddress });
+      this.escrowAmount = satoshiToDecimal(res.data[0]);
+      return true;
+    } catch (err) {
+      this.app.components.globalDialog.setError(err.message, Routes.api.eventEscrowAmount);
+      this.close();
+    }
+    return false;
+  }
+
+  /**
+   * Gets the average block time from the Insight API.
+   */
+  getAverageBlockTime = async () => {
+    try {
+      const { data } = await axios.get(Routes.insight.totals);
+      this.averageBlockTime = data.time_between_blocks;
+    } catch (err) {
+      console.error(`${Routes.insight.totals}: ${err.message}`); // eslint-disable-line
+      this.averageBlockTime = defaults.averageBlockTime;
+    }
   }
 
   @action
@@ -340,7 +366,7 @@ export default class CreateEventStore {
   @action
   validateCreator = () => {
     const { app: { wallet }, escrowAmount, creator } = this;
-    const checkingAddresses = _.filter(wallet.addresses, { address: creator });
+    const checkingAddresses = filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
       this.error.creator = messages.strNotEnoughBotMsg.id;
     } else if (!creator) {
@@ -350,7 +376,7 @@ export default class CreateEventStore {
     }
   }
 
-  isBeforeNow = (valueUnix) => _.isUndefined(valueUnix) || moment().unix() > valueUnix
+  isBeforeNow = (valueUnix) => isUndefined(valueUnix) || moment().unix() > valueUnix
 
   @action
   validatePredictionStartTime = () => {
@@ -443,38 +469,8 @@ export default class CreateEventStore {
       return data.isvalid;
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.validateAddress);
+        this.app.components.globalDialog.setError(error.message, Routes.api.validateAddress);
       });
-    }
-  }
-
-  @action
-  prepareToCreateEvent = async () => {
-    this.validateAll();
-    if (!this.isAllValid) return;
-    try {
-      const txInfo = {
-        type: TransactionType.APPROVE_CREATE_EVENT,
-        token: Token.BOT,
-        amount: decimalToSatoshi(this.escrowAmount),
-        senderAddress: this.creator,
-      };
-      const { data } = await axios.post(Routes.api.transactionCost, txInfo);
-      const txFees = _.map(data, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
-    const { wallet } = this.app;
-    if (wallet.needsToBeUnlocked) {
-      wallet.unlockDialogOpen = true;
-    } else {
-      wallet.unlockDialogOpen = false;
     }
   }
 
@@ -493,8 +489,15 @@ export default class CreateEventStore {
 
   @action
   submit = async () => {
-    try {
-      const { data } = await createTopic(
+    this.validateAll();
+    if (!this.isAllValid) return;
+
+    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
+    const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
+    if (isAllowanceEnough(allowance, escrowAmountSatoshi)) {
+      await this.app.tx.addCreateEventTx(
+        undefined,
         this.title,
         this.outcomes,
         this.resultSetter,
@@ -502,41 +505,23 @@ export default class CreateEventStore {
         this.prediction.endTime.toString(),
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
-        decimalToSatoshi(this.escrowAmount),
-        this.creator, // address
+        escrowAmountSatoshi,
       );
-
-      runInAction(() => {
-        this.app.qtumPrediction.loadFirst();
-        this.app.pendingTxsSnackbar.init(); // Show pending txs snackbar
-        this.txConfirmDialogOpen = false;
-        this.txid = data.createTopic.txid;
-        this.txSentDialogOpen = true;
-        this.app.pendingTxsSnackbar.init();
-      });
-    } catch (error) {
-      console.error('ERROR: ', { // eslint-disable-line
-        ...error,
-        route: `${Routes.graphql.http}/createTopicTx`,
-      });
-      runInAction(() => {
-        this.app.ui.setError(error.message, `${Routes.graphql.http}/createTopicTx`);
-      });
+    } else {
+      await this.app.tx.addApproveCreateEventTx(
+        this.title,
+        this.outcomes,
+        this.resultSetter,
+        this.prediction.startTime.toString(),
+        this.prediction.endTime.toString(),
+        this.resultSetting.startTime.toString(),
+        this.resultSetting.endTime.toString(),
+        escrowAmountSatoshi,
+      );
     }
+
+    this.close();
   }
 
   close = () => Object.assign(this, INIT)
-
-  /*
-  * Calculates the estimated block based on current block and future date.
-  * @param currentBlock {Number} The current block number.
-  * @param futureDate {Moment} A moment instance (UTC) of the future date to estimate.
-  * @param averageBlockTime {Number} The average block time in seconds.
-  * @return {Number} Returns a number of the estimated future block.
-  */
-  calculateBlock = (futureDateUnix) => {
-    const currentBlock = this.app.global.syncBlockNum;
-    const diffSec = futureDateUnix - moment().unix();
-    return Math.round(diffSec / this.averageBlockTime) + currentBlock;
-  }
 }

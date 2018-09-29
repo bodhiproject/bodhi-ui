@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { has, includes } from 'lodash';
 
 export const TYPE = {
   topic: 'Topic',
@@ -39,7 +39,6 @@ const TYPE_DEF = {
       resultSetStartTime
       resultSetEndTime
       resultSetterAddress
-      resultSetterQAddress
       consensusThreshold
     }
     transactions {
@@ -66,7 +65,6 @@ const TYPE_DEF = {
     resultSetStartTime
     resultSetEndTime
     resultSetterAddress
-    resultSetterQAddress
     consensusThreshold
     transactions {
       type
@@ -77,14 +75,13 @@ const TYPE_DEF = {
 
   Vote: `
     txid
-    version
     blockNum
     voterAddress
-    voterQAddress
     topicAddress
     oracleAddress
     optionIdx
     amount
+    version
   `,
 
   SyncInfo: `
@@ -101,34 +98,56 @@ const TYPE_DEF = {
 
   Transaction: `
     type
-    txid
     status
+    txid
+    createdBlock
     createdTime
     blockNum
     blockTime
     gasLimit
     gasPrice
     gasUsed
-    version
     senderAddress
     receiverAddress
     topicAddress
     oracleAddress
     name
+    options
     optionIdx
-    token
     amount
+    token
+    resultSetterAddress
+    bettingStartTime
+    bettingEndTime
+    resultSettingStartTime
+    resultSettingEndTime
     topic {
       address
       name
       options
     }
+    version
   `,
 };
 
 const MUTATIONS = {
-  createTopic: {
+  resetApprove: {
     mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'receiverAddress',
+    ],
+    return: TYPE_DEF.Transaction,
+  },
+
+  approveCreateEvent: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'name',
       'options',
       'resultSetterAddress',
@@ -137,125 +156,120 @@ const MUTATIONS = {
       'resultSettingStartTime',
       'resultSettingEndTime',
       'amount',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      token
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
+  },
+
+  createEvent: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'name',
+      'options',
+      'resultSetterAddress',
+      'bettingStartTime',
+      'bettingEndTime',
+      'resultSettingStartTime',
+      'resultSettingEndTime',
+      'amount',
+    ],
+    return: TYPE_DEF.Transaction,
   },
 
   createBet: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
+  },
+
+  approveSetResult: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+    ],
+    return: TYPE_DEF.Transaction,
   },
 
   setResult: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
+  },
+
+  approveVote: {
+    mapping: [
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
+      'topicAddress',
+      'oracleAddress',
+      'optionIdx',
+      'amount',
+    ],
+    return: TYPE_DEF.Transaction,
   },
 
   createVote: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      oracleAddress
-      optionIdx
-      amount
-      senderAddress
-      token
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   finalizeResult: {
     mapping: [
-      'version',
+      'txid',
+      'gasLimit',
+      'gasPrice',
+      'senderAddress',
       'topicAddress',
       'oracleAddress',
-      'senderAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      oracleAddress
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   withdraw: {
     mapping: [
       'type',
-      'version',
-      'topicAddress',
+      'txid',
+      'gasLimit',
+      'gasPrice',
       'senderAddress',
+      'topicAddress',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      topicAddress
-      senderAddress
-    `,
+    return: TYPE_DEF.Transaction,
   },
 
   transfer: {
@@ -265,17 +279,7 @@ const MUTATIONS = {
       'token',
       'amount',
     ],
-    return: `
-      txid
-      createdTime
-      version
-      type
-      status
-      senderAddress
-      receiverAddress
-      token
-      amount
-    `,
+    return: TYPE_DEF.Transaction,
   },
 };
 
@@ -318,8 +322,8 @@ const ENUMS = {
 };
 
 export function isValidEnum(key, value) {
-  const isEnum = _.has(ENUMS, key);
-  const isValid = _.includes(ENUMS[key], value);
+  const isEnum = has(ENUMS, key);
+  const isValid = includes(ENUMS[key], value);
   return isEnum && isValid;
 }
 

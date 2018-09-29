@@ -11,7 +11,7 @@ const TransactionHistoryID = ({ classes, transaction }) => (
   <TableCell padding="dense" className={classes.txidRow}>
     <div className={classes.txidWrapper}>
       <div className={classes.txidLabel}>
-        <FormattedMessage id="str.transactionId" defaultMessage="Transaction ID" />
+        <FormattedMessage id="str.transactionIdX" defaultMessage="Transaction ID: {txid}" values={{ txid: '' }} />
       </div>
       <div
         className={classes.txIdText}

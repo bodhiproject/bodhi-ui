@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
 import { SortBy, Token, OracleStatus, Routes } from 'constants';
 
@@ -27,7 +27,7 @@ export default class QtumPredictionStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
+      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
         if (this.app.ui.location === Routes.QTUM_PREDICTION) {
           this.init();

@@ -1,16 +1,11 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { CssBaseline, withStyles } from '@material-ui/core';
+import { BottomBar, GlobalDialog, ExecuteTxDialog, GlobalSnackbar, TxSentDialog, PendingTxsSnackbar, TutorialCarouselDialog, WalletUnlockDialog } from 'components';
 
 import styles from './styles';
 import AppRouter from './router';
-import BottomBar from '../../components/BottomBar';
 import CreateEventFormDialog from '../CreateEvent';
-import PendingTxsSnackbar from '../../components/PendingTxsSnackbar';
-import GlobalSnackbar from '../../components/GlobalSnackbar';
-import WalletUnlockDialog from '../../components/WalletUnlockDialog';
-import ErrorDialog from '../../components/ErrorDialog';
-import TutorialCarouselDialog from '../../components/TutorialCarouselDialog';
 
 
 const App = observer(({ classes, match: { url }, store }) => (
@@ -21,12 +16,15 @@ const App = observer(({ classes, match: { url }, store }) => (
           <AppRouter url={url} />
         </div>
         <BottomBar />
-        <CreateEventFormDialog />
-        <PendingTxsSnackbar />
-        <GlobalSnackbar />
-        <WalletUnlockDialog />
-        <ErrorDialog />
+
         <TutorialCarouselDialog />
+        <GlobalSnackbar />
+        <PendingTxsSnackbar />
+        <GlobalDialog />
+        <ExecuteTxDialog />
+        <TxSentDialog />
+        <CreateEventFormDialog />
+        <WalletUnlockDialog />
       </Fragment>
     )}
     <CssBaseline />

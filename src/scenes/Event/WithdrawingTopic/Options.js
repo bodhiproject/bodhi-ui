@@ -51,10 +51,10 @@ const Typog = styled(Typography)`
 const OptionNumber = styled.div`
   ${({ theme }) => css`
     background: ${theme.palette.background.grey};
-    height: ${theme.sizes.icon};
-    width: ${theme.sizes.icon};
-    line-height: ${theme.sizes.icon};
-    border-radius: ${theme.sizes.icon};
+    height: ${theme.sizes.icon.large};
+    width: ${theme.sizes.icon.large};
+    line-height: ${theme.sizes.icon.large};
+    border-radius: ${theme.sizes.icon.large};
     overflow: hidden;
     text-align: center;
     font-size: ${theme.sizes.font.meta};

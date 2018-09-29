@@ -32,7 +32,7 @@ export default class WalletUnlockDialogStore {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.unlockWallet);
+        this.app.components.globalDialog.setError(error.message, Routes.api.unlockWallet);
       });
     }
   }

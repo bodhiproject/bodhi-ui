@@ -13,11 +13,8 @@ const styles = (theme) => ({
   createDialogTitle: {
     padding: `${theme.padding.xs.px} ${theme.padding.sm.px} 0 ${theme.padding.sm.px}`,
   },
-  EscrowAmountNote: {
-    [theme.breakpoints.down('xs')]: {
-      margin: 0,
-      padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
-    },
+  escrowAmountNote: {
+    margin: `${theme.padding.sm.px} 0 0 0`,
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
@@ -29,6 +26,28 @@ const styles = (theme) => ({
       fontSize: 12,
       paddingTop: 8,
     },
+  },
+  removeOutcomeIcon: {
+    position: 'absolute',
+    right: 5,
+    top: 8,
+    cursor: 'pointer',
+  },
+  addOutcomeButton: {
+    marginTop: theme.padding.unit.px,
+  },
+  selectAddressButton: {
+    marginBottom: theme.padding.unit.px,
+  },
+  footer: {
+    margin: theme.padding.sm.px,
+  },
+  buttonIcon: {
+    fontSize: theme.sizes.icon.small,
+    marginRight: 4,
+  },
+  cancelButton: {
+    marginRight: theme.padding.unit.px,
   },
 });
 

@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { Dialog, DialogContent as Content, DialogActions, DialogTitle as _DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning, TxConfirmDialog, TxSentDialog, ImportantNote as _ImportantNote } from 'components';
-import { Token } from 'constants';
+import { EventWarning as _EventWarning, ImportantNote } from 'components';
+import { EventWarningType } from 'constants';
 
 import styles from './styles';
 import Title from './Title';
@@ -25,15 +25,9 @@ const messages = defineMessages({
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
-  txConfirmMsgCreateMsg: {
-    id: 'txConfirmMsg.create',
-    defaultMessage: 'create an event',
-  },
 });
 
-const CreateEventDialog = withStyles(styles)(observer(({
-  classes, store: { createEvent, createEvent: { warning, hasEnoughFee, isOpen } },
-}) => (
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen } } }) => (
   <Fragment>
     <Dialog
       className={classes.createDialog}
@@ -42,10 +36,12 @@ const CreateEventDialog = withStyles(styles)(observer(({
       maxWidth='md'
       open={isOpen}
     >
-      <DialogTitle className={classes.createDialogTitle}>Create an event</DialogTitle>
-      {!hasEnoughFee && <EventWarning id={warning.id} message={warning.message} type='error' />}
-      <EscrowAmountNote amount={createEvent.escrowAmount} />
-      <Content>
+      <DialogTitle className={classes.createDialogTitle}>
+        <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+      </DialogTitle>
+      <DialogContent>
+        <EscrowAmountNote />
+        <EventWarning />
         <Title />
         <CreatorDropdown />
         <PredictionStartTime />
@@ -54,66 +50,43 @@ const CreateEventDialog = withStyles(styles)(observer(({
         <ResultSetEndTime />
         <Outcomes />
         <ResultSetter />
-      </Content>
-      <Footer>
-        <CancelButton createEvent={createEvent} />
-        <PublishButton createEvent={createEvent} />
-      </Footer>
+      </DialogContent>
+      <DialogActions className={classes.footer}>
+        <CancelButton />
+        <PublishButton />
+      </DialogActions>
     </Dialog>
-    {createEvent.txConfirmDialogOpen && (
-      <CreateEventTxConfirmDialog createEvent={createEvent} />
-    )}
-    {createEvent.txSentDialogOpen && (
-      <TxSentDialog
-        txid={createEvent.txid}
-        open={createEvent.txSentDialogOpen}
-        onClose={createEvent.close}
-      />
-    )}
   </Fragment>
-)));
-
-const DialogTitle = styled(_DialogTitle)`
-
-`;
-
-const EscrowAmountNote = injectIntl(withStyles(styles)(({ classes, amount, intl }) => {
-  const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount });
-  const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount });
-  return <ImportantNote className={classes.EscrowAmountNote} heading={heading} message={message} />;
-}));
-
-const Footer = styled(DialogActions)`
-  margin: 18px 14px !important;
-`;
-
-const ImportantNote = styled(_ImportantNote)`
-  margin-left: 35px;
-  margin-bottom: ${props => props.theme.padding.xs.px};
-`;
-
-const CancelButton = ({ createEvent }) => (
-  <Button onClick={createEvent.close} color='primary'>
-    <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
-  </Button>
 );
 
-const PublishButton = observer(({ createEvent }) => (
-  <Button onClick={createEvent.prepareToCreateEvent} disabled={createEvent.submitting || !createEvent.hasEnoughFee} color="primary" variant="raised">
+const EventWarning = inject('store')(observer(({ store: { createEvent: { hasEnoughFee, warning } } }) => (
+  !hasEnoughFee && <_EventWarning id={warning.id} message={warning.message} type={EventWarningType.ERROR} />
+)));
+
+const EscrowAmountNote = injectIntl(withStyles(styles)(inject('store')(observer(({ classes, intl, store: { createEvent: { escrowAmount } } }) => {
+  const heading = intl.formatMessage(messages.createEscrowNoteTitleMsg, { amount: escrowAmount });
+  const message = intl.formatMessage(messages.createEscrowNoteDescMsg, { amount: escrowAmount });
+  return <ImportantNote className={classes.escrowAmountNote} heading={heading} message={message} />;
+}))));
+
+const CancelButton = withStyles(styles)(inject('store')(({ classes, store: { createEvent } }) => (
+  <Button className={classes.cancelButton} onClick={createEvent.close} variant="raised" size="small">
+    <Clear className={classes.buttonIcon} />
+    <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
+  </Button>
+)));
+
+const PublishButton = withStyles(styles)(inject('store')(observer(({ classes, store: { createEvent } }) => (
+  <Button
+    onClick={createEvent.submit}
+    disabled={createEvent.submitting || !createEvent.hasEnoughFee}
+    color="primary"
+    variant="raised"
+    size="small"
+  >
+    <Create className={classes.buttonIcon} />
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
-));
+))));
 
-const CreateEventTxConfirmDialog = injectIntl(({ createEvent, intl }) => (
-  <TxConfirmDialog
-    onClose={() => createEvent.txConfirmDialogOpen = false}
-    onConfirm={createEvent.submit}
-    txFees={createEvent.txFees}
-    open={createEvent.txConfirmDialogOpen}
-    txToken={Token.BOT}
-    txAmount={createEvent.escrowAmount}
-    txDesc={intl.formatMessage(messages.txConfirmMsgCreateMsg)}
-  />
-));
-
-export default inject('store')(CreateEventDialog);
+export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));
