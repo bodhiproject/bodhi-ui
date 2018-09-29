@@ -57,4 +57,4 @@ const getMetadata = () => {
   return TESTNET;
 };
 
-module.exports = getMetadata;
+export default getMetadata;
