@@ -2,7 +2,6 @@ import _ from 'lodash';
 import gql from 'graphql-tag';
 
 import client from './';
-import GraphParser from './parser';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
 import { isProduction } from '../../config/app';
 
@@ -141,7 +140,7 @@ class GraphQuery {
       query: gql`${query}`,
       fetchPolicy: 'network-only',
     });
-    return GraphParser.getParser(this.type)(res.data[this.queryName]);
+    return res.data[this.queryName];
   }
 }
 

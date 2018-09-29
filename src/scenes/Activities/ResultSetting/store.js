@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty, each, uniqBy } from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
 import { Oracle } from 'models';
@@ -25,7 +25,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === Routes.SET) {
           this.init();

@@ -39,6 +39,7 @@ module.exports = {
     INFO: 'INFO',
     ERROR: 'ERROR',
     HIGHLIGHT: 'HIGHLIGHT',
+    ORANGE: 'ORANGE',
   },
 
   WalletProvider: {

@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { createMuiTheme } from '@material-ui/core';
-import { rgba } from 'polished';
 
-/* Brand Variables */
-
+// Font
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
-// TODO (LIV): TOO MANY FONT SIZES, TALK TO THE DESIGNERS
+// Font size
 const fontSizeTitleLg = 36;
 const fontSizeTitleMd = 32;
 const fontSizeTitleSm = 24;
@@ -15,53 +13,66 @@ const fontSizeTextMd = 18;
 const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
+// Font weight
+const fontWeightBold = 700;
+const fontWeightMedium = 700;
+const fontWeightRegular = 400;
+const fontWeightLight = 300;
+
+// Line height
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
 
-const progressHeight = 12;
-const iconSize = 24;
-
-const white = '#FFFFFF';
-
-// neon blue
+// Neon blue
 const primaryColor = '#585AFA';
 const primaryColorDark = '#4244BB';
 const primaryColorLight = '#F0F0FF';
 
-// neo teal
+// Neo teal
 const secondaryColor = '#23DAE0';
 const secondaryColorLight = '#E9FEFE';
 const secondaryColorDark = '#11A5A9';
 
-// red
+// White
+const white = '#FFFFFF';
+
+// Red
 const redColor = '#FE4A49';
 const redColorLight = '#FFDEDE';
 const redColorDark = '#960F0E';
 
+// Orange
+const orange = '#F5A623';
+
+// Text
 const textColorDark = '#333333';
 const textColorGrey = '#666666';
 const textColorLight = '#9B9B9B';
 
+// Misc
 const backgroundColor = '#F9F9F9';
 const borderColor = '#ECECEC';
+
+// Spacing
+const paddingUnit = 8;
+const paddingXs = paddingUnit * 2; // 16
+const paddingSm = paddingUnit * 3; // 24
+const paddingMd = paddingUnit * 5; // 40
+const paddingLg = paddingUnit * 7; // 56
+
+// Size
+const progressHeight = 12;
+const iconSizeLg = 24;
+const iconSizeSm = 18;
 const borderRadius = 4;
-
-const spaceUnit = 8;
-const paddingXs = spaceUnit * 2; // 16
-const paddingSm = spaceUnit * 3; // 24
-const paddingMd = spaceUnit * 5; // 40
-const paddingLg = spaceUnit * 7; // 56
-
 const navHeight = 70;
 const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
 
 const px = (value) => value.toString().concat('px');
 
-// Material Theme for Bodhi
-
 export const theme = {
-  /* material variables */
+  /* Material variables */
   palette: {
     primary: {
       light: primaryColorLight,
@@ -92,26 +103,29 @@ export const theme = {
       disabled: textColorLight,
       hint: textColorLight,
     },
+    extra: {
+      orange,
+    },
     divider: borderColor,
   },
   typography: {
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 700,
-    fontWeightBold: 700, // additional var
+    fontWeightLight,
+    fontWeightRegular,
+    fontWeightMedium,
+    fontWeightBold, // additional var
     // large headline (i.e. title on prediction title)
     display1: {
       fontSize: px(fontSizeTitleLg),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
     },
     headline: {
       fontSize: px(fontSizeTitleSm),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
@@ -119,19 +133,19 @@ export const theme = {
     // large text (i.e. title on prediction title)
     title: {
       fontSize: px(fontSizeTextMd),
-      fontWeight: 700,
+      fontWeight: fontWeightBold,
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
     body1: {
       fontSize: px(fontSizeMeta),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
     body2: {
       fontSize: px(fontSizeTextSm),
-      fontWeight: 400,
+      fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
@@ -140,13 +154,13 @@ export const theme = {
       color: textColorLight,
     },
   },
-  /* override component globally */
+  /* Component overrides */
   overrides: {
     MuiLinearProgress: {
       root: {
         height: px(progressHeight),
         borderRadius: px(progressHeight),
-        backgroundColor: borderColor.concat(' !important'),
+        backgroundColor: `${borderColor} !important`,
       },
     },
     MuiSelect: {
@@ -161,7 +175,7 @@ export const theme = {
         borderRadius: px(paddingLg),
         textTransform: 'none',
       },
-      raised: {
+      raisedPrimary: {
         backgroundColor: primaryColor,
         color: white,
         boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
@@ -175,15 +189,18 @@ export const theme = {
           opacity: 0.6,
         },
       },
-      outlined: {
-      },
       sizeLarge: {
         fontSize: px(fontSizeTextLg),
-        fontWeight: 700,
-        minHeight: px(paddingLg),
+        fontWeight: fontWeightBold,
+        minHeight: 56,
+      },
+      sizeSmall: {
+        fontSize: px(fontSizeMeta),
+        fontWeight: fontWeightBold,
+        height: 40,
+        padding: `0 ${paddingSm}`,
       },
     },
-    // TODO (LIVIA): USE A VARIENT INSTEAD OF OVERRIDE
     MuiStepConnector: {
       vertical: {
         padding: '0',
@@ -204,8 +221,8 @@ export const theme = {
     },
     MuiTab: {
       root: {
-        marginTop: px(spaceUnit),
-        marginBottom: px(spaceUnit),
+        marginTop: px(paddingUnit),
+        marginBottom: px(paddingUnit),
       },
       label: {
         fontSize: fontSizeTextSm,
@@ -215,7 +232,7 @@ export const theme = {
     MuiTable: {
       root: {
         background: white,
-        border: 'solid 1px '.concat(borderColor),
+        border: `solid 1px ${borderColor}`,
       },
     },
     MuiTableRow: {
@@ -230,8 +247,16 @@ export const theme = {
         fontSize: 13,
       },
       head: {
-        fontWeight: 700,
+        fontWeight: fontWeightBold,
         fontSize: px(fontSizeMeta),
+      },
+    },
+    MuiTooltip: {
+      tooltip: {
+        backgroundColor: primaryColor,
+        color: white,
+        fontSize: px(fontSizeMeta),
+        padding: paddingUnit,
       },
     },
     MuiExpansionPanelSummary: {
@@ -250,11 +275,11 @@ export const theme = {
       },
     },
   },
-  /* additional variables */
+  /* User-defined */
   padding: {
     unit: {
-      value: spaceUnit,
-      px: px(spaceUnit),
+      value: paddingUnit,
+      px: px(paddingUnit),
     },
     xs: {
       value: paddingXs,
@@ -274,7 +299,10 @@ export const theme = {
     },
   },
   sizes: {
-    icon: px(iconSize),
+    icon: {
+      large: px(iconSizeLg),
+      small: px(iconSizeSm),
+    },
     font: {
       titleLg: px(fontSizeTitleLg),
       titleMd: px(fontSizeTitleMd),
@@ -291,10 +319,9 @@ export const theme = {
     navHeight: px(navHeight),
     footerHeight,
   },
-  border: 'solid 1px '.concat(borderColor),
+  border: `solid 1px ${borderColor}`,
   borderRadius: px(borderRadius),
 };
 
-const bodhiTheme = createMuiTheme(theme);
-
-export default bodhiTheme;
+export default createMuiTheme(theme);
+/* eslint-enable no-unused-vars */

@@ -148,7 +148,7 @@ const styles = (theme) => ({
   questionIcon: {
     marginRight: 2,
     '&:before': {
-      fontSize: theme.sizes.icon,
+      fontSize: theme.sizes.icon.large,
     },
   },
   selectMenu: {

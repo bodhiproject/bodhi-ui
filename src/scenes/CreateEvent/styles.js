@@ -27,11 +27,27 @@ const styles = (theme) => ({
       paddingTop: 8,
     },
   },
+  removeOutcomeIcon: {
+    position: 'absolute',
+    right: 5,
+    top: 8,
+    cursor: 'pointer',
+  },
+  addOutcomeButton: {
+    marginTop: theme.padding.unit.px,
+  },
   selectAddressButton: {
     marginBottom: theme.padding.unit.px,
   },
   footer: {
     margin: theme.padding.sm.px,
+  },
+  buttonIcon: {
+    fontSize: theme.sizes.icon.small,
+    marginRight: 4,
+  },
+  cancelButton: {
+    marginRight: theme.padding.unit.px,
   },
 });
 

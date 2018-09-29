@@ -182,6 +182,7 @@ export default class TransactionStore {
   confirmTx = async (index) => {
     const tx = this.transactions[index];
     const confirmFunc = {
+      [TransactionType.RESET_APPROVE]: this.executeResetApprove,
       [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
       [TransactionType.CREATE_EVENT]: this.executeCreateEvent,
       [TransactionType.BET]: this.executeBet,
@@ -243,6 +244,52 @@ export default class TransactionStore {
       senderAddress,
     });
     return { txid, gasLimit, gasPrice };
+  }
+
+  /**
+   * Adds a reset approve tx to the queue.
+   * @param {string} spender Address to reset the allowance for.
+   */
+  @action
+  addResetApproveTx = async (spender) => {
+    this.transactions.push(observable.object(new Transaction({
+      type: TransactionType.RESET_APPROVE,
+      senderAddress: this.app.wallet.currentAddress,
+      receiverAddress: spender,
+      amount: '0',
+      token: Token.BOT,
+    })));
+    await this.showConfirmDialog();
+  }
+
+  /**
+   * Executes an approve to reset the allowance to 0.
+   * @param {number} index Index of the Transaction object.
+   * @param {Transaction} tx Transaction object.
+   */
+  @action
+  executeResetApprove = async (index, tx) => {
+    try {
+      const { senderAddress, receiverAddress, amount } = tx;
+      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, receiverAddress, amount);
+      if (!txid) throw Error('Error executing approve.');
+
+      // Create pending tx on server
+      Object.assign(tx, { txid, gasLimit, gasPrice });
+      await createTransaction('resetApprove', {
+        txid,
+        gasLimit: gasLimit.toString(),
+        gasPrice: gasPrice.toFixed(8),
+        senderAddress,
+        receiverAddress: tx.receiverAddress,
+        amount,
+      });
+
+      await this.onTxExecuted(index, tx);
+      Tracking.track('event-resetApprove');
+    } catch (err) {
+      this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/reset-approve`);
+    }
   }
 
   /**

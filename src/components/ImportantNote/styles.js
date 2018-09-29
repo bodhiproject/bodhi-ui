@@ -5,6 +5,14 @@ const styles = (theme) => ({
     alignItems: 'center',
     margin: `${theme.padding.xs.px} 0 ${theme.padding.unit.px} 0`,
   },
+  iconButton: {
+    width: theme.sizes.icon.large,
+    height: theme.sizes.icon.large,
+    backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
   icon: {
     fontSize: theme.sizes.font.textMd,
     color: theme.palette.primary.main,

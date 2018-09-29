@@ -1,4 +1,4 @@
-import { observable, runInAction, action, computed, reaction } from 'mobx';
+import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
 import axios from 'axios';
@@ -29,6 +29,7 @@ const INIT = {
   eventWarningMessageId: '',
   escrowClaim: 0,
   hashId: '',
+  allowance: undefined,
   qtumWinnings: 0,
   botWinnings: 0,
   withdrawableAddresses: [],
@@ -48,6 +49,7 @@ export default class EventStore {
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
+  @observable allowance = INIT.allowance;
 
   // topic
   @observable topics = INIT.topics
@@ -156,25 +158,34 @@ export default class EventStore {
     // GraphQL calls
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
+    await this.getAllowanceAmount();
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = this.oracle.consensusThreshold.toString();
     }
+
     this.loading = false;
   }
 
   setReactions = () => {
-    // Handle Topic changes when the address list changes
+    // Wallet addresses list changed
     reaction(
-      () => this.app.wallet.addresses,
-      async () => {
+      () => toJS(this.app.wallet.addresses),
+      () => {
         if (this.type === TOPIC) {
           this.calculateWinnings();
         }
       }
     );
 
+    // Current wallet address changed
+    reaction(
+      () => this.app.wallet.currentAddress,
+      () => this.getAllowanceAmount(),
+    );
+
+    // New block
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
@@ -192,6 +203,7 @@ export default class EventStore {
           case ORACLE: {
             await this.queryTransactions(this.topicAddress);
             await this.queryOracles(this.topicAddress);
+            await this.getAllowanceAmount();
             this.disableEventActionsIfNecessary();
             break;
           }
@@ -202,9 +214,9 @@ export default class EventStore {
       }
     );
 
-    // Toggle CTA on new block, transaction change, amount input change, option selected
+    // Tx, amount, selected option, current wallet address, or allowance changes
     reaction(
-      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
+      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
       () => {
         if (this.type === TOPIC || this.type === ORACLE) {
           this.disableEventActionsIfNecessary();
@@ -255,6 +267,13 @@ export default class EventStore {
       runInAction(() => {
         this.app.components.globalDialog.setError(error.message, networkRoutes.api.eventEscrowAmount);
       });
+    }
+  }
+
+  @action
+  getAllowanceAmount = async () => {
+    if (this.oracle.phase === VOTING) {
+      this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
     }
   }
 
@@ -477,6 +496,14 @@ export default class EventStore {
       return;
     }
 
+    // Error getting allowance amount
+    if (phase === VOTING && !this.allowance) {
+      this.buttonDisabled = true;
+      this.warningType = EventWarningType.ERROR;
+      this.eventWarningMessageId = 'str.errorGettingAllowance';
+      return;
+    }
+
     // ALL
     // Trying to bet more qtum than you have or you just don't have enough QTUM period
     if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
@@ -560,17 +587,21 @@ export default class EventStore {
   }
 
   vote = async () => {
-    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
     const amountSatoshi = decimalToSatoshi(this.amount);
-    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-    if (isAllowanceEnough(allowance, amountSatoshi)) {
-      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
+    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // Has allowance less than the vote amount, needs to reset
+      await this.app.tx.addResetApproveTx(topicAddress);
+    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // No previous allowance, approve now
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      // Has enough allowance, place vote
+      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
   }
 

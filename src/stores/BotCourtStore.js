@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, Routes } from '../constants';
 import { queryAllOracles } from '../network/graphql/queries';
@@ -24,7 +24,7 @@ export default class BotCourtStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === Routes.BOT_COURT) {
           this.init();

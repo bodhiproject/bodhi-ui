@@ -1,4 +1,4 @@
-import { observable, action, reaction, runInAction } from 'mobx';
+import { observable, action, reaction, runInAction, toJS } from 'mobx';
 import { map, filter, isEmpty, reduce } from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
 import { Transaction } from 'models';
@@ -50,12 +50,12 @@ export default class PendingTxsSnackbarStore {
   constructor(app) {
     this.app = app;
 
-    // Hide/show the snackbar when the pending count changes
+    // Counts changed
     reaction(
       () => this.count,
       () => this.isVisible = this.count > 0
     );
-    // Query pending txs on new blocks
+    // New block change
     reaction(
       () => this.app.global.syncBlockNum,
       () => {
@@ -63,6 +63,11 @@ export default class PendingTxsSnackbarStore {
           this.queryPendingTransactions();
         }
       },
+    );
+    // Wallet addresses changed
+    reaction(
+      () => toJS(this.app.wallet.addresses),
+      () => this.queryPendingTransactions(),
     );
 
     this.init();

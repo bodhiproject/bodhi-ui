@@ -44,7 +44,6 @@
   "create.cancel": "取消",
   "create.datePast": "时间不能为过去",
   "create.dateTime": "选择日期和时间",
-  "create.dialogTitle": "创建事件",
   "create.duplicateOutcome": "不允许重复结果。",
   "create.escrowNoteDesc": "您需要存入{amount}BOT押金以用于创建事件，您可以在提现阶段取出。",
   "create.escrowNoteTitle": "{amount}BOT押金",

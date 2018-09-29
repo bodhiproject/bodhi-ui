@@ -5,10 +5,10 @@ import styled from 'styled-components';
 export const Icon = styled(({ type = '', className }) => (
   <i className={`icon iconfont icon-ic_${type} ${className}`} />
 ))`
-  height: ${props => props.theme.sizes.icon};
-  width: ${props => props.theme.sizes.icon};
+  height: ${props => props.theme.sizes.icon.large};
+  width: ${props => props.theme.sizes.icon.large};
   line-height: 1;
-  font-size: ${props => props.theme.sizes.icon};
+  font-size: ${props => props.theme.sizes.icon.large};
   color: ${props => props.theme.palette.text.primary};
   position: absolute;
   left: 0;

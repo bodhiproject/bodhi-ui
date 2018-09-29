@@ -44,7 +44,6 @@
   "create.cancel": "취소",
   "create.datePast": "지난 날짜는 선택할 수 없습니다.",
   "create.dateTime": "날짜 및 시간 선택하기",
-  "create.dialogTitle": "이벤트 만들기",
   "create.duplicateOutcome": "중복 결과는 허용되지 않습니다.",
   "create.escrowNoteDesc": "이벤트를 생성하려면 에스크로에 {amount} BOT를 입금해야합니다. 이벤트가 철회 단계에있을 때 철회 할 수 있습니다.",
   "create.escrowNoteTitle": "{amount} BOT 에스크로",
