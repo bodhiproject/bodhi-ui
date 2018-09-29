@@ -42,7 +42,7 @@ export default function asyncComponent(importComponent, langHandler, lang) {
       return (
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
           <div>
-            <NavBar {...this.props} langHandler={langHandler} lang={lang} />
+            <NavBar {...this.props} lang={lang} />
             {Component}
           </div>
         </ReactPlaceholder>
