@@ -9,13 +9,15 @@ import ResultSetting from './ResultSetting';
 import Finalize from './Finalize';
 import Withdraw from './Withdraw';
 import ActivityHistory from './ActivityHistory';
+import Favorite from './Favorite';
 import styles from './styles';
-const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
+const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY, FAVORITE } = Routes;
 
 const TAB_SET = 0;
 const TAB_FINALIZE = 1;
 const TAB_WITHDRAW = 2;
 const TAB_HISTORY = 3;
+const TAB_FAVORITE = 4;
 
 const messages = defineMessages({
   set: {
@@ -33,6 +35,10 @@ const messages = defineMessages({
   history: {
     id: 'activitiesTab.History',
     defaultMessage: 'Activities History',
+  },
+  favorite: {
+    id: 'str.favorite',
+    defaultMessage: 'My Favorite',
   },
 });
 
@@ -53,6 +59,7 @@ export default class Activities extends Component {
     [FINALIZE]: TAB_FINALIZE,
     [WITHDRAW]: TAB_WITHDRAW,
     [ACTIVITY_HISTORY]: TAB_HISTORY,
+    [FAVORITE]: TAB_FAVORITE,
   }[this.props.match.path]
 
   getTabLabel = (eventStatusIndex) => {
@@ -106,6 +113,10 @@ export default class Activities extends Component {
         this.props.history.push(Routes.ACTIVITY_HISTORY);
         break;
       }
+      case TAB_FAVORITE: {
+        this.props.history.push(Routes.FAVORITE);
+        break;
+      }
       default: {
         throw new Error(`Invalid tab index: ${value}`);
       }
@@ -122,12 +133,14 @@ export default class Activities extends Component {
           <Tab label={this.getTabLabel(EventStatus.FINALIZE)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
           <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
           <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
+          <Tab label={this.props.intl.formatMessage(messages.favorite)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {this.tabIdx === TAB_SET && <ResultSetting />}
           {this.tabIdx === TAB_FINALIZE && <Finalize />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
           {this.tabIdx === TAB_HISTORY && <ActivityHistory />}
+          {this.tabIdx === TAB_FAVORITE && <Favorite />}
         </div>
       </div>
     );

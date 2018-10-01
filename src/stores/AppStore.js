@@ -14,6 +14,7 @@ import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
+import FavoriteStore from '../scenes/Activities/Favorite/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
@@ -33,6 +34,7 @@ class AppStore {
   ui = {}
   wallet = {}
   transaction = {}
+  favorite = {}
   globalSnackbar = {}
   pendingTxsSnackbar = {}
   globalDialog = {}
@@ -58,6 +60,7 @@ class AppStore {
     this.qrypto = new QryptoStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
+    this.favorite = new FavoriteStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);

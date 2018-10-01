@@ -36,16 +36,21 @@ const styles = (theme) => ({
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
-    display: '-webkit-box',
-    maxWidth: '700px',
+    display: '-webkit-box', // For multiline text overflow ellipsis
     maxHeight: '160px',
     margin: '0 auto',
-    WebkitLineClamp: 5,
-    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 5, // For multiline text overflow ellipsis
+    WebkitBoxOrient: 'vertical', // For multiline text overflow ellipsis
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     fontWeight: '700',
     color: 'rgba(0,0,0,0.75)',
+  },
+  eventCardNameBundle: {
+    display: 'flex',
+  },
+  eventCardNameFlex: {
+    flex: 1,
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,
