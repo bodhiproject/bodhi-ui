@@ -562,18 +562,6 @@ export default class EventStore {
     }
   }
 
-  // used by confirm tx modal
-  confirm = () => {
-    const actionToPerform = {
-      BETTING: this.bet,
-      RESULT_SETTING: this.setResult,
-      VOTING: this.vote,
-      FINALIZING: this.finalize,
-    }[this.oracle.phase];
-    if (!isUndefined(actionToPerform)) return actionToPerform();
-    console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
-  }
-
   bet = async () => {
     await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption.idx, this.amount);
   }
@@ -587,7 +575,7 @@ export default class EventStore {
 
     if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
       // Has allowance less than the consensus threshold, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress);
+      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
     } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
       // No previous allowance, approve now
       await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
@@ -606,7 +594,7 @@ export default class EventStore {
 
     if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
       // Has allowance less than the vote amount, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress);
+      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
     } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
       // No previous allowance, approve now
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);

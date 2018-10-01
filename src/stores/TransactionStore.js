@@ -249,15 +249,20 @@ export default class TransactionStore {
   /**
    * Adds a reset approve tx to the queue.
    * @param {string} spender Address to reset the allowance for.
+   * @param {string} topicAddress Address of the TopicEvent. Only for Set Result and Vote.
+   * @param {string} oracleAddress Address of the Oracle. Only for Set Result and Vote.
    */
   @action
-  addResetApproveTx = async (spender) => {
+  addResetApproveTx = async (spender, topicAddress, oracleAddress) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.RESET_APPROVE,
       senderAddress: this.app.wallet.currentAddress,
       receiverAddress: spender,
+      topicAddress,
+      oracleAddress,
       amount: '0',
       token: Token.BOT,
+
     })));
     await this.showConfirmDialog();
   }
@@ -282,6 +287,8 @@ export default class TransactionStore {
         gasPrice: gasPrice.toFixed(8),
         senderAddress,
         receiverAddress: tx.receiverAddress,
+        topicAddress: tx.topicAddress,
+        oracleAddress: tx.oracleAddress,
         amount,
       });
 
