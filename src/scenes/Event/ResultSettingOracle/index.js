@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid } from '@material-ui/core';
-import { EventWarning, ImportantNote } from 'components';
+import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
+
 import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
 
 const messages = defineMessages({
@@ -17,7 +18,7 @@ const messages = defineMessages({
   },
 });
 
-const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
+const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle, amountDecimal } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
@@ -26,6 +27,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       )}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
+      <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
       <TransactionHistory options={oracle.options} />
     </Content>

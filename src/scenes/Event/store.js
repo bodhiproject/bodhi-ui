@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
@@ -49,7 +49,7 @@ export default class EventStore {
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
-  @observable allowance = INIT.allowance;
+  @observable allowance = INIT.allowance; // In Botoshi
 
   // topic
   @observable topics = INIT.topics
@@ -59,6 +59,9 @@ export default class EventStore {
   betBalances = []
   voteBalances = []
 
+  @computed get amountDecimal() {
+    return satoshiToDecimal(this.allowance);
+  }
   @computed get totalBetAmount() {
     return sum(this.betBalances);
   }
@@ -270,9 +273,13 @@ export default class EventStore {
     }
   }
 
+  /**
+   * Gets the allowance amount for result setting and voting oracles.
+   * The allowance is the current amount of BOT approved for transfer.
+   */
   @action
   getAllowanceAmount = async () => {
-    if (this.oracle.phase === VOTING) {
+    if (includes([RESULT_SETTING, VOTING], this.oracle.phase)) {
       this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
     }
   }
