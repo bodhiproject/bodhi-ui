@@ -22,6 +22,7 @@ const TYPE_DEF = {
     botAmount
     escrowAmount
     creatorAddress
+    language
     oracles {
       version
       address
@@ -71,6 +72,7 @@ const TYPE_DEF = {
       status
     }
     hashId
+    language
   `,
 
   Vote: `
@@ -127,6 +129,7 @@ const TYPE_DEF = {
       options
     }
     version
+    language
   `,
 };
 
@@ -158,6 +161,7 @@ const MUTATIONS = {
       'resultSettingStartTime',
       'resultSettingEndTime',
       'amount',
+      'language',
     ],
     return: TYPE_DEF.Transaction,
   },
@@ -176,6 +180,7 @@ const MUTATIONS = {
       'resultSettingStartTime',
       'resultSettingEndTime',
       'amount',
+      'language',
     ],
     return: TYPE_DEF.Transaction,
   },

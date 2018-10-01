@@ -47,6 +47,7 @@ class GraphMutation {
 
   async execute() {
     const mutation = this.build();
+    console.log('TCL: GraphMutation -> asyncexecute -> mutation', mutation);
 
     // Post mutation to window
     if (!isProduction()) {

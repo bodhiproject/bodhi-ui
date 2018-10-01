@@ -107,6 +107,7 @@ class GraphParser {
       resultSettingStartTime: entry.resultSettingStartTime,
       resultSettingEndTime: entry.resultSettingEndTime,
       topic: entry.topic,
+      language: entry.language,
     }));
   }
 }

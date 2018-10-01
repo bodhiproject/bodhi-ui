@@ -14,6 +14,7 @@ import PredictionEndTime from './PredictionEndTime';
 import ResultSetStartTime from './ResultSetStartTime';
 import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
+import LanguageSelector from './LanguageSelector';
 import ResultSetter from './ResultSetter';
 
 const messages = defineMessages({
@@ -49,6 +50,7 @@ const CreateEventDialog = ({ classes, store: { createEvent: { isOpen } } }) => (
         <ResultSetStartTime />
         <ResultSetEndTime />
         <Outcomes />
+        <LanguageSelector />
         <ResultSetter />
       </DialogContent>
       <DialogActions className={classes.footer}>

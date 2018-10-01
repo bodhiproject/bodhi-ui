@@ -27,6 +27,7 @@ export default class Transaction {
   topic // The Topic object associated with the Transaction
   version = 0 // Current version of the contract. To manage deprecations later.
   localizedInvalid = {}; // for invalid option
+  language = ''; // current transaction language
 
   constructor(transaction) {
     Object.assign(this, transaction);
