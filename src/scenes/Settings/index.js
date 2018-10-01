@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Paper, Typography, Select, MenuItem, Grid, withStyles } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Routes } from 'constants';
 
 import styles from './styles';
 
+const messages = defineMessages({
+  languageSetting: {
+    id: 'settings.languageSetting',
+    defaultMessage: 'Language:',
+  },
+});
+
 @withStyles(styles, { withTheme: true })
-@inject('store')
 @injectIntl
+@inject('store')
 @observer
 export default class Settings extends Component {
   componentDidMount() {
@@ -23,13 +30,11 @@ export default class Settings extends Component {
         <Typography variant="display1" className={classes.headerText}>
           <FormattedMessage id="settings.settings" defaultMessage="Settings" />
         </Typography>
-        <Grid container>
-          <Grid item xs={12} sm={2}>
-            <Typography variant="title">
-              <FormattedMessage id="settings.languageSetting" defaultMessage="Language:" />
-            </Typography>
+        <Grid container className={classes.settingGridContainer}>
+          <Grid item xs={12} sm={4}>
+            <SettingName message={messages.languageSetting} />
           </Grid>
-          <Grid item xs={12} sm={10}>
+          <Grid item xs={12} sm={8}>
             <LanguageSelector {...this.props} />
           </Grid>
         </Grid>
@@ -37,6 +42,12 @@ export default class Settings extends Component {
     );
   }
 }
+
+const SettingName = withStyles(styles)(injectIntl(({ classes, intl, message }) => (
+  <Typography variant="title" className={classes.settingName}>
+    {intl.formatMessage(message)}
+  </Typography>
+)));
 
 const LanguageSelector = inject('store')(observer(({ store: { ui } }) => (
   <Select value={ui.locale} name="lang" onChange={(e) => ui.changeLocale(e.target.value)}>
