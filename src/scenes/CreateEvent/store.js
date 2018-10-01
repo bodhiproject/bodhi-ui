@@ -253,8 +253,8 @@ export default class CreateEventStore {
     }
 
     // Close if getting pending txs fails
-    const pendingTxsSuccess = await this.hasPendingCreateTxs();
-    if (!pendingTxsSuccess) {
+    const hasPendingTxs = await this.hasPendingCreateTxs();
+    if (hasPendingTxs) {
       this.close();
       return;
     }
