@@ -369,7 +369,7 @@
   "txConfirm.txFeeMsg": "你将会使用最多{txFee} QTUM的交易费用进行{txAction}操作。",
   "txConfirm.selectWalletProvider": "请选择你的钱包提供者:",
   "txConfirm.transactionX": "交易 #{txNumber}",
-  "txConfirm.txFeeReturnMsg": "Gas fees are the maximum amount that you will spend for the transaction. Any unused transaction fees will be refunded to you.",
+  "txConfirm.txFeeReturnMsg": "燃料费用是您最多为该交易所花费的费用。任何未使用的交易费用将会返还回您的账户。",
   "wallet.changePassphrase": "更改密码",
   "wallet.encrypt": "加密",
   "wallet.encryptLabel": "请输入密码用于加密您的钱包",
