@@ -579,17 +579,21 @@ export default class EventStore {
   }
 
   setResult = async () => {
-    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
     const amountSatoshi = decimalToSatoshi(this.amount);
-    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-    if (isAllowanceEnough(allowance, amountSatoshi)) {
-      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
+    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // Has allowance less than the consensus threshold, needs to reset
+      await this.app.tx.addResetApproveTx(topicAddress);
+    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // No previous allowance, approve now
       await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      // Has enough allowance, set the result
+      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
   }
 
