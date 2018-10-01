@@ -140,7 +140,6 @@ const MUTATIONS = {
       'receiverAddress',
       'topicAddress',
       'oracleAddress',
-      'amount',
     ],
     return: TYPE_DEF.Transaction,
   },
