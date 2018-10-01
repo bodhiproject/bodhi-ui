@@ -8,6 +8,7 @@ import cx from 'classnames';
 import { Routes } from 'constants';
 
 import styles from './styles';
+import ActionableBadge from './components/ActionableBadge';
 
 export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <div className={classes.rightButtonContainer}>
@@ -32,7 +33,10 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
       </Link>
       <Link to={Routes.ACTIVITY_HISTORY}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+          <div className={classes.navDropdownMyActivitiesContainer}>
+            <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
+            <ActionableBadge className={classes.dropdownMyActivitiesCount} />
+          </div>
         </div>
       </Link>
     </Hidden>

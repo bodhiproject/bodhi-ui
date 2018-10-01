@@ -8,17 +8,19 @@ import { includes } from 'lodash';
 
 import styles from './styles';
 import NavLink from './components/NavLink';
+import ActionableBadge from './components/ActionableBadge';
 
-const MyActivities = ({ classes, store: { global, ui } }) => {
-  const actionableCount = global.userData.totalCount;
-  const selected = includes([Routes.SET, Routes.FINALIZE, Routes.WITHDRAW, Routes.ACTIVITY_HISTORY], ui.location) ? 'selected' : '';
+const MyActivities = ({ classes, store: { ui } }) => {
+  const selected = includes([Routes.SET, Routes.FINALIZE, Routes.WITHDRAW, Routes.ACTIVITY_HISTORY], ui.location)
+    ? 'selected'
+    : '';
 
   return (
     <NavLink to={Routes.ACTIVITY_HISTORY}>
       <div className={cx(classes.rightButtonContainer, classes.myActivitiesWrapper)}>
         <div className={classes.myActivitiesButton}>
           <Typography className={cx(classes.navButton, selected)}>
-            {actionableCount > 0 && <div className={classes.myActivitiesActionableCount}>{actionableCount}</div>}
+            <ActionableBadge className={classes.navBarMyActivitiesActionCount} />
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Typography>
         </div>

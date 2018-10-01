@@ -104,14 +104,7 @@ const styles = (theme) => ({
       right: 30,
     },
   },
-  myActivitiesActionableCount: {
-    height: 22,
-    width: 22,
-    fontSize: 12,
-    color: theme.palette.secondary.contrastText,
-    backgroundColor: theme.palette.secondary.main,
-    borderRadius: '50%',
-    display: 'inline-block',
+  navBarMyActivitiesActionCount: {
     marginRight: 4,
   },
   myActivitiesButton: {
@@ -150,6 +143,14 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
     },
+  },
+  navDropdownMyActivitiesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dropdownMyActivitiesCount: {
+    marginLeft: 4,
   },
 });
 
