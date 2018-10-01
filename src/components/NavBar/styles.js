@@ -25,6 +25,8 @@ const styles = (theme) => ({
     verticalAlign: 'middle',
   },
   navButton: {
+    display: 'flex',
+    flexDirection: 'row',
     fontSize: theme.sizes.font.textSm,
     fontWeight: 400,
     color: 'rgba(255,255,255,0.65)',
@@ -102,14 +104,15 @@ const styles = (theme) => ({
       right: 30,
     },
   },
-  myActivitiesBadgeBadge: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-      top: -5,
-      width: 18,
-      right: -9,
-      height: 18,
-    },
+  myActivitiesActionableCount: {
+    height: 22,
+    width: 22,
+    fontSize: 12,
+    color: theme.palette.secondary.contrastText,
+    backgroundColor: theme.palette.secondary.main,
+    borderRadius: '50%',
+    display: 'inline-block',
+    marginRight: 4,
   },
   myActivitiesButton: {
     height: 'auto',
