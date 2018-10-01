@@ -202,13 +202,12 @@ export default class GlobalStore {
       this.userData.withdrawCount = topicsForVotes.length;
 
       // Get result set items
-      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
-      each(action.walletAddresses, (item) => {
-        oracleSetFilters.push({
-          token: Token.QTUM,
-          status: OracleStatus.WAIT_RESULT,
-          resultSetterAddress: item.address,
-        });
+      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.queryLanguage }];
+      oracleSetFilters.push({
+        token: Token.QTUM,
+        status: OracleStatus.WAIT_RESULT,
+        resultSetterAddress: this.app.wallet.currentAddress,
+        language: this.app.ui.queryLanguage,
       });
       const oraclesForResultset = await queryAllOracles(this.app, oracleSetFilters);
       this.userData.resultSettingCount = oraclesForResultset.length;

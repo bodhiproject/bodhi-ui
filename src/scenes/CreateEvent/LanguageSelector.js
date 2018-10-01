@@ -20,8 +20,8 @@ const LanguageSelector = observer(({ store: { createEvent } }) => (
       name="lang"
     >
       <MenuItem value="English">English</MenuItem>
-      <MenuItem value="中文">中文</MenuItem>
-      <MenuItem value="한국어">한국어</MenuItem>
+      <MenuItem value="Chinese">中文</MenuItem>
+      <MenuItem value="Korean">한국어</MenuItem>
     </Select>
   </Section>
 ));

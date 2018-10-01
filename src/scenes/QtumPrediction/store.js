@@ -73,8 +73,8 @@ export default class QtumPredictionStore {
     if (this.hasMore) {
       const orderBy = { field: 'endTime', direction: this.sortBy };
       const filters = [
-        { token: Token.QTUM, status: OracleStatus.VOTING },
-        { token: Token.QTUM, status: OracleStatus.CREATED },
+        { token: Token.QTUM, status: OracleStatus.VOTING, language: this.app.ui.queryLanguage },
+        { token: Token.QTUM, status: OracleStatus.CREATED, language: this.app.ui.queryLanguage },
       ];
       let result = [];
       result = await queryAllOracles(this.app, filters, orderBy, limit, skip);

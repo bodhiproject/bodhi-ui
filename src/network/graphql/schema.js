@@ -213,7 +213,7 @@ const MUTATIONS = {
     return: TYPE_DEF.Transaction,
   },
 
-  approveSetResult: {
+  setResult: {
     mapping: [
       'txid',
       'gasLimit',

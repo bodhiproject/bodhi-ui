@@ -354,7 +354,6 @@ export default class TransactionStore {
   executeApproveCreateEvent = async (index, tx) => {
     try {
       const { senderAddress, amountSatoshi } = tx;
-      console.log('TCL: executeApproveCreateEvent -> tx', tx);
       const { txid, gasLimit, gasPrice } = await this.executeApprove(
         senderAddress,
         getContracts().AddressManager.address,
@@ -493,7 +492,6 @@ export default class TransactionStore {
           token: Token.BOT,
           language,
         });
-        console.log('hehrhe');
         await this.onTxExecuted(index, tx);
         this.app.qtumPrediction.loadFirst();
         Tracking.track('event-createEvent');
@@ -668,7 +666,6 @@ export default class TransactionStore {
         senderAddress,
       });
       Object.assign(tx, { txid, gasLimit, gasPrice });
-
       // Create pending tx on server
       if (txid) {
         await createTransaction('setResult', {

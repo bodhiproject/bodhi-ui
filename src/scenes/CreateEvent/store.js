@@ -71,8 +71,8 @@ const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
 const LANGUAGE = {
   'en-US': 'English',
-  'zh-Hans-CN': '中文',
-  'ko-KR': '한국어',
+  'zh-Hans-CN': 'Chinese',
+  'ko-KR': 'Korean',
 };
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
