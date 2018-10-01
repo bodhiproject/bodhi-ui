@@ -45,6 +45,7 @@ export default class TransactionStore {
   constructor(app) {
     this.app = app;
 
+    // Visiblity of execute tx dialog changes
     reaction(
       () => this.visible,
       () => {
@@ -53,9 +54,19 @@ export default class TransactionStore {
         }
       }
     );
+    // New block change
     reaction(
       () => this.app.global.syncBlockNum,
       () => this.checkPendingApproves(),
+    );
+    // Qrypto logged in/out
+    reaction(
+      () => this.app.qrypto.loggedIn,
+      () => {
+        if (this.app.qrypto.loggedIn) {
+          this.checkPendingApproves();
+        }
+      }
     );
   }
 
@@ -95,6 +106,10 @@ export default class TransactionStore {
    */
   @action
   checkPendingApproves = async () => {
+    if (!this.app.qrypto.loggedIn) {
+      return;
+    }
+
     const pending = this.getPendingApproves();
     if (!isEmpty(pending)) {
       // Get all txs from DB
