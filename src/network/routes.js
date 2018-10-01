@@ -41,6 +41,6 @@ export default {
     totals: `${BASE_INSIGHT}/statistics/total`,
   },
   explorer: {
-    tx: 'https://qtumhost/tx',
+    tx: process.env.LOCAL_WALLET === 'true' ? 'https://qtumhost/tx' : `${BASE_QTUM_WEB}/tx`,
   },
 };
