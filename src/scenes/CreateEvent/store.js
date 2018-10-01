@@ -274,7 +274,7 @@ export default class CreateEventStore {
         });
         this.txFees = map(data, (item) => new TransactionCost(item));
       } catch (error) {
-        this.app.components.globalDialog.setError(error.message, Routes.api.transactionCost);
+        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
       }
     });
   }
@@ -316,7 +316,7 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(res.data[0]);
       return true;
     } catch (err) {
-      this.app.components.globalDialog.setError(err.message, Routes.api.eventEscrowAmount);
+      this.app.components.globalDialog.setError(`${err.message} : ${err.response.data.error}`, Routes.api.eventEscrowAmount);
       this.close();
     }
     return false;
@@ -466,7 +466,7 @@ export default class CreateEventStore {
       return data.isvalid;
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(error.message, Routes.api.validateAddress);
+        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.validateAddress);
       });
     }
   }

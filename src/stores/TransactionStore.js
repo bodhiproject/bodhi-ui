@@ -170,7 +170,7 @@ export default class TransactionStore {
       });
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(error.message, networkRoutes.api.transactionCost);
+        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.transactionCost);
       });
     }
   }
