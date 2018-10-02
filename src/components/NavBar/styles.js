@@ -95,6 +95,12 @@ const styles = (theme) => ({
     display: 'flex',
     width: '90%',
   },
+  walletStatusBadge: {
+    width: 10,
+    height: 10,
+    top: '-6px',
+    right: '-4px',
+  },
   myActivitiesWrapper: {
     display: 'flex',
     alignItems: 'center',
