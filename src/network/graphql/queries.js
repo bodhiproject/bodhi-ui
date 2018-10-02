@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic } from 'models';
+import { Transaction, Oracle, Topic, SyncInfo } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -236,7 +236,7 @@ export function querySyncInfo(includeBalance) {
   if (includeBalance) {
     request.addParam('includeBalance', includeBalance);
   }
-  return request.execute();
+  return request.execute().then((result) => new SyncInfo(result));
 }
 
 /**

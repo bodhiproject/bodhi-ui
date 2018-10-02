@@ -2,7 +2,6 @@ import { observable, action, reaction, toJS } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
 
-import SyncInfo from './models/SyncInfo';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
 import apolloClient from '../network/graphql';
@@ -75,15 +74,14 @@ export default class GlobalStore {
     if (syncInfo.error) {
       console.error(syncInfo.error.message); // eslint-disable-line no-console
     } else {
-      const { percent, blockNum, blockTime, balances, peerNodeCount } = new SyncInfo(syncInfo);
-      this.syncPercent = percent;
-      this.syncBlockNum = blockNum;
-      this.syncBlockTime = blockTime;
-      this.peerNodeCount = peerNodeCount || 0;
+      this.syncPercent = syncInfo.percent;
+      this.syncBlockNum = syncInfo.blockNum;
+      this.syncBlockTime = syncInfo.blockTime;
+      this.peerNodeCount = syncInfo.peerNodeCount || 0;
 
       // Only use the syncInfo balances if using a local wallet. Qrypto will set the addresses differently.
       if (this.localWallet) {
-        this.app.wallet.addresses = balances;
+        this.app.wallet.addresses = syncInfo.balances;
       }
     }
   }
