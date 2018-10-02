@@ -6,7 +6,6 @@ import { queryAllOracles } from '../network/graphql/queries';
 const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
-  loadingFirst: false,
   list: [], // data list
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
@@ -19,7 +18,6 @@ export default class BotCourtStore {
   @observable list = INIT_VALUES.list
   @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
-  @observable loadingFirst = INIT_VALUES.loadingFirst
   limit = INIT_VALUES.limit
 
   constructor(app) {
@@ -44,12 +42,9 @@ export default class BotCourtStore {
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.BOT_COURT;
-    this.loaded = false;
-    this.loadingFirst = true;
     this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = true;
-      this.loadingFirst = false;
     });
   }
 

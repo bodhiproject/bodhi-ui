@@ -7,7 +7,6 @@ import { queryAllOracles } from '../../network/graphql/queries';
 const INIT_VALUES = {
   loaded: false, // loading state?
   loadingMore: false, // for laoding icon?
-  loadingFirst: false,
   list: [], // data list
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
@@ -22,7 +21,6 @@ export default class QtumPredictionStore {
   @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
   @observable sortBy = INIT_VALUES.sortBy
-  @observable loadingFirst = INIT_VALUES.loadingFirst
   limit = INIT_VALUES.limit
 
   constructor(app) {
@@ -52,26 +50,21 @@ export default class QtumPredictionStore {
 
   @action
   loadFirst = async () => {
-    this.loadingFirst = true;
-    this.loaded = false;
     this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = true;
-      this.loadingFirst = false;
     });
   }
 
   @action
   loadMore = async () => {
     if (this.hasMore) {
-      this.loaded = false;
       this.loadingMore = true;
       this.skip += this.limit;
       const nextFewEvents = await this.fetch(this.limit, this.skip);
       runInAction(() => {
         this.list = [...this.list, ...nextFewEvents];
         this.loadingMore = false;
-        this.loaded = true;
       });
     }
   }

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, withWidth, Button } from '@material-ui/core';
+import { Grid, Typography, withWidth, Button, withStyles } from '@material-ui/core';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Routes } from 'constants';
 import { Loading } from '../Loading';
+import styles from './styles';
 
 const messages = defineMessages({
   loadMoreMsg: {
@@ -62,17 +63,21 @@ export default class InfiniteScroll extends Component {
     ) : (
       <Row>
         <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
-        <Row><Typography variant="title">
-          <FormattedMessage id="events.empty" defaultMessage="There's no ongoing events currently." />
-        </Typography></Row>
+        <Row>
+          <Typography variant="title">
+            <FormattedMessage id="events.empty" defaultMessage="There's no ongoing events currently." />
+          </Typography>
+        </Row>
         {ui.location === Routes.QTUM_PREDICTION &&
-        <Row><Button
-          size={width === 'xs' ? 'small' : 'medium'}
-          color="primary"
-          onClick={createEvent.open}
-        >
-          <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
-        </Button></Row>
+        <Row>
+          <Button
+            size={width === 'xs' ? 'small' : 'medium'}
+            color="primary"
+            onClick={createEvent.open}
+          >
+            <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
+          </Button>
+        </Row>
         }
       </Row>
     );
@@ -81,15 +86,6 @@ export default class InfiniteScroll extends Component {
 
 const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 
-const Row = (props) => (
-  <div
-    style={{
-      display: 'grid',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      marginTop: '20px',
-    }}
-    {...props}
-  />
-);
+const Row = withStyles(styles)(({ classes, ...props }) => (
+  <div className={classes.row} {...props} />
+));

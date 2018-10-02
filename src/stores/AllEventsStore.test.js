@@ -53,12 +53,10 @@ describe('AllEventsStore', () => {
   /** all following test cases target specifically to the mock backend, eg. network/graphql/__mocks__/queries.js */
   it('Init', async () => {
     const curListNum = store.list.length;
-    expect.assertions(4);
     expect(curListNum).toBe(0);
     await store.init();
     expect(app.ui.location).toBe(Routes.ALL_EVENTS);
     expect(store.list.length).toBe(curListNum + store.limit);
-    expect(store.loadingFirst).toBe(false);
   });
 
   it('Load More Events', async () => {

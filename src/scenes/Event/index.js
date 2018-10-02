@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { defineMessages } from 'react-intl';
-import { Loading as _Loading } from 'components';
+import { Loading } from 'components';
 import { EventType } from 'constants';
 
 import BettingOracle from './BettingOracle';
@@ -52,7 +52,7 @@ export default class EventPage extends Component {
       const loadProps = {
         marginTop: '10rem',
       };
-      return <_Loading text={messages.loadOracleMsg} {...loadProps} />;
+      return <Loading text={messages.loadOracleMsg} {...loadProps} />;
     }
 
     const Event = {

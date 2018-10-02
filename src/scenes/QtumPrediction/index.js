@@ -36,11 +36,8 @@ export default class QtumPrediction extends Component {
   }
 
   render() {
-    const { list, loadMore, loadingMore, loadingFirst } = this.props.store.qtumPrediction;
-    const loadProps = {
-      marginTop: '10rem',
-    };
-    if (loadingFirst) return <Loading {...loadProps} />;
+    const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
+    if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
       <EventCard key={i} index={i} event={event} increasingCount={this.state.increasingCount} />
     )); // eslint-disable-line

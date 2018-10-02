@@ -24,11 +24,8 @@ export default class AllEvents extends Component {
   }
 }
 
-const Events = observer(({ allEvents: { list, loadMoreEvents, loadingFirst, loadingMore } }) => {
-  const loadProps = {
-    marginTop: '10rem',
-  };
-  if (loadingFirst) return <Loading {...loadProps} />;
+const Events = observer(({ allEvents: { list, loadMoreEvents, loaded, loadingMore } }) => {
+  if (!loaded) return <Loading />;
   const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
   return (
     <InfiniteScroll
