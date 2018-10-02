@@ -277,7 +277,6 @@ export default class TransactionStore {
       oracleAddress,
       amount: '0',
       token: Token.BOT,
-
     })));
     await this.showConfirmDialog();
   }
