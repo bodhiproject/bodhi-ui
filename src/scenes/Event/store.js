@@ -145,10 +145,7 @@ export default class EventStore {
     // GraphQL calls
     this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
     this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.address }], { field: 'blockNum', direction: SortBy.ASCENDING });
-    this.transactions = await queryAllTransactions(
-      [{ topicAddress: this.address }],
-      { field: 'createdTime', direction: SortBy.DESCENDING },
-    );
+    await this.queryTransactions(this.address);
 
     // API calls
     await this.getEscrowAmount();
@@ -162,10 +159,7 @@ export default class EventStore {
   initOracle = async () => {
     // GraphQL calls
     this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
-    this.transactions = await queryAllTransactions(
-      [{ topicAddress: this.topicAddress }],
-      { field: 'createdTime', direction: SortBy.DESCENDING },
-    );
+    await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
 
     if (this.oracle.phase === RESULT_SETTING) {
@@ -204,18 +198,12 @@ export default class EventStore {
             break;
           }
           case TOPIC: {
-            this.transactions = await queryAllTransactions(
-              [{ topicAddress: this.address }],
-              { field: 'createdTime', direction: SortBy.DESCENDING },
-            );
+            await this.queryTransactions(this.address);
             this.disableEventActionsIfNecessary();
             break;
           }
           case ORACLE: {
-            this.transactions = await queryAllTransactions(
-              [{ topicAddress: this.topicAddress }],
-              { field: 'createdTime', direction: SortBy.DESCENDING },
-            );
+            await this.queryTransactions(this.topicAddress);
             this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
             await this.getAllowanceAmount();
             this.disableEventActionsIfNecessary();
@@ -250,7 +238,7 @@ export default class EventStore {
   }
 
   @action
-  queryTransactions = async (address) => { // TODO: REMOVE LATER
+  queryTransactions = async (address) => {
     this.transactions = await queryAllTransactions(
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
