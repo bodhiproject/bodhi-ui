@@ -65,6 +65,8 @@ export default class TransactionStore {
       () => {
         if (this.app.qrypto.loggedIn) {
           this.checkPendingApproves();
+        } else {
+          this.visible = false;
         }
       }
     );
