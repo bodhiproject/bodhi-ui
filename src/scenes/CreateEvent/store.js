@@ -107,7 +107,7 @@ const INIT = {
 };
 
 export default class CreateEventStore {
-  escrowAmount = INIT.escrowAmount // decimal number
+  @observable escrowAmount = INIT.escrowAmount // decimal number
   averageBlockTime = INIT.averageBlockTime
   @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
@@ -252,8 +252,20 @@ export default class CreateEventStore {
       return;
     }
 
-    if (await this.hasPendingCreateTxs()) return;
-    if (await !this.getEscrowAmount()) return;
+    // Close if getting pending txs fails
+    const hasPendingTxs = await this.hasPendingCreateTxs();
+    if (hasPendingTxs) {
+      this.close();
+      return;
+    }
+
+    // Close if unable to get the escrow amount
+    const escrowAmountSuccess = await this.getEscrowAmount();
+    if (!escrowAmountSuccess) {
+      this.close();
+      return;
+    }
+
     await this.getAverageBlockTime();
 
     runInAction(async () => {
@@ -300,8 +312,9 @@ export default class CreateEventStore {
         this.close();
         return true;
       }
-    } catch (error) {
-      console.error(error); // eslint-disable-line
+    } catch (err) {
+      this.app.components.globalDialog.setError(err.message, `${Routes.graphql.http}/all-transactions`);
+      this.close();
     }
     return false;
   }
@@ -310,6 +323,7 @@ export default class CreateEventStore {
    * Fetches the escrow amount from the API.
    * @return {boolean} True if the API call was successful.
    */
+  @action
   getEscrowAmount = async () => {
     try {
       const res = await axios.post(Routes.api.eventEscrowAmount, { senderAddress: this.app.wallet.currentAddress });
@@ -325,6 +339,7 @@ export default class CreateEventStore {
   /**
    * Gets the average block time from the Insight API.
    */
+  @action
   getAverageBlockTime = async () => {
     try {
       const { data } = await axios.get(Routes.insight.totals);
