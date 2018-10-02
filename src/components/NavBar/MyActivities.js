@@ -19,8 +19,8 @@ const MyActivities = ({ classes, store: { ui } }) => {
     <NavLink to={Routes.ACTIVITY_HISTORY}>
       <div className={cx(classes.rightButtonContainer, classes.myActivitiesWrapper)}>
         <div className={classes.myActivitiesButton}>
+          <ActionableBadge className={classes.navBarMyActivitiesActionCount} />
           <Typography className={cx(classes.navButton, selected)}>
-            <ActionableBadge className={classes.navBarMyActivitiesActionCount} />
             <FormattedMessage id="navBar.activities" defaultMessage="My Activities" />
           </Typography>
         </div>

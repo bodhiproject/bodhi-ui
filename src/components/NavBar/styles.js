@@ -109,6 +109,10 @@ const styles = (theme) => ({
   },
   myActivitiesButton: {
     height: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     [theme.breakpoints.down('xs')]: {
       lineHeight: theme.sizes.font.textSm,
     },
