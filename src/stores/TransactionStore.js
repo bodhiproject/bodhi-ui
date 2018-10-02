@@ -13,33 +13,14 @@ import Tracking from '../helpers/mixpanelUtil';
 const INIT_VALUES = {
   visible: false,
   provider: WalletProvider.QRYPTO,
-  type: undefined,
-  action: undefined,
-  option: undefined,
-  amount: undefined,
-  token: undefined,
-  topicAddress: undefined,
-  oracleAddress: undefined,
-  senderAddress: undefined,
   fees: [],
-  confirmedFunc: undefined,
 };
 
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
-  @observable transactions = [];
-
-  @observable type = INIT_VALUES.type;
-  @observable action = INIT_VALUES.action;
-  @observable option = INIT_VALUES.option;
-  @observable amount = INIT_VALUES.amount;
-  @observable token = INIT_VALUES.token;
-  @observable topicAddress = INIT_VALUES.topicAddress;
-  @observable oracleAddress = INIT_VALUES.oracleAddress;
-  @observable senderAddress = INIT_VALUES.senderAddress;
   @observable fees = INIT_VALUES.fees;
-  confirmedFunc = INIT_VALUES.confirmedFunc;
+  @observable transactions = [];
   app = undefined;
 
   constructor(app) {
