@@ -25,6 +25,8 @@ const styles = (theme) => ({
     verticalAlign: 'middle',
   },
   navButton: {
+    display: 'flex',
+    flexDirection: 'row',
     fontSize: theme.sizes.font.textSm,
     fontWeight: 400,
     color: 'rgba(255,255,255,0.65)',
@@ -93,6 +95,16 @@ const styles = (theme) => ({
     display: 'flex',
     width: '90%',
   },
+  walletStatusBadge: {
+    width: 10,
+    height: 10,
+    top: '-6px',
+    right: '-4px',
+    [theme.breakpoints.down('xs')]: {
+      top: '3px',
+      right: '-13px',
+    },
+  },
   myActivitiesWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -102,17 +114,15 @@ const styles = (theme) => ({
       right: 30,
     },
   },
-  myActivitiesBadgeBadge: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-      top: -5,
-      width: 18,
-      right: -9,
-      height: 18,
-    },
+  navBarMyActivitiesActionCount: {
+    marginRight: 4,
   },
   myActivitiesButton: {
     height: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     [theme.breakpoints.down('xs')]: {
       lineHeight: theme.sizes.font.textSm,
     },
@@ -147,6 +157,14 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
     },
+  },
+  navDropdownMyActivitiesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dropdownMyActivitiesCount: {
+    marginLeft: 4,
   },
 });
 

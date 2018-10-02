@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-import { Grid } from '@material-ui/core';
-import { EventWarning, ImportantNote } from 'components';
+import { Grid, withStyles } from '@material-ui/core';
+import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
+
+import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
 
 const messages = defineMessages({
@@ -17,7 +18,7 @@ const messages = defineMessages({
   },
 });
 
-const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
+const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle, amountDecimal } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
@@ -26,6 +27,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle 
       )}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
+      <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
       <TransactionHistory options={oracle.options} />
     </Content>
@@ -39,15 +41,11 @@ const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => 
   return <ImportantNote heading={heading} message={message} />;
 });
 
-const Options = observer(({ oracle }) => (
-  <Container>
-    {oracle.options.map((option, i) => <Option key={i} option={option} amountInputDisabled />)}
-  </Container>
-));
-
-const Container = styled(Grid)`
-  min-width: 75%;
-`;
+const Options = withStyles(styles)(observer(({ classes, oracle: { options } }) => (
+  <Grid className={classes.optionGrid}>
+    {options.map((option, i) => <Option key={i} option={option} amountInputDisabled />)}
+  </Grid>
+)));
 
 const SetResultButton = props => {
   const { oracle, setResult, isPending, buttonDisabled } = props.eventpage;

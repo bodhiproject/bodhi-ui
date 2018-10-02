@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-import { Grid } from '@material-ui/core';
+import { Grid, withStyles } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
+
+import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
 
 const messages = defineMessages({
@@ -44,15 +45,11 @@ const EventUnconfirmedNote = injectIntl(({ intl: { formatMessage } }) => (
   />
 ));
 
-const Options = observer(({ oracle }) => (
-  <Container>
+const Options = withStyles(styles)(observer(({ classes, oracle }) => (
+  <Grid className={classes.optionGrid}>
     {oracle.options.map((option, i) => <Option key={i} option={option} disabled={oracle.isArchived} />)}
-  </Container>
-));
-
-const Container = styled(Grid)`
-  min-width: 75%;
-`;
+  </Grid>
+)));
 
 const BetButton = props => {
   const { oracle, unconfirmed, bet, isPending, buttonDisabled } = props.eventpage;

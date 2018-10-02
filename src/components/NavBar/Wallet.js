@@ -1,6 +1,6 @@
 import React from 'react';
-import { IconButton, withStyles } from '@material-ui/core';
-import { inject } from 'mobx-react';
+import { IconButton, Badge, withStyles } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
 
 import styles from './styles';
@@ -14,10 +14,16 @@ const Wallet = ({ classes, store: { global, qrypto } }) => {
   return (
     <div className={classes.rightButtonContainer}>
       <IconButton className={classes.navButton} onClick={() => qrypto.openPopover()}>
-        <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
+        <Badge
+          classes={{ badge: classes.walletStatusBadge }}
+          color={qrypto.loggedIn ? 'secondary' : 'error'}
+          badgeContent=""
+        >
+          <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
+        </Badge>
       </IconButton>
     </div>
   );
 };
 
-export default withStyles(styles, { withTheme: true })(inject('store')((Wallet)));
+export default withStyles(styles, { withTheme: true })(inject('store')(observer((Wallet))));

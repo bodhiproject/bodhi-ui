@@ -1,4 +1,7 @@
 const styles = (theme) => ({
+  withdrawingPaper: {
+    padding: theme.padding.md.px,
+  },
   rewardTooltip: {
     background: '#FFFFFF',
     marginTop: '0px',
@@ -14,7 +17,6 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    /* display: 'inline-block', */
     marginBottom: theme.padding.unit.px,
   },
   tokenDiv: {

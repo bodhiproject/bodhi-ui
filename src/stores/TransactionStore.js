@@ -13,38 +13,20 @@ import Tracking from '../helpers/mixpanelUtil';
 const INIT_VALUES = {
   visible: false,
   provider: WalletProvider.QRYPTO,
-  type: undefined,
-  action: undefined,
-  option: undefined,
-  amount: undefined,
-  token: undefined,
-  topicAddress: undefined,
-  oracleAddress: undefined,
-  senderAddress: undefined,
   fees: [],
-  confirmedFunc: undefined,
 };
 
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
-  @observable transactions = [];
-
-  @observable type = INIT_VALUES.type;
-  @observable action = INIT_VALUES.action;
-  @observable option = INIT_VALUES.option;
-  @observable amount = INIT_VALUES.amount;
-  @observable token = INIT_VALUES.token;
-  @observable topicAddress = INIT_VALUES.topicAddress;
-  @observable oracleAddress = INIT_VALUES.oracleAddress;
-  @observable senderAddress = INIT_VALUES.senderAddress;
   @observable fees = INIT_VALUES.fees;
-  confirmedFunc = INIT_VALUES.confirmedFunc;
+  @observable transactions = [];
   app = undefined;
 
   constructor(app) {
     this.app = app;
 
+    // Visiblity of execute tx dialog changes
     reaction(
       () => this.visible,
       () => {
@@ -53,9 +35,21 @@ export default class TransactionStore {
         }
       }
     );
+    // New block change
     reaction(
       () => this.app.global.syncBlockNum,
       () => this.checkPendingApproves(),
+    );
+    // Qrypto logged in/out
+    reaction(
+      () => this.app.qrypto.loggedIn,
+      () => {
+        if (this.app.qrypto.loggedIn) {
+          this.checkPendingApproves();
+        } else {
+          this.visible = false;
+        }
+      }
     );
   }
 
@@ -95,6 +89,10 @@ export default class TransactionStore {
    */
   @action
   checkPendingApproves = async () => {
+    if (!this.app.qrypto.loggedIn) {
+      return;
+    }
+
     const pending = this.getPendingApproves();
     if (!isEmpty(pending)) {
       // Get all txs from DB
@@ -249,13 +247,17 @@ export default class TransactionStore {
   /**
    * Adds a reset approve tx to the queue.
    * @param {string} spender Address to reset the allowance for.
+   * @param {string} topicAddress Address of the TopicEvent. Only for Set Result and Vote.
+   * @param {string} oracleAddress Address of the Oracle. Only for Set Result and Vote.
    */
   @action
-  addResetApproveTx = async (spender) => {
+  addResetApproveTx = async (spender, topicAddress, oracleAddress) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.RESET_APPROVE,
       senderAddress: this.app.wallet.currentAddress,
       receiverAddress: spender,
+      topicAddress,
+      oracleAddress,
       amount: '0',
       token: Token.BOT,
     })));
@@ -282,6 +284,8 @@ export default class TransactionStore {
         gasPrice: gasPrice.toFixed(8),
         senderAddress,
         receiverAddress: tx.receiverAddress,
+        topicAddress: tx.topicAddress,
+        oracleAddress: tx.oracleAddress,
         amount,
       });
 

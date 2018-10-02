@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill } from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
@@ -49,7 +49,7 @@ export default class EventStore {
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
-  @observable allowance = INIT.allowance;
+  @observable allowance = INIT.allowance; // In Botoshi
 
   // topic
   @observable topics = INIT.topics
@@ -59,6 +59,9 @@ export default class EventStore {
   betBalances = []
   voteBalances = []
 
+  @computed get amountDecimal() {
+    return satoshiToDecimal(this.allowance);
+  }
   @computed get totalBetAmount() {
     return sum(this.betBalances);
   }
@@ -270,9 +273,13 @@ export default class EventStore {
     }
   }
 
+  /**
+   * Gets the allowance amount for result setting and voting oracles.
+   * The allowance is the current amount of BOT approved for transfer.
+   */
   @action
   getAllowanceAmount = async () => {
-    if (this.oracle.phase === VOTING) {
+    if (includes([RESULT_SETTING, VOTING], this.oracle.phase)) {
       this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
     }
   }
@@ -555,34 +562,26 @@ export default class EventStore {
     }
   }
 
-  // used by confirm tx modal
-  confirm = () => {
-    const actionToPerform = {
-      BETTING: this.bet,
-      RESULT_SETTING: this.setResult,
-      VOTING: this.vote,
-      FINALIZING: this.finalize,
-    }[this.oracle.phase];
-    if (!isUndefined(actionToPerform)) return actionToPerform();
-    console.error(`NO ACTION FOR PHASE ${this.oracle.phase}`); // eslint-disable-line
-  }
-
   bet = async () => {
     await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption.idx, this.amount);
   }
 
   setResult = async () => {
-    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
+    const { isAllowanceEnough } = this.app.wallet;
     const { topicAddress } = this.oracle;
     const oracleAddress = this.oracle.address;
     const optionIdx = this.selectedOption.idx;
     const amountSatoshi = decimalToSatoshi(this.amount);
-    const allowance = await checkAllowance(currentAddress, topicAddress);
 
-    if (isAllowanceEnough(allowance, amountSatoshi)) {
-      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
+    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // Has allowance less than the consensus threshold, needs to reset
+      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
+    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
+      // No previous allowance, approve now
       await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
+    } else {
+      // Has enough allowance, set the result
+      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
     }
   }
 
@@ -595,7 +594,7 @@ export default class EventStore {
 
     if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
       // Has allowance less than the vote amount, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress);
+      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
     } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
       // No previous allowance, approve now
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);

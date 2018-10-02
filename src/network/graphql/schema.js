@@ -138,6 +138,8 @@ const MUTATIONS = {
       'gasPrice',
       'senderAddress',
       'receiverAddress',
+      'topicAddress',
+      'oracleAddress',
     ],
     return: TYPE_DEF.Transaction,
   },

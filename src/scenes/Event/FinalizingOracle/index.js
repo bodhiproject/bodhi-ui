@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Grid } from '@material-ui/core';
+import { Grid, withStyles } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
+
+import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory } from '../components';
 
 const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
@@ -23,22 +24,13 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
   </Row>
 ));
 
-const Options = observer(({ oracle }) => (
-  <Container>
+const Options = withStyles(styles)(observer(({ classes, oracle }) => (
+  <Grid className={classes.optionGrid}>
     {oracle.options.map((option, i) => (
-      <Option
-        key={i}
-        option={option}
-        showAmountInput={false}
-        skipExpansion
-      />
+      <Option key={i} option={option} showAmountInput={false} skipExpansion />
     ))}
-  </Container>
-));
-
-const Container = styled(Grid)`
-  min-width: 75%;
-`;
+  </Grid>
+)));
 
 const FinalizeButton = props => {
   const { oracle, finalize, isPending, buttonDisabled } = props.eventpage;

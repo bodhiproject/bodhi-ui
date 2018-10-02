@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { Paper } from '@material-ui/core';
+import { Paper, withStyles } from '@material-ui/core';
+
+import styles from './styles';
 import { Row, Content, Title, ResultHistory, TransactionHistory } from '../components';
 import WinningOutcome from './WinningOutcome';
 import WithdrawTo from './WithdrawTo';
@@ -10,19 +11,22 @@ import Reward from './Reward';
 import Options from './Options';
 import Sidebar from './Sidebar';
 
+@withStyles(styles, { withTheme: true })
+@injectIntl
 @inject('store')
 @observer
-class WithdrawingTopic extends Component {
+export default class WithdrawingTopic extends Component {
   componentWillUnmount() {
     this.props.store.eventPage.reset();
   }
+
   render() {
-    const { store: { eventPage, eventPage: { topic, escrowClaim, botWinnings, qtumWinnings } } } = this.props;
+    const { classes, store: { eventPage, eventPage: { topic, escrowClaim, botWinnings, qtumWinnings } } } = this.props;
     return (
       <Row>
         <Content>
           <Title>{topic.name}</Title>
-          <Container>
+          <Paper className={classes.withdrawingPaper}>
             <WinningOutcome eventPage={eventPage} />
             {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
               <Fragment>
@@ -30,7 +34,7 @@ class WithdrawingTopic extends Component {
                 <WithdrawTo />
               </Fragment>
             )}
-          </Container>
+          </Paper>
           <Options eventPage={eventPage} />
           <ResultHistory oracles={eventPage.oracles} currentEvent={topic} />
           <TransactionHistory options={topic.options} />
@@ -39,9 +43,3 @@ class WithdrawingTopic extends Component {
       </Row>);
   }
 }
-
-const Container = styled(Paper)`
-  padding: ${props => props.theme.padding.md.px};
-`;
-
-export default injectIntl(inject('store')(WithdrawingTopic));
