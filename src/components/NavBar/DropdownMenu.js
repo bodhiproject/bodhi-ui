@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, Hidden, IconButton } from '@material-ui/core';
+import { withStyles, Hidden, IconButton, Badge } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage } from 'react-intl';
@@ -53,7 +53,13 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
           qrypto.openPopover();
         }}
       >
-        <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
+        <Badge
+          classes={{ badge: classes.walletStatusBadge }}
+          color={qrypto.loggedIn ? 'secondary' : 'error'}
+          badgeContent=""
+        >
+          <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
+        </Badge>
       </div>
     </Hidden>
     <Link to={Routes.SETTINGS}>

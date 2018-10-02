@@ -100,6 +100,10 @@ const styles = (theme) => ({
     height: 10,
     top: '-6px',
     right: '-4px',
+    [theme.breakpoints.down('xs')]: {
+      top: '3px',
+      right: '-13px',
+    },
   },
   myActivitiesWrapper: {
     display: 'flex',
