@@ -107,7 +107,7 @@ const INIT = {
 };
 
 export default class CreateEventStore {
-  escrowAmount = INIT.escrowAmount // decimal number
+  @observable escrowAmount = INIT.escrowAmount // decimal number
   averageBlockTime = INIT.averageBlockTime
   @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
