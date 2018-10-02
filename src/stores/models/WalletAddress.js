@@ -1,4 +1,3 @@
-
 import { observable } from 'mobx';
 import { satoshiToDecimal } from '../../helpers/utility';
 

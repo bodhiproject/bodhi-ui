@@ -487,6 +487,7 @@ export default class TransactionStore {
           token: Token.BOT,
           language,
         });
+
         await this.onTxExecuted(index, tx);
         this.app.qtumPrediction.loadFirst();
         Tracking.track('event-createEvent');
@@ -660,6 +661,7 @@ export default class TransactionStore {
         gasLimit: 1500000,
         senderAddress,
       });
+
       Object.assign(tx, { txid, gasLimit, gasPrice });
       // Create pending tx on server
       if (txid) {
@@ -797,6 +799,7 @@ export default class TransactionStore {
           optionIdx,
           amount: amountSatoshi,
         });
+
         await this.onTxExecuted(index, tx);
         Tracking.track('event-vote');
       }

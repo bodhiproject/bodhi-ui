@@ -184,7 +184,7 @@ export default class GlobalStore {
       // Get all votes for all your addresses
       each(this.app.wallet.addresses, (item) => {
         voteFilters.push({ voterAddress: item.address });
-        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
       });
 
       // Filter votes
@@ -196,18 +196,18 @@ export default class GlobalStore {
       }, []);
 
       each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
       });
       const topicsForVotes = await queryAllTopics(this.app, topicFilters);
       this.userData.withdrawCount = topicsForVotes.length;
 
       // Get result set items
-      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.queryLanguage }];
+      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
       oracleSetFilters.push({
         token: Token.QTUM,
         status: OracleStatus.WAIT_RESULT,
         resultSetterAddress: this.app.wallet.currentAddress,
-        language: this.app.ui.queryLanguage,
+        language: this.app.ui.locale,
       });
       const oraclesForResultset = await queryAllOracles(this.app, oracleSetFilters);
       this.userData.resultSettingCount = oraclesForResultset.length;

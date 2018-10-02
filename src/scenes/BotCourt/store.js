@@ -66,11 +66,11 @@ export default class BotCourtStore {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
       const excludeResultSetterAddress = this.app.wallet.addresses.map(({ address }) => address);
       const filters = [
-        { token: Token.BOT, status: OracleStatus.VOTING, language: this.app.ui.queryLanguage },
+        { token: Token.BOT, status: OracleStatus.VOTING, language: this.app.ui.locale },
         { token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
           excludeResultSetterAddress,
-          language: this.app.ui.queryLanguage,
+          language: this.app.ui.locale,
         },
       ];
       let result = [];

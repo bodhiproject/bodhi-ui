@@ -69,11 +69,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
-const LANGUAGE = {
-  'en-US': 'English',
-  'zh-Hans-CN': 'Chinese',
-  'ko-KR': 'Korean',
-};
+
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
@@ -108,7 +104,6 @@ const INIT = {
     outcomes: ['', ''],
     resultSetter: '',
   },
-  language: '',
 };
 
 export default class CreateEventStore {
@@ -126,7 +121,6 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
-  @observable language = INIT.language
 
   @computed get hasEnoughFee() {
     const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
@@ -281,7 +275,6 @@ export default class CreateEventStore {
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.creator = this.app.wallet.currentAddress;
       this.isOpen = true;
-      this.language = LANGUAGE[this.app.ui.locale];
 
       // Determine if user has enough tokens to create an event
       try {
@@ -525,7 +518,7 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
-        this.language
+        this.app.ui.locale,
       );
     } else {
       await this.app.tx.addApproveCreateEventTx(
@@ -537,7 +530,7 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
-        this.language
+        this.app.ui.locale,
       );
     }
 

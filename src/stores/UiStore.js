@@ -1,4 +1,4 @@
-import { observable, action, reaction, computed } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
@@ -7,21 +7,12 @@ import locales from '../languageProvider';
 import { faqUrls } from '../config/app';
 import Tracking from '../helpers/mixpanelUtil';
 
-const queryLang = {
-  'en-US': 'English',
-  'zh-Hans-CN': 'Chinese',
-  'ko-KR': 'Korean',
-};
 export default class UiStore {
   @observable location = Routes.QTUM_PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
 
-  @computed
-  get queryLanguage() {
-    return queryLang[this.locale];
-  }
   get localeMessages() {
     return locales[this.locale].messages;
   }
