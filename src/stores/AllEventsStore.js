@@ -2,8 +2,6 @@ import { observable, action, runInAction, computed, reaction, toJS } from 'mobx'
 import _ from 'lodash';
 import { OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
-import Topic from './models/Topic';
-import Oracle from './models/Oracle';
 
 const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
@@ -67,14 +65,14 @@ export default class {
     let topics = [];
     if (this.hasMoreTopics) {
       const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-      topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
-      topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
+      topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+      topics = _.uniqBy(topics, 'txid');
       if (topics.length < limit) this.hasMoreTopics = false;
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      oracles = await queryAllOracles(undefined, orderBy, limit, skip);
-      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      oracles = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
+      oracles = _.uniqBy(oracles, 'txid');
       if (oracles.length < limit) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());

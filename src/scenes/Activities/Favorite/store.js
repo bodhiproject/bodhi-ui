@@ -2,8 +2,6 @@ import { observable, action, reaction } from 'mobx';
 import { uniqBy, difference, orderBy } from 'lodash';
 import { Routes, SortBy, OracleStatus } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../../../network/graphql/queries';
-import Topic from '../../../stores/models/Topic';
-import Oracle from '../../../stores/models/Oracle';
 
 const INIT_VALUES_FAVPAGE = {
   displayList: [], // data list
@@ -63,15 +61,14 @@ export default class FavoriteStore {
     // Get all event in WITHDRAW phase as Topic at favorite topic address list "favList"
     const topicOrderBy = { field: 'endTime', direction: SortBy.ASCENDING };
     const topicFilters = this.favList.map(topicAddress => ({ address: topicAddress, status: OracleStatus.WITHDRAW }));
-    const topics = await queryAllTopics(topicFilters, topicOrderBy, 5000);
-    const topicResult = topics.map((topic) => new Topic(topic, this.app));
+    const topicResult = await queryAllTopics(this.app, topicFilters, topicOrderBy, 5000);
 
     // For those events which is not in WITHDRAW phase, search for the latest oracle
     const locatedTopics = topicResult.map(topicObject => (topicObject.address));
     const oracleFilters = difference(this.favList, locatedTopics).map(omittedTopicAddress => ({ topicAddress: omittedTopicAddress }));
     const oracleOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
-    const oracles = await queryAllOracles(oracleFilters, oracleOrderBy, 5000);
-    const oracleResult = uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
+    const oracles = await queryAllOracles(this.app, oracleFilters, oracleOrderBy, 5000);
+    const oracleResult = uniqBy(oracles, 'topicAddress');
 
     // Combine both WITHDRAW topics and latest phase oracles into result
     const result = orderBy([...topicResult, ...oracleResult], ['endTime']);

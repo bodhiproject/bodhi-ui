@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
+import { Transaction, Oracle, Topic } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -149,7 +150,7 @@ class GraphQuery {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
-export function queryAllTopics(filters, orderBy, limit, skip) {
+export function queryAllTopics(app, filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTopics', TYPE.topic);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
@@ -163,7 +164,7 @@ export function queryAllTopics(filters, orderBy, limit, skip) {
   if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  return request.execute().then((result) => _.map(result, (topic) => new Topic(topic, app)));
 }
 
 /*
@@ -171,7 +172,7 @@ export function queryAllTopics(filters, orderBy, limit, skip) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllOracles(filters, orderBy, limit, skip) {
+export function queryAllOracles(app, filters, orderBy, limit, skip) {
   const request = new GraphQuery('allOracles', TYPE.oracle);
   if (!_.isEmpty(filters)) {
     request.setFilters(filters);
@@ -185,7 +186,7 @@ export function queryAllOracles(filters, orderBy, limit, skip) {
   if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  return request.execute().then((result) => _.map(result, (oracle) => new Oracle(oracle, app)));
 }
 
 /*
@@ -223,7 +224,7 @@ export function queryAllTransactions(filters, orderBy, limit, skip) {
   if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  return request.execute().then((result) => _.map(result, (tx) => new Transaction(tx)));
 }
 
 /*
@@ -245,7 +246,7 @@ export function querySyncInfo(includeBalance) {
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} Search result from graphql
  */
-export function searchOracles(phrase, filters, orderBy) {
+export function searchOracles(app, phrase, filters, orderBy) {
   const request = new GraphQuery('searchOracles', TYPE.oracle);
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
@@ -257,7 +258,7 @@ export function searchOracles(phrase, filters, orderBy) {
     request.setOrderBy(orderBy);
   }
   request.addParam('limit', 1000); // how to do unlimited search??
-  return request.execute();
+  return request.execute().then((result) => _.map(result, (oracle) => new Oracle(oracle, app)));
 }
 
 /**
@@ -267,7 +268,7 @@ export function searchOracles(phrase, filters, orderBy) {
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} Search result from graphql
  */
-export function searchTopics(phrase, filters, orderBy) {
+export function searchTopics(app, phrase, filters, orderBy) {
   const request = new GraphQuery('searchTopics', TYPE.topic);
   if (!_.isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
@@ -279,5 +280,5 @@ export function searchTopics(phrase, filters, orderBy) {
     request.setOrderBy(orderBy);
   }
   request.addParam('limit', 1000);
-  return request.execute();
+  return request.execute().then((result) => _.map(result, (topic) => new Topic(topic, app)));
 }

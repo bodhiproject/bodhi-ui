@@ -2,7 +2,6 @@ import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
 import { Token, OracleStatus, Routes } from '../constants';
 import { queryAllOracles } from '../network/graphql/queries';
-import Oracle from './models/Oracle';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -74,8 +73,8 @@ export default class BotCourtStore {
         },
       ];
       let result = [];
-      result = await queryAllOracles(filters, orderBy, limit, skip);
-      result = _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      result = _.uniqBy(result, 'txid');
       if (result.length < limit) this.hasMore = false;
       return _.orderBy(result, ['endTime'], this.app.sortBy.toLowerCase());
     }

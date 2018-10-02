@@ -200,7 +200,7 @@ export default class GlobalStore {
       each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
-      const topicsForVotes = await queryAllTopics(topicFilters);
+      const topicsForVotes = await queryAllTopics(this.app, topicFilters);
       this.userData.withdrawCount = topicsForVotes.length;
 
       // Get result set items
@@ -212,12 +212,12 @@ export default class GlobalStore {
           resultSetterAddress: item.address,
         });
       });
-      const oraclesForResultset = await queryAllOracles(oracleSetFilters);
+      const oraclesForResultset = await queryAllOracles(this.app, oracleSetFilters);
       this.userData.resultSettingCount = oraclesForResultset.length;
 
       // Get finalize items
       const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
-      const oraclesForFinalize = await queryAllOracles(oracleFinalizeFilters);
+      const oraclesForFinalize = await queryAllOracles(this.app, oracleFinalizeFilters);
       this.userData.finalizeCount = oraclesForFinalize.length;
     } catch (err) {
       console.error(err); // eslint-disable-line

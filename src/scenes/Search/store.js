@@ -2,8 +2,7 @@ import _ from 'lodash';
 import { observable, runInAction, action, reaction } from 'mobx';
 import { Phases, OracleStatus, SortBy } from 'constants';
 import { searchOracles, searchTopics } from '../../network/graphql/queries';
-import Oracle from '../../stores/models/Oracle';
-import Topic from '../../stores/models/Topic';
+
 const TAB_BET = 0;
 const TAB_VOTE = 1;
 const TAB_SET = 2;
@@ -93,11 +92,10 @@ export default class SearchStore {
   async fetch() {
     if (_.isEmpty(this.phrase)) return;
     const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
-    let oracles = await searchOracles(this.phrase, null, orderBy);
-    oracles = _.uniqBy(oracles, 'topicAddress').map((oracle) => new Oracle(oracle, this.app));
+    let oracles = await searchOracles(this.app, this.phrase, null, orderBy);
+    oracles = _.uniqBy(oracles, 'topicAddress');
     const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-    const topics = await searchTopics(this.phrase, topicFilters);
-    this.withdraws = topics.map((topic) => new Topic(topic, this.app));
+    this.withdraws = await searchTopics(this.app, this.phrase, topicFilters);
     this.oracles = _.orderBy(oracles, ['endTime']);
   }
 }

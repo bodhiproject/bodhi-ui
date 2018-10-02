@@ -1,7 +1,6 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
 import { SortBy, TransactionType } from 'constants';
-import { Transaction } from 'models';
 
 import { queryAllTransactions } from '../../../network/graphql/queries';
 
@@ -74,7 +73,7 @@ export default class WalletHistoryStore {
       const result = await queryAllTransactions(filters, orderByObj, limit, skip);
 
       runInAction(() => {
-        this.fullList = _.map(result, (tx) => new Transaction(tx));
+        this.fullList = result;
         this.list = _.slice(this.fullList, 0, this.perPage);
       });
     } catch (error) {

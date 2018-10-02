@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty, each, uniqBy } from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
-import { Oracle } from 'models';
 
 import { queryAllOracles } from '../../../network/graphql/queries';
 
@@ -85,8 +84,8 @@ export default class {
         });
       });
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const data = await queryAllOracles(filters, orderBy, limit, skip);
-      return uniqBy(data, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      return uniqBy(data, 'txid');
     }
     return INIT_VALUES.list; // default return
   }
