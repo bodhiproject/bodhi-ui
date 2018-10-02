@@ -134,8 +134,7 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    const res = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
-    this.oracles = res;
+    this.oracles = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
     this.loading = false;
   }
 
@@ -144,9 +143,12 @@ export default class EventStore {
     this.topicAddress = this.address;
 
     // GraphQL calls
-    await this.queryTopics();
-    await this.queryOracles(this.address);
-    await this.queryTransactions(this.address);
+    this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+    this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    this.transactions = await queryAllTransactions(
+      [{ topicAddress: this.address }],
+      { field: 'createdTime', direction: SortBy.DESCENDING },
+    );
 
     // API calls
     await this.getEscrowAmount();
@@ -159,8 +161,11 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
-    await this.queryOracles(this.topicAddress);
-    await this.queryTransactions(this.topicAddress);
+    this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    this.transactions = await queryAllTransactions(
+      [{ topicAddress: this.topicAddress }],
+      { field: 'createdTime', direction: SortBy.DESCENDING },
+    );
     await this.getAllowanceAmount();
 
     if (this.oracle.phase === RESULT_SETTING) {
@@ -199,13 +204,19 @@ export default class EventStore {
             break;
           }
           case TOPIC: {
-            this.queryTransactions(this.address);
+            this.transactions = await queryAllTransactions(
+              [{ topicAddress: this.address }],
+              { field: 'createdTime', direction: SortBy.DESCENDING },
+            );
             this.disableEventActionsIfNecessary();
             break;
           }
           case ORACLE: {
-            await this.queryTransactions(this.topicAddress);
-            await this.queryOracles(this.topicAddress);
+            this.transactions = await queryAllTransactions(
+              [{ topicAddress: this.topicAddress }],
+              { field: 'createdTime', direction: SortBy.DESCENDING },
+            );
+            this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
             await this.getAllowanceAmount();
             this.disableEventActionsIfNecessary();
             break;
@@ -239,17 +250,7 @@ export default class EventStore {
   }
 
   @action
-  queryTopics = async () => {
-    this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
-  }
-
-  @action
-  queryOracles = async (address) => {
-    this.oracles = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
-  }
-
-  @action
-  queryTransactions = async (address) => {
+  queryTransactions = async (address) => { // TODO: REMOVE LATER
     this.transactions = await queryAllTransactions(
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
