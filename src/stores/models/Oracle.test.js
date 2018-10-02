@@ -15,8 +15,9 @@ global.localStorage = localStorageMock;
 const { QTUM, BOT } = Token;
 const { BETTING, VOTING, RESULT_SETTING } = Phases;
 
-describe('models/Oracle', () => {
+describe('Oracle Model', () => {
   let oracle;
+  let input;
   const addr = {
     address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
     qtum: 2000,
@@ -28,15 +29,11 @@ describe('models/Oracle', () => {
     global: { syncBlockNum: 0 },
     refreshing: false,
     ui: { location: 0 },
-  }); // mock the appstore
+  });
   beforeEach(() => {
     oracle = null;
-  });
-
-  /** all following test cases target specifically to the mock backend, eg. network/graphql/__mocks__/queries.js */
-  it('Constructor confirmed betting', async () => {
-    const input = observable({
-      txid: '0',
+    input = {
+      txid: '0906a03d4ebb95258731970ef87cfc76b818e37aee35b0b6e17b9f620e0b5287',
       amounts: [decimalToSatoshi('99'), decimalToSatoshi('100')],
       consensusThreshold: decimalToSatoshi('100'),
       address: '02e91962156da21fae38e65038279c020347e4ff',
@@ -47,160 +44,101 @@ describe('models/Oracle', () => {
       token: QTUM,
       optionIdxs: [0, 1],
       status: OracleStatus.VOTING,
-      hashId: 'hahaha',
-    });
-    oracle = new Oracle(input, app);
-
-    expect(oracle.app).toBe(app);
-    expect(oracle.amounts.length).toBe(input.amounts.length);
-    expect(oracle.amounts[0]).toBe(99);
-    expect(oracle.amounts[1]).toBe(100);
-    expect(oracle.consensusThreshold).toBe(100);
-    expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/02e91962156da21fae38e65038279c020347e4ff/0');
-    expect(oracle.endTime).toBe('20');
-    expect(oracle.options.length).toBe(input.options.length);
-
-    expect(oracle.isUpcoming).not.toBeTruthy();
-    expect(oracle.unconfirmed).not.toBeTruthy();
-    expect(oracle.isPending).not.toBeTruthy();
-    expect(oracle.isArchived).not.toBeTruthy();
-    expect(oracle.isOpenResultSetting).not.toBeTruthy();
-    expect(oracle.phase).toBe(BETTING);
+      hashId: null,
+    };
   });
 
-  it('Constructor unconfirmed result setting', async () => {
-    const input = observable({
-      txid: '0',
-      amounts: [decimalToSatoshi('99'), decimalToSatoshi('100')],
-      consensusThreshold: decimalToSatoshi('100'),
-      address: undefined,
-      topicAddress: undefined,
-      resultSetEndTime: '10',
-      endTime: '20',
-      options: ['1', '2'],
-      token: QTUM,
-      optionIdxs: [0, 1],
-      status: OracleStatus.WAIT_RESULT,
-      hashId: 'hahaha',
+  describe('constructor()', () => {
+    it('Constructor confirmed betting', async () => {
+      oracle = new Oracle(input, app);
+
+      expect(oracle.app).toBe(app);
+      expect(oracle.amounts.length).toBe(input.amounts.length);
+      expect(oracle.amounts[0]).toBe(99);
+      expect(oracle.amounts[1]).toBe(100);
+      expect(oracle.consensusThreshold).toBe(100);
+      expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/02e91962156da21fae38e65038279c020347e4ff/0906a03d4ebb95258731970ef87cfc76b818e37aee35b0b6e17b9f620e0b5287');
+      expect(oracle.endTime).toBe('20');
+      expect(oracle.options.length).toBe(input.options.length);
+
+      expect(oracle.isUpcoming).not.toBeTruthy();
+      expect(oracle.unconfirmed).not.toBeTruthy();
+      expect(oracle.isPending).not.toBeTruthy();
+      expect(oracle.isArchived).not.toBeTruthy();
+      expect(oracle.isOpenResultSetting).not.toBeTruthy();
+      expect(oracle.phase).toBe(BETTING);
     });
-    oracle = new Oracle(input, app);
 
-    expect(oracle.app).toBe(app);
-    expect(oracle.amounts.length).toBe(input.amounts.length);
-    expect(oracle.amounts[0]).toBe(99);
-    expect(oracle.amounts[1]).toBe(100);
-    expect(oracle.consensusThreshold).toBe(100);
-    expect(oracle.url).toBe('/oracle/hahaha');
-    expect(oracle.endTime).toBe('10');
-    expect(oracle.options.length).toBe(input.options.length);
+    it('Constructor unconfirmed oracle', async () => {
+      input.address = undefined;
+      input.topicAddress = undefined;
+      input.status = OracleStatus.CREATED;
+      input.hashId = '6c6e946e510e739d4a1a6416ff6b48cb';
+      oracle = new Oracle(input, app);
 
-    expect(oracle.isUpcoming).toBeTruthy();
-    expect(oracle.unconfirmed).toBeTruthy();
-    expect(oracle.isPending).not.toBeTruthy();
-    expect(oracle.isArchived).not.toBeTruthy();
-    expect(oracle.isOpenResultSetting).not.toBeTruthy();
-    expect(oracle.phase).toBe(RESULT_SETTING);
+      expect(oracle.app).toBe(app);
+      expect(oracle.amounts.length).toBe(input.amounts.length);
+      expect(oracle.amounts[0]).toBe(99);
+      expect(oracle.amounts[1]).toBe(100);
+      expect(oracle.consensusThreshold).toBe(100);
+      expect(oracle.url).toBe('/oracle/6c6e946e510e739d4a1a6416ff6b48cb');
+      expect(oracle.endTime).toBe('20');
+      expect(oracle.options.length).toBe(input.options.length);
+
+      expect(oracle.isUpcoming).not.toBeTruthy();
+      expect(oracle.unconfirmed).toBeTruthy();
+      expect(oracle.isPending).toBeTruthy();
+      expect(oracle.isArchived).not.toBeTruthy();
+      expect(oracle.isOpenResultSetting).not.toBeTruthy();
+      expect(oracle.phase).toBe(BETTING);
+    });
+
+    it('Constructor Open Result Setting Oracle', async () => {
+      input.address = undefined;
+      input.status = OracleStatus.OPEN_RESULT_SET;
+      oracle = new Oracle(input, app);
+
+      expect(oracle.app).toBe(app);
+      expect(oracle.amounts.length).toBe(input.amounts.length);
+      expect(oracle.amounts[0]).toBe(99);
+      expect(oracle.amounts[1]).toBe(100);
+      expect(oracle.consensusThreshold).toBe(100);
+      expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/undefined/0906a03d4ebb95258731970ef87cfc76b818e37aee35b0b6e17b9f620e0b5287');
+      expect(oracle.phase).toBe(RESULT_SETTING);
+      expect(oracle.endTime).toBe('10');
+      expect(oracle.options.length).toBe(input.options.length);
+
+      expect(oracle.isUpcoming).not.toBeTruthy();
+      expect(oracle.unconfirmed).not.toBeTruthy();
+      expect(oracle.isPending).not.toBeTruthy();
+      expect(oracle.isArchived).not.toBeTruthy();
+      expect(oracle.isOpenResultSetting).toBeTruthy();
+    });
   });
 
-  it('Constructor unconfirmed oracle', async () => {
-    const input = observable({
-      txid: '0',
-      amounts: [decimalToSatoshi('99'), decimalToSatoshi('100')],
-      consensusThreshold: decimalToSatoshi('100'),
-      address: undefined,
-      topicAddress: undefined,
-      resultSetEndTime: '10',
-      endTime: '20',
-      options: ['1', '2'],
-      token: QTUM,
-      optionIdxs: [0, 1],
-      status: OracleStatus.CREATED,
-      hashId: 'hahaha',
+  describe('isArchived()', () => {
+    it('Archived Voting Oracle', async () => {
+      input.address = undefined;
+      input.token = BOT;
+      input.optionIdxs = [1];
+      input.status = OracleStatus.WITHDRAW;
+      oracle = new Oracle(input, app);
+
+      expect(oracle.app).toBe(app);
+      expect(oracle.amounts.length).toBe(input.amounts.length);
+      expect(oracle.amounts[0]).toBe(99);
+      expect(oracle.amounts[1]).toBe(100);
+      expect(oracle.consensusThreshold).toBe(100);
+      expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/undefined/0906a03d4ebb95258731970ef87cfc76b818e37aee35b0b6e17b9f620e0b5287');
+      expect(oracle.phase).toBe(VOTING);
+      expect(oracle.endTime).toBe('20');
+      expect(oracle.options.length).toBe(input.options.length);
+
+      expect(oracle.isUpcoming).not.toBeTruthy();
+      expect(oracle.unconfirmed).not.toBeTruthy();
+      expect(oracle.isPending).not.toBeTruthy();
+      expect(oracle.isArchived).toBeTruthy();
+      expect(oracle.isOpenResultSetting).not.toBeTruthy();
     });
-    oracle = new Oracle(input, app);
-
-    expect(oracle.app).toBe(app);
-    expect(oracle.amounts.length).toBe(input.amounts.length);
-    expect(oracle.amounts[0]).toBe(99);
-    expect(oracle.amounts[1]).toBe(100);
-    expect(oracle.consensusThreshold).toBe(100);
-    expect(oracle.url).toBe('/oracle/hahaha');
-    expect(oracle.endTime).toBe('20');
-    expect(oracle.options.length).toBe(input.options.length);
-
-    expect(oracle.isUpcoming).not.toBeTruthy();
-    expect(oracle.unconfirmed).toBeTruthy();
-    expect(oracle.isPending).toBeTruthy();
-    expect(oracle.isArchived).not.toBeTruthy();
-    expect(oracle.isOpenResultSetting).not.toBeTruthy();
-    expect(oracle.phase).toBe(BETTING);
-  });
-
-  it('Constructor Open Result Setting Oracle', async () => {
-    const input = observable({
-      txid: '0',
-      amounts: [decimalToSatoshi('99'), decimalToSatoshi('100')],
-      consensusThreshold: decimalToSatoshi('100'),
-      address: undefined,
-      topicAddress: '4044f951857f2885d66d29a475235dacdaddea84',
-      resultSetEndTime: '10',
-      endTime: '20',
-      options: ['1', '2'],
-      token: QTUM,
-      optionIdxs: [0, 1],
-      status: OracleStatus.OPEN_RESULT_SET,
-      hashId: 'hahaha',
-    });
-    oracle = new Oracle(input, app);
-
-    expect(oracle.app).toBe(app);
-    expect(oracle.amounts.length).toBe(input.amounts.length);
-    expect(oracle.amounts[0]).toBe(99);
-    expect(oracle.amounts[1]).toBe(100);
-    expect(oracle.consensusThreshold).toBe(100);
-    expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/undefined/0');
-    expect(oracle.phase).toBe(RESULT_SETTING);
-    expect(oracle.endTime).toBe('10');
-    expect(oracle.options.length).toBe(input.options.length);
-
-    expect(oracle.isUpcoming).not.toBeTruthy();
-    expect(oracle.unconfirmed).not.toBeTruthy();
-    expect(oracle.isPending).not.toBeTruthy();
-    expect(oracle.isArchived).not.toBeTruthy();
-    expect(oracle.isOpenResultSetting).toBeTruthy();
-  });
-
-  it('Archived Voting Oracle', async () => {
-    const input = observable({
-      txid: '0',
-      amounts: [decimalToSatoshi('99'), decimalToSatoshi('100')],
-      consensusThreshold: decimalToSatoshi('100'),
-      address: undefined,
-      topicAddress: '4044f951857f2885d66d29a475235dacdaddea84',
-      resultSetEndTime: '10',
-      endTime: '20',
-      options: ['1', '2'],
-      token: BOT,
-      optionIdxs: [1],
-      status: OracleStatus.WITHDRAW,
-      hashId: 'hahaha',
-    });
-    oracle = new Oracle(input, app);
-
-    expect(oracle.app).toBe(app);
-    expect(oracle.amounts.length).toBe(input.amounts.length);
-    expect(oracle.amounts[0]).toBe(99);
-    expect(oracle.amounts[1]).toBe(100);
-    expect(oracle.consensusThreshold).toBe(100);
-    expect(oracle.url).toBe('/oracle/4044f951857f2885d66d29a475235dacdaddea84/undefined/0');
-    expect(oracle.phase).toBe(VOTING);
-    expect(oracle.endTime).toBe('20');
-    expect(oracle.options.length).toBe(input.options.length);
-
-    expect(oracle.isUpcoming).not.toBeTruthy();
-    expect(oracle.unconfirmed).not.toBeTruthy();
-    expect(oracle.isPending).not.toBeTruthy();
-    expect(oracle.isArchived).toBeTruthy();
-    expect(oracle.isOpenResultSetting).not.toBeTruthy();
   });
 });
