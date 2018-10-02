@@ -8,6 +8,8 @@ import { InstallQryptoInline } from 'components';
 import styles from './styles';
 import EventRows from './EventRows';
 import Config from '../../../config/app';
+import { Row } from '../../../components/InfiniteScroll';
+import Loading from '../../../components/EventListLoading';
 
 const headerCols = [
   {
@@ -80,8 +82,9 @@ export default class ActivityHistory extends Component {
 
   render() {
     const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
-    const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
+    const { transactions, order, orderBy, page, perPage, displayedTxs, loaded } = history;
 
+    if (!loaded) return <Loading />;
     return (
       <div>
         {currentAddress ? (
@@ -104,9 +107,14 @@ export default class ActivityHistory extends Component {
                 />
               </Table>
             ) : (
-              <Typography variant="body1">
-                <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-              </Typography>
+              <Row>
+                <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
+                <Row>
+                  <Typography variant="title">
+                    <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+                  </Typography>
+                </Row>
+              </Row>
             )}
           </Grid>
         ) : (

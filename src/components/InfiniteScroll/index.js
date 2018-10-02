@@ -86,6 +86,6 @@ export default class InfiniteScroll extends Component {
 
 const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 
-const Row = withStyles(styles)(({ classes, ...props }) => (
+export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
