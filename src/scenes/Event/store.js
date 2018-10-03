@@ -143,8 +143,8 @@ export default class EventStore {
     this.topicAddress = this.address;
 
     // GraphQL calls
-    this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
-    this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    await this.queryTopics();
+    await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
 
     // API calls
@@ -158,7 +158,7 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
-    this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
 
@@ -204,7 +204,7 @@ export default class EventStore {
           }
           case ORACLE: {
             await this.queryTransactions(this.topicAddress);
-            this.oracles = await queryAllOracles(this.app, [{ topicAddress: this.topicAddress }], { field: 'blockNum', direction: SortBy.ASCENDING });
+            await this.queryOracles(this.topicAddress);
             await this.getAllowanceAmount();
             this.disableEventActionsIfNecessary();
             break;
@@ -236,6 +236,12 @@ export default class EventStore {
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
     }
   }
+
+  @action
+  queryTopics = async () => this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+
+  @action
+  queryOracles = async (address) => this.oracles = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
 
   @action
   queryTransactions = async (address) => {
@@ -360,7 +366,7 @@ export default class EventStore {
       const topics = await queryAllTopics(this.app, [{ address: eventAddress }]);
       let topic;
       if (!isEmpty(topics)) {
-        topic = new Topic(topics[0]);
+        [topic] = topics;
       } else {
         throw new Error(`Unable to find topic ${eventAddress}`);
       }

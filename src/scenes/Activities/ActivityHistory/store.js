@@ -103,8 +103,8 @@ export default class {
     const filters = [{ topicAddress }];
 
     if (topicAddress) {
-      const targetoracle = await queryAllOracles(this.app, filters, order);
-      const path = getDetailPagePath(targetoracle);
+      const targetOracle = await queryAllOracles(this.app, filters, order);
+      const path = getDetailPagePath(targetOracle);
       if (path) return path;
     }
   }
