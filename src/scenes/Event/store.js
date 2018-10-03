@@ -4,7 +4,6 @@ import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filte
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
-import { Topic } from 'models';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
