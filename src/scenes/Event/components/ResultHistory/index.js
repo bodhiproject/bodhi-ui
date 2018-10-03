@@ -103,7 +103,7 @@ const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, 
   }
 
   return (
-    <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+    <TableRow key={`result-${index}`}>
       <TableCell padding="dense">{moment.unix(oracle.endTime).format('LLL')}</TableCell>
       <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
       <TableCell padding="dense">{winningOutcome}</TableCell>

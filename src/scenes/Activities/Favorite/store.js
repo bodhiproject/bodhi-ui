@@ -37,6 +37,7 @@ export default class FavoriteStore {
 
   @action
   setFavorite = async (topicAddress) => {
+    if (!topicAddress) return;
     if (this.isInFavorite(topicAddress)) {
       this.favList = this.favList.filter(x => x !== topicAddress);
     } else {

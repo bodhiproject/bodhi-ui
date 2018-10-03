@@ -9,6 +9,8 @@ import styles from './styles';
 import { ResultHistory, TransactionHistory } from '../';
 
 const { TOPIC } = EventType;
+const TAB_RESULTHISTORY = 0;
+const TAB_TRANSACTIONHISTORY = 1;
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -20,11 +22,11 @@ export default class HistoryTable extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
   state = {
-    tabValue: 'transactionHistory',
+    tabValue: TAB_TRANSACTIONHISTORY,
   };
 
   componentDidMount = () => {
-    this.setState({ tabValue: this.props.resultHistory ? 'resultHistory' : 'transactionHistory' });
+    this.setState({ tabValue: this.props.resultHistory ? TAB_RESULTHISTORY : TAB_TRANSACTIONHISTORY });
   }
 
   handleChange = (event, tabValue) => {
@@ -51,19 +53,19 @@ export default class HistoryTable extends Component {
           onChange={this.handleChange}
         >
           {this.props.resultHistory && <Tab
-            value='resultHistory'
+            value={TAB_RESULTHISTORY}
             label={intl.formatMessage({ id: 'str.resultHistory', defaultMessage: 'Result History' })}
             className={classes.pickerTab}
           />}
           {this.props.transactionHistory && <Tab
-            value='transactionHistory'
+            value={TAB_TRANSACTIONHISTORY}
             label={intl.formatMessage({ id: 'str.myTransactions', defaultMessage: 'My Transactions' })}
             className={classes.pickerTab}
           />}
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === 'resultHistory' && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
-          {tabValue === 'transactionHistory' && <TransactionHistory options={currentEvent.options} />}
+          {tabValue === TAB_RESULTHISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
+          {tabValue === TAB_TRANSACTIONHISTORY && <TransactionHistory options={currentEvent.options} />}
         </div>
       </div>
     );
