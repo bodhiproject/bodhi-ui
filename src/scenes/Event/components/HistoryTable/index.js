@@ -8,7 +8,7 @@ import { Tabs, Tab, withStyles } from '@material-ui/core';
 import styles from './styles';
 import { ResultHistory, TransactionHistory } from '../';
 
-const { UNCONFIRMED, TOPIC, ORACLE } = EventType; // eslint-disable-line
+const { TOPIC } = EventType;
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -17,7 +17,6 @@ const { UNCONFIRMED, TOPIC, ORACLE } = EventType; // eslint-disable-line
 export default class HistoryTable extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    // oracles: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
   state = {
@@ -45,7 +44,8 @@ export default class HistoryTable extends Component {
     return (
       <div className={classes.mainTableContainer}>
         <Tabs
-          color="primary"
+          indicatorColor="primary"
+          textColor="primary"
           fullWidth
           value={tabValue}
           onChange={this.handleChange}
@@ -57,7 +57,7 @@ export default class HistoryTable extends Component {
           />}
           {this.props.transactionHistory && <Tab
             value='transactionHistory'
-            label={intl.formatMessage({ id: 'str.transaction', defaultMessage: 'My Transactions' })}
+            label={intl.formatMessage({ id: 'str.myTransactions', defaultMessage: 'My Transactions' })}
             className={classes.pickerTab}
           />}
         </Tabs>

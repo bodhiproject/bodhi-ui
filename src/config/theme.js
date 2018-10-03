@@ -223,7 +223,7 @@ export const theme = {
       root: {
         marginTop: px(paddingUnit),
         marginBottom: px(paddingUnit),
-        borderBottom: `1px solid ${textColorLight}`,
+        borderBottom: `1px solid ${borderColor}`,
       },
       label: {
         fontSize: fontSizeTextSm,
