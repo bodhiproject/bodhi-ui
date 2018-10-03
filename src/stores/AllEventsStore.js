@@ -23,7 +23,7 @@ export default class {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
   @observable skip = INIT_VALUES.skip
-  limit = 24
+  @observable limit = 24
 
   constructor(app) {
     this.app = app;
@@ -66,13 +66,11 @@ export default class {
     if (this.hasMoreTopics) {
       const topicFilters = [{ status: OracleStatus.WITHDRAW }];
       topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      topics = _.uniqBy(topics, 'txid');
       if (topics.length < limit) this.hasMoreTopics = false;
     }
     let oracles = [];
     if (this.hasMoreOracles) {
       oracles = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      oracles = _.uniqBy(oracles, 'txid');
       if (oracles.length < limit) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());

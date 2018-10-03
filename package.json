@@ -11,6 +11,7 @@
     "apollo-utilities": "^1.0.14",
     "axios": "^0.18.0",
     "babel-jest": "^23.4.2",
+    "jest": "^23.5.0",
     "bignumber.js": "^6.0.0",
     "clone": "^2.1.1",
     "file-system": "^2.2.2",

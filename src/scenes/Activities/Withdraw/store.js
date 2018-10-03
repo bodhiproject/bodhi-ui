@@ -1,5 +1,5 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { isEmpty, each, find, uniqBy } from 'lodash';
+import { isEmpty, each, find } from 'lodash';
 import { OracleStatus, Routes, SortBy } from 'constants';
 
 import { queryAllVotes, queryAllTopics } from '../../../network/graphql/queries';
@@ -97,9 +97,8 @@ export default class {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
       });
       const topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      const result = uniqBy(topics, 'txid');
-      if (result.length < limit) this.hasMore = false;
-      return result;
+      if (topics.length < limit) this.hasMore = false;
+      return topics;
     }
     return INIT_VALUES.list; // default return
   }

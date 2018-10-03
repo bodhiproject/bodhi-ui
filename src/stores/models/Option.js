@@ -30,15 +30,13 @@ export default class Option {
     this.name = optionName;
     this.token = oracle.token;
     this.phase = oracle.phase;
-
+    this.value = `${this.amount} ${this.token}`;
     if (oracle.token === QTUM) {
-      this.value = `${this.amount} ${this.token}`;
-
       const totalBalance = _.sum(oracle.amounts);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {
       this.isPrevResult = !oracle.optionIdxs.includes(i);
-      this.maxAmount = oracle.token === BOT && oracle.status === OracleStatus.Voting
+      this.maxAmount = oracle.token === BOT && oracle.status === OracleStatus.VOTING
         ? oracle.consensusThreshold - this.amount : undefined;
 
       const threshold = this.isPrevResult ? 0 : oracle.consensusThreshold;
