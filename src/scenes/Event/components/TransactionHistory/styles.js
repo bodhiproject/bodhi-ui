@@ -8,6 +8,13 @@ const styles = (theme) => ({
   arrowSize: {
     fontSize: '8px',
   },
+  centeredDiv: {
+    display: 'grid',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: '20px',
+  },
 });
 
 export default styles;
