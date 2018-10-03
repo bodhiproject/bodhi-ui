@@ -52,6 +52,7 @@ const textColorLight = '#9B9B9B';
 // Misc
 const backgroundColor = '#F9F9F9';
 const borderColor = '#ECECEC';
+const borderColorDark = '#999999';
 
 // Spacing
 const paddingUnit = 8;
@@ -217,12 +218,16 @@ export const theme = {
     MuiTabs: {
       root: {
         zIndex: 999,
+        boxSizing: 'border-box',
+        borderBottom: `2px solid ${borderColor}`,
       },
     },
     MuiTab: {
       root: {
         marginTop: px(paddingUnit),
         marginBottom: px(paddingUnit),
+        borderBottom: `1px solid ${borderColorDark}`,
+        borderCollapse: 'separate',
       },
       label: {
         fontSize: fontSizeTextSm,
@@ -232,7 +237,7 @@ export const theme = {
     MuiTable: {
       root: {
         background: white,
-        border: `solid 1px ${borderColor}`,
+        borderTop: `1px solid ${borderColor}`,
       },
     },
     MuiTableRow: {

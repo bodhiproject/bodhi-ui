@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core';
 import { Token, Phases } from 'constants';
-import { i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
 
@@ -33,7 +32,7 @@ export default class EventResultHistory extends Component {
     );
   }
   render() {
-    const { classes, oracles } = this.props;
+    const { oracles } = this.props;
     let sortedOracles = orderBy(oracles, ['endTime']);
 
     // Add Result Setting round
@@ -57,12 +56,7 @@ export default class EventResultHistory extends Component {
     sortedOracles = filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
 
     return (
-      <div className={classes.detailTxWrapper}>
-        <Typography variant="headline" className={classes.detailTxTitle}>
-          <FormattedMessage id="str.resultHistory" defaultMessage="Result History">
-            {(txt) => i18nToUpperCase(txt)}
-          </FormattedMessage>
-        </Typography>
+      <div>
         {sortedOracles.length && (
           <Table>
             <TableHead>
@@ -109,7 +103,7 @@ const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, 
   }
 
   return (
-    <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+    <TableRow key={`result-${index}`}>
       <TableCell padding="dense">{moment.unix(oracle.endTime).format('LLL')}</TableCell>
       <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
       <TableCell padding="dense">{winningOutcome}</TableCell>

@@ -5,7 +5,7 @@ import { Grid, withStyles } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
 
 const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
@@ -17,8 +17,7 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
       <FinalizeButton eventpage={eventPage} />
-      <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
-      <TransactionHistory options={oracle.options} />
+      <HistoryTable resultHistory transactionHistory />
     </Content>
     <Sidebar />
   </Row>

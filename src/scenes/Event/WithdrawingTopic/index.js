@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Paper, withStyles } from '@material-ui/core';
 
 import styles from './styles';
-import { Row, Content, Title, ResultHistory, TransactionHistory } from '../components';
+import { Row, Content, Title, HistoryTable } from '../components';
 import WinningOutcome from './WinningOutcome';
 import WithdrawTo from './WithdrawTo';
 import Reward from './Reward';
@@ -36,8 +36,7 @@ export default class WithdrawingTopic extends Component {
             )}
           </Paper>
           <Options eventPage={eventPage} />
-          <ResultHistory oracles={eventPage.oracles} currentEvent={topic} />
-          <TransactionHistory options={topic.options} />
+          <HistoryTable resultHistory transactionHistory />
         </Content>
         <Sidebar topic={topic} />
       </Row>);
