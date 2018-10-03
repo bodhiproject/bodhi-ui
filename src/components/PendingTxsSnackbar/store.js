@@ -19,18 +19,18 @@ const {
   RESET_APPROVE,
 } = TransactionType;
 
-const INIT_VALUES = {
+export const INIT_VALUES = {
   isVisible: false,
   count: 0,
-  pendingApproves: 0,
-  pendingCreateEvents: 0,
-  pendingBets: 0,
-  pendingSetResults: 0,
-  pendingVotes: 0,
-  pendingFinalizeResults: 0,
-  pendingWithdraws: 0,
-  pendingTransfers: 0,
-  pendingResetApproves: 0,
+  pendingApproves: [],
+  pendingCreateEvents: [],
+  pendingBets: [],
+  pendingSetResults: [],
+  pendingVotes: [],
+  pendingFinalizeResults: [],
+  pendingWithdraws: [],
+  pendingTransfers: [],
+  pendingResetApproves: [],
 };
 
 export default class PendingTxsSnackbarStore {
