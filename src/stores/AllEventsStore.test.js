@@ -1,5 +1,6 @@
 import { observable } from 'mobx';
 import { Routes, SortBy } from 'constants';
+import cryptoRandomString from 'crypto-random-string';
 import AllEventsStore from './AllEventsStore';
 import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
 
@@ -19,7 +20,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
 describe('AllEventsStore', () => {
   let store;
   const addr = {
-    address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
+    address: cryptoRandomString(34),
     qtum: 2000,
     bot: 100,
   };
@@ -40,8 +41,8 @@ describe('AllEventsStore', () => {
         txid: i,
         amounts: [],
         consensusThreshold: 100,
-        address: '02e91962156da21fae38e65038279c020347e4ff',
-        topicAddress: '4044f951857f2885d66d29a475235dacdaddea84',
+        address: 'cryptoRandomString(40)',
+        topicAddress: 'cryptoRandomString(40)',
         resultSetEndTime: 10,
         endTime: 20,
         options: [],
@@ -90,7 +91,7 @@ describe('AllEventsStore', () => {
     expect(store.list.length).toBe(0);
     app.ui.location = Routes.ALL_EVENTS;
     const newAddr = {
-      address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT2',
+      address: cryptoRandomString(34),
       qtum: 200,
       bot: 10,
     };

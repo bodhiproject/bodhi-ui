@@ -2,10 +2,13 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
-import { orderBy as lodashOrderBy, flatten, uniqBy, forEach, filter as lodashFilter } from 'lodash';
-import mockData from './mockData';
+import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter } from 'lodash';
+import cryptoRandomString from 'crypto-random-string';
+import moment from 'moment';
+import { TransactionStatus } from 'constants';
+import { Transaction } from 'models';
 
-import MockTransaction from './dbmodels/mockTransaction';
+import mockData from './mockData';
 
 export function mockResetAllList() {
   mockData.resetAll();
@@ -27,14 +30,27 @@ export function mockResetTransactionList() {
   mockData.resetTransactions();
 }
 
-export function mockAddTransaction(txid, transinit) {
-  const newTransaction = new MockTransaction(txid, transinit);
-  mockData.addTransactions(newTransaction);
-  return newTransaction;
+export function mockAddTransaction(args) {
+  const tx = new Transaction({
+    txid: cryptoRandomString(64),
+    status: 'PENDING',
+    createdTime: moment.unix(),
+  });
+  Object.assign(tx, args);
+  mockData.addTransactions(tx);
+  return tx;
 }
 
 export function mockAddOracle(newOracle) {
   mockData.addOracles(newOracle);
+}
+
+export function mockSetTxStatus(tx, status) {
+  tx.status = status;
+}
+
+export function mockSetAllTxsSuccess(txs) {
+  each(txs, tx => mockSetTxStatus(tx, TransactionStatus.SUCCESS));
 }
 
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
