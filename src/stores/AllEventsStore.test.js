@@ -36,9 +36,9 @@ describe('AllEventsStore', () => {
     mockResetOracleList();
     mockResetTopicList();
     for (let i = 0; i < 18; i++) {
-      mockAddTopic({ txid: i });
+      mockAddTopic({ txid: cryptoRandomString(64) });
       mockAddOracle({
-        txid: i,
+        txid: cryptoRandomString(64),
         amounts: [],
         consensusThreshold: 100,
         address: 'cryptoRandomString(40)',

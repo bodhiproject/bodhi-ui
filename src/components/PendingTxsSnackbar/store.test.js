@@ -44,7 +44,6 @@ describe('PendingTxsSnackbarStore', () => {
 
   describe('Reset', () => {
     it('Reset the values when called', async () => {
-      await store.init();
       mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address });
       await store.queryPendingTransactions();
       store.reset();
