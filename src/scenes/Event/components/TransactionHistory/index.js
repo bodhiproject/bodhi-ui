@@ -13,18 +13,14 @@ import styles from './styles';
 @observer
 export default class TransactionHistory extends Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     options: PropTypes.array.isRequired,
   };
 
   render() {
-    const { classes, options, store: { eventPage } } = this.props;
+    const { options, store: { eventPage } } = this.props;
     const { transactions } = eventPage;
     return (
-      <div className={classes.detailTxWrapper}>
-        <Typography variant="headline" className={classes.detailTxTitle}>
-          <FormattedMessage id="str.transaction" defaultMessage="TRANSACTIONS" />
-        </Typography>
+      <div>
         {transactions.length && options.length ? (
           <Table>
             <TableHead>

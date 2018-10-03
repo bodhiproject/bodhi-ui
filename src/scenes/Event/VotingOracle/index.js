@@ -5,7 +5,7 @@ import { Grid, withStyles } from '@material-ui/core';
 import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
 
 import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
 
 const messages = defineMessages({
   oracleConsensusThresholdMsg: {
@@ -29,8 +29,7 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal }
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
       <CurrentAllowanceNote allowance={amountDecimal} />
       <VoteButton eventpage={eventPage} />
-      <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
-      <TransactionHistory options={oracle.options} />
+      <HistoryTable resultHistory transactionHistory />
     </Content>
     <Sidebar />
   </Row>

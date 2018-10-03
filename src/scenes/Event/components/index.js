@@ -6,4 +6,5 @@ export * from './Icon';
 export * from './Sidebar';
 export { default as ResultHistory } from './ResultHistory';
 export { default as TransactionHistory } from './TransactionHistory';
+export { default as HistoryTable } from './HistoryTable';
 export { default as Option } from './Option';

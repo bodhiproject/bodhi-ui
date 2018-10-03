@@ -5,7 +5,7 @@ import { Grid, withStyles } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
 
 const messages = defineMessages({
   unconfirmedMessage: {
@@ -30,7 +30,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
       {!oracle.unconfirmed && (
         <Fragment>
           <BetButton eventpage={eventPage} />
-          <TransactionHistory options={oracle.options} />
+          <HistoryTable transactionHistory />
         </Fragment>
       )}
     </Content>

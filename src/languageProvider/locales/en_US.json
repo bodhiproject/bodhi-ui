@@ -224,7 +224,7 @@
   "str.time": "Time",
   "str.to": "To",
   "str.token": "Token",
-  "str.transaction": "TRANSACTIONS",
+  "str.transaction": "My Transactions",
   "str.transactionIdX": "Transaction ID: {txid}",
   "str.transfer": "Transfer",
   "str.transferTokens": "Transfer Tokens",
