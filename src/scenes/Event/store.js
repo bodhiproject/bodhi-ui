@@ -4,9 +4,8 @@ import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filte
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
-import { Oracle, Transaction, Topic } from 'models';
 
-import { toFixed, decimalToSatoshi, satoshiToDecimal, processTopic } from '../../helpers/utility';
+import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
@@ -134,8 +133,7 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    const res = await queryAllOracles([{ hashId: this.hashId }], undefined, 1);
-    this.oracles = res.map(oracle => new Oracle(oracle, this.app));
+    this.oracles = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
     this.loading = false;
   }
 
@@ -199,7 +197,7 @@ export default class EventStore {
             break;
           }
           case TOPIC: {
-            this.queryTransactions(this.address);
+            await this.queryTransactions(this.address);
             this.disableEventActionsIfNecessary();
             break;
           }
@@ -231,7 +229,7 @@ export default class EventStore {
 
   @action
   verifyConfirmedOracle = async () => {
-    const res = await queryAllOracles([{ hashId: this.hashId }]);
+    const res = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
     if (!isNull(res[0].topicAddress)) {
       const { topicAddress, address, txid } = res[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
@@ -239,24 +237,17 @@ export default class EventStore {
   }
 
   @action
-  queryTopics = async () => {
-    const res = await queryAllTopics([{ address: this.address }], undefined, 1);
-    this.topics = res.map(topic => new Topic(topic, this.app));
-  }
+  queryTopics = async () => this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
 
   @action
-  queryOracles = async (address) => {
-    const res = await queryAllOracles([{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
-    this.oracles = res.map(oracle => new Oracle(oracle, this.app));
-  }
+  queryOracles = async (address) => this.oracles = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
 
   @action
   queryTransactions = async (address) => {
-    const res = await queryAllTransactions(
+    this.transactions = await queryAllTransactions(
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
     );
-    this.transactions = res.map(tx => new Transaction(tx, this.app));
   }
 
   @action
@@ -371,10 +362,10 @@ export default class EventStore {
       const withdrawableAddresses = [];
 
       // Fetch Topic
-      const topics = await queryAllTopics([{ address: eventAddress }]);
+      const topics = await queryAllTopics(this.app, [{ address: eventAddress }]);
       let topic;
       if (!isEmpty(topics)) {
-        topic = processTopic(topics[0]);
+        [topic] = topics;
       } else {
         throw new Error(`Unable to find topic ${eventAddress}`);
       }

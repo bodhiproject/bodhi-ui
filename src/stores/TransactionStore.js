@@ -100,8 +100,7 @@ export default class TransactionStore {
         result.push({ txid: value });
         return result;
       }, []);
-      let txs = await queryAllTransactions(filters);
-      txs = map(txs, (tx) => new Transaction(tx));
+      const txs = await queryAllTransactions(filters);
 
       each(txs, async (tx) => {
         // Execute follow-up tx if successful approve and not already added

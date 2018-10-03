@@ -1,7 +1,6 @@
 import { observable, action, reaction, runInAction, toJS } from 'mobx';
-import { map, filter, isEmpty, reduce } from 'lodash';
+import { filter, isEmpty, reduce } from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
-import { Transaction } from 'models';
 
 import { queryAllTransactions } from '../../network/graphql/queries';
 
@@ -93,8 +92,7 @@ export default class PendingTxsSnackbarStore {
         return result;
       }, []);
 
-      const result = await queryAllTransactions(filters);
-      const txs = map(result, (tx) => new Transaction(tx));
+      const txs = await queryAllTransactions(filters);
 
       runInAction(() => {
         this.count = txs.length;

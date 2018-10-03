@@ -1,5 +1,6 @@
-import _ from 'lodash';
+import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
 import gql from 'graphql-tag';
+import { Transaction, Oracle, Topic, SyncInfo } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -40,8 +41,8 @@ class GraphQuery {
       .keys(obj)
       .map((key) => {
         const value = obj[key];
-        if (_.isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
-        if (isValidEnum(key, value) || !_.isString(value)) {
+        if (isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
+        if (isValidEnum(key, value) || !isString(value)) {
           // Enums require values without quotes
           return `${key}: ${value}`;
         }
@@ -55,8 +56,8 @@ class GraphQuery {
     let filterStr = '';
     if (this.filters) {
       // Create entire string for OR: [] as objects
-      _.forEach(this.filters, (obj) => {
-        if (!_.isEmpty(filterStr)) {
+      forEach(this.filters, (obj) => {
+        if (!isEmpty(filterStr)) {
           filterStr = filterStr.concat(', ');
         }
         filterStr = filterStr.concat(this.formatObject(obj));
@@ -78,7 +79,7 @@ class GraphQuery {
     if (this.orderBy) {
       orderByStr = this.formatObject(this.orderBy);
     }
-    return _.isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
+    return isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
   }
 
   getSearchPhraseString() {
@@ -86,15 +87,15 @@ class GraphQuery {
     if (this.searchPhrase) {
       phraseStr = JSON.stringify(this.searchPhrase);
     }
-    return _.isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
+    return isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
   }
 
   getParamsString() {
     let str = '';
     const keys = Object.keys(this.params);
     if (keys.length > 0) {
-      _.each(keys, (key) => {
-        if (!_.isEmpty(str)) {
+      each(keys, (key) => {
+        if (!isEmpty(str)) {
           str = str.concat(', ');
         }
 
@@ -109,7 +110,7 @@ class GraphQuery {
     const orderByStr = this.getOrderByString();
     const searchPhraseStr = this.getSearchPhraseString();
     const paramsStr = this.getParamsString();
-    const needsParentheses = !_.isEmpty(filterStr) || !_.isEmpty(orderByStr) || !_.isEmpty(paramsStr) || !_.isEmpty(searchPhraseStr);
+    const needsParentheses = !isEmpty(filterStr) || !isEmpty(orderByStr) || !isEmpty(paramsStr) || !isEmpty(searchPhraseStr);
 
     const parenthesesOpen = needsParentheses ? '(' : '';
     const parenthesesClose = needsParentheses ? ')' : '';
@@ -149,21 +150,22 @@ class GraphQuery {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
-export function queryAllTopics(filters, orderBy, limit, skip) {
+export async function queryAllTopics(app, filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTopics', TYPE.topic);
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  if (_.isFinite(limit) && limit > 0) {
+  if (isFinite(limit) && limit > 0) {
     request.addParam('limit', limit);
   }
-  if (_.isFinite(skip) && skip >= 0) {
+  if (isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (topic) => new Topic(topic, app));
 }
 
 /*
@@ -171,21 +173,22 @@ export function queryAllTopics(filters, orderBy, limit, skip) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllOracles(filters, orderBy, limit, skip) {
+export async function queryAllOracles(app, filters, orderBy, limit, skip) {
   const request = new GraphQuery('allOracles', TYPE.oracle);
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  if (_.isFinite(limit) && limit > 0) {
+  if (isFinite(limit) && limit > 0) {
     request.addParam('limit', limit);
   }
-  if (_.isFinite(skip) && skip >= 0) {
+  if (isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (oracle) => new Oracle(oracle, app));
 }
 
 /*
@@ -195,10 +198,10 @@ export function queryAllOracles(filters, orderBy, limit, skip) {
 */
 export function queryAllVotes(filters, orderBy) {
   const request = new GraphQuery('allVotes', TYPE.vote);
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
   return request.execute();
@@ -209,33 +212,35 @@ export function queryAllVotes(filters, orderBy) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllTransactions(filters, orderBy, limit, skip) {
+export async function queryAllTransactions(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTransactions', TYPE.transaction);
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  if (_.isFinite(limit) && limit > 0) {
+  if (isFinite(limit) && limit > 0) {
     request.addParam('limit', limit);
   }
-  if (_.isFinite(skip) && skip >= 0) {
+  if (isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (tx) => new Transaction(tx));
 }
 
 /*
 * Queries syncInfo from GraphQL.
 * @param includeBalances {Boolean} Should include address balances array
 */
-export function querySyncInfo(includeBalance) {
+export async function querySyncInfo(includeBalance) {
   const request = new GraphQuery('syncInfo', TYPE.syncInfo);
   if (includeBalance) {
     request.addParam('includeBalance', includeBalance);
   }
-  return request.execute();
+  const result = await request.execute();
+  return new SyncInfo(result);
 }
 
 /**
@@ -245,19 +250,20 @@ export function querySyncInfo(includeBalance) {
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} Search result from graphql
  */
-export function searchOracles(phrase, filters, orderBy) {
+export async function searchOracles(app, phrase, filters, orderBy) {
   const request = new GraphQuery('searchOracles', TYPE.oracle);
-  if (!_.isEmpty(phrase)) {
+  if (!isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
   }
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
   request.addParam('limit', 1000); // how to do unlimited search??
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (oracle) => new Oracle(oracle, app));
 }
 
 /**
@@ -267,17 +273,18 @@ export function searchOracles(phrase, filters, orderBy) {
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} Search result from graphql
  */
-export function searchTopics(phrase, filters, orderBy) {
+export async function searchTopics(app, phrase, filters, orderBy) {
   const request = new GraphQuery('searchTopics', TYPE.topic);
-  if (!_.isEmpty(phrase)) {
+  if (!isEmpty(phrase)) {
     request.setSearchPhrase(phrase);
   }
-  if (!_.isEmpty(filters)) {
+  if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
-  if (!_.isEmpty(orderBy)) {
+  if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
   request.addParam('limit', 1000);
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (topic) => new Topic(topic, app));
 }

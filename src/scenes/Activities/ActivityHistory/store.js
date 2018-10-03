@@ -1,7 +1,6 @@
 import { observable, action, reaction, computed } from 'mobx';
-import { orderBy, map, omit, values, isEmpty, each, merge } from 'lodash';
+import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
-import { Transaction, Oracle } from 'models';
 
 import { getDetailPagePath } from '../../../helpers/utility';
 import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
@@ -81,7 +80,7 @@ export default class {
 
     const orderBySect = { field: orderByField, direction };
     const result = await queryAllTransactions(filters, orderBySect, limit, skip);
-    return map(result, (tx) => new Transaction(tx));
+    return result;
   }
 
   @action
@@ -104,8 +103,8 @@ export default class {
     const filters = [{ topicAddress }];
 
     if (topicAddress) {
-      const targetoracle = await queryAllOracles(filters, order);
-      const path = getDetailPagePath(map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
+      const targetOracle = await queryAllOracles(this.app, filters, order);
+      const path = getDetailPagePath(targetOracle);
       if (path) return path;
     }
   }

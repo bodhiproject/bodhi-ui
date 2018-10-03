@@ -185,30 +185,6 @@ export const getPhase = ({ token, status }) => {
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 
-export function processTopic(topic) {
-  if (!topic) {
-    return undefined;
-  }
-
-  const newTopic = _.assign({}, topic);
-  newTopic.qtumAmount = _.map(topic.qtumAmount, satoshiToDecimal);
-  newTopic.botAmount = _.map(topic.botAmount, satoshiToDecimal);
-  newTopic.escrowAmount = satoshiToDecimal(topic.escrowAmount);
-  newTopic.oracles = _.map(topic.oracles, processOracle);
-  return newTopic;
-}
-
-export function processOracle(oracle) {
-  if (!oracle) {
-    return undefined;
-  }
-
-  const newOracle = _.assign({}, oracle);
-  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
-  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-  return newOracle;
-}
-
 export function toFixed(num) {
   let x = num;
   if (Math.abs(x) < 1.0) {

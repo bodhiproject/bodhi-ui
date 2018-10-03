@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { SortBy, Token, OracleStatus, Routes } from 'constants';
 
 import { queryAllOracles } from '../../network/graphql/queries';
-import Oracle from '../../stores/models/Oracle';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -78,8 +77,8 @@ export default class QtumPredictionStore {
         { token: Token.QTUM, status: OracleStatus.CREATED },
       ];
       let result = [];
-      result = await queryAllOracles(filters, orderBy, limit, skip);
-      result = _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
+      result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      result = _.uniqBy(result, 'txid');
       if (result.length < limit) this.hasMore = false;
       return _.orderBy(result, ['endTime'], this.sortBy.toLowerCase());
     }

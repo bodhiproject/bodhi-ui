@@ -3,7 +3,7 @@
  * This file simply skip the backend retrival and fake query results and return
  * Current logic is straightforward but good enough to make tests
  * */
-export function queryAllTopics(filters, orderBy, limit, skip) {
+export function queryAllTopics(app, filters, orderBy, limit, skip) {
   const topics = [];
   const max = 23;
   let i;
@@ -14,7 +14,7 @@ export function queryAllTopics(filters, orderBy, limit, skip) {
   return topics.slice(skip, end);
 }
 
-export function queryAllOracles(filters, orderBy, limit, skip) {
+export function queryAllOracles(app, filters, orderBy, limit, skip) {
   const oracles = [];
   const max = 23;
   let i;
