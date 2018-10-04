@@ -19,13 +19,6 @@ const styles = (theme) => ({
   searchTabContainer: {
     marginTop: theme.sizes.navHeight,
   },
-  row: {
-    display: 'grid',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    margin: theme.paddingSm,
-  },
 });
 
 export default styles;

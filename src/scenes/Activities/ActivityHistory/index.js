@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { Typography, Table, Grid, TableCell, TableHead, TableRow, TableSortLabel, TableFooter, TablePagination, Tooltip, withStyles } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { Table, Grid, TableCell, TableHead, TableRow, TableSortLabel, TableFooter, TablePagination, Tooltip, withStyles } from '@material-ui/core';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { InstallQryptoInline } from 'components';
 
 import styles from './styles';
 import EventRows from './EventRows';
 import Config from '../../../config/app';
-import { Row } from '../../../components/InfiniteScroll';
 import Loading from '../../../components/EventListLoading';
+import EmptyPlaceholder from '../../../components/NoItemsPlaceholder';
 
 const headerCols = [
   {
@@ -63,6 +63,13 @@ const headerCols = [
   },
 ];
 
+const messages = defineMessages({
+  emptyTxHistoryMsg: {
+    id: 'str.emptyTxHistory',
+    defaultMessage: 'You do not have any transactions right now.',
+  },
+});
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
@@ -82,41 +89,13 @@ export default class ActivityHistory extends Component {
 
   render() {
     const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
-    const { transactions, order, orderBy, page, perPage, displayedTxs, loaded } = history;
+    const { loaded } = history;
 
     if (!loaded) return <Loading />;
     return (
       <div>
         {currentAddress ? (
-          <Grid container spacing={0}>
-            {transactions.length ? (
-              <Table className={classes.historyTable}>
-                <TableHeader
-                  onSortChange={this.createSortHandler}
-                  cols={headerCols}
-                  order={order}
-                  orderBy={orderBy}
-                />
-                <EventRows displayedTxs={displayedTxs} />
-                <EventHistoryFooter
-                  fullList={transactions}
-                  perPage={perPage}
-                  page={page}
-                  onChangePage={(event, pg) => history.page = pg}
-                  onChangeRowsPerPage={(event) => history.perPage = event.target.value}
-                />
-              </Table>
-            ) : (
-              <Row>
-                <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
-                <Row>
-                  <Typography variant="title">
-                    <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-                  </Typography>
-                </Row>
-              </Row>
-            )}
-          </Grid>
+          <EventHistoryContent history={history} classes={classes} createSortHandler={this.createSortHandler} />
         ) : (
           <InstallQryptoInline />
         )}
@@ -124,6 +103,32 @@ export default class ActivityHistory extends Component {
     );
   }
 }
+
+const EventHistoryContent = ({ history, classes, createSortHandler }) => {
+  const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
+  return transactions.length ? (
+    <Grid container spacing={0}>
+      <Table className={classes.historyTable}>
+        <TableHeader
+          onSortChange={createSortHandler}
+          cols={headerCols}
+          order={order}
+          orderBy={orderBy}
+        />
+        <EventRows displayedTxs={displayedTxs} />
+        <EventHistoryFooter
+          fullList={transactions}
+          perPage={perPage}
+          page={page}
+          onChangePage={(event, pg) => history.page = pg}
+          onChangeRowsPerPage={(event) => history.perPage = event.target.value}
+        />
+      </Table>
+    </Grid>
+  ) : (
+    <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
+  );
+};
 
 const EventHistoryFooter = ({ fullList, perPage, page, ...props }) => (
   <TableFooter>

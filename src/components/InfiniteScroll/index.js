@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, withWidth, Button, withStyles } from '@material-ui/core';
-import { defineMessages, FormattedMessage } from 'react-intl';
-import { Routes } from 'constants';
+import { Grid, withWidth, withStyles } from '@material-ui/core';
+import { defineMessages } from 'react-intl';
 import { Loading } from '../Loading';
 import styles from './styles';
+import EmptyPlaceholder from '../NoItemsPlaceholder';
 
 const messages = defineMessages({
   loadMoreMsg: {
     id: 'load.more',
     defaultMessage: 'loading more',
   },
+  eventsEmptyMsg: {
+    id: 'events.empty',
+    defaultMessage: 'There is no ongoing events',
+  },
 });
+
 @withWidth()
 @inject('store')
 @observer
@@ -53,33 +58,14 @@ export default class InfiniteScroll extends Component {
   }
 
   render() {
-    const { data, spacing, loadingMore, store, width } = this.props;
-    const { createEvent, ui } = store;
+    const { data, spacing, loadingMore } = this.props;
     return data.length > 0 ? (
       <Grid container spacing={spacing}>
         {data}
         {loadingMore && <LoadingMore />}
       </Grid>
     ) : (
-      <Row>
-        <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
-        <Row>
-          <Typography variant="title">
-            <FormattedMessage id="events.empty" defaultMessage="There's no ongoing events currently." />
-          </Typography>
-        </Row>
-        {ui.location === Routes.QTUM_PREDICTION &&
-        <Row>
-          <Button
-            size={width === 'xs' ? 'small' : 'medium'}
-            color="primary"
-            onClick={createEvent.open}
-          >
-            <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE AN EVENT" />
-          </Button>
-        </Row>
-        }
-      </Row>
+      <EmptyPlaceholder message={messages.eventsEmptyMsg} />
     );
   }
 }
