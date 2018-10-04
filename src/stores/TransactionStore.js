@@ -103,10 +103,10 @@ export default class TransactionStore {
       const txs = await queryAllTransactions(filters);
 
       each(txs, async (tx) => {
-        // Execute follow-up tx if not already added, successful approve, and sender is in current addresses
+        // Execute follow-up tx if not already added, sender is in current addresses, and approve was successful
         const txIndex = findIndex(this.transactions, { approveTxid: tx.txid });
         const addressIndex = findIndex(this.app.wallet.addresses, { address: tx.senderAddress });
-        if (txIndex === -1 && tx.status === TransactionStatus.SUCCESS && addressIndex !== -1) {
+        if (txIndex === -1 && addressIndex !== -1 && tx.status === TransactionStatus.SUCCESS) {
           switch (tx.type) {
             case TransactionType.APPROVE_CREATE_EVENT: {
               await this.addCreateEventTx(
