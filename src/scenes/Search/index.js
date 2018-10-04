@@ -7,7 +7,7 @@ import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import Loading from '../../components/EventListLoading';
 import styles from './styles';
-import EmptyPlaceholder from '../../components/NoItemsPlaceholder';
+import EmptyPlaceholder from '../../components/EmptyPlaceholder';
 
 const TAB_BET = 0;
 const TAB_VOTE = 1;

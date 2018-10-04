@@ -51,11 +51,17 @@ export default class TransactionHistory extends Component {
             </TableBody>
           </Table>
         ) : (
-          <Typography variant="body1">
-            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-          </Typography>
+          <CenteredDiv>
+            <Typography variant="body1">
+              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+            </Typography>
+          </CenteredDiv>
         )}
       </div>
     );
   }
 }
+
+export const CenteredDiv = withStyles(styles)(({ classes, ...props }) => (
+  <div className={classes.centeredDiv} {...props} />
+));
