@@ -213,7 +213,7 @@ export default class GlobalStore {
       this.userData.resultSettingCount = oraclesForResultset.length;
 
       // Get finalize items
-      const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
+      const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
       const oraclesForFinalize = await queryAllOracles(this.app, oracleFinalizeFilters);
       this.userData.finalizeCount = oraclesForFinalize.length;
     } catch (err) {

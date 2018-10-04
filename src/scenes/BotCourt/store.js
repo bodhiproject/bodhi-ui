@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, Routes } from '../constants';
-import { queryAllOracles } from '../network/graphql/queries';
+import { Token, OracleStatus, Routes } from '../../constants';
+import { queryAllOracles } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
