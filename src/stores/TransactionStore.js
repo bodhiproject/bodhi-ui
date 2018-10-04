@@ -110,6 +110,7 @@ export default class TransactionStore {
             case TransactionType.APPROVE_CREATE_EVENT: {
               await this.addCreateEventTx(
                 tx.txid,
+                tx.senderAddress,
                 tx.name,
                 tx.options,
                 tx.resultSetterAddress,
@@ -123,11 +124,25 @@ export default class TransactionStore {
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
+              await this.addSetResultTx(
+                tx.txid,
+                tx.senderAddress,
+                tx.topicAddress,
+                tx.oracleAddress,
+                tx.optionIdx,
+                tx.amountSatoshi,
+              );
               break;
             }
             case TransactionType.APPROVE_VOTE: {
-              await this.addVoteTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
+              await this.addVoteTx(
+                tx.txid,
+                tx.senderAddress,
+                tx.topicAddress,
+                tx.oracleAddress,
+                tx.optionIdx,
+                tx.amountSatoshi,
+              );
               break;
             }
             default: {
@@ -390,6 +405,7 @@ export default class TransactionStore {
   /**
    * Adds a create event tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} name Name of the event.
    * @param {array} options String array of the options for the event.
    * @param {string} resultSetterAddress Address of the result setter.
@@ -402,6 +418,7 @@ export default class TransactionStore {
   @action
   addCreateEventTx = async (
     approveTxid,
+    senderAddress,
     name,
     options,
     resultSetterAddress,
@@ -415,7 +432,7 @@ export default class TransactionStore {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.CREATE_EVENT,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       name,
       options,
       resultSetterAddress,
@@ -626,17 +643,18 @@ export default class TransactionStore {
   /**
    * Adds a set result tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {number} optionIdx Index of the option being set.
    * @param {string} amountSatoshi Consensus threshold.
    */
   @action
-  addSetResultTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
+  addSetResultTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.SET_RESULT,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       topicAddress,
       oracleAddress,
       optionIdx,
@@ -750,17 +768,18 @@ export default class TransactionStore {
   /**
    * Adds a vote tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the DecentralizedOracle.
    * @param {number} optionIdx Index of the option being voted on.
    * @param {string} amountSatoshi Vote amount.
    */
   @action
-  addVoteTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
+  addVoteTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.VOTE,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       topicAddress,
       oracleAddress,
       optionIdx,
