@@ -12,12 +12,13 @@ import Loading from '../../components/EventListLoading';
 export default class BotCourt extends Component {
   componentDidMount() {
     this.props.store.botCourt.init();
+    this.props.store.ui.initIncreasingCount(1);
   }
 
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.botCourt;
     if (!loaded) return <Loading />;
-    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} />); // eslint-disable-line
     return (
       <Fragment>
         <TopActions />

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -10,7 +10,7 @@ import { Phases, EventWarningType } from 'constants';
 import FavoriteButton from './FavoriteButton';
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers/utility';
+import { getEndTimeCountDownString } from '../../helpers';
 
 const { BETTING, RESULT_SETTING, VOTING, FINALIZING, WITHDRAWING } = Phases;
 const messages = defineMessages({
@@ -29,15 +29,13 @@ const messages = defineMessages({
 export default class EventCard extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     index: PropTypes.number.isRequired,
     endTime: PropTypes.string,
-    onClick: PropTypes.func,
+    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   static defaultProps = {
     endTime: undefined,
-    onClick: null,
   };
 
   getAmountLabel = () => {
@@ -77,14 +75,15 @@ export default class EventCard extends PureComponent {
   }
 
   render() {
-    const { classes, index, onClick } = this.props;
+    const { classes, index } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
+    const increasingCount = this.props.increasingCount || 0;
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link onClick={onClick} to={url}>
+        <Link to={url}>
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
@@ -100,16 +99,16 @@ export default class EventCard extends PureComponent {
               </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
-                  <div>
+                  <div className={classes.eventCardInfoItem}>
                     <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
+                    {`${amountLabel} `}
                     <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                    {` ${amountLabel}`}
                   </div>
                 )}
-                <div>
+                <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? `${getEndTimeCountDownString(endTime, locale, localeMessages)}`
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - increasingCount, locale, localeMessages)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>

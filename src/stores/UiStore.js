@@ -12,6 +12,13 @@ export default class UiStore {
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
+  @observable increasingCount = 0;
+  counterInterval = null;
+
+  initIncreasingCount = (interval) => {
+    if (this.counterInterval) clearInterval(this.counterInterval);
+    this.counterInterval = setInterval(() => this.increasingCount += (interval / 1000000000), interval * 1000);
+  }
 
   get localeMessages() {
     return locales[this.locale].messages;

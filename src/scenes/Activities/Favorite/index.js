@@ -20,12 +20,13 @@ const messages = defineMessages({
 export default class Favorite extends Component {
   componentDidMount() {
     this.props.store.favorite.init();
+    this.props.store.ui.initIncreasingCount(1);
   }
 
   render() {
     const { displayList, loading } = this.props.store.favorite;
     if (loading) return <Loading />;
-    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount}/>); // eslint-disable-line
     return (
       <Fragment>
         {displayList.length ? (
