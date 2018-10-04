@@ -128,12 +128,38 @@ export default class Activities extends Component {
 
     return (
       <div>
-        <Tabs indicatorColor="primary" value={this.tabIdx} onChange={this.handleTabChange} className={classes.activitiesTabWrapper}>
-          <Tab label={this.getTabLabel(EventStatus.SET)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
-          <Tab label={this.getTabLabel(EventStatus.FINALIZE)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
-          <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
-          <Tab label={this.props.intl.formatMessage(messages.history)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
-          <Tab label={this.props.intl.formatMessage(messages.favorite)} className={classes.activitiesTabButton} classes={{ label: classes.activitiesTabLabel }} />
+        <Tabs
+          indicatorColor="primary"
+          value={this.tabIdx}
+          onChange={this.handleTabChange}
+          className={classes.activitiesTabWrapper}
+          scrollable
+        >
+          <Tab
+            label={this.getTabLabel(EventStatus.SET)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
+          <Tab
+            label={this.getTabLabel(EventStatus.FINALIZE)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
+          <Tab
+            label={this.getTabLabel(EventStatus.WITHDRAW)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
+          <Tab
+            label={this.props.intl.formatMessage(messages.history)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
+          <Tab
+            label={this.props.intl.formatMessage(messages.favorite)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {this.tabIdx === TAB_SET && <ResultSetting />}
