@@ -75,7 +75,7 @@ export default class {
 
     // we want to fetch all *Oracles* which is related to BOT token and waitResult status
     if (this.hasMore) {
-      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT }];
+      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
       const result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
       if (result.length < limit) this.hasMore = false;

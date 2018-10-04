@@ -1,9 +1,8 @@
 import { observable } from 'mobx';
-
 import { satoshiToDecimal } from '../../helpers/utility';
 
 export default class WalletAddress {
-  @observable address = '';
+  @observable address = ''
   @observable qtum = 0
   @observable bot = 0
 

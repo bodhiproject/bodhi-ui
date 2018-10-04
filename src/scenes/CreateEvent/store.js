@@ -69,8 +69,8 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
-const nowPlus = seconds => moment().add(seconds, 's').unix();
 
+const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   escrowAmount: undefined,
@@ -518,6 +518,7 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
+        this.app.ui.locale,
       );
     } else {
       await this.app.tx.addApproveCreateEventTx(
@@ -529,6 +530,7 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
+        this.app.ui.locale,
       );
     }
 

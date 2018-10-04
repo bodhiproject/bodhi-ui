@@ -8,7 +8,7 @@ import QryptoStore from './QryptoStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
-import BotCourtStore from './BotCourtStore';
+import BotCourtStore from '../scenes/BotCourt/store';
 import QtumPredictionStore from '../scenes/QtumPrediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';

@@ -81,7 +81,7 @@ export default class {
       // Get all votes for all your addresses
       each(this.app.wallet.addresses, (item) => {
         voteFilters.push({ voterAddress: item.address });
-        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
       });
 
       // Filter votes
@@ -94,7 +94,7 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx });
+        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
       });
       const topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
       if (topics.length < limit) this.hasMore = false;

@@ -75,12 +75,13 @@ export default class {
 
     // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
     if (this.hasMore) {
-      const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET }];
+      const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
       each(this.app.wallet.addresses, (addressObj) => {
         filters.push({
           token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
           resultSetterAddress: addressObj.address,
+          language: this.app.ui.locale,
         });
       });
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };

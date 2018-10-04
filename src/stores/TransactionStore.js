@@ -118,6 +118,7 @@ export default class TransactionStore {
                 tx.resultSettingStartTime,
                 tx.resultSettingEndTime,
                 tx.amountSatoshi,
+                tx.language,
               );
               break;
             }
@@ -320,6 +321,7 @@ export default class TransactionStore {
     resultSettingStartTime,
     resultSettingEndTime,
     amountSatoshi,
+    language,
   ) => {
     this.transactions.push(observable.object(new Transaction({
       type: TransactionType.APPROVE_CREATE_EVENT,
@@ -333,6 +335,7 @@ export default class TransactionStore {
       resultSettingEndTime,
       amount: amountSatoshi,
       token: Token.BOT,
+      language,
     })));
     await this.showConfirmDialog();
   }
@@ -368,6 +371,7 @@ export default class TransactionStore {
           resultSettingStartTime: tx.resultSettingStartTime,
           resultSettingEndTime: tx.resultSettingEndTime,
           amount: amountSatoshi,
+          language: tx.language,
         });
 
         this.addPendingApprove(txid);
@@ -406,6 +410,7 @@ export default class TransactionStore {
     resultSettingStartTime,
     resultSettingEndTime,
     amount,
+    language,
   ) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
@@ -420,6 +425,7 @@ export default class TransactionStore {
       resultSettingEndTime,
       amount,
       token: Token.BOT,
+      language,
     })));
     await this.showConfirmDialog();
   }
@@ -442,6 +448,7 @@ export default class TransactionStore {
         resultSettingStartTime,
         resultSettingEndTime,
         amountSatoshi,
+        language,
       } = tx;
       const contract = this.app.global.qweb3.Contract(
         getContracts().EventFactory.address,
@@ -478,6 +485,7 @@ export default class TransactionStore {
           resultSettingEndTime,
           amount: amountSatoshi,
           token: Token.BOT,
+          language,
         });
 
         await this.onTxExecuted(index, tx);
@@ -653,8 +661,8 @@ export default class TransactionStore {
         gasLimit: 1500000,
         senderAddress,
       });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
 
+      Object.assign(tx, { txid, gasLimit, gasPrice });
       // Create pending tx on server
       if (txid) {
         await createTransaction('setResult', {

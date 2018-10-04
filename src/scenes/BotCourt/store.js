@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { Token, OracleStatus, Routes } from '../constants';
-import { queryAllOracles } from '../network/graphql/queries';
+import { Token, OracleStatus, Routes } from '../../constants';
+import { queryAllOracles } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -66,10 +66,11 @@ export default class BotCourtStore {
       const orderBy = { field: 'endTime', direction: this.app.sortBy };
       const excludeResultSetterAddress = this.app.wallet.addresses.map(({ address }) => address);
       const filters = [
-        { token: Token.BOT, status: OracleStatus.VOTING },
+        { token: Token.BOT, status: OracleStatus.VOTING, language: this.app.ui.locale },
         { token: Token.QTUM,
           status: OracleStatus.WAIT_RESULT,
           excludeResultSetterAddress,
+          language: this.app.ui.locale,
         },
       ];
       let result = [];
