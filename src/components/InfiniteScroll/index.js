@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { Grid } from '@material-ui/core';
+import { Grid, withWidth, withStyles } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
-
 import { Loading } from '../Loading';
+import styles from './styles';
+import EmptyPlaceholder from '../NoItemsPlaceholder';
 
 const messages = defineMessages({
   loadMoreMsg: {
     id: 'load.more',
     defaultMessage: 'loading more',
   },
+  eventsEmptyMsg: {
+    id: 'events.empty',
+    defaultMessage: 'There is no ongoing events',
+  },
 });
 
+@withWidth()
+@inject('store')
+@observer
 export default class InfiniteScroll extends Component {
   static propTypes = {
     hasMore: PropTypes.bool,
@@ -49,26 +58,20 @@ export default class InfiniteScroll extends Component {
   }
 
   render() {
-    return (
-      <Grid container spacing={this.props.spacing}>
-        {this.props.data}
-        {this.props.loadingMore && <LoadingMore />}
+    const { data, spacing, loadingMore } = this.props;
+    return data.length > 0 ? (
+      <Grid container spacing={spacing}>
+        {data}
+        {loadingMore && <LoadingMore />}
       </Grid>
+    ) : (
+      <EmptyPlaceholder message={messages.eventsEmptyMsg} />
     );
   }
 }
 
 const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 
-const Row = (props) => (
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      margin: 20,
-    }}
-    {...props}
-  />
-);
+export const Row = withStyles(styles)(({ classes, ...props }) => (
+  <div className={classes.row} {...props} />
+));

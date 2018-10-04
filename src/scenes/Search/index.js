@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { Grid, Typography, Tabs, Tab, withStyles } from '@material-ui/core';
+import { injectIntl, defineMessages } from 'react-intl';
+import { Grid, Tabs, Tab, withStyles } from '@material-ui/core';
 import { EventStatus } from 'constants';
 import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
-import { Loading } from '../../components/Loading';
+import Loading from '../../components/EventListLoading';
 import styles from './styles';
+import EmptyPlaceholder from '../../components/NoItemsPlaceholder';
 
 const TAB_BET = 0;
 const TAB_VOTE = 1;
@@ -38,6 +39,10 @@ const messages = defineMessages({
   searchingMsg: {
     id: 'search.loading',
     defaultMessage: 'Searching...',
+  },
+  searchEmptySearchResultMsg: {
+    id: 'search.emptySearchResult',
+    defaultMessage: 'Oops, your search has no results.',
   },
 });
 @withStyles(styles, { withTheme: true })
@@ -123,7 +128,7 @@ export default class Search extends Component {
     const { ui } = this.props.store;
     const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
     this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
-    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <NoResult /> : this.showEvents;
+    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <EmptyPlaceholder message={messages.searchEmptySearchResultMsg} /> : this.showEvents;
     return (
       <Fragment>
         <div>
@@ -136,7 +141,7 @@ export default class Search extends Component {
           </Tabs>
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.sm.value}>
-              {loading ? <Row><Loading className={classes.searching} text={messages.searchingMsg} /></Row> : result}
+              {loading ? <Loading message={messages.searchingMsg} /> : result}
             </Grid>
           </div>
         </div>
@@ -144,13 +149,3 @@ export default class Search extends Component {
     );
   }
 }
-
-const NoResult = () => (
-  <Typography variant="body1">
-    <FormattedMessage id="search.emptySearchResult" defaultMessage="Oops, your search has no results." />
-  </Typography>
-);
-
-const Row = withStyles(styles)(({ classes, ...props }) => (
-  <div className={classes.row} {...props} />
-));

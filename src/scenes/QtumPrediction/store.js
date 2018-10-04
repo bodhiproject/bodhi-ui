@@ -52,7 +52,7 @@ export default class QtumPredictionStore {
   loadFirst = async () => {
     this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
-      this.loaded = false;
+      this.loaded = true;
     });
   }
 

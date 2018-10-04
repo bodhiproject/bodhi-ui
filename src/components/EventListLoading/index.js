@@ -16,4 +16,4 @@ export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 
-export default withStyles(styles)(({ classes }) => <Row><Loading className={classes.loading} text={messages.loadEventListMsg} /></Row>);
+export default withStyles(styles)(({ classes, ...props }) => (<Row><Loading text={props.message || messages.loadEventListMsg} {...props} /></Row>));

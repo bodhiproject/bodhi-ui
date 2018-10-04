@@ -88,6 +88,7 @@
   "eventInfo.predictionFund": "预测总金额",
   "eventInfo.voteVolume": "仲裁总金额",
   "eventInfo.voteVolumn": "仲裁总金额",
+  "events.empty": "目前没有正在进行的活动。",
   "help": "帮助",
   "invalid": "无效",
   "language.select": "English",

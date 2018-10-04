@@ -17,8 +17,8 @@ export default class Finalize extends Component {
 
   render() {
     const { currentAddress } = this.props.store.wallet;
-    const { list, loadMore, loadingMore, loading } = this.props.store.activities.finalize;
-    if (loading) return <Loading />;
+    const { list, loadMore, loadingMore, loaded } = this.props.store.activities.finalize;
+    if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
       <Fragment>

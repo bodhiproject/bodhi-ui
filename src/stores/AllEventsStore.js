@@ -4,7 +4,7 @@ import { OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
 
 const INIT_VALUES = {
-  loaded: true, // INIT_VALUESial loaded state
+  loaded: false, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
   hasMoreTopics: true, // has more topics to fetch?
@@ -43,7 +43,7 @@ export default class {
     this.app.ui.location = Routes.ALL_EVENTS;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
-      this.loading = false;
+      this.loaded = true;
     });
   }
 

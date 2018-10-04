@@ -1,10 +1,10 @@
 const styles = () => ({
   row: {
-    display: 'flex',
+    display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    margin: '20px',
+    marginTop: '20px',
   },
 });
 

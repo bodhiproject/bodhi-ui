@@ -1,4 +1,4 @@
-import { observable, action, reaction, computed } from 'mobx';
+import { observable, action, reaction, computed, runInAction } from 'mobx';
 import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 
@@ -12,15 +12,17 @@ const INIT_VALUES = {
   perPage: 10,
   page: 0,
   limit: 50,
+  loaded: false,
 };
 
 export default class {
-  @observable transactions = INIT_VALUES.transactions
-  @observable order = INIT_VALUES.order
-  @observable orderBy = INIT_VALUES.orderBy
-  @observable perPage = INIT_VALUES.perPage
-  @observable page = INIT_VALUES.page
-  @observable limit = INIT_VALUES.limit
+  @observable transactions = INIT_VALUES.transactions;
+  @observable order = INIT_VALUES.order;
+  @observable orderBy = INIT_VALUES.orderBy;
+  @observable perPage = INIT_VALUES.perPage;
+  @observable page = INIT_VALUES.page;
+  @observable limit = INIT_VALUES.limit;
+  @observable loaded = INIT_VALUES.loaded;
 
   @computed
   get displayedTxs() {
@@ -62,6 +64,9 @@ export default class {
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.ACTIVITY_HISTORY;
     this.transactions = await this.fetchHistory();
+    runInAction(() => {
+      this.loaded = true;
+    });
   }
 
   fetchHistory = async (skip = 0, limit = this.limit, orderByField = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
@@ -85,9 +90,13 @@ export default class {
 
   @action
   getMoreData = async () => {
+    this.loaded = false;
     const moreData = await this.fetchHistory(this.transactions.length);
     this.transactions = [...this.transactions, ...moreData];
     this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
+    runInAction(() => {
+      this.loaded = true;
+    });
   }
 
   @action

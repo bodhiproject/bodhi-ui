@@ -17,8 +17,8 @@ export default class ResultSetting extends Component {
 
   render() {
     const { currentAddress } = this.props.store.wallet;
-    const { list, loadMore, loadingMore, loading } = this.props.store.activities.resultSetting;
-    if (loading) return <Loading />;
+    const { list, loadMore, loadingMore, loaded } = this.props.store.activities.resultSetting;
+    if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
       <Fragment>

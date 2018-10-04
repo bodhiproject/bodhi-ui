@@ -44,7 +44,7 @@ export default class BotCourtStore {
     this.app.ui.location = Routes.BOT_COURT;
     this.list = await this.fetch(limit);
     runInAction(() => {
-      this.loaded = false;
+      this.loaded = true;
     });
   }
 
