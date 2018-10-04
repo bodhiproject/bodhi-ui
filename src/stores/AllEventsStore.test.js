@@ -58,7 +58,7 @@ describe('AllEventsStore', () => {
     await store.init();
     expect(app.ui.location).toBe(Routes.ALL_EVENTS);
     expect(store.list.length).toBe(curListNum + store.limit);
-    expect(store.loading).toBe(false);
+    expect(store.loaded).toBe(true);
   });
 
   it('Load More Events', async () => {
