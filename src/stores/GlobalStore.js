@@ -74,9 +74,9 @@ export default class GlobalStore {
     if (syncInfo.error) {
       console.error(syncInfo.error.message); // eslint-disable-line no-console
     } else {
-      this.syncPercent = syncInfo.percent;
-      this.syncBlockNum = syncInfo.blockNum;
-      this.syncBlockTime = syncInfo.blockTime;
+      this.syncPercent = syncInfo.syncPercent;
+      this.syncBlockNum = syncInfo.syncBlockNum;
+      this.syncBlockTime = syncInfo.syncBlockTime;
       this.peerNodeCount = syncInfo.peerNodeCount || 0;
 
       // Only use the syncInfo balances if using a local wallet. Qrypto will set the addresses differently.
