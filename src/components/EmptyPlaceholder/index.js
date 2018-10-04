@@ -10,7 +10,7 @@ export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 
-const NoItemsPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
+const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
   const { message, width } = props;
   return (
     <Row>
@@ -35,8 +35,8 @@ const NoItemsPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
   );
 };
 
-NoItemsPlaceholder.propTypes = {
+EmptyPlaceholder.propTypes = {
   width: PropTypes.string.isRequired,
 };
 
-export default withWidth()(injectIntl(inject('store')(NoItemsPlaceholder)));
+export default withWidth()(injectIntl(inject('store')(EmptyPlaceholder)));

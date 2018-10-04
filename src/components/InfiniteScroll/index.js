@@ -5,7 +5,7 @@ import { Grid, withWidth, withStyles } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
 import { Loading } from '../Loading';
 import styles from './styles';
-import EmptyPlaceholder from '../NoItemsPlaceholder';
+import EmptyPlaceholder from '../EmptyPlaceholder';
 
 const messages = defineMessages({
   loadMoreMsg: {

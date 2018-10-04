@@ -9,7 +9,7 @@ import styles from './styles';
 import EventRows from './EventRows';
 import Config from '../../../config/app';
 import Loading from '../../../components/EventListLoading';
-import EmptyPlaceholder from '../../../components/NoItemsPlaceholder';
+import EmptyPlaceholder from '../../../components/EmptyPlaceholder';
 
 const headerCols = [
   {
