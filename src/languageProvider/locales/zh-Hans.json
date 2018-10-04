@@ -210,6 +210,7 @@
   "str.pending": "等待中",
   "str.pendingConfirmation": "确认等待中",
   "str.pendingTransactionDisabledMsg": "您在此事件中已经有一个待处理的交易，请等待此交易被确认后再进行下一个交易.",
+  "str.pleasewait": "Please Wait",
   "str.qrypto": "Qrypto",
   "str.qtum": "QTUM",
   "str.raised": "筹集到",

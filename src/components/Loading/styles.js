@@ -15,7 +15,12 @@ const styles = ({ palette: { primary } }) => ({
     width: '3rem',
     height: '3rem',
     display: 'inline-flex',
-    marginTop: '10rem',
+    '&.event': {
+      marginTop: '10rem',
+    },
+    '&.createevent': {
+      marginTop: '0rem',
+    },
     marginRight: '20px',
     marginBottom: '10px',
     marginLeft: '20px',
