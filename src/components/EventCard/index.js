@@ -88,7 +88,7 @@ export default class EventCard extends Component {
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link onClick={onClick} to={url}>
+        <Link to={url}>
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>

@@ -93,6 +93,10 @@ export default class Search extends Component {
     return `${label}${countText}`;
   }
 
+  componentDidMount() {
+    this.props.store.ui.initIncreasingCount(1);
+  }
+
   handleTabChange = (event, value) => {
     const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
     this.props.store.search.tabIdx = value;
@@ -127,7 +131,7 @@ export default class Search extends Component {
     const { classes } = this.props;
     const { ui } = this.props.store;
     const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
-    this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
+    this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} increasingCount={this.props.store.ui.increasingCount} />));
     const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <EmptyPlaceholder message={messages.searchEmptySearchResultMsg} /> : this.showEvents;
     return (
       <Fragment>
