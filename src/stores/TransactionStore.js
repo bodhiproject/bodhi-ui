@@ -107,11 +107,12 @@ export default class TransactionStore {
         const txIndex = findIndex(this.transactions, { approveTxid: tx.txid });
         const addressIndex = findIndex(this.app.wallet.addresses, { address: tx.senderAddress });
         if (txIndex === -1 && addressIndex !== -1 && tx.status === TransactionStatus.SUCCESS) {
+          const { txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
           switch (tx.type) {
             case TransactionType.APPROVE_CREATE_EVENT: {
               await this.addCreateEventTx(
-                tx.txid,
-                tx.senderAddress,
+                txid,
+                senderAddress,
                 tx.name,
                 tx.options,
                 tx.resultSetterAddress,
@@ -119,31 +120,17 @@ export default class TransactionStore {
                 tx.bettingEndTime,
                 tx.resultSettingStartTime,
                 tx.resultSettingEndTime,
-                tx.amountSatoshi,
+                amountSatoshi,
                 tx.language,
               );
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(
-                tx.txid,
-                tx.senderAddress,
-                tx.topicAddress,
-                tx.oracleAddress,
-                tx.optionIdx,
-                tx.amountSatoshi,
-              );
+              await this.addSetResultTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
               break;
             }
             case TransactionType.APPROVE_VOTE: {
-              await this.addVoteTx(
-                tx.txid,
-                tx.senderAddress,
-                tx.topicAddress,
-                tx.oracleAddress,
-                tx.optionIdx,
-                tx.amountSatoshi,
-              );
+              await this.addVoteTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
               break;
             }
             default: {
