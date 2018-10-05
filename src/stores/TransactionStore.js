@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, each, reduce, findIndex } from 'lodash';
+import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
@@ -181,7 +181,9 @@ export default class TransactionStore {
    * @param {number} index Index of the tx to execute.
    */
   confirmTx = async (index) => {
-    const tx = this.transactions[index];
+    const tx = cloneDeep(this.transactions[index]);
+    this.deleteTx(index, tx.approveTxid);
+
     const confirmFunc = {
       [TransactionType.RESET_APPROVE]: this.executeResetApprove,
       [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
@@ -201,10 +203,9 @@ export default class TransactionStore {
 
   /**
    * Logic to execute after a tx has been executed.
-   * @param {number} index Index of the tx that was executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = async (index, tx) => {
+  onTxExecuted = async (tx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.queryTransactions(tx.topicAddress);
@@ -212,23 +213,22 @@ export default class TransactionStore {
 
     this.app.txSentDialog.open(tx.txid);
     await this.app.pendingTxsSnackbar.init();
-    this.deleteTx(index);
   }
 
   /**
-   * Removes a tx from the transactions array.
+   * Removes a tx from the transactions array and any pending approve from the localStorage.
    * @param {number} index Index of the tx to remove.
+   * @param {string} approveTxid Approve txid if it is an approve tx.
    */
   @action
-  deleteTx = (index) => {
-    const tx = this.transactions[index];
-    if (tx.approveTxid) {
-      this.removePendingApprove(tx.approveTxid);
-    }
-
+  deleteTx = (index, approveTxid) => {
     this.transactions.splice(index, 1);
     if (this.transactions.length === 0) {
       this.visible = false;
+    }
+
+    if (approveTxid) {
+      this.removePendingApprove(approveTxid);
     }
   }
 
@@ -292,7 +292,7 @@ export default class TransactionStore {
         amount,
       });
 
-      await this.onTxExecuted(index, tx);
+      await this.onTxExecuted(tx);
       Tracking.track('event-resetApprove');
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
@@ -378,7 +378,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveCreateEvent');
       }
     } catch (err) {
@@ -493,7 +493,7 @@ export default class TransactionStore {
           language,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         this.app.qtumPrediction.loadFirst();
         Tracking.track('event-createEvent');
       }
@@ -557,7 +557,7 @@ export default class TransactionStore {
           amount,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-bet');
       }
     } catch (err) {
@@ -616,7 +616,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveSetResult');
       }
     } catch (err) {
@@ -682,7 +682,7 @@ export default class TransactionStore {
           amount: tx.amountSatoshi,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-setResult');
       }
     } catch (err) {
@@ -741,7 +741,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveVote');
       }
     } catch (err) {
@@ -807,7 +807,7 @@ export default class TransactionStore {
           amount: amountSatoshi,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-vote');
       }
     } catch (err) {
@@ -862,7 +862,7 @@ export default class TransactionStore {
           oracleAddress,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-finalizeResult');
       }
     } catch (err) {
@@ -916,7 +916,7 @@ export default class TransactionStore {
           topicAddress,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-withdraw');
       }
     } catch (err) {
@@ -963,7 +963,7 @@ export default class TransactionStore {
       });
       const newTx = observable.object(new Transaction(transfer));
 
-      await this.onTxExecuted(index, newTx);
+      await this.onTxExecuted(newTx);
       await this.app.myWallet.history.addTransaction(newTx);
       Tracking.track('wallet-transfer');
     } catch (err) {
