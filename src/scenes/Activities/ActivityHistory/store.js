@@ -5,58 +5,65 @@ import { TransactionType, SortBy, Routes } from 'constants';
 import { getDetailPagePath } from '../../../helpers/utility';
 import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 10;
+const QUERY_LIMIT = 500;
 const INIT_VALUES = {
   transactions: [],
   displayedTxs: [],
-  order: SortBy.DESCENDING.toLowerCase(),
-  orderBy: 'createdTime',
-  perPage: 5,
-  page: 0,
-  skip: 0,
+  tableOrder: SortBy.DESCENDING.toLowerCase(),
+  tableOrderBy: 'createdTime',
+  tablePerPage: 10,
+  tablePage: 0,
+  querySkip: 0,
+  queryPage: 0,
   loaded: false,
 };
 
 export default class {
-  @observable transactions = INIT_VALUES.transactions;
+  @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
   @observable displayedTxs = INIT_VALUES.displayedTxs; // Txs for the current table page, sliced from transactions
-  @observable order = INIT_VALUES.order;
-  @observable orderBy = INIT_VALUES.orderBy;
-  @observable perPage = INIT_VALUES.perPage; // UI per page for the table (not the tx query)
-  @observable page = INIT_VALUES.page; // UI current page (not for tx query)
-  @observable limit = QUERY_LIMIT; // Tx query limit
-  @observable skip = INIT_VALUES.skip; // Tx query skip
+  @observable tableOrder = INIT_VALUES.tableOrder; // UI table order
+  @observable tableOrderBy = INIT_VALUES.tableOrderBy; // UI table order by
+  @observable tablePerPage = INIT_VALUES.tablePerPage; // UI table per page
+  @observable tablePage = INIT_VALUES.tablePage; // UI table page
+  querySkip = INIT_VALUES.querySkip; // Tx query skip
+  queryPage = INIT_VALUES.queryPage; // Tx query page
   @observable loaded = INIT_VALUES.loaded;
 
   constructor(app) {
     this.app = app;
 
-    // Try to fetch more when got new block
-    // reaction(
-    //   () => this.app.global.syncBlockNum,
-    //   () => this.loadMore()
-    // );
     // Sort order changed
     reaction(
-      () => this.order + this.orderBy,
+      () => this.tableOrder + this.tableOrderBy,
       () => {
-        this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
+        this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
         this.setDisplayedTxs();
       },
     );
     // Page or per page changed
     reaction(
-      () => this.page + this.perPage,
+      () => this.tablePage + this.tablePerPage,
       () => {
         this.setDisplayedTxs();
 
         // Fetch more batches if needed
         const txCount = this.transactions.length;
-        const lastPage = Math.ceil(txCount / this.perPage);
-        if (txCount > 0 && this.page + 1 === lastPage && lastPage * this.perPage === txCount) {
+        const lastPage = Math.ceil(txCount / this.tablePerPage);
+        if (txCount > 0 && this.tablePage + 1 === lastPage && lastPage * this.tablePerPage === txCount) {
           this.loadMore();
         }
       }
+    );
+    // New block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (this.transactions.length > 0) {
+          const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);
+          this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
+          this.setDisplayedTxs();
+        }
+      },
     );
     // Wallet addresses changed
     reaction(
@@ -76,8 +83,8 @@ export default class {
    */
   @action
   setDisplayedTxs() {
-    const start = this.page === 0 ? 0 : (this.page * this.perPage);
-    const end = (this.page * this.perPage) + this.perPage;
+    const start = this.tablePage === 0 ? 0 : this.tablePage * this.tablePerPage;
+    const end = (this.tablePage * this.tablePerPage) + this.tablePerPage;
     this.displayedTxs = this.transactions.slice(start, end);
   }
 
@@ -93,10 +100,11 @@ export default class {
   loadFirst = async () => {
     Object.assign(this, INIT_VALUES);
     const txs = await this.fetchHistory();
-    this.transactions = orderBy(txs, [this.orderBy], [this.order]);
+    this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
     this.setDisplayedTxs();
 
     runInAction(() => {
+      this.batches = 1;
       this.loaded = true;
     });
   }
@@ -106,10 +114,10 @@ export default class {
    */
   @action
   loadMore = async () => {
-    this.skip += QUERY_LIMIT;
+    this.querySkip += QUERY_LIMIT;
     const moreTxs = await this.fetchHistory();
     this.transactions = [...this.transactions, ...moreTxs];
-    this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
+    this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
     this.setDisplayedTxs();
   }
 
@@ -117,7 +125,7 @@ export default class {
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchHistory = async () => {
+  fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
     // Address is required for the request filters
     if (isEmpty(this.app.wallet.addresses)) {
       return [];
@@ -128,7 +136,7 @@ export default class {
     each(this.app.wallet.addresses, (walletAddress) => {
       merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
     });
-    return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, this.limit, this.skip);
+    return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
   }
 
   /**
@@ -138,8 +146,8 @@ export default class {
   @action
   sort = (columnName) => {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
-    this.orderBy = columnName;
-    this.order = this.order === descending ? ascending : descending;
+    this.tableOrderBy = columnName;
+    this.tableOrder = this.tableOrder === descending ? ascending : descending;
   }
 
   /**
@@ -149,10 +157,9 @@ export default class {
    */
   @action
   getOracleAddress = async (topicAddress) => {
-    const order = { field: 'endTime', direction: SortBy.DESCENDING };
-    const filters = [{ topicAddress }];
-
     if (topicAddress) {
+      const filters = [{ topicAddress }];
+      const order = { field: 'endTime', direction: SortBy.DESCENDING };
       const targetOracle = await queryAllOracles(this.app, filters, order);
       const path = getDetailPagePath(targetOracle);
       if (path) return path;

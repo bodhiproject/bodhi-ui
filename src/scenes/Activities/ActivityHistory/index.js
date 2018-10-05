@@ -115,14 +115,14 @@ const EventHistoryContent = inject('store')(observer(({ classes, store: { activi
     )
   )));
 
-const Header = inject('store')(observer(({ store: { activities: { history, history: { orderBy, order } } } }) => (
+const Header = inject('store')(observer(({ store: { activities: { history, history: { tableOrderBy, tableOrder } } } }) => (
   <TableHead>
     <TableRow>
       {headerCols.map((column) => column.sortable ? (
         <TableCell
           key={column.id}
           numeric={column.numeric}
-          sortDirection={orderBy === column.id ? order : false}
+          sortDirection={tableOrderBy === column.id ? tableOrder : false}
         >
           <Tooltip
             title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
@@ -130,8 +130,8 @@ const Header = inject('store')(observer(({ store: { activities: { history, histo
             placement={column.numeric ? 'bottom-end' : 'bottom-start'}
           >
             <TableSortLabel
-              active={orderBy === column.id}
-              direction={order}
+              active={tableOrderBy === column.id}
+              direction={tableOrder}
               onClick={() => history.sort(column.id)}
             >
               <FormattedMessage id={column.name} default={column.nameDefault} />
@@ -147,16 +147,16 @@ const Header = inject('store')(observer(({ store: { activities: { history, histo
   </TableHead>
 )));
 
-const Footer = inject('store')(observer(({ store: { activities: { history, history: { transactions, perPage, page } } } }) => (
+const Footer = inject('store')(observer(({ store: { activities: { history, history: { transactions, tablePerPage, tablePage } } } }) => (
   <TableFooter>
     <TableRow>
       <TablePagination
         colSpan={12}
         count={transactions.length}
-        rowsPerPage={perPage}
-        page={page}
-        onChangePage={(e, p) => history.page = p}
-        onChangeRowsPerPage={(event) => history.perPage = event.target.value}
+        rowsPerPage={tablePerPage}
+        page={tablePage}
+        onChangePage={(e, p) => history.tablePage = p}
+        onChangeRowsPerPage={(event) => history.tablePerPage = event.target.value}
       />
     </TableRow>
   </TableFooter>
