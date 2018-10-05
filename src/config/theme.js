@@ -226,7 +226,6 @@ export const theme = {
       root: {
         marginTop: px(paddingUnit),
         marginBottom: px(paddingUnit),
-        borderBottom: `1px solid ${borderColorDark}`,
         borderCollapse: 'separate',
       },
       label: {
