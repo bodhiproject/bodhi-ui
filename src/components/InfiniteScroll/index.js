@@ -70,7 +70,7 @@ export default class InfiniteScroll extends Component {
   }
 }
 
-const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} event /></Row>;
+const LoadingMore = () => <Row><Loading text={messages.loadMoreMsg} /></Row>;
 
 export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />

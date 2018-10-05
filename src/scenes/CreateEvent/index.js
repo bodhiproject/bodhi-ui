@@ -46,7 +46,7 @@ const Loading = () => (
     <DialogTitle>
       <FormattedMessage id="str.pleasewait" defaultMessage="Please Wait" />
     </DialogTitle>
-    <_Loading createevent="true" />
+    <_Loading />
   </Fragment>
 );
 

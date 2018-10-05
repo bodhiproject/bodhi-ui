@@ -18,9 +18,6 @@ const styles = ({ palette: { primary } }) => ({
     '&.event': {
       marginTop: '10rem',
     },
-    '&.createevent': {
-      marginTop: '0rem',
-    },
     marginRight: '20px',
     marginBottom: '10px',
     marginLeft: '20px',

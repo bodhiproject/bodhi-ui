@@ -6,7 +6,7 @@ import styles from './styles';
 
 export const Loading = withStyles(styles)(injectIntl(({ classes, text, intl, ...props }) => (
   <div className={classes.col} {...props} >
-    <div className={props.createevent ? cx(classes.loading, 'createevent') : cx(classes.loading, 'event')} {...props} />
+    <div className={props.event ? cx(classes.loading, 'event') : classes.loading} {...props} />
     {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </div>
 )));
