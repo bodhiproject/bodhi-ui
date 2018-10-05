@@ -5,6 +5,7 @@ import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typograph
 import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
 import { TransactionType } from 'constants';
+import { Loading } from 'components';
 
 import styles from './styles';
 import { getTxTypeString } from '../../helpers/stringUtil';
@@ -20,34 +21,28 @@ const messages = defineMessages({
   },
 });
 
-const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => {
-  if (!fees || fees.length === 0) {
-    return null;
-  }
-
-  return (
-    <Table className={classes.txFeesTable}>
-      <TableHead>
-        <TableRow>
-          <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
-          <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
-          <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
-          <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
+const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => (
+  <Table className={classes.txFeesTable}>
+    <TableHead>
+      <TableRow>
+        <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
+        <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
+        <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
+        <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
+        <TableRow key={i}>
+          <TableCell>{getTxTypeString(type, intl)}</TableCell>
+          <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
+          <TableCell>{gasLimit}</TableCell>
+          <TableCell>{gasCost}</TableCell>
         </TableRow>
-      </TableHead>
-      <TableBody>
-        {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
-          <TableRow key={i}>
-            <TableCell>{getTxTypeString(type, intl)}</TableCell>
-            <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
-            <TableCell>{gasLimit}</TableCell>
-            <TableCell>{gasCost}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}))));
+      ))}
+    </TableBody>
+  </Table>
+)))));
 
 const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { type, fees } }) => {
   const txAction = getTxTypeString(type, intl);
@@ -120,12 +115,18 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
   </div>
 ))));
 
-const PendingTxListItem = (props) => (
-  <div>
-    <TransactionFeesTable {...props} />
-    <ExplanationMessage {...props} />
-    <MultipleTransactionMessage {...props} />
-    <ActionButtons {...props} />
+const PendingTxListItem = (props, classes) => (
+  <div className={classes.listItemContainer}>
+    {!props.tx.fees || props.tx.fees.length === 0 ? (
+      <Loading />
+    ) : (
+      <div>
+        <TransactionFeesTable {...props} />
+        <ExplanationMessage {...props} />
+        <MultipleTransactionMessage {...props} />
+        <ActionButtons {...props} />
+      </div>
+    )}
   </div>
 );
 

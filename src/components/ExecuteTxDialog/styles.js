@@ -17,6 +17,7 @@ const styles = (theme) => ({
     padding: `${theme.padding.xs.px} 0`,
   },
   listItemPaper: {
+    width: '100%',
     padding: theme.padding.xs.px,
   },
   listItemTxNumber: {
