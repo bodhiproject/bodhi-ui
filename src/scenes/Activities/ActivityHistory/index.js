@@ -83,10 +83,6 @@ export default class ActivityHistory extends Component {
     this.props.store.activities.history.init();
   }
 
-  createSortHandler = (property) => (event) => { // eslint-disable-line
-    this.props.store.activities.history.sort(property);
-  }
-
   render() {
     const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
     const { loaded } = history;
@@ -95,7 +91,7 @@ export default class ActivityHistory extends Component {
     return (
       <div>
         {currentAddress ? (
-          <EventHistoryContent history={history} classes={classes} createSortHandler={this.createSortHandler} />
+          <EventHistoryContent history={history} classes={classes} />
         ) : (
           <InstallQryptoInline />
         )}
@@ -104,19 +100,18 @@ export default class ActivityHistory extends Component {
   }
 }
 
-const EventHistoryContent = ({ history, classes, createSortHandler }) => {
+const EventHistoryContent = inject('store')(observer(({ history, classes }) => {
   const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
   return transactions.length ? (
     <Grid container spacing={0}>
       <Table className={classes.historyTable}>
-        <TableHeader
-          onSortChange={createSortHandler}
+        <Header
           cols={headerCols}
           order={order}
           orderBy={orderBy}
         />
         <EventRows displayedTxs={displayedTxs} />
-        <EventHistoryFooter
+        <Footer
           fullList={transactions}
           perPage={perPage}
           page={page}
@@ -128,23 +123,9 @@ const EventHistoryContent = ({ history, classes, createSortHandler }) => {
   ) : (
     <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
   );
-};
+}));
 
-const EventHistoryFooter = ({ fullList, perPage, page, ...props }) => (
-  <TableFooter>
-    <TableRow>
-      <TablePagination
-        colSpan={12}
-        count={fullList.length}
-        rowsPerPage={perPage}
-        page={page}
-        {...props}
-      />
-    </TableRow>
-  </TableFooter>
-);
-
-const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
+const Header = inject('store')(observer(({ store: { activities: { history } }, cols, order, orderBy }) => (
   <TableHead>
     <TableRow>
       {cols.map((column) => column.sortable ? (
@@ -161,7 +142,7 @@ const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
             <TableSortLabel
               active={orderBy === column.id}
               direction={order}
-              onClick={onSortChange(column.id)}
+              onClick={() => history.sort(column.id)}
             >
               <FormattedMessage id={column.name} default={column.nameDefault} />
             </TableSortLabel>
@@ -174,4 +155,18 @@ const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
       ))}
     </TableRow>
   </TableHead>
+)));
+
+const Footer = ({ fullList, perPage, page, ...props }) => (
+  <TableFooter>
+    <TableRow>
+      <TablePagination
+        colSpan={12}
+        count={fullList.length}
+        rowsPerPage={perPage}
+        page={page}
+        {...props}
+      />
+    </TableRow>
+  </TableFooter>
 );

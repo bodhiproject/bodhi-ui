@@ -7,6 +7,7 @@ import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/
 
 const INIT_VALUES = {
   transactions: [],
+  currentPageTxs: [],
   order: SortBy.DESCENDING.toLowerCase(),
   orderBy: 'createdTime',
   perPage: 10,
@@ -17,10 +18,11 @@ const INIT_VALUES = {
 
 export default class {
   @observable transactions = INIT_VALUES.transactions;
+  @observable currentPageTxs = INIT_VALUES.currentPageTxs; // Txs for the current table page, sliced from transactions
   @observable order = INIT_VALUES.order;
   @observable orderBy = INIT_VALUES.orderBy;
-  @observable perPage = INIT_VALUES.perPage;
-  @observable page = INIT_VALUES.page;
+  @observable perPage = INIT_VALUES.perPage; // UI per page for the table (not the tx query)
+  @observable page = INIT_VALUES.page; // UI current page (not for tx query)
   @observable limit = INIT_VALUES.limit;
   @observable loaded = INIT_VALUES.loaded;
 
@@ -37,7 +39,7 @@ export default class {
     // Try to fetch more when got new block
     reaction(
       () => this.app.global.syncBlockNum,
-      () => this.getMoreData()
+      () => this.loadMore()
     );
     // Sort while order changes - may be different from the reaction with syncBlockNum in future
     reaction(
@@ -52,7 +54,7 @@ export default class {
         const needMoreFetch = this.transactions.length > 0 && (this.perPage * (this.page + 1)) >= this.transactions.length;
         if (needMoreFetch) {
           this.limit = this.perPage;
-          this.getMoreData();
+          this.loadMore();
         }
       }
     );
@@ -69,17 +71,25 @@ export default class {
     await this.loadFirst();
   }
 
+  /**
+   * It is necessary to fetch a big batch of txs for the purposes of pagination. We need to know the total count
+   * of all the txs for the table footer. This implementation goes like this:
+   * 1. Fetch big batch of txs (500)
+   * 2. Slice the txs per page (based on how many perPage is selected)
+   * 3. If there are more than the first batch of txs (> 500), then fetch the second batch when the user is on the last
+   *    page of the first batch.
+   */
   @action
   loadFirst = async () => {
     Object.assign(this, INIT_VALUES);
-    this.transactions = await this.fetchHistory();
+    this.transactions = await this.fetchHistory(0, 500);
     runInAction(() => {
       this.loaded = true;
     });
   }
 
   @action
-  getMoreData = async () => {
+  loadMore = async () => {
     this.loaded = false;
     const moreData = await this.fetchHistory(this.transactions.length);
     this.transactions = [...this.transactions, ...moreData];
