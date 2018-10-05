@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
 import { map, includes, isEmpty, remove, each, reduce, findIndex } from 'lodash';
-import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
+import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
@@ -469,7 +469,7 @@ export default class TransactionStore {
           resultSettingStartTime,
           resultSettingEndTime,
         ],
-        gasLimit: 3500000,
+        gasLimit: TransactionGas.CREATE_EVENT,
         senderAddress,
       });
       Object.assign(tx, { txid, gasLimit, gasPrice });
@@ -664,7 +664,7 @@ export default class TransactionStore {
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
         methodArgs: [optionIdx],
-        gasLimit: 1500000,
+        gasLimit: TransactionGas.DORACLE_CREATE,
         senderAddress,
       });
 
@@ -789,7 +789,7 @@ export default class TransactionStore {
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
         methodArgs: [optionIdx, amountSatoshi],
-        gasLimit: 1500000, // TODO: determine gas limit to use
+        gasLimit: TransactionGas.DORACLE_CREATE, // TODO: determine gas limit to use
         senderAddress,
       });
       Object.assign(tx, { txid, gasLimit, gasPrice });

@@ -89,4 +89,9 @@ module.exports = {
     ASCENDING: 'ASC',
     DESCENDING: 'DESC',
   },
+
+  TransactionGas: {
+    CREATE_EVENT: 3500000,
+    DORACLE_CREATE: 1500000,
+  },
 };
