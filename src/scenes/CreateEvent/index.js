@@ -15,6 +15,7 @@ import ResultSetStartTime from './ResultSetStartTime';
 import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
+import { Loading as _Loading } from '../../components/Loading';
 
 const messages = defineMessages({
   createEscrowNoteTitleMsg: {
@@ -27,35 +28,49 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = ({ classes, store: { createEvent: { isOpen } } }) => (
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } } }) => (
   <Fragment>
     <Dialog
       className={classes.createDialog}
       classes={{ paper: classes.createDialogPaper }}
-      fullWidth
       maxWidth='md'
       open={isOpen}
     >
-      <DialogTitle className={classes.createDialogTitle}>
-        <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-      </DialogTitle>
-      <DialogContent>
-        <EscrowAmountNote />
-        <EventWarning />
-        <Title />
-        <CreatorDropdown />
-        <PredictionStartTime />
-        <PredictionEndTime />
-        <ResultSetStartTime />
-        <ResultSetEndTime />
-        <Outcomes />
-        <ResultSetter />
-      </DialogContent>
-      <DialogActions className={classes.footer}>
-        <CancelButton />
-        <PublishButton />
-      </DialogActions>
+      {!loaded ? <Loading /> : <CreateEventDetail classes={classes} />}
     </Dialog>
+  </Fragment>
+);
+
+const Loading = () => (
+  <Fragment>
+    <DialogTitle>
+      <FormattedMessage id="str.pleasewait" defaultMessage="Please Wait" />
+    </DialogTitle>
+    <_Loading />
+  </Fragment>
+);
+
+const CreateEventDetail = ({ classes }) => (
+  <Fragment>
+    <DialogTitle className={classes.createDialogTitle}>
+      <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+    </DialogTitle>
+    <DialogContent>
+      <EscrowAmountNote />
+      <EventWarning />
+      <Title />
+      <CreatorDropdown />
+      <PredictionStartTime />
+      <PredictionEndTime />
+      <ResultSetStartTime />
+      <ResultSetEndTime />
+      <Outcomes />
+      <ResultSetter />
+    </DialogContent>
+    <DialogActions className={classes.footer}>
+      <CancelButton />
+      <PublishButton />
+    </DialogActions>
   </Fragment>
 );
 

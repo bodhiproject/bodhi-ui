@@ -15,13 +15,13 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
   return (
     <Row>
       <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
-      <div>
+      <Row>
         <Typography variant="title">
           {intl.formatMessage({ id: message.id, defaultMessage: message.defaultMessage })}
         </Typography>
-      </div>
+      </Row>
       {ui.location === Routes.QTUM_PREDICTION && !ui.searchBarMode &&
-      <div>
+      <Row>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
@@ -29,7 +29,7 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
         >
           <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
         </Button>
-      </div>
+      </Row>
       }
     </Row>
   );

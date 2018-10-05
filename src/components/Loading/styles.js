@@ -15,9 +15,11 @@ const styles = ({ palette: { primary } }) => ({
     width: '3rem',
     height: '3rem',
     display: 'inline-flex',
-    marginTop: '10rem',
+    '&.event': {
+      marginTop: '10rem',
+    },
     marginRight: '20px',
-    marginBottom: '10px',
+    marginBottom: '25px',
     marginLeft: '20px',
     borderRadius: '100%',
     background: `linear-gradient(${primary.main}, #fff)`,

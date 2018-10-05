@@ -210,6 +210,7 @@
   "str.pending": "대기중",
   "str.pendingConfirmation": "대기중 확인",
   "str.pendingTransactionDisabledMsg": "본 이벤트에 대하여 보류중인 트랜젝션이 있습니다. 확인 될 때까지 기다려주세요.",
+  "str.pleasewait": "Please Wait",
   "str.qrypto": "Qrypto",
   "str.qtum": "QTUM",
   "str.raised": "증가",

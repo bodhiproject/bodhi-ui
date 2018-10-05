@@ -73,6 +73,7 @@ const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
+  loaded: false,
   escrowAmount: undefined,
   averageBlockTime: '',
   txFees: [],
@@ -114,6 +115,7 @@ export default class CreateEventStore {
 
   // form fields
   @observable isOpen = INIT.isOpen
+  @observable loaded = INIT.loaded
   @observable title = INIT.title
   @observable creator = INIT.creator // address
   @observable prediction = INIT.prediction
@@ -244,7 +246,8 @@ export default class CreateEventStore {
   @action
   open = async () => {
     Tracking.track('dashboard-createEventClick');
-
+    this.isOpen = true;
+    this.loaded = INIT.loaded;
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
       this.app.qrypto.openPopover('qrypto.loginToView');
@@ -274,8 +277,7 @@ export default class CreateEventStore {
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.creator = this.app.wallet.currentAddress;
-      this.isOpen = true;
-
+      this.loaded = true;
       // Determine if user has enough tokens to create an event
       try {
         const { data } = await axios.post(Routes.api.transactionCost, {
