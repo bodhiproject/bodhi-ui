@@ -100,35 +100,25 @@ export default class ActivityHistory extends Component {
   }
 }
 
-const EventHistoryContent = inject('store')(observer(({ history, classes }) => {
-  const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
-  return transactions.length ? (
-    <Grid container spacing={0}>
-      <Table className={classes.historyTable}>
-        <Header
-          cols={headerCols}
-          order={order}
-          orderBy={orderBy}
-        />
-        <EventRows displayedTxs={displayedTxs} />
-        <Footer
-          fullList={transactions}
-          perPage={perPage}
-          page={page}
-          onChangePage={(event, pg) => history.page = pg}
-          onChangeRowsPerPage={(event) => history.perPage = event.target.value}
-        />
-      </Table>
-    </Grid>
-  ) : (
-    <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
-  );
-}));
+const EventHistoryContent = inject('store')(observer(({ classes, store: { activities: { history: { transactions } } } }) =>
+  (
+    transactions.length ? (
+      <Grid container spacing={0}>
+        <Table className={classes.historyTable}>
+          <Header />
+          <EventRows />
+          <Footer />
+        </Table>
+      </Grid>
+    ) : (
+      <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
+    )
+  )));
 
-const Header = inject('store')(observer(({ store: { activities: { history } }, cols, order, orderBy }) => (
+const Header = inject('store')(observer(({ store: { activities: { history, history: { orderBy, order } } } }) => (
   <TableHead>
     <TableRow>
-      {cols.map((column) => column.sortable ? (
+      {headerCols.map((column) => column.sortable ? (
         <TableCell
           key={column.id}
           numeric={column.numeric}
@@ -157,16 +147,17 @@ const Header = inject('store')(observer(({ store: { activities: { history } }, c
   </TableHead>
 )));
 
-const Footer = ({ fullList, perPage, page, ...props }) => (
+const Footer = inject('store')(observer(({ store: { activities: { history, history: { transactions, perPage, page } } } }) => (
   <TableFooter>
     <TableRow>
       <TablePagination
         colSpan={12}
-        count={fullList.length}
+        count={transactions.length}
         rowsPerPage={perPage}
         page={page}
-        {...props}
+        onChangePage={(e, p) => history.page = p}
+        onChangeRowsPerPage={(event) => history.perPage = event.target.value}
       />
     </TableRow>
   </TableFooter>
-);
+)));
