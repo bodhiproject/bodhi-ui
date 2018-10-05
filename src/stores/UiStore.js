@@ -13,6 +13,7 @@ export default class UiStore {
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
   @observable currentTimeUnix = 0;
+  @observable favoriteDrawerOpen = false;
   counterInterval = null;
 
   get localeMessages() {

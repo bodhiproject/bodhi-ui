@@ -14,6 +14,7 @@ import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import styles from './styles';
+import FavoriteDrawer from '../FavoriteDrawer';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -71,6 +72,7 @@ export default class NavBar extends Component {
         <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>
           <SearchResult />
         </Collapse>
+        <FavoriteDrawer />
       </AppBar>
     );
   }
