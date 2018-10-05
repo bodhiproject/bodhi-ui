@@ -19,7 +19,7 @@ const styles = ({ palette: { primary } }) => ({
       marginTop: '10rem',
     },
     marginRight: '20px',
-    marginBottom: '10px',
+    marginBottom: '25px',
     marginLeft: '20px',
     borderRadius: '100%',
     background: `linear-gradient(${primary.main}, #fff)`,
