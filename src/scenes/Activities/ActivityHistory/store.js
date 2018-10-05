@@ -1,4 +1,4 @@
-import { observable, action, reaction, computed, runInAction } from 'mobx';
+import { observable, action, reaction, computed, runInAction, toJS } from 'mobx';
 import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 
@@ -56,13 +56,22 @@ export default class {
         }
       }
     );
+    // Wallet addresses changed
+    reaction(
+      () => toJS(this.app.wallet.addresses),
+      () => this.loadFirst(),
+    );
   }
 
   @action
   init = async () => {
-    // reset to initial values
-    Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.ACTIVITY_HISTORY;
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    Object.assign(this, INIT_VALUES);
     this.transactions = await this.fetchHistory();
     runInAction(() => {
       this.loaded = true;

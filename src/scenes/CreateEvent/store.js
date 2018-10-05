@@ -510,6 +510,7 @@ export default class CreateEventStore {
     if (isAllowanceEnough(allowance, escrowAmountSatoshi)) {
       await this.app.tx.addCreateEventTx(
         undefined,
+        this.app.wallet.currentAddress,
         this.title,
         this.outcomes,
         this.resultSetter,

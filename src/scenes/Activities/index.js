@@ -43,8 +43,8 @@ const messages = defineMessages({
 });
 
 
-@injectIntl
 @withStyles(styles, { withTheme: true })
+@injectIntl
 @inject('store')
 @observer
 export default class Activities extends Component {
@@ -134,6 +134,7 @@ export default class Activities extends Component {
           onChange={this.handleTabChange}
           className={classes.activitiesTabWrapper}
           scrollable
+          scrollButtons='off'
         >
           <Tab
             label={this.getTabLabel(EventStatus.SET)}

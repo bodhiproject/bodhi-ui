@@ -103,13 +103,16 @@ export default class TransactionStore {
       const txs = await queryAllTransactions(filters);
 
       each(txs, async (tx) => {
-        // Execute follow-up tx if successful approve and not already added
-        const index = findIndex(this.transactions, { approveTxid: tx.txid });
-        if (index === -1 && tx.status === TransactionStatus.SUCCESS) {
+        // Execute follow-up tx if not already added, sender is in current addresses, and approve was successful
+        const txIndex = findIndex(this.transactions, { approveTxid: tx.txid });
+        const addressIndex = findIndex(this.app.wallet.addresses, { address: tx.senderAddress });
+        if (txIndex === -1 && addressIndex !== -1 && tx.status === TransactionStatus.SUCCESS) {
+          const { txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
           switch (tx.type) {
             case TransactionType.APPROVE_CREATE_EVENT: {
               await this.addCreateEventTx(
-                tx.txid,
+                txid,
+                senderAddress,
                 tx.name,
                 tx.options,
                 tx.resultSetterAddress,
@@ -117,17 +120,17 @@ export default class TransactionStore {
                 tx.bettingEndTime,
                 tx.resultSettingStartTime,
                 tx.resultSettingEndTime,
-                tx.amountSatoshi,
+                amountSatoshi,
                 tx.language,
               );
               break;
             }
             case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
+              await this.addSetResultTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
               break;
             }
             case TransactionType.APPROVE_VOTE: {
-              await this.addVoteTx(tx.txid, tx.topicAddress, tx.oracleAddress, tx.optionIdx, tx.amountSatoshi);
+              await this.addVoteTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
               break;
             }
             default: {
@@ -390,6 +393,7 @@ export default class TransactionStore {
   /**
    * Adds a create event tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} name Name of the event.
    * @param {array} options String array of the options for the event.
    * @param {string} resultSetterAddress Address of the result setter.
@@ -402,6 +406,7 @@ export default class TransactionStore {
   @action
   addCreateEventTx = async (
     approveTxid,
+    senderAddress,
     name,
     options,
     resultSetterAddress,
@@ -415,7 +420,7 @@ export default class TransactionStore {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.CREATE_EVENT,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       name,
       options,
       resultSetterAddress,
@@ -626,17 +631,18 @@ export default class TransactionStore {
   /**
    * Adds a set result tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the CentralizedOracle.
    * @param {number} optionIdx Index of the option being set.
    * @param {string} amountSatoshi Consensus threshold.
    */
   @action
-  addSetResultTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
+  addSetResultTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.SET_RESULT,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       topicAddress,
       oracleAddress,
       optionIdx,
@@ -750,17 +756,18 @@ export default class TransactionStore {
   /**
    * Adds a vote tx to the queue.
    * @param {string} approveTxid Txid of the approve.
+   * @param {string} senderAddress Address of the sender.
    * @param {string} topicAddress Address of the TopicEvent.
    * @param {string} oracleAddress Address of the DecentralizedOracle.
    * @param {number} optionIdx Index of the option being voted on.
    * @param {string} amountSatoshi Vote amount.
    */
   @action
-  addVoteTx = async (approveTxid, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
+  addVoteTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
     this.transactions.push(observable.object(new Transaction({
       approveTxid,
       type: TransactionType.VOTE,
-      senderAddress: this.app.wallet.currentAddress,
+      senderAddress,
       topicAddress,
       oracleAddress,
       optionIdx,

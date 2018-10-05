@@ -572,7 +572,14 @@ export default class EventStore {
       await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
     } else {
       // Has enough allowance, set the result
-      await this.app.tx.addSetResultTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
+      await this.app.tx.addSetResultTx(
+        undefined,
+        this.app.wallet.currentAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amountSatoshi,
+      );
     }
   }
 
@@ -591,7 +598,14 @@ export default class EventStore {
       await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
     } else {
       // Has enough allowance, place vote
-      await this.app.tx.addVoteTx(undefined, topicAddress, oracleAddress, optionIdx, amountSatoshi);
+      await this.app.tx.addVoteTx(
+        undefined,
+        this.app.wallet.currentAddress,
+        topicAddress,
+        oracleAddress,
+        optionIdx,
+        amountSatoshi,
+      );
     }
   }
 
