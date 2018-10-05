@@ -1,5 +1,5 @@
 import { observable, computed, reaction, action, runInAction } from 'mobx';
-import { sumBy, map, filter, isUndefined, isEmpty } from 'lodash';
+import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
@@ -495,9 +495,9 @@ export default class CreateEventStore {
     this.validatePredictionEndTime();
     this.validateResultSettingStartTime();
     this.validateResultSettingEndTime();
-    for (var i in this.outcomes) { // eslint-disable-line
-      this.validateOutcome(i);
-    }
+    each(this.outcomes, (value, key) => {
+      this.validateOutcome(key);
+    });
     this.validateResultSetter();
   }
 
