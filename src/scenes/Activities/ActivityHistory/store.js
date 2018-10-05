@@ -76,7 +76,7 @@ export default class {
    */
   @action
   setDisplayedTxs() {
-    const start = this.page * this.perPage;
+    const start = this.page === 0 ? 0 : (this.page * this.perPage);
     const end = (this.page * this.perPage) + this.perPage;
     this.displayedTxs = this.transactions.slice(start, end);
   }
@@ -92,7 +92,8 @@ export default class {
   @action
   loadFirst = async () => {
     Object.assign(this, INIT_VALUES);
-    this.transactions = await this.fetchHistory();
+    const txs = await this.fetchHistory();
+    this.transactions = orderBy(txs, [this.orderBy], [this.order]);
     this.setDisplayedTxs();
 
     runInAction(() => {
@@ -109,6 +110,7 @@ export default class {
     const moreTxs = await this.fetchHistory();
     this.transactions = [...this.transactions, ...moreTxs];
     this.transactions = orderBy(this.transactions, [this.orderBy], [this.order]);
+    this.setDisplayedTxs();
   }
 
   /**
@@ -126,10 +128,7 @@ export default class {
     each(this.app.wallet.addresses, (walletAddress) => {
       merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
     });
-
-    const direction = this.order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
-    const orderBySect = { field: this.orderBy, direction };
-    return queryAllTransactions(filters, orderBySect, this.limit, this.skip);
+    return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, this.limit, this.skip);
   }
 
   /**
