@@ -12,14 +12,14 @@ import TopActions from './components/TopActions';
 @observer
 export default class QtumPrediction extends Component {
   componentDidMount() {
-    this.props.store.ui.initIncreasingCount(1);
+    this.props.store.ui.resetIncreasingCount();
   }
 
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
-      <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} />
+      <EventCard key={i} index={i} event={event} />
     )); // eslint-disable-line
     return (
       <Fragment>

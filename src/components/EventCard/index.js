@@ -1,4 +1,5 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -26,7 +27,9 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-export default class EventCard extends PureComponent {
+@inject('store')
+@observer
+export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
@@ -75,11 +78,11 @@ export default class EventCard extends PureComponent {
   }
 
   render() {
-    const { classes, index } = this.props;
+    const { classes, index, store: { ui } } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
-    const increasingCount = this.props.increasingCount || 0;
+    const { increasingCount } = ui;
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>

@@ -14,10 +14,10 @@ export default class UiStore {
   @observable dropdownMenuOpen = false;
   @observable increasingCount = 0;
   counterInterval = null;
+  countdownInterval = 1;
 
-  initIncreasingCount = (interval) => {
-    if (this.counterInterval) clearInterval(this.counterInterval);
-    this.counterInterval = setInterval(() => this.increasingCount += (interval / 1000000000), interval * 1000);
+  resetIncreasingCount = () => {
+    this.increasingCount = 0;
   }
 
   get localeMessages() {
@@ -38,6 +38,10 @@ export default class UiStore {
 
   constructor(app) {
     this.app = app;
+
+    // For eventcard countdown
+    this.counterInterval = setInterval(() => this.increasingCount += (this.countdownInterval / 1000000000), this.countdownInterval * 1000);
+    this.resetIncreasingCount();
 
     // Extend Moment with DurationFormat here to avoid overwritting of the moment locale
     momentDurationFormat(moment);
