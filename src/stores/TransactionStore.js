@@ -13,13 +13,11 @@ import Tracking from '../helpers/mixpanelUtil';
 const INIT_VALUES = {
   visible: false,
   provider: WalletProvider.QRYPTO,
-  fees: [],
 };
 
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
-  @observable fees = INIT_VALUES.fees;
   @observable transactions = [];
   app = undefined;
 
