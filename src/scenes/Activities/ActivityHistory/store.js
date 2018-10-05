@@ -78,25 +78,6 @@ export default class {
     });
   }
 
-  fetchHistory = async (skip = 0, limit = this.limit, orderByField = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return [];
-    }
-
-    const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
-
-    const txTypes = values(omit(TransactionType, 'TRANSFER'));
-    const filters = [];
-    each(this.app.wallet.addresses, (walletAddress) => {
-      merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
-    });
-
-    const orderBySect = { field: orderByField, direction };
-    const result = await queryAllTransactions(filters, orderBySect, limit, skip);
-    return result;
-  }
-
   @action
   getMoreData = async () => {
     this.loaded = false;
@@ -106,6 +87,31 @@ export default class {
     runInAction(() => {
       this.loaded = true;
     });
+  }
+
+  /**
+   * Gets the tx history via API call.
+   * @param {number} skip Number of items to skip (pagination).
+   * @param {number} limit Number of items per page.
+   * @param {string} orderByField Field to order the table by.
+   * @param {string} order Direction of the order by field.
+   * @return {[Transaction]} Tx array of the query.
+   */
+  fetchHistory = async (skip = 0, limit = this.limit, orderByField = this.orderBy, order = this.order) => {
+    // Address is required for the request filters
+    if (isEmpty(this.app.wallet.addresses)) {
+      return [];
+    }
+
+    const txTypes = values(omit(TransactionType, 'TRANSFER'));
+    const filters = [];
+    each(this.app.wallet.addresses, (walletAddress) => {
+      merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
+    });
+
+    const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
+    const orderBySect = { field: orderByField, direction };
+    return queryAllTransactions(filters, orderBySect, limit, skip);
   }
 
   @action
