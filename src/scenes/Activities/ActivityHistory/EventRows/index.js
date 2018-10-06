@@ -83,11 +83,11 @@ class EventRow extends Component {
     }
 }
 
-const EventRows = observer(({ displayedTxs }) => (
+const EventRows = ({ store: { activities: { history: { displayedTxs } } } }) => (
   <TableBody>
     {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
   </TableBody>
-));
+);
 
 const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
   <TableCell>
@@ -101,4 +101,4 @@ const CollapsableItem = withStyles(styles)(({ expanded, children }) => (
   </Fragment>
 ));
 
-export default EventRows;
+export default inject('store')(observer(EventRows));

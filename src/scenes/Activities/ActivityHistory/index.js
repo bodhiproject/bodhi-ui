@@ -83,10 +83,6 @@ export default class ActivityHistory extends Component {
     this.props.store.activities.history.init();
   }
 
-  createSortHandler = (property) => (event) => { // eslint-disable-line
-    this.props.store.activities.history.sort(property);
-  }
-
   render() {
     const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
     const { loaded } = history;
@@ -95,7 +91,7 @@ export default class ActivityHistory extends Component {
     return (
       <div>
         {currentAddress ? (
-          <EventHistoryContent history={history} classes={classes} createSortHandler={this.createSortHandler} />
+          <EventHistoryContent history={history} classes={classes} />
         ) : (
           <InstallQryptoInline />
         )}
@@ -104,54 +100,29 @@ export default class ActivityHistory extends Component {
   }
 }
 
-const EventHistoryContent = ({ history, classes, createSortHandler }) => {
-  const { transactions, order, orderBy, page, perPage, displayedTxs } = history;
-  return transactions.length ? (
-    <Grid container spacing={0}>
-      <Table className={classes.historyTable}>
-        <TableHeader
-          onSortChange={createSortHandler}
-          cols={headerCols}
-          order={order}
-          orderBy={orderBy}
-        />
-        <EventRows displayedTxs={displayedTxs} />
-        <EventHistoryFooter
-          fullList={transactions}
-          perPage={perPage}
-          page={page}
-          onChangePage={(event, pg) => history.page = pg}
-          onChangeRowsPerPage={(event) => history.perPage = event.target.value}
-        />
-      </Table>
-    </Grid>
-  ) : (
-    <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
-  );
-};
+const EventHistoryContent = inject('store')(observer(({ classes, store: { activities: { history: { transactions } } } }) =>
+  (
+    transactions.length ? (
+      <Grid container spacing={0}>
+        <Table className={classes.historyTable}>
+          <Header />
+          <EventRows />
+          <Footer />
+        </Table>
+      </Grid>
+    ) : (
+      <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />
+    )
+  )));
 
-const EventHistoryFooter = ({ fullList, perPage, page, ...props }) => (
-  <TableFooter>
-    <TableRow>
-      <TablePagination
-        colSpan={12}
-        count={fullList.length}
-        rowsPerPage={perPage}
-        page={page}
-        {...props}
-      />
-    </TableRow>
-  </TableFooter>
-);
-
-const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
+const Header = inject('store')(observer(({ store: { activities: { history, history: { tableOrderBy, tableOrder } } } }) => (
   <TableHead>
     <TableRow>
-      {cols.map((column) => column.sortable ? (
+      {headerCols.map((column) => column.sortable ? (
         <TableCell
           key={column.id}
           numeric={column.numeric}
-          sortDirection={orderBy === column.id ? order : false}
+          sortDirection={tableOrderBy === column.id ? tableOrder : false}
         >
           <Tooltip
             title={<FormattedMessage id="str.sort" defaultMessage="Sort" />}
@@ -159,9 +130,9 @@ const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
             placement={column.numeric ? 'bottom-end' : 'bottom-start'}
           >
             <TableSortLabel
-              active={orderBy === column.id}
-              direction={order}
-              onClick={onSortChange(column.id)}
+              active={tableOrderBy === column.id}
+              direction={tableOrder}
+              onClick={() => history.sort(column.id)}
             >
               <FormattedMessage id={column.name} default={column.nameDefault} />
             </TableSortLabel>
@@ -174,4 +145,19 @@ const TableHeader = ({ cols, order, orderBy, onSortChange }) => (
       ))}
     </TableRow>
   </TableHead>
-);
+)));
+
+const Footer = inject('store')(observer(({ store: { activities: { history, history: { transactions, tablePerPage, tablePage } } } }) => (
+  <TableFooter>
+    <TableRow>
+      <TablePagination
+        colSpan={12}
+        count={transactions.length}
+        rowsPerPage={tablePerPage}
+        page={tablePage}
+        onChangePage={(e, p) => history.tablePage = p}
+        onChangeRowsPerPage={(event) => history.tablePerPage = event.target.value}
+      />
+    </TableRow>
+  </TableFooter>
+)));
