@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction } from 'mobx';
 import axios from 'axios';
-import { map, includes, isEmpty, remove, each, reduce, findIndex } from 'lodash';
-import { WalletProvider, TransactionType, TransactionStatus, Token } from 'constants';
+import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
+import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 
 import networkRoutes from '../network/routes';
@@ -13,13 +13,11 @@ import Tracking from '../helpers/mixpanelUtil';
 const INIT_VALUES = {
   visible: false,
   provider: WalletProvider.QRYPTO,
-  fees: [],
 };
 
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
-  @observable fees = INIT_VALUES.fees;
   @observable transactions = [];
   app = undefined;
 
@@ -182,7 +180,9 @@ export default class TransactionStore {
    * @param {number} index Index of the tx to execute.
    */
   confirmTx = async (index) => {
-    const tx = this.transactions[index];
+    const tx = cloneDeep(this.transactions[index]);
+    this.deleteTx(index, tx.approveTxid);
+
     const confirmFunc = {
       [TransactionType.RESET_APPROVE]: this.executeResetApprove,
       [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
@@ -202,10 +202,9 @@ export default class TransactionStore {
 
   /**
    * Logic to execute after a tx has been executed.
-   * @param {number} index Index of the tx that was executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = async (index, tx) => {
+  onTxExecuted = async (tx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.queryTransactions(tx.topicAddress);
@@ -213,23 +212,22 @@ export default class TransactionStore {
 
     this.app.txSentDialog.open(tx.txid);
     await this.app.pendingTxsSnackbar.init();
-    this.deleteTx(index);
   }
 
   /**
-   * Removes a tx from the transactions array.
+   * Removes a tx from the transactions array and any pending approve from the localStorage.
    * @param {number} index Index of the tx to remove.
+   * @param {string} approveTxid Approve txid if it is an approve tx.
    */
   @action
-  deleteTx = (index) => {
-    const tx = this.transactions[index];
-    if (tx.approveTxid) {
-      this.removePendingApprove(tx.approveTxid);
-    }
-
+  deleteTx = (index, approveTxid) => {
     this.transactions.splice(index, 1);
     if (this.transactions.length === 0) {
       this.visible = false;
+    }
+
+    if (approveTxid) {
+      this.removePendingApprove(approveTxid);
     }
   }
 
@@ -293,7 +291,7 @@ export default class TransactionStore {
         amount,
       });
 
-      await this.onTxExecuted(index, tx);
+      await this.onTxExecuted(tx);
       Tracking.track('event-resetApprove');
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
@@ -379,7 +377,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveCreateEvent');
       }
     } catch (err) {
@@ -470,7 +468,7 @@ export default class TransactionStore {
           resultSettingStartTime,
           resultSettingEndTime,
         ],
-        gasLimit: 3500000,
+        gasLimit: TransactionGas.CREATE_EVENT,
         senderAddress,
       });
       Object.assign(tx, { txid, gasLimit, gasPrice });
@@ -494,7 +492,7 @@ export default class TransactionStore {
           language,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         this.app.qtumPrediction.loadFirst();
         Tracking.track('event-createEvent');
       }
@@ -558,7 +556,7 @@ export default class TransactionStore {
           amount,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-bet');
       }
     } catch (err) {
@@ -617,7 +615,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveSetResult');
       }
     } catch (err) {
@@ -665,7 +663,7 @@ export default class TransactionStore {
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
         methodArgs: [optionIdx],
-        gasLimit: 1500000,
+        gasLimit: TransactionGas.DORACLE_CREATE,
         senderAddress,
       });
 
@@ -683,7 +681,7 @@ export default class TransactionStore {
           amount: tx.amountSatoshi,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-setResult');
       }
     } catch (err) {
@@ -742,7 +740,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-approveVote');
       }
     } catch (err) {
@@ -790,7 +788,7 @@ export default class TransactionStore {
       const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
       const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
         methodArgs: [optionIdx, amountSatoshi],
-        gasLimit: 1500000, // TODO: determine gas limit to use
+        gasLimit: TransactionGas.DORACLE_CREATE, // TODO: determine gas limit to use
         senderAddress,
       });
       Object.assign(tx, { txid, gasLimit, gasPrice });
@@ -808,7 +806,7 @@ export default class TransactionStore {
           amount: amountSatoshi,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-vote');
       }
     } catch (err) {
@@ -863,7 +861,7 @@ export default class TransactionStore {
           oracleAddress,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-finalizeResult');
       }
     } catch (err) {
@@ -917,7 +915,7 @@ export default class TransactionStore {
           topicAddress,
         });
 
-        await this.onTxExecuted(index, tx);
+        await this.onTxExecuted(tx);
         Tracking.track('event-withdraw');
       }
     } catch (err) {
@@ -964,7 +962,7 @@ export default class TransactionStore {
       });
       const newTx = observable.object(new Transaction(transfer));
 
-      await this.onTxExecuted(index, newTx);
+      await this.onTxExecuted(newTx);
       await this.app.myWallet.history.addTransaction(newTx);
       Tracking.track('wallet-transfer');
     } catch (err) {
