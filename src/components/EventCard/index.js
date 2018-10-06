@@ -82,7 +82,7 @@ export default class EventCard extends Component {
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
-    const { increasingCount } = ui;
+    const { increasingTime } = ui;
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -111,7 +111,7 @@ export default class EventCard extends Component {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - increasingCount, locale, localeMessages)}</Fragment>
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - increasingTime, locale, localeMessages)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>

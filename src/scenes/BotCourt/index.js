@@ -12,7 +12,6 @@ import Loading from '../../components/EventListLoading';
 export default class BotCourt extends Component {
   componentDidMount() {
     this.props.store.botCourt.init();
-    this.props.store.ui.resetIncreasingCount();
   }
 
   render() {

@@ -41,9 +41,9 @@ const SidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
   text-align: right;
 `;
 
-const EndDate = injectIntl(({ oracle: { endTime }, intl: { locale, messages } }) => (
-  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
-));
+const EndDate = inject('store')(observer(injectIntl(({ oracle: { endTime }, store: { ui: { increasingTime } }, intl: { locale, messages } }) => (
+  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - increasingTime, locale, messages)} />
+))));
 
 const Funding = ({ oracle: { amounts, token } }) => (
   <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${parseFloat(_.sum(amounts).toFixed(5)).toString()} ${token}`} />

@@ -11,10 +11,6 @@ import TopActions from './components/TopActions';
 @inject('store')
 @observer
 export default class QtumPrediction extends Component {
-  componentDidMount() {
-    this.props.store.ui.resetIncreasingCount();
-  }
-
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
     if (!loaded) return <Loading />;

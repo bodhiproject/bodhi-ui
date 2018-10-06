@@ -12,13 +12,8 @@ export default class UiStore {
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
-  @observable increasingCount = 0;
+  @observable increasingTime = 0;
   counterInterval = null;
-  countdownInterval = 1;
-
-  resetIncreasingCount = () => {
-    this.increasingCount = 0;
-  }
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -40,8 +35,7 @@ export default class UiStore {
     this.app = app;
 
     // For eventcard countdown
-    this.counterInterval = setInterval(() => this.increasingCount += (this.countdownInterval / 1000000000), this.countdownInterval * 1000);
-    this.resetIncreasingCount();
+    this.counterInterval = setInterval(() => this.increasingTime = moment().unix());
 
     // Extend Moment with DurationFormat here to avoid overwritting of the moment locale
     momentDurationFormat(moment);
