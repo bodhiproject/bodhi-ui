@@ -10,7 +10,8 @@ import { ResultHistory, TransactionHistory } from '../';
 
 const { TOPIC } = EventType;
 const TAB_RESULTHISTORY = 0;
-const TAB_TRANSACTIONHISTORY = 1;
+const TAB_MYTRANSACTIONHISTORY = 1;
+const TAB_ALLTRANSACTIONHISTORY = 2;
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -22,11 +23,11 @@ export default class HistoryTable extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
   state = {
-    tabValue: TAB_TRANSACTIONHISTORY,
+    tabValue: TAB_ALLTRANSACTIONHISTORY,
   };
 
   componentDidMount = () => {
-    this.setState({ tabValue: this.props.resultHistory ? TAB_RESULTHISTORY : TAB_TRANSACTIONHISTORY });
+    this.setState({ tabValue: this.props.resultHistory ? TAB_RESULTHISTORY : TAB_ALLTRANSACTIONHISTORY });
   }
 
   handleChange = (event, tabValue) => {
@@ -58,14 +59,20 @@ export default class HistoryTable extends Component {
             className={classes.pickerTab}
           />}
           {this.props.transactionHistory && <Tab
-            value={TAB_TRANSACTIONHISTORY}
+            value={TAB_MYTRANSACTIONHISTORY}
             label={intl.formatMessage({ id: 'str.myTransactions', defaultMessage: 'My Transactions' })}
+            className={classes.pickerTab}
+          />}
+          {this.props.transactionHistory && <Tab
+            value={TAB_ALLTRANSACTIONHISTORY}
+            label={intl.formatMessage({ id: 'str.allTransactions', defaultMessage: 'All Transactions' })}
             className={classes.pickerTab}
           />}
         </Tabs>
         <div className={classes.subTableContainer}>
           {tabValue === TAB_RESULTHISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
-          {tabValue === TAB_TRANSACTIONHISTORY && <TransactionHistory options={currentEvent.options} />}
+          {tabValue === TAB_MYTRANSACTIONHISTORY && <TransactionHistory my options={currentEvent.options} />}
+          {tabValue === TAB_ALLTRANSACTIONHISTORY && <TransactionHistory options={currentEvent.options} />}
         </div>
       </div>
     );
