@@ -204,10 +204,10 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = async (tx) => {
+  onTxExecuted = async (index, tx, pendingTx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
-      await this.app.eventPage.queryTransactions(tx.topicAddress);
+      await this.app.eventPage.addPendingTx(pendingTx);
     }
 
     this.app.txSentDialog.open(tx.txid);
@@ -545,7 +545,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        await createTransaction('createBet', {
+        const { data: { createBet } } = await createTransaction('createBet', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -556,7 +556,7 @@ export default class TransactionStore {
           amount,
         });
 
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(index, tx, new Transaction(createBet));
         Tracking.track('event-bet');
       }
     } catch (err) {

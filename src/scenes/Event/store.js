@@ -251,6 +251,11 @@ export default class EventStore {
   }
 
   @action
+  addPendingTx(pendingTransaction) {
+    this.transactions.push(pendingTransaction);
+  }
+
+  @action
   getEscrowAmount = async () => {
     try {
       const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
