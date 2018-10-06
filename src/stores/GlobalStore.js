@@ -4,7 +4,7 @@ import { each, find, isEmpty } from 'lodash';
 
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
-import apolloClient from '../network/graphql';
+import apolloClient, { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: undefined,
@@ -19,6 +19,14 @@ const INIT_VALUES = {
     withdrawCount: 0,
     totalCount: 0,
   },
+  online: false,
+};
+
+const webSocketState = {
+  CONNECTING: 0,
+  OPEN: 1,
+  CLOSING: 2,
+  CLOSED: 3,
 };
 
 export default class GlobalStore {
@@ -28,6 +36,7 @@ export default class GlobalStore {
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
   @observable peerNodeCount = INIT_VALUES.peerNodeCount
+  @observable online = INIT_VALUES.online
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     finalizeCount: INIT_VALUES.userData.finalizeCount,
@@ -36,6 +45,9 @@ export default class GlobalStore {
       return this.resultSettingCount + this.finalizeCount + this.withdrawCount;
     },
   });
+
+  setOnline = () => this.online = true;
+  setOffline = () => this.online = false;
 
   constructor(app) {
     this.app = app;
@@ -56,6 +68,17 @@ export default class GlobalStore {
         }
       }
     );
+    /*
+    reaction(
+      () => wsLink.subscriptionClient.status,
+      () => {
+        if ([webSocketState.OPEN, webSocketState.CLOSING].includes(wsLink.subscriptionClient.status)) {
+          this.online = true;
+        } else {
+          this.online = false;
+        }
+      }
+    ); */
 
     // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
@@ -63,6 +86,9 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.getSyncInfo();
     this.subscribeSyncInfo();
+
+    wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
+    wsLink.subscriptionClient.onConnected(this.setOnline, this);
   }
 
   /**

@@ -38,10 +38,10 @@ export default class BottomBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncBlockTime, syncBlockNum, peerNodeCount } = this.props.store.global;
+    const { syncBlockTime, syncBlockNum, peerNodeCount, online } = this.props.store.global;
     return (
       <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection peerNodeCount={peerNodeCount} />
+        <NetworkConnection peerNodeCount={peerNodeCount} online={online} />
         {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
       </Paper>
     );
@@ -63,9 +63,9 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   </Grid>
 ));
 
-const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount }) => (
+const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount, online }) => (
   <Grid container item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
-    {navigator.onLine ? (
+    {online ? (
       <Fragment>
         <Grid item xs={12} sm={6}>
           <Typography variant="body1" className={classes.bottomBarTxt}>
