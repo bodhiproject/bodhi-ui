@@ -13,7 +13,6 @@ import {
   MenuItem,
   Card,
   withStyles,
-  withWidth,
 } from '@material-ui/core';
 
 import { SortBy } from 'constants';
@@ -21,14 +20,12 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@withWidth()
 @inject('store')
 @observer
 export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     noCreateEventButton: PropTypes.bool,
-    width: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -36,7 +33,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction }, width } = this.props;
+    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction } } = this.props;
     const { createEvent } = store;
 
     return (
@@ -45,7 +42,7 @@ export default class TopActions extends Component {
           {!noCreateEventButton && (
             <Button
               variant="raised"
-              size={width === 'xs' ? 'small' : 'medium'}
+              size="medium"
               color="primary"
               className={classes.createEventButton}
               onClick={createEvent.open}

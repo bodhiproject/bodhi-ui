@@ -5,9 +5,6 @@ const styles = (theme) => ({
   createEventButton: {
     padding: `12px ${theme.padding.sm.px}`,
     verticalAlign: 'middle',
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
   },
   createEventButtonIcon: {
     [theme.breakpoints.down('xs')]: {

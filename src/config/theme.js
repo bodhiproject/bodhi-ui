@@ -171,37 +171,6 @@ export const theme = {
         },
       },
     },
-    MuiButton: {
-      root: {
-        borderRadius: px(paddingLg),
-        textTransform: 'none',
-      },
-      raisedPrimary: {
-        backgroundColor: primaryColor,
-        color: white,
-        boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
-        '&:hover': {
-          backgroundColor: primaryColor,
-          boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
-        },
-        '&:disabled': {
-          backgroundColor: primaryColor,
-          color: white,
-          opacity: 0.6,
-        },
-      },
-      sizeLarge: {
-        fontSize: px(fontSizeTextLg),
-        fontWeight: fontWeightBold,
-        minHeight: 56,
-      },
-      sizeSmall: {
-        fontSize: px(fontSizeMeta),
-        fontWeight: fontWeightBold,
-        height: 40,
-        padding: `0 ${paddingSm}`,
-      },
-    },
     MuiStepConnector: {
       vertical: {
         padding: '0',
@@ -327,5 +296,47 @@ export const theme = {
   borderRadius: px(borderRadius),
 };
 
-export default createMuiTheme(theme);
-/* eslint-enable no-unused-vars */
+const bodhiTheme = createMuiTheme(theme);
+
+bodhiTheme.overrides = {
+  ...bodhiTheme.overrides,
+  MuiButton: {
+    root: {
+      borderRadius: px(paddingLg),
+      textTransform: 'none',
+      [bodhiTheme.breakpoints.down('xs')]: {
+        padding: px(paddingUnit),
+        minWidth: 64,
+        minHeight: 32,
+        fontSize: 12,
+      },
+    },
+    raisedPrimary: {
+      backgroundColor: primaryColor,
+      color: white,
+      boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
+      '&:hover': {
+        backgroundColor: primaryColor,
+        boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
+      },
+      '&:disabled': {
+        backgroundColor: primaryColor,
+        color: white,
+        opacity: 0.6,
+      },
+    },
+    sizeLarge: {
+      fontSize: px(fontSizeTextLg),
+      fontWeight: fontWeightBold,
+      minHeight: 56,
+    },
+    sizeSmall: {
+      fontSize: px(fontSizeMeta),
+      fontWeight: fontWeightBold,
+      height: 40,
+      padding: `0 ${paddingSm}`,
+    },
+  },
+};
+
+export default bodhiTheme;

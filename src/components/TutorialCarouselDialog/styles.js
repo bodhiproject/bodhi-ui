@@ -107,11 +107,6 @@ const styles = (theme) => ({
       margin: `${theme.padding.unit.px} ${theme.padding.unit.px}`,
     },
   },
-  buttonTxt: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-    },
-  },
   link: {
     color: theme.palette.primary.main,
     wordWrap: 'break-word',
