@@ -17,7 +17,7 @@ export default class TransactionHistory extends Component {
   };
 
   render() {
-    const { options, store: { eventPage } } = this.props;
+    const { options, store: { eventPage, wallet } } = this.props;
     const { transactions } = eventPage;
     return (
       <div>
@@ -46,7 +46,7 @@ export default class TransactionHistory extends Component {
             </TableHead>
             <TableBody>
               {transactions.map((transaction) => (
-                <TxRow key={transaction.txid} transaction={transaction} />
+                (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} />
               ))}
             </TableBody>
           </Table>
