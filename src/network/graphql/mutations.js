@@ -69,5 +69,6 @@ class GraphMutation {
  */
 export async function createTransaction(mutationName, args) {
   const res = await new GraphMutation(mutationName, args, TYPE.transaction).execute();
-  return new Transaction(res);
+  const { data: { [mutationName]: ret } } = res;
+  return new Transaction(ret);
 }

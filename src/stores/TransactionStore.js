@@ -545,7 +545,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        const { data: { createBet } } = await createTransaction('createBet', {
+        const pendingTx = await createTransaction('createBet', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -556,7 +556,7 @@ export default class TransactionStore {
           amount,
         });
 
-        await this.onTxExecuted(tx, createBet);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-bet');
       }
     } catch (err) {
@@ -603,7 +603,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        const { data: { approveSetResult } } = await createTransaction('approveSetResult', {
+        const pendingTx = await createTransaction('approveSetResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -615,7 +615,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(tx, approveSetResult);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-approveSetResult');
       }
     } catch (err) {
@@ -670,7 +670,7 @@ export default class TransactionStore {
       Object.assign(tx, { txid, gasLimit, gasPrice });
       // Create pending tx on server
       if (txid) {
-        const { data: { setResult } } = await createTransaction('setResult', {
+        const pendingTx = await createTransaction('setResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -681,7 +681,7 @@ export default class TransactionStore {
           amount: tx.amountSatoshi,
         });
 
-        await this.onTxExecuted(tx, setResult);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-setResult');
       }
     } catch (err) {
@@ -728,7 +728,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        const { data: { approveVote } } = await createTransaction('approveVote', {
+        const pendingTx = await createTransaction('approveVote', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -740,7 +740,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(tx, approveVote);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-approveVote');
       }
     } catch (err) {
@@ -795,7 +795,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        const { data: { createVote } } = await createTransaction('createVote', {
+        const pendingTx = await createTransaction('createVote', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -806,7 +806,7 @@ export default class TransactionStore {
           amount: amountSatoshi,
         });
 
-        await this.onTxExecuted(tx, createVote);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-vote');
       }
     } catch (err) {
@@ -852,7 +852,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        const { data: { finalizeResult } } = await createTransaction('finalizeResult', {
+        const pendingTx = await createTransaction('finalizeResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -861,7 +861,7 @@ export default class TransactionStore {
           oracleAddress,
         });
 
-        await this.onTxExecuted(tx, finalizeResult);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-finalizeResult');
       }
     } catch (err) {
@@ -906,7 +906,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        const { data: { withdraw } } = await createTransaction('withdraw', {
+        const pendingTx = await createTransaction('withdraw', {
           type,
           txid,
           gasLimit: gasLimit.toString(),
@@ -915,7 +915,7 @@ export default class TransactionStore {
           topicAddress,
         });
 
-        await this.onTxExecuted(tx, withdraw);
+        await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-withdraw');
       }
     } catch (err) {
@@ -954,13 +954,12 @@ export default class TransactionStore {
   @action
   executeTransfer = async (index, tx) => {
     try {
-      const { data: { transfer } } = await createTransaction('transfer', {
+      const newTx = await createTransaction('transfer', {
         senderAddress: tx.senderAddress,
         receiverAddress: tx.receiverAddress,
         amount: tx.amount,
         token: tx.token,
       });
-      const newTx = observable.object(new Transaction(transfer));
 
       await this.onTxExecuted(newTx);
       await this.app.myWallet.history.addTransaction(newTx);

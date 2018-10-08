@@ -252,7 +252,7 @@ export default class EventStore {
 
   @action
   addPendingTx(pendingTransaction) {
-    this.transactions.push(pendingTransaction);
+    this.transactions.unshift(pendingTransaction);
   }
 
   @action
