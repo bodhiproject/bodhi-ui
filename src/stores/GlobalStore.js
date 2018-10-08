@@ -22,13 +22,6 @@ const INIT_VALUES = {
   online: false,
 };
 
-const webSocketState = {
-  CONNECTING: 0,
-  OPEN: 1,
-  CLOSING: 2,
-  CLOSED: 3,
-};
-
 export default class GlobalStore {
   @observable localWallet = INIT_VALUES.localWallet
   @observable qweb3 = INIT_VALUES.qweb3
@@ -37,6 +30,7 @@ export default class GlobalStore {
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
   @observable peerNodeCount = INIT_VALUES.peerNodeCount
   @observable online = INIT_VALUES.online
+  socket = wsLink.subscriptionClient;
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     finalizeCount: INIT_VALUES.userData.finalizeCount,
@@ -68,17 +62,6 @@ export default class GlobalStore {
         }
       }
     );
-    /*
-    reaction(
-      () => wsLink.subscriptionClient.status,
-      () => {
-        if ([webSocketState.OPEN, webSocketState.CLOSING].includes(wsLink.subscriptionClient.status)) {
-          this.online = true;
-        } else {
-          this.online = false;
-        }
-      }
-    ); */
 
     // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
@@ -87,8 +70,9 @@ export default class GlobalStore {
     this.getSyncInfo();
     this.subscribeSyncInfo();
 
-    wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
+    wsLink.subscriptionClient.onReconnected(this.setOnline, this);
+    wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
   }
 
   /**

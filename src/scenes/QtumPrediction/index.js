@@ -7,9 +7,6 @@ import Loading from '../../components/EventListLoading';
 import EventCard from '../../components/EventCard';
 import TopActions from './components/TopActions';
 
-import { wsLink } from '../../network/graphql';
-
-
 @inject('store')
 @observer
 export default class QtumPrediction extends Component {
@@ -18,7 +15,6 @@ export default class QtumPrediction extends Component {
   }
 
   render() {
-    console.log(wsLink.subscriptionClient.status);
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
