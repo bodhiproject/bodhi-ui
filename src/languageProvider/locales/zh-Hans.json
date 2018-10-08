@@ -385,7 +385,7 @@
   "txType.setResult": "设置结果",
   "txType.vote": "仲裁",
   "txType.withdraw": "提现",
-  "txType.withdrawEscrow": "撤回托管",
+  "txType.withdrawEscrow": "提现押金",
   "wallet.changePassphrase": "更改密码",
   "wallet.encrypt": "加密",
   "wallet.encryptLabel": "请输入密码用于加密您的钱包",
