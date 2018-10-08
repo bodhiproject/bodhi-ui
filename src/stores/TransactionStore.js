@@ -204,7 +204,7 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = async (index, tx, pendingTx) => {
+  onTxExecuted = async (tx, pendingTx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.addPendingTx(pendingTx);
@@ -556,7 +556,7 @@ export default class TransactionStore {
           amount,
         });
 
-        await this.onTxExecuted(index, tx, new Transaction(createBet));
+        await this.onTxExecuted(tx, createBet);
         Tracking.track('event-bet');
       }
     } catch (err) {
@@ -603,7 +603,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        await createTransaction('approveSetResult', {
+        const { data: { approveSetResult } } = await createTransaction('approveSetResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -615,7 +615,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, approveSetResult);
         Tracking.track('event-approveSetResult');
       }
     } catch (err) {
@@ -670,7 +670,7 @@ export default class TransactionStore {
       Object.assign(tx, { txid, gasLimit, gasPrice });
       // Create pending tx on server
       if (txid) {
-        await createTransaction('setResult', {
+        const { data: { setResult } } = await createTransaction('setResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -681,7 +681,7 @@ export default class TransactionStore {
           amount: tx.amountSatoshi,
         });
 
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, setResult);
         Tracking.track('event-setResult');
       }
     } catch (err) {
@@ -728,7 +728,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        await createTransaction('approveVote', {
+        const { data: { approveVote } } = await createTransaction('approveVote', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -740,7 +740,7 @@ export default class TransactionStore {
         });
 
         this.addPendingApprove(txid);
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, approveVote);
         Tracking.track('event-approveVote');
       }
     } catch (err) {
@@ -795,7 +795,7 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        await createTransaction('createVote', {
+        const { data: { createVote } } = await createTransaction('createVote', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -806,7 +806,7 @@ export default class TransactionStore {
           amount: amountSatoshi,
         });
 
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, createVote);
         Tracking.track('event-vote');
       }
     } catch (err) {
@@ -852,7 +852,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        await createTransaction('finalizeResult', {
+        const { data: { finalizeResult } } = await createTransaction('finalizeResult', {
           txid,
           gasLimit: gasLimit.toString(),
           gasPrice: gasPrice.toFixed(8),
@@ -861,7 +861,7 @@ export default class TransactionStore {
           oracleAddress,
         });
 
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, finalizeResult);
         Tracking.track('event-finalizeResult');
       }
     } catch (err) {
@@ -906,7 +906,7 @@ export default class TransactionStore {
 
       if (txid) {
         // Create pending tx on server
-        await createTransaction('withdraw', {
+        const { data: { withdraw } } = await createTransaction('withdraw', {
           type,
           txid,
           gasLimit: gasLimit.toString(),
@@ -915,7 +915,7 @@ export default class TransactionStore {
           topicAddress,
         });
 
-        await this.onTxExecuted(tx);
+        await this.onTxExecuted(tx, withdraw);
         Tracking.track('event-withdraw');
       }
     } catch (err) {
