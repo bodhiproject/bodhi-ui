@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogContent,
   MenuItem,
-  withWidth,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { injectIntl, defineMessages, intlShape } from 'react-intl';
@@ -41,14 +40,12 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@withWidth()
 @inject('store')
 @observer
 export default class TutorialCarouselDialog extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line
-    width: PropTypes.string.isRequired,
   }
 
   state = {
@@ -82,7 +79,7 @@ export default class TutorialCarouselDialog extends Component {
   }
 
   render() {
-    const { classes, store: { ui }, intl, width } = this.props;
+    const { classes, store: { ui }, intl } = this.props;
     const { currentIndex, openTutorial } = this.state;
     const CurrentComponentName = this.components[currentIndex];
 
@@ -107,13 +104,13 @@ export default class TutorialCarouselDialog extends Component {
             </div>
             <div className={classes.buttonsWrapper}>
               {currentIndex > 0 && (
-                <Button onClick={this.prevSlide} msgId={messages.previous} width={width} />
+                <Button onClick={this.prevSlide} msgId={messages.previous} />
               )}
               {currentIndex < this.components.length - 1 && (
-                <Button onClick={this.nextSlide} msgId={messages.next} width={width} />
+                <Button onClick={this.nextSlide} msgId={messages.next} />
               )}
               {currentIndex === this.components.length - 1 && (
-                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} width={width} />
+                <Button onClick={this.closeTutorial} msgId={messages.iAcceptLetsStart} />
               )}
             </div>
           </div>
@@ -123,8 +120,8 @@ export default class TutorialCarouselDialog extends Component {
   }
 }
 
-const Button = injectIntl(withStyles(styles)(({ classes, intl, msgId, width, ...props }) => (
-  <_Button {...props} className={classes.button} variant="raised" size={width === 'xs' ? 'small' : 'medium'}>
+const Button = injectIntl(withStyles(styles)(({ classes, intl, msgId, ...props }) => (
+  <_Button {...props} className={classes.button} variant="raised" size="medium">
     {intl.formatMessage(msgId)}
   </_Button>
 )));

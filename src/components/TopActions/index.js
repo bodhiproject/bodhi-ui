@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles, withWidth } from '@material-ui/core';
+import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 
@@ -10,14 +10,12 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@withWidth()
 @inject('store')
 @observer
 export default class TopActions extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     noCreateEventButton: PropTypes.bool,
-    width: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -25,7 +23,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, width } = this.props;
+    const { classes, noCreateEventButton, fontSize, store } = this.props;
     const { sortBy, createEvent } = store;
 
     return (
@@ -34,7 +32,7 @@ export default class TopActions extends Component {
           {!noCreateEventButton && (
             <Button
               variant="raised"
-              size={width === 'xs' ? 'small' : 'medium'}
+              size="medium"
               color="primary"
               className={classes.createEventButton}
               onClick={createEvent.open}
