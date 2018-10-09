@@ -47,13 +47,22 @@ const styles = (theme) => ({
     height: theme.sizes.navHeight,
     lineHeight: theme.sizes.navHeight,
     color: theme.palette.background.paper,
-    paddingLeft: theme.padding.xs.px,
-    paddingRight: theme.padding.xs.px,
+    paddingLeft: theme.padding.unit.px,
+    paddingRight: theme.padding.unit.px,
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
     [theme.breakpoints.up('sm')]: {
       borderLeft: '1px solid rgba(0,0,0,0.2)',
+    },
+  },
+  searchButtonIcon: {
+    color: 'rgba(255,255,255,0.65)',
+    '&.selected': {
+      color: 'white',
+    },
+    '&:hover': {
+      color: 'white',
     },
   },
   searchBarWrapper: {
