@@ -1,7 +1,4 @@
 const styles = () => ({
-  summaryRowCell: {
-
-  },
   eventNameText: {
     textDecoration: 'underline',
     '&:hover': {

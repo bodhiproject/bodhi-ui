@@ -1,10 +1,4 @@
 const styles = () => ({
-  txidLabel: {
-
-  },
-  txidRow: {
-
-  },
   txidWrapper: {
     width: '100%',
   },

@@ -51,7 +51,7 @@ class EventRow extends Component {
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell className={classes.summaryRowCell}>{moment.unix(createdTime).format('LLL')}</TableCell>
+            <TableCell>{moment.unix(createdTime).format('LLL')}</TableCell>
             <TableCell>{getTxTypeString(type, intl)}</TableCell>
             <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
               {(topic && topic.name) || name}

@@ -352,9 +352,6 @@ bodhiTheme.overrides = {
     },
   },
   MuiTableCell: {
-    root: {
-
-    },
     body: {
       color: textColorGrey,
       fontSize: 13,
