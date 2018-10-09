@@ -21,7 +21,7 @@ const messages = defineMessages({
 const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal } } }) => (
   <Row>
     <Content>
-      <Title>{oracle.name}</Title>
+      <Title text={oracle.name} />
       {!oracle.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
       )}

@@ -1,4 +1,7 @@
 const styles = (theme) => ({
+  title: {
+    marginBottom: theme.padding.md.px,
+  },
   oracleButton: {
     marginTop: theme.padding.md.px,
     background: theme.palette.primary.main,

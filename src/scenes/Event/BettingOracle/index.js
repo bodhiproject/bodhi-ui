@@ -21,7 +21,7 @@ const messages = defineMessages({
 const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
-      <Title>{oracle.name}</Title>
+      <Title text={oracle.name} />
       {!oracle.unconfirmed && !oracle.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
       )}
