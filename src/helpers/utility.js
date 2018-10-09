@@ -96,10 +96,15 @@ export function gasToQtum(gas) {
   return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
-export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
+/**
+ * Converts a duration to the countdown display string.
+ * @param unixDiff {Number} The duration to convert. Formatted in unix time format.
+ * @param locale {Object}} Locale object that the Intl is using.
+ * @param localeMessages {Object} LocalMessages object that the Intl is using.
+ * @return {String} A string either showing "ended" or the duration in human friendly way.
+ */
+export function getEndTimeCountDownString(unixDiff, locale, localeMessages) {
   const { day, hour, minute, second, end } = messages;
-  const nowUnix = moment().unix();
-  const unixDiff = unixSeconds - nowUnix;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {

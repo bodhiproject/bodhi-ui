@@ -17,7 +17,7 @@ export default class BotCourt extends Component {
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.botCourt;
     if (!loaded) return <Loading />;
-    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />);
     return (
       <Fragment>
         <TopActions />

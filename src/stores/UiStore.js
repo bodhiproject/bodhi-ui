@@ -12,6 +12,8 @@ export default class UiStore {
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
+  @observable currentTimeUnix = 0;
+  counterInterval = null;
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -31,6 +33,9 @@ export default class UiStore {
 
   constructor(app) {
     this.app = app;
+
+    // For eventcard countdown
+    this.counterInterval = setInterval(() => this.currentTimeUnix = moment().unix());
 
     // Extend Moment with DurationFormat here to avoid overwritting of the moment locale
     momentDurationFormat(moment);
