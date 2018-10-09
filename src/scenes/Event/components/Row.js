@@ -1,13 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, withStyles } from '@material-ui/core';
 
+import styles from './styles';
 
-export const Row = styled(({ children, ...props }) => (
-  <Paper {...props}>
+export const Row = withStyles(styles)(({ children, ...props }) => (
+  <Paper elevation={0} {...props}>
     <Grid container spacing={0}>{children}</Grid>
   </Paper>
-))`
-  box-shadow: none !important; // TODO: fix this
-  border-radius: ${props => props.theme.borderRadius};
-`;
+));

@@ -1,4 +1,8 @@
 const styles = (theme) => ({
+  rootPaper: {
+    // box-shadow: none !important; // TODO: fix this
+    borderRadius: theme.borderRadius,
+  },
   title: {
     marginBottom: theme.padding.md.px,
   },
