@@ -5,13 +5,13 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import styles from './styles';
 
-const TransactionHistoryAddress = ({ classes, transaction }) => (
-  <TableCell padding="dense" className={classes.txidRow}>
+const TransactionHistoryAddress = ({ classes, transaction, colSpan }) => (
+  <TableCell padding="dense" className={classes.txidRow} colSpan={colSpan}>
     <div className={classes.txidWrapper}>
       <div className={classes.txidLabel}>
         <FormattedMessage id="str.addressUsed" defaultMessage="Address Used" />
       </div>
-      <div>
+      <div className={classes.transactionHistoryTxidTxt}>
         {transaction.senderAddress}
       </div>
     </div>

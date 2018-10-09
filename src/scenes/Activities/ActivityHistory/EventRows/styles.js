@@ -1,7 +1,6 @@
 const styles = () => ({
   summaryRowCell: {
-    paddingTop: '24px',
-    paddingBottom: '24px',
+
   },
   eventNameText: {
     textDecoration: 'underline',

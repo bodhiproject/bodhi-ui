@@ -49,7 +49,7 @@ export default class BottomBar extends Component {
 }
 
 const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
-  <Grid container item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
+  <Grid container item xs={12} md={7} className={classes.bottomBarBlockInfoWrapper}>
     <Grid item xs={12} sm={6}>
       <Typography variant="body1" className={classes.bottomBarTxt}>
         <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>

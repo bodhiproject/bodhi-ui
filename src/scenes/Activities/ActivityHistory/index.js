@@ -103,7 +103,7 @@ export default class ActivityHistory extends Component {
 const EventHistoryContent = inject('store')(observer(({ classes, store: { activities: { history: { transactions } } } }) =>
   (
     transactions.length ? (
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className={classes.historyTableWrapper}>
         <Table className={classes.historyTable}>
           <Header />
           <EventRows />

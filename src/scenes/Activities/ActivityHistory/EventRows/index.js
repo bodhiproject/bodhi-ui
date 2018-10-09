@@ -72,10 +72,8 @@ class EventRow extends Component {
           </TableRow>
           <CollapsableItem expanded={expanded}>
             <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
-              <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
-              <TableCell /><TransactionHistoryID transaction={transaction} />
-              <TableCell />
-              <TableCell /><TableCell /><TableCell />
+              <TransactionHistoryAddress colSpan={3} transaction={transaction} />
+              <TransactionHistoryID colSpan={4} transaction={transaction} />
             </TableRow>
           </CollapsableItem>
         </Fragment>

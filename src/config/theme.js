@@ -189,6 +189,7 @@ export const theme = {
         zIndex: 999,
         boxSizing: 'border-box',
         borderBottom: `2px solid ${borderColor}`,
+        background: backgroundColor,
       },
     },
     MuiTab: {
@@ -212,16 +213,6 @@ export const theme = {
       head: {
         height: tableHeaderHeight,
         background: borderColor,
-      },
-    },
-    MuiTableCell: {
-      body: {
-        color: textColorGrey,
-        fontSize: 13,
-      },
-      head: {
-        fontWeight: fontWeightBold,
-        fontSize: px(fontSizeMeta),
       },
     },
     MuiTooltip: {
@@ -335,6 +326,57 @@ bodhiTheme.overrides = {
       fontWeight: fontWeightBold,
       height: 40,
       padding: `0 ${paddingSm}`,
+    },
+  },
+  MuiTablePagination: {
+    toolbar: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        paddingLeft: px(paddingUnit),
+      },
+    },
+    selectRoot: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        margin: 0,
+        fontSize: 12,
+      },
+    },
+    caption: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+    actions: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        marginLeft: 0,
+      },
+    },
+  },
+  MuiTableCell: {
+    root: {
+
+    },
+    body: {
+      color: textColorGrey,
+      fontSize: 13,
+      paddingTop: px(paddingSm),
+      paddingBottom: px(paddingSm),
+      [bodhiTheme.breakpoints.down('md')]: {
+        padding: px(paddingUnit),
+        fontSize: 12,
+      },
+    },
+    head: {
+      fontWeight: fontWeightBold,
+      fontSize: px(fontSizeMeta),
+      [bodhiTheme.breakpoints.down('md')]: {
+        padding: px(paddingUnit),
+        fontSize: 12,
+      },
+    },
+    numeric: {
+      [bodhiTheme.breakpoints.down('md')]: {
+        padding: px(paddingUnit),
+      },
     },
   },
 };

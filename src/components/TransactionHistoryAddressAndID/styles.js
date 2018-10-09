@@ -1,18 +1,12 @@
 const styles = () => ({
   txidLabel: {
-    width: '150px',
+
   },
   txidRow: {
-    position: 'relative',
-    height: '85px',
+
   },
   txidWrapper: {
-    position: 'absolute',
-    left: '24px',
-    top: '4px',
-    bottom: '4px',
-    right: '24px',
-    paddingTop: '18px',
+    width: '100%',
   },
   txIdText: {
     '&:hover': {
@@ -20,6 +14,9 @@ const styles = () => ({
       cursor: 'pointer',
     },
     textDecoration: 'underline',
+  },
+  transactionHistoryTxidTxt: {
+    wordBreak: 'break-all',
   },
 });
 
