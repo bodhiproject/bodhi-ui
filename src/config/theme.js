@@ -189,7 +189,7 @@ export const theme = {
         zIndex: 999,
         boxSizing: 'border-box',
         borderBottom: `2px solid ${borderColor}`,
-        background: backgroundColor,
+        background: white,
       },
     },
     MuiTab: {
