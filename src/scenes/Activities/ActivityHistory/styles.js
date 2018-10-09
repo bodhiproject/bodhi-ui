@@ -1,6 +1,7 @@
 const styles = () => ({
-  historyTable: {
-    overflowX: 'scroll',
+  historyTableWrapper: {
+    width: '100%',
+    overflowX: 'auto',
   },
 });
 

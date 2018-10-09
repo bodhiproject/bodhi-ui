@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { withStyles, TableCell } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
@@ -7,14 +8,14 @@ import styles from './styles';
 import Routes from '../../network/routes';
 
 
-const TransactionHistoryID = ({ classes, transaction }) => (
-  <TableCell padding="dense" className={classes.txidRow}>
+const TransactionHistoryID = ({ classes, transaction, colSpan }) => (
+  <TableCell padding="dense" colSpan={colSpan}>
     <div className={classes.txidWrapper}>
-      <div className={classes.txidLabel}>
+      <div>
         <FormattedMessage id="str.transactionIdX" defaultMessage="Transaction ID: {txid}" values={{ txid: '' }} />
       </div>
       <div
-        className={classes.txIdText}
+        className={cx(classes.transactionHistoryTxidTxt, classes.txIdText)}
         onClick={(e) => {
           e.stopPropagation();
           window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
