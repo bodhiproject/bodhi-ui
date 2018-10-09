@@ -20,7 +20,7 @@ export default class BotCourt extends Component {
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />);
     return (
       <Fragment>
-        <TopActions />
+        {events.length > 0 && <TopActions />}
         <InfiniteScroll
           spacing={theme.padding.sm.value}
           data={events}
