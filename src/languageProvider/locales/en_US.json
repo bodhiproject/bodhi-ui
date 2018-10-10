@@ -247,6 +247,8 @@
   "str.winningOutcome": "Wining Outcome",
   "str.winnings": "Winnings",
   "str.withdraw": "Withdraw",
+  "str.withdrawing": "Withdrawing",
+  "str.withdrawn": "Withdrawn",
   "str.withdrawEscrow": "Withdraw Escrow",
   "tnc.accept": "Accept",
   "tnc.acceptCheckboxText": "I accept the Terms and Conditions",

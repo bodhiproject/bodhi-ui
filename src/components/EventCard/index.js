@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { sum } from 'lodash';
-import { Phases, EventWarningType } from 'constants';
+import { sum, filter } from 'lodash';
+import { Phases, EventWarningType, TransactionStatus, TransactionType } from 'constants';
 
 import FavoriteButton from './FavoriteButton';
 import EventWarning from '../EventWarning';
@@ -78,6 +78,19 @@ export default class EventCard extends Component {
     }
   }
 
+  get withdrawnStatus() {
+    const { event: { phase, transactions } } = this.props;
+    if (phase !== Phases.WITHDRAWING) return 0;
+    const allTxs = filter(transactions, { type: TransactionType.WITHDRAW });
+    const pendingTxs = filter(allTxs, { status: TransactionStatus.PENDING });
+    const successTxs = filter(allTxs, { status: TransactionStatus.SUCCESS });
+
+    if (allTxs.length === 0) return 0;
+    if (pendingTxs.length > 0) return 1;
+    if (successTxs.length > 0) return 2;
+    return 0;
+  }
+
   render() {
     const { classes, index, onClick, store: { ui } } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
@@ -93,6 +106,8 @@ export default class EventCard extends Component {
             <div className={cx(classes.eventCardSection, 'top')}>
               {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
+              {this.withdrawnStatus === 1 && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+              {this.withdrawnStatus === 2 && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
                   <Typography variant="headline" className={classes.eventCardName}>
