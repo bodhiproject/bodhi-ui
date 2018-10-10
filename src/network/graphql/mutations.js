@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { each, isFinite } from 'lodash';
+import { Transaction } from 'models';
 
 import client from './';
 import { TYPE, getMutation, isValidEnum } from './schema';
@@ -66,6 +67,8 @@ class GraphMutation {
  * @param {string} mutationName Name of the mutation.
  * @param {object} args Arguments for the mutation.
  */
-export function createTransaction(mutationName, args) {
-  return new GraphMutation(mutationName, args, TYPE.transaction).execute();
+export async function createTransaction(mutationName, args) {
+  const res = await new GraphMutation(mutationName, args, TYPE.transaction).execute();
+  const { data: { [mutationName]: tx } } = res;
+  return new Transaction(tx);
 }
