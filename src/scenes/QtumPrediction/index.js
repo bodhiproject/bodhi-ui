@@ -19,7 +19,7 @@ export default class QtumPrediction extends Component {
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
-      <EventCard key={i} index={i} event={event} increasingCount={this.state.increasingCount} />
+      <EventCard key={i} index={i} event={event} />
     ));
     return (
       <Fragment>
