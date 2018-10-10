@@ -954,15 +954,15 @@ export default class TransactionStore {
   @action
   executeTransfer = async (index, tx) => {
     try {
-      const newTx = await createTransaction('transfer', {
+      const pendingTx = await createTransaction('transfer', {
         senderAddress: tx.senderAddress,
         receiverAddress: tx.receiverAddress,
         amount: tx.amount,
         token: tx.token,
       });
 
-      await this.onTxExecuted(newTx);
-      await this.app.myWallet.history.addTransaction(newTx);
+      await this.onTxExecuted(pendingTx);
+      await this.app.myWallet.history.addTransaction(pendingTx);
       Tracking.track('wallet-transfer');
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
