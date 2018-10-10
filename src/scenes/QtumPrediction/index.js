@@ -19,11 +19,11 @@ export default class QtumPrediction extends Component {
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
-      <EventCard key={i} index={i} event={event} />
-    )); // eslint-disable-line
+      <EventCard key={i} index={i} event={event} increasingCount={this.state.increasingCount} />
+    ));
     return (
       <Fragment>
-        <TopActions />
+        {events.length > 0 && <TopActions />}
         <InfiniteScroll
           spacing={theme.padding.sm.value}
           data={events}

@@ -22,6 +22,7 @@ const fontWeightLight = 300;
 // Line height
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
+const lineHeight32 = '32px';
 
 // Neon blue
 const primaryColor = '#585AFA';
@@ -116,14 +117,6 @@ export const theme = {
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
-    // large headline (i.e. title on prediction title)
-    display1: {
-      fontSize: px(fontSizeTitleLg),
-      fontWeight: fontWeightRegular,
-      lineHeight: lineHeightLg,
-      marginLeft: '0',
-      color: textColorDark,
-    },
     headline: {
       fontSize: px(fontSizeTitleSm),
       fontWeight: fontWeightRegular,
@@ -189,7 +182,7 @@ export const theme = {
         zIndex: 999,
         boxSizing: 'border-box',
         borderBottom: `2px solid ${borderColor}`,
-        background: backgroundColor,
+        background: white,
       },
     },
     MuiTab: {
@@ -288,6 +281,23 @@ export const theme = {
 };
 
 const bodhiTheme = createMuiTheme(theme);
+
+bodhiTheme.typography = {
+  ...bodhiTheme.typography,
+  // large headline (i.e. title on prediction title)
+  display1: {
+    fontSize: px(fontSizeTitleLg),
+    fontWeight: fontWeightRegular,
+    lineHeight: lineHeightLg,
+    marginLeft: '0',
+    color: textColorDark,
+    [bodhiTheme.breakpoints.down('xs')]: {
+      fontSize: fontSizeTitleSm,
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeight32,
+    },
+  },
+};
 
 bodhiTheme.overrides = {
   ...bodhiTheme.overrides,
