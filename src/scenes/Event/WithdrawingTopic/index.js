@@ -25,7 +25,7 @@ export default class WithdrawingTopic extends Component {
     return (
       <Row>
         <Content>
-          <Title text={topic.name} />
+          <Title>{topic.name}</Title>
           <Paper className={classes.withdrawingPaper}>
             <WinningOutcome eventPage={eventPage} />
             {Boolean(escrowClaim || botWinnings || qtumWinnings) && (

@@ -10,7 +10,7 @@ import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../c
 const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
-      <Title text={oracle.name} />
+      <Title>{oracle.name}</Title>
       {!oracle.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
       )}
