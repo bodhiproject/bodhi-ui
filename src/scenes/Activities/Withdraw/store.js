@@ -24,7 +24,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.WITHDRAW) {
           this.init();

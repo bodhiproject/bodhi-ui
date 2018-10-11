@@ -1,4 +1,4 @@
-import { observable, action, reaction, toJS } from 'mobx';
+import { observable, action, reaction, toJS, computed } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
 
@@ -19,7 +19,8 @@ const INIT_VALUES = {
     withdrawCount: 0,
     totalCount: 0,
   },
-  online: false,
+  socketOnline: false,
+  internetOnline: true,
 };
 
 export default class GlobalStore {
@@ -29,7 +30,8 @@ export default class GlobalStore {
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
   @observable peerNodeCount = INIT_VALUES.peerNodeCount
-  @observable online = INIT_VALUES.online
+  @observable socketOnline = INIT_VALUES.socketOnline
+  @observable internetOnline = INIT_VALUES.internetOnline
   socket = wsLink.subscriptionClient;
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
@@ -40,8 +42,23 @@ export default class GlobalStore {
     },
   });
 
-  setOnline = () => this.online = true;
-  setOffline = () => this.online = false;
+  setOnline = () => {
+    this.socketOnline = true;
+    this.getSyncInfo();
+    console.log('socket online');
+  }
+  setOffline = () => {
+    this.socketOnline = false;
+    console.log('socket offline');
+  }
+
+  @computed get online() {
+    return this.socketOnline && this.internetOnline;
+  }
+
+  reconnecting = () => console.log('Reconnecting');
+
+  // hasError = () => console.log('ERROR!!!');
 
   constructor(app) {
     this.app = app;
@@ -67,12 +84,23 @@ export default class GlobalStore {
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
     // Call syncInfo once to init the wallet addresses used by other stores
-    this.getSyncInfo();
     this.subscribeSyncInfo();
 
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
     wsLink.subscriptionClient.onReconnected(this.setOnline, this);
     wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
+    wsLink.subscriptionClient.onReconnecting(this.reconnecting, this);
+
+    // Subscribe to changes
+    window.addEventListener('offline', () => {
+      console.log('internet offline');
+      this.internetOnline = false;
+    });
+    window.addEventListener('online', () => {
+      console.log('internet online');
+      this.internetOnline = true;
+      this.getSyncInfo();
+    });
   }
 
   /**
@@ -102,6 +130,7 @@ export default class GlobalStore {
    */
   @action
   getSyncInfo = async () => {
+    console.log('Syncing...');
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
@@ -109,6 +138,7 @@ export default class GlobalStore {
     } catch (error) {
       this.onSyncInfo({ error });
     }
+    console.log('Sync Done');
   }
 
   /**

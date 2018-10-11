@@ -26,7 +26,7 @@ export default class QtumPredictionStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status,
+      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.QTUM_PREDICTION) {
           this.init();

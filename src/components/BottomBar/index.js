@@ -20,22 +20,6 @@ export default class BottomBar extends Component {
     classes: PropTypes.object.isRequired,
   }
 
-  state = { // this state is used to re-render the dom here when going online/offline
-    online: true,
-  }
-
-  componentDidMount() {
-    // Subscribe to changes
-    window.addEventListener('offline', () => this.setState({ online: false }));
-    window.addEventListener('online', () => this.setState({ online: true }));
-  }
-
-  componentWillUnmount() {
-    // Clean up listener
-    window.removeEventListener('offline', () => this.setState({ online: false }));
-    window.removeEventListener('online', () => this.setState({ online: true }));
-  }
-
   render() {
     const { classes } = this.props;
     const { syncBlockTime, syncBlockNum, peerNodeCount, online } = this.props.store.global;

@@ -28,7 +28,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();

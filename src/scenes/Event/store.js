@@ -195,7 +195,7 @@ export default class EventStore {
 
     // New block
     reaction(
-      () => this.app.global.syncBlockNum,
+      () => this.app.global.syncBlockNum + this.app.global.online,
       async () => {
         // Fetch transactions during new block
         switch (this.type) {

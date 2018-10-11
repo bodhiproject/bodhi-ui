@@ -23,7 +23,7 @@ export default class BotCourtStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.BOT_COURT) {
           this.init();

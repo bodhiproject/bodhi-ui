@@ -56,7 +56,7 @@ export default class {
     );
     // New block
     reaction(
-      () => this.app.global.syncBlockNum,
+      () => this.app.global.syncBlockNum + this.app.global.online,
       async () => {
         if (this.transactions.length > 0) {
           const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);

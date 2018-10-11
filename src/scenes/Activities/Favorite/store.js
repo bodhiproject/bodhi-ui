@@ -16,7 +16,7 @@ export default class FavoriteStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.FAVORITE) {
           this.init();
