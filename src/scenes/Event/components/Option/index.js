@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Collapse, withStyles, MenuItem, Select, Typography, FormControl, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Input, InputLabel, InputAdornment } from '@material-ui/core';
+import { Collapse, withStyles, MenuItem, Select, Typography, FormControl, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Input, InputLabel, InputAdornment, FormHelperText } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
@@ -92,11 +92,13 @@ export default class Option extends Component {
                   onChange={({ target }) => eventPage.amount = target.value}
                   onBlur={eventPage.fixAmount}
                   amountPlaceholder={amountPlaceholder}
+                  error={eventPage.error.amount && intl.formatMessage({ id: eventPage.error.amount })}
                 />
                 <AddressSelect
                   classes={classes}
                   value={wallet.currentAddress}
                   onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
+                  error={eventPage.error.address && intl.formatMessage({ id: eventPage.error.address })}
                 />
               </div>
             )}
@@ -107,7 +109,7 @@ export default class Option extends Component {
   }
 }
 
-const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => (
+const AmountInput = ({ classes, token, phase, amountPlaceholder, error, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
       <div className={classes.eventOptionIcon}>
@@ -125,12 +127,13 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => 
           }
           {...props}
         />
+        {!!error && <FormHelperText error>{error}</FormHelperText>}
       </FormControl>
     </div>
   </ExpansionPanelDetails>
 );
 
-const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { addresses } }, ...props }) => (
+const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { addresses } }, error, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
       <div className={classes.eventOptionIcon}>
@@ -145,6 +148,7 @@ const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { ad
             </MenuItem>
           ))}
         </Select>
+        {!!error && <FormHelperText error>{error}</FormHelperText>}
       </FormControl>
     </div>
   </ExpansionPanelDetails>
