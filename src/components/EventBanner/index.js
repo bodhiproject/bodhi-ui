@@ -30,10 +30,12 @@ export default class EventBanner extends PureComponent {
     classes: PropTypes.object.isRequired,
     endTime: PropTypes.string,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    onClick: PropTypes.func,
   };
 
   static defaultProps = {
     endTime: undefined,
+    onClick: null,
   };
 
   getAmountLabel = () => {
@@ -73,16 +75,16 @@ export default class EventBanner extends PureComponent {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, onClick } = this.props;
     const { name, url, endTime } = this.props.event;
     const { locale, messages: localeMessages } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const increasingCount = this.props.increasingCount || 0;
 
     return (
-      <Grid item xs={12} sm={12} md={12} lg={12}>
+      <Grid item xs={12}>
         <Link to={url}>
-          <Card className={classes.eventCard}>
+          <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardSection, 'top')}>
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>

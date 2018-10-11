@@ -93,10 +93,6 @@ export default class Search extends Component {
     return `${label}${countText}`;
   }
 
-  componentDidMount() {
-    this.props.store.ui.initIncreasingCount(1);
-  }
-
   handleTabChange = (event, value) => {
     const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
     this.props.store.search.tabIdx = value;

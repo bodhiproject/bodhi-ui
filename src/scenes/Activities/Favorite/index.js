@@ -21,7 +21,6 @@ const messages = defineMessages({
 export default class Favorite extends Component {
   componentDidMount() {
     this.props.store.favorite.init();
-    this.props.store.ui.initIncreasingCount(1);
   }
 
   render() {
