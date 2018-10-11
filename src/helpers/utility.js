@@ -210,3 +210,11 @@ export function toFixed(num) {
   }
   return x;
 }
+
+/**
+ * Sleeps for a given number of milliseconds.
+ * @param {number} ms Number of milliseconds to sleep.
+ */
+export async function sleep(ms) {
+  await new Promise(res => setTimeout(res, ms));
+}

@@ -1,11 +1,14 @@
 import { observable } from 'mobx';
+import { isEqual } from 'lodash';
 import { Routes, SortBy } from 'constants';
 import cryptoRandomString from 'crypto-random-string';
-import AllEventsStore from './AllEventsStore';
-import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../network/graphql/queries/';
+
+import EventStore from './store';
+import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../../network/graphql/queries/';
+import { sleep } from '../../helpers/utility';
 
 // Test init
-jest.mock('../network/graphql/queries'); // block and manually mock our backend
+jest.mock('../../network/graphql/queries'); // block and manually mock our backend
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -14,8 +17,6 @@ const localStorageMock = {
 const navigatorMock = {};
 global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
-
-const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 describe('EventStore', () => {
   let store;
@@ -33,22 +34,29 @@ describe('EventStore', () => {
   }); // mock the appstore
 
   beforeEach(() => {
-    store = new AllEventsStore(app); // create a new instance before each test case
+    store = new EventStore(app); // create a new instance before each test case
     mockResetOracleList();
     mockResetTopicList();
+
     for (let i = 0; i < 18; i++) {
       mockAddTopic({ txid: cryptoRandomString(64) });
       mockAddOracle({
         txid: cryptoRandomString(64),
         amounts: [],
         consensusThreshold: 100,
-        address: 'cryptoRandomString(40)',
-        topicAddress: 'cryptoRandomString(40)',
+        address: cryptoRandomString(40),
+        topicAddress: cryptoRandomString(40),
         resultSetEndTime: 10,
         endTime: 20,
         options: [],
       });
     }
+  });
+
+  describe('constructor', () => {
+    it('sets the values', () => {
+      expect(isEqual(store.app, app)).toBe(true);
+    });
   });
 
   /** all following test cases target specifically to the mock backend, eg. network/graphql/__mocks__/queries.js */
