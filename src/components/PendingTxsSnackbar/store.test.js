@@ -1,28 +1,24 @@
 import { TransactionType } from 'constants';
-import { observable } from 'mobx';
-import cryptoRandomString from 'crypto-random-string';
 
 import PendingTxsSnackbarStore, { INIT_VALUES } from './store';
-import { mockResetTransactionList, mockAddTransaction, mockSetAllTxsSuccess } from '../../network/graphql/queries/';
+import { mockAddTransaction, mockSetAllTxsSuccess } from '../../network/graphql/queries/';
+import { sleep, getMockAppStore } from '../../helpers/testUtil';
+import mockDB from '../../../test/mockDB';
 
 jest.mock('../../network/graphql/queries'); // block and manually mock our backend
 
 describe('PendingTxsSnackbarStore', () => {
+  let app;
   let store;
-  const addr = {
-    address: cryptoRandomString(34),
-    qtum: 2000,
-    bot: 100,
-  };
-  const app = {
-    global: observable({ syncBlockNum: 0, syncPercent: 10 }),
-    wallet: { addresses: [addr] },
-  }; // mock the appstore
-  const sleep = ms => new Promise(res => setTimeout(res, ms));
+  let addr;
 
   beforeEach(async () => {
+    app = getMockAppStore();
+    app.syncPercent = 10;
+    [addr] = app.wallet.addresses;
+
     store = new PendingTxsSnackbarStore(app); // create a new instance before each test case
-    mockResetTransactionList();
+    mockDB.init();
     await store.init();
   });
 
@@ -38,7 +34,6 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.pendingWithdraws).toEqual(INIT_VALUES.pendingWithdraws);
       expect(store.pendingTransfers).toEqual(INIT_VALUES.pendingTransfers);
       expect(store.pendingResetApproves).toEqual(INIT_VALUES.pendingResetApproves);
-      expect.assertions(10);
     });
   });
 
@@ -57,7 +52,6 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.pendingWithdraws).toEqual(INIT_VALUES.pendingWithdraws);
       expect(store.pendingTransfers).toEqual(INIT_VALUES.pendingTransfers);
       expect(store.pendingResetApproves).toEqual(INIT_VALUES.pendingResetApproves);
-      expect.assertions(10);
     });
   });
 
@@ -178,14 +172,13 @@ describe('PendingTxsSnackbarStore', () => {
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
 
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(true);
 
       mockSetAllTxsSuccess(allTxs);
       await store.queryPendingTransactions();
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(false);
-      expect.assertions(4);
     });
 
     it('syncBlockNum', async () => {
@@ -193,27 +186,26 @@ describe('PendingTxsSnackbarStore', () => {
 
       const allTxs = [mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address })];
       app.global.syncBlockNum = 1;
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(false);
 
       app.global.syncPercent = 120;
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(false);
 
       app.global.syncBlockNum = 2;
-      await sleep(100);
+      await sleep();
       expect(app.global.syncPercent).toBe(120);
       expect(store.isVisible).toBe(true);
 
       mockSetAllTxsSuccess(allTxs);
       app.global.syncPercent = 150;
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(true);
 
       app.global.syncBlockNum = 3;
-      await sleep(100);
+      await sleep();
       expect(store.isVisible).toBe(false);
-      expect.assertions(7);
     });
   });
 });

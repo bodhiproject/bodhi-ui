@@ -10,26 +10,6 @@ import { Transaction } from 'models';
 
 import mockData from '../../../../test/mockDB';
 
-export function mockResetAllList() {
-  mockData.resetAll();
-}
-
-export function mockResetTopicList() {
-  mockData.resetTopics();
-}
-
-export function mockResetOracleList() {
-  mockData.resetOracles();
-}
-
-export function mockAddTopic(newTopic) {
-  mockData.addTopics(newTopic);
-}
-
-export function mockResetTransactionList() {
-  mockData.resetTransactions();
-}
-
 export function mockAddTransaction(args) {
   const tx = new Transaction({
     txid: cryptoRandomString(64),
@@ -39,10 +19,6 @@ export function mockAddTransaction(args) {
   Object.assign(tx, args);
   mockData.addTransactions(tx);
   return tx;
-}
-
-export function mockAddOracle(newOracle) {
-  mockData.addOracles(newOracle);
 }
 
 export function mockSetTxStatus(tx, status) {
