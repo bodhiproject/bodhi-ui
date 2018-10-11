@@ -43,7 +43,7 @@ export default {
       address: cryptoRandomString(40),
       creatorAddress: `q${cryptoRandomString(33)}`,
       hashId: cryptoRandomString(32),
-      status: OracleStatus.VOTING,
+      status: OracleStatus.WITHDRAW,
       name: `Test Topic ${randomInt(1, 10000)}`,
       options: ['A', 'B', 'C'],
       qtumAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),

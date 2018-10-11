@@ -7,15 +7,16 @@ import { orderBy as lodashOrderBy, flatten, forEach, filter as lodashFilter, isU
 import mockData from '../../../../test/mockDB';
 
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.paginatedTopics.topics.length ? skip + limit : mockData.paginatedTopics.topics.length;
-  const topics = mockData.paginatedTopics.topics.slice(skip, end);
-  const pageNumber = toInteger(end / limit);
+  let { topics } = mockData;
+  topics = filterList(filters, mockData.topics);
+  topics = orderList(orderBy, topics);
+  topics = paginateList(limit, skip, topics);
   return {
     totalCount: mockData.paginatedTopics.totalCount,
     topics,
     pageInfo: {
       hasNextPage: end < mockData.paginatedTopics.totalCount,
-      pageNumber,
+      pageNumber: toInteger(end / limit),
       count: topics.length,
     },
   };
