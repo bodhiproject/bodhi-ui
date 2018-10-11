@@ -32,6 +32,10 @@ const INIT = {
   qtumWinnings: 0,
   botWinnings: 0,
   withdrawableAddresses: [],
+  error: {
+    amount: '',
+    address: '',
+  },
 };
 
 export default class EventStore {
@@ -49,6 +53,8 @@ export default class EventStore {
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
   @observable allowance = INIT.allowance; // In Botoshi
+
+  @observable error = INIT.error
 
   // topic
   @observable topics = INIT.topics
@@ -450,14 +456,18 @@ export default class EventStore {
     const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
     const notEnoughQtum = currentWalletQtum < maxTransactionFee;
 
-    // Trying to vote over the consensus threshold
+    this.buttonDisabled = false;
+    this.warningType = '';
+    this.eventWarningMessageId = '';
+    this.error = INIT.error;
+
+    // Trying to vote over the consensus threshold - currently not way to trigger
     const amountNum = Number(this.amount);
     if (phase === VOTING && this.amount && this.selectedOptionIdx >= 0) {
       const maxVote = NP.minus(consensusThreshold, this.selectedOption.amount);
       if (amountNum > maxVote) {
         this.buttonDisabled = true;
-        this.warningType = EventWarningType.ERROR;
-        this.eventWarningMessageId = 'oracle.maxVoteText';
+        this.error.amount = 'oracle.maxVoteText';
         return;
       }
     }
@@ -486,6 +496,14 @@ export default class EventStore {
       return;
     }
 
+    // ALL
+    // No wallet can be found
+    if (wallet.addresses.length === 0) {
+      this.buttonDisabled = true;
+      this.error.address = 'str.noAddressInWallet';
+      return;
+    }
+
     // Trying to set result or vote when not enough QTUM or BOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
     const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
@@ -494,25 +512,21 @@ export default class EventStore {
       || (phase === RESULT_SETTING && currentBot < consensusThreshold)
     ) && notEnoughQtum) {
       this.buttonDisabled = true;
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'str.notEnoughQtumAndBot';
+      this.error.amount = 'str.notEnoughQtumAndBot';
       return;
     }
 
     // Error getting allowance amount
     if (phase === VOTING && !this.allowance) {
       this.buttonDisabled = true;
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'str.errorGettingAllowance';
+      this.error.address = 'str.errorGettingAllowance';
       return;
     }
 
-    // ALL
     // Trying to bet more qtum than you have or you just don't have enough QTUM period
     if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
       this.buttonDisabled = true;
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'str.notEnoughQtum';
+      this.error.amount = 'str.notEnoughQtum';
       return;
     }
 
@@ -520,8 +534,7 @@ export default class EventStore {
     if ((phase === RESULT_SETTING && currentBot < consensusThreshold && this.selectedOptionIdx !== -1)
       || (phase === VOTING && currentBot < this.amount)) {
       this.buttonDisabled = true;
-      this.warningType = EventWarningType.ERROR;
-      this.eventWarningMessageId = 'str.notEnoughBot';
+      this.error.amount = 'str.notEnoughBot';
       return;
     }
 
@@ -534,16 +547,18 @@ export default class EventStore {
     }
 
     // Did not enter an amount
-    if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+    if ([BETTING, VOTING].includes(phase) && (!this.amount)) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
       return;
     }
 
-    this.buttonDisabled = false;
-    this.eventWarningMessageId = '';
-    this.warningType = '';
+    // Enter an invalid amount
+    if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+      this.buttonDisabled = true;
+      this.error.amount = 'str.invalidAmount';
+    }
   }
 
   // Auto-fixes the amount field onBlur if trying to vote over the threshold

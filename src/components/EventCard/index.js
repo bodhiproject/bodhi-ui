@@ -35,10 +35,12 @@ export default class EventCard extends Component {
     index: PropTypes.number.isRequired,
     endTime: PropTypes.string,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+    onClick: PropTypes.func,
   };
 
   static defaultProps = {
     endTime: undefined,
+    onClick: null,
   };
 
   getAmountLabel = () => {
@@ -78,7 +80,7 @@ export default class EventCard extends Component {
   }
 
   render() {
-    const { classes, index, store: { ui } } = this.props;
+    const { classes, index, onClick, store: { ui } } = this.props;
     const { name, isPending, isUpcoming, url, endTime } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
@@ -86,7 +88,7 @@ export default class EventCard extends Component {
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link to={url}>
+        <Link onClick={onClick} to={url}>
           <Card className={classes.eventCard}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
