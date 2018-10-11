@@ -1,10 +1,8 @@
-import { observable } from 'mobx';
 import { isEqual } from 'lodash';
-import cryptoRandomString from 'crypto-random-string';
 
 import EventStore from './store';
 import { mockInitDb } from '../../network/graphql/queries/';
-import { sleep } from '../../helpers/utility';
+import { getMockAppStore } from '../../helpers/testUtil';
 
 // Test init
 jest.mock('../../network/graphql/queries'); // block and manually mock our backend
@@ -18,21 +16,11 @@ global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
 describe('EventStore', () => {
+  let app;
   let store;
-  const addr = {
-    address: cryptoRandomString(34),
-    qtum: 2000,
-    bot: 100,
-  };
-  const app = observable({
-    sortBy: 'ASC',
-    wallet: { addresses: [addr] },
-    global: { syncBlockNum: 0 },
-    refreshing: false,
-    ui: { location: 0 },
-  }); // mock the appstore
 
   beforeEach(() => {
+    app = getMockAppStore();
     store = new EventStore(app); // create a new instance before each test case
     mockInitDb();
   });
