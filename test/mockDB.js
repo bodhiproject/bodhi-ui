@@ -3,22 +3,20 @@ import { times } from 'lodash';
 import moment from 'moment';
 import { OracleStatus, Token } from 'constants';
 
-import { decimalToSatoshi } from '../../../helpers/utility';
-import { randomInt } from '../../../helpers/testUtil';
+import { decimalToSatoshi } from '../src/helpers/utility';
+import { randomInt } from '../src/helpers/testUtil';
 
 /**
- * This is a storage class work for mocking graphql
- * so the test files link to this instead of connecting to backend.
- * This file simply skip the backend retrival and fake query results and return.
- * Current logic is straightforward but good enough to make tests.
- * */
+ * Storage class abstraction for mocking the GraphQL DB.
+ * Mock GraphQL queries and mutations can use this directly.
+ */
 export default {
   paginatedOracles: { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
   paginatedTopics: { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
   transactions: [],
 
   // Call this to populate the entire DB with mock data in all tables.
-  initDB() {
+  init() {
     for (let i = 0; i < 10; i++) {
       this.addTopics(this.generateTopic());
     }

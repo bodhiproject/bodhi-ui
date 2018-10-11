@@ -8,11 +8,7 @@ import moment from 'moment';
 import { TransactionStatus } from 'constants';
 import { Transaction } from 'models';
 
-import mockData from './mockData';
-
-export function mockInitDb() {
-  mockData.initDB();
-}
+import mockData from '../../../../test/mockDB';
 
 export function mockResetAllList() {
   mockData.resetAll();

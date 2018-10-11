@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 
 import EventStore from './store';
-import { mockInitDb } from '../../network/graphql/queries/';
+import mockDB from '../../../test/mockDB';
 import { getMockAppStore } from '../../helpers/testUtil';
 
 // Test init
@@ -22,7 +22,7 @@ describe('EventStore', () => {
   beforeEach(() => {
     app = getMockAppStore();
     store = new EventStore(app); // create a new instance before each test case
-    mockInitDb();
+    mockDB.init();
   });
 
   describe('constructor', () => {
