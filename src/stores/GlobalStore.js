@@ -20,7 +20,7 @@ const INIT_VALUES = {
     totalCount: 0,
   },
   socketOnline: false,
-  internetOnline: true,
+  internetOnline: navigator.onLine,
 };
 
 export default class GlobalStore {
@@ -32,7 +32,6 @@ export default class GlobalStore {
   @observable peerNodeCount = INIT_VALUES.peerNodeCount
   @observable socketOnline = INIT_VALUES.socketOnline
   @observable internetOnline = INIT_VALUES.internetOnline
-  socket = wsLink.subscriptionClient;
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     finalizeCount: INIT_VALUES.userData.finalizeCount,
@@ -42,23 +41,9 @@ export default class GlobalStore {
     },
   });
 
-  setOnline = () => {
-    this.socketOnline = true;
-    this.getSyncInfo();
-    console.log('socket online');
-  }
-  setOffline = () => {
-    this.socketOnline = false;
-    console.log('socket offline');
-  }
-
   @computed get online() {
     return this.socketOnline && this.internetOnline;
   }
-
-  reconnecting = () => console.log('Reconnecting');
-
-  // hasError = () => console.log('ERROR!!!');
 
   constructor(app) {
     this.app = app;
@@ -86,18 +71,22 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
 
+    this.setOnline = () => {
+      this.socketOnline = true;
+      this.getSyncInfo();
+    };
+    this.setOffline = () => {
+      this.socketOnline = false;
+    };
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
     wsLink.subscriptionClient.onReconnected(this.setOnline, this);
     wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
-    wsLink.subscriptionClient.onReconnecting(this.reconnecting, this);
 
     // Subscribe to changes
     window.addEventListener('offline', () => {
-      console.log('internet offline');
       this.internetOnline = false;
     });
     window.addEventListener('online', () => {
-      console.log('internet online');
       this.internetOnline = true;
       this.getSyncInfo();
     });
@@ -130,7 +119,6 @@ export default class GlobalStore {
    */
   @action
   getSyncInfo = async () => {
-    console.log('Syncing...');
     try {
       const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
       const syncInfo = await querySyncInfo(includeBalances);
@@ -138,7 +126,6 @@ export default class GlobalStore {
     } catch (error) {
       this.onSyncInfo({ error });
     }
-    console.log('Sync Done');
   }
 
   /**

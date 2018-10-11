@@ -42,7 +42,7 @@ export default class SearchStore {
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
       () => {
-        if (this.app.ui.searchBarMode && !_.isEmpty(this.phrase)) {
+        if (this.app.ui.searchBarMode && !_.isEmpty(this.phrase) && this.app.global.online) {
           this.init();
         }
       }

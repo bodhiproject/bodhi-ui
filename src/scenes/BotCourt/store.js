@@ -23,10 +23,19 @@ export default class BotCourtStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.global.online,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === Routes.BOT_COURT) {
           this.init();
+        }
+      }
+    );
+    reaction(
+      () => this.app.global.online,
+      () => {
+        if (this.app.ui.location === Routes.BOT_COURT && this.app.global.online) {
+          if (this.loadingMore) this.loadMore();
+          else this.init();
         }
       }
     );
@@ -47,11 +56,15 @@ export default class BotCourtStore {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
-      const nextFewEvents = await this.fetch();
-      runInAction(() => {
-        this.list = [...this.list, ...nextFewEvents];
-        this.loadingMore = false;
-      });
+      try {
+        const nextFewEvents = await this.fetch();
+        runInAction(() => {
+          this.list = [...this.list, ...nextFewEvents];
+          this.loadingMore = false;
+        });
+      } catch (e) {
+        this.skip -= this.limit;
+      }
     }
   }
 

@@ -198,25 +198,27 @@ export default class EventStore {
       () => this.app.global.syncBlockNum + this.app.global.online,
       async () => {
         // Fetch transactions during new block
-        switch (this.type) {
-          case UNCONFIRMED: {
-            this.verifyConfirmedOracle();
-            break;
-          }
-          case TOPIC: {
-            await this.queryTransactions(this.address);
-            this.disableEventActionsIfNecessary();
-            break;
-          }
-          case ORACLE: {
-            await this.queryTransactions(this.topicAddress);
-            await this.queryOracles(this.topicAddress);
-            await this.getAllowanceAmount();
-            this.disableEventActionsIfNecessary();
-            break;
-          }
-          default: {
-            break;
+        if (this.app.global.online) {
+          switch (this.type) {
+            case UNCONFIRMED: {
+              this.verifyConfirmedOracle();
+              break;
+            }
+            case TOPIC: {
+              await this.queryTransactions(this.address);
+              this.disableEventActionsIfNecessary();
+              break;
+            }
+            case ORACLE: {
+              await this.queryTransactions(this.topicAddress);
+              await this.queryOracles(this.topicAddress);
+              await this.getAllowanceAmount();
+              this.disableEventActionsIfNecessary();
+              break;
+            }
+            default: {
+              break;
+            }
           }
         }
       }
