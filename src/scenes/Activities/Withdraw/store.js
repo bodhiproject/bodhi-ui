@@ -31,12 +31,6 @@ export default class {
         }
       }
     );
-    reaction(
-      () => this.list,
-      () => {
-        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
-      }
-    );
   }
 
   @action
