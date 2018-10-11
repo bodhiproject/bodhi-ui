@@ -27,7 +27,9 @@ export default class FavoriteDrawer extends Component {
         }}
         anchor="left"
       >
-        {ui.favoriteDrawerOpen && <FavoritePage bannerStyle />}
+        <div className={classes.drawerContainer}>
+          {ui.favoriteDrawerOpen && <FavoritePage bannerStyle />}
+        </div>
       </Drawer>
     );
   }

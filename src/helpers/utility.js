@@ -112,7 +112,7 @@ export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isSh
     return formatMessage(end);
   }
 
-  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} h:m:s`);
+  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} hh:mm:ss`);
   return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}] s[${formatMessage(second)}]`);
 }
 

@@ -78,7 +78,14 @@ export default class UiStore {
   }
 
   @action
+  showFavoriteDrawer = () => this.favoriteDrawerOpen = true;
+
+  @action
+  hideFavoriteDrawer = () => this.favoriteDrawerOpen = false;
+
+  @action
   enableSearchBarMode = () => {
+    this.hideFavoriteDrawer();
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();

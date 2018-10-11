@@ -3,7 +3,7 @@ const styles = (theme) => ({
     position: 'relative',
     borderRadius: '5px',
     boxShadow: '0px 0px 20px 0px rgba(0,0,0,0.05)',
-    border: '2px solid rgba(0,0,0,0.075)',
+    border: '1px solid rgba(0,0,0,0.25)',
     '&:hover': {
       boxShadow: '0px 5px 20px 3px rgba(0,0,0,0.1)',
       transform: 'translateY(-2px)',
@@ -15,25 +15,26 @@ const styles = (theme) => ({
   },
   eventCardSection: {
     position: 'relative',
-    padding: theme.padding.sm.px,
+    padding: theme.padding.xs.px,
     '&.top': {
-      height: '320px',
+      height: '100px',
     },
   },
   dashboardTime: {
     color: theme.palette.text.hint,
-    fontWeight: '600',
+    fontWeight: '500',
     display: 'block',
     paddingBottom: '10px',
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
-    display: 'flex',
-    maxHeight: '1.5em',
-    fontSize: '16px',
+    display: 'block',
+    maxHeight: '1.4em',
+    fontSize: '20px',
     margin: '0 auto',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
     fontWeight: '600',
     color: 'rgba(0,0,0,0.75)',
   },
@@ -43,20 +44,10 @@ const styles = (theme) => ({
   eventCardNameFlex: {
     flex: 1,
   },
-  unconfirmedTag: {
-    background: theme.palette.secondary.light,
-    color: theme.palette.secondary.main,
-    border: `solid 1px ${theme.palette.secondary.main}`,
-    borderRadius: theme.borderRadius,
-    padding: `2px ${theme.padding.unit.px}`,
-    marginBottom: theme.padding.unit.px,
-    fontSize: theme.sizes.font.meta,
-  },
   dashBoardCardIcon: {
     marginRight: theme.padding.unit.px,
   },
   eventCardInfo: {
-    position: 'absolute',
     bottom: theme.padding.sm.px,
     color: theme.palette.text.primary,
   },

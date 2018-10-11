@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
+import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum } from 'lodash';
 import { Phases } from 'constants';
@@ -84,7 +84,6 @@ export default class EventBanner extends PureComponent {
       <Grid item xs={12} sm={12} md={12} lg={12}>
         <Link to={url}>
           <Card className={classes.eventCard}>
-            <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
@@ -94,7 +93,6 @@ export default class EventBanner extends PureComponent {
                 </div>
                 <FavoriteButton event={this.props.event} />
               </div>
-              <Divider />
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
                   <div className={classes.eventCardInfoItem}>

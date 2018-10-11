@@ -17,7 +17,7 @@ const styles = (theme) => ({
     color: 'black',
   },
   searchTabContainer: {
-    marginTop: theme.sizes.navHeight,
+    marginTop: theme.sizes.navHeight.px,
   },
 });
 
