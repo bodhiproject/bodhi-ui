@@ -24,44 +24,18 @@ export function queryAllTopics(app, filters, orderBy, limit, skip) {
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
   const { totalCount } = mockData.paginatedOracles;
   let { oracles } = mockData.paginatedOracles;
+  oracles = filterList(filters, oracles);
+  oracles = orderList(orderBy, oracles);
+  oracles = paginateList(limit, skip, oracles);
 
-  // Filter
-  if (filters) {
-    oracles = flatten(filters.map((filter) => lodashFilter(oracles, filter)));
-  }
-
-  // Order
-  if (orderBy) {
-    const orderFields = [];
-    const orderDirections = [];
-
-    if (orderBy instanceof Array) {
-      forEach(orderBy, (order) => {
-        orderFields.push(order.field);
-        orderDirections.push(order.direction);
-      });
-    } else {
-      orderFields.push(orderBy.field);
-      orderDirections.push(orderBy.direction);
-    }
-
-    oracles = lodashOrderBy(oracles, orderFields, orderDirections);
-  }
-
-  // Paginate
-  let end;
-  if (!isUndefined(limit) && !isUndefined(skip)) {
-    end = skip + limit <= oracles.length ? skip + limit : oracles.length;
-    oracles = oracles.slice(skip, end);
-  }
-
+  const end = getEndIndex(limit, skip, oracles);
   return {
     totalCount,
     oracles,
-    pageInfo: end && {
-      count: oracles.length,
+    pageInfo: {
       hasNextPage: end < totalCount,
       pageNumber: toInteger(end / limit),
+      count: oracles.length,
     },
   };
 }
@@ -78,3 +52,45 @@ export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {
   const end = skip + (limit > 0 && limit <= mockData.transactions.length) ? skip + limit : mockData.transactions.length;
   return result.slice(skip, end);
 }
+
+const getPageInfo = (totalCount, limit, skip) => {
+  const end = skip + (limit > 0 && limit <= list.length) ? skip + limit : oracles.length;
+  return !isUndefined(limit)
+    && !isUndefined(skip)
+    && skip + (limit > 0 && limit <= list.length) ? skip + limit : list.length;
+};
+
+const filterList = (filters, list) => {
+  if (filters) {
+    return flatten(filters.map((filter) => lodashFilter(list, filter)));
+  }
+  return list;
+};
+
+const orderList = (orderBy, list) => {
+  if (orderBy) {
+    const orderFields = [];
+    const orderDirections = [];
+
+    if (orderBy instanceof Array) {
+      forEach(orderBy, (order) => {
+        orderFields.push(order.field);
+        orderDirections.push(order.direction);
+      });
+    } else {
+      orderFields.push(orderBy.field);
+      orderDirections.push(orderBy.direction);
+    }
+
+    return lodashOrderBy(list, orderFields, orderDirections);
+  }
+  return list;
+};
+
+const paginateList = (limit, skip, list) => {
+  if (!isUndefined(limit) && !isUndefined(skip)) {
+    const end = skip + limit <= list.length ? skip + limit : list.length;
+    return list.slice(skip, end);
+  }
+  return list;
+};
