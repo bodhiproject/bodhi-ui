@@ -33,12 +33,6 @@ export default class QtumPredictionStore {
         }
       }
     );
-    reaction(
-      () => this.list,
-      () => {
-        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
-      }
-    );
   }
 
   @action
@@ -78,8 +72,8 @@ export default class QtumPredictionStore {
       ];
       let result = [];
       result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      if (result.length < limit) this.hasMore = false;
-      return _.orderBy(result, ['endTime'], this.sortBy.toLowerCase());
+      this.hasMore = result.pageInfo.hasNextPage;
+      return _.orderBy(result.oracles, ['endTime'], this.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }

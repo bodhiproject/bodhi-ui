@@ -30,12 +30,6 @@ export default class BotCourtStore {
         }
       }
     );
-    reaction(
-      () => this.list,
-      () => {
-        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
-      }
-    );
   }
 
   @action
@@ -75,8 +69,8 @@ export default class BotCourtStore {
       ];
       let result = [];
       result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      if (result.length < limit) this.hasMore = false;
-      return _.orderBy(result, ['endTime'], this.app.sortBy.toLowerCase());
+      this.hasMore = result.pageInfo.hasNextPage;
+      return _.orderBy(result.oracles, ['endTime'], this.app.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }

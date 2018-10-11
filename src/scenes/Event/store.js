@@ -133,7 +133,8 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    this.oracles = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
+    const result = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
+    this.oracles = result.oracles;
     this.loading = false;
   }
 
@@ -229,7 +230,7 @@ export default class EventStore {
 
   @action
   verifyConfirmedOracle = async () => {
-    const res = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
+    const { oracles: res } = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
     if (!isNull(res[0].topicAddress)) {
       const { topicAddress, address, txid } = res[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
@@ -240,7 +241,10 @@ export default class EventStore {
   queryTopics = async () => this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
 
   @action
-  queryOracles = async (address) => this.oracles = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+  queryOracles = async (address) => {
+    const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    this.oracles = oracles;
+  }
 
   @action
   queryTransactions = async (address) => {

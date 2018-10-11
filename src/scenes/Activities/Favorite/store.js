@@ -68,7 +68,7 @@ export default class FavoriteStore {
     const locatedTopics = topicResult.map(topicObject => (topicObject.address));
     const oracleFilters = difference(this.favList, locatedTopics).map(omittedTopicAddress => ({ topicAddress: omittedTopicAddress }));
     const oracleOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
-    const oracles = await queryAllOracles(this.app, oracleFilters, oracleOrderBy, 5000);
+    const { oracles } = await queryAllOracles(this.app, oracleFilters, oracleOrderBy, 5000);
     const oracleResult = uniqBy(oracles, 'topicAddress');
 
     // Combine both WITHDRAW topics and latest phase oracles into result

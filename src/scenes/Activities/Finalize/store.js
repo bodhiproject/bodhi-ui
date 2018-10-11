@@ -78,8 +78,8 @@ export default class {
       const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
       const result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      if (result.length < limit) this.hasMore = false;
-      return result;
+      this.hasMore = result.pageInfo.hasNextPage;
+      return result.oracles;
     }
     return INIT_VALUES.list;
   }

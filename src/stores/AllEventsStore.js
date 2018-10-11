@@ -70,8 +70,9 @@ export default class {
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      oracles = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      if (oracles.length < limit) this.hasMoreOracles = false;
+      const result = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
+      oracles = result.oracles; // eslint-disable-line
+      this.hasMoreOracles = result.pageInfo.hasNextPage;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;

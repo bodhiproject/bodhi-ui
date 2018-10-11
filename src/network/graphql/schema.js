@@ -6,6 +6,7 @@ export const TYPE = {
   vote: 'Vote',
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
+  paginatedOracles: 'PaginatedOracles',
 };
 
 const TYPE_DEF = {
@@ -75,6 +76,40 @@ const TYPE_DEF = {
     language
   `,
 
+  PaginatedOracles: `
+    totalCount
+    oracles{
+      txid
+      version
+      address
+      topicAddress
+      status
+      token
+      name
+      options
+      optionIdxs
+      amounts
+      resultIdx
+      blockNum
+      startTime
+      endTime
+      resultSetStartTime
+      resultSetEndTime
+      resultSetterAddress
+      consensusThreshold
+      transactions {
+        type
+        status
+      }
+      hashId
+      language
+    }
+    pageInfo{
+      hasNextPage
+      pageNumber
+      count
+    }
+  `,
   Vote: `
     txid
     blockNum

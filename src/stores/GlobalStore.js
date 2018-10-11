@@ -209,13 +209,13 @@ export default class GlobalStore {
         resultSetterAddress: this.app.wallet.currentAddress,
         language: this.app.ui.locale,
       });
-      const oraclesForResultset = await queryAllOracles(this.app, oracleSetFilters);
-      this.userData.resultSettingCount = oraclesForResultset.length;
+      const resultSettingInfo = await queryAllOracles(this.app, oracleSetFilters);
+      this.userData.resultSettingCount = resultSettingInfo.totalCount;
 
       // Get finalize items
       const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
-      const oraclesForFinalize = await queryAllOracles(this.app, oracleFinalizeFilters);
-      this.userData.finalizeCount = oraclesForFinalize.length;
+      const finalizeInfo = await queryAllOracles(this.app, oracleFinalizeFilters);
+      this.userData.finalizeCount = finalizeInfo.totalCount;
     } catch (err) {
       console.error(err); // eslint-disable-line
     }
