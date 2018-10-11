@@ -1,7 +1,8 @@
 import cryptoRandomString from 'crypto-random-string';
-import { times } from 'lodash';
+import { times, each } from 'lodash';
 import moment from 'moment';
-import { OracleStatus, Token } from 'constants';
+import { OracleStatus, Token, TransactionStatus } from 'constants';
+import { Transaction } from 'models';
 
 import { decimalToSatoshi } from '../src/helpers/utility';
 import { randomInt } from '../src/helpers/testUtil';
@@ -28,6 +29,13 @@ export default {
     }
   },
 
+  resetAll() {
+    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+    this.transactions = [];
+  },
+
+  /* Topics */
   generateTopic(params) {
     const topic = {
       txid: cryptoRandomString(64),
@@ -57,6 +65,11 @@ export default {
     return this.topics[Math.floor(Math.random() * this.topics.length)];
   },
 
+  resetTopics() {
+    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+  },
+
+  /* Oracles */
   generateOracle(params) {
     const currentUnix = moment.unix();
     const oracle = {
@@ -87,25 +100,30 @@ export default {
     this.paginatedOracles.totalCount = this.paginatedOracles.totalCount + 1;
   },
 
-  addTransactions(newTransactions) {
-    this.transactions.push(newTransactions);
-  },
-
-  resetAll() {
-    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-    this.transactions = [];
-  },
-
-  resetTopics() {
-    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-  },
-
   resetOracles() {
     this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
   },
 
+  /* Transactions */
+  generateTransaction(params) {
+    const tx = new Transaction({
+      txid: cryptoRandomString(64),
+      status: 'PENDING',
+      createdTime: moment.unix(),
+    });
+    Object.assign(tx, params);
+    return tx;
+  },
+
+  addTransactions(newTransactions) {
+    this.transactions.push(newTransactions);
+  },
+
   resetTransactions() {
     this.transactions = [];
+  },
+
+  setAllTxsSuccess() {
+    each(this.transactions, tx => tx.status = TransactionStatus.SUCCESS);
   },
 };

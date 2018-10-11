@@ -1,7 +1,6 @@
 import { TransactionType } from 'constants';
 
 import PendingTxsSnackbarStore, { INIT_VALUES } from './store';
-import { mockAddTransaction, mockSetAllTxsSuccess } from '../../network/graphql/queries/';
 import { sleep, getMockAppStore } from '../../helpers/testUtil';
 import mockDB from '../../../test/mockDB';
 
@@ -37,9 +36,13 @@ describe('PendingTxsSnackbarStore', () => {
     });
   });
 
-  describe('Reset', () => {
+  describe.only('Reset', () => {
     it('Reset the values when called', async () => {
-      mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address });
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_CREATE_EVENT,
+        senderAddress: addr.address,
+      }));
+
       await store.queryPendingTransactions();
       store.reset();
       expect(store.count).toBe(INIT_VALUES.count);
@@ -61,75 +64,109 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.count).toBe(0);
       expect(store.isVisible).toBe(false);
 
-      const allTxs = [];
-
-      allTxs.push(mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_CREATE_EVENT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
       expect(store.pendingApproves.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.CREATE_EVENT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.CREATE_EVENT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(2);
       expect(store.pendingCreateEvents.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.BET, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.BET,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(3);
       expect(store.pendingBets.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.APPROVE_SET_RESULT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_SET_RESULT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(4);
       expect(store.pendingApproves.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.SET_RESULT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.SET_RESULT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(5);
       expect(store.pendingSetResults.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.APPROVE_VOTE, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_VOTE,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(6);
       expect(store.pendingApproves.length).toBe(3);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.VOTE, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.VOTE,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(7);
       expect(store.pendingVotes.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.FINALIZE_RESULT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.FINALIZE_RESULT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(8);
       expect(store.pendingFinalizeResults.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.WITHDRAW, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.WITHDRAW,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(9);
       expect(store.pendingWithdraws.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.WITHDRAW_ESCROW, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.WITHDRAW_ESCROW,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(10);
       expect(store.pendingWithdraws.length).toBe(2);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.TRANSFER, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.TRANSFER,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(11);
       expect(store.pendingTransfers.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.RESET_APPROVE, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.RESET_APPROVE,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(12);
       expect(store.pendingApproves.length).toBe(3);
@@ -143,7 +180,7 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.pendingResetApproves.length).toBe(1);
       expect(store.isVisible).toBe(true);
 
-      mockSetAllTxsSuccess(allTxs);
+      mockDB.setAllTxsSuccess();
       await store.queryPendingTransactions();
       expect(store.count).toBe(0);
       expect(store.pendingCreateEvents.length).toBe(0);
@@ -156,7 +193,10 @@ describe('PendingTxsSnackbarStore', () => {
       expect(store.pendingResetApproves.length).toBe(0);
       expect(store.isVisible).toBe(false);
 
-      allTxs.push(mockAddTransaction({ type: TransactionType.SET_RESULT, senderAddress: addr.address }));
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.SET_RESULT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
       expect(store.pendingSetResults.length).toBe(1);
@@ -168,14 +208,17 @@ describe('PendingTxsSnackbarStore', () => {
     it('Visible', async () => {
       expect(store.count).toBe(0);
 
-      const allTxs = [mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address })];
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_CREATE_EVENT,
+        senderAddress: addr.address,
+      }));
       await store.queryPendingTransactions();
       expect(store.count).toBe(1);
 
       await sleep();
       expect(store.isVisible).toBe(true);
 
-      mockSetAllTxsSuccess(allTxs);
+      mockDB.setAllTxsSuccess();
       await store.queryPendingTransactions();
       await sleep();
       expect(store.isVisible).toBe(false);
@@ -184,7 +227,10 @@ describe('PendingTxsSnackbarStore', () => {
     it('syncBlockNum', async () => {
       expect(store.isVisible).toBe(false);
 
-      const allTxs = [mockAddTransaction({ type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: addr.address })];
+      mockDB.addTransactions(mockDB.generateTransaction({
+        type: TransactionType.APPROVE_CREATE_EVENT,
+        senderAddress: addr.address,
+      }));
       app.global.syncBlockNum = 1;
       await sleep();
       expect(store.isVisible).toBe(false);
@@ -198,7 +244,7 @@ describe('PendingTxsSnackbarStore', () => {
       expect(app.global.syncPercent).toBe(120);
       expect(store.isVisible).toBe(true);
 
-      mockSetAllTxsSuccess(allTxs);
+      mockDB.setAllTxsSuccess();
       app.global.syncPercent = 150;
       await sleep();
       expect(store.isVisible).toBe(true);
