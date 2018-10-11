@@ -71,8 +71,7 @@ export default class {
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      const result = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      const { oracles: aliasOracles, pageInfo } = result.oracles;
+      const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
       this.hasMoreOracles = pageInfo.hasNextPage;
       oracles = aliasOracles;
     }
