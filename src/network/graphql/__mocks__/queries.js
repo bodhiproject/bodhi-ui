@@ -69,16 +69,31 @@ export function queryAllTopics(app, filters, orderBy, limit, skip) {
 }
 
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.paginatedOracles.oracles.length ? skip + limit : mockData.paginatedOracles.oracles.length;
-  const oracles = mockData.paginatedOracles.oracles.slice(skip, end);
-  const pageNumber = toInteger(end / limit);
+  const { oracles, totalCount } = mockData.paginatedOracles;
+
+  // Filter
+  let filtered = flatten(filters.map((filter) => lodashFilter(oracles, filter)));
+
+  // Order
+  const orderFields = [];
+  const orderDirections = [];
+  forEach(orderBy, (order) => {
+    orderDirections.push(order.direction);
+    orderFields.push(order.field);
+  });
+  filtered = lodashOrderBy(filtered, orderFields, orderDirections);
+
+  // Paginate
+  const end = skip + limit <= filtered.length ? skip + limit : filtered.length;
+  filtered = filtered.slice(skip, end);
+
   return {
-    totalCount: mockData.paginatedOracles.totalCount,
+    totalCount,
     oracles,
     pageInfo: {
-      count: oracles.length,
-      hasNextPage: end < mockData.paginatedOracles.totalCount,
-      pageNumber,
+      count: filtered.length,
+      hasNextPage: end < totalCount,
+      pageNumber: toInteger(end / limit),
     },
   };
 }
