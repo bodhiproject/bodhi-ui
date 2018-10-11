@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Drawer, withStyles, Divider } from '@material-ui/core';
+import { Drawer, withStyles } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
 import styles from './styles';
