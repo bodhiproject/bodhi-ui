@@ -2,7 +2,7 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
-import { orderBy as lodashOrderBy, flatten, uniqBy, forEach, filter as lodashFilter, toInteger, isUndefined } from 'lodash';
+import { orderBy as lodashOrderBy, flatten, forEach, filter as lodashFilter, isUndefined, toInteger } from 'lodash';
 
 import mockData from '../../../../test/mockDB';
 
@@ -41,16 +41,11 @@ export function queryAllOracles(app, filters, orderBy, limit, skip) {
 }
 
 export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {
-  const filteredTxs = uniqBy(flatten(filters.map((filter) => lodashFilter(mockData.transactions, filter))), 'txid');
-  const orderFields = [];
-  const orderDirections = [];
-  forEach(orderBy, (order) => {
-    orderDirections.push(order.direction);
-    orderFields.push(order.field);
-  });
-  const result = lodashOrderBy(filteredTxs, orderFields, orderDirections);
-  const end = skip + (limit > 0 && limit <= mockData.transactions.length) ? skip + limit : mockData.transactions.length;
-  return result.slice(skip, end);
+  let { transactions } = mockData;
+  transactions = filterList(filters, mockData.transactions);
+  transactions = orderList(orderBy, transactions);
+  transactions = paginateList(limit, skip, transactions);
+  return transactions;
 }
 
 const getPageInfo = (totalCount, limit, skip) => {
