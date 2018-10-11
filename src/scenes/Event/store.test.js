@@ -1,10 +1,9 @@
 import { observable } from 'mobx';
 import { isEqual } from 'lodash';
-import { Routes, SortBy } from 'constants';
 import cryptoRandomString from 'crypto-random-string';
 
 import EventStore from './store';
-import { mockResetTopicList, mockResetOracleList, mockAddTopic, mockAddOracle } from '../../network/graphql/queries/';
+import { mockInitDb } from '../../network/graphql/queries/';
 import { sleep } from '../../helpers/utility';
 
 // Test init
@@ -35,22 +34,7 @@ describe('EventStore', () => {
 
   beforeEach(() => {
     store = new EventStore(app); // create a new instance before each test case
-    mockResetOracleList();
-    mockResetTopicList();
-
-    for (let i = 0; i < 18; i++) {
-      mockAddTopic({ txid: cryptoRandomString(64) });
-      mockAddOracle({
-        txid: cryptoRandomString(64),
-        amounts: [],
-        consensusThreshold: 100,
-        address: cryptoRandomString(40),
-        topicAddress: cryptoRandomString(40),
-        resultSetEndTime: 10,
-        endTime: 20,
-        options: [],
-      });
-    }
+    mockInitDb();
   });
 
   describe('constructor', () => {

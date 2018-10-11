@@ -10,6 +10,10 @@ import { Transaction } from 'models';
 
 import mockData from './mockData';
 
+export function mockInitDb() {
+  mockData.initDB();
+}
+
 export function mockResetAllList() {
   mockData.resetAll();
 }

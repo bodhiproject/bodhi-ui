@@ -3,7 +3,8 @@ import { times } from 'lodash';
 import moment from 'moment';
 import { OracleStatus, Token } from 'constants';
 
-import { decimalToSatoshi, randomInt } from '../../../helpers/utility';
+import { decimalToSatoshi } from '../../../helpers/utility';
+import { randomInt } from '../../../helpers/testUtil';
 
 /**
  * This is a storage class work for mocking graphql
@@ -18,25 +19,27 @@ export default {
 
   // Call this to populate the entire DB with mock data in all tables.
   initDB() {
-    this.addTopics(times(10, this.generateTopic()));
-    this.addOracles(times(10, () => {
+    for (let i = 0; i < 10; i++) {
+      this.addTopics(this.generateTopic());
+    }
+    for (let i = 0; i < 10; i++) {
       const topic = this.getRandomTopic();
-      return this.generateOracle(topic.address);
-    }));
+      this.addOracles(this.generateOracle(topic.address));
+    }
   },
 
   generateTopic(params) {
     const topic = {
       txid: cryptoRandomString(64),
-      blockNum: Math.random() * 1000,
+      blockNum: randomInt(1, 1000),
       address: cryptoRandomString(40),
       creatorAddress: `q${cryptoRandomString(33)}`,
       hashId: cryptoRandomString(32),
       status: OracleStatus.VOTING,
-      name: 'Test Topic',
+      name: `Test Topic ${randomInt(1, 10000)}`,
       options: ['A', 'B', 'C'],
-      qtumAmount: times(3, decimalToSatoshi(Math.random())),
-      botAmount: times(3, decimalToSatoshi(Math.random())),
+      qtumAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
+      botAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
       resultIdx: randomInt(0, 2),
       escrowAmount: decimalToSatoshi(5),
       language: 'en-US',
@@ -58,7 +61,7 @@ export default {
     const currentUnix = moment.unix();
     const oracle = {
       txid: cryptoRandomString(64),
-      blockNum: Math.random() * 1000,
+      blockNum: randomInt(1, 1000),
       address: cryptoRandomString(40),
       topicAddress: cryptoRandomString(40),
       status: OracleStatus.VOTING,
@@ -66,7 +69,7 @@ export default {
       options: ['A', 'B', 'C'],
       optionIdxs: [0, 1, 2],
       resultIdx: randomInt(0, 2),
-      amounts: times(3, decimalToSatoshi(Math.random())),
+      amounts: times(3, decimalToSatoshi(randomInt(1, 10))),
       token: Token.QTUM,
       consensusThreshold: decimalToSatoshi(100),
       startTime: currentUnix,
