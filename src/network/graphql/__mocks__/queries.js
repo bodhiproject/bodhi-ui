@@ -2,7 +2,7 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
-import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter, toInteger } from 'lodash';
+import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter, toInteger, isUndefined } from 'lodash';
 import cryptoRandomString from 'crypto-random-string';
 import moment from 'moment';
 import { TransactionStatus } from 'constants';
@@ -69,29 +69,44 @@ export function queryAllTopics(app, filters, orderBy, limit, skip) {
 }
 
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const { oracles, totalCount } = mockData.paginatedOracles;
+  const { totalCount } = mockData.paginatedOracles;
+  let { oracles } = mockData.paginatedOracles;
 
   // Filter
-  let filtered = flatten(filters.map((filter) => lodashFilter(oracles, filter)));
+  if (filters) {
+    oracles = flatten(filters.map((filter) => lodashFilter(oracles, filter)));
+  }
 
   // Order
-  const orderFields = [];
-  const orderDirections = [];
-  forEach(orderBy, (order) => {
-    orderDirections.push(order.direction);
-    orderFields.push(order.field);
-  });
-  filtered = lodashOrderBy(filtered, orderFields, orderDirections);
+  if (orderBy) {
+    const orderFields = [];
+    const orderDirections = [];
+
+    if (orderBy instanceof Array) {
+      forEach(orderBy, (order) => {
+        orderFields.push(order.field);
+        orderDirections.push(order.direction);
+      });
+    } else {
+      orderFields.push(orderBy.field);
+      orderDirections.push(orderBy.direction);
+    }
+
+    oracles = lodashOrderBy(oracles, orderFields, orderDirections);
+  }
 
   // Paginate
-  const end = skip + limit <= filtered.length ? skip + limit : filtered.length;
-  filtered = filtered.slice(skip, end);
+  let end;
+  if (!isUndefined(limit) && !isUndefined(skip)) {
+    end = skip + limit <= oracles.length ? skip + limit : oracles.length;
+    oracles = oracles.slice(skip, end);
+  }
 
   return {
     totalCount,
     oracles,
-    pageInfo: {
-      count: filtered.length,
+    pageInfo: end && {
+      count: oracles.length,
       hasNextPage: end < totalCount,
       pageNumber: toInteger(end / limit),
     },

@@ -6,7 +6,7 @@ import { Routes } from 'constants';
  * Sleeps for a given number of milliseconds.
  * @param {number} ms Number of milliseconds to sleep.
  */
-export async function sleep(ms) {
+export async function sleep(ms = 1) {
   await new Promise(res => setTimeout(res, ms));
 }
 
@@ -24,6 +24,7 @@ export function getMockAppStore() {
     global: getMockGlobalStore(),
     ui: getMockUiStore(),
     wallet: getMockWalletStore(),
+    sortBy: 'ASC',
   });
 }
 

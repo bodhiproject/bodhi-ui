@@ -17,10 +17,12 @@ export default {
 
   // Call this to populate the entire DB with mock data in all tables.
   init() {
-    for (let i = 0; i < 10; i++) {
+    this.resetAll();
+
+    for (let i = 0; i < 20; i++) {
       this.addTopics(this.generateTopic());
     }
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       const topic = this.getRandomTopic();
       this.addOracles(this.generateOracle(topic.address));
     }
