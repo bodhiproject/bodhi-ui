@@ -5,6 +5,7 @@ import { defineMessages } from 'react-intl';
 
 import theme from '../../../config/theme';
 import EventCard from '../../../components/EventCard';
+import EventBanner from '../../../components/EventBanner';
 import Loading from '../../../components/EventListLoading';
 import EmptyPlaceholder from '../../../components/EmptyPlaceholder';
 
@@ -26,7 +27,9 @@ export default class Favorite extends Component {
   render() {
     const { ui, favorite: { displayList, loading } } = this.props.store;
     if (loading) return <Loading />;
-    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} onClick={() => ui.favoriteDrawerOpen = false} />); // eslint-disable-line
+    let events;
+    if (!!this.props.bannerStyle) events = (displayList || []).map((event, i) => <EventBanner key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} onClick={() => ui.favoriteDrawerOpen = false} />); // eslint-disable-line
+    else events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} onClick={() => ui.favoriteDrawerOpen = false} />); // eslint-disable-line
     return (
       <Fragment>
         {displayList.length ? (

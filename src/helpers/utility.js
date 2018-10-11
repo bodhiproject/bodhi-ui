@@ -101,9 +101,10 @@ export function gasToQtum(gas) {
  * @param unixDiff {Number} The duration to convert. Formatted in unix time format.
  * @param locale {Object}} Locale object that the Intl is using.
  * @param localeMessages {Object} LocalMessages object that the Intl is using.
+ * @param isShort {Boolean} Whether to show shorter version.
  * @return {String} A string either showing "ended" or the duration in human friendly way.
  */
-export function getEndTimeCountDownString(unixDiff, locale, localeMessages) {
+export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isShort) {
   const { day, hour, minute, second, end } = messages;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);
@@ -111,6 +112,7 @@ export function getEndTimeCountDownString(unixDiff, locale, localeMessages) {
     return formatMessage(end);
   }
 
+  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} h:m:s`);
   return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}] s[${formatMessage(second)}]`);
 }
 

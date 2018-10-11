@@ -19,14 +19,6 @@ const styles = (theme) => ({
     '&.top': {
       height: '320px',
     },
-    '&.button': {
-      textAlign: 'center',
-      paddingTop: theme.padding.xs.px,
-      paddingBottom: theme.padding.xs.px,
-      lineHeight: 1,
-      fontSize: theme.sizes.font.textMd,
-      color: theme.palette.text.primary,
-    },
   },
   dashboardTime: {
     color: theme.palette.text.hint,
@@ -36,14 +28,13 @@ const styles = (theme) => ({
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
-    display: '-webkit-box', // For multiline text overflow ellipsis
-    maxHeight: '160px',
+    display: 'flex',
+    maxHeight: '1.5em',
+    fontSize: '16px',
     margin: '0 auto',
-    WebkitLineClamp: 5, // For multiline text overflow ellipsis
-    WebkitBoxOrient: 'vertical', // For multiline text overflow ellipsis
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    fontWeight: '700',
+    fontWeight: '600',
     color: 'rgba(0,0,0,0.75)',
   },
   eventCardNameBundle: {
@@ -71,6 +62,7 @@ const styles = (theme) => ({
   },
   eventCardInfoItem: {
     padding: '3px 0px',
+    display: 'inline',
   },
 });
 
