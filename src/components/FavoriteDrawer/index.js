@@ -4,6 +4,7 @@ import { Drawer, withStyles, Divider } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
 import styles from './styles';
+import FavoritePage from '../../scenes/Activities/Favorite';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -26,12 +27,7 @@ export default class FavoriteDrawer extends Component {
         }}
         anchor="left"
       >
-        <Divider />
-        <Divider />
-        <Divider />
-        <Divider />
-        <Divider />
-        <Divider />
+        {ui.favoriteDrawerOpen && <FavoritePage />}
       </Drawer>
     );
   }

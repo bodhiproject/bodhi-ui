@@ -15,6 +15,7 @@ import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import styles from './styles';
 import FavoriteDrawer from '../FavoriteDrawer';
+import { Favorite } from './Favorite';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -49,6 +50,7 @@ export default class NavBar extends Component {
                 <QtumPrediction {...this.props} />
                 <BotCourt {...this.props} />
               </Hidden>
+              <Favorite />
             </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>

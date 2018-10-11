@@ -24,9 +24,9 @@ export default class Favorite extends Component {
   }
 
   render() {
-    const { displayList, loading } = this.props.store.favorite;
+    const { ui, favorite: { displayList, loading } } = this.props.store;
     if (loading) return <Loading />;
-    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount}/>); // eslint-disable-line
+    const events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} increasingCount={this.props.store.ui.increasingCount} onClick={() => ui.favoriteDrawerOpen = false} />); // eslint-disable-line
     return (
       <Fragment>
         {displayList.length ? (
