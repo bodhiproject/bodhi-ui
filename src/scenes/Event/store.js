@@ -238,7 +238,10 @@ export default class EventStore {
   }
 
   @action
-  queryTopics = async () => this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+  queryTopics = async () => {
+    const { topics } = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+    this.topics = topics;
+  }
 
   @action
   queryOracles = async (address) => {
@@ -371,7 +374,7 @@ export default class EventStore {
       const withdrawableAddresses = [];
 
       // Fetch Topic
-      const topics = await queryAllTopics(this.app, [{ address: eventAddress }]);
+      const { topics } = await queryAllTopics(this.app, [{ address: eventAddress }]);
       let topic;
       if (!isEmpty(topics)) {
         [topic] = topics;

@@ -96,8 +96,8 @@ export default class {
       each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
       });
-      const topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      if (topics.length < limit) this.hasMore = false;
+      const { topics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+      this.hasMore = pageInfo.hasNextPage;
       return topics;
     }
     return INIT_VALUES.list; // default return

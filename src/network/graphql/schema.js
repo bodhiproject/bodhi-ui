@@ -7,6 +7,8 @@ export const TYPE = {
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
   paginatedOracles: 'PaginatedOracles',
+  paginatedTopics: 'PaginatedTopics',
+
 };
 
 const TYPE_DEF = {
@@ -78,7 +80,7 @@ const TYPE_DEF = {
 
   PaginatedOracles: `
     totalCount
-    oracles{
+    oracles {
       txid
       version
       address
@@ -104,7 +106,54 @@ const TYPE_DEF = {
       hashId
       language
     }
-    pageInfo{
+    pageInfo {
+      hasNextPage
+      pageNumber
+      count
+    }
+  `,
+
+  PaginatedTopics: `
+    totalCount
+    topics {
+      txid
+      version
+      address
+      name
+      options
+      blockNum
+      status
+      resultIdx
+      qtumAmount
+      botAmount
+      escrowAmount
+      creatorAddress
+      language
+      oracles {
+        version
+        address
+        topicAddress
+        status
+        token
+        name
+        options
+        optionIdxs
+        amounts
+        resultIdx
+        blockNum
+        startTime
+        endTime
+        resultSetStartTime
+        resultSetEndTime
+        resultSetterAddress
+        consensusThreshold
+      }
+      transactions {
+        type
+        status
+      }
+    }
+    pageInfo {
       hasNextPage
       pageNumber
       count

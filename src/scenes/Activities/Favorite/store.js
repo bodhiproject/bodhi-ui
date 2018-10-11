@@ -62,7 +62,7 @@ export default class FavoriteStore {
     // Get all event in WITHDRAW phase as Topic at favorite topic address list "favList"
     const topicOrderBy = { field: 'endTime', direction: SortBy.ASCENDING };
     const topicFilters = this.favList.map(topicAddress => ({ address: topicAddress, status: OracleStatus.WITHDRAW }));
-    const topicResult = await queryAllTopics(this.app, topicFilters, topicOrderBy, 5000);
+    const { topics: topicResult } = await queryAllTopics(this.app, topicFilters, topicOrderBy, 5000);
 
     // For those events which is not in WITHDRAW phase, search for the latest oracle
     const locatedTopics = topicResult.map(topicObject => (topicObject.address));

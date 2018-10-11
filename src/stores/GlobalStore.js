@@ -198,8 +198,8 @@ export default class GlobalStore {
       each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
       });
-      const topicsForVotes = await queryAllTopics(this.app, topicFilters);
-      this.userData.withdrawCount = topicsForVotes.length;
+      const withdrawInfo = await queryAllTopics(this.app, topicFilters);
+      this.userData.withdrawCount = withdrawInfo.totalCount;
 
       // Get result set items
       const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
