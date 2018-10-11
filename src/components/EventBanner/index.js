@@ -28,7 +28,6 @@ const messages = defineMessages({
 export default class EventBanner extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
     endTime: PropTypes.string,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
@@ -74,7 +73,7 @@ export default class EventBanner extends PureComponent {
   }
 
   render() {
-    const { classes, index } = this.props;
+    const { classes } = this.props;
     const { name, url, endTime } = this.props.event;
     const { locale, messages: localeMessages } = this.props.intl;
     const amountLabel = this.getAmountLabel();

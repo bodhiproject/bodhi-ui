@@ -25,6 +25,9 @@ export default class FavoriteDrawer extends Component {
         classes={{
           paper: classes.drawerPaper,
         }}
+        ModalProps={{
+          onBackdropClick: ui.hideFavoriteDrawer,
+        }}
         anchor="left"
       >
         <div className={classes.drawerContainer}>
