@@ -27,7 +27,7 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class EventBanner extends Component {
+export default class FavoriteCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     endTime: PropTypes.string,

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
 import { withStyles } from '@material-ui/core';
 import { FavoriteBorder, Favorite } from '@material-ui/icons';
 
 import styles from './styles';
 
 @withStyles(styles, { withTheme: true })
-@withRouter
 @inject('store')
 @observer
 class FavoriteButton extends Component {

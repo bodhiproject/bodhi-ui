@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   eventCard: {
     position: 'relative',
-    borderRadius: '5px',
+    borderRadius: '0px',
     boxShadow: '0px 0px 20px 0px rgba(0,0,0,0.05)',
     border: '1px solid rgba(0,0,0,0.25)',
     '&:hover': {
@@ -24,14 +24,14 @@ const styles = (theme) => ({
     color: theme.palette.text.hint,
     fontWeight: '500',
     display: 'block',
-    paddingBottom: '10px',
+    paddingBottom: theme.padding.unit.px,
   },
   eventCardName: {
     marginBottom: theme.padding.xs.px,
     display: 'block',
     maxHeight: '1.4em',
     maxWidth: '100%',
-    fontSize: '20px',
+    fontSize: theme.sizes.font.textLg,
     margin: '0 auto',
     overflow: 'hidden',
     textOverflow: 'ellipsis',

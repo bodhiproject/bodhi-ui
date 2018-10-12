@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   drawerPaper: {
-    position: 'relative',
+    display: 'flex',
     width: 320,
     overflow: 'hidden',
     paddingTop: theme.sizes.navHeight.px,
@@ -8,12 +8,9 @@ const styles = (theme) => ({
   drawerContainer: {
     overflowY: 'auto',
     overflowX: 'hidden',
-    height: '100%',
+    flex: 1,
   },
   drawerUnderNavbar: {
-    zIndex: 999,
-  },
-  drawerPlaceHolder: {
     zIndex: 999,
   },
 });
