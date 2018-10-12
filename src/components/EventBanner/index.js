@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -25,7 +25,7 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-export default class EventBanner extends PureComponent {
+export default class EventBanner extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     endTime: PropTypes.string,
@@ -86,14 +86,16 @@ export default class EventBanner extends PureComponent {
         <Link to={url}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardSection, 'top')}>
-              <div className={classes.eventCardNameBundle}>
-                <div className={classes.eventCardNameFlex}>
+              <Grid container spacing={8}>
+                <Grid item xs={8}>
                   <Typography variant="headline" className={classes.eventCardName}>
                     {name}
                   </Typography>
-                </div>
-                <FavoriteButton event={this.props.event} />
-              </div>
+                </Grid>
+                <Grid item>
+                  <FavoriteButton event={this.props.event} />
+                </Grid>
+              </Grid>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
                   <div className={classes.eventCardInfoItem}>

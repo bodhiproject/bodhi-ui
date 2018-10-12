@@ -8,8 +8,12 @@ const styles = (theme) => ({
   drawerContainer: {
     overflowY: 'auto',
     overflowX: 'hidden',
+    height: '100%',
   },
   drawerUnderNavbar: {
+    zIndex: 999,
+  },
+  drawerPlaceHolder: {
     zIndex: 999,
   },
 });

@@ -30,6 +30,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.xs.px,
     display: 'block',
     maxHeight: '1.4em',
+    maxWidth: '100%',
     fontSize: '20px',
     margin: '0 auto',
     overflow: 'hidden',
@@ -37,12 +38,6 @@ const styles = (theme) => ({
     whiteSpace: 'nowrap',
     fontWeight: '600',
     color: 'rgba(0,0,0,0.75)',
-  },
-  eventCardNameBundle: {
-    display: 'flex',
-  },
-  eventCardNameFlex: {
-    flex: 1,
   },
   dashBoardCardIcon: {
     marginRight: theme.padding.unit.px,
