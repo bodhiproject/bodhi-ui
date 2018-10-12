@@ -41,6 +41,7 @@ class GraphQuery {
       .keys(obj)
       .map((key) => {
         const value = obj[key];
+        if (key === 'language') return ''; // remove this if we need filter based on language in the future
         if (isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
         if (isValidEnum(key, value) || !isString(value)) {
           // Enums require values without quotes
