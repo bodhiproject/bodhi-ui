@@ -2,7 +2,7 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
-import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter } from 'lodash';
+import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter, toInteger } from 'lodash';
 import cryptoRandomString from 'crypto-random-string';
 import moment from 'moment';
 import { TransactionStatus } from 'constants';
@@ -54,13 +54,33 @@ export function mockSetAllTxsSuccess(txs) {
 }
 
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.topics.length ? skip + limit : mockData.topics.length;
-  return mockData.topics.slice(skip, end);
+  const end = skip + limit <= mockData.paginatedTopics.topics.length ? skip + limit : mockData.paginatedTopics.topics.length;
+  const topics = mockData.paginatedTopics.topics.slice(skip, end);
+  const pageNumber = toInteger(end / limit);
+  return {
+    totalCount: mockData.paginatedTopics.totalCount,
+    topics,
+    pageInfo: {
+      hasNextPage: end < mockData.paginatedTopics.totalCount,
+      pageNumber,
+      count: topics.length,
+    },
+  };
 }
 
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.oracles.length ? skip + limit : mockData.oracles.length;
-  return mockData.oracles.slice(skip, end);
+  const end = skip + limit <= mockData.paginatedOracles.oracles.length ? skip + limit : mockData.paginatedOracles.oracles.length;
+  const oracles = mockData.paginatedOracles.oracles.slice(skip, end);
+  const pageNumber = toInteger(end / limit);
+  return {
+    totalCount: mockData.paginatedOracles.totalCount,
+    oracles,
+    pageInfo: {
+      count: oracles.length,
+      hasNextPage: end < mockData.paginatedOracles.totalCount,
+      pageNumber,
+    },
+  };
 }
 
 export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {

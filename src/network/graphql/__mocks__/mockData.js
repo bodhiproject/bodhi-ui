@@ -4,28 +4,30 @@
  * Current logic is straightforward but good enough to make tests
  * */
 export default {
-  oracles: [],
-  topics: [],
+  paginatedOracles: { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
+  paginatedTopics: { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
   transactions: [],
   resetAll() {
-    this.topics = [];
-    this.oracles = [];
+    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
     this.transactions = [];
   },
   resetOracles() {
-    this.oracles = [];
+    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
   },
   resetTopics() {
-    this.topics = [];
+    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
   },
   resetTransactions() {
     this.transactions = [];
   },
   addOracles(newOracles) {
-    this.oracles.push(newOracles);
+    this.paginatedOracles.oracles.push(newOracles);
+    this.paginatedOracles.totalCount++;
   },
   addTopics(newTopics) {
-    this.topics.push(newTopics);
+    this.paginatedTopics.topics.push(newTopics);
+    this.paginatedTopics.totalCount++;
   },
   addTransactions(newTransactions) {
     this.transactions.push(newTransactions);
