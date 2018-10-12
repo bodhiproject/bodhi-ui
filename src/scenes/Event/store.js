@@ -139,7 +139,8 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    this.oracles = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
+    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
+    this.oracles = oracles;
     this.loading = false;
   }
 
@@ -235,18 +236,24 @@ export default class EventStore {
 
   @action
   verifyConfirmedOracle = async () => {
-    const res = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
-    if (!isNull(res[0].topicAddress)) {
-      const { topicAddress, address, txid } = res[0];
+    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
+    if (!isNull(oracles[0].topicAddress)) {
+      const { topicAddress, address, txid } = oracles[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
     }
   }
 
   @action
-  queryTopics = async () => this.topics = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+  queryTopics = async () => {
+    const { topics } = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+    this.topics = topics;
+  }
 
   @action
-  queryOracles = async (address) => this.oracles = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+  queryOracles = async (address) => {
+    const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
+    this.oracles = oracles;
+  }
 
   @action
   queryTransactions = async (address) => {
@@ -373,7 +380,7 @@ export default class EventStore {
       const withdrawableAddresses = [];
 
       // Fetch Topic
-      const topics = await queryAllTopics(this.app, [{ address: eventAddress }]);
+      const { topics } = await queryAllTopics(this.app, [{ address: eventAddress }]);
       let topic;
       if (!isEmpty(topics)) {
         [topic] = topics;

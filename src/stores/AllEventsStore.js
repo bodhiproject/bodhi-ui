@@ -65,13 +65,15 @@ export default class {
     let topics = [];
     if (this.hasMoreTopics) {
       const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-      topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      if (topics.length < limit) this.hasMoreTopics = false;
+      const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+      topics = aliasTopics;
+      this.hasMoreTopics = pageInfo.hasNextPage;
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      oracles = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      if (oracles.length < limit) this.hasMoreOracles = false;
+      const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
+      this.hasMoreOracles = pageInfo.hasNextPage;
+      oracles = aliasOracles;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
     return allEvents;

@@ -198,8 +198,8 @@ export default class GlobalStore {
       each(votes, ({ topicAddress, optionIdx }) => {
         topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
       });
-      const topicsForVotes = await queryAllTopics(this.app, topicFilters);
-      this.userData.withdrawCount = topicsForVotes.length;
+      const withdrawInfo = await queryAllTopics(this.app, topicFilters);
+      this.userData.withdrawCount = withdrawInfo.totalCount;
 
       // Get result set items
       const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
@@ -209,13 +209,13 @@ export default class GlobalStore {
         resultSetterAddress: this.app.wallet.currentAddress,
         language: this.app.ui.locale,
       });
-      const oraclesForResultset = await queryAllOracles(this.app, oracleSetFilters);
-      this.userData.resultSettingCount = oraclesForResultset.length;
+      const resultSettingInfo = await queryAllOracles(this.app, oracleSetFilters);
+      this.userData.resultSettingCount = resultSettingInfo.totalCount;
 
       // Get finalize items
       const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
-      const oraclesForFinalize = await queryAllOracles(this.app, oracleFinalizeFilters);
-      this.userData.finalizeCount = oraclesForFinalize.length;
+      const finalizeInfo = await queryAllOracles(this.app, oracleFinalizeFilters);
+      this.userData.finalizeCount = finalizeInfo.totalCount;
     } catch (err) {
       console.error(err); // eslint-disable-line
     }

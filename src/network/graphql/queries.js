@@ -114,7 +114,6 @@ class GraphQuery {
 
     const parenthesesOpen = needsParentheses ? '(' : '';
     const parenthesesClose = needsParentheses ? ')' : '';
-
     const query = `
       query {
         ${this.queryName}${parenthesesOpen}
@@ -151,7 +150,7 @@ class GraphQuery {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
 */
 export async function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const request = new GraphQuery('allTopics', TYPE.topic);
+  const request = new GraphQuery('allTopics', TYPE.paginatedTopics);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -165,7 +164,12 @@ export async function queryAllTopics(app, filters, orderBy, limit, skip) {
     request.addParam('skip', skip);
   }
   const result = await request.execute();
-  return map(result, (topic) => new Topic(topic, app));
+
+  return {
+    totalCount: result.totalCount,
+    topics: map(result.topics, (topic) => new Topic(topic, app)),
+    pageInfo: result.pageInfo,
+  };
 }
 
 /*
@@ -174,7 +178,7 @@ export async function queryAllTopics(app, filters, orderBy, limit, skip) {
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
 export async function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const request = new GraphQuery('allOracles', TYPE.oracle);
+  const request = new GraphQuery('allOracles', TYPE.paginatedOracles);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
   }
@@ -188,7 +192,11 @@ export async function queryAllOracles(app, filters, orderBy, limit, skip) {
     request.addParam('skip', skip);
   }
   const result = await request.execute();
-  return map(result, (oracle) => new Oracle(oracle, app));
+  return {
+    totalCount: result.totalCount,
+    oracles: map(result.oracles, (oracle) => new Oracle(oracle, app)),
+    pageInfo: result.pageInfo,
+  };
 }
 
 /*

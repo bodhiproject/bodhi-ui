@@ -31,12 +31,6 @@ export default class {
         }
       }
     );
-    reaction(
-      () => this.list,
-      () => {
-        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
-      }
-    );
   }
 
   @action
@@ -86,7 +80,8 @@ export default class {
       });
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
       const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      return data;
+      this.hasMore = data.pageInfo.hasNextPage;
+      return data.oracles;
     }
     return INIT_VALUES.list; // default return
   }

@@ -33,12 +33,6 @@ export default class QtumPredictionStore {
         }
       }
     );
-    reaction(
-      () => this.list,
-      () => {
-        if (this.loaded && this.list.length < this.skip) this.hasMore = false;
-      }
-    );
   }
 
   @action
@@ -76,10 +70,9 @@ export default class QtumPredictionStore {
         { token: Token.QTUM, status: OracleStatus.VOTING, language: this.app.ui.locale },
         { token: Token.QTUM, status: OracleStatus.CREATED, language: this.app.ui.locale },
       ];
-      let result = [];
-      result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      if (result.length < limit) this.hasMore = false;
-      return _.orderBy(result, ['endTime'], this.sortBy.toLowerCase());
+      const { oracles, pageInfo: { hasNextPage } } = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      this.hasMore = hasNextPage;
+      return _.orderBy(oracles, ['endTime'], this.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }

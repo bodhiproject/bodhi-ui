@@ -6,9 +6,11 @@ export const TYPE = {
   vote: 'Vote',
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
+  paginatedOracles: 'PaginatedOracles',
+  paginatedTopics: 'PaginatedTopics',
 };
 
-const TYPE_DEF = {
+const TOPIC_DEF = {
   Topic: `
     txid
     version
@@ -47,7 +49,9 @@ const TYPE_DEF = {
       status
     }
   `,
+};
 
+const ORACLE_DEF = {
   Oracle: `
     txid
     version
@@ -74,7 +78,36 @@ const TYPE_DEF = {
     hashId
     language
   `,
+};
 
+const TYPE_DEF = {
+  Topic: TOPIC_DEF.Topic,
+
+  Oracle: ORACLE_DEF.Oracle,
+
+  PaginatedOracles: `
+    totalCount
+    oracles {
+      ${ORACLE_DEF.Oracle}
+    }
+    pageInfo {
+      hasNextPage
+      pageNumber
+      count
+    }
+  `,
+
+  PaginatedTopics: `
+    totalCount
+    topics {
+      ${TOPIC_DEF.Topic}
+    }
+    pageInfo {
+      hasNextPage
+      pageNumber
+      count
+    }
+  `,
   Vote: `
     txid
     blockNum

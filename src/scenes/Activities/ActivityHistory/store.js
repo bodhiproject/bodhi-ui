@@ -160,8 +160,8 @@ export default class {
     if (topicAddress) {
       const filters = [{ topicAddress }];
       const order = { field: 'endTime', direction: SortBy.DESCENDING };
-      const targetOracle = await queryAllOracles(this.app, filters, order);
-      const path = getDetailPagePath(targetOracle);
+      const { oracles } = await queryAllOracles(this.app, filters, order);
+      const path = getDetailPagePath(oracles);
       if (path) return path;
     }
   }
