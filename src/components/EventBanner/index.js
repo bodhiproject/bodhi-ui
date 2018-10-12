@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
@@ -22,9 +23,10 @@ const messages = defineMessages({
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
 
-
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class EventBanner extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -75,11 +77,11 @@ export default class EventBanner extends Component {
   }
 
   render() {
-    const { classes, onClick } = this.props;
+    const { classes, onClick, store: { ui } } = this.props;
     const { name, url, endTime } = this.props.event;
     const { locale, messages: localeMessages } = this.props.intl;
     const amountLabel = this.getAmountLabel();
-    const increasingCount = this.props.increasingCount || 0;
+    const { currentTimeUnix } = ui;
 
     return (
       <Grid item xs={12}>
@@ -106,7 +108,7 @@ export default class EventBanner extends Component {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - increasingCount, locale, localeMessages, true)}</Fragment>
+                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - currentTimeUnix, locale, localeMessages, true)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>

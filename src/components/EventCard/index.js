@@ -24,7 +24,6 @@ const messages = defineMessages({
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
 
-
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
