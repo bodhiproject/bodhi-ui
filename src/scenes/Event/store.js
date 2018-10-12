@@ -230,9 +230,9 @@ export default class EventStore {
 
   @action
   verifyConfirmedOracle = async () => {
-    const { oracles: res } = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
-    if (!isNull(res[0].topicAddress)) {
-      const { topicAddress, address, txid } = res[0];
+    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
+    if (!isNull(oracles[0].topicAddress)) {
+      const { topicAddress, address, txid } = oracles[0];
       this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
     }
   }

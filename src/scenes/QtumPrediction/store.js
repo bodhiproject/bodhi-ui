@@ -70,10 +70,9 @@ export default class QtumPredictionStore {
         { token: Token.QTUM, status: OracleStatus.VOTING, language: this.app.ui.locale },
         { token: Token.QTUM, status: OracleStatus.CREATED, language: this.app.ui.locale },
       ];
-      let result = [];
-      result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      this.hasMore = result.pageInfo.hasNextPage;
-      return _.orderBy(result.oracles, ['endTime'], this.sortBy.toLowerCase());
+      const { oracles, pageInfo: { hasNextPage } } = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      this.hasMore = hasNextPage;
+      return _.orderBy(oracles, ['endTime'], this.sortBy.toLowerCase());
     }
     return INIT_VALUES.list;
   }

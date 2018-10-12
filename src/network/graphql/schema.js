@@ -8,10 +8,9 @@ export const TYPE = {
   transaction: 'Transaction',
   paginatedOracles: 'PaginatedOracles',
   paginatedTopics: 'PaginatedTopics',
-
 };
 
-const TYPE_DEF = {
+const TOPIC_DEF = {
   Topic: `
     txid
     version
@@ -50,7 +49,9 @@ const TYPE_DEF = {
       status
     }
   `,
+};
 
+const ORACLE_DEF = {
   Oracle: `
     txid
     version
@@ -77,34 +78,17 @@ const TYPE_DEF = {
     hashId
     language
   `,
+};
+
+const TYPE_DEF = {
+  Topic: TOPIC_DEF.Topic,
+
+  Oracle: ORACLE_DEF.Oracle,
 
   PaginatedOracles: `
     totalCount
     oracles {
-      txid
-      version
-      address
-      topicAddress
-      status
-      token
-      name
-      options
-      optionIdxs
-      amounts
-      resultIdx
-      blockNum
-      startTime
-      endTime
-      resultSetStartTime
-      resultSetEndTime
-      resultSetterAddress
-      consensusThreshold
-      transactions {
-        type
-        status
-      }
-      hashId
-      language
+      ${ORACLE_DEF.Oracle}
     }
     pageInfo {
       hasNextPage
@@ -116,42 +100,7 @@ const TYPE_DEF = {
   PaginatedTopics: `
     totalCount
     topics {
-      txid
-      version
-      address
-      name
-      options
-      blockNum
-      status
-      resultIdx
-      qtumAmount
-      botAmount
-      escrowAmount
-      creatorAddress
-      language
-      oracles {
-        version
-        address
-        topicAddress
-        status
-        token
-        name
-        options
-        optionIdxs
-        amounts
-        resultIdx
-        blockNum
-        startTime
-        endTime
-        resultSetStartTime
-        resultSetEndTime
-        resultSetterAddress
-        consensusThreshold
-      }
-      transactions {
-        type
-        status
-      }
+      ${TOPIC_DEF.Topic}
     }
     pageInfo {
       hasNextPage
