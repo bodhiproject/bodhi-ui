@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Grid } from '@material-ui/core';
-import { defineMessages } from 'react-intl';
+import { Grid, Typography, withStyles } from '@material-ui/core';
+import { defineMessages, injectIntl } from 'react-intl';
 
 import theme from '../../../config/theme';
 import EventCard from '../../../components/EventCard';
 import FavoriteCard from '../../../components/FavoriteCard';
 import Loading from '../../../components/EventListLoading';
 import EmptyPlaceholder from '../../../components/EmptyPlaceholder';
+import styles from './styles';
 
 const messages = defineMessages({
   emptyFavMsg: {
@@ -17,13 +18,16 @@ const messages = defineMessages({
 });
 
 @inject('store')
+@injectIntl
 @observer
+@withStyles(styles, { withTheme: true })
 export default class Favorite extends Component {
   componentDidMount() {
     this.props.store.favorite.init();
   }
 
   render() {
+    const { intl } = this.props;
     const { ui, favorite: { displayList, loading } } = this.props.store;
     if (loading) return <Loading />;
     let events;
@@ -36,7 +40,17 @@ export default class Favorite extends Component {
             {events}
           </Grid>
         ) : (
-          <EmptyPlaceholder message={messages.emptyFavMsg} />
+          <div>
+            this.props.bannerStyle ? (
+            <div className="favoriteSidebarPlacholder">
+              <Typography variant="title">
+                {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
+              </Typography>
+            </div>
+             ) : (
+            <EmptyPlaceholder message={messages.emptyFavMsg} />
+             )
+          </div>
         )}
       </Fragment>
     );
