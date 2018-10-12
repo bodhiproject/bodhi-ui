@@ -133,8 +133,8 @@ export default class EventStore {
    */
   @action
   initUnconfirmedOracle = async () => {
-    const result = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
-    this.oracles = result.oracles;
+    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
+    this.oracles = oracles;
     this.loading = false;
   }
 
