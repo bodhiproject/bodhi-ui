@@ -9,7 +9,7 @@ export default {
   transactions: [],
   resetAll() {
     this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
+    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
     this.transactions = [];
   },
   resetOracles() {
@@ -23,11 +23,11 @@ export default {
   },
   addOracles(newOracles) {
     this.paginatedOracles.oracles.push(newOracles);
-    this.paginatedOracles.totalCount++;
+    this.paginatedOracles.totalCount = this.paginatedOracles.totalCount + 1;
   },
   addTopics(newTopics) {
     this.paginatedTopics.topics.push(newTopics);
-    this.paginatedTopics.totalCount++;
+    this.paginatedTopics.totalCount = this.paginatedTopics.totalCount + 1;
   },
   addTransactions(newTransactions) {
     this.transactions.push(newTransactions);
