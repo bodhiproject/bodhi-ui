@@ -45,9 +45,9 @@ describe('AllEventsStore', () => {
     expect(store.loadingMore).toBe(false);
 
     await store.loadMoreEvents();
-    expect(store.list.length).toBe(40);
+    expect(store.list.length).toBe(48);
     expect(store.loadingMore).toBe(false);
-    expect(store.hasMore).toBe(false); // no events left in backend
+    expect(store.hasMore).toBe(true);
     expect(store.skip).toBe(store.skip);
   });
 

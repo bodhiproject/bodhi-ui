@@ -7,13 +7,35 @@ import { Transaction } from 'models';
 import { decimalToSatoshi } from '../src/helpers/utility';
 import { randomInt } from '../src/helpers/testUtil';
 
+const INIT_VALUES = {
+  paginatedTopics: {
+    totalCount: 0,
+    topics: [],
+    pageInfo: {
+      hasNextPage: true,
+      count: 0,
+      pageNumber: 1,
+    },
+  },
+  paginatedOracles: {
+    totalCount: 0,
+    oracles: [],
+    pageInfo: {
+      hasNextPage: true,
+      count: 0,
+      pageNumber: 1,
+    },
+  },
+  transactions: [],
+};
+
 /**
  * Storage class abstraction for mocking the GraphQL DB.
  * Mock GraphQL queries and mutations can use this directly.
  */
 export default {
-  paginatedOracles: { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
-  paginatedTopics: { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } },
+  paginatedTopics: INIT_VALUES.paginatedTopics,
+  paginatedOracles: INIT_VALUES.paginatedOracles,
   transactions: [],
 
   // Call this to populate the entire DB with mock data in all tables.
@@ -30,9 +52,7 @@ export default {
   },
 
   resetAll() {
-    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
-    this.transactions = [];
+    Object.assign(this, INIT_VALUES);
   },
 
   /* Topics */
@@ -66,7 +86,7 @@ export default {
   },
 
   resetTopics() {
-    this.paginatedTopics = { totalCount: 0, topics: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+    this.paginatedTopics = INIT_VALUES.paginatedTopics;
   },
 
   /* Oracles */
@@ -101,7 +121,7 @@ export default {
   },
 
   resetOracles() {
-    this.paginatedOracles = { totalCount: 0, oracles: [], pageInfo: { hasNextPage: true, count: 0, pageNumber: 1 } };
+    this.paginatedOracles = INIT_VALUES.paginatedOracles;
   },
 
   /* Transactions */
@@ -120,7 +140,7 @@ export default {
   },
 
   resetTransactions() {
-    this.transactions = [];
+    this.transactions = INIT_VALUES.transactions;
   },
 
   setAllTxsSuccess() {
