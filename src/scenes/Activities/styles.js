@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   activitiesTabWrapper: {
     position: 'fixed',
-    top: theme.sizes.navHeight,
+    top: theme.sizes.navHeight.px,
     left: 0,
     right: 0,
   },
@@ -18,7 +18,7 @@ const styles = (theme) => ({
     },
   },
   activitiesTabContainer: {
-    marginTop: theme.sizes.navHeight,
+    marginTop: theme.sizes.navHeight.px,
   },
   notLoggedInContainer: {
     top: 0,

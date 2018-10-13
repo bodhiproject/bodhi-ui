@@ -177,6 +177,7 @@
   "str.date": "날짜",
   "str.delete": "지우다",
   "str.description": "설명",
+  "str.discoverEvents": "이벤트 발견",
   "str.empty": " ",
   "str.emptyFavorite": "지금 당장 좋아하는 이벤트가 없습니다.",
   "str.emptyTxHistory": "현재 보유한 트랜젝션이 없습니다.",

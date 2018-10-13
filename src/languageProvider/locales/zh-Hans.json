@@ -177,6 +177,7 @@
   "str.date": "时间",
   "str.delete": "删除",
   "str.description": "描述",
+  "str.discoverEvents": "探索事件",
   "str.empty": " ",
   "str.emptyFavorite": "您目前没有任何收藏的事件。",
   "str.emptyTxHistory": "您目前没有任何交易。",

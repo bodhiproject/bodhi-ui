@@ -10,7 +10,7 @@ const styles = (theme) => ({
     padding: `0 ${theme.padding.sm.px}`,
     paddingRight: '0',
     alignItems: 'center',
-    height: theme.sizes.navHeight,
+    height: theme.sizes.navHeight.px,
     justifyContent: 'space-between',
     [theme.breakpoints.down('xs')]: {
       paddingLeft: theme.padding.unit.px,
@@ -44,8 +44,8 @@ const styles = (theme) => ({
     },
   },
   rightButtonContainer: {
-    height: theme.sizes.navHeight,
-    lineHeight: theme.sizes.navHeight,
+    height: theme.sizes.navHeight.px,
+    lineHeight: theme.sizes.navHeight.px,
     color: theme.palette.background.paper,
     paddingLeft: theme.padding.unit.px,
     paddingRight: theme.padding.unit.px,
@@ -66,8 +66,8 @@ const styles = (theme) => ({
     },
   },
   searchBarWrapper: {
-    height: theme.sizes.navHeight,
-    lineHeight: theme.sizes.navHeight,
+    height: theme.sizes.navHeight.px,
+    lineHeight: theme.sizes.navHeight.px,
     background: 'white',
     color: 'rgba(0, 0, 0, 1)',
   },
@@ -142,7 +142,7 @@ const styles = (theme) => ({
     boxShadow: '0px -2px 20px -2px rgba(0,0,0,0.2), 0px -2px 5px rgba(0,0,0,0.1)',
     position: 'absolute',
     right: 0,
-    top: theme.sizes.navHeight,
+    top: theme.sizes.navHeight.px,
     transition: '0.3s all ease-in-out',
     '&.hide': {
       display: 'none',

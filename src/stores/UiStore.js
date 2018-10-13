@@ -13,6 +13,7 @@ export default class UiStore {
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
   @observable currentTimeUnix = 0;
+  @observable favoriteDrawerOpen = false;
   counterInterval = null;
 
   get localeMessages() {
@@ -77,7 +78,14 @@ export default class UiStore {
   }
 
   @action
+  showFavoriteDrawer = () => this.favoriteDrawerOpen = true;
+
+  @action
+  hideFavoriteDrawer = () => this.favoriteDrawerOpen = false;
+
+  @action
   enableSearchBarMode = () => {
+    this.hideFavoriteDrawer();
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();

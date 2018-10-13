@@ -273,7 +273,10 @@ export const theme = {
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
       headerHeight: tableHeaderHeight,
     },
-    navHeight: px(navHeight),
+    navHeight: {
+      value: navHeight,
+      px: px(navHeight),
+    },
     footerHeight,
   },
   border: `solid 1px ${borderColor}`,
