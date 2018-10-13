@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import { Grid, Typography, withStyles, Button } from '@material-ui/core';
 import { defineMessages, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Routes } from 'constants';
 
 import theme from '../../../config/theme';
 import EventCard from '../../../components/EventCard';
@@ -18,16 +20,16 @@ const messages = defineMessages({
 });
 
 @inject('store')
+@withStyles(styles, { withTheme: true })
 @injectIntl
 @observer
-@withStyles(styles, { withTheme: true })
 export default class Favorite extends Component {
   componentDidMount() {
     this.props.store.favorite.init();
   }
 
   render() {
-    const { intl } = this.props;
+    const { intl, classes } = this.props;
     const { ui, favorite: { displayList, loading } } = this.props.store;
     if (loading) return <Loading />;
     let events;
@@ -40,17 +42,28 @@ export default class Favorite extends Component {
             {events}
           </Grid>
         ) : (
-          <div>
-            this.props.bannerStyle ? (
-            <div className="favoriteSidebarPlacholder">
-              <Typography variant="title">
-                {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
-              </Typography>
-            </div>
-             ) : (
-            <EmptyPlaceholder message={messages.emptyFavMsg} />
-             )
-          </div>
+          <Fragment>
+            {this.props.bannerStyle ? (
+              <div className={classes.favoriteSidebarPlacholderContainer}>
+                <Typography variant="title" className={classes.favoriteSidebarPlacholderItem}>
+                  {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
+                </Typography>
+                <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderItem}>
+                  <Button
+                    variant="raised"
+                    size="medium"
+                    color="primary"
+                    onClick={ui.hideFavoriteDrawer}
+                  >
+                    {intl.formatMessage({ id: 'str.discoverEvents', defaultMessage: 'Discover Events' })}
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <EmptyPlaceholder message={messages.emptyFavMsg} />
+            )
+            }
+          </Fragment>
         )}
       </Fragment>
     );

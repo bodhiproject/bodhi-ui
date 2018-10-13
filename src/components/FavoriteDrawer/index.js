@@ -12,6 +12,7 @@ import FavoritePage from '../../scenes/Activities/Favorite';
 @observer
 export default class FavoriteDrawer extends Component {
   componentDidMount() {
+    this.props.store.favorite.init();
   }
 
   render() {
