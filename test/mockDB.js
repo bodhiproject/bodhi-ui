@@ -62,7 +62,7 @@ export default {
   },
 
   getRandomTopic() {
-    return this.topics[Math.floor(Math.random() * this.topics.length)];
+    return this.paginatedTopics.topics[Math.floor(Math.random() * this.paginatedTopics.totalCount)];
   },
 
   resetTopics() {

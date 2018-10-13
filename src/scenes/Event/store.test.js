@@ -37,7 +37,7 @@ describe('EventStore', () => {
     });
 
     it('sets all the values for a Betting Oracle', async () => {
-      const { topicAddress, address, txid } = mockDB.oracles[0];
+      const { topicAddress, address, txid } = mockDB.paginatedOracles.oracles[0];
       await store.init({
         topicAddress,
         address,

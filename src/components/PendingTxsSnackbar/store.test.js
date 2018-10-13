@@ -36,7 +36,7 @@ describe('PendingTxsSnackbarStore', () => {
     });
   });
 
-  describe.only('Reset', () => {
+  describe('Reset', () => {
     it('Reset the values when called', async () => {
       mockDB.addTransactions(mockDB.generateTransaction({
         type: TransactionType.APPROVE_CREATE_EVENT,

@@ -7,18 +7,16 @@ import { orderBy as lodashOrderBy, flatten, forEach, filter as lodashFilter, isU
 import mockData from '../../../../test/mockDB';
 
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
-  let { topics } = mockData;
-  topics = filterList(filters, mockData.topics);
+  const { totalCount } = mockData.paginatedTopics;
+  let { topics } = mockData.paginatedTopics;
+  topics = filterList(filters, topics);
   topics = orderList(orderBy, topics);
   topics = paginateList(limit, skip, topics);
+
   return {
-    totalCount: mockData.paginatedTopics.totalCount,
+    totalCount,
     topics,
-    pageInfo: {
-      hasNextPage: end < mockData.paginatedTopics.totalCount,
-      pageNumber: toInteger(end / limit),
-      count: topics.length,
-    },
+    pageInfo: getPageInfo(limit, skip, totalCount, topics),
   };
 }
 
@@ -29,32 +27,20 @@ export function queryAllOracles(app, filters, orderBy, limit, skip) {
   oracles = orderList(orderBy, oracles);
   oracles = paginateList(limit, skip, oracles);
 
-  const end = getEndIndex(limit, skip, oracles);
   return {
     totalCount,
     oracles,
-    pageInfo: {
-      hasNextPage: end < totalCount,
-      pageNumber: toInteger(end / limit),
-      count: oracles.length,
-    },
+    pageInfo: getPageInfo(limit, skip, totalCount, oracles),
   };
 }
 
-export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {
+export function queryAllTransactions(filters, orderBy, limit, skip) {
   let { transactions } = mockData;
   transactions = filterList(filters, mockData.transactions);
   transactions = orderList(orderBy, transactions);
   transactions = paginateList(limit, skip, transactions);
   return transactions;
 }
-
-const getPageInfo = (totalCount, limit, skip) => {
-  const end = skip + (limit > 0 && limit <= list.length) ? skip + limit : oracles.length;
-  return !isUndefined(limit)
-    && !isUndefined(skip)
-    && skip + (limit > 0 && limit <= list.length) ? skip + limit : list.length;
-};
 
 const filterList = (filters, list) => {
   if (filters) {
@@ -89,4 +75,15 @@ const paginateList = (limit, skip, list) => {
     return list.slice(skip, end);
   }
   return list;
+};
+
+const getPageInfo = (limit, skip, totalCount, list) => {
+  const endIndex = skip + limit;
+  return !isUndefined(limit)
+    && !isUndefined(skip)
+    && {
+      hasNextPage: endIndex < totalCount,
+      pageNumber: toInteger(endIndex / limit),
+      count: list.length,
+    };
 };
