@@ -2,96 +2,88 @@
  * so the test files link to this instead of connecting to backend
  * this mock module is a interface between stores and mockData module.
  * */
-import { orderBy as lodashOrderBy, flatten, uniqBy, each, forEach, filter as lodashFilter, toInteger } from 'lodash';
-import cryptoRandomString from 'crypto-random-string';
-import moment from 'moment';
-import { TransactionStatus } from 'constants';
-import { Transaction } from 'models';
+import { orderBy as lodashOrderBy, flatten, forEach, filter as lodashFilter, isUndefined, toInteger } from 'lodash';
 
-import mockData from './mockData';
-
-export function mockResetAllList() {
-  mockData.resetAll();
-}
-
-export function mockResetTopicList() {
-  mockData.resetTopics();
-}
-
-export function mockResetOracleList() {
-  mockData.resetOracles();
-}
-
-export function mockAddTopic(newTopic) {
-  mockData.addTopics(newTopic);
-}
-
-export function mockResetTransactionList() {
-  mockData.resetTransactions();
-}
-
-export function mockAddTransaction(args) {
-  const tx = new Transaction({
-    txid: cryptoRandomString(64),
-    status: 'PENDING',
-    createdTime: moment.unix(),
-  });
-  Object.assign(tx, args);
-  mockData.addTransactions(tx);
-  return tx;
-}
-
-export function mockAddOracle(newOracle) {
-  mockData.addOracles(newOracle);
-}
-
-export function mockSetTxStatus(tx, status) {
-  tx.status = status;
-}
-
-export function mockSetAllTxsSuccess(txs) {
-  each(txs, tx => mockSetTxStatus(tx, TransactionStatus.SUCCESS));
-}
+import mockData from '../../../../test/mockDB';
 
 export function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.paginatedTopics.topics.length ? skip + limit : mockData.paginatedTopics.topics.length;
-  const topics = mockData.paginatedTopics.topics.slice(skip, end);
-  const pageNumber = toInteger(end / limit);
+  const { totalCount } = mockData.paginatedTopics;
+  let { topics } = mockData.paginatedTopics;
+  topics = filterList(filters, topics);
+  topics = orderList(orderBy, topics);
+  topics = paginateList(limit, skip, topics);
+
   return {
-    totalCount: mockData.paginatedTopics.totalCount,
+    totalCount,
     topics,
-    pageInfo: {
-      hasNextPage: end < mockData.paginatedTopics.totalCount,
-      pageNumber,
-      count: topics.length,
-    },
+    pageInfo: getPageInfo(limit, skip, totalCount, topics),
   };
 }
 
 export function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const end = skip + limit <= mockData.paginatedOracles.oracles.length ? skip + limit : mockData.paginatedOracles.oracles.length;
-  const oracles = mockData.paginatedOracles.oracles.slice(skip, end);
-  const pageNumber = toInteger(end / limit);
+  const { totalCount } = mockData.paginatedOracles;
+  let { oracles } = mockData.paginatedOracles;
+  oracles = filterList(filters, oracles);
+  oracles = orderList(orderBy, oracles);
+  oracles = paginateList(limit, skip, oracles);
+
   return {
-    totalCount: mockData.paginatedOracles.totalCount,
+    totalCount,
     oracles,
-    pageInfo: {
-      count: oracles.length,
-      hasNextPage: end < mockData.paginatedOracles.totalCount,
-      pageNumber,
-    },
+    pageInfo: getPageInfo(limit, skip, totalCount, oracles),
   };
 }
 
-export function queryAllTransactions(filters, orderBy, limit = 0, skip = 0) {
-  const filteredTxs = uniqBy(flatten(filters.map((filter) => lodashFilter(mockData.transactions, filter))), 'txid');
-  const orderFields = [];
-  const orderDirections = [];
-  forEach(orderBy, (order) => {
-    orderDirections.push(order.direction);
-    orderFields.push(order.field);
-  });
-  const result = lodashOrderBy(filteredTxs, orderFields, orderDirections);
-  const end = skip + (limit > 0 && limit <= mockData.transactions.length) ? skip + limit : mockData.transactions.length;
-  return result.slice(skip, end);
+export function queryAllTransactions(filters, orderBy, limit, skip) {
+  let { transactions } = mockData;
+  transactions = filterList(filters, mockData.transactions);
+  transactions = orderList(orderBy, transactions);
+  transactions = paginateList(limit, skip, transactions);
+  return transactions;
 }
+
+const filterList = (filters, list) => {
+  if (filters) {
+    return flatten(filters.map((filter) => lodashFilter(list, filter)));
+  }
+  return list;
+};
+
+const orderList = (orderBy, list) => {
+  if (orderBy) {
+    const orderFields = [];
+    const orderDirections = [];
+
+    if (orderBy instanceof Array) {
+      forEach(orderBy, (order) => {
+        orderFields.push(order.field);
+        orderDirections.push(order.direction);
+      });
+    } else {
+      orderFields.push(orderBy.field);
+      orderDirections.push(orderBy.direction);
+    }
+
+    return lodashOrderBy(list, orderFields, orderDirections);
+  }
+  return list;
+};
+
+const paginateList = (limit, skip, list) => {
+  if (!isUndefined(limit) && !isUndefined(skip)) {
+    const end = skip + limit <= list.length ? skip + limit : list.length;
+    return list.slice(skip, end);
+  }
+  return list;
+};
+
+const getPageInfo = (limit, skip, totalCount, list) => {
+  const endIndex = skip + limit;
+  return !isUndefined(limit)
+    && !isUndefined(skip)
+    && {
+      hasNextPage: endIndex < totalCount,
+      pageNumber: toInteger(endIndex / limit),
+      count: list.length,
+    };
+};

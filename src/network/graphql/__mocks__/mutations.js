@@ -4,7 +4,8 @@
  * */
 import moment from 'moment';
 import cryptoRandomString from 'crypto-random-string';
-import mockData from './mockData';
+
+import mockData from '../../../../test/mockDB';
 
 export function createTopic(
   name,
