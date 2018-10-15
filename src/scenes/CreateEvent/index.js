@@ -28,59 +28,52 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = () => (
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } } }) => (
   <Fragment>
-    <Loading />
-    <CreateEventDetail />
+    <Dialog
+      className={classes.createDialog}
+      classes={{ paper: classes.createDialogPaper }}
+      fullWidth={loaded}
+      maxWidth='md'
+      open={isOpen}
+    >
+      {!loaded ? <Loading /> : <CreateEventDetail classes={classes} />}
+    </Dialog>
   </Fragment>
 );
 
-const Loading = withStyles(styles)(inject('store')(observer(({ classes, store: { createEvent: { loaded, isOpen } } }) => (
+const Loading = () => (
   <Fragment>
-    <Dialog
-      className={classes.createDialog}
-      classes={{ paper: classes.createDialogPaper }}
-      open={!loaded && isOpen}
-    >
-      <DialogTitle>
-        <FormattedMessage id="str.pleasewait" defaultMessage="Please Wait" />
-      </DialogTitle>
-      <_Loading />
-    </Dialog>
+    <DialogTitle>
+      <FormattedMessage id="str.pleasewait" defaultMessage="Please Wait" />
+    </DialogTitle>
+    <_Loading />
   </Fragment>
-))));
+);
 
-const CreateEventDetail = withStyles(styles)(inject('store')(observer(({ classes, store: { createEvent: { loaded, isOpen } } }) => (
+const CreateEventDetail = ({ classes }) => (
   <Fragment>
-    <Dialog
-      className={classes.createDialog}
-      classes={{ paper: classes.createDialogPaper }}
-      fullWidth
-      maxWidth='md'
-      open={loaded && isOpen}
-    >
-      <DialogTitle className={classes.createDialogTitle}>
-        <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-      </DialogTitle>
-      <DialogContent>
-        <EscrowAmountNote />
-        <EventWarning />
-        <Title />
-        <CreatorDropdown />
-        <PredictionStartTime />
-        <PredictionEndTime />
-        <ResultSetStartTime />
-        <ResultSetEndTime />
-        <Outcomes />
-        <ResultSetter />
-      </DialogContent>
-      <DialogActions className={classes.footer}>
-        <CancelButton />
-        <PublishButton />
-      </DialogActions>
-    </Dialog>
+    <DialogTitle className={classes.createDialogTitle}>
+      <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+    </DialogTitle>
+    <DialogContent>
+      <EscrowAmountNote />
+      <EventWarning />
+      <Title />
+      <CreatorDropdown />
+      <PredictionStartTime />
+      <PredictionEndTime />
+      <ResultSetStartTime />
+      <ResultSetEndTime />
+      <Outcomes />
+      <ResultSetter />
+    </DialogContent>
+    <DialogActions className={classes.footer}>
+      <CancelButton />
+      <PublishButton />
+    </DialogActions>
   </Fragment>
-))));
+);
 
 const EventWarning = inject('store')(observer(({ store: { createEvent: { hasEnoughFee, warning } } }) => (
   !hasEnoughFee && <_EventWarning id={warning.id} message={warning.message} type={EventWarningType.ERROR} />
