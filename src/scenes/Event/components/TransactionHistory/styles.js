@@ -15,12 +15,6 @@ const styles = (theme) => ({
     width: '100%',
     marginTop: '20px',
   },
-  transactionHistoryTableWrapper: {
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-      overflowX: 'auto',
-    },
-  },
 });
 
 export default styles;

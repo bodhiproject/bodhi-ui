@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
+import { TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
+import { ResponsiveTable } from 'components';
 
 import TxRow from './TxRow';
 import styles from './styles';
@@ -17,12 +18,12 @@ export default class TransactionHistory extends Component {
   };
 
   render() {
-    const { classes, options, store: { eventPage, wallet } } = this.props;
+    const { options, store: { eventPage, wallet } } = this.props;
     const { transactions } = eventPage;
     return (
-      <div className={classes.transactionHistoryTableWrapper}>
+      <div>
         {transactions.length && options.length ? (
-          <Table>
+          <ResponsiveTable>
             <TableHead>
               <TableRow>
                 <TableCell padding="dense">
@@ -49,7 +50,7 @@ export default class TransactionHistory extends Component {
                 (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} />
               ))}
             </TableBody>
-          </Table>
+          </ResponsiveTable>
         ) : (
           <CenteredDiv>
             <Typography variant="body1">

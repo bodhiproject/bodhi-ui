@@ -19,6 +19,10 @@ const styles = (theme) => ({
     },
   },
   oracleSidebarContainer: {
+    padding: `${theme.padding.lg.px}`,
+    overflowX: 'hidden',
+    borderLeft: `${theme.border}`,
+    textAlign: 'right',
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.xs.px,
       textAlign: 'left',

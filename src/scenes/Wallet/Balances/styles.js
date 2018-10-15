@@ -11,10 +11,6 @@ const styles = (theme) => ({
   myBalanceTitle: {
     marginBottom: theme.padding.xs.px,
   },
-  myBalanceTableWrapper: {
-    width: '100%',
-    overflowX: 'auto',
-  },
   totalsContainerGrid: {
     marginBottom: theme.padding.sm.px,
   },

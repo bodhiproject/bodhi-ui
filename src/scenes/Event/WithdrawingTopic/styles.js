@@ -24,14 +24,12 @@ const styles = (theme) => ({
     flexDirection: 'column',
     position: 'relative',
     marginBottom: theme.padding.unit.px,
+    minWidth: '10%',
+    margin: '0 auto',
   },
   tokenDiv: {
     fontSize: theme.sizes.font.textSm,
     fontWeight: theme.typography.fontWeightBold,
-  },
-  withdrawListTableWrapper: {
-    width: '100%',
-    overflowX: 'auto',
   },
 });
 

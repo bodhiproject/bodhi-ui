@@ -83,8 +83,6 @@ const Separator = styled.div`
   width: 1px;
   height: 75px;
   background: ${props => props.theme.palette.divider};
-  margin-left: ${props => props.theme.padding.md.px};
-  margin-right: ${props => props.theme.padding.md.px};
 `;
 
 @withStyles(styles, { withTheme: true })

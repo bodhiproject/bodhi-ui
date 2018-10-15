@@ -35,18 +35,11 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) 
   </SidebarContainer>
 )));
 
-const SidebarContainer = withStyles(styles)(({ children, classes, ...props }) => (
-  <StyledSidebarContainer className={classes.oracleSidebarContainer} {...props}>
+const SidebarContainer = withStyles(styles)(({ children, classes }) => (
+  <Grid className={classes.oracleSidebarContainer} item xs={12} md={4}>
     {children}
-  </StyledSidebarContainer>
+  </Grid>
 ));
-
-const StyledSidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
-  padding: ${props => props.theme.padding.lg.px};
-  overflow-x: hidden;
-  border-left: ${props => props.theme.border};
-  text-align: right;
-`;
 
 const EndDate = inject('store')(observer(injectIntl(({ oracle: { endTime }, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />

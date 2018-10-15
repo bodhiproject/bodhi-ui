@@ -1,10 +1,4 @@
-const styles = (theme) => ({
-  tableWrapper: {
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-      overflowX: 'auto',
-    },
-  },
+const styles = () => ({
   table: {
     background: 'rgb(249,249,249)',
     border: '8px',

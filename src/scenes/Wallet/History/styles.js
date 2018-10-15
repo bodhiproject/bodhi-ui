@@ -8,10 +8,6 @@ const styles = (theme) => ({
   txHistoryGridContainer: {
     padding: theme.padding.md.px,
   },
-  tableWrapper: {
-    width: '100%',
-    overflowX: 'auto',
-  },
   table: {
     marginTop: theme.padding.sm.px,
   },
