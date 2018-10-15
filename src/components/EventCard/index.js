@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { sum } from 'lodash';
-import { Phases, EventWarningType } from 'constants';
+import { sum, filter } from 'lodash';
+import { Phases, EventWarningType, TransactionStatus, TransactionType } from 'constants';
 
 import FavoriteButton from './FavoriteButton';
 import EventWarning from '../EventWarning';
@@ -23,6 +23,7 @@ const messages = defineMessages({
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
+
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -78,9 +79,18 @@ export default class EventCard extends Component {
     }
   }
 
+  get isWithdrawn() {
+    const { event: { phase, transactions } } = this.props;
+    if (phase !== Phases.WITHDRAWING) return false;
+    const successTxs = filter(transactions, { status: TransactionStatus.SUCCESS, type: TransactionType.WITHDRAW });
+
+    if (successTxs.length > 0) return true;
+    return false;
+  }
+
   render() {
     const { classes, index, onClick, store: { ui } } = this.props;
-    const { name, isPending, isUpcoming, url, endTime } = this.props.event;
+    const { name, isPending, isUpcoming, url, endTime, phase } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
@@ -91,8 +101,10 @@ export default class EventCard extends Component {
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+              {isPending && phase !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
+              {isPending && phase === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+              {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
                   <Typography variant="headline" className={classes.eventCardName}>

@@ -247,6 +247,8 @@
   "str.winningOutcome": "결과 창출",
   "str.winnings": "상금",
   "str.withdraw": "철회",
+  "str.withdrawing": "철회ing",
+  "str.withdrawn": "철회ed",
   "str.withdrawEscrow": "에스크로 철회",
   "tnc.accept": "동의",
   "tnc.acceptCheckboxText": "나는 이용 약관에 동의합니다",

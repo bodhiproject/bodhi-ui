@@ -247,6 +247,8 @@
   "str.winningOutcome": "胜出选项",
   "str.winnings": "赢利",
   "str.withdraw": "提现",
+  "str.withdrawing": "提现中",
+  "str.withdrawn": "已提现",
   "str.withdrawEscrow": "提现押金",
   "tnc.accept": "接受",
   "tnc.acceptCheckboxText": "我接受条款及条件",
