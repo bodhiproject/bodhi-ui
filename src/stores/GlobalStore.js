@@ -71,13 +71,6 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
 
-    this.setOnline = () => {
-      this.socketOnline = true;
-      this.getSyncInfo();
-    };
-    this.setOffline = () => {
-      this.socketOnline = false;
-    };
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
     wsLink.subscriptionClient.onReconnected(this.setOnline, this);
     wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
@@ -91,6 +84,14 @@ export default class GlobalStore {
       this.getSyncInfo();
     });
   }
+
+  setOnline = () => {
+    this.socketOnline = true;
+    this.getSyncInfo();
+  };
+  setOffline = () => {
+    this.socketOnline = false;
+  };
 
   /**
    * Handle the syncInfo return of a getSyncInfo or a syncInfo subscription message.
