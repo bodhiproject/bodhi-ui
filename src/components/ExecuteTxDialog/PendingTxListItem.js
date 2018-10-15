@@ -22,26 +22,28 @@ const messages = defineMessages({
 });
 
 const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => (
-  <Table className={classes.txFeesTable}>
-    <TableHead>
-      <TableRow>
-        <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
-        <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
-        <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
-        <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
-        <TableRow key={i}>
-          <TableCell>{getTxTypeString(type, intl)}</TableCell>
-          <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
-          <TableCell>{gasLimit}</TableCell>
-          <TableCell>{gasCost}</TableCell>
+  <div className={classes.txFeesTableWrapper}>
+    <Table className={classes.txFeesTable}>
+      <TableHead>
+        <TableRow>
+          <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
+          <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
+          <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
+          <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
         </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+      </TableHead>
+      <TableBody>
+        {fees.map(({ type, amount, gasCost, gasLimit, token }, i) => (
+          <TableRow key={i}>
+            <TableCell>{getTxTypeString(type, intl)}</TableCell>
+            <TableCell>{amount ? `${amount} ${token}` : null}</TableCell>
+            <TableCell>{gasLimit}</TableCell>
+            <TableCell>{gasCost}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
 )))));
 
 const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { type, fees } }) => {

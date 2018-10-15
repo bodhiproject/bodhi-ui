@@ -69,10 +69,12 @@ export default class MyBalances extends Component {
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
           {this.getTotalsGrid()}
-          <Table>
-            {this.getTableHeader()}
-            {this.getTableBody()}
-          </Table>
+          <div className={classes.myBalanceTableWrapper}>
+            <Table>
+              {this.getTableHeader()}
+              {this.getTableBody()}
+            </Table>
+          </div>
           {this.getAddrCopiedSnackBar()}
           <DepositDialog
             dialogVisible={depositDialogVisible}

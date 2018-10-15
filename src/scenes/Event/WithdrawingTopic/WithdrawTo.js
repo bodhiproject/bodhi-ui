@@ -4,11 +4,12 @@ import _ from 'lodash';
 import { TransactionStatus, TransactionType, Token } from 'constants';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, TableBody, TableHead, TableRow, TableCell, Button } from '@material-ui/core';
+import { Table, TableBody, TableHead, TableRow, TableCell, Button, withStyles } from '@material-ui/core';
 import { Warning } from 'components';
 import { Icon } from '../components';
 import { Container, Label } from './components';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import styles from './styles';
 
 const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => {
   if (withdrawableAddresses.length > 0) {
@@ -31,14 +32,16 @@ const WithdrawToLabel = () => (
   </Label>
 );
 
-const WithdrawList = ({ withdrawableAddresses }) => (
-  <Table>
-    <TableHeader />
-    <TableBody>
-      {withdrawableAddresses.map((addr, i) => <WinningWithdrawRow addr={addr} key={i} />)}
-    </TableBody>
-  </Table>
-);
+const WithdrawList = withStyles(styles)(({ withdrawableAddresses, classes }) => (
+  <div className={classes.withdrawListTableWrapper}>
+    <Table>
+      <TableHeader />
+      <TableBody>
+        {withdrawableAddresses.map((addr, i) => <WinningWithdrawRow addr={addr} key={i} />)}
+      </TableBody>
+    </Table>
+  </div>
+));
 
 const TableHeader = () => (
   <TableHead>

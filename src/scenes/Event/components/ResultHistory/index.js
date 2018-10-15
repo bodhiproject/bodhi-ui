@@ -32,7 +32,7 @@ export default class EventResultHistory extends Component {
     );
   }
   render() {
-    const { oracles } = this.props;
+    const { oracles, classes } = this.props;
     let sortedOracles = orderBy(oracles, ['endTime']);
 
     // Add Result Setting round
@@ -56,7 +56,7 @@ export default class EventResultHistory extends Component {
     sortedOracles = filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
 
     return (
-      <div>
+      <div className={classes.eventResultHistoryTableWrapper}>
         {sortedOracles.length && (
           <Table>
             <TableHead>

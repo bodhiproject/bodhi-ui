@@ -3,10 +3,11 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, withStyles } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
 import { getEndTimeCountDownString } from '../../../helpers';
+import styles from './styles';
 
 const message = defineMessages({
   eventInfoEndDateMsg: {
@@ -34,7 +35,13 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) 
   </SidebarContainer>
 )));
 
-const SidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
+const SidebarContainer = withStyles(styles)(({ children, classes, ...props }) => (
+  <StyledSidebarContainer className={classes.oracleSidebarContainer} {...props}>
+    {children}
+  </StyledSidebarContainer>
+));
+
+const StyledSidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
   padding: ${props => props.theme.padding.lg.px};
   overflow-x: hidden;
   border-left: ${props => props.theme.border};
@@ -77,7 +84,7 @@ const Heading = styled(Typography).attrs({ variant: 'body1' })`
 const Content = styled(Typography).attrs({ variant: 'title' })`
   margin-top: ${props => props.theme.padding.unit.px} !important;
   word-wrap: break-word !important;
-  padding-left: ${props => props.theme.padding.md.px} !important;
+  padding-left: ${props => props.theme.padding.md.px};
   font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 

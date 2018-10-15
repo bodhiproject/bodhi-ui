@@ -18,6 +18,17 @@ const styles = (theme) => ({
       padding: theme.padding.xs.px,
     },
   },
+  oracleSidebarContainer: {
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.padding.xs.px,
+      textAlign: 'left',
+    },
+    '& h2': {
+      [theme.breakpoints.down('xs')]: {
+        paddingLeft: 0,
+      },
+    },
+  },
 });
 
 export default styles;

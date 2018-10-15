@@ -24,6 +24,12 @@ const styles = (theme) => ({
     fontWeight: theme.typography.fontWeightBold,
     marginBottom: theme.padding.xs.px,
   },
+  txFeesTableWrapper: {
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      overflowX: 'auto',
+    },
+  },
   txFeesTable: {
     marginBottom: theme.padding.xs.px,
     overflowX: 'scroll',

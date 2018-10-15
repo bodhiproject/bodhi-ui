@@ -1,6 +1,5 @@
 const styles = (theme) => ({
   functionRow: {
-    minWidth: theme.sizes.table.minWidth,
     margin: '-30px 0px 20px 0px',
     textAlign: 'right',
   },

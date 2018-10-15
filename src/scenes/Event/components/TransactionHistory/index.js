@@ -17,10 +17,10 @@ export default class TransactionHistory extends Component {
   };
 
   render() {
-    const { options, store: { eventPage, wallet } } = this.props;
+    const { classes, options, store: { eventPage, wallet } } = this.props;
     const { transactions } = eventPage;
     return (
-      <div>
+      <div className={classes.transactionHistoryTableWrapper}>
         {transactions.length && options.length ? (
           <Table>
             <TableHead>

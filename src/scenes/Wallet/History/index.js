@@ -65,21 +65,23 @@ export default class WalletHistory extends Component {
           <Typography variant="title">
             <FormattedMessage id="walletHistory.transferHistory" defaultMessage="Transfer History" />
           </Typography>
-          <Table className={classes.table}>
-            <TableHeader
-              orderBy={history.orderBy}
-              direction={history.direction}
-              onSortChange={this.onSortChange}
-            />
-            <TableRows list={history.list} />
-            <TableFooter
-              fullList={history.fullList}
-              perPage={history.perPage}
-              page={history.page}
-              onPageChange={this.onPageChange}
-              onPerPageChange={this.onPerPageChange}
-            />
-          </Table>
+          <div className={classes.tableWrapper}>
+            <Table className={classes.table}>
+              <TableHeader
+                orderBy={history.orderBy}
+                direction={history.direction}
+                onSortChange={this.onSortChange}
+              />
+              <TableRows list={history.list} />
+              <TableFooter
+                fullList={history.fullList}
+                perPage={history.perPage}
+                page={history.page}
+                onPageChange={this.onPageChange}
+                onPerPageChange={this.onPerPageChange}
+              />
+            </Table>
+          </div>
         </Grid>
       </Paper>
     );

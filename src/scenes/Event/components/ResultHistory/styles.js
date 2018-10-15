@@ -9,6 +9,12 @@ const styles = (theme) => ({
   arrowSize: {
     fontSize: '8px',
   },
+  eventResultHistoryTableWrapper: {
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      overflowX: 'auto',
+    },
+  },
 });
 
 export default styles;

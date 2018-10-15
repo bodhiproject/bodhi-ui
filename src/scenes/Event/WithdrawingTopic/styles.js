@@ -1,6 +1,12 @@
 const styles = (theme) => ({
   withdrawingPaper: {
     padding: theme.padding.md.px,
+    [theme.breakpoints.down('md')]: {
+      padding: theme.padding.xs.px,
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: `${theme.padding.xs.px} ${theme.padding.unit.px}`,
+    },
   },
   rewardTooltip: {
     background: '#FFFFFF',
@@ -22,6 +28,10 @@ const styles = (theme) => ({
   tokenDiv: {
     fontSize: theme.sizes.font.textSm,
     fontWeight: theme.typography.fontWeightBold,
+  },
+  withdrawListTableWrapper: {
+    width: '100%',
+    overflowX: 'auto',
   },
 });
 

@@ -32,78 +32,80 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
   const tokenProfit = tokenWinnings - resultTokenAmount;
 
   return (
-    <Table className={classes.table}>
-      <TableBody>
-        <TableRow className={classes.tableRow}>
-          <TableCell className={classes.tableCell}>
-            <FormattedMessage id="tooltip.tokenInvestment" defaultMessage="Total {token} Investment" values={{ token }} />
-          </TableCell>
-          <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-            {totalTokenAmount}
-          </TableCell>
-        </TableRow>
-        {token === 'BOT' &&
-        (
+    <div className={classes.tableWrapper}>
+      <Table className={classes.table}>
+        <TableBody>
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
+              <FormattedMessage id="tooltip.tokenInvestment" defaultMessage="Total {token} Investment" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {tokenProfit}
+              {totalTokenAmount}
             </TableCell>
           </TableRow>
-        )
-        }
-        {token === 'QTUM' &&
-        (
+          {token === 'BOT' &&
+          (
+            <TableRow className={classes.tableRow}>
+              <TableCell className={classes.tableCell}>
+                <FormattedMessage id="tooltip.tokenProfit" defaultMessage="Total {token} Profit" values={{ token }} />
+              </TableCell>
+              <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+                {tokenProfit}
+              </TableCell>
+            </TableRow>
+          )
+          }
+          {token === 'QTUM' &&
+          (
+            <TableRow className={classes.tableRow}>
+              <TableCell className={classes.tableCell}>
+                <FormattedMessage id="tooltip.qtumWon" defaultMessage="{token} Won" values={{ token }} />
+              </TableCell>
+              <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+                {qtumWonFixed}
+              </TableCell>
+            </TableRow>
+          )
+          }
+          {token === 'QTUM' &&
+          (
+            <TableRow className={classes.tableRow}>
+              <TableCell className={classes.tableCell}>
+                <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
+              </TableCell>
+              <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
+                {botQtumWonFixed}
+              </TableCell>
+            </TableRow>
+          )
+          }
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.qtumWon" defaultMessage="{token} Won" values={{ token }} />
+              <FormattedMessage id="tooltip.tokenLosing" defaultMessage="Total {token} Losing" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {qtumWonFixed}
+              {tokenLosing}
             </TableCell>
           </TableRow>
-        )
-        }
-        {token === 'QTUM' &&
-        (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
+              <Divider />
             </TableCell>
-            <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {botQtumWonFixed}
+            <TableCell className={cx(classes.tableCell)} numeric padding="none">
+              <Divider />
             </TableCell>
           </TableRow>
-        )
-        }
-        <TableRow className={classes.tableRow}>
-          <TableCell className={classes.tableCell}>
-            <FormattedMessage id="tooltip.tokenLosing" defaultMessage="Total {token} Losing" values={{ token }} />
-          </TableCell>
-          <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-            {tokenLosing}
-          </TableCell>
-        </TableRow>
-        <TableRow className={classes.tableRow}>
-          <TableCell className={classes.tableCell}>
-            <Divider />
-          </TableCell>
-          <TableCell className={cx(classes.tableCell)} numeric padding="none">
-            <Divider />
-          </TableCell>
-        </TableRow>
-        <TableRow className={classes.tableRow}>
-          <TableCell className={cx(classes.tableCell, classes.lastRow)} >
-            <FormattedMessage id="tooltip.tokenReward" defaultMessage="Total {token} Reward" values={{ token }} />
-          </TableCell>
-          <TableCell className={cx(classes.tableCell, classes.lastRow, classes.root)} numeric>
-            {tokenWinnings}
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+          <TableRow className={classes.tableRow}>
+            <TableCell className={cx(classes.tableCell, classes.lastRow)} >
+              <FormattedMessage id="tooltip.tokenReward" defaultMessage="Total {token} Reward" values={{ token }} />
+            </TableCell>
+            <TableCell className={cx(classes.tableCell, classes.lastRow, classes.root)} numeric>
+              {tokenWinnings}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

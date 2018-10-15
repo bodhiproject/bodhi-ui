@@ -1,6 +1,5 @@
 const styles = (theme) => ({
   myBalancePaper: {
-    minWidth: theme.sizes.table.minWidth,
     overflowX: 'visible',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,
@@ -11,6 +10,10 @@ const styles = (theme) => ({
   },
   myBalanceTitle: {
     marginBottom: theme.padding.xs.px,
+  },
+  myBalanceTableWrapper: {
+    width: '100%',
+    overflowX: 'auto',
   },
   totalsContainerGrid: {
     marginBottom: theme.padding.sm.px,
