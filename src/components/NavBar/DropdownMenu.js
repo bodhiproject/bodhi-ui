@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, Hidden, IconButton, Badge } from '@material-ui/core';
+import { withStyles, Hidden, IconButton, Badge, Backdrop } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage } from 'react-intl';
@@ -70,5 +70,6 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
     <div className={classes.navDropdownLinkItem} onClick={ui.onHelpButtonClick}>
       <FormattedMessage id="help" defaultMessage="Help" />
     </div>
+    <Backdrop invisible open={ui.dropdownMenuOpen} onClick={ui.toggleDropdownMenu} />
   </div>
 ))));
