@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core';
+import { TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core';
+import { ResponsiveTable } from 'components';
 import { Token, Phases } from 'constants';
 import styles from './styles';
 
@@ -58,7 +59,7 @@ export default class EventResultHistory extends Component {
     return (
       <div>
         {sortedOracles.length && (
-          <Table>
+          <ResponsiveTable>
             <TableHead>
               <TableRow>
                 <TableCell padding="dense">
@@ -78,7 +79,7 @@ export default class EventResultHistory extends Component {
             <TableBody>
               <ResultRows sortedOracles={sortedOracles} getTypeText={this.getTypeText} {...this.props} />
             </TableBody>
-          </Table>
+          </ResponsiveTable>
         )}
       </div>
     );

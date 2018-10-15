@@ -1,8 +1,9 @@
 import React from 'react';
-import { withStyles, Table, TableBody, TableCell, TableRow, Divider } from '@material-ui/core';
+import { withStyles, TableBody, TableCell, TableRow, Divider } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import _ from 'lodash';
+import { ResponsiveTable } from 'components';
 
 import styles from './styles';
 
@@ -32,7 +33,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
   const tokenProfit = tokenWinnings - resultTokenAmount;
 
   return (
-    <Table className={classes.table}>
+    <ResponsiveTable className={classes.table}>
       <TableBody>
         <TableRow className={classes.tableRow}>
           <TableCell className={classes.tableCell}>
@@ -103,7 +104,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
           </TableCell>
         </TableRow>
       </TableBody>
-    </Table>
+    </ResponsiveTable>
   );
 };
 

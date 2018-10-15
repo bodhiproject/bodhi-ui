@@ -26,7 +26,6 @@ const styles = (theme) => ({
   },
   txFeesTable: {
     marginBottom: theme.padding.xs.px,
-    overflowX: 'scroll',
   },
   explanationMsgContainer: {
     marginBottom: theme.padding.xs.px,

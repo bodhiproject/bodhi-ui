@@ -83,12 +83,8 @@ export default class TxRow extends Component {
         {expanded && (
           <Fragment>
             <TableRow selected key={`txaddr-${txid}`}>
-              <TransactionHistoryID transaction={transaction} />
-              <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
-            </TableRow>
-            <TableRow selected key={`txid-${txid}`}>
-              <TransactionHistoryAddress transaction={transaction} />
-              <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
+              <TransactionHistoryID colSpan={3} transaction={transaction} />
+              <TransactionHistoryAddress colSpan={3} transaction={transaction} />
             </TableRow>
           </Fragment>
         )}

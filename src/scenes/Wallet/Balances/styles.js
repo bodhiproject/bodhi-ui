@@ -1,6 +1,5 @@
 const styles = (theme) => ({
   myBalancePaper: {
-    minWidth: theme.sizes.table.minWidth,
     overflowX: 'visible',
     boxShadow: 'none',
     borderRadius: theme.borderRadius,

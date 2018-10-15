@@ -1,11 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { withStyles, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
+import { withStyles, TableHead, TableBody, TableRow, TableCell, Typography, Button } from '@material-ui/core';
 import { Check, Clear } from '@material-ui/icons';
 import { sumBy } from 'lodash';
 import { TransactionType } from 'constants';
-import { Loading } from 'components';
+import { Loading, ResponsiveTable } from 'components';
 
 import styles from './styles';
 import { getTxTypeString } from '../../helpers/stringUtil';
@@ -22,7 +22,7 @@ const messages = defineMessages({
 });
 
 const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { fees } }) => (
-  <Table className={classes.txFeesTable}>
+  <ResponsiveTable className={classes.txFeesTable}>
     <TableHead>
       <TableRow>
         <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
@@ -41,7 +41,7 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
         </TableRow>
       ))}
     </TableBody>
-  </Table>
+  </ResponsiveTable>
 )))));
 
 const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, tx: { type, fees } }) => {

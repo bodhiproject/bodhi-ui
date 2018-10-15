@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import {
-  Table,
   Paper,
   Grid,
   Typography,
@@ -18,6 +17,7 @@ import {
 } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { SortBy } from 'constants';
+import { ResponsiveTable } from 'components';
 
 import styles from './styles';
 import HistoryItem from './HistoryItem';
@@ -65,7 +65,7 @@ export default class WalletHistory extends Component {
           <Typography variant="title">
             <FormattedMessage id="walletHistory.transferHistory" defaultMessage="Transfer History" />
           </Typography>
-          <Table className={classes.table}>
+          <ResponsiveTable className={classes.table}>
             <TableHeader
               orderBy={history.orderBy}
               direction={history.direction}
@@ -79,7 +79,7 @@ export default class WalletHistory extends Component {
               onPageChange={this.onPageChange}
               onPerPageChange={this.onPerPageChange}
             />
-          </Table>
+          </ResponsiveTable>
         </Grid>
       </Paper>
     );
