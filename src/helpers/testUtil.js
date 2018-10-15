@@ -33,6 +33,7 @@ function getMockGlobalStore() {
     localWallet: false,
     syncBlockNum: 1,
     syncBlockTime: '1506768969',
+    online: true,
   });
 }
 

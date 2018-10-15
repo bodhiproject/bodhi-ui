@@ -11,7 +11,7 @@ const httpLink = new HttpLink({
   uri: Routes.graphql.http,
 });
 
-const wsLink = new WebSocketLink({
+export const wsLink = new WebSocketLink({
   uri: Routes.graphql.subs,
   options: {
     reconnect: true,

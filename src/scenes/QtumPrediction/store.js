@@ -33,6 +33,15 @@ export default class QtumPredictionStore {
         }
       }
     );
+    reaction(
+      () => this.app.global.online,
+      () => {
+        if (this.app.ui.location === Routes.QTUM_PREDICTION && this.app.global.online) {
+          if (this.loadingMore) this.loadMore();
+          else this.init();
+        }
+      }
+    );
   }
 
   @action
@@ -55,11 +64,15 @@ export default class QtumPredictionStore {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
-      const nextFewEvents = await this.fetch(this.limit, this.skip);
-      runInAction(() => {
-        this.list = [...this.list, ...nextFewEvents];
-        this.loadingMore = false;
-      });
+      try {
+        const nextFewEvents = await this.fetch(this.limit, this.skip);
+        runInAction(() => {
+          this.list = [...this.list, ...nextFewEvents];
+          this.loadingMore = false;
+        });
+      } catch (e) {
+        this.skip -= this.limit;
+      }
     }
   }
 

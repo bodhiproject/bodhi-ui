@@ -30,6 +30,15 @@ export default class BotCourtStore {
         }
       }
     );
+    reaction(
+      () => this.app.global.online,
+      () => {
+        if (this.app.ui.location === Routes.BOT_COURT && this.app.global.online) {
+          if (this.loadingMore) this.loadMore();
+          else this.init();
+        }
+      }
+    );
   }
 
   @action
@@ -47,11 +56,15 @@ export default class BotCourtStore {
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit;
-      const nextFewEvents = await this.fetch();
-      runInAction(() => {
-        this.list = [...this.list, ...nextFewEvents];
-        this.loadingMore = false;
-      });
+      try {
+        const nextFewEvents = await this.fetch();
+        runInAction(() => {
+          this.list = [...this.list, ...nextFewEvents];
+          this.loadingMore = false;
+        });
+      } catch (e) {
+        this.skip -= this.limit;
+      }
     }
   }
 

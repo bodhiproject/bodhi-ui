@@ -35,6 +35,15 @@ export default class {
         }
       }
     );
+    reaction(
+      () => this.app.global.online,
+      () => {
+        if (this.app.ui.location === Routes.ALL_EVENTS && this.app.global.online) {
+          if (this.loadingMore) this.loadMoreEvents();
+          else this.init();
+        }
+      }
+    );
   }
 
   @action
@@ -51,11 +60,16 @@ export default class {
   loadMoreEvents = async () => {
     this.loadingMore = true;
     this.skip += this.limit;
-    const nextFewEvents = await this.fetchAllEvents();
-    runInAction(() => {
-      this.list = [...this.list, ...nextFewEvents];
-      this.loadingMore = false;
-    });
+    try {
+      const nextFewEvents = await this.fetchAllEvents();
+      runInAction(() => {
+        this.list = [...this.list, ...nextFewEvents];
+        this.loadingMore = false;
+      });
+    } catch (e) {
+      // if encounter error, such as internet loss, keep loadingMore true, but set skip back, so when regain internet, loadMore continue
+      this.skip -= this.limit;
+    }
   }
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
@@ -63,13 +77,13 @@ export default class {
     skip /= 2; // eslint-disable-line
     const orderBy = { field: 'blockNum', direction: this.app.sortBy };
     let topics = [];
+    let oracles = [];
     if (this.hasMoreTopics) {
       const topicFilters = [{ status: OracleStatus.WITHDRAW }];
       const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
       topics = aliasTopics;
       this.hasMoreTopics = pageInfo.hasNextPage;
     }
-    let oracles = [];
     if (this.hasMoreOracles) {
       const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
       this.hasMoreOracles = pageInfo.hasNextPage;

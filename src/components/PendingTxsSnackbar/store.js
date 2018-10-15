@@ -56,9 +56,9 @@ export default class PendingTxsSnackbarStore {
     );
     // New block change
     reaction(
-      () => this.app.global.syncBlockNum,
+      () => this.app.global.syncBlockNum + this.app.global.online,
       () => {
-        if (this.app.global.syncPercent >= 100) {
+        if (this.app.global.syncPercent >= 100 && this.app.global.online) {
           this.queryPendingTransactions();
         }
       },

@@ -1,10 +1,10 @@
-import { observable, action, reaction, toJS } from 'mobx';
+import { observable, action, reaction, toJS, computed } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
 
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
-import apolloClient from '../network/graphql';
+import apolloClient, { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: undefined,
@@ -19,6 +19,8 @@ const INIT_VALUES = {
     withdrawCount: 0,
     totalCount: 0,
   },
+  socketOnline: false,
+  internetOnline: navigator.onLine,
 };
 
 export default class GlobalStore {
@@ -28,6 +30,8 @@ export default class GlobalStore {
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
   @observable peerNodeCount = INIT_VALUES.peerNodeCount
+  @observable socketOnline = INIT_VALUES.socketOnline
+  @observable internetOnline = INIT_VALUES.internetOnline
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     finalizeCount: INIT_VALUES.userData.finalizeCount,
@@ -36,6 +40,10 @@ export default class GlobalStore {
       return this.resultSettingCount + this.finalizeCount + this.withdrawCount;
     },
   });
+
+  @computed get online() {
+    return this.socketOnline && this.internetOnline;
+  }
 
   constructor(app) {
     this.app = app;
@@ -61,9 +69,29 @@ export default class GlobalStore {
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
     // Call syncInfo once to init the wallet addresses used by other stores
-    this.getSyncInfo();
     this.subscribeSyncInfo();
+
+    wsLink.subscriptionClient.onConnected(this.setOnline, this);
+    wsLink.subscriptionClient.onReconnected(this.setOnline, this);
+    wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
+
+    // Subscribe to changes
+    window.addEventListener('offline', () => {
+      this.internetOnline = false;
+    });
+    window.addEventListener('online', () => {
+      this.internetOnline = true;
+      this.getSyncInfo();
+    });
   }
+
+  setOnline = () => {
+    this.socketOnline = true;
+    this.getSyncInfo();
+  };
+  setOffline = () => {
+    this.socketOnline = false;
+  };
 
   /**
    * Handle the syncInfo return of a getSyncInfo or a syncInfo subscription message.

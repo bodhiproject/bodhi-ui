@@ -7,7 +7,6 @@ import Loading from '../../components/EventListLoading';
 import EventCard from '../../components/EventCard';
 import TopActions from './components/TopActions';
 
-
 @inject('store')
 @observer
 export default class QtumPrediction extends Component {
