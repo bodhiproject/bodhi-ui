@@ -85,7 +85,6 @@ export default class EventCard extends Component {
     const pendingTxs = filter(allTxs, { status: TransactionStatus.PENDING });
     const successTxs = filter(allTxs, { status: TransactionStatus.SUCCESS });
 
-    if (allTxs.length === 0) return 0;
     if (pendingTxs.length > 0) return 1;
     if (successTxs.length > 0) return 2;
     return 0;
@@ -97,6 +96,7 @@ export default class EventCard extends Component {
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
+    console.log(this.props.event);
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -106,7 +106,7 @@ export default class EventCard extends Component {
             <div className={cx(classes.eventCardSection, 'top')}>
               {isPending && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
-              {this.withdrawnStatus === 1 && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+              {isPending && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
               {this.withdrawnStatus === 2 && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
