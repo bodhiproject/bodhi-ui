@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } f
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -18,6 +18,7 @@ const INIT = {
   loading: true,
   oracles: [],
   topics: [],
+  votes: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -42,6 +43,7 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
+  @observable votes = INIT.votes
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -167,6 +169,7 @@ export default class EventStore {
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
+    await this.queryLeaderboard('QTUM');
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
@@ -255,6 +258,12 @@ export default class EventStore {
   queryOracles = async (address) => {
     const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
     this.oracles = oracles;
+  }
+
+  @action
+  queryLeaderboard = async (token) => {
+    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 20, 0);
+    this.votes = votes;
   }
 
   @action

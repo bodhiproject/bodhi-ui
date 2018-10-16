@@ -63,13 +63,12 @@ class GraphQuery {
         }
         filterStr = filterStr.concat(this.formatObject(obj));
       });
-
       filterStr = `
-        filter: {
-          OR: [
-            ${filterStr}
-          ]
-        }
+      filter: {
+        OR: [
+          ${filterStr}
+        ]
+      }
       `;
     }
     return filterStr;
@@ -214,6 +213,29 @@ export function queryAllVotes(filters, orderBy) {
     request.setOrderBy(orderBy);
   }
   return request.execute();
+}
+
+/*
+* Queries allVotes from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+*/
+export async function queryMostVotes(filters, orderBy, limit, skip) {
+  const request = new GraphQuery('mostVotes', TYPE.paginatedAccumulatedVotes);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  if (isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
+  }
+  const result = await request.execute();
+  return result;
 }
 
 /*

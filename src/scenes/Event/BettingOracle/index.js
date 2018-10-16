@@ -6,6 +6,7 @@ import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import Leaderboard from '../components/Leaderboard';
 
 const messages = defineMessages({
   unconfirmedMessage: {
@@ -30,6 +31,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
       {!oracle.unconfirmed && (
         <Fragment>
           <BetButton eventpage={eventPage} />
+          <Leaderboard />
           <HistoryTable transactionHistory />
         </Fragment>
       )}
