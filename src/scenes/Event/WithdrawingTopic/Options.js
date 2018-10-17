@@ -70,18 +70,18 @@ const OptionWrapper = styled.div`
   width: 100%;
   display: block;
   position: relative;
-  padding-left: ${props => props.theme.padding.md.px};
-  margin-bottom: ${props => props.theme.padding.md.px};
+  padding-left: ${props => props.theme.padding.space5X.px};
+  margin-bottom: ${props => props.theme.padding.space5X.px};
   &.last {
     margin: 0;
   };
   &.option {
-    margin-bottom: ${props => props.theme.padding.sm.px};
+    margin-bottom: ${props => props.theme.padding.space3X.px};
   };
 `;
 
 const Wrapper = styled.div`
-  padding: ${props => props.theme.padding.md.px};
+  padding: ${props => props.theme.padding.space5X.px};
 `;
 
 export default Options;

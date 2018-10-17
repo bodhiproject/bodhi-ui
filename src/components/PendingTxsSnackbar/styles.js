@@ -1,13 +1,13 @@
 const styles = (theme) => ({
   snackbar: {
     width: 200,
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.spaceX.px,
   },
   totalCountText: {
     fontWeight: theme.typography.fontWeightBold,
   },
   balanceExplanation: {
-    marginTop: theme.padding.xs.px,
+    marginTop: theme.padding.space2X.px,
   },
 });
 

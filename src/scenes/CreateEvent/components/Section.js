@@ -17,5 +17,5 @@ export const Section = injectIntl(withStyles(styles, { withTheme: true })(({ tit
 )));
 
 const SectionContainer = styled(Grid).attrs({ container: true })`
-  margin-bottom: ${props => props.theme.padding.unit.px};
+  margin-bottom: ${props => props.theme.padding.spaceX.px};
 `;

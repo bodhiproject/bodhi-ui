@@ -1,13 +1,13 @@
 const styles = (theme) => ({
   depositAddress: {
     color: theme.palette.primary.main,
-    padding: theme.padding.xs.px,
-    marginBottom: theme.padding.xs.px,
+    padding: theme.padding.space2X.px,
+    marginBottom: theme.padding.space2X.px,
     border: theme.border,
     borderRadius: theme.borderRadius,
   },
   qtumAmount: {
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.spaceX.px,
   },
 });
 

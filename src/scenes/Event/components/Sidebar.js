@@ -54,7 +54,7 @@ const ResultSetter = ({ oracle }) => (
 );
 
 const EventInfo = styled.div`
-  padding-bottom: ${props => props.theme.padding.md.px};
+  padding-bottom: ${props => props.theme.padding.space5X.px};
 `;
 
 const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
@@ -75,9 +75,9 @@ const Heading = styled(Typography).attrs({ variant: 'body1' })`
 `;
 
 const Content = styled(Typography).attrs({ variant: 'title' })`
-  margin-top: ${props => props.theme.padding.unit.px} !important;
+  margin-top: ${props => props.theme.padding.spaceX.px} !important;
   word-wrap: break-word !important;
-  padding-left: ${props => props.theme.padding.md.px};
+  padding-left: ${props => props.theme.padding.space5X.px};
   font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 

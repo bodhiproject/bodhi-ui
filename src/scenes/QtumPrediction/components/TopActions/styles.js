@@ -1,9 +1,9 @@
 const styles = (theme) => ({
   dashboardActionsWrapper: {
-    marginBottom: theme.padding.sm.px,
+    marginBottom: theme.padding.space3X.px,
   },
   createEventButton: {
-    padding: `12px ${theme.padding.sm.px}`,
+    padding: `12px ${theme.padding.space3X.px}`,
     verticalAlign: 'middle',
   },
   createEventButtonIcon: {
@@ -16,17 +16,17 @@ const styles = (theme) => ({
   },
   dashboardActionsSort: {
     display: 'inline-block',
-    padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
+    padding: `${theme.padding.spaceX.px} ${theme.padding.space3X.px}`,
     verticalAlign: 'middle',
     [theme.breakpoints.down('xs')]: {
-      padding: `${theme.padding.unit.px} ${theme.padding.unit.px}`,
+      padding: `${theme.padding.spaceX.px} ${theme.padding.spaceX.px}`,
     },
   },
   dashboardActionsSortLabel: {
-    marginRight: theme.padding.sm.px,
+    marginRight: theme.padding.space3X.px,
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
-      marginRight: theme.padding.unit.px,
+      marginRight: theme.padding.spaceX.px,
     },
   },
   dashboardActionsSelect: {

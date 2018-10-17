@@ -1,12 +1,12 @@
 const styles = (theme) => ({
   eventOptionCollapse: {
-    padding: ('0 ').concat(theme.padding.unit.px),
+    padding: ('0 ').concat(theme.padding.spaceX.px),
     paddingTop: '1px',
     '&.first': {
-      paddingTop: theme.padding.unit.px,
+      paddingTop: theme.padding.spaceX.px,
     },
     '&.last': {
-      paddingBottom: theme.padding.unit.px,
+      paddingBottom: theme.padding.spaceX.px,
     },
     '&.is_result span': {
       display: 'none !important',
@@ -19,15 +19,15 @@ const styles = (theme) => ({
     width: '100%',
     display: 'block',
     position: 'relative',
-    paddingLeft: theme.padding.md.px,
+    paddingLeft: theme.padding.space5X.px,
     paddingRight: '0 !important',
-    marginTop: theme.padding.unit.px,
-    marginBottom: theme.padding.unit.px,
+    marginTop: theme.padding.spaceX.px,
+    marginBottom: theme.padding.spaceX.px,
     '&.noMargin': {
       margin: 0,
     },
     '&.last': {
-      marginBottom: theme.padding.xs.px,
+      marginBottom: theme.padding.space2X.px,
     },
   },
   eventOptionNum: {
@@ -58,8 +58,8 @@ const styles = (theme) => ({
   eventOptionProgress: {
     position: 'relative',
     paddingRight: '50px',
-    marginTop: theme.padding.unit.px,
-    marginBottom: theme.padding.unit.px,
+    marginTop: theme.padding.spaceX.px,
+    marginBottom: theme.padding.spaceX.px,
   },
   eventOptionProgressNum: {
     width: '50px',

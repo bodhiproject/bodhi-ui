@@ -56,11 +56,19 @@ const borderColor = '#ECECEC';
 const borderColorDark = '#999999';
 
 // Spacing
-const paddingUnit = 8;
-const paddingXs = paddingUnit * 2; // 16
-const paddingSm = paddingUnit * 3; // 24
-const paddingMd = paddingUnit * 5; // 40
-const paddingLg = paddingUnit * 7; // 56
+const baseSpaceX = 8;
+const spaceX = baseSpaceX; // 8
+const space2X = baseSpaceX * 2; // 16
+const space3X = baseSpaceX * 3; // 24
+const space4X = baseSpaceX * 4; // 32
+const space5X = baseSpaceX * 5; // 40
+const space6X = baseSpaceX * 6; // 48
+const space7X = baseSpaceX * 7; // 56
+const space8X = baseSpaceX * 8; // 64
+const space9X = baseSpaceX * 9; // 72
+const space10X = baseSpaceX * 10; // 80
+const space11X = baseSpaceX * 11; // 88
+const space12X = baseSpaceX * 12; // 96
 
 // Size
 const progressHeight = 12;
@@ -72,6 +80,7 @@ const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
 
 const px = (value) => value.toString().concat('px');
+const rem = (value) => (value / 16).toString().concat('rem');
 
 export const theme = {
   /* Material variables */
@@ -187,8 +196,8 @@ export const theme = {
     },
     MuiTab: {
       root: {
-        marginTop: px(paddingUnit),
-        marginBottom: px(paddingUnit),
+        marginTop: px(spaceX),
+        marginBottom: px(spaceX),
         borderCollapse: 'separate',
       },
       label: {
@@ -213,12 +222,12 @@ export const theme = {
         backgroundColor: primaryColor,
         color: white,
         fontSize: px(fontSizeMeta),
-        padding: paddingUnit,
+        padding: spaceX,
       },
     },
     MuiExpansionPanelSummary: {
       expandIcon: {
-        top: px(paddingSm),
+        top: px(space3X),
         right: 0,
       },
     },
@@ -234,25 +243,65 @@ export const theme = {
   },
   /* User-defined */
   padding: {
-    unit: {
-      value: paddingUnit,
-      px: px(paddingUnit),
+    spaceX: {
+      value: spaceX,
+      px: px(spaceX),
+      rem: rem(spaceX),
     },
-    xs: {
-      value: paddingXs,
-      px: px(paddingXs),
+    space2X: {
+      value: space2X,
+      px: px(space2X),
+      rem: rem(space2X),
     },
-    sm: {
-      value: paddingSm,
-      px: px(paddingSm),
+    space3X: {
+      value: space3X,
+      px: px(space3X),
+      rem: rem(space3X),
     },
-    md: {
-      value: paddingMd,
-      px: px(paddingMd),
+    space4X: {
+      value: space4X,
+      px: px(space4X),
+      rem: rem(space4X),
     },
-    lg: {
-      value: paddingLg,
-      px: px(paddingLg),
+    space5X: {
+      value: space5X,
+      px: px(space5X),
+      rem: rem(space5X),
+    },
+    space6X: {
+      value: space6X,
+      px: px(space6X),
+      rem: rem(space6X),
+    },
+    space7X: {
+      value: space7X,
+      px: px(space7X),
+      rem: rem(space7X),
+    },
+    space8X: {
+      value: space8X,
+      px: px(space8X),
+      rem: rem(space8X),
+    },
+    space9X: {
+      value: space9X,
+      px: px(space9X),
+      rem: rem(space9X),
+    },
+    space10X: {
+      value: space10X,
+      px: px(space10X),
+      rem: rem(space10X),
+    },
+    space11X: {
+      value: space11X,
+      px: px(space11X),
+      rem: rem(space11X),
+    },
+    space12X: {
+      value: space12X,
+      px: px(space12X),
+      rem: rem(space12X),
     },
   },
   sizes: {
@@ -306,10 +355,10 @@ bodhiTheme.overrides = {
   ...bodhiTheme.overrides,
   MuiButton: {
     root: {
-      borderRadius: px(paddingLg),
+      borderRadius: px(space7X),
       textTransform: 'none',
       [bodhiTheme.breakpoints.down('xs')]: {
-        padding: px(paddingUnit),
+        padding: px(spaceX),
         minWidth: 64,
         minHeight: 32,
         fontSize: 12,
@@ -338,13 +387,13 @@ bodhiTheme.overrides = {
       fontSize: px(fontSizeMeta),
       fontWeight: fontWeightBold,
       height: 40,
-      padding: `0 ${paddingSm}`,
+      padding: `0 ${space3X}`,
     },
   },
   MuiTablePagination: {
     toolbar: {
       [bodhiTheme.breakpoints.down('xs')]: {
-        paddingLeft: px(paddingUnit),
+        paddingLeft: px(spaceX),
       },
     },
     selectRoot: {
@@ -368,10 +417,10 @@ bodhiTheme.overrides = {
     body: {
       color: textColorGrey,
       fontSize: 13,
-      paddingTop: px(paddingSm),
-      paddingBottom: px(paddingSm),
+      paddingTop: px(space3X),
+      paddingBottom: px(space3X),
       [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
+        padding: px(spaceX),
         fontSize: 12,
       },
     },
@@ -379,13 +428,13 @@ bodhiTheme.overrides = {
       fontWeight: fontWeightBold,
       fontSize: px(fontSizeMeta),
       [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
+        padding: px(spaceX),
         fontSize: 12,
       },
     },
     numeric: {
       [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
+        padding: px(spaceX),
       },
     },
   },

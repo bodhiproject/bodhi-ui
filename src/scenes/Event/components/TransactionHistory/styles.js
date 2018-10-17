@@ -1,9 +1,9 @@
 const styles = (theme) => ({
   detailTxWrapper: {
-    marginTop: theme.padding.md.px,
+    marginTop: theme.padding.space5X.px,
   },
   detailTxTitle: {
-    marginBottom: theme.padding.xs.px,
+    marginBottom: theme.padding.space2X.px,
   },
   arrowSize: {
     fontSize: '8px',

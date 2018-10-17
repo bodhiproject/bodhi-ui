@@ -38,7 +38,7 @@ const styles = (theme) => ({
     marginLeft: '-50px',
   },
   loaderPercentWrapper: {
-    marginTop: theme.padding.sm.px,
+    marginTop: theme.padding.space3X.px,
   },
   loaderPercent: {
     display: 'inline-block',
@@ -51,23 +51,23 @@ const styles = (theme) => ({
     background: 'white',
     borderRadius: '14px',
     boxShadow: '0 0 8px rgba(0,0,0,0.15)',
-    marginTop: theme.padding.sm.px,
-    marginBottom: theme.padding.xs.px,
+    marginTop: theme.padding.space3X.px,
+    marginBottom: theme.padding.space2X.px,
   },
   loaderProgress: {
     height: '10px',
   },
   loaderInfoWrapper: {
-    marginTop: theme.padding.sm.px,
+    marginTop: theme.padding.space3X.px,
   },
   loaderInfoLabel: {
     fontWeight: 'bold',
     textAlign: 'right',
-    padding: theme.padding.unit.px,
+    padding: theme.padding.spaceX.px,
   },
   loaderInfoData: {
     textAlign: 'left',
-    padding: theme.padding.unit.px,
+    padding: theme.padding.spaceX.px,
   },
 });
 

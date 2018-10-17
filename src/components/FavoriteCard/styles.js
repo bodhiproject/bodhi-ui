@@ -15,7 +15,7 @@ const styles = (theme) => ({
   },
   eventCardSection: {
     position: 'relative',
-    padding: theme.padding.xs.px,
+    padding: theme.padding.space2X.px,
     '&.top': {
       height: '100px',
     },
@@ -24,10 +24,10 @@ const styles = (theme) => ({
     color: theme.palette.text.hint,
     fontWeight: '500',
     display: 'block',
-    paddingBottom: theme.padding.unit.px,
+    paddingBottom: theme.padding.spaceX.px,
   },
   eventCardName: {
-    marginBottom: theme.padding.xs.px,
+    marginBottom: theme.padding.space2X.px,
     display: 'block',
     maxHeight: '1.4em',
     maxWidth: '100%',
@@ -40,10 +40,10 @@ const styles = (theme) => ({
     color: 'rgba(0,0,0,0.75)',
   },
   dashBoardCardIcon: {
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
   },
   eventCardInfo: {
-    bottom: theme.padding.sm.px,
+    bottom: theme.padding.space3X.px,
     color: theme.palette.text.primary,
   },
   eventCardInfoItem: {

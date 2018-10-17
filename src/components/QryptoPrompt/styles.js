@@ -7,20 +7,20 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.padding.lg.px,
+    padding: theme.padding.space7X.px,
   },
   popoverRoot: {
     maxWidth: 532,
-    padding: theme.padding.sm.px,
+    padding: theme.padding.space3X.px,
   },
   logo: {
     width: 48,
-    marginBottom: theme.padding.sm.px,
+    marginBottom: theme.padding.space3X.px,
   },
   message: {
     fontSize: theme.sizes.font.textLg,
     lineHeight: '32px',
-    marginBottom: theme.padding.sm.px,
+    marginBottom: theme.padding.space3X.px,
     '&.left': {
       textAlign: 'left',
     },
@@ -28,7 +28,7 @@ const styles = (theme) => ({
       textAlign: 'center',
     },
     '&.marginLeft': {
-      marginLeft: theme.padding.xs.px,
+      marginLeft: theme.padding.space2X.px,
     },
   },
   buttonContainer: {
@@ -36,7 +36,7 @@ const styles = (theme) => ({
     justifyContent: 'flex-end',
   },
   remindButton: {
-    marginRight: theme.padding.xs.px,
+    marginRight: theme.padding.space2X.px,
   },
 });
 

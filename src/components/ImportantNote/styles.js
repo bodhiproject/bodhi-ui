@@ -3,7 +3,7 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    margin: `${theme.padding.xs.px} 0 ${theme.padding.unit.px} 0`,
+    margin: `${theme.padding.space2X.px} 0 ${theme.padding.spaceX.px} 0`,
   },
   iconButton: {
     width: theme.sizes.icon.large,
@@ -16,7 +16,7 @@ const styles = (theme) => ({
   icon: {
     fontSize: theme.sizes.font.textMd,
     color: theme.palette.primary.main,
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
   },
   heading: {
     fontSize: theme.sizes.font.textMd,
@@ -26,10 +26,10 @@ const styles = (theme) => ({
   message: {
     fontSize: theme.sizes.font.textSm,
     color: theme.palette.text.secondary,
-    margin: `0 0 ${theme.padding.xs.px} 0`,
+    margin: `0 0 ${theme.padding.space2X.px} 0`,
     [theme.breakpoints.down('xs')]: {
       margin: 0,
-      padding: `${theme.padding.unit.px} 0`,
+      padding: `${theme.padding.spaceX.px} 0`,
       fontSize: 12,
     },
   },

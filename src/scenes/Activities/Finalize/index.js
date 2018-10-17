@@ -24,7 +24,7 @@ export default class Finalize extends Component {
       <Fragment>
         {currentAddress ? (
           <InfiniteScroll
-            spacing={theme.padding.sm.value}
+            spacing={theme.padding.space3X.value}
             data={events}
             loadMore={loadMore}
             loadingMore={loadingMore}

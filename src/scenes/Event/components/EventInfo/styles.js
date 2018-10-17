@@ -1,14 +1,14 @@
 const styles = (theme) => ({
   eventInfoWrapper: {
-    paddingBottom: theme.padding.md.px,
+    paddingBottom: theme.padding.space5X.px,
   },
   eventInfoBlock: {
     marginBottom: '36px',
   },
   eventInfo: {
-    marginTop: theme.padding.unit.px,
+    marginTop: theme.padding.spaceX.px,
     wordWrap: 'break-word',
-    paddingLeft: theme.padding.md.px,
+    paddingLeft: theme.padding.space5X.px,
     fontSize: theme.typography.fontSize,
   },
 });

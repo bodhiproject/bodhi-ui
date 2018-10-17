@@ -4,7 +4,7 @@ const styles = (theme) => ({
     textAlign: 'right',
   },
   button: {
-    margin: `${theme.padding.xs.px} 12px ${theme.padding.unit.px} 12px`,
+    margin: `${theme.padding.space2X.px} 12px ${theme.padding.spaceX.px} 12px`,
     border: '1px solid blue',
     background: 'white',
     boxShadow: 'none',

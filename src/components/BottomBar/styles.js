@@ -4,13 +4,13 @@ const styles = (theme) => ({
     bottom: 0,
     left: 0,
     right: 0,
-    padding: `${theme.padding.unit.px} ${theme.padding.sm.px}`,
+    padding: `${theme.padding.spaceX.px} ${theme.padding.space3X.px}`,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: {
-      padding: `${theme.padding.unit.px}`,
+      padding: `${theme.padding.spaceX.px}`,
     },
   },
   bottomBarNetworkWrapper: {

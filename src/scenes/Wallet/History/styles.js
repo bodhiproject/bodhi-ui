@@ -6,10 +6,10 @@ const styles = (theme) => ({
     background: theme.palette.background.paper,
   },
   txHistoryGridContainer: {
-    padding: theme.padding.md.px,
+    padding: theme.padding.space5X.px,
   },
   table: {
-    marginTop: theme.padding.sm.px,
+    marginTop: theme.padding.space3X.px,
   },
 });
 

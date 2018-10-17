@@ -28,11 +28,11 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.padding.lg.px,
+    padding: theme.padding.space7X.px,
   },
   notLoggedInIcon: {
     fontSize: 80,
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.spaceX.px,
   },
   notLoggedInText: {
     textAlign: 'center',
