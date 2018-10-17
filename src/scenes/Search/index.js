@@ -140,7 +140,7 @@ export default class Search extends Component {
             <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.searchTabButton} />
           </Tabs>
           <div className={classes.searchTabContainer}>
-            <Grid container spacing={theme.padding.sm.value}>
+            <Grid container spacing={theme.padding.space3X.value}>
               {loading ? <Loading message={messages.searchingMsg} /> : result}
             </Grid>
           </div>

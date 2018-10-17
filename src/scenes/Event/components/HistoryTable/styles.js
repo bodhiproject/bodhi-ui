@@ -8,7 +8,7 @@ const styles = (theme) => ({
   subTableContainer: {
   },
   mainTableContainer: {
-    marginTop: theme.padding.md.px,
+    marginTop: theme.padding.space5X.px,
   },
 });
 

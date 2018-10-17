@@ -38,7 +38,7 @@ export default class Favorite extends Component {
     return (
       <Fragment>
         {displayList.length ? (
-          <Grid container spacing={this.props.bannerStyle ? theme.padding.unit.value : theme.padding.sm.value}>
+          <Grid container spacing={this.props.bannerStyle ? theme.padding.spaceX.value : theme.padding.space3X.value}>
             {events}
           </Grid>
         ) : (

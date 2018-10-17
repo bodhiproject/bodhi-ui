@@ -7,13 +7,13 @@ const styles = (theme) => ({
   },
   navBarWrapper: {
     display: 'flex',
-    padding: `0 ${theme.padding.sm.px}`,
+    padding: `0 ${theme.padding.space3X.px}`,
     paddingRight: '0',
     alignItems: 'center',
     height: theme.sizes.navHeight.px,
     justifyContent: 'space-between',
     [theme.breakpoints.down('xs')]: {
-      paddingLeft: theme.padding.unit.px,
+      paddingLeft: theme.padding.spaceX.px,
     },
   },
   navSection: {
@@ -37,7 +37,7 @@ const styles = (theme) => ({
       color: 'white',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.padding.unit.px}`,
+      padding: `0 ${theme.padding.spaceX.px}`,
     },
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
@@ -47,8 +47,8 @@ const styles = (theme) => ({
     height: theme.sizes.navHeight.px,
     lineHeight: theme.sizes.navHeight.px,
     color: theme.palette.background.paper,
-    paddingLeft: theme.padding.unit.px,
-    paddingRight: theme.padding.unit.px,
+    paddingLeft: theme.padding.spaceX.px,
+    paddingRight: theme.padding.spaceX.px,
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
@@ -79,7 +79,7 @@ const styles = (theme) => ({
   searchBarInputBase: {
     height: '48px',
     lineHeight: '48px',
-    padding: `0px ${theme.padding.xs.px}`,
+    padding: `0px ${theme.padding.space2X.px}`,
     borderLeft: `2px solid ${theme.palette.text.hint}`,
   },
   searchBarInput: {
@@ -91,10 +91,10 @@ const styles = (theme) => ({
   searchBarLeftIcon: {
     fontSize: theme.sizes.font.textLg,
     color: theme.palette.primary.main,
-    paddingRight: theme.padding.sm.value,
+    paddingRight: theme.padding.space3X.value,
   },
   searchBarFont: {
-    paddingLeft: theme.padding.unit.px,
+    paddingLeft: theme.padding.spaceX.px,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
@@ -119,7 +119,7 @@ const styles = (theme) => ({
     alignItems: 'center',
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
-      padding: `0 ${theme.padding.unit.px}`,
+      padding: `0 ${theme.padding.spaceX.px}`,
       right: 30,
     },
   },
@@ -156,7 +156,7 @@ const styles = (theme) => ({
     background: theme.palette.background.paper,
     display: 'flex',
     textAlign: 'left',
-    padding: theme.padding.sm.px,
+    padding: theme.padding.space3X.px,
     cursor: 'pointer',
     borderBottom: theme.border,
     justifyContent: 'space-between',
@@ -164,7 +164,7 @@ const styles = (theme) => ({
       background: theme.palette.background.grey,
     },
     [theme.breakpoints.down('xs')]: {
-      padding: theme.padding.xs.px,
+      padding: theme.padding.space2X.px,
     },
   },
   navDropdownMyActivitiesContainer: {

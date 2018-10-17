@@ -1,16 +1,16 @@
 const styles = (theme) => ({
   root: {
-    padding: theme.padding.lg.px,
+    padding: theme.padding.space7X.px,
   },
   headerText: {
-    marginBottom: theme.padding.md.px,
+    marginBottom: theme.padding.space5X.px,
   },
   settingGridContainer: {
-    padding: `${theme.padding.sm.px} 0`,
+    padding: `${theme.padding.space3X.px} 0`,
   },
   settingName: {
     [theme.breakpoints.down('xs')]: {
-      marginBottom: theme.padding.unit.px,
+      marginBottom: theme.padding.spaceX.px,
     },
   },
 });

@@ -1,10 +1,10 @@
 const styles = (theme) => ({
   favoriteSidebarPlacholderContainer: {
-    marginTop: theme.padding.lg.px,
+    marginTop: theme.padding.space7X.px,
   },
   favoriteSidebarPlacholderItem: {
     display: 'grid',
-    marginTop: theme.padding.sm.px,
+    marginTop: theme.padding.space3X.px,
     justifyContent: 'center',
   },
 });

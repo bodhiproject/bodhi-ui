@@ -15,14 +15,14 @@ const styles = (theme) => ({
   },
   eventCardSection: {
     position: 'relative',
-    padding: theme.padding.sm.px,
+    padding: theme.padding.space3X.px,
     '&.top': {
       height: '320px',
     },
     '&.button': {
       textAlign: 'center',
-      paddingTop: theme.padding.xs.px,
-      paddingBottom: theme.padding.xs.px,
+      paddingTop: theme.padding.space2X.px,
+      paddingBottom: theme.padding.space2X.px,
       lineHeight: 1,
       fontSize: theme.sizes.font.textMd,
       color: theme.palette.text.primary,
@@ -35,7 +35,7 @@ const styles = (theme) => ({
     paddingBottom: '10px',
   },
   eventCardName: {
-    marginBottom: theme.padding.xs.px,
+    marginBottom: theme.padding.space2X.px,
     display: '-webkit-box', // For multiline text overflow ellipsis
     maxHeight: '160px',
     margin: '0 auto',
@@ -57,16 +57,16 @@ const styles = (theme) => ({
     color: theme.palette.secondary.main,
     border: `solid 1px ${theme.palette.secondary.main}`,
     borderRadius: theme.borderRadius,
-    padding: `2px ${theme.padding.unit.px}`,
-    marginBottom: theme.padding.unit.px,
+    padding: `2px ${theme.padding.spaceX.px}`,
+    marginBottom: theme.padding.spaceX.px,
     fontSize: theme.sizes.font.meta,
   },
   dashBoardCardIcon: {
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
   },
   eventCardInfo: {
     position: 'absolute',
-    bottom: theme.padding.sm.px,
+    bottom: theme.padding.space3X.px,
     color: theme.palette.text.primary,
   },
   eventCardInfoItem: {

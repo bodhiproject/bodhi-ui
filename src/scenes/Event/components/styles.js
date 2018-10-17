@@ -4,27 +4,27 @@ const styles = (theme) => ({
     borderRadius: theme.borderRadius,
   },
   title: {
-    marginBottom: theme.padding.md.px,
+    marginBottom: theme.padding.space5X.px,
   },
   oracleButton: {
-    marginTop: theme.padding.md.px,
+    marginTop: theme.padding.space5X.px,
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
   },
   oracleContent: {
-    padding: theme.padding.lg.px,
+    padding: theme.padding.space7X.px,
     overflowX: 'hidden',
     [theme.breakpoints.down('xs')]: {
-      padding: theme.padding.xs.px,
+      padding: theme.padding.space2X.px,
     },
   },
   oracleSidebarContainer: {
-    padding: `${theme.padding.lg.px}`,
+    padding: `${theme.padding.space7X.px}`,
     overflowX: 'hidden',
     borderLeft: `${theme.border}`,
     textAlign: 'right',
     [theme.breakpoints.down('xs')]: {
-      padding: theme.padding.xs.px,
+      padding: theme.padding.space2X.px,
       textAlign: 'left',
     },
     '& h2': {

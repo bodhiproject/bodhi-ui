@@ -3,7 +3,7 @@ const styles = (theme) => ({
     position: 'relative',
     left: '100%',
     background: 'transparent',
-    marginLeft: '-'.concat(theme.padding.md.px),
+    marginLeft: '-'.concat(theme.padding.space5X.px),
     [theme.breakpoints.down('xs')]: {
       textAlign: 'left',
       padding: 0,
@@ -15,7 +15,7 @@ const styles = (theme) => ({
     '& > span:last-of-type': {
       position: 'relative',
       right: '100%',
-      paddingRight: theme.padding.unit.px,
+      paddingRight: theme.padding.spaceX.px,
       [theme.breakpoints.down('xs')]: {
         right: 0,
       },

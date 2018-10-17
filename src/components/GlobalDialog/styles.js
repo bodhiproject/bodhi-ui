@@ -6,13 +6,13 @@ const styles = (theme) => ({
   },
   titleIcon: {
     fontSize: theme.sizes.font.textLg,
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
   },
   heading: {
     fontSize: theme.sizes.font.textSm,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.error.main,
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.spaceX.px,
   },
   body: {
     fontSize: theme.sizes.font.textSm,

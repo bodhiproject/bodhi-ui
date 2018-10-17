@@ -47,7 +47,7 @@ const OutcomeOption = styled(Typography)`
   color: ${props => props.theme.palette.primary.main} !important;
   font-size: ${props => props.theme.sizes.font.titleSm} !important;
   font-weight: ${props => props.theme.typography.fontWeightBold} !important;
-  margin-bottom: ${props => props.theme.padding.unit.px} !important;
+  margin-bottom: ${props => props.theme.padding.spaceX.px} !important;
 `;
 
 export default WinningOutcome;

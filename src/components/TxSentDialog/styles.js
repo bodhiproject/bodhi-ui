@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   bodyPrimary: {
-    marginBottom: theme.padding.sm.px,
+    marginBottom: theme.padding.space3X.px,
   },
 });
 

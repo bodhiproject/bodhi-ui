@@ -6,16 +6,16 @@ const styles = (theme) => ({
     background: theme.palette.background.paper,
   },
   myBalanceGridContainer: {
-    padding: theme.padding.md.px,
+    padding: theme.padding.space5X.px,
   },
   myBalanceTitle: {
-    marginBottom: theme.padding.xs.px,
+    marginBottom: theme.padding.space2X.px,
   },
   totalsContainerGrid: {
-    marginBottom: theme.padding.sm.px,
+    marginBottom: theme.padding.space3X.px,
   },
   totalsItemGrid: {
-    marginRight: theme.padding.md.px,
+    marginRight: theme.padding.space5X.px,
   },
   totalsItemAmount: {
     fontSize: theme.sizes.font.titleMd,
@@ -30,7 +30,7 @@ const styles = (theme) => ({
   tableRowCopyButtonIcon: {
     width: 12,
     height: 12,
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
   },
   tableRowCopyButtonText: {
     color: theme.palette.primary.main,
@@ -38,7 +38,7 @@ const styles = (theme) => ({
   tableRowActionButton: {
     minHeight: 24,
     fontSize: 12,
-    marginRight: theme.padding.unit.px,
+    marginRight: theme.padding.spaceX.px,
     borderRadius: 2,
   },
 });

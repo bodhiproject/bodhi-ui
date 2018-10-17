@@ -22,7 +22,7 @@ export default class BotCourt extends Component {
       <Fragment>
         {events.length > 0 && <TopActions />}
         <InfiniteScroll
-          spacing={theme.padding.sm.value}
+          spacing={theme.padding.space3X.value}
           data={events}
           loadMore={loadMore}
           loadingMore={loadingMore}

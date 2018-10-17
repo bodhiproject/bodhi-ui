@@ -1,11 +1,11 @@
 const styles = (theme) => ({
   withdrawingPaper: {
-    padding: theme.padding.md.px,
+    padding: theme.padding.space5X.px,
     [theme.breakpoints.down('md')]: {
-      padding: theme.padding.xs.px,
+      padding: theme.padding.space2X.px,
     },
     [theme.breakpoints.down('xs')]: {
-      padding: `${theme.padding.xs.px} ${theme.padding.unit.px}`,
+      padding: `${theme.padding.space2X.px} ${theme.padding.spaceX.px}`,
     },
   },
   rewardTooltip: {
@@ -23,7 +23,7 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    marginBottom: theme.padding.unit.px,
+    marginBottom: theme.padding.spaceX.px,
     minWidth: '10%',
     margin: '0 auto',
   },

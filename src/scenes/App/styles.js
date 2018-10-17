@@ -3,17 +3,17 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   container: {
-    margin: `${theme.sizes.navHeight.px} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
-    padding: `${theme.padding.md.px} 0 0 0`,
+    margin: `${theme.sizes.navHeight.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px}`,
+    padding: `${theme.padding.space5X.px} 0 0 0`,
     [theme.breakpoints.down('xs')]: {
-      margin: `${theme.sizes.navHeight} ${theme.padding.unit.px} ${theme.padding.lg.px} ${theme.padding.unit.px}`,
-      padding: `${theme.padding.unit.px} 0 0 0`,
+      margin: `${theme.sizes.navHeight} ${theme.padding.spaceX.px} ${theme.padding.space7X.px} ${theme.padding.spaceX.px}`,
+      padding: `${theme.padding.spaceX.px} 0 0 0`,
     },
     [theme.breakpoints.up('xl')]: {
       margin: '0 auto',
-      marginTop: theme.padding.md.px,
-      marginBottom: theme.padding.md.px,
-      maxWidth: (theme.breakpoints.values.xl - (theme.padding.md.value * 2)),
+      marginTop: theme.padding.space5X.px,
+      marginBottom: theme.padding.space5X.px,
+      maxWidth: (theme.breakpoints.values.xl - (theme.padding.space5X.value * 2)),
     },
   },
 });

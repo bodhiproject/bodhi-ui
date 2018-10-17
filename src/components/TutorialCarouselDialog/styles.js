@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   tutorialDialogPaper: {
     [theme.breakpoints.down('xs')]: {
-      margin: theme.padding.unit.px,
+      margin: theme.padding.spaceX.px,
     },
   },
   tutorialDialog: {
@@ -62,12 +62,12 @@ const styles = (theme) => ({
   },
   titleTopLine: {
     height: '5px',
-    marginBottom: theme.padding.xs.px,
+    marginBottom: theme.padding.space2X.px,
   },
   contentWrapper: {
-    padding: `${theme.padding.sm.px} ${theme.padding.md.px}`,
+    padding: `${theme.padding.space3X.px} ${theme.padding.space5X.px}`,
     [theme.breakpoints.down('xs')]: {
-      padding: `${theme.padding.unit.px} ${theme.padding.sm.px} 0 ${theme.padding.sm.px}`,
+      padding: `${theme.padding.spaceX.px} ${theme.padding.space3X.px} 0 ${theme.padding.space3X.px}`,
     },
   },
   tutorialDialogContentWrapper: {
@@ -101,10 +101,10 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
   button: {
-    margin: `${theme.padding.unit.px} ${theme.padding.md.px}`,
+    margin: `${theme.padding.spaceX.px} ${theme.padding.space5X.px}`,
     display: 'inline-block',
     [theme.breakpoints.down('xs')]: {
-      margin: `${theme.padding.unit.px} ${theme.padding.unit.px}`,
+      margin: `${theme.padding.spaceX.px} ${theme.padding.spaceX.px}`,
     },
   },
   link: {
@@ -114,9 +114,9 @@ const styles = (theme) => ({
   tncWrapper: {
     maxHeight: '300px',
     overflowY: 'scroll',
-    marginTop: theme.padding.xs.px,
-    marginBottom: theme.padding.unit.px,
-    padding: theme.padding.sm.px,
+    marginTop: theme.padding.space2X.px,
+    marginBottom: theme.padding.spaceX.px,
+    padding: theme.padding.space3X.px,
     [theme.breakpoints.down('xs')]: {
       maxHeight: 260,
       fontSize: 12,
@@ -130,8 +130,8 @@ const styles = (theme) => ({
     },
   },
   langBtn: {
-    marginLeft: theme.padding.xs.px,
-    padding: `0px ${theme.padding.unit.px}`,
+    marginLeft: theme.padding.space2X.px,
+    padding: `0px ${theme.padding.spaceX.px}`,
     border: theme.border,
     borderRadius: theme.borderRadius,
     [theme.breakpoints.down('xs')]: {
