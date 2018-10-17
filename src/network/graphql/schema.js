@@ -10,6 +10,8 @@ export const TYPE = {
   paginatedTopics: 'PaginatedTopics',
   paginatedAccumulatedVotes: 'PaginatedAccumulatedVotes',
   winners: 'Winner',
+  resultSet: 'ResultSet',
+  withdraw: 'Withdraw',
 };
 
 const TOPIC_DEF = {

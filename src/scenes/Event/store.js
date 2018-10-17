@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } f
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -298,6 +298,18 @@ export default class EventStore {
     this.transactions = await queryAllTransactions(
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
+    );
+    const resultSets = await queryResultSets(
+      [{ topicAddress: address }],
+      { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    );
+    const withdraws = await queryWithdraws(
+      [{ topicAddress: address }],
+      { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    );
+    const votes = await queryAllVotes(
+      [{ topicAddress: address }],
+      { field: 'block.blockTime', direction: SortBy.DESCENDING },
     );
   }
 

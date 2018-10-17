@@ -337,3 +337,37 @@ export async function searchTopics(app, phrase, filters, orderBy) {
   const result = await request.execute();
   return map(result, (topic) => new Topic(topic, app));
 }
+
+/**
+ * Search for Topics that contains phrase either in title or result setter address
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+ * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+ * @return {Promise} Search result from graphql
+ */
+export function queryResultSets(filters, orderBy) {
+  const request = new GraphQuery('resultSets', TYPE.resultSet);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  return request.execute();
+}
+
+/**
+ * Search for Topics that contains phrase either in title or result setter address
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+ * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+ * @return {Promise} Search result from graphql
+ */
+export function queryWithdraws(filters, orderBy) {
+  const request = new GraphQuery('withdraws', TYPE.withdraw);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  return request.execute();
+}
