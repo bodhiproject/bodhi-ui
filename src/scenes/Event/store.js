@@ -262,7 +262,7 @@ export default class EventStore {
 
   @action
   queryLeaderboard = async (token) => {
-    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 20, 0);
+    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
     this.votes = votes;
   }
 

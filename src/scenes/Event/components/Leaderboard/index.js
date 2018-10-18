@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-
 import { withStyles } from '@material-ui/core/styles';
 // import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
@@ -15,9 +14,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MobileStepper from './carousel';
 import styles from './styles';
+import { satoshiToDecimal } from '../../../../helpers/utility';
 
 const paras = ['QTUM', 'BOT'];
 const tabs = ['Who bet the most QTUM', 'Who bet the most BOT'];
+
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
@@ -47,16 +48,17 @@ export default class Leaderboard extends React.Component {
   render() {
     const { classes, theme, store: { eventPage } } = this.props;
     const maxSteps = 2;
+    const { votes } = eventPage;
     const { activeStep } = this.state;
-
+    if (votes.length < 5) {
+      for (let i = votes.length; i < 5; i++) {
+        votes.push({ voterAddress: 'empty', amount: '0' });
+      }
+    }
     return (
       <div className={classes.root}>
-        {/* <Paper square elevation={0} className={classes.header}>
-          <Typography>{tutorialSteps[activeStep].label}</Typography>
-        </Paper> */}
-        {console.log(classes.im)}
         <div className={classes.ii}>
-          <img src="/images/Leaderboard.svg" alt='s' />
+          <img src="/images/Leaderboard.svg" alt='s' className={classes.flag} />
           <div className={classes.im}>Leaderboard </div>
         </div>
         <div className={classes.board}>
@@ -79,23 +81,24 @@ export default class Leaderboard extends React.Component {
           />
           <Paper className={classes.sds}>
             <Table className={classes.table}>
-              <TableHead>
+              <TableHead className={classes.tableHead}>
                 <TableRow>
-                  <TableCell>Ranking</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Amount</TableCell>
+                  <CustomTableHeadCell>Ranking</CustomTableHeadCell>
+                  <CustomTableHeadCell>Address</CustomTableHeadCell>
+                  <CustomTableHeadCell>Amount</CustomTableHeadCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {eventPage.votes.map((row, index) =>
+                {votes.map((row, index) =>
                   (
-                    <TableRow key={row.voterAddress}>
-                      <TableCell component="th" scope="row">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell>{row.voterAddress}</TableCell>
-                      <TableCell>{row.amount}</TableCell>
-                    </TableRow>
+                    <CustomTableRow key={index} className={classes.entry}>
+                      <CustomTableBodyCell component="th" scope="row">
+                        {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='aa' />}
+                        {index > 2 && `#${index + 1}`}
+                      </CustomTableBodyCell>
+                      <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
+                      <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>
+                    </CustomTableRow>
                   ))}
               </TableBody>
             </Table>
@@ -105,3 +108,31 @@ export default class Leaderboard extends React.Component {
     );
   }
 }
+
+const CustomTableHeadCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.white,
+    borderBottom: '1px solid rgba(151, 151, 151, 0.1)',
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const CustomTableBodyCell = withStyles(() => ({
+  root: {
+    borderColor: 'rgba(151, 151, 151, 0.1)',
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const CustomTableRow = withStyles(() => ({
+  head: {
+    border: '1px solid blue',
+    // borderColor: 'rgba(151, 151, 151, 0.1)',
+    height: '48px',
+  },
+}))(TableRow);
+
