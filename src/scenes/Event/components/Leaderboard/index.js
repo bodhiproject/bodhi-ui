@@ -1,28 +1,22 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import Table from '@material-ui/core/Table';
+
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
-const messages = defineMessages({
-  mostQTUM: {
-    id: 'leaderboard.mostQTUM',
-    defaultMessage: 'Who bet the most QTUM',
-  },
-  mostBOT: {
-    id: 'leaderboard.mostBOT',
-    defaultMessage: 'Who bet the most BOT',
-  },
-  biggestWinner: {
-    id: 'leaderboard.biggestWinners',
-    defaultMessage: 'Biggest Winners',
-  },
-});
-
-const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
+const paras = ['QTUM', 'BOT'];
+const tabs = ['Who bet the most QTUM', 'Who bet the most BOT'];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
