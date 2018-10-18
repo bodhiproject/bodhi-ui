@@ -33,6 +33,7 @@ const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } }
     <Dialog
       className={classes.createDialog}
       classes={{ paper: classes.createDialogPaper }}
+      fullWidth={loaded}
       maxWidth='md'
       open={isOpen}
     >

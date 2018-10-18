@@ -1,11 +1,12 @@
 const styles = (theme) => ({
   createDialog: {
-    overflowY: 'scroll',
+    overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
     },
   },
   createDialogPaper: {
+    overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
       margin: 0,
     },
