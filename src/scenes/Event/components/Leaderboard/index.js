@@ -8,22 +8,8 @@ import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
-const messages = defineMessages({
-  mostQTUM: {
-    id: 'leaderboard.mostQTUM',
-    defaultMessage: 'Who bet the most QTUM',
-  },
-  mostBOT: {
-    id: 'leaderboard.mostBOT',
-    defaultMessage: 'Who bet the most BOT',
-  },
-  biggestWinner: {
-    id: 'leaderboard.biggestWinners',
-    defaultMessage: 'Biggest Winners',
-  },
-});
-
-const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
+const paras = ['QTUM', 'BOT'];
+const tabs = ['Who bet the most QTUM', 'Who bet the most BOT'];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
