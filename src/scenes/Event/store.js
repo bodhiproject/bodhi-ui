@@ -158,7 +158,7 @@ export default class EventStore {
     // API calls
     await this.getEscrowAmount();
     await this.calculateWinnings();
-    await this.queryLeaderboard('QTUM');
+    await this.queryLeaderboard(Token.QTUM);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -169,7 +169,7 @@ export default class EventStore {
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
-    await this.queryLeaderboard('QTUM');
+    await this.queryLeaderboard(Token.QTUM);
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
@@ -267,8 +267,8 @@ export default class EventStore {
   }
 
   @action
-  queryLL = async (token) => {
-    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, token, optionIdx: this.topic.resultIdx } });
+  queryBiggestWinner = async () => {
+    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
     this.votes = winners;
   }
 

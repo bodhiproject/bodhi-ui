@@ -1,25 +1,34 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-// import MobileStepper from '@material-ui/core/MobileStepper';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import Table from '@material-ui/core/Table';
-
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { EventType, Token } from 'constants';
+import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
-const paras = ['QTUM', 'BOT'];
-const tabs = ['Who bet the most QTUM', 'Who bet the most BOT', 'Biggest QTUM Winners', 'Biggest BOT Winners'];
+const messages = defineMessages({
+  mostQTUM: {
+    id: 'leaderboard.mostQTUM',
+    defaultMessage: 'Who bet the most QTUM',
+  },
+  mostBOT: {
+    id: 'leaderboard.mostBOT',
+    defaultMessage: 'Who bet the most BOT',
+  },
+  biggestWinner: {
+    id: 'leaderboard.biggestWinners',
+    defaultMessage: 'Biggest Winners',
+  },
+});
+
+const { TOPIC } = EventType;
+const paras = [Token.QTUM, Token.BOT];
+const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
+@injectIntl
 @inject('store')
 @observer
 export default class Leaderboard extends React.Component {
@@ -44,26 +53,29 @@ export default class Leaderboard extends React.Component {
       if (nextState.activeStep < 2) {
         this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
       } else {
-        this.props.store.eventPage.queryLL(paras[nextState.activeStep % 2]);
+        this.props.store.eventPage.queryBiggestWinner();
       }
     }
   }
 
   render() {
-    const { classes, theme, store: { eventPage } } = this.props;
-    const maxSteps = 4;
-    const { votes } = eventPage;
+    const { classes, theme, store: { eventPage }, intl } = this.props;
+    const { votes, type } = eventPage;
+    let maxSteps = 2;
+    if (type === TOPIC) {
+      maxSteps = 3;
+    }
     const { activeStep } = this.state;
     if (votes.length < 5) {
       for (let i = votes.length; i < 5; i++) {
-        votes.push({ voterAddress: 'empty', amount: '0' });
+        votes.push({ voterAddress: '', amount: '' });
       }
     }
     return (
       <div className={classes.root}>
         <div className={classes.ii}>
           <img src="/images/Leaderboard.svg" alt='s' className={classes.flag} />
-          <div className={classes.im}>Leaderboard </div>
+          <div className={classes.im}><FormattedMessage id='leaderboard.title' defaultMessage='Leaderboard' /> </div>
         </div>
         <div className={classes.board}>
           <MobileStepper
@@ -71,7 +83,7 @@ export default class Leaderboard extends React.Component {
             position="static"
             activeStep={activeStep}
             className={classes.mobileStepper}
-            currentValue={tabs[activeStep]}
+            currentValue={intl.formatMessage(tabs[activeStep])}
             nextButton={
               <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
                 {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
@@ -87,9 +99,9 @@ export default class Leaderboard extends React.Component {
             <Table className={classes.table}>
               <TableHead className={classes.tableHead}>
                 <TableRow>
-                  <CustomTableHeadCell>Ranking</CustomTableHeadCell>
-                  <CustomTableHeadCell>Address</CustomTableHeadCell>
-                  <CustomTableHeadCell>Amount</CustomTableHeadCell>
+                  <CustomTableHeadCell><FormattedMessage id='leaderboard.ranking' defaultMessage='Ranking' /></CustomTableHeadCell>
+                  <CustomTableHeadCell><FormattedMessage id='leaderboard.address' defaultMessage='Address' /></CustomTableHeadCell>
+                  <CustomTableHeadCell><FormattedMessage id='leaderboard.amount' defaultMessage='Amount' /></CustomTableHeadCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -101,7 +113,8 @@ export default class Leaderboard extends React.Component {
                         {index > 2 && `#${index + 1}`}
                       </CustomTableBodyCell>
                       <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
-                      <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>
+                      {!row.amount.qtum && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
+                      {row.amount.qtum && <CustomTableBodyCell>{satoshiToDecimal(row.amount.qtum)} QTUM,{satoshiToDecimal(row.amount.bot)} BOT</CustomTableBodyCell>}
                     </CustomTableRow>
                   ))}
               </TableBody>
@@ -135,7 +148,6 @@ const CustomTableBodyCell = withStyles(() => ({
 const CustomTableRow = withStyles(() => ({
   head: {
     border: '1px solid blue',
-    // borderColor: 'rgba(151, 151, 151, 0.1)',
     height: '48px',
   },
 }))(TableRow);

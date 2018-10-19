@@ -9,7 +9,7 @@ export const TYPE = {
   paginatedOracles: 'PaginatedOracles',
   paginatedTopics: 'PaginatedTopics',
   paginatedAccumulatedVotes: 'PaginatedAccumulatedVotes',
-  winners: 'Winners',
+  winners: 'Winner',
 };
 
 const TOPIC_DEF = {
@@ -146,11 +146,13 @@ const TYPE_DEF = {
       count
     }
   `,
-  Winners: `
+  Winner: `
     topicAddress
     voterAddress
-    amount
-    token
+    amount{
+      bot
+      qtum
+    }
   `,
 
   Transaction: `
