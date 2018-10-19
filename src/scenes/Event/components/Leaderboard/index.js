@@ -1,22 +1,31 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import Table from '@material-ui/core/Table';
-
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { EventType, Token } from 'constants';
+import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
-const paras = ['QTUM', 'BOT'];
-const tabs = ['Who bet the most QTUM', 'Who bet the most BOT', 'Biggest QTUM Winners', 'Biggest BOT Winners'];
+const messages = defineMessages({
+  mostQTUM: {
+    id: 'leaderboard.mostQTUM',
+    defaultMessage: 'Who bet the most QTUM',
+  },
+  mostBOT: {
+    id: 'leaderboard.mostBOT',
+    defaultMessage: 'Who bet the most BOT',
+  },
+  biggestWinner: {
+    id: 'leaderboard.biggestWinners',
+    defaultMessage: 'Biggest Winners',
+  },
+});
+
+const { TOPIC } = EventType;
+const paras = [Token.QTUM, Token.BOT];
+const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -36,18 +45,22 @@ export default class Leaderboard extends React.Component {
       if (nextState.activeStep < 2) {
         this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
       } else {
-        this.props.store.eventPage.queryLL(paras[nextState.activeStep % 2]);
+        this.props.store.eventPage.queryBiggestWinner();
       }
     }
   }
 
   render() {
-    const { classes, theme, store: { eventPage }, intl, maxSteps } = this.props;
-    const { leaderboardVotes, activeStep } = eventPage;
-
-    if (leaderboardVotes.length < 5) {
-      for (let i = leaderboardVotes.length; i < 5; i++) {
-        leaderboardVotes.push({ voterAddress: '', amount: '' });
+    const { classes, theme, store: { eventPage }, intl } = this.props;
+    const { votes, type } = eventPage;
+    let maxSteps = 2;
+    if (type === TOPIC) {
+      maxSteps = 3;
+    }
+    const { activeStep } = this.state;
+    if (votes.length < 5) {
+      for (let i = votes.length; i < 5; i++) {
+        votes.push({ voterAddress: '', amount: '' });
       }
     }
     return (
