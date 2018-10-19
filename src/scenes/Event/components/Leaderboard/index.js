@@ -8,8 +8,24 @@ import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
-const paras = ['QTUM', 'BOT'];
-const tabs = ['Who bet the most QTUM', 'Who bet the most BOT', 'Biggest QTUM Winners', 'Biggest BOT Winners'];
+const messages = defineMessages({
+  mostQTUM: {
+    id: 'leaderboard.mostQTUM',
+    defaultMessage: 'Who bet the most QTUM',
+  },
+  mostBOT: {
+    id: 'leaderboard.mostBOT',
+    defaultMessage: 'Who bet the most BOT',
+  },
+  biggestWinner: {
+    id: 'leaderboard.biggestWinners',
+    defaultMessage: 'Biggest Winners',
+  },
+});
+
+const { TOPIC } = EventType;
+const paras = [Token.QTUM, Token.BOT];
+const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -43,7 +59,7 @@ export default class Leaderboard extends React.Component {
       if (nextState.activeStep < 2) {
         this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
       } else {
-        this.props.store.eventPage.queryLL(paras[nextState.activeStep % 2]);
+        this.props.store.eventPage.queryBiggestWinner();
       }
     }
   }
