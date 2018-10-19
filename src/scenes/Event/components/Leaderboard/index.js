@@ -54,7 +54,7 @@ export default class Leaderboard extends React.Component {
     return (
       <div className={classes.root}>
         <div className={classes.ii}>
-          <img src="/images/Leaderboard.svg" alt='s' className={classes.flag} />
+          <img src="/images/Leaderboard.svg" alt='image not available' className={classes.flag} />
           <div className={classes.im}><FormattedMessage id='leaderboard.title' defaultMessage='Leaderboard' /> </div>
         </div>
         <div className={classes.board}>
@@ -89,7 +89,7 @@ export default class Leaderboard extends React.Component {
                   (
                     <CustomTableRow key={index} className={classes.entry}>
                       <CustomTableBodyCell component="th" scope="row">
-                        {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='aa' />}
+                        {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='image not available' />}
                         {index > 2 && `#${index + 1}`}
                       </CustomTableBodyCell>
                       <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
