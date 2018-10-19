@@ -238,6 +238,24 @@ export async function queryMostVotes(filters, orderBy, limit, skip) {
   return result;
 }
 
+export async function queryWinners(filters, orderBy, limit, skip) {
+  const request = new GraphQuery('winners', TYPE.winners);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  if (isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
+  }
+  const result = await request.execute();
+  return result;
+}
+
 /*
 * Queries allTransactions from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]

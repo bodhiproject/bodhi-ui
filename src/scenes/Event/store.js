@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } f
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -158,7 +158,7 @@ export default class EventStore {
     // API calls
     await this.getEscrowAmount();
     await this.calculateWinnings();
-
+    await this.queryLeaderboard('QTUM');
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -264,6 +264,12 @@ export default class EventStore {
   queryLeaderboard = async (token) => {
     const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
     this.votes = votes;
+  }
+
+  @action
+  queryLL = async (token) => {
+    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, token, optionIdx: this.topic.resultIdx } });
+    this.votes = winners;
   }
 
   @action
