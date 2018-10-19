@@ -24,7 +24,6 @@ const messages = defineMessages({
 });
 
 const { TOPIC } = EventType;
-const paras = [Token.QTUM, Token.BOT];
 const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
@@ -53,16 +52,6 @@ export default class Leaderboard extends React.Component {
       eventPage.activeStep -= 1;
     }
   };
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.activeStep !== this.state.activeStep) {
-      if (nextState.activeStep < 2) {
-        this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
-      } else {
-        this.props.store.eventPage.queryBiggestWinner();
-      }
-    }
-  }
 
   render() {
     const { classes, theme, intl, maxSteps } = this.props;
