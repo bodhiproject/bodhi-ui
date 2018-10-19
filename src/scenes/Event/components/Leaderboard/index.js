@@ -16,7 +16,7 @@ import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
 const paras = ['QTUM', 'BOT'];
-const tabs = ['Who bet the most QTUM', 'Who bet the most BOT'];
+const tabs = ['Who bet the most QTUM', 'Who bet the most BOT', 'Biggest QTUM Winners', 'Biggest BOT Winners'];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -30,6 +30,16 @@ export default class Leaderboard extends React.Component {
   handleBack = () => {
     this.props.store.eventPage.activeStep = this.props.store.eventPage.activeStep - 1;
   };
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.activeStep !== this.state.activeStep) {
+      if (nextState.activeStep < 2) {
+        this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
+      } else {
+        this.props.store.eventPage.queryLL(paras[nextState.activeStep % 2]);
+      }
+    }
+  }
 
   render() {
     const { classes, theme, store: { eventPage }, intl, maxSteps } = this.props;
