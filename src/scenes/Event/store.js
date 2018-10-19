@@ -299,18 +299,19 @@ export default class EventStore {
       [{ topicAddress: address }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
     );
-    const resultSets = await queryResultSets(
-      [{ topicAddress: address }],
-      { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    );
-    const withdraws = await queryWithdraws(
-      [{ topicAddress: address }],
-      { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    );
-    const votes = await queryAllVotes(
-      [{ topicAddress: address }],
-      { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    );
+
+    // const resultSets = await queryResultSets(
+    //   [{ topicAddress: address }],
+    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    // );
+    // const withdraws = await queryWithdraws(
+    //   [{ topicAddress: address }],
+    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    // );
+    // const votes = await queryAllVotes(
+    //   [{ topicAddress: address }],
+    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    // );
   }
 
   @action
