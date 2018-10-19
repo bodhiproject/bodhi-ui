@@ -12,6 +12,7 @@ import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
+const paras = [Token.QTUM, Token.BOT];
 
 const INIT = {
   type: undefined,
@@ -33,6 +34,7 @@ const INIT = {
   qtumWinnings: 0,
   botWinnings: 0,
   withdrawableAddresses: [],
+  activeStep: 0,
   error: {
     amount: '',
     address: '',
@@ -55,7 +57,7 @@ export default class EventStore {
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
   @observable allowance = INIT.allowance; // In Botoshi
-
+  @observable activeStep = INIT.allowance; // In Botoshi
   @observable error = INIT.error
 
   // topic
@@ -190,6 +192,12 @@ export default class EventStore {
       }
     );
 
+    // Leaderboard tab changed
+    reaction(
+      () => toJS(this.activeStep),
+      () => this.updateLeaderBoard(),
+    );
+
     // Current wallet address changed
     reaction(
       () => this.app.wallet.currentAddress,
@@ -210,12 +218,14 @@ export default class EventStore {
             case TOPIC: {
               await this.queryTransactions(this.address);
               this.disableEventActionsIfNecessary();
+              await this.updateLeaderBoard();
               break;
             }
             case ORACLE: {
               await this.queryTransactions(this.topicAddress);
               await this.queryOracles(this.topicAddress);
               await this.getAllowanceAmount();
+              await this.updateLeaderBoard();
               this.disableEventActionsIfNecessary();
               break;
             }
@@ -270,6 +280,15 @@ export default class EventStore {
   queryBiggestWinner = async () => {
     const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
     this.votes = winners;
+  }
+
+  @action
+  updateLeaderBoard = async () => {
+    if (this.activeStep < 2) {
+      await this.queryLeaderboard(paras[this.activeStep]);
+    } else {
+      await this.queryBiggestWinner();
+    }
   }
 
   @action
