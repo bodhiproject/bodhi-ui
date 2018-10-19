@@ -194,7 +194,7 @@ export default class EventStore {
 
     // Leaderboard tab changed
     reaction(
-      () => toJS(this.activeStep),
+      () => this.activeStep,
       () => this.updateLeaderBoard(),
     );
 
