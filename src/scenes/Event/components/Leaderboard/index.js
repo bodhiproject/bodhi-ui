@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { EventType, Token } from 'constants';
+import { EventType } from 'constants';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
 import MobileStepper from './carousel';
@@ -24,7 +24,6 @@ const messages = defineMessages({
 });
 
 const { TOPIC } = EventType;
-const paras = [Token.QTUM, Token.BOT];
 const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
@@ -40,24 +39,13 @@ export default class Leaderboard extends React.Component {
     this.props.store.eventPage.activeStep = this.props.store.eventPage.activeStep - 1;
   };
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.activeStep !== this.state.activeStep) {
-      if (nextState.activeStep < 2) {
-        this.props.store.eventPage.queryLeaderboard(paras[nextState.activeStep]);
-      } else {
-        this.props.store.eventPage.queryBiggestWinner();
-      }
-    }
-  }
-
   render() {
     const { classes, theme, store: { eventPage }, intl } = this.props;
-    const { votes, type } = eventPage;
+    const { votes, type, activeStep } = eventPage;
     let maxSteps = 2;
     if (type === TOPIC) {
       maxSteps = 3;
     }
-    const { activeStep } = this.state;
     if (votes.length < 5) {
       for (let i = votes.length; i < 5; i++) {
         votes.push({ voterAddress: '', amount: '' });
