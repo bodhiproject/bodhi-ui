@@ -137,10 +137,10 @@ export default {
   generateAccumulatedVote() {
     return {
       topicAddress: cryptoRandomString(40),
-      voterAddress:`q${cryptoRandomString(33)}`,
+      voterAddress: `q${cryptoRandomString(33)}`,
       amount: times(3, decimalToSatoshi(randomInt(1, 10))),
       token: Token.QTUM,
-    }
+    };
   },
 
   addAccumulatedVote(vote) {
