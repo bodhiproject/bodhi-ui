@@ -57,7 +57,7 @@ export default class EventStore {
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
   @observable allowance = INIT.allowance; // In Botoshi
-  @observable activeStep = INIT.allowance; // In Botoshi
+  @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
 
   // topic
