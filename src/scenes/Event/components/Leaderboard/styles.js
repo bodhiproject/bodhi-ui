@@ -1,6 +1,5 @@
 const styles = theme => ({
   root: {
-    // minWidth: 640,
     flexGrow: 1,
     border: '1px solid #585AFA',
     textAlign: 'center',
@@ -16,7 +15,6 @@ const styles = theme => ({
     alignItems: 'center',
     height: 50,
     paddingLeft: theme.spacing.unit * 4,
-    // backgroundColor: theme.palette.background.default,
   },
   img: {
     height: 255,
