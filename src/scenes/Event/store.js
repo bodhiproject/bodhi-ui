@@ -19,7 +19,12 @@ const INIT = {
   loading: true,
   oracles: [],
   topics: [],
+  leaderboardVotes: [],
   votes: [],
+  bets: [],
+  resultsets: [],
+  finalizes: [],
+  withdraws: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -45,7 +50,12 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
+  @observable leaderboardVotes = INIT.leaderboardVotes
   @observable votes = INIT.votes
+  @observable bets = INIT.bets
+  @observable resultsets = INIT.resultsets
+  @observable finalizes = INIT.finalizes
+  @observable withdraws = INIT.withdraws
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -275,13 +285,13 @@ export default class EventStore {
   @action
   queryLeaderboard = async (token) => {
     const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
-    this.votes = votes;
+    this.leaderboardVotes = votes;
   }
 
   @action
   queryBiggestWinner = async () => {
     const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
-    this.votes = winners;
+    this.leaderboardVotes = winners;
   }
 
   @action
