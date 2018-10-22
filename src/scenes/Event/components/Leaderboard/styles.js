@@ -6,7 +6,7 @@ const styles = theme => ({
     textAlign: 'center',
     marginTop: '40px',
   },
-  sds: {
+  outWrapper: {
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
     boxShadow: 'none',
@@ -25,7 +25,7 @@ const styles = theme => ({
     display: 'block',
     width: '100%',
   },
-  im: {
+  leaderboardText: {
     position: 'absolute',
     bottom: '15px',
     color: 'white',
@@ -40,7 +40,7 @@ const styles = theme => ({
     maxWidth: '385px',
     height: '48px',
   },
-  ii: {
+  leaderboardTitle: {
     position: 'relative',
     top: '-15px',
   },

@@ -53,9 +53,9 @@ export default class Leaderboard extends React.Component {
     }
     return (
       <div className={classes.root}>
-        <div className={classes.ii}>
+        <div className={classes.leaderboardTitle}>
           <img src="/images/Leaderboard.svg" alt='leaderboard' className={classes.flag} />
-          <div className={classes.im}><FormattedMessage id='leaderboard.title' defaultMessage='Leaderboard' /> </div>
+          <div className={classes.leaderboardText}><FormattedMessage id='leaderboard.title' defaultMessage='Leaderboard' /> </div>
         </div>
         <div className={classes.board}>
           <MobileStepper
@@ -75,7 +75,7 @@ export default class Leaderboard extends React.Component {
               </Button>
             }
           />
-          <Paper className={classes.sds}>
+          <Paper className={classes.outWrapper}>
             <Table className={classes.table}>
               <TableHead className={classes.tableHead}>
                 <TableRow>
