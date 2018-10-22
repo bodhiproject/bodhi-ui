@@ -6,6 +6,7 @@ import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import Leaderboard from '../components/Leaderboard';
 
 const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
@@ -17,6 +18,7 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
       <FinalizeButton eventpage={eventPage} />
+      <Leaderboard />
       <HistoryTable resultHistory transactionHistory />
     </Content>
     <Sidebar />

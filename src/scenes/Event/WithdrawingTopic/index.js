@@ -10,6 +10,7 @@ import WithdrawTo from './WithdrawTo';
 import Reward from './Reward';
 import Options from './Options';
 import Sidebar from './Sidebar';
+import Leaderboard from '../components/Leaderboard';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -36,6 +37,7 @@ export default class WithdrawingTopic extends Component {
             )}
           </Paper>
           <Options eventPage={eventPage} />
+          <Leaderboard />
           <HistoryTable resultHistory transactionHistory />
         </Content>
         <Sidebar topic={topic} />

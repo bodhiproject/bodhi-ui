@@ -7,17 +7,19 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } f
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
 const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
+const paras = [Token.QTUM, Token.BOT];
 
 const INIT = {
   type: undefined,
   loading: true,
   oracles: [],
   topics: [],
+  votes: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -32,6 +34,7 @@ const INIT = {
   qtumWinnings: 0,
   botWinnings: 0,
   withdrawableAddresses: [],
+  activeStep: 0,
   error: {
     amount: '',
     address: '',
@@ -42,6 +45,7 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
+  @observable votes = INIT.votes
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -53,7 +57,7 @@ export default class EventStore {
   @observable escrowClaim = INIT.escrowClaim
   @observable hashId = INIT.hashId
   @observable allowance = INIT.allowance; // In Botoshi
-
+  @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
 
   // topic
@@ -156,7 +160,7 @@ export default class EventStore {
     // API calls
     await this.getEscrowAmount();
     await this.calculateWinnings();
-
+    await this.queryLeaderboard(Token.QTUM);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -167,6 +171,7 @@ export default class EventStore {
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
+    await this.queryLeaderboard(Token.QTUM);
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
@@ -185,6 +190,12 @@ export default class EventStore {
           this.calculateWinnings();
         }
       }
+    );
+
+    // Leaderboard tab changed
+    reaction(
+      () => this.activeStep,
+      () => this.updateLeaderBoard(),
     );
 
     // Current wallet address changed
@@ -207,12 +218,14 @@ export default class EventStore {
             case TOPIC: {
               await this.queryTransactions(this.address);
               this.disableEventActionsIfNecessary();
+              await this.updateLeaderBoard();
               break;
             }
             case ORACLE: {
               await this.queryTransactions(this.topicAddress);
               await this.queryOracles(this.topicAddress);
               await this.getAllowanceAmount();
+              await this.updateLeaderBoard();
               this.disableEventActionsIfNecessary();
               break;
             }
@@ -255,6 +268,27 @@ export default class EventStore {
   queryOracles = async (address) => {
     const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
     this.oracles = oracles;
+  }
+
+  @action
+  queryLeaderboard = async (token) => {
+    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
+    this.votes = votes;
+  }
+
+  @action
+  queryBiggestWinner = async () => {
+    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
+    this.votes = winners;
+  }
+
+  @action
+  updateLeaderBoard = async () => {
+    if (this.activeStep < 2) {
+      await this.queryLeaderboard(paras[this.activeStep]);
+    } else {
+      await this.queryBiggestWinner();
+    }
   }
 
   @action

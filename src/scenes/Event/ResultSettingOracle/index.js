@@ -6,6 +6,7 @@ import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
 
 import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import Leaderboard from '../components/Leaderboard';
 
 const messages = defineMessages({
   consensusThreshold: {
@@ -29,6 +30,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
       <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
+      <Leaderboard />
       <HistoryTable transactionHistory />
     </Content>
     <Sidebar />

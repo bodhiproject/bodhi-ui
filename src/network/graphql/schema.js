@@ -8,6 +8,8 @@ export const TYPE = {
   transaction: 'Transaction',
   paginatedOracles: 'PaginatedOracles',
   paginatedTopics: 'PaginatedTopics',
+  paginatedAccumulatedVotes: 'PaginatedAccumulatedVotes',
+  winners: 'Winner',
 };
 
 const TOPIC_DEF = {
@@ -128,6 +130,28 @@ const TYPE_DEF = {
       address
       qtum
       bot
+    }
+  `,
+
+  PaginatedAccumulatedVotes: `
+    totalCount
+    votes {
+      topicAddress
+      voterAddress
+      amount
+    }
+    pageInfo {
+      hasNextPage
+      pageNumber
+      count
+    }
+  `,
+  Winner: `
+    topicAddress
+    voterAddress
+    amount{
+      bot
+      qtum
     }
   `,
 

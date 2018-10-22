@@ -26,6 +26,15 @@ const INIT_VALUES = {
       pageNumber: 1,
     },
   },
+  paginatedAccumulatedVotes: {
+    totalCount: 0,
+    votes: [],
+    pageInfo: {
+      hasNextPage: true,
+      count: 0,
+      pageNumber: 1,
+    },
+  },
   transactions: [],
 };
 
@@ -36,6 +45,7 @@ const INIT_VALUES = {
 export default {
   paginatedTopics: INIT_VALUES.paginatedTopics,
   paginatedOracles: INIT_VALUES.paginatedOracles,
+  paginatedAccumulatedVotes: INIT_VALUES.paginatedAccumulatedVotes,
   transactions: [],
 
   // Call this to populate the entire DB with mock data in all tables.
@@ -122,6 +132,24 @@ export default {
 
   resetOracles() {
     this.paginatedOracles = INIT_VALUES.paginatedOracles;
+  },
+
+  generateAccumulatedVote() {
+    return {
+      topicAddress: cryptoRandomString(40),
+      voterAddress: `q${cryptoRandomString(33)}`,
+      amount: times(3, decimalToSatoshi(randomInt(1, 10))),
+      token: Token.QTUM,
+    };
+  },
+
+  addAccumulatedVote(vote) {
+    this.paginatedAccumulatedVotes.votes.push(vote);
+    this.paginatedAccumulatedVotes.totalCount = this.paginatedAccumulatedVotes.totalCount + 1;
+  },
+
+  resetAccumulatedVote() {
+    this.paginatedAccumulatedVotes = INIT_VALUES.paginatedAccumulatedVotes;
   },
 
   /* Transactions */
