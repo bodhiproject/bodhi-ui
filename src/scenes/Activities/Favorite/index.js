@@ -45,10 +45,12 @@ export default class Favorite extends Component {
           <Fragment>
             {this.props.bannerStyle ? (
               <div className={classes.favoriteSidebarPlacholderContainer}>
-                <Typography variant="title" className={classes.favoriteSidebarPlacholderItem}>
-                  {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
-                </Typography>
-                <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderItem}>
+                <div className={classes.favoriteSidebarPlacholderText}>
+                  <Typography variant="title">
+                    {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
+                  </Typography>
+                </div>
+                <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderButton}>
                   <Button
                     variant="raised"
                     size="medium"
