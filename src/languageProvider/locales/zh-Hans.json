@@ -186,7 +186,7 @@
   "str.description": "描述",
   "str.discoverEvents": "探索事件",
   "str.empty": " ",
-  "str.emptyFavorite": "You do not have any favorite events right now.",
+  "str.emptyFavorite": "您目前没有任何收藏事件。",
   "str.emptyTxHistory": "您目前没有任何交易。",
   "str.encrypt": "加密钱包。这只用于第一次加密。 加密之后，启动Bodhi时您需要用此密码解锁钱包。",
   "str.end": "已结束",

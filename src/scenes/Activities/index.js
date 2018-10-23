@@ -9,7 +9,6 @@ import ResultSetting from './ResultSetting';
 import Finalize from './Finalize';
 import Withdraw from './Withdraw';
 import ActivityHistory from './ActivityHistory';
-import Favorite from './Favorite';
 import styles from './styles';
 const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
 
