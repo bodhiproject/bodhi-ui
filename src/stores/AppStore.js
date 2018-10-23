@@ -86,7 +86,6 @@ class AppStore {
       this.myWallet = {
         history: new WalletHistoryStore(this),
       };
-
       this.search = new SearchStore(this);
       // finished loading all stores, show UI
       this.loading = false;
