@@ -18,7 +18,7 @@ const FinalizingOracle = observer(({ store: { eventPage, eventPage: { oracle } }
       <Options oracle={oracle} />
       {oracle.unconfirmed && <ImportantNote heading='str.unconfirmed' message='oracle.eventUnconfirmed' />}
       <FinalizeButton eventpage={eventPage} />
-      <Leaderboard />
+      <Leaderboard maxSteps={2} />
       <HistoryTable resultHistory transactionHistory />
     </Content>
     <Sidebar />
