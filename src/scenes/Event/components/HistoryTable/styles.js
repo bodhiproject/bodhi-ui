@@ -4,6 +4,7 @@ const styles = (theme) => ({
     marginTop: 0,
     paddingTop: 10,
     padding: 10,
+    maxWidth: '100%',
   },
   subTableContainer: {
   },
