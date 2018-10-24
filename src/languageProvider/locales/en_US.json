@@ -212,7 +212,7 @@
   "str.myTransactions": "My Transactions",
   "str.name": "Name",
   "str.newPassphrase": "NEW PASSPHRASE",
-  "str.noAddressInWallet": "Can not get address from wallet. You may try to login your qrypto",
+  "str.noAddressInWallet": "No wallet address found. Please login to Qrypto.",
   "str.notEnoughBot": "You don't have enough BOT",
   "str.notEnoughQtum": "You don't have enough QTUM",
   "str.notEnoughQtumAndBot": "You don't have enough QTUM or BOT",

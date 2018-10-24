@@ -160,6 +160,7 @@ export default class EventStore {
     // API calls
     await this.getEscrowAmount();
     await this.calculateWinnings();
+    this.disableEventActionsIfNecessary();
     await this.queryLeaderboard(Token.QTUM);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
@@ -172,6 +173,7 @@ export default class EventStore {
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
     await this.queryLeaderboard(Token.QTUM);
+    this.disableEventActionsIfNecessary();
 
     if (this.oracle.phase === RESULT_SETTING) {
       // Set the amount field since we know the amount will be the consensus threshold
