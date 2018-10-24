@@ -33,7 +33,7 @@ const styles = (theme) => ({
     textAlign: 'right',
   },
   bottomBarBlockNum: {
-
+    paddingRight: theme.padding.spaceX.px,
   },
   bottomBarBlockTime: {
 
