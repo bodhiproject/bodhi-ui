@@ -114,13 +114,23 @@ const TYPE_DEF = {
   `,
   Vote: `
     txid
-    blockNum
+    block {
+      blockNum
+      blockTime
+    }
     voterAddress
     topicAddress
     oracleAddress
     optionIdx
     amount
     version
+    token
+    type
+    topic {
+      address
+      name
+      options
+    }
   `,
 
   SyncInfo: `

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
+import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, TransactionStatus, DBVoteType } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
@@ -305,23 +305,33 @@ export default class EventStore {
 
   @action
   queryTransactions = async (address) => {
-    this.transactions = await queryAllTransactions(
-      [{ topicAddress: address }],
+    const transactions = await queryAllTransactions(
+      [{ topicAddress: address, status: TransactionStatus.PENDING }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
     );
+    // // this.withdraws = await queryWithdraws(
+    // //   [{ topicAddress: address }],
+    // //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    // // );
 
-    // const resultSets = await queryResultSets(
-    //   [{ topicAddress: address }],
-    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    // );
-    // const withdraws = await queryWithdraws(
-    //   [{ topicAddress: address }],
-    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    // );
-    // const votes = await queryAllVotes(
-    //   [{ topicAddress: address }],
-    //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
-    // );
+    // // this.finalizes = await queryResultSets(
+    // //   [{ topicAddress: address, oracleAddress: null }],
+    // //   { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    // // );
+
+    const votes = await queryAllVotes(
+      [{ topicAddress: address }],
+      { field: 'block.blockTime', direction: SortBy.DESCENDING },
+    );
+
+    this.votes = filter(votes, { type: DBVoteType.VOTE });
+    this.resultsets = filter(votes, { type: DBVoteType.RESULT_SET });
+    this.bets = filter(votes, { type: DBVoteType.BET });
+
+    this.transactions = [...transactions, ...this.withdraws, ...this.finalizes, ...this.votes, ...this.resultsets, ...this.bets];
+    console.log(address);
+    console.log(transactions);
+    // console.log(this.transactions);
   }
 
   @action

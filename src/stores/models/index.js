@@ -5,3 +5,4 @@ export { default as Topic } from './Topic';
 export { default as Transaction } from './Transaction';
 export { default as TransactionCost } from './TransactionCost';
 export { default as WalletAddress } from './WalletAddress';
+export { default as Vote } from './Vote';

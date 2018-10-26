@@ -1,6 +1,6 @@
 import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
 import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic, SyncInfo } from 'models';
+import { Transaction, Oracle, Topic, SyncInfo, Vote } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -204,7 +204,7 @@ export async function queryAllOracles(app, filters, orderBy, limit, skip) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllVotes(filters, orderBy) {
+export async function queryAllVotes(filters, orderBy) {
   const request = new GraphQuery('allVotes', TYPE.vote);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
@@ -212,7 +212,8 @@ export function queryAllVotes(filters, orderBy) {
   if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (vote) => new Vote(vote));
 }
 
 /*

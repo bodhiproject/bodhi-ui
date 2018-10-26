@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-import { TransactionType } from 'constants';
+import { TransactionType, DBVoteType } from 'constants';
 
 import { getIntlProvider } from './i18nUtil';
 
@@ -62,6 +62,9 @@ export function getTxTypeString(txType, intl) {
       return formatMessage(strings.bet);
     }
     case TransactionType.SET_RESULT: {
+      return formatMessage(strings.setResult);
+    }
+    case DBVoteType.RESULT_SET: {
       return formatMessage(strings.setResult);
     }
     case TransactionType.VOTE: {

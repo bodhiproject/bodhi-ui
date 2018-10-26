@@ -54,7 +54,7 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { status, txid, createdTime, amount, token, type } = transaction;
+    const { status, txid, createdTime, amount, token, type, blockTime } = transaction;
     const { expanded } = this.state;
 
     const statusMsg = (() => {
@@ -68,7 +68,7 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
+          <TableCell padding="dense">{blockTime ? moment.unix(blockTime).format('LLL') : moment.unix(createdTime).format('LLL')}</TableCell>
           <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
           <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>
