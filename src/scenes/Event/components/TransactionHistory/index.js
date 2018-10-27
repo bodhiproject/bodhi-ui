@@ -19,10 +19,10 @@ export default class TransactionHistory extends Component {
 
   render() {
     const { options, store: { eventPage, wallet } } = this.props;
-    const { transactions } = eventPage;
+    const { transactionHistoryItems, topic } = eventPage;
     return (
       <div>
-        {transactions.length && options.length ? (
+        {transactionHistoryItems.length && options.length ? (
           <ResponsiveTable>
             <TableHead>
               <TableRow>
@@ -46,8 +46,8 @@ export default class TransactionHistory extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {transactions.map((transaction) => (
-                (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} />
+              {transactionHistoryItems.map((transaction) => (
+                (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} topic={topic} />
               ))}
             </TableBody>
           </ResponsiveTable>

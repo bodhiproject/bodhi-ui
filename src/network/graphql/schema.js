@@ -126,11 +126,33 @@ const TYPE_DEF = {
     version
     token
     type
-    topic {
-      address
-      name
-      options
+  `,
+
+  ResultSet: `
+    txid
+    block {
+      blockNum
+      blockTime
     }
+    topicAddress
+    oracleAddress
+    fromAddress
+    resultIdx
+    version
+  `,
+
+  Withdraw: `
+    txid
+    block {
+      blockNum
+      blockTime
+    }
+    topicAddress
+    withdrawerAddress
+    qtumAmount
+    botAmount
+    version
+    type
   `,
 
   SyncInfo: `

@@ -38,11 +38,11 @@ export default class TxRow extends Component {
   }
 
   get description() {
-    const { intl, transaction: { optionIdx, topic, localizedInvalid } } = this.props;
-    if (topic && optionIdx) {
+    const { intl, transaction: { optionIdx }, topic } = this.props;
+    if (topic && optionIdx && optionIdx !== null) {
       const optionName = topic.options[optionIdx];
-      return `#${optionIdx + 1} ${optionName === 'Invalid' && !localizedInvalid
-        ? localizedInvalid.parse(intl.locale)
+      return `#${optionIdx + 1} ${optionName === 'Invalid' && !topic.localizedInvalid
+        ? topic.localizedInvalid.parse(intl.locale)
         : optionName}`;
     }
     return '';
@@ -56,9 +56,10 @@ export default class TxRow extends Component {
     const { classes, intl, transaction } = this.props;
     const { status, txid, createdTime, amount, token, type, blockTime } = transaction;
     const { expanded } = this.state;
-
+    let finalStatus = status;
+    if (transaction.constructor.name !== 'Transaction') finalStatus = 'SUCCESS';
     const statusMsg = (() => {
-      switch (status) {
+      switch (finalStatus) {
         case 'PENDING': return messages.strPendingMsg;
         case 'SUCCESS': return messages.strSuccessMsg;
         default: return messages.strFailMsg;

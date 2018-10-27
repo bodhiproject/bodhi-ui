@@ -1,6 +1,6 @@
 import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
 import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic, SyncInfo, Vote } from 'models';
+import { Transaction, Oracle, Topic, SyncInfo, Vote, Finalize, Withdraw } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -340,12 +340,12 @@ export async function searchTopics(app, phrase, filters, orderBy) {
 }
 
 /**
- * Search for Topics that contains phrase either in title or result setter address
+ * Search for finalizes
  * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
- * @return {Promise} Search result from graphql
+ * @return {Promise} result sets from graphql
  */
-export function queryResultSets(filters, orderBy) {
+export async function queryFinalizes(filters, orderBy) {
   const request = new GraphQuery('resultSets', TYPE.resultSet);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
@@ -353,16 +353,17 @@ export function queryResultSets(filters, orderBy) {
   if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (finalize) => new Finalize(finalize));
 }
 
 /**
- * Search for Topics that contains phrase either in title or result setter address
+ * Search for withdraws
  * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} Search result from graphql
  */
-export function queryWithdraws(filters, orderBy) {
+export async function queryWithdraws(filters, orderBy) {
   const request = new GraphQuery('withdraws', TYPE.withdraw);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
@@ -370,5 +371,6 @@ export function queryWithdraws(filters, orderBy) {
   if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (withdraw) => new Withdraw(withdraw));
 }
