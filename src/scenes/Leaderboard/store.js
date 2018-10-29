@@ -43,7 +43,7 @@ export default class Leaderboard {
   init = async () => {
     Object.assign(this, INIT_VALUES);
     const res = await queryLeaderboardStats();
-    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBOT), totalQTUM: satoshiToDecimal(res.totalQTUM) });
+    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
     await this.loadLeaderBoard();
   }
 

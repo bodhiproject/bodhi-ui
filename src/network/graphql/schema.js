@@ -171,8 +171,8 @@ const TYPE_DEF = {
   LeaderboardStats: `
     eventCount
     participantsCount
-    totalQTUM
-    totalBOT
+    totalQtum
+    totalBot
   `,
 
   PaginatedAccumulatedVotes: `
