@@ -6,5 +6,5 @@ export { default as Transaction } from './Transaction';
 export { default as TransactionCost } from './TransactionCost';
 export { default as WalletAddress } from './WalletAddress';
 export { default as Vote } from './Vote';
-export { default as Finalize } from './Finalize';
+export { default as ResultSet } from './ResultSet';
 export { default as Withdraw } from './Withdraw';

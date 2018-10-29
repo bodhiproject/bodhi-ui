@@ -54,12 +54,12 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { status, txid, createdTime, amount, token, type, blockTime } = transaction;
+    const { txid, createdTime, amount, token, type, blockTime } = transaction;
+    let { status } = transaction;
     const { expanded } = this.state;
-    let finalStatus = status;
-    if (transaction.constructor.name !== 'Transaction') finalStatus = 'SUCCESS';
+    if (transaction.constructor.name !== 'Transaction') status = 'SUCCESS';
     const statusMsg = (() => {
-      switch (finalStatus) {
+      switch (status) {
         case 'PENDING': return messages.strPendingMsg;
         case 'SUCCESS': return messages.strSuccessMsg;
         default: return messages.strFailMsg;

@@ -1,6 +1,6 @@
 import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
 import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic, SyncInfo, Vote, Finalize, Withdraw } from 'models';
+import { Transaction, Oracle, Topic, SyncInfo, Vote, ResultSet, Withdraw } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -340,12 +340,12 @@ export async function searchTopics(app, phrase, filters, orderBy) {
 }
 
 /**
- * Search for finalizes
+ * Search for Result Sets
  * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
  * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
  * @return {Promise} result sets from graphql
  */
-export async function queryFinalizes(filters, orderBy) {
+export async function queryResultSets(filters, orderBy) {
   const request = new GraphQuery('resultSets', TYPE.resultSet);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
@@ -354,7 +354,7 @@ export async function queryFinalizes(filters, orderBy) {
     request.setOrderBy(orderBy);
   }
   const result = await request.execute();
-  return map(result, (finalize) => new Finalize(finalize));
+  return map(result, (resultset) => new ResultSet(resultset));
 }
 
 /**

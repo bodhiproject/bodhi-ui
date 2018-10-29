@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, Tr
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryFinalizes, queryWithdraws } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -20,11 +20,6 @@ const INIT = {
   oracles: [],
   topics: [],
   leaderboardVotes: [],
-  votes: [],
-  bets: [],
-  resultsets: [],
-  finalizes: [],
-  withdraws: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -51,11 +46,6 @@ export default class EventStore {
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
   @observable leaderboardVotes = INIT.leaderboardVotes
-  @observable votes = INIT.votes
-  @observable bets = INIT.bets
-  @observable resultsets = INIT.resultsets
-  @observable finalizes = INIT.finalizes
-  @observable withdraws = INIT.withdraws
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -310,18 +300,20 @@ export default class EventStore {
       [{ topicAddress: address, status: TransactionStatus.PENDING }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
     );
-    this.withdraws = await queryWithdraws([{ topicAddress: address }]);
 
-    this.finalizes = await queryFinalizes([{ topicAddress: address }]);
-    this.finalizes = filter(this.finalizes, { oracleAddress: null });
-    const votes = await queryAllVotes([{ topicAddress: address }]);
+    const withdraws = await queryWithdraws([{ topicAddress: address }]);
 
-    this.votes = filter(votes, { type: TransactionType.VOTE });
-    this.resultsets = filter(votes, { type: TransactionType.SET_RESULT });
-    this.bets = filter(votes, { type: TransactionType.BET });
+    const resultsets = await queryResultSets([{ topicAddress: address }]);
+    const finalizes = filter(resultsets, { oracleAddress: null });
 
-    let confirmed = [...this.withdraws, ...this.finalizes, ...this.votes, ...this.resultsets, ...this.bets];
+    const transactions = await queryAllVotes([{ topicAddress: address }]);
+    const votes = filter(transactions, { type: TransactionType.VOTE });
+    const resultsetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
+    const bets = filter(transactions, { type: TransactionType.BET });
+
+    let confirmed = [...withdraws, ...finalizes, ...votes, ...resultsetsWithAmount, ...bets];
     confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
+
     this.transactionHistoryItems = [...pendings, ...confirmed];
   }
 
