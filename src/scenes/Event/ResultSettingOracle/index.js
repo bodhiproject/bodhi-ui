@@ -30,7 +30,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
       <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
-      <Leaderboard maxSteps={1} />
+      <Leaderboard maxSteps={1} xstore={eventPage} />
       <HistoryTable transactionHistory />
     </Content>
     <Sidebar />
