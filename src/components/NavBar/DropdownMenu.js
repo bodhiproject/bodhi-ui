@@ -45,6 +45,11 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         <FormattedMessage id="navBar.allEvents" defaultMessage="All Events" />
       </div>
     </Link>
+    <Link to={Routes.LEADERBOARD}>
+      <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
+        <FormattedMessage id="navBar.leaderboard" defaultMessage="Leaderboard" />
+      </div>
+    </Link>
     <Hidden smUp>
       <div
         className={classes.navDropdownLinkItem}

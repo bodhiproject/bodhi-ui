@@ -32,22 +32,19 @@ const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 @observer
 export default class Leaderboard extends React.Component {
   handleNext = () => {
-    this.props.store.eventPage.activeStep = this.props.store.eventPage.activeStep + 1;
+    this.props.xstore.activeStep = this.props.xstore.activeStep + 1;
   };
 
   handleBack = () => {
-    this.props.store.eventPage.activeStep = this.props.store.eventPage.activeStep - 1;
+    this.props.xstore.activeStep = this.props.xstore.activeStep - 1;
   };
 
   render() {
-    const { classes, theme, store: { eventPage }, intl } = this.props;
-    const { votes, type, activeStep } = eventPage;
-    let maxSteps = 2;
-    if (type === TOPIC) {
-      maxSteps = 3;
-    }
-    if (votes.length < 5) {
-      for (let i = votes.length; i < 5; i++) {
+    const { classes, theme, xstore, intl, maxSteps } = this.props;
+    const { votes, activeStep, leaderboardLimit } = xstore;
+
+    if (votes.length < leaderboardLimit) {
+      for (let i = votes.length; i < leaderboardLimit; i++) {
         votes.push({ voterAddress: '', amount: '' });
       }
     }

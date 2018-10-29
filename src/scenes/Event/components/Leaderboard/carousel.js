@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import cx from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import { Paper } from '@material-ui/core';
 
 export const styles = () => ({
   root: {
@@ -19,6 +19,8 @@ export const styles = () => ({
     backgroundColor: '#FFFFFF',
     color: '#585AFA',
     fontWeight: 'bold',
+    margin: '0 auto',
+    padding: '8px 0px',
   },
 });
 
@@ -34,20 +36,18 @@ function CMobileStepper(props) {
     ...other
   } = props;
 
-  const className = classNames(
+  const className = cx(
     classes.root,
     classNameProp,
   );
 
   return (
     <Paper square elevation={0} className={className} {...other}>
-      {backButton}
-      {
-        <div className={classes.dots}>
-          {currentValue}
-        </div>
-      }
-      {nextButton}
+      {steps > 1 && backButton}
+      <div className={classes.dots}>
+        {currentValue}
+      </div>
+      {steps > 1 && nextButton}
     </Paper>
   );
 }

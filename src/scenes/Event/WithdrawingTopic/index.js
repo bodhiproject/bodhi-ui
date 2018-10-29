@@ -37,7 +37,7 @@ export default class WithdrawingTopic extends Component {
             )}
           </Paper>
           <Options eventPage={eventPage} />
-          <Leaderboard maxSteps={3} />
+          <Leaderboard maxSteps={3} xstore={eventPage} />
           <HistoryTable resultHistory transactionHistory />
         </Content>
         <Sidebar topic={topic} />

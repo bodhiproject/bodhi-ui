@@ -17,6 +17,7 @@ import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import FavoriteStore from '../scenes/Activities/Favorite/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
+import LeaderboardStore from '../scenes/Leaderboard/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
 import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
@@ -77,6 +78,7 @@ class AppStore {
       this.botCourt = new BotCourtStore(this);
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
+      this.leaderboard = new LeaderboardStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),

@@ -12,6 +12,7 @@ export const TYPE = {
   winners: 'Winner',
   resultSet: 'ResultSet',
   withdraw: 'Withdraw',
+  leaderboardStats: 'LeaderboardStats',
 };
 
 const TOPIC_DEF = {
@@ -165,6 +166,13 @@ const TYPE_DEF = {
       qtum
       bot
     }
+  `,
+
+  LeaderboardStats: `
+    eventCount
+    participantsCount
+    totalQTUM
+    totalBOT
   `,
 
   PaginatedAccumulatedVotes: `

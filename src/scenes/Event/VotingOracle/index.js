@@ -30,7 +30,7 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal }
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
       <CurrentAllowanceNote allowance={amountDecimal} />
       <VoteButton eventpage={eventPage} />
-      <Leaderboard maxSteps={2} />
+      <Leaderboard maxSteps={2} xstore={eventPage} />
       <HistoryTable resultHistory transactionHistory />
     </Content>
     <Sidebar />

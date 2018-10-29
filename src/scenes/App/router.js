@@ -79,6 +79,11 @@ const AppRouter = ({ url }) => {
         path={`${url}${Routes.FAVORITE}`}
         component={asyncComponent(() => import('../Activities'))}
       />
+      <Route
+        exact
+        path={`${url}${Routes.LEADERBOARD}`}
+        component={asyncComponent(() => import('../Leaderboard'))}
+      />
     </Switch>
   );
 };

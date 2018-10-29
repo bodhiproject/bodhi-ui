@@ -31,7 +31,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } })
       {!oracle.unconfirmed && (
         <Fragment>
           <BetButton eventpage={eventPage} />
-          <Leaderboard maxSteps={1} />
+          <Leaderboard maxSteps={1} xstore={eventPage} />
           <HistoryTable transactionHistory />
         </Fragment>
       )}
