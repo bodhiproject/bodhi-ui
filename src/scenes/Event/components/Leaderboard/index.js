@@ -23,7 +23,6 @@ const messages = defineMessages({
   },
 });
 
-const { TOPIC } = EventType;
 const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
