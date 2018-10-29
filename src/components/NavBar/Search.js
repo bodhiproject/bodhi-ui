@@ -47,4 +47,4 @@ export const SearchBarField = withStyles(styles)(injectIntl(inject('store')(({ i
   </div>
 ))));
 
-export default withStyles(styles, { withTheme: true })(inject('store')(observer((SearchButton))));
+export default withStyles(styles, { withTheme: true })(SearchButton);

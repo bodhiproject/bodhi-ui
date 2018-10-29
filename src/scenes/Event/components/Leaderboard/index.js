@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { EventType } from 'constants';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
 import MobileStepper from './carousel';
@@ -23,7 +22,6 @@ const messages = defineMessages({
   },
 });
 
-const { TOPIC } = EventType;
 const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
