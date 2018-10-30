@@ -1,12 +1,11 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy, times } from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, TransactionStatus } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
-import { randomInt } from '../../helpers/testUtil';
 import networkRoutes from '../../network/routes';
 import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
