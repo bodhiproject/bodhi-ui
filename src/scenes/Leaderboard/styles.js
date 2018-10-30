@@ -1,11 +1,4 @@
 const styles = (theme) => ({
-  root: {
-    borderRadius: theme.borderRadius,
-    background: 'rgba(255, 255, 255,0)',
-  },
-  title: {
-    marginBottom: theme.padding.space7X.px,
-  },
   SidebarContainer: {
     padding: theme.padding.space7X.px,
     overflowX: 'hidden',
