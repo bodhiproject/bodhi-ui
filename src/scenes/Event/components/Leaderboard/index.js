@@ -39,11 +39,11 @@ export default class Leaderboard extends React.Component {
 
   render() {
     const { classes, theme, xstore, intl, maxSteps } = this.props;
-    const { votes, activeStep, leaderboardLimit } = xstore;
+    const { leaderboardVotes, activeStep, leaderboardLimit } = xstore;
 
-    if (votes.length < leaderboardLimit) {
-      for (let i = votes.length; i < leaderboardLimit; i++) {
-        votes.push({ voterAddress: '', amount: '' });
+    if (leaderboardVotes.length < leaderboardLimit) {
+      for (let i = leaderboardVotes.length; i < leaderboardLimit; i++) {
+        leaderboardVotes.push({ voterAddress: '', amount: '' });
       }
     }
     return (

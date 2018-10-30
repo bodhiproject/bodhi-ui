@@ -9,7 +9,7 @@ const INIT_VALUES = {
   participantsCount: 0,
   totalBOT: '',
   totalQTUM: '',
-  votes: [],
+  leaderboardVotes: [],
   activeStep: 0,
 };
 
@@ -20,7 +20,7 @@ export default class Leaderboard {
   @observable participantsCount = INIT_VALUES.participantsCount
   @observable totalBOT = INIT_VALUES.totalBOT
   @observable totalQTUM = INIT_VALUES.totalQTUM
-  @observable votes = INIT_VALUES.votes
+  @observable leaderboardVotes = INIT_VALUES.leaderboardVotes
   @observable activeStep = INIT_VALUES.activeStep
   leaderboardLimit = 10
   constructor(app) {
@@ -50,6 +50,6 @@ export default class Leaderboard {
   @action
   loadLeaderBoard = async () => {
     const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
-    this.votes = votes;
+    this.leaderboardVotes = votes;
   }
 }
