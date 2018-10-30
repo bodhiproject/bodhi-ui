@@ -39,11 +39,11 @@ export default class Leaderboard extends React.Component {
 
   render() {
     const { classes, theme, store: { eventPage }, intl, maxSteps } = this.props;
-    const { votes, activeStep } = eventPage;
+    const { leaderboardVotes, activeStep } = eventPage;
 
-    if (votes.length < 5) {
-      for (let i = votes.length; i < 5; i++) {
-        votes.push({ voterAddress: '', amount: '' });
+    if (leaderboardVotes.length < 5) {
+      for (let i = leaderboardVotes.length; i < 5; i++) {
+        leaderboardVotes.push({ voterAddress: '', amount: '' });
       }
     }
     return (
@@ -80,7 +80,7 @@ export default class Leaderboard extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {votes.map((row, index) =>
+                {leaderboardVotes.map((row, index) =>
                   (
                     <CustomTableRow key={index} className={classes.entry}>
                       <CustomTableBodyCell component="th" scope="row">

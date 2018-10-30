@@ -10,6 +10,8 @@ export const TYPE = {
   paginatedTopics: 'PaginatedTopics',
   paginatedAccumulatedVotes: 'PaginatedAccumulatedVotes',
   winners: 'Winner',
+  resultSet: 'ResultSet',
+  withdraw: 'Withdraw',
 };
 
 const TOPIC_DEF = {
@@ -112,13 +114,45 @@ const TYPE_DEF = {
   `,
   Vote: `
     txid
-    blockNum
+    block {
+      blockNum
+      blockTime
+    }
     voterAddress
     topicAddress
     oracleAddress
     optionIdx
     amount
     version
+    token
+    type
+  `,
+
+  ResultSet: `
+    txid
+    block {
+      blockNum
+      blockTime
+    }
+    topicAddress
+    oracleAddress
+    fromAddress
+    resultIdx
+    version
+  `,
+
+  Withdraw: `
+    txid
+    block {
+      blockNum
+      blockTime
+    }
+    topicAddress
+    withdrawerAddress
+    qtumAmount
+    botAmount
+    version
+    type
   `,
 
   SyncInfo: `

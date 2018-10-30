@@ -1,6 +1,6 @@
 import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
 import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic, SyncInfo } from 'models';
+import { Transaction, Oracle, Topic, SyncInfo, Vote, ResultSet, Withdraw } from 'models';
 
 import client from './';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -204,7 +204,7 @@ export async function queryAllOracles(app, filters, orderBy, limit, skip) {
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
 * @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
 */
-export function queryAllVotes(filters, orderBy) {
+export async function queryAllVotes(filters, orderBy) {
   const request = new GraphQuery('allVotes', TYPE.vote);
   if (!isEmpty(filters)) {
     request.setFilters(filters);
@@ -212,7 +212,8 @@ export function queryAllVotes(filters, orderBy) {
   if (!isEmpty(orderBy)) {
     request.setOrderBy(orderBy);
   }
-  return request.execute();
+  const result = await request.execute();
+  return map(result, (vote) => new Vote(vote));
 }
 
 /*
@@ -336,4 +337,40 @@ export async function searchTopics(app, phrase, filters, orderBy) {
   request.addParam('limit', 1000);
   const result = await request.execute();
   return map(result, (topic) => new Topic(topic, app));
+}
+
+/**
+ * Search for Result Sets
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+ * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+ * @return {Promise} result sets from graphql
+ */
+export async function queryResultSets(filters, orderBy) {
+  const request = new GraphQuery('resultSets', TYPE.resultSet);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  const result = await request.execute();
+  return map(result, (resultset) => new ResultSet(resultset));
+}
+
+/**
+ * Search for withdraws
+ * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+ * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+ * @return {Promise} Search result from graphql
+ */
+export async function queryWithdraws(filters, orderBy) {
+  const request = new GraphQuery('withdraws', TYPE.withdraw);
+  if (!isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  const result = await request.execute();
+  return map(result, (withdraw) => new Withdraw(withdraw));
 }

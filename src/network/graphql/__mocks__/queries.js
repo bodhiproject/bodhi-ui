@@ -56,6 +56,30 @@ export function queryAllTransactions(filters, orderBy, limit, skip) {
   return transactions;
 }
 
+export function queryWithdraws(filters, orderBy, limit, skip) {
+  let { withdraws } = mockData;
+  withdraws = filterList(filters, mockData.withdraws);
+  withdraws = orderList(orderBy, withdraws);
+  withdraws = paginateList(limit, skip, withdraws);
+  return withdraws;
+}
+
+export function queryResultSets(filters, orderBy, limit, skip) {
+  let { resultSets } = mockData;
+  resultSets = filterList(filters, mockData.resultSets);
+  resultSets = orderList(orderBy, resultSets);
+  resultSets = paginateList(limit, skip, resultSets);
+  return resultSets;
+}
+
+export function queryAllVotes(filters, orderBy, limit, skip) {
+  let { votes } = mockData;
+  votes = filterList(filters, mockData.votes);
+  votes = orderList(orderBy, votes);
+  votes = paginateList(limit, skip, votes);
+  return votes;
+}
+
 const filterList = (filters, list) => {
   if (filters) {
     return flatten(filters.map((filter) => lodashFilter(list, filter)));

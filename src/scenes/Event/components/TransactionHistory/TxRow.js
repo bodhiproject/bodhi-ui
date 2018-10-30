@@ -38,11 +38,11 @@ export default class TxRow extends Component {
   }
 
   get description() {
-    const { intl, transaction: { optionIdx, topic, localizedInvalid } } = this.props;
-    if (topic && optionIdx) {
+    const { intl, transaction: { optionIdx }, topic } = this.props;
+    if (topic && optionIdx && optionIdx !== null) {
       const optionName = topic.options[optionIdx];
-      return `#${optionIdx + 1} ${optionName === 'Invalid' && !localizedInvalid
-        ? localizedInvalid.parse(intl.locale)
+      return `#${optionIdx + 1} ${optionName === 'Invalid' && !topic.localizedInvalid
+        ? topic.localizedInvalid.parse(intl.locale)
         : optionName}`;
     }
     return '';
@@ -54,9 +54,10 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { status, txid, createdTime, amount, token, type } = transaction;
+    const { txid, createdTime, amount, token, type, blockTime } = transaction;
+    let { status } = transaction;
     const { expanded } = this.state;
-
+    if (transaction.constructor.name !== 'Transaction') status = 'SUCCESS';
     const statusMsg = (() => {
       switch (status) {
         case 'PENDING': return messages.strPendingMsg;
@@ -68,7 +69,7 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
+          <TableCell padding="dense">{blockTime ? moment.unix(blockTime).format('LLL') : moment.unix(createdTime).format('LLL')}</TableCell>
           <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
           <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>

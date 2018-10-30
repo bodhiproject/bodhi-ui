@@ -1,13 +1,13 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes } from 'lodash';
+import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases } from 'constants';
+import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, TransactionStatus } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -19,11 +19,11 @@ const INIT = {
   loading: true,
   oracles: [],
   topics: [],
-  votes: [],
+  leaderboardVotes: [],
   amount: '',
   address: '',
   topicAddress: '',
-  transactions: [],
+  transactionHistoryItems: [],
   selectedOptionIdx: -1,
   buttonDisabled: false,
   warningType: '',
@@ -45,11 +45,11 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
-  @observable votes = INIT.votes
+  @observable leaderboardVotes = INIT.leaderboardVotes
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
-  @observable transactions = INIT.transactions
+  @observable transactionHistoryItems = INIT.transactionHistoryItems
   @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
@@ -84,7 +84,7 @@ export default class EventStore {
     return this.voteBalances[this.selectedOptionIdx];
   }
   @computed get topic() {
-    return find(this.topics, { address: this.address }) || {};
+    return find(this.topics, { address: this.topicAddress }) || {};
   }
   // For Oracle only
   @computed get unconfirmed() {
@@ -169,6 +169,7 @@ export default class EventStore {
   @action
   initOracle = async () => {
     // GraphQL calls
+    await this.queryTopics();
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
@@ -241,7 +242,7 @@ export default class EventStore {
 
     // Tx, amount, selected option, current wallet address, or allowance changes
     reaction(
-      () => this.transactions + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
+      () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
       () => {
         if (this.type === TOPIC || this.type === ORACLE) {
           this.disableEventActionsIfNecessary();
@@ -262,7 +263,7 @@ export default class EventStore {
 
   @action
   queryTopics = async () => {
-    const { topics } = await queryAllTopics(this.app, [{ address: this.address }], undefined, 1);
+    const { topics } = await queryAllTopics(this.app, [{ address: this.topicAddress }], undefined, 1);
     this.topics = topics;
   }
 
@@ -275,13 +276,13 @@ export default class EventStore {
   @action
   queryLeaderboard = async (token) => {
     const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
-    this.votes = votes;
+    this.leaderboardVotes = votes;
   }
 
   @action
   queryBiggestWinner = async () => {
     const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
-    this.votes = winners;
+    this.leaderboardVotes = winners;
   }
 
   @action
@@ -295,15 +296,29 @@ export default class EventStore {
 
   @action
   queryTransactions = async (address) => {
-    this.transactions = await queryAllTransactions(
-      [{ topicAddress: address }],
+    const pendings = await queryAllTransactions(
+      [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
       { field: 'createdTime', direction: SortBy.DESCENDING },
     );
+    const withdraws = await queryWithdraws([{ topicAddress: address }]);
+
+    const resultSets = await queryResultSets([{ topicAddress: address }]);
+    const finalizes = filter(resultSets, { oracleAddress: null });
+
+    const transactions = await queryAllVotes([{ topicAddress: address }]);
+    const votes = filter(transactions, { type: TransactionType.VOTE });
+    const resultSetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
+    const bets = filter(transactions, { type: TransactionType.BET });
+
+    let confirmed = [...withdraws, ...finalizes, ...votes, ...resultSetsWithAmount, ...bets];
+    confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
+
+    this.transactionHistoryItems = [...pendings, ...confirmed];
   }
 
   @action
   addPendingTx(pendingTransaction) {
-    this.transactions.unshift(pendingTransaction);
+    this.transactionHistoryItems.unshift(pendingTransaction);
   }
 
   @action

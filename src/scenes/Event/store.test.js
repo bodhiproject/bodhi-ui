@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash';
-import { EventType } from 'constants';
+import { EventType, TransactionType } from 'constants';
+import cryptoRandomString from 'crypto-random-string';
 
 import EventStore from './store';
 import mockDB from '../../../test/mockDB';
@@ -47,7 +48,7 @@ describe('EventStore', () => {
 
       // reset()
       expect(store.amount).toBe('');
-      expect(store.transactions.length).toBe(0);
+      expect(store.transactionHistoryItems.length).toBe(0);
       expect(store.selectedOptionIdx).toBe(-1);
       expect(store.escrowClaim).toBe(0);
       expect(store.allowance).toBe(undefined);
@@ -83,6 +84,37 @@ describe('EventStore', () => {
     });
 
     it('sets the reactions', () => {
+    });
+
+    it('sets random values to transaction history', async () => {
+      let numBets = 0;
+      let numVotes = 0;
+      let numResultsets = 0;
+      let numWithdraws = 0;
+      let numFinalizes = 0;
+      let numPendings = 0;
+      const topicAddress = cryptoRandomString(40);
+
+      mockDB.addTransactions(mockDB.generateTransaction({ topicAddress }));
+      numPendings += 1;
+      mockDB.addWithdraws(mockDB.generateWithdraw({ topicAddress }));
+      mockDB.addWithdraws(mockDB.generateWithdraw({ topicAddress }));
+      numWithdraws += 2;
+      mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: cryptoRandomString(40), topicAddress })); // result set
+      mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: cryptoRandomString(40), topicAddress }));
+      mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: null, topicAddress }));
+      numFinalizes += 1;
+      for (let i = 0; i < 10; i++) {
+        const vote = mockDB.generateVote({ topicAddress });
+        if (vote.type === TransactionType.BET) numBets += 1;
+        if (vote.type === TransactionType.VOTE) numVotes += 1;
+        if (vote.type === TransactionType.SET_RESULT) numResultsets += 1;
+        mockDB.addVotes(vote);
+      }
+
+      await store.queryTransactions(topicAddress);
+
+      expect(store.transactionHistoryItems.length).toBe(numPendings + numBets + numVotes + numResultsets + numWithdraws + numFinalizes);
     });
   });
 });

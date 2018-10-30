@@ -66,7 +66,7 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, bo
   const { id, message, warningType, disabled } = getActionButtonConfig(
     { type, address },
     eventPage.withdrawableAddresses,
-    eventPage.transactions,
+    eventPage.transactionHistoryItems,
     eventPage.address,
   );
   const botWonText = botWon ? `${botWon} ${Token.BOT}` : '';
