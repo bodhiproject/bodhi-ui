@@ -65,11 +65,11 @@ export function queryWithdraws(filters, orderBy, limit, skip) {
 }
 
 export function queryResultSets(filters, orderBy, limit, skip) {
-  let { resultsets } = mockData;
-  resultsets = filterList(filters, mockData.resultsets);
-  resultsets = orderList(orderBy, resultsets);
-  resultsets = paginateList(limit, skip, resultsets);
-  return resultsets;
+  let { resultSets } = mockData;
+  resultSets = filterList(filters, mockData.resultSets);
+  resultSets = orderList(orderBy, resultSets);
+  resultSets = paginateList(limit, skip, resultSets);
+  return resultSets;
 }
 
 export function queryAllVotes(filters, orderBy, limit, skip) {

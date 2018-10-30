@@ -36,6 +36,9 @@ const INIT_VALUES = {
     },
   },
   transactions: [],
+  withdraws: [],
+  resultSets: [],
+  votes: [],
 };
 
 /**
@@ -48,7 +51,7 @@ export default {
   paginatedAccumulatedVotes: INIT_VALUES.paginatedAccumulatedVotes,
   transactions: [],
   withdraws: [],
-  resultsets: [],
+  resultSets: [],
   votes: [],
 
   // Call this to populate the entire DB with mock data in all tables.
@@ -226,11 +229,11 @@ export default {
   },
 
   addResultSets(newResultSets) {
-    this.resultsets.push(newResultSets);
+    this.resultSets.push(newResultSets);
   },
 
   resetResultSets() {
-    this.resultsets = INIT_VALUES.resultsets;
+    this.resultSets = INIT_VALUES.resultSets;
   },
 
   /* Votes */

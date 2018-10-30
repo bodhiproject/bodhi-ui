@@ -302,15 +302,15 @@ export default class EventStore {
     );
     const withdraws = await queryWithdraws([{ topicAddress: address }]);
 
-    const resultsets = await queryResultSets([{ topicAddress: address }]);
-    const finalizes = filter(resultsets, { oracleAddress: null });
+    const resultSets = await queryResultSets([{ topicAddress: address }]);
+    const finalizes = filter(resultSets, { oracleAddress: null });
 
     const transactions = await queryAllVotes([{ topicAddress: address }]);
     const votes = filter(transactions, { type: TransactionType.VOTE });
-    const resultsetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
+    const resultSetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
     const bets = filter(transactions, { type: TransactionType.BET });
 
-    let confirmed = [...withdraws, ...finalizes, ...votes, ...resultsetsWithAmount, ...bets];
+    let confirmed = [...withdraws, ...finalizes, ...votes, ...resultSetsWithAmount, ...bets];
     confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
 
     this.transactionHistoryItems = [...pendings, ...confirmed];
