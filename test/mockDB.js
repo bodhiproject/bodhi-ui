@@ -1,8 +1,8 @@
 import cryptoRandomString from 'crypto-random-string';
 import { times, each } from 'lodash';
 import moment from 'moment';
-import { OracleStatus, Token, TransactionStatus } from 'constants';
-import { Transaction } from 'models';
+import { OracleStatus, Token, TransactionStatus, TransactionType } from 'constants';
+import { Transaction, ResultSet, Vote, Withdraw } from 'models';
 
 import { decimalToSatoshi } from '../src/helpers/utility';
 import { randomInt } from '../src/helpers/testUtil';
@@ -47,6 +47,9 @@ export default {
   paginatedOracles: INIT_VALUES.paginatedOracles,
   paginatedAccumulatedVotes: INIT_VALUES.paginatedAccumulatedVotes,
   transactions: [],
+  withdraws: [],
+  resultsets: [],
+  votes: [],
 
   // Call this to populate the entire DB with mock data in all tables.
   init() {
@@ -173,5 +176,91 @@ export default {
 
   setAllTxsSuccess() {
     each(this.transactions, tx => tx.status = TransactionStatus.SUCCESS);
+  },
+
+  /* Withdraws */
+  generateWithdraw(params) {
+    const isQtum = randomInt(0, 1);
+    const tx = new Withdraw({
+      txid: cryptoRandomString(64),
+      block: {
+        blockNum: randomInt(1, 1000),
+        blockTime: moment.unix(),
+      },
+      topicAddress: cryptoRandomString(40),
+      withdrawerAddress: cryptoRandomString(40),
+      qtumAmount: isQtum ? decimalToSatoshi(randomInt(1, 10)) : 0,
+      botAmount: !isQtum ? decimalToSatoshi(randomInt(1, 10)) : 0,
+      version: 0,
+      type: !isQtum ? 'ESCROW' : 'WINNING',
+    });
+    Object.assign(tx, params);
+    return tx;
+  },
+
+  addWithdraws(newWithdraws) {
+    this.withdraws.push(newWithdraws);
+  },
+
+  resetWithdraws() {
+    this.withdraws = INIT_VALUES.withdraws;
+  },
+
+  /* Result Sets */
+  generateResultSet(params) {
+    const isFinalize = randomInt(0, 1);
+    const tx = new ResultSet({
+      txid: cryptoRandomString(64),
+      block: {
+        blockNum: randomInt(1, 1000),
+        blockTime: moment.unix(),
+      },
+      topicAddress: cryptoRandomString(40),
+      oracleAddress: isFinalize ? null : cryptoRandomString(40),
+      fromAddress: cryptoRandomString(40),
+      resultIdx: randomInt(0, 2),
+      version: 0,
+    });
+    Object.assign(tx, params);
+    return tx;
+  },
+
+  addResultSets(newResultSets) {
+    this.resultsets.push(newResultSets);
+  },
+
+  resetResultSets() {
+    this.resultsets = INIT_VALUES.resultsets;
+  },
+
+  /* Votes */
+  generateVote(params) {
+    const types = [TransactionType.BET, TransactionType.VOTE, TransactionType.SET_RESULT];
+    const whichType = randomInt(0, 2);
+    const tx = new Vote({
+      txid: cryptoRandomString(64),
+      block: {
+        blockNum: randomInt(1, 1000),
+        blockTime: moment.unix(),
+      },
+      topicAddress: cryptoRandomString(40),
+      oracleAddress: cryptoRandomString(40),
+      voterAddress: cryptoRandomString(40),
+      optionIdx: randomInt(0, 2),
+      amount: decimalToSatoshi(randomInt(1, 10)),
+      version: 0,
+      token: whichType === 0 ? Token.QTUM : Token.BOT,
+      type: types[whichType],
+    });
+    Object.assign(tx, params);
+    return tx;
+  },
+
+  addVotes(newVotes) {
+    this.votes.push(newVotes);
+  },
+
+  resetVotes() {
+    this.votes = INIT_VALUES.votes;
   },
 };
