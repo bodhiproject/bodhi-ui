@@ -27,6 +27,7 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       marginTop: 4,
     },
+    margin: 'auto',
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {

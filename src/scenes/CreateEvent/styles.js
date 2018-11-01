@@ -50,6 +50,18 @@ const styles = (theme) => ({
   cancelButton: {
     marginRight: theme.padding.spaceX.px,
   },
+  root: {
+    borderRadius: '5px',
+    width: '50%',
+    marginLeft: '20px',
+    '&$disabled': {
+      color: 'black',
+    },
+  },
+  disabled: {},
+  formControl: {
+    width: '50%',
+  },
 });
 
 export default styles;

@@ -47,6 +47,10 @@ const messages = defineMessages({
     id: 'create.invalidName',
     defaultMessage: "Cannot name the outcome 'Invalid'",
   },
+  createProfitCutMsg: {
+    id: 'create.profitCutMsg',
+    defaultMessage: "profitCut should between 0% to 100% '",
+  },
   createDuplicateOutcomeMsg: {
     id: 'create.duplicateOutcome',
     defaultMessage: 'Duplicate outcomes are not allowed.',
@@ -69,12 +73,12 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
-
+const arbitrationTimeOptions = { 100: '48h', 200: '24h', 300: '12h', 400: '6h' };
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   loaded: false,
-  escrowAmount: undefined,
+  escrowAmount: 100,
   averageBlockTime: '',
   txFees: [],
   resultSetterDialogOpen: false,
@@ -90,6 +94,7 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
+  profitCut: '',
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -104,6 +109,7 @@ const INIT = {
     },
     outcomes: ['', ''],
     resultSetter: '',
+    profitCut: '',
   },
 };
 
@@ -123,6 +129,7 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
+  @observable profitCut = INIT.profitCut
 
   @computed get hasEnoughFee() {
     const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
@@ -130,6 +137,10 @@ export default class CreateEventStore {
     return currentWalletAddress
       && (currentWalletAddress.qtum >= transactionFee)
       && (currentWalletAddress.bot >= this.escrowAmount);
+  }
+
+  @computed get arbitrationTime() {
+    return arbitrationTimeOptions[this.escrowAmount];
   }
   @computed get warning() {
     if (!this.hasEnoughFee) {
@@ -154,7 +165,7 @@ export default class CreateEventStore {
     };
   }
   @computed get isAllValid() {
-    const { title, creator, prediction, resultSetting, outcomes, resultSetter } = this.error;
+    const { title, creator, prediction, resultSetting, outcomes, resultSetter, profitCut } = this.error;
     return (
       // all fields set
       this.title
@@ -169,6 +180,7 @@ export default class CreateEventStore {
       && !resultSetting.endTime
       && outcomes.every(outcome => !outcome)
       && !resultSetter
+      && !profitCut
     );
   }
 
@@ -263,11 +275,11 @@ export default class CreateEventStore {
     }
 
     // Close if unable to get the escrow amount
-    const escrowAmountSuccess = await this.getEscrowAmount();
-    if (!escrowAmountSuccess) {
-      this.close();
-      return;
-    }
+    // const escrowAmountSuccess = await this.getEscrowAmount();
+    // if (!escrowAmountSuccess) {
+    //   this.close();
+    //   return;
+    // }
 
     await this.getAverageBlockTime();
 
@@ -291,6 +303,16 @@ export default class CreateEventStore {
         this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
       }
     });
+  }
+
+  @action
+  handleEscrowAmountChange = event => {
+    this.escrowAmount = event.target.value;
+  }
+
+  @action
+  handleProfitCutChange = event => {
+    this.profitCut = event.target.value;
   }
 
   /**
@@ -467,6 +489,16 @@ export default class CreateEventStore {
   }
 
   @action
+  validateProfitCut = () => {
+    console.log(this.profitCut);
+    if (this.profitCut > 100 || this.profitCut < 0 || isEmpty(this.profitCut)) {
+      this.error.profitCut = messages.createProfitCutMsg.id;
+    } else {
+      this.error.profitCut = '';
+    }
+  }
+
+  @action
   validateResultSetter = async () => {
     if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
@@ -499,6 +531,7 @@ export default class CreateEventStore {
       this.validateOutcome(key);
     });
     this.validateResultSetter();
+    this.validateProfitCut();
   }
 
   @action

@@ -15,6 +15,10 @@ import ResultSetStartTime from './ResultSetStartTime';
 import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
+import Stake from './Stake';
+import ProfitCut from './ProfitCut';
+
+
 import { Loading as _Loading } from '../../components/Loading';
 
 const messages = defineMessages({
@@ -57,7 +61,7 @@ const CreateEventDetail = ({ classes }) => (
       <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
     </DialogTitle>
     <DialogContent>
-      <EscrowAmountNote />
+      {/* <EscrowAmountNote /> */}
       <EventWarning />
       <Title />
       <CreatorDropdown />
@@ -66,6 +70,8 @@ const CreateEventDetail = ({ classes }) => (
       <ResultSetStartTime />
       <ResultSetEndTime />
       <Outcomes />
+      <Stake />
+      <ProfitCut />
       <ResultSetter />
     </DialogContent>
     <DialogActions className={classes.footer}>
