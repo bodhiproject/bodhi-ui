@@ -16,7 +16,7 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
     <Row>
       <Row><img src="/images/empty.svg" alt="empty placeholder" /></Row>
       <Row>
-        <Typography variant="title">
+        <Typography variant="subtitle1">
           {intl.formatMessage({ id: message.id, defaultMessage: message.defaultMessage })}
         </Typography>
       </Row>

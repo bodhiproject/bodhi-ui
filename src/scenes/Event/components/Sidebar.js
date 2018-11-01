@@ -74,7 +74,7 @@ const Heading = styled(Typography).attrs({ variant: 'body1' })`
   text-transform: uppercase;
 `;
 
-const Content = styled(Typography).attrs({ variant: 'title' })`
+const Content = styled(Typography).attrs({ variant: 'subtitle1' })`
   margin-top: ${props => props.theme.padding.spaceX.px} !important;
   word-wrap: break-word !important;
   padding-left: ${props => props.theme.padding.space5X.px};

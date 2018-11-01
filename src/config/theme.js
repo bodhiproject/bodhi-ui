@@ -127,7 +127,7 @@ export const theme = {
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
-    headline: {
+    h1: {
       fontSize: px(fontSizeTitleSm),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
@@ -338,7 +338,7 @@ const bodhiTheme = createMuiTheme(theme);
 bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
-  display1: {
+  subtitle2: {
     fontSize: px(fontSizeTitleLg),
     fontWeight: fontWeightRegular,
     lineHeight: lineHeightLg,

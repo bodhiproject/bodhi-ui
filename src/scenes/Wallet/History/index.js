@@ -62,7 +62,7 @@ export default class WalletHistory extends Component {
     return (
       <Paper className={classes.txHistoryPaper}>
         <Grid container spacing={0} className={classes.txHistoryGridContainer}>
-          <Typography variant="title">
+          <Typography variant="subtitle1">
             <FormattedMessage id="walletHistory.transferHistory" defaultMessage="Transfer History" />
           </Typography>
           <ResponsiveTable className={classes.table}>

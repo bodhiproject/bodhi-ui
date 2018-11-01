@@ -55,7 +55,7 @@ export default class DepositDialog extends Component {
           <FormattedMessage id="depositDialog.title" defaultMessage="QTUM/BOT Deposit Address" />
         </DialogTitle>
         <DialogContent>
-          <Typography variant="title" className={classes.depositAddress}>
+          <Typography variant="subtitle1" className={classes.depositAddress}>
             {walletAddress}
           </Typography>
           <Typography variant="body1" className={classes.qtumAmount}>

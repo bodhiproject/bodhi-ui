@@ -104,7 +104,7 @@ class FromToField extends Component {
         <Typography variant="body1" className={classes.fromLabel}>
           <FormattedMessage id="str.from" defaultMessage="From" />
         </Typography>
-        <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
+        <Typography variant="subtitle1" className={classes.fromAddress}>{walletAddress}</Typography>
         <div className={classes.toAddressInputContainer}>
           <TextField
             autoFocus
@@ -123,7 +123,7 @@ class FromToField extends Component {
         </div>
       </div>
     );
-  }  
+  }
 }
 
 @injectIntl

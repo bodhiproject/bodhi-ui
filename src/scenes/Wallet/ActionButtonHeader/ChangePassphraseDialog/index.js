@@ -64,7 +64,7 @@ export default class ChangePassphraseDialog extends Component {
         </DialogTitle>
         <DialogContent>
           <div>
-            <Typography variant="title" ></Typography>
+            <Typography variant="subtitle1" ></Typography>
             <TextField
               autoFocus
               margin="normal"
