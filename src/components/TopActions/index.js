@@ -31,7 +31,7 @@ export default class TopActions extends Component {
         <Grid item xs={6}>
           {!noCreateEventButton && (
             <Button
-              variant="raised"
+              variant="contained"
               size="medium"
               color="primary"
               className={classes.createEventButton}

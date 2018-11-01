@@ -86,7 +86,7 @@ const EscrowAmountNote = injectIntl(withStyles(styles)(inject('store')(observer(
 }))));
 
 const CancelButton = withStyles(styles)(inject('store')(({ classes, store: { createEvent } }) => (
-  <Button className={classes.cancelButton} onClick={createEvent.close} variant="raised" size="small">
+  <Button className={classes.cancelButton} onClick={createEvent.close} variant="contained" size="small">
     <Clear className={classes.buttonIcon} />
     <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
   </Button>
@@ -97,7 +97,7 @@ const PublishButton = withStyles(styles)(inject('store')(observer(({ classes, st
     onClick={createEvent.submit}
     disabled={createEvent.submitting || !createEvent.hasEnoughFee}
     color="primary"
-    variant="raised"
+    variant="contained"
     size="small"
   >
     <Create className={classes.buttonIcon} />

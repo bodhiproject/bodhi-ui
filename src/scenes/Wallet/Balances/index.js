@@ -277,7 +277,7 @@ export default class MyBalances extends Component {
             </TableCell>
             <TableCell>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}
@@ -289,7 +289,7 @@ export default class MyBalances extends Component {
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}

@@ -120,6 +120,7 @@ export const theme = {
     divider: borderColor,
   },
   typography: {
+    useNextVariants: true,
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
     fontWeightLight,

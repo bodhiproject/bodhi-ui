@@ -2,7 +2,7 @@
   "name": "bodhi-ui",
   "version": "1.0.4",
   "dependencies": {
-    "@material-ui/core": "^1.2.2",
+    "@material-ui/core": "latest",
     "@material-ui/icons": "^1.1.0",
     "apollo-cache-inmemory": "^1.2.3",
     "apollo-client": "^2.3.3",

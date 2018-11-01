@@ -96,7 +96,7 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, bo
       <TableCell padding="dense">
         <Button
           size="small"
-          variant="raised"
+          variant="contained"
           color="primary"
           disabled={disabled}
           onClick={() => eventPage.withdraw(address, type)}

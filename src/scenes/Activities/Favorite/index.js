@@ -52,7 +52,7 @@ export default class Favorite extends Component {
                 </div>
                 <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderButton}>
                   <Button
-                    variant="raised"
+                    variant="contained"
                     size="medium"
                     color="primary"
                     onClick={ui.hideFavoriteDrawer}
