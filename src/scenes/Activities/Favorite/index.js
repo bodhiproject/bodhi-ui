@@ -20,8 +20,8 @@ const messages = defineMessages({
 });
 
 @withStyles(styles, { withTheme: true })
-@inject('store')
 @injectIntl
+@inject('store')
 @observer
 export default class Favorite extends Component {
   componentDidMount() {

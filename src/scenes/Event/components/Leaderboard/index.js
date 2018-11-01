@@ -3,6 +3,7 @@ import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
+import { Routes } from 'constants';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
@@ -30,17 +31,37 @@ const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
 @observer
 export default class Leaderboard extends React.Component {
   handleNext = () => {
-    this.props.xstore.activeStep = this.props.xstore.activeStep + 1;
+    const { ui: { location } } = this.props.store;
+    if (location === Routes.LEADERBOARD) {
+      const { leaderboard } = this.props.store;
+      leaderboard.activeStep += 1;
+    } else {
+      const { eventPage } = this.props.store;
+      eventPage.activeStep += 1;
+    }
   };
 
   handleBack = () => {
-    this.props.xstore.activeStep = this.props.xstore.activeStep - 1;
+    const { ui: { location } } = this.props.store;
+    if (location === Routes.LEADERBOARD) {
+      const { leaderboard } = this.props.store;
+      leaderboard.activeStep -= 1;
+    } else {
+      const { eventPage } = this.props.store;
+      eventPage.activeStep -= 1;
+    }
   };
 
   render() {
-    const { classes, theme, xstore, intl, maxSteps } = this.props;
-    const { leaderboardVotes, activeStep, leaderboardLimit } = xstore;
-
+    const { classes, theme, intl, maxSteps } = this.props;
+    let leaderboardVotes = [];
+    let activeStep = 0;
+    let leaderboardLimit = 5;
+    if (this.props.store.ui.location === Routes.LEADERBOARD) {
+      ({ leaderboardVotes, activeStep, leaderboardLimit } = this.props.store.leaderboard);
+    } else {
+      ({ leaderboardVotes, activeStep, leaderboardLimit } = this.props.store.eventPage);
+    }
     if (leaderboardVotes.length < leaderboardLimit) {
       for (let i = leaderboardVotes.length; i < leaderboardLimit; i++) {
         leaderboardVotes.push({ voterAddress: '', amount: '' });

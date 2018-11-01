@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   totalBOT: {
     id: 'leaderboard.totalBOT',
-    defaultMessage: 'Total bet in BOT',
+    defaultMessage: 'Total voted in BOT',
   },
 });
 
@@ -34,37 +34,37 @@ export default class Leaderboard extends Component {
   componentDidMount() {
     this.props.store.leaderboard.init();
   }
+
   render() {
     const { eventCount, participantsCount, totalBOT, totalQTUM } = this.props.store.leaderboard;
-    const { intl } = this.props;
     return (
       <Row>
         <SidebarContainer>
-          <Card title={intl.formatMessage(messages.totalEvents)} value={eventCount} />
-          <Card title={intl.formatMessage(messages.totalParticipants)} value={participantsCount} />
-          <Card title={intl.formatMessage(messages.totalQTUM)} value={totalQTUM} />
-          <Card title={intl.formatMessage(messages.totalBOT)} value={totalBOT} />
+          <Card title={messages.totalEvents} value={eventCount} />
+          <Card title={messages.totalParticipants} value={participantsCount} />
+          <Card title={messages.totalQTUM} value={totalQTUM} />
+          <Card title={messages.totalBOT} value={totalBOT} />
         </SidebarContainer>
         <Content>
-          <_Leaderboard maxSteps={2} xstore={this.props.store.leaderboard} />
+          <_Leaderboard maxSteps={2} />
         </Content>
       </Row>
     );
   }
 }
 
-const Card = withStyles(styles)(({ title, value, classes }) => (
+const Card = injectIntl(withStyles(styles)(({ title, value, classes, intl }) => (
   <_Card className={classes.card}>
     <CardContent>
       <Typography className={classes.cardHeader} align='left'>
-        {title}
+        {intl.formatMessage(title)}
       </Typography>
       <Typography className={classes.cardContent}>
         {value}
       </Typography>
     </CardContent>
   </_Card>
-));
+)));
 
 const SidebarContainer = withStyles(styles)(({ children, classes }) => (
   <Grid className={classes.SidebarContainer} item xs={12} md={4}>

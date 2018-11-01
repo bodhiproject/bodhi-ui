@@ -2,7 +2,7 @@ const styles = (theme) => ({
   SidebarContainer: {
     padding: theme.padding.space7X.px,
     overflowX: 'hidden',
-    borderLeft: `${theme.border}`,
+    borderLeft: theme.border,
     textAlign: 'right',
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.space2X.px,

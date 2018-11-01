@@ -35,20 +35,21 @@ export default class Leaderboard {
     );
     reaction(
       () => this.activeStep,
-      () => this.loadLeaderBoard(),
+      () => this.loadLeaderboard(),
     );
   }
 
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
+    this.app.ui.location = Routes.LEADERBOARD;
     const res = await queryLeaderboardStats();
     Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
-    await this.loadLeaderBoard();
+    await this.loadLeaderboard();
   }
 
   @action
-  loadLeaderBoard = async () => {
+  loadLeaderboard = async () => {
     const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
     this.leaderboardVotes = votes;
   }
