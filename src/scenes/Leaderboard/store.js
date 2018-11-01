@@ -2,7 +2,6 @@ import { observable, action, reaction, toJS } from 'mobx';
 import { Token, Routes } from 'constants';
 
 import { queryLeaderboardStats, queryMostVotes } from '../../network/graphql/queries';
-import { satoshiToDecimal } from '../../helpers/utility';
 
 const INIT_VALUES = {
   eventCount: 0,
