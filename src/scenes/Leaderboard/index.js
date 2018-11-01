@@ -6,6 +6,7 @@ import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@mater
 import styles from './styles';
 import _Leaderboard from '../Event/components/Leaderboard';
 import { Row, Content } from '../Event/components';
+import { satoshiToDecimal } from '../../helpers/utility';
 
 const messages = defineMessages({
   totalEvents: {
@@ -42,8 +43,8 @@ export default class Leaderboard extends Component {
         <SidebarContainer>
           <Card title={messages.totalEvents} value={eventCount} />
           <Card title={messages.totalParticipants} value={participantsCount} />
-          <Card title={messages.totalQTUM} value={totalQTUM} />
-          <Card title={messages.totalBOT} value={totalBOT} />
+          <Card title={messages.totalQTUM} value={satoshiToDecimal(totalQTUM)} />
+          <Card title={messages.totalBOT} value={satoshiToDecimal(totalBOT)} />
         </SidebarContainer>
         <Content>
           <_Leaderboard maxSteps={2} />

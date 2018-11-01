@@ -15,7 +15,7 @@ const INIT_VALUES = {
 
 const paras = [Token.QTUM, Token.BOT];
 
-export default class Leaderboard {
+export default class LeaderboardStore {
   @observable eventCount = INIT_VALUES.eventCount
   @observable participantsCount = INIT_VALUES.participantsCount
   @observable totalBOT = INIT_VALUES.totalBOT
@@ -44,7 +44,7 @@ export default class Leaderboard {
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.LEADERBOARD;
     const res = await queryLeaderboardStats();
-    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
+    Object.assign(this, res, { totalBOT: res.totalBot, totalQTUM: res.totalQtum });
     await this.loadLeaderboard();
   }
 
