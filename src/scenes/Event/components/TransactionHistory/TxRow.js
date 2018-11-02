@@ -39,7 +39,7 @@ export default class TxRow extends Component {
 
   get description() {
     const { intl, transaction: { optionIdx }, topic } = this.props;
-    if (topic && optionIdx && optionIdx !== null) {
+    if (topic && optionIdx !== null && optionIdx !== undefined) {
       const optionName = topic.options[optionIdx];
       return `#${optionIdx + 1} ${optionName === 'Invalid' && !topic.localizedInvalid
         ? topic.localizedInvalid.parse(intl.locale)

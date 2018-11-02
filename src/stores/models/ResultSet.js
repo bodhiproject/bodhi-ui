@@ -7,7 +7,7 @@ export default class ResultSet {
   txid = '' // ResultSet ID assigned by the blockchain
   blockNum = 0 // Block number when ResultSet was recorded on blockchain
   blockTime = '' // Block timestamp for blockNum
-  fromAddress = '' // Sender's address
+  senderAddress = '' // Sender's address
   topicAddress = '' // Topic contract address associated with ResultSet
   oracleAddress = ''
   optionIdx = null // Result index used for ResultSet. eg. For a bet, this would be the result index the user bet on.
@@ -20,5 +20,6 @@ export default class ResultSet {
     if (this.oracleAddress === null) this.type = TransactionType.FINALIZE_RESULT;
     else this.type = TransactionType.SET_RESULT;
     this.optionIdx = resultSet.resultIdx;
+    this.senderAddress = resultSet.fromAddress;
   }
 }
