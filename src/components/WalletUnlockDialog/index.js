@@ -55,7 +55,7 @@ export default class WalletUnlockDialog extends Component {
           <FormattedMessage id="walletUnlockDialog.unlockWallet" defaultMessage="Unlock Wallet" />
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" className={classes.bodyPrimary}>
+          <Typography variant="body2" className={classes.bodyPrimary}>
             <FormattedMessage
               id="walletUnlockDialog.walletPassphraseRequired"
               defaultMessage="This action requires you to unlock this wallet. Please enter your wallet passphrase."

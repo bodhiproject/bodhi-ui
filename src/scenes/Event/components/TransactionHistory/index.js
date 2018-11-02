@@ -53,7 +53,7 @@ export default class TransactionHistory extends Component {
           </ResponsiveTable>
         ) : (
           <CenteredDiv>
-            <Typography variant="body1">
+            <Typography variant="body2">
               <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
             </Typography>
           </CenteredDiv>

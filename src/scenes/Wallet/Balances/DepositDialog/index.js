@@ -58,10 +58,10 @@ export default class DepositDialog extends Component {
           <Typography variant="h6" className={classes.depositAddress}>
             {walletAddress}
           </Typography>
-          <Typography variant="body1" className={classes.qtumAmount}>
+          <Typography variant="body2" className={classes.qtumAmount}>
             {`QTUM: ${qtumAmount}`}
           </Typography>
-          <Typography variant="body1">
+          <Typography variant="body2">
             {`BOT: ${botAmount}`}
           </Typography>
         </DialogContent>

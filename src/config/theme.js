@@ -141,7 +141,7 @@ export const theme = {
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
-    body1: {
+    body2: {
       fontSize: px(fontSizeMeta),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,

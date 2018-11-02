@@ -76,7 +76,7 @@ export default class Option extends Component {
                   <Progress color="secondary" invalid={name === 'Invalid'} variant="determinate" value={percent} />
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}
                 </Typography>
               </div>

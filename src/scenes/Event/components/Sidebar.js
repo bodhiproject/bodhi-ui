@@ -69,7 +69,7 @@ const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
   </Container>
 ));
 
-const Heading = styled(Typography).attrs({ variant: 'body1' })`
+const Heading = styled(Typography).attrs({ variant: 'body2' })`
   font-size: 18px;
   text-transform: uppercase;
 `;

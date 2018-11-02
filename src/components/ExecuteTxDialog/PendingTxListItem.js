@@ -49,7 +49,7 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
   const txFee = sumBy(fees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
   return (
     <div className={classes.explanationMsgContainer}>
-      <Typography variant="body1">
+      <Typography variant="body2">
         <FormattedMessage
           id='txConfirm.txFeeMsg'
           defaultMessage='You are about to {txAction} with a maximum transaction fee of {txFee} QTUM.'
@@ -88,7 +88,7 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ intl, 
 
     return (
       <div>
-        <Typography variant="body1">{intl.formatMessage(message, { action })}</Typography>
+        <Typography variant="body2">{intl.formatMessage(message, { action })}</Typography>
       </div>
     );
   }
