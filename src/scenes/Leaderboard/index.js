@@ -6,7 +6,6 @@ import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@mater
 import styles from './styles';
 import _Leaderboard from '../Event/components/Leaderboard';
 import { Row, Content } from '../Event/components';
-import { satoshiToDecimal } from '../../helpers/utility';
 
 const messages = defineMessages({
   totalEvents: {
