@@ -43,7 +43,7 @@ export default class LeaderboardStore {
     Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.LEADERBOARD;
     const res = await queryLeaderboardStats();
-    Object.assign(this, res, { totalBOT: res.totalBot, totalQTUM: res.totalQtum });
+    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
     await this.loadLeaderboard();
   }
 

@@ -43,8 +43,8 @@ export default class Leaderboard extends Component {
         <SidebarContainer>
           <Card title={messages.totalEvents} value={eventCount} />
           <Card title={messages.totalParticipants} value={participantsCount} />
-          <Card title={messages.totalQTUM} value={satoshiToDecimal(totalQTUM)} />
-          <Card title={messages.totalBOT} value={satoshiToDecimal(totalBOT)} />
+          <Card title={messages.totalQTUM} value={totalQTUM} />
+          <Card title={messages.totalBOT} value={totalBOT} />
         </SidebarContainer>
         <Content>
           <_Leaderboard maxSteps={2} />
