@@ -9,7 +9,7 @@ export default class Vote {
   txid = '' // Vote ID assigned by the blockchain
   blockNum = 0 // Block number when Vote was recorded on blockchain
   blockTime = '' // Block timestamp for blockNum
-  voterAddress = '' // Sender's address
+  senderAddress = '' // Sender's address
   topicAddress = '' // Topic contract address associated with Vote
   oracleAddress = '' // Oracle contract address associated with Vote
   optionIdx = null // Result index used for Vote. eg. For a bet, this would be the result index the user bet on.
@@ -24,6 +24,7 @@ export default class Vote {
     this.amount = satoshiToDecimal(this.amount).toString();
     this.blockTime = vote.block.blockTime;
     this.blockNum = vote.block.blockNum;
+    this.senderAddress = vote.voterAddress;
     if (this.type === 'RESULT_SET') this.type = TransactionType.SET_RESULT;
   }
 }
