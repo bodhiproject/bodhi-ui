@@ -51,7 +51,7 @@ const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) =>
 
 const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, outcome, createEvent, i, intl }) => (
   <div>
-    <FormControl fullWidth>
+    <FormControl fullWidth variant="outlined" margin="dense">
       <TextField
         fullWidth
         value={outcome}
@@ -63,6 +63,7 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
           classes: { input: classes.createEventTextField },
           startAdornment: <InputAdornment position="start" classes={{ positionStart: classes.createEventInputAdornment }}>#{i + 1}</InputAdornment>,
         }}
+        variant="outlined"
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}

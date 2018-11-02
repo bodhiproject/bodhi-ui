@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { FormControl, FormHelperText, Select, withStyles } from '@material-ui/core';
+import { FormControl, FormHelperText, Select, withStyles, OutlinedInput } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Section } from './components';
 
@@ -24,6 +24,11 @@ const CreatorDropdown = (({ classes, store: { createEvent, wallet: { addresses }
         value={createEvent.creator}
         onChange={e => createEvent.creator = e.target.value}
         onBlur={createEvent.validateCreator}
+        input={
+          <OutlinedInput
+            labelWidth={0}
+          />
+        }
       >
         {addresses.map(creator => <CreatorItem key={creator.address} {...creator} />)}
       </Select>

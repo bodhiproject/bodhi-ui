@@ -32,6 +32,7 @@ const Title = withStyles(styles, { withTheme: true })(observer(({ classes, store
         onBlur={createEvent.validateTitle}
         error={!!createEvent.error.title}
         fullWidth
+        variant="outlined"
       />
       {!!createEvent.error.title && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.title })}</FormHelperText>}
     </FormControl>

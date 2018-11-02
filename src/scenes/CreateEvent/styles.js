@@ -40,6 +40,9 @@ const styles = (theme) => ({
   selectAddressButton: {
     marginBottom: theme.padding.spaceX.px,
   },
+  selectAddressButtonContent: {
+    padding: '0px',
+  },
   footer: {
     margin: theme.padding.space3X.px,
   },

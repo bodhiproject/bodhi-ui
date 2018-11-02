@@ -40,6 +40,7 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
       placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}
       onBlur={createEvent.validateResultSetter}
       error={!!createEvent.error.resultSetter}
+      variant="outlined"
     />
     {!!createEvent.error.resultSetter && (
       <FormHelperText error>{intl.formatMessage({ id: createEvent.error.resultSetter })}</FormHelperText>
@@ -48,7 +49,7 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
 ))));
 
 const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
-  <Button className={classes.selectAddressButton} variant="contained" color="primary" size="small" {...props}>
+  <Button className={classes.selectAddressButton} classes={{ root: classes.selectAddressButtonContent }} variant="contained" color="primary" size="small" {...props}>
     {intl.formatMessage(messages.createSelectMyAddressMsg)}
   </Button>
 )));

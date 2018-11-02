@@ -34,6 +34,7 @@ export class DateTimePickerCombo extends Component {
             value={moment.unix(value).format('YYYY-MM-DDTHH:mm')}
             error={Boolean(error)}
             type="datetime-local"
+            variant="outlined"
             InputProps={{
               classes: { input: classes.createEventTextField },
               startAdornment: (
