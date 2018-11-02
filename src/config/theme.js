@@ -127,7 +127,7 @@ export const theme = {
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
-    h1: {
+    h5: {
       fontSize: px(fontSizeTitleSm),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,

@@ -26,7 +26,7 @@ export default class EventInfo extends PureComponent {
             <Typography variant="body1">
               {label}
             </Typography>
-            <Typography variant="subtitle1" className={classes.eventInfo}>
+            <Typography variant="h6" className={classes.eventInfo}>
               {content}
             </Typography>
             {highlight && (

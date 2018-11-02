@@ -90,7 +90,7 @@ export default class FavoriteCard extends Component {
             <div className={cx(classes.eventCardSection, 'top')}>
               <Grid container spacing={8}>
                 <Grid item xs={8}>
-                  <Typography variant="h1" className={classes.eventCardName}>
+                  <Typography variant="h5" className={classes.eventCardName}>
                     {name}
                   </Typography>
                 </Grid>

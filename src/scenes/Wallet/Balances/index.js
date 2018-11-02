@@ -66,7 +66,7 @@ export default class MyBalances extends Component {
     return (
       <Paper className={classes.myBalancePaper}>
         <Grid container spacing={0} className={classes.myBalanceGridContainer}>
-          <Typography variant="subtitle1" className={classes.myBalanceTitle}>
+          <Typography variant="h6" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
           {this.getTotalsGrid()}
