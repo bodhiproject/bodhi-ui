@@ -10,6 +10,7 @@ module.exports = {
     FAVORITE: '/activities/favorite',
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
+    LEADERBOARD: '/leaderboard',
   },
 
   EventType: {

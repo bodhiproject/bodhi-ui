@@ -67,6 +67,7 @@ export default class EventStore {
   @observable withdrawableAddresses = INIT.withdrawableAddresses
   betBalances = []
   voteBalances = []
+  leaderboardLimit = 5
 
   @computed get amountDecimal() {
     return satoshiToDecimal(this.allowance);

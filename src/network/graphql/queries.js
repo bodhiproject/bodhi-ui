@@ -257,6 +257,12 @@ export async function queryWinners(filters, orderBy, limit, skip) {
   return result;
 }
 
+export async function queryLeaderboardStats() {
+  const request = new GraphQuery('leaderboardStats', TYPE.leaderboardStats);
+  const result = await request.execute();
+  return result;
+}
+
 /*
 * Queries allTransactions from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]

@@ -19,9 +19,9 @@ const messages = defineMessages({
   },
 });
 
-@inject('store')
 @withStyles(styles, { withTheme: true })
 @injectIntl
+@inject('store')
 @observer
 export default class Favorite extends Component {
   componentDidMount() {

@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import cx from 'classnames';
+import { withStyles, Paper } from '@material-ui/core';
 
-export const styles = () => ({
+export const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
+    padding: theme.padding.spaceX,
   },
   /* Styles applied to the dots container if `variant="dots"`. */
   dots: {
@@ -19,6 +18,8 @@ export const styles = () => ({
     backgroundColor: '#FFFFFF',
     color: '#585AFA',
     fontWeight: 'bold',
+    margin: '0 auto',
+    padding: `${theme.padding.spaceX} 0px`,
   },
 });
 
@@ -34,20 +35,15 @@ function CMobileStepper(props) {
     ...other
   } = props;
 
-  const className = classNames(
-    classes.root,
-    classNameProp,
-  );
+  const className = cx(classes.root, classNameProp);
 
   return (
     <Paper square elevation={0} className={className} {...other}>
-      {backButton}
-      {
-        <div className={classes.dots}>
-          {currentValue}
-        </div>
-      }
-      {nextButton}
+      {steps > 1 && backButton}
+      <div className={classes.dots}>
+        {currentValue}
+      </div>
+      {steps > 1 && nextButton}
     </Paper>
   );
 }
