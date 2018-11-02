@@ -135,7 +135,7 @@ export const theme = {
       color: textColorDark,
     },
     // large text (i.e. title on prediction title)
-    title: {
+    h6: {
       fontSize: px(fontSizeTextMd),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightLg,
