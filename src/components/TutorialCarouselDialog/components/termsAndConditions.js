@@ -8,12 +8,12 @@ import styles from '../styles';
 
 const TermsAndConditions = ({ classes }) => (
   <div>
-    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
+    <Typography variant="h4" classes={{ subtitle2: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tnc.title" defaultMessage="Bodhi Terms and Conditions" />
     </Typography>
     <Paper className={classes.tncWrapper}>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.general" defaultMessage="General" />
         </Typography>
         <ol>
@@ -22,7 +22,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.definitions" defaultMessage="Definitions" />
         </Typography>
         <FormattedMessage id="tnc.definitionsExplanation" defaultMessage="In these Terms and Conditions, the following words and phrases shall (unless the context otherwise requires) have the meanings set out beside them:" />
@@ -37,7 +37,7 @@ const TermsAndConditions = ({ classes }) => (
         </ul>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.subordination" defaultMessage="Subordination to the Terms and Conditions and the Binding Effect Thereof" />
         </Typography>
         <ol>
@@ -47,7 +47,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.participate" defaultMessage=" Who is Entitled to Participate?" />
         </Typography>
         <ol>
@@ -62,7 +62,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.representations" defaultMessage="Your Representations" />
         </Typography>
         <ol>
@@ -70,7 +70,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.awards" defaultMessage="Awards Policy" />
         </Typography>
         <ol>
@@ -80,7 +80,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.powers" defaultMessage="Powers and Authorities of the Company" />
         </Typography>
         <ol>
@@ -91,7 +91,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.responsibilities" defaultMessage="Reservations Concerning Our Responsibility" />
         </Typography>
         <ol>
@@ -107,7 +107,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.ip" defaultMessage="Intellectual Property" />
         </Typography>
         <ol>
@@ -115,7 +115,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.support" defaultMessage="Customer Support" />
         </Typography>
         <ol>
@@ -124,7 +124,7 @@ const TermsAndConditions = ({ classes }) => (
         </ol>
       </div>
       <div>
-        <Typography variant="title">
+        <Typography variant="h6">
           <FormattedMessage id="tnc.misc" defaultMessage="Miscellaneous" />
         </Typography>
         <ol>

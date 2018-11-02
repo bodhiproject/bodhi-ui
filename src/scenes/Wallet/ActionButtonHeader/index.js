@@ -86,7 +86,7 @@ export default class ActionButtonHeader extends Component {
 
 const Tip = injectIntl(withStyles(styles, { withTheme: true })(({ children, classes, intl, theme, ...props }) => (
   <Tooltip id="tooltip-icon" title={intl.formatMessage(messages[children])}>
-    <Button variant="raised" color="primary" className={classes.button} {...props}>
+    <Button variant="contained" color="primary" className={classes.button} {...props}>
       {intl.formatMessage(messages[`${children}Button`])}
     </Button>
   </Tooltip>

@@ -101,10 +101,10 @@ class FromToField extends Component {
 
     return (
       <div>
-        <Typography variant="body1" className={classes.fromLabel}>
+        <Typography variant="body2" className={classes.fromLabel}>
           <FormattedMessage id="str.from" defaultMessage="From" />
         </Typography>
-        <Typography variant="title" className={classes.fromAddress}>{walletAddress}</Typography>
+        <Typography variant="h6" className={classes.fromAddress}>{walletAddress}</Typography>
         <div className={classes.toAddressInputContainer}>
           <TextField
             autoFocus
@@ -123,7 +123,7 @@ class FromToField extends Component {
         </div>
       </div>
     );
-  }  
+  }
 }
 
 @injectIntl
@@ -166,7 +166,7 @@ class AmountField extends Component {
           </Select>
           {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
         </div>
-        <Typography variant="body1">
+        <Typography variant="body2">
           {`${withdrawAmountText} ${wallet.lastAddressWithdrawLimit[wallet.selectedToken]}`}
         </Typography>
       </div>

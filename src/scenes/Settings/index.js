@@ -27,7 +27,7 @@ export default class Settings extends Component {
 
     return (
       <Paper className={classes.root} elevation={0}>
-        <Typography variant="display1" className={classes.headerText}>
+        <Typography variant="h4" className={classes.headerText}>
           <FormattedMessage id="settings.settings" defaultMessage="Settings" />
         </Typography>
         <Grid container className={classes.settingGridContainer}>
@@ -44,7 +44,7 @@ export default class Settings extends Component {
 }
 
 const SettingName = withStyles(styles)(injectIntl(({ classes, intl, message }) => (
-  <Typography variant="title" className={classes.settingName}>
+  <Typography variant="h6" className={classes.settingName}>
     {intl.formatMessage(message)}
   </Typography>
 )));

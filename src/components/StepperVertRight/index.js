@@ -42,7 +42,7 @@ export default class StepperVertRight extends Component {
         {steps.value.map((item) => (
           <Step key={item.title}>
             <StepLabel className={classes.stepperVertRightLabel}>
-              <Typography variant="title">
+              <Typography variant="h6">
                 {item.title}
               </Typography>
               <Typography variant="caption">

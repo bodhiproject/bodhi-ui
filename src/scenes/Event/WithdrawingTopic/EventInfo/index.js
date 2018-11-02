@@ -23,10 +23,10 @@ export default class EventInfo extends PureComponent {
       <div className={classes.eventInfoWrapper}>
         {_.map(infoObjs, ({ label, highlight, content }, index) => label && content && (
           <Grid key={`info${index}`} item xs={12} sm={6} md={12} className={classes.eventInfoBlock}>
-            <Typography variant="body1">
+            <Typography variant="body2">
               {label}
             </Typography>
-            <Typography variant="title" className={classes.eventInfo}>
+            <Typography variant="h6" className={classes.eventInfo}>
               {content}
             </Typography>
             {highlight && (

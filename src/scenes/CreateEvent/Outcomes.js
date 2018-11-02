@@ -43,7 +43,7 @@ const RemoveIcon = withStyles(styles)(inject('store')(({ classes, index, store: 
 )));
 
 const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) => (
-  <Button className={classes.addOutcomeButton} variant="raised" color="primary" size="small" {...props}>
+  <Button className={classes.addOutcomeButton} variant="contained" color="primary" size="small" {...props}>
     <Add className={classes.buttonIcon} />
     <FormattedMessage id="create.addOutcome" defaultMessage="Add Outcome" />
   </Button>

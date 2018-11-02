@@ -10,7 +10,7 @@ import styles from './styles';
 const EventsEmptyBg = ({ classes }) => (
   <div className={classes.eventsEmptyWrapper}>
     <EventIcon className={classes.eventsEmptyIcon} />
-    <Typography variant="body1"><FormattedMessage id="dashboard.empty" defaultMessage="No Event at Current Status" /> </Typography>
+    <Typography variant="body2"><FormattedMessage id="dashboard.empty" defaultMessage="No Event at Current Status" /> </Typography>
   </div>
 );
 

@@ -28,7 +28,7 @@ export default class BackButton extends Component {
     const { classes } = this.props;
 
     return (
-      <Button variant="raised" color="primary" size="small" className={classes.button} onClick={this.onBackClick}>
+      <Button variant="contained" color="primary" size="small" className={classes.button} onClick={this.onBackClick}>
         <ChevronLeft />
         <FormattedMessage id="str.back" defaultMessage="Back" />
       </Button>

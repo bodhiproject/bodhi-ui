@@ -10,13 +10,13 @@ const TxSentDialog = ({ classes, store: { txSentDialog } }) => (
   <Dialog open={txSentDialog.visible}>
     <DialogTitle><FormattedMessage id="transactionSentDialog.successMsg" defaultMessage="Success" /></DialogTitle>
     <DialogContent>
-      <Typography variant="body1" className={classes.bodyPrimary}>
+      <Typography variant="body2" className={classes.bodyPrimary}>
         <FormattedMessage
           id="transactionSentDialog.waitingMsg"
           defaultMessage="Transaction sent. Waiting for confirmations."
         />
       </Typography>
-      <Typography variant="body1">
+      <Typography variant="body2">
         <FormattedMessage
           id="str.transactionIdX"
           defaultMessage="Transaction ID: {txid}"

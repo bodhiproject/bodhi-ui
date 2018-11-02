@@ -92,7 +92,7 @@ class QtumReturn extends Component {
     const { qtumWinnings, qtumReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
-        <Typography variant="display1">
+        <Typography variant="h4">
           <div className={classes.rowDiv}>
             +{qtumWinnings} <div className={classes.tokenDiv}>QTUM</div>
             <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
@@ -115,7 +115,7 @@ class BotUsed extends Component {
     const { botWinnings, botReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
-        <Typography variant="display1">
+        <Typography variant="h4">
           <div className={classes.rowDiv}>
             +{botWinnings} <div className={classes.tokenDiv}>BOT</div>
             <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>

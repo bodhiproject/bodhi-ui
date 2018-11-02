@@ -49,7 +49,7 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
   const txFee = sumBy(fees, ({ gasCost }) => gasCost ? parseFloat(gasCost) : 0);
   return (
     <div className={classes.explanationMsgContainer}>
-      <Typography variant="body1">
+      <Typography variant="body2">
         <FormattedMessage
           id='txConfirm.txFeeMsg'
           defaultMessage='You are about to {txAction} with a maximum transaction fee of {txFee} QTUM.'
@@ -88,7 +88,7 @@ const MultipleTransactionMessage = injectIntl(inject('store')(observer(({ intl, 
 
     return (
       <div>
-        <Typography variant="body1">{intl.formatMessage(message, { action })}</Typography>
+        <Typography variant="body2">{intl.formatMessage(message, { action })}</Typography>
       </div>
     );
   }
@@ -100,7 +100,7 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
   <div className={classes.actionButtonsContainer}>
     <Button
       className={classes.confirmButton}
-      variant="raised"
+      variant="contained"
       color="primary"
       size="small"
       onClick={() => tx.confirmTx(index)}
@@ -108,7 +108,7 @@ const ActionButtons = withStyles(styles)(injectIntl(inject('store')(({ classes, 
       <Check className={classes.buttonIcon} />
       <FormattedMessage id="str.confirm" defaultMessage="Confirm" />
     </Button>
-    <Button variant="raised" color="default" size="small" onClick={() => tx.deleteTx(index)}>
+    <Button variant="contained" color="default" size="small" onClick={() => tx.deleteTx(index)}>
       <Clear className={classes.buttonIcon} />
       <FormattedMessage id="str.delete" defaultMessage="Delete" />
     </Button>

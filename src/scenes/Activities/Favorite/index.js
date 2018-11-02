@@ -46,13 +46,13 @@ export default class Favorite extends Component {
             {this.props.bannerStyle ? (
               <div className={classes.favoriteSidebarPlacholderContainer}>
                 <div className={classes.favoriteSidebarPlacholderText}>
-                  <Typography variant="title">
+                  <Typography variant="h6">
                     {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
                   </Typography>
                 </div>
                 <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderButton}>
                   <Button
-                    variant="raised"
+                    variant="contained"
                     size="medium"
                     color="primary"
                     onClick={ui.hideFavoriteDrawer}

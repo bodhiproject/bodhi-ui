@@ -120,13 +120,14 @@ export const theme = {
     divider: borderColor,
   },
   typography: {
+    useNextVariants: true,
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
-    headline: {
+    h5: {
       fontSize: px(fontSizeTitleSm),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
@@ -140,13 +141,13 @@ export const theme = {
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
-    body1: {
+    body2: {
       fontSize: px(fontSizeMeta),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
-    body2: {
+    body1: {
       fontSize: px(fontSizeTextSm),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
@@ -337,7 +338,7 @@ const bodhiTheme = createMuiTheme(theme);
 bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
-  display1: {
+  subtitle2: {
     fontSize: px(fontSizeTitleLg),
     fontWeight: fontWeightRegular,
     lineHeight: lineHeightLg,

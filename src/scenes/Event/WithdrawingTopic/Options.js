@@ -24,7 +24,7 @@ const Options = ({ eventPage }) => (
 const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic } }) => (
   <OptionWrapper>
     <OptionNumber>{index + 1}</OptionNumber>
-    <Typog variant="title" data-small={topic.resultIdx === index}>
+    <Typog variant="h6" data-small={topic.resultIdx === index}>
       {option === 'Invalid' ? topic.localizedInvalid.parse(intl.locale) : option}
     </Typog>
     <Typography variant="caption">

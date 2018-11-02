@@ -35,7 +35,7 @@ const Logo = withStyles(styles)(({ classes }) => (
 
 const InstallNowButton = inject('store')(({ store: { qrypto } }) => (
   <Button
-    variant="raised"
+    variant="contained"
     size="small"
     color="primary"
     onClick={qrypto.onInstallClick}
@@ -83,7 +83,7 @@ export const InstallQryptoPopover = withStyles(styles)(injectIntl(inject('store'
           <Grid item xs className={classes.buttonContainer}>
             {qrypto.isInstalled ? (
               <Button
-                variant="raised"
+                variant="contained"
                 size="small"
                 color="primary"
                 onClick={() => qrypto.popoverOpen = false}

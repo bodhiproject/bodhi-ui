@@ -66,7 +66,7 @@ export default class MyBalances extends Component {
     return (
       <Paper className={classes.myBalancePaper}>
         <Grid container spacing={0} className={classes.myBalanceGridContainer}>
-          <Typography variant="title" className={classes.myBalanceTitle}>
+          <Typography variant="h6" className={classes.myBalanceTitle}>
             <FormattedMessage id="myBalances.myBalance" defaultMessage="My Balance" />
           </Typography>
           {this.getTotalsGrid()}
@@ -127,7 +127,7 @@ export default class MyBalances extends Component {
         {items.map((item) => (
           <Grid item key={item.id} className={classes.totalsItemGrid}>
             <Typography className={classes.totalsItemAmount}>{item.total.toFixed(2)}</Typography>
-            <Typography variant="body1">
+            <Typography variant="body2">
               <FormattedMessage id={item.name} default={item.nameDefault} />
             </Typography>
           </Grid>
@@ -204,7 +204,7 @@ export default class MyBalances extends Component {
             direction={order}
             onClick={this.handleSorting(column.id)}
           >
-            <Typography variant="body1" className={classes.tableHeaderItemText}>
+            <Typography variant="body2" className={classes.tableHeaderItemText}>
               <FormattedMessage id={column.name} default={column.nameDefault} />
             </Typography>
           </TableSortLabel>
@@ -221,7 +221,7 @@ export default class MyBalances extends Component {
         key={column.id}
         numeric={column.numeric}
       >
-        <Typography variant="body1" className={classes.tableHeaderItemText}>
+        <Typography variant="body2" className={classes.tableHeaderItemText}>
           <FormattedMessage id={column.name} default={column.nameDefault} />
         </Typography>
       </TableCell>
@@ -257,27 +257,27 @@ export default class MyBalances extends Component {
         {wallet.addresses.map((item, index) =>
           (<TableRow key={item.address} selected={index % 2 !== 0}>
             <TableCell>
-              <Typography variant="body1">{item.address}</Typography>
+              <Typography variant="body2">{item.address}</Typography>
             </TableCell>
             <TableCell>
               <CopyToClipboard text={item.address} onCopy={this.onCopyClicked}>
                 <Button size="small" className={classes.tableRowCopyButton}>
                   <ContentCopy className={classes.tableRowCopyButtonIcon} />
-                  <Typography variant="body1" className={classes.tableRowCopyButtonText}>
+                  <Typography variant="body2" className={classes.tableRowCopyButtonText}>
                     <FormattedMessage id="str.copy" defaultMessage="Copy" />
                   </Typography>
                 </Button>
               </CopyToClipboard>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1">{item.qtum}</Typography>
+              <Typography variant="body2">{item.qtum}</Typography>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1">{item.bot}</Typography>
+              <Typography variant="body2">{item.bot}</Typography>
             </TableCell>
             <TableCell>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}
@@ -289,7 +289,7 @@ export default class MyBalances extends Component {
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 size="small"
                 className={classes.tableRowActionButton}

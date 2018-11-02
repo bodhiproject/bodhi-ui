@@ -69,12 +69,12 @@ const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
   </Container>
 ));
 
-const Heading = styled(Typography).attrs({ variant: 'body1' })`
+const Heading = styled(Typography).attrs({ variant: 'body2' })`
   font-size: 18px;
   text-transform: uppercase;
 `;
 
-const Content = styled(Typography).attrs({ variant: 'title' })`
+const Content = styled(Typography).attrs({ variant: 'h6' })`
   margin-top: ${props => props.theme.padding.spaceX.px} !important;
   word-wrap: break-word !important;
   padding-left: ${props => props.theme.padding.space5X.px};
