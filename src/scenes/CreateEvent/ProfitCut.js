@@ -27,7 +27,7 @@ const messages = defineMessages({
 });
 
 const ProfitCut = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent }, intl }) => {
-  console.log('ere');
+  const a = 0;
   return (
     <Section title={messages.createprofitCut}>
       <TextField

@@ -1,3 +1,4 @@
+export * from './DateItem';
 export * from './DateRow';
 export * from './Section';
 export * from './DateTimePickerCombo';

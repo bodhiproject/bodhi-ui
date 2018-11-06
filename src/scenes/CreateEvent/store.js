@@ -73,7 +73,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
-const arbitrationTimeOptions = { 100: '48h', 200: '24h', 300: '12h', 400: '6h' };
+const arbitrationTimeOptions = { 100: '48', 200: '24', 300: '12', 400: '6' };
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
@@ -139,7 +139,7 @@ export default class CreateEventStore {
       && (currentWalletAddress.bot >= this.escrowAmount);
   }
 
-  @computed get arbitrationTime() {
+  @computed get arbitrationLength() {
     return arbitrationTimeOptions[this.escrowAmount];
   }
   @computed get warning() {
@@ -490,7 +490,6 @@ export default class CreateEventStore {
 
   @action
   validateProfitCut = () => {
-    console.log(this.profitCut);
     if (this.profitCut > 100 || this.profitCut < 0 || isEmpty(this.profitCut)) {
       this.error.profitCut = messages.createProfitCutMsg.id;
     } else {
@@ -554,6 +553,8 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
+        Number(this.arbitrationLength) * 60 * 60,
+        this.profitCut,
         this.app.ui.locale,
       );
     } else {

@@ -66,9 +66,7 @@ const CreateEventDetail = ({ classes }) => (
       <Title />
       <CreatorDropdown />
       <PredictionStartTime />
-      <PredictionEndTime />
       <ResultSetStartTime />
-      <ResultSetEndTime />
       <Outcomes />
       <Stake />
       <ProfitCut />

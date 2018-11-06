@@ -1,19 +1,21 @@
 import React from 'react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import styled from 'styled-components';
+import { Grid, withStyles } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
-import { DateTimePickerCombo } from './DateTimePickerCombo';
 import styles from './styles';
 
-export const DateRow = withStyles(styles, { withTheme: true })(injectIntl(({ classes, intl, error, blockNum, isOpen, ...props }) => (
-  <Grid container direction="row" alignItems="center">
-    <Grid item xs={12} sm={6}>
-      <DateTimePickerCombo fullWidth error={error} {...props} />
+export const DateRow = injectIntl(withStyles(styles, { withTheme: true })(({ title, children, column = false, intl, classes }) => (
+  <SectionContainer>
+    <Grid item xs={12} sm={3} className={classes.createEventSectionTitle}>
+      {intl.formatMessage(title)}
     </Grid>
-    <Grid item xs>
-      <Typography variant="body2">
-        {blockNum ? `~ ${intl.formatMessage({ id: 'str.block', defaultMessage: 'Block' })} ${blockNum}` : ''}
-      </Typography>
+    <Grid item xs={12} sm={9} className={classes.sectionFlexDirection}>
+      {children}
     </Grid>
-  </Grid>
+  </SectionContainer>
 )));
+
+const SectionContainer = styled(Grid).attrs({ container: true })`
+  margin-bottom: ${props => props.theme.padding.spaceX.px};
+`;

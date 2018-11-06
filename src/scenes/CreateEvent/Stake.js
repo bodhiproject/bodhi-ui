@@ -23,7 +23,7 @@ const messages = defineMessages({
 });
 
 const Stake = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent }, intl }) => {
-  console.log('ere');
+  const a = 1;
   return (
     <Section title={messages.createEscrow}>
       <TextField
@@ -41,7 +41,7 @@ const Stake = withStyles(styles, { withTheme: true })(observer(({ classes, store
         <option value={400}>400 BOT</option>
       </TextField>
       <Button variant="outlined" disabled classes={{ root: classes.root, disabled: classes.disabled }}>
-        {createEvent.arbitrationTime}
+        {createEvent.arbitrationLength}h
       </Button>
     </Section>
   );

@@ -21,6 +21,7 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
     },
+    height: 'auto',
   },
   createEventInputAdornment: {
     [theme.breakpoints.down('xs')]: {
@@ -64,6 +65,11 @@ const styles = (theme) => ({
   disabled: {},
   formControl: {
     width: '50%',
+  },
+  firstDateItem: {
+    [theme.breakpoints.up('sm')]: {
+      paddingRight: theme.padding.spaceX.px,
+    },
   },
 });
 

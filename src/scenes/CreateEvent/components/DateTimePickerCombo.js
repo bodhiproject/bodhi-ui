@@ -24,7 +24,7 @@ export class DateTimePickerCombo extends Component {
   }
 
   render() {
-    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, ...props } = this.props;
+    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, estblockNum, start, ...props } = this.props;
     const { isDatePickerOpen } = this.state;
     return (
       <Fragment>
@@ -35,6 +35,8 @@ export class DateTimePickerCombo extends Component {
             error={Boolean(error)}
             type="datetime-local"
             variant="outlined"
+            label={start ? 'start' : 'end'}
+            helperText={estblockNum}
             InputProps={{
               classes: { input: classes.createEventTextField },
               startAdornment: (

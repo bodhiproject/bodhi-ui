@@ -27,13 +27,22 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       marginTop: 4,
     },
-    margin: 'auto',
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
       fontSize: 12,
       height: 20,
     },
+  },
+  sectionFlexDirection: {
+    display: 'flex',
+    flexDirection: 'row',
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+    },
+  },
+  dateItem: {
+    paddingTop: theme.padding.spaceX.px,
   },
 });
 
