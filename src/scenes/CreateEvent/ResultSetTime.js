@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
 });
 
-const ResultSetStartTime = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent } }) => (
+const ResultSetTime = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent } }) => (
   <DateRow title={messages.createResultSetTimeMsg}>
     <DateItem
       error={createEvent.error.resultSetting.startTime}
@@ -33,4 +33,4 @@ const ResultSetStartTime = withStyles(styles, { withTheme: true })(observer(({ c
   </DateRow>
 )));
 
-export default inject('store')(ResultSetStartTime);
+export default inject('store')(ResultSetTime);

@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
 });
 
-const PredictionStartTime = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent } }) => (
+const PredictionTime = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent } }) => (
   <DateRow title={messages.createBetTimeMsg}>
     <DateItem
       error={createEvent.error.prediction.startTime}
@@ -34,4 +34,4 @@ const PredictionStartTime = withStyles(styles, { withTheme: true })(observer(({ 
 )));
 
 
-export default inject('store')(PredictionStartTime);
+export default inject('store')(PredictionTime);

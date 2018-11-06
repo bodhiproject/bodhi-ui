@@ -9,8 +9,8 @@ import { EventWarningType } from 'constants';
 import styles from './styles';
 import Title from './Title';
 import CreatorDropdown from './CreatorDropdown';
-import PredictionStartTime from './PredictionStartTime';
-import ResultSetStartTime from './ResultSetStartTime';
+import PredictionTime from './PredictionTime';
+import ResultSetTime from './ResultSetTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
 
@@ -60,8 +60,8 @@ const CreateEventDetail = ({ classes }) => (
       <EventWarning />
       <Title />
       <CreatorDropdown />
-      <PredictionStartTime />
-      <ResultSetStartTime />
+      <PredictionTime />
+      <ResultSetTime />
       <Outcomes />
       <ResultSetter />
     </DialogContent>

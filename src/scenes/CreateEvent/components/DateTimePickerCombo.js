@@ -6,8 +6,8 @@ import { injectIntl, defineMessages } from 'react-intl';
 import moment from 'moment';
 
 import styles from './styles';
-
 import { DateTimePickerDialog } from './DateTimePickerDialog';
+
 const messages = defineMessages({
   start: {
     id: 'create.start',
