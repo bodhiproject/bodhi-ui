@@ -29,14 +29,14 @@ const primaryBrandColor = '#585afa';
 const secondaryBrandColor = '#23dae0';
 
 // Brand Color variables
-const primaryBrandColor200 = '#4648c8';
-const primaryBrandColor80 = '#797bfb';
-const primaryBrandColor60 = '#9b9cfc';
-const primaryBrandColor30 = '#cdcefe';
-const secondaryBrandColor200 = '#1caeb3';
-const secondaryBrandColor80 = '#4fe1e6';
-const secondaryBrandColor60 = '#7be9ec';
-const secondaryBrandColor30 = '#bdf4f6';
+const primaryBrandColor200 = '#4648C1';
+const primaryBrandColor80 = '#7A7AF3';
+const primaryBrandColor60 = '#9B9CF5';
+const primaryBrandColor30 = '#CDCEFA';
+const secondaryBrandColor200 = '#52ACB1';
+const secondaryBrandColor80 = '#7BDEE4';
+const secondaryBrandColor60 = '#97E6EA';
+const secondaryBrandColor30 = '#C8F2F5';
 
 // Text Colors
 const textColorDarkGrey = '#333333';
@@ -47,18 +47,18 @@ const textColorLightGrey = '#b3b3b3';
 const backgroundColorLight = '#f9f9f9';
 
 // Support Colors
-const supportColorRed100 = '#d0021b';
-const supportColorRed60 = '#e36776';
-const supportColorRed30 = '#f1b3bb';
-const supportColorBlue100 = '#1e81dc';
-const supportColorBlue60 = '#78b3ea';
-const supportColorBlue30 = '#bbd9f5';
-const supportColorGreen100 = '#64c850';
-const supportColorGreen60 = '#a2de96';
-const supportColorGreen30 = '#d1efcb';
-const supportColorYellow100 = '#f5a623';
-const supportColorYellow60 = '#f9ca7b';
-const supportColorYellow30 = '#fce4bd';
+const supportColorRed100 = '#BE2828';
+const supportColorRed60 = '#D36E78';
+const supportColorRed30 = '#E8B6BC';
+const supportColorBlue100 = '#3F7FD5';
+const supportColorBlue60 = '#85B2E5';
+const supportColorBlue30 = '#C1D8F2';
+const supportColorGreen100 = '#7EC660';
+const supportColorGreen60 = '#AFDC9D';
+const supportColorGreen30 = '#D7EECE';
+const supportColorYellow100 = '#E9AA44';
+const supportColorYellow60 = '#F1CB86';
+const supportColorYellow30 = '#F8E5C1';
 
 // White
 const white = '#FFFFFF';
