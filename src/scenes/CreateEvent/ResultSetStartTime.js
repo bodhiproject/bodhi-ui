@@ -8,14 +8,14 @@ import styles from './styles';
 import { DateRow, DateItem } from './components';
 
 const messages = defineMessages({
-  createResultSetStartTimeMsg: {
-    id: 'create.resultSetStartTime',
+  createResultSetTimeMsg: {
+    id: 'create.resultSetTime',
     defaultMessage: 'Result Setting Time',
   },
 });
 
 const ResultSetStartTime = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent } }) => (
-  <DateRow title={messages.createResultSetStartTimeMsg}>
+  <DateRow title={messages.createResultSetTimeMsg}>
     <DateItem
       error={createEvent.error.resultSetting.startTime}
       onChange={e => moment(e.target.value).isValid && (createEvent.resultSetting.startTime = moment(e.target.value).utc().unix())}

@@ -350,7 +350,7 @@ export default class TransactionStore {
   @action
   executeApproveCreateEvent = async (index, tx) => {
     try {
-      const { senderAddress, amountSatoshi, arbitrationLength, profitCut } = tx;
+      const { senderAddress, amountSatoshi } = tx;
       const { txid, gasLimit, gasPrice } = await this.executeApprove(
         senderAddress,
         getContracts().AddressManager.address,
@@ -414,8 +414,6 @@ export default class TransactionStore {
     resultSettingStartTime,
     resultSettingEndTime,
     amount,
-    arbitrationLength,
-    profitCut,
     language,
   ) => {
     this.transactions.push(observable.object(new Transaction({
@@ -431,8 +429,6 @@ export default class TransactionStore {
       resultSettingEndTime,
       amount,
       token: Token.BOT,
-      arbitrationLength,
-      profitCut,
       language,
     })));
     await this.showConfirmDialog();
@@ -456,8 +452,6 @@ export default class TransactionStore {
         resultSettingStartTime,
         resultSettingEndTime,
         amountSatoshi,
-        arbitrationLength,
-        profitCut,
         language,
       } = tx;
       const contract = this.app.global.qweb3.Contract(

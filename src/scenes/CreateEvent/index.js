@@ -10,14 +10,9 @@ import styles from './styles';
 import Title from './Title';
 import CreatorDropdown from './CreatorDropdown';
 import PredictionStartTime from './PredictionStartTime';
-import PredictionEndTime from './PredictionEndTime';
 import ResultSetStartTime from './ResultSetStartTime';
-import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
-import Stake from './Stake';
-import ProfitCut from './ProfitCut';
-
 
 import { Loading as _Loading } from '../../components/Loading';
 
@@ -61,15 +56,13 @@ const CreateEventDetail = ({ classes }) => (
       <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
     </DialogTitle>
     <DialogContent>
-      {/* <EscrowAmountNote /> */}
+      <EscrowAmountNote />
       <EventWarning />
       <Title />
       <CreatorDropdown />
       <PredictionStartTime />
       <ResultSetStartTime />
       <Outcomes />
-      <Stake />
-      <ProfitCut />
       <ResultSetter />
     </DialogContent>
     <DialogActions className={classes.footer}>

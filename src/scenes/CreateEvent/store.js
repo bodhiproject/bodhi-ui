@@ -47,10 +47,6 @@ const messages = defineMessages({
     id: 'create.invalidName',
     defaultMessage: "Cannot name the outcome 'Invalid'",
   },
-  createProfitCutMsg: {
-    id: 'create.profitCutMsg',
-    defaultMessage: "profitCut should between 0% to 100% '",
-  },
   createDuplicateOutcomeMsg: {
     id: 'create.duplicateOutcome',
     defaultMessage: 'Duplicate outcomes are not allowed.',
@@ -73,12 +69,11 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
-const arbitrationTimeOptions = { 100: '48', 200: '24', 300: '12', 400: '6' };
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   loaded: false,
-  escrowAmount: 100,
+  escrowAmount: undefined,
   averageBlockTime: '',
   txFees: [],
   resultSetterDialogOpen: false,
@@ -94,7 +89,6 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
-  profitCut: '',
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -109,7 +103,6 @@ const INIT = {
     },
     outcomes: ['', ''],
     resultSetter: '',
-    profitCut: '',
   },
 };
 
@@ -129,7 +122,6 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable error = INIT.error
-  @observable profitCut = INIT.profitCut
 
   @computed get hasEnoughFee() {
     const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
@@ -139,9 +131,6 @@ export default class CreateEventStore {
       && (currentWalletAddress.bot >= this.escrowAmount);
   }
 
-  @computed get arbitrationLength() {
-    return arbitrationTimeOptions[this.escrowAmount];
-  }
   @computed get warning() {
     if (!this.hasEnoughFee) {
       return {
@@ -165,7 +154,7 @@ export default class CreateEventStore {
     };
   }
   @computed get isAllValid() {
-    const { title, creator, prediction, resultSetting, outcomes, resultSetter, profitCut } = this.error;
+    const { title, creator, prediction, resultSetting, outcomes, resultSetter } = this.error;
     return (
       // all fields set
       this.title
@@ -180,7 +169,6 @@ export default class CreateEventStore {
       && !resultSetting.endTime
       && outcomes.every(outcome => !outcome)
       && !resultSetter
-      && !profitCut
     );
   }
 
@@ -275,11 +263,11 @@ export default class CreateEventStore {
     }
 
     // Close if unable to get the escrow amount
-    // const escrowAmountSuccess = await this.getEscrowAmount();
-    // if (!escrowAmountSuccess) {
-    //   this.close();
-    //   return;
-    // }
+    const escrowAmountSuccess = await this.getEscrowAmount();
+    if (!escrowAmountSuccess) {
+      this.close();
+      return;
+    }
 
     await this.getAverageBlockTime();
 
@@ -303,16 +291,6 @@ export default class CreateEventStore {
         this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
       }
     });
-  }
-
-  @action
-  handleEscrowAmountChange = event => {
-    this.escrowAmount = event.target.value;
-  }
-
-  @action
-  handleProfitCutChange = event => {
-    this.profitCut = event.target.value;
   }
 
   /**
@@ -489,15 +467,6 @@ export default class CreateEventStore {
   }
 
   @action
-  validateProfitCut = () => {
-    if (this.profitCut > 100 || this.profitCut < 0 || isEmpty(this.profitCut)) {
-      this.error.profitCut = messages.createProfitCutMsg.id;
-    } else {
-      this.error.profitCut = '';
-    }
-  }
-
-  @action
   validateResultSetter = async () => {
     if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
@@ -530,7 +499,6 @@ export default class CreateEventStore {
       this.validateOutcome(key);
     });
     this.validateResultSetter();
-    this.validateProfitCut();
   }
 
   @action
@@ -553,8 +521,6 @@ export default class CreateEventStore {
         this.resultSetting.startTime.toString(),
         this.resultSetting.endTime.toString(),
         escrowAmountSatoshi,
-        Number(this.arbitrationLength) * 60 * 60,
-        this.profitCut,
         this.app.ui.locale,
       );
     } else {
