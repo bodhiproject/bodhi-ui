@@ -24,34 +24,46 @@ const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
 const lineHeight32 = '32px';
 
-// Neon blue
-const primaryColor = '#585AFA';
-const primaryColorDark = '#4244BB';
-const primaryColorLight = '#F0F0FF';
+// Brand Colors
+const primaryBrandColor = '#585afa';
+const secondaryBrandColor = '#23dae0';
 
-// Neo teal
-const secondaryColor = '#23DAE0';
-const secondaryColorLight = '#E9FEFE';
-const secondaryColorDark = '#11A5A9';
+// Brand Color variables
+const primaryBrandColor200 = '#4648C1';
+const primaryBrandColor80 = '#7A7AF3';
+const primaryBrandColor60 = '#9B9CF5';
+const primaryBrandColor30 = '#CDCEFA';
+const secondaryBrandColor200 = '#52ACB1';
+const secondaryBrandColor80 = '#7BDEE4';
+const secondaryBrandColor60 = '#97E6EA';
+const secondaryBrandColor30 = '#C8F2F5';
+
+// Text Colors
+const textColorDarkGrey = '#333333';
+const textColorMediumGrey = '#666666';
+const textColorLightGrey = '#b3b3b3';
+
+// Background Color
+const backgroundColorLight = '#f9f9f9';
+
+// Support Colors
+const supportColorRed100 = '#BE2828';
+const supportColorRed60 = '#D36E78';
+const supportColorRed30 = '#E8B6BC';
+const supportColorBlue100 = '#3F7FD5';
+const supportColorBlue60 = '#85B2E5';
+const supportColorBlue30 = '#C1D8F2';
+const supportColorGreen100 = '#7EC660';
+const supportColorGreen60 = '#AFDC9D';
+const supportColorGreen30 = '#D7EECE';
+const supportColorYellow100 = '#E9AA44';
+const supportColorYellow60 = '#F1CB86';
+const supportColorYellow30 = '#F8E5C1';
 
 // White
 const white = '#FFFFFF';
 
-// Red
-const redColor = '#FE4A49';
-const redColorLight = '#FFDEDE';
-const redColorDark = '#960F0E';
-
-// Orange
-const orange = '#F5A623';
-
-// Text
-const textColorDark = '#333333';
-const textColorGrey = '#666666';
-const textColorLight = '#9B9B9B';
-
-// Misc
-const backgroundColor = '#F9F9F9';
+// Border
 const borderColor = '#ECECEC';
 const borderColorDark = '#999999';
 
@@ -86,36 +98,36 @@ export const theme = {
   /* Material variables */
   palette: {
     primary: {
-      light: primaryColorLight,
-      main: primaryColor,
-      dark: primaryColorDark,
+      light: primaryBrandColor30,
+      main: primaryBrandColor,
+      dark: primaryBrandColor200,
       contrastText: white,
     },
     secondary: {
-      light: secondaryColorLight,
-      main: secondaryColor,
-      dark: secondaryColorDark,
+      light: secondaryBrandColor30,
+      main: secondaryBrandColor,
+      dark: secondaryBrandColor200,
       contrastText: white,
     },
     error: {
-      light: redColorLight,
-      main: redColor,
-      dark: redColorDark,
+      light: supportColorRed30,
+      main: supportColorRed60,
+      dark: supportColorRed100,
       contrastText: white,
     },
     background: {
       paper: white,
-      default: backgroundColor,
+      default: backgroundColorLight,
       grey: borderColor, // additional var
     },
     text: {
-      primary: textColorDark,
-      secondary: textColorGrey,
-      disabled: textColorLight,
-      hint: textColorLight,
+      primary: textColorDarkGrey,
+      secondary: textColorMediumGrey,
+      disabled: textColorLightGrey,
+      hint: textColorLightGrey,
     },
     extra: {
-      orange,
+      orange: supportColorYellow100,
     },
     divider: borderColor,
   },
@@ -132,30 +144,30 @@ export const theme = {
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
-      color: textColorDark,
+      color: textColorDarkGrey,
     },
     // large text (i.e. title on prediction title)
     h6: {
       fontSize: px(fontSizeTextMd),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightLg,
-      color: textColorDark,
+      color: textColorDarkGrey,
     },
     body2: {
       fontSize: px(fontSizeMeta),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
-      color: textColorGrey,
+      color: textColorMediumGrey,
     },
     body1: {
       fontSize: px(fontSizeTextSm),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
-      color: textColorGrey,
+      color: textColorMediumGrey,
     },
     caption: {
       fontSize: px(fontSizeMeta),
-      color: textColorLight,
+      color: textColorLightGrey,
     },
   },
   /* Component overrides */
@@ -220,7 +232,7 @@ export const theme = {
     },
     MuiTooltip: {
       tooltip: {
-        backgroundColor: primaryColor,
+        backgroundColor: primaryBrandColor,
         color: white,
         fontSize: px(fontSizeMeta),
         padding: spaceX,
@@ -235,7 +247,7 @@ export const theme = {
     MuiExpansionPanel: {
       root: {
         '&:disabled': {
-          backgroundColor: primaryColor,
+          backgroundColor: primaryBrandColor,
           opacity: 0.1,
           boxShadow: '0px 0px 4px rgba(0, 0, 0, .2)',
         },
@@ -343,7 +355,7 @@ bodhiTheme.typography = {
     fontWeight: fontWeightRegular,
     lineHeight: lineHeightLg,
     marginLeft: '0',
-    color: textColorDark,
+    color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
       fontSize: fontSizeTitleSm,
       fontWeight: fontWeightBold,
@@ -366,15 +378,15 @@ bodhiTheme.overrides = {
       },
     },
     raisedPrimary: {
-      backgroundColor: primaryColor,
+      backgroundColor: primaryBrandColor,
       color: white,
       boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
       '&:hover': {
-        backgroundColor: primaryColor,
+        backgroundColor: primaryBrandColor,
         boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
       },
       '&:disabled': {
-        backgroundColor: primaryColor,
+        backgroundColor: primaryBrandColor,
         color: white,
         opacity: 0.6,
       },
@@ -416,7 +428,7 @@ bodhiTheme.overrides = {
   },
   MuiTableCell: {
     body: {
-      color: textColorGrey,
+      color: textColorMediumGrey,
       fontSize: 13,
       paddingTop: px(space3X),
       paddingBottom: px(space3X),
