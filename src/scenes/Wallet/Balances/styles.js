@@ -18,7 +18,7 @@ const styles = (theme) => ({
     marginRight: theme.padding.space5X.px,
   },
   totalsItemAmount: {
-    fontSize: theme.sizes.font.titleMd,
+    fontSize: theme.sizes.font.xLarge.px,
     marginBottom: 2,
   },
   tableHeaderItemText: {

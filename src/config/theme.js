@@ -4,14 +4,15 @@ import { createMuiTheme } from '@material-ui/core';
 // Font
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
-// Font size
-const fontSizeTitleLg = 36;
-const fontSizeTitleMd = 32;
-const fontSizeTitleSm = 24;
-const fontSizeTextLg = 20;
-const fontSizeTextMd = 18;
-const fontSizeTextSm = 16;
-const fontSizeMeta = 14;
+// Type scale
+const xxxSmallText = 10;
+const xxSmallText = 12;
+const xSmallText = 14;
+const smallText = 16;
+const mediumText = 20;
+const largeText = 24;
+const xLargeText = 32;
+const xxLargeText = 48;
 
 // Font weight
 const fontWeightBold = 700;
@@ -20,7 +21,7 @@ const fontWeightRegular = 400;
 const fontWeightLight = 300;
 
 // Line height
-const lineHeightLg = '133.33%';
+const lineHeightLg = '150%';
 const lineHeightSm = '125%';
 const lineHeight32 = '32px';
 
@@ -134,13 +135,20 @@ export const theme = {
   typography: {
     useNextVariants: true,
     fontFamily: fontLato,
-    fontSize: fontSizeTextSm,
+    fontSize: xSmallText,
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
+    h1: {
+      fontSize: px(xxLargeText),
+      fontWeight: fontWeightRegular,
+      lineHeight: lineHeightSm,
+      marginLeft: '0',
+      color: textColorDarkGrey,
+    },
     h5: {
-      fontSize: px(fontSizeTitleSm),
+      fontSize: px(xLargeText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
@@ -148,26 +156,44 @@ export const theme = {
     },
     // large text (i.e. title on prediction title)
     h6: {
-      fontSize: px(fontSizeTextMd),
+      fontSize: px(largeText),
       fontWeight: fontWeightBold,
-      lineHeight: lineHeightLg,
+      lineHeight: lineHeightSm,
       color: textColorDarkGrey,
     },
     body2: {
-      fontSize: px(fontSizeMeta),
+      fontSize: px(xSmallText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     body1: {
-      fontSize: px(fontSizeTextSm),
+      fontSize: px(smallText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     caption: {
-      fontSize: px(fontSizeMeta),
+      fontSize: px(xxSmallText),
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightSm,
       color: textColorLightGrey,
+    },
+    micro: {
+      fontSize: px(xxxSmallText),
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightSm,
+      color: textColorLightGrey,
+    },
+    label: {
+      fontSize: px(xxSmallText),
+      fontWeight: fontWeightRegular,
+      lineHeight: lineHeightLg,
+    },
+    link: {
+      fontSize: px(xSmallText),
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightLg,
     },
   },
   /* Component overrides */
@@ -214,7 +240,7 @@ export const theme = {
         borderCollapse: 'separate',
       },
       label: {
-        fontSize: fontSizeTextSm,
+        fontSize: xxSmallText,
         textTransform: 'none !important',
       },
     },
@@ -234,7 +260,7 @@ export const theme = {
       tooltip: {
         backgroundColor: primaryBrandColor,
         color: white,
-        fontSize: px(fontSizeMeta),
+        fontSize: px(xxSmallText),
         padding: spaceX,
       },
     },
@@ -323,13 +349,38 @@ export const theme = {
       small: px(iconSizeSm),
     },
     font: {
-      titleLg: px(fontSizeTitleLg),
-      titleMd: px(fontSizeTitleMd),
-      titleSm: px(fontSizeTitleSm),
-      textLg: px(fontSizeTextLg),
-      textMd: px(fontSizeTextMd),
-      textSm: px(fontSizeTextSm),
-      meta: px(fontSizeMeta),
+      xxLarge: {
+        px: px(xxLargeText),
+        rem: rem(xxLargeText),
+      },
+      xLarge: {
+        px: px(xLargeText),
+        rem: rem(xLargeText),
+      },
+      large: {
+        px: px(largeText),
+        rem: rem(largeText),
+      },
+      medium: {
+        px: px(mediumText),
+        rem: rem(mediumText),
+      },
+      small: {
+        px: px(smallText),
+        rem: rem(smallText),
+      },
+      xSmall: {
+        px: px(xSmallText),
+        rem: rem(xSmallText),
+      },
+      xxSmall: {
+        px: px(xxSmallText),
+        rem: rem(xxSmallText),
+      },
+      xxxSmall: {
+        px: px(xxxSmallText),
+        rem: rem(xxxSmallText),
+      },
     },
     table: {
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
@@ -350,14 +401,14 @@ const bodhiTheme = createMuiTheme(theme);
 bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
-  subtitle2: {
-    fontSize: px(fontSizeTitleLg),
-    fontWeight: fontWeightRegular,
-    lineHeight: lineHeightLg,
+  subtitle1: {
+    fontSize: px(mediumText),
+    fontWeight: fontWeightBold,
+    lineHeight: lineHeightSm,
     marginLeft: '0',
     color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: fontSizeTitleSm,
+      fontSize: largeText,
       fontWeight: fontWeightBold,
       lineHeight: lineHeight32,
     },
@@ -392,12 +443,12 @@ bodhiTheme.overrides = {
       },
     },
     sizeLarge: {
-      fontSize: px(fontSizeTextLg),
+      fontSize: px(mediumText),
       fontWeight: fontWeightBold,
       minHeight: 56,
     },
     sizeSmall: {
-      fontSize: px(fontSizeMeta),
+      fontSize: px(xxSmallText),
       fontWeight: fontWeightBold,
       height: 40,
       padding: `0 ${space3X}`,
@@ -439,7 +490,7 @@ bodhiTheme.overrides = {
     },
     head: {
       fontWeight: fontWeightBold,
-      fontSize: px(fontSizeMeta),
+      fontSize: px(xxSmallText),
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
         fontSize: 12,

@@ -38,7 +38,7 @@ const styles = (theme) => ({
     borderRadius: theme.sizes.icon.large,
     overflow: 'hidden',
     textAlign: 'center',
-    fontSize: theme.sizes.font.meta,
+    fontSize: theme.sizes.font.xxSmall.px,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
     position: 'absolute',
@@ -72,7 +72,7 @@ const styles = (theme) => ({
     color: theme.palette.text.primary,
   },
   eventOptionInput: {
-    fontSize: theme.sizes.font.titleMd,
+    fontSize: theme.sizes.font.xLarge.px,
   },
 });
 

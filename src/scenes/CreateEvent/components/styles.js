@@ -23,7 +23,7 @@ const styles = (theme) => ({
     paddingRight: 0,
   },
   createEventSectionTitle: {
-    fontSize: theme.sizes.font.textSm,
+    fontSize: theme.sizes.font.xSmall.px,
     [theme.breakpoints.down('xs')]: {
       marginTop: 4,
     },

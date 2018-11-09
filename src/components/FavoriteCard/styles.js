@@ -31,7 +31,7 @@ const styles = (theme) => ({
     display: 'block',
     maxHeight: '1.4em',
     maxWidth: '100%',
-    fontSize: theme.sizes.font.textLg,
+    fontSize: theme.sizes.font.medium.px,
     margin: '0 auto',
     overflow: 'hidden',
     textOverflow: 'ellipsis',

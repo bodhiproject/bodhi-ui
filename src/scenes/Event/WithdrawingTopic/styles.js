@@ -28,7 +28,7 @@ const styles = (theme) => ({
     margin: '0 auto',
   },
   tokenDiv: {
-    fontSize: theme.sizes.font.textSm,
+    fontSize: theme.sizes.font.xSmall.px,
     fontWeight: theme.typography.fontWeightBold,
   },
 });

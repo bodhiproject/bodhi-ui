@@ -8,7 +8,7 @@ import styles from '../styles';
 
 const TermsAndConditions = ({ classes }) => (
   <div>
-    <Typography variant="h4" classes={{ subtitle2: classes.tutorialDialogContentTitle }}>
+    <Typography variant="h4" classes={{ subtitle1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tnc.title" defaultMessage="Bodhi Terms and Conditions" />
     </Typography>
     <Paper className={classes.tncWrapper}>

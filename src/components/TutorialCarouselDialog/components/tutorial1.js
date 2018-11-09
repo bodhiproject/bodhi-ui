@@ -43,7 +43,7 @@ const messages = defineMessages({
 
 const Tutorial1 = ({ classes }) => (
   <div>
-    <Typography variant="h4" classes={{ subtitle2: classes.tutorialDialogContentTitle }}>
+    <Typography variant="h4" classes={{ subtitle1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tutorial1.title" defaultMessage="Bodhi Dapp Uses The Qtum Wallet" />
     </Typography>
     <ul className={classes.contentList}>

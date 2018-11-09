@@ -79,10 +79,10 @@ const styles = (theme) => ({
   },
   tutorialDialogContentTitle: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.sizes.font.titleMd,
+      fontSize: theme.sizes.font.xLarge.px,
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.textLg,
+      fontSize: theme.sizes.font.medium.px,
     },
   },
   contentList: {

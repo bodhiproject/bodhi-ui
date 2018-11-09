@@ -8,7 +8,7 @@ const styles = (theme) => ({
   },
   createEventButtonIcon: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.textMd,
+      fontSize: theme.sizes.font.small.px,
     },
   },
   dashboardActionsRight: {
