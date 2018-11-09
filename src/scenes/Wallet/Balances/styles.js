@@ -37,7 +37,7 @@ const styles = (theme) => ({
   },
   tableRowActionButton: {
     minHeight: 24,
-    fontSize: 12,
+    fontSize: theme.sizes.font.xxSmall.px,
     marginRight: theme.padding.spaceX.px,
     borderRadius: 2,
   },

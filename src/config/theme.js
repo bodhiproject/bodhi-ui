@@ -135,7 +135,7 @@ export const theme = {
   typography: {
     useNextVariants: true,
     fontFamily: fontLato,
-    fontSize: xSmallText,
+    fontSize: px(xSmallText),
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
@@ -240,7 +240,7 @@ export const theme = {
         borderCollapse: 'separate',
       },
       label: {
-        fontSize: xxSmallText,
+        fontSize: px(xxSmallText),
         textTransform: 'none !important',
       },
     },
@@ -408,7 +408,7 @@ bodhiTheme.typography = {
     marginLeft: '0',
     color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: largeText,
+      fontSize: px(largeText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeight32,
     },
@@ -425,7 +425,7 @@ bodhiTheme.overrides = {
         padding: px(spaceX),
         minWidth: 64,
         minHeight: 32,
-        fontSize: 12,
+        fontSize: px(xxSmallText),
       },
     },
     raisedPrimary: {
@@ -463,12 +463,12 @@ bodhiTheme.overrides = {
     selectRoot: {
       [bodhiTheme.breakpoints.down('xs')]: {
         margin: 0,
-        fontSize: 12,
+        fontSize: px(xxSmallText),
       },
     },
     caption: {
       [bodhiTheme.breakpoints.down('xs')]: {
-        fontSize: 12,
+        fontSize: px(xxSmallText),
       },
     },
     actions: {
@@ -480,12 +480,11 @@ bodhiTheme.overrides = {
   MuiTableCell: {
     body: {
       color: textColorMediumGrey,
-      fontSize: 13,
+      fontSize: px(xxSmallText),
       paddingTop: px(space3X),
       paddingBottom: px(space3X),
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: 12,
       },
     },
     head: {
@@ -493,7 +492,7 @@ bodhiTheme.overrides = {
       fontSize: px(xxSmallText),
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: 12,
+        fontSize: px(xxSmallText),
       },
     },
     numeric: {

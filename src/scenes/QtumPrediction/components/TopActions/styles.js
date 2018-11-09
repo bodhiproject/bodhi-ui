@@ -25,18 +25,18 @@ const styles = (theme) => ({
   dashboardActionsSortLabel: {
     marginRight: theme.padding.space3X.px,
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
       marginRight: theme.padding.spaceX.px,
     },
   },
   dashboardActionsSelect: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   dashboardActionsMenuItem: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
 });

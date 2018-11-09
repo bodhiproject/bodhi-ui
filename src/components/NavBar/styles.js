@@ -40,7 +40,7 @@ const styles = (theme) => ({
       padding: `0 ${theme.padding.spaceX.px}`,
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   rightButtonContainer: {
@@ -85,7 +85,7 @@ const styles = (theme) => ({
   searchBarInput: {
     fontSize: theme.sizes.font.medium.px,
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   searchBarLeftIcon: {
@@ -118,7 +118,7 @@ const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
       padding: `0 ${theme.padding.spaceX.px}`,
       right: 30,
     },
@@ -148,7 +148,7 @@ const styles = (theme) => ({
       display: 'none',
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   navDropdownLinkItem: {

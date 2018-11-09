@@ -2,7 +2,7 @@ const styles = (theme) => ({
   createDialog: {
     overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   createDialogPaper: {
@@ -19,12 +19,12 @@ const styles = (theme) => ({
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
   createEventInputAdornment: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
       paddingTop: 8,
     },
   },

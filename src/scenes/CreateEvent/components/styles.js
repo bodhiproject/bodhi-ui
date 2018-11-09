@@ -30,7 +30,7 @@ const styles = (theme) => ({
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
       height: 20,
     },
   },

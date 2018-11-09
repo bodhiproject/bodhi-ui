@@ -30,7 +30,7 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       margin: 0,
       padding: `${theme.padding.spaceX.px} 0`,
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall.px,
     },
   },
 });
