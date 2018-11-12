@@ -24,6 +24,8 @@ const fontWeightLight = 300;
 const lineHeightLg = '150%';
 const lineHeightSm = '125%';
 const lineHeight32 = '32px';
+const lineHeight24 = '24px';
+const lineHeight16 = '16px';
 
 // Brand Colors
 const primaryBrandColor = '#585afa';
@@ -395,8 +397,14 @@ bodhiTheme.overrides = {
   ...bodhiTheme.overrides,
   MuiButton: {
     root: {
+      fontSize: xSmallText,
+      lineHeight: lineHeight24,
+      padding: `4px ${px(space2X)}`,
+      fontWeight: fontWeightBold,
       borderRadius: px(space7X),
       textTransform: 'none',
+      minWidth: 'auto',
+      minHeight: 'auto',
       [bodhiTheme.breakpoints.down('xs')]: {
         padding: px(spaceX),
         minWidth: 64,
@@ -404,30 +412,73 @@ bodhiTheme.overrides = {
         fontSize: xxSmallText,
       },
     },
-    raisedPrimary: {
+    contained: {
       backgroundColor: primaryBrandColor,
       color: white,
-      boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
+      boxShadow: 'none',
       '&:hover': {
-        backgroundColor: primaryBrandColor,
-        boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
+        backgroundColor: primaryBrandColor80,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        backgroundColor: primaryBrandColor60,
+        boxShadow: 'none',
       },
       '&:disabled': {
-        backgroundColor: primaryBrandColor,
-        color: white,
-        opacity: 0.6,
+        backgroundColor: primaryBrandColor30,
+        color: `${white}!important`,
+        boxShadow: 'none',
+      },
+    },
+    outlined: {
+      color: primaryBrandColor,
+      border: `1px solid ${primaryBrandColor}`,
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: primaryBrandColor30,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        backgroundColor: primaryBrandColor60,
+        boxShadow: `1px 1px 4px ${primaryBrandColor60}`,
+      },
+      '&:disabled': {
+        color: primaryBrandColor30,
+        border: `1px solid ${primaryBrandColor30}!important`,
+        boxShadow: 'none',
+      },
+    },
+    text: {
+      color: primaryBrandColor,
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: primaryBrandColor30,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        backgroundColor: primaryBrandColor60,
+        boxShadow: `1px 1px 4px ${primaryBrandColor60}`,
+      },
+      '&:disabled': {
+        color: primaryBrandColor30,
+        boxShadow: 'none',
       },
     },
     sizeLarge: {
-      fontSize: mediumText,
+      fontSize: smallText,
+      lineHeight: lineHeight24,
+      padding: `12px ${px(space2X)}`,
       fontWeight: fontWeightBold,
-      minHeight: 56,
+      minWidth: 'auto',
+      minHeight: 'auto',
     },
     sizeSmall: {
       fontSize: xxSmallText,
+      lineHeight: lineHeight16,
+      padding: `4px ${px(space2X)}`,
       fontWeight: fontWeightBold,
-      height: 40,
-      padding: `0 ${space3X}`,
+      minWidth: 'auto',
+      minHeight: 'auto',
     },
   },
   MuiTablePagination: {
