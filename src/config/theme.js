@@ -426,13 +426,13 @@ bodhiTheme.overrides = {
       },
       '&:disabled': {
         backgroundColor: primaryBrandColor30,
-        color: `${white}!important`,
+        color: `${white} !important`,
         boxShadow: 'none',
       },
     },
     outlined: {
       color: primaryBrandColor,
-      border: `1px solid ${primaryBrandColor}`,
+      border: `2px solid ${primaryBrandColor} !important`,
       boxShadow: 'none',
       '&:hover': {
         backgroundColor: primaryBrandColor30,
@@ -444,7 +444,7 @@ bodhiTheme.overrides = {
       },
       '&:disabled': {
         color: primaryBrandColor30,
-        border: `1px solid ${primaryBrandColor30}!important`,
+        border: `2px solid ${primaryBrandColor30} !important`,
         boxShadow: 'none',
       },
     },
@@ -467,7 +467,7 @@ bodhiTheme.overrides = {
     sizeLarge: {
       fontSize: smallText,
       lineHeight: lineHeight24,
-      padding: `12px ${px(space2X)}`,
+      padding: `12px ${px(space3X)}`,
       fontWeight: fontWeightBold,
       minWidth: 'auto',
       minHeight: 'auto',
