@@ -40,7 +40,7 @@ const styles = (theme) => ({
   },
   bottomBarTxt: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
 });

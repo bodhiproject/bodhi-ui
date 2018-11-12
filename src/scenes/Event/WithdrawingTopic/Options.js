@@ -57,7 +57,7 @@ const OptionNumber = styled.div`
     border-radius: ${theme.sizes.icon.large};
     overflow: hidden;
     text-align: center;
-    font-size: ${theme.sizes.font.meta};
+    font-size: ${theme.sizes.font.xxSmall.px};
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.palette.text.primary};
     position: absolute;

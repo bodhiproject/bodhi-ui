@@ -45,7 +45,7 @@ const WinningOutcomeTitle = () => (
 
 const OutcomeOption = styled(Typography)`
   color: ${props => props.theme.palette.primary.main} !important;
-  font-size: ${props => props.theme.sizes.font.titleSm} !important;
+  font-size: ${props => props.theme.sizes.font.large.px} !important;
   font-weight: ${props => props.theme.typography.fontWeightBold} !important;
   margin-bottom: ${props => props.theme.padding.spaceX.px} !important;
 `;

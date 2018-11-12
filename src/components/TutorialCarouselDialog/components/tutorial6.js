@@ -27,7 +27,7 @@ const messages = defineMessages({
 
 const Tutorial6 = ({ classes }) => (
   <div>
-    <Typography variant="h4" classes={{ subtitle2: classes.tutorialDialogContentTitle }}>
+    <Typography variant="h4" classes={{ subtitle1: classes.tutorialDialogContentTitle }}>
       <FormattedMessage id="tutorial6.title" defaultMessage="Decentralization" />
     </Typography>
     <ul className={classes.contentList}>

@@ -2,7 +2,7 @@ const styles = (theme) => ({
   myActivitiesActionableCount: {
     height: 22,
     width: 22,
-    fontSize: 12,
+    fontSize: theme.sizes.font.xxSmall,
     color: theme.palette.secondary.contrastText,
     backgroundColor: theme.palette.secondary.main,
     borderRadius: '50%',

@@ -128,16 +128,16 @@ const CustomTableHeadCell = withStyles(theme => ({
     borderBottom: '1px solid rgba(151, 151, 151, 0.1)',
   },
   body: {
-    fontSize: 14,
+    fontSize: theme.sizes.font.xSmall,
   },
 }))(TableCell);
 
-const CustomTableBodyCell = withStyles(() => ({
+const CustomTableBodyCell = withStyles(theme => ({
   root: {
     borderColor: 'rgba(151, 151, 151, 0.1)',
   },
   body: {
-    fontSize: 14,
+    fontSize: theme.sizes.font.xSmall,
   },
 }))(TableCell);
 
@@ -147,4 +147,3 @@ const CustomTableRow = withStyles(() => ({
     height: '48px',
   },
 }))(TableRow);
-

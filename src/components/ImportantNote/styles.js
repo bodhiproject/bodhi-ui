@@ -14,23 +14,23 @@ const styles = (theme) => ({
     },
   },
   icon: {
-    fontSize: theme.sizes.font.textMd,
+    fontSize: theme.sizes.font.small,
     color: theme.palette.primary.main,
     marginRight: theme.padding.spaceX.px,
   },
   heading: {
-    fontSize: theme.sizes.font.textMd,
+    fontSize: theme.sizes.font.small,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
   },
   message: {
-    fontSize: theme.sizes.font.textSm,
+    fontSize: theme.sizes.font.xSmall,
     color: theme.palette.text.secondary,
     margin: `0 0 ${theme.padding.space2X.px} 0`,
     [theme.breakpoints.down('xs')]: {
       margin: 0,
       padding: `${theme.padding.spaceX.px} 0`,
-      fontSize: 12,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
 });

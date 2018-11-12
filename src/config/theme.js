@@ -4,14 +4,15 @@ import { createMuiTheme } from '@material-ui/core';
 // Font
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
-// Font size
-const fontSizeTitleLg = 36;
-const fontSizeTitleMd = 32;
-const fontSizeTitleSm = 24;
-const fontSizeTextLg = 20;
-const fontSizeTextMd = 18;
-const fontSizeTextSm = 16;
-const fontSizeMeta = 14;
+// Type scale
+const xxxSmallText = '0.625rem';
+const xxSmallText = '0.75rem';
+const xSmallText = '0.875rem';
+const smallText = '1rem';
+const mediumText = '1.25rem';
+const largeText = '1.5rem';
+const xLargeText = '2rem';
+const xxLargeText = '3rem';
 
 // Font weight
 const fontWeightBold = 700;
@@ -20,7 +21,7 @@ const fontWeightRegular = 400;
 const fontWeightLight = 300;
 
 // Line height
-const lineHeightLg = '133.33%';
+const lineHeightLg = '150%';
 const lineHeightSm = '125%';
 const lineHeight32 = '32px';
 
@@ -134,13 +135,20 @@ export const theme = {
   typography: {
     useNextVariants: true,
     fontFamily: fontLato,
-    fontSize: fontSizeTextSm,
+    fontSize: smallText,
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
+    h1: {
+      fontSize: xxLargeText,
+      fontWeight: fontWeightRegular,
+      lineHeight: lineHeightSm,
+      marginLeft: '0',
+      color: textColorDarkGrey,
+    },
     h5: {
-      fontSize: px(fontSizeTitleSm),
+      fontSize: xLargeText,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
@@ -148,26 +156,44 @@ export const theme = {
     },
     // large text (i.e. title on prediction title)
     h6: {
-      fontSize: px(fontSizeTextMd),
+      fontSize: largeText,
       fontWeight: fontWeightBold,
-      lineHeight: lineHeightLg,
+      lineHeight: lineHeightSm,
       color: textColorDarkGrey,
     },
     body2: {
-      fontSize: px(fontSizeMeta),
+      fontSize: xSmallText,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     body1: {
-      fontSize: px(fontSizeTextSm),
+      fontSize: smallText,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     caption: {
-      fontSize: px(fontSizeMeta),
+      fontSize: xxSmallText,
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightSm,
       color: textColorLightGrey,
+    },
+    micro: {
+      fontSize: xxxSmallText,
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightSm,
+      color: textColorLightGrey,
+    },
+    label: {
+      fontSize: xxSmallText,
+      fontWeight: fontWeightRegular,
+      lineHeight: lineHeightLg,
+    },
+    link: {
+      fontSize: xSmallText,
+      fontWeight: fontWeightBold,
+      lineHeight: lineHeightLg,
     },
   },
   /* Component overrides */
@@ -214,7 +240,7 @@ export const theme = {
         borderCollapse: 'separate',
       },
       label: {
-        fontSize: fontSizeTextSm,
+        fontSize: xxSmallText,
         textTransform: 'none !important',
       },
     },
@@ -234,7 +260,7 @@ export const theme = {
       tooltip: {
         backgroundColor: primaryBrandColor,
         color: white,
-        fontSize: px(fontSizeMeta),
+        fontSize: xxSmallText,
         padding: spaceX,
       },
     },
@@ -323,13 +349,14 @@ export const theme = {
       small: px(iconSizeSm),
     },
     font: {
-      titleLg: px(fontSizeTitleLg),
-      titleMd: px(fontSizeTitleMd),
-      titleSm: px(fontSizeTitleSm),
-      textLg: px(fontSizeTextLg),
-      textMd: px(fontSizeTextMd),
-      textSm: px(fontSizeTextSm),
-      meta: px(fontSizeMeta),
+      xxLarge: xxLargeText,
+      xLarge: xLargeText,
+      large: largeText,
+      medium: mediumText,
+      small: smallText,
+      xSmall: xSmallText,
+      xxSmall: xxSmallText,
+      xxxSmall: xxxSmallText,
     },
     table: {
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
@@ -350,14 +377,14 @@ const bodhiTheme = createMuiTheme(theme);
 bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
-  subtitle2: {
-    fontSize: px(fontSizeTitleLg),
-    fontWeight: fontWeightRegular,
-    lineHeight: lineHeightLg,
+  subtitle1: {
+    fontSize: mediumText,
+    fontWeight: fontWeightBold,
+    lineHeight: lineHeightSm,
     marginLeft: '0',
     color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: fontSizeTitleSm,
+      fontSize: smallText,
       fontWeight: fontWeightBold,
       lineHeight: lineHeight32,
     },
@@ -374,7 +401,7 @@ bodhiTheme.overrides = {
         padding: px(spaceX),
         minWidth: 64,
         minHeight: 32,
-        fontSize: 12,
+        fontSize: xxSmallText,
       },
     },
     raisedPrimary: {
@@ -392,12 +419,12 @@ bodhiTheme.overrides = {
       },
     },
     sizeLarge: {
-      fontSize: px(fontSizeTextLg),
+      fontSize: mediumText,
       fontWeight: fontWeightBold,
       minHeight: 56,
     },
     sizeSmall: {
-      fontSize: px(fontSizeMeta),
+      fontSize: xxSmallText,
       fontWeight: fontWeightBold,
       height: 40,
       padding: `0 ${space3X}`,
@@ -412,12 +439,12 @@ bodhiTheme.overrides = {
     selectRoot: {
       [bodhiTheme.breakpoints.down('xs')]: {
         margin: 0,
-        fontSize: 12,
+        fontSize: xxSmallText,
       },
     },
     caption: {
       [bodhiTheme.breakpoints.down('xs')]: {
-        fontSize: 12,
+        fontSize: xxSmallText,
       },
     },
     actions: {
@@ -429,20 +456,19 @@ bodhiTheme.overrides = {
   MuiTableCell: {
     body: {
       color: textColorMediumGrey,
-      fontSize: 13,
+      fontSize: xxSmallText,
       paddingTop: px(space3X),
       paddingBottom: px(space3X),
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: 12,
       },
     },
     head: {
       fontWeight: fontWeightBold,
-      fontSize: px(fontSizeMeta),
+      fontSize: xxSmallText,
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: 12,
+        fontSize: xxSmallText,
       },
     },
     numeric: {
