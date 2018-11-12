@@ -8,7 +8,7 @@ const styles = (theme) => ({
   },
   createEventButtonIcon: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.small.px,
+      fontSize: theme.sizes.font.small.rem,
     },
   },
   dashboardActionsRight: {
@@ -25,18 +25,18 @@ const styles = (theme) => ({
   dashboardActionsSortLabel: {
     marginRight: theme.padding.space3X.px,
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.px,
+      fontSize: theme.sizes.font.xxSmall.rem,
       marginRight: theme.padding.spaceX.px,
     },
   },
   dashboardActionsSelect: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.px,
+      fontSize: theme.sizes.font.xxSmall.rem,
     },
   },
   dashboardActionsMenuItem: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.px,
+      fontSize: theme.sizes.font.xxSmall.rem,
     },
   },
 });

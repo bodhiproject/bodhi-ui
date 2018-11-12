@@ -22,12 +22,12 @@ const styles = (theme) => ({
   },
   cardHeader: {
     color: '#585AFA',
-    fontSize: '1em',
+    fontSize: theme.sizes.font.small.rem,
     marginBottom: theme.padding.space3X.px,
   },
   cardContent: {
     color: '#585AFA',
-    fontSize: '1.5em',
+    fontSize: theme.sizes.font.largeText.rem,
   },
 });
 

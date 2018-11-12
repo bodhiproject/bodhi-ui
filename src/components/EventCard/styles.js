@@ -24,7 +24,7 @@ const styles = (theme) => ({
       paddingTop: theme.padding.space2X.px,
       paddingBottom: theme.padding.space2X.px,
       lineHeight: 1,
-      fontSize: theme.sizes.font.small.px,
+      fontSize: theme.sizes.font.small.rem,
       color: theme.palette.text.primary,
     },
   },
@@ -59,7 +59,7 @@ const styles = (theme) => ({
     borderRadius: theme.borderRadius,
     padding: `2px ${theme.padding.spaceX.px}`,
     marginBottom: theme.padding.spaceX.px,
-    fontSize: theme.sizes.font.xxSmall.px,
+    fontSize: theme.sizes.font.xxSmall.rem,
   },
   dashBoardCardIcon: {
     marginRight: theme.padding.spaceX.px,

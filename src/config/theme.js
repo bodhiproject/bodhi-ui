@@ -135,20 +135,20 @@ export const theme = {
   typography: {
     useNextVariants: true,
     fontFamily: fontLato,
-    fontSize: px(xSmallText),
+    fontSize: rem(smallText),
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
     fontWeightBold, // additional var
     h1: {
-      fontSize: px(xxLargeText),
+      fontSize: rem(xxLargeText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightSm,
       marginLeft: '0',
       color: textColorDarkGrey,
     },
     h5: {
-      fontSize: px(xLargeText),
+      fontSize: rem(xLargeText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
@@ -156,42 +156,42 @@ export const theme = {
     },
     // large text (i.e. title on prediction title)
     h6: {
-      fontSize: px(largeText),
+      fontSize: rem(largeText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightSm,
       color: textColorDarkGrey,
     },
     body2: {
-      fontSize: px(xSmallText),
+      fontSize: rem(xSmallText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     body1: {
-      fontSize: px(smallText),
+      fontSize: rem(smallText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
     caption: {
-      fontSize: px(xxSmallText),
+      fontSize: rem(xxSmallText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightSm,
       color: textColorLightGrey,
     },
     micro: {
-      fontSize: px(xxxSmallText),
+      fontSize: rem(xxxSmallText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightSm,
       color: textColorLightGrey,
     },
     label: {
-      fontSize: px(xxSmallText),
+      fontSize: rem(xxSmallText),
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
     },
     link: {
-      fontSize: px(xSmallText),
+      fontSize: rem(xSmallText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeightLg,
     },
@@ -240,7 +240,7 @@ export const theme = {
         borderCollapse: 'separate',
       },
       label: {
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
         textTransform: 'none !important',
       },
     },
@@ -260,7 +260,7 @@ export const theme = {
       tooltip: {
         backgroundColor: primaryBrandColor,
         color: white,
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
         padding: spaceX,
       },
     },
@@ -402,13 +402,13 @@ bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
   subtitle1: {
-    fontSize: px(mediumText),
+    fontSize: rem(mediumText),
     fontWeight: fontWeightBold,
     lineHeight: lineHeightSm,
     marginLeft: '0',
     color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: px(largeText),
+      fontSize: rem(smallText),
       fontWeight: fontWeightBold,
       lineHeight: lineHeight32,
     },
@@ -425,7 +425,7 @@ bodhiTheme.overrides = {
         padding: px(spaceX),
         minWidth: 64,
         minHeight: 32,
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
       },
     },
     raisedPrimary: {
@@ -443,12 +443,12 @@ bodhiTheme.overrides = {
       },
     },
     sizeLarge: {
-      fontSize: px(mediumText),
+      fontSize: rem(mediumText),
       fontWeight: fontWeightBold,
       minHeight: 56,
     },
     sizeSmall: {
-      fontSize: px(xxSmallText),
+      fontSize: rem(xxSmallText),
       fontWeight: fontWeightBold,
       height: 40,
       padding: `0 ${space3X}`,
@@ -463,12 +463,12 @@ bodhiTheme.overrides = {
     selectRoot: {
       [bodhiTheme.breakpoints.down('xs')]: {
         margin: 0,
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
       },
     },
     caption: {
       [bodhiTheme.breakpoints.down('xs')]: {
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
       },
     },
     actions: {
@@ -480,7 +480,7 @@ bodhiTheme.overrides = {
   MuiTableCell: {
     body: {
       color: textColorMediumGrey,
-      fontSize: px(xxSmallText),
+      fontSize: rem(xxSmallText),
       paddingTop: px(space3X),
       paddingBottom: px(space3X),
       [bodhiTheme.breakpoints.down('md')]: {
@@ -489,10 +489,10 @@ bodhiTheme.overrides = {
     },
     head: {
       fontWeight: fontWeightBold,
-      fontSize: px(xxSmallText),
+      fontSize: rem(xxSmallText),
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: px(xxSmallText),
+        fontSize: rem(xxSmallText),
       },
     },
     numeric: {
