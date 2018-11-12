@@ -128,7 +128,7 @@ const CustomTableHeadCell = withStyles(theme => ({
     borderBottom: '1px solid rgba(151, 151, 151, 0.1)',
   },
   body: {
-    fontSize: theme.sizes.font.xSmall.rem,
+    fontSize: theme.sizes.font.xSmall,
   },
 }))(TableCell);
 
@@ -137,7 +137,7 @@ const CustomTableBodyCell = withStyles(theme => ({
     borderColor: 'rgba(151, 151, 151, 0.1)',
   },
   body: {
-    fontSize: theme.sizes.font.xSmall.rem,
+    fontSize: theme.sizes.font.xSmall,
   },
 }))(TableCell);
 

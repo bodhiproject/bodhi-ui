@@ -6,7 +6,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.space2X.px,
   },
   selectWalletText: {
-    fontSize: theme.sizes.font.xSmall.rem,
+    fontSize: theme.sizes.font.xSmall,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
   },

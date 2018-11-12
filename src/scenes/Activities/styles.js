@@ -14,7 +14,7 @@ const styles = (theme) => ({
   },
   activitiesTabLabel: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   activitiesTabContainer: {

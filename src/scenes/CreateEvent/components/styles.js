@@ -23,14 +23,14 @@ const styles = (theme) => ({
     paddingRight: 0,
   },
   createEventSectionTitle: {
-    fontSize: theme.sizes.font.xSmall.rem,
+    fontSize: theme.sizes.font.xSmall,
     [theme.breakpoints.down('xs')]: {
       marginTop: 4,
     },
   },
   createEventTextField: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
       height: 20,
     },
   },

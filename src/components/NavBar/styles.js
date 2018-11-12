@@ -27,7 +27,7 @@ const styles = (theme) => ({
   navButton: {
     display: 'flex',
     flexDirection: 'row',
-    fontSize: theme.sizes.font.xSmall.rem,
+    fontSize: theme.sizes.font.xSmall,
     fontWeight: 400,
     color: 'rgba(255,255,255,0.65)',
     '&.selected': {
@@ -40,7 +40,7 @@ const styles = (theme) => ({
       padding: `0 ${theme.padding.spaceX.px}`,
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   rightButtonContainer: {
@@ -83,13 +83,13 @@ const styles = (theme) => ({
     borderLeft: `2px solid ${theme.palette.text.hint}`,
   },
   searchBarInput: {
-    fontSize: theme.sizes.font.medium.rem,
+    fontSize: theme.sizes.font.medium,
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   searchBarLeftIcon: {
-    fontSize: theme.sizes.font.medium.rem,
+    fontSize: theme.sizes.font.medium,
     color: theme.palette.primary.main,
     paddingRight: theme.padding.space3X.value,
   },
@@ -118,7 +118,7 @@ const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
       padding: `0 ${theme.padding.spaceX.px}`,
       right: 30,
     },
@@ -148,7 +148,7 @@ const styles = (theme) => ({
       display: 'none',
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   navDropdownLinkItem: {

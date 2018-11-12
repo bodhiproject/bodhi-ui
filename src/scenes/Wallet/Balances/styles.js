@@ -18,7 +18,7 @@ const styles = (theme) => ({
     marginRight: theme.padding.space5X.px,
   },
   totalsItemAmount: {
-    fontSize: theme.sizes.font.xLarge.rem,
+    fontSize: theme.sizes.font.xLarge,
     marginBottom: 2,
   },
   tableHeaderItemText: {
@@ -37,7 +37,7 @@ const styles = (theme) => ({
   },
   tableRowActionButton: {
     minHeight: 24,
-    fontSize: theme.sizes.font.xxSmall.rem,
+    fontSize: theme.sizes.font.xxSmall,
     marginRight: theme.padding.spaceX.px,
     borderRadius: 2,
   },

@@ -18,7 +18,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.space3X.px,
   },
   message: {
-    fontSize: theme.sizes.font.medium.rem,
+    fontSize: theme.sizes.font.medium,
     lineHeight: '32px',
     marginBottom: theme.padding.space3X.px,
     '&.left': {

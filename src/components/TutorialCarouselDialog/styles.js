@@ -79,10 +79,10 @@ const styles = (theme) => ({
   },
   tutorialDialogContentTitle: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.sizes.font.xLarge.rem,
+      fontSize: theme.sizes.font.xLarge,
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.medium.rem,
+      fontSize: theme.sizes.font.medium,
     },
   },
   contentList: {
@@ -94,7 +94,7 @@ const styles = (theme) => ({
   },
   tutorialDialogContentItem: {
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   buttonsWrapper: {
@@ -119,14 +119,14 @@ const styles = (theme) => ({
     padding: theme.padding.space3X.px,
     [theme.breakpoints.down('xs')]: {
       maxHeight: 260,
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   tncAgreement: {
     fontWeight: 'bold',
     color: theme.palette.error.main,
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
   langBtn: {
@@ -135,7 +135,7 @@ const styles = (theme) => ({
     border: theme.border,
     borderRadius: theme.borderRadius,
     [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall.rem,
+      fontSize: theme.sizes.font.xxSmall,
     },
   },
 });
