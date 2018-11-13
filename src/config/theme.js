@@ -34,8 +34,11 @@ const secondaryBrandColor = '#23dae0';
 // Brand Color variables
 const primaryBrandColor200 = '#4648C1';
 const primaryBrandColor80 = '#7A7AF3';
+const primaryBrandColorTransparent80 = `${primaryBrandColor200}CD`;
 const primaryBrandColor60 = '#9B9CF5';
+const primaryBrandColorTransparent60 = `${primaryBrandColor200}9A`;
 const primaryBrandColor30 = '#CDCEFA';
+const primaryBrandColorTransparent30 = `${primaryBrandColor200}4D`;
 const secondaryBrandColor200 = '#52ACB1';
 const secondaryBrandColor80 = '#7BDEE4';
 const secondaryBrandColor60 = '#97E6EA';
@@ -417,34 +420,78 @@ bodhiTheme.overrides = {
       color: white,
       boxShadow: 'none',
       '&:hover': {
-        backgroundColor: primaryBrandColor80,
+        backgroundColor: primaryBrandColorTransparent80,
         boxShadow: 'none',
       },
       '&:active': {
-        backgroundColor: primaryBrandColor60,
+        backgroundColor: primaryBrandColorTransparent60,
         boxShadow: 'none',
       },
       '&:disabled': {
-        backgroundColor: primaryBrandColor30,
-        color: `${white} !important`,
+        backgroundColor: primaryBrandColor200,
+        color: white,
+        opacity: 0.3,
+        boxShadow: 'none',
+      },
+    },
+    containedPrimary: {
+      backgroundColor: primaryBrandColor,
+      color: white,
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: primaryBrandColorTransparent80,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        backgroundColor: primaryBrandColorTransparent60,
+        boxShadow: 'none',
+      },
+      '&:disabled': {
+        backgroundColor: primaryBrandColor200,
+        color: white,
+        opacity: 0.3,
         boxShadow: 'none',
       },
     },
     outlined: {
       color: primaryBrandColor,
-      border: `2px solid ${primaryBrandColor} !important`,
+      border: `2px solid ${primaryBrandColor}`,
       boxShadow: 'none',
       '&:hover': {
-        backgroundColor: primaryBrandColor30,
+        border: `2px solid ${primaryBrandColor}`,
+        backgroundColor: primaryBrandColorTransparent30,
         boxShadow: 'none',
       },
       '&:active': {
-        backgroundColor: primaryBrandColor60,
-        boxShadow: `1px 1px 4px ${primaryBrandColor60}`,
+        border: `2px solid ${primaryBrandColor}`,
+        backgroundColor: primaryBrandColorTransparent60,
+        boxShadow: `1px 1px 4px ${primaryBrandColorTransparent60}`,
       },
       '&:disabled': {
-        color: primaryBrandColor30,
-        border: `2px solid ${primaryBrandColor30} !important`,
+        color: primaryBrandColor,
+        border: `2px solid ${primaryBrandColor}`,
+        opacity: 0.3,
+        boxShadow: 'none',
+      },
+    },
+    outlinedPrimary: {
+      color: primaryBrandColor,
+      border: `2px solid ${primaryBrandColor}`,
+      boxShadow: 'none',
+      '&:hover': {
+        border: `2px solid ${primaryBrandColor}`,
+        backgroundColor: primaryBrandColorTransparent30,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        border: `2px solid ${primaryBrandColor}`,
+        backgroundColor: primaryBrandColorTransparent60,
+        boxShadow: `1px 1px 4px ${primaryBrandColorTransparent60}`,
+      },
+      '&:disabled': {
+        color: primaryBrandColor,
+        border: `2px solid ${primaryBrandColor}`,
+        opacity: 0.3,
         boxShadow: 'none',
       },
     },
@@ -452,15 +499,33 @@ bodhiTheme.overrides = {
       color: primaryBrandColor,
       boxShadow: 'none',
       '&:hover': {
-        backgroundColor: primaryBrandColor30,
+        backgroundColor: primaryBrandColorTransparent30,
         boxShadow: 'none',
       },
       '&:active': {
-        backgroundColor: primaryBrandColor60,
-        boxShadow: `1px 1px 4px ${primaryBrandColor60}`,
+        backgroundColor: primaryBrandColorTransparent60,
+        boxShadow: `1px 1px 4px ${primaryBrandColorTransparent60}`,
       },
       '&:disabled': {
-        color: primaryBrandColor30,
+        color: primaryBrandColor,
+        opacity: 0.3,
+        boxShadow: 'none',
+      },
+    },
+    textPrimary: {
+      color: primaryBrandColor,
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: primaryBrandColorTransparent30,
+        boxShadow: 'none',
+      },
+      '&:active': {
+        backgroundColor: primaryBrandColorTransparent60,
+        boxShadow: `1px 1px 4px ${primaryBrandColorTransparent60}`,
+      },
+      '&:disabled': {
+        color: primaryBrandColor,
+        opacity: 0.3,
         boxShadow: 'none',
       },
     },
