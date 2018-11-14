@@ -284,6 +284,35 @@ export const theme = {
         },
       },
     },
+    MuiInput: {
+      root: {
+        fontSize: smallText,
+        lineHeight: lineHeight24,
+        padding: `8px ${px(space2X)}`,
+        color: textColorDarkGrey,
+      },
+      input: {
+        padding: 0,
+      },
+      underline: {
+        '&:after': {
+          borderBottom: `2px solid ${primaryBrandColor}`,
+        },
+      },
+      error: {
+        '&:after': {
+          borderBottomColor: `${supportColorRed100} !important`,
+        },
+      },
+    },
+    MuiFormHelperText: {
+      error: {
+        fontSize: xxSmallText,
+        lineHeight: lineHeight16,
+        color: `${supportColorRed100} !important`,
+        marginTop: 0,
+      },
+    },
   },
   /* User-defined */
   padding: {
