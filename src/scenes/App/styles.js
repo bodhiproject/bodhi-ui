@@ -6,7 +6,7 @@ const styles = (theme) => ({
     margin: `${theme.sizes.navHeight.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px}`,
     padding: `${theme.padding.space5X.px} 0 0 0`,
     [theme.breakpoints.down('xs')]: {
-      margin: `${theme.sizes.navHeight} ${theme.padding.spaceX.px} ${theme.padding.space7X.px} ${theme.padding.spaceX.px}`,
+      margin: `${theme.sizes.navHeight.px} ${theme.padding.spaceX.px} ${theme.padding.space7X.px} ${theme.padding.spaceX.px}`,
       padding: `${theme.padding.spaceX.px} 0 0 0`,
     },
     [theme.breakpoints.up('xl')]: {
