@@ -628,6 +628,13 @@ bodhiTheme.overrides = {
       },
     },
   },
+  MuiDialog: {
+    paper: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        margin: 0,
+      },
+    },
+  },
 };
 
 export default bodhiTheme;
