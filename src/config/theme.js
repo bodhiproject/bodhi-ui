@@ -212,6 +212,7 @@ export const theme = {
     },
     MuiSelect: {
       select: {
+        height: 'auto',
         '&:focus': {
           backgroundColor: 'transparent',
         },
@@ -311,6 +312,11 @@ export const theme = {
         lineHeight: lineHeight16,
         color: `${supportColorRed100} !important`,
         marginTop: 0,
+      },
+    },
+    MuiSvgIcon: {
+      colorError: {
+        color: supportColorRed100,
       },
     },
   },
@@ -619,6 +625,13 @@ bodhiTheme.overrides = {
     numeric: {
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
+      },
+    },
+  },
+  MuiDialog: {
+    paper: {
+      [bodhiTheme.breakpoints.down('xs')]: {
+        margin: 0,
       },
     },
   },

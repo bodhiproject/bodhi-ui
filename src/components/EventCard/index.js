@@ -107,7 +107,7 @@ export default class EventCard extends Component {
               {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
-                  <Typography variant="h5" className={classes.eventCardName}>
+                  <Typography variant="h6" className={classes.eventCardName}>
                     {name}
                   </Typography>
                 </div>

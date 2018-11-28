@@ -7,9 +7,6 @@ const styles = (theme) => ({
   },
   createDialogPaper: {
     overflow: 'auto',
-    [theme.breakpoints.down('xs')]: {
-      margin: 0,
-    },
   },
   createDialogTitle: {
     padding: `${theme.padding.space2X.px} ${theme.padding.space3X.px} 0 ${theme.padding.space3X.px}`,
