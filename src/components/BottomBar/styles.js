@@ -34,6 +34,9 @@ const styles = (theme) => ({
   },
   bottomBarBlockNum: {
     paddingRight: theme.padding.spaceX.px,
+    [theme.breakpoints.down('sm')]: {
+      paddingRight: 0,
+    },
   },
   bottomBarBlockTime: {
 

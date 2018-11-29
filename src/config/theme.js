@@ -319,6 +319,11 @@ export const theme = {
         color: supportColorRed100,
       },
     },
+    MuiBadge: {
+      colorError: {
+        backgroundColor: supportColorRed100,
+      },
+    },
   },
   /* User-defined */
   padding: {
