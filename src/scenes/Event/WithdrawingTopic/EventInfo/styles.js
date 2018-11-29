@@ -17,7 +17,6 @@ const styles = (theme) => ({
   eventInfo: {
     marginTop: theme.padding.spaceX.px,
     wordWrap: 'break-word',
-    paddingLeft: theme.padding.space5X.px,
     fontSize: theme.typography.fontSize,
   },
 });
