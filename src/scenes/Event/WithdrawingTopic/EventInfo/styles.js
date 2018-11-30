@@ -2,7 +2,6 @@ const styles = (theme) => ({
   eventInfoWrapper: {
     paddingBottom: theme.padding.space5X.px,
     [theme.breakpoints.down('xs')]: {
-      padding: theme.padding.space2X.px,
       textAlign: 'left',
     },
     '& h2': {

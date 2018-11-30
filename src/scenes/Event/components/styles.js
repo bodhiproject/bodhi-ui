@@ -24,8 +24,10 @@ const styles = (theme) => ({
     borderLeft: `${theme.border}`,
     textAlign: 'right',
     [theme.breakpoints.down('sm')]: {
-      padding: theme.padding.space2X.px,
       textAlign: 'left',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.padding.space2X.px,
     },
     '& h2': {
       [theme.breakpoints.down('xs')]: {
