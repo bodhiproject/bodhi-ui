@@ -25,7 +25,7 @@ const styles = (theme) => ({
       color: theme.palette.secondary.main,
     },
     '&.offline': {
-      color: 'red',
+      color: theme.palette.error.dark,
     },
   },
   bottomBarBlockInfoWrapper: {

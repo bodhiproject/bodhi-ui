@@ -1,9 +1,9 @@
 
 
-const styles = () => ({
+const styles = (theme) => ({
   invalid: {
     '& > div': {
-      'background-color': 'red !important',
+      'background-color': theme.palette.error.dark,
     },
   },
 });
