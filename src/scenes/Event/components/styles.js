@@ -23,9 +23,11 @@ const styles = (theme) => ({
     overflowX: 'hidden',
     borderLeft: `${theme.border}`,
     textAlign: 'right',
+    [theme.breakpoints.down('sm')]: {
+      textAlign: 'left',
+    },
     [theme.breakpoints.down('xs')]: {
       padding: theme.padding.space2X.px,
-      textAlign: 'left',
     },
     '& h2': {
       [theme.breakpoints.down('xs')]: {

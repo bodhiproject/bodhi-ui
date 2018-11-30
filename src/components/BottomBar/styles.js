@@ -25,7 +25,7 @@ const styles = (theme) => ({
       color: theme.palette.secondary.main,
     },
     '&.offline': {
-      color: 'red',
+      color: theme.palette.error.dark,
     },
   },
   bottomBarBlockInfoWrapper: {
@@ -34,6 +34,9 @@ const styles = (theme) => ({
   },
   bottomBarBlockNum: {
     paddingRight: theme.padding.spaceX.px,
+    [theme.breakpoints.down('sm')]: {
+      paddingRight: 0,
+    },
   },
   bottomBarBlockTime: {
 

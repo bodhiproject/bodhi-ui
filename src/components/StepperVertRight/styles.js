@@ -4,7 +4,7 @@ const styles = (theme) => ({
     left: '100%',
     background: 'transparent',
     marginLeft: '-'.concat(theme.padding.space5X.px),
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       textAlign: 'left',
       padding: 0,
       left: 0,
@@ -16,7 +16,7 @@ const styles = (theme) => ({
       position: 'relative',
       right: '100%',
       paddingRight: theme.padding.spaceX.px,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         right: 0,
       },
     },

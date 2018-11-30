@@ -77,11 +77,10 @@ const Heading = styled(Typography).attrs({ variant: 'body2' })`
 const Content = styled(Typography).attrs({ variant: 'h6' })`
   margin-top: ${props => props.theme.padding.spaceX.px} !important;
   word-wrap: break-word !important;
-  padding-left: ${props => props.theme.padding.space5X.px};
   font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 
-const Container = styled(Grid).attrs({ item: true, xs: 12, sm: 6, md: 12 })`
+const Container = styled(Grid).attrs({ item: true })`
   margin-bottom: 36px !important;
 `;
 

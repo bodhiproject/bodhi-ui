@@ -49,7 +49,7 @@ export default class EventPage extends Component {
     const { event, loading } = eventPage;
 
     if (loading) {
-      return <Loading text={messages.loadOracleMsg} />;
+      return <Loading text={messages.loadOracleMsg} event='true' />;
     }
 
     const Event = {
