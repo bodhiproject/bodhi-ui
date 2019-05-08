@@ -23,4 +23,12 @@ module.exports = {
     // and loading screen is blocking the view.
     showAppLoad: false,
   },
+  CHAIN_ID: {
+    MAINNET: '2019',
+    TESTNET: '2018',
+  },
+  NETWORK: {
+    MAINNET: 'MAINNET',
+    TESTNET: 'TESTNET',
+  },
 };

@@ -4,7 +4,7 @@ import { RouterStore } from 'mobx-react-router';
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
-import QryptoStore from './QryptoStore';
+import NakaStore from './NakaStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
@@ -58,7 +58,7 @@ class AppStore {
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
-    this.qrypto = new QryptoStore(this);
+    this.qrypto = new NakaStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.favorite = new FavoriteStore(this);
@@ -68,7 +68,10 @@ class AppStore {
     this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
-
+    window.onload = () => {
+      console.log('rere1');
+      this.qrypto.init();
+    };
     this.components = {
       globalDialog: new GlobalDialogStore(),
     };

@@ -115,6 +115,7 @@ export default class WalletStore {
   @action
   onQryptoAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
+    console.log('TCL: WalletStore -> onQryptoAccountChange -> account', account);
 
     // Reset addresses if logged out
     if (!loggedIn) {
