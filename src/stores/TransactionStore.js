@@ -12,7 +12,7 @@ import Tracking from '../helpers/mixpanelUtil';
 
 const INIT_VALUES = {
   visible: false,
-  provider: WalletProvider.QRYPTO,
+  provider: WalletProvider.NAKA,
 };
 
 export default class TransactionStore {
@@ -38,11 +38,11 @@ export default class TransactionStore {
       () => this.app.global.syncBlockNum,
       () => this.checkPendingApproves(),
     );
-    // Qrypto logged in/out
+    // Naka Wallet logged in/out
     reaction(
-      () => this.app.qrypto.loggedIn,
+      () => this.app.naka.loggedIn,
       () => {
-        if (this.app.qrypto.loggedIn) {
+        if (this.app.naka.loggedIn) {
           this.checkPendingApproves();
         } else {
           Object.assign(this, INIT_VALUES);
@@ -88,7 +88,7 @@ export default class TransactionStore {
    */
   @action
   checkPendingApproves = async () => {
-    if (!this.app.qrypto.loggedIn) {
+    if (!this.app.naka.loggedIn) {
       return;
     }
 

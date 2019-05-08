@@ -45,7 +45,7 @@ module.exports = {
   },
 
   WalletProvider: {
-    QRYPTO: 'QRYPTO',
+    NAKA: 'NAKA',
     QT_WALLET: 'QT_WALLET',
   },
 

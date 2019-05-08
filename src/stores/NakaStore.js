@@ -28,11 +28,11 @@ export default class NakaStore {
   isInstalled = () => !!window.naka
 
   /**
-   * Registers with Qrypto and sets the event handler if not using a local wallet.
+   * Registers with Naka Wallet and sets the event handler if not using a local wallet.
    */
   // registerQrypto = () => {
   //   if (!this.localWallet) {
-  //     console.log('Trying to register with Qrypto...'); // eslint-disable-line
+  //     console.log('Trying to register with Naka Wallet...'); // eslint-disable-line
   //     window.addEventListener('message', this.handleWindowMessage, false);
   //     window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
   //   }
@@ -54,14 +54,14 @@ export default class NakaStore {
   // }
 
   /**
-   * Handles the event when Qrypto posts an install or update message.
+   * Handles the event when Naka Wallet posts an install or update message.
    */
   // handleQryptoInstall = () => {
   //   window.location.reload();
   // }
 
   /**
-   * Handles the event when Qrypto posts an account change message.
+   * Handles the event when Naka Wallet posts an account change message.
    * @param {MessageEvent} event Message to handle.
    */
   @action
@@ -87,7 +87,7 @@ export default class NakaStore {
     }
 
     this.loggedIn = !!this.account;
-    this.app.wallet.onQryptoAccountChange({ loggedIn: this.loggedIn, network: this.network, address: this.account, balance: this.balance });
+    this.app.wallet.onNakaAccountChange({ loggedIn: this.loggedIn, network: this.network, address: this.account, balance: this.balance });
   }
 
   @action
@@ -97,11 +97,11 @@ export default class NakaStore {
     if (messageId) {
       this.popoverMessageId = messageId;
     } else if (!this.isInstalled) {
-      this.popoverMessageId = 'qrypto.notInstalled';
+      this.popoverMessageId = 'naka.notInstalled';
     } else if (!this.loggedIn) {
-      this.popoverMessageId = 'qrypto.notLoggedIn';
+      this.popoverMessageId = 'naka.notLoggedIn';
     } else {
-      this.popoverMessageId = 'qrypto.loggedIn';
+      this.popoverMessageId = 'naka.loggedIn';
     }
   }
 

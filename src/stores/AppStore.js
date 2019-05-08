@@ -58,7 +58,7 @@ class AppStore {
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
     this.ui = new UiStore(this);
-    this.qrypto = new NakaStore(this);
+    this.naka = new NakaStore(this);
     this.wallet = new WalletStore(this);
     this.tx = new TransactionStore(this);
     this.favorite = new FavoriteStore(this);
@@ -70,7 +70,7 @@ class AppStore {
     this.eventPage = new EventPageStore(this);
     window.onload = () => {
       console.log('rere1');
-      this.qrypto.init();
+      this.naka.init();
     };
     this.components = {
       globalDialog: new GlobalDialogStore(),

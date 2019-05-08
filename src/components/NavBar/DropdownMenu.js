@@ -18,7 +18,7 @@ export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({
   </div>
 ))));
 
-export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, qrypto } }) => (
+export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, naka } }) => (
   <div className={cx(classes.navDropdown, ui.dropdownMenuOpen ? '' : 'hide')}>
     <Hidden smUp>
       <Link to={Routes.QTUM_PREDICTION}>
@@ -55,12 +55,12 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         className={classes.navDropdownLinkItem}
         onClick={() => {
           ui.toggleDropdownMenu();
-          qrypto.openPopover();
+          naka.openPopover();
         }}
       >
         <Badge
           classes={{ badge: classes.walletStatusBadge }}
-          color={qrypto.loggedIn ? 'secondary' : 'error'}
+          color={naka.loggedIn ? 'secondary' : 'error'}
           badgeContent=""
         >
           <FormattedMessage id="str.wallet" defaultMessage="Wallet" />

@@ -250,7 +250,7 @@ export default class CreateEventStore {
     this.loaded = INIT.loaded;
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
-      this.app.qrypto.openPopover('qrypto.loginToView');
+      this.app.naka.openPopover('naka.loginToView');
       this.close();
       return;
     }

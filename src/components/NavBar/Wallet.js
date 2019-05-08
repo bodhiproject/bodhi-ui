@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 import styles from './styles';
 
-const Wallet = ({ classes, store: { global, qrypto } }) => {
+const Wallet = ({ classes, store: { global, naka } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
   if (global.localWallet) {
     return null;
@@ -13,10 +13,10 @@ const Wallet = ({ classes, store: { global, qrypto } }) => {
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.navButton} onClick={() => qrypto.openPopover()}>
+      <IconButton className={classes.navButton} onClick={() => naka.openPopover()}>
         <Badge
           classes={{ badge: classes.walletStatusBadge }}
-          color={qrypto.loggedIn ? 'secondary' : 'error'}
+          color={naka.loggedIn ? 'secondary' : 'error'}
           badgeContent=""
         >
           <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
