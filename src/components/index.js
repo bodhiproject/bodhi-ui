@@ -7,7 +7,7 @@ export { default as GlobalSnackbar } from './GlobalSnackbar';
 export { default as ImportantNote } from './ImportantNote';
 export * from './Loading';
 export { default as PendingTxsSnackbar } from './PendingTxsSnackbar';
-export * from './QryptoPrompt';
+export * from './NakaWalletPrompt';
 export { default as ResponsiveTable } from './ResponsiveTable';
 export { default as StepperVertRight } from './StepperVertRight';
 export { default as TransactionHistoryID } from './TransactionHistoryAddressAndID/id';

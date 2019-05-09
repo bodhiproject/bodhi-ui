@@ -69,7 +69,6 @@ class AppStore {
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
     window.onload = () => {
-      console.log('rere1');
       this.naka.init();
     };
     this.components = {

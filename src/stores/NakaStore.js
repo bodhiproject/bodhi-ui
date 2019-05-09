@@ -1,5 +1,4 @@
-import { action, observable, reaction, toJS } from 'mobx';
-import { Qweb3 } from 'qweb3';
+import { action, observable } from 'mobx';
 
 import { urls, CHAIN_ID, NETWORK } from '../config/app';
 export default class NakaStore {
@@ -15,12 +14,11 @@ export default class NakaStore {
   }
 
   init = () => {
-    console.log('rere');
     if (!this.app.global.naka) {
       if (window.naka) {
         this.app.global.naka = window.naka;
-        this.app.global.naka.currentProvider.publicConfigStore.on('update', () => this.handleQryptoAccountChange());
-        console.log('TCL: NakaStore -> init -> this.app.global.naka', this.app.global.naka);
+        this.handleNakaWalletAccountChange();
+        this.app.global.naka.currentProvider.publicConfigStore.on('update', () => this.handleNakaWalletAccountChange());
       }
     }
   }
@@ -30,11 +28,11 @@ export default class NakaStore {
   /**
    * Registers with Naka Wallet and sets the event handler if not using a local wallet.
    */
-  // registerQrypto = () => {
+  // registerNakaWallet = () => {
   //   if (!this.localWallet) {
   //     console.log('Trying to register with Naka Wallet...'); // eslint-disable-line
   //     window.addEventListener('message', this.handleWindowMessage, false);
-  //     window.postMessage({ message: { type: 'CONNECT_QRYPTO' } }, '*');
+  //     window.postMessage({ message: { type: 'CONNECT_NakaWallet' } }, '*');
   //   }
   // }
 
@@ -45,8 +43,8 @@ export default class NakaStore {
   // handleWindowMessage = (event) => {
   //   if (event.data.message && event.data.message.type) {
   //     const types = {
-  //       QRYPTO_INSTALLED_OR_UPDATED: this.handleQryptoInstall,
-  //       QRYPTO_ACCOUNT_CHANGED: this.handleQryptoAccountChange,
+  //       NakaWallet_INSTALLED_OR_UPDATED: this.handleNakaWalletInstall,
+  //       NakaWallet_ACCOUNT_CHANGED: this.handleNakaWalletAccountChange,
   //     };
   //     const messageAction = types[event.data.message.type];
   //     if (messageAction) messageAction(event);
@@ -56,7 +54,7 @@ export default class NakaStore {
   /**
    * Handles the event when Naka Wallet posts an install or update message.
    */
-  // handleQryptoInstall = () => {
+  // handleNakaWalletInstall = () => {
   //   window.location.reload();
   // }
 
@@ -65,7 +63,7 @@ export default class NakaStore {
    * @param {MessageEvent} event Message to handle.
    */
   @action
-  handleQryptoAccountChange = async (event) => {
+  handleNakaWalletAccountChange = async () => {
     const [acct] = this.app.global.naka.eth.accounts;
     this.account = acct;
 
@@ -107,7 +105,7 @@ export default class NakaStore {
 
   @action
   onInstallClick = () => {
-    window.open(urls.qryptoWebStore, '_blank');
+    window.open(urls.NakaWalletWebStore, '_blank');
     this.popoverOpen = false;
   }
 }

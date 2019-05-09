@@ -30,7 +30,7 @@ const messages = defineMessages({
 });
 
 const Logo = withStyles(styles)(({ classes }) => (
-  <img src="/images/qrypto-logo.png" alt="Naka Wallet Logo" className={classes.logo} />
+  <img src="/images/naka_logo.png" alt="Naka Wallet Logo" className={classes.logo} />
 ));
 
 const InstallNowButton = inject('store')(({ store: { naka } }) => (
@@ -44,7 +44,7 @@ const InstallNowButton = inject('store')(({ store: { naka } }) => (
   </Button>
 ));
 
-export const InstallQryptoInline = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => (
+export const InstallNakaWalletInline = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => (
   <div className={classes.inlineRoot}>
     <Logo />
     <Grid container>
@@ -60,7 +60,7 @@ export const InstallQryptoInline = withStyles(styles)(injectIntl(inject('store')
   </div>
 )))));
 
-export const InstallQryptoPopover = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => {
+export const InstallNakaWalletPopover = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => {
   if (!naka.popoverMessageId) return null;
   const message = messages[naka.popoverMessageId];
 

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { InstallQryptoInline } from 'components';
+import { InstallNakaWalletInline } from 'components';
 
 import theme from '../../../config/theme';
 import InfiniteScroll from '../../../components/InfiniteScroll';
@@ -30,7 +30,7 @@ export default class Withdraw extends Component {
             loadingMore={loadingMore}
           />
         ) : (
-          <InstallQryptoInline />
+          <InstallNakaWalletInline />
         )}
       </Fragment>
     );
