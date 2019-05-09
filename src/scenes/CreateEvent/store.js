@@ -18,6 +18,7 @@ import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
 let web3;
 
+const OWNER = '0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e'
 
 const messages = defineMessages({
   createDatePastMsg: {
@@ -75,7 +76,6 @@ const ddd =  async () =>    {
   web3 = new Web3(window.naka.currentProvider)
   const nbotMethods = window.naka.eth.contract(aa.abi).at(aa.testnet)
 	console.log("TCL: ddd -> nbotMethods", nbotMethods)
-  const OWNER = '0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e'
 	console.log("TCL: ddd -> OWNER", OWNER)
   const eventParams =  await getEventParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e')
 	console.log("TCL: ddd -> eventParams", eventParams)
@@ -91,6 +91,7 @@ const ddd =  async () =>    {
 }
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf'
+const BET_EVENT_FUNC_SIG = '885ab66d'
 const RESULT_INVALID = 'Invalid'
 const BET_TOKEN_DECIMALS = 18
 const createEventFuncTypes = [
@@ -101,6 +102,11 @@ const createEventFuncTypes = [
   'uint256',
   'uint256',
   'address',
+]
+const betEventFuncTypes = [
+  'address',
+  'uint8',
+  'uint256',
 ]
 async function currentBlockTime() {
   const blockNumber = await web3.eth.getBlockNumber();
@@ -135,6 +141,14 @@ const getEventParams = async (cOracle) => {
   ]
 }
 
+const getBetParams = (address, resultIndex, betAmount) => {
+  return [
+    address,
+    resultIndex,
+    betAmount,
+  ]
+}
+
 const createEvent = async ({
   nbotMethods,
   eventParams,
@@ -150,26 +164,32 @@ const createEvent = async ({
       eventParams,
     ).substr(2)
     const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`
-		console.log("TCL: data", data)
-
     // Send tx
-		console.log("TCL: nbotMethods", nbotMethods)
-		console.log("TCL: nbotMethods['transfer(address,uint256,bytes)']", nbotMethods.transfer["address,uint256,bytes"])
     nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventFactoryAddr, escrowAmt, data,{ gas }, (err, res) => console.log(res))
-    // nbotMethods.transfer["address,uint256,bytes"].sendTransaction('0x5ef2e4d2979308d3c9e32582a7feb2e7f75a034d', '10000000000', '0x2b2601bf00000000000000000000000000000000000000000000000000000000000002004100000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000043000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005cd32272000000000000000000000000000000000000000000000000000000005cd32a42000000000000000000000000000000000000000000000000000000005cd32e2a000000000000000000000000000000000000000000000000000000005cd335fa000000000000000000000000627306090abab3a6e1400e9345bc60c78a8bef57000000000000000000000000000000000000000000000000000000000000000c54657374204576656e7420310000000000000000000000000000000000000000', { gas: 3000000 },
-    // (err, res) => {
-    //   if (err) console.log(err)
-    //   else console.log('Event address: ' + res)
-    // })
-    // Parse event log and instantiate event instance
-    // const decoded = decodeEvent(
-    //   receipt.events,
-    //   EventFactory._json.abi,
-    //   'MultipleResultsEventCreated'
-    // )
-    // TODO: web3.eth.abi.decodeLog is parsing the logs backwards so it should
-    // using eventAddress instead of ownerAddress
-    // return decoded.ownerAddress
+  } catch (err) {
+    throw err
+  }
+}
+
+const betEvent = async ({
+  nbotMethods,
+  betParams,
+  eventAddr,
+  betAmount,
+  resultIndex,
+  from,
+  gas,
+}) => {
+  try {
+    // Construct params
+    const paramsHex = web3.eth.abi.encodeParameters(
+      betEventFuncTypes,
+      betParams,
+    ).substr(2)
+    const data = `0x${BET_EVENT_FUNC_SIG}${paramsHex}`
+		console.log("TCL: data", data)
+    // Send tx
+    nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventAddr, betAmount, data,{ gas }, (err, res) => console.log(res))
   } catch (err) {
     throw err
   }
@@ -357,6 +377,22 @@ export default class CreateEventStore {
   @action
   createButton = async () => {
     await ddd()
+  }
+
+  @action
+  bet = async () => {
+    const nbotMethods = window.naka.eth.contract(aa.abi).at(aa.testnet)
+    web3 = new Web3(window.naka.currentProvider)
+
+    const betParams =  await getBetParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e', 1, '1')
+    const eventAddr = await betEvent({
+      nbotMethods,
+      betParams,
+      eventAddr: '0x20cadbaecbb1fbd4021324850d1544f10188f769',
+      betAmount: '1',
+      from: OWNER,
+      gas: 3000000,
+    })
   }
 
   @action
