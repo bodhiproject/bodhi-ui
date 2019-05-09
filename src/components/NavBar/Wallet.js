@@ -5,24 +5,26 @@ import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
 import Web3 from 'web3'
 // console.log("TCL: web3", web3)
-const web3 = new Web3(window.naka.currentProvider)
+let web3;
 import styles from './styles';
 import aa from './config'
 import { compose } from 'async';
 const ddd =  async () =>    {
+  console.log(aa)
+  web3 = new Web3(window.naka.currentProvider)
   const nbotMethods = window.naka.eth.contract(aa.abi).at(aa.testnet)
   const OWNER = '0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e'
 	console.log("TCL: ddd -> OWNER", OWNER)
   const eventParams =  await getEventParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e')
 	console.log("TCL: ddd -> eventParams", eventParams)
 
-  eventAddr = await createEvent({
+  const eventAddr = await createEvent({
     nbotMethods,
     eventParams,
-    eventFactoryAddr: '0x5ef2e4d2979308d3c9e32582a7feb2e7f75a034d',
-    escrowAmt: 31312321,
+    eventFactoryAddr: '0x20f060573c33a21ea80bde9ddccb2b9647879746',
+    escrowAmt: '1000000000',
     from: OWNER,
-    gas: 2000000,
+    gas: 3000000,
   })
 }
 
@@ -65,12 +67,9 @@ const createEventFuncTypes = [
   'address',
 ]
 async function currentBlockTime() {
-  const b = window.naka.eth.getBlockNumber((err, res) => console.log(res));
-	console.log("TCL: currentBlockTime -> b", b)
-  const a = await window.naka.eth.getBlock(3003506, (err, res)=>console.log('rere', res))
-	console.log("TCL: currentBlockTime -> a", a)
-
-  return 1557364426
+  const blockNumber = await web3.eth.getBlockNumber();
+  const block = await web3.eth.getBlock(blockNumber)
+  return block.timestamp
 }
 
 const getEventParams = async (cOracle) => {
@@ -120,21 +119,22 @@ const createEvent = async ({
 
     // Send tx
 		console.log("TCL: nbotMethods", nbotMethods)
-    const receipt = await nbotMethods['transfer(address,uint256,bytes)'](
-      eventFactoryAddr,
-      escrowAmt,
-      data,
-    ).send({ from, gas })
-
+		console.log("TCL: nbotMethods['transfer(address,uint256,bytes)']", nbotMethods.transfer["address,uint256,bytes"])
+    // const receipt = await nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventFactoryAddr, escrowAmt, data,{ gas }, (err, res) => console.log(res))
+    nbotMethods.transfer["address,uint256,bytes"].sendTransaction('0x5ef2e4d2979308d3c9e32582a7feb2e7f75a034d', '10000000000', '0x2b2601bf00000000000000000000000000000000000000000000000000000000000002004100000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000043000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005cd32272000000000000000000000000000000000000000000000000000000005cd32a42000000000000000000000000000000000000000000000000000000005cd32e2a000000000000000000000000000000000000000000000000000000005cd335fa000000000000000000000000627306090abab3a6e1400e9345bc60c78a8bef57000000000000000000000000000000000000000000000000000000000000000c54657374204576656e7420310000000000000000000000000000000000000000', { gas: 3000000 },
+    (err, res) => {
+      if (err) console.log(err)
+      else console.log('Event address: ' + res)
+    })
     // Parse event log and instantiate event instance
-    const decoded = decodeEvent(
-      receipt.events,
-      EventFactory._json.abi,
-      'MultipleResultsEventCreated'
-    )
+    // const decoded = decodeEvent(
+    //   receipt.events,
+    //   EventFactory._json.abi,
+    //   'MultipleResultsEventCreated'
+    // )
     // TODO: web3.eth.abi.decodeLog is parsing the logs backwards so it should
     // using eventAddress instead of ownerAddress
-    return decoded.ownerAddress
+    // return decoded.ownerAddress
   } catch (err) {
     throw err
   }
