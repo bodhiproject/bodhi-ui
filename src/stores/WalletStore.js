@@ -109,11 +109,11 @@ export default class WalletStore {
   }
 
   /**
-   * Sets the account sent from Qrypto.
+   * Sets the account sent from Naka Wallet.
    * @param {object} account Account object.
    */
   @action
-  onQryptoAccountChange = async (account) => {
+  onNakaAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
 
     // Reset addresses if logged out
@@ -125,11 +125,11 @@ export default class WalletStore {
 
     // Stop login if the chain network does not match
     if (network.toLowerCase() !== process.env.CHAIN_NETWORK) {
-      this.app.qrypto.openPopover('qrypto.loggedIntoWrongNetwork');
+      this.app.naka.openPopover('naka.loggedIntoWrongNetwork');
       return;
     }
 
-    // If setting Qrypto's account for the first time or the address changes, fetch the BOT balance right away.
+    // If setting Naka Wallet's account for the first time or the address changes, fetch the BOT balance right away.
     // After the initial BOT balance fetch, it will refetch on every new block.
     const fetchInitBotBalance = isEmpty(this.addresses);
 

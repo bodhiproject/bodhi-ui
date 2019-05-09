@@ -65,7 +65,7 @@ export default class GlobalStore {
       }
     );
 
-    // Set flag of using a local wallet, eg. Qtum Wallet vs Qrypto
+    // Set flag of using a local wallet, eg. Qtum Wallet vs Naka Wallet
     this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
     // Call syncInfo once to init the wallet addresses used by other stores
@@ -107,7 +107,7 @@ export default class GlobalStore {
       this.syncBlockTime = syncInfo.syncBlockTime;
       this.peerNodeCount = syncInfo.peerNodeCount || 0;
 
-      // Only use the syncInfo balances if using a local wallet. Qrypto will set the addresses differently.
+      // Only use the syncInfo balances if using a local wallet. Naka Wallet will set the addresses differently.
       if (this.localWallet) {
         this.app.wallet.addresses = syncInfo.balances;
       }

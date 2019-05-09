@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { Table, Grid, TableCell, TableHead, TableRow, TableSortLabel, TableFooter, TablePagination, Tooltip, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { InstallQryptoInline } from 'components';
+import { InstallNakaWalletInline } from 'components';
 
 import styles from './styles';
 import EventRows from './EventRows';
@@ -93,7 +93,7 @@ export default class ActivityHistory extends Component {
         {currentAddress ? (
           <EventHistoryContent history={history} classes={classes} />
         ) : (
-          <InstallQryptoInline />
+          <InstallNakaWalletInline />
         )}
       </div>
     );

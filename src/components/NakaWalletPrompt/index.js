@@ -7,66 +7,66 @@ import cx from 'classnames';
 import styles from './styles';
 
 const messages = defineMessages({
-  'qrypto.loggedIn': {
-    id: 'qrypto.loggedIn',
-    defaultMessage: 'You are logged in to Qrypto.',
+  'naka.loggedIn': {
+    id: 'naka.loggedIn',
+    defaultMessage: 'You are logged in to Naka Wallet.',
   },
-  'qrypto.loginToView': {
-    id: 'qrypto.loginToView',
-    defaultMessage: 'Please login to Qrypto to view this page.',
+  'naka.loginToView': {
+    id: 'naka.loginToView',
+    defaultMessage: 'Please login to Naka Wallet to view this page.',
   },
-  'qrypto.notInstalled': {
-    id: 'qrypto.notInstalled',
-    defaultMessage: 'You have not installed Qrypto yet. Qrypto is a Chrome extension wallet that allows you to sign transaction requests from web dapps. It is strongly recommended that you install it to gain the full experience.',
+  'naka.notInstalled': {
+    id: 'naka.notInstalled',
+    defaultMessage: 'You have not installed Naka Wallet yet. Naka Wallet is a Chrome extension wallet that allows you to sign transaction requests from web dapps. It is strongly recommended that you install it to gain the full experience.',
   },
-  'qrypto.notLoggedIn': {
-    id: 'qrypto.notLoggedIn',
-    defaultMessage: 'You are not logged into Qrypto.',
+  'naka.notLoggedIn': {
+    id: 'naka.notLoggedIn',
+    defaultMessage: 'You are not logged into Naka Wallet.',
   },
-  'qrypto.loggedIntoWrongNetwork': {
-    id: 'qrypto.loggedIntoWrongNetwork',
-    defaultMessage: 'Logged into wrong network. Switch your Qrypto network.',
+  'naka.loggedIntoWrongNetwork': {
+    id: 'naka.loggedIntoWrongNetwork',
+    defaultMessage: 'Logged into wrong network. Switch your Naka Wallet network.',
   },
 });
 
 const Logo = withStyles(styles)(({ classes }) => (
-  <img src="/images/qrypto-logo.png" alt="Qrypto Logo" className={classes.logo} />
+  <img src="/images/naka_logo.png" alt="Naka Wallet Logo" className={classes.logo} />
 ));
 
-const InstallNowButton = inject('store')(({ store: { qrypto } }) => (
+const InstallNowButton = inject('store')(({ store: { naka } }) => (
   <Button
     variant="contained"
     size="small"
     color="primary"
-    onClick={qrypto.onInstallClick}
+    onClick={naka.onInstallClick}
   >
-    <FormattedMessage id="qrypto.installNow" defaultMessage="Install Now" />
+    <FormattedMessage id="naka.installNow" defaultMessage="Install Now" />
   </Button>
 ));
 
-export const InstallQryptoInline = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { qrypto } }) => (
+export const InstallNakaWalletInline = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => (
   <div className={classes.inlineRoot}>
     <Logo />
     <Grid container>
       <Grid item xs></Grid>
       <Grid item xs={12} sm={6}>
         <Typography className={cx(classes.message, 'center')}>
-          {intl.formatMessage(qrypto.isInstalled ? messages['qrypto.loginToView'] : messages['qrypto.notInstalled'])}
+          {intl.formatMessage(naka.isInstalled ? messages['naka.loginToView'] : messages['naka.notInstalled'])}
         </Typography>
       </Grid>
       <Grid item xs></Grid>
     </Grid>
-    {!qrypto.isInstalled && <InstallNowButton />}
+    {!naka.isInstalled && <InstallNowButton />}
   </div>
 )))));
 
-export const InstallQryptoPopover = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { qrypto } }) => {
-  if (!qrypto.popoverMessageId) return null;
-  const message = messages[qrypto.popoverMessageId];
+export const InstallNakaWalletPopover = withStyles(styles)(injectIntl(inject('store')(observer(({ classes, intl, store: { naka } }) => {
+  if (!naka.popoverMessageId) return null;
+  const message = messages[naka.popoverMessageId];
 
   return (
     <Popover
-      open={qrypto.popoverOpen}
+      open={naka.popoverOpen}
       anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
       transformOrigin={{ horizontal: 'center', vertical: 'center' }}
     >
@@ -81,12 +81,12 @@ export const InstallQryptoPopover = withStyles(styles)(injectIntl(inject('store'
         </Grid>
         <Grid container>
           <Grid item xs className={classes.buttonContainer}>
-            {qrypto.isInstalled ? (
+            {naka.isInstalled ? (
               <Button
                 variant="contained"
                 size="small"
                 color="primary"
-                onClick={() => qrypto.popoverOpen = false}
+                onClick={() => naka.popoverOpen = false}
               >
                 <FormattedMessage id="str.ok" defaultMessage="Ok" />
               </Button>
@@ -96,9 +96,9 @@ export const InstallQryptoPopover = withStyles(styles)(injectIntl(inject('store'
                   size="small"
                   color="primary"
                   className={classes.remindButton}
-                  onClick={() => qrypto.popoverOpen = false}
+                  onClick={() => naka.popoverOpen = false}
                 >
-                  <FormattedMessage id="qrypto.remindMeLater" defaultMessage="Remind Me Later" />
+                  <FormattedMessage id="naka.remindMeLater" defaultMessage="Remind Me Later" />
                 </Button>
                 <InstallNowButton />
               </div>
