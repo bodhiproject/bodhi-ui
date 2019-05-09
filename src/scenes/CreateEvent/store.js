@@ -363,7 +363,7 @@ export default class CreateEventStore {
   open = async () => {
     Tracking.track('dashboard-createEventClick');
     this.isOpen = true;
-    this.loaded = INIT.loaded;
+    this.loaded = true;
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
       this.app.naka.openPopover('naka.loginToView');
@@ -372,41 +372,41 @@ export default class CreateEventStore {
     }
 
     // Close if getting pending txs fails
-    const hasPendingTxs = await this.hasPendingCreateTxs();
-    if (hasPendingTxs) {
-      this.close();
-      return;
-    }
+    // const hasPendingTxs = await this.hasPendingCreateTxs();
+    // if (hasPendingTxs) {
+    //   this.close();
+    //   return;
+    // }
 
     // Close if unable to get the escrow amount
-    const escrowAmountSuccess = await this.getEscrowAmount();
-    if (!escrowAmountSuccess) {
-      this.close();
-      return;
-    }
+    // const escrowAmountSuccess = await this.getEscrowAmount();
+    // if (!escrowAmountSuccess) {
+    //   this.close();
+    //   return;
+    // }
 
-    await this.getAverageBlockTime();
+    // await this.getAverageBlockTime();
 
-    runInAction(async () => {
-      this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
-      this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-      this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-      this.creator = this.app.wallet.currentAddress;
-      this.loaded = true;
-      // Determine if user has enough tokens to create an event
-      try {
-        const { data } = await axios.post(Routes.api.transactionCost, {
-          type: TransactionType.APPROVE_CREATE_EVENT,
-          senderAddress: this.app.wallet.currentAddress,
-          amount: decimalToSatoshi(this.escrowAmount),
-          token: Token.BOT,
-        });
-        this.txFees = map(data, (item) => new TransactionCost(item));
-      } catch (error) {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
-      }
-    });
+    // runInAction(async () => {
+    //   this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
+    //   this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+    //   this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+    //   this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
+    //   this.creator = this.app.wallet.currentAddress;
+    //   this.loaded = true;
+    //   // Determine if user has enough tokens to create an event
+    //   try {
+    //     const { data } = await axios.post(Routes.api.transactionCost, {
+    //       type: TransactionType.APPROVE_CREATE_EVENT,
+    //       senderAddress: this.app.wallet.currentAddress,
+    //       amount: decimalToSatoshi(this.escrowAmount),
+    //       token: Token.BOT,
+    //     });
+    //     this.txFees = map(data, (item) => new TransactionCost(item));
+    //   } catch (error) {
+    //     this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
+    //   }
+    // });
   }
 
   /**

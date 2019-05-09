@@ -29,6 +29,34 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
         >
           <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
         </Button>
+        <Button
+          size={width === 'xs' ? 'small' : 'medium'}
+          color="primary"
+          onClick={createEvent.open} // TODO: REVERT when create is done
+        >
+          <FormattedMessage id="create.dialogTitle1" defaultMessage="BET" />
+        </Button>
+        <Button
+          size={width === 'xs' ? 'small' : 'medium'}
+          color="primary"
+          onClick={createEvent.open} // TODO: REVERT when create is done
+        >
+          <FormattedMessage id="create.dialogTitle2" defaultMessage="SET RESULT" />
+        </Button>
+        <Button
+          size={width === 'xs' ? 'small' : 'medium'}
+          color="primary"
+          onClick={createEvent.open} // TODO: REVERT when create is done
+        >
+          <FormattedMessage id="create.dialogTitle3" defaultMessage="VOTE" />
+        </Button>
+        <Button
+          size={width === 'xs' ? 'small' : 'medium'}
+          color="primary"
+          onClick={createEvent.open} // TODO: REVERT when create is done
+        >
+          <FormattedMessage id="create.dialogTitle4" defaultMessage="WITHDRAW" />
+        </Button>
       </Row>
       }
     </Row>
