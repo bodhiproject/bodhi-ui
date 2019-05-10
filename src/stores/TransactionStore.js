@@ -3,6 +3,8 @@ import axios from 'axios';
 import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
+import { AbiCoder } from 'web3-eth-abi';
+import promisify from 'js-promisify';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
@@ -10,9 +12,49 @@ import { createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
+const web3EthAbi = new AbiCoder();
 const INIT_VALUES = {
   visible: false,
   provider: WalletProvider.NAKA,
+};
+
+const CREATE_EVENT_FUNC_SIG = '2b2601bf';
+const BET_EVENT_FUNC_SIG = '885ab66d';
+const SET_EVENT_FUNC_SIG = 'a6b4218b';
+const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
+const createEventFuncTypes = [
+  'string',
+  'bytes32[10]',
+  'uint256',
+  'uint256',
+  'uint256',
+  'uint256',
+  'address',
+];
+const playEventFuncTypes = [
+  'uint8',
+];
+
+const createEvent = async ({
+  nbotMethods,
+  eventParams,
+  eventFactoryAddr,
+  escrowAmt,
+  gas,
+}) => {
+  try {
+    // Construct params
+    const paramsHex = web3EthAbi.encodeParameters(
+      createEventFuncTypes,
+      eventParams,
+    ).substr(2);
+    const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
+    // Send tx
+    const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+    return txid;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export default class TransactionStore {
@@ -454,31 +496,32 @@ export default class TransactionStore {
         amountSatoshi,
         language,
       } = tx;
-      const contract = this.app.global.qweb3.Contract(
-        getContracts().EventFactory.address,
-        getContracts().EventFactory.abi,
-      );
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('createTopic', {
-        methodArgs: [
-          resultSetterAddress,
-          name,
-          options,
-          bettingStartTime,
-          bettingEndTime,
-          resultSettingStartTime,
-          resultSettingEndTime,
-        ],
-        gasLimit: TransactionGas.CREATE_EVENT,
-        senderAddress,
+
+      const createEventParams = [
+        name,
+        options,
+        bettingStartTime,
+        bettingEndTime,
+        resultSettingStartTime,
+        resultSettingEndTime,
+        resultSetterAddress,
+      ];
+
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const txid = await createEvent({
+        nbotMethods,
+        eventParams: createEventParams,
+        eventFactoryAddr: getContracts().EventFactory.address,
+        escrowAmt: '10000000000',
+        gas: 3000000,
       });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
+
+      Object.assign(tx, { txid });
 
       // Create pending tx on server
       if (txid) {
         await createTransaction('createEvent', {
           txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
           senderAddress,
           resultSetterAddress,
           name,

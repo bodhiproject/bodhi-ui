@@ -5,10 +5,18 @@ import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
+import promisify from 'js-promisify';
+
 import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 import Web3 from 'web3'
+const Web3EthAbi = require('web3-eth-abi')
+console.log('TCL: Web3EthAbi', Web3EthAbi);
+import {AbiCoder} from 'web3-eth-abi';
+
+const web3_eth_abi = new AbiCoder();
+
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
@@ -75,8 +83,6 @@ const CREATE_EVENT_FUNC_SIG = '2b2601bf'
 const BET_EVENT_FUNC_SIG = '885ab66d'
 const SET_EVENT_FUNC_SIG = 'a6b4218b'
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f'
-const RESULT_INVALID = 'Invalid'
-const BET_TOKEN_DECIMALS = 18
 const createEventFuncTypes = [
   'string',
   'bytes32[10]',
@@ -89,6 +95,8 @@ const createEventFuncTypes = [
 const playEventFuncTypes = [
   'uint8',
 ]
+const RESULT_INVALID = 'Invalid'
+const BET_TOKEN_DECIMALS = 18
 
 async function currentBlockTime() {
   const blockNumber = await web3.eth.getBlockNumber();
@@ -137,13 +145,15 @@ const createEvent = async ({
 }) => {
   try {
     // Construct params
-    const paramsHex = web3.eth.abi.encodeParameters(
+    const paramsHex = web3_eth_abi.encodeParameters(
       createEventFuncTypes,
       eventParams,
     ).substr(2)
     const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`
     // Send tx
-    nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventFactoryAddr, escrowAmt, data,{ gas }, (err, res) => console.log(res))
+    const a = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+    console.log('TCL: a', a);
+    // nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventFactoryAddr, escrowAmt, data,{ gas }, (err, res) => console.log(res))
   } catch (err) {
     throw err
   }
