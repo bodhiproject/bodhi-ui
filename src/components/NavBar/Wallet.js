@@ -2,7 +2,6 @@ import React from 'react';
 import { IconButton, Badge, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
-
 import styles from './styles';
 
 const Wallet = ({ classes, store: { global, naka } }) => {
