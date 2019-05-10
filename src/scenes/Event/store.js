@@ -16,7 +16,7 @@ const paras = [Token.QTUM, Token.BOT];
 
 const INIT = {
   type: undefined,
-  loading: false,
+  loading: true,
   oracles: [],
   topics: [],
   leaderboardVotes: [],

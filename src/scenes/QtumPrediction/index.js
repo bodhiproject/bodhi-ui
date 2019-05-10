@@ -16,8 +16,7 @@ export default class QtumPrediction extends Component {
 
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
-    // TODO: Remove when backend is connected
-    // if (!loaded) return <Loading />;
+    if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
       <EventCard key={i} index={i} event={event} />
     ));
