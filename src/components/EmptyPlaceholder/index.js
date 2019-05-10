@@ -25,35 +25,35 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.createButton} // TODO: REVERT when create is done
+          onClick={createEvent.create} // TODO: REVERT when create is done
         >
           <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
         </Button>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.bet} // TODO: REVERT when create is done
+          onClick={createEvent.bet} // TODO: REVERT when bet is done
         >
           <FormattedMessage id="create.dialogTitle1" defaultMessage="BET" />
         </Button>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.open} // TODO: REVERT when create is done
+          onClick={createEvent.setResult} // TODO: REVERT when set is done
         >
           <FormattedMessage id="create.dialogTitle2" defaultMessage="SET RESULT" />
         </Button>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.open} // TODO: REVERT when create is done
+          onClick={createEvent.vote} // TODO: REVERT when vote is done
         >
           <FormattedMessage id="create.dialogTitle3" defaultMessage="VOTE" />
         </Button>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.open} // TODO: REVERT when create is done
+          onClick={createEvent.withdraw} // TODO: REVERT when withdraw is done
         >
           <FormattedMessage id="create.dialogTitle4" defaultMessage="WITHDRAW" />
         </Button>

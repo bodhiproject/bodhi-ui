@@ -9,7 +9,6 @@ import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 import Web3 from 'web3'
-import aa from './config'
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import Routes from '../../network/routes';
@@ -71,27 +70,11 @@ const messages = defineMessages({
   },
 });
 
-const ddd =  async () =>    {
-  console.log(aa)
-  web3 = new Web3(window.naka.currentProvider)
-  const nbotMethods = window.naka.eth.contract(aa.abi).at(aa.testnet)
-	console.log("TCL: ddd -> nbotMethods", nbotMethods)
-	console.log("TCL: ddd -> OWNER", OWNER)
-  const eventParams =  await getEventParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e')
-	console.log("TCL: ddd -> eventParams", eventParams)
-
-  const eventAddr = await createEvent({
-    nbotMethods,
-    eventParams,
-    eventFactoryAddr: '0x5ef2e4d2979308d3c9e32582a7feb2e7f75a034d',
-    escrowAmt: '10000000000',
-    from: OWNER,
-    gas: 3000000,
-  })
-}
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf'
 const BET_EVENT_FUNC_SIG = '885ab66d'
+const SET_EVENT_FUNC_SIG = 'a6b4218b'
+const VOTE_EVENT_FUNC_SIG = '1e00eb7f'
 const RESULT_INVALID = 'Invalid'
 const BET_TOKEN_DECIMALS = 18
 const createEventFuncTypes = [
@@ -103,11 +86,10 @@ const createEventFuncTypes = [
   'uint256',
   'address',
 ]
-const betEventFuncTypes = [
-  'address',
+const playEventFuncTypes = [
   'uint8',
-  'uint256',
 ]
+
 async function currentBlockTime() {
   const blockNumber = await web3.eth.getBlockNumber();
   const block = await web3.eth.getBlock(blockNumber)
@@ -115,12 +97,9 @@ async function currentBlockTime() {
 }
 
 const getEventParams = async (cOracle) => {
-	console.log("TCL: getEventParams -> cOracle", cOracle)
   const currTime = await currentBlockTime()
-  // const currTime = 13
-	console.log("TCL: getEventParams -> currTime", currTime)
   return [
-    'Test Event 3',
+    'Test Set 3',
     [
       web3.utils.fromAscii('C'),
       web3.utils.fromAscii('D'),
@@ -133,21 +112,20 @@ const getEventParams = async (cOracle) => {
       web3.utils.fromAscii(''),
       web3.utils.fromAscii(''),
     ],
-    `${currTime + 2000}`,
-    `${currTime + 4000}`,
-    `${currTime + 5000}`,
-    `${currTime + 7000}`,
+    `${currTime}`,
+    `${currTime + 1}`,
+    `${currTime + 2}`,
+    `${currTime + 1940000}`,
     cOracle,
   ]
 }
 
-const getBetParams = (address, resultIndex, betAmount) => {
+const getPlayParams = ( resultIndex) => {
   return [
-    address,
     resultIndex,
-    betAmount,
   ]
 }
+
 
 const createEvent = async ({
   nbotMethods,
@@ -171,25 +149,23 @@ const createEvent = async ({
   }
 }
 
-const betEvent = async ({
+const playEvent = async ({
   nbotMethods,
-  betParams,
+  params,
   eventAddr,
-  betAmount,
-  resultIndex,
-  from,
+  eventFuncSig,
+  amount,
   gas,
 }) => {
   try {
     // Construct params
     const paramsHex = web3.eth.abi.encodeParameters(
-      betEventFuncTypes,
-      betParams,
-    ).substr(2)
-    const data = `0x${BET_EVENT_FUNC_SIG}${paramsHex}`
-		console.log("TCL: data", data)
+      playEventFuncTypes,
+      params,
+      ).substr(2)
+    const data = `0x${eventFuncSig}${paramsHex}`
     // Send tx
-    nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventAddr, betAmount, data,{ gas }, (err, res) => console.log(res))
+    nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventAddr, amount, data,{ gas }, (err, res) => console.log(res))
   } catch (err) {
     throw err
   }
@@ -374,25 +350,74 @@ export default class CreateEventStore {
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
 
-  @action
-  createButton = async () => {
-    await ddd()
-  }
 
   @action
-  bet = async () => {
-    const nbotMethods = window.naka.eth.contract(aa.abi).at(aa.testnet)
+  create =  async () =>    {
     web3 = new Web3(window.naka.currentProvider)
-
-    const betParams =  await getBetParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e', 1, '1')
-    const eventAddr = await betEvent({
+    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
+    const eventParams =  await getEventParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e')
+    createEvent({
       nbotMethods,
-      betParams,
-      eventAddr: '0x20cadbaecbb1fbd4021324850d1544f10188f769',
-      betAmount: '1',
+      eventParams,
+      eventFactoryAddr: '0x61aff875671a11c66ded577a480be5428426ca66',
+      escrowAmt: '10000000000',
       from: OWNER,
       gas: 3000000,
     })
+  }
+
+  @action
+  bet = () => {
+    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
+    web3 = new Web3(window.naka.currentProvider)
+
+    const betParams =  getPlayParams(1)
+    playEvent({
+      nbotMethods,
+      params: betParams,
+      eventAddr: '0x2c892c9e019932006a7ed2ea3d0ad39bd12aa789',
+      eventFuncSig: BET_EVENT_FUNC_SIG,
+      amount: '1',
+      gas: 3000000,
+    })
+  }
+
+  @action
+  setResult =  () => {
+    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
+    web3 = new Web3(window.naka.currentProvider)
+
+    const setResultParams =  getPlayParams(1)
+    playEvent({
+      nbotMethods,
+      params: setResultParams,
+      eventAddr: '0x6319375564ee0bfb596bd0394818ce88c840999b',
+      eventFuncSig: SET_EVENT_FUNC_SIG,
+      amount: '10000000000',
+      gas: 3000000,
+    })
+  }
+
+  @action
+  vote = () => {
+    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
+    web3 = new Web3(window.naka.currentProvider)
+
+    const voteParams = getPlayParams(2)
+    playEvent({
+      nbotMethods,
+      params: voteParams,
+      eventAddr: '0x6319375564ee0bfb596bd0394818ce88c840999b',
+      eventFuncSig: VOTE_EVENT_FUNC_SIG,
+      amount: '11000000000',
+      gas: 3000000,
+    })
+  }
+
+  @action
+  withdraw = () => {
+    const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at('0x6319375564ee0bfb596bd0394818ce88c840999b')
+    nbotMethods.withdraw((err, res) => console.log(res))
   }
 
   @action
