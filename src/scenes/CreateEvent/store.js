@@ -11,8 +11,6 @@ import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 import Web3 from 'web3'
-const Web3EthAbi = require('web3-eth-abi')
-console.log('TCL: Web3EthAbi', Web3EthAbi);
 import {AbiCoder} from 'web3-eth-abi';
 
 const web3_eth_abi = new AbiCoder();
