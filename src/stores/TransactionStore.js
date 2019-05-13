@@ -35,51 +35,6 @@ const playEventFuncTypes = [
   'uint8',
 ];
 
-const createEvent = async ({
-  nbotMethods,
-  eventParams,
-  eventFactoryAddr,
-  escrowAmt,
-  gas,
-}) => {
-  try {
-    // Construct params
-    const paramsHex = web3EthAbi.encodeParameters(
-      createEventFuncTypes,
-      eventParams,
-    ).substr(2);
-    const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
-    // Send tx
-    const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
-    return txid;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const playEvent = async ({
-  nbotMethods,
-  params,
-  eventAddr,
-  eventFuncSig,
-  amount,
-  gas,
-}) => {
-  try {
-    // Construct params
-    const paramsHex = web3EthAbi.encodeParameters(
-      playEventFuncTypes,
-      params,
-    ).substr(2);
-    const data = `0x${eventFuncSig}${paramsHex}`;
-    // Send tx
-    const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
-    return txid;
-  } catch (err) {
-    throw err;
-  }
-};
-
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
@@ -145,6 +100,51 @@ export default class TransactionStore {
     if (includes(pending, txid)) {
       pending = remove(pending, txid);
       localStorage.setItem('pendingApproves', pending);
+    }
+  };
+
+  createEvent = async ({
+    nbotMethods,
+    eventParams,
+    eventFactoryAddr,
+    escrowAmt,
+    gas,
+  }) => {
+    try {
+      // Construct params
+      const paramsHex = web3EthAbi.encodeParameters(
+        createEventFuncTypes,
+        eventParams,
+      ).substr(2);
+      const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
+      // Send tx
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+      return txid;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  playEvent = async ({
+    nbotMethods,
+    params,
+    eventAddr,
+    eventFuncSig,
+    amount,
+    gas,
+  }) => {
+    try {
+      // Construct params
+      const paramsHex = web3EthAbi.encodeParameters(
+        playEventFuncTypes,
+        params,
+      ).substr(2);
+      const data = `0x${eventFuncSig}${paramsHex}`;
+      // Send tx
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
+      return txid;
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -531,7 +531,7 @@ export default class TransactionStore {
       ];
 
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
-      const txid = await createEvent({
+      const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
         eventFactoryAddr: getContracts().EventFactory.address,
@@ -603,7 +603,7 @@ export default class TransactionStore {
       const { oracleAddress, optionIdx, amount, senderAddress } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
-      const txid = await playEvent({
+      const txid = await this.playEvent({
         nbotMethods,
         params: betParams,
         eventAddr: oracleAddress,
@@ -729,7 +729,7 @@ export default class TransactionStore {
       const { senderAddress, oracleAddress, optionIdx } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const setResultParams = [optionIdx];
-      const txid = await playEvent({
+      const txid = await this.playEvent({
         nbotMethods,
         params: setResultParams,
         eventAddr: oracleAddress,
@@ -856,7 +856,7 @@ export default class TransactionStore {
       const { senderAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const voteParams = [optionIdx];
-      const txid = await playEvent({
+      const txid = await this.playEvent({
         nbotMethods,
         params: voteParams,
         eventAddr: oracleAddress,
