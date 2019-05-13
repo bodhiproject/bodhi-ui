@@ -5,15 +5,10 @@ import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import Web3Utils from 'web3-utils';
-import promisify from 'js-promisify';
 
 import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
-import Web3 from 'web3'
-import {AbiCoder} from 'web3-eth-abi';
-
-const web3_eth_abi = new AbiCoder();
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
@@ -21,9 +16,6 @@ import Routes from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
 import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
-let web3;
-
-const OWNER = '0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e'
 
 const messages = defineMessages({
   createDatePastMsg: {
@@ -75,110 +67,6 @@ const messages = defineMessages({
     defaultMessage: 'Invalid address',
   },
 });
-
-
-const CREATE_EVENT_FUNC_SIG = '2b2601bf'
-const BET_EVENT_FUNC_SIG = '885ab66d'
-const SET_EVENT_FUNC_SIG = 'a6b4218b'
-const VOTE_EVENT_FUNC_SIG = '1e00eb7f'
-const createEventFuncTypes = [
-  'string',
-  'bytes32[10]',
-  'uint256',
-  'uint256',
-  'uint256',
-  'uint256',
-  'address',
-]
-const playEventFuncTypes = [
-  'uint8',
-]
-const RESULT_INVALID = 'Invalid'
-const BET_TOKEN_DECIMALS = 18
-
-async function currentBlockTime() {
-  const blockNumber = await web3.eth.getBlockNumber();
-  const block = await web3.eth.getBlock(blockNumber)
-  return block.timestamp
-}
-
-const getEventParams = async (cOracle) => {
-  const currTime = await currentBlockTime()
-  return [
-    'Test Set 3',
-    [
-      web3.utils.fromAscii('C'),
-      web3.utils.fromAscii('D'),
-      web3.utils.fromAscii('E'),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-      web3.utils.fromAscii(''),
-    ],
-    `${currTime}`,
-    `${currTime + 1}`,
-    `${currTime + 2}`,
-    `${currTime + 1940000}`,
-    cOracle,
-  ]
-}
-
-const getPlayParams = ( resultIndex) => {
-  return [
-    resultIndex,
-  ]
-}
-
-
-const createEvent = async ({
-  nbotMethods,
-  eventParams,
-  eventFactoryAddr,
-  escrowAmt,
-  from,
-  gas,
-}) => {
-  try {
-    // Construct params
-    const paramsHex = web3_eth_abi.encodeParameters(
-      createEventFuncTypes,
-      eventParams,
-    ).substr(2)
-    const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`
-    // Send tx
-    const a = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
-    console.log('TCL: a', a);
-    // nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventFactoryAddr, escrowAmt, data,{ gas }, (err, res) => console.log(res))
-  } catch (err) {
-    throw err
-  }
-}
-
-const playEvent = async ({
-  nbotMethods,
-  params,
-  eventAddr,
-  eventFuncSig,
-  amount,
-  gas,
-}) => {
-  try {
-    // Construct params
-    const paramsHex = web3.eth.abi.encodeParameters(
-      playEventFuncTypes,
-      params,
-      ).substr(2)
-    const data = `0x${eventFuncSig}${paramsHex}`
-    // Send tx
-    nbotMethods.transfer["address,uint256,bytes"].sendTransaction(eventAddr, amount, data,{ gas }, (err, res) => console.log(res))
-  } catch (err) {
-    throw err
-  }
-}
-
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
@@ -356,76 +244,6 @@ export default class CreateEventStore {
     const currentBlock = this.app.global.syncBlockNum;
     const diffSec = futureDateUnix - moment().unix();
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
-  }
-
-
-  @action
-  create =  async () =>    {
-    web3 = new Web3(window.naka.currentProvider)
-    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
-    const eventParams =  await getEventParams('0x47BA776B3eD5D514d3E206fFEE72FA483BaFFa7e')
-    createEvent({
-      nbotMethods,
-      eventParams,
-      eventFactoryAddr: '0x61aff875671a11c66ded577a480be5428426ca66',
-      escrowAmt: '10000000000',
-      from: OWNER,
-      gas: 3000000,
-    })
-  }
-
-  @action
-  bet = () => {
-    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
-    web3 = new Web3(window.naka.currentProvider)
-
-    const betParams =  getPlayParams(1)
-    playEvent({
-      nbotMethods,
-      params: betParams,
-      eventAddr: '0x2c892c9e019932006a7ed2ea3d0ad39bd12aa789',
-      eventFuncSig: BET_EVENT_FUNC_SIG,
-      amount: '1',
-      gas: 3000000,
-    })
-  }
-
-  @action
-  setResult =  () => {
-    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
-    web3 = new Web3(window.naka.currentProvider)
-
-    const setResultParams =  getPlayParams(1)
-    playEvent({
-      nbotMethods,
-      params: setResultParams,
-      eventAddr: '0x6319375564ee0bfb596bd0394818ce88c840999b',
-      eventFuncSig: SET_EVENT_FUNC_SIG,
-      amount: '10000000000',
-      gas: 3000000,
-    })
-  }
-
-  @action
-  vote = () => {
-    const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address)
-    web3 = new Web3(window.naka.currentProvider)
-
-    const voteParams = getPlayParams(2)
-    playEvent({
-      nbotMethods,
-      params: voteParams,
-      eventAddr: '0x6319375564ee0bfb596bd0394818ce88c840999b',
-      eventFuncSig: VOTE_EVENT_FUNC_SIG,
-      amount: '11000000000',
-      gas: 3000000,
-    })
-  }
-
-  @action
-  withdraw = () => {
-    const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at('0x6319375564ee0bfb596bd0394818ce88c840999b')
-    nbotMethods.withdraw((err, res) => console.log(res))
   }
 
   @action

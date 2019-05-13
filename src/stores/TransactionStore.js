@@ -57,6 +57,29 @@ const createEvent = async ({
   }
 };
 
+const playEvent = async ({
+  nbotMethods,
+  params,
+  eventAddr,
+  eventFuncSig,
+  amount,
+  gas,
+}) => {
+  try {
+    // Construct params
+    const paramsHex = web3EthAbi.encodeParameters(
+      playEventFuncTypes,
+      params,
+    ).substr(2);
+    const data = `0x${eventFuncSig}${paramsHex}`;
+    // Send tx
+    const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
+    return txid;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export default class TransactionStore {
   @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
@@ -512,7 +535,7 @@ export default class TransactionStore {
         nbotMethods,
         eventParams: createEventParams,
         eventFactoryAddr: getContracts().EventFactory.address,
-        escrowAmt: '10000000000',
+        escrowAmt: '10000000000', // TODO: fetch escrow from configmanager later
         gas: 3000000,
       });
 
@@ -578,20 +601,21 @@ export default class TransactionStore {
   executeBet = async (index, tx) => {
     try {
       const { oracleAddress, optionIdx, amount, senderAddress } = tx;
-      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('bet', {
-        methodArgs: [optionIdx],
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const betParams = [optionIdx];
+      const txid = await playEvent({
+        nbotMethods,
+        params: betParams,
+        eventAddr: oracleAddress,
+        eventFuncSig: BET_EVENT_FUNC_SIG,
         amount,
-        senderAddress,
+        gas: 3000000,
       });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
+      Object.assign(tx, { txid });
       if (txid) {
         // Create pending tx on server
         const pendingTx = await createTransaction('createBet', {
           txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
           senderAddress,
           topicAddress: tx.topicAddress,
           oracleAddress,
@@ -703,20 +727,22 @@ export default class TransactionStore {
   executeSetResult = async (index, tx) => {
     try {
       const { senderAddress, oracleAddress, optionIdx } = tx;
-      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().CentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('setResult', {
-        methodArgs: [optionIdx],
-        gasLimit: TransactionGas.DORACLE_CREATE,
-        senderAddress,
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const setResultParams = [optionIdx];
+      const txid = await playEvent({
+        nbotMethods,
+        params: setResultParams,
+        eventAddr: oracleAddress,
+        eventFuncSig: SET_EVENT_FUNC_SIG,
+        amount: '10000000000', // TODO: get set result amount from where it defines
+        gas: 3000000,
       });
 
-      Object.assign(tx, { txid, gasLimit, gasPrice });
+      Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
         const pendingTx = await createTransaction('setResult', {
           txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
           senderAddress,
           topicAddress: tx.topicAddress,
           oracleAddress,
@@ -828,20 +854,22 @@ export default class TransactionStore {
   executeVote = async (index, tx) => {
     try {
       const { senderAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
-      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('voteResult', {
-        methodArgs: [optionIdx, amountSatoshi],
-        gasLimit: TransactionGas.DORACLE_CREATE, // TODO: determine gas limit to use
-        senderAddress,
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const voteParams = [optionIdx];
+      const txid = await playEvent({
+        nbotMethods,
+        params: voteParams,
+        eventAddr: oracleAddress,
+        eventFuncSig: VOTE_EVENT_FUNC_SIG,
+        amount: amountSatoshi,
+        gas: 3000000,
       });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
+      Object.assign(tx, { txid });
 
       // Create pending tx on server
       if (txid) {
         const pendingTx = await createTransaction('createVote', {
           txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
           senderAddress,
           topicAddress: tx.topicAddress,
           oracleAddress,
@@ -939,21 +967,16 @@ export default class TransactionStore {
   executeWithdraw = async (index, tx) => {
     try {
       const { type, senderAddress, topicAddress } = tx;
-      const contract = this.app.global.qweb3.Contract(topicAddress, getContracts().TopicEvent.abi);
-      const methodName = type === TransactionType.WITHDRAW ? 'withdrawWinnings' : 'withdrawEscrow';
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send(methodName, {
-        methodArgs: [],
-        senderAddress,
-      });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
+      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at(topicAddress);
+      const txid = await promisify(nbotMethods.withdraw, []);
+
+      Object.assign(tx, { txid });
 
       if (txid) {
         // Create pending tx on server
         const pendingTx = await createTransaction('withdraw', {
           type,
           txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
           senderAddress,
           topicAddress,
         });
