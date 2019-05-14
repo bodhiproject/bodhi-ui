@@ -1,6 +1,7 @@
 import { observable, action, reaction, toJS, computed } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
+import { SyncInfo } from 'models';
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import { subscribeSyncInfo } from '../network/graphql/subscriptions';
 import { wsLink } from '../network/graphql';
@@ -75,61 +76,33 @@ export default class GlobalStore {
     });
     window.addEventListener('online', () => {
       this.internetOnline = true;
-      this.getSyncInfo();
     });
   }
 
   setOnline = () => {
     this.socketOnline = true;
-    this.getSyncInfo();
   };
+
   setOffline = () => {
     this.socketOnline = false;
   };
 
   /**
-   * Handle the syncInfo return of a getSyncInfo or a syncInfo subscription message.
-   * @param {object} syncInfo syncInfo object.
-   */
-  @action
-  onSyncInfo = (syncInfo) => {
-    if (syncInfo.error) {
-      console.error(syncInfo.error.message); // eslint-disable-line no-console
-    } else {
-      this.syncPercent = syncInfo.syncPercent;
-      this.syncBlockNum = syncInfo.syncBlockNum;
-      this.syncBlockTime = syncInfo.syncBlockTime;
-    }
-  }
-
-  /**
-   * Queries syncInfo by GraphQL call.
-   * This is long-polled in the beginning while the server is syncing the blockchain.
-   */
-  @action
-  getSyncInfo = async () => {
-    try {
-      const includeBalances = this.syncPercent === 0 || this.syncPercent >= 98;
-      const syncInfo = await querySyncInfo(includeBalances);
-      this.onSyncInfo(syncInfo);
-    } catch (error) {
-      this.onSyncInfo({ error });
-    }
-  }
-
-  /**
    * Subscribe to syncInfo subscription.
-   * This is meant to be used after the long-polling getSyncInfo is finished.
    * This subscription will return a syncInfo on every new block.
    */
+  @action
   subscribeSyncInfo = () => {
-    const self = this;
     subscribeSyncInfo(this.app.graphqlClient, (err, data) => {
+      console.log('NAKA: GlobalStore -> subscribeSyncInfo -> data', data);
       if (err) {
-        self.onSyncInfo({ error: err.message });
+        console.error(err);
         return;
       }
-      self.onSyncInfo(data);
+      const syncInfo = new SyncInfo(data);
+      this.syncPercent = syncInfo.percent;
+      this.syncBlockNum = syncInfo.blockNum;
+      this.syncBlockTime = syncInfo.blockTime;
     });
   }
 

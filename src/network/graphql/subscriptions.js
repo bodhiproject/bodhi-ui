@@ -16,12 +16,10 @@ export const subscribeSyncInfo = async (client, cb) => {
     query: SUBSCRIPTIONS.onSyncInfo,
     fetchPolicy: 'network-only',
   }).subscribe({
-    next(data) {
-      console.log('NAKA: next -> data', data);
-      cb(null, data.onSyncInfo);
+    next(res) {
+      cb(null, res.data.onSyncInfo);
     },
     error(err) {
-      console.log('NAKA: error -> err', err);
       cb(err);
     },
   });
