@@ -9,13 +9,13 @@ import Loading from '../../components/EventListLoading';
 
 @inject('store')
 @observer
-export default class BotCourt extends Component {
+export default class Arbitration extends Component {
   componentDidMount() {
-    this.props.store.botCourt.init();
+    this.props.store.arbitration.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loaded } = this.props.store.botCourt;
+    const { list, loadMore, loadingMore, loaded } = this.props.store.arbitration;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />);
     return (

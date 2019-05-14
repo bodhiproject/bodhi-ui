@@ -10,7 +10,7 @@ export const EVENT_STATUS = {
 module.exports = {
   Routes: {
     PREDICTION: '/',
-    BOT_COURT: '/bot-court',
+    ARBITRATION: '/arbitration',
     WALLET: '/wallet',
     SET: '/activities/set',
     FINALIZE: '/activities/finalize',

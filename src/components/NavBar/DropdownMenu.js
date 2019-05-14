@@ -26,9 +26,9 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
           <FormattedMessage id="navbar.prediction" defaultMessage="Prediction" />
         </div>
       </Link>
-      <Link to={Routes.BOT_COURT}>
+      <Link to={Routes.ARBITRATION}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.arbitration" defaultMessage="BOT Court" />
+          <FormattedMessage id="navbar.arbitration" defaultMessage="Arbitration" />
         </div>
       </Link>
       <Link to={Routes.ACTIVITY_HISTORY}>

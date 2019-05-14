@@ -26,8 +26,8 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.BOT_COURT}`}
-        component={asyncComponent(() => import('../BotCourt'))}
+        path={`${url}${Routes.ARBITRATION}`}
+        component={asyncComponent(() => import('../Arbitration'))}
       />
       <Route
         exact

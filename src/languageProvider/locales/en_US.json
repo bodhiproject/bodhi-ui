@@ -120,7 +120,7 @@
   "navBar.allEvents": "All Events",
   "navBar.leaderboard": "Leaderboard",
   "navBar.settings": "Settings",
-  "navbar.arbitration": "BOT Court",
+  "navbar.arbitration": "Arbitration",
   "navbar.prediction": "Prediction",
   "note.currentAllowanceMessage": "This indicates your current BOT approved amount. You may use up to this amount. If the current approved amount is greater than 0 and you want to increase the approved amount, you will have to do a transaction to reset it back to 0 first.",
   "note.currentAllowanceTitle": "Current Allowance: {allowance} BOT",

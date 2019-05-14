@@ -8,18 +8,18 @@ import cx from 'classnames';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-const BotCourt = ({ classes, store: { ui } }) => (
-  <NavLink to={Routes.BOT_COURT}>
+const Arbitration = ({ classes, store: { ui } }) => (
+  <NavLink to={Routes.ARBITRATION}>
     <Button
       data-index={EventStatus.VOTE}
       className={cx(
         classes.navButton,
-        ui.location === Routes.BOT_COURT ? 'selected' : '',
+        ui.location === Routes.ARBITRATION ? 'selected' : '',
       )}
     >
-      <FormattedMessage id="navbar.arbitration" defaultMessage="BOT Court" />
+      <FormattedMessage id="navbar.arbitration" defaultMessage="Arbitration" />
     </Button>
   </NavLink>
 );
 
-export default withStyles(styles, { withTheme: true })(inject('store')(observer(BotCourt)));
+export default withStyles(styles, { withTheme: true })(inject('store')(observer(Arbitration)));

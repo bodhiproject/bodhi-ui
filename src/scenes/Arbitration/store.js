@@ -12,7 +12,7 @@ const INIT_VALUES = {
   limit: 16, // loading batch amount
 };
 
-export default class BotCourtStore {
+export default class ArbitrationStore {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
@@ -25,7 +25,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === Routes.BOT_COURT) {
+        if (this.app.ui.location === Routes.ARBITRATION) {
           this.init();
         }
       }
@@ -33,7 +33,7 @@ export default class BotCourtStore {
     reaction(
       () => this.app.global.online,
       () => {
-        if (this.app.ui.location === Routes.BOT_COURT && this.app.global.online) {
+        if (this.app.ui.location === Routes.ARBITRATION && this.app.global.online) {
           if (this.loadingMore) this.loadMore();
           else this.init();
         }
@@ -44,7 +44,7 @@ export default class BotCourtStore {
   @action
   init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = Routes.BOT_COURT;
+    this.app.ui.location = Routes.ARBITRATION;
     this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = true;
