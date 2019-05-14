@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty } from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
-
 import { queryAllOracles } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -75,19 +74,22 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
+    // // Address is required for the request filters
+    // if (isEmpty(this.app.wallet.addresses)) {
+    //   return;
+    // }
 
-    // we want to fetch all *Oracles* which is related to BOT token and waitResult status
-    if (this.hasMore) {
-      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      this.hasMore = result.pageInfo.hasNextPage;
-      return result.oracles;
-    }
-    return INIT_VALUES.list;
+    // // we want to fetch all *Oracles* which is related to BOT token and waitResult status
+    // if (this.hasMore) {
+    //   const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
+    //   const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+    //   const result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+    //   this.hasMore = result.pageInfo.hasNextPage;
+    //   return result.oracles;
+    // }
+    // return INIT_VALUES.list;
+
+    const result = [];
+    return result;
   }
 }

@@ -73,23 +73,25 @@ export default class {
   }
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
-    limit /= 2; // eslint-disable-line
-    skip /= 2; // eslint-disable-line
-    const orderBy = { field: 'blockNum', direction: this.app.sortBy };
-    let topics = [];
-    let oracles = [];
-    if (this.hasMoreTopics) {
-      const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-      const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      topics = aliasTopics;
-      this.hasMoreTopics = pageInfo.hasNextPage;
-    }
-    if (this.hasMoreOracles) {
-      const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      this.hasMoreOracles = pageInfo.hasNextPage;
-      oracles = aliasOracles;
-    }
-    const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
-    return allEvents;
+    // limit /= 2; // eslint-disable-line
+    // skip /= 2; // eslint-disable-line
+    // const orderBy = { field: 'blockNum', direction: this.app.sortBy };
+    // let topics = [];
+    // let oracles = [];
+    // if (this.hasMoreTopics) {
+    //   const topicFilters = [{ status: OracleStatus.WITHDRAW }];
+    //   const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+    //   topics = aliasTopics;
+    //   this.hasMoreTopics = pageInfo.hasNextPage;
+    // }
+    // if (this.hasMoreOracles) {
+    //   const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
+    //   this.hasMoreOracles = pageInfo.hasNextPage;
+    //   oracles = aliasOracles;
+    // }
+    // const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
+    // return allEvents;
+    const result = [];
+    return result;
   }
 }
