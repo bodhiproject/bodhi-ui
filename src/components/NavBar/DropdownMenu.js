@@ -23,7 +23,7 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
     <Hidden smUp>
       <Link to={Routes.PREDICTION}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.prediction" defaultMessage="QTUM Prediction" />
+          <FormattedMessage id="navbar.prediction" defaultMessage="Prediction" />
         </div>
       </Link>
       <Link to={Routes.BOT_COURT}>

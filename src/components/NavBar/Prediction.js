@@ -17,7 +17,7 @@ const Prediction = observer(({ classes, store: { ui } }) => (
         ui.location === Routes.PREDICTION || ui.location === Routes.bet ? 'selected' : '',
       )}
     >
-      <FormattedMessage id="navbar.prediction" defaultMessage="QTUM Prediction" />
+      <FormattedMessage id="navbar.prediction" defaultMessage="Prediction" />
     </Button>
   </NavLink>
 ));
