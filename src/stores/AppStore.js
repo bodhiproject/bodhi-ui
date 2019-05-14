@@ -23,7 +23,6 @@ import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import GlobalDialogStore from '../components/GlobalDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
-import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
 
 class AppStore {
@@ -37,7 +36,6 @@ class AppStore {
   transaction = {}
   favorite = {}
   globalSnackbar = {}
-  pendingTxsSnackbar = {}
   globalDialog = {}
   walletUnlockDialog = {}
   txSentDialog = {}
@@ -65,7 +63,6 @@ class AppStore {
     this.tx = new TransactionStore(this);
     this.favorite = new FavoriteStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
-    this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
