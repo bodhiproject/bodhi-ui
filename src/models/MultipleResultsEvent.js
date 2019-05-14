@@ -1,5 +1,5 @@
 import { EVENT_STATUS } from 'constants';
-import { satoshiToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal } from '../helpers/utility';
 
 export default class MultipleResultsEvent {
   txid // Transaction ID returned when the event confirmed

@@ -1,6 +1,6 @@
 import { Token } from 'constants';
 
-import { gasToQtum, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
+import { gasToQtum, satoshiToDecimal, decimalToSatoshi } from '../helpers/utility';
 
 /**
  * Model for Transactions.

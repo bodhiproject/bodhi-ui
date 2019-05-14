@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { satoshiToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal } from '../helpers/utility';
 
 export default class WalletAddress {
   @observable address = ''

@@ -1,4 +1,4 @@
-import { satoshiToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal } from '../helpers/utility';
 
 export default class ResultSet {
   txid // Transaction ID returned when confirmed
