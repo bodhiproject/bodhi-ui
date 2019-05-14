@@ -9,7 +9,7 @@ if (!isProduction()) {
   window.queries = '';
 }
 
-export default {
+const QUERIES = {
   events: gql`
     query(
       $filter: EventFilter
@@ -168,136 +168,154 @@ export default {
 };
 
 class GraphQuery {
-  constructor(queryName, type) {
+  constructor(queryName) {
     this.queryName = queryName;
-    this.type = type;
-    this.filters = undefined;
+    this.query = QUERIES[queryName];
+    this.filter = undefined;
     this.orderBy = undefined;
-    this.params = {};
+    this.limit = undefined;
+    this.skip = undefined;
     this.searchPhrase = undefined;
+    this.params = undefined;
   }
 
-  setFilters(filters) {
-    this.filters = filters;
+  setFilter = (filters) => {
+    this.filter = filters;
   }
 
-  setOrderBy(orderBy) {
+  setOrderBy = (orderBy) => {
     this.orderBy = orderBy;
   }
 
-  setSearchPhrase(phrase) {
+  setLimit = (limit) => {
+    this.limit = limit;
+  }
+
+  setSkip = (skip) => {
+    this.skip = skip;
+  }
+
+  setSearchPhrase = (phrase) => {
     this.searchPhrase = phrase;
   }
 
   addParam(key, value) {
+    if (!this.params) this.params = {};
     this.params[key] = value;
   }
 
-  formatObject(obj) {
-    const str = Object
-      .keys(obj)
-      .map((key) => {
-        const value = obj[key];
-        if (key === 'language') return ''; // remove this if we need filter based on language in the future
-        if (isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
-        if (isValidEnum(key, value) || !isString(value)) {
-          // Enums require values without quotes
-          return `${key}: ${value}`;
-        }
-        return `${key}: ${JSON.stringify(value)}`;
-      })
-      .join(', ');
-    return `{ ${str} }`;
-  }
+  // formatObject(obj) {
+  //   const str = Object
+  //     .keys(obj)
+  //     .map((key) => {
+  //       const value = obj[key];
+  //       if (key === 'language') return ''; // remove this if we need filter based on language in the future
+  //       if (isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
+  //       if (isValidEnum(key, value) || !isString(value)) {
+  //         // Enums require values without quotes
+  //         return `${key}: ${value}`;
+  //       }
+  //       return `${key}: ${JSON.stringify(value)}`;
+  //     })
+  //     .join(', ');
+  //   return `{ ${str} }`;
+  // }
 
-  getFilterString() {
-    let filterStr = '';
-    if (this.filters) {
-      // Create entire string for OR: [] as objects
-      forEach(this.filters, (obj) => {
-        if (!isEmpty(filterStr)) {
-          filterStr = filterStr.concat(', ');
-        }
-        filterStr = filterStr.concat(this.formatObject(obj));
-      });
-      filterStr = `
-      filter: {
-        OR: [
-          ${filterStr}
-        ]
-      }
-      `;
+  // getFilterString() {
+  //   let filterStr = '';
+  //   if (this.filters) {
+  //     // Create entire string for OR: [] as objects
+  //     forEach(this.filters, (obj) => {
+  //       if (!isEmpty(filterStr)) {
+  //         filterStr = filterStr.concat(', ');
+  //       }
+  //       filterStr = filterStr.concat(this.formatObject(obj));
+  //     });
+  //     filterStr = `
+  //     filter: {
+  //       OR: [
+  //         ${filterStr}
+  //       ]
+  //     }
+  //     `;
+  //   }
+  //   return filterStr;
+  // }
+
+  // getOrderByString() {
+  //   let orderByStr = '';
+  //   if (this.orderBy) {
+  //     orderByStr = this.formatObject(this.orderBy);
+  //   }
+  //   return isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
+  // }
+
+  // getSearchPhraseString() {
+  //   let phraseStr = '';
+  //   if (this.searchPhrase) {
+  //     phraseStr = JSON.stringify(this.searchPhrase);
+  //   }
+  //   return isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
+  // }
+
+  // getParamsString() {
+  //   let str = '';
+  //   const keys = Object.keys(this.params);
+  //   if (keys.length > 0) {
+  //     each(keys, (key) => {
+  //       if (!isEmpty(str)) {
+  //         str = str.concat(', ');
+  //       }
+
+  //       str = str.concat(`${key}: ${this.params[key]}`);
+  //     });
+  //   }
+  //   return str;
+  // }
+
+  // build() {
+  //   const filterStr = this.getFilterString();
+  //   const orderByStr = this.getOrderByString();
+  //   const searchPhraseStr = this.getSearchPhraseString();
+  //   const paramsStr = this.getParamsString();
+  //   const needsParentheses = !isEmpty(filterStr)
+  //     || !isEmpty(orderByStr)
+  //     || !isEmpty(paramsStr)
+  //     || !isEmpty(searchPhraseStr);
+
+  //   const parenthesesOpen = needsParentheses ? '(' : '';
+  //   const parenthesesClose = needsParentheses ? ')' : '';
+  //   const query = `
+  //     query {
+  //       ${this.queryName}${parenthesesOpen}
+  //         ${searchPhraseStr}
+  //         ${filterStr}
+  //         ${orderByStr}
+  //         ${paramsStr}
+  //       ${parenthesesClose} {
+  //         ${getTypeDef(this.type)}
+  //       }
+  //     }
+  //   `;
+  //   return query;
+  // }
+
+  constructVariables = () => {
+    const vars = {};
+    if (this.filter) vars.filter = this.filter;
+    if (this.orderBy) vars.orderBy = this.orderBy;
+    if (this.limit) vars.limit = this.limit;
+    if (this.skip) vars.skip = this.skip;
+    if (this.searchPhrase) vars.searchPhrase = this.searchPhrase;
+    if (this.params) {
+      each(Object.keys(this.params), (key) => vars[key] = this.params[key]);
     }
-    return filterStr;
-  }
-
-  getOrderByString() {
-    let orderByStr = '';
-    if (this.orderBy) {
-      orderByStr = this.formatObject(this.orderBy);
-    }
-    return isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
-  }
-
-  getSearchPhraseString() {
-    let phraseStr = '';
-    if (this.searchPhrase) {
-      phraseStr = JSON.stringify(this.searchPhrase);
-    }
-    return isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
-  }
-
-  getParamsString() {
-    let str = '';
-    const keys = Object.keys(this.params);
-    if (keys.length > 0) {
-      each(keys, (key) => {
-        if (!isEmpty(str)) {
-          str = str.concat(', ');
-        }
-
-        str = str.concat(`${key}: ${this.params[key]}`);
-      });
-    }
-    return str;
-  }
-
-  build() {
-    const filterStr = this.getFilterString();
-    const orderByStr = this.getOrderByString();
-    const searchPhraseStr = this.getSearchPhraseString();
-    const paramsStr = this.getParamsString();
-    const needsParentheses = !isEmpty(filterStr)
-      || !isEmpty(orderByStr)
-      || !isEmpty(paramsStr)
-      || !isEmpty(searchPhraseStr);
-
-    const parenthesesOpen = needsParentheses ? '(' : '';
-    const parenthesesClose = needsParentheses ? ')' : '';
-    const query = `
-      query {
-        ${this.queryName}${parenthesesOpen}
-          ${searchPhraseStr}
-          ${filterStr}
-          ${orderByStr}
-          ${paramsStr}
-        ${parenthesesClose} {
-          ${getTypeDef(this.type)}
-        }
-      }
-    `;
-    return query;
   }
 
   async execute() {
-    const query = this.build();
-    // Post query to window
-    if (!isProduction()) {
-      window.queries += `\n${query}`;
-    }
-
     const res = await client.query({
-      query: gql`${query}`,
+      query: this.query,
+      variables: this.constructVariables(),
       fetchPolicy: 'network-only',
     });
     return res.data[this.queryName];
