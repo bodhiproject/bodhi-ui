@@ -1,3 +1,4 @@
+export { default as MultipleResultsEvent } from './MultipleResultsEvent';
 export { default as Option } from './Option';
 export { default as Oracle } from './Oracle';
 export { default as SyncInfo } from './SyncInfo';
