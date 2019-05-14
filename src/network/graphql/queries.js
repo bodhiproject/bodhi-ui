@@ -1,12 +1,3 @@
-/**
- * Example query arguments:
- * - filter: [{ status: 'BETTING' }]
- * - orderBy: [{ field: 'blockNum', direction: 'ASC' }]
- * - limit: 100
- * - skip: 50
- * - searchPhrase: 'How much is Apple going to be worth in 2019'
- */
-
 import { gql } from 'apollo-boost';
 import { map } from 'lodash';
 import { Event, Bet, ResultSet, Withdraw, SyncInfo } from 'models';
@@ -22,6 +13,15 @@ import {
   BIGGEST_WINNER,
 } from './schema';
 
+/**
+ * Example query arguments:
+ * - filter: [{ status: 'BETTING' }]
+ * - orderBy: [{ field: 'blockNum', direction: 'ASC' }]
+ * - limit: 100
+ * - skip: 50
+ * - searchPhrase: 'How much is Apple going to be worth in 2019'
+ * - pendingTxsAddress: '0xd5d087daabc73fc6cc5d9c1131b93acbd53a2428'
+ */
 const QUERIES = {
   events: gql`
     query(
