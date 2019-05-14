@@ -94,7 +94,6 @@ export default class GlobalStore {
   @action
   subscribeSyncInfo = () => {
     subscribeSyncInfo(this.app.graphqlClient, (err, data) => {
-      console.log('NAKA: GlobalStore -> subscribeSyncInfo -> data', data);
       if (err) {
         console.error(err);
         return;
