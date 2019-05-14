@@ -7,7 +7,6 @@ import { EventType } from 'constants';
 
 import BettingOracle from './BettingOracle';
 import VotingOracle from './VotingOracle';
-import FinalizingOracle from './FinalizingOracle';
 import ResultSettingOracle from './ResultSettingOracle';
 import WithdrawingTopic from './WithdrawingTopic';
 import BackButton from '../../components/BackButton';
@@ -56,7 +55,6 @@ export default class EventPage extends Component {
       BETTING: BettingOracle,
       RESULT_SETTING: ResultSettingOracle,
       VOTING: VotingOracle,
-      FINALIZING: FinalizingOracle,
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
 

@@ -9,7 +9,6 @@ export default class Option {
   value
   percent
   isPrevResult
-  isFinalizing
   maxAmount
   amount
   phase
@@ -41,14 +40,11 @@ export default class Option {
 
       const threshold = this.isPrevResult ? 0 : oracle.consensusThreshold;
       this.percent = threshold === 0 ? threshold : _.round((this.amount / threshold) * 100);
-
-      // oracle.token === Token.BOT && oracle.status === OracleStatus.WaitResult
-      this.isFinalizing = this.phase === 'FINALIZING';
     }
 
     this.disabled = oracle.unconfirmed
-      || (!this.isFinalizing && this.isPrevResult)
-      || (this.isFinalizing && !this.isPrevResult);
+      || (this.isPrevResult)
+      || (!this.isPrevResult);
   }
 
   @action

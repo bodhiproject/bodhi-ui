@@ -105,22 +105,11 @@ export default class StepperVertRight extends Component {
         } else {
           current = null;
         }
+      } else if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
+        // Highlight last DecentralizedOracle voting
+        current = ORACLE_RESULT_SETTING + numOfDOracles;
       } else {
-        // Add finalizing step for DecentralizedOracle
-        value.push({
-          title: <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />,
-          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
-        });
-
-        if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
-          // Highlight last DecentralizedOracle voting
-          current = ORACLE_RESULT_SETTING + numOfDOracles;
-        } else if (syncBlockTime >= lastDOracle.endTime) {
-          // Highlight finalizing
-          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
-        } else {
-          current = null;
-        }
+        current = null;
       }
     } else { // CentralizedOracle detail
       // Only show open result setting in CentralizedOracle

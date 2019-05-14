@@ -6,7 +6,7 @@ import { defineMessages } from 'react-intl';
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
 
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
+const { BETTING, VOTING, RESULT_SETTING, PENDING, WITHDRAWING, UNCONFIRMED } = Phases;
 const SATOSHI_CONVERSION = 10 ** 8;
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
@@ -187,7 +187,6 @@ export const getPhase = ({ token, status }) => {
   if (BOT && status === 'VOTING') return VOTING;
   if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
   if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
-  if (BOT && status === 'WAITRESULT') return FINALIZING;
   if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };

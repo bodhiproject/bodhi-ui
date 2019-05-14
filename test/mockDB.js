@@ -211,7 +211,7 @@ export default {
 
   /* Result Sets */
   generateResultSet(params) {
-    const isFinalize = randomInt(0, 1);
+    const isWithdraw = randomInt(0, 1);
     const tx = new ResultSet({
       txid: cryptoRandomString(64),
       block: {
@@ -219,7 +219,7 @@ export default {
         blockTime: moment.unix(),
       },
       topicAddress: cryptoRandomString(40),
-      oracleAddress: isFinalize ? null : cryptoRandomString(40),
+      oracleAddress: isWithdraw ? null : cryptoRandomString(40),
       fromAddress: cryptoRandomString(40),
       resultIdx: randomInt(0, 2),
       version: 0,

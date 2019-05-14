@@ -14,7 +14,6 @@ const INIT_VALUES = {
   peerNodeCount: 0,
   userData: {
     resultSettingCount: 0,
-    finalizeCount: 0,
     withdrawCount: 0,
     totalCount: 0,
   },
@@ -32,10 +31,9 @@ export default class GlobalStore {
   @observable internetOnline = INIT_VALUES.internetOnline
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
-    finalizeCount: INIT_VALUES.userData.finalizeCount,
     withdrawCount: INIT_VALUES.userData.withdrawCount,
     get totalCount() {
-      return this.resultSettingCount + this.finalizeCount + this.withdrawCount;
+      return this.resultSettingCount + this.withdrawCount;
     },
   });
 
@@ -108,14 +106,13 @@ export default class GlobalStore {
   /**
    * Gets the actionable item count for all the addresses the user owns.
    * Actionable item count means the number of items the user can take action on.
-   * eg. This user can do 4 set results, 10 finalizes, and 5 withdraws
+   * eg. This user can do 4 set results, and 5 withdraws
    */
   @action
   getActionableItemCount = async () => {
     // // Address is required for the request filters
     // if (isEmpty(this.app.wallet.addresses)) {
     //   this.userData.resultSettingCount = 0;
-    //   this.userData.finalizeCount = 0;
     //   this.userData.withdrawCount = 0;
     //   return;
     // }
@@ -154,11 +151,6 @@ export default class GlobalStore {
     //   });
     //   const resultSettingInfo = await queryAllOracles(this.app, oracleSetFilters);
     //   this.userData.resultSettingCount = resultSettingInfo.totalCount;
-
-    //   // Get finalize items
-    //   const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
-    //   const finalizeInfo = await queryAllOracles(this.app, oracleFinalizeFilters);
-    //   this.userData.finalizeCount = finalizeInfo.totalCount;
     // } catch (err) {
     //   console.error(err); // eslint-disable-line
     // }

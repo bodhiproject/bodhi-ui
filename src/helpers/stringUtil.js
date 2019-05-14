@@ -28,10 +28,6 @@ const strings = defineMessages({
     id: 'str.vote',
     defaultMessage: 'Vote',
   },
-  finalizeResult: {
-    id: 'str.finalizeResult',
-    defaultMessage: 'Finalize Result',
-  },
   withdraw: {
     id: 'str.withdraw',
     defaultMessage: 'Withdraw',
@@ -66,9 +62,6 @@ export function getTxTypeString(txType, intl) {
     }
     case TransactionType.VOTE: {
       return formatMessage(strings.vote);
-    }
-    case TransactionType.FINALIZE_RESULT: {
-      return formatMessage(strings.finalizeResult);
     }
     case TransactionType.WITHDRAW: {
       return formatMessage(strings.withdraw);
