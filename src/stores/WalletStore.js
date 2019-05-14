@@ -4,11 +4,10 @@ import moment from 'moment';
 import { Token } from 'constants';
 import { defineMessages } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
-
+import { WalletAddress } from 'models';
 import axios from '../network/api';
 import Routes from '../network/routes';
 import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
-import WalletAddress from './models/WalletAddress';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
