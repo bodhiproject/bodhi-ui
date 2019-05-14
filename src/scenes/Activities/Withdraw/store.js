@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty, each, find } from 'lodash';
 import { OracleStatus, Routes, SortBy } from 'constants';
-
 import { queryAllVotes, queryAllTopics } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -75,38 +74,41 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
+    // // Address is required for the request filters
+    // if (isEmpty(this.app.wallet.addresses)) {
+    //   return;
+    // }
 
-    if (this.hasMore) {
-      const voteFilters = [];
-      const topicFilters = [];
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+    // if (this.hasMore) {
+    //   const voteFilters = [];
+    //   const topicFilters = [];
+    //   const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
 
-      // Get all votes for all your addresses
-      each(this.app.wallet.addresses, (item) => {
-        voteFilters.push({ voterAddress: item.address });
-        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
-      });
+    //   // Get all votes for all your addresses
+    //   each(this.app.wallet.addresses, (item) => {
+    //     voteFilters.push({ voterAddress: item.address });
+    //     topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
+    //   });
 
-      // Filter votes
-      let votes = await queryAllVotes(voteFilters);
-      votes = votes.reduce((accumulator, vote) => {
-        const { voterAddress, topicAddress, optionIdx } = vote;
-        if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
-        return accumulator;
-      }, []);
+    //   // Filter votes
+    //   let votes = await queryAllVotes(voteFilters);
+    //   votes = votes.reduce((accumulator, vote) => {
+    //     const { voterAddress, topicAddress, optionIdx } = vote;
+    //     if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
+    //     return accumulator;
+    //   }, []);
 
-      // Fetch topics against votes that have the winning result index
-      each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
-      });
-      const { topics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      this.hasMore = pageInfo.hasNextPage;
-      return topics;
-    }
-    return INIT_VALUES.list; // default return
+    //   // Fetch topics against votes that have the winning result index
+    //   each(votes, ({ topicAddress, optionIdx }) => {
+    //     topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
+    //   });
+    //   const { topics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+    //   this.hasMore = pageInfo.hasNextPage;
+    //   return topics;
+    // }
+    // return INIT_VALUES.list;
+
+    const result = [];
+    return result;
   }
 }

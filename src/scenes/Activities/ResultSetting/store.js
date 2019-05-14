@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty, each } from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
-
 import { queryAllOracles } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -75,27 +74,30 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
+    // // Address is required for the request filters
+    // if (isEmpty(this.app.wallet.addresses)) {
+    //   return;
+    // }
 
-    // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
-    if (this.hasMore) {
-      const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
-      each(this.app.wallet.addresses, (addressObj) => {
-        filters.push({
-          token: Token.QTUM,
-          status: OracleStatus.WAIT_RESULT,
-          resultSetterAddress: addressObj.address,
-          language: this.app.ui.locale,
-        });
-      });
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      this.hasMore = data.pageInfo.hasNextPage;
-      return data.oracles;
-    }
-    return INIT_VALUES.list; // default return
+    // // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
+    // if (this.hasMore) {
+    //   const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
+    //   each(this.app.wallet.addresses, (addressObj) => {
+    //     filters.push({
+    //       token: Token.QTUM,
+    //       status: OracleStatus.WAIT_RESULT,
+    //       resultSetterAddress: addressObj.address,
+    //       language: this.app.ui.locale,
+    //     });
+    //   });
+    //   const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+    //   const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+    //   this.hasMore = data.pageInfo.hasNextPage;
+    //   return data.oracles;
+    // }
+    // return INIT_VALUES.list;
+
+    const result = [];
+    return result;
   }
 }
