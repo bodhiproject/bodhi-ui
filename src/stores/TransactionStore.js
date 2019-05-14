@@ -121,7 +121,7 @@ export default class TransactionStore {
       const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
       return txid;
     } catch (err) {
-      throw err;
+      throw err; // TODO: show errror message and show error in error dialog
     }
   };
 
@@ -144,7 +144,7 @@ export default class TransactionStore {
       const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
       return txid;
     } catch (err) {
-      throw err;
+      throw err; // TODO: show errror message and show error in error dialog
     }
   };
 
@@ -609,7 +609,7 @@ export default class TransactionStore {
         eventAddr: oracleAddress,
         eventFuncSig: BET_EVENT_FUNC_SIG,
         amount,
-        gas: 3000000,
+        gas: 300000,
       });
       Object.assign(tx, { txid });
       if (txid) {
@@ -734,8 +734,8 @@ export default class TransactionStore {
         params: setResultParams,
         eventAddr: oracleAddress,
         eventFuncSig: SET_EVENT_FUNC_SIG,
-        amount: '10000000000', // TODO: get set result amount from where it defines
-        gas: 3000000,
+        amount: '10000000000', // TODO: get set result amount from where it defines, change to Event.consensusThreshold later
+        gas: 500000,
       });
 
       Object.assign(tx, { txid });
@@ -862,7 +862,7 @@ export default class TransactionStore {
         eventAddr: oracleAddress,
         eventFuncSig: VOTE_EVENT_FUNC_SIG,
         amount: amountSatoshi,
-        gas: 3000000,
+        gas: 300000,
       });
       Object.assign(tx, { txid });
 
