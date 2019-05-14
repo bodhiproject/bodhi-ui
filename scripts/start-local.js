@@ -1,9 +1,7 @@
 // Set local env vars
 process.env.CHAIN_NETWORK = 'testnet';
-process.env.API_HOSTNAME = 'localhost';
-process.env.API_PORT = 6767;
-process.env.PROTOCOL_HTTP = 'http';
-process.env.PROTOCOL_WS = 'ws';
+process.env.API_HOSTNAME = 'localhost:9999';
+process.env.SSL = 'false';
 
 // Run start script
 require('./start');

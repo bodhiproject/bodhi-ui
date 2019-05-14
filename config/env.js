@@ -79,10 +79,7 @@ function getClientEnvironment(publicUrl) {
         OS_ARCH: os.arch(),
         CHAIN_NETWORK: process.env.CHAIN_NETWORK,
         API_HOSTNAME: process.env.API_HOSTNAME,
-        API_PORT: process.env.API_PORT,
-        PROTOCOL_HTTP: process.env.PROTOCOL_HTTP,
-        PROTOCOL_WS: process.env.PROTOCOL_WS,
-        LOCAL_WALLET: process.env.LOCAL_WALLET,
+        SSL: process.env.SSL,
       }
     );
   console.log('Environment Vars:\n', raw);
