@@ -11,7 +11,7 @@ import { defineMessages } from 'react-intl';
 import Web3 from 'web3'
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
-import Routes from '../../network/routes';
+import Routes, { GRAPHQL } from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
 import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
@@ -492,7 +492,7 @@ export default class CreateEventStore {
         return true;
       }
     } catch (err) {
-      this.app.components.globalDialog.setError(err.message, `${Routes.graphql.http}/all-transactions`);
+      this.app.components.globalDialog.setError(err.message, `${GRAPHQL.HTTP}/all-transactions`);
       this.close();
     }
     return false;

@@ -6,7 +6,7 @@ import { subscribeSyncInfo } from '../network/graphql/subscriptions';
 import { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
-  localWallet: undefined,
+  localWallet: false,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
@@ -61,9 +61,6 @@ export default class GlobalStore {
         }
       }
     );
-
-    // Set flag of using a local wallet, eg. Qtum Wallet vs Naka Wallet
-    this.localWallet = Boolean(process.env.LOCAL_WALLET === 'true');
 
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
