@@ -62,7 +62,7 @@ const TESTNET = {
 };
 
 const getMetadata = () => {
-  if (process.env.CHAIN_NETWORK === 'mainnet') {
+  if (process.env.NETWORK === 'mainnet') {
     return MAINNET;
   }
   return TESTNET;

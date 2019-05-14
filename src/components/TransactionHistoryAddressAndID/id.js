@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { withStyles, TableCell } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
 import styles from './styles';
-import Routes from '../../network/routes';
+import { EXPLORER } from '../../network/routes';
 
 
 const TransactionHistoryID = ({ classes, transaction, colSpan }) => (
@@ -18,7 +17,7 @@ const TransactionHistoryID = ({ classes, transaction, colSpan }) => (
         className={cx(classes.transactionHistoryTxidTxt, classes.txIdText)}
         onClick={(e) => {
           e.stopPropagation();
-          window.open(`${Routes.explorer.tx}/${transaction.txid}`, '_blank');
+          window.open(`${EXPLORER.TX}/${transaction.txid}`, '_blank');
         }}
       >
         {transaction.txid}
