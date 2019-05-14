@@ -1,8 +1,8 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { SortBy, Token, OracleStatus, Routes } from 'constants';
+import { SortBy, EVENT_STATUS, Routes } from 'constants';
 
-import { queryAllOracles } from '../../network/graphql/queries';
+import { events } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -78,16 +78,22 @@ export default class PredictionStore {
   }
 
   async fetch(limit = this.limit, skip = this.skip) {
-    // if (this.hasMore) {
-    //   const orderBy = { field: 'endTime', direction: this.sortBy };
-    //   const filters = [
-    //     { token: Token.NAKA, status: OracleStatus.VOTING, language: this.app.ui.locale },
-    //     { token: Token.NAKA, status: OracleStatus.CREATED, language: this.app.ui.locale },
-    //   ];
-    //   const { oracles, pageInfo: { hasNextPage } } = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-    //   this.hasMore = hasNextPage;
-    //   return _.orderBy(oracles, ['endTime'], this.sortBy.toLowerCase());
-    // }
+    if (this.hasMore) {
+      const orderBy = { field: 'endTime', direction: this.sortBy };
+      const filters = [
+        { status: EVENT_STATUS.BETTING, language: this.app.ui.locale },
+        { status: EVENT_STATUS.CREATED, language: this.app.ui.locale },
+      ];
+
+      // if naka wallet not loggined, pop up and wait
+      const { account } = this.app.naka;
+      if (!account) await window.ethereum.enable();
+
+      const res = await events({ filters, orderBy, limit, skip, pendingTxsAddress: account });
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
+      return _.orderBy(res.items, ['endTime'], this.sortBy.toLowerCase());
+    }
     return INIT_VALUES.list;
   }
 }
