@@ -34,9 +34,8 @@ export default class MultipleResultsEvent {
   // UI-specific vars
   localizedInvalid // for invalid option
 
-  constructor(event, app) {
+  constructor(event) {
     Object.assign(this, event);
-    this.app = app;
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {

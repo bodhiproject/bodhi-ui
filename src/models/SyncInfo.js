@@ -1,7 +1,7 @@
 export default class SyncInfo {
-  percent = 0
-  blockNum = 0
-  blockTime = 0
+  percent // Percentage of backend that is synced to the latest block
+  blockNum // Block number of the latest synced block
+  blockTime // Block time of the latest synced block
 
   constructor(syncInfo) {
     this.percent = syncInfo.syncPercent;
