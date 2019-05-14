@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { map } from 'lodash';
-import { Event, Bet, ResultSet, Withdraw, SyncInfo } from 'models';
+import { MultipleResultsEvent, Bet, ResultSet, Withdraw, SyncInfo } from 'models';
 import {
   PAGINATED_EVENTS,
   MULTIPLE_RESULTS_EVENT,
@@ -196,7 +196,7 @@ class GraphQuery {
  */
 export async function events(client, args) {
   const res = await new GraphQuery(client, 'events', args).execute();
-  res.items = map(res.items, (event) => new Event(event));
+  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
   return res;
 }
 
@@ -208,7 +208,7 @@ export async function events(client, args) {
  */
 export async function searchEvents(client, args) {
   const res = await new GraphQuery(client, 'searchEvents', args).execute();
-  return map(res, (event) => new Event(event));
+  return map(res, (event) => new MultipleResultsEvent(event));
 }
 
 /**
