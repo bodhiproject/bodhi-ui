@@ -20,7 +20,7 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
           {intl.formatMessage({ id: message.id, defaultMessage: message.defaultMessage })}
         </Typography>
       </Row>
-      {ui.location === Routes.QTUM_PREDICTION && !ui.searchBarMode &&
+      {ui.location === Routes.PREDICTION && !ui.searchBarMode &&
       <Row>
         <Button
           size={width === 'xs' ? 'small' : 'medium'}

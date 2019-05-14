@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { SortBy, Token, OracleStatus, Routes } from 'constants';
-
+import { Token, OracleStatus, Routes } from '../../constants';
 import { queryAllOracles } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -11,24 +10,22 @@ const INIT_VALUES = {
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
   limit: 16, // loading batch amount
-  sortBy: SortBy.DEFAULT,
 };
 
-export default class QtumPredictionStore {
+export default class ArbitrationStore {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
   @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
-  @observable sortBy = INIT_VALUES.sortBy
   limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
       () => {
-        if (this.app.ui.location === Routes.QTUM_PREDICTION) {
+        if (this.app.ui.location === Routes.ARBITRATION) {
           this.init();
         }
       }
@@ -36,7 +33,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.global.online,
       () => {
-        if (this.app.ui.location === Routes.QTUM_PREDICTION && this.app.global.online) {
+        if (this.app.ui.location === Routes.ARBITRATION && this.app.global.online) {
           if (this.loadingMore) this.loadMore();
           else this.init();
         }
@@ -45,16 +42,10 @@ export default class QtumPredictionStore {
   }
 
   @action
-  init = async () => {
+  init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = Routes.QTUM_PREDICTION;
-    await this.loadFirst();
-  }
-
-  @action
-  loadFirst = async () => {
-    this.hasMore = true;
-    this.list = await this.fetch(this.limit, 0);
+    this.app.ui.location = Routes.ARBITRATION;
+    this.list = await this.fetch(limit);
     runInAction(() => {
       this.loaded = true;
     });
@@ -66,7 +57,7 @@ export default class QtumPredictionStore {
       this.loadingMore = true;
       this.skip += this.limit;
       try {
-        const nextFewEvents = await this.fetch(this.limit, this.skip);
+        const nextFewEvents = await this.fetch();
         runInAction(() => {
           this.list = [...this.list, ...nextFewEvents];
           this.loadingMore = false;
@@ -79,14 +70,19 @@ export default class QtumPredictionStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     // if (this.hasMore) {
-    //   const orderBy = { field: 'endTime', direction: this.sortBy };
+    //   const orderBy = { field: 'endTime', direction: this.app.sortBy };
+    //   const excludeResultSetterAddress = this.app.wallet.addresses.map(({ address }) => address);
     //   const filters = [
-    //     { token: Token.QTUM, status: OracleStatus.VOTING, language: this.app.ui.locale },
-    //     { token: Token.QTUM, status: OracleStatus.CREATED, language: this.app.ui.locale },
+    //     { token: Token.BOT, status: OracleStatus.VOTING, language: this.app.ui.locale },
+    //     { token: Token.QTUM,
+    //       status: OracleStatus.WAIT_RESULT,
+    //       excludeResultSetterAddress,
+    //       language: this.app.ui.locale,
+    //     },
     //   ];
     //   const { oracles, pageInfo: { hasNextPage } } = await queryAllOracles(this.app, filters, orderBy, limit, skip);
     //   this.hasMore = hasNextPage;
-    //   return _.orderBy(oracles, ['endTime'], this.sortBy.toLowerCase());
+    //   return _.orderBy(oracles, ['endTime'], this.app.sortBy.toLowerCase());
     // }
     return INIT_VALUES.list;
   }

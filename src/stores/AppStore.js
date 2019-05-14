@@ -8,8 +8,8 @@ import NakaStore from './NakaStore';
 import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
-import BotCourtStore from '../scenes/BotCourt/store';
-import QtumPredictionStore from '../scenes/QtumPrediction/store';
+import ArbitrationStore from '../scenes/Arbitration/store';
+import PredictionStore from '../scenes/Prediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
@@ -41,8 +41,8 @@ class AppStore {
   txSentDialog = {}
   refreshing = {}
   eventPage = {}
-  qtumPrediction = {}
-  botCourt = {}
+  prediction = {}
+  arbitration = {}
   createEvent = {}
   allEvents = {}
   activities = {}
@@ -75,8 +75,8 @@ class AppStore {
     };
 
     runInAction(() => {
-      this.qtumPrediction = new QtumPredictionStore(this);
-      this.botCourt = new BotCourtStore(this);
+      this.prediction = new PredictionStore(this);
+      this.arbitration = new ArbitrationStore(this);
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
       this.leaderboard = new LeaderboardStore(this);

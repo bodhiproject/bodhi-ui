@@ -9,8 +9,8 @@ export const EVENT_STATUS = {
 
 module.exports = {
   Routes: {
-    QTUM_PREDICTION: '/',
-    BOT_COURT: '/bot-court',
+    PREDICTION: '/',
+    ARBITRATION: '/arbitration',
     WALLET: '/wallet',
     SET: '/activities/set',
     FINALIZE: '/activities/finalize',

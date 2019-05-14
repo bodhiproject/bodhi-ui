@@ -8,18 +8,18 @@ import cx from 'classnames';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-const QtumPrediction = observer(({ classes, store: { ui } }) => (
-  <NavLink to={Routes.QTUM_PREDICTION}>
+const Prediction = observer(({ classes, store: { ui } }) => (
+  <NavLink to={Routes.PREDICTION}>
     <Button
       data-index={EventStatus.BET}
       className={cx(
         classes.navButton,
-        ui.location === Routes.QTUM_PREDICTION || ui.location === Routes.bet ? 'selected' : '',
+        ui.location === Routes.PREDICTION || ui.location === Routes.bet ? 'selected' : '',
       )}
     >
-      <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
+      <FormattedMessage id="navbar.prediction" defaultMessage="Prediction" />
     </Button>
   </NavLink>
 ));
 
-export default withStyles(styles, { withTheme: true })(inject('store')(observer(QtumPrediction)));
+export default withStyles(styles, { withTheme: true })(inject('store')(observer(Prediction)));

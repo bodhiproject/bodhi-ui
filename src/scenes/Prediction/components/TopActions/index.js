@@ -33,7 +33,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { qtumPrediction } } = this.props;
+    const { classes, noCreateEventButton, fontSize, store, store: { prediction } } = this.props;
     const { createEvent } = store;
 
     return (
@@ -58,7 +58,7 @@ export default class TopActions extends Component {
           </span>
           <Card className={classes.dashboardActionsSort}>
             <FormControl>
-              <Select disableUnderline className={classes.dashboardActionsSelect} value={qtumPrediction.sortBy} onChange={e => qtumPrediction.sortBy = e.target.value}>
+              <Select disableUnderline className={classes.dashboardActionsSelect} value={prediction.sortBy} onChange={e => prediction.sortBy = e.target.value}>
                 <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
               </Select>
             </FormControl>

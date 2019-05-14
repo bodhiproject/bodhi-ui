@@ -3,24 +3,21 @@ import { inject, observer } from 'mobx-react';
 
 import InfiniteScroll from '../../components/InfiniteScroll';
 import theme from '../../config/theme';
-import Loading from '../../components/EventListLoading';
 import EventCard from '../../components/EventCard';
-import TopActions from './components/TopActions';
+import TopActions from '../../components/TopActions';
+import Loading from '../../components/EventListLoading';
 
 @inject('store')
 @observer
-export default class QtumPrediction extends Component {
+export default class Arbitration extends Component {
   componentDidMount() {
-    this.props.store.qtumPrediction.init();
+    this.props.store.arbitration.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
-    // TODO: Remove when backend is connected
-    // if (!loaded) return <Loading />;
-    const events = (list || []).map((event, i) => (
-      <EventCard key={i} index={i} event={event} />
-    ));
+    const { list, loadMore, loadingMore, loaded } = this.props.store.arbitration;
+    if (!loaded) return <Loading />;
+    const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />);
     return (
       <Fragment>
         {events.length > 0 && <TopActions />}

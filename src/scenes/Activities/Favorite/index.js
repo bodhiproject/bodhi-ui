@@ -50,7 +50,7 @@ export default class Favorite extends Component {
                     {intl.formatMessage({ id: messages.emptyFavMsg.id, defaultMessage: messages.emptyFavMsg.defaultMessage })}
                   </Typography>
                 </div>
-                <Link to={Routes.QTUM_PREDICTION} className={classes.favoriteSidebarPlacholderButton}>
+                <Link to={Routes.PREDICTION} className={classes.favoriteSidebarPlacholderButton}>
                   <Button
                     variant="contained"
                     size="medium"

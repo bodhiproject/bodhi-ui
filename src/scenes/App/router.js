@@ -21,13 +21,13 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.QTUM_PREDICTION}`}
-        component={asyncComponent(() => import('../QtumPrediction'))}
+        path={`${url}${Routes.PREDICTION}`}
+        component={asyncComponent(() => import('../Prediction'))}
       />
       <Route
         exact
-        path={`${url}${Routes.BOT_COURT}`}
-        component={asyncComponent(() => import('../BotCourt'))}
+        path={`${url}${Routes.ARBITRATION}`}
+        component={asyncComponent(() => import('../Arbitration'))}
       />
       <Route
         exact
