@@ -109,8 +109,8 @@ export default class Leaderboard extends React.Component {
                         {index > 2 && `#${index + 1}`}
                       </CustomTableBodyCell>
                       <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
-                      {!row.amount.qtum && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
-                      {row.amount.qtum && <CustomTableBodyCell>{satoshiToDecimal(row.amount.qtum)} QTUM,{satoshiToDecimal(row.amount.bot)} BOT</CustomTableBodyCell>}
+                      {!row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
+                      {row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount.naka)} QTUM,{satoshiToDecimal(row.amount.nbot)} BOT</CustomTableBodyCell>}
                     </CustomTableRow>
                   ))}
               </TableBody>

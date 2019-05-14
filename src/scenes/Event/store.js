@@ -335,17 +335,6 @@ export default class EventStore {
     }
   }
 
-  /**
-   * Gets the allowance amount for result setting and voting oracles.
-   * The allowance is the current amount of BOT approved for transfer.
-   */
-  @action
-  getAllowanceAmount = async () => {
-    if (includes([RESULT_SETTING, VOTING], this.oracle.phase)) {
-      this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
-    }
-  }
-
   @action
   calculateWinnings = async () => {
     await this.getBetAndVoteBalances();
@@ -513,7 +502,7 @@ export default class EventStore {
     const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
+    const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.naka : 0;
     const notEnoughQtum = currentWalletQtum < maxTransactionFee;
 
     this.buttonDisabled = false;
@@ -566,7 +555,7 @@ export default class EventStore {
 
     // Trying to set result or vote when not enough QTUM or BOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
-    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of BOT at currently selected address
     if ((
       (phase === VOTING && currentBot < this.amount)
       || (phase === RESULT_SETTING && currentBot < consensusThreshold)

@@ -72,7 +72,7 @@ export default class NakaStore {
         if (err) {
           // logger.error(`Error getting wallet accounts: ${err.message}`)
         }
-        this.balance = balance.toString(16);
+        this.balance = balance.toString(10);
       });
     }
 

@@ -3,11 +3,13 @@ import { isEmpty, find, findIndex } from 'lodash';
 import moment from 'moment';
 import { Token } from 'constants';
 import { defineMessages } from 'react-intl';
-import { BigNumber } from 'bignumber.js';
 import { WalletAddress } from 'models';
+import promisify from 'js-promisify';
+
 import axios from '../network/api';
 import Routes from '../network/routes';
 import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
+import getContracts from '../config/contracts';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
@@ -37,7 +39,6 @@ const INIT_VALUE = {
   passphrase: '',
   walletUnlockedUntil: 0,
   unlockDialogOpen: false,
-  changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
 };
 
@@ -60,7 +61,6 @@ export default class WalletStore {
   @observable walletUnlockedUntil = INIT_VALUE.walletUnlockedUntil;
   @observable unlockDialogOpen = INIT_VALUE.unlockDialogOpen;
   @observable selectedToken = INIT_VALUE_DIALOG.selectedToken;
-  @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
@@ -86,17 +86,13 @@ export default class WalletStore {
 
   @computed get lastAddressWithdrawLimit() {
     return {
-      QTUM: this.currentWalletAddress ? this.currentWalletAddress.qtum : 0,
-      BOT: this.currentWalletAddress ? this.currentWalletAddress.bot : 0,
+      QTUM: this.currentWalletAddress ? this.currentWalletAddress.naka : 0,
+      BOT: this.currentWalletAddress ? this.currentWalletAddress.nbot : 0,
     };
   }
 
   constructor(app) {
     this.app = app;
-
-    if (this.app.global.localWallet) {
-      this.checkWalletEncrypted();
-    }
   }
 
   /**
@@ -130,130 +126,57 @@ export default class WalletStore {
 
     // If setting Naka Wallet's account for the first time or the address changes, fetch the BOT balance right away.
     // After the initial BOT balance fetch, it will refetch on every new block.
-    const fetchInitBotBalance = isEmpty(this.addresses);
+    const fetchInitNbotBalance = isEmpty(this.addresses);
 
     const index = findIndex(this.addresses, { address });
     if (index === -1) {
       // Push the WalletAddress if it is not in the list of addresses
-      const walletAddress = new WalletAddress({ address, qtum: balance, bot: 0 }, false);
+      const walletAddress = new WalletAddress({ address, naka: balance, nbot: 0 }, false);
       this.addresses.push(walletAddress);
       this.currentWalletAddress = walletAddress;
     } else {
       // Update existing balances
       const walletAddress = this.addresses[index];
-      walletAddress.qtum = balance;
+      walletAddress.naka = balance;
       if (this.currentWalletAddress.address === address) {
-        this.currentWalletAddress.qtum = balance;
+        this.currentWalletAddress.naka = balance;
       }
     }
 
-    if (fetchInitBotBalance) {
-      this.fetchBotBalance(address);
+    if (fetchInitNbotBalance) {
+      this.fetchNbotBalance(address);
     }
   }
-
-  /**
-   * Checks the Bodhi Token allowance from the owner to spender.
-   * @param {string} owner Approver of the tokens.
-   * @param {string} spender Approvee of the tokens.
-   * @return {string} Amount of the allowance.
-   */
-  checkAllowance = async (owner, spender) => {
-    if (!owner || !spender || !this.currentAddress) {
-      return undefined;
-    }
-
-    try {
-      const { data: { remaining } } = await axios.post(Routes.api.allowance, {
-        owner,
-        spender,
-        senderAddress: this.currentAddress,
-      });
-      return remaining;
-    } catch (err) {
-      console.error(`Error getting allowance: ${err.message}`); // eslint-disable-line
-    }
-  }
-
-  /**
-   * Checks if the allowance is enough.
-   * @param {string} allowance Current allowance.
-   * @param {string} needed Amount of allowance needed.
-   * @return {boolean} True if the allowance is greater than or equal to needed.
-   */
-  isAllowanceEnough = (allowance, needed) => new BigNumber(allowance).isGreaterThanOrEqualTo(new BigNumber(needed));
 
   /**
    * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
    * @param {string} address Address to check the BOT balance of.
    */
-  fetchBotBalance = async (address) => {
+  fetchNbotBalance = async (address) => {
     if (isEmpty(address)) {
       return;
     }
 
     try {
-      const { data } = await axios.post(Routes.api.botBalance, {
-        owner: address,
-        senderAddress: address,
-      });
-      if (data.balance) {
-        const bot = satoshiToDecimal(data.balance);
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const balance = await promisify(nbotMethods.balanceOf, [address]).toString(10);
+      if (balance) {
+        const nbot = satoshiToDecimal(balance);
 
         // Update WalletAddress BOT in list of addresses
         const index = findIndex(this.addresses, { address });
         if (index !== -1) {
-          this.addresses[index].bot = bot;
+          this.addresses[index].nbot = nbot;
         }
 
         // Update current WalletAddress BOT if matching address
         if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
-          this.currentWalletAddress.bot = bot;
+          this.currentWalletAddress.nbot = nbot;
         }
       }
     } catch (err) {
       console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
     }
-  }
-
-  @action
-  checkWalletEncrypted = async () => {
-    try {
-      const { data } = await axios.get(Routes.api.getWalletInfo);
-
-      runInAction(() => {
-        this.walletEncrypted = data && !data.unlocked_until;
-        this.walletUnlockedUntil = data && data.unlocked_until ? data.unlocked_until : 0;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.getWalletInfo);
-      });
-    }
-  }
-
-  @action
-  encryptWallet = async (passphrase) => {
-    try {
-      const { data } = await axios.post(Routes.api.encryptWallet, {
-        passphrase,
-      });
-      this.encryptResult = data;
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.encryptWallet);
-      });
-    }
-  }
-
-  @action
-  onPassphraseChange = (passphrase) => {
-    this.passphrase = passphrase;
-  }
-
-  @action
-  clearEncryptResult = () => {
-    this.encryptResult = undefined;
   }
 
   isValidAddress = async (addressToVerify) => {
@@ -300,33 +223,5 @@ export default class WalletStore {
     const amount = this.selectedToken === Token.BOT
       ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount);
     await this.app.tx.addTransferTx(this.walletAddress, this.toAddress, amount, this.selectedToken);
-  }
-
-  @action
-  backupWallet = async () => {
-    try {
-      await axios.post(Routes.api.backupWallet);
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.backupWallet);
-      });
-    }
-  }
-
-  @action
-  changePassphrase = async (oldPassphrase, newPassphrase) => {
-    try {
-      const { data } = await axios.post(Routes.api.walletPassphraseChange, {
-        oldPassphrase,
-        newPassphrase,
-      });
-      runInAction(() => {
-        this.changePassphraseResult = data;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.walletPassphraseChange);
-      });
-    }
   }
 }

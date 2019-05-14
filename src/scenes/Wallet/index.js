@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Routes } from 'constants';
 
-import ActionButtonHeader from './ActionButtonHeader';
 import Balances from './Balances';
 import History from './History';
 
@@ -16,7 +15,6 @@ export default class MyWallet extends Component {
   render() {
     return (
       <div>
-        <ActionButtonHeader />
         <Balances />
         <History />
       </div>

@@ -131,8 +131,8 @@ export default class CreateEventStore {
     const transactionFee = sumBy(this.txFees, ({ gasCost }) => Number(gasCost));
     const { currentWalletAddress } = this.app.wallet;
     return currentWalletAddress
-      && (currentWalletAddress.qtum >= transactionFee)
-      && (currentWalletAddress.bot >= this.escrowAmount);
+      && (currentWalletAddress.naka >= transactionFee)
+      && (currentWalletAddress.nbot >= this.escrowAmount);
   }
   @computed get warning() {
     if (!this.hasEnoughFee) {
@@ -384,7 +384,7 @@ export default class CreateEventStore {
   validateCreator = () => {
     const { app: { wallet }, escrowAmount, creator } = this;
     const checkingAddresses = filter(wallet.addresses, { address: creator });
-    if (checkingAddresses.length && checkingAddresses[0].bot < escrowAmount) {
+    if (checkingAddresses.length && checkingAddresses[0].nbot < escrowAmount) {
       this.error.creator = messages.strNotEnoughBotMsg.id;
     } else if (!creator) {
       this.error.creator = messages.createRequiredMsg.id;
@@ -509,8 +509,7 @@ export default class CreateEventStore {
     this.validateAll();
     if (!this.isAllValid) return;
 
-    const { checkAllowance, currentAddress, isAllowanceEnough } = this.app.wallet;
-    const allowance = await checkAllowance(currentAddress, getContracts().AddressManager.address);
+    const { currentAddress, isAllowanceEnough } = this.app.wallet;
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
     if (isAllowanceEnough(allowance, escrowAmountSatoshi)) {
       await this.app.tx.addCreateEventTx(

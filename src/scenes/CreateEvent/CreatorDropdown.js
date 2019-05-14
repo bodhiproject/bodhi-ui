@@ -34,10 +34,10 @@ const CreatorDropdown = (({ classes, store: { createEvent, wallet: { addresses }
   </Section>
 ));
 
-const CreatorItem = observer(({ address, qtum, bot }) => (
+const CreatorItem = observer(({ address, naka, nbot }) => (
   <option value={address}>
     {`${address}`}
-    {` (${qtum ? qtum.toFixed(2) : 0} QTUM, ${bot ? bot.toFixed(2) : 0} BOT)`}
+    {` (${naka ? naka.toFixed(2) : 0} NAKA, ${nbot ? nbot.toFixed(2) : 0} NBOT)`}
   </option>
 ));
 

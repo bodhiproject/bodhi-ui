@@ -99,26 +99,26 @@ export default class MyBalances extends Component {
   getTotalsGrid() {
     const { classes, store: { wallet } } = this.props;
 
-    let totalQtum = 0;
-    let totalBot = 0;
+    let totalNaka = 0;
+    let totalNbot = 0;
     const walletAddresses = wallet.addresses;
     if (walletAddresses && walletAddresses.length) {
-      totalQtum = _.sumBy(walletAddresses, (address) => address.qtum ? address.qtum : 0);
-      totalBot = _.sumBy(walletAddresses, (address) => address.bot ? address.bot : 0);
+      totalNaka = _.sumBy(walletAddresses, (address) => address.naka ? address.naka : 0);
+      totalNbot = _.sumBy(walletAddresses, (address) => address.nbot ? address.nbot : 0);
     }
 
     const items = [
       {
         id: 'qtum',
-        name: 'str.qtum',
+        name: 'str.naka',
         nameDefault: 'QTUM',
-        total: totalQtum,
+        total: totalNaka,
       },
       {
         id: 'bot',
-        name: 'str.bot',
+        name: 'str.nbot',
         nameDefault: 'BOT',
-        total: totalBot,
+        total: totalNbot,
       },
     ];
 
@@ -154,14 +154,14 @@ export default class MyBalances extends Component {
       },
       {
         id: 'qtum',
-        name: 'str.qtum',
+        name: 'str.naka',
         nameDefault: 'QTUM',
         numeric: true,
         sortable: true,
       },
       {
         id: 'bot',
-        name: 'str.bot',
+        name: 'str.nbot',
         nameDefault: 'BOT',
         numeric: true,
         sortable: true,
@@ -270,10 +270,10 @@ export default class MyBalances extends Component {
               </CopyToClipboard>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body2">{item.qtum}</Typography>
+              <Typography variant="body2">{item.naka}</Typography>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body2">{item.bot}</Typography>
+              <Typography variant="body2">{item.nbot}</Typography>
             </TableCell>
             <TableCell>
               <Button
@@ -283,8 +283,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onDepositClicked}
                 data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
+                data-qtum={item.naka}
+                data-bot={item.nbot}
               >
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
@@ -295,8 +295,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onWithdrawClicked}
                 data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
+                data-qtum={item.naka}
+                data-bot={item.nbot}
               >
                 <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
               </Button>
