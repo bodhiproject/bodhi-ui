@@ -15,7 +15,7 @@ global.localStorage = localStorageMock;
 const { QTUM, BOT } = Token;
 const { BETTING, VOTING, RESULT_SETTING } = Phases;
 
-describe('Oracle Model', () => {
+describe('MultipleResultsEvent', () => {
   let oracle;
   let input;
   const addr = {

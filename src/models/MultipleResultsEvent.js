@@ -48,6 +48,10 @@ export default class MultipleResultsEvent {
     };
   }
 
+  isUnconfirmed() {
+    return !this.address;
+  }
+
   isPending() {
     return this.pendingTxs.total && this.pendingTxs.total > 0;
   }
