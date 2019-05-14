@@ -1,4 +1,4 @@
-import { satoshiToDecimal } from '../../helpers/utility';
+import { satoshiToDecimal } from '../helpers/utility';
 
 /*
 * Model for TransactionCost.
