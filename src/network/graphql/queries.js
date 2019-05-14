@@ -209,6 +209,7 @@ class GraphQuery {
     if (this.params) {
       each(Object.keys(this.params), (key) => vars[key] = this.params[key]);
     }
+    return vars;
   }
 
   async execute() {
