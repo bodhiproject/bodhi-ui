@@ -21,14 +21,14 @@ export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({
 export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, naka } }) => (
   <div className={cx(classes.navDropdown, ui.dropdownMenuOpen ? '' : 'hide')}>
     <Hidden smUp>
-      <Link to={Routes.QTUM_PREDICTION}>
+      <Link to={Routes.PREDICTION}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
+          <FormattedMessage id="navbar.prediction" defaultMessage="QTUM Prediction" />
         </div>
       </Link>
       <Link to={Routes.BOT_COURT}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+          <FormattedMessage id="navbar.arbitration" defaultMessage="BOT Court" />
         </div>
       </Link>
       <Link to={Routes.ACTIVITY_HISTORY}>

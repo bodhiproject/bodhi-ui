@@ -17,7 +17,7 @@ const BotCourt = ({ classes, store: { ui } }) => (
         ui.location === Routes.BOT_COURT ? 'selected' : '',
       )}
     >
-      <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+      <FormattedMessage id="navbar.arbitration" defaultMessage="BOT Court" />
     </Button>
   </NavLink>
 );

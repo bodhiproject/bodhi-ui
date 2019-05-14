@@ -8,7 +8,7 @@ import { faqUrls } from '../config/app';
 import Tracking from '../helpers/mixpanelUtil';
 
 export default class UiStore {
-  @observable location = Routes.QTUM_PREDICTION
+  @observable location = Routes.PREDICTION
   @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;

@@ -14,7 +14,7 @@ const INIT_VALUES = {
   sortBy: SortBy.DEFAULT,
 };
 
-export default class QtumPredictionStore {
+export default class PredictionStore {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
@@ -28,7 +28,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
-        if (this.app.ui.location === Routes.QTUM_PREDICTION) {
+        if (this.app.ui.location === Routes.PREDICTION) {
           this.init();
         }
       }
@@ -36,7 +36,7 @@ export default class QtumPredictionStore {
     reaction(
       () => this.app.global.online,
       () => {
-        if (this.app.ui.location === Routes.QTUM_PREDICTION && this.app.global.online) {
+        if (this.app.ui.location === Routes.PREDICTION && this.app.global.online) {
           if (this.loadingMore) this.loadMore();
           else this.init();
         }
@@ -47,7 +47,7 @@ export default class QtumPredictionStore {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-    this.app.ui.location = Routes.QTUM_PREDICTION;
+    this.app.ui.location = Routes.PREDICTION;
     await this.loadFirst();
   }
 

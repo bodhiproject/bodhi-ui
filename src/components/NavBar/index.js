@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 
 import BodhiLogo from './Logo';
-import QtumPrediction from './QtumPrediction';
+import Prediction from './Prediction';
 import BotCourt from './BotCourt';
 import Wallet from './Wallet';
 import { SearchButton, SearchBarField } from './Search';
@@ -47,7 +47,7 @@ export default class NavBar extends Component {
             <div className={classes.navSection}>
               <BodhiLogo {...this.props} />
               <Hidden xsDown>
-                <QtumPrediction {...this.props} />
+                <Prediction {...this.props} />
                 <BotCourt {...this.props} />
               </Hidden>
               <Favorite />

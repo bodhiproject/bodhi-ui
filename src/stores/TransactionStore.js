@@ -492,7 +492,7 @@ export default class TransactionStore {
         });
 
         await this.onTxExecuted(tx);
-        this.app.qtumPrediction.loadFirst();
+        this.app.prediction.loadFirst();
         Tracking.track('event-createEvent');
       }
     } catch (err) {

@@ -39,7 +39,7 @@ function getMockGlobalStore() {
 
 function getMockUiStore() {
   return observable({
-    location: Routes.QTUM_PREDICTION,
+    location: Routes.PREDICTION,
   });
 }
 

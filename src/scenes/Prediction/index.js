@@ -9,13 +9,13 @@ import TopActions from './components/TopActions';
 
 @inject('store')
 @observer
-export default class QtumPrediction extends Component {
+export default class Prediction extends Component {
   componentDidMount() {
-    this.props.store.qtumPrediction.init();
+    this.props.store.prediction.init();
   }
 
   render() {
-    const { list, loadMore, loadingMore, loaded } = this.props.store.qtumPrediction;
+    const { list, loadMore, loadingMore, loaded } = this.props.store.prediction;
     // TODO: Remove when backend is connected
     // if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (
