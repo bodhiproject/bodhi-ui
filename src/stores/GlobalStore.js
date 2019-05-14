@@ -129,7 +129,7 @@ export default class GlobalStore {
    */
   subscribeSyncInfo = () => {
     const self = this;
-    subscribeSyncInfo((err, data) => {
+    subscribeSyncInfo(this.app.graphqlClient, (err, data) => {
       if (err) {
         self.onSyncInfo({ error: err.message });
         return;

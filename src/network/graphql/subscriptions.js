@@ -1,5 +1,4 @@
 import { gql } from 'apollo-boost';
-import client from '.';
 import { SYNC_INFO } from './schema';
 
 const SUBSCRIPTIONS = {
@@ -12,8 +11,8 @@ const SUBSCRIPTIONS = {
   `,
 };
 
-export const subscribeSyncInfo = async (cb) => {
-  client().subscribe({
+export const subscribeSyncInfo = async (client, cb) => {
+  client.subscribe({
     query: SUBSCRIPTIONS.onSyncInfo,
     fetchPolicy: 'network-only',
   }).subscribe({

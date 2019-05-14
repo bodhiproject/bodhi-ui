@@ -6,8 +6,6 @@ import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import Routes from '../routes';
 
-let client;
-
 const httpLink = new HttpLink({
   uri: Routes.graphql.http,
 });
@@ -31,12 +29,9 @@ const link = split(
   httpLink,
 );
 
-export default () => {
-  if (!client) {
-    client = new ApolloClient({
-      link,
-      cache: new InMemoryCache(),
-    });
-  }
-  return client;
-};
+const client = new ApolloClient({
+  link,
+  cache: new InMemoryCache(),
+});
+
+export default client;

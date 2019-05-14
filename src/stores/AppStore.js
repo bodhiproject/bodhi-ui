@@ -25,9 +25,9 @@ import GlobalDialogStore from '../components/GlobalDialog/store';
 import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
-import { isProduction } from '../config/app';
 
 class AppStore {
+  @observable graphqlClient = undefined;
   @observable loading = true;
   @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
 
@@ -51,7 +51,9 @@ class AppStore {
   search = {}
   components = {}
 
-  constructor() {
+  constructor(graphqlClient) {
+    this.graphqlClient = graphqlClient;
+
     // block content until all stores are initialized
     this.loading = true;
 
@@ -97,10 +99,4 @@ class AppStore {
   }
 }
 
-const store = new AppStore();
-// Add store to window
-if (!isProduction()) {
-  window.store = store;
-}
-
-export default store;
+export default (graphqlClient) => new AppStore(graphqlClient);
