@@ -1,14 +1,171 @@
+import { gql } from 'apollo-boost';
 import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
-import gql from 'graphql-tag';
 import { Transaction, Oracle, Topic, SyncInfo, Vote, ResultSet, Withdraw } from 'models';
-
 import client from './';
-import { TYPE, isValidEnum, getTypeDef } from './schema';
+import { TYPE_FIELDS } from './schema';
 import { isProduction } from '../../config/app';
 
 if (!isProduction()) {
   window.queries = '';
 }
+
+export default {
+  events: gql`
+    query(
+      $filter: EventFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+      $pendingTxsAddress: String
+    ) {
+      events(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+        pendingTxsAddress: $pendingTxsAddress
+      ) {
+        ${TYPE_FIELDS.PAGINATED_EVENTS}
+      }
+    }
+  `,
+
+  searchEvents: gql`
+    query(
+      $searchPhrase: String
+      $filter: EventFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      searchEvents(
+        searchPhrase: $searchPhrase
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.MULTIPLE_RESULTS_EVENT}
+      }
+    }
+  `,
+
+  bets: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      bets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.PAGINATED_BETS}
+      }
+    }
+  `,
+
+  resultSets: gql`
+    query(
+      $filter: ResultSetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      resultSets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.PAGINATED_RESULT_SETS}
+      }
+    }
+  `,
+
+  withdraws: gql`
+    query(
+      $filter: WithdrawFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      withdraws(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.PAGINATED_WITHDRAWS}
+      }
+    }
+  `,
+
+  syncInfo: gql`
+    query {
+      syncInfo {
+        ${TYPE_FIELDS.SYNC_INFO}
+      }
+    }
+  `,
+
+  allStats: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      allStats(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.ALL_STATS}
+      }
+    }
+  `,
+
+  mostBets: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      mostBets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.PAGINATED_MOST_BETS}
+      }
+    }
+  `,
+
+  biggestWinners: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      biggestWinners(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TYPE_FIELDS.BIGGEST_WINNER}
+      }
+    }
+  `,
+};
 
 class GraphQuery {
   constructor(queryName, type) {
