@@ -126,17 +126,19 @@ export default class {
    * @return {[Transaction]} Tx array of the query.
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return [];
-    }
+    // // Address is required for the request filters
+    // if (isEmpty(this.app.wallet.addresses)) {
+    //   return [];
+    // }
 
-    const txTypes = values(omit(TransactionType, 'TRANSFER'));
-    const filters = [];
-    each(this.app.wallet.addresses, (walletAddress) => {
-      merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
-    });
-    return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
+    // const txTypes = values(omit(TransactionType, 'TRANSFER'));
+    // const filters = [];
+    // each(this.app.wallet.addresses, (walletAddress) => {
+    //   merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
+    // });
+    // return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
+    const results = [];
+    return results;
   }
 
   /**
