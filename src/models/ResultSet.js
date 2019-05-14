@@ -8,10 +8,10 @@ export default class ResultSet {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   centralizedOracleAddress // Result setters address (only for eventRound 0)
-  resultIndex // Result index the bet was placed on
-  amount // Bet amount in decimals
-  amountSatoshi // Bet amount in satoshi
-  eventRound // Round of the event for the bet
+  resultIndex // Result index that was set
+  amount // Result set amount in decimals
+  amountSatoshi // Result set amount in satoshi
+  eventRound // Round of the event for the result set. 0 is set by Centralized Oracle. > 0 is set by arbitration.
 
   constructor(resultSet) {
     Object.assign(this, resultSet);
