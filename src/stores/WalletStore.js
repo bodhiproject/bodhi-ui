@@ -123,7 +123,7 @@ export default class WalletStore {
     }
 
     // Stop login if the chain network does not match
-    if (network.toLowerCase() !== process.env.CHAIN_NETWORK) {
+    if (network.toLowerCase() !== process.env.NETWORK) {
       this.app.naka.openPopover('naka.loggedIntoWrongNetwork');
       return;
     }

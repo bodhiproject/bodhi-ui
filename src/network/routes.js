@@ -2,6 +2,9 @@ const SSL = Boolean(process.env.SSL);
 const HOSTNAME = process.env.API_HOSTNAME;
 const HTTP_ROUTE = `${SSL ? 'https' : 'http'}://${HOSTNAME}`;
 const WS_ROUTE = `${SSL ? 'wss' : 'ws'}://${HOSTNAME}/graphql`;
+const EXPLORER_URL = process.env.NETWORK === 'mainnet'
+  ? 'https://explorer.nakachain.org'
+  : 'https://testnet.explorer.nakachain.org';
 
 export const GRAPHQL = {
   HTTP: `${HTTP_ROUTE}/graphql`,
@@ -9,31 +12,26 @@ export const GRAPHQL = {
 };
 
 export const API = {
-  eventFactoryAddress: `${HTTP_ROUTE}/config-manager/event-factory-address`,
-  eventEscrowAmount: `${HTTP_ROUTE}/config-manager/event-escrow-amount`,
-  arbitrationLength: `${HTTP_ROUTE}/config-manager/arbitration-length`,
-  arbitrationRewardPercentage: `${HTTP_ROUTE}/config-manager/arbitration-reward-percentage`,
-  startingOracleThreshold: `${HTTP_ROUTE}/config-manager/starting-oracle-threshold`,
-  thresholdPercentIncrease: `${HTTP_ROUTE}/config-manager/threshold-percent-increase`,
-  calculateWinnings: `${HTTP_ROUTE}/multiple-results-event/calculate-winnings`,
-  version: `${HTTP_ROUTE}/multiple-results-event/version`,
-  round: `${HTTP_ROUTE}/multiple-results-event/round`,
-  resultIndex: `${HTTP_ROUTE}/multiple-results-event/result-index`,
-  consensusThreshold: `${HTTP_ROUTE}/multiple-results-event/consensus-threshold`,
-  arbitrationEndTime: `${HTTP_ROUTE}/multiple-results-event/arbitration-end-time`,
-  eventMetadata: `${HTTP_ROUTE}/multiple-results-event/event-metadata`,
-  centralizedMetadata: `${HTTP_ROUTE}/multiple-results-event/centralized-metadata`,
-  configMetadata: `${HTTP_ROUTE}/multiple-results-event/config-metadata`,
-  totalBets: `${HTTP_ROUTE}/multiple-results-event/total-bets`,
-  didWithdraw: `${HTTP_ROUTE}/multiple-results-event/did-withdraw`,
-  didWithdrawEscrow: `${HTTP_ROUTE}/multiple-results-event/did-withdraw-escrow`,
+  EVENT_FACTORY_ADDRESS: `${HTTP_ROUTE}/config-manager/event-factory-address`,
+  EVENT_ESCROW_AMOUNT: `${HTTP_ROUTE}/config-manager/event-escrow-amount`,
+  ARBITRATION_LENGTH: `${HTTP_ROUTE}/config-manager/arbitration-length`,
+  ARBITRATION_REWARD_PERCENTAGE: `${HTTP_ROUTE}/config-manager/arbitration-reward-percentage`,
+  STARTING_ORACLE_THRESHOLD: `${HTTP_ROUTE}/config-manager/starting-oracle-threshold`,
+  THRESHOLD_PERCENT_INCREASE: `${HTTP_ROUTE}/config-manager/threshold-percent-increase`,
+  CALCULATE_WINNINGS: `${HTTP_ROUTE}/multiple-results-event/calculate-winnings`,
+  VERSION: `${HTTP_ROUTE}/multiple-results-event/version`,
+  ROUND: `${HTTP_ROUTE}/multiple-results-event/round`,
+  RESULT_INDEX: `${HTTP_ROUTE}/multiple-results-event/result-index`,
+  CONSENSUS_THRESHOLD: `${HTTP_ROUTE}/multiple-results-event/consensus-threshold`,
+  ARBITRATION_END_TIME: `${HTTP_ROUTE}/multiple-results-event/arbitration-end-time`,
+  EVENT_METADATA: `${HTTP_ROUTE}/multiple-results-event/event-metadata`,
+  CENTRALIZED_METADATA: `${HTTP_ROUTE}/multiple-results-event/centralized-metadata`,
+  CONFIG_METADATA: `${HTTP_ROUTE}/multiple-results-event/config-metadata`,
+  TOTAL_BETS: `${HTTP_ROUTE}/multiple-results-event/total-bets`,
+  DID_WITHDRAW: `${HTTP_ROUTE}/multiple-results-event/did-withdraw`,
+  DID_WITHDRAW_ESCROW: `${HTTP_ROUTE}/multiple-results-event/did-withdraw-escrow`,
 };
 
-export default {
-  insight: {
-    totals: `${BASE_INSIGHT}/statistics/total`,
-  },
-  explorer: {
-    tx: process.env.LOCAL_WALLET === 'true' ? 'https://qtumhost/tx' : `${BASE_QTUM_WEB}/tx`,
-  },
+export const EXPLORER = {
+  TX: `${EXPLORER_URL}/tx`,
 };
