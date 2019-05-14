@@ -1,14 +1,13 @@
-import { observable, action, runInAction, computed, reaction, toJS } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { OracleStatus, Routes } from 'constants';
-import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
+import { EVENT_STATUS, Routes } from 'constants';
+import { events } from '../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
-  hasMoreTopics: true, // has more topics to fetch?
-  hasMoreOracles: true, // has more oracles to fetch?
+  hasMore: true,
   skip: 0, // skip
 };
 
@@ -17,11 +16,7 @@ export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
-  @observable hasMoreTopics = INIT_VALUES.hasMoreTopics
-  @observable hasMoreOracles = INIT_VALUES.hasMoreOracles
-  @computed get hasMore() {
-    return this.hasMoreOracles || this.hasMoreTopics;
-  }
+  @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
   @observable limit = 24
 
@@ -73,25 +68,21 @@ export default class {
   }
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
-    // limit /= 2; // eslint-disable-line
-    // skip /= 2; // eslint-disable-line
-    // const orderBy = { field: 'blockNum', direction: this.app.sortBy };
-    // let topics = [];
-    // let oracles = [];
-    // if (this.hasMoreTopics) {
-    //   const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-    //   const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-    //   topics = aliasTopics;
-    //   this.hasMoreTopics = pageInfo.hasNextPage;
-    // }
-    // if (this.hasMoreOracles) {
-    //   const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-    //   this.hasMoreOracles = pageInfo.hasNextPage;
-    //   oracles = aliasOracles;
-    // }
-    // const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
-    // return allEvents;
-    const result = [];
-    return result;
+    if (this.hasMore) {
+      const orderBy = { field: 'blockNum', direction: this.app.sortBy };
+      const filters = [
+        { language: this.app.ui.locale },
+      ];
+
+      // if naka wallet not loggined, pop up and wait
+      const { account } = this.app.naka;
+      if (!account) await window.ethereum.enable();
+
+      const res = await events({ filters, orderBy, limit, skip, pendingTxsAddress: account });
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
+      return res.items;
+    }
+    return INIT_VALUES.list;
   }
 }
