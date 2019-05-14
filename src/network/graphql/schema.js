@@ -1,15 +1,15 @@
-const PAGE_INFO = `
+export const PAGE_INFO = `
   hasNextPage
   pageNumber
   count
 `;
 
-const BLOCK = `
+export const BLOCK = `
   number
   time
 `;
 
-const TRANSACTION_RECEIPT = `
+export const TRANSACTION_RECEIPT = `
   status
   blockHash
   blockNumber
@@ -21,14 +21,14 @@ const TRANSACTION_RECEIPT = `
   gasUsed
 `;
 
-const PENDING_TRANSACTIONS = `
+export const PENDING_TRANSACTIONS = `
   bet
   resultSet
   withdraw
   total
 `;
 
-const MULTIPLE_RESULTS_EVENT = `
+export const MULTIPLE_RESULTS_EVENT = `
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
@@ -59,13 +59,13 @@ const MULTIPLE_RESULTS_EVENT = `
   pendingTxs { ${PENDING_TRANSACTIONS} }
 `;
 
-const PAGINATED_EVENTS = `
+export const PAGINATED_EVENTS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${MULTIPLE_RESULTS_EVENT} }
 `;
 
-const BET = `
+export const BET = `
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
@@ -78,13 +78,13 @@ const BET = `
   eventRound
 `;
 
-const PAGINATED_BETS = `
+export const PAGINATED_BETS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${BET} }
 `;
 
-const RESULT_SET = `
+export const RESULT_SET = `
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
@@ -97,13 +97,13 @@ const RESULT_SET = `
   eventRound
 `;
 
-const PAGINATED_RESULT_SETS = `
+export const PAGINATED_RESULT_SETS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${RESULT_SET} }
 `;
 
-const WITHDRAW = `
+export const WITHDRAW = `
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
@@ -115,50 +115,38 @@ const WITHDRAW = `
   escrowAmount
 `;
 
-const PAGINATED_WITHDRAWS = `
+export const PAGINATED_WITHDRAWS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${WITHDRAW} }
 `;
 
-const SYNC_INFO = `
+export const SYNC_INFO = `
   syncBlockNum
   syncBlockTime
   syncPercent
 `;
 
-const ALL_STATS = `
+export const ALL_STATS = `
   eventCount
   participantCount
   totalBets
 `;
 
-const MOST_BET = `
+export const MOST_BET = `
   eventAddress
   betterAddress
   amount
 `;
 
-const PAGINATED_MOST_BETS = `
+export const PAGINATED_MOST_BETS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${MOST_BET} }
 `;
 
-const BIGGEST_WINNER = `
+export const BIGGEST_WINNER = `
   eventAddress
   betterAddress
   amount
 `;
-
-export const TYPE_FIELDS = {
-  MULTIPLE_RESULTS_EVENT,
-  PAGINATED_EVENTS,
-  PAGINATED_BETS,
-  PAGINATED_RESULT_SETS,
-  PAGINATED_WITHDRAWS,
-  SYNC_INFO,
-  ALL_STATS,
-  PAGINATED_MOST_BETS,
-  BIGGEST_WINNER,
-};

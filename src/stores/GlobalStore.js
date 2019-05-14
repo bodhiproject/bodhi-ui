@@ -1,10 +1,9 @@
 import { observable, action, reaction, toJS, computed } from 'mobx';
 import { OracleStatus, Token } from 'constants';
 import { each, find, isEmpty } from 'lodash';
-
 import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
-import getSubscription, { channels } from '../network/graphql/subscriptions';
-import apolloClient, { wsLink } from '../network/graphql';
+import { subscribeSyncInfo } from '../network/graphql/subscriptions';
+import { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: undefined,
@@ -105,12 +104,6 @@ export default class GlobalStore {
       this.syncPercent = syncInfo.syncPercent;
       this.syncBlockNum = syncInfo.syncBlockNum;
       this.syncBlockTime = syncInfo.syncBlockTime;
-      this.peerNodeCount = syncInfo.peerNodeCount || 0;
-
-      // Only use the syncInfo balances if using a local wallet. Naka Wallet will set the addresses differently.
-      if (this.localWallet) {
-        this.app.wallet.addresses = syncInfo.balances;
-      }
     }
   }
 
@@ -136,57 +129,12 @@ export default class GlobalStore {
    */
   subscribeSyncInfo = () => {
     const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_SYNC_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onSyncInfo({ error: errors[0] });
-        } else {
-          self.onSyncInfo(data.onSyncInfo);
-        }
-      },
-      error(err) {
+    subscribeSyncInfo((err, data) => {
+      if (err) {
         self.onSyncInfo({ error: err.message });
-      },
-    });
-  }
-
-  /**
-   * Handles an onApproveSuccess subscription message.
-   * @param {object} data Subscription message payload.
-   */
-  onApproveSuccess = (data) => {
-    if (data.error) {
-      console.error(data.error.message); // eslint-disable-line no-console
-      return;
-    }
-
-    if (!this.localWallet) {
-      // TODO: execute follow up tx
-    }
-  }
-
-  /**
-   * Subscribe to onApproveSuccess subscription.
-   * Receives messages of approve transactions that were successful.
-   * This is used so the UI knows to execute a follow-up tx.
-   */
-  subscribeOnApproveSuccess = () => {
-    const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_APPROVE_SUCCESS),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onApproveSuccess({ error: errors[0] });
-        } else {
-          self.onApproveSuccess(data.onApproveSuccess);
-        }
-      },
-      error(err) {
-        self.onApproveSuccess({ error: err.message });
-      },
+        return;
+      }
+      self.onSyncInfo(data);
     });
   }
 

@@ -9,7 +9,6 @@ import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsPr
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
-
 import App from './scenes/App';
 import bodhiTheme, { theme as styledTheme } from './config/theme';
 import store from './stores/AppStore';
@@ -24,7 +23,7 @@ export const AppProvider = observer(() => (
     <MobxProvider store={store}>
       <MuiThemeProvider theme={bodhiTheme}>
         <IntlProvider locale={store.ui.locale} messages={store.ui.localeMessages}>
-          <ApolloProvider client={graphqlClient}>
+          <ApolloProvider client={graphqlClient()}>
             <Router history={history}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <Route

@@ -1,8 +1,18 @@
 import { gql } from 'apollo-boost';
 import { isEmpty, each, isFinite } from 'lodash';
 import { SyncInfo } from 'models';
-import client from './';
-import { TYPE_FIELDS } from './schema';
+import client from '.';
+import {
+  PAGINATED_EVENTS,
+  MULTIPLE_RESULTS_EVENT,
+  PAGINATED_BETS,
+  PAGINATED_RESULT_SETS,
+  PAGINATED_WITHDRAWS,
+  SYNC_INFO,
+  ALL_STATS,
+  PAGINATED_MOST_BETS,
+  BIGGEST_WINNER,
+} from './schema';
 
 const QUERIES = {
   events: gql`
@@ -20,7 +30,7 @@ const QUERIES = {
         skip: $skip
         pendingTxsAddress: $pendingTxsAddress
       ) {
-        ${TYPE_FIELDS.PAGINATED_EVENTS}
+        ${PAGINATED_EVENTS}
       }
     }
   `,
@@ -40,7 +50,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.MULTIPLE_RESULTS_EVENT}
+        ${MULTIPLE_RESULTS_EVENT}
       }
     }
   `,
@@ -58,7 +68,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.PAGINATED_BETS}
+        ${PAGINATED_BETS}
       }
     }
   `,
@@ -76,7 +86,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.PAGINATED_RESULT_SETS}
+        ${PAGINATED_RESULT_SETS}
       }
     }
   `,
@@ -94,7 +104,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.PAGINATED_WITHDRAWS}
+        ${PAGINATED_WITHDRAWS}
       }
     }
   `,
@@ -102,7 +112,7 @@ const QUERIES = {
   syncInfo: gql`
     query {
       syncInfo {
-        ${TYPE_FIELDS.SYNC_INFO}
+        ${SYNC_INFO}
       }
     }
   `,
@@ -110,7 +120,7 @@ const QUERIES = {
   allStats: gql`
     query {
       allStats {
-        ${TYPE_FIELDS.ALL_STATS}
+        ${ALL_STATS}
       }
     }
   `,
@@ -128,7 +138,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.PAGINATED_MOST_BETS}
+        ${PAGINATED_MOST_BETS}
       }
     }
   `,
@@ -146,7 +156,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${TYPE_FIELDS.BIGGEST_WINNER}
+        ${BIGGEST_WINNER}
       }
     }
   `,
@@ -202,7 +212,7 @@ class GraphQuery {
   }
 
   async execute() {
-    const res = await client.query({
+    const res = await client().query({
       query: this.query,
       variables: this.constructVariables(),
       fetchPolicy: 'network-only',
