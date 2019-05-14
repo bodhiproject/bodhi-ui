@@ -211,7 +211,6 @@ export default class TransactionStore {
     }
 
     this.app.txSentDialog.open(tx.txid);
-    await this.app.pendingTxsSnackbar.init();
   }
 
   /**

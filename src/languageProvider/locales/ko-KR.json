@@ -136,8 +136,6 @@
   "oracle.setResultExplanation": "합의 한계점에에 도달한 후 결과 설정이 가능합니다.",
   "oracle.setStartTimeDisabledText": "결과 설정 시작 시간이 아직 시작되지 않았습니다.",
   "oracle.voteExplanation": "결과의 총 투표수가 합의 한계점에 도달한 경우 새로운 결과가 됩니다.",
-  "pendingTxsSnackbar.balanceExplanation": "보류중인 거래는 지갑 잔액에 영향을 미칩니다.",
-  "pendingTxsSnackbar.youHaveXPendingTransactions": "보류중인 거래가 {numOfTxs} 개 있습니다.",
   "naka.installNow": "지금 설치",
   "naka.loggedIn": "NakaWallet에 로그인했습니다.",
   "naka.loggedIntoWrongNetwork": "잘못된 네트워크에 로그인되었습니다. Naka Wallet 네트워크를 전환하십시오.",

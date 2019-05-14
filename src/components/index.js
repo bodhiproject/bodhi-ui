@@ -6,7 +6,6 @@ export { default as ExecuteTxDialog } from './ExecuteTxDialog';
 export { default as GlobalSnackbar } from './GlobalSnackbar';
 export { default as ImportantNote } from './ImportantNote';
 export * from './Loading';
-export { default as PendingTxsSnackbar } from './PendingTxsSnackbar';
 export * from './NakaWalletPrompt';
 export { default as ResponsiveTable } from './ResponsiveTable';
 export { default as StepperVertRight } from './StepperVertRight';

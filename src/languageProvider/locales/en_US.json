@@ -136,8 +136,6 @@
   "oracle.setResultExplanation": "Setting the result requires staking the Consensus Threshold amount.",
   "oracle.setStartTimeDisabledText": "The result setting start time has not started yet.",
   "oracle.voteExplanation": "When a result's total votes reaches the Consensus Threshold, it will become the new result.",
-  "pendingTxsSnackbar.balanceExplanation": "Pending transactions will affect your wallet balances.",
-  "pendingTxsSnackbar.youHaveXPendingTransactions": "You have {numOfTxs} pending transaction(s).",
   "naka.installNow": "Install Now",
   "naka.loggedIn": "You are logged in to Naka Wallet.",
   "naka.loggedIntoWrongNetwork": "Logged into wrong network. Switch your Naka Wallet network.",

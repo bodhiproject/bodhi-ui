@@ -136,8 +136,6 @@
   "oracle.setResultExplanation": "设置结果要求投入共识阈值数量。",
   "oracle.setStartTimeDisabledText": "结果设置时间还没到达。",
   "oracle.voteExplanation": "当一个结果获得的投票达到共识阈值，此结果将会成为新的结果。",
-  "pendingTxsSnackbar.balanceExplanation": "处理中的交易将会影响您的钱包余额",
-  "pendingTxsSnackbar.youHaveXPendingTransactions": "您有{numOfTxs}待处理的交易.",
   "naka.installNow": "现在就安装",
   "naka.loggedIn": "您已登录NakaWallet.",
   "naka.loggedIntoWrongNetwork": "您的NakaWallet登录了错误的链网络，请切换您的链网络。",
