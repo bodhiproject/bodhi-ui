@@ -1,5 +1,5 @@
 import { gql } from 'apollo-boost';
-import { Event, Bet, ResultSet, Withdraw } from 'models';
+import { MultipleResultsEvent, Bet, ResultSet, Withdraw } from 'models';
 import { MULTIPLE_RESULTS_EVENT, BET, RESULT_SET, WITHDRAW } from './schema';
 
 const MUTATIONS = {
