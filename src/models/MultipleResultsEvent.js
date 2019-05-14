@@ -37,8 +37,8 @@ export default class MultipleResultsEvent {
   constructor(event, app) {
     Object.assign(this, event);
     this.app = app;
-    this.escrowAmount = satoshiToDecimal(this.escrowAmount);
-    this.totalBets = satoshiToDecimal(this.totalBets);
+    this.escrowAmount = satoshiToDecimal(event.escrowAmount);
+    this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',
