@@ -41,16 +41,16 @@ export default class LeaderboardStore {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES);
-    this.app.ui.location = Routes.LEADERBOARD;
-    const res = await queryLeaderboardStats();
-    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
-    await this.loadLeaderboard();
+    // Object.assign(this, INIT_VALUES);
+    // this.app.ui.location = Routes.LEADERBOARD;
+    // const res = await queryLeaderboardStats();
+    // Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
+    // await this.loadLeaderboard();
   }
 
   @action
   loadLeaderboard = async () => {
-    const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
-    this.leaderboardVotes = votes;
+    // const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
+    // this.leaderboardVotes = votes;
   }
 }
