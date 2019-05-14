@@ -7,7 +7,6 @@ import { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: undefined,
-  qweb3: undefined,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
@@ -24,7 +23,6 @@ const INIT_VALUES = {
 
 export default class GlobalStore {
   @observable localWallet = INIT_VALUES.localWallet
-  @observable qweb3 = INIT_VALUES.qweb3
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
@@ -145,55 +143,55 @@ export default class GlobalStore {
    */
   @action
   getActionableItemCount = async () => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      this.userData.resultSettingCount = 0;
-      this.userData.finalizeCount = 0;
-      this.userData.withdrawCount = 0;
-      return;
-    }
+    // // Address is required for the request filters
+    // if (isEmpty(this.app.wallet.addresses)) {
+    //   this.userData.resultSettingCount = 0;
+    //   this.userData.finalizeCount = 0;
+    //   this.userData.withdrawCount = 0;
+    //   return;
+    // }
 
-    try {
-      const voteFilters = [];
-      const topicFilters = [];
+    // try {
+    //   const voteFilters = [];
+    //   const topicFilters = [];
 
-      // Get all votes for all your addresses
-      each(this.app.wallet.addresses, (item) => {
-        voteFilters.push({ voterAddress: item.address });
-        topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
-      });
+    //   // Get all votes for all your addresses
+    //   each(this.app.wallet.addresses, (item) => {
+    //     voteFilters.push({ voterAddress: item.address });
+    //     topicFilters.push({ status: OracleStatus.WITHDRAW, creatorAddress: item.address, language: this.app.ui.locale });
+    //   });
 
-      // Filter votes
-      let votes = await queryAllVotes(voteFilters);
-      votes = votes.reduce((accumulator, vote) => {
-        const { voterAddress, topicAddress, optionIdx } = vote;
-        if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
-        return accumulator;
-      }, []);
+    //   // Filter votes
+    //   let votes = await queryAllVotes(voteFilters);
+    //   votes = votes.reduce((accumulator, vote) => {
+    //     const { voterAddress, topicAddress, optionIdx } = vote;
+    //     if (!find(accumulator, { voterAddress, topicAddress, optionIdx })) accumulator.push(vote);
+    //     return accumulator;
+    //   }, []);
 
-      each(votes, ({ topicAddress, optionIdx }) => {
-        topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
-      });
-      const withdrawInfo = await queryAllTopics(this.app, topicFilters);
-      this.userData.withdrawCount = withdrawInfo.totalCount;
+    //   each(votes, ({ topicAddress, optionIdx }) => {
+    //     topicFilters.push({ status: OracleStatus.WITHDRAW, address: topicAddress, resultIdx: optionIdx, language: this.app.ui.locale });
+    //   });
+    //   const withdrawInfo = await queryAllTopics(this.app, topicFilters);
+    //   this.userData.withdrawCount = withdrawInfo.totalCount;
 
-      // Get result set items
-      const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
-      oracleSetFilters.push({
-        token: Token.QTUM,
-        status: OracleStatus.WAIT_RESULT,
-        resultSetterAddress: this.app.wallet.currentAddress,
-        language: this.app.ui.locale,
-      });
-      const resultSettingInfo = await queryAllOracles(this.app, oracleSetFilters);
-      this.userData.resultSettingCount = resultSettingInfo.totalCount;
+    //   // Get result set items
+    //   const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
+    //   oracleSetFilters.push({
+    //     token: Token.QTUM,
+    //     status: OracleStatus.WAIT_RESULT,
+    //     resultSetterAddress: this.app.wallet.currentAddress,
+    //     language: this.app.ui.locale,
+    //   });
+    //   const resultSettingInfo = await queryAllOracles(this.app, oracleSetFilters);
+    //   this.userData.resultSettingCount = resultSettingInfo.totalCount;
 
-      // Get finalize items
-      const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
-      const finalizeInfo = await queryAllOracles(this.app, oracleFinalizeFilters);
-      this.userData.finalizeCount = finalizeInfo.totalCount;
-    } catch (err) {
-      console.error(err); // eslint-disable-line
-    }
+    //   // Get finalize items
+    //   const oracleFinalizeFilters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
+    //   const finalizeInfo = await queryAllOracles(this.app, oracleFinalizeFilters);
+    //   this.userData.finalizeCount = finalizeInfo.totalCount;
+    // } catch (err) {
+    //   console.error(err); // eslint-disable-line
+    // }
   }
 }
