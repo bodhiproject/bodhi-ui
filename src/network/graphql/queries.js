@@ -1,7 +1,6 @@
 import { gql } from 'apollo-boost';
 import { isEmpty, each, isFinite } from 'lodash';
 import { SyncInfo } from 'models';
-import client from '.';
 import {
   PAGINATED_EVENTS,
   MULTIPLE_RESULTS_EVENT,
@@ -163,9 +162,10 @@ const QUERIES = {
 };
 
 class GraphQuery {
-  constructor(queryName) {
+  constructor(queryName, client) {
     this.queryName = queryName;
     this.query = QUERIES[queryName];
+    this.client = client;
     this.filter = undefined;
     this.orderBy = undefined;
     this.limit = undefined;
@@ -212,7 +212,7 @@ class GraphQuery {
   }
 
   async execute() {
-    const res = await client().query({
+    const res = await this.client.query({
       query: this.query,
       variables: this.constructVariables(),
       fetchPolicy: 'network-only',
@@ -223,14 +223,15 @@ class GraphQuery {
 
 /**
  * Queries all events.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {array} orderBy Array of order by fields. e.g. [{ field: 'blockNum', direction: 'ASC' }]
  * @param {number} limit Max number of items per query.
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function events(filter, orderBy, limit, skip) {
-  const request = new GraphQuery('events');
+export async function events(client, filter, orderBy, limit, skip) {
+  const request = new GraphQuery('events', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (!isEmpty(orderBy)) request.setOrderBy(orderBy);
   if (isFinite(limit) && limit > 0) request.setLimit(limit);
@@ -240,6 +241,7 @@ export async function events(filter, orderBy, limit, skip) {
 
 /**
  * Searches all events by a search phrase.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {string} searchPhrase Phrase to search events.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {array} orderBy Array of order by fields. e.g. [{ field: 'blockNum', direction: 'ASC' }]
@@ -247,8 +249,8 @@ export async function events(filter, orderBy, limit, skip) {
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function searchEvents(searchPhrase, filter, orderBy, limit, skip) {
-  const request = new GraphQuery('searchEvents');
+export async function searchEvents(client, searchPhrase, filter, orderBy, limit, skip) {
+  const request = new GraphQuery('searchEvents', client);
   request.setSearchPhrase(searchPhrase);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (!isEmpty(orderBy)) request.setOrderBy(orderBy);
@@ -259,14 +261,15 @@ export async function searchEvents(searchPhrase, filter, orderBy, limit, skip) {
 
 /**
  * Queries all bets.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {array} orderBy Array of order by fields. e.g. [{ field: 'blockNum', direction: 'ASC' }]
  * @param {number} limit Max number of items per query.
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function bets(filter, orderBy, limit, skip) {
-  const request = new GraphQuery('bets');
+export async function bets(client, filter, orderBy, limit, skip) {
+  const request = new GraphQuery('bets', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (!isEmpty(orderBy)) request.setOrderBy(orderBy);
   if (isFinite(limit) && limit > 0) request.setLimit(limit);
@@ -276,14 +279,15 @@ export async function bets(filter, orderBy, limit, skip) {
 
 /**
  * Queries all result sets.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {array} orderBy Array of order by fields. e.g. [{ field: 'blockNum', direction: 'ASC' }]
  * @param {number} limit Max number of items per query.
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function resultSets(filter, orderBy, limit, skip) {
-  const request = new GraphQuery('resultSets');
+export async function resultSets(client, filter, orderBy, limit, skip) {
+  const request = new GraphQuery('resultSets', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (!isEmpty(orderBy)) request.setOrderBy(orderBy);
   if (isFinite(limit) && limit > 0) request.setLimit(limit);
@@ -293,14 +297,15 @@ export async function resultSets(filter, orderBy, limit, skip) {
 
 /**
  * Queries all withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {array} orderBy Array of order by fields. e.g. [{ field: 'blockNum', direction: 'ASC' }]
  * @param {number} limit Max number of items per query.
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function withdraws(filter, orderBy, limit, skip) {
-  const request = new GraphQuery('withdraws');
+export async function withdraws(client, filter, orderBy, limit, skip) {
+  const request = new GraphQuery('withdraws', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (!isEmpty(orderBy)) request.setOrderBy(orderBy);
   if (isFinite(limit) && limit > 0) request.setLimit(limit);
@@ -310,32 +315,35 @@ export async function withdraws(filter, orderBy, limit, skip) {
 
 /**
  * Queries sync info.
+ * @param {ApolloClient} client Apollo Client instance.
  * @return {object} Query result.
  */
-export async function syncInfo() {
-  const request = new GraphQuery('syncInfo');
+export async function syncInfo(client) {
+  const request = new GraphQuery('syncInfo', client);
   const result = await request.execute();
   return new SyncInfo(result);
 }
 
 /**
  * Queries sync info.
+ * @param {ApolloClient} client Apollo Client instance.
  * @return {object} Query result.
  */
-export async function allStats() {
-  const request = new GraphQuery('allStats');
+export async function allStats(client) {
+  const request = new GraphQuery('allStats', client);
   return request.execute();
 }
 
 /**
  * Queries most bets given the filters.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @param {number} limit Max number of items per query.
  * @param {number} skip Amount of items to skip.
  * @return {object} Query result.
  */
-export async function mostBets(filter, limit, skip) {
-  const request = new GraphQuery('mostBets');
+export async function mostBets(client, filter, limit, skip) {
+  const request = new GraphQuery('mostBets', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   if (isFinite(limit) && limit > 0) request.setLimit(limit);
   if (isFinite(skip) && skip >= 0) request.setSkip(skip);
@@ -344,11 +352,12 @@ export async function mostBets(filter, limit, skip) {
 
 /**
  * Queries the biggest winners based on an event address.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {array} filter Array of filters. e.g. [{ status: 'BETTING' }]
  * @return {object} Query result.
  */
-export async function biggestWinners(filter) {
-  const request = new GraphQuery('biggestWinners');
+export async function biggestWinners(client, filter) {
+  const request = new GraphQuery('biggestWinners', client);
   if (!isEmpty(filter)) request.setFilter(filter);
   return request.execute();
 }
