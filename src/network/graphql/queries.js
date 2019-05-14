@@ -110,7 +110,10 @@ class GraphQuery {
     const orderByStr = this.getOrderByString();
     const searchPhraseStr = this.getSearchPhraseString();
     const paramsStr = this.getParamsString();
-    const needsParentheses = !isEmpty(filterStr) || !isEmpty(orderByStr) || !isEmpty(paramsStr) || !isEmpty(searchPhraseStr);
+    const needsParentheses = !isEmpty(filterStr)
+      || !isEmpty(orderByStr)
+      || !isEmpty(paramsStr)
+      || !isEmpty(searchPhraseStr);
 
     const parenthesesOpen = needsParentheses ? '(' : '';
     const parenthesesClose = needsParentheses ? ')' : '';
