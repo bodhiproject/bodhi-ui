@@ -1,6 +1,91 @@
+import { gql } from 'apollo-boost';
 import { has, includes } from 'lodash';
 
+export const QUERY = {
+  events: gql`{
+    events(
+      filter: EventFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+      pendingTxsAddress: String
+    ): PaginatedEvents!  
+  }`,
+
+  searchEvents: gql`{
+    searchEvents(
+      searchPhrase: String
+      filter: EventFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): [MultipleResultsEvent]!
+  }`,
+
+  bets: gql`{
+    bets(
+      filter: BetFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): PaginatedBets!
+  }`,
+
+  resultSets: gql`{
+    resultSets(
+      filter: ResultSetFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): PaginatedResultSets!
+  }`,
+
+  withdraws: gql`{
+    withdraws(
+      filter: WithdrawFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): PaginatedWithdraws!
+  }`,
+
+  syncInfo: gql`{
+    syncInfo: SyncInfo!
+  }`,
+
+  allStats: gql`{
+    allStats(
+      filter: BetFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): AllStats!
+  }`,
+
+  mostBets: gql`{
+    mostBets(
+      filter: BetFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): PaginatedMostBets!
+  }`,
+
+  biggestWinners: gql`{
+    biggestWinners(
+      filter: BetFilter
+      orderBy: [Order!]
+      limit: Int
+      skip: Int
+    ): [BiggestWinner]!
+  }`,
+};
+
 export const TYPE = {
+  MULTIPLE_RESULTS_EVENT: 'MultipleResultsEvents',
+  PAGINATED_EVENTS: 'PaginatedEvents',
+  BET: 'Bet',
+
   topic: 'Topic',
   oracle: 'Oracle',
   vote: 'Vote',
