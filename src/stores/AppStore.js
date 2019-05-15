@@ -11,7 +11,6 @@ import AllEventsStore from './AllEventsStore';
 import ArbitrationStore from '../scenes/Arbitration/store';
 import PredictionStore from '../scenes/Prediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
-import FinalizeStore from '../scenes/Activities/Finalize/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
 import FavoriteStore from '../scenes/Activities/Favorite/store';
@@ -82,7 +81,6 @@ class AppStore {
       this.leaderboard = new LeaderboardStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
-        finalize: new FinalizeStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
       };

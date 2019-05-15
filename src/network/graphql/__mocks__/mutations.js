@@ -75,9 +75,6 @@ export function createSetResultTx(version, topicAddress, oracleAddress, optionId
 export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) { // eslint-disable-line
 }
 
-export function createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress) { // eslint-disable-line
-}
-
 export function createWithdrawTx(type, version, topicAddress, senderAddress) { // eslint-disable-line
 }
 

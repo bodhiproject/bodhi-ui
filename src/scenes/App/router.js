@@ -61,11 +61,6 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.FINALIZE}`}
-        component={asyncComponent(() => import('../Activities'))}
-      />
-      <Route
-        exact
         path={`${url}${Routes.WITHDRAW}`}
         component={asyncComponent(() => import('../Activities'))}
       />

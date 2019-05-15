@@ -257,7 +257,6 @@ export default class TransactionStore {
       [TransactionType.SET_RESULT]: this.executeSetResult,
       [TransactionType.APPROVE_VOTE]: this.executeApproveVote,
       [TransactionType.VOTE]: this.executeVote,
-      [TransactionType.FINALIZE_RESULT]: this.executeFinalizeResult,
       [TransactionType.WITHDRAW]: this.executeWithdraw,
       [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
       [TransactionType.TRANSFER]: this.executeTransfer,
@@ -884,61 +883,6 @@ export default class TransactionStore {
         this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/vote`);
       } else {
         this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/vote`);
-      }
-    }
-  }
-
-  /**
-   * Adds a finalize result tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the DecentralizedOracle.
-   */
-  @action
-  addFinalizeResultTx = async (topicAddress, oracleAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.FINALIZE_RESULT,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes a finalize result.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeFinalizeResult = async (index, tx) => {
-    try {
-      const { senderAddress, oracleAddress } = tx;
-      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
-        methodArgs: [],
-        senderAddress,
-      });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      if (txid) {
-        // Create pending tx on server
-        const pendingTx = await createTransaction('finalizeResult', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-        });
-
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-finalizeResult');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/finalize-result`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/finalize-result`);
       }
     }
   }

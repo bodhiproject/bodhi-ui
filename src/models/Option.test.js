@@ -11,7 +11,7 @@ global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
 const { QTUM, BOT } = Token;
-const { BETTING, VOTING, FINALIZING } = Phases;
+const { BETTING, VOTING } = Phases;
 
 describe('Option Model', () => {
   const addr = {
@@ -66,7 +66,6 @@ describe('Option Model', () => {
       expect(store.percent).toBe(50);
       expect(store.isPrevResult).toBe(undefined);
       expect(store.maxAmount).toBe(undefined);
-      expect(store.isFinalizing).toBe(undefined);
       expect(store.disabled).toBeTruthy();
     });
 
@@ -89,7 +88,6 @@ describe('Option Model', () => {
       expect(store.percent).toBe(50);
       expect(store.isPrevResult).toBe(undefined);
       expect(store.maxAmount).toBe(undefined);
-      expect(store.isFinalizing).toBe(undefined);
       expect(store.disabled).not.toBeTruthy();
     });
 
@@ -115,7 +113,6 @@ describe('Option Model', () => {
       expect(store.percent).toBe(0);
       expect(store.isPrevResult).toBeTruthy();
       expect(store.maxAmount).toBe(0);
-      expect(store.isFinalizing).not.toBeTruthy();
       expect(store.disabled).toBeTruthy();
     });
 
@@ -141,62 +138,7 @@ describe('Option Model', () => {
       expect(store.percent).toBe(100);
       expect(store.isPrevResult).not.toBeTruthy();
       expect(store.maxAmount).toBe(0);
-      expect(store.isFinalizing).not.toBeTruthy();
       expect(store.disabled).not.toBeTruthy();
-    });
-
-    it('Constructor 5: decentralized oracle confirmed & prev result & finalizing', () => {
-      const name = '1';
-      const i = 1;
-
-      oracle.token = BOT;
-      oracle.phase = FINALIZING;
-      oracle.optionIdxs = [0];
-      oracle.status = OracleStatus.WAIT_RESULT;
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      expect(store.app).toBe(app);
-      expect(store.idx).toBe(i);
-      expect(store.amount).toBe(oracle.amounts[i]);
-      expect(store.isLast).toBeTruthy();
-      expect(store.isFirst).not.toBeTruthy();
-      expect(store.name).toBe(name);
-      expect(store.token).toBe(BOT);
-      expect(store.phase).toBe(FINALIZING);
-      expect(store.value).toBe('100 BOT');
-      expect(store.percent).toBe(0);
-      expect(store.isPrevResult).toBeTruthy();
-      expect(store.maxAmount).toBe(undefined);
-      expect(store.isFinalizing).toBeTruthy();
-      expect(store.disabled).not.toBeTruthy();
-    });
-
-    it('Constructor 6: decentralized oracle confirmed & NOT prev result & finalizing', () => {
-      const name = '1';
-      const i = 1;
-
-      oracle.token = BOT;
-      oracle.phase = FINALIZING;
-      oracle.optionIdxs = [1];
-      oracle.status = OracleStatus.WAIT_RESULT;
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      expect(store.app).toBe(app);
-      expect(store.idx).toBe(i);
-      expect(store.amount).toBe(oracle.amounts[i]);
-      expect(store.isLast).toBeTruthy();
-      expect(store.isFirst).not.toBeTruthy();
-      expect(store.name).toBe(name);
-      expect(store.token).toBe(BOT);
-      expect(store.phase).toBe(FINALIZING);
-      expect(store.value).toBe('100 BOT');
-      expect(store.percent).toBe(100);
-      expect(store.isPrevResult).not.toBeTruthy();
-      expect(store.maxAmount).toBe(undefined);
-      expect(store.isFinalizing).toBeTruthy();
-      expect(store.disabled).toBeTruthy();
     });
   });
 

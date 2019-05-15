@@ -6,8 +6,7 @@ import { searchOracles, searchTopics } from '../../network/graphql/queries';
 const TAB_BET = 0;
 const TAB_VOTE = 1;
 const TAB_SET = 2;
-const TAB_FINALIZE = 3;
-const TAB_WITHDRAW = 4;
+const TAB_WITHDRAW = 3;
 export default class SearchStore {
   @observable oracles = [];
   @observable phrase = '';
@@ -19,7 +18,6 @@ export default class SearchStore {
   @observable votes = [];
   @observable sets = [];
   @observable withdraws = [];
-  @observable finalizes = [];
 
   constructor(app) {
     this.app = app;
@@ -35,7 +33,6 @@ export default class SearchStore {
           this.bets = [];
           this.votes = [];
           this.sets = [];
-          this.finalizes = [];
         }
       },
     );
@@ -55,7 +52,6 @@ export default class SearchStore {
     this.loaded = false;
     await this.fetch();
     runInAction(() => {
-      this.finalizes = this.oracles.filter(event => event.phase === Phases.FINALIZING);
       this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING);
       this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING');
       this.bets = this.oracles.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING');
@@ -70,10 +66,6 @@ export default class SearchStore {
         }
         case TAB_SET: {
           this.events = this.sets;
-          break;
-        }
-        case TAB_FINALIZE: {
-          this.events = this.finalizes;
           break;
         }
         case TAB_WITHDRAW: {

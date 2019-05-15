@@ -13,13 +13,12 @@ import EventWarning from '../EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../helpers';
 
-const { BETTING, RESULT_SETTING, VOTING, FINALIZING, WITHDRAWING } = Phases;
+const { BETTING, RESULT_SETTING, VOTING, WITHDRAWING } = Phases;
 const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
   setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
-  finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
@@ -52,9 +51,6 @@ export default class EventCard extends Component {
         const amount = parseFloat(sum(amounts).toFixed(2));
         return `${amount} ${token}`;
       }
-      case FINALIZING: {
-        return '';
-      }
       case WITHDRAWING: {
         const totalQTUM = parseFloat(sum(qtumAmount).toFixed(2));
         const totalBOT = parseFloat(sum(botAmount).toFixed(2));
@@ -73,7 +69,6 @@ export default class EventCard extends Component {
       case BETTING: return messages.placeBet;
       case RESULT_SETTING: return messages.setResult;
       case VOTING: return messages.arbitrate;
-      case FINALIZING: return messages.finalizeResult;
       case WITHDRAWING: return messages.withdraw;
       default: console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
     }

@@ -77,9 +77,6 @@ describe('EventStore', () => {
     it('sets all the values for a Voting Oracle', async () => {
     });
 
-    it('sets all the values for a Finalizing Oracle', async () => {
-    });
-
     it('sets all the values for a Withdrawing Topic', async () => {
     });
 
@@ -91,7 +88,6 @@ describe('EventStore', () => {
       let numVotes = 0;
       let numResultsets = 0;
       let numWithdraws = 0;
-      let numFinalizes = 0;
       let numPendings = 0;
       const topicAddress = cryptoRandomString(40);
 
@@ -103,7 +99,6 @@ describe('EventStore', () => {
       mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: cryptoRandomString(40), topicAddress })); // result set
       mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: cryptoRandomString(40), topicAddress }));
       mockDB.addResultSets(mockDB.generateWithdraw({ oracleAddress: null, topicAddress }));
-      numFinalizes += 1;
       for (let i = 0; i < 10; i++) {
         const vote = mockDB.generateVote({ topicAddress });
         if (vote.type === TransactionType.BET) numBets += 1;
@@ -114,7 +109,7 @@ describe('EventStore', () => {
 
       await store.queryTransactions(topicAddress);
 
-      expect(store.transactionHistoryItems.length).toBe(numPendings + numBets + numVotes + numResultsets + numWithdraws + numFinalizes);
+      expect(store.transactionHistoryItems.length).toBe(numPendings + numBets + numVotes + numResultsets + numWithdraws);
     });
   });
 });

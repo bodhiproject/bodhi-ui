@@ -12,17 +12,12 @@ import EmptyPlaceholder from '../../components/EmptyPlaceholder';
 const TAB_BET = 0;
 const TAB_VOTE = 1;
 const TAB_SET = 2;
-const TAB_FINALIZE = 3;
-const TAB_WITHDRAW = 4;
+const TAB_WITHDRAW = 3;
 
 const messages = defineMessages({
   set: {
     id: 'search.set',
     defaultMessage: 'Result Setting',
-  },
-  finalize: {
-    id: 'search.finalize',
-    defaultMessage: 'Finalize',
   },
   withdraw: {
     id: 'search.withdraw',
@@ -53,7 +48,7 @@ export default class Search extends Component {
   showEvents = [];
   getTabLabel = (eventStatusIndex) => {
     const { intl } = this.props;
-    const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
+    const { bets, votes, sets, withdraws } = this.props.store.search;
     let label;
     let count;
     switch (eventStatusIndex) {
@@ -70,11 +65,6 @@ export default class Search extends Component {
       case EventStatus.SET: {
         label = intl.formatMessage(messages.set);
         count = sets.length;
-        break;
-      }
-      case EventStatus.FINALIZE: {
-        label = intl.formatMessage(messages.finalize);
-        count = finalizes.length;
         break;
       }
       case EventStatus.WITHDRAW: {
@@ -94,7 +84,7 @@ export default class Search extends Component {
   }
 
   handleTabChange = (event, value) => {
-    const { bets, votes, sets, finalizes, withdraws } = this.props.store.search;
+    const { bets, votes, sets, withdraws } = this.props.store.search;
     this.props.store.search.tabIdx = value;
     switch (value) {
       case TAB_BET: {
@@ -107,10 +97,6 @@ export default class Search extends Component {
       }
       case TAB_SET: {
         this.props.store.search.events = sets;
-        break;
-      }
-      case TAB_FINALIZE: {
-        this.props.store.search.events = finalizes;
         break;
       }
       case TAB_WITHDRAW: {
@@ -136,7 +122,6 @@ export default class Search extends Component {
             <Tab label={this.getTabLabel(EventStatus.BET)} className={classes.searchTabButton} />
             <Tab label={this.getTabLabel(EventStatus.VOTE)} className={classes.searchTabButton} />
             <Tab label={this.getTabLabel(EventStatus.SET)} className={classes.searchTabButton} />
-            <Tab label={this.getTabLabel(EventStatus.FINALIZE)} className={classes.searchTabButton} />
             <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.searchTabButton} />
           </Tabs>
           <div className={classes.searchTabContainer}>

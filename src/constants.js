@@ -13,7 +13,6 @@ module.exports = {
     ARBITRATION: '/arbitration',
     WALLET: '/wallet',
     SET: '/activities/set',
-    FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
     FAVORITE: '/activities/favorite',
@@ -34,7 +33,6 @@ module.exports = {
     PENDING: 'PENDING', // VOTING
     VOTING: 'VOTING',
     RESULT_SETTING: 'RESULT_SETTING',
-    FINALIZING: 'FINALIZING',
     WITHDRAWING: 'WITHDRAWING',
   },
 
@@ -42,7 +40,6 @@ module.exports = {
     BET: 0,
     SET: 1,
     VOTE: 2,
-    FINALIZE: 3,
     WITHDRAW: 4,
   },
 
@@ -81,7 +78,6 @@ module.exports = {
     SET_RESULT: 'SETRESULT',
     APPROVE_VOTE: 'APPROVEVOTE',
     VOTE: 'VOTE',
-    FINALIZE_RESULT: 'FINALIZERESULT',
     WITHDRAW: 'WITHDRAW',
     WITHDRAW_ESCROW: 'WITHDRAWESCROW',
     TRANSFER: 'TRANSFER',
