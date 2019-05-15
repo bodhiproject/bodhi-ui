@@ -16,7 +16,7 @@ export default class MyWallet extends Component {
     return (
       <div>
         <Balances />
-        <History />
+        {/* <History /> */}
       </div>
     );
   }
