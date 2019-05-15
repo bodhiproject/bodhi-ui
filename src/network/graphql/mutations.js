@@ -2,6 +2,11 @@ import { gql } from 'apollo-boost';
 import { MultipleResultsEvent, Bet, ResultSet, Withdraw } from 'models';
 import { MULTIPLE_RESULTS_EVENT, BET, RESULT_SET, WITHDRAW } from './schema';
 
+const MUTA_ADD_PENDING_EVENT = 'addPendingEvent';
+const MUTA_ADD_PENDING_BET = 'addPendingBet';
+const MUTA_ADD_PENDING_RESULT_SET = 'addPendingResultSet';
+const MUTA_ADD_PENDING_WITHDRAW = 'addPendingWithdraw';
+
 const MUTATIONS = {
   addPendingEvent: gql`
     mutation(
@@ -132,7 +137,8 @@ class GraphMutation {
  * @return {object} Mutation result.
  */
 export const addPendingEvent = async (client, args) => {
-  const res = await new GraphMutation(client, 'addPendingEvent', args).execute();
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_EVENT, args)
+    .execute();
   const { data: { addPendingEvent: event } } = res;
   return new MultipleResultsEvent(event);
 };
@@ -144,7 +150,8 @@ export const addPendingEvent = async (client, args) => {
  * @return {object} Mutation result.
  */
 export const addPendingBet = async (client, args) => {
-  const res = await new GraphMutation(client, 'addPendingBet', args).execute();
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_BET, args)
+    .execute();
   const { data: { addPendingBet: bet } } = res;
   return new Bet(bet);
 };
@@ -156,7 +163,8 @@ export const addPendingBet = async (client, args) => {
  * @return {object} Mutation result.
  */
 export const addPendingResultSet = async (client, args) => {
-  const res = await new GraphMutation(client, 'addPendingResultSet', args).execute();
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_RESULT_SET, args)
+    .execute();
   const { data: { addPendingResultSet: resultSet } } = res;
   return new ResultSet(resultSet);
 };
@@ -168,7 +176,8 @@ export const addPendingResultSet = async (client, args) => {
  * @return {object} Mutation result.
  */
 export const addPendingWithdraw = async (client, args) => {
-  const res = await new GraphMutation(client, 'addPendingWithdraw', args).execute();
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_WITHDRAW, args)
+    .execute();
   const { data: { addPendingWithdraw: withdraw } } = res;
   return new Withdraw(withdraw);
 };
