@@ -3,7 +3,7 @@ import { EVENT_STATUS, Routes, SortBy } from 'constants';
 import { events } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
-  loaded: false, // loading state?
+  loaded: false, // loading stateimport NakaStore from '../../../stores/NakaStore';
   loadingMore: false, // for laoding icon?
   list: [], // data list
   hasMore: true, // has more data to fetch?
@@ -69,17 +69,17 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const { account } = this.app.naka;
-      if (!account) await window.ethereum.enable();
+      await this.app.naka.checkLoggedIn();
+      const { naka: { account }, graphqlClient } = this.app;
 
       const filters = [
         { status: EVENT_STATUS.OPEN_RESULT_SETTING, language: this.app.ui.locale },
         { status: EVENT_STATUS.ORACLE_RESULT_SETTING, ownerAddress: account, language: this.app.ui.locale },
       ];
 
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+      const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING.toLowerCase() };
 
-      const res = await events({ filters, orderBy, limit, skip });
+      const res = await events(graphqlClient, { filters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
