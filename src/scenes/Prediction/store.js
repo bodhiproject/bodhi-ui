@@ -79,20 +79,20 @@ export default class PredictionStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
-      const orderBy = { field: 'endTime', direction: this.sortBy };
+      const orderBy = { field: 'resultSetEndTime', direction: this.sortBy };
       const filters = [
         { status: EVENT_STATUS.BETTING, language: this.app.ui.locale },
         { status: EVENT_STATUS.CREATED, language: this.app.ui.locale },
       ];
 
-      // if naka wallet not loggined, pop up and wait
-      const { account } = this.app.naka;
-      if (!account) await window.ethereum.enable();
+      const { naka: { account }, graphqlClient } = this.app;
 
-      const res = await events({ filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
+      console.log('hello');
+      console.log(res);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
-      return _.orderBy(res.items, ['endTime'], this.sortBy.toLowerCase());
+      return res.items;
     }
     return INIT_VALUES.list;
   }

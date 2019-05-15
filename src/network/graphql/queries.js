@@ -20,7 +20,6 @@ import {
   PAGINATED_MOST_BETS,
   BIGGEST_WINNER,
 } from './schema';
-import apollo from './';
 
 const QUERY_EVENTS = 'events';
 const QUERY_SEARCH_EVENTS = 'searchEvents';
