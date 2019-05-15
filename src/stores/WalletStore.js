@@ -159,34 +159,21 @@ export default class WalletStore {
 
     try {
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
-      const balance = await promisify(nbotMethods.balanceOf, [address]).toString(10);
-      if (balance) {
-        const nbot = satoshiToDecimal(balance);
+      const balance = await promisify(nbotMethods.balanceOf, [address]);
+      const nbot = satoshiToDecimal(balance.toString(16));
 
-        // Update WalletAddress NBOT in list of addresses
-        const index = findIndex(this.addresses, { address });
-        if (index !== -1) {
-          this.addresses[index].nbot = nbot;
-        }
+      // Update WalletAddress NBOT in list of addresses
+      const index = findIndex(this.addresses, { address });
+      if (index !== -1) {
+        this.addresses[index].nbot = nbot;
+      }
 
-        // Update current WalletAddress NBOT if matching address
-        if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
-          this.currentWalletAddress.nbot = nbot;
-        }
+      // Update current WalletAddress NBOT if matching address
+      if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
+        this.currentWalletAddress.nbot = nbot;
       }
     } catch (err) {
       console.error(`Error getting NBOT balance for ${address}: ${err.message}`); // eslint-disable-line
-    }
-  }
-
-  isValidAddress = async (addressToVerify) => {
-    try {
-      const { data } = await axios.post(Routes.api.validateAddress, { address: addressToVerify });
-      return data.isvalid;
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.validateAddress);
-      });
     }
   }
 
@@ -194,8 +181,6 @@ export default class WalletStore {
   validateWithdrawDialogWalletAddress = async () => {
     if (isEmpty(this.toAddress)) {
       this.withdrawDialogError.walletAddress = messages.withdrawDialogRequiredMsg.id;
-    } else if (!(await this.isValidAddress(this.toAddress))) {
-      this.withdrawDialogError.walletAddress = messages.withdrawDialogInvalidAddressMsg.id;
     } else {
       this.withdrawDialogError.walletAddress = '';
     }

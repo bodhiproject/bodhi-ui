@@ -555,10 +555,10 @@ export default class EventStore {
 
     // Trying to set result or vote when not enough NAKA or NBOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
-    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
+    const currentNbot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
     if ((
-      (phase === VOTING && currentBot < this.amount)
-      || (phase === RESULT_SETTING && currentBot < consensusThreshold)
+      (phase === VOTING && currentNbot < this.amount)
+      || (phase === RESULT_SETTING && currentNbot < consensusThreshold)
     ) && notEnoughNaka) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNAKAAndNbot';
@@ -580,8 +580,8 @@ export default class EventStore {
     }
 
     // Not enough nbot for setting the result or voting
-    if ((phase === RESULT_SETTING && currentBot < consensusThreshold && this.selectedOptionIdx !== -1)
-      || (phase === VOTING && currentBot < this.amount)) {
+    if ((phase === RESULT_SETTING && currentNbot < consensusThreshold && this.selectedOptionIdx !== -1)
+      || (phase === VOTING && currentNbot < this.amount)) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNbot';
       return;

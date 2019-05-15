@@ -4,12 +4,16 @@ import { satoshiToDecimal } from '../helpers/utility';
 export default class WalletAddress {
   @observable address = ''
   @observable naka = 0
+  @observable nakaSatoshi = 0
   @observable nbot = 0
+  @observable nbotSatoshi = 0
 
-  constructor(args, convertToDecimal = true) {
+  constructor(args) {
     Object.assign(this, args);
     this.address = this.address;
-    this.naka = convertToDecimal ? satoshiToDecimal(args.naka) : args.naka;
-    this.nbot = convertToDecimal ? satoshiToDecimal(args.nbot) : args.nbot;
+    this.naka = satoshiToDecimal(args.naka);
+    this.nakaSatoshi = args.naka;
+    this.nbot = satoshiToDecimal(args.nbot);
+    this.nbotSatoshi = args.nbot;
   }
 }
