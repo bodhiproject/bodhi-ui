@@ -9,7 +9,7 @@ import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createTransaction } from '../network/graphql/mutations';
+import { addPendingEvent, createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -370,54 +370,6 @@ export default class TransactionStore {
     }
   }
 
-
-  /**
-   * Executes an approve for a create event.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeApproveCreateEvent = async (index, tx) => {
-    try {
-      const { senderAddress, amountSatoshi } = tx;
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(
-        senderAddress,
-        getContracts().AddressManager.address,
-        amountSatoshi,
-      );
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      // Create pending tx on server
-      if (txid) {
-        await createTransaction('approveCreateEvent', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          name: tx.name,
-          options: tx.options,
-          resultSetterAddress: tx.resultSetterAddress,
-          bettingStartTime: tx.bettingStartTime,
-          bettingEndTime: tx.bettingEndTime,
-          resultSettingStartTime: tx.resultSettingStartTime,
-          resultSettingEndTime: tx.resultSettingEndTime,
-          amount: amountSatoshi,
-          language: tx.language,
-        });
-
-        this.addPendingApprove(txid);
-        await this.onTxExecuted(tx);
-        Tracking.track('event-approveCreateEvent');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/approve-create-event`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/approve-create-event`);
-      }
-    }
-  }
-
   /**
    * Adds a create event tx to the queue.
    * @param {string} approveTxid Txid of the approve.
@@ -511,23 +463,26 @@ export default class TransactionStore {
       });
 
       Object.assign(tx, { txid });
-
       // Create pending tx on server
       if (txid) {
-        await createTransaction('createEvent', {
+        const { graphqlClient } = this.app;
+        const numOfResults = options.length;
+        const res = await addPendingEvent(graphqlClient, {
           txid,
-          senderAddress,
-          resultSetterAddress,
+          blockNum: 132323,
+          ownerAddress: senderAddress,
+          version: 1,
           name,
-          options,
-          bettingStartTime,
-          bettingEndTime,
-          resultSettingStartTime,
-          resultSettingEndTime,
-          amount: amountSatoshi,
-          token: Token.NBOT,
+          results: toJS(options),
+          numOfResults,
+          centralizedOracle: resultSetterAddress,
+          betStartTime: bettingStartTime,
+          betEndTime: bettingEndTime,
+          resultSetStartTime: resultSettingStartTime,
+          resultSetEndTime: resultSettingEndTime,
           language,
         });
+        console.log('TCL: executeCreateEvent -> res', res);
 
         // await this.onTxExecuted(tx);
         this.app.prediction.loadFirst();

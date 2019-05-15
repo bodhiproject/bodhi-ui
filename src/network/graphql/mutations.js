@@ -123,11 +123,16 @@ class GraphMutation {
     this.args = args;
   }
 
-  execute = async () => this.client.mutate({
-    mutation: this.mutation,
-    variables: this.args,
-    fetchPolicy: 'no-cache',
-  });
+  execute = async () => {
+    console.log('TCL: GraphMutation -> execute -> this.mutation', this.mutation);
+    console.log('TCL: GraphMutation -> execute -> this.args', this.args);
+    console.log('TCL: GraphMutation -> execute -> this.client.', this.client);
+    this.client.mutate({
+      mutation: this.mutation,
+      variables: this.args,
+      fetchPolicy: 'no-cache',
+    });
+  }
 }
 
 /**
