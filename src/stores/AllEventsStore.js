@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { EVENT_STATUS, Routes } from 'constants';
+import { SortBy, Routes } from 'constants';
 import { events } from '../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -69,16 +69,14 @@ export default class {
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const orderBy = { field: 'blockNum', direction: this.app.sortBy };
+      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
       const filters = [
         { language: this.app.ui.locale },
       ];
 
-      // if naka wallet not loggined, pop up and wait
-      const { account } = this.app.naka;
-      if (!account) await window.ethereum.enable();
+      const { naka: { account }, graphqlClient } = this.app;
 
-      const res = await events({ filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
