@@ -28,12 +28,17 @@ export const PENDING_TRANSACTIONS = `
   total
 `;
 
-export const MULTIPLE_RESULTS_EVENT = `
+export const ITRANSACTION = `
+  txType
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
   blockNum
   block { ${BLOCK} }
+`;
+
+export const MULTIPLE_RESULTS_EVENT = `
+  ${ITRANSACTION}
   address
   ownerAddress
   version
@@ -66,11 +71,7 @@ export const PAGINATED_EVENTS = `
 `;
 
 export const BET = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   betterAddress
   resultIndex
@@ -85,11 +86,7 @@ export const PAGINATED_BETS = `
 `;
 
 export const RESULT_SET = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   centralizedOracleAddress
   resultIndex
@@ -104,11 +101,7 @@ export const PAGINATED_RESULT_SETS = `
 `;
 
 export const WITHDRAW = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   winnerAddress
   winningAmount
@@ -119,6 +112,39 @@ export const PAGINATED_WITHDRAWS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${WITHDRAW} }
+`;
+
+export const PAGINATED_TRANSACTIONS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items {
+    ${ITRANSACTION}
+    ... on MultipleResultsEvent {
+      address
+      name
+      escrowAmount
+    }
+    ... on Bet {
+      eventAddress
+      betterAddress
+      resultIndex
+      amount
+      eventRound
+    }
+    ... on ResultSet {
+      eventAddress
+      centralizedOracleAddress
+      resultIndex
+      amount
+      eventRound
+    }
+    ... on Withdraw {
+      eventAddress
+      winnerAddress
+      winningAmount
+      escrowAmount
+    }
+  }
 `;
 
 export const SYNC_INFO = `

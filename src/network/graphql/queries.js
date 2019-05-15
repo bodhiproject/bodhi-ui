@@ -117,6 +117,22 @@ const QUERIES = {
     }
   `,
 
+  transactions: gql`
+    query(
+      $filter: TransactionFilter
+      $limit: Int
+      $skip: Int
+    ) {
+      transactions(
+        filter: $filter
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_WITHDRAWS}
+      }
+    }
+  `,
+
   syncInfo: gql`
     query {
       syncInfo {
