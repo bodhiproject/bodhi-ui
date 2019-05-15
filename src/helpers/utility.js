@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
+import { fromWei } from 'web3-utils';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
@@ -80,6 +81,20 @@ export function satoshiToDecimal(number) {
 
   const conversionBN = new BigNumber(SATOSHI_CONVERSION);
   return bn.dividedBy(conversionBN).toNumber();
+}
+
+/**
+ * Converts wei to a decimal number.
+ * @param number {String} The wei to convert.
+ * @return {String} The converted decimal number.
+ */
+export function weiToDecimal(number) {
+  if (!number) {
+    return number;
+  }
+
+  const decimal = fromWei(number);
+  return Number(decimal);
 }
 
 /**

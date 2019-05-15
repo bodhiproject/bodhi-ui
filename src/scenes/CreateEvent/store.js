@@ -4,7 +4,7 @@ import { observable, computed, reaction, action, runInAction } from 'mobx';
 import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
-import Web3Utils from 'web3-utils';
+import { toHex } from 'web3-utils';
 
 import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
@@ -370,7 +370,7 @@ export default class CreateEventStore {
   @action
   validateTitle = () => {
     // Remove hex prefix for length validation
-    const hexString = Web3Utils.toHex(this.title || '').slice(2);
+    const hexString = toHex(this.title || '').slice(2);
     if (!this.title) {
       this.error.title = messages.createRequiredMsg.id;
     } else if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
@@ -448,7 +448,7 @@ export default class CreateEventStore {
     }
 
     // Validate hex length
-    const hexString = Web3Utils.toHex(outcome).slice(2); // Remove hex prefix for length validation
+    const hexString = toHex(outcome).slice(2); // Remove hex prefix for length validation
     if (hexString.length > MAX_LEN_RESULT_HEX) {
       this.error.outcomes[i] = messages.createResultTooLongMsg.id;
       return;

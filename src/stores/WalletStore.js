@@ -6,9 +6,7 @@ import { defineMessages } from 'react-intl';
 import { WalletAddress } from 'models';
 import promisify from 'js-promisify';
 
-import axios from '../network/api';
-import Routes from '../network/routes';
-import { decimalToSatoshi, satoshiToDecimal } from '../helpers/utility';
+import { decimalToSatoshi, satoshiToDecimal, weiToDecimal } from '../helpers/utility';
 import getContracts from '../config/contracts';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
@@ -137,9 +135,9 @@ export default class WalletStore {
     } else {
       // Update existing balances
       const walletAddress = this.addresses[index];
-      walletAddress.naka = balance;
+      walletAddress.naka = weiToDecimal(balance);
       if (this.currentWalletAddress.address === address) {
-        this.currentWalletAddress.naka = balance;
+        this.currentWalletAddress.naka = weiToDecimal(balance);
       }
     }
 

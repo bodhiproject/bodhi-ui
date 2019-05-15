@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FormControl, FormHelperText, Select, withStyles } from '@material-ui/core';
@@ -34,11 +35,12 @@ const CreatorDropdown = (({ classes, store: { createEvent, wallet: { addresses }
   </Section>
 ));
 
-const CreatorItem = observer(({ address, naka, nbot }) => (
+const CreatorItem = observer(({ address, naka, nbot }) =>{
+ return (
   <option value={address}>
     {`${address}`}
     {` (${naka ? naka.toFixed(2) : 0} NAKA, ${nbot ? nbot.toFixed(2) : 0} NBOT)`}
   </option>
-));
+)});
 
 export default withStyles(styles)(injectIntl(inject('store')(observer(CreatorDropdown))));

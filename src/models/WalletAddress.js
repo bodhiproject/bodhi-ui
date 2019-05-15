@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { satoshiToDecimal } from '../helpers/utility';
+import { satoshiToDecimal, weiToDecimal } from '../helpers/utility';
 
 export default class WalletAddress {
   @observable address = ''
@@ -11,7 +11,7 @@ export default class WalletAddress {
   constructor(args) {
     Object.assign(this, args);
     this.address = this.address;
-    this.naka = satoshiToDecimal(args.naka);
+    this.naka = weiToDecimal(args.naka);
     this.nakaSatoshi = args.naka;
     this.nbot = satoshiToDecimal(args.nbot);
     this.nbotSatoshi = args.nbot;
