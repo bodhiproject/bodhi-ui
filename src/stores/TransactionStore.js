@@ -1,10 +1,11 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import axios from 'axios';
 import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
+import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
@@ -112,10 +113,14 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      console.log('TCL: TransactionStore -> createEventFuncTypes', createEventFuncTypes);
+      console.log('erere123');
+      console.log('TCL: TransactionStore -> eventParams', eventParams);
       const paramsHex = web3EthAbi.encodeParameters(
         createEventFuncTypes,
         eventParams,
       ).substr(2);
+      console.log('TCL: TransactionStore -> paramsHex', paramsHex);
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
       const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
@@ -464,7 +469,7 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeCreateEvent = async (index, tx) => {
+  executeCreateEvent = async (tx) => {
     try {
       const {
         senderAddress,
@@ -481,20 +486,27 @@ export default class TransactionStore {
 
       const createEventParams = [
         name,
-        options,
+        toJS(options),
         bettingStartTime,
         bettingEndTime,
         resultSettingStartTime,
         resultSettingEndTime,
         resultSetterAddress,
       ];
+      for (let i = 0; i < 10; i++) {
+        if (createEventParams[1][i]) {
+          createEventParams[1][i] = fromAscii(createEventParams[1][i]);
+        } else {
+          createEventParams[1][i] = fromAscii('');
+        }
+      }
 
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
         eventFactoryAddr: getContracts().EventFactory.address,
-        escrowAmt: '10000000000', // TODO: fetch escrow from configmanager later
+        escrowAmt: amountSatoshi,
         gas: 3000000,
       });
 
@@ -517,15 +529,15 @@ export default class TransactionStore {
           language,
         });
 
-        await this.onTxExecuted(tx);
+        // await this.onTxExecuted(tx);
         this.app.prediction.loadFirst();
         Tracking.track('event-createEvent');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/create-event`);
+        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/create-event');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/create-event`);
+        this.app.components.globalDialog.setError(err.message, '/create-event');
       }
     }
   }

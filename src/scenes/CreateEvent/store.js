@@ -487,19 +487,18 @@ export default class CreateEventStore {
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
-    await this.app.tx.addCreateEventTx(
-      undefined,
-      this.app.wallet.currentAddress,
-      this.title,
-      this.outcomes,
-      this.resultSetter,
-      this.prediction.startTime.toString(),
-      this.prediction.endTime.toString(),
-      this.resultSetting.startTime.toString(),
-      this.resultSetting.endTime.toString(),
-      escrowAmountSatoshi,
-      this.app.ui.locale,
-    );
+    await this.app.tx.executeCreateEvent({
+      senderAddress: this.app.wallet.currentAddress,
+      name: this.title,
+      options: this.outcomes,
+      resultSetterAddress: this.resultSetter,
+      bettingStartTime: this.prediction.startTime.toString(),
+      bettingEndTime: this.prediction.endTime.toString(),
+      resultSettingStartTime: this.resultSetting.startTime.toString(),
+      resultSettingEndTime: this.resultSetting.endTime.toString(),
+      amountSatoshi: escrowAmountSatoshi,
+      language :this.app.ui.locale,
+    });
 
     this.close();
   }
