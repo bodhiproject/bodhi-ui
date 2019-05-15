@@ -1,9 +1,9 @@
 import { observable, action, reaction, runInAction, toJS } from 'mobx';
-import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
+import { orderBy, isEmpty, each } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 
 import { getDetailPagePath } from '../../../helpers/utility';
-import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
+import { transactions, events } from '../../../network/graphql/queries';
 
 const QUERY_LIMIT = 500;
 const INIT_VALUES = {
@@ -67,7 +67,7 @@ export default class {
     );
     // Wallet addresses changed
     reaction(
-      () => toJS(this.app.wallet.addresses),
+      () => toJS(this.app.naka.account),
       () => this.loadFirst(),
     );
   }
@@ -126,19 +126,16 @@ export default class {
    * @return {[Transaction]} Tx array of the query.
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
-    // // Address is required for the request filters
-    // if (isEmpty(this.app.wallet.addresses)) {
-    //   return [];
-    // }
+    // Address is required for the request filters
+    await this.app.naka.checkLoggedIn();
+    const { naka: { account }, graphqlClient } = this.app;
 
-    // const txTypes = values(omit(TransactionType, 'TRANSFER'));
-    // const filters = [];
-    // each(this.app.wallet.addresses, (walletAddress) => {
-    //   merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
-    // });
-    // return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
-    const results = [];
-    return results;
+    const direction = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
+    const filters = [{ transactorAddress: account }];
+
+    const res = await transactions(graphqlClient, { filters, orderBy: direction, limit, skip });
+
+    return res.items;
   }
 
   /**
@@ -158,12 +155,13 @@ export default class {
    * @return {string} URL path for the newest Oracle.
    */
   @action
-  getOracleAddress = async (topicAddress) => {
-    if (topicAddress) {
-      const filters = [{ topicAddress }];
-      const order = { field: 'endTime', direction: SortBy.DESCENDING };
-      const { oracles } = await queryAllOracles(this.app, filters, order);
-      const path = getDetailPagePath(oracles);
+  getEventAddress = async (address) => {
+    if (address) {
+      const { graphqlClient } = this.app;
+      const filters = [{ address }];
+      const order = { field: 'betEndTime', direction: SortBy.DESCENDING.toLowerCase() };
+      const res = await events(graphqlClient, { filters, orderBy: order });
+      const path = getDetailPagePath(res.items);
       if (path) return path;
     }
   }
