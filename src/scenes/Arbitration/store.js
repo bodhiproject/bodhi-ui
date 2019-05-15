@@ -1,6 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import _ from 'lodash';
-import { EVENT_STATUS, Routes } from '../../constants';
+import { EVENT_STATUS, Routes, SortBy } from '../../constants';
 import { events } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
@@ -70,7 +70,7 @@ export default class ArbitrationStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
-      const orderBy = { field: 'endTime', direction: this.app.sortBy };
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING.toLowerCase() };
       const filters = [
         { status: EVENT_STATUS.ARBITRATION, language: this.app.ui.locale },
         { status: EVENT_STATUS.ORACLE_RESULT_SETTING,
@@ -78,13 +78,12 @@ export default class ArbitrationStore {
         },
       ];
 
-      const { account } = this.app.naka;
-      if (!account) await window.ethereum.enable();
+      const { naka: { account }, graphqlClient } = this.app;
 
-      const res = await events({ filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
-      return _.orderBy(res.items, ['endTime'], this.app.sortBy.toLowerCase());
+      return res.items;
     }
     return INIT_VALUES.list;
   }
