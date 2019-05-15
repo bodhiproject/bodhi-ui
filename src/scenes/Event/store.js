@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, Tr
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
+import { transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -297,21 +297,14 @@ export default class EventStore {
 
   @action
   queryTransactions = async (address) => {
-    const pendings = await queryAllTransactions(
-      [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
-      { field: 'createdTime', direction: SortBy.DESCENDING },
-    );
-    const withdraws = await queryWithdraws([{ topicAddress: address }]);
-
-    const resultSets = await queryResultSets([{ topicAddress: address }]);
-
-    const transactions = await queryAllVotes([{ topicAddress: address }]);
-    const votes = filter(transactions, { type: TransactionType.VOTE });
-    const resultSetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
-    const bets = filter(transactions, { type: TransactionType.BET });
-
-    let confirmed = [...withdraws, ...votes, ...resultSetsWithAmount, ...bets];
-    confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
+    // const pendings = await queryAllTransactions(
+    //   [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
+    //   { field: 'createdTime', direction: SortBy.DESCENDING },
+    // );
+    const pendings = [];
+    const txs = await transactions([{ eventAddress: address }]);
+    let confirmed = txs.items;
+    confirmed = orderBy(confirmed, ['blockNum'], ['desc']);
 
     this.transactionHistoryItems = [...pendings, ...confirmed];
   }
