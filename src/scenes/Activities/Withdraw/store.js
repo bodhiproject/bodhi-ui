@@ -70,16 +70,16 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING.toLowerCase() };
 
-      const { account } = this.app.naka;
-      if (!account) await window.ethereum.enable();
+      await this.app.naka.checkLoggedIn();
+      const { naka: { account }, graphqlClient } = this.app;
 
       const betFilters = [{ betterAddress: account }];
       const eventFilters = [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: this.app.ui.locale }];
 
       // Filter votes
-      let votes = await bets(betFilters);
+      let votes = await bets(graphqlClient, betFilters);
       votes = votes.items.reduce((accumulator, vote) => {
         const { betterAddress, eventAddress, resultIndex } = vote;
         if (!find(accumulator, { betterAddress, eventAddress, resultIndex })) accumulator.push(vote);
@@ -90,7 +90,7 @@ export default class {
       each(votes, ({ eventAddress, resultIndex }) => {
         eventFilters.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: this.app.ui.locale });
       });
-      const res = await events({ eventFilters, orderBy, limit, skip });
+      const res = await events(graphqlClient, { eventFilters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
