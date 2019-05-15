@@ -7,11 +7,11 @@ import { Typography } from '@material-ui/core';
 const messages = defineMessages({
   withdrawDetailTotalBetTotalVoteMsg: {
     id: 'withdrawDetail.totalBetTotalVote',
-    defaultMessage: 'Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.',
+    defaultMessage: 'Total bet amount {naka} NAKA. Total voted amount {nbot} NBOT.',
   },
   withdrawDetailYouBetYouVoteMsg: {
     id: 'withdrawDetail.youBetYouVote',
-    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
+    defaultMessage: 'You bet {naka} NAKA. You voted {nbot} NBOT.',
   },
 });
 
@@ -29,13 +29,13 @@ const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic 
     </Typog>
     <Typography variant="caption">
       {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {
-        qtum: topic.qtumAmount[index], bot: topic.botAmount[index],
+        naka: topic.nakaAmount[index], nbot: topic.nbotAmount[index],
       })}
     </Typography>
     {!!(eventPage.betBalances[index] || eventPage.voteBalances[index]) && (
       <div>
         <Typography variant="caption">
-          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.betBalances[index], bot: eventPage.voteBalances[index] })}
+          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { naka: eventPage.betBalances[index], nbot: eventPage.voteBalances[index] })}
         </Typography>
       </div>
     )}

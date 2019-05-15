@@ -20,11 +20,11 @@ import { Loading as _Loading } from '../../components/Loading';
 const messages = defineMessages({
   createEscrowNoteTitleMsg: {
     id: 'create.escrowNoteTitle',
-    defaultMessage: '{amount} BOT Escrow',
+    defaultMessage: '{amount} NBOT Escrow',
   },
   createEscrowNoteDescMsg: {
     id: 'create.escrowNoteDesc',
-    defaultMessage: 'You will need to deposit {amount} BOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
+    defaultMessage: 'You will need to deposit {amount} NBOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
 });
 

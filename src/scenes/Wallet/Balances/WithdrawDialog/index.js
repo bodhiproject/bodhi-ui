@@ -47,14 +47,14 @@ export default class WithdrawDialog extends Component {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddress: PropTypes.string,
-    botAmount: PropTypes.string,
+    nbotAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     walletAddress: undefined,
-    botAmount: undefined,
+    nbotAmount: undefined,
   };
 
   render() {
@@ -71,7 +71,7 @@ export default class WithdrawDialog extends Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw QTUM/BOT" />
+          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw NAKA/NBOT" />
         </DialogTitle>
         <DialogContent>
           <FromToField walletAddress={walletAddress} />
@@ -161,8 +161,8 @@ class AmountField extends Component {
             onBlur={wallet.validateWithdrawDialogAmount}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
-            <MenuItem value={Token.QTUM}>QTUM</MenuItem>
-            <MenuItem value={Token.BOT}>BOT</MenuItem>
+            <MenuItem value={Token.NAKA}>NAKA</MenuItem>
+            <MenuItem value={Token.NBOT}>NBOT</MenuItem>
           </Select>
           {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
         </div>

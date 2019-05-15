@@ -21,7 +21,7 @@ export function createTopic(
   const newTransaction = {
     createdTime: moment.unix(),
     status: 'PENDING',
-    token: 'BOT',
+    token: 'NBOT',
     txid: cryptoRandomString(64),
     type: 'APPROVECREATEEVENT',
     createdBlock: 0,
@@ -57,7 +57,7 @@ export function createBetTx(version, topicAddress, oracleAddress, optionIdx, amo
     topicAddress,
     oracleAddress,
     optionIdx,
-    token: 'QTUM',
+    token: 'NAKA',
     amount,
     type: 'BET',
     status: 'PENDING',

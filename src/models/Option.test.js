@@ -10,14 +10,14 @@ const navigatorMock = {};
 global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
-const { QTUM, BOT } = Token;
+const { NAKA, NBOT } = Token;
 const { BETTING, VOTING } = Phases;
 
 describe('Option Model', () => {
   const addr = {
     address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
-    qtum: 2000,
-    bot: 100,
+    naka: 2000,
+    nbot: 100,
   };
   const app = observable({
     sortBy: 'ASC',
@@ -40,7 +40,7 @@ describe('Option Model', () => {
       resultSetEndTime: 10,
       endTime: 20,
       options: ['0', '1'],
-      token: QTUM,
+      token: NAKA,
       phase: BETTING,
       optionIdxs: [0, 1],
       status: OracleStatus.VOTING,
@@ -60,9 +60,9 @@ describe('Option Model', () => {
       expect(store.isLast).not.toBeTruthy();
       expect(store.isFirst).toBeTruthy();
       expect(store.name).toBe(name);
-      expect(store.token).toBe(QTUM);
+      expect(store.token).toBe(NAKA);
       expect(store.phase).toBe(BETTING);
-      expect(store.value).toBe('99 QTUM');
+      expect(store.value).toBe('99 NAKA');
       expect(store.percent).toBe(50);
       expect(store.isPrevResult).toBe(undefined);
       expect(store.maxAmount).toBe(undefined);
@@ -82,9 +82,9 @@ describe('Option Model', () => {
       expect(store.isLast).not.toBeTruthy();
       expect(store.isFirst).toBeTruthy();
       expect(store.name).toBe(name);
-      expect(store.token).toBe(QTUM);
+      expect(store.token).toBe(NAKA);
       expect(store.phase).toBe(BETTING);
-      expect(store.value).toBe('99 QTUM');
+      expect(store.value).toBe('99 NAKA');
       expect(store.percent).toBe(50);
       expect(store.isPrevResult).toBe(undefined);
       expect(store.maxAmount).toBe(undefined);
@@ -95,7 +95,7 @@ describe('Option Model', () => {
       const name = '1';
       const i = 1;
 
-      oracle.token = BOT;
+      oracle.token = NBOT;
       oracle.phase = VOTING;
       oracle.unconfirmed = false;
       oracle.optionIdxs = [0];
@@ -107,9 +107,9 @@ describe('Option Model', () => {
       expect(store.isLast).toBeTruthy();
       expect(store.isFirst).not.toBeTruthy();
       expect(store.name).toBe(name);
-      expect(store.token).toBe(BOT);
+      expect(store.token).toBe(NBOT);
       expect(store.phase).toBe(VOTING);
-      expect(store.value).toBe('100 BOT');
+      expect(store.value).toBe('100 NBOT');
       expect(store.percent).toBe(0);
       expect(store.isPrevResult).toBeTruthy();
       expect(store.maxAmount).toBe(0);
@@ -120,7 +120,7 @@ describe('Option Model', () => {
       const name = '1';
       const i = 1;
 
-      oracle.token = BOT;
+      oracle.token = NBOT;
       oracle.phase = VOTING;
       oracle.unconfirmed = false;
       oracle.optionIdxs = [1];
@@ -132,9 +132,9 @@ describe('Option Model', () => {
       expect(store.isLast).toBeTruthy();
       expect(store.isFirst).not.toBeTruthy();
       expect(store.name).toBe(name);
-      expect(store.token).toBe(BOT);
+      expect(store.token).toBe(NBOT);
       expect(store.phase).toBe(VOTING);
-      expect(store.value).toBe('100 BOT');
+      expect(store.value).toBe('100 NBOT');
       expect(store.percent).toBe(100);
       expect(store.isPrevResult).not.toBeTruthy();
       expect(store.maxAmount).toBe(0);
@@ -147,7 +147,7 @@ describe('Option Model', () => {
       const name = '1';
       const i = 1;
 
-      oracle.token = BOT;
+      oracle.token = NBOT;
       oracle.phase = VOTING;
       oracle.optionIdxs = [1];
       oracle.unconfirmed = false;
@@ -164,7 +164,7 @@ describe('Option Model', () => {
       const name = 'cons test 4';
       const i = 1;
 
-      oracle.token = BOT;
+      oracle.token = NBOT;
       oracle.phase = VOTING;
       oracle.optionIdxs = [1];
       oracle.unconfirmed = false;

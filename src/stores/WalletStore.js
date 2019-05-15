@@ -43,7 +43,7 @@ const INIT_VALUE = {
 };
 
 const INIT_VALUE_DIALOG = {
-  selectedToken: Token.QTUM,
+  selectedToken: Token.NAKA,
   toAddress: '',
   withdrawAmount: '',
   withdrawDialogError: {
@@ -86,8 +86,8 @@ export default class WalletStore {
 
   @computed get lastAddressWithdrawLimit() {
     return {
-      QTUM: this.currentWalletAddress ? this.currentWalletAddress.naka : 0,
-      BOT: this.currentWalletAddress ? this.currentWalletAddress.nbot : 0,
+      NAKA: this.currentWalletAddress ? this.currentWalletAddress.naka : 0,
+      NBOT: this.currentWalletAddress ? this.currentWalletAddress.nbot : 0,
     };
   }
 
@@ -124,8 +124,8 @@ export default class WalletStore {
       return;
     }
 
-    // If setting Naka Wallet's account for the first time or the address changes, fetch the BOT balance right away.
-    // After the initial BOT balance fetch, it will refetch on every new block.
+    // If setting Naka Wallet's account for the first time or the address changes, fetch the NBOT balance right away.
+    // After the initial NBOT balance fetch, it will refetch on every new block.
     const fetchInitNbotBalance = isEmpty(this.addresses);
 
     const index = findIndex(this.addresses, { address });
@@ -149,8 +149,8 @@ export default class WalletStore {
   }
 
   /**
-   * Calls the BodhiToken contract to get the BOT balance and sets the balance in the addresses.
-   * @param {string} address Address to check the BOT balance of.
+   * Calls the BodhiToken contract to get the NBOT balance and sets the balance in the addresses.
+   * @param {string} address Address to check the NBOT balance of.
    */
   fetchNbotBalance = async (address) => {
     if (isEmpty(address)) {
@@ -163,19 +163,19 @@ export default class WalletStore {
       if (balance) {
         const nbot = satoshiToDecimal(balance);
 
-        // Update WalletAddress BOT in list of addresses
+        // Update WalletAddress NBOT in list of addresses
         const index = findIndex(this.addresses, { address });
         if (index !== -1) {
           this.addresses[index].nbot = nbot;
         }
 
-        // Update current WalletAddress BOT if matching address
+        // Update current WalletAddress NBOT if matching address
         if (this.currentWalletAddress && this.currentWalletAddress.address === address) {
           this.currentWalletAddress.nbot = nbot;
         }
       }
     } catch (err) {
-      console.error(`Error getting BOT balance for ${address}: ${err.message}`); // eslint-disable-line
+      console.error(`Error getting NBOT balance for ${address}: ${err.message}`); // eslint-disable-line
     }
   }
 
@@ -220,7 +220,7 @@ export default class WalletStore {
   @action
   withdraw = async (walletAddress) => {
     this.walletAddress = walletAddress;
-    const amount = this.selectedToken === Token.BOT
+    const amount = this.selectedToken === Token.NBOT
       ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount);
     await this.app.tx.addTransferTx(this.walletAddress, this.toAddress, amount, this.selectedToken);
   }

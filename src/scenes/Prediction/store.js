@@ -81,8 +81,8 @@ export default class PredictionStore {
     // if (this.hasMore) {
     //   const orderBy = { field: 'endTime', direction: this.sortBy };
     //   const filters = [
-    //     { token: Token.QTUM, status: OracleStatus.VOTING, language: this.app.ui.locale },
-    //     { token: Token.QTUM, status: OracleStatus.CREATED, language: this.app.ui.locale },
+    //     { token: Token.NAKA, status: OracleStatus.VOTING, language: this.app.ui.locale },
+    //     { token: Token.NAKA, status: OracleStatus.CREATED, language: this.app.ui.locale },
     //   ];
     //   const { oracles, pageInfo: { hasNextPage } } = await queryAllOracles(this.app, filters, orderBy, limit, skip);
     //   this.hasMore = hasNextPage;

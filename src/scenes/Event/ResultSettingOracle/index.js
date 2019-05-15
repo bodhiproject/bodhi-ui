@@ -38,7 +38,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
 ));
 
 const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} BOT`;
+  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} NBOT`;
   const message = intl.formatMessage(messages.setResultExplanation);
   return <ImportantNote heading={heading} message={message} />;
 });

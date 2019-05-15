@@ -56,7 +56,7 @@ export default class GlobalStore {
       () => this.syncBlockNum,
       () => {
         if (this.localWallet === false) {
-          this.app.wallet.fetchBotBalance(this.app.wallet.currentAddress);
+          this.app.wallet.fetchNbotBalance(this.app.wallet.currentAddress);
         }
       }
     );
@@ -142,9 +142,9 @@ export default class GlobalStore {
     //   this.userData.withdrawCount = withdrawInfo.totalCount;
 
     //   // Get result set items
-    //   const oracleSetFilters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
+    //   const oracleSetFilters = [{ token: Token.NAKA, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
     //   oracleSetFilters.push({
-    //     token: Token.QTUM,
+    //     token: Token.NAKA,
     //     status: OracleStatus.WAIT_RESULT,
     //     resultSetterAddress: this.app.wallet.currentAddress,
     //     language: this.app.ui.locale,

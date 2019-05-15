@@ -52,8 +52,8 @@ describe('EventStore', () => {
       expect(store.selectedOptionIdx).toBe(-1);
       expect(store.escrowClaim).toBe(0);
       expect(store.allowance).toBe(undefined);
-      expect(store.qtumWinnings).toBe(0);
-      expect(store.botWinnings).toBe(0);
+      expect(store.nakaWinnings).toBe(0);
+      expect(store.nbotWinnings).toBe(0);
       expect(store.withdrawableAddresses.length).toBe(0);
 
       // Oracle values

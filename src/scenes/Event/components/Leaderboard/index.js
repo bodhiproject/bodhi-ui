@@ -9,13 +9,13 @@ import styles from './styles';
 import { satoshiToDecimal } from '../../../../helpers/utility';
 
 const messages = defineMessages({
-  mostQTUM: {
-    id: 'leaderboard.mostQTUM',
-    defaultMessage: 'Who bet the most QTUM',
+  mostNAKA: {
+    id: 'leaderboard.mostNAKA',
+    defaultMessage: 'Who bet the most NAKA',
   },
-  mostBOT: {
-    id: 'leaderboard.mostBOT',
-    defaultMessage: 'Who bet the most BOT',
+  mostNBOT: {
+    id: 'leaderboard.mostNBOT',
+    defaultMessage: 'Who bet the most NBOT',
   },
   biggestWinner: {
     id: 'leaderboard.biggestWinners',
@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
 });
 
-const tabs = [messages.mostQTUM, messages.mostBOT, messages.biggestWinner];
+const tabs = [messages.mostNAKA, messages.mostNBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -110,7 +110,7 @@ export default class Leaderboard extends React.Component {
                       </CustomTableBodyCell>
                       <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
                       {!row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
-                      {row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount.naka)} QTUM,{satoshiToDecimal(row.amount.nbot)} BOT</CustomTableBodyCell>}
+                      {row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount.naka)} NAKA,{satoshiToDecimal(row.amount.nbot)} NBOT</CustomTableBodyCell>}
                     </CustomTableRow>
                   ))}
               </TableBody>

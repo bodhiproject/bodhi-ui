@@ -83,11 +83,11 @@ export function satoshiToDecimal(number) {
 }
 
 /**
- * Converts the gas number to QTUM cost.
+ * Converts the gas number to NAKA cost.
  * @param gas {Number} The gas number to convert.
- * @return {Number} The gas amount represented as QTUM.
+ * @return {Number} The gas amount represented as NAKA.
  */
-export function gasToQtum(gas) {
+export function gasToNaka(gas) {
   if (!gas || !_.isFinite(gas)) {
     return undefined;
   }
@@ -181,13 +181,13 @@ export function getDetailPagePath(oracles) {
  * @param {oracle} oracle
  */
 export const getPhase = ({ token, status }) => {
-  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && status === 'CREATED') return UNCONFIRMED; // BETTING
-  if (QTUM && status === 'VOTING') return BETTING;
-  if (BOT && status === 'VOTING') return VOTING;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
+  const [NBOT, NAKA] = [token === 'NBOT', token === 'NAKA'];
+  if (NAKA && status === 'CREATED') return UNCONFIRMED; // BETTING
+  if (NAKA && status === 'VOTING') return BETTING;
+  if (NBOT && status === 'VOTING') return VOTING;
+  if (NAKA && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+  if ((NBOT || NAKA) && status === 'PENDING') return PENDING; // VOTING
+  if ((NBOT || NAKA) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 

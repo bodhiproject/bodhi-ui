@@ -40,7 +40,7 @@ export default class FavoriteCard extends Component {
   };
 
   getAmountLabel = () => {
-    const { phase, token, amounts, qtumAmount, botAmount } = this.props.event;
+    const { phase, token, amounts, nakaAmount, nbotAmount } = this.props.event;
     switch (phase) {
       case BETTING:
       case RESULT_SETTING:
@@ -49,9 +49,9 @@ export default class FavoriteCard extends Component {
         return `${amount} ${token}`;
       }
       case WITHDRAWING: {
-        const totalQTUM = parseFloat(sum(qtumAmount).toFixed(2));
-        const totalBOT = parseFloat(sum(botAmount).toFixed(2));
-        return `${totalQTUM} QTUM, ${totalBOT} BOT`;
+        const totalNAKA = parseFloat(sum(nakaAmount).toFixed(2));
+        const totalNBOT = parseFloat(sum(nbotAmount).toFixed(2));
+        return `${totalNAKA} NAKA, ${totalNBOT} NBOT`;
       }
       default: {
         console.error(`Unhandled phase: ${phase}`); // eslint-disable-line

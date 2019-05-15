@@ -33,7 +33,7 @@ const messages = defineMessages({
   },
   tutorial1Content6Msg: {
     id: 'tutorial1.content6',
-    defaultMessage: 'If you send your public key (Qtum address) to someone, they can send you QTUM or BOT.',
+    defaultMessage: 'If you send your public key (Qtum address) to someone, they can send you NAKA or NBOT.',
   },
   tutorial1Content7Msg: {
     id: 'tutorial1.content7',

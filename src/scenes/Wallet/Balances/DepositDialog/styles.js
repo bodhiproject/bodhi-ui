@@ -6,7 +6,7 @@ const styles = (theme) => ({
     border: theme.border,
     borderRadius: theme.borderRadius,
   },
-  qtumAmount: {
+  nakaAmount: {
     marginBottom: theme.padding.spaceX.px,
   },
 });

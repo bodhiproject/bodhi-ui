@@ -12,7 +12,7 @@ import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
 const { BETTING, VOTING, RESULT_SETTING } = Phases;
-const paras = [Token.QTUM, Token.BOT];
+const paras = [Token.NAKA, Token.NBOT];
 
 const INIT = {
   type: undefined,
@@ -31,8 +31,8 @@ const INIT = {
   escrowClaim: 0,
   hashId: '',
   allowance: undefined,
-  qtumWinnings: 0,
-  botWinnings: 0,
+  nakaWinnings: 0,
+  nbotWinnings: 0,
   withdrawableAddresses: [],
   activeStep: 0,
   error: {
@@ -62,8 +62,8 @@ export default class EventStore {
 
   // topic
   @observable topics = INIT.topics
-  @observable qtumWinnings = INIT.qtumWinnings
-  @observable botWinnings = INIT.botWinnings
+  @observable nakaWinnings = INIT.nakaWinnings
+  @observable nbotWinnings = INIT.nbotWinnings
   @observable withdrawableAddresses = INIT.withdrawableAddresses
   betBalances = []
   voteBalances = []
@@ -91,13 +91,13 @@ export default class EventStore {
   @computed get unconfirmed() {
     return isUndefined(this.topicAddress) && isUndefined(this.address);
   }
-  @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
-    return this.oracles.filter(({ token }) => token === Token.BOT);
+  @computed get dOracles() { // [NBOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
+    return this.oracles.filter(({ token }) => token === Token.NBOT);
   }
   @computed get cOracle() {
-    // [QTUM] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
+    // [NAKA] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
     // mainly: BETTING & RESULT SETTING phases
-    return find(this.oracles, { token: Token.QTUM }) || {};
+    return find(this.oracles, { token: Token.NAKA }) || {};
   }
   @computed get oracle() {
     if (this.unconfirmed) {
@@ -162,7 +162,7 @@ export default class EventStore {
     await this.getEscrowAmount();
     await this.calculateWinnings();
     this.disableEventActionsIfNecessary();
-    await this.queryLeaderboard(Token.QTUM);
+    await this.queryLeaderboard(Token.NAKA);
     this.selectedOptionIdx = this.topic.resultIdx;
     this.loading = false;
   }
@@ -174,7 +174,7 @@ export default class EventStore {
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
     await this.getAllowanceAmount();
-    await this.queryLeaderboard(Token.QTUM);
+    await this.queryLeaderboard(Token.NAKA);
     this.disableEventActionsIfNecessary();
 
     if (this.oracle.phase === RESULT_SETTING) {
@@ -340,10 +340,10 @@ export default class EventStore {
     await this.getBetAndVoteBalances();
     await this.getWithdrawableAddresses();
 
-    this.botWinnings = sumBy(this.withdrawableAddresses, a => (
-      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
+    this.nbotWinnings = sumBy(this.withdrawableAddresses, a => (
+      a.type === TransactionType.WITHDRAW && a.nbotWon ? a.nbotWon : 0
     ));
-    this.qtumWinnings = sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
+    this.nakaWinnings = sumBy(this.withdrawableAddresses, ({ nakaWon }) => nakaWon);
   }
 
   @action
@@ -444,8 +444,8 @@ export default class EventStore {
           withdrawableAddresses.push({
             type: TransactionType.WITHDRAW_ESCROW,
             address: item.address,
-            botWon: topic.escrowAmount,
-            qtumWon: 0,
+            nbotWon: topic.escrowAmount,
+            nakaWon: 0,
           });
           this.escrowClaim = topic.escrowAmount;
         }
@@ -471,16 +471,16 @@ export default class EventStore {
           contractAddress: topic.address,
           senderAddress: vote.voterAddress,
         });
-        const botWon = data ? satoshiToDecimal(data[0]) : 0;
-        const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
+        const nbotWon = data ? satoshiToDecimal(data[0]) : 0;
+        const nakaWon = data ? satoshiToDecimal(data[1]) : 0;
 
         // return only winning addresses
-        if (botWon || qtumWon) {
+        if (nbotWon || nakaWon) {
           withdrawableAddresses.push({
             type: TransactionType.WITHDRAW,
             address: vote.voterAddress,
-            botWon,
-            qtumWon,
+            nbotWon,
+            nakaWon,
           });
         }
       }
@@ -502,8 +502,8 @@ export default class EventStore {
     const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.naka : 0;
-    const notEnoughQtum = currentWalletQtum < maxTransactionFee;
+    const currentWalletNaka = wallet.currentWalletAddress ? wallet.currentWalletAddress.naka : 0;
+    const notEnoughNaka = currentWalletNaka < maxTransactionFee;
 
     this.buttonDisabled = false;
     this.warningType = '';
@@ -553,15 +553,15 @@ export default class EventStore {
       return;
     }
 
-    // Trying to set result or vote when not enough QTUM or BOT
+    // Trying to set result or vote when not enough NAKA or NBOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
-    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of BOT at currently selected address
+    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
     if ((
       (phase === VOTING && currentBot < this.amount)
       || (phase === RESULT_SETTING && currentBot < consensusThreshold)
-    ) && notEnoughQtum) {
+    ) && notEnoughNaka) {
       this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughQtumAndBot';
+      this.error.amount = 'str.notEnoughNAKAAndNbot';
       return;
     }
 
@@ -572,18 +572,18 @@ export default class EventStore {
       return;
     }
 
-    // Trying to bet more qtum than you have or you just don't have enough QTUM period
-    if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
+    // Trying to bet more naka than you have or you just don't have enough NAKA period
+    if ((phase === BETTING && this.amount > currentWalletNaka + maxTransactionFee) || notEnoughNaka) {
       this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughQtum';
+      this.error.amount = 'str.notEnoughNaka';
       return;
     }
 
-    // Not enough bot for setting the result or voting
+    // Not enough nbot for setting the result or voting
     if ((phase === RESULT_SETTING && currentBot < consensusThreshold && this.selectedOptionIdx !== -1)
       || (phase === VOTING && currentBot < this.amount)) {
       this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughBot';
+      this.error.amount = 'str.notEnoughNbot';
       return;
     }
 

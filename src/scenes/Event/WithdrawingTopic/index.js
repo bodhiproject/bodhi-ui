@@ -22,14 +22,14 @@ export default class WithdrawingTopic extends Component {
   }
 
   render() {
-    const { classes, store: { eventPage, eventPage: { topic, escrowClaim, botWinnings, qtumWinnings } } } = this.props;
+    const { classes, store: { eventPage, eventPage: { topic, escrowClaim, nbotWinnings, nakaWinnings } } } = this.props;
     return (
       <Row>
         <Content>
           <Title>{topic.name}</Title>
           <Paper className={classes.withdrawingPaper}>
             <WinningOutcome eventPage={eventPage} />
-            {Boolean(escrowClaim || botWinnings || qtumWinnings) && (
+            {Boolean(escrowClaim || nbotWinnings || nakaWinnings) && (
               <Fragment>
                 <Reward topic={topic} eventPage={eventPage} />
                 <WithdrawTo />

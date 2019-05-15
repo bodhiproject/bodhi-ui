@@ -33,8 +33,8 @@ export default class MyBalances extends Component {
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressNaka: undefined,
+      selectedAddressNbot: undefined,
       depositDialogVisible: false,
       withdrawDialogVisible: false,
     };
@@ -57,8 +57,8 @@ export default class MyBalances extends Component {
     const { classes } = this.props;
     const {
       selectedAddress,
-      selectedAddressQtum,
-      selectedAddressBot,
+      selectedAddressNaka,
+      selectedAddressNbot,
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
@@ -80,16 +80,16 @@ export default class MyBalances extends Component {
             onClose={this.handleDepositDialogClose}
             onCopyClicked={this.onCopyClicked}
             walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
+            nakaAmount={selectedAddressNaka}
+            nbotAmount={selectedAddressNbot}
           />
           <WithdrawDialog
             dialogVisible={withdrawDialogVisible}
             onClose={this.handleWithdrawDialogClose}
             onWithdraw={this.onWithdraw}
             walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
+            nakaAmount={selectedAddressNaka}
+            nbotAmount={selectedAddressNbot}
           />
         </Grid>
       </Paper>
@@ -109,15 +109,15 @@ export default class MyBalances extends Component {
 
     const items = [
       {
-        id: 'qtum',
+        id: 'naka',
         name: 'str.naka',
-        nameDefault: 'QTUM',
+        nameDefault: 'NAKA',
         total: totalNaka,
       },
       {
-        id: 'bot',
+        id: 'nbot',
         name: 'str.nbot',
-        nameDefault: 'BOT',
+        nameDefault: 'NBOT',
         total: totalNbot,
       },
     ];
@@ -153,16 +153,16 @@ export default class MyBalances extends Component {
         sortable: false,
       },
       {
-        id: 'qtum',
+        id: 'naka',
         name: 'str.naka',
-        nameDefault: 'QTUM',
+        nameDefault: 'NAKA',
         numeric: true,
         sortable: true,
       },
       {
-        id: 'bot',
+        id: 'nbot',
         name: 'str.nbot',
-        nameDefault: 'BOT',
+        nameDefault: 'NBOT',
         numeric: true,
         sortable: true,
       },
@@ -283,8 +283,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onDepositClicked}
                 data-address={item.address}
-                data-qtum={item.naka}
-                data-bot={item.nbot}
+                data-naka={item.naka}
+                data-nbot={item.nbot}
               >
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
@@ -295,8 +295,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onWithdrawClicked}
                 data-address={item.address}
-                data-qtum={item.naka}
-                data-bot={item.nbot}
+                data-naka={item.naka}
+                data-nbot={item.nbot}
               >
                 <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
               </Button>
@@ -338,8 +338,8 @@ export default class MyBalances extends Component {
   onDepositClicked(event) {
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      selectedAddressNaka: event.currentTarget.getAttribute('data-naka'),
+      selectedAddressNbot: event.currentTarget.getAttribute('data-nbot'),
       depositDialogVisible: true,
     });
 
@@ -349,8 +349,8 @@ export default class MyBalances extends Component {
   handleDepositDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressNaka: undefined,
+      selectedAddressNbot: undefined,
       depositDialogVisible: false,
     });
   };
@@ -360,8 +360,8 @@ export default class MyBalances extends Component {
 
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      selectedAddressNaka: event.currentTarget.getAttribute('data-naka'),
+      selectedAddressNbot: event.currentTarget.getAttribute('data-nbot'),
       withdrawDialogVisible: true,
     });
     wallet.setCurrentWalletAddress(event.currentTarget.getAttribute('data-address'));
@@ -372,8 +372,8 @@ export default class MyBalances extends Component {
   handleWithdrawDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressNaka: undefined,
+      selectedAddressNbot: undefined,
       withdrawDialogVisible: false,
     });
   };

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { action, computed } from 'mobx';
 import { Token, OracleStatus } from 'constants';
 
-const { QTUM, BOT } = Token;
+const { NAKA, NBOT } = Token;
 
 export default class Option {
   name
@@ -30,12 +30,12 @@ export default class Option {
     this.token = oracle.token;
     this.phase = oracle.phase;
     this.value = `${this.amount} ${this.token}`;
-    if (oracle.token === QTUM) {
+    if (oracle.token === NAKA) {
       const totalBalance = _.sum(oracle.amounts);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {
       this.isPrevResult = !oracle.optionIdxs.includes(i);
-      this.maxAmount = oracle.token === BOT && oracle.status === OracleStatus.VOTING
+      this.maxAmount = oracle.token === NBOT && oracle.status === OracleStatus.VOTING
         ? oracle.consensusThreshold - this.amount : undefined;
 
       const threshold = this.isPrevResult ? 0 : oracle.consensusThreshold;

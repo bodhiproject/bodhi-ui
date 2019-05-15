@@ -115,7 +115,7 @@ const TableHeader = ({ orderBy, direction, onSortChange }) => {
     {
       id: 'fee',
       name: 'str.fee',
-      nameDefault: 'Gas Fee(QTUM)',
+      nameDefault: 'Gas Fee(NAKA)',
       numeric: true,
     },
     {

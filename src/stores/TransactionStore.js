@@ -324,7 +324,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
       amount: '0',
-      token: Token.BOT,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }
@@ -399,7 +399,7 @@ export default class TransactionStore {
       resultSettingStartTime,
       resultSettingEndTime,
       amount: amountSatoshi,
-      token: Token.BOT,
+      token: Token.NBOT,
       language,
     })));
     await this.showConfirmDialog();
@@ -491,7 +491,7 @@ export default class TransactionStore {
       resultSettingStartTime,
       resultSettingEndTime,
       amount,
-      token: Token.BOT,
+      token: Token.NBOT,
       language,
     })));
     await this.showConfirmDialog();
@@ -552,7 +552,7 @@ export default class TransactionStore {
           resultSettingStartTime,
           resultSettingEndTime,
           amount: amountSatoshi,
-          token: Token.BOT,
+          token: Token.NBOT,
           language,
         });
 
@@ -585,7 +585,7 @@ export default class TransactionStore {
       oracleAddress,
       optionIdx,
       amount,
-      token: Token.QTUM,
+      token: Token.NAKA,
     })));
     await this.showConfirmDialog();
   }
@@ -649,7 +649,7 @@ export default class TransactionStore {
       oracleAddress,
       optionIdx,
       amount: amountSatoshi,
-      token: Token.BOT,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }
@@ -711,7 +711,7 @@ export default class TransactionStore {
       oracleAddress,
       optionIdx,
       amount: amountSatoshi,
-      token: Token.BOT,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }
@@ -776,7 +776,7 @@ export default class TransactionStore {
       oracleAddress,
       optionIdx,
       amount: amountSatoshi,
-      token: Token.BOT,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }
@@ -838,7 +838,7 @@ export default class TransactionStore {
       oracleAddress,
       optionIdx,
       amount: amountSatoshi,
-      token: Token.BOT,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }

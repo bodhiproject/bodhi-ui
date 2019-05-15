@@ -22,42 +22,42 @@ const messages = defineMessages({
 class Reward extends Component {
   render() {
     const { eventPage, topic, classes } = this.props;
-    const { qtumWinnings, botWinnings, betBalances, voteBalances } = eventPage;
+    const { nakaWinnings, nbotWinnings, betBalances, voteBalances } = eventPage;
     const totalBetAmount = _.sum(betBalances);
     const totalVoteAmount = _.sum(voteBalances);
-    const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
-    const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
+    const nakaReturnRate = totalBetAmount ? ((nakaWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
+    const botReturnRate = totalVoteAmount ? ((nbotWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
-    const totalQtumWinningBets = eventPage.topic.qtumAmount[topic.resultIdx];
-    const totalQtumBets = _.sum(topic.qtumAmount);
-    const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
-    const losersQtumReward = totalLosingQtumBets / 100;
-    const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
-    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
-    const totalBotWinningBets = topic.botAmount[topic.resultIdx];
-    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
-    if (botQtumWon > 0 || qtumWon > 0) {
+    const totalNakaWinningBets = eventPage.topic.nakaAmount[topic.resultIdx];
+    const totalNakaBets = _.sum(topic.nakaAmount);
+    const totalLosingNakaBets = totalNakaBets - totalNakaWinningBets;
+    const losersNakaReward = totalLosingNakaBets / 100;
+    const losersAdjustedNaka = totalLosingNakaBets - losersNakaReward;
+    const nakaWon = ((resultBetAmount / totalNakaWinningBets) * losersAdjustedNaka) || 0;
+    const totalNbotWinningBets = topic.nbotAmount[topic.resultIdx];
+    const nbotNakaWon = ((resultVoteAmount / totalNbotWinningBets) * losersNakaReward) || 0;
+    if (nbotNakaWon > 0 || nakaWon > 0) {
       return (
         <Container>
           <RewardIcon />
           <RewardTitle />
           <div className={classes.rowDiv}>
-            <QtumReturn
-              qtumWinnings={eventPage.qtumWinnings}
-              qtumWon={qtumWon}
-              botQtumWon={botQtumWon}
+            <NakaReturn
+              nakaWinnings={eventPage.nakaWinnings}
+              nakaWon={nakaWon}
+              nbotNakaWon={nbotNakaWon}
               resultTokenAmount={resultBetAmount}
               totalTokenAmount={totalBetAmount}
-              tokenWinnings={qtumWinnings}
-              qtumReturnRate={qtumReturnRate}
+              tokenWinnings={nakaWinnings}
+              nakaReturnRate={nakaReturnRate}
             />
             <Separator />
             <BotUsed
-              botWinnings={eventPage.botWinnings}
+              nbotWinnings={eventPage.nbotWinnings}
               resultTokenAmount={resultVoteAmount}
               totalTokenAmount={totalVoteAmount}
-              tokenWinnings={botWinnings}
+              tokenWinnings={nbotWinnings}
               botReturnRate={botReturnRate}
             />
           </div>
@@ -87,21 +87,21 @@ const Separator = styled.div`
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
-class QtumReturn extends Component {
+class NakaReturn extends Component {
   render() {
-    const { qtumWinnings, qtumReturnRate, intl, classes, ...props } = this.props;
+    const { nakaWinnings, nakaReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
         <Typography variant="h4">
           <div className={classes.rowDiv}>
-            +{qtumWinnings} <div className={classes.tokenDiv}>QTUM</div>
-            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
+            +{nakaWinnings} <div className={classes.tokenDiv}>NAKA</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="NAKA" {...props} />}>
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
           </div>
         </Typography>
         <Typography variant="caption">
-          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${qtumReturnRate.toFixed(2)}%`}
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${nakaReturnRate.toFixed(2)}%`}
         </Typography>
       </div>
     );
@@ -112,13 +112,13 @@ class QtumReturn extends Component {
 @injectIntl
 class BotUsed extends Component {
   render() {
-    const { botWinnings, botReturnRate, intl, classes, ...props } = this.props;
+    const { nbotWinnings, botReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
         <Typography variant="h4">
           <div className={classes.rowDiv}>
-            +{botWinnings} <div className={classes.tokenDiv}>BOT</div>
-            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
+            +{nbotWinnings} <div className={classes.tokenDiv}>NBOT</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="NBOT" {...props} />}>
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
           </div>

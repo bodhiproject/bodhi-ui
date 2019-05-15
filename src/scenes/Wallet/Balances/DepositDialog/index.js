@@ -22,16 +22,16 @@ export default class DepositDialog extends Component {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddress: PropTypes.string,
-    qtumAmount: PropTypes.string,
-    botAmount: PropTypes.string,
+    nakaAmount: PropTypes.string,
+    nbotAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onCopyClicked: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     walletAddress: undefined,
-    qtumAmount: undefined,
-    botAmount: undefined,
+    nakaAmount: undefined,
+    nbotAmount: undefined,
   }
 
   render() {
@@ -39,8 +39,8 @@ export default class DepositDialog extends Component {
       classes,
       dialogVisible,
       walletAddress,
-      qtumAmount,
-      botAmount,
+      nakaAmount,
+      nbotAmount,
       onClose,
       onCopyClicked,
     } = this.props;
@@ -52,17 +52,17 @@ export default class DepositDialog extends Component {
     return (
       <Dialog open={dialogVisible} onClose={onClose}>
         <DialogTitle>
-          <FormattedMessage id="depositDialog.title" defaultMessage="QTUM/BOT Deposit Address" />
+          <FormattedMessage id="depositDialog.title" defaultMessage="NAKA/NBOT Deposit Address" />
         </DialogTitle>
         <DialogContent>
           <Typography variant="h6" className={classes.depositAddress}>
             {walletAddress}
           </Typography>
-          <Typography variant="body2" className={classes.qtumAmount}>
-            {`QTUM: ${qtumAmount}`}
+          <Typography variant="body2" className={classes.nakaAmount}>
+            {`NAKA: ${nakaAmount}`}
           </Typography>
           <Typography variant="body2">
-            {`BOT: ${botAmount}`}
+            {`NBOT: ${nbotAmount}`}
           </Typography>
         </DialogContent>
         <DialogActions>

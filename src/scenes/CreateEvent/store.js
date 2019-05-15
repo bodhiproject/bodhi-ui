@@ -34,9 +34,9 @@ const messages = defineMessages({
     id: 'create.validResultSetEnd',
     defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
   },
-  strNotEnoughBotMsg: {
-    id: 'str.notEnoughBot',
-    defaultMessage: "You don't have enough BOT",
+  strNotEnoughNbotMsg: {
+    id: 'str.notEnoughNbot',
+    defaultMessage: "You don't have enough NBOT",
   },
   createRequiredMsg: {
     id: 'create.required',
@@ -137,8 +137,8 @@ export default class CreateEventStore {
   @computed get warning() {
     if (!this.hasEnoughFee) {
       return {
-        id: 'str.notEnoughQtumAndBot',
-        message: 'You don\'t have enough QTUM or BOT',
+        id: 'str.notEnoughNAKAAndNbot',
+        message: 'You don\'t have enough NAKA or NBOT',
       };
     }
     return {};
@@ -287,7 +287,7 @@ export default class CreateEventStore {
     //       type: TransactionType.APPROVE_CREATE_EVENT,
     //       senderAddress: this.app.wallet.currentAddress,
     //       amount: decimalToSatoshi(this.escrowAmount),
-    //       token: Token.BOT,
+    //       token: Token.NBOT,
     //     });
     //     this.txFees = map(data, (item) => new TransactionCost(item));
     //   } catch (error) {
@@ -385,7 +385,7 @@ export default class CreateEventStore {
     const { app: { wallet }, escrowAmount, creator } = this;
     const checkingAddresses = filter(wallet.addresses, { address: creator });
     if (checkingAddresses.length && checkingAddresses[0].nbot < escrowAmount) {
-      this.error.creator = messages.strNotEnoughBotMsg.id;
+      this.error.creator = messages.strNotEnoughNbotMsg.id;
     } else if (!creator) {
       this.error.creator = messages.createRequiredMsg.id;
     } else {
