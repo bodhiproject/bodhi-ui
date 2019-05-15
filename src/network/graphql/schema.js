@@ -5,8 +5,8 @@ export const PAGE_INFO = `
 `;
 
 export const BLOCK = `
-  number
-  time
+  blockNum
+  blockTime
 `;
 
 export const TRANSACTION_RECEIPT = `
