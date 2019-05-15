@@ -28,6 +28,7 @@ export const PENDING_TRANSACTIONS = `
   total
 `;
 
+// Transaction interface
 export const ITRANSACTION = `
   txType
   txid
@@ -37,6 +38,7 @@ export const ITRANSACTION = `
   block { ${BLOCK} }
 `;
 
+// MultipleResultsEvent extends Transaction
 export const MULTIPLE_RESULTS_EVENT = `
   ${ITRANSACTION}
   address
@@ -70,6 +72,7 @@ export const PAGINATED_EVENTS = `
   items { ${MULTIPLE_RESULTS_EVENT} }
 `;
 
+// Bet extends Transaction
 export const BET = `
   ${ITRANSACTION}
   eventAddress
@@ -85,6 +88,7 @@ export const PAGINATED_BETS = `
   items { ${BET} }
 `;
 
+// ResultSet extends Transaction
 export const RESULT_SET = `
   ${ITRANSACTION}
   eventAddress
@@ -100,6 +104,7 @@ export const PAGINATED_RESULT_SETS = `
   items { ${RESULT_SET} }
 `;
 
+// Withdraw extends Transaction
 export const WITHDRAW = `
   ${ITRANSACTION}
   eventAddress
