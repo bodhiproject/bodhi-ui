@@ -115,7 +115,7 @@
   "navBar.allEvents": "全部事件",
   "navBar.leaderboard": "排行榜",
   "navBar.settings": "设置",
-  "navbar.arbitration": "BOT仲裁",
+  "navbar.arbitration": "NBOT仲裁",
   "navbar.prediction": "NAKA预测",
   "note.currentAllowanceMessage": "这里显示了您现在通过了授权，可以使用的BOT额度。若通过额度大于0，您需要先重置额度至0才能增加至更高的额度。",
   "note.currentAllowanceTitle": "现在的允许额度: {allowance} NBOT",
