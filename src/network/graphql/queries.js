@@ -1,12 +1,20 @@
 import { gql } from 'apollo-boost';
 import { map } from 'lodash';
-import { MultipleResultsEvent, Bet, ResultSet, Withdraw, SyncInfo } from 'models';
+import {
+  MultipleResultsEvent,
+  Bet,
+  ResultSet,
+  Withdraw,
+  Transaction,
+  SyncInfo,
+} from 'models';
 import {
   PAGINATED_EVENTS,
   MULTIPLE_RESULTS_EVENT,
   PAGINATED_BETS,
   PAGINATED_RESULT_SETS,
   PAGINATED_WITHDRAWS,
+  PAGINATED_TRANSACTIONS,
   SYNC_INFO,
   ALL_STATS,
   PAGINATED_MOST_BETS,
@@ -128,7 +136,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${PAGINATED_WITHDRAWS}
+        ${PAGINATED_TRANSACTIONS}
       }
     }
   `,
@@ -260,6 +268,19 @@ export async function resultSets(client, args) {
 export async function withdraws(client, args) {
   const res = await new GraphQuery(client, 'withdraws', args).execute();
   res.items = map(res.items, (withdraw) => new Withdraw(withdraw));
+  return res;
+}
+
+/**
+ * Queries all transactions.
+ * Returns concatenated list of Events, Bets, ResultSets, and Withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function transactions(client, args) {
+  const res = await new GraphQuery(client, 'transactions', args).execute();
+  res.items = map(res.items, (tx) => new Transaction(tx));
   return res;
 }
 
