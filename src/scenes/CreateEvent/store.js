@@ -4,7 +4,7 @@ import { observable, computed, reaction, action, runInAction } from 'mobx';
 import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
-import { toHex } from 'web3-utils';
+import { toHex, isAddress } from 'web3-utils';
 
 import { TransactionType, TransactionStatus, Token } from 'constants';
 import { TransactionCost } from 'models';
@@ -12,7 +12,7 @@ import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
-import Routes, { GRAPHQL } from '../../network/routes';
+import Routes, { GRAPHQL, API } from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
 import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
@@ -77,7 +77,7 @@ const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   loaded: false,
-  escrowAmount: undefined,
+  escrowAmount: 100,
   averageBlockTime: '',
   txFees: [],
   resultSetterDialogOpen: false,
@@ -272,28 +272,16 @@ export default class CreateEventStore {
     //   return;
     // }
 
-    // await this.getAverageBlockTime();
+    await this.getAverageBlockTime();
 
-    // runInAction(async () => {
-    //   this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
-    //   this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-    //   this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-    //   this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
-    //   this.creator = this.app.wallet.currentAddress;
-    //   this.loaded = true;
-    //   // Determine if user has enough tokens to create an event
-    //   try {
-    //     const { data } = await axios.post(Routes.api.transactionCost, {
-    //       type: TransactionType.APPROVE_CREATE_EVENT,
-    //       senderAddress: this.app.wallet.currentAddress,
-    //       amount: decimalToSatoshi(this.escrowAmount),
-    //       token: Token.NBOT,
-    //     });
-    //     this.txFees = map(data, (item) => new TransactionCost(item));
-    //   } catch (error) {
-    //     this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.transactionCost);
-    //   }
-    // });
+    runInAction(async () => {
+      this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
+      this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+      this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
+      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
+      this.creator = this.app.wallet.currentAddress;
+      this.loaded = true;
+    });
   }
 
   /**
@@ -331,11 +319,11 @@ export default class CreateEventStore {
   @action
   getEscrowAmount = async () => {
     try {
-      const res = await axios.post(Routes.api.eventEscrowAmount, { senderAddress: this.app.wallet.currentAddress });
-      this.escrowAmount = satoshiToDecimal(res.data[0]);
+      const { data: { result } } = await axios.get(API.EVENT_ESCROW_AMOUNT);
+      this.escrowAmount = satoshiToDecimal(result);
       return true;
     } catch (err) {
-      this.app.components.globalDialog.setError(`${err.message} : ${err.response.data.error}`, Routes.api.eventEscrowAmount);
+      this.app.components.globalDialog.setError(`${err.message} : ${err.response.data.error}`);
       this.close();
     }
     return false;
@@ -347,10 +335,9 @@ export default class CreateEventStore {
   @action
   getAverageBlockTime = async () => {
     try {
-      const { data } = await axios.get(Routes.insight.totals);
-      this.averageBlockTime = data.time_between_blocks;
+      this.averageBlockTime = 3000;
     } catch (err) {
-      console.error(`${Routes.insight.totals}: ${err.message}`); // eslint-disable-line
+      console.error(`AverageBlockTime: ${err.message}`); // eslint-disable-line
       this.averageBlockTime = defaults.averageBlockTime;
     }
   }
@@ -470,24 +457,13 @@ export default class CreateEventStore {
   }
 
   @action
-  validateResultSetter = async () => {
+  validateResultSetter = () => {
     if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
-    } else if (!(await this.isValidAddress())) {
+    } else if (!isAddress(this.resultSetter)) {
       this.error.resultSetter = messages.invalidAddress.id;
     } else {
       this.error.resultSetter = '';
-    }
-  }
-
-  isValidAddress = async () => {
-    try {
-      const { data } = await axios.post(Routes.api.validateAddress, { address: this.resultSetter });
-      return data.isvalid;
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.validateAddress);
-      });
     }
   }
 
@@ -509,35 +485,21 @@ export default class CreateEventStore {
     this.validateAll();
     if (!this.isAllValid) return;
 
-    const { currentAddress, isAllowanceEnough } = this.app.wallet;
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
-    if (isAllowanceEnough(allowance, escrowAmountSatoshi)) {
-      await this.app.tx.addCreateEventTx(
-        undefined,
-        this.app.wallet.currentAddress,
-        this.title,
-        this.outcomes,
-        this.resultSetter,
-        this.prediction.startTime.toString(),
-        this.prediction.endTime.toString(),
-        this.resultSetting.startTime.toString(),
-        this.resultSetting.endTime.toString(),
-        escrowAmountSatoshi,
-        this.app.ui.locale,
-      );
-    } else {
-      await this.app.tx.addApproveCreateEventTx(
-        this.title,
-        this.outcomes,
-        this.resultSetter,
-        this.prediction.startTime.toString(),
-        this.prediction.endTime.toString(),
-        this.resultSetting.startTime.toString(),
-        this.resultSetting.endTime.toString(),
-        escrowAmountSatoshi,
-        this.app.ui.locale,
-      );
-    }
+
+    await this.app.tx.addCreateEventTx(
+      undefined,
+      this.app.wallet.currentAddress,
+      this.title,
+      this.outcomes,
+      this.resultSetter,
+      this.prediction.startTime.toString(),
+      this.prediction.endTime.toString(),
+      this.resultSetting.startTime.toString(),
+      this.resultSetting.endTime.toString(),
+      escrowAmountSatoshi,
+      this.app.ui.locale,
+    );
 
     this.close();
   }

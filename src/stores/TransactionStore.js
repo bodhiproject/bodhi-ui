@@ -217,18 +217,18 @@ export default class TransactionStore {
   @action
   showConfirmDialog = async () => {
     try {
-      each(this.transactions, async (tx) => {
-        const { data } = await axios.post(networkRoutes.api.transactionCost, {
-          type: tx.type,
-          senderAddress: tx.senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress: tx.oracleAddress,
-          optionIdx: tx.optionIdx,
-          amount: tx.amountSatoshi,
-          token: tx.token,
-        });
-        tx.fees = map(data, (item) => new TransactionCost(item));
-      });
+      // each(this.transactions, async (tx) => {
+      //   const { data } = await axios.post(networkRoutes.api.transactionCost, {
+      //     type: tx.type,
+      //     senderAddress: tx.senderAddress,
+      //     topicAddress: tx.topicAddress,
+      //     oracleAddress: tx.oracleAddress,
+      //     optionIdx: tx.optionIdx,
+      //     amount: tx.amountSatoshi,
+      //     token: tx.token,
+      //   });
+      //   tx.fees = map(data, (item) => new TransactionCost(item));
+      // });
 
       runInAction(() => {
         this.visible = true;
@@ -365,45 +365,6 @@ export default class TransactionStore {
     }
   }
 
-  /**
-   * Adds an approve create event tx to the queue.
-   * @param {string} name Name of the event.
-   * @param {array} options String array of the options for the event.
-   * @param {string} resultSetterAddress Address of the result setter.
-   * @param {string} bettingStartTime Unix timestamp of the betting start time.
-   * @param {string} bettingEndTime Unix timestamp of the betting end time.
-   * @param {string} resultSettingStartTime Unix timestamp of the result setting start time.
-   * @param {string} resultSettingEndTime Unix timestamp of the result setting end time.
-   * @param {string} amountSatoshi Escrow amount.
-   */
-  @action
-  addApproveCreateEventTx = async (
-    name,
-    options,
-    resultSetterAddress,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    amountSatoshi,
-    language,
-  ) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.APPROVE_CREATE_EVENT,
-      senderAddress: this.app.wallet.currentAddress,
-      name,
-      options,
-      resultSetterAddress,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      amount: amountSatoshi,
-      token: Token.NBOT,
-      language,
-    })));
-    await this.showConfirmDialog();
-  }
 
   /**
    * Executes an approve for a create event.
