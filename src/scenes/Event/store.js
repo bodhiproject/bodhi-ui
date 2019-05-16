@@ -283,9 +283,9 @@ export default class EventStore {
   @action
   queryResultSets = async (address) => {
     const { graphqlClient } = this.app;
-    const resultSetfilter = [{ eventAddress: address }];
+    const resultSetFilter = [{ eventAddress: address }];
     const resultSetOrderBy = { field: 'evetRound', direction: SortBy.ASCENDING };
-    const res = await resultSets(graphqlClient, { filter: resultSetfilter, orderBy: resultSetOrderBy });
+    const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
     this.resultSetsHistory = res.item;
   }
 
@@ -317,11 +317,12 @@ export default class EventStore {
     //   { field: 'createdTime', direction: SortBy.DESCENDING },
     // );
     const pendings = [];
-    const txs = await transactions([{ eventAddress: address }]);
-    let confirmed = txs.items;
-    confirmed = orderBy(confirmed, ['blockNum'], ['desc']);
+    const { graphqlClient } = this.app;
+    const txFilter = [{ eventAddress: address }];
+    const txOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+    const txs = await transactions(graphqlClient, { filter: txFilter, orderBy: txOrderBy });
 
-    this.transactionHistoryItems = [...pendings, ...confirmed];
+    this.transactionHistoryItems = [...pendings, ...txs.items];
   }
 
   @action
