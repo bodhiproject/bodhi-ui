@@ -12,9 +12,8 @@ import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
-import Routes, { GRAPHQL, API } from '../../network/routes';
+import { GRAPHQL, API } from '../../network/routes';
 import { isProduction, defaults } from '../../config/app';
-import getContracts from '../../config/contracts';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
@@ -77,7 +76,7 @@ const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   loaded: false,
-  escrowAmount: 100,
+  escrowAmount: undefined,
   averageBlockTime: '',
   txFees: [],
   resultSetterDialogOpen: false,
@@ -145,6 +144,7 @@ export default class CreateEventStore {
   }
   @computed get blockNum() {
     const { prediction, resultSetting } = this;
+		console.log('TCL: CreateEventStore -> @computedgetblockNum -> prediction', prediction);
     return {
       prediction: {
         startTime: this.calculateBlock(prediction.startTime),
@@ -241,7 +241,7 @@ export default class CreateEventStore {
    * @return {number} Estimated future block.
    */
   calculateBlock = (futureDateUnix) => {
-    const currentBlock = this.app.global.syncBlockNum;
+    const currentBlock = this.currentBlock
     const diffSec = futureDateUnix - moment().unix();
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
@@ -258,20 +258,13 @@ export default class CreateEventStore {
       return;
     }
 
-    // Close if getting pending txs fails
-    // const hasPendingTxs = await this.hasPendingCreateTxs();
-    // if (hasPendingTxs) {
-    //   this.close();
-    //   return;
-    // }
-
     // Close if unable to get the escrow amount
-    // const escrowAmountSuccess = await this.getEscrowAmount();
-    // if (!escrowAmountSuccess) {
-    //   this.close();
-    //   return;
-    // }
-
+    const escrowAmountSuccess = await this.getEscrowAmount();
+    if (!escrowAmountSuccess) {
+      this.close();
+      return;
+    }
+    this.currentBlock = this.app.global.syncBlockNum;
     await this.getAverageBlockTime();
 
     runInAction(async () => {
@@ -335,7 +328,7 @@ export default class CreateEventStore {
   @action
   getAverageBlockTime = async () => {
     try {
-      this.averageBlockTime = 3000;
+      this.averageBlockTime = 3;
     } catch (err) {
       console.error(`AverageBlockTime: ${err.message}`); // eslint-disable-line
       this.averageBlockTime = defaults.averageBlockTime;

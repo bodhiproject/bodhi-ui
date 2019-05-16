@@ -120,7 +120,6 @@ export default class TransactionStore {
         createEventFuncTypes,
         eventParams,
       ).substr(2);
-      console.log('TCL: TransactionStore -> paramsHex', paramsHex);
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
       const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
@@ -273,6 +272,7 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
+  // TODO: handle for specific types
   onTxExecuted = async (tx, pendingTx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
@@ -467,13 +467,13 @@ export default class TransactionStore {
       if (txid) {
         const { graphqlClient } = this.app;
         const numOfResults = options.length;
-        const res = await addPendingEvent(graphqlClient, {
+        const pp = {
           txid,
-          blockNum: 132323,
+          blockNum: this.app.global.syncBlockNum,
           ownerAddress: senderAddress,
           version: 1,
           name,
-          results: toJS(options),
+          results: createEventParams[1],
           numOfResults,
           centralizedOracle: resultSetterAddress,
           betStartTime: bettingStartTime,
@@ -481,10 +481,11 @@ export default class TransactionStore {
           resultSetStartTime: resultSettingStartTime,
           resultSetEndTime: resultSettingEndTime,
           language,
-        });
+        };
+        const res = await addPendingEvent(graphqlClient, pp);
         console.log('TCL: executeCreateEvent -> res', res);
 
-        // await this.onTxExecuted(tx);
+        await this.onTxExecuted(res);
         this.app.prediction.loadFirst();
         Tracking.track('event-createEvent');
       }
