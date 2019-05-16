@@ -117,9 +117,15 @@ export default class TransactionStore {
         createEventFuncTypes,
         eventParams,
       ).substr(2);
+
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: this.app.wallet.nbotOwner,
+        exchangeRate: this.app.wallet.exchangeRate,
+        gas,
+      }]);
       return txid;
     } catch (err) {
       throw err; // TODO: show errror message and show error in error dialog
@@ -464,9 +470,7 @@ export default class TransactionStore {
         const { graphqlClient } = this.app;
         const res = await addPendingEvent(graphqlClient, {
           txid,
-          blockNum: this.app.global.syncBlockNum,
           ownerAddress: senderAddress,
-          version: 0,
           name,
           results: createEventParams[1],
           numOfResults: results.length,

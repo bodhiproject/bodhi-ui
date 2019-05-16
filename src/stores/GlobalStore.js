@@ -57,6 +57,7 @@ export default class GlobalStore {
       () => {
         if (this.localWallet === false) {
           this.app.wallet.fetchNbotBalance(this.app.wallet.currentAddress);
+          this.app.wallet.fetchExchangeRate();
         }
       }
     );
