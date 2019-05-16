@@ -19,6 +19,7 @@ export const TRANSACTION_RECEIPT = `
   contractAddress
   cumulativeGasUsed
   gasUsed
+  gasPrice
 `;
 
 export const PENDING_TRANSACTIONS = `
