@@ -79,17 +79,14 @@ export default class PredictionStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
+      const { naka: { account }, graphqlClient, ui: { locale } } = this.app;
       const orderBy = { field: 'resultSetEndTime', direction: this.sortBy };
       const filters = [
-        { status: EVENT_STATUS.BETTING, language: this.app.ui.locale },
-        { status: EVENT_STATUS.CREATED, language: this.app.ui.locale },
+        { status: EVENT_STATUS.BETTING, language: locale },
+        { status: EVENT_STATUS.CREATED, language: locale },
       ];
 
-      const { naka: { account }, graphqlClient } = this.app;
-
       const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
-      console.log('hello');
-      console.log(res);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
