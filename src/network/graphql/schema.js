@@ -19,6 +19,7 @@ export const TRANSACTION_RECEIPT = `
   contractAddress
   cumulativeGasUsed
   gasUsed
+  gasPrice
 `;
 
 export const PENDING_TRANSACTIONS = `
@@ -60,10 +61,10 @@ export const MULTIPLE_RESULTS_EVENT = `
   currentResultIndex
   consensusThreshold
   arbitrationEndTime
-  totalBets
   status
   language
   pendingTxs { ${PENDING_TRANSACTIONS} }
+  roundBets
 `;
 
 export const PAGINATED_EVENTS = `

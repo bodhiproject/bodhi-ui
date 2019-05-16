@@ -49,6 +49,7 @@ const QUERIES = {
       $limit: Int
       $skip: Int
       $pendingTxsAddress: String
+      $includeRoundBets: Boolean
     ) {
       events(
         filter: $filter
@@ -56,6 +57,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
         pendingTxsAddress: $pendingTxsAddress
+        includeRoundBets: $includeRoundBets
       ) {
         ${PAGINATED_EVENTS}
       }
