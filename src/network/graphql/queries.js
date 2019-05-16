@@ -1,17 +1,36 @@
 import { gql } from 'apollo-boost';
 import { map } from 'lodash';
-import { MultipleResultsEvent, Bet, ResultSet, Withdraw, SyncInfo } from 'models';
+import {
+  MultipleResultsEvent,
+  Bet,
+  ResultSet,
+  Withdraw,
+  Transaction,
+  SyncInfo,
+} from 'models';
 import {
   PAGINATED_EVENTS,
   MULTIPLE_RESULTS_EVENT,
   PAGINATED_BETS,
   PAGINATED_RESULT_SETS,
   PAGINATED_WITHDRAWS,
+  PAGINATED_TRANSACTIONS,
   SYNC_INFO,
   ALL_STATS,
   PAGINATED_MOST_BETS,
   BIGGEST_WINNER,
 } from './schema';
+
+const QUERY_EVENTS = 'events';
+const QUERY_SEARCH_EVENTS = 'searchEvents';
+const QUERY_BETS = 'bets';
+const QUERY_RESULT_SETS = 'resultSets';
+const QUERY_WITHDRAWS = 'withdraws';
+const QUERY_TRANSACTIONS = 'transactions';
+const QUERY_SYNC_INFO = 'syncInfo';
+const QUERY_ALL_STATS = 'allStats';
+const QUERY_MOST_BETS = 'mostBets';
+const QUERY_BIGGEST_WINNERS = 'biggestWinners';
 
 /**
  * Example query arguments:
@@ -117,6 +136,22 @@ const QUERIES = {
     }
   `,
 
+  transactions: gql`
+    query(
+      $filter: TransactionFilter
+      $limit: Int
+      $skip: Int
+    ) {
+      transactions(
+        filter: $filter
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_TRANSACTIONS}
+      }
+    }
+  `,
+
   syncInfo: gql`
     query {
       syncInfo {
@@ -195,7 +230,7 @@ class GraphQuery {
  * @return {object} Query result.
  */
 export async function events(client, args) {
-  const res = await new GraphQuery(client, 'events', args).execute();
+  const res = await new GraphQuery(client, QUERY_EVENTS, args).execute();
   res.items = map(res.items, (event) => new MultipleResultsEvent(event));
   return res;
 }
@@ -207,7 +242,7 @@ export async function events(client, args) {
  * @return {object} Query result.
  */
 export async function searchEvents(client, args) {
-  const res = await new GraphQuery(client, 'searchEvents', args).execute();
+  const res = await new GraphQuery(client, QUERY_SEARCH_EVENTS, args).execute();
   return map(res, (event) => new MultipleResultsEvent(event));
 }
 
@@ -218,7 +253,7 @@ export async function searchEvents(client, args) {
  * @return {object} Query result.
  */
 export async function bets(client, args) {
-  const res = await new GraphQuery(client, 'bets', args).execute();
+  const res = await new GraphQuery(client, QUERY_BETS, args).execute();
   res.items = map(res.items, (bet) => new Bet(bet));
   return res;
 }
@@ -230,7 +265,7 @@ export async function bets(client, args) {
  * @return {object} Query result.
  */
 export async function resultSets(client, args) {
-  const res = await new GraphQuery(client, 'resultSets', args).execute();
+  const res = await new GraphQuery(client, QUERY_RESULT_SETS, args).execute();
   res.items = map(res.items, (resultSet) => new ResultSet(resultSet));
   return res;
 }
@@ -242,8 +277,21 @@ export async function resultSets(client, args) {
  * @return {object} Query result.
  */
 export async function withdraws(client, args) {
-  const res = await new GraphQuery(client, 'withdraws', args).execute();
+  const res = await new GraphQuery(client, QUERY_WITHDRAWS, args).execute();
   res.items = map(res.items, (withdraw) => new Withdraw(withdraw));
+  return res;
+}
+
+/**
+ * Queries all transactions.
+ * Returns concatenated list of Events, Bets, ResultSets, and Withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function transactions(client, args) {
+  const res = await new GraphQuery(client, QUERY_TRANSACTIONS, args).execute();
+  res.items = map(res.items, (tx) => new Transaction(tx));
   return res;
 }
 
@@ -253,7 +301,7 @@ export async function withdraws(client, args) {
  * @return {object} Query result.
  */
 export async function syncInfo(client) {
-  const res = await new GraphQuery(client, 'syncInfo').execute();
+  const res = await new GraphQuery(client, QUERY_SYNC_INFO).execute();
   return new SyncInfo(res);
 }
 
@@ -263,7 +311,7 @@ export async function syncInfo(client) {
  * @return {object} Query result.
  */
 export async function allStats(client) {
-  return new GraphQuery('allStats', client).execute();
+  return new GraphQuery(client, QUERY_ALL_STATS).execute();
 }
 
 /**
@@ -273,7 +321,7 @@ export async function allStats(client) {
  * @return {object} Query result.
  */
 export async function mostBets(client, args) {
-  return new GraphQuery(client, 'mostBets', args).execute();
+  return new GraphQuery(client, QUERY_MOST_BETS, args).execute();
 }
 
 /**
@@ -283,5 +331,5 @@ export async function mostBets(client, args) {
  * @return {object} Query result.
  */
 export async function biggestWinners(client, args) {
-  return new GraphQuery(client, 'biggestWinners', args).execute();
+  return new GraphQuery(client, QUERY_BIGGEST_WINNERS, args).execute();
 }

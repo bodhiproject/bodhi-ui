@@ -5,8 +5,8 @@ export const PAGE_INFO = `
 `;
 
 export const BLOCK = `
-  number
-  time
+  blockNum
+  blockTime
 `;
 
 export const TRANSACTION_RECEIPT = `
@@ -28,12 +28,19 @@ export const PENDING_TRANSACTIONS = `
   total
 `;
 
-export const MULTIPLE_RESULTS_EVENT = `
+// Transaction interface
+export const ITRANSACTION = `
+  txType
   txid
   txStatus
   txReceipt { ${TRANSACTION_RECEIPT} }
   blockNum
   block { ${BLOCK} }
+`;
+
+// MultipleResultsEvent extends Transaction
+export const MULTIPLE_RESULTS_EVENT = `
+  ${ITRANSACTION}
   address
   ownerAddress
   version
@@ -65,12 +72,9 @@ export const PAGINATED_EVENTS = `
   items { ${MULTIPLE_RESULTS_EVENT} }
 `;
 
+// Bet extends Transaction
 export const BET = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   betterAddress
   resultIndex
@@ -84,12 +88,9 @@ export const PAGINATED_BETS = `
   items { ${BET} }
 `;
 
+// ResultSet extends Transaction
 export const RESULT_SET = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   centralizedOracleAddress
   resultIndex
@@ -103,12 +104,9 @@ export const PAGINATED_RESULT_SETS = `
   items { ${RESULT_SET} }
 `;
 
+// Withdraw extends Transaction
 export const WITHDRAW = `
-  txid
-  txStatus
-  txReceipt { ${TRANSACTION_RECEIPT} }
-  blockNum
-  block { ${BLOCK} }
+  ${ITRANSACTION}
   eventAddress
   winnerAddress
   winningAmount
@@ -119,6 +117,39 @@ export const PAGINATED_WITHDRAWS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items { ${WITHDRAW} }
+`;
+
+export const PAGINATED_TRANSACTIONS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items {
+    ${ITRANSACTION}
+    ... on MultipleResultsEvent {
+      address
+      name
+      escrowAmount
+    }
+    ... on Bet {
+      eventAddress
+      betterAddress
+      resultIndex
+      amount
+      eventRound
+    }
+    ... on ResultSet {
+      eventAddress
+      centralizedOracleAddress
+      resultIndex
+      amount
+      eventRound
+    }
+    ... on Withdraw {
+      eventAddress
+      winnerAddress
+      winningAmount
+      escrowAmount
+    }
+  }
 `;
 
 export const SYNC_INFO = `
