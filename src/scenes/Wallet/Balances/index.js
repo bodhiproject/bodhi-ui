@@ -10,10 +10,7 @@ import { SortBy } from 'constants';
 import { ResponsiveTable } from 'components';
 
 import styles from './styles';
-import DepositDialog from './DepositDialog';
-import WithdrawDialog from './WithdrawDialog';
 import Config from '../../../config/app';
-import Tracking from '../../../helpers/mixpanelUtil';
 
 
 @injectIntl
@@ -32,11 +29,6 @@ export default class MyBalances extends Component {
       order: SortBy.ASCENDING.toLowerCase(),
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
-      selectedAddress: undefined,
-      selectedAddressNaka: undefined,
-      selectedAddressNbot: undefined,
-      depositDialogVisible: false,
-      withdrawDialogVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -46,22 +38,11 @@ export default class MyBalances extends Component {
     this.getTableBody = this.getTableBody.bind(this);
     this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
-    this.onDepositClicked = this.onDepositClicked.bind(this);
-    this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
-    this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.onWithdraw = this.onWithdraw.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
   render() {
     const { classes } = this.props;
-    const {
-      selectedAddress,
-      selectedAddressNaka,
-      selectedAddressNbot,
-      depositDialogVisible,
-      withdrawDialogVisible,
-    } = this.state;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -75,22 +56,6 @@ export default class MyBalances extends Component {
             {this.getTableBody()}
           </ResponsiveTable>
           {this.getAddrCopiedSnackBar()}
-          <DepositDialog
-            dialogVisible={depositDialogVisible}
-            onClose={this.handleDepositDialogClose}
-            onCopyClicked={this.onCopyClicked}
-            walletAddress={selectedAddress}
-            nakaAmount={selectedAddressNaka}
-            nbotAmount={selectedAddressNbot}
-          />
-          <WithdrawDialog
-            dialogVisible={withdrawDialogVisible}
-            onClose={this.handleWithdrawDialogClose}
-            onWithdraw={this.onWithdraw}
-            walletAddress={selectedAddress}
-            nakaAmount={selectedAddressNaka}
-            nbotAmount={selectedAddressNbot}
-          />
         </Grid>
       </Paper>
     );
@@ -165,13 +130,6 @@ export default class MyBalances extends Component {
         nameDefault: 'NBOT',
         numeric: true,
         sortable: true,
-      },
-      {
-        id: 'actions',
-        name: 'str.actions',
-        nameDefault: 'Actions',
-        numeric: false,
-        sortable: false,
       },
     ];
 
@@ -275,32 +233,6 @@ export default class MyBalances extends Component {
             <TableCell numeric>
               <Typography variant="body2">{item.nbot}</Typography>
             </TableCell>
-            <TableCell>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.tableRowActionButton}
-                onClick={this.onDepositClicked}
-                data-address={item.address}
-                data-naka={item.naka}
-                data-nbot={item.nbot}
-              >
-                <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.tableRowActionButton}
-                onClick={this.onWithdrawClicked}
-                data-address={item.address}
-                data-naka={item.naka}
-                data-nbot={item.nbot}
-              >
-                <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
-              </Button>
-            </TableCell>
           </TableRow>))}
       </TableBody>
     );
@@ -332,55 +264,6 @@ export default class MyBalances extends Component {
   onCopyClicked() {
     this.setState({
       addrCopiedSnackbarVisible: true,
-    });
-  }
-
-  onDepositClicked(event) {
-    this.setState({
-      selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressNaka: event.currentTarget.getAttribute('data-naka'),
-      selectedAddressNbot: event.currentTarget.getAttribute('data-nbot'),
-      depositDialogVisible: true,
-    });
-
-    Tracking.track('myWallet-depositDialogOpen');
-  }
-
-  handleDepositDialogClose = () => {
-    this.setState({
-      selectedAddress: undefined,
-      selectedAddressNaka: undefined,
-      selectedAddressNbot: undefined,
-      depositDialogVisible: false,
-    });
-  };
-
-  onWithdrawClicked(event) {
-    const { wallet } = this.props.store;
-
-    this.setState({
-      selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressNaka: event.currentTarget.getAttribute('data-naka'),
-      selectedAddressNbot: event.currentTarget.getAttribute('data-nbot'),
-      withdrawDialogVisible: true,
-    });
-    wallet.setCurrentWalletAddress(event.currentTarget.getAttribute('data-address'));
-
-    Tracking.track('myWallet-withdrawDialogOpen');
-  }
-
-  handleWithdrawDialogClose = () => {
-    this.setState({
-      selectedAddress: undefined,
-      selectedAddressNaka: undefined,
-      selectedAddressNbot: undefined,
-      withdrawDialogVisible: false,
-    });
-  };
-
-  onWithdraw() {
-    this.setState({
-      withdrawDialogVisible: false,
     });
   }
 

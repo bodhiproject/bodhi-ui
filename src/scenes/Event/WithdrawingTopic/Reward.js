@@ -26,7 +26,7 @@ class Reward extends Component {
     const totalBetAmount = _.sum(betBalances);
     const totalVoteAmount = _.sum(voteBalances);
     const nakaReturnRate = totalBetAmount ? ((nakaWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
-    const botReturnRate = totalVoteAmount ? ((nbotWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
+    const nbotReturnRate = totalVoteAmount ? ((nbotWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
     const totalNakaWinningBets = eventPage.topic.nakaAmount[topic.resultIdx];
@@ -58,7 +58,7 @@ class Reward extends Component {
               resultTokenAmount={resultVoteAmount}
               totalTokenAmount={totalVoteAmount}
               tokenWinnings={nbotWinnings}
-              botReturnRate={botReturnRate}
+              nbotReturnRate={nbotReturnRate}
             />
           </div>
         </Container>
@@ -112,7 +112,7 @@ class NakaReturn extends Component {
 @injectIntl
 class BotUsed extends Component {
   render() {
-    const { nbotWinnings, botReturnRate, intl, classes, ...props } = this.props;
+    const { nbotWinnings, nbotReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
         <Typography variant="h4">
@@ -124,7 +124,7 @@ class BotUsed extends Component {
           </div>
         </Typography>
         <Typography variant="caption">
-          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${botReturnRate.toFixed(2)}%`}
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${nbotReturnRate.toFixed(2)}%`}
         </Typography>
       </div>
     );

@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { Routes } from 'constants';
 
 import Balances from './Balances';
-import History from './History';
 
 @inject('store')
 @observer
@@ -16,7 +15,6 @@ export default class MyWallet extends Component {
     return (
       <div>
         <Balances />
-        {/* <History /> */}
       </div>
     );
   }

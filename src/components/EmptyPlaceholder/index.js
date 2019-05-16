@@ -25,7 +25,7 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
         <Button
           size={width === 'xs' ? 'small' : 'medium'}
           color="primary"
-          onClick={createEvent.open} // TODO: REVERT when create is done
+          onClick={createEvent.open}
         >
           <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
         </Button>
