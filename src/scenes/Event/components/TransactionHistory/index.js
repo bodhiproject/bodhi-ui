@@ -13,16 +13,12 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class TransactionHistory extends Component {
-  static propTypes = {
-    options: PropTypes.array.isRequired,
-  };
-
   render() {
-    const { options, store: { eventPage, wallet, naka } } = this.props;
+    const { store: { eventPage, wallet, naka } } = this.props;
     const { transactionHistoryItems, topic } = eventPage;
     return (
       <div>
-        {transactionHistoryItems.length && options.length ? (
+        {transactionHistoryItems.length ? (
           <ResponsiveTable>
             <TableHead>
               <TableRow>
