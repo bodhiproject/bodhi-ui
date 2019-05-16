@@ -485,9 +485,9 @@ export default class TransactionStore {
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/create-event');
+        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/addPendingEvent');
       } else {
-        this.app.components.globalDialog.setError(err.message, '/create-event');
+        this.app.components.globalDialog.setError(err.message, '/addPendingEvent');
       }
     }
   }
