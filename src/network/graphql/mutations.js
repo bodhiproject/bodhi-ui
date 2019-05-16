@@ -11,9 +11,7 @@ const MUTATIONS = {
   addPendingEvent: gql`
     mutation(
       $txid: String!
-      $blockNum: Int!
       $ownerAddress: String!
-      $version: Int!
       $name: String!
       $results: [String!]!
       $numOfResults: Int!
@@ -26,9 +24,7 @@ const MUTATIONS = {
     ) {
       addPendingEvent(
         txid: $txid
-        blockNum: $blockNum
         ownerAddress: $ownerAddress
-        version: $version
         name: $name
         results: $results
         numOfResults: $numOfResults
@@ -47,7 +43,6 @@ const MUTATIONS = {
   addPendingBet: gql`
     mutation(
       $txid: String!
-      $blockNum: Int!
       $eventAddress: String!
       $betterAddress: String!
       $resultIndex: Int!
@@ -56,7 +51,6 @@ const MUTATIONS = {
     ) {
       addPendingBet(
         txid: $txid
-        blockNum: $blockNum
         eventAddress: $eventAddress
         betterAddress: $betterAddress
         resultIndex: $resultIndex
@@ -71,7 +65,6 @@ const MUTATIONS = {
   addPendingResultSet: gql`
     mutation(
       $txid: String!
-      $blockNum: Int!
       $eventAddress: String!
       $centralizedOracleAddress: String!
       $resultIndex: Int!
@@ -80,7 +73,6 @@ const MUTATIONS = {
     ) {
       addPendingResultSet(
         txid: $txid
-        blockNum: $blockNum
         eventAddress: $eventAddress
         centralizedOracleAddress: $centralizedOracleAddress
         resultIndex: $resultIndex
@@ -95,7 +87,6 @@ const MUTATIONS = {
   addPendingWithdraw: gql`
     mutation(
       $txid: String!
-      $blockNum: Int!
       $eventAddress: String!
       $winnerAddress: String!
       $winningAmount: Int!
@@ -103,7 +94,6 @@ const MUTATIONS = {
     ) {
       addPendingWithdraw(
         txid: $txid
-        blockNum: $blockNum
         eventAddress: $eventAddress
         winnerAddress: $winnerAddress
         winningAmount: $winningAmount
