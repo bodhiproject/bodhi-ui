@@ -61,10 +61,10 @@ export const MULTIPLE_RESULTS_EVENT = `
   currentResultIndex
   consensusThreshold
   arbitrationEndTime
-  totalBets
   status
   language
   pendingTxs { ${PENDING_TRANSACTIONS} }
+  roundBets
 `;
 
 export const PAGINATED_EVENTS = `

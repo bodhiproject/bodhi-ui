@@ -1,3 +1,4 @@
+import { map } from 'lodash';
 import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
 
@@ -26,10 +27,10 @@ export default class MultipleResultsEvent {
   currentResultIndex // Current winning result index
   consensusThreshold // Current consensus threshold for the round in decimals
   arbitrationEndTime // Timestamp of the end of the arbitration round
-  totalBets // Total amount of all bets in decimals
   status // Event status. One of: [CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING]
   language // Language of the event
   pendingTxs // Counts of pending txs for the address passed in pendingTxsAddress param
+  roundBets // Array of bets for the current round returned if includeRoundBets: true
 
   // UI-specific vars
   localizedInvalid // for invalid option
@@ -37,7 +38,7 @@ export default class MultipleResultsEvent {
   constructor(event) {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
-    this.totalBets = satoshiToDecimal(event.totalBets);
+    this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',
