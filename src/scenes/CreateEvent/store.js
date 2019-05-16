@@ -77,7 +77,7 @@ const INIT = {
   isOpen: false,
   loaded: false,
   escrowAmount: undefined,
-  averageBlockTime: '',
+  averageBlockTime: 3,
   txFees: [],
   resultSetterDialogOpen: false,
   title: '',
@@ -144,7 +144,6 @@ export default class CreateEventStore {
   }
   @computed get blockNum() {
     const { prediction, resultSetting } = this;
-		console.log('TCL: CreateEventStore -> @computedgetblockNum -> prediction', prediction);
     return {
       prediction: {
         startTime: this.calculateBlock(prediction.startTime),
@@ -265,7 +264,6 @@ export default class CreateEventStore {
       return;
     }
     this.currentBlock = this.app.global.syncBlockNum;
-    await this.getAverageBlockTime();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
@@ -320,19 +318,6 @@ export default class CreateEventStore {
       this.close();
     }
     return false;
-  }
-
-  /**
-   * Gets the average block time from the Insight API.
-   */
-  @action
-  getAverageBlockTime = async () => {
-    try {
-      this.averageBlockTime = 3;
-    } catch (err) {
-      console.error(`AverageBlockTime: ${err.message}`); // eslint-disable-line
-      this.averageBlockTime = defaults.averageBlockTime;
-    }
   }
 
   @action
@@ -483,12 +468,12 @@ export default class CreateEventStore {
     await this.app.tx.executeCreateEvent({
       senderAddress: this.app.wallet.currentAddress,
       name: this.title,
-      options: this.outcomes,
-      resultSetterAddress: this.resultSetter,
-      bettingStartTime: this.prediction.startTime.toString(),
-      bettingEndTime: this.prediction.endTime.toString(),
-      resultSettingStartTime: this.resultSetting.startTime.toString(),
-      resultSettingEndTime: this.resultSetting.endTime.toString(),
+      results: this.outcomes,
+      centralizedOracle: this.resultSetter,
+      betStartTime: this.prediction.startTime.toString(),
+      betEndTime: this.prediction.endTime.toString(),
+      resultSetStartTime: this.resultSetting.startTime.toString(),
+      resultSetEndTime: this.resultSetting.endTime.toString(),
       amountSatoshi: escrowAmountSatoshi,
       language :this.app.ui.locale,
     });

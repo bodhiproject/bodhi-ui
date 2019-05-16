@@ -113,9 +113,6 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
-      console.log('TCL: TransactionStore -> createEventFuncTypes', createEventFuncTypes);
-      console.log('erere123');
-      console.log('TCL: TransactionStore -> eventParams', eventParams);
       const paramsHex = web3EthAbi.encodeParameters(
         createEventFuncTypes,
         eventParams,
@@ -425,25 +422,25 @@ export default class TransactionStore {
     try {
       const {
         senderAddress,
-        resultSetterAddress,
+        centralizedOracle,
         name,
-        options,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
+        results,
+        betStartTime,
+        betEndTime,
+        resultSetStartTime,
+        resultSetEndTime,
         amountSatoshi,
         language,
       } = tx;
 
       const createEventParams = [
         name,
-        toJS(options),
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
-        resultSetterAddress,
+        toJS(results),
+        betStartTime,
+        betEndTime,
+        resultSetStartTime,
+        resultSetEndTime,
+        centralizedOracle,
       ];
       for (let i = 0; i < 10; i++) {
         if (createEventParams[1][i]) {
@@ -466,24 +463,21 @@ export default class TransactionStore {
       // Create pending tx on server
       if (txid) {
         const { graphqlClient } = this.app;
-        const numOfResults = options.length;
-        const pp = {
+        const res = await addPendingEvent(graphqlClient, {
           txid,
           blockNum: this.app.global.syncBlockNum,
           ownerAddress: senderAddress,
-          version: 1,
+          version: 0,
           name,
           results: createEventParams[1],
-          numOfResults,
-          centralizedOracle: resultSetterAddress,
-          betStartTime: bettingStartTime,
-          betEndTime: bettingEndTime,
-          resultSetStartTime: resultSettingStartTime,
-          resultSetEndTime: resultSettingEndTime,
+          numOfResults: results.length,
+          centralizedOracle,
+          betStartTime,
+          betEndTime,
+          resultSetStartTime,
+          resultSetEndTime,
           language,
-        };
-        const res = await addPendingEvent(graphqlClient, pp);
-        console.log('TCL: executeCreateEvent -> res', res);
+        });
 
         await this.onTxExecuted(res);
         this.app.prediction.loadFirst();
