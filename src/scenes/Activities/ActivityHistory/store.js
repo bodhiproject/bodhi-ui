@@ -1,9 +1,9 @@
 import { observable, action, reaction, runInAction, toJS } from 'mobx';
-import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
+import { orderBy, isEmpty, each } from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
 
 import { getDetailPagePath } from '../../../helpers/utility';
-import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
+import { transactions, events } from '../../../network/graphql/queries';
 
 const QUERY_LIMIT = 500;
 const INIT_VALUES = {
@@ -67,7 +67,7 @@ export default class {
     );
     // Wallet addresses changed
     reaction(
-      () => toJS(this.app.wallet.addresses),
+      () => this.app.naka.account,
       () => this.loadFirst(),
     );
   }
@@ -126,19 +126,17 @@ export default class {
    * @return {[Transaction]} Tx array of the query.
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
-    // // Address is required for the request filters
-    // if (isEmpty(this.app.wallet.addresses)) {
-    //   return [];
-    // }
+    // Address is required for the request filters
+    const { naka: { checkLoggedIn }, graphqlClient } = this.app;
+    await checkLoggedIn();
+    const { naka: { account } } = this.app;
 
-    // const txTypes = values(omit(TransactionType, 'TRANSFER'));
-    // const filters = [];
-    // each(this.app.wallet.addresses, (walletAddress) => {
-    //   merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
-    // });
-    // return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
-    const results = [];
-    return results;
+    const direction = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
+    const filters = [{ transactorAddress: account }];
+
+    const res = await transactions(graphqlClient, { filters, orderBy: direction, limit, skip });
+
+    return res.items;
   }
 
   /**
@@ -150,21 +148,5 @@ export default class {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
     this.tableOrderBy = columnName;
     this.tableOrder = this.tableOrder === descending ? ascending : descending;
-  }
-
-  /**
-   * Queries and finds the newest Oracle to direct to for the purposes of clicking on the event name.
-   * @param {string} topicAddress Topic address for the Oracle.
-   * @return {string} URL path for the newest Oracle.
-   */
-  @action
-  getOracleAddress = async (topicAddress) => {
-    if (topicAddress) {
-      const filters = [{ topicAddress }];
-      const order = { field: 'endTime', direction: SortBy.DESCENDING };
-      const { oracles } = await queryAllOracles(this.app, filters, order);
-      const path = getDetailPagePath(oracles);
-      if (path) return path;
-    }
   }
 }
