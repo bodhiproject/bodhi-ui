@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, Tr
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners } from '../../network/graphql/queries';
+import { transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -19,6 +19,7 @@ const INIT = {
   loading: false,
   oracles: [],
   topics: [],
+  resultSetsHistory: [],
   leaderboardVotes: [],
   amount: '',
   address: '',
@@ -65,6 +66,7 @@ export default class EventStore {
   @observable nakaWinnings = INIT.nakaWinnings
   @observable nbotWinnings = INIT.nbotWinnings
   @observable withdrawableAddresses = INIT.withdrawableAddresses
+  @observable resultSetsHistory = INIT.resultSetsHistory
   betBalances = []
   voteBalances = []
   leaderboardLimit = 5
@@ -157,6 +159,7 @@ export default class EventStore {
     await this.queryTopics();
     await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
+    await this.queryResultSets(this.address);
 
     // API calls
     await this.getEscrowAmount();
@@ -173,6 +176,7 @@ export default class EventStore {
     await this.queryTopics();
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
+    await this.queryResultSets(this.address);
     await this.getAllowanceAmount();
     await this.queryLeaderboard(Token.NAKA);
     this.disableEventActionsIfNecessary();
@@ -223,6 +227,7 @@ export default class EventStore {
               await this.queryTransactions(this.address);
               this.disableEventActionsIfNecessary();
               await this.updateLeaderBoard();
+              await this.queryResultSets(this.address);
               break;
             }
             case ORACLE: {
@@ -230,6 +235,7 @@ export default class EventStore {
               await this.queryOracles(this.topicAddress);
               await this.getAllowanceAmount();
               await this.updateLeaderBoard();
+              await this.queryResultSets(this.address);
               this.disableEventActionsIfNecessary();
               break;
             }
@@ -272,6 +278,15 @@ export default class EventStore {
   queryOracles = async (address) => {
     const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
     this.oracles = oracles;
+  }
+
+  @action
+  queryResultSets = async (address) => {
+    const { graphqlClient } = this.app;
+    const resultSetfilter = [{ eventAddress: address }];
+    const resultSetOrderBy = { field: 'evetRound', direction: SortBy.ASCENDING };
+    const res = await resultSets(graphqlClient, { filter: resultSetfilter, orderBy: resultSetOrderBy });
+    this.resultSetsHistory = res.item;
   }
 
   @action

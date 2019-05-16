@@ -70,7 +70,7 @@ export default class HistoryTable extends Component {
           />}
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === TAB_RESULT_HISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
+          {tabValue === TAB_RESULT_HISTORY && <ResultHistory oracles={eventPage.oracles} />}
           {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions options={currentEvent.options} />}
           {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory options={currentEvent.options} />}
         </div>
