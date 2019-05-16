@@ -1,10 +1,9 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { isEmpty, each } from 'lodash';
-import { Token, OracleStatus, Routes, SortBy } from 'constants';
-import { queryAllOracles } from '../../../network/graphql/queries';
+import { EVENT_STATUS, Routes, SortBy } from 'constants';
+import { events } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
-  loaded: false, // loading state?
+  loaded: false, // loading state
   loadingMore: false, // for laoding icon?
   list: [], // data list
   hasMore: true, // has more data to fetch?
@@ -23,7 +22,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => toJS(this.app.naka.account) + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === Routes.SET) {
           this.init();
@@ -53,11 +52,6 @@ export default class {
 
   @action
   loadMore = async () => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
-
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit; // pump the skip eg. from 0 to 24
@@ -74,30 +68,22 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // // Address is required for the request filters
-    // if (isEmpty(this.app.wallet.addresses)) {
-    //   return;
-    // }
+    if (this.hasMore) {
+      const { naka: { checkLoggedIn }, graphqlClient } = this.app;
+      await checkLoggedIn();
+      const { naka: { account }, ui: { locale } } = this.app;
+      const filters = [
+        { status: EVENT_STATUS.OPEN_RESULT_SETTING, language: locale },
+        { status: EVENT_STATUS.ORACLE_RESULT_SETTING, ownerAddress: account, language: locale },
+      ];
 
-    // // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
-    // if (this.hasMore) {
-    //   const filters = [{ token: Token.NAKA, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
-    //   each(this.app.wallet.addresses, (addressObj) => {
-    //     filters.push({
-    //       token: Token.NAKA,
-    //       status: OracleStatus.WAIT_RESULT,
-    //       resultSetterAddress: addressObj.address,
-    //       language: this.app.ui.locale,
-    //     });
-    //   });
-    //   const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-    //   const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-    //   this.hasMore = data.pageInfo.hasNextPage;
-    //   return data.oracles;
-    // }
-    // return INIT_VALUES.list;
+      const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING.toLowerCase() };
 
-    const result = [];
-    return result;
+      const res = await events(graphqlClient, { filters, orderBy, limit, skip });
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
+      return res.items;
+    }
+    return INIT_VALUES.list;
   }
 }
