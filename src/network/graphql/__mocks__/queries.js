@@ -34,7 +34,7 @@ export function queryAllOracles(app, filters, orderBy, limit, skip) {
   };
 }
 
-export async function queryMostVotes(app, filters, orderBy, limit, skip) {
+export async function mostBets(app, filters, orderBy, limit, skip) {
   const { totalCount } = mockData.paginatedAccumulatedVotes;
   let { votes } = mockData.paginatedAccumulatedVotes;
   votes = filterList(filters, votes);

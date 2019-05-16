@@ -54,17 +54,17 @@ export default class Leaderboard extends React.Component {
 
   render() {
     const { classes, theme, intl, maxSteps } = this.props;
-    let leaderboardVotes = [];
+    let leaderboardBets = [];
     let activeStep = 0;
     let leaderboardLimit = 5;
     if (this.props.store.ui.location === Routes.LEADERBOARD) {
-      ({ leaderboardVotes, activeStep, leaderboardLimit } = this.props.store.leaderboard);
+      ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.leaderboard);
     } else {
-      ({ leaderboardVotes, activeStep, leaderboardLimit } = this.props.store.eventPage);
+      ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.eventPage);
     }
-    if (leaderboardVotes.length < leaderboardLimit) {
-      for (let i = leaderboardVotes.length; i < leaderboardLimit; i++) {
-        leaderboardVotes.push({ voterAddress: '', amount: '' });
+    if (leaderboardBets.length < leaderboardLimit) {
+      for (let i = leaderboardBets.length; i < leaderboardLimit; i++) {
+        leaderboardBets.push({ betterAddress: '', amount: '' });
       }
     }
     return (
@@ -101,16 +101,15 @@ export default class Leaderboard extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {leaderboardVotes.map((row, index) =>
+                {leaderboardBets.map((row, index) =>
                   (
                     <CustomTableRow key={index} className={classes.entry}>
                       <CustomTableBodyCell component="th" scope="row">
                         {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />}
                         {index > 2 && `#${index + 1}`}
                       </CustomTableBodyCell>
-                      <CustomTableBodyCell>{row.voterAddress}</CustomTableBodyCell>
-                      {!row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
-                      {row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount.naka)} NAKA,{satoshiToDecimal(row.amount.nbot)} NBOT</CustomTableBodyCell>}
+                      <CustomTableBodyCell>{row.betterAddress}</CustomTableBodyCell>
+                      <CustomTableBodyCell>{satoshiToDecimal(row.amount)} {row.amount ? 'NBOT' : ''}</CustomTableBodyCell>
                     </CustomTableRow>
                   ))}
               </TableBody>

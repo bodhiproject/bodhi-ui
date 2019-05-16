@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, Tr
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, mostBets, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -19,7 +19,7 @@ const INIT = {
   loading: false,
   oracles: [],
   topics: [],
-  leaderboardVotes: [],
+  leaderboardBets: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -45,7 +45,7 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
-  @observable leaderboardVotes = INIT.leaderboardVotes
+  @observable leaderboardBets = INIT.leaderboardBets
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -276,19 +276,20 @@ export default class EventStore {
 
   @action
   queryLeaderboard = async (token) => {
-    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
-    this.leaderboardVotes = votes;
+    const { graphqlClient } = this.app;
+    const { votes } = await mostBets(graphqlClient, { filters: { eventAddress: this.topicAddress } });
+    this.leaderboardBets = votes;
   }
 
   @action
   queryBiggestWinner = async () => {
     const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
-    this.leaderboardVotes = winners;
+    this.leaderboardBets = winners;
   }
 
   @action
   updateLeaderBoard = async () => {
-    if (this.activeStep < 2) {
+    if (this.activeStep < 1) {
       await this.queryLeaderboard(paras[this.activeStep]);
     } else {
       await this.queryBiggestWinner();
