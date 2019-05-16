@@ -13,5 +13,4 @@ export { default as TransactionHistoryID } from './TransactionHistoryAddressAndI
 export { default as TransactionHistoryAddress } from './TransactionHistoryAddressAndID/address';
 export { default as TutorialCarouselDialog } from './TutorialCarouselDialog';
 export { default as TxSentDialog } from './TxSentDialog';
-export { default as WalletUnlockDialog } from './WalletUnlockDialog';
 export { default as Warning } from './Warning';

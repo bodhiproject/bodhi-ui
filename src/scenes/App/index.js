@@ -9,7 +9,6 @@ import {
   InstallNakaWalletPopover,
   TxSentDialog,
   TutorialCarouselDialog,
-  WalletUnlockDialog,
 } from 'components';
 
 import styles from './styles';
@@ -32,7 +31,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <TxSentDialog />
         <CreateEventFormDialog />
         <InstallNakaWalletPopover />
-        <WalletUnlockDialog />
       </Fragment>
     )}
     <CssBaseline />

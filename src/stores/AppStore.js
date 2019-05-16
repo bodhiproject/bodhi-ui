@@ -17,11 +17,9 @@ import FavoriteStore from '../scenes/Activities/Favorite/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import LeaderboardStore from '../scenes/Leaderboard/store';
-import WalletHistoryStore from '../scenes/Wallet/History/store';
 import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import GlobalDialogStore from '../components/GlobalDialog/store';
-import WalletUnlockDialogStore from '../components/WalletUnlockDialog/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
 
 class AppStore {
@@ -36,7 +34,6 @@ class AppStore {
   favorite = {}
   globalSnackbar = {}
   globalDialog = {}
-  walletUnlockDialog = {}
   txSentDialog = {}
   refreshing = {}
   eventPage = {}
@@ -62,7 +59,6 @@ class AppStore {
     this.tx = new TransactionStore(this);
     this.favorite = new FavoriteStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
-    this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.txSentDialog = new TxSentDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
@@ -83,9 +79,6 @@ class AppStore {
         resultSetting: new ResultSettingStore(this),
         withdraw: new WithdrawStore(this),
         history: new ActivityHistoryStore(this),
-      };
-      this.myWallet = {
-        history: new WalletHistoryStore(this),
       };
       this.search = new SearchStore(this);
       // finished loading all stores, show UI

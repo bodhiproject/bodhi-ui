@@ -260,7 +260,6 @@ export default class TransactionStore {
       [TransactionType.VOTE]: this.executeVote,
       [TransactionType.WITHDRAW]: this.executeWithdraw,
       [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
-      [TransactionType.TRANSFER]: this.executeTransfer,
     };
     await confirmFunc[tx.type](index, tx);
   }
@@ -876,32 +875,5 @@ export default class TransactionStore {
       token,
     })));
     await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes a transfer.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeTransfer = async (index, tx) => {
-    try {
-      const pendingTx = await createTransaction('transfer', {
-        senderAddress: tx.senderAddress,
-        receiverAddress: tx.receiverAddress,
-        amount: tx.amount,
-        token: tx.token,
-      });
-
-      await this.onTxExecuted(pendingTx);
-      await this.app.myWallet.history.addTransaction(pendingTx);
-      Tracking.track('wallet-transfer');
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/transfer`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/transfer`);
-      }
-    }
   }
 }
