@@ -86,7 +86,7 @@ export default class NakaStore {
   }
 
   @action
-  openPopover = (messageId) => {
+  openPopover = async (messageId) => {
     this.popoverOpen = true;
 
     if (messageId) {
@@ -95,6 +95,7 @@ export default class NakaStore {
       this.popoverMessageId = 'naka.notInstalled';
     } else if (!this.loggedIn) {
       this.popoverMessageId = 'naka.notLoggedIn';
+      await window.ethereum.enable();
     } else {
       this.popoverMessageId = 'naka.loggedIn';
     }
