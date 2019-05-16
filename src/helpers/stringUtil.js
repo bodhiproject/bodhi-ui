@@ -10,7 +10,7 @@ const strings = defineMessages({
   },
   approveBotTransfer: {
     id: 'tx.approveBotTransfer',
-    defaultMessage: 'Approve BOT Transfer',
+    defaultMessage: 'Approve NBOT Transfer',
   },
   createEvent: {
     id: 'str.createEvent',

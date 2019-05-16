@@ -67,8 +67,8 @@ describe('AllEventsStore', () => {
     app.ui.location = Routes.ALL_EVENTS;
     const newAddr = {
       address: cryptoRandomString(34),
-      qtum: 200,
-      bot: 10,
+      naka: 200,
+      nbot: 10,
     };
     app.wallet.addresses.push(newAddr);
     await sleep();

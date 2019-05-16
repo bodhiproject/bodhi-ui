@@ -19,7 +19,7 @@ export default class EventResultHistory extends Component {
   };
 
   getTypeText(oracle, index) {
-    if (oracle.token === Token.QTUM) {
+    if (oracle.token === Token.NAKA) {
       return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;

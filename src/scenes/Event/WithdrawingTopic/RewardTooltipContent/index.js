@@ -7,7 +7,7 @@ import { ResponsiveTable } from 'components';
 
 import styles from './styles';
 
-const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, qtumWon, botQtumWon, classes }) => {
+const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, nakaWon, nbotNakaWon, classes }) => {
   function atMostEightDigits(num) {
     let numToString = _.toString(num);
     const numArr = numToString.split('.');
@@ -20,13 +20,13 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
     return numToString;
   }
 
-  let qtumWonFixed = qtumWon;
-  let botQtumWonFixed = botQtumWon;
-  if (_.isNumber(qtumWon)) {
-    qtumWonFixed = atMostEightDigits(qtumWon);
+  let nakaWonFixed = nakaWon;
+  let nbotNakaWonFixed = nbotNakaWon;
+  if (_.isNumber(nakaWon)) {
+    nakaWonFixed = atMostEightDigits(nakaWon);
   }
-  if (_.isNumber(botQtumWon)) {
-    botQtumWonFixed = atMostEightDigits(botQtumWon);
+  if (_.isNumber(nbotNakaWon)) {
+    nbotNakaWonFixed = atMostEightDigits(nbotNakaWon);
   }
 
   const tokenLosing = totalTokenAmount - resultTokenAmount;
@@ -43,7 +43,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
             {totalTokenAmount}
           </TableCell>
         </TableRow>
-        {token === 'BOT' &&
+        {token === 'NBOT' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
@@ -55,26 +55,26 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
           </TableRow>
         )
         }
-        {token === 'QTUM' &&
+        {token === 'NAKA' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.qtumWon" defaultMessage="{token} Won" values={{ token }} />
+              <FormattedMessage id="tooltip.nakaWon" defaultMessage="{token} Won" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {qtumWonFixed}
+              {nakaWonFixed}
             </TableCell>
           </TableRow>
         )
         }
-        {token === 'QTUM' &&
+        {token === 'NAKA' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
+              <FormattedMessage id="tooltip.nbotNakaWon" defaultMessage="{token} Reward" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {botQtumWonFixed}
+              {nbotNakaWonFixed}
             </TableCell>
           </TableRow>
         )

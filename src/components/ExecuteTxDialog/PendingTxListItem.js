@@ -13,11 +13,11 @@ import { getTxTypeString } from '../../helpers/stringUtil';
 const messages = defineMessages({
   resetApprove: {
     id: 'txConfirm.resetApprove',
-    defaultMessage: 'You are trying to use more BOT than your currently approved amount. This will require you to reset the approved amount to 0 first before you can increase it. Or you can change the amount up to the current approved amount.',
+    defaultMessage: 'You are trying to use more NBOT than your currently approved amount. This will require you to reset the approved amount to 0 first before you can increase it. Or you can change the amount up to the current approved amount.',
   },
   approveNotice: {
     id: 'txConfirm.approveNotice',
-    defaultMessage: 'The {action} action requires you to approve BOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.',
+    defaultMessage: 'The {action} action requires you to approve NBOT to be transferred first. You will be required to confirm the follow-up {action} transaction after this transaction is successful.',
   },
 });
 
@@ -28,7 +28,7 @@ const TransactionFeesTable = withStyles(styles)(injectIntl(inject('store')(obser
         <TableCell><FormattedMessage id="str.type" defaultMessage="Type" /></TableCell>
         <TableCell><FormattedMessage id="str.amount" defaultMessage="Amount" /></TableCell>
         <TableCell><FormattedMessage id="str.gasLimit" defaultMessage="Gas Limit" /></TableCell>
-        <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (QTUM)" /></TableCell>
+        <TableCell><FormattedMessage id="str.fee" defaultMessage="Gas Fee (NAKA)" /></TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
@@ -52,7 +52,7 @@ const ExplanationMessage = withStyles(styles)(injectIntl(inject('store')(observe
       <Typography variant="body2">
         <FormattedMessage
           id='txConfirm.txFeeMsg'
-          defaultMessage='You are about to {txAction} with a maximum transaction fee of {txFee} QTUM.'
+          defaultMessage='You are about to {txAction} with a maximum transaction fee of {txFee} NAKA.'
           values={{ txAction, txFee }}
         />
       </Typography>

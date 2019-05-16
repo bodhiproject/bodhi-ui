@@ -19,8 +19,8 @@ const getEventInfoObjs = (topic) => {
     return [];
   }
 
-  const qtumTotal = _.sum(topic.qtumAmount);
-  const botTotal = _.sum(topic.botAmount);
+  const nakaTotal = _.sum(topic.nakaAmount);
+  const nbotTotal = _.sum(topic.nbotAmount);
 
   let resultSetterAddress;
   _.map(topic.oracles, (o) => {
@@ -33,10 +33,10 @@ const getEventInfoObjs = (topic) => {
   return [
     {
       label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="Prediction Fund" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: `${qtumTotal} QTUM`,
+      content: `${nakaTotal} NAKA`,
     }, {
       label: <FormattedMessage id="eventInfo.voteVolume" defaultMessage="Voting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: `${botTotal} BOT`,
+      content: `${nbotTotal} NBOT`,
     }, {
       label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
       content: resultSetterAddress,

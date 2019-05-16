@@ -123,11 +123,12 @@ class GraphMutation {
     this.args = args;
   }
 
-  execute = async () => this.client.mutate({
-    mutation: this.mutation,
-    variables: this.args,
-    fetchPolicy: 'no-cache',
-  });
+  execute = async () =>
+    this.client.mutate({
+      mutation: this.mutation,
+      variables: this.args,
+      fetchPolicy: 'no-cache',
+    });
 }
 
 /**

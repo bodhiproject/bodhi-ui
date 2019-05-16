@@ -43,7 +43,7 @@ const headerCols = [
   {
     id: 'fee',
     name: 'str.fee',
-    nameDefault: 'Gas Fee (QTUM)',
+    nameDefault: 'Gas Fee (NAKA)',
     numeric: true,
     sortable: true,
   },

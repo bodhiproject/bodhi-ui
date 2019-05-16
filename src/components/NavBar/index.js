@@ -54,7 +54,7 @@ export default class NavBar extends Component {
             </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>
-              <Wallet />
+              <Wallet {...this.props} />
               <MyActivities {...this.props} />
               <DropdownMenuButton />
             </Hidden>

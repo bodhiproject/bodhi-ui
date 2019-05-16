@@ -38,7 +38,7 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal }
 );
 
 const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage(messages.oracleConsensusThresholdMsg)} ${consensusThreshold} BOT`;
+  const heading = `${intl.formatMessage(messages.oracleConsensusThresholdMsg)} ${consensusThreshold} NBOT`;
   const message = intl.formatMessage(messages.oracleSetResultExplanationMsg);
   return <ImportantNote heading={heading} message={message} />;
 });

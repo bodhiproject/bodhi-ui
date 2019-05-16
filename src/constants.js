@@ -57,8 +57,8 @@ module.exports = {
 
   /* GraphQL Constants */
   Token: {
-    QTUM: 'QTUM',
-    BOT: 'BOT',
+    NAKA: 'NAKA',
+    NBOT: 'NBOT',
   },
 
   OracleStatus: {

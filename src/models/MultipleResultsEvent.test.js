@@ -12,7 +12,7 @@ const navigatorMock = {};
 global.navigator = navigatorMock;
 global.localStorage = localStorageMock;
 
-const { QTUM, BOT } = Token;
+const { NAKA, NBOT } = Token;
 const { BETTING, VOTING, RESULT_SETTING } = Phases;
 
 describe('MultipleResultsEvent', () => {
@@ -20,8 +20,8 @@ describe('MultipleResultsEvent', () => {
   let input;
   const addr = {
     address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
-    qtum: 2000,
-    bot: 100,
+    naka: 2000,
+    nbot: 100,
   };
   const app = observable({
     sortBy: 'ASC',
@@ -41,7 +41,7 @@ describe('MultipleResultsEvent', () => {
       resultSetEndTime: '10',
       endTime: '20',
       options: ['1', '2'],
-      token: QTUM,
+      token: NAKA,
       optionIdxs: [0, 1],
       status: OracleStatus.VOTING,
       hashId: null,
@@ -119,7 +119,7 @@ describe('MultipleResultsEvent', () => {
   describe('isArchived()', () => {
     it('Archived Voting Oracle', async () => {
       input.address = undefined;
-      input.token = BOT;
+      input.token = NBOT;
       input.optionIdxs = [1];
       input.status = OracleStatus.WITHDRAW;
       oracle = new Oracle(input, app);

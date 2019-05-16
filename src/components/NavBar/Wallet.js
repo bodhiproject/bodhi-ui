@@ -2,9 +2,11 @@ import React from 'react';
 import { IconButton, Badge, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
+import { Routes } from 'constants';
+
 import styles from './styles';
 
-const Wallet = ({ classes, store: { global, naka } }) => {
+const Wallet = ({ classes, history, store: { global, naka } }) => {
   // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
   if (global.localWallet) {
     return null;
@@ -12,7 +14,7 @@ const Wallet = ({ classes, store: { global, naka } }) => {
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.navButton} onClick={() => naka.openPopover()}>
+      <IconButton className={classes.navButton} onClick={() => naka.loggedIn ? history.push(Routes.WALLET) : naka.openPopover()}>
         <Badge
           classes={{ badge: classes.walletStatusBadge }}
           color={naka.loggedIn ? 'secondary' : 'error'}

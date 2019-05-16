@@ -1,4 +1,5 @@
 import { action, observable } from 'mobx';
+import promisify from 'js-promisify';
 
 import { urls, CHAIN_ID, NETWORK } from '../config/app';
 export default class NakaStore {
@@ -68,12 +69,8 @@ export default class NakaStore {
     this.account = acct;
 
     if (this.account) {
-      this.app.global.naka.eth.getBalance(this.account, (err, balance) => {
-        if (err) {
-          // logger.error(`Error getting wallet accounts: ${err.message}`)
-        }
-        this.balance = balance.toString(16);
-      });
+      const data = await promisify(this.app.global.naka.eth.getBalance, [this.account]);
+      this.balance = data.toString(10);
     }
 
     // Init network

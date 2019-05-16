@@ -15,7 +15,7 @@ const SelectWalletSection = ({ classes, store: { tx } }) => (
     </Grid>
     <Grid item xs={12} sm={7}>
       <Select disableUnderline value={tx.provider} onChange={e => tx.provider = e.target.value}>
-        <MenuItem value={WalletProvider.NAKA}><FormattedMessage id="str.naka" defaultMessage="Naka Wallet" /></MenuItem>
+        <MenuItem value={WalletProvider.NAKA}><FormattedMessage id="str.nakaWallet" defaultMessage="Naka Wallet" /></MenuItem>
       </Select>
     </Grid>
   </Grid>

@@ -73,8 +73,8 @@ export default class ArbitrationStore {
     //   const orderBy = { field: 'endTime', direction: this.app.sortBy };
     //   const excludeResultSetterAddress = this.app.wallet.addresses.map(({ address }) => address);
     //   const filters = [
-    //     { token: Token.BOT, status: OracleStatus.VOTING, language: this.app.ui.locale },
-    //     { token: Token.QTUM,
+    //     { token: Token.NBOT, status: OracleStatus.VOTING, language: this.app.ui.locale },
+    //     { token: Token.NAKA,
     //       status: OracleStatus.WAIT_RESULT,
     //       excludeResultSetterAddress,
     //       language: this.app.ui.locale,
