@@ -1,4 +1,4 @@
-const SSL = Boolean(process.env.SSL);
+const SSL = process.env.SSL === 'true';
 const HOSTNAME = process.env.API_HOSTNAME;
 const HTTP_ROUTE = `${SSL ? 'https' : 'http'}://${HOSTNAME}`;
 const WS_ROUTE = `${SSL ? 'wss' : 'ws'}://${HOSTNAME}/graphql`;
