@@ -72,11 +72,12 @@ export default class {
     if (this.hasMore) {
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING.toLowerCase() };
 
-      await this.app.naka.checkLoggedIn();
-      const { naka: { account }, graphqlClient } = this.app;
+      const { naka: { checkLoggedIn }, graphqlClient } = this.app;
+      await checkLoggedIn();
+      const { naka: { account }, ui: { locale } } = this.app;
 
       const betFilters = [{ betterAddress: account }];
-      const eventFilters = [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: this.app.ui.locale }];
+      const eventFilters = [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: locale }];
 
       // Filter votes
       let votes = await bets(graphqlClient, betFilters);
@@ -88,7 +89,7 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       each(votes, ({ eventAddress, resultIndex }) => {
-        eventFilters.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: this.app.ui.locale });
+        eventFilters.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: locale });
       });
       const res = await events(graphqlClient, { eventFilters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
