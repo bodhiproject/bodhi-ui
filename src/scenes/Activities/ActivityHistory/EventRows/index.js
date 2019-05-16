@@ -36,39 +36,36 @@ class EventRow extends Component {
     onEventNameClick = (eventAddress) => async (event) => {
       event.stopPropagation();
       if (eventAddress) {
-        const { activities: { history: { getEventAddress } } } = this.props.store;
         const { history } = this.props;
-        const nextLocation = await getEventAddress(eventAddress);
+        const nextLocation = `/event/${eventAddress}`;
         if (nextLocation) history.push(nextLocation);
       }
     }
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus } = transaction;
+      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block: { blockTime: createdTime } } = transaction;
       const { expanded } = this.state;
 
       // parse necessary data
-      let name;
-      let address;
-      let amount;
+      let { name, address, amount } = transaction;
       if (txType === TransactionType.CREATE_EVENT) {
-        name = transaction.name; // eslint-disable-line
-        address = transaction.address; // eslint-disable-line
         amount = transaction.escrowAmount;
       } else if (txType === TransactionType.BET
         || txType === TransactionType.RESULT_SET
         || txType === TransactionType.VOTE) {
-        amount = transaction.amount; // eslint-disable-line
         address = transaction.eventAddress;
+        name = transaction.resultIndex;
       } else {
         amount = transaction.winningAmount + transaction.escrowAmount;
         address = transaction.eventAddress;
+        name = 'Withdraw';
       }
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
+            <TableCell>{moment.unix(createdTime).format('LLL')}</TableCell>
             <TableCell>{getTxTypeString(txType, intl)}</TableCell>
             <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
               {name || ''}

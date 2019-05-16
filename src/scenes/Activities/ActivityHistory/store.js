@@ -67,7 +67,7 @@ export default class {
     );
     // Wallet addresses changed
     reaction(
-      () => toJS(this.app.naka.account),
+      () => this.app.naka.account,
       () => this.loadFirst(),
     );
   }
@@ -127,8 +127,9 @@ export default class {
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
     // Address is required for the request filters
-    await this.app.naka.checkLoggedIn();
-    const { naka: { account }, graphqlClient } = this.app;
+    const { naka: { checkLoggedIn }, graphqlClient } = this.app;
+    await checkLoggedIn();
+    const { naka: { account } } = this.app;
 
     const direction = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
     const filters = [{ transactorAddress: account }];
@@ -147,22 +148,5 @@ export default class {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
     this.tableOrderBy = columnName;
     this.tableOrder = this.tableOrder === descending ? ascending : descending;
-  }
-
-  /**
-   * Queries and finds the newest Oracle to direct to for the purposes of clicking on the event name.
-   * @param {string} topicAddress Topic address for the Oracle.
-   * @return {string} URL path for the newest Oracle.
-   */
-  @action
-  getEventAddress = async (address) => {
-    if (address) {
-      const { graphqlClient } = this.app;
-      const filters = [{ address }];
-      const order = { field: 'betEndTime', direction: SortBy.DESCENDING.toLowerCase() };
-      const res = await events(graphqlClient, { filters, orderBy: order });
-      const path = getDetailPagePath(res.items);
-      if (path) return path;
-    }
   }
 }
