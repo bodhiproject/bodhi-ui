@@ -159,7 +159,7 @@ export default class EventStore {
     // await this.queryResultSets(this.address);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
-    this.disableEventActionsIfNecessary();
+    // this.disableEventActionsIfNecessary();
 
     // if (this.oracle.status === RESULT_SETTING) {
     //   // Set the amount field since we know the amount will be the consensus threshold

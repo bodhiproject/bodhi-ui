@@ -26,7 +26,6 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
   </Row>
 ));
 
-
 const Options = withStyles(styles)(observer(({ classes, event }) => (
   <Grid className={classes.optionGrid}>
     {event.results.map((option, i) => <Option key={i} option={option} disabled={event.isArchived} />)}

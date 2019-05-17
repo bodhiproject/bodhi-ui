@@ -240,6 +240,8 @@ class GraphQuery {
       variables: this.args,
       fetchPolicy: 'network-only',
     });
+    console.log('TCL: GraphQuery -> execute -> res', res);
+    console.log('TCL: GraphQuery -> execute -> this.queryName', this.queryName);
     return res.data[this.queryName];
   }
 }

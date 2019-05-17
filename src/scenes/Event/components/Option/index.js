@@ -46,6 +46,7 @@ export default class Option extends Component {
       disabled,
       amountPlaceholder,
     } = this.props;
+    console.log('TCL: Option -> render -> this.props', this.props);
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;

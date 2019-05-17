@@ -25,6 +25,7 @@ const messages = defineMessages({
 export default class EventPage extends Component {
   componentDidMount() {
     const { path, params } = this.props.match;
+    console.log('TCL: EventPage -> componentDidMount -> params', params);
     const type = EventType.ORACLE;
     // if (path.startsWith('/topic')) {
     //   type = EventType.TOPIC;
