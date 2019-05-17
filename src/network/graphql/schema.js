@@ -111,7 +111,7 @@ export const WITHDRAW = `
   eventAddress
   winnerAddress
   winningAmount
-  escrowAmount
+  escrowWithdrawAmount
 `;
 
 export const PAGINATED_WITHDRAWS = `
@@ -148,7 +148,7 @@ export const PAGINATED_TRANSACTIONS = `
       eventAddress
       winnerAddress
       winningAmount
-      escrowAmount
+      escrowWithdrawAmount
     }
   }
 `;

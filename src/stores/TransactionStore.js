@@ -448,6 +448,7 @@ export default class TransactionStore {
           createEventParams[1][i] = fromAscii('');
         }
       }
+      console.log('NAKA: executeCreateEvent -> createEventParams', createEventParams);
 
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const txid = await this.createEvent({
