@@ -49,13 +49,9 @@ export default class MultipleResultsEvent {
     };
   }
 
-  isUnconfirmed() {
-    return !this.address;
-  }
+  isUnconfirmed = () => !this.address;
 
-  isPending() {
-    return this.pendingTxs.total && this.pendingTxs.total > 0;
-  }
+  isPending = () => !!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0;
 
   isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
