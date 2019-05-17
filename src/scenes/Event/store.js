@@ -283,8 +283,8 @@ export default class EventStore {
   @action
   queryResultSets = async (address) => {
     const { graphqlClient } = this.app;
-    const resultSetFilter = [{ eventAddress: address }];
-    const resultSetOrderBy = { field: 'evetRound', direction: SortBy.ASCENDING };
+    const resultSetFilter = { eventAddress: address, status: TransactionStatus.SUCCESS };
+    const resultSetOrderBy = { field: 'eventRound', direction: SortBy.ASCENDING };
     const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
     this.resultSetsHistory = res.item;
   }
@@ -312,17 +312,13 @@ export default class EventStore {
 
   @action
   queryTransactions = async (address) => {
-    // const pendings = await queryAllTransactions(
-    //   [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
-    //   { field: 'createdTime', direction: SortBy.DESCENDING },
-    // );
-    const pendings = [];
     const { graphqlClient } = this.app;
-    const txFilter = [{ eventAddress: address }];
+    const txFilter = { eventAddress: address };
     const txOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
     const txs = await transactions(graphqlClient, { filter: txFilter, orderBy: txOrderBy });
-
-    this.transactionHistoryItems = [...pendings, ...txs.items];
+    const pendings = filter(txs.items, { txStatus: TransactionStatus.PENDING });
+    const confirmed = filter(txs.items, { txStatus: TransactionStatus.SUCCESS });
+    this.transactionHistoryItems = [...pendings, ...confirmed];
   }
 
   @action
