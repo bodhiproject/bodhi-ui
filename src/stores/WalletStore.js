@@ -5,16 +5,22 @@ import promisify from 'js-promisify';
 
 import { satoshiToDecimal, weiToDecimal } from '../helpers/utility';
 import getContracts from '../config/contracts';
+import TokenExchangeMeta from '../config/token-exchange';
 
 const INIT_VALUE = {
   addresses: [],
   currentWalletAddress: undefined,
+  nbotContract: undefined,
+  nbotOwner: undefined,
+  exchangeRate: undefined,
 };
 
 export default class WalletStore {
   @observable addresses = INIT_VALUE.addresses;
   @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
-
+  @observable nbotOwner = INIT_VALUE.nbotOwner;
+  @observable exchangeRate = INIT_VALUE.exchangeRate
+  nbotContract = INIT_VALUE.nbotContract;
   @computed get currentAddress() {
     return this.currentWalletAddress ? this.currentWalletAddress.address : '';
   }
@@ -45,6 +51,8 @@ export default class WalletStore {
   @action
   onNakaAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
+
+    this.nbotContract = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
 
     // Reset addresses if logged out
     if (!loggedIn) {
@@ -80,7 +88,20 @@ export default class WalletStore {
 
     if (fetchInitNbotBalance) {
       this.fetchNbotBalance(address);
+      await this.fetchNbotOwner();
+      await this.fetchExchangeRate();
     }
+  }
+
+  fetchNbotOwner = async () => {
+    this.nbotOwner = await promisify(this.nbotContract.owner, []);
+  }
+
+  fetchExchangeRate = async () => {
+    if (!this.nbotOwner) return;
+    const exchangeMethod = window.naka.eth.contract(TokenExchangeMeta.abi).at(TokenExchangeMeta.address);
+    const rate = await promisify(exchangeMethod.getRate, [getContracts().NakaBodhiToken.address, this.nbotOwner]);
+    this.exchangeRate = rate.toString(16);
   }
 
   /**
@@ -93,8 +114,7 @@ export default class WalletStore {
     }
 
     try {
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
-      const balance = await promisify(nbotMethods.balanceOf, [address]);
+      const balance = await promisify(this.nbotContract.balanceOf, [address]);
       const nbot = satoshiToDecimal(balance.toString(16));
 
       // Update WalletAddress NBOT in list of addresses

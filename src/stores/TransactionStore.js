@@ -113,16 +113,31 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+      if (!nbotOwner) {
+        throw new Error('exchanger not existed');
+      }
+      if (!exchangeRate) {
+        throw new Error('excahngeRate not existed');
+      }
       const paramsHex = web3EthAbi.encodeParameters(
         createEventFuncTypes,
         eventParams,
       ).substr(2);
+
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+        gas,
+      }]);
       return txid;
     } catch (err) {
-      throw err; // TODO: show errror message and show error in error dialog
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${err.message}`);
+      });
     }
   };
 
@@ -464,9 +479,7 @@ export default class TransactionStore {
         const { graphqlClient } = this.app;
         const res = await addPendingEvent(graphqlClient, {
           txid,
-          blockNum: this.app.global.syncBlockNum,
           ownerAddress: senderAddress,
-          version: 0,
           name,
           results: createEventParams[1],
           numOfResults: results.length,
