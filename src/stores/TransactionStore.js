@@ -504,26 +504,6 @@ export default class TransactionStore {
     }
   }
 
-  /**
-   * Adds a bet tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {number} optionIdx Index of the option being bet.
-   * @param {string} amount Amount of the bet.
-   */
-  @action
-  addBetTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.BET,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount,
-      token: Token.NAKA,
-    })));
-    await this.showConfirmDialog();
-  }
 
   /**
    * Executes a bet.
@@ -531,15 +511,16 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeBet = async (index, tx) => {
+  executeBet = async (tx) => {
     try {
-      const { oracleAddress, optionIdx, amount, senderAddress } = tx;
+      const { eventAddr, optionIdx, amount, senderAddress } = tx;
+      console.log('TCL: executeBet -> tx', tx);
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: betParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: BET_EVENT_FUNC_SIG,
         amount,
         gas: 300000,
@@ -551,7 +532,7 @@ export default class TransactionStore {
           txid,
           senderAddress,
           topicAddress: tx.topicAddress,
-          oracleAddress,
+          eventAddr,
           optionIdx,
           amount,
         });

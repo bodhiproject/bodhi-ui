@@ -97,7 +97,7 @@ export default class EventCard extends Component {
 
   render() {
     const { classes, index, onClick, store: { ui, naka: { account } } } = this.props;
-    const { name, isPending, isUpcoming, txid, status } = this.props.event;
+    const { name, isPending, isUpcoming, txid, status, url } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
@@ -105,7 +105,7 @@ export default class EventCard extends Component {
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link to={`/event/${txid}`}>
+        <Link to={url}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>

@@ -250,9 +250,10 @@ class GraphQuery {
  * @param {object} args Arguments for the query.
  * @return {object} Query result.
  */
-export async function events(client, args) {
+export async function events(client, args, app) {
+  console.log('TCL: events -> app', app);
   const res = await new GraphQuery(client, QUERY_EVENTS, args).execute();
-  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
+  res.items = map(res.items, (event) => new MultipleResultsEvent(event, app));
   return res;
 }
 
