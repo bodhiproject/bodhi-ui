@@ -6,12 +6,13 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum, filter } from 'lodash';
-import { Phases, EventWarningType, TransactionStatus, TransactionType } from 'constants';
+import { Phases, EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
 
 import FavoriteButton from './FavoriteButton';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../helpers';
+import carousel from '../../scenes/Event/components/Leaderboard/carousel';
 
 const { BETTING, RESULT_SETTING, VOTING, WITHDRAWING } = Phases;
 const messages = defineMessages({
@@ -43,18 +44,16 @@ export default class EventCard extends Component {
   };
 
   getAmountLabel = () => {
-    const { phase, token, amounts, nakaAmount, nbotAmount } = this.props.event;
-    switch (phase) {
-      case BETTING:
-      case RESULT_SETTING:
-      case VOTING: {
+    const { status, token, amounts, nakaAmount, nbotAmount } = this.props.event;
+    switch (status) {
+      case EVENT_STATUS.CREATED:
+      case EVENT_STATUS.BETTING:
+      case EVENT_STATUS.ORACLE_RESULT_SETTING:
+      case EVENT_STATUS.OPEN_RESULT_SETTING:
+      case EVENT_STATUS.ARBITRATION:
+      case EVENT_STATUS.WITHDRAWING: {
         const amount = parseFloat(sum(amounts).toFixed(2));
         return `${amount} ${token}`;
-      }
-      case WITHDRAWING: {
-        const totalNAKA = parseFloat(sum(nakaAmount).toFixed(2));
-        const totalNBOT = parseFloat(sum(nbotAmount).toFixed(2));
-        return `${totalNAKA} NAKA, ${totalNBOT} NBOT`;
       }
       default: {
         console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
@@ -64,12 +63,14 @@ export default class EventCard extends Component {
   }
 
   getButtonText = () => {
-    const { phase } = this.props.event;
-    switch (phase) {
-      case BETTING: return messages.placeBet;
-      case RESULT_SETTING: return messages.setResult;
-      case VOTING: return messages.arbitrate;
-      case WITHDRAWING: return messages.withdraw;
+    const { status } = this.props.event;
+    switch (status) {
+      case EVENT_STATUS.CREATED:
+      case EVENT_STATUS.BETTING: return messages.placeBet;
+      case EVENT_STATUS.ORACLE_RESULT_SETTING:
+      case EVENT_STATUS.OPEN_RESULT_SETTING: return messages.setResult;
+      case EVENT_STATUS.ARBITRATION: return messages.arbitrate;
+      case EVENT_STATUS.WITHDRAWING: return messages.withdraw;
       default: console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
     }
   }
@@ -85,14 +86,15 @@ export default class EventCard extends Component {
 
   render() {
     const { classes, index, onClick, store: { ui } } = this.props;
-    const { name, isPending, isUpcoming, url, endTime, phase } = this.props.event;
+    const { name, isPending, isUpcoming, txid, endTime, phase } = this.props.event;
+    // console.log('TCL: EventCard -> render -> this.props.event', this.props.event);
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link to={url}>
+        <Link to={`/event/${txid}`}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
