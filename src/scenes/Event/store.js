@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, Tr
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
+import { transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
@@ -19,6 +19,7 @@ const INIT = {
   loading: false,
   oracles: [],
   topics: [],
+  resultSetsHistory: [],
   leaderboardVotes: [],
   amount: '',
   address: '',
@@ -65,6 +66,7 @@ export default class EventStore {
   @observable nakaWinnings = INIT.nakaWinnings
   @observable nbotWinnings = INIT.nbotWinnings
   @observable withdrawableAddresses = INIT.withdrawableAddresses
+  @observable resultSetsHistory = INIT.resultSetsHistory
   betBalances = []
   voteBalances = []
   leaderboardLimit = 5
@@ -157,6 +159,7 @@ export default class EventStore {
     await this.queryTopics();
     await this.queryOracles(this.address);
     await this.queryTransactions(this.address);
+    await this.queryResultSets(this.address);
 
     // API calls
     await this.getEscrowAmount();
@@ -173,6 +176,7 @@ export default class EventStore {
     await this.queryTopics();
     await this.queryOracles(this.topicAddress);
     await this.queryTransactions(this.topicAddress);
+    await this.queryResultSets(this.address);
     await this.getAllowanceAmount();
     await this.queryLeaderboard(Token.NAKA);
     this.disableEventActionsIfNecessary();
@@ -223,6 +227,7 @@ export default class EventStore {
               await this.queryTransactions(this.address);
               this.disableEventActionsIfNecessary();
               await this.updateLeaderBoard();
+              await this.queryResultSets(this.address);
               break;
             }
             case ORACLE: {
@@ -230,6 +235,7 @@ export default class EventStore {
               await this.queryOracles(this.topicAddress);
               await this.getAllowanceAmount();
               await this.updateLeaderBoard();
+              await this.queryResultSets(this.address);
               this.disableEventActionsIfNecessary();
               break;
             }
@@ -275,6 +281,15 @@ export default class EventStore {
   }
 
   @action
+  queryResultSets = async (address) => {
+    const { graphqlClient } = this.app;
+    const resultSetFilter = { eventAddress: address, status: TransactionStatus.SUCCESS };
+    const resultSetOrderBy = { field: 'eventRound', direction: SortBy.ASCENDING };
+    const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
+    this.resultSetsHistory = res.item;
+  }
+
+  @action
   queryLeaderboard = async (token) => {
     const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
     this.leaderboardVotes = votes;
@@ -297,22 +312,12 @@ export default class EventStore {
 
   @action
   queryTransactions = async (address) => {
-    const pendings = await queryAllTransactions(
-      [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
-      { field: 'createdTime', direction: SortBy.DESCENDING },
-    );
-    const withdraws = await queryWithdraws([{ topicAddress: address }]);
-
-    const resultSets = await queryResultSets([{ topicAddress: address }]);
-
-    const transactions = await queryAllVotes([{ topicAddress: address }]);
-    const votes = filter(transactions, { type: TransactionType.VOTE });
-    const resultSetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
-    const bets = filter(transactions, { type: TransactionType.BET });
-
-    let confirmed = [...withdraws, ...votes, ...resultSetsWithAmount, ...bets];
-    confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
-
+    const { graphqlClient } = this.app;
+    const txFilter = { eventAddress: address };
+    const txOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+    const txs = await transactions(graphqlClient, { filter: txFilter, orderBy: txOrderBy });
+    const pendings = filter(txs.items, { txStatus: TransactionStatus.PENDING });
+    const confirmed = filter(txs.items, { txStatus: TransactionStatus.SUCCESS });
     this.transactionHistoryItems = [...pendings, ...confirmed];
   }
 

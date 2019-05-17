@@ -8,7 +8,6 @@ import { Tabs, Tab, withStyles } from '@material-ui/core';
 import styles from './styles';
 import { ResultHistory, TransactionHistory } from '../';
 
-const { TOPIC } = EventType;
 const TAB_RESULT_HISTORY = 0;
 const TAB_MY_TRANSACTIONS = 1;
 const TAB_ALL_TRANSACTIONS = 2;
@@ -37,12 +36,6 @@ export default class HistoryTable extends Component {
   render() {
     const { classes, intl, store: { eventPage } } = this.props;
     const { tabValue } = this.state;
-    let currentEvent;
-    if (eventPage.type === TOPIC) {
-      currentEvent = eventPage.topic;
-    } else {
-      currentEvent = eventPage.oracle;
-    }
 
     return (
       <div className={classes.mainTableContainer}>
@@ -70,9 +63,9 @@ export default class HistoryTable extends Component {
           />}
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === TAB_RESULT_HISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
-          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions options={currentEvent.options} />}
-          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory options={currentEvent.options} />}
+          {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={eventPage.resultSetsHistory} />}
+          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
+          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
         </div>
       </div>
     );
