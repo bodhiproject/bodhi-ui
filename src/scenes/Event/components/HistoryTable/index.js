@@ -36,7 +36,6 @@ export default class HistoryTable extends Component {
   render() {
     const { classes, intl, store: { eventPage } } = this.props;
     const { tabValue } = this.state;
-    const currentEvent = eventPage.event;
 
     return (
       <div className={classes.mainTableContainer}>
@@ -64,9 +63,9 @@ export default class HistoryTable extends Component {
           />}
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === TAB_RESULT_HISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
-          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions options={currentEvent.results} />}
-          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory options={currentEvent.results} />}
+          {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={eventPage.resultSetsHistory} />}
+          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
+          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
         </div>
       </div>
     );
