@@ -37,7 +37,6 @@ export default class HistoryTable extends Component {
     const { classes, intl, store: { eventPage } } = this.props;
     const { tabValue } = this.state;
     const currentEvent = eventPage.event;
-    console.log('TCL: HistoryTable -> render -> currentEvent', currentEvent);
 
     return (
       <div className={classes.mainTableContainer}>

@@ -16,12 +16,10 @@ export default class Option {
   idx
 
   @computed get isExpanded() {
-    console.log('123321', this.app);
     return this.app.eventPage.selectedOptionIdx === this.idx;
   }
 
   constructor(optionName, i, oracle, app) {
-    console.log('TCL: Option -> constructor -> app', app);
     this.app = app;
     this.idx = i;
     this.amount = oracle.roundBets[i] || 0;
@@ -44,13 +42,11 @@ export default class Option {
     }
 
     this.disabled = this.isPrevResult;
-    console.log('TCL: Option -> constructor -> this.disabled', this.disabled);
   }
 
   @action
   toggleExpansion = () => {
     const { eventPage } = this.app;
-    console.log('123aqq', this.idx);
     if (eventPage.selectedOptionIdx == this.idx) { // eslint-disable-line
       eventPage.selectedOptionIdx = -1;
     } else {
