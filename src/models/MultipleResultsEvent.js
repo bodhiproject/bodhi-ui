@@ -1,6 +1,7 @@
 import { map } from 'lodash';
 import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
+import Option from './Option';
 
 export default class MultipleResultsEvent {
   txid // Transaction ID returned when the event confirmed
@@ -37,7 +38,7 @@ export default class MultipleResultsEvent {
   localizedInvalid // for invalid option
   url // URL to link to for the router
 
-  constructor(event) {
+  constructor(event, app) {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
@@ -50,7 +51,8 @@ export default class MultipleResultsEvent {
         return this[locale.slice(0, 2)];
       },
     };
-    this.url = `/event/${event.address}`;
+    this.url = `/event/${this.txid}`;
+    this.results = event.results.map((result, i) => new Option(result, i, this, app));
   }
 
   isUnconfirmed = () => !this.address;

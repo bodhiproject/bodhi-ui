@@ -40,7 +40,7 @@ export default class EventCard extends Component {
   };
 
   getAmountLabel = () => {
-    const { status, token, amounts, nakaAmount, nbotAmount } = this.props.event;
+    const { status, token, amounts, totalBets } = this.props.event;
     switch (status) {
       case CREATED:
       case BETTING:
@@ -48,8 +48,8 @@ export default class EventCard extends Component {
       case OPEN_RESULT_SETTING:
       case ARBITRATION:
       case WITHDRAWING: {
-        const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${amount} ${token}`;
+        // const amount = parseFloat(sum(amounts).toFixed(2));
+        return `${totalBets} NBOT`;
       }
       default: {
         console.error(`Unhandled status: ${status}`); // eslint-disable-line
@@ -103,7 +103,7 @@ export default class EventCard extends Component {
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Link to={`/event/${txid}`}>
+        <Link to={url}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>

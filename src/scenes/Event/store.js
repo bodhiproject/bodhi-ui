@@ -3,20 +3,20 @@ import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, TransactionStatus } from 'constants';
+import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, EVENT_STATUS, TransactionStatus } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes from '../../network/routes';
-import { transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
+import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
-const { BETTING, VOTING, RESULT_SETTING } = Phases;
+const { VOTING, RESULT_SETTING } = Phases;
+const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const paras = [Token.NAKA, Token.NBOT];
-
 const INIT = {
   type: undefined,
-  loading: false,
+  loading: true,
   oracles: [],
   topics: [],
   resultSetsHistory: [],
@@ -36,6 +36,7 @@ const INIT = {
   nbotWinnings: 0,
   withdrawableAddresses: [],
   activeStep: 0,
+  event: undefined,
   error: {
     amount: '',
     address: '',
@@ -60,7 +61,7 @@ export default class EventStore {
   @observable allowance = INIT.allowance; // In Botoshi
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
-
+  @observable event = INIT.event
   // topic
   @observable topics = INIT.topics
   @observable nakaWinnings = INIT.nakaWinnings
@@ -89,10 +90,7 @@ export default class EventStore {
   @computed get topic() {
     return find(this.topics, { address: this.topicAddress }) || {};
   }
-  // For Oracle only
-  @computed get unconfirmed() {
-    return isUndefined(this.topicAddress) && isUndefined(this.address);
-  }
+
   @computed get dOracles() { // [NBOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
     return this.oracles.filter(({ token }) => token === Token.NBOT);
   }
@@ -101,19 +99,10 @@ export default class EventStore {
     // mainly: BETTING & RESULT SETTING phases
     return find(this.oracles, { token: Token.NAKA }) || {};
   }
-  @computed get oracle() {
-    if (this.unconfirmed) {
-      return find(this.oracles, { hashId: this.hashId });
-    }
-    return find(this.oracles, { address: this.address }) || {};
-  }
+
   // both
   @computed get selectedOption() {
-    return (this.event.options && this.event.options[this.selectedOptionIdx]) || {};
-  }
-  @computed get event() {
-    if (this.type === TOPIC) return this.topic;
-    return this.oracle;
+    return (this.event.results && this.event.results[this.selectedOptionIdx]) || {};
   }
 
   constructor(app) {
@@ -129,27 +118,15 @@ export default class EventStore {
     this.type = type;
     this.hashId = hashId;
 
-    if (type === UNCONFIRMED) {
-      await this.initUnconfirmedOracle();
-    } else if (type === TOPIC) {
+    if (type === TOPIC) {
       await this.initTopic();
     } else {
-      await this.initOracle();
+      await this.initOracle(txid);
     }
 
     this.setReactions();
   }
 
-  /**
-   * Show unconfirmed Oracle page.
-   * Find unconfirmed Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress.
-   */
-  @action
-  initUnconfirmedOracle = async () => {
-    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
-    this.oracles = oracles;
-    this.loading = false;
-  }
 
   @action
   initTopic = async () => {
@@ -171,14 +148,19 @@ export default class EventStore {
   }
 
   @action
-  initOracle = async () => {
+  initOracle = async (txid) => {
+    const { graphqlClient } = this.app;
+    console.log('TCL: initOracle -> this.app', this.app);
+    const { items } = await events(graphqlClient, { filter: { txid }, includeRoundBets: true }, this.app);
+    [this.event] = items;
+    console.log('TCL: initOracle -> this.oracles', this.event);
     // GraphQL calls
-    await this.queryTopics();
-    await this.queryOracles(this.topicAddress);
-    await this.queryTransactions(this.topicAddress);
-    await this.queryResultSets(this.address);
-    await this.getAllowanceAmount();
-    await this.queryLeaderboard(Token.NAKA);
+    // await this.queryTopics();
+    await this.queryOracles(txid);
+    // await this.queryTransactions(this.topicAddress);
+    // await this.queryResultSets(this.address);
+    // await this.getAllowanceAmount();
+    // await this.queryLeaderboard(Token.NAKA);
     this.disableEventActionsIfNecessary();
 
     if (this.oracle.phase === RESULT_SETTING) {
@@ -206,12 +188,6 @@ export default class EventStore {
       () => this.updateLeaderBoard(),
     );
 
-    // Current wallet address changed
-    reaction(
-      () => this.app.wallet.currentAddress,
-      () => this.getAllowanceAmount(),
-    );
-
     // New block
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
@@ -231,12 +207,12 @@ export default class EventStore {
               break;
             }
             case ORACLE: {
-              await this.queryTransactions(this.topicAddress);
-              await this.queryOracles(this.topicAddress);
-              await this.getAllowanceAmount();
-              await this.updateLeaderBoard();
-              await this.queryResultSets(this.address);
-              this.disableEventActionsIfNecessary();
+              // await this.queryTransactions(this.topicAddress);
+              // await this.queryOracles(this.topicAddress);
+              // await this.getAllowanceAmount();
+              // await this.updateLeaderBoard();
+              // await this.queryResultSets(this.address);
+              // this.disableEventActionsIfNecessary();
               break;
             }
             default: {
@@ -504,7 +480,7 @@ export default class EventStore {
    */
   @action
   disableEventActionsIfNecessary = () => {
-    const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
+    const { status, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
     const currentWalletNaka = wallet.currentWalletAddress ? wallet.currentWalletAddress.naka : 0;
@@ -517,7 +493,7 @@ export default class EventStore {
 
     // Trying to vote over the consensus threshold - currently not way to trigger
     const amountNum = Number(this.amount);
-    if (phase === VOTING && this.amount && this.selectedOptionIdx >= 0) {
+    if (status === VOTING && this.amount && this.selectedOptionIdx >= 0) {
       const maxVote = NP.minus(consensusThreshold, this.selectedOption.amount);
       if (amountNum > maxVote) {
         this.buttonDisabled = true;
@@ -527,7 +503,7 @@ export default class EventStore {
     }
 
     // Has not reached betting start time
-    if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
+    if (status === BETTING && currBlockTime.isBefore(moment.unix(this.event.startTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -535,7 +511,7 @@ export default class EventStore {
     }
 
     // Has not reached result setting start time
-    if ((phase === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+    if ((status === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -543,7 +519,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterAddress !== wallet.currentAddress) {
+    if (status === RESULT_SETTING && !isOpenResultSetting && resultSetterAddress !== wallet.currentAddress) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -562,8 +538,8 @@ export default class EventStore {
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
     const currentNbot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
     if ((
-      (phase === VOTING && currentNbot < this.amount)
-      || (phase === RESULT_SETTING && currentNbot < consensusThreshold)
+      (status === VOTING && currentNbot < this.amount)
+      || (status === RESULT_SETTING && currentNbot < consensusThreshold)
     ) && notEnoughNaka) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNAKAAndNbot';
@@ -571,22 +547,22 @@ export default class EventStore {
     }
 
     // Error getting allowance amount
-    if (phase === VOTING && !this.allowance) {
+    if (status === VOTING && !this.allowance) {
       this.buttonDisabled = true;
       this.error.address = 'str.errorGettingAllowance';
       return;
     }
 
     // Trying to bet more naka than you have or you just don't have enough NAKA period
-    if ((phase === BETTING && this.amount > currentWalletNaka + maxTransactionFee) || notEnoughNaka) {
+    if ((status === BETTING && this.amount > currentWalletNaka + maxTransactionFee) || notEnoughNaka) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNaka';
       return;
     }
 
     // Not enough nbot for setting the result or voting
-    if ((phase === RESULT_SETTING && currentNbot < consensusThreshold && this.selectedOptionIdx !== -1)
-      || (phase === VOTING && currentNbot < this.amount)) {
+    if ((status === RESULT_SETTING && currentNbot < consensusThreshold && this.selectedOptionIdx !== -1)
+      || (status === VOTING && currentNbot < this.amount)) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNbot';
       return;
@@ -601,7 +577,7 @@ export default class EventStore {
     }
 
     // Did not enter an amount
-    if ([BETTING, VOTING].includes(phase) && (!this.amount)) {
+    if ([BETTING, VOTING].includes(status) && (!this.amount)) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
@@ -609,7 +585,7 @@ export default class EventStore {
     }
 
     // Enter an invalid amount
-    if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+    if ([BETTING, VOTING].includes(status) && (this.amount <= 0 || Number.isNaN(this.amount))) {
       this.buttonDisabled = true;
       this.error.amount = 'str.invalidAmount';
     }
@@ -618,17 +594,17 @@ export default class EventStore {
   // Auto-fixes the amount field onBlur if trying to vote over the threshold
   @action
   fixAmount = () => {
-    if (this.oracle.phase !== VOTING) return;
+    if (this.event.status !== ARBITRATION) return;
 
     const inputAmount = parseFloat(this.amount, 10);
-    const consensusThreshold = parseFloat(this.oracle.consensusThreshold, 10);
+    const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
       this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
     }
   }
 
   bet = async () => {
-    await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption.idx, this.amount);
+    await this.app.tx.executeBet({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }
 
   setResult = async () => {
