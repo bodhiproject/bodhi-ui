@@ -15,9 +15,10 @@ export default class Withdraw {
 
   constructor(withdraw) {
     Object.assign(this, withdraw);
+    delete this.escrowWithdrawAmount;
     this.winningAmount = satoshiToDecimal(withdraw.winningAmount);
     this.winningAmountSatoshi = withdraw.winningAmount;
-    this.escrowAmount = satoshiToDecimal(withdraw.escrowAmount);
-    this.escrowAmountSatoshi = withdraw.escrowAmount;
+    this.escrowAmount = satoshiToDecimal(withdraw.escrowWithdrawAmount);
+    this.escrowAmountSatoshi = withdraw.escrowWithdrawAmount;
   }
 }

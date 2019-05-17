@@ -6,6 +6,6 @@ export default class SyncInfo {
   constructor(syncInfo) {
     this.percent = syncInfo.syncPercent;
     this.blockNum = syncInfo.syncBlockNum;
-    this.blockTime = Number(syncInfo.syncBlockTime);
+    this.blockTime = syncInfo.syncBlockTime;
   }
 }
