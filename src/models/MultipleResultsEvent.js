@@ -54,9 +54,7 @@ export default class MultipleResultsEvent {
     this.results = event.results.map((result, i) => new Option(result, i, this, app));
   }
 
-  isUnconfirmed = () => !this.address;
-
-  isPending = () => !!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0;
+  isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
 
   isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
