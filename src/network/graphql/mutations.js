@@ -16,10 +16,10 @@ const MUTATIONS = {
       $results: [String!]!
       $numOfResults: Int!
       $centralizedOracle: String!
-      $betStartTime: String!
-      $betEndTime: String!
-      $resultSetStartTime: String!
-      $resultSetEndTime: String!
+      $betStartTime: Int!
+      $betEndTime: Int!
+      $resultSetStartTime: Int!
+      $resultSetEndTime: Int!
       $language: String!
     ) {
       addPendingEvent(
