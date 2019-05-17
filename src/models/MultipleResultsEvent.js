@@ -1,4 +1,5 @@
 import { map } from 'lodash';
+import moment from 'moment';
 import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
 import Option from './Option';
@@ -59,4 +60,6 @@ export default class MultipleResultsEvent {
 
   isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
+
+  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING
 }

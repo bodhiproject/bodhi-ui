@@ -206,7 +206,6 @@
   "str.newPassphrase": "NEW PASSPHRASE",
   "str.noAddressInWallet": "No wallet address found. Please login to Naka Wallet.",
   "str.notEnoughNbot": "You don't have enough NBOT",
-  "str.notEnoughNaka": "You don't have enough NAKA",
   "str.notEnoughNAKAAndNbot": "You don't have enough NAKA or NBOT",
   "str.ok": "Ok",
   "str.oldPassphrase": "OLD PASSPHRASE",
