@@ -23,6 +23,7 @@ import {
 
 const QUERY_EVENTS = 'events';
 const QUERY_SEARCH_EVENTS = 'searchEvents';
+const QUERY_WITHDRAWABLE_EVENTS = 'withdrawableEvents';
 const QUERY_BETS = 'bets';
 const QUERY_RESULT_SETS = 'resultSets';
 const QUERY_WITHDRAWS = 'withdraws';
@@ -80,6 +81,24 @@ const QUERIES = {
         skip: $skip
       ) {
         ${MULTIPLE_RESULTS_EVENT}
+      }
+    }
+  `,
+
+  withdrawableEvents: gql`
+    query(
+      $filter: WithdrawableEventFilter!
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      events(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_EVENTS}
       }
     }
   `,
@@ -246,6 +265,19 @@ export async function events(client, args) {
 export async function searchEvents(client, args) {
   const res = await new GraphQuery(client, QUERY_SEARCH_EVENTS, args).execute();
   return map(res, (event) => new MultipleResultsEvent(event));
+}
+
+/**
+ * Queries events that the user can withdraw from.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function withdrawableEvents(client, args) {
+  const res = await new GraphQuery(client, QUERY_WITHDRAWABLE_EVENTS, args)
+    .execute();
+  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
+  return res;
 }
 
 /**
