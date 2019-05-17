@@ -91,7 +91,7 @@ export default class {
       each(votes, ({ eventAddress, resultIndex }) => {
         eventFilters.OR.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: locale });
       });
-      const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip });
+      const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip }, this.app);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

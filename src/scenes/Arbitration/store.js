@@ -79,7 +79,7 @@ export default class ArbitrationStore {
         },
       ] };
 
-      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account }, this.app);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
