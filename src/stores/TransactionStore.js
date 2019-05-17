@@ -113,6 +113,13 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+      if (!nbotOwner) {
+        throw new Error('exchanger not existed');
+      }
+      if (!exchangeRate) {
+        throw new Error('excahngeRate not existed');
+      }
       const paramsHex = web3EthAbi.encodeParameters(
         createEventFuncTypes,
         eventParams,
@@ -122,13 +129,15 @@ export default class TransactionStore {
       // Send tx
       const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
         token: getContracts().NakaBodhiToken.address,
-        exchanger: this.app.wallet.nbotOwner,
-        exchangeRate: this.app.wallet.exchangeRate,
+        exchanger: nbotOwner,
+        exchangeRate,
         gas,
       }]);
       return txid;
     } catch (err) {
-      throw err; // TODO: show errror message and show error in error dialog
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${err.message}`);
+      });
     }
   };
 

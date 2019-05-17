@@ -10,14 +10,17 @@ import TokenExchangeMeta from '../config/token-exchange';
 const INIT_VALUE = {
   addresses: [],
   currentWalletAddress: undefined,
+  nbotContract: undefined,
+  nbotOwner: undefined,
+  exchangeRate: undefined,
 };
 
 export default class WalletStore {
   @observable addresses = INIT_VALUE.addresses;
   @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
-  @observable nbotOwner = undefined;
-  @observable exchangeRate = undefined
-  nbotMethods = undefined;
+  @observable nbotOwner = INIT_VALUE.nbotOwner;
+  @observable exchangeRate = INIT_VALUE.exchangeRate
+  nbotContract = INIT_VALUE.nbotContract;
   @computed get currentAddress() {
     return this.currentWalletAddress ? this.currentWalletAddress.address : '';
   }
@@ -49,7 +52,7 @@ export default class WalletStore {
   onNakaAccountChange = async (account) => {
     const { loggedIn, network, address, balance } = account;
 
-    this.nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+    this.nbotContract = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
 
     // Reset addresses if logged out
     if (!loggedIn) {
@@ -91,7 +94,7 @@ export default class WalletStore {
   }
 
   fetchNbotOwner = async () => {
-    this.nbotOwner = await promisify(this.nbotMethods.owner, []);
+    this.nbotOwner = await promisify(this.nbotContract.owner, []);
   }
 
   fetchExchangeRate = async () => {
@@ -111,7 +114,7 @@ export default class WalletStore {
     }
 
     try {
-      const balance = await promisify(this.nbotMethods.balanceOf, [address]);
+      const balance = await promisify(this.nbotContract.balanceOf, [address]);
       const nbot = satoshiToDecimal(balance.toString(16));
 
       // Update WalletAddress NBOT in list of addresses
