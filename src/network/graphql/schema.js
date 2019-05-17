@@ -81,6 +81,7 @@ export const BET = `
   resultIndex
   amount
   eventRound
+  resultName
 `;
 
 export const PAGINATED_BETS = `
@@ -97,6 +98,7 @@ export const RESULT_SET = `
   resultIndex
   amount
   eventRound
+  resultName
 `;
 
 export const PAGINATED_RESULT_SETS = `
@@ -136,6 +138,7 @@ export const PAGINATED_TRANSACTIONS = `
       resultIndex
       amount
       eventRound
+      resultName
     }
     ... on ResultSet {
       eventAddress
@@ -143,6 +146,7 @@ export const PAGINATED_TRANSACTIONS = `
       resultIndex
       amount
       eventRound
+      resultName
     }
     ... on Withdraw {
       eventAddress
