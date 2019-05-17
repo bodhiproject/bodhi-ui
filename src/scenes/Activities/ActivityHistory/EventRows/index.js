@@ -57,7 +57,9 @@ class EventRow extends Component {
         address = transaction.eventAddress;
         name = transaction.resultIndex;
       } else {
-        amount = transaction.winningAmount + transaction.escrowAmount;
+        // TODO: fix this, these are both string values.
+        // need to convert to BN instances, add, then .toString()
+        amount = transaction.winningAmount + transaction.escrowWithdrawAmount;
         address = transaction.eventAddress;
         name = 'Withdraw';
       }

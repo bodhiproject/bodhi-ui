@@ -16,10 +16,10 @@ const MUTATIONS = {
       $results: [String!]!
       $numOfResults: Int!
       $centralizedOracle: String!
-      $betStartTime: String!
-      $betEndTime: String!
-      $resultSetStartTime: String!
-      $resultSetEndTime: String!
+      $betStartTime: Int!
+      $betEndTime: Int!
+      $resultSetStartTime: Int!
+      $resultSetEndTime: Int!
       $language: String!
     ) {
       addPendingEvent(
@@ -90,14 +90,14 @@ const MUTATIONS = {
       $eventAddress: String!
       $winnerAddress: String!
       $winningAmount: Int!
-      $escrowAmount: String!
+      $escrowWithdrawAmount: String!
     ) {
       addPendingWithdraw(
         txid: $txid
         eventAddress: $eventAddress
         winnerAddress: $winnerAddress
         winningAmount: $winningAmount
-        escrowAmount: $escrowAmount
+        escrowWithdrawAmount: $escrowWithdrawAmount
       ) {
         ${WITHDRAW}
       }
