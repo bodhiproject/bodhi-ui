@@ -10,15 +10,14 @@ export default class Withdraw {
   winnerAddress // Winner address
   winningAmount // Won amount in decimals
   winningAmountSatoshi // Won amount in satoshi
-  escrowAmount // Escrow amount withdrawn in decimals
-  escrowAmountSatoshi // Escrow amount withdrawn in satoshi
+  escrowWithdrawAmount // Escrow amount withdrawn in decimals
+  escrowWithdrawAmountSatoshi // Escrow amount withdrawn in satoshi
 
   constructor(withdraw) {
     Object.assign(this, withdraw);
-    delete this.escrowWithdrawAmount;
     this.winningAmount = satoshiToDecimal(withdraw.winningAmount);
     this.winningAmountSatoshi = withdraw.winningAmount;
-    this.escrowAmount = satoshiToDecimal(withdraw.escrowWithdrawAmount);
-    this.escrowAmountSatoshi = withdraw.escrowWithdrawAmount;
+    this.escrowWithdrawAmount = satoshiToDecimal(withdraw.escrowWithdrawAmount);
+    this.escrowWithdrawAmountSatoshi = withdraw.escrowWithdrawAmount;
   }
 }

@@ -57,7 +57,7 @@ class EventRow extends Component {
         address = transaction.eventAddress;
         name = transaction.resultIndex;
       } else {
-        amount = transaction.winningAmount + transaction.escrowAmount;
+        amount = transaction.winningAmount + transaction.escrowWithdrawAmount;
         address = transaction.eventAddress;
         name = 'Withdraw';
       }
