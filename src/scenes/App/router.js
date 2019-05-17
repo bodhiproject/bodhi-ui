@@ -36,7 +36,7 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}/oracle/:hashId`}
+        path={`${url}/event/:txid`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route
