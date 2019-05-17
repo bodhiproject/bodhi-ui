@@ -80,12 +80,12 @@ export default class PredictionStore {
     if (this.hasMore) {
       const { naka: { account }, graphqlClient, ui: { locale } } = this.app;
       const orderBy = { field: 'resultSetEndTime', direction: this.sortBy };
-      const filters = [
+      const filter = { OR: [
         { status: EVENT_STATUS.BETTING, language: locale },
         { status: EVENT_STATUS.CREATED, language: locale },
-      ];
+      ] };
 
-      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account });
       // console.log('TCL: PredictionStore -> fetch -> res', res);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;

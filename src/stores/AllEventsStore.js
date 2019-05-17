@@ -70,12 +70,10 @@ export default class {
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
       const { naka: { account }, graphqlClient, ui: { locale } } = this.app;
-      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
-      const filters = [
-        { language: locale },
-      ];
+      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+      const filter = { language: locale };
 
-      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
