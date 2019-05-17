@@ -25,6 +25,7 @@ const messages = defineMessages({
 export default class EventPage extends Component {
   componentDidMount() {
     const { path, params } = this.props.match;
+    console.log('TCL: EventPage -> componentDidMount -> params', params);
     const type = EventType.ORACLE;
     // if (path.startsWith('/topic')) {
     //   type = EventType.TOPIC;
@@ -46,20 +47,20 @@ export default class EventPage extends Component {
   render() {
     const { eventPage } = this.props.store;
     const { event, loading } = eventPage;
+    console.log('TCL: EventPage -> render -> event', event);
     console.log('TCL: EventPage -> render -> eventPage', eventPage);
-
     if (loading) {
       return <Loading text={messages.loadOracleMsg} event='true' />;
     }
 
-    const Event = {
-      BETTING: BettingOracle,
-      RESULT_SETTING: ResultSettingOracle,
-      VOTING: VotingOracle,
-      WITHDRAWING: WithdrawingTopic,
-    }[event.phase];
+    // const Event = {
+    //   BETTING: BettingOracle,
+    //   RESULT_SETTING: ResultSettingOracle,
+    //   VOTING: VotingOracle,
+    //   WITHDRAWING: WithdrawingTopic,
+    // }[event.status];
 
-    console.log('TCL: EventPage -> render -> Event', Event);
+    // console.log('TCL: EventPage -> render -> Event', Event);
     return (
       <Fragment>
         <BackButton />

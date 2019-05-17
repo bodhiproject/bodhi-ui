@@ -12,29 +12,30 @@ export default class Option {
   maxAmount
   amount
   phase
-  unconfirmed
   token
   idx
 
   @computed get isExpanded() {
+    console.log('123321', this.app);
     return this.app.eventPage.selectedOptionIdx === this.idx;
   }
 
   constructor(optionName, i, oracle, app) {
+    console.log('TCL: Option -> constructor -> app', app);
     this.app = app;
     this.idx = i;
-    this.amount = oracle.amounts[i] || 0;
-    this.isLast = i === oracle.options.length - 1;
+    this.amount = oracle.roundBets[i] || 0;
+    this.isLast = i === oracle.results.length - 1;
     this.isFirst = i === 0;
     this.name = optionName;
-    this.token = oracle.token;
+    this.token = NBOT;
     this.phase = oracle.phase;
     this.value = `${this.amount} ${this.token}`;
     if (oracle.token === NAKA) {
       const totalBalance = _.sum(oracle.amounts);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {
-      this.isPrevResult = !oracle.optionIdxs.includes(i);
+      this.isPrevResult = oracle.currentResultIndex === i;
       this.maxAmount = oracle.token === NBOT && oracle.status === OracleStatus.VOTING
         ? oracle.consensusThreshold - this.amount : undefined;
 
@@ -42,14 +43,14 @@ export default class Option {
       this.percent = threshold === 0 ? threshold : _.round((this.amount / threshold) * 100);
     }
 
-    this.disabled = oracle.unconfirmed
-      || (this.isPrevResult)
-      || (!this.isPrevResult);
+    this.disabled = this.isPrevResult;
+    console.log('TCL: Option -> constructor -> this.disabled', this.disabled);
   }
 
   @action
   toggleExpansion = () => {
     const { eventPage } = this.app;
+    console.log('123aqq', this.idx);
     if (eventPage.selectedOptionIdx == this.idx) { // eslint-disable-line
       eventPage.selectedOptionIdx = -1;
     } else {

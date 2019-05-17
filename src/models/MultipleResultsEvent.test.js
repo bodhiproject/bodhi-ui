@@ -62,7 +62,6 @@ describe('MultipleResultsEvent', () => {
       expect(oracle.options.length).toBe(input.options.length);
 
       expect(oracle.isUpcoming).not.toBeTruthy();
-      expect(oracle.unconfirmed).not.toBeTruthy();
       expect(oracle.isPending).not.toBeTruthy();
       expect(oracle.isArchived).not.toBeTruthy();
       expect(oracle.isOpenResultSetting).not.toBeTruthy();

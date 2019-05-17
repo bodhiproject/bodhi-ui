@@ -9,7 +9,7 @@ import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { addPendingEvent, createTransaction } from '../network/graphql/mutations';
+import { addPendingEvent, addPendingBet, createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -151,16 +151,30 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+      if (!nbotOwner) {
+        throw new Error('exchanger not existed');
+      }
+      if (!exchangeRate) {
+        throw new Error('excahngeRate not existed');
+      }
       const paramsHex = web3EthAbi.encodeParameters(
         playEventFuncTypes,
         params,
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, {
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+        gas,
+      }]);
       return txid;
     } catch (err) {
-      throw err; // TODO: show errror message and show error in error dialog
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${err.message}`);
+      });
     }
   };
 
@@ -504,26 +518,6 @@ export default class TransactionStore {
     }
   }
 
-  /**
-   * Adds a bet tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {number} optionIdx Index of the option being bet.
-   * @param {string} amount Amount of the bet.
-   */
-  @action
-  addBetTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.BET,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount,
-      token: Token.NAKA,
-    })));
-    await this.showConfirmDialog();
-  }
 
   /**
    * Executes a bet.
@@ -531,15 +525,16 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeBet = async (index, tx) => {
+  executeBet = async (tx) => {
     try {
-      const { oracleAddress, optionIdx, amount, senderAddress } = tx;
+      const { eventAddr, optionIdx, amount, senderAddress, eventRound } = tx;
+      console.log('TCL: executeBet -> tx', tx);
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: betParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: BET_EVENT_FUNC_SIG,
         amount,
         gas: 300000,
@@ -547,23 +542,24 @@ export default class TransactionStore {
       Object.assign(tx, { txid });
       if (txid) {
         // Create pending tx on server
-        const pendingTx = await createTransaction('createBet', {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingBet(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
+          eventAddress: eventAddr,
+          betterAddress: address,
+          resultIndex: optionIdx,
           amount,
+          eventRound,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
+        await this.onTxExecuted(res);
         Tracking.track('event-bet');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/bet`);
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/bet');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/bet`);
+        this.app.components.globalDialog.setError(err.message, '/bet');
       }
     }
   }

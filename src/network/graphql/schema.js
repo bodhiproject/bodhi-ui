@@ -65,6 +65,7 @@ export const MULTIPLE_RESULTS_EVENT = `
   language
   pendingTxs { ${PENDING_TRANSACTIONS} }
   roundBets
+  totalBets
 `;
 
 export const PAGINATED_EVENTS = `

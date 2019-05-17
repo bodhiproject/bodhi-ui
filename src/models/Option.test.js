@@ -44,7 +44,6 @@ describe('Option Model', () => {
       phase: BETTING,
       optionIdxs: [0, 1],
       status: OracleStatus.VOTING,
-      unconfirmed: true,
     };
   });
 
