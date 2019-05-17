@@ -459,13 +459,9 @@ export default class EventStore {
   @action
   disableEventActionsIfNecessary = () => {
     const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
-    console.log('TCL: disableEventActionsIfNecessary -> this.event', this.event);
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    console.log('TCL: disableEventActionsIfNecessary -> syncBlockTime', syncBlockTime);
-    console.log('TCL: disableEventActionsIfNecessary -> currBlockTime', currBlockTime);
     const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : 0;
-    console.log('TCL: disableEventActionsIfNecessary -> wallet.currentWalletAddress', wallet.currentWalletAddress);
     const notEnoughNbot = currentWalletNbot < maxTransactionFee;
 
     this.buttonDisabled = false;
@@ -483,19 +479,14 @@ export default class EventStore {
         return;
       }
     }
-    console.log('123', this.buttonDisabled);
 
     // Has not reached betting start time
-    console.log('TCL: disableEventActionsIfNecessary -> this.event.betStartTime)', this.event.betStartTime);
-    console.log('TCL: disableEventActionsIfNecessary -> moment.unix(this.event.betStartTime))', moment.unix(this.event.betStartTime));
-    console.log('TCL: disableEventActionsIfNecessary -> currBlockTime.isBefore(moment.unix(this.event.betStartTime))', currBlockTime.isBefore(moment.unix(this.event.betStartTime)));
     if (status === BETTING && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
       return;
     }
-    console.log('222', this.buttonDisabled);
 
     // Has not reached result setting start time
     if ((status === ORACLE_RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
@@ -505,8 +496,6 @@ export default class EventStore {
       return;
     }
 
-    console.log('333', this.buttonDisabled);
-
     // User is not the result setter
     if (status === ORACLE_RESULT_SETTING && !isOpenResultSetting() && centralizedOracle !== wallet.currentAddress) {
       this.buttonDisabled = true;
@@ -514,7 +503,6 @@ export default class EventStore {
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
       return;
     }
-    console.log('444', this.buttonDisabled);
 
     // ALL
     // No wallet can be found
@@ -523,8 +511,6 @@ export default class EventStore {
       this.error.address = 'str.noAddressInWallet';
       return;
     }
-
-    console.log('555', this.buttonDisabled);
 
     // Trying to set result or vote when not enough NBOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
@@ -538,20 +524,12 @@ export default class EventStore {
       return;
     }
 
-    console.log('666', this.buttonDisabled);
-
     // Trying to bet more naka than you have or you just don't have enough NAKA period
-    console.log('TCL: disableEventActionsIfNecessary -> this.amount', this.amount);
-    console.log('TCL: disableEventActionsIfNecessary -> currentWalletNbot', currentWalletNbot);
-    console.log('TCL: disableEventActionsIfNecessary -> maxTransactionFee', maxTransactionFee);
-    console.log('TCL: disableEventActionsIfNecessary -> notEnoughNbot', notEnoughNbot);
     if ((status === BETTING && this.amount > currentWalletNbot + maxTransactionFee) || notEnoughNbot) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNbot';
       return;
     }
-
-    console.log('777', this.buttonDisabled);
 
     // Did not select a result
     if (this.selectedOptionIdx === -1) {
@@ -561,8 +539,6 @@ export default class EventStore {
       return;
     }
 
-    console.log('888', this.buttonDisabled);
-
     // Did not enter an amount
     if ([BETTING, ARBITRATION].includes(status) && (!this.amount)) {
       this.buttonDisabled = true;
@@ -571,13 +547,11 @@ export default class EventStore {
       return;
     }
 
-    console.log('999', this.buttonDisabled);
     // Enter an invalid amount
     if ([BETTING, ARBITRATION].includes(status) && (this.amount <= 0 || Number.isNaN(this.amount))) {
       this.buttonDisabled = true;
       this.error.amount = 'str.invalidAmount';
     }
-    console.log('101010', this.buttonDisabled);
   }
 
   // Auto-fixes the amount field onBlur if trying to vote over the threshold

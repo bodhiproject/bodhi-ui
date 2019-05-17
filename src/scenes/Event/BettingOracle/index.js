@@ -8,26 +8,24 @@ import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
 import Leaderboard from '../components/Leaderboard';
 
-const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) => {
-  console.log('TCL: BettingOracle -> eventPage', eventPage);
-  return (
-    <Row>
-      <Content>
-        <Title>{event.name}</Title>
-        {/* {!event.unconfirmed && !event.isArchived && (
-          <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
-        )} */}
-        <Options event={event} />
-        <Fragment>
-          <BetButton eventpage={eventPage} />
-          <Leaderboard maxSteps={1} />
-          <HistoryTable transactionHistory />
-        </Fragment>
-      </Content>
-      <Sidebar endTime={event.betEndTime} />
-    </Row>
-  );
-});
+const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) => (
+  <Row>
+    <Content>
+      <Title>{event.name}</Title>
+      {/* {!event.unconfirmed && !event.isArchived && (
+        <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
+      )} */}
+      <Options event={event} />
+      <Fragment>
+        <BetButton eventpage={eventPage} />
+        <Leaderboard maxSteps={1} />
+        <HistoryTable transactionHistory />
+      </Fragment>
+    </Content>
+    <Sidebar endTime={event.betEndTime} />
+  </Row>
+));
+
 
 const Options = withStyles(styles)(observer(({ classes, event }) => (
   <Grid className={classes.optionGrid}>
