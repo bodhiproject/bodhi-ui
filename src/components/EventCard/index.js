@@ -42,7 +42,7 @@ export default class EventCard extends Component {
   };
 
   getAmountLabel = () => {
-    const { status, token, amounts, nakaAmount, nbotAmount } = this.props.event;
+    const { status, token, amounts, totalBets } = this.props.event;
     switch (status) {
       case CREATED:
       case BETTING:
@@ -50,8 +50,8 @@ export default class EventCard extends Component {
       case OPEN_RESULT_SETTING:
       case ARBITRATION:
       case WITHDRAWING: {
-        const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${amount} ${token}`;
+        // const amount = parseFloat(sum(amounts).toFixed(2));
+        return `${totalBets} NBOT`;
       }
       default: {
         console.error(`Unhandled status: ${status}`); // eslint-disable-line
