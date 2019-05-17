@@ -76,11 +76,11 @@ export default class {
       await checkLoggedIn();
       const { naka: { account }, ui: { locale } } = this.app;
 
-      const betFilters = [{ betterAddress: account }];
-      const eventFilters = [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: locale }];
+      const betFilters = { betterAddress: account };
+      const eventFilters = { OR: [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: locale }] };
 
       // Filter votes
-      let votes = await bets(graphqlClient, betFilters);
+      let votes = await bets(graphqlClient, { filter: betFilters });
       votes = votes.items.reduce((accumulator, vote) => {
         const { betterAddress, eventAddress, resultIndex } = vote;
         if (!find(accumulator, { betterAddress, eventAddress, resultIndex })) accumulator.push(vote);
@@ -89,9 +89,9 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       each(votes, ({ eventAddress, resultIndex }) => {
-        eventFilters.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: locale });
+        eventFilters.OR.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: locale });
       });
-      const res = await events(graphqlClient, { eventFilters, orderBy, limit, skip });
+      const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

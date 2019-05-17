@@ -132,9 +132,9 @@ export default class {
     const { naka: { account } } = this.app;
 
     const direction = { field: 'blockNum', direction: SortBy.DESCENDING };
-    const filters = [{ transactorAddress: account }];
+    const filter = { transactorAddress: account };
 
-    const res = await transactions(graphqlClient, { filters, orderBy: direction, limit, skip });
+    const res = await transactions(graphqlClient, { filter, orderBy: direction, limit, skip });
 
     return res.items;
   }
