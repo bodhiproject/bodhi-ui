@@ -1,6 +1,9 @@
 const styles = (theme) => ({
   eventOptionCollapse: {
     paddingTop: '1px',
+    '&.first': {
+      paddingTop: theme.padding.spaceX.px,
+    },
     '&.last': {
       paddingBottom: theme.padding.spaceX.px,
     },
