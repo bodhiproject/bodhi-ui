@@ -85,8 +85,7 @@ export default class PredictionStore {
         { status: EVENT_STATUS.CREATED, language: locale },
       ] };
 
-      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account });
-      // console.log('TCL: PredictionStore -> fetch -> res', res);
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account }, this.app);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
