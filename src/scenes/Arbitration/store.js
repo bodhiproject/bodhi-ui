@@ -70,7 +70,7 @@ export default class ArbitrationStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
-      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING.toLowerCase() };
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING };
       const filters = [
         { status: EVENT_STATUS.ARBITRATION, language: this.app.ui.locale },
         { status: EVENT_STATUS.ORACLE_RESULT_SETTING,

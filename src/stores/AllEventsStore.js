@@ -70,7 +70,7 @@ export default class {
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
       const { naka: { account }, graphqlClient, ui: { locale } } = this.app;
-      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING.toLowerCase() };
+      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
       const filters = [
         { language: locale },
       ];

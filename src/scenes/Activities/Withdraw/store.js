@@ -70,7 +70,7 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING.toLowerCase() };
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
 
       const { naka: { checkLoggedIn }, graphqlClient } = this.app;
       await checkLoggedIn();

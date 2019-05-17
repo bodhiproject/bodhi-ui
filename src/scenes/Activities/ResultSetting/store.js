@@ -77,7 +77,7 @@ export default class {
         { status: EVENT_STATUS.ORACLE_RESULT_SETTING, ownerAddress: account, language: locale },
       ];
 
-      const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING.toLowerCase() };
+      const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING };
 
       const res = await events(graphqlClient, { filters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
