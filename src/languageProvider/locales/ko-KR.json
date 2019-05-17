@@ -206,7 +206,6 @@
   "str.newPassphrase": "새 암호 문구",
   "str.noAddressInWallet": "지갑에 주소가 없습니다. naka 지갑에 로그인을 시도 할 수 있습니다.",
   "str.notEnoughNbot": "BOT가 충분하지 않습니다.",
-  "str.notEnoughNaka": "NAKA이 충분하지 않습합니다.",
   "str.notEnoughNAKAAndNbot": "NAKA 또는 BOT가 충분하지 않습니다.",
   "str.ok": "승인",
   "str.oldPassphrase": "옛 파스퇴르",

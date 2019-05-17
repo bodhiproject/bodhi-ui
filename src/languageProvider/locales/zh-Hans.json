@@ -206,7 +206,6 @@
   "str.newPassphrase": "新密码",
   "str.noAddressInWallet": "无法从您的地址获取钱包。您可尝试登陆NakaWallet",
   "str.notEnoughNbot": "您没有足够的BOT",
-  "str.notEnoughNaka": "您没有足够的NAKA",
   "str.notEnoughNAKAAndNbot": "您没有足够的NAKA或BOT",
   "str.ok": "好",
   "str.oldPassphrase": "旧密码",
