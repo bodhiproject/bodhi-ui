@@ -150,10 +150,8 @@ export default class EventStore {
   @action
   initOracle = async (txid) => {
     const { graphqlClient } = this.app;
-    console.log('TCL: initOracle -> this.app', this.app);
     const { items } = await events(graphqlClient, { filter: { txid }, includeRoundBets: true }, this.app);
     [this.event] = items;
-    console.log('TCL: initOracle -> this.oracles', this.event);
     // GraphQL calls
     // await this.queryTopics();
     await this.queryOracles(txid);
