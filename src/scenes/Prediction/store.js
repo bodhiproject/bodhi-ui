@@ -46,7 +46,6 @@ export default class PredictionStore {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES);
     this.app.ui.location = Routes.PREDICTION;
     await this.loadFirst();
   }
@@ -87,6 +86,7 @@ export default class PredictionStore {
       ];
 
       const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
+      // console.log('TCL: PredictionStore -> fetch -> res', res);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

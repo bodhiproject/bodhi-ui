@@ -16,6 +16,7 @@ export default class Prediction extends Component {
 
   render() {
     const { list, loadMore, loadingMore, loaded } = this.props.store.prediction;
+    console.log('TCL: Prediction -> render -> list', list.length);
     // TODO: Remove when backend is connected
     // if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => (

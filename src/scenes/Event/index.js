@@ -24,18 +24,18 @@ const messages = defineMessages({
 @observer
 export default class EventPage extends Component {
   componentDidMount() {
-    let type;
     const { path, params } = this.props.match;
-    if (path.startsWith('/topic')) {
-      type = EventType.TOPIC;
-    } else if (path.startsWith('/oracle')) {
-      const { hashId } = params;
-      if (hashId) {
-        type = EventType.UNCONFIRMED;
-      } else {
-        type = EventType.ORACLE;
-      }
-    }
+    const type = EventType.ORACLE;
+    // if (path.startsWith('/topic')) {
+    //   type = EventType.TOPIC;
+    // } else if (path.startsWith('/oracle')) {
+    //   const { hashId } = params;
+    //   if (hashId) {
+    //     type = EventType.UNCONFIRMED;
+    //   } else {
+    //     type = EventType.ORACLE;
+    //   }
+    // }
     this.props.store.eventPage.init({ ...params, type });
   }
 
@@ -46,6 +46,7 @@ export default class EventPage extends Component {
   render() {
     const { eventPage } = this.props.store;
     const { event, loading } = eventPage;
+    console.log('TCL: EventPage -> render -> eventPage', eventPage);
 
     if (loading) {
       return <Loading text={messages.loadOracleMsg} event='true' />;
@@ -58,10 +59,11 @@ export default class EventPage extends Component {
       WITHDRAWING: WithdrawingTopic,
     }[event.phase];
 
+    console.log('TCL: EventPage -> render -> Event', Event);
     return (
       <Fragment>
         <BackButton />
-        <Event eventPage={eventPage} />
+        <BettingOracle eventPage={eventPage} />
       </Fragment>
     );
   }
