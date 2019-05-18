@@ -252,8 +252,11 @@ class GraphQuery {
  */
 export async function events(client, args, app) {
   const res = await new GraphQuery(client, QUERY_EVENTS, args).execute();
-  res.items = map(res.items, (event) => new MultipleResultsEvent(event, app));
-  return res;
+  const tmp = {};
+  tmp.items = map(res.items, (event) => new MultipleResultsEvent(event, app));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**
