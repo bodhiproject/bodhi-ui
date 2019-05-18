@@ -88,6 +88,10 @@ export default class EventStore {
     return this.voteBalances[this.selectedOptionIdx];
   }
 
+  @computed get isResultSetting() {
+    return this.event && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
+  }
+
   @computed get buttonExtendProps() {
     if (!this.event) return {};
     if (this.event.currentRound === 0) {

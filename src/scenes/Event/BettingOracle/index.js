@@ -27,8 +27,8 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
       {/* {!event.unconfirmed && !event.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
       )} */}
-      <Options event={event} />
-      {eventPage.buttonExtendProps.type === 'setResult' && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
+      <Options event={event} amountInputDisabled={eventPage.isResultSetting} />
+      {eventPage.isResultSetting && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>
         <BetButton eventpage={eventPage} />
         <Leaderboard maxSteps={1} />
@@ -39,10 +39,9 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
   </Row>
 ));
 
-const Options = withStyles(styles)(observer(({ classes, event }) => (
+const Options = withStyles(styles)(observer(({ classes, event, amountInputDisabled }) => (
   <Grid className={classes.optionGrid}>
-    {console.log('TCL: event', event)}
-    {event.results.map((option, i) => <Option key={i} option={option} disabled={event.isArchived} />)}
+    {event.results.map((option, i) => <Option key={i} option={option} disabled={event.isArchived} amountInputDisabled={amountInputDisabled} />)}
   </Grid>
 )));
 
