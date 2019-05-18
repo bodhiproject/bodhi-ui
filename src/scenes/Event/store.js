@@ -1,4 +1,4 @@
-import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
+import { observable, runInAction, action, computed, reaction, toJS, set } from 'mobx';
 import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
 import axios from 'axios';
@@ -87,6 +87,17 @@ export default class EventStore {
   @computed get resultVoteAmount() {
     return this.voteBalances[this.selectedOptionIdx];
   }
+
+  @computed get buttonExtendProps() {
+    if (!this.event) return {};
+    if (this.event.currentRound === 0) {
+      if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
+        return { buttonFunc: this.set, localeId: 'str.setResult', localeDefaultMessage: 'Set Result', type: 'setResult' };
+      }
+      return { buttonFunc: this.bet, localeId: 'bottomButtonText.placeBet', localeDefaultMessage: 'Place Bet', type: 'bet' };
+    }
+    return {};
+  }
   @computed get topic() {
     return find(this.topics, { address: this.topicAddress }) || {};
   }
@@ -162,9 +173,9 @@ export default class EventStore {
     // await this.queryLeaderboard(Token.NAKA);
     // this.disableEventActionsIfNecessary();
 
-    if (this.oracle.phase === RESULT_SETTING) {
+    if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
-      this.amount = this.oracle.consensusThreshold.toString();
+      this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
     }
 
     this.loading = false;
@@ -574,6 +585,10 @@ export default class EventStore {
 
   bet = async () => {
     await this.app.tx.executeBet({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
+  }
+
+  set = async () => {
+    await this.app.tx.executeSetResult({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }
 
   setResult = async () => {

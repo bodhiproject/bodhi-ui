@@ -653,41 +653,51 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeSetResult = async (index, tx) => {
+  executeSetResult = async (tx) => {
     try {
-      const { senderAddress, oracleAddress, optionIdx } = tx;
+      const { senderAddress, eventAddr, optionIdx, amount } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      console.log('TCL: executeSetResult -> nbotMethods', nbotMethods);
       const setResultParams = [optionIdx];
+      console.log('TCL: executeSetResult -> setResultParams', setResultParams);
+      // const txid = await this.playEvent({
+      //   nbotMethods,
+      //   params: setResultParams,
+      //   eventAddr: oracleAddress,
+      //   eventFuncSig: SET_EVENT_FUNC_SIG,
+      //   amount: '10000000000', // TODO: get set result amount from where it defines, change to Event.consensusThreshold later
+      //   gas: 500000,
+      // });
       const txid = await this.playEvent({
         nbotMethods,
         params: setResultParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: SET_EVENT_FUNC_SIG,
-        amount: '10000000000', // TODO: get set result amount from where it defines, change to Event.consensusThreshold later
+        amount,
         gas: 500000,
       });
 
       Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
-        const pendingTx = await createTransaction('setResult', {
-          txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
-          amount: tx.amountSatoshi,
-        });
+        // const pendingTx = await createTransaction('setResult', {
+        //   txid,
+        //   senderAddress,
+        //   topicAddress: tx.topicAddress,
+        //   oracleAddress,
+        //   optionIdx,
+        //   amount: tx.amountSatoshi,
+        // });
 
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-setResult');
+        // await this.onTxExecuted(tx, pendingTx);
+        // Tracking.track('event-setResult');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/set-result`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/set-result`);
-      }
+      // if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
+      //   this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/set-result`);
+      // } else {
+      //   this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/set-result`);
+      // }
     }
   }
 
