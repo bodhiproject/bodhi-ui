@@ -58,7 +58,12 @@ export default class NavBar extends Component {
               <DropdownMenuButton />
             </Hidden>
             <Hidden smUp>
-              <IconButton className={classes.menuButton} onClick={ui.toggleDropdownMenu} color="inherit" aria-label="Menu">
+              <IconButton
+                className={classes.menuButton}
+                onClick={ui.toggleDropdownMenu}
+                color="inherit"
+                aria-label="Menu"
+              >
                 <Menu />
               </IconButton>
             </Hidden>

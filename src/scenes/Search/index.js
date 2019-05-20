@@ -10,8 +10,8 @@ import styles from './styles';
 import EmptyPlaceholder from '../../components/EmptyPlaceholder';
 
 const TAB_BET = 0;
-const TAB_VOTE = 1;
-const TAB_SET = 2;
+const TAB_SET = 1;
+const TAB_VOTE = 2;
 const TAB_WITHDRAW = 3;
 
 const messages = defineMessages({
@@ -98,20 +98,20 @@ export default class Search extends Component {
         onChange={(e, v) => search.onTabChange(v)}
       >
         <Tab
+          className={classes.searchTabButton}
           label={this.getTabLabel(EventStatus.BET)}
-          className={classes.searchTabButton}
         />
         <Tab
+          className={classes.searchTabButton}
           label={this.getTabLabel(EventStatus.SET)}
-          className={classes.searchTabButton}
         />
         <Tab
+          className={classes.searchTabButton}
           label={this.getTabLabel(EventStatus.VOTE)}
-          className={classes.searchTabButton}
         />
         <Tab
-          label={this.getTabLabel(EventStatus.WITHDRAW)}
           className={classes.searchTabButton}
+          label={this.getTabLabel(EventStatus.WITHDRAW)}
         />
       </Tabs>
     );
