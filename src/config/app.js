@@ -31,6 +31,7 @@ module.exports = {
     TESTNET: 'TESTNET',
   },
   STORAGE_KEY: {
+    LOCALE: 'locale',
     FAVORITES: 'favorites',
   },
 };

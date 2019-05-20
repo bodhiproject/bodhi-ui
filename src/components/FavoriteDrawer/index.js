@@ -16,7 +16,7 @@ export default class FavoriteDrawer extends Component {
     this.props.store.favorite.init();
   }
 
-  // TODO: add grid spacing unit via JSS
+  // TODO: add grid spacing unit via JSS?
   renderItems = (events) => (
     <div>
       <Grid container>
