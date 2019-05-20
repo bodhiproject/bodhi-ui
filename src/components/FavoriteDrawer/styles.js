@@ -20,7 +20,7 @@ const styles = (theme) => ({
     display: 'grid',
     marginTop: theme.padding.space3X.px,
     padding: theme.padding.space5X.px,
-    justifyContent: 'center',
+    textAlign: 'center',
   },
   emptyButtonContainer: {
     display: 'grid',
