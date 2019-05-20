@@ -6,7 +6,7 @@ import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, EVENT_STATUS, TransactionStatus } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
-import networkRoutes from '../../network/routes';
+import networkRoutes, { API } from '../../network/routes';
 import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
@@ -41,6 +41,7 @@ const INIT = {
     amount: '',
     address: '',
   },
+  currentArbitrationEndTime: undefined,
 };
 
 export default class EventStore {
@@ -68,6 +69,7 @@ export default class EventStore {
   @observable nbotWinnings = INIT.nbotWinnings
   @observable withdrawableAddresses = INIT.withdrawableAddresses
   @observable resultSetsHistory = INIT.resultSetsHistory
+  @observable currentArbitrationEndTime = INIT.currentArbitrationEndTime
   betBalances = []
   voteBalances = []
   leaderboardLimit = 5
@@ -170,10 +172,11 @@ export default class EventStore {
     // GraphQL calls
     // await this.queryTopics();
     // await this.queryOracles(txid);
-    // await this.queryTransactions(this.topicAddress);
-    // await this.queryResultSets(this.address);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
+    // await this.queryTransactions(this.event.address);
+    // await this.queryResultSets(this.event.address);
+    // await this.getCurrentArbitrationEndTime();
     this.disableEventActionsIfNecessary();
 
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
@@ -209,19 +212,17 @@ export default class EventStore {
         if (this.app.global.online) {
           switch (this.type) {
             case TOPIC: {
-              await this.queryTransactions(this.address);
+              await this.queryTransactions(this.event.address);
               this.disableEventActionsIfNecessary();
               await this.updateLeaderBoard();
-              await this.queryResultSets(this.address);
+              await this.queryResultSets(this.event.address);
               break;
             }
             case ORACLE: {
               await this.initOracle(this.txid);
-              // await this.queryTransactions(this.topicAddress);
               // await this.queryOracles(this.topicAddress);
               // await this.getAllowanceAmount();
               // await this.updateLeaderBoard();
-              // await this.queryResultSets(this.address);
               // this.disableEventActionsIfNecessary();
               break;
             }
@@ -311,6 +312,20 @@ export default class EventStore {
     } catch (error) {
       runInAction(() => {
         this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
+      });
+    }
+  }
+
+  @action
+  getCurrentArbitrationEndTime = async () => {
+    try {
+      const { data: { result } } = await axios.get(API.ARBITRATION_END_TIME, {
+        eventAddress: this.event.address,
+      });
+      this.currentArbitrationEndTime = result;
+    } catch (error) {
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, API.ARBITRATION_END_TIME);
       });
     }
   }
