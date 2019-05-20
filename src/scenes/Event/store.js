@@ -6,9 +6,11 @@ import NP from 'number-precision';
 import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, EVENT_STATUS, TransactionStatus } from 'constants';
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
-import networkRoutes from '../../network/routes';
+import networkRoutes, { API } from '../../network/routes';
 import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
+import getContracts from '../../config/contracts';
+
 
 const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
 const { VOTING, RESULT_SETTING } = Phases;
@@ -592,33 +594,12 @@ export default class EventStore {
   }
 
   set = async () => {
+    // const { data: { result } } = await axios.get(API.ROUND, { eventAddress: '0x1C221FA9755edb422CebC0E9124E567B3c2E146F' });
+    // console.log('TCL: set -> result', result);
+    const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at('0x1C221FA9755edb422CebC0E9124E567B3c2E146F');
+    console.log('TCL: set -> nbotMethods', nbotMethods.currentRound((err, res) => console.log(res.toString())));
+
     await this.app.tx.executeSetResult({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
-  }
-
-  setResult = async () => {
-    const { isAllowanceEnough } = this.app.wallet;
-    const { topicAddress } = this.oracle;
-    const oracleAddress = this.oracle.address;
-    const optionIdx = this.selectedOption.idx;
-    const amountSatoshi = decimalToSatoshi(this.amount);
-
-    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // Has allowance less than the consensus threshold, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
-    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // No previous allowance, approve now
-      await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
-      // Has enough allowance, set the result
-      await this.app.tx.addSetResultTx(
-        undefined,
-        this.app.wallet.currentAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amountSatoshi,
-      );
-    }
   }
 
   vote = async () => {

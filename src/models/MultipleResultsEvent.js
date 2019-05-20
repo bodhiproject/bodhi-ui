@@ -53,7 +53,7 @@ export default class MultipleResultsEvent {
         return this[locale.slice(0, 2)];
       },
     };
-    this.url = `/event/${this.txid}`;
+    this.url = `/event/${this.address ? this.address : this.txid}`;
     this.results = event.results.map((result, i) => new Option(result, i, this, app));
   }
 

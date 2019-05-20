@@ -9,7 +9,7 @@ import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { addPendingEvent, addPendingBet, createTransaction } from '../network/graphql/mutations';
+import { addPendingEvent, addPendingBet, addPendingResultSet, createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -473,7 +473,7 @@ export default class TransactionStore {
   @action
   executeSetResult = async (tx) => {
     try {
-      const { senderAddress, eventAddr, optionIdx, amount } = tx;
+      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       console.log('TCL: executeSetResult -> nbotMethods', nbotMethods);
       const setResultParams = [optionIdx];
@@ -498,6 +498,17 @@ export default class TransactionStore {
       Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingResultSet(graphqlClient, {
+          txid,
+          eventAddress: eventAddr,
+          centralizedOracleAddress: address,
+          resultIndex: optionIdx,
+          amount,
+          eventRound,
+        });
+
+        await this.onTxExecuted(res);
         // const pendingTx = await createTransaction('setResult', {
         //   txid,
         //   senderAddress,
@@ -508,7 +519,7 @@ export default class TransactionStore {
         // });
 
         // await this.onTxExecuted(tx, pendingTx);
-        // Tracking.track('event-setResult');
+        Tracking.track('event-setResult');
       }
     } catch (err) {
       // if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {

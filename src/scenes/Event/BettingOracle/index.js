@@ -24,7 +24,6 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
   <Row>
     <Content>
       <Title>{event.name}</Title>
-      {console.log(eventPage.amount)}
       {!event.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={String(eventPage.amount)} type={eventPage.warningType} />
       )}
