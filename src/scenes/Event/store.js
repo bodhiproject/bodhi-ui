@@ -169,7 +169,7 @@ export default class EventStore {
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
-    await this.queryOracles(txid);
+    // await this.queryOracles(txid);
     // await this.queryTransactions(this.topicAddress);
     // await this.queryResultSets(this.address);
     // await this.getAllowanceAmount();

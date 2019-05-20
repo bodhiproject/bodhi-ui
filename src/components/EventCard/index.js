@@ -43,7 +43,6 @@ export default class EventCard extends Component {
 
   getAmountLabel = () => {
     const { status, totalBets } = this.props.event;
-    const totalBetsInHex = new BigNumber(totalBets).toString(16);
 
     switch (status) {
       case CREATED:
@@ -53,7 +52,7 @@ export default class EventCard extends Component {
       case ARBITRATION:
       case WITHDRAWING: {
         // const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${satoshiToDecimal(totalBetsInHex)} NBOT`;
+        return `${totalBets} NBOT`;
       }
       default: {
         console.error(`Unhandled status: ${status}`); // eslint-disable-line
@@ -99,7 +98,7 @@ export default class EventCard extends Component {
 
   render() {
     const { classes, index, onClick, store: { ui, naka: { account } } } = this.props;
-    const { address, name, isPending, isUpcoming, txid, url, endTime, status } = this.props.event;
+    const { address, name, isPending, isUpcoming, txid, url, status } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;

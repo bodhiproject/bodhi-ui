@@ -46,10 +46,9 @@ const EndDate = inject('store')(observer(injectIntl(({ endTime, store: { ui: { c
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 
-const Funding = ({ event: { totalBets } }) => {
-  const totalBetsInHex = new BigNumber(totalBets).toString(16);
-  return <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${satoshiToDecimal(totalBetsInHex)} NBOT`} />;
-};
+const Funding = ({ event: { totalBets } }) => (
+  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${totalBets} NBOT`} />
+);
 
 const ResultSetter = ({ event }) => (
   <EventInfoBlock id={message.strResultSetterMsg.id} content={event.centralizedOracle} />
