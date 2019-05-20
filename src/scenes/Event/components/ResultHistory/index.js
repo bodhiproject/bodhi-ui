@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { ResponsiveTable } from 'components';
 import { Token, Phases } from 'constants';
 import styles from './styles';
+import { CenteredDiv } from '../TransactionHistory';
 
+const messages = defineMessages({
+  emptyTxHistoryMsg: {
+    id: 'str.emptyResultSetHistory',
+    defaultMessage: 'There are no previous results for now.',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -34,7 +41,7 @@ export default class EventResultHistory extends Component {
     const { resultSetsHistory } = this.props;
     return (
       <div>
-        {resultSetsHistory.length && (
+        {resultSetsHistory.length ? (
           <ResponsiveTable>
             <TableHead>
               <TableRow>
@@ -56,6 +63,12 @@ export default class EventResultHistory extends Component {
               <ResultRows resultSetsHistory={resultSetsHistory} getTypeText={this.getTypeText} {...this.props} />
             </TableBody>
           </ResponsiveTable>
+        ) : (
+          <CenteredDiv>
+            <Typography variant="body2">
+              <FormattedMessage id="str.emptyResultSetHistory" defaultMessage="There are no previous results for now." />
+            </Typography>
+          </CenteredDiv>
         )}
       </div>
     );

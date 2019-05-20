@@ -32,7 +32,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
       <Fragment>
         <BetButton eventpage={eventPage} />
         <Leaderboard maxSteps={1} />
-        <HistoryTable transactionHistory />
+        <HistoryTable />
       </Fragment>
     </Content>
     <Sidebar endTime={event.betEndTime} />

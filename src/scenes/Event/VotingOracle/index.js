@@ -31,7 +31,7 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal }
       <CurrentAllowanceNote allowance={amountDecimal} />
       <VoteButton eventpage={eventPage} />
       <Leaderboard maxSteps={2} />
-      <HistoryTable resultHistory transactionHistory />
+      <HistoryTable />
     </Content>
     <Sidebar />
   </Row>
