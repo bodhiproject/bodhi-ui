@@ -1,12 +1,8 @@
 import { isEmpty, filter } from 'lodash';
-import { observable, runInAction, action, reaction } from 'mobx';
-import { EVENT_STATUS, Phases, OracleStatus, SortBy } from 'constants';
+import { observable, action, reaction } from 'mobx';
+import { EVENT_STATUS, SortBy } from 'constants';
 import { searchEvents } from '../../network/graphql/queries';
 
-const TAB_BET = 0;
-const TAB_VOTE = 1;
-const TAB_SET = 2;
-const TAB_WITHDRAW = 3;
 const INIT_VALUES = {
   phrase: '',
   loading: false,
@@ -35,46 +31,13 @@ export default class SearchStore {
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
       () => {
-        if (this.app.ui.searchBarMode && !_.isEmpty(this.phrase) && this.app.global.online) {
-          this.init();
+        if (this.app.ui.searchBarMode
+          && this.app.global.online
+          && !isEmpty(this.phrase)) {
+          this.fetchEvents();
         }
       }
     );
-  }
-
-  @action
-  init = async () => {
-    this.loaded = false;
-    await this.fetch();
-
-    runInAction(() => {
-      this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING);
-      this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING');
-      this.bets = this.oracles.filter(event => event.phase === Phases.BETTING && event.status === 'VOTING');
-      switch (this.tabIdx) {
-        case TAB_BET: {
-          this.events = this.bets;
-          break;
-        }
-        case TAB_VOTE: {
-          this.events = this.votes;
-          break;
-        }
-        case TAB_SET: {
-          this.events = this.sets;
-          break;
-        }
-        case TAB_WITHDRAW: {
-          this.events = this.withdraws;
-          break;
-        }
-        default: {
-          throw new Error(`Invalid tab index: ${this.tabIdx}`);
-        }
-      }
-      
-      this.loaded = true;
-    });
   }
 
   @action

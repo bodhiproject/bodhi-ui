@@ -4,7 +4,6 @@ import { AppBar, Collapse, Toolbar, withStyles, IconButton, Hidden } from '@mate
 import { Menu } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-
 import BodhiLogo from './Logo';
 import Prediction from './Prediction';
 import Arbitration from './Arbitration';
@@ -29,7 +28,7 @@ export default class NavBar extends Component {
   handleSearchBarKeyDown = event => {
     switch (event.key) {
       case 'Enter':
-        this.props.store.search.init();
+        this.props.store.search.fetchEvents();
         break;
       default:
         break;

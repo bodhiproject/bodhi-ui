@@ -40,6 +40,7 @@ const messages = defineMessages({
     defaultMessage: 'Oops, your search has no results.',
   },
 });
+
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
