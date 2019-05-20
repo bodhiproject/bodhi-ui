@@ -4,7 +4,7 @@ import { Routes, SortBy, OracleStatus } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../../network/graphql/queries';
 
 const INIT_VALUES_FAVPAGE = {
-  displayList: [], // data list
+  displayList: [],
   loading: true,
 };
 
@@ -50,7 +50,7 @@ export default class FavoriteStore {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES_FAVPAGE); // reset to initial state
+    Object.assign(this, INIT_VALUES_FAVPAGE);
     this.app.ui.location = Routes.FAVORITE; // change ui location, for tabs to render correctly
     this.displayList = await this.fetchFav();
     this.loading = false;

@@ -34,6 +34,7 @@ export default class Favorite extends Component {
     let events;
     if (!!this.props.bannerStyle) events = (displayList || []).map((event, i) => <FavoriteCard key={i} index={i} event={event} onClick={ui.hideFavoriteDrawer} />); // eslint-disable-line
     else events = (displayList || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+    
     return (
       <Fragment>
         {displayList.length ? (
