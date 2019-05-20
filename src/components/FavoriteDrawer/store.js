@@ -3,15 +3,17 @@ import { uniqBy, difference, orderBy } from 'lodash';
 import { Routes, SortBy, OracleStatus } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../../network/graphql/queries';
 
-const INIT_VALUES_FAVPAGE = {
-  displayList: [],
+const INIT_VALUES = {
+  visible: false,
   loading: true,
+  displayList: [],
 };
 
 export default class FavoriteStore {
+  @observable visible = INIT_VALUES.visible;
   @observable favList = JSON.parse(localStorage.getItem('bodhi_dapp_favList')) || []; // Data example: ['21e389b909c7ab977088c8d43802d459b0eb521a', ...]
-  @observable displayList = INIT_VALUES_FAVPAGE.displayList
-  @observable loading = INIT_VALUES_FAVPAGE.loading
+  @observable displayList = INIT_VALUES.displayList
+  @observable loading = INIT_VALUES.loading
 
   constructor(app) {
     this.app = app;
@@ -30,6 +32,12 @@ export default class FavoriteStore {
       }
     );
   }
+
+  @action
+  showDrawer = () => this.visible = true;
+
+  @action
+  hideDrawer = () => this.visible = false;
 
   updateLocalStorageFavList() {
     localStorage.setItem('bodhi_dapp_favList', JSON.stringify(this.favList));
@@ -50,7 +58,7 @@ export default class FavoriteStore {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES_FAVPAGE);
+    Object.assign(this, INIT_VALUES);
     this.displayList = await this.fetchFav();
     this.loading = false;
   }

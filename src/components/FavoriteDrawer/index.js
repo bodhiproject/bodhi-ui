@@ -61,7 +61,13 @@ export default class FavoriteDrawer extends Component {
 
   render() {
     const { classes } = this.props;
-    const { ui, favorite: { displayList, loading } } = this.props.store;
+    const { ui,
+      favorite: {
+        visible,
+        displayList,
+        loading,
+      },
+    } = this.props.store;
 
     if (loading) return <EventListLoading />;
 
@@ -76,7 +82,7 @@ export default class FavoriteDrawer extends Component {
 
     return (
       <Drawer
-        open={ui.favoriteDrawerOpen}
+        open={visible}
         className={classes.drawerUnderNavbar}
         classes={{
           paper: classes.drawerPaper,
@@ -87,7 +93,7 @@ export default class FavoriteDrawer extends Component {
         anchor="left"
       >
         <div className={classes.drawerContainer}>
-          {ui.favoriteDrawerOpen &&
+          {visible &&
             events.length > 0
             ? this.renderItems(events)
             : this.renderEmptyMessage()
