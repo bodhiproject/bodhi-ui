@@ -166,7 +166,6 @@ export default class EventStore {
   initOracle = async (txid) => {
     const { graphqlClient } = this.app;
     const { items } = await events(graphqlClient, { filter: { txid }, includeRoundBets: true }, this.app);
-    // console.log('TCL: initOracle -> items', items);
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
@@ -175,7 +174,7 @@ export default class EventStore {
     // await this.queryResultSets(this.address);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
-    // this.disableEventActionsIfNecessary();
+    this.disableEventActionsIfNecessary();
 
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
@@ -217,6 +216,7 @@ export default class EventStore {
               break;
             }
             case ORACLE: {
+              await this.initOracle(this.txid);
               // await this.queryTransactions(this.topicAddress);
               // await this.queryOracles(this.topicAddress);
               // await this.getAllowanceAmount();

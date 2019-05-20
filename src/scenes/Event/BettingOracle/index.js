@@ -24,9 +24,10 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
   <Row>
     <Content>
       <Title>{event.name}</Title>
-      {/* {!event.unconfirmed && !event.isArchived && (
-        <EventWarning id={eventPage.eventWarningMessageId} amount={eventPage.amount} type={eventPage.warningType} />
-      )} */}
+      {console.log(eventPage.amount)}
+      {!event.isArchived && (
+        <EventWarning id={eventPage.eventWarningMessageId} amount={String(eventPage.amount)} type={eventPage.warningType} />
+      )}
       <Options event={event} amountInputDisabled={eventPage.isResultSetting} />
       {eventPage.isResultSetting && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>

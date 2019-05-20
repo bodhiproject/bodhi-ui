@@ -5,8 +5,9 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString } from '../../../helpers';
+import { getEndTimeCountDownString, satoshiToDecimal } from '../../../helpers';
 import styles from './styles';
 
 const message = defineMessages({
@@ -45,9 +46,10 @@ const EndDate = inject('store')(observer(injectIntl(({ endTime, store: { ui: { c
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 
-const Funding = ({ event: { totalBets } }) => (
-  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${totalBets} NBOT`} />
-);
+const Funding = ({ event: { totalBets } }) => {
+  const totalBetsInHex = new BigNumber(totalBets).toString(16);
+  return <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${satoshiToDecimal(totalBetsInHex)} NBOT`} />;
+};
 
 const ResultSetter = ({ event }) => (
   <EventInfoBlock id={message.strResultSetterMsg.id} content={event.centralizedOracle} />

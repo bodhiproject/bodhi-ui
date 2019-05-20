@@ -8,9 +8,11 @@ import cx from 'classnames';
 import { sum, filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
 import { FavoriteButton } from 'components';
+import { BigNumber } from 'bignumber.js';
+
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers';
+import { getEndTimeCountDownString, satoshiToDecimal } from '../../helpers';
 import carousel from '../../scenes/Event/components/Leaderboard/carousel';
 
 const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
@@ -40,7 +42,9 @@ export default class EventCard extends Component {
   };
 
   getAmountLabel = () => {
-    const { status, token, amounts, totalBets } = this.props.event;
+    const { status, totalBets } = this.props.event;
+    const totalBetsInHex = new BigNumber(totalBets).toString(16);
+
     switch (status) {
       case CREATED:
       case BETTING:
@@ -49,7 +53,7 @@ export default class EventCard extends Component {
       case ARBITRATION:
       case WITHDRAWING: {
         // const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${totalBets} NBOT`;
+        return `${satoshiToDecimal(totalBetsInHex)} NBOT`;
       }
       default: {
         console.error(`Unhandled status: ${status}`); // eslint-disable-line
