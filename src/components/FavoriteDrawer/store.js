@@ -20,14 +20,16 @@ export default class FavoriteStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.global.online,
+      () => this.app.global.online + this.app.wallet.addresses,
       () => {
-        if (this.app.global.online && this.visible) this.init();
+        if (this.app.global.online && this.visible) this.queryEvents();
       }
     );
     reaction(
       () => this.favAddresses,
-      async () => this.queryEvents(),
+      () => {
+        if (this.visible) this.queryEvents();
+      },
     );
   }
 
@@ -39,7 +41,10 @@ export default class FavoriteStore {
   }
 
   @action
-  showDrawer = () => this.visible = true;
+  showDrawer = async () => {
+    this.visible = true;
+    await this.queryEvents();
+  }
 
   @action
   hideDrawer = () => this.visible = false;
@@ -61,7 +66,12 @@ export default class FavoriteStore {
   }
 
   queryEvents = async () => {
-    if (this.favAddresses.length === 0) this.favEvents = [];
+    if (!this.visible) return;
+
+    if (this.favAddresses.length === 0) {
+      this.favEvents = [];
+      return;
+    }
 
     const filters = [];
     each(this.favAddresses, (addr) => filters.push({ address: addr }));
