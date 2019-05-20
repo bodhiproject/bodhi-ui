@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import moment from 'moment';
+import { EVENT_STATUS } from 'constants';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { isEmpty, each } from 'lodash';
@@ -30,10 +31,10 @@ const messages = defineMessages({
 @observer
 export default class StepperVertRight extends Component {
   render() {
-    const { global: { syncBlockTime }, eventPage: { oracles } } = this.props.store;
+    const { global: { syncBlockTime }, eventPage: { event } } = this.props.store;
     const { classes } = this.props;
 
-    if (!syncBlockTime || isEmpty(oracles)) return null;
+    if (!syncBlockTime || isEmpty(event)) return null;
 
     const steps = this.getSteps();
 
@@ -56,77 +57,86 @@ export default class StepperVertRight extends Component {
   }
 
   getSteps = () => {
-    const { intl: { formatMessage }, isTopicDetail = false } = this.props;
+    const { intl: { formatMessage } } = this.props;
     const { syncBlockTime } = this.props.store.global;
-    const { cOracle: centralized, dOracles: decentralized } = this.props.store.eventPage;
+    const { event, resultSetsHistory, currentArbitrationEndTime } = this.props.store.eventPage;
 
-    const cOracle = centralized;
-    const dOracles = decentralized;
     const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);
     const ANYTIME = formatMessage(messages.anytimeMsg);
 
+    let current;
+    const arbitrations = resultSetsHistory.slice(1);
+    let lastArbitrationEndTime = event.resultSetEndTime;
+    const numOfDOracles = arbitrations.length;
+
     // Init all events with these steps
     const value = [{
-      title: <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />,
-      description: `${formatMessage(messages.blockMsg)}: ${cOracle.blockNum || ''}`,
+      title: <FormattedMessage id="cardInfo.topic" defaultMessage="Event Created" />,
+      description: `${formatMessage(messages.blockMsg)}: ${event.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      description: `${moment.unix(cOracle.startTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(cOracle.endTime).format('LLL')}`,
+      description: `${moment.unix(event.betStartTime).format('LLL')}
+        ${RANGE_SEPARATOR} ${moment.unix(event.betEndTime).format('LLL')}`,
     }, {
-      title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />,
-      description: `${moment.unix(cOracle.resultSetStartTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(cOracle.resultSetEndTime).format('LLL')}`,
+      title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Event Result Setting" />,
+      description: `${moment.unix(event.resultSetStartTime).format('LLL')}
+        ${RANGE_SEPARATOR} ${moment.unix(event.resultSetEndTime).format('LLL')}`,
     }];
 
-    let current;
-    if (!isEmpty(dOracles)) { // DecentralizedOracle and Topic detail
-      // Add all voting steps of each DecentralizedOracle
-      each(dOracles, (item) => {
-        value.push({
-          title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-          description: `${moment.unix(item.startTime).format('LLL')}
-            ${RANGE_SEPARATOR} ${moment.unix(item.endTime).format('LLL')}`,
-        });
-      });
-
-      const numOfDOracles = dOracles.length;
-      const lastDOracle = dOracles[dOracles.length - 1];
-      if (isTopicDetail) {
-        // Add withdrawing step for TopicEvent
-        value.push({
-          title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
-          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
-        });
-
-        if (syncBlockTime >= lastDOracle.endTime) {
-          // Highlight withdrawal
-          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
-        } else {
-          current = null;
-        }
-      } else if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
-        // Highlight last DecentralizedOracle voting
-        current = ORACLE_RESULT_SETTING + numOfDOracles;
-      } else {
-        current = null;
-      }
-    } else { // CentralizedOracle detail
+    if (event.status === EVENT_STATUS.OPEN_RESULT_SETTING) { // CentralizedOracle detail
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
-        description: `${moment.unix(cOracle.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${moment.unix(event.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
       // Set step number
-      if (syncBlockTime < cOracle.startTime) {
+      if (syncBlockTime < event.betStartTime) {
         current = TOPIC_CREATED;
-      } else if (syncBlockTime >= cOracle.startTime && syncBlockTime < cOracle.resultSetStartTime) {
+      } else if (syncBlockTime >= event.betStartTime && syncBlockTime < event.resultSetStartTime) {
         current = BETTING;
-      } else if (syncBlockTime >= cOracle.resultSetStartTime && syncBlockTime < cOracle.resultSetEndTime) {
+      } else if (syncBlockTime >= event.resultSetStartTime && syncBlockTime < event.resultSetEndTime) {
         current = ORACLE_RESULT_SETTING;
-      } else if (syncBlockTime >= cOracle.resultSetEndTime) {
+      } else if (syncBlockTime >= event.resultSetEndTime) {
         current = OPEN_RESULT_SETTING;
+      } else {
+        current = null;
+      }
+    }
+
+    if (!isEmpty(arbitrations)) { // DecentralizedOracle and Topic detail
+      // Add all voting steps of each DecentralizedOracle
+      each(arbitrations, (item) => {
+        value.push({
+          title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
+          description: `${moment.unix(lastArbitrationEndTime).format('LLL')}
+            ${RANGE_SEPARATOR} ${moment.unix(item.block.blockTime).format('LLL')}`,
+        });
+        lastArbitrationEndTime = item.block.blockTime;
+      });
+    }
+
+    if (event.status === EVENT_STATUS.ARBITRATION) {
+      // Add current arbitration step for event
+      value.push({
+        title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
+        description: `${moment.unix(lastArbitrationEndTime).format('LLL')}
+          ${RANGE_SEPARATOR} ${moment.unix(currentArbitrationEndTime).format('LLL')}`,
+      });
+      // Highlight last DecentralizedOracle voting
+      current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
+    }
+
+    if (event.status === EVENT_STATUS.WITHDRAWING) {
+      // Add withdrawing step for TopicEvent
+      value.push({
+        title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
+        description: `${moment.unix(lastArbitrationEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
+      });
+
+      if (syncBlockTime >= lastArbitrationEndTime) {
+        // Highlight withdrawal
+        current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
       } else {
         current = null;
       }

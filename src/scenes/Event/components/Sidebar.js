@@ -32,7 +32,7 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, end
       <Funding event={event} />
       <ResultSetter event={event} />
     </EventInfo>
-    {/* <StepperVertRight /> */}
+    <StepperVertRight />
   </SidebarContainer>
 )));
 
