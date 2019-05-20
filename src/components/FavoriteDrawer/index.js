@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Drawer, withStyles } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
-
 import styles from './styles';
-import FavoritePage from '../../scenes/Activities/Favorite';
+import FavoritePage from './content';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl

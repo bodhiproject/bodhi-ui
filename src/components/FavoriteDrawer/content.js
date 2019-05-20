@@ -4,13 +4,12 @@ import { Grid, Typography, withStyles, Button } from '@material-ui/core';
 import { defineMessages, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Routes } from 'constants';
-
-import theme from '../../../config/theme';
-import EventCard from '../../../components/EventCard';
-import FavoriteCard from '../../../components/FavoriteCard';
-import Loading from '../../../components/EventListLoading';
-import EmptyPlaceholder from '../../../components/EmptyPlaceholder';
 import styles from './styles';
+import theme from '../../config/theme';
+import EventCard from '../EventCard';
+import FavoriteCard from '../FavoriteCard';
+import Loading from '../EventListLoading';
+import EmptyPlaceholder from '../EmptyPlaceholder';
 
 const messages = defineMessages({
   emptyFavMsg: {

@@ -1,7 +1,7 @@
 import { observable, action, reaction } from 'mobx';
 import { uniqBy, difference, orderBy } from 'lodash';
 import { Routes, SortBy, OracleStatus } from 'constants';
-import { queryAllTopics, queryAllOracles } from '../../../network/graphql/queries';
+import { queryAllTopics, queryAllOracles } from '../../network/graphql/queries';
 
 const INIT_VALUES_FAVPAGE = {
   displayList: [], // data list
