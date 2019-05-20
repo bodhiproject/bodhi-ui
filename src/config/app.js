@@ -32,6 +32,7 @@ module.exports = {
   },
   STORAGE_KEY: {
     LOCALE: 'locale',
+    TUTORIAL_DISPLAYED: 'tutorialDisplayed',
     FAVORITES: 'favorites',
   },
 };
