@@ -62,11 +62,11 @@ export default class FavoriteDrawer extends Component {
   render() {
     const { classes } = this.props;
     const { favorite } = this.props.store;
-    const { visible, loading, displayList } = favorite;
+    const { visible, loading, favEvents } = favorite;
 
     if (loading) return <EventListLoading />;
 
-    const events = displayList.map((event, i) => (
+    const events = favEvents.map((event, i) => (
       <FavoriteCard
         key={i}
         index={i}
