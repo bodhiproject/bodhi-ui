@@ -28,7 +28,7 @@ export default class SearchStore {
     this.app = app;
 
     reaction(
-      () => this.app.global.syncBlockNum + this.app.global.online,
+      () => this.app.global.online,
       () => {
         if (this.app.ui.searchBarMode && this.app.global.online) {
           this.fetchEvents();
