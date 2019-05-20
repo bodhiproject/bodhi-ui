@@ -17,7 +17,7 @@ export default class FavoriteDrawer extends Component {
   }
 
   // TODO: add grid spacing unit via JSS?
-  renderItems = (events) => (
+  renderEvents = (events) => (
     <div>
       <Grid container>
         {events}
@@ -90,7 +90,7 @@ export default class FavoriteDrawer extends Component {
         <div className={classes.drawerContainer}>
           {visible &&
             events.length > 0
-            ? this.renderItems(events)
+            ? this.renderEvents(events)
             : this.renderEmptyMessage()
           }
         </div>

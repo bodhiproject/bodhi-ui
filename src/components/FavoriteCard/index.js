@@ -7,8 +7,7 @@ import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum } from 'lodash';
 import { Phases } from 'constants';
-
-import FavoriteButton from './FavoriteButton';
+import { FavoriteButton } from 'components';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../helpers';
 
@@ -29,9 +28,10 @@ const messages = defineMessages({
 export default class FavoriteCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    event: PropTypes.object.isRequired,
+    onClick: PropTypes.func,
     endTime: PropTypes.string,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    onClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -73,7 +73,7 @@ export default class FavoriteCard extends Component {
 
   render() {
     const { classes, onClick, store: { ui } } = this.props;
-    const { name, url, endTime } = this.props.event;
+    const { address, name, url, endTime } = this.props.event;
     const { locale, messages: localeMessages } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
@@ -90,7 +90,7 @@ export default class FavoriteCard extends Component {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <FavoriteButton event={this.props.event} />
+                  <FavoriteButton eventAddress={address} />
                 </Grid>
               </Grid>
               <div className={classes.eventCardInfo}>

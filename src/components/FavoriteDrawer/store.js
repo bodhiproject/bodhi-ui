@@ -44,11 +44,13 @@ export default class FavoriteStore {
   @action
   hideDrawer = () => this.visible = false;
 
+  isFavorite = (eventAddress) => this.favAddresses.includes(eventAddress);
+
   @action
   setFavorite = async (eventAddress) => {
     if (!eventAddress) return;
 
-    if (this.favAddresses.includes(eventAddress)) {
+    if (this.isFavorite(eventAddress)) {
       this.favAddresses = this.favAddresses.filter(x => x !== eventAddress);
     } else {
       this.favAddresses.push(eventAddress);
