@@ -31,14 +31,17 @@ export default class MultipleResultsEvent {
   language // Language of the event
   pendingTxs // Counts of pending txs for the address passed in pendingTxsAddress param
   roundBets // Array of bets for the current round returned if includeRoundBets: true
+  totalBets // Total amount of bets for this event in decimals
 
   // UI-specific vars
   localizedInvalid // for invalid option
+  url // URL to link to for the router
 
   constructor(event) {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
+    this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',
@@ -47,6 +50,7 @@ export default class MultipleResultsEvent {
         return this[locale.slice(0, 2)];
       },
     };
+    this.url = `/event/${event.address}`;
   }
 
   isUnconfirmed() {
