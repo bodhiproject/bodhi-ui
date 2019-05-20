@@ -1,40 +1,36 @@
-import _ from 'lodash';
+import { isEmpty, filter } from 'lodash';
 import { observable, runInAction, action, reaction } from 'mobx';
-import { Phases, OracleStatus, SortBy } from 'constants';
-import { searchOracles, searchTopics } from '../../network/graphql/queries';
+import { EVENT_STATUS, Phases, OracleStatus, SortBy } from 'constants';
+import { searchEvents } from '../../network/graphql/queries';
 
 const TAB_BET = 0;
 const TAB_VOTE = 1;
 const TAB_SET = 2;
 const TAB_WITHDRAW = 3;
+const INIT_VALUES = {
+  phrase: '',
+  loading: false,
+  tabIdx: 0,
+  bets: [],
+  sets: [],
+  votes: [],
+  withdraws: [],
+};
+
 export default class SearchStore {
-  @observable oracles = [];
-  @observable phrase = '';
-  @observable loading = false;
-  @observable loaded = false;
-  @observable tabIdx = 0;
-  @observable events = [];
-  @observable bets = [];
-  @observable votes = [];
-  @observable sets = [];
-  @observable withdraws = [];
+  @observable phrase = INIT_VALUES.phrase;
+  @observable loading = INIT_VALUES.loading;
+  @observable tabIdx = INIT_VALUES.tabIdx;
+  @observable bets = INIT_VALUES.bets;
+  @observable sets = INIT_VALUES.sets;
+  @observable votes = INIT_VALUES.votes;
+  @observable withdraws = INIT_VALUES.withdraws;
 
   constructor(app) {
     this.app = app;
-    reaction( // whenever the locale changes, update locale in local storage and moment
+    reaction(
       () => this.phrase,
-      () => {
-        if (_.isEmpty(this.phrase)) {
-          this.loading = false;
-          this.loaded = false;
-          this.oracles = [];
-          this.withdraws = [];
-          this.events = [];
-          this.bets = [];
-          this.votes = [];
-          this.sets = [];
-        }
-      },
+      () => this.fetchEvents(),
     );
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
@@ -48,9 +44,9 @@ export default class SearchStore {
 
   @action
   init = async () => {
-    this.loading = true;
     this.loaded = false;
     await this.fetch();
+
     runInAction(() => {
       this.sets = this.oracles.filter(event => event.phase === Phases.RESULT_SETTING);
       this.votes = this.oracles.filter(event => event.phase === Phases.VOTING && event.status === 'VOTING');
@@ -76,18 +72,38 @@ export default class SearchStore {
           throw new Error(`Invalid tab index: ${this.tabIdx}`);
         }
       }
-      this.loading = false;
+      
       this.loaded = true;
     });
   }
 
-  async fetch() {
-    if (_.isEmpty(this.phrase)) return;
-    const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
-    let oracles = await searchOracles(this.app, this.phrase, null, orderBy);
-    oracles = _.uniqBy(oracles, 'topicAddress');
-    const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-    this.withdraws = await searchTopics(this.app, this.phrase, topicFilters);
-    this.oracles = _.orderBy(oracles, ['endTime']);
+  @action
+  setSearchPhrase = (phrase) => this.phrase = phrase;
+
+  fetchEvents = async () => {
+    // Reset values if empty search phrase
+    if (isEmpty(this.phrase)) {
+      this.bets = INIT_VALUES.bets;
+      this.sets = INIT_VALUES.sets;
+      this.votes = INIT_VALUES.votes;
+      this.withdraws = INIT_VALUES.withdraws;
+      return;
+    }
+
+    this.loading = true;
+
+    // Fetch events and filter by status
+    const events = await searchEvents(this.app.graphqlClient, {
+      orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
+      searchPhrase: this.phrase,
+    });
+    this.bets = filter(events, { status: EVENT_STATUS.BETTING });
+    this.sets = filter(events, (e) =>
+      e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
+      || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
+    this.votes = filter(events, { status: EVENT_STATUS.ARBITRATION });
+    this.withdraws = filter(events, { status: EVENT_STATUS.WITHDRAWING });
+
+    this.loading = false;
   }
 }

@@ -46,6 +46,7 @@ const messages = defineMessages({
 @observer
 export default class Search extends Component {
   showEvents = [];
+
   getTabLabel = (eventStatusIndex) => {
     const { intl } = this.props;
     const { bets, votes, sets, withdraws } = this.props.store.search;
@@ -113,8 +114,17 @@ export default class Search extends Component {
     const { classes } = this.props;
     const { ui } = this.props.store;
     const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
-    this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
+
+    this.showEvents = (events || []).map((entry, i) => (
+      <EventCard
+        key={i}
+        index={i}
+        onClick={() => ui.disableSearchBarMode()}
+        event={entry}
+      />
+    ));
     const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <EmptyPlaceholder message={messages.searchEmptySearchResultMsg} /> : this.showEvents;
+
     return (
       <Fragment>
         <div>
