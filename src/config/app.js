@@ -8,7 +8,6 @@ module.exports = {
   },
   defaults: {
     averageBlockTime: 142.01324503311258,
-    unlockWalletMins: 1440,
   },
   maxTransactionFee: 0.1,
   faqUrls: {
@@ -30,5 +29,8 @@ module.exports = {
   NETWORK: {
     MAINNET: 'MAINNET',
     TESTNET: 'TESTNET',
+  },
+  STORAGE_KEY: {
+    FAVORITES: 'favorites',
   },
 };
