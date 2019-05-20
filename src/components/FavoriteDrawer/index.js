@@ -30,8 +30,8 @@ export default class FavoriteDrawer extends Component {
     const { ui } = this.props.store;
 
     return (
-      <div className={classes.favoriteSidebarPlacholderContainer}>
-        <div className={classes.favoriteSidebarPlacholderText}>
+      <div className={classes.emptyContainer}>
+        <div className={classes.emptyTextContainer}>
           <Typography variant="h6">
             <FormattedMessage
               id="str.emptyFavorite"
@@ -41,7 +41,7 @@ export default class FavoriteDrawer extends Component {
         </div>
         <Link
           to={Routes.PREDICTION}
-          className={classes.favoriteSidebarPlacholderButton}
+          className={classes.emptyButtonContainer}
         >
           <Button
             variant="contained"
