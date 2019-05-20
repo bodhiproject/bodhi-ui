@@ -12,11 +12,6 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class FavoriteDrawer extends Component {
-  componentDidMount() {
-    this.props.store.favorite.init();
-  }
-
-  // TODO: add grid spacing unit via JSS?
   renderEvents = (events) => (
     <div>
       <Grid container>

@@ -6,7 +6,7 @@ import { events } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
   visible: false,
-  loading: true,
+  loading: false,
   favEvents: [],
 };
 
@@ -31,13 +31,6 @@ export default class FavoriteStore {
         if (this.visible) this.queryEvents();
       },
     );
-  }
-
-  @action
-  init = async () => {
-    Object.assign(this, INIT_VALUES);
-    await this.queryEvents();
-    this.loading = false;
   }
 
   @action
@@ -73,6 +66,8 @@ export default class FavoriteStore {
       return;
     }
 
+    this.loading = true;
+
     const filters = [];
     each(this.favAddresses, (addr) => filters.push({ address: addr }));
     const paginatedEvents = await events(this.app.graphqlClient, {
@@ -80,5 +75,7 @@ export default class FavoriteStore {
       orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
     });
     this.favEvents = paginatedEvents.items;
+
+    this.loading = false;
   }
 }
