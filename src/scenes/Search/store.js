@@ -7,6 +7,7 @@ const INIT_VALUES = {
   phrase: '',
   loading: false,
   tabIdx: 0,
+  events: [],
   bets: [],
   sets: [],
   votes: [],
@@ -17,6 +18,7 @@ export default class SearchStore {
   @observable phrase = INIT_VALUES.phrase;
   @observable loading = INIT_VALUES.loading;
   @observable tabIdx = INIT_VALUES.tabIdx;
+  @observable events = INIT_VALUES.events;
   @observable bets = INIT_VALUES.bets;
   @observable sets = INIT_VALUES.sets;
   @observable votes = INIT_VALUES.votes;
@@ -41,11 +43,15 @@ export default class SearchStore {
   }
 
   @action
+  onTabChange = (tabIdx) => this.tabIdx = tabIdx;
+
+  @action
   setSearchPhrase = (phrase) => this.phrase = phrase;
 
   fetchEvents = async () => {
     // Reset values if empty search phrase
     if (isEmpty(this.phrase)) {
+      this.events = INIT_VALUES.events;
       this.bets = INIT_VALUES.bets;
       this.sets = INIT_VALUES.sets;
       this.votes = INIT_VALUES.votes;
@@ -56,16 +62,16 @@ export default class SearchStore {
     this.loading = true;
 
     // Fetch events and filter by status
-    const events = await searchEvents(this.app.graphqlClient, {
+    this.events = await searchEvents(this.app.graphqlClient, {
       orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
       searchPhrase: this.phrase,
     });
-    this.bets = filter(events, { status: EVENT_STATUS.BETTING });
-    this.sets = filter(events, (e) =>
+    this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
+    this.sets = filter(this.events, (e) =>
       e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
       || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
-    this.votes = filter(events, { status: EVENT_STATUS.ARBITRATION });
-    this.withdraws = filter(events, { status: EVENT_STATUS.WITHDRAWING });
+    this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
+    this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
 
     this.loading = false;
   }
