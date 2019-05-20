@@ -20,9 +20,7 @@ export default class FavoriteStore {
     reaction(
       () => this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.global.online,
       () => {
-        if (this.app.ui.location === Routes.FAVORITE && this.app.global.online) {
-          this.init();
-        }
+        if (this.app.global.online && this.visible) this.init();
       }
     );
     reaction(

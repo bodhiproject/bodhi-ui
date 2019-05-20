@@ -15,7 +15,6 @@ module.exports = {
     SET: '/activities/set',
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
-    FAVORITE: '/activities/favorite',
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
     LEADERBOARD: '/leaderboard',

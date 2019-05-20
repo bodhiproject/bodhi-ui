@@ -61,13 +61,8 @@ export default class FavoriteDrawer extends Component {
 
   render() {
     const { classes } = this.props;
-    const { ui,
-      favorite: {
-        visible,
-        displayList,
-        loading,
-      },
-    } = this.props.store;
+    const { favorite } = this.props.store;
+    const { visible, loading, displayList } = favorite;
 
     if (loading) return <EventListLoading />;
 
@@ -76,7 +71,7 @@ export default class FavoriteDrawer extends Component {
         key={i}
         index={i}
         event={event}
-        onClick={ui.hideFavoriteDrawer}
+        onClick={favorite.hideDrawer}
       />
     ));
 
@@ -88,7 +83,7 @@ export default class FavoriteDrawer extends Component {
           paper: classes.drawerPaper,
         }}
         ModalProps={{
-          onBackdropClick: ui.hideFavoriteDrawer,
+          onBackdropClick: favorite.hideDrawer,
         }}
         anchor="left"
       >
