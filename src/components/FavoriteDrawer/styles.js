@@ -1,4 +1,7 @@
 const styles = (theme) => ({
+  drawerUnderNavbar: {
+    zIndex: 999,
+  },
   drawerPaper: {
     display: 'flex',
     width: 320,
@@ -10,8 +13,18 @@ const styles = (theme) => ({
     overflowX: 'hidden',
     flex: 1,
   },
-  drawerUnderNavbar: {
-    zIndex: 999,
+  emptyContainer: {
+    marginTop: theme.padding.space7X.px,
+  },
+  emptyTextContainer: {
+    display: 'grid',
+    marginTop: theme.padding.space3X.px,
+    padding: theme.padding.space5X.px,
+    textAlign: 'center',
+  },
+  emptyButtonContainer: {
+    display: 'grid',
+    justifyContent: 'center',
   },
 });
 

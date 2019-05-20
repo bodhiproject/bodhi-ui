@@ -2,18 +2,16 @@ import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
-
+import { STORAGE_KEY, faqUrls } from '../config/app';
 import locales from '../languageProvider';
-import { faqUrls } from '../config/app';
 import Tracking from '../helpers/mixpanelUtil';
 
 export default class UiStore {
   @observable location = Routes.PREDICTION
-  @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
+  @observable locale = localStorage.getItem(STORAGE_KEY.LOCALE) || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
   @observable currentTimeUnix = 0;
-  @observable favoriteDrawerOpen = false;
   counterInterval = null;
 
   get localeMessages() {
@@ -63,7 +61,7 @@ export default class UiStore {
       () => this.locale,
       () => {
         moment.locale(locales[this.locale].momentlocale);
-        localStorage.setItem('bodhi_dapp_lang', this.locale);
+        localStorage.setItem(STORAGE_KEY.LOCALE, this.locale);
       },
       { fireImmediately: true }
     );
@@ -78,14 +76,8 @@ export default class UiStore {
   }
 
   @action
-  showFavoriteDrawer = () => this.favoriteDrawerOpen = true;
-
-  @action
-  hideFavoriteDrawer = () => this.favoriteDrawerOpen = false;
-
-  @action
   enableSearchBarMode = () => {
-    this.hideFavoriteDrawer();
+    this.app.favorite.hideDrawer();
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();

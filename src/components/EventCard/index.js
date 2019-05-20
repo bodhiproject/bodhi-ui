@@ -7,8 +7,7 @@ import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum, filter } from 'lodash';
 import { Phases, EventWarningType, TransactionStatus, TransactionType } from 'constants';
-
-import FavoriteButton from './FavoriteButton';
+import { FavoriteButton } from 'components';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString } from '../../helpers';
@@ -22,7 +21,6 @@ const messages = defineMessages({
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -85,7 +83,7 @@ export default class EventCard extends Component {
 
   render() {
     const { classes, index, onClick, store: { ui } } = this.props;
-    const { name, isPending, isUpcoming, url, endTime, phase } = this.props.event;
+    const { address, name, isPending, isUpcoming, url, endTime, phase } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
@@ -106,7 +104,7 @@ export default class EventCard extends Component {
                     {name}
                   </Typography>
                 </div>
-                <FavoriteButton event={this.props.event} />
+                <FavoriteButton eventAddress={address} />
               </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (

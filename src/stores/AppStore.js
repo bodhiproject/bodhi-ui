@@ -1,6 +1,5 @@
 import { observable, runInAction } from 'mobx';
 import { RouterStore } from 'mobx-react-router';
-
 import GlobalStore from './GlobalStore';
 import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
@@ -13,7 +12,6 @@ import PredictionStore from '../scenes/Prediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
-import FavoriteStore from '../scenes/Activities/Favorite/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import LeaderboardStore from '../scenes/Leaderboard/store';
@@ -21,6 +19,7 @@ import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import GlobalDialogStore from '../components/GlobalDialog/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
+import FavoriteStore from '../components/FavoriteDrawer/store';
 
 class AppStore {
   @observable graphqlClient = undefined;
