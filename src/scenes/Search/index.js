@@ -92,6 +92,8 @@ export default class Search extends Component {
       <Tabs
         className={classes.searchTabWrapper}
         indicatorColor="primary"
+        textColor="primary"
+        fullWidth
         value={search.tabIdx}
         onChange={(e, v) => search.onTabChange(v)}
       >
@@ -100,11 +102,11 @@ export default class Search extends Component {
           className={classes.searchTabButton}
         />
         <Tab
-          label={this.getTabLabel(EventStatus.VOTE)}
+          label={this.getTabLabel(EventStatus.SET)}
           className={classes.searchTabButton}
         />
         <Tab
-          label={this.getTabLabel(EventStatus.SET)}
+          label={this.getTabLabel(EventStatus.VOTE)}
           className={classes.searchTabButton}
         />
         <Tab

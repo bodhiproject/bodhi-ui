@@ -1,4 +1,4 @@
-import { isEmpty, filter } from 'lodash';
+import { isEmpty, filter, debounce } from 'lodash';
 import { observable, action, reaction } from 'mobx';
 import { EVENT_STATUS, SortBy } from 'constants';
 import { searchEvents } from '../../network/graphql/queries';
@@ -26,16 +26,11 @@ export default class SearchStore {
 
   constructor(app) {
     this.app = app;
-    reaction(
-      () => this.phrase,
-      () => this.fetchEvents(),
-    );
+
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
       () => {
-        if (this.app.ui.searchBarMode
-          && this.app.global.online
-          && !isEmpty(this.phrase)) {
+        if (this.app.ui.searchBarMode && this.app.global.online) {
           this.fetchEvents();
         }
       }
@@ -48,31 +43,43 @@ export default class SearchStore {
   @action
   setSearchPhrase = (phrase) => this.phrase = phrase;
 
+  @action
+  resetEvents = () => {
+    this.events = INIT_VALUES.events;
+    this.bets = INIT_VALUES.bets;
+    this.sets = INIT_VALUES.sets;
+    this.votes = INIT_VALUES.votes;
+    this.withdraws = INIT_VALUES.withdraws;
+  }
+
   fetchEvents = async () => {
     // Reset values if empty search phrase
     if (isEmpty(this.phrase)) {
-      this.events = INIT_VALUES.events;
-      this.bets = INIT_VALUES.bets;
-      this.sets = INIT_VALUES.sets;
-      this.votes = INIT_VALUES.votes;
-      this.withdraws = INIT_VALUES.withdraws;
+      this.resetEvents();
       return;
     }
 
     this.loading = true;
 
     // Fetch events and filter by status
-    this.events = await searchEvents(this.app.graphqlClient, {
-      orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
-      searchPhrase: this.phrase,
-    });
-    this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
-    this.sets = filter(this.events, (e) =>
-      e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
-      || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
-    this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
-    this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
+    try {
+      this.events = await searchEvents(this.app.graphqlClient, {
+        orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
+        searchPhrase: this.phrase,
+      });
+      this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
+      this.sets = filter(this.events, (e) =>
+        e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
+        || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
+      this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
+      this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
+    } catch (err) {
+      console.error(err);
+      this.resetEvents();
+    }
 
     this.loading = false;
   }
+
+  debounceFetchEvents = debounce(this.fetchEvents, 1500);
 }
