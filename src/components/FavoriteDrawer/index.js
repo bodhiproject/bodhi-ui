@@ -59,9 +59,6 @@ export default class FavoriteDrawer extends Component {
     const { favorite } = this.props.store;
     const { visible, loading, favEvents } = favorite;
 
-    // Hide since it will cause large navar blue area when loading
-    // if (loading) return <EventListLoading />;
-
     const events = favEvents.map((event, i) => (
       <FavoriteCard
         key={i}
@@ -70,6 +67,14 @@ export default class FavoriteDrawer extends Component {
         onClick={favorite.hideDrawer}
       />
     ));
+
+    // Only show content if not loading and visible
+    let content;
+    if (!loading && visible) {
+      content = events.length > 0
+        ? this.renderEvents(events)
+        : this.renderEmptyMessage();
+    }
 
     return (
       <Drawer
@@ -84,11 +89,8 @@ export default class FavoriteDrawer extends Component {
         anchor="left"
       >
         <div className={classes.drawerContainer}>
-          {visible &&
-            events.length > 0
-            ? this.renderEvents(events)
-            : this.renderEmptyMessage()
-          }
+          {loading && <EventListLoading />}
+          {content}
         </div>
       </Drawer>
     );
