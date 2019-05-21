@@ -1,18 +1,15 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { sum, filter } from 'lodash';
+import { filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
 import { FavoriteButton, CountdownTime } from 'components';
-import { BigNumber } from 'bignumber.js';
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString, satoshiToDecimal } from '../../helpers';
-import carousel from '../../scenes/Event/components/Leaderboard/carousel';
 
 const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
