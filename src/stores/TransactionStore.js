@@ -534,17 +534,17 @@ export default class TransactionStore {
       // Create pending tx on server
       if (txid) {
         const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
-        const res = await addPendingResultSet(graphqlClient, {
+        const res = await addPendingBet(graphqlClient, {
           txid,
           eventAddress: eventAddr,
-          centralizedOracleAddress: address,
+          betterAddress: address,
           resultIndex: optionIdx,
           amount,
           eventRound,
         });
 
         await this.onTxExecuted(res);
-        Tracking.track('event-setResult');
+        Tracking.track('event-vote');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
