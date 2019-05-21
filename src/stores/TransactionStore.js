@@ -501,11 +501,11 @@ export default class TransactionStore {
         Tracking.track('event-setResult');
       }
     } catch (err) {
-      // if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-      //   this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/set-result`);
-      // } else {
-      //   this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/set-result`);
-      // }
+      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/set-result');
+      } else {
+        this.app.components.globalDialog.setError(err.message, '/set-resul');
+      }
     }
   }
 
@@ -547,9 +547,9 @@ export default class TransactionStore {
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/vote`);
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/vote');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/vote`);
+        this.app.components.globalDialog.setError(err.message, '/vote');
       }
     }
   }
