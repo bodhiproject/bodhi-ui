@@ -23,58 +23,37 @@ export default class BottomBar extends Component {
     const { classes, width } = this.props;
     const { syncBlockTime, syncBlockNum, online } = this.props.store.global;
     return (
-      <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection online={online} width={width} />
-        {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
+      <Paper className={classes.paper}>
+        <NetworkConnection width={width} online={online} />
+        {syncBlockTime &&
+          <BlockInfo
+            width={width}
+            blockNum={syncBlockNum}
+            blockTime={syncBlockTime}
+          />
+        }
       </Paper>
     );
   }
 }
 
-const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
-  <Grid container item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
-    <Grid item xs={12} sm={6}>
-      <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockNum}>
-          <FormattedMessage
-            id="bottomBar.blockNum"
-            defaultMessage="Current Block Number"
-          />
-          {`: ${blockNum}`}
-        </span>
-      </Typography>
-    </Grid>
-    <Grid item xs={12} sm={6}>
-      <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockTime}>
-          <FormattedMessage
-            id="bottomBar.blockTime"
-            defaultMessage="Current Block Time"
-          />
-          {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
-        </span>
-      </Typography>
-    </Grid>
-  </Grid>
-));
-
 const NetworkConnection = withStyles(styles)(({ classes, width, online }) => (
   <Grid container item xs={12} md={6}>
     {width !== 'xs' && (
       <Fragment>
-        <div className={classes.bottomBarStatusContainer}>
+        <div className={classes.statusContainer}>
           {online
-            ? <CheckCircle className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            : <RemoveCircle className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+            ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+            : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
-          <Typography variant="body2" className={cx(classes.bottomBarTxt, 'marginRight')}>
+          <Typography variant="body2" className={cx(classes.bottomBarTxt, 'network')}>
             <FormattedMessage id="bottomBar.network" defaultMessage="Network" />
           </Typography>
         </div>
-        <div className={classes.bottomBarStatusContainer}>
+        <div className={classes.statusContainer}>
           {online
-            ? <CheckCircle className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            : <RemoveCircle className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+            ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+            : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
           <Typography variant="body2" className={classes.bottomBarTxt}>
             <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
@@ -84,22 +63,79 @@ const NetworkConnection = withStyles(styles)(({ classes, width, online }) => (
     )}
     {width === 'xs' && (
       <Fragment>
-        <Grid item xs={12} className={classes.bottomBarStatusContainer}>
+        <Grid item xs={12} className={classes.statusContainer}>
           {online
-            ? <CheckCircle className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            : <RemoveCircle className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+            ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+            : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
           <Typography variant="body2" className={classes.bottomBarTxt}>
             <FormattedMessage id="bottomBar.network" defaultMessage="Network" />
           </Typography>
         </Grid>
-        <Grid item xs={12} className={classes.bottomBarStatusContainer}>
+        <Grid item xs={12} className={classes.statusContainer}>
           {online
-            ? <CheckCircle className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            : <RemoveCircle className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+            ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+            : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
           <Typography variant="body2" className={classes.bottomBarTxt}>
             <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
+          </Typography>
+        </Grid>
+      </Fragment>
+    )}
+  </Grid>
+));
+
+const BlockInfo = withStyles(styles)(({ classes, width, blockNum, blockTime }) => (
+  <Grid container item xs={12} md={6} className={classes.blockInfoContainer}>
+    {width !== 'xs' && (
+      <Fragment>
+        <div className={classes.blockItemContainer}>
+          <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
+            <span>
+              <FormattedMessage
+                id="bottomBar.blockNum"
+                defaultMessage="Current Block Number"
+              />
+              {`: ${blockNum}`}
+            </span>
+          </Typography>
+        </div>
+        <div className={classes.blockItemContainer}>
+          <Typography variant="body2" className={classes.bottomBarTxt}>
+            <span>
+              <FormattedMessage
+                id="bottomBar.blockTime"
+                defaultMessage="Current Block Time"
+              />
+              {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
+            </span>
+          </Typography>
+        </div>
+      </Fragment>
+    )}
+    {width === 'xs' && (
+      <Fragment>
+        <Grid item xs={12} className={classes.blockItemContainer}>
+          <Typography variant="body2" className={classes.bottomBarTxt}>
+            <span>
+              <FormattedMessage
+                id="bottomBar.blockNum"
+                defaultMessage="Current Block Number"
+              />
+              {`: ${blockNum}`}
+            </span>
+          </Typography>
+        </Grid>
+        <Grid item xs={12} className={classes.blockItemContainer}>
+          <Typography variant="body2" className={classes.bottomBarTxt}>
+            <span>
+              <FormattedMessage
+                id="bottomBar.blockTime"
+                defaultMessage="Current Block Time"
+              />
+              {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
+            </span>
           </Typography>
         </Grid>
       </Fragment>
