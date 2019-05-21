@@ -1,29 +1,21 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import axios from 'axios';
-import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
-import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
-import { Transaction, TransactionCost } from 'models';
+import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { fromAscii } from 'web3-utils';
-
-import networkRoutes from '../network/routes';
-import { queryAllTransactions } from '../network/graphql/queries';
-import { addPendingEvent, addPendingBet, addPendingResultSet, createTransaction } from '../network/graphql/mutations';
+import {
+  addPendingEvent,
+  addPendingBet,
+  addPendingResultSet,
+  createTransaction,
+} from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
-
-const web3EthAbi = new AbiCoder();
-const INIT_VALUES = {
-  visible: false,
-  provider: WalletProvider.NAKA,
-};
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
 const BET_EVENT_FUNC_SIG = '885ab66d';
 const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
-const createEventFuncTypes = [
+const CREATE_EVENT_FUNC_TYPES = [
   'string',
   'bytes32[10]',
   'uint256',
@@ -32,77 +24,33 @@ const createEventFuncTypes = [
   'uint256',
   'address',
 ];
-const playEventFuncTypes = [
+const PLAY_EVENT_FUNC_TYPES = [
   'uint8',
 ];
+const web3EthAbi = new AbiCoder();
 
 export default class TransactionStore {
-  @observable visible = INIT_VALUES.visible;
-  @observable provider = INIT_VALUES.provider;
-  @observable transactions = [];
   app = undefined;
 
   constructor(app) {
     this.app = app;
-
-    // Visiblity of execute tx dialog changes
-    reaction(
-      () => this.visible,
-      () => {
-        if (!this.visible) {
-          Object.assign(this, INIT_VALUES);
-        }
-      }
-    );
-    // New block change
-    reaction(
-      () => this.app.global.syncBlockNum,
-      () => this.checkPendingApproves(),
-    );
-    // Naka Wallet logged in/out
-    reaction(
-      () => this.app.naka.loggedIn,
-      () => {
-        if (this.app.naka.loggedIn) {
-          this.checkPendingApproves();
-        } else {
-          Object.assign(this, INIT_VALUES);
-          this.transactions.clear();
-        }
-      }
-    );
   }
 
-  /**
-   * Gets the array of pending approve txs for this client.
-   * @return {array} Array of pending approve txs.
-   */
-  getPendingApproves = () => {
-    const pending = localStorage.getItem('pendingApproves');
-    return pending ? pending.split(',') : [];
-  }
-
-  /**
-   * Stores a txid of a pending approve transaction.
-   * @param {string} txid Transaction ID of a pending approve tx.
-   */
-  addPendingApprove = (txid) => {
-    const pending = this.getPendingApproves();
-    if (!includes(pending, txid)) pending.push(txid);
-    localStorage.setItem('pendingApproves', pending);
-  };
-
-  /**
-   * Removes a txid of a pending approve transaction.
-   * @param {string} txid Transaction ID to remove.
-   */
-  removePendingApprove = (txid) => {
-    let pending = this.getPendingApproves();
-    if (includes(pending, txid)) {
-      pending = remove(pending, txid);
-      localStorage.setItem('pendingApproves', pending);
+  handleReqError = (err, reqName) => {
+    const { components: { globalDialog } } = this.app;
+    if (err.networkError
+      && err.networkError.result.errors
+      && err.networkError.result.errors.length > 0) {
+      // Handles GraphQL error
+      globalDialog.setError(
+        `${err.message} : ${err.networkError.result.errors[0].message}`,
+        `GraphQL error: ${reqName}`,
+      );
+    } else {
+      // Handle other error
+      globalDialog.setError(err.message, `Other error: ${reqName}`);
     }
-  };
+  }
 
   createEvent = async ({
     nbotMethods,
@@ -121,22 +69,25 @@ export default class TransactionStore {
         throw new Error('excahngeRate not existed');
       }
       const paramsHex = web3EthAbi.encodeParameters(
-        createEventFuncTypes,
+        CREATE_EVENT_FUNC_TYPES,
         eventParams,
       ).substr(2);
 
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
-        token: getContracts().NakaBodhiToken.address,
-        exchanger: nbotOwner,
-        exchangeRate,
-        gas,
-      }]);
+      const txid = await promisify(
+        nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
+        [eventFactoryAddr, escrowAmt, data, {
+          token: getContracts().NakaBodhiToken.address,
+          exchanger: nbotOwner,
+          exchangeRate,
+          gas,
+        }]
+      );
       return txid;
     } catch (err) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${err.message}`);
+        this.app.globalDialog.setError(`${err.message}`);
       });
     }
   };
@@ -159,186 +110,40 @@ export default class TransactionStore {
         throw new Error('excahngeRate not existed');
       }
       const paramsHex = web3EthAbi.encodeParameters(
-        playEventFuncTypes,
+        PLAY_EVENT_FUNC_TYPES,
         params,
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, {
-        token: getContracts().NakaBodhiToken.address,
-        exchanger: nbotOwner,
-        exchangeRate,
-        gas,
-      }]);
+      const txid = await promisify(
+        nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
+        [eventAddr, amount, data, {
+          token: getContracts().NakaBodhiToken.address,
+          exchanger: nbotOwner,
+          exchangeRate,
+          gas,
+        }]
+      );
       return txid;
     } catch (err) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${err.message}`);
+        this.app.globalDialog.setError(`${err.message}`);
       });
     }
   };
 
   /**
-   * Checks for successful approve txs. If they are successful, adds a tx to the list of txs to confirm.
-   */
-  @action
-  checkPendingApproves = async () => {
-    if (!this.app.naka.loggedIn) {
-      return;
-    }
-
-    const pending = this.getPendingApproves();
-    if (!isEmpty(pending)) {
-      // Get all txs from DB
-      const filters = reduce(pending, (result, value) => {
-        result.push({ txid: value });
-        return result;
-      }, []);
-      const txs = await queryAllTransactions(filters);
-
-      each(txs, async (tx) => {
-        // Execute follow-up tx if not already added, sender is in current addresses, and approve was successful
-        const txIndex = findIndex(this.transactions, { approveTxid: tx.txid });
-        const addressIndex = findIndex(this.app.wallet.addresses, { address: tx.senderAddress });
-        if (txIndex === -1 && addressIndex !== -1 && tx.status === TransactionStatus.SUCCESS) {
-          const { txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
-          switch (tx.type) {
-            case TransactionType.APPROVE_CREATE_EVENT: {
-              await this.addCreateEventTx(
-                txid,
-                senderAddress,
-                tx.name,
-                tx.options,
-                tx.resultSetterAddress,
-                tx.bettingStartTime,
-                tx.bettingEndTime,
-                tx.resultSettingStartTime,
-                tx.resultSettingEndTime,
-                amountSatoshi,
-                tx.language,
-              );
-              break;
-            }
-            case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-              break;
-            }
-            case TransactionType.APPROVE_VOTE: {
-              await this.addVoteTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-        }
-      });
-    }
-
-    // Show confirm dialog if there are pending txs
-    if (this.transactions.length > 0) {
-      this.visible = true;
-    }
-  }
-
-  /**
-   * Gets the tx costs for each tx and shows the confirmation dialog.
-   */
-  @action
-  showConfirmDialog = async () => {
-    try {
-      // each(this.transactions, async (tx) => {
-      //   const { data } = await axios.post(networkRoutes.api.transactionCost, {
-      //     type: tx.type,
-      //     senderAddress: tx.senderAddress,
-      //     topicAddress: tx.topicAddress,
-      //     oracleAddress: tx.oracleAddress,
-      //     optionIdx: tx.optionIdx,
-      //     amount: tx.amountSatoshi,
-      //     token: tx.token,
-      //   });
-      //   tx.fees = map(data, (item) => new TransactionCost(item));
-      // });
-
-      runInAction(() => {
-        this.visible = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.transactionCost);
-      });
-    }
-  }
-
-  /**
-   * Confirms a tx and executes it.
-   * @param {number} index Index of the tx to execute.
-   */
-  confirmTx = async (index) => {
-    const tx = cloneDeep(this.transactions[index]);
-    this.deleteTx(index, tx.approveTxid);
-
-    const confirmFunc = {
-      [TransactionType.RESET_APPROVE]: this.executeResetApprove,
-      [TransactionType.CREATE_EVENT]: this.executeCreateEvent,
-      [TransactionType.BET]: this.executeBet,
-      [TransactionType.SET_RESULT]: this.executeSetResult,
-      [TransactionType.VOTE]: this.executeVote,
-      [TransactionType.WITHDRAW]: this.executeWithdraw,
-      [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
-    };
-    await confirmFunc[tx.type](index, tx);
-  }
-
-  /**
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  // TODO: handle for specific types
   onTxExecuted = async (tx, pendingTx) => {
+    // TODO: refresh Event Detail if the address is showing
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.addPendingTx(pendingTx);
     }
 
     this.app.txSentDialog.open(tx.txid);
-  }
-
-  /**
-   * Removes a tx from the transactions array and any pending approve from the localStorage.
-   * @param {number} index Index of the tx to remove.
-   * @param {string} approveTxid Approve txid if it is an approve tx.
-   */
-  @action
-  deleteTx = (index, approveTxid) => {
-    this.transactions.splice(index, 1);
-    if (this.transactions.length === 0) {
-      this.visible = false;
-    }
-
-    if (approveTxid) {
-      this.removePendingApprove(approveTxid);
-    }
-  }
-
-  /**
-   * Adds a reset approve tx to the queue.
-   * @param {string} spender Address to reset the allowance for.
-   * @param {string} topicAddress Address of the TopicEvent. Only for Set Result and Vote.
-   * @param {string} oracleAddress Address of the Oracle. Only for Set Result and Vote.
-   */
-  @action
-  addResetApproveTx = async (spender, topicAddress, oracleAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.RESET_APPROVE,
-      senderAddress: this.app.wallet.currentAddress,
-      receiverAddress: spender,
-      topicAddress,
-      oracleAddress,
-      amount: '0',
-      token: Token.NBOT,
-    })));
-    await this.showConfirmDialog();
   }
 
   /**
@@ -379,7 +184,8 @@ export default class TransactionStore {
         }
       }
 
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
@@ -411,11 +217,7 @@ export default class TransactionStore {
         Tracking.track('event-createEvent');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/addPendingEvent');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/addPendingEvent');
-      }
+      this.handleReqError(err, 'addPendingEvent');
     }
   }
 
@@ -428,8 +230,9 @@ export default class TransactionStore {
   @action
   executeBet = async (tx) => {
     try {
-      const { eventAddr, optionIdx, amount, senderAddress, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -456,11 +259,7 @@ export default class TransactionStore {
         Tracking.track('event-bet');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/bet');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/bet');
-      }
+      this.handleReqError(err, 'addPendingBet');
     }
   }
 
@@ -472,8 +271,9 @@ export default class TransactionStore {
   @action
   executeSetResult = async (tx) => {
     try {
-      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const setResultParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -487,7 +287,10 @@ export default class TransactionStore {
       Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
-        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const {
+          graphqlClient,
+          wallet: { currentWalletAddress: { address } },
+        } = this.app;
         const res = await addPendingResultSet(graphqlClient, {
           txid,
           eventAddress: eventAddr,
@@ -501,11 +304,7 @@ export default class TransactionStore {
         Tracking.track('event-setResult');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/set-result');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/set-resul');
-      }
+      this.handleReqError(err, 'addPendingResultSet');
     }
   }
 
@@ -517,8 +316,9 @@ export default class TransactionStore {
   @action
   executeVote = async (tx) => {
     try {
-      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -532,7 +332,10 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const {
+          graphqlClient,
+          wallet: { currentWalletAddress: { address } },
+        } = this.app;
         const res = await addPendingBet(graphqlClient, {
           txid,
           eventAddress: eventAddr,
@@ -546,38 +349,20 @@ export default class TransactionStore {
         Tracking.track('event-vote');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/vote');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/vote');
-      }
+      this.handleReqError(err, 'addPendingBet');
     }
   }
 
   /**
-   * Adds a withdraw tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   */
-  @action
-  addWithdrawTx = async (type, topicAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
    * Executes a withdraw or withdraw escrow..
-   * @param {number} index Index of the Transaction object.
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeWithdraw = async (index, tx) => {
+  executeWithdraw = async (tx) => {
     try {
       const { type, senderAddress, topicAddress } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at(topicAddress);
+      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
+        .at(topicAddress);
       const txid = await promisify(nbotMethods.withdraw, []);
 
       Object.assign(tx, { txid });
@@ -595,11 +380,7 @@ export default class TransactionStore {
         Tracking.track('event-withdraw');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/withdraw`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/withdraw`);
-      }
+      this.handleReqError(err, 'addPendingWithdraw');
     }
   }
 }

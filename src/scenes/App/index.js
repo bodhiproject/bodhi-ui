@@ -4,7 +4,6 @@ import { CssBaseline, withStyles } from '@material-ui/core';
 import {
   BottomBar,
   GlobalDialog,
-  ExecuteTxDialog,
   GlobalSnackbar,
   InstallNakaWalletPopover,
   TxSentDialog,
@@ -27,7 +26,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <TutorialCarouselDialog />
         <GlobalSnackbar />
         <GlobalDialog />
-        <ExecuteTxDialog />
         <TxSentDialog />
         <CreateEventFormDialog />
         <InstallNakaWalletPopover />

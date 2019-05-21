@@ -325,7 +325,7 @@ export default class EventStore {
       this.escrowAmount = satoshiToDecimal(data[0]);
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
+        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
       });
     }
   }
@@ -396,7 +396,7 @@ export default class EventStore {
       this.voteBalances = map(unzip(voteArrays), sum);
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(
+        this.app.globalDialog.setError(
           `${error.message} : ${error.response.data.error}`,
           `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`,
         );
@@ -483,7 +483,7 @@ export default class EventStore {
       this.withdrawableAddresses = withdrawableAddresses;
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.winnings);
+        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.winnings);
       });
     }
   }
@@ -624,8 +624,9 @@ export default class EventStore {
     await this.app.tx.executeVote({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }
 
-  withdraw = async (senderAddress, type) => {
-    await this.app.tx.addWithdrawTx(type, this.topic.address);
+  withdraw = async () => {
+    // TODO: finish when withdraw is done
+    await this.app.tx.executeWithdraw({});
   }
 
   reset = () => Object.assign(this, INIT);

@@ -42,7 +42,6 @@ class AppStore {
   allEvents = {}
   activities = {}
   search = {}
-  components = {}
 
   constructor(graphqlClient) {
     this.graphqlClient = graphqlClient;
@@ -59,13 +58,11 @@ class AppStore {
     this.favorite = new FavoriteStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.txSentDialog = new TxSentDialogStore();
+    this.globalDialog = new GlobalDialogStore();
     this.refreshing = new RefreshingStore();
     this.eventPage = new EventPageStore(this);
     window.onload = () => {
       this.naka.init();
-    };
-    this.components = {
-      globalDialog: new GlobalDialogStore(),
     };
 
     runInAction(() => {
