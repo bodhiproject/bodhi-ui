@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { action } from 'mobx';
 import { Token, EVENT_STATUS } from 'constants';
 import { decimalToSatoshi } from '../helpers/utility';
 
@@ -16,8 +15,7 @@ export default class Option {
   token
   idx
 
-  constructor(optionName, i, event, app) {
-    this.app = app;
+  constructor(optionName, i, event) {
     this.idx = i;
     this.amount = event.roundBets[i] || 0;
     this.isLast = i === event.results.length - 1;
