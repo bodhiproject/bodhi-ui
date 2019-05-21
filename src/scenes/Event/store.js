@@ -190,7 +190,7 @@ export default class EventStore {
     // await this.queryOracles(txid);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
-    // await this.queryTransactions(this.event.address);
+    await this.queryTransactions(this.event.address);
     await this.queryResultSets(this.event.address);
     // await this.getCurrentArbitrationEndTime();
     this.disableEventActionsIfNecessary();
