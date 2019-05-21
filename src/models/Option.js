@@ -41,15 +41,5 @@ export default class Option {
     this.disabled = this.isPrevResult;
   }
 
-  @action
-  toggleExpansion = () => {
-    const { eventPage } = this.app;
-    if (eventPage.selectedOptionIdx == this.idx) { // eslint-disable-line
-      eventPage.selectedOptionIdx = -1;
-    } else {
-      eventPage.selectedOptionIdx = this.idx;
-    }
-  }
-
   isExpanded = (selectedOptionIdx) => selectedOptionIdx === this.idx
 }

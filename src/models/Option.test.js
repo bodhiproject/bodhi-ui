@@ -140,40 +140,4 @@ describe('Option Model', () => {
       expect(store.disabled).not.toBeTruthy();
     });
   });
-
-  describe('toggleExpansion()', () => {
-    it('toggleExpansion & expand', () => {
-      const name = '1';
-      const i = 1;
-
-      oracle.token = NBOT;
-      oracle.phase = VOTING;
-      oracle.optionIdxs = [1];
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      app.eventPage.selectedOptionIdx = 0;
-      expect(store.isExpanded).not.toBeTruthy();
-      store.toggleExpansion();
-      expect(app.eventPage.selectedOptionIdx).toBe(i);
-      expect(store.isExpanded).toBeTruthy();
-    });
-
-    it('toggleExpansion & unexpand', () => {
-      const name = 'cons test 4';
-      const i = 1;
-
-      oracle.token = NBOT;
-      oracle.phase = VOTING;
-      oracle.optionIdxs = [1];
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      app.eventPage.selectedOptionIdx = 1;
-      expect(store.isExpanded).toBeTruthy();
-      store.toggleExpansion();
-      expect(app.eventPage.selectedOptionIdx).toBe(-1);
-      expect(store.isExpanded).not.toBeTruthy();
-    });
-  });
 });

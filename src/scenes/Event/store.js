@@ -603,6 +603,15 @@ export default class EventStore {
     }
   }
 
+  @action
+  setSelectedOption = (selectedOptionIdx) => {
+    if (selectedOptionIdx === this.selectedOptionIdx) {
+      this.selectedOptionIdx = INIT.selectedOptionIdx;
+    } else {
+      this.selectedOptionIdx = selectedOptionIdx;
+    }
+  }
+
   bet = async () => {
     await this.app.tx.executeBet({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }

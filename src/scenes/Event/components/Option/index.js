@@ -63,7 +63,7 @@ export default class Option extends Component {
         >
           <ExpansionPanel
             expanded={isExpanded(selectedOptionIdx) || skipExpansion}
-            onChange={skipExpansion ? null : option.toggleExpansion}
+            onChange={skipExpansion ? null : eventPage.setSelectedOption(idx)}
             disabled={option.disabled || disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
