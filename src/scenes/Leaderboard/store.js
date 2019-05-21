@@ -1,14 +1,13 @@
 import { observable, action, reaction, toJS } from 'mobx';
 import { Token, Routes } from 'constants';
 
-import { queryLeaderboardStats, queryMostVotes } from '../../network/graphql/queries';
+import { allStats, queryMostVotes } from '../../network/graphql/queries';
 import { satoshiToDecimal } from '../../helpers/utility';
 
 const INIT_VALUES = {
   eventCount: 0,
-  participantsCount: 0,
-  totalNBOT: '',
-  totalNAKA: '',
+  participantCount: 0,
+  totalBets: '',
   leaderboardVotes: [],
   activeStep: 0,
 };
@@ -17,9 +16,8 @@ const paras = [Token.NAKA, Token.NBOT];
 
 export default class LeaderboardStore {
   @observable eventCount = INIT_VALUES.eventCount
-  @observable participantsCount = INIT_VALUES.participantsCount
-  @observable totalNBOT = INIT_VALUES.totalNBOT
-  @observable totalNAKA = INIT_VALUES.totalNAKA
+  @observable participantCount = INIT_VALUES.participantCount
+  @observable totalBets = INIT_VALUES.totalBets
   @observable leaderboardVotes = INIT_VALUES.leaderboardVotes
   @observable activeStep = INIT_VALUES.activeStep
   leaderboardLimit = 10
@@ -42,9 +40,9 @@ export default class LeaderboardStore {
   @action
   init = async () => {
     // Object.assign(this, INIT_VALUES);
-    // this.app.ui.location = Routes.LEADERBOARD;
-    // const res = await queryLeaderboardStats();
-    // Object.assign(this, res, { totalNBOT: satoshiToDecimal(res.totalNbot), totalNAKA: satoshiToDecimal(res.totalNAKA) });
+    this.app.ui.location = Routes.LEADERBOARD;
+    const res = await allStats(this.app.graphqlClient);
+    Object.assign(this, res, { totalBets: satoshiToDecimal(res.totalBets) });
     // await this.loadLeaderboard();
   }
 
