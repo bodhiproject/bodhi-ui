@@ -189,8 +189,10 @@ export default class EventStore {
     // await this.queryOracles(txid);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
-    await this.queryTransactions(this.event.address);
-    await this.queryResultSets(this.event.address);
+    if (this.event) {
+      await this.queryTransactions(this.event.address);
+      await this.queryResultSets(this.event.address);
+    }
     this.disableEventActionsIfNecessary();
 
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
