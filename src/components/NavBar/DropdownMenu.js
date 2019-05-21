@@ -58,13 +58,7 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
           naka.openPopover();
         }}
       >
-        <Badge
-          classes={{ badge: classes.walletStatusBadge }}
-          color={naka.loggedIn ? 'secondary' : 'error'}
-          badgeContent=""
-        >
-          <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
-        </Badge>
+        <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
       </div>
     </Hidden>
     <Link to={Routes.SETTINGS}>

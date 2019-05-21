@@ -104,16 +104,6 @@ const styles = (theme) => ({
     display: 'flex',
     width: '90%',
   },
-  walletStatusBadge: {
-    width: 10,
-    height: 10,
-    top: '-6px',
-    right: '-4px',
-    [theme.breakpoints.down('xs')]: {
-      top: '3px',
-      right: '-13px',
-    },
-  },
   myActivitiesWrapper: {
     display: 'flex',
     alignItems: 'center',
