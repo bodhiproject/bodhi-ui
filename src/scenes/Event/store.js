@@ -191,7 +191,6 @@ export default class EventStore {
     // await this.queryLeaderboard(Token.NAKA);
     await this.queryTransactions(this.event.address);
     await this.queryResultSets(this.event.address);
-    // await this.getCurrentArbitrationEndTime();
     this.disableEventActionsIfNecessary();
 
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
@@ -327,20 +326,6 @@ export default class EventStore {
     } catch (error) {
       runInAction(() => {
         this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
-      });
-    }
-  }
-
-  @action
-  getCurrentArbitrationEndTime = async () => {
-    try {
-      const { data: { result } } = await axios.get(API.ARBITRATION_END_TIME, {
-        eventAddress: this.event.address,
-      });
-      this.currentArbitrationEndTime = result;
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, API.ARBITRATION_END_TIME);
       });
     }
   }
