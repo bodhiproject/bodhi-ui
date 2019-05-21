@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { withStyles } from '@material-ui/core';
+import { Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import styles from './styles';
@@ -33,15 +33,19 @@ export default class CountdownTime extends Component {
     } = this.props;
 
     return (
-      <div>
+      <div className={classes.container}>
         <i className={cx(classes.icon, 'icon iconfont icon-ic_timer')}></i>
         {endTime !== undefined
           ? (
-            <Fragment>
+            <Typography variant="body1">
               {getEndTimeCountDownString(endTime - currentTimeUnix, locale, localeMessages)}
-            </Fragment>
+            </Typography>
           )
-          : <FormattedMessage id="str.end" defaultMessage="Ended" />
+          : (
+            <Typography variant="body1">
+              <FormattedMessage id="str.end" defaultMessage="Ended" />
+            </Typography>
+          )
         }
       </div>
     );
