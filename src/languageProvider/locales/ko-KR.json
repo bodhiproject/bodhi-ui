@@ -167,7 +167,6 @@
   "str.betting": "베팅",
   "str.bettingRound": "베팅 회차",
   "str.block": "블록",
-  "str.blockSync": "블록체인 동기화({peers} peers)...",
   "str.nbot": "NBOT",
   "str.cancel": "취소",
   "str.close": "닫기",

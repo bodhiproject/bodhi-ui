@@ -11,7 +11,6 @@ const INIT_VALUES = {
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
-  peerNodeCount: 0,
   userData: {
     resultSettingCount: 0,
     withdrawCount: 0,
@@ -26,7 +25,6 @@ export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
-  @observable peerNodeCount = INIT_VALUES.peerNodeCount
   @observable socketOnline = INIT_VALUES.socketOnline
   @observable internetOnline = INIT_VALUES.internetOnline
   userData = observable({

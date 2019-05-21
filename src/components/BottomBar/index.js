@@ -7,9 +7,7 @@ import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-
 import styles from './styles';
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -22,10 +20,10 @@ export default class BottomBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { syncBlockTime, syncBlockNum, peerNodeCount, online } = this.props.store.global;
+    const { syncBlockTime, syncBlockNum, online } = this.props.store.global;
     return (
       <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection peerNodeCount={peerNodeCount} online={online} />
+        <NetworkConnection online={online} />
         {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
       </Paper>
     );
@@ -59,20 +57,14 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   </Grid>
 ));
 
-const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount, online }) => (
+const NetworkConnection = withStyles(styles)(({ classes, online }) => (
   <Grid container item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
     {online ? (
       <Fragment>
         <Grid item xs={12} sm={6}>
           <Typography variant="body2" className={classes.bottomBarTxt}>
             <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />:
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            {`${peerNodeCount} `}
-            <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
+            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
           </Typography>
         </Grid>
       </Fragment>

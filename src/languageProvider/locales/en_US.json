@@ -167,7 +167,6 @@
   "str.betting": "Betting",
   "str.bettingRound": "Betting Round",
   "str.block": "Block",
-  "str.blockSync": "Blockchain syncing with {peers} peers...",
   "str.nbot": "NBOT",
   "str.cancel": "Cancel",
   "str.close": "Close",
