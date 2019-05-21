@@ -133,10 +133,9 @@ export default class {
 
     const direction = { field: 'blockNum', direction: SortBy.DESCENDING };
     const filter = { transactorAddress: account };
-    return 1;
-    // const res = await transactions(graphqlClient, { filter, orderBy: direction, limit, skip });
 
-    // return res.items;
+    const res = await transactions(graphqlClient, { filter, orderBy: direction, limit, skip });
+    return res.items;
   }
 
   /**
