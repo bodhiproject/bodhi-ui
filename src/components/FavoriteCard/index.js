@@ -32,16 +32,12 @@ export default class FavoriteCard extends Component {
     } = this.props;
 
     return (
-      <Grid container spacing={8}>
-        <Grid item xs={8}>
-          <Typography variant="h5" className={classes.eventCardName}>
-            {name}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <FavoriteButton eventAddress={address} />
-        </Grid>
-      </Grid>
+      <div className={classes.headerContainer}>
+        <Typography variant="subtitle1" className={classes.eventNameText} noWrap>
+          {name}
+        </Typography>
+        <FavoriteButton eventAddress={address} />
+      </div>
     );
   }
 
@@ -52,8 +48,8 @@ export default class FavoriteCard extends Component {
     } = this.props;
 
     return (
-      <div className={classes.eventCardInfoItem}>
-        <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
+      <div className={classes.infoItem}>
+        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_token')}></i>
         {totalBets}
       </div>
     );
@@ -80,8 +76,8 @@ export default class FavoriteCard extends Component {
     const timeLeft = endTime - currentTimeUnix;
 
     return (
-      <div className={classes.eventCardInfoItem}>
-        <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
+      <div className={classes.infoItem}>
+        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_timer')}></i>
         {timeLeft > 0
           ? <Fragment>{getEndTimeCountDownString(timeLeft, locale, localeMessages, true)}</Fragment>
           : <FormattedMessage id="str.end" defaultMessage="Ended" />
@@ -100,7 +96,7 @@ export default class FavoriteCard extends Component {
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardSection, 'top')}>
               {this.renderHeader()}
-              <div className={classes.eventCardInfo}>
+              <div>
                 {this.renderTotalBets()}
                 {this.renderTimeLeft()}
               </div>
