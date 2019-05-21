@@ -28,7 +28,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
         <EventWarning id={eventPage.eventWarningMessageId} amount={String(eventPage.amount)} type={eventPage.warningType} />
       )}
       <Options event={event} amountInputDisabled={eventPage.isResultSetting} />
-      {eventPage.isResultSetting && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
+      {(eventPage.isResultSetting || eventPage.isArbitration) && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>
         <BetButton eventpage={eventPage} />
         <Leaderboard maxSteps={1} />

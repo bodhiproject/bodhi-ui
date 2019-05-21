@@ -96,6 +96,10 @@ export default class EventStore {
     return this.event && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
   }
 
+  @computed get isArbitration() {
+    return this.event && this.event.status === ARBITRATION;
+  }
+
   @computed get buttonExtendProps() {
     if (!this.event) return {};
     if (this.event.currentRound === 0) {
@@ -191,7 +195,7 @@ export default class EventStore {
     // await this.getCurrentArbitrationEndTime();
     this.disableEventActionsIfNecessary();
 
-    if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION].includes(this.event.status)) {
+    if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
     }
