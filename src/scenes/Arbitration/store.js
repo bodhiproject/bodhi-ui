@@ -42,10 +42,15 @@ export default class ArbitrationStore {
   }
 
   @action
-  init = async (limit = this.limit) => {
-    Object.assign(this, INIT_VALUES);
+  init = async () => {
     this.app.ui.location = Routes.ARBITRATION;
-    this.list = await this.fetch(limit);
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.hasMore = true;
+    this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = true;
     });

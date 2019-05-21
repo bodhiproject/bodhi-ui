@@ -179,6 +179,7 @@ export default class EventStore {
         { address: url },
       ] },
     includeRoundBets: true }, this.app);
+    console.log('TCL: items', items);
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
@@ -230,7 +231,7 @@ export default class EventStore {
               break;
             }
             case ORACLE: {
-              await this.initOracle(this.txid);
+              await this.initOracle(this.url);
               // await this.queryOracles(this.topicAddress);
               // await this.getAllowanceAmount();
               // await this.updateLeaderBoard();
