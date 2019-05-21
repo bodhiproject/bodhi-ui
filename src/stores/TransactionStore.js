@@ -60,12 +60,15 @@ export default class TransactionStore {
 
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
-        token: getContracts().NakaBodhiToken.address,
-        exchanger: nbotOwner,
-        exchangeRate,
-        gas,
-      }]);
+      const txid = await promisify(
+        nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
+        [eventFactoryAddr, escrowAmt, data, {
+          token: getContracts().NakaBodhiToken.address,
+          exchanger: nbotOwner,
+          exchangeRate,
+          gas,
+        }]
+      );
       return txid;
     } catch (err) {
       runInAction(() => {
@@ -97,12 +100,15 @@ export default class TransactionStore {
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, {
-        token: getContracts().NakaBodhiToken.address,
-        exchanger: nbotOwner,
-        exchangeRate,
-        gas,
-      }]);
+      const txid = await promisify(
+        nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
+        [eventAddr, amount, data, {
+          token: getContracts().NakaBodhiToken.address,
+          exchanger: nbotOwner,
+          exchangeRate,
+          gas,
+        }]
+      );
       return txid;
     } catch (err) {
       runInAction(() => {
@@ -163,7 +169,8 @@ export default class TransactionStore {
         }
       }
 
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
@@ -212,8 +219,9 @@ export default class TransactionStore {
   @action
   executeBet = async (tx) => {
     try {
-      const { eventAddr, optionIdx, amount, senderAddress, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -256,8 +264,9 @@ export default class TransactionStore {
   @action
   executeSetResult = async (tx) => {
     try {
-      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const setResultParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -271,7 +280,10 @@ export default class TransactionStore {
       Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
-        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const {
+          graphqlClient,
+          wallet: { currentWalletAddress: { address } },
+        } = this.app;
         const res = await addPendingResultSet(graphqlClient, {
           txid,
           eventAddress: eventAddr,
@@ -301,8 +313,9 @@ export default class TransactionStore {
   @action
   executeVote = async (tx) => {
     try {
-      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
+      const { eventAddr, optionIdx, amount, eventRound } = tx;
+      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
+        .at(getContracts().NakaBodhiToken.address);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -316,7 +329,10 @@ export default class TransactionStore {
 
       // Create pending tx on server
       if (txid) {
-        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const {
+          graphqlClient,
+          wallet: { currentWalletAddress: { address } },
+        } = this.app;
         const res = await addPendingBet(graphqlClient, {
           txid,
           eventAddress: eventAddr,
@@ -346,7 +362,8 @@ export default class TransactionStore {
   executeWithdraw = async (tx) => {
     try {
       const { type, senderAddress, topicAddress } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at(topicAddress);
+      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
+        .at(topicAddress);
       const txid = await promisify(nbotMethods.withdraw, []);
 
       Object.assign(tx, { txid });
