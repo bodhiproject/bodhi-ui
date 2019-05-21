@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed } from 'mobx';
+import { action } from 'mobx';
 import { Token, EVENT_STATUS } from 'constants';
 import { decimalToSatoshi } from '../helpers/utility';
 
@@ -15,10 +15,6 @@ export default class Option {
   phase
   token
   idx
-
-  @computed get isExpanded() {
-    return this.app.eventPage.selectedOptionIdx === this.idx;
-  }
 
   constructor(optionName, i, event, app) {
     this.app = app;
@@ -54,4 +50,6 @@ export default class Option {
       eventPage.selectedOptionIdx = this.idx;
     }
   }
+
+  isExpanded = (selectedOptionIdx) => selectedOptionIdx === this.idx
 }

@@ -47,23 +47,22 @@ export default class Option extends Component {
       amountPlaceholder,
     } = this.props;
 
-
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
     const { eventPage, wallet } = store;
     const { selectedOptionIdx } = eventPage;
 
     return (
-      <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
+      <Collapse in={isExpanded(selectedOptionIdx) || selectedOptionIdx === -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
-            last: isLast || isExpanded,
-            first: isFirst || isExpanded,
+            last: isLast || isExpanded(selectedOptionIdx),
+            first: isFirst || isExpanded(selectedOptionIdx),
             is_result: isPrevResult,
           })}
         >
           <ExpansionPanel
-            expanded={isExpanded || skipExpansion}
+            expanded={isExpanded(selectedOptionIdx) || skipExpansion}
             onChange={skipExpansion ? null : option.toggleExpansion}
             disabled={option.disabled || disabled}
           >
