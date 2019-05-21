@@ -1,4 +1,4 @@
-import { observable, runInAction, action, computed, reaction, toJS, set } from 'mobx';
+import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
 import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
 import axios from 'axios';
@@ -183,7 +183,6 @@ export default class EventStore {
         { address: url },
       ] },
     includeRoundBets: true }, this.app);
-    console.log('TCL: items', items);
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
