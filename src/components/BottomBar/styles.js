@@ -13,9 +13,6 @@ const styles = (theme) => ({
       padding: `${theme.padding.spaceX.px}`,
     },
   },
-  bottomBarNetworkWrapper: {
-    flexBasis: 130,
-  },
   bottomBarStatusContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -43,12 +40,14 @@ const styles = (theme) => ({
       paddingRight: 0,
     },
   },
-  bottomBarBlockTime: {
-
-  },
   bottomBarTxt: {
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.sizes.font.xxSmall,
+    },
+    [theme.breakpoints.up('xs')]: {
+      '&.marginRight': {
+        marginRight: theme.padding.space2X.px,
+      },
     },
   },
 });
