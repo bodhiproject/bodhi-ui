@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { FavoriteButton, CountdownTime } from 'components';
+import { FavoriteButton, RaisedAmount, CountdownTime } from 'components';
 import styles from './styles';
 
 @withStyles(styles, { withTheme: true })
@@ -47,8 +47,7 @@ export default class FavoriteCard extends Component {
 
     return (
       <div className={classes.infoItem}>
-        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_token')}></i>
-        {totalBets}
+        <RaisedAmount amount={totalBets} />
       </div>
     );
   }
