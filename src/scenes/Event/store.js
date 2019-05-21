@@ -182,7 +182,7 @@ export default class EventStore {
         { txid: url },
         { address: url },
       ] },
-    includeRoundBets: true }, this.app);
+    includeRoundBets: true });
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
