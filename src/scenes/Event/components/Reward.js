@@ -22,7 +22,7 @@ const messages = defineMessages({
 class Reward extends Component {
   render() {
     const { eventPage, event, classes } = this.props;
-    // const { nakaWinnings, nbotWinnings, betBalances, voteBalances } = eventPage;
+    const { nbotWinnings, betBalances, voteBalances } = eventPage;
     // const totalBetAmount = _.sum(betBalances);
     // const totalVoteAmount = _.sum(voteBalances);
     // const nakaReturnRate = totalBetAmount ? ((nakaWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
@@ -44,13 +44,13 @@ class Reward extends Component {
           <RewardIcon />
           <RewardTitle />
           <div className={classes.rowDiv}>
-            {/* <BotUsed
+            <BotUsed
               nbotWinnings={eventPage.nbotWinnings}
-              resultTokenAmount={resultVoteAmount}
-              totalTokenAmount={totalVoteAmount}
-              tokenWinnings={nbotWinnings}
-              nbotReturnRate={nbotReturnRate}
-            /> */}
+              // resultTokenAmount={resultVoteAmount}
+              // totalTokenAmount={totalVoteAmount}
+              // tokenWinnings={nbotWinnings}
+              // nbotReturnRate={nbotReturnRate}
+            />
           </div>
         </Container>
       );
@@ -92,7 +92,7 @@ class BotUsed extends Component {
           </div>
         </Typography>
         <Typography variant="caption">
-          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${nbotReturnRate.toFixed(2)}%`}
+          {/* {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${nbotReturnRate.toFixed(2)}%`} */}
         </Typography>
       </div>
     );

@@ -5,7 +5,7 @@ import { Grid, withStyles, Paper } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, HistoryTable, WinningOutcome, Reward } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, HistoryTable, WinningOutcome, Reward, WithdrawTo } from '../components';
 import Leaderboard from '../components/Leaderboard';
 import { satoshiToDecimal } from '../../../helpers/utility';
 
@@ -32,6 +32,7 @@ const BettingOracle = withStyles(styles)(injectIntl(observer(({ store: { eventPa
         {Boolean(escrowClaim || nbotWinnings) && (
           <Fragment>
             <Reward event={event} eventPage={eventPage} />
+            <WithdrawTo />
           </Fragment>
         )}
       </Paper>

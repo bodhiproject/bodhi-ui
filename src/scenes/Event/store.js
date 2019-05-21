@@ -160,6 +160,7 @@ export default class EventStore {
 
   @action
   initEvent = async (url) => {
+    console.log('TCL: initEvent -> url', url);
     const { graphqlClient } = this.app;
     const { items } = await events(graphqlClient, { filter: {
       OR: [
@@ -181,6 +182,7 @@ export default class EventStore {
     }
     this.disableEventActionsIfNecessary();
     this.selectedOptionIdx = 1;
+    console.log('TCL: this.event', this.event);
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
@@ -324,10 +326,16 @@ export default class EventStore {
 
   @action
   calculateWinnings = async () => {
-    const { data } = await axios.get(API.CALCULATE_WINNINGS, {
-      params: { eventAddress: this.address, address: this.app.wallet.currentAddress },
-    });
-    this.nbotWinnings = data.result;
+    try {
+      const { data } = await axios.get(API.CALCULATE_WINNINGS, {
+        params: { eventAddress: this.address, address: this.app.wallet.currentAddress },
+      });
+      this.nbotWinnings = data.result;
+    } catch (error) {
+      runInAction(() => {
+        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, API.CALCULATE_WINNINGS);
+      });
+    }
   }
 
   @action
@@ -396,6 +404,7 @@ export default class EventStore {
   @action
   getWithdrawableAddresses = async () => {
     // Address is needed to get withdrawable addresses
+    console.log('TCL: getWithdrawableAddresses -> this.app.wallet.addresses', this.app.wallet.addresses);
     if (isEmpty(this.app.wallet.addresses)) {
       this.withdrawableAddresses = [];
       return;
