@@ -475,17 +475,7 @@ export default class TransactionStore {
     try {
       const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
-      console.log('TCL: executeSetResult -> nbotMethods', nbotMethods);
       const setResultParams = [optionIdx];
-      console.log('TCL: executeSetResult -> setResultParams', setResultParams);
-      // const txid = await this.playEvent({
-      //   nbotMethods,
-      //   params: setResultParams,
-      //   eventAddr: oracleAddress,
-      //   eventFuncSig: SET_EVENT_FUNC_SIG,
-      //   amount: '10000000000', // TODO: get set result amount from where it defines, change to Event.consensusThreshold later
-      //   gas: 500000,
-      // });
       const txid = await this.playEvent({
         nbotMethods,
         params: setResultParams,
@@ -509,16 +499,6 @@ export default class TransactionStore {
         });
 
         await this.onTxExecuted(res);
-        // const pendingTx = await createTransaction('setResult', {
-        //   txid,
-        //   senderAddress,
-        //   topicAddress: tx.topicAddress,
-        //   oracleAddress,
-        //   optionIdx,
-        //   amount: tx.amountSatoshi,
-        // });
-
-        // await this.onTxExecuted(tx, pendingTx);
         Tracking.track('event-setResult');
       }
     } catch (err) {
@@ -531,63 +511,40 @@ export default class TransactionStore {
   }
 
   /**
-   * Adds a vote tx to the queue.
-   * @param {string} approveTxid Txid of the approve.
-   * @param {string} senderAddress Address of the sender.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the DecentralizedOracle.
-   * @param {number} optionIdx Index of the option being voted on.
-   * @param {string} amountSatoshi Vote amount.
-   */
-  @action
-  addVoteTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
-    this.transactions.push(observable.object(new Transaction({
-      approveTxid,
-      type: TransactionType.VOTE,
-      senderAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount: amountSatoshi,
-      token: Token.NBOT,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
    * Executes a vote.
    * @param {number} index Index of the Transaction object.
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeVote = async (index, tx) => {
+  executeVote = async (tx) => {
     try {
-      const { senderAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: voteParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: VOTE_EVENT_FUNC_SIG,
-        amount: amountSatoshi,
+        amount,
         gas: 300000,
       });
       Object.assign(tx, { txid });
 
       // Create pending tx on server
       if (txid) {
-        const pendingTx = await createTransaction('createVote', {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingResultSet(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
-          amount: amountSatoshi,
+          eventAddress: eventAddr,
+          centralizedOracleAddress: address,
+          resultIndex: optionIdx,
+          amount,
+          eventRound,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-vote');
+        await this.onTxExecuted(res);
+        Tracking.track('event-setResult');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
