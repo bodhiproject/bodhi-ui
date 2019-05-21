@@ -84,25 +84,20 @@ export default class StepperVertRight extends Component {
         ${RANGE_SEPARATOR} ${moment.unix(event.resultSetEndTime).format('LLL')}`,
     }];
 
-    if (event.status === EVENT_STATUS.OPEN_RESULT_SETTING) { // CentralizedOracle detail
+    if (event.status === EVENT_STATUS.CREATED) {
+      current = TOPIC_CREATED;
+    } else if (event.status === EVENT_STATUS.BETTING) {
+      current = BETTING;
+    } else if (event.status === EVENT_STATUS.ORACLE_RESULT_SETTING) {
+      current = ORACLE_RESULT_SETTING;
+    } else if (event.status === EVENT_STATUS.OPEN_RESULT_SETTING) { // CentralizedOracle detail
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
         description: `${moment.unix(event.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
-      // Set step number
-      if (syncBlockTime < event.betStartTime) {
-        current = TOPIC_CREATED;
-      } else if (syncBlockTime >= event.betStartTime && syncBlockTime < event.resultSetStartTime) {
-        current = BETTING;
-      } else if (syncBlockTime >= event.resultSetStartTime && syncBlockTime < event.resultSetEndTime) {
-        current = ORACLE_RESULT_SETTING;
-      } else if (syncBlockTime >= event.resultSetEndTime) {
-        current = OPEN_RESULT_SETTING;
-      } else {
-        current = null;
-      }
+      current = OPEN_RESULT_SETTING;
     }
 
     if (!isEmpty(arbitrations)) { // DecentralizedOracle and Topic detail
