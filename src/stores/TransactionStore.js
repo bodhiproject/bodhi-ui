@@ -87,7 +87,7 @@ export default class TransactionStore {
       return txid;
     } catch (err) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${err.message}`);
+        this.app.globalDialog.setError(`${err.message}`);
       });
     }
   };
@@ -127,7 +127,7 @@ export default class TransactionStore {
       return txid;
     } catch (err) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${err.message}`);
+        this.app.globalDialog.setError(`${err.message}`);
       });
     }
   };

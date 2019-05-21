@@ -288,7 +288,7 @@ export default class CreateEventStore {
       ];
       const pendingCreates = await queryAllTransactions(filters);
       if (pendingCreates.length > 0) {
-        this.app.components.globalDialog.setError({
+        this.app.globalDialog.setError({
           id: 'create.pendingExists',
           defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
         });
@@ -296,7 +296,7 @@ export default class CreateEventStore {
         return true;
       }
     } catch (err) {
-      this.app.components.globalDialog.setError(err.message, `${GRAPHQL.HTTP}/all-transactions`);
+      this.app.globalDialog.setError(err.message, `${GRAPHQL.HTTP}/all-transactions`);
       this.close();
     }
     return false;
@@ -313,7 +313,7 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(result);
       return true;
     } catch (err) {
-      this.app.components.globalDialog.setError(`${err.message} : ${err.response.data.error}`);
+      this.app.globalDialog.setError(`${err.message} : ${err.response.data.error}`);
       this.close();
     }
     return false;

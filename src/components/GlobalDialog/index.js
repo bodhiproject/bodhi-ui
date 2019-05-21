@@ -29,7 +29,7 @@ export default class GlobalDialog extends Component {
 
   render() {
     const { classes, intl } = this.props;
-    const { globalDialog } = this.props.store.components;
+    const { globalDialog } = this.props.store;
     const { visible, title, heading, body } = globalDialog;
 
     const formattedTitle = title && title.id ? intl.formatMessage(messages[title.id]) : title;
