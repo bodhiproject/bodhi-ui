@@ -2,7 +2,6 @@ import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { fromAscii } from 'web3-utils';
-import networkRoutes from '../network/routes';
 import {
   addPendingEvent,
   addPendingBet,
@@ -35,6 +34,22 @@ export default class TransactionStore {
 
   constructor(app) {
     this.app = app;
+  }
+
+  handleReqError = (err, reqName) => {
+    const { components: { globalDialog } } = this.app;
+    if (err.networkError
+      && err.networkError.result.errors
+      && err.networkError.result.errors.length > 0) {
+      // Handles GraphQL error
+      globalDialog.setError(
+        `${err.message} : ${err.networkError.result.errors[0].message}`,
+        `GraphQL error: ${reqName}`,
+      );
+    } else {
+      // Handle other error
+      globalDialog.setError(err.message, `Other error: ${reqName}`);
+    }
   }
 
   createEvent = async ({
@@ -202,11 +217,7 @@ export default class TransactionStore {
         Tracking.track('event-createEvent');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/addPendingEvent');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/addPendingEvent');
-      }
+      this.handleReqError(err, 'addPendingEvent');
     }
   }
 
@@ -248,11 +259,7 @@ export default class TransactionStore {
         Tracking.track('event-bet');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/bet');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/bet');
-      }
+      this.handleReqError(err, 'addPendingBet');
     }
   }
 
@@ -297,11 +304,7 @@ export default class TransactionStore {
         Tracking.track('event-setResult');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/set-result');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/set-resul');
-      }
+      this.handleReqError(err, 'addPendingResultSet');
     }
   }
 
@@ -346,11 +349,7 @@ export default class TransactionStore {
         Tracking.track('event-vote');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} :`, 'network/vote');
-      } else {
-        this.app.components.globalDialog.setError(err.message, '/vote');
-      }
+      this.handleReqError(err, 'addPendingBet');
     }
   }
 
@@ -381,11 +380,7 @@ export default class TransactionStore {
         Tracking.track('event-withdraw');
       }
     } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/withdraw`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/withdraw`);
-      }
+      this.handleReqError(err, 'addPendingWithdraw');
     }
   }
 }
