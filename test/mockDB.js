@@ -82,8 +82,8 @@ export default {
       status: OracleStatus.WITHDRAW,
       name: `Test Topic ${randomInt(1, 10000)}`,
       options: ['A', 'B', 'C'],
-      qtumAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
-      botAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
+      nakaAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
+      nbotAmount: times(3, () => decimalToSatoshi(randomInt(1, 10))),
       resultIdx: randomInt(0, 2),
       escrowAmount: decimalToSatoshi(5),
       language: 'en-US',
@@ -119,7 +119,7 @@ export default {
       optionIdxs: [0, 1, 2],
       resultIdx: randomInt(0, 2),
       amounts: times(3, decimalToSatoshi(randomInt(1, 10))),
-      token: Token.QTUM,
+      token: Token.NAKA,
       consensusThreshold: decimalToSatoshi(100),
       startTime: currentUnix,
       endTime: currentUnix + 100,
@@ -145,7 +145,7 @@ export default {
       topicAddress: cryptoRandomString(40),
       voterAddress: `q${cryptoRandomString(33)}`,
       amount: times(3, decimalToSatoshi(randomInt(1, 10))),
-      token: Token.QTUM,
+      token: Token.NAKA,
     };
   },
 
@@ -183,7 +183,7 @@ export default {
 
   /* Withdraws */
   generateWithdraw(params) {
-    const isQtum = randomInt(0, 1);
+    const isNaka = randomInt(0, 1);
     const tx = new Withdraw({
       txid: cryptoRandomString(64),
       block: {
@@ -192,10 +192,10 @@ export default {
       },
       topicAddress: cryptoRandomString(40),
       withdrawerAddress: cryptoRandomString(40),
-      qtumAmount: isQtum ? decimalToSatoshi(randomInt(1, 10)) : 0,
-      botAmount: !isQtum ? decimalToSatoshi(randomInt(1, 10)) : 0,
+      nakaAmount: isNaka ? decimalToSatoshi(randomInt(1, 10)) : 0,
+      nbotAmount: !isNaka ? decimalToSatoshi(randomInt(1, 10)) : 0,
       version: 0,
-      type: !isQtum ? 'ESCROW' : 'WINNING',
+      type: !isNaka ? 'ESCROW' : 'WINNING',
     });
     Object.assign(tx, params);
     return tx;
@@ -211,7 +211,7 @@ export default {
 
   /* Result Sets */
   generateResultSet(params) {
-    const isFinalize = randomInt(0, 1);
+    const isWithdraw = randomInt(0, 1);
     const tx = new ResultSet({
       txid: cryptoRandomString(64),
       block: {
@@ -219,7 +219,7 @@ export default {
         blockTime: moment.unix(),
       },
       topicAddress: cryptoRandomString(40),
-      oracleAddress: isFinalize ? null : cryptoRandomString(40),
+      oracleAddress: isWithdraw ? null : cryptoRandomString(40),
       fromAddress: cryptoRandomString(40),
       resultIdx: randomInt(0, 2),
       version: 0,
@@ -252,7 +252,7 @@ export default {
       optionIdx: randomInt(0, 2),
       amount: decimalToSatoshi(randomInt(1, 10)),
       version: 0,
-      token: whichType === 0 ? Token.QTUM : Token.BOT,
+      token: whichType === 0 ? Token.NAKA : Token.NBOT,
       type: types[whichType],
     });
     Object.assign(tx, params);

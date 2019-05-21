@@ -6,24 +6,24 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum, filter } from 'lodash';
-import { Phases, EventWarningType, TransactionStatus, TransactionType } from 'constants';
+import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
+import { FavoriteButton } from 'components';
+import { BigNumber } from 'bignumber.js';
 
-import FavoriteButton from './FavoriteButton';
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers';
+import { getEndTimeCountDownString, satoshiToDecimal } from '../../helpers';
+import carousel from '../../scenes/Event/components/Leaderboard/carousel';
 
-const { BETTING, RESULT_SETTING, VOTING, FINALIZING, WITHDRAWING } = Phases;
+const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
   setResult: { id: 'str.setResult', defaultMessage: 'Set Result' },
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
-  finalizeResult: { id: 'str.finalizeResult', defaultMessage: 'Finalize Result' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
 });
-
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -33,77 +33,85 @@ export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    endTime: PropTypes.string,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     onClick: PropTypes.func,
   };
 
   static defaultProps = {
-    endTime: undefined,
     onClick: null,
   };
 
   getAmountLabel = () => {
-    const { phase, token, amounts, qtumAmount, botAmount } = this.props.event;
-    switch (phase) {
+    const { status, totalBets } = this.props.event;
+
+    switch (status) {
+      case CREATED:
       case BETTING:
-      case RESULT_SETTING:
-      case VOTING: {
-        const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${amount} ${token}`;
-      }
-      case FINALIZING: {
-        return '';
-      }
+      case ORACLE_RESULT_SETTING:
+      case OPEN_RESULT_SETTING:
+      case ARBITRATION:
       case WITHDRAWING: {
-        const totalQTUM = parseFloat(sum(qtumAmount).toFixed(2));
-        const totalBOT = parseFloat(sum(botAmount).toFixed(2));
-        return `${totalQTUM} QTUM, ${totalBOT} BOT`;
+        // const amount = parseFloat(sum(amounts).toFixed(2));
+        return `${totalBets} NBOT`;
       }
       default: {
-        console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
+        console.error(`Unhandled status: ${status}`); // eslint-disable-line
         break;
       }
     }
   }
 
   getButtonText = () => {
-    const { phase } = this.props.event;
-    switch (phase) {
+    const { status } = this.props.event;
+    switch (status) {
+      case CREATED:
       case BETTING: return messages.placeBet;
-      case RESULT_SETTING: return messages.setResult;
-      case VOTING: return messages.arbitrate;
-      case FINALIZING: return messages.finalizeResult;
+      case ORACLE_RESULT_SETTING:
+      case OPEN_RESULT_SETTING: return messages.setResult;
+      case ARBITRATION: return messages.arbitrate;
       case WITHDRAWING: return messages.withdraw;
-      default: console.error(`Unhandled phase: ${phase}`); // eslint-disable-line
+      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
     }
   }
 
   get isWithdrawn() {
-    const { event: { phase, transactions } } = this.props;
-    if (phase !== Phases.WITHDRAWING) return false;
+    const { event: { status, transactions } } = this.props;
+    if (status !== WITHDRAWING) return false;
     const successTxs = filter(transactions, { status: TransactionStatus.SUCCESS, type: TransactionType.WITHDRAW });
 
     if (successTxs.length > 0) return true;
     return false;
   }
 
+  getEndTime = () => {
+    const { event, event: { status } } = this.props;
+    switch (status) {
+      case CREATED: return undefined;
+      case BETTING: return event.betEndTime;
+      case ORACLE_RESULT_SETTING: return event.resultSetEndTime;
+      case OPEN_RESULT_SETTING: return event.resultSetEndTime;
+      case ARBITRATION: return event.arbitrationEndTime;
+      case WITHDRAWING: return undefined;
+      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
+    }
+  }
+
   render() {
-    const { classes, index, onClick, store: { ui } } = this.props;
-    const { name, isPending, isUpcoming, url, endTime, phase } = this.props.event;
+    const { classes, index, onClick, store: { ui, naka: { account } } } = this.props;
+    const { address, name, isPending, isUpcoming, txid, url, status } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
     const { currentTimeUnix } = ui;
-
+    const endTime = this.getEndTime();
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {isPending && phase !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
-              {isUpcoming && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
-              {isPending && phase === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+              {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+              {isUpcoming(account) && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
+              {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
               {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
@@ -111,7 +119,7 @@ export default class EventCard extends Component {
                     {name}
                   </Typography>
                 </div>
-                <FavoriteButton event={this.props.event} />
+                <FavoriteButton eventAddress={address} />
               </div>
               <div className={classes.eventCardInfo}>
                 {amountLabel && (
@@ -124,7 +132,7 @@ export default class EventCard extends Component {
                 <div className={classes.eventCardInfoItem}>
                   <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
                   {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(this.props.event.endTime - currentTimeUnix, locale, localeMessages)}</Fragment>
+                    ? <Fragment>{getEndTimeCountDownString(endTime - currentTimeUnix, locale, localeMessages)}</Fragment>
                     : <FormattedMessage id="str.end" defaultMessage="Ended" />
                   }
                 </div>
@@ -132,7 +140,7 @@ export default class EventCard extends Component {
             </div>
             <Divider />
             <div className={cx(classes.eventCardSection, 'button')}>
-              {isUpcoming
+              {isUpcoming(account)
                 ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" />
                 : formatMessage(this.getButtonText())
               }

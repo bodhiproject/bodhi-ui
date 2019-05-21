@@ -61,7 +61,7 @@ const TableHeader = () => (
 );
 
 
-const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, botWon, qtumWon }, store, key }) => {
+const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, nbotWon, nakaWon }, store, key }) => {
   const { eventPage } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig(
     { type, address },
@@ -69,8 +69,8 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, bo
     eventPage.transactionHistoryItems,
     eventPage.address,
   );
-  const botWonText = botWon ? `${botWon} ${Token.BOT}` : '';
-  const qtumWonText = qtumWon ? `${qtumWon} ${Token.QTUM}` : '';
+  const nbotWonText = nbotWon ? `${nbotWon} ${Token.NBOT}` : '';
+  const nakaWonText = nakaWon ? `${nakaWon} ${Token.NAKA}` : '';
 
   return (
     <TableRow key={key}>
@@ -91,7 +91,7 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, bo
         )}
       </TableCell>
       <TableCell padding="dense">
-        {`${botWonText}${!_.isEmpty(botWonText) && !_.isEmpty(qtumWonText) ? ', ' : ''}${qtumWonText}`}
+        {`${nbotWonText}${!_.isEmpty(nbotWonText) && !_.isEmpty(nakaWonText) ? ', ' : ''}${nakaWonText}`}
       </TableCell>
       <TableCell padding="dense">
         <Button

@@ -8,7 +8,6 @@ import { Tabs, Tab, withStyles } from '@material-ui/core';
 import styles from './styles';
 import { ResultHistory, TransactionHistory } from '../';
 
-const { TOPIC } = EventType;
 const TAB_RESULT_HISTORY = 0;
 const TAB_MY_TRANSACTIONS = 1;
 const TAB_ALL_TRANSACTIONS = 2;
@@ -35,14 +34,8 @@ export default class HistoryTable extends Component {
   };
 
   render() {
-    const { classes, intl, store: { eventPage } } = this.props;
+    const { classes, intl, store: { eventPage: { resultSetsHistory } } } = this.props;
     const { tabValue } = this.state;
-    let currentEvent;
-    if (eventPage.type === TOPIC) {
-      currentEvent = eventPage.topic;
-    } else {
-      currentEvent = eventPage.oracle;
-    }
 
     return (
       <div className={classes.mainTableContainer}>
@@ -53,26 +46,26 @@ export default class HistoryTable extends Component {
           value={tabValue}
           onChange={this.handleChange}
         >
-          {this.props.resultHistory && <Tab
+          <Tab
             value={TAB_RESULT_HISTORY}
             label={intl.formatMessage({ id: 'str.resultHistory', defaultMessage: 'Result History' })}
             className={classes.pickerTab}
-          />}
-          {this.props.transactionHistory && <Tab
+          />
+          <Tab
             value={TAB_MY_TRANSACTIONS}
             label={intl.formatMessage({ id: 'str.myTransactions', defaultMessage: 'My Transactions' })}
             className={classes.pickerTab}
-          />}
-          {this.props.transactionHistory && <Tab
+          />
+          <Tab
             value={TAB_ALL_TRANSACTIONS}
             label={intl.formatMessage({ id: 'str.allTransactions', defaultMessage: 'All Transactions' })}
             className={classes.pickerTab}
-          />}
+          />
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === TAB_RESULT_HISTORY && <ResultHistory oracles={eventPage.oracles} currentEvent={currentEvent} />}
-          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions options={currentEvent.options} />}
-          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory options={currentEvent.options} />}
+          {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
+          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
+          {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
         </div>
       </div>
     );

@@ -21,13 +21,13 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.QTUM_PREDICTION}`}
-        component={asyncComponent(() => import('../QtumPrediction'))}
+        path={`${url}${Routes.PREDICTION}`}
+        component={asyncComponent(() => import('../Prediction'))}
       />
       <Route
         exact
-        path={`${url}${Routes.BOT_COURT}`}
-        component={asyncComponent(() => import('../BotCourt'))}
+        path={`${url}${Routes.ARBITRATION}`}
+        component={asyncComponent(() => import('../Arbitration'))}
       />
       <Route
         exact
@@ -36,7 +36,7 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}/oracle/:hashId`}
+        path={`${url}/event/:url`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route
@@ -61,22 +61,12 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.FINALIZE}`}
-        component={asyncComponent(() => import('../Activities'))}
-      />
-      <Route
-        exact
         path={`${url}${Routes.WITHDRAW}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route
         exact
         path={`${url}${Routes.ACTIVITY_HISTORY}`}
-        component={asyncComponent(() => import('../Activities'))}
-      />
-      <Route
-        exact
-        path={`${url}${Routes.FAVORITE}`}
         component={asyncComponent(() => import('../Activities'))}
       />
       <Route

@@ -93,7 +93,7 @@ module.exports = {
       'react-native': 'react-native-web',
       components$: sources('../src/components'),
       constants$: sources('../src/constants'),
-      models$: sources('../src/stores/models'),
+      models$: sources('../src/models'),
       stores$: sources('../src/stores'),
     },
     plugins: [

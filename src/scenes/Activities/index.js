@@ -6,25 +6,19 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Routes, EventStatus } from 'constants';
 
 import ResultSetting from './ResultSetting';
-import Finalize from './Finalize';
 import Withdraw from './Withdraw';
 import ActivityHistory from './ActivityHistory';
 import styles from './styles';
-const { SET, FINALIZE, WITHDRAW, ACTIVITY_HISTORY } = Routes;
+const { SET, WITHDRAW, ACTIVITY_HISTORY } = Routes;
 
 const TAB_SET = 0;
-const TAB_FINALIZE = 1;
-const TAB_WITHDRAW = 2;
-const TAB_HISTORY = 3;
+const TAB_WITHDRAW = 1;
+const TAB_HISTORY = 2;
 
 const messages = defineMessages({
   set: {
     id: 'activitiesTab.Set',
     defaultMessage: 'Result Setting',
-  },
-  finalize: {
-    id: 'str.finalize',
-    defaultMessage: 'Finalize',
   },
   withdraw: {
     id: 'str.withdraw',
@@ -50,7 +44,6 @@ export default class Activities extends Component {
 
   tabIdx = { // Determine tab index based on path
     [SET]: TAB_SET,
-    [FINALIZE]: TAB_FINALIZE,
     [WITHDRAW]: TAB_WITHDRAW,
     [ACTIVITY_HISTORY]: TAB_HISTORY,
   }[this.props.match.path]
@@ -64,11 +57,6 @@ export default class Activities extends Component {
       case EventStatus.SET: {
         label = intl.formatMessage(messages.set);
         count = global.userData.resultSettingCount;
-        break;
-      }
-      case EventStatus.FINALIZE: {
-        label = intl.formatMessage(messages.finalize);
-        count = global.userData.finalizeCount;
         break;
       }
       case EventStatus.WITHDRAW: {
@@ -92,10 +80,6 @@ export default class Activities extends Component {
     switch (value) {
       case TAB_SET: {
         this.props.history.push(Routes.SET);
-        break;
-      }
-      case TAB_FINALIZE: {
-        this.props.history.push(Routes.FINALIZE);
         break;
       }
       case TAB_WITHDRAW: {
@@ -131,11 +115,6 @@ export default class Activities extends Component {
             classes={{ label: classes.activitiesTabLabel }}
           />
           <Tab
-            label={this.getTabLabel(EventStatus.FINALIZE)}
-            className={classes.activitiesTabButton}
-            classes={{ label: classes.activitiesTabLabel }}
-          />
-          <Tab
             label={this.getTabLabel(EventStatus.WITHDRAW)}
             className={classes.activitiesTabButton}
             classes={{ label: classes.activitiesTabLabel }}
@@ -148,7 +127,6 @@ export default class Activities extends Component {
         </Tabs>
         <div className={classes.activitiesTabContainer}>
           {this.tabIdx === TAB_SET && <ResultSetting />}
-          {this.tabIdx === TAB_FINALIZE && <Finalize />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
           {this.tabIdx === TAB_HISTORY && <ActivityHistory />}
         </div>

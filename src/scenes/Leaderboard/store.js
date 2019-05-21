@@ -7,19 +7,19 @@ import { satoshiToDecimal } from '../../helpers/utility';
 const INIT_VALUES = {
   eventCount: 0,
   participantsCount: 0,
-  totalBOT: '',
-  totalQTUM: '',
+  totalNBOT: '',
+  totalNAKA: '',
   leaderboardVotes: [],
   activeStep: 0,
 };
 
-const paras = [Token.QTUM, Token.BOT];
+const paras = [Token.NAKA, Token.NBOT];
 
 export default class LeaderboardStore {
   @observable eventCount = INIT_VALUES.eventCount
   @observable participantsCount = INIT_VALUES.participantsCount
-  @observable totalBOT = INIT_VALUES.totalBOT
-  @observable totalQTUM = INIT_VALUES.totalQTUM
+  @observable totalNBOT = INIT_VALUES.totalNBOT
+  @observable totalNAKA = INIT_VALUES.totalNAKA
   @observable leaderboardVotes = INIT_VALUES.leaderboardVotes
   @observable activeStep = INIT_VALUES.activeStep
   leaderboardLimit = 10
@@ -41,16 +41,16 @@ export default class LeaderboardStore {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES);
-    this.app.ui.location = Routes.LEADERBOARD;
-    const res = await queryLeaderboardStats();
-    Object.assign(this, res, { totalBOT: satoshiToDecimal(res.totalBot), totalQTUM: satoshiToDecimal(res.totalQtum) });
-    await this.loadLeaderboard();
+    // Object.assign(this, INIT_VALUES);
+    // this.app.ui.location = Routes.LEADERBOARD;
+    // const res = await queryLeaderboardStats();
+    // Object.assign(this, res, { totalNBOT: satoshiToDecimal(res.totalNbot), totalNAKA: satoshiToDecimal(res.totalNAKA) });
+    // await this.loadLeaderboard();
   }
 
   @action
   loadLeaderboard = async () => {
-    const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
-    this.leaderboardVotes = votes;
+    // const { votes } = await queryMostVotes([{ token: paras[this.activeStep] }], null, 10, 0);
+    // this.leaderboardVotes = votes;
   }
 }

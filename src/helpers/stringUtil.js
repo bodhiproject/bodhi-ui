@@ -10,7 +10,7 @@ const strings = defineMessages({
   },
   approveBotTransfer: {
     id: 'tx.approveBotTransfer',
-    defaultMessage: 'Approve BOT Transfer',
+    defaultMessage: 'Approve NBOT Transfer',
   },
   createEvent: {
     id: 'str.createEvent',
@@ -27,10 +27,6 @@ const strings = defineMessages({
   vote: {
     id: 'str.vote',
     defaultMessage: 'Vote',
-  },
-  finalizeResult: {
-    id: 'str.finalizeResult',
-    defaultMessage: 'Finalize Result',
   },
   withdraw: {
     id: 'str.withdraw',
@@ -66,9 +62,6 @@ export function getTxTypeString(txType, intl) {
     }
     case TransactionType.VOTE: {
       return formatMessage(strings.vote);
-    }
-    case TransactionType.FINALIZE_RESULT: {
-      return formatMessage(strings.finalizeResult);
     }
     case TransactionType.WITHDRAW: {
       return formatMessage(strings.withdraw);

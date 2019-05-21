@@ -10,7 +10,7 @@
       "root": ["./src"],
       "alias": {
         "constants":"./src/constants",
-        "models":"./src/stores/models"
+        "models":"./src/models"
       }
     }]
   ]

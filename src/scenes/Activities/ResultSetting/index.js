@@ -16,13 +16,13 @@ export default class ResultSetting extends Component {
   }
 
   render() {
-    const { currentAddress } = this.props.store.wallet;
+    const { account } = this.props.store.naka;
     const { list, loadMore, loadingMore, loaded } = this.props.store.activities.resultSetting;
     if (!loaded) return <Loading />;
     const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
     return (
       <Fragment>
-        {currentAddress ? (
+        {account ? (
           <InfiniteScroll
             spacing={theme.padding.space3X.value}
             data={events}

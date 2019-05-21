@@ -9,13 +9,18 @@ import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsPr
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
-
 import App from './scenes/App';
 import bodhiTheme, { theme as styledTheme } from './config/theme';
-import store from './stores/AppStore';
+import { isProduction } from './config/app';
 import graphqlClient from './network/graphql';
+import createStore from './stores/AppStore';
 import '../src/style/styles.less';
 
+// Init MobX Store with GraphQL client
+const store = createStore(graphqlClient);
+if (!isProduction()) window.store = store; // Add store to window for debugging
+
+// Sync history with store's router
 const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, store.router);
 

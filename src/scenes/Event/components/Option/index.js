@@ -47,6 +47,7 @@ export default class Option extends Component {
       amountPlaceholder,
     } = this.props;
 
+
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
     const { eventPage, wallet } = store;
@@ -123,7 +124,7 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, error, ...props
           placeholder={amountPlaceholder || '0.00'}
           className={classes.eventOptionInput}
           endAdornment={
-            <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.BOT : token}</InputAdornment>
+            <InputAdornment position="end">{Token.NBOT}</InputAdornment>
           }
           {...props}
         />
@@ -142,9 +143,9 @@ const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { ad
       <FormControl fullWidth>
         <InputLabel htmlFor="address" shrink>ADDRESS</InputLabel>
         <Select inputProps={{ id: 'address' }} {...props}>
-          {addresses.map(({ address, bot, qtum }) => (
+          {addresses.map(({ address, nbot, naka }) => (
             <MenuItem key={address} value={address}>
-              {`${address} (${qtum ? Number(qtum).toFixed(2) : 0} QTUM, ${bot ? Number(bot).toFixed(2) : 0} BOT)`}
+              {`${address} (${naka ? Number(naka).toFixed(2) : 0} NAKA, ${nbot ? Number(nbot).toFixed(2) : 0} NBOT)`}
             </MenuItem>
           ))}
         </Select>

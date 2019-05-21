@@ -7,7 +7,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
-
+import { TransactionType } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
@@ -33,33 +33,49 @@ class EventRow extends Component {
       this.setState({ expanded: !this.state.expanded });
     }
 
-    onEventNameClick = (topicAddress) => async (event) => {
+    onEventNameClick = (eventAddress) => async (event) => {
       event.stopPropagation();
-      if (topicAddress) {
-        const { activities: { history: { getOracleAddress } } } = this.props.store;
+      if (eventAddress) {
         const { history } = this.props;
-        const nextLocation = await getOracleAddress(topicAddress);
+        const nextLocation = `/event/${eventAddress}`;
         if (nextLocation) history.push(nextLocation);
       }
     }
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
+      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block: { blockTime: createdTime } } = transaction;
       const { expanded } = this.state;
+
+      // parse necessary data
+      let { name, address, amount } = transaction;
+      if (txType === TransactionType.CREATE_EVENT) {
+        amount = transaction.escrowAmount;
+      } else if (txType === TransactionType.BET
+        || txType === TransactionType.RESULT_SET
+        || txType === TransactionType.VOTE) {
+        address = transaction.eventAddress;
+        name = transaction.resultIndex;
+      } else {
+        // TODO: fix this, these are both string values.
+        // need to convert to BN instances, add, then .toString()
+        amount = transaction.winningAmount + transaction.escrowWithdrawAmount;
+        address = transaction.eventAddress;
+        name = 'Withdraw';
+      }
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
             <TableCell>{moment.unix(createdTime).format('LLL')}</TableCell>
-            <TableCell>{getTxTypeString(type, intl)}</TableCell>
-            <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
-              {(topic && topic.name) || name}
+            <TableCell>{getTxTypeString(txType, intl)}</TableCell>
+            <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
+              {name || ''}
             </NameLinkCell>
-            <TableCell numeric>{`${amount || ''}  ${amount ? token : ''}`}</TableCell>
-            <TableCell numeric>{fee}</TableCell>
+            <TableCell numeric>{`${amount || ''}`}</TableCell>
+            <TableCell numeric>{cumulativeGasUsed}</TableCell>
             <TableCell>
-              <FormattedMessage id={`str.${status}`.toLowerCase()}>
+              <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
                 {(txt) => i18nToUpperCase(txt)}
               </FormattedMessage>
             </TableCell>

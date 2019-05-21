@@ -13,16 +13,12 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class TransactionHistory extends Component {
-  static propTypes = {
-    options: PropTypes.array.isRequired,
-  };
-
   render() {
-    const { options, store: { eventPage, wallet } } = this.props;
+    const { store: { eventPage, wallet, naka } } = this.props;
     const { transactionHistoryItems, topic } = eventPage;
     return (
       <div>
-        {transactionHistoryItems.length && options.length ? (
+        {transactionHistoryItems.length ? (
           <ResponsiveTable>
             <TableHead>
               <TableRow>
@@ -47,7 +43,7 @@ export default class TransactionHistory extends Component {
             </TableHead>
             <TableBody>
               {transactionHistoryItems.map((transaction) => (
-                (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} topic={topic} />
+                (!(this.props.myTransactions && naka.account === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} topic={topic} />
               ))}
             </TableBody>
           </ResponsiveTable>

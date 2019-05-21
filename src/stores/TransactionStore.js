@@ -1,14 +1,15 @@
-import { observable, action, runInAction, reaction } from 'mobx';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import axios from 'axios';
 import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
 import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
+import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { createTransaction } from '../network/graphql/mutations';
+import { addPendingEvent, addPendingBet, addPendingResultSet, createTransaction } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -112,16 +113,31 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+      if (!nbotOwner) {
+        throw new Error('exchanger not existed');
+      }
+      if (!exchangeRate) {
+        throw new Error('excahngeRate not existed');
+      }
       const paramsHex = web3EthAbi.encodeParameters(
         createEventFuncTypes,
         eventParams,
       ).substr(2);
+
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, { gas }]);
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventFactoryAddr, escrowAmt, data, {
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+        gas,
+      }]);
       return txid;
     } catch (err) {
-      throw err; // TODO: show errror message and show error in error dialog
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${err.message}`);
+      });
     }
   };
 
@@ -135,16 +151,30 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+      if (!nbotOwner) {
+        throw new Error('exchanger not existed');
+      }
+      if (!exchangeRate) {
+        throw new Error('excahngeRate not existed');
+      }
       const paramsHex = web3EthAbi.encodeParameters(
         playEventFuncTypes,
         params,
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
       // Send tx
-      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, { gas }]);
+      const txid = await promisify(nbotMethods.transfer['address,uint256,bytes'].sendTransaction, [eventAddr, amount, data, {
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+        gas,
+      }]);
       return txid;
     } catch (err) {
-      throw err; // TODO: show errror message and show error in error dialog
+      runInAction(() => {
+        this.app.components.globalDialog.setError(`${err.message}`);
+      });
     }
   };
 
@@ -217,18 +247,18 @@ export default class TransactionStore {
   @action
   showConfirmDialog = async () => {
     try {
-      each(this.transactions, async (tx) => {
-        const { data } = await axios.post(networkRoutes.api.transactionCost, {
-          type: tx.type,
-          senderAddress: tx.senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress: tx.oracleAddress,
-          optionIdx: tx.optionIdx,
-          amount: tx.amountSatoshi,
-          token: tx.token,
-        });
-        tx.fees = map(data, (item) => new TransactionCost(item));
-      });
+      // each(this.transactions, async (tx) => {
+      //   const { data } = await axios.post(networkRoutes.api.transactionCost, {
+      //     type: tx.type,
+      //     senderAddress: tx.senderAddress,
+      //     topicAddress: tx.topicAddress,
+      //     oracleAddress: tx.oracleAddress,
+      //     optionIdx: tx.optionIdx,
+      //     amount: tx.amountSatoshi,
+      //     token: tx.token,
+      //   });
+      //   tx.fees = map(data, (item) => new TransactionCost(item));
+      // });
 
       runInAction(() => {
         this.visible = true;
@@ -250,17 +280,12 @@ export default class TransactionStore {
 
     const confirmFunc = {
       [TransactionType.RESET_APPROVE]: this.executeResetApprove,
-      [TransactionType.APPROVE_CREATE_EVENT]: this.executeApproveCreateEvent,
       [TransactionType.CREATE_EVENT]: this.executeCreateEvent,
       [TransactionType.BET]: this.executeBet,
-      [TransactionType.APPROVE_SET_RESULT]: this.executeApproveSetResult,
       [TransactionType.SET_RESULT]: this.executeSetResult,
-      [TransactionType.APPROVE_VOTE]: this.executeApproveVote,
       [TransactionType.VOTE]: this.executeVote,
-      [TransactionType.FINALIZE_RESULT]: this.executeFinalizeResult,
       [TransactionType.WITHDRAW]: this.executeWithdraw,
       [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
-      [TransactionType.TRANSFER]: this.executeTransfer,
     };
     await confirmFunc[tx.type](index, tx);
   }
@@ -269,6 +294,7 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
+  // TODO: handle for specific types
   onTxExecuted = async (tx, pendingTx) => {
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
@@ -276,7 +302,6 @@ export default class TransactionStore {
     }
 
     this.app.txSentDialog.open(tx.txid);
-    await this.app.pendingTxsSnackbar.init();
   }
 
   /**
@@ -297,21 +322,6 @@ export default class TransactionStore {
   }
 
   /**
-   * Executes an approve.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeApprove = async (senderAddress, spender, amountSatoshi) => {
-    const bodhiToken = getContracts().BodhiToken;
-    const contract = this.app.global.qweb3.Contract(bodhiToken.address, bodhiToken.abi);
-    const { txid, args: { gasLimit, gasPrice } } = await contract.send('approve', {
-      methodArgs: [spender, amountSatoshi],
-      senderAddress,
-    });
-    return { txid, gasLimit, gasPrice };
-  }
-
-  /**
    * Adds a reset approve tx to the queue.
    * @param {string} spender Address to reset the allowance for.
    * @param {string} topicAddress Address of the TopicEvent. Only for Set Result and Vote.
@@ -326,175 +336,7 @@ export default class TransactionStore {
       topicAddress,
       oracleAddress,
       amount: '0',
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes an approve to reset the allowance to 0.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeResetApprove = async (index, tx) => {
-    try {
-      const { senderAddress, receiverAddress, amount } = tx;
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, receiverAddress, amount);
-      if (!txid) throw Error('Error executing approve.');
-
-      // Create pending tx on server
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-      await createTransaction('resetApprove', {
-        txid,
-        gasLimit: gasLimit.toString(),
-        gasPrice: gasPrice.toFixed(8),
-        senderAddress,
-        receiverAddress: tx.receiverAddress,
-        topicAddress: tx.topicAddress,
-        oracleAddress: tx.oracleAddress,
-        amount,
-      });
-
-      await this.onTxExecuted(tx);
-      Tracking.track('event-resetApprove');
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/reset-approve`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/reset-approve`);
-      }
-    }
-  }
-
-  /**
-   * Adds an approve create event tx to the queue.
-   * @param {string} name Name of the event.
-   * @param {array} options String array of the options for the event.
-   * @param {string} resultSetterAddress Address of the result setter.
-   * @param {string} bettingStartTime Unix timestamp of the betting start time.
-   * @param {string} bettingEndTime Unix timestamp of the betting end time.
-   * @param {string} resultSettingStartTime Unix timestamp of the result setting start time.
-   * @param {string} resultSettingEndTime Unix timestamp of the result setting end time.
-   * @param {string} amountSatoshi Escrow amount.
-   */
-  @action
-  addApproveCreateEventTx = async (
-    name,
-    options,
-    resultSetterAddress,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    amountSatoshi,
-    language,
-  ) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.APPROVE_CREATE_EVENT,
-      senderAddress: this.app.wallet.currentAddress,
-      name,
-      options,
-      resultSetterAddress,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      amount: amountSatoshi,
-      token: Token.BOT,
-      language,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes an approve for a create event.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeApproveCreateEvent = async (index, tx) => {
-    try {
-      const { senderAddress, amountSatoshi } = tx;
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(
-        senderAddress,
-        getContracts().AddressManager.address,
-        amountSatoshi,
-      );
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      // Create pending tx on server
-      if (txid) {
-        await createTransaction('approveCreateEvent', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          name: tx.name,
-          options: tx.options,
-          resultSetterAddress: tx.resultSetterAddress,
-          bettingStartTime: tx.bettingStartTime,
-          bettingEndTime: tx.bettingEndTime,
-          resultSettingStartTime: tx.resultSettingStartTime,
-          resultSettingEndTime: tx.resultSettingEndTime,
-          amount: amountSatoshi,
-          language: tx.language,
-        });
-
-        this.addPendingApprove(txid);
-        await this.onTxExecuted(tx);
-        Tracking.track('event-approveCreateEvent');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/approve-create-event`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/approve-create-event`);
-      }
-    }
-  }
-
-  /**
-   * Adds a create event tx to the queue.
-   * @param {string} approveTxid Txid of the approve.
-   * @param {string} senderAddress Address of the sender.
-   * @param {string} name Name of the event.
-   * @param {array} options String array of the options for the event.
-   * @param {string} resultSetterAddress Address of the result setter.
-   * @param {string} bettingStartTime Unix timestamp of the betting start time.
-   * @param {string} bettingEndTime Unix timestamp of the betting end time.
-   * @param {string} resultSettingStartTime Unix timestamp of the result setting start time.
-   * @param {string} resultSettingEndTime Unix timestamp of the result setting end time.
-   * @param {string} amount Escrow amount in Botoshi.
-   */
-  @action
-  addCreateEventTx = async (
-    approveTxid,
-    senderAddress,
-    name,
-    options,
-    resultSetterAddress,
-    bettingStartTime,
-    bettingEndTime,
-    resultSettingStartTime,
-    resultSettingEndTime,
-    amount,
-    language,
-  ) => {
-    this.transactions.push(observable.object(new Transaction({
-      approveTxid,
-      type: TransactionType.CREATE_EVENT,
-      senderAddress,
-      name,
-      options,
-      resultSetterAddress,
-      bettingStartTime,
-      bettingEndTime,
-      resultSettingStartTime,
-      resultSettingEndTime,
-      amount,
-      token: Token.BOT,
-      language,
+      token: Token.NBOT,
     })));
     await this.showConfirmDialog();
   }
@@ -505,92 +347,78 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeCreateEvent = async (index, tx) => {
+  executeCreateEvent = async (tx) => {
     try {
       const {
         senderAddress,
-        resultSetterAddress,
+        centralizedOracle,
         name,
-        options,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
+        results,
+        betStartTime,
+        betEndTime,
+        resultSetStartTime,
+        resultSetEndTime,
         amountSatoshi,
         language,
       } = tx;
 
       const createEventParams = [
         name,
-        options,
-        bettingStartTime,
-        bettingEndTime,
-        resultSettingStartTime,
-        resultSettingEndTime,
-        resultSetterAddress,
+        toJS(results),
+        betStartTime,
+        betEndTime,
+        resultSetStartTime,
+        resultSetEndTime,
+        centralizedOracle,
       ];
+      for (let i = 0; i < 10; i++) {
+        if (createEventParams[1][i]) {
+          createEventParams[1][i] = fromAscii(createEventParams[1][i]);
+        } else {
+          createEventParams[1][i] = fromAscii('');
+        }
+      }
 
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
         eventFactoryAddr: getContracts().EventFactory.address,
-        escrowAmt: '10000000000', // TODO: fetch escrow from configmanager later
+        escrowAmt: amountSatoshi,
         gas: 3000000,
       });
 
       Object.assign(tx, { txid });
-
       // Create pending tx on server
       if (txid) {
-        await createTransaction('createEvent', {
+        const { graphqlClient } = this.app;
+        const res = await addPendingEvent(graphqlClient, {
           txid,
-          senderAddress,
-          resultSetterAddress,
+          ownerAddress: senderAddress,
           name,
-          options,
-          bettingStartTime,
-          bettingEndTime,
-          resultSettingStartTime,
-          resultSettingEndTime,
-          amount: amountSatoshi,
-          token: Token.BOT,
+          results: createEventParams[1],
+          numOfResults: results.length,
+          centralizedOracle,
+          betStartTime,
+          betEndTime,
+          resultSetStartTime,
+          resultSetEndTime,
           language,
         });
 
-        await this.onTxExecuted(tx);
-        this.app.qtumPrediction.loadFirst();
+        await this.onTxExecuted(res);
+        this.app.prediction.loadFirst();
         Tracking.track('event-createEvent');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/create-event`);
+        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, 'network/addPendingEvent');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/create-event`);
+        this.app.components.globalDialog.setError(err.message, '/addPendingEvent');
       }
     }
   }
 
-  /**
-   * Adds a bet tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {number} optionIdx Index of the option being bet.
-   * @param {string} amount Amount of the bet.
-   */
-  @action
-  addBetTx = async (topicAddress, oracleAddress, optionIdx, amount) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.BET,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount,
-      token: Token.QTUM,
-    })));
-    await this.showConfirmDialog();
-  }
 
   /**
    * Executes a bet.
@@ -598,15 +426,15 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeBet = async (index, tx) => {
+  executeBet = async (tx) => {
     try {
-      const { oracleAddress, optionIdx, amount, senderAddress } = tx;
+      const { eventAddr, optionIdx, amount, senderAddress, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: betParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: BET_EVENT_FUNC_SIG,
         amount,
         gas: 300000,
@@ -614,108 +442,26 @@ export default class TransactionStore {
       Object.assign(tx, { txid });
       if (txid) {
         // Create pending tx on server
-        const pendingTx = await createTransaction('createBet', {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingBet(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
+          eventAddress: eventAddr,
+          betterAddress: address,
+          resultIndex: optionIdx,
           amount,
+          eventRound,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
+        await this.onTxExecuted(res);
         Tracking.track('event-bet');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/bet`);
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/bet');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/bet`);
+        this.app.components.globalDialog.setError(err.message, '/bet');
       }
     }
-  }
-
-  /**
-   * Adds an approve set result tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {number} optionIdx Index of the option being set.
-   * @param {string} amountSatoshi Approve amount.
-   */
-  @action
-  addApproveSetResultTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.APPROVE_SET_RESULT,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount: amountSatoshi,
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes an approve for a set result.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeApproveSetResult = async (index, tx) => {
-    try {
-      const { senderAddress, topicAddress, amountSatoshi } = tx;
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, topicAddress, amountSatoshi);
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      // Create pending tx on server
-      if (txid) {
-        const pendingTx = await createTransaction('approveSetResult', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          topicAddress,
-          oracleAddress: tx.oracleAddress,
-          optionIdx: tx.optionIdx,
-          amount: amountSatoshi,
-        });
-
-        this.addPendingApprove(txid);
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-approveSetResult');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/approve-set-result`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/approve-set-result`);
-      }
-    }
-  }
-
-  /**
-   * Adds a set result tx to the queue.
-   * @param {string} approveTxid Txid of the approve.
-   * @param {string} senderAddress Address of the sender.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the CentralizedOracle.
-   * @param {number} optionIdx Index of the option being set.
-   * @param {string} amountSatoshi Consensus threshold.
-   */
-  @action
-  addSetResultTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
-    this.transactions.push(observable.object(new Transaction({
-      approveTxid,
-      type: TransactionType.SET_RESULT,
-      senderAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount: amountSatoshi,
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
   }
 
   /**
@@ -724,125 +470,43 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeSetResult = async (index, tx) => {
+  executeSetResult = async (tx) => {
     try {
-      const { senderAddress, oracleAddress, optionIdx } = tx;
+      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const setResultParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: setResultParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: SET_EVENT_FUNC_SIG,
-        amount: '10000000000', // TODO: get set result amount from where it defines, change to Event.consensusThreshold later
+        amount,
         gas: 500000,
       });
 
       Object.assign(tx, { txid });
       // Create pending tx on server
       if (txid) {
-        const pendingTx = await createTransaction('setResult', {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingResultSet(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
-          amount: tx.amountSatoshi,
+          eventAddress: eventAddr,
+          centralizedOracleAddress: address,
+          resultIndex: optionIdx,
+          amount,
+          eventRound,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
+        await this.onTxExecuted(res);
         Tracking.track('event-setResult');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/set-result`);
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/set-result');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/set-result`);
+        this.app.components.globalDialog.setError(err.message, '/set-resul');
       }
     }
-  }
-
-  /**
-   * Adds a approve vote tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the DecentralizedOracle.
-   * @param {number} optionIdx Index of the option being voted on.
-   * @param {string} amountSatoshi Approve amount.
-   */
-  @action
-  addApproveVoteTx = async (topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.APPROVE_VOTE,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount: amountSatoshi,
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes an approve for a vote.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeApproveVote = async (index, tx) => {
-    try {
-      const { senderAddress, topicAddress, amountSatoshi } = tx;
-      const { txid, gasLimit, gasPrice } = await this.executeApprove(senderAddress, topicAddress, amountSatoshi);
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      // Create pending tx on server
-      if (txid) {
-        const pendingTx = await createTransaction('approveVote', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          topicAddress,
-          oracleAddress: tx.oracleAddress,
-          optionIdx: tx.optionIdx,
-          amount: amountSatoshi,
-        });
-
-        this.addPendingApprove(txid);
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-approveVote');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/approve-vote`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/approve-vote`);
-      }
-    }
-  }
-
-  /**
-   * Adds a vote tx to the queue.
-   * @param {string} approveTxid Txid of the approve.
-   * @param {string} senderAddress Address of the sender.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the DecentralizedOracle.
-   * @param {number} optionIdx Index of the option being voted on.
-   * @param {string} amountSatoshi Vote amount.
-   */
-  @action
-  addVoteTx = async (approveTxid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi) => {
-    this.transactions.push(observable.object(new Transaction({
-      approveTxid,
-      type: TransactionType.VOTE,
-      senderAddress,
-      topicAddress,
-      oracleAddress,
-      optionIdx,
-      amount: amountSatoshi,
-      token: Token.BOT,
-    })));
-    await this.showConfirmDialog();
   }
 
   /**
@@ -851,95 +515,41 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeVote = async (index, tx) => {
+  executeVote = async (tx) => {
     try {
-      const { senderAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
+      const { senderAddress, eventAddr, optionIdx, amount, eventRound } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
         params: voteParams,
-        eventAddr: oracleAddress,
+        eventAddr,
         eventFuncSig: VOTE_EVENT_FUNC_SIG,
-        amount: amountSatoshi,
+        amount,
         gas: 300000,
       });
       Object.assign(tx, { txid });
 
       // Create pending tx on server
       if (txid) {
-        const pendingTx = await createTransaction('createVote', {
+        const { graphqlClient, wallet: { currentWalletAddress: { address } } } = this.app;
+        const res = await addPendingBet(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-          optionIdx,
-          amount: amountSatoshi,
+          eventAddress: eventAddr,
+          betterAddress: address,
+          resultIndex: optionIdx,
+          amount,
+          eventRound,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
+        await this.onTxExecuted(res);
         Tracking.track('event-vote');
       }
     } catch (err) {
       if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/vote`);
+        this.app.components.globalDialog.setError(`${err.message} :`, 'network/vote');
       } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/vote`);
-      }
-    }
-  }
-
-  /**
-   * Adds a finalize result tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   * @param {string} oracleAddress Address of the DecentralizedOracle.
-   */
-  @action
-  addFinalizeResultTx = async (topicAddress, oracleAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.FINALIZE_RESULT,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-      oracleAddress,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes a finalize result.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeFinalizeResult = async (index, tx) => {
-    try {
-      const { senderAddress, oracleAddress } = tx;
-      const contract = this.app.global.qweb3.Contract(oracleAddress, getContracts().DecentralizedOracle.abi);
-      const { txid, args: { gasLimit, gasPrice } } = await contract.send('finalizeResult', {
-        methodArgs: [],
-        senderAddress,
-      });
-      Object.assign(tx, { txid, gasLimit, gasPrice });
-
-      if (txid) {
-        // Create pending tx on server
-        const pendingTx = await createTransaction('finalizeResult', {
-          txid,
-          gasLimit: gasLimit.toString(),
-          gasPrice: gasPrice.toFixed(8),
-          senderAddress,
-          topicAddress: tx.topicAddress,
-          oracleAddress,
-        });
-
-        await this.onTxExecuted(tx, pendingTx);
-        Tracking.track('event-finalizeResult');
-      }
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/finalize-result`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/finalize-result`);
+        this.app.components.globalDialog.setError(err.message, '/vote');
       }
     }
   }
@@ -989,52 +599,6 @@ export default class TransactionStore {
         this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/withdraw`);
       } else {
         this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/withdraw`);
-      }
-    }
-  }
-
-  /**
-   * Adds a transfer tx to the queue.
-   * @param {string} senderAddress Sender of the transfer.
-   * @param {string} receiverAddress Receiver of the transfer.
-   * @param {number|string} amount Amount of the transfer.
-   * @param {string} token Token type.
-   */
-  @action
-  addTransferTx = async (senderAddress, receiverAddress, amount, token) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.TRANSFER,
-      senderAddress,
-      receiverAddress,
-      amount,
-      token,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
-   * Executes a transfer.
-   * @param {number} index Index of the Transaction object.
-   * @param {Transaction} tx Transaction object.
-   */
-  @action
-  executeTransfer = async (index, tx) => {
-    try {
-      const pendingTx = await createTransaction('transfer', {
-        senderAddress: tx.senderAddress,
-        receiverAddress: tx.receiverAddress,
-        amount: tx.amount,
-        token: tx.token,
-      });
-
-      await this.onTxExecuted(pendingTx);
-      await this.app.myWallet.history.addTransaction(pendingTx);
-      Tracking.track('wallet-transfer');
-    } catch (err) {
-      if (err.networkError && err.networkError.result.errors && err.networkError.result.errors.length > 0) {
-        this.app.components.globalDialog.setError(`${err.message} : ${err.networkError.result.errors[0].message}`, `${networkRoutes.graphql.http}/transfer`);
-      } else {
-        this.app.components.globalDialog.setError(err.message, `${networkRoutes.graphql.http}/transfer`);
       }
     }
   }

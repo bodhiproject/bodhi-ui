@@ -5,8 +5,9 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString } from '../../../helpers';
+import { getEndTimeCountDownString, satoshiToDecimal } from '../../../helpers';
 import styles from './styles';
 
 const message = defineMessages({
@@ -24,12 +25,12 @@ const message = defineMessages({
   },
 });
 
-const Sidebar = inject('store')(observer(({ store: { eventPage: { oracle } } }) => (
+const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, endTime }) => (
   <SidebarContainer>
     <EventInfo>
-      <EndDate oracle={oracle} />
-      <Funding oracle={oracle} />
-      <ResultSetter oracle={oracle} />
+      <EndDate endTime={endTime} />
+      <Funding event={event} />
+      <ResultSetter event={event} />
     </EventInfo>
     <StepperVertRight />
   </SidebarContainer>
@@ -41,16 +42,16 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
   </Grid>
 ));
 
-const EndDate = inject('store')(observer(injectIntl(({ oracle: { endTime }, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
+const EndDate = inject('store')(observer(injectIntl(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 
-const Funding = ({ oracle: { amounts, token } }) => (
-  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${parseFloat(_.sum(amounts).toFixed(5)).toString()} ${token}`} />
+const Funding = ({ event: { totalBets } }) => (
+  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${totalBets} NBOT`} />
 );
 
-const ResultSetter = ({ oracle }) => (
-  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterAddress} />
+const ResultSetter = ({ event }) => (
+  <EventInfoBlock id={message.strResultSetterMsg.id} content={event.centralizedOracle} />
 );
 
 const EventInfo = styled.div`

@@ -39,7 +39,7 @@ function getMockGlobalStore() {
 
 function getMockUiStore() {
   return observable({
-    location: Routes.QTUM_PREDICTION,
+    location: Routes.PREDICTION,
   });
 }
 
@@ -48,8 +48,8 @@ function getMockWalletStore() {
     addresses: [
       {
         address: `q${cryptoRandomString(33)}`,
-        qtum: 20000,
-        bot: 20000,
+        naka: 20000,
+        nbot: 20000,
       },
     ],
   });

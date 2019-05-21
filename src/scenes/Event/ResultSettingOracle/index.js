@@ -31,14 +31,14 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
       <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
       <Leaderboard maxSteps={1} />
-      <HistoryTable transactionHistory />
+      <HistoryTable />
     </Content>
     <Sidebar />
   </Row>
 ));
 
 const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} BOT`;
+  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} NBOT`;
   const message = intl.formatMessage(messages.setResultExplanation);
   return <ImportantNote heading={heading} message={message} />;
 });

@@ -1,74 +1,174 @@
-import gql from 'graphql-tag';
-import { each, isFinite } from 'lodash';
-import { Transaction } from 'models';
+import { gql } from 'apollo-boost';
+import { MultipleResultsEvent, Bet, ResultSet, Withdraw } from 'models';
+import { MULTIPLE_RESULTS_EVENT, BET, RESULT_SET, WITHDRAW } from './schema';
 
-import client from './';
-import { TYPE, getMutation, isValidEnum } from './schema';
-import { isProduction } from '../../config/app';
+const MUTA_ADD_PENDING_EVENT = 'addPendingEvent';
+const MUTA_ADD_PENDING_BET = 'addPendingBet';
+const MUTA_ADD_PENDING_RESULT_SET = 'addPendingResultSet';
+const MUTA_ADD_PENDING_WITHDRAW = 'addPendingWithdraw';
 
-if (!isProduction()) {
-  window.mutations = '';
-}
+const MUTATIONS = {
+  addPendingEvent: gql`
+    mutation(
+      $txid: String!
+      $ownerAddress: String!
+      $name: String!
+      $results: [String!]!
+      $numOfResults: Int!
+      $centralizedOracle: String!
+      $betStartTime: Int!
+      $betEndTime: Int!
+      $resultSetStartTime: Int!
+      $resultSetEndTime: Int!
+      $language: String!
+    ) {
+      addPendingEvent(
+        txid: $txid
+        ownerAddress: $ownerAddress
+        name: $name
+        results: $results
+        numOfResults: $numOfResults
+        centralizedOracle: $centralizedOracle
+        betStartTime: $betStartTime
+        betEndTime: $betEndTime
+        resultSetStartTime: $resultSetStartTime
+        resultSetEndTime: $resultSetEndTime
+        language: $language
+      ) {
+        ${MULTIPLE_RESULTS_EVENT}
+      }
+    }
+  `,
+
+  addPendingBet: gql`
+    mutation(
+      $txid: String!
+      $eventAddress: String!
+      $betterAddress: String!
+      $resultIndex: Int!
+      $amount: String!
+      $eventRound: Int!
+    ) {
+      addPendingBet(
+        txid: $txid
+        eventAddress: $eventAddress
+        betterAddress: $betterAddress
+        resultIndex: $resultIndex
+        amount: $amount
+        eventRound: $eventRound
+      ) {
+        ${BET}
+      }
+    }
+  `,
+
+  addPendingResultSet: gql`
+    mutation(
+      $txid: String!
+      $eventAddress: String!
+      $centralizedOracleAddress: String!
+      $resultIndex: Int!
+      $amount: String!
+      $eventRound: Int!
+    ) {
+      addPendingResultSet(
+        txid: $txid
+        eventAddress: $eventAddress
+        centralizedOracleAddress: $centralizedOracleAddress
+        resultIndex: $resultIndex
+        amount: $amount
+        eventRound: $eventRound
+      ) {
+        ${RESULT_SET}
+      }
+    }
+  `,
+
+  addPendingWithdraw: gql`
+    mutation(
+      $txid: String!
+      $eventAddress: String!
+      $winnerAddress: String!
+      $winningAmount: Int!
+      $escrowWithdrawAmount: String!
+    ) {
+      addPendingWithdraw(
+        txid: $txid
+        eventAddress: $eventAddress
+        winnerAddress: $winnerAddress
+        winningAmount: $winningAmount
+        escrowWithdrawAmount: $escrowWithdrawAmount
+      ) {
+        ${WITHDRAW}
+      }
+    }
+  `,
+};
 
 class GraphMutation {
-  constructor(mutationName, args) {
+  constructor(client, mutationName, args) {
+    this.client = client;
     this.mutationName = mutationName;
-    this.schema = getMutation(mutationName);
+    this.mutation = MUTATIONS[mutationName];
     this.args = args;
   }
 
-  constructMapping() {
-    let mappingStr = '';
-    each(this.schema.mapping, (key) => {
-      const value = this.args[key];
-      if (isValidEnum(key, value) || isFinite(value)) {
-        // Enums require values without quotes
-        mappingStr = mappingStr.concat(`${key}: ${value}\n`);
-      } else {
-        mappingStr = mappingStr.concat(`${key}: ${JSON.stringify(value)}\n`);
-      }
-    });
-
-    return mappingStr;
-  }
-
-  build() {
-    const mutation = `
-      mutation {
-        ${this.mutationName}(
-          ${this.constructMapping()}
-        ) {
-          ${this.schema.return}
-        }
-      }
-    `;
-
-    return mutation;
-  }
-
-  async execute() {
-    const mutation = this.build();
-
-    // Post mutation to window
-    if (!isProduction()) {
-      window.mutations += `\n${mutation}`;
-    }
-
-    const res = await client.mutate({
-      mutation: gql`${mutation}`,
+  execute = async () =>
+    this.client.mutate({
+      mutation: this.mutation,
+      variables: this.args,
       fetchPolicy: 'no-cache',
     });
-    return res;
-  }
 }
 
 /**
- * Executes a transaction mutation.
- * @param {string} mutationName Name of the mutation.
+ * Creates a new pending MultipleResultsEvent.
+ * @param {ApolloClient} client Apollo Client instance.
  * @param {object} args Arguments for the mutation.
+ * @return {object} Mutation result.
  */
-export async function createTransaction(mutationName, args) {
-  const res = await new GraphMutation(mutationName, args, TYPE.transaction).execute();
-  const { data: { [mutationName]: tx } } = res;
-  return new Transaction(tx);
-}
+export const addPendingEvent = async (client, args) => {
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_EVENT, args)
+    .execute();
+  const { data: { addPendingEvent: event } } = res;
+  return new MultipleResultsEvent(event);
+};
+
+/**
+ * Creates a new pending Bet.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the mutation.
+ * @return {object} Mutation result.
+ */
+export const addPendingBet = async (client, args) => {
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_BET, args)
+    .execute();
+  const { data: { addPendingBet: bet } } = res;
+  return new Bet(bet);
+};
+
+/**
+ * Creates a new pending Result Set.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the mutation.
+ * @return {object} Mutation result.
+ */
+export const addPendingResultSet = async (client, args) => {
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_RESULT_SET, args)
+    .execute();
+  const { data: { addPendingResultSet: resultSet } } = res;
+  return new ResultSet(resultSet);
+};
+
+/**
+ * Creates a new pending Withdraw.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the mutation.
+ * @return {object} Mutation result.
+ */
+export const addPendingWithdraw = async (client, args) => {
+  const res = await new GraphMutation(client, MUTA_ADD_PENDING_WITHDRAW, args)
+    .execute();
+  const { data: { addPendingWithdraw: withdraw } } = res;
+  return new Withdraw(withdraw);
+};

@@ -1,13 +1,20 @@
 module.exports = {
+  EVENT_STATUS: {
+    CREATED: 'CREATED',
+    BETTING: 'BETTING',
+    ORACLE_RESULT_SETTING: 'ORACLE_RESULT_SETTING',
+    OPEN_RESULT_SETTING: 'OPEN_RESULT_SETTING',
+    ARBITRATION: 'ARBITRATION',
+    WITHDRAWING: 'WITHDRAWING',
+  },
+
   Routes: {
-    QTUM_PREDICTION: '/',
-    BOT_COURT: '/bot-court',
+    PREDICTION: '/',
+    ARBITRATION: '/arbitration',
     WALLET: '/wallet',
     SET: '/activities/set',
-    FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
-    FAVORITE: '/activities/favorite',
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
     LEADERBOARD: '/leaderboard',
@@ -25,7 +32,6 @@ module.exports = {
     PENDING: 'PENDING', // VOTING
     VOTING: 'VOTING',
     RESULT_SETTING: 'RESULT_SETTING',
-    FINALIZING: 'FINALIZING',
     WITHDRAWING: 'WITHDRAWING',
   },
 
@@ -33,7 +39,6 @@ module.exports = {
     BET: 0,
     SET: 1,
     VOTE: 2,
-    FINALIZE: 3,
     WITHDRAW: 4,
   },
 
@@ -51,8 +56,8 @@ module.exports = {
 
   /* GraphQL Constants */
   Token: {
-    QTUM: 'QTUM',
-    BOT: 'BOT',
+    NAKA: 'NAKA',
+    NBOT: 'NBOT',
   },
 
   OracleStatus: {
@@ -65,18 +70,11 @@ module.exports = {
   },
 
   TransactionType: {
-    APPROVE_CREATE_EVENT: 'APPROVECREATEEVENT',
-    CREATE_EVENT: 'CREATEEVENT',
+    CREATE_EVENT: 'CREATE_EVENT',
     BET: 'BET',
-    APPROVE_SET_RESULT: 'APPROVESETRESULT',
-    SET_RESULT: 'SETRESULT',
-    APPROVE_VOTE: 'APPROVEVOTE',
+    RESULT_SET: 'RESULT_SET',
     VOTE: 'VOTE',
-    FINALIZE_RESULT: 'FINALIZERESULT',
     WITHDRAW: 'WITHDRAW',
-    WITHDRAW_ESCROW: 'WITHDRAWESCROW',
-    TRANSFER: 'TRANSFER',
-    RESET_APPROVE: 'RESETAPPROVE',
   },
 
   TransactionStatus: {

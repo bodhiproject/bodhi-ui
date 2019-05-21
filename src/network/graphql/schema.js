@@ -1,442 +1,189 @@
-import { has, includes } from 'lodash';
+export const PAGE_INFO = `
+  hasNextPage
+  pageNumber
+  count
+`;
 
-export const TYPE = {
-  topic: 'Topic',
-  oracle: 'Oracle',
-  vote: 'Vote',
-  syncInfo: 'SyncInfo',
-  transaction: 'Transaction',
-  paginatedOracles: 'PaginatedOracles',
-  paginatedTopics: 'PaginatedTopics',
-  paginatedAccumulatedVotes: 'PaginatedAccumulatedVotes',
-  winners: 'Winner',
-  resultSet: 'ResultSet',
-  withdraw: 'Withdraw',
-  leaderboardStats: 'LeaderboardStats',
-};
+export const BLOCK = `
+  blockNum
+  blockTime
+`;
 
-const TOPIC_DEF = {
-  Topic: `
-    txid
-    version
-    address
-    name
-    options
-    blockNum
-    status
-    resultIdx
-    qtumAmount
-    botAmount
-    escrowAmount
-    creatorAddress
-    language
-    oracles {
-      version
+export const TRANSACTION_RECEIPT = `
+  status
+  blockHash
+  blockNumber
+  transactionHash
+  from
+  to
+  contractAddress
+  cumulativeGasUsed
+  gasUsed
+  gasPrice
+`;
+
+export const PENDING_TRANSACTIONS = `
+  bet
+  resultSet
+  withdraw
+  total
+`;
+
+// Transaction interface
+export const ITRANSACTION = `
+  txType
+  txid
+  txStatus
+  txReceipt { ${TRANSACTION_RECEIPT} }
+  blockNum
+  block { ${BLOCK} }
+`;
+
+// MultipleResultsEvent extends Transaction
+export const MULTIPLE_RESULTS_EVENT = `
+  ${ITRANSACTION}
+  address
+  ownerAddress
+  version
+  name
+  results
+  numOfResults
+  centralizedOracle
+  betStartTime
+  betEndTime
+  resultSetStartTime
+  resultSetEndTime
+  escrowAmount
+  arbitrationLength
+  thresholdPercentIncrease
+  arbitrationRewardPercentage
+  currentRound
+  currentResultIndex
+  consensusThreshold
+  arbitrationEndTime
+  status
+  language
+  pendingTxs { ${PENDING_TRANSACTIONS} }
+  roundBets
+  totalBets
+`;
+
+export const PAGINATED_EVENTS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${MULTIPLE_RESULTS_EVENT} }
+`;
+
+// Bet extends Transaction
+export const BET = `
+  ${ITRANSACTION}
+  eventAddress
+  betterAddress
+  resultIndex
+  amount
+  eventRound
+  resultName
+`;
+
+export const PAGINATED_BETS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${BET} }
+`;
+
+// ResultSet extends Transaction
+export const RESULT_SET = `
+  ${ITRANSACTION}
+  eventAddress
+  centralizedOracleAddress
+  resultIndex
+  amount
+  eventRound
+  resultName
+`;
+
+export const PAGINATED_RESULT_SETS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${RESULT_SET} }
+`;
+
+// Withdraw extends Transaction
+export const WITHDRAW = `
+  ${ITRANSACTION}
+  eventAddress
+  winnerAddress
+  winningAmount
+  escrowWithdrawAmount
+`;
+
+export const PAGINATED_WITHDRAWS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${WITHDRAW} }
+`;
+
+export const PAGINATED_TRANSACTIONS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items {
+    ${ITRANSACTION}
+    ... on MultipleResultsEvent {
       address
-      topicAddress
-      status
-      token
       name
-      options
-      optionIdxs
-      amounts
-      resultIdx
-      blockNum
-      startTime
-      endTime
-      resultSetStartTime
-      resultSetEndTime
-      resultSetterAddress
-      consensusThreshold
+      escrowAmount
     }
-    transactions {
-      type
-      status
-    }
-  `,
-};
-
-const ORACLE_DEF = {
-  Oracle: `
-    txid
-    version
-    address
-    topicAddress
-    status
-    token
-    name
-    options
-    optionIdxs
-    amounts
-    resultIdx
-    blockNum
-    startTime
-    endTime
-    resultSetStartTime
-    resultSetEndTime
-    resultSetterAddress
-    consensusThreshold
-    transactions {
-      type
-      status
-    }
-    hashId
-    language
-  `,
-};
-
-const TYPE_DEF = {
-  Topic: TOPIC_DEF.Topic,
-
-  Oracle: ORACLE_DEF.Oracle,
-
-  PaginatedOracles: `
-    totalCount
-    oracles {
-      ${ORACLE_DEF.Oracle}
-    }
-    pageInfo {
-      hasNextPage
-      pageNumber
-      count
-    }
-  `,
-
-  PaginatedTopics: `
-    totalCount
-    topics {
-      ${TOPIC_DEF.Topic}
-    }
-    pageInfo {
-      hasNextPage
-      pageNumber
-      count
-    }
-  `,
-  Vote: `
-    txid
-    block {
-      blockNum
-      blockTime
-    }
-    voterAddress
-    topicAddress
-    oracleAddress
-    optionIdx
-    amount
-    version
-    token
-    type
-  `,
-
-  ResultSet: `
-    txid
-    block {
-      blockNum
-      blockTime
-    }
-    topicAddress
-    oracleAddress
-    fromAddress
-    resultIdx
-    version
-  `,
-
-  Withdraw: `
-    txid
-    block {
-      blockNum
-      blockTime
-    }
-    topicAddress
-    withdrawerAddress
-    qtumAmount
-    botAmount
-    version
-    type
-  `,
-
-  SyncInfo: `
-    syncBlockNum
-    syncBlockTime
-    syncPercent
-    peerNodeCount
-    addressBalances {
-      address
-      qtum
-      bot
-    }
-  `,
-
-  LeaderboardStats: `
-    eventCount
-    participantsCount
-    totalQtum
-    totalBot
-  `,
-
-  PaginatedAccumulatedVotes: `
-    totalCount
-    votes {
-      topicAddress
-      voterAddress
+    ... on Bet {
+      eventAddress
+      betterAddress
+      resultIndex
       amount
+      eventRound
+      resultName
     }
-    pageInfo {
-      hasNextPage
-      pageNumber
-      count
+    ... on ResultSet {
+      eventAddress
+      centralizedOracleAddress
+      resultIndex
+      amount
+      eventRound
+      resultName
     }
-  `,
-  Winner: `
-    topicAddress
-    voterAddress
-    amount{
-      bot
-      qtum
+    ... on Withdraw {
+      eventAddress
+      winnerAddress
+      winningAmount
+      escrowWithdrawAmount
     }
-  `,
+  }
+`;
 
-  Transaction: `
-    type
-    status
-    txid
-    createdBlock
-    createdTime
-    blockNum
-    blockTime
-    gasLimit
-    gasPrice
-    gasUsed
-    senderAddress
-    receiverAddress
-    topicAddress
-    oracleAddress
-    name
-    options
-    optionIdx
-    amount
-    token
-    resultSetterAddress
-    bettingStartTime
-    bettingEndTime
-    resultSettingStartTime
-    resultSettingEndTime
-    topic {
-      address
-      name
-      options
-    }
-    version
-    language
-  `,
-};
+export const SYNC_INFO = `
+  syncBlockNum
+  syncBlockTime
+  syncPercent
+`;
 
-const MUTATIONS = {
-  resetApprove: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'receiverAddress',
-      'topicAddress',
-      'oracleAddress',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
+export const ALL_STATS = `
+  eventCount
+  participantCount
+  totalBets
+`;
 
-  approveCreateEvent: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'name',
-      'options',
-      'resultSetterAddress',
-      'bettingStartTime',
-      'bettingEndTime',
-      'resultSettingStartTime',
-      'resultSettingEndTime',
-      'amount',
-      'language',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
+export const MOST_BET = `
+  eventAddress
+  betterAddress
+  amount
+`;
 
-  createEvent: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'name',
-      'options',
-      'resultSetterAddress',
-      'bettingStartTime',
-      'bettingEndTime',
-      'resultSettingStartTime',
-      'resultSettingEndTime',
-      'amount',
-      'language',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
+export const PAGINATED_MOST_BETS = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${MOST_BET} }
+`;
 
-  createBet: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  approveSetResult: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  setResult: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  approveVote: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  createVote: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  finalizeResult: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  withdraw: {
-    mapping: [
-      'type',
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'topicAddress',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  transfer: {
-    mapping: [
-      'senderAddress',
-      'receiverAddress',
-      'token',
-      'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-};
-
-const ENUMS = {
-  direction: [
-    'ASC',
-    'DESC',
-  ],
-
-  status: [
-    'CREATED',
-    'VOTING',
-    'WAITRESULT',
-    'OPENRESULTSET',
-    'PENDING',
-    'WITHDRAW',
-    'SUCCESS',
-    'FAIL',
-  ],
-
-  type: [
-    'APPROVECREATEEVENT',
-    'CREATEEVENT',
-    'BET',
-    'APPROVESETRESULT',
-    'SETRESULT',
-    'APPROVEVOTE',
-    'VOTE',
-    'FINALIZERESULT',
-    'WITHDRAW',
-    'WITHDRAWESCROW',
-    'TRANSFER',
-    'RESETAPPROVE',
-  ],
-
-  token: [
-    'QTUM',
-    'BOT',
-  ],
-};
-
-export function isValidEnum(key, value) {
-  const isEnum = has(ENUMS, key);
-  const isValid = includes(ENUMS[key], value);
-  return isEnum && isValid;
-}
-
-export function getTypeDef(queryName) {
-  return TYPE_DEF[queryName];
-}
-
-export function getMutation(mutationName) {
-  return MUTATIONS[mutationName];
-}
+export const BIGGEST_WINNER = `
+  eventAddress
+  betterAddress
+  amount
+`;

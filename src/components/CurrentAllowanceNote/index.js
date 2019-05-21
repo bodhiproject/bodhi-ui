@@ -5,11 +5,11 @@ import { ImportantNote } from 'components';
 const messages = defineMessages({
   currentAllowanceTitle: {
     id: 'note.currentAllowanceTitle',
-    defaultMessage: 'Current Allowance: {allowance} BOT',
+    defaultMessage: 'Current Allowance: {allowance} NBOT',
   },
   currentAllowanceMessage: {
     id: 'note.currentAllowanceMessage',
-    defaultMessage: 'This indicates your current BOT approved amount. You may use up to this amount. If the current approved amount is greater than 0 and you want to increase the approved amount, you will have to do a transaction to reset it back to 0 first.',
+    defaultMessage: 'This indicates your current NBOT approved amount. You may use up to this amount. If the current approved amount is greater than 0 and you want to increase the approved amount, you will have to do a transaction to reset it back to 0 first.',
   },
 });
 

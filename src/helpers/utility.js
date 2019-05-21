@@ -2,11 +2,12 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
+import { fromWei } from 'web3-utils';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
 
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
+const { BETTING, VOTING, RESULT_SETTING, PENDING, WITHDRAWING, UNCONFIRMED } = Phases;
 const SATOSHI_CONVERSION = 10 ** 8;
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
@@ -83,11 +84,25 @@ export function satoshiToDecimal(number) {
 }
 
 /**
- * Converts the gas number to QTUM cost.
- * @param gas {Number} The gas number to convert.
- * @return {Number} The gas amount represented as QTUM.
+ * Converts wei to a decimal number.
+ * @param number {String} The wei to convert.
+ * @return {String} The converted decimal number.
  */
-export function gasToQtum(gas) {
+export function weiToDecimal(number) {
+  if (!number) {
+    return number;
+  }
+
+  const decimal = fromWei(number);
+  return Number(decimal);
+}
+
+/**
+ * Converts the gas number to NAKA cost.
+ * @param gas {Number} The gas number to convert.
+ * @return {Number} The gas amount represented as NAKA.
+ */
+export function gasToNaka(gas) {
   if (!gas || !_.isFinite(gas)) {
     return undefined;
   }
@@ -181,14 +196,13 @@ export function getDetailPagePath(oracles) {
  * @param {oracle} oracle
  */
 export const getPhase = ({ token, status }) => {
-  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && status === 'CREATED') return UNCONFIRMED; // BETTING
-  if (QTUM && status === 'VOTING') return BETTING;
-  if (BOT && status === 'VOTING') return VOTING;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
-  if (BOT && status === 'WAITRESULT') return FINALIZING;
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
+  const [NBOT, NAKA] = [token === 'NBOT', token === 'NAKA'];
+  if (NAKA && status === 'CREATED') return UNCONFIRMED; // BETTING
+  if (NAKA && status === 'VOTING') return BETTING;
+  if (NBOT && status === 'VOTING') return VOTING;
+  if (NAKA && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+  if ((NBOT || NAKA) && status === 'PENDING') return PENDING; // VOTING
+  if ((NBOT || NAKA) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
 

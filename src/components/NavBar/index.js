@@ -4,10 +4,9 @@ import { AppBar, Collapse, Toolbar, withStyles, IconButton, Hidden } from '@mate
 import { Menu } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-
 import BodhiLogo from './Logo';
-import QtumPrediction from './QtumPrediction';
-import BotCourt from './BotCourt';
+import Prediction from './Prediction';
+import Arbitration from './Arbitration';
 import Wallet from './Wallet';
 import { SearchButton, SearchBarField } from './Search';
 import MyActivities from './MyActivities';
@@ -29,7 +28,7 @@ export default class NavBar extends Component {
   handleSearchBarKeyDown = event => {
     switch (event.key) {
       case 'Enter':
-        this.props.store.search.init();
+        this.props.store.search.fetchEvents();
         break;
       default:
         break;
@@ -47,19 +46,24 @@ export default class NavBar extends Component {
             <div className={classes.navSection}>
               <BodhiLogo {...this.props} />
               <Hidden xsDown>
-                <QtumPrediction {...this.props} />
-                <BotCourt {...this.props} />
+                <Prediction {...this.props} />
+                <Arbitration {...this.props} />
               </Hidden>
               <Favorite />
             </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>
-              <Wallet />
+              <Wallet {...this.props} />
               <MyActivities {...this.props} />
               <DropdownMenuButton />
             </Hidden>
             <Hidden smUp>
-              <IconButton className={classes.menuButton} onClick={ui.toggleDropdownMenu} color="inherit" aria-label="Menu">
+              <IconButton
+                className={classes.menuButton}
+                onClick={ui.toggleDropdownMenu}
+                color="inherit"
+                aria-label="Menu"
+              >
                 <Menu />
               </IconButton>
             </Hidden>
