@@ -20,11 +20,18 @@ export default class BottomBar extends Component {
   }
 
   render() {
-    const { classes, width } = this.props;
-    const { syncBlockTime, syncBlockNum, online } = this.props.store.global;
+    const {
+      classes,
+      width,
+      store: {
+        global: { syncBlockTime, syncBlockNum, online },
+        naka: { loggedIn },
+      },
+    } = this.props;
+
     return (
       <Paper className={classes.paper}>
-        <NetworkConnection width={width} online={online} />
+        <NetworkConnection width={width} online={online} loggedIn={loggedIn} />
         {syncBlockTime &&
           <BlockInfo
             width={width}
@@ -37,7 +44,7 @@ export default class BottomBar extends Component {
   }
 }
 
-const NetworkConnection = withStyles(styles)(({ classes, width, online }) => (
+const NetworkConnection = withStyles(styles)(({ classes, width, online, loggedIn }) => (
   <Grid container item xs={12} md={6}>
     {width !== 'xs' && (
       <Fragment>
@@ -51,7 +58,7 @@ const NetworkConnection = withStyles(styles)(({ classes, width, online }) => (
           </Typography>
         </div>
         <div className={classes.statusContainer}>
-          {online
+          {loggedIn
             ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
             : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
@@ -73,7 +80,7 @@ const NetworkConnection = withStyles(styles)(({ classes, width, online }) => (
           </Typography>
         </Grid>
         <Grid item xs={12} className={classes.statusContainer}>
-          {online
+          {loggedIn
             ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
             : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
           }
