@@ -7,7 +7,6 @@ import moment from 'moment';
 import { toHex, isAddress } from 'web3-utils';
 
 import { TransactionType, TransactionStatus, Token } from 'constants';
-import { TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
