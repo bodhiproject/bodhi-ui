@@ -7,9 +7,8 @@ import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { sum, filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
-import { FavoriteButton } from 'components';
+import { FavoriteButton, CountdownTime } from 'components';
 import { BigNumber } from 'bignumber.js';
-
 import EventWarning from '../EventWarning';
 import styles from './styles';
 import { getEndTimeCountDownString, satoshiToDecimal } from '../../helpers';
@@ -130,11 +129,7 @@ export default class EventCard extends Component {
                   </div>
                 )}
                 <div className={classes.eventCardInfoItem}>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
-                  {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(endTime - currentTimeUnix, locale, localeMessages)}</Fragment>
-                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
-                  }
+                  <CountdownTime endTime={endTime} />
                 </div>
               </div>
             </div>
