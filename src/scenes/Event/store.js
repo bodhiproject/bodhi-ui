@@ -615,8 +615,9 @@ export default class EventStore {
     await this.app.tx.executeVote({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }
 
-  withdraw = async (senderAddress, type) => {
-    await this.app.tx.addWithdrawTx(type, this.topic.address);
+  withdraw = async () => {
+    // TODO: finish when withdraw is done
+    await this.app.tx.executeWithdraw({});
   }
 
   reset = () => Object.assign(this, INIT);

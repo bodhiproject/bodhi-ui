@@ -1,15 +1,18 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import axios from 'axios';
-import { map, includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
-import { WalletProvider, TransactionType, TransactionStatus, Token, TransactionGas } from 'constants';
-import { Transaction, TransactionCost } from 'models';
+import { includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
+import { WalletProvider, TransactionType, TransactionStatus } from 'constants';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { fromAscii } from 'web3-utils';
 
 import networkRoutes from '../network/routes';
 import { queryAllTransactions } from '../network/graphql/queries';
-import { addPendingEvent, addPendingBet, addPendingResultSet, createTransaction } from '../network/graphql/mutations';
+import {
+  addPendingEvent,
+  addPendingBet,
+  addPendingResultSet,
+  createTransaction,
+} from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -242,35 +245,6 @@ export default class TransactionStore {
   }
 
   /**
-   * Gets the tx costs for each tx and shows the confirmation dialog.
-   */
-  @action
-  showConfirmDialog = async () => {
-    try {
-      // each(this.transactions, async (tx) => {
-      //   const { data } = await axios.post(networkRoutes.api.transactionCost, {
-      //     type: tx.type,
-      //     senderAddress: tx.senderAddress,
-      //     topicAddress: tx.topicAddress,
-      //     oracleAddress: tx.oracleAddress,
-      //     optionIdx: tx.optionIdx,
-      //     amount: tx.amountSatoshi,
-      //     token: tx.token,
-      //   });
-      //   tx.fees = map(data, (item) => new TransactionCost(item));
-      // });
-
-      runInAction(() => {
-        this.visible = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.transactionCost);
-      });
-    }
-  }
-
-  /**
    * Confirms a tx and executes it.
    * @param {number} index Index of the tx to execute.
    */
@@ -319,26 +293,6 @@ export default class TransactionStore {
     if (approveTxid) {
       this.removePendingApprove(approveTxid);
     }
-  }
-
-  /**
-   * Adds a reset approve tx to the queue.
-   * @param {string} spender Address to reset the allowance for.
-   * @param {string} topicAddress Address of the TopicEvent. Only for Set Result and Vote.
-   * @param {string} oracleAddress Address of the Oracle. Only for Set Result and Vote.
-   */
-  @action
-  addResetApproveTx = async (spender, topicAddress, oracleAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type: TransactionType.RESET_APPROVE,
-      senderAddress: this.app.wallet.currentAddress,
-      receiverAddress: spender,
-      topicAddress,
-      oracleAddress,
-      amount: '0',
-      token: Token.NBOT,
-    })));
-    await this.showConfirmDialog();
   }
 
   /**
@@ -555,26 +509,11 @@ export default class TransactionStore {
   }
 
   /**
-   * Adds a withdraw tx to the queue.
-   * @param {string} topicAddress Address of the TopicEvent.
-   */
-  @action
-  addWithdrawTx = async (type, topicAddress) => {
-    this.transactions.push(observable.object(new Transaction({
-      type,
-      senderAddress: this.app.wallet.currentAddress,
-      topicAddress,
-    })));
-    await this.showConfirmDialog();
-  }
-
-  /**
    * Executes a withdraw or withdraw escrow..
-   * @param {number} index Index of the Transaction object.
    * @param {Transaction} tx Transaction object.
    */
   @action
-  executeWithdraw = async (index, tx) => {
+  executeWithdraw = async (tx) => {
     try {
       const { type, senderAddress, topicAddress } = tx;
       const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at(topicAddress);
