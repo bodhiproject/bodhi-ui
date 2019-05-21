@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unused-state */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
-import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
+import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
@@ -31,7 +31,7 @@ export default class BottomBar extends Component {
 }
 
 const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
-  <Grid container item xs={12} md={7} className={classes.bottomBarBlockInfoWrapper}>
+  <Grid container item xs={12} md={6} className={classes.bottomBarBlockInfoWrapper}>
     <Grid item xs={12} sm={6}>
       <Typography variant="body2" className={classes.bottomBarTxt}>
         <span className={classes.bottomBarBlockNum}>
@@ -59,28 +59,17 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
 
 const NetworkConnection = withStyles(styles)(({ classes, online }) => (
   <Grid container item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
-    {online ? (
-      <Fragment>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />
-          </Typography>
-        </Grid>
-      </Fragment>
-    ) : (
-      <Fragment>
-        <Grid item xs={12} sm={2}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <FormattedMessage id="bottomBar.offline" defaultMessage="Offline" />
-          </Typography>
-        </Grid>
-      </Fragment>
-    )}
+    <Grid item xs={12} sm={12} className={classes.bottomBarStatusContainer}>
+      {online
+        ? <CheckCircle className={cx(classes.bottomBarNetworkIcon, 'online')} />
+        : <RemoveCircle className={cx(classes.bottomBarNetworkIcon, 'offline')} />
+      }
+      <Typography variant="body2" className={classes.bottomBarTxt}>
+        <FormattedMessage
+          id="bottomBar.networkStatus"
+          defaultMessage="Network Status"
+        />
+      </Typography>
+    </Grid>
   </Grid>
 ));

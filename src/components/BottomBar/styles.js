@@ -16,6 +16,11 @@ const styles = (theme) => ({
   bottomBarNetworkWrapper: {
     flexBasis: 130,
   },
+  bottomBarStatusContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   bottomBarNetworkIcon: {
     marginBottom: '-2px',
     marginRight: '4px',
