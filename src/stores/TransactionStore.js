@@ -1,12 +1,8 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { includes, isEmpty, remove, each, reduce, findIndex, cloneDeep } from 'lodash';
-import { WalletProvider, TransactionType, TransactionStatus } from 'constants';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { fromAscii } from 'web3-utils';
-
 import networkRoutes from '../network/routes';
-import { queryAllTransactions } from '../network/graphql/queries';
 import {
   addPendingEvent,
   addPendingBet,
@@ -18,7 +14,6 @@ import Tracking from '../helpers/mixpanelUtil';
 
 const web3EthAbi = new AbiCoder();
 const INIT_VALUES = {
-  provider: WalletProvider.NAKA,
 };
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
@@ -39,62 +34,23 @@ const playEventFuncTypes = [
 ];
 
 export default class TransactionStore {
-  @observable provider = INIT_VALUES.provider;
   @observable transactions = [];
   app = undefined;
 
   constructor(app) {
     this.app = app;
 
-    // New block change
-    reaction(
-      () => this.app.global.syncBlockNum,
-      () => this.checkPendingApproves(),
-    );
     // Naka Wallet logged in/out
     reaction(
       () => this.app.naka.loggedIn,
       () => {
-        if (this.app.naka.loggedIn) {
-          this.checkPendingApproves();
-        } else {
+        if (!this.app.naka.loggedIn) {
           Object.assign(this, INIT_VALUES);
           this.transactions.clear();
         }
       }
     );
   }
-
-  /**
-   * Gets the array of pending approve txs for this client.
-   * @return {array} Array of pending approve txs.
-   */
-  getPendingApproves = () => {
-    const pending = localStorage.getItem('pendingApproves');
-    return pending ? pending.split(',') : [];
-  }
-
-  /**
-   * Stores a txid of a pending approve transaction.
-   * @param {string} txid Transaction ID of a pending approve tx.
-   */
-  addPendingApprove = (txid) => {
-    const pending = this.getPendingApproves();
-    if (!includes(pending, txid)) pending.push(txid);
-    localStorage.setItem('pendingApproves', pending);
-  };
-
-  /**
-   * Removes a txid of a pending approve transaction.
-   * @param {string} txid Transaction ID to remove.
-   */
-  removePendingApprove = (txid) => {
-    let pending = this.getPendingApproves();
-    if (includes(pending, txid)) {
-      pending = remove(pending, txid);
-      localStorage.setItem('pendingApproves', pending);
-    }
-  };
 
   createEvent = async ({
     nbotMethods,
@@ -171,89 +127,6 @@ export default class TransactionStore {
   };
 
   /**
-   * Checks for successful approve txs. If they are successful, adds a tx to the list of txs to confirm.
-   */
-  @action
-  checkPendingApproves = async () => {
-    if (!this.app.naka.loggedIn) {
-      return;
-    }
-
-    const pending = this.getPendingApproves();
-    if (!isEmpty(pending)) {
-      // Get all txs from DB
-      const filters = reduce(pending, (result, value) => {
-        result.push({ txid: value });
-        return result;
-      }, []);
-      const txs = await queryAllTransactions(filters);
-
-      each(txs, async (tx) => {
-        // Execute follow-up tx if not already added, sender is in current addresses, and approve was successful
-        const txIndex = findIndex(this.transactions, { approveTxid: tx.txid });
-        const addressIndex = findIndex(this.app.wallet.addresses, { address: tx.senderAddress });
-        if (txIndex === -1 && addressIndex !== -1 && tx.status === TransactionStatus.SUCCESS) {
-          const { txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi } = tx;
-          switch (tx.type) {
-            case TransactionType.APPROVE_CREATE_EVENT: {
-              await this.addCreateEventTx(
-                txid,
-                senderAddress,
-                tx.name,
-                tx.options,
-                tx.resultSetterAddress,
-                tx.bettingStartTime,
-                tx.bettingEndTime,
-                tx.resultSettingStartTime,
-                tx.resultSettingEndTime,
-                amountSatoshi,
-                tx.language,
-              );
-              break;
-            }
-            case TransactionType.APPROVE_SET_RESULT: {
-              await this.addSetResultTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-              break;
-            }
-            case TransactionType.APPROVE_VOTE: {
-              await this.addVoteTx(txid, senderAddress, topicAddress, oracleAddress, optionIdx, amountSatoshi);
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-        }
-      });
-    }
-
-    // Show confirm dialog if there are pending txs
-    if (this.transactions.length > 0) {
-      this.visible = true;
-    }
-  }
-
-  /**
-   * Confirms a tx and executes it.
-   * @param {number} index Index of the tx to execute.
-   */
-  confirmTx = async (index) => {
-    const tx = cloneDeep(this.transactions[index]);
-    this.deleteTx(index, tx.approveTxid);
-
-    const confirmFunc = {
-      [TransactionType.RESET_APPROVE]: this.executeResetApprove,
-      [TransactionType.CREATE_EVENT]: this.executeCreateEvent,
-      [TransactionType.BET]: this.executeBet,
-      [TransactionType.SET_RESULT]: this.executeSetResult,
-      [TransactionType.VOTE]: this.executeVote,
-      [TransactionType.WITHDRAW]: this.executeWithdraw,
-      [TransactionType.WITHDRAW_ESCROW]: this.executeWithdraw,
-    };
-    await confirmFunc[tx.type](index, tx);
-  }
-
-  /**
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
@@ -265,23 +138,6 @@ export default class TransactionStore {
     }
 
     this.app.txSentDialog.open(tx.txid);
-  }
-
-  /**
-   * Removes a tx from the transactions array and any pending approve from the localStorage.
-   * @param {number} index Index of the tx to remove.
-   * @param {string} approveTxid Approve txid if it is an approve tx.
-   */
-  @action
-  deleteTx = (index, approveTxid) => {
-    this.transactions.splice(index, 1);
-    if (this.transactions.length === 0) {
-      this.visible = false;
-    }
-
-    if (approveTxid) {
-      this.removePendingApprove(approveTxid);
-    }
   }
 
   /**
