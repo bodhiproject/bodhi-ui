@@ -18,7 +18,6 @@ import Tracking from '../helpers/mixpanelUtil';
 
 const web3EthAbi = new AbiCoder();
 const INIT_VALUES = {
-  visible: false,
   provider: WalletProvider.NAKA,
 };
 
@@ -40,7 +39,6 @@ const playEventFuncTypes = [
 ];
 
 export default class TransactionStore {
-  @observable visible = INIT_VALUES.visible;
   @observable provider = INIT_VALUES.provider;
   @observable transactions = [];
   app = undefined;
@@ -48,15 +46,6 @@ export default class TransactionStore {
   constructor(app) {
     this.app = app;
 
-    // Visiblity of execute tx dialog changes
-    reaction(
-      () => this.visible,
-      () => {
-        if (!this.visible) {
-          Object.assign(this, INIT_VALUES);
-        }
-      }
-    );
     // New block change
     reaction(
       () => this.app.global.syncBlockNum,
