@@ -36,7 +36,7 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}/event/:txid`}
+        path={`${url}/event/:url`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route

@@ -104,7 +104,10 @@ export default class EventStore {
       }
       return { buttonFunc: this.bet, localeId: 'bottomButtonText.placeBet', localeDefaultMessage: 'Place Bet', type: 'bet' };
     }
-    return {};
+    if (this.event.status === WITHDRAWING) {
+      return { buttonFunc: this.withdraw, localeId: 'str.withdraw', localeDefaultMessage: 'withdraw', type: 'withdraw' };
+    }
+    return { buttonFunc: this.vote, localeId: 'str.vote', localeDefaultMessage: 'vote', type: 'vote' };
   }
   @computed get topic() {
     return find(this.topics, { address: this.topicAddress }) || {};
@@ -129,18 +132,19 @@ export default class EventStore {
   }
 
   @action
-  async init({ topicAddress, address, txid, type, hashId }) {
+  async init({ topicAddress, address, txid, type, hashId, url }) {
     this.reset();
     this.topicAddress = topicAddress;
     this.address = address;
     this.txid = txid;
     this.type = type;
     this.hashId = hashId;
+    this.url = url;
 
     if (type === TOPIC) {
       await this.initTopic();
     } else {
-      await this.initOracle(txid);
+      await this.initOracle(url);
     }
 
     this.setReactions();
@@ -167,9 +171,14 @@ export default class EventStore {
   }
 
   @action
-  initOracle = async (txid) => {
+  initOracle = async (url) => {
     const { graphqlClient } = this.app;
-    const { items } = await events(graphqlClient, { filter: { txid }, includeRoundBets: true }, this.app);
+    const { items } = await events(graphqlClient, { filter: {
+      OR: [
+        { txid: url },
+        { address: url },
+      ] },
+    includeRoundBets: true }, this.app);
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
@@ -496,6 +505,7 @@ export default class EventStore {
    */
   @action
   disableEventActionsIfNecessary = () => {
+    if (!this.event) return;
     const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
