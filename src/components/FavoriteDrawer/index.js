@@ -64,7 +64,8 @@ export default class FavoriteDrawer extends Component {
     const { favorite } = this.props.store;
     const { visible, loading, favEvents } = favorite;
 
-    if (loading) return <EventListLoading />;
+    // Hide since it will cause large navar blue area when loading
+    // if (loading) return <EventListLoading />;
 
     const events = favEvents.map((event, i) => (
       <FavoriteCard

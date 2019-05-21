@@ -47,6 +47,7 @@ export default class Option extends Component {
       amountPlaceholder,
     } = this.props;
 
+
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
     const { eventPage, wallet } = store;
@@ -123,7 +124,7 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, error, ...props
           placeholder={amountPlaceholder || '0.00'}
           className={classes.eventOptionInput}
           endAdornment={
-            <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.NBOT : token}</InputAdornment>
+            <InputAdornment position="end">{Token.NBOT}</InputAdornment>
           }
           {...props}
         />

@@ -31,7 +31,7 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
       <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
       <Leaderboard maxSteps={1} />
-      <HistoryTable transactionHistory />
+      <HistoryTable />
     </Content>
     <Sidebar />
   </Row>

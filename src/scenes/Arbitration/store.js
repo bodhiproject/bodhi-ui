@@ -42,10 +42,15 @@ export default class ArbitrationStore {
   }
 
   @action
-  init = async (limit = this.limit) => {
-    Object.assign(this, INIT_VALUES);
+  init = async () => {
     this.app.ui.location = Routes.ARBITRATION;
-    this.list = await this.fetch(limit);
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.hasMore = true;
+    this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = true;
     });
@@ -70,17 +75,16 @@ export default class ArbitrationStore {
 
   async fetch(limit = this.limit, skip = this.skip) {
     if (this.hasMore) {
-      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING.toLowerCase() };
-      const filters = [
-        { status: EVENT_STATUS.ARBITRATION, language: this.app.ui.locale },
+      const { naka: { account }, graphqlClient, ui: { locale } } = this.app;
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING };
+      const filter = { OR: [
+        { status: EVENT_STATUS.ARBITRATION, language: locale },
         { status: EVENT_STATUS.ORACLE_RESULT_SETTING,
-          language: this.app.ui.locale,
+          language: locale,
         },
-      ];
+      ] };
 
-      const { naka: { account }, graphqlClient } = this.app;
-
-      const res = await events(graphqlClient, { filters, orderBy, limit, skip, pendingTxsAddress: account });
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account }, this.app);
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

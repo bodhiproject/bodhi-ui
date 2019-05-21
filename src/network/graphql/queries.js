@@ -238,7 +238,7 @@ class GraphQuery {
     const res = await this.client.query({
       query: this.query,
       variables: this.args,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache', // for fixing transactions query
     });
     return res.data[this.queryName];
   }
@@ -250,10 +250,13 @@ class GraphQuery {
  * @param {object} args Arguments for the query.
  * @return {object} Query result.
  */
-export async function events(client, args) {
+export async function events(client, args, app) {
   const res = await new GraphQuery(client, QUERY_EVENTS, args).execute();
-  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
-  return res;
+  const tmp = {};
+  tmp.items = map(res.items, (event) => new MultipleResultsEvent(event, app));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**
