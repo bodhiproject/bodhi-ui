@@ -63,6 +63,7 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
 
+    // Handle websocket connection changes
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
     wsLink.subscriptionClient.onReconnected(this.setOnline, this);
     wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
