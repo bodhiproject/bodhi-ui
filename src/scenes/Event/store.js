@@ -32,7 +32,6 @@ const INIT = {
   warningType: '',
   eventWarningMessageId: '',
   escrowClaim: 0,
-  hashId: '',
   allowance: undefined,
   nakaWinnings: 0,
   nbotWinnings: 0,
@@ -60,7 +59,6 @@ export default class EventStore {
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable escrowClaim = INIT.escrowClaim
-  @observable hashId = INIT.hashId
   @observable allowance = INIT.allowance; // In Botoshi
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
@@ -117,15 +115,6 @@ export default class EventStore {
     return find(this.topics, { address: this.topicAddress }) || {};
   }
 
-  @computed get dOracles() { // [NBOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
-    return this.oracles.filter(({ token }) => token === Token.NBOT);
-  }
-  @computed get cOracle() {
-    // [NAKA] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
-    // mainly: BETTING & RESULT SETTING phases
-    return find(this.oracles, { token: Token.NAKA }) || {};
-  }
-
   @computed get maxLeaderBoardSteps() {
     return this.event.status === WITHDRAWING ? 2 : 1;
   }
@@ -140,21 +129,12 @@ export default class EventStore {
   }
 
   @action
-  async init({ topicAddress, address, txid, type, hashId, url }) {
+  async init({ txid, type, url }) {
     this.reset();
-    this.topicAddress = topicAddress;
-    this.address = address;
     this.txid = txid;
     this.type = type;
-    this.hashId = hashId;
     this.url = url;
-
-    if (type === TOPIC) {
-      await this.initTopic();
-    } else {
-      await this.initOracle(url);
-    }
-
+    await this.initEvent(url);
     this.setReactions();
   }
 
@@ -179,7 +159,7 @@ export default class EventStore {
   }
 
   @action
-  initOracle = async (url) => {
+  initEvent = async (url) => {
     const { graphqlClient } = this.app;
     const { items } = await events(graphqlClient, { filter: {
       OR: [
@@ -200,10 +180,14 @@ export default class EventStore {
       await this.queryResultSets(this.event.address);
     }
     this.disableEventActionsIfNecessary();
-
+    this.selectedOptionIdx = 1;
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
+    }
+    if (this.event.status === WITHDRAWING) {
+      this.selectedOptionIdx = this.event.currentResultIndex;
+      await this.calculateWinnings();
     }
 
     this.loading = false;
@@ -241,7 +225,7 @@ export default class EventStore {
               break;
             }
             case ORACLE: {
-              await this.initOracle(this.url);
+              await this.initEvent(this.url);
               // await this.queryOracles(this.topicAddress);
               // await this.getAllowanceAmount();
               // await this.updateLeaderBoard();
@@ -340,13 +324,10 @@ export default class EventStore {
 
   @action
   calculateWinnings = async () => {
-    await this.getBetAndVoteBalances();
-    await this.getWithdrawableAddresses();
-
-    this.nbotWinnings = sumBy(this.withdrawableAddresses, a => (
-      a.type === TransactionType.WITHDRAW && a.nbotWon ? a.nbotWon : 0
-    ));
-    this.nakaWinnings = sumBy(this.withdrawableAddresses, ({ nakaWon }) => nakaWon);
+    const { data } = await axios.get(API.CALCULATE_WINNINGS, {
+      params: { eventAddress: this.address, address: this.app.wallet.currentAddress },
+    });
+    this.nbotWinnings = data.result;
   }
 
   @action

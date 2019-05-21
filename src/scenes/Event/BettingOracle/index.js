@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-import { Grid, withStyles } from '@material-ui/core';
+import { Grid, withStyles, Paper } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
 
 import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import { Sidebar, Row, Content, Title, Button, Option, HistoryTable, WinningOutcome, Reward } from '../components';
 import Leaderboard from '../components/Leaderboard';
 import { satoshiToDecimal } from '../../../helpers/utility';
 
@@ -20,13 +20,21 @@ const messages = defineMessages({
   },
 });
 
-const BettingOracle = observer(({ store: { eventPage, eventPage: { event, maxLeaderBoardSteps } } }) => (
+const BettingOracle = withStyles(styles)(injectIntl(observer(({ store: { eventPage, eventPage: { event, escrowClaim, nbotWinnings, maxLeaderBoardSteps } }, classes }) => (
   <Row>
     <Content>
       <Title>{event.name}</Title>
       {!event.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={String(eventPage.amount)} type={eventPage.warningType} />
       )}
+      <Paper className={classes.withdrawingPaper}>
+        <WinningOutcome eventPage={eventPage} />
+        {Boolean(escrowClaim || nbotWinnings) && (
+          <Fragment>
+            <Reward event={event} eventPage={eventPage} />
+          </Fragment>
+        )}
+      </Paper>
       <Options event={event} amountInputDisabled={eventPage.isResultSetting} />
       {(eventPage.isResultSetting || eventPage.isArbitration) && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>
@@ -37,7 +45,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event, maxLea
     </Content>
     <Sidebar endTime={event.betEndTime} />
   </Row>
-));
+))));
 
 const Options = withStyles(styles)(observer(({ classes, event, amountInputDisabled }) => (
   <Grid className={classes.optionGrid}>
