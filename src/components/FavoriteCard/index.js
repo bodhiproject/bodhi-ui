@@ -63,10 +63,6 @@ export default class FavoriteCard extends Component {
     const {
       classes,
       store: {
-        event: {
-          resultSetEndTime,
-          arbitrationEndTime,
-        },
         ui: {
           currentTimeUnix,
         },
@@ -74,6 +70,10 @@ export default class FavoriteCard extends Component {
       intl: {
         locale,
         messages: localeMessages,
+      },
+      event: {
+        resultSetEndTime,
+        arbitrationEndTime,
       },
     } = this.props;
     const endTime = arbitrationEndTime || resultSetEndTime;

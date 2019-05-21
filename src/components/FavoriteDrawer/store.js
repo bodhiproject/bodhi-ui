@@ -6,7 +6,7 @@ import { events } from '../../network/graphql/queries';
 
 const INIT_VALUES = {
   visible: false,
-  loading: true,
+  loading: false,
   favEvents: [],
 };
 
@@ -20,26 +20,24 @@ export default class FavoriteStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.global.online,
+      () => this.app.global.online + this.app.wallet.addresses,
       () => {
-        if (this.app.global.online && this.visible) this.init();
+        if (this.app.global.online && this.visible) this.queryEvents();
       }
     );
     reaction(
       () => this.favAddresses,
-      async () => this.queryEvents(),
+      () => {
+        if (this.visible) this.queryEvents();
+      },
     );
   }
 
   @action
-  init = async () => {
-    Object.assign(this, INIT_VALUES);
+  showDrawer = async () => {
+    this.visible = true;
     await this.queryEvents();
-    this.loading = false;
   }
-
-  @action
-  showDrawer = () => this.visible = true;
 
   @action
   hideDrawer = () => this.visible = false;
@@ -61,7 +59,14 @@ export default class FavoriteStore {
   }
 
   queryEvents = async () => {
-    if (this.favAddresses.length === 0) this.favEvents = [];
+    if (!this.visible) return;
+
+    if (this.favAddresses.length === 0) {
+      this.favEvents = [];
+      return;
+    }
+
+    this.loading = true;
 
     const filters = [];
     each(this.favAddresses, (addr) => filters.push({ address: addr }));
@@ -70,5 +75,7 @@ export default class FavoriteStore {
       orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
     });
     this.favEvents = paginatedEvents.items;
+
+    this.loading = false;
   }
 }

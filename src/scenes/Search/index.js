@@ -10,8 +10,8 @@ import styles from './styles';
 import EmptyPlaceholder from '../../components/EmptyPlaceholder';
 
 const TAB_BET = 0;
-const TAB_VOTE = 1;
-const TAB_SET = 2;
+const TAB_SET = 1;
+const TAB_VOTE = 2;
 const TAB_WITHDRAW = 3;
 
 const messages = defineMessages({
@@ -40,12 +40,12 @@ const messages = defineMessages({
     defaultMessage: 'Oops, your search has no results.',
   },
 });
+
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
 @observer
 export default class Search extends Component {
-  showEvents = [];
   getTabLabel = (eventStatusIndex) => {
     const { intl } = this.props;
     const { bets, votes, sets, withdraws } = this.props.store.search;
@@ -83,50 +83,97 @@ export default class Search extends Component {
     return `${label}${countText}`;
   }
 
-  handleTabChange = (event, value) => {
-    const { bets, votes, sets, withdraws } = this.props.store.search;
-    this.props.store.search.tabIdx = value;
-    switch (value) {
-      case TAB_BET: {
-        this.props.store.search.events = bets;
-        break;
-      }
-      case TAB_VOTE: {
-        this.props.store.search.events = votes;
-        break;
-      }
-      case TAB_SET: {
-        this.props.store.search.events = sets;
-        break;
-      }
-      case TAB_WITHDRAW: {
-        this.props.store.search.events = withdraws;
-        break;
-      }
-      default: {
-        throw new Error(`Invalid tab index: ${value}`);
-      }
+  renderTabs = () => {
+    const {
+      classes,
+      store: { search },
+    } = this.props;
+    return (
+      <Tabs
+        className={classes.searchTabWrapper}
+        indicatorColor="primary"
+        textColor="primary"
+        fullWidth
+        value={search.tabIdx}
+        onChange={(e, v) => search.onTabChange(v)}
+      >
+        <Tab
+          className={classes.searchTabButton}
+          label={this.getTabLabel(EventStatus.BET)}
+        />
+        <Tab
+          className={classes.searchTabButton}
+          label={this.getTabLabel(EventStatus.SET)}
+        />
+        <Tab
+          className={classes.searchTabButton}
+          label={this.getTabLabel(EventStatus.VOTE)}
+        />
+        <Tab
+          className={classes.searchTabButton}
+          label={this.getTabLabel(EventStatus.WITHDRAW)}
+        />
+      </Tabs>
+    );
+  }
+
+  renderEvents = () => {
+    const {
+      store: {
+        ui,
+        search: {
+          tabIdx,
+          bets,
+          sets,
+          votes,
+          withdraws,
+        },
+      },
+    } = this.props;
+
+    // Set events for the selected tab
+    let tabEvents = [];
+    switch (tabIdx) {
+      case TAB_BET: tabEvents = bets; break;
+      case TAB_SET: tabEvents = sets; break;
+      case TAB_VOTE: tabEvents = votes; break;
+      case TAB_WITHDRAW: tabEvents = withdraws; break;
+      default: throw Error(`Invalid tab index: ${tabIdx}`);
     }
+
+    // Show empty message if no events for this tab
+    if (tabEvents.length === 0) {
+      return <EmptyPlaceholder message={messages.searchEmptySearchResultMsg} />;
+    }
+
+    // Convert array of events to components
+    tabEvents = tabEvents.map((event, i) => (
+      <EventCard
+        key={i}
+        index={i}
+        onClick={() => ui.disableSearchBarMode()}
+        event={event}
+      />
+    ));
+    return tabEvents;
   }
 
   render() {
-    const { classes } = this.props;
-    const { ui } = this.props.store;
-    const { oracles, withdraws, loading, loaded, tabIdx, events } = this.props.store.search;
-    this.showEvents = (events || []).map((entry, i) => (<EventCard onClick={() => ui.disableSearchBarMode()} key={i} index={i} event={entry} />));
-    const result = oracles.length === 0 && withdraws.length === 0 && loaded ? <EmptyPlaceholder message={messages.searchEmptySearchResultMsg} /> : this.showEvents;
+    const {
+      classes,
+      store: { search: { loading } },
+    } = this.props;
+
     return (
       <Fragment>
         <div>
-          <Tabs indicatorColor="primary" value={tabIdx} onChange={this.handleTabChange} className={classes.searchTabWrapper}>
-            <Tab label={this.getTabLabel(EventStatus.BET)} className={classes.searchTabButton} />
-            <Tab label={this.getTabLabel(EventStatus.VOTE)} className={classes.searchTabButton} />
-            <Tab label={this.getTabLabel(EventStatus.SET)} className={classes.searchTabButton} />
-            <Tab label={this.getTabLabel(EventStatus.WITHDRAW)} className={classes.searchTabButton} />
-          </Tabs>
+          {this.renderTabs()}
           <div className={classes.searchTabContainer}>
             <Grid container spacing={theme.padding.space3X.value}>
-              {loading ? <Loading message={messages.searchingMsg} /> : result}
+              {loading
+                ? <Loading message={messages.searchingMsg} />
+                : this.renderEvents()
+              }
             </Grid>
           </div>
         </div>
