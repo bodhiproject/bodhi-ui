@@ -36,12 +36,24 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   <Grid container item xs={12} md={7} className={classes.bottomBarBlockInfoWrapper}>
     <Grid item xs={12} sm={6}>
       <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
+        <span className={classes.bottomBarBlockNum}>
+          <FormattedMessage
+            id="bottomBar.blockNum"
+            defaultMessage="Current Block Number"
+          />
+          {`: ${blockNum}`}
+        </span>
       </Typography>
     </Grid>
     <Grid item xs={12} sm={6}>
       <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? moment.unix(blockTime).format('LLL') : ''}</span>
+        <span className={classes.bottomBarBlockTime}>
+          <FormattedMessage
+            id="bottomBar.blockTime"
+            defaultMessage="Current Block Time"
+          />
+          {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
+        </span>
       </Typography>
     </Grid>
   </Grid>

@@ -10,7 +10,7 @@ const INIT_VALUES = {
   localWallet: false,
   syncPercent: 0,
   syncBlockNum: 0,
-  syncBlockTime: '',
+  syncBlockTime: 0,
   peerNodeCount: 0,
   userData: {
     resultSettingCount: 0,
