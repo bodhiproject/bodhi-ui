@@ -429,7 +429,6 @@ export default class TransactionStore {
   executeBet = async (tx) => {
     try {
       const { eventAddr, optionIdx, amount, senderAddress, eventRound } = tx;
-      console.log('TCL: executeBet -> tx', tx);
       const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi).at(getContracts().NakaBodhiToken.address);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
