@@ -608,11 +608,6 @@ export default class EventStore {
   }
 
   set = async () => {
-    // const { data: { result } } = await axios.get(API.ROUND, { eventAddress: '0x1C221FA9755edb422CebC0E9124E567B3c2E146F' });
-    // console.log('TCL: set -> result', result);
-    const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi).at('0x1C221FA9755edb422CebC0E9124E567B3c2E146F');
-    console.log('TCL: set -> nbotMethods', nbotMethods.currentRound((err, res) => console.log(res.toString())));
-
     await this.app.tx.executeSetResult({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
   }
 
