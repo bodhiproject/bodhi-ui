@@ -534,7 +534,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (status === ORACLE_RESULT_SETTING && !isOpenResultSetting() && centralizedOracle !== wallet.currentAddress) {
+    if (status === ORACLE_RESULT_SETTING && !isOpenResultSetting() && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
