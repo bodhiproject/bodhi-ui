@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Collapse, withStyles, MenuItem, Select, Typography, FormControl, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Input, InputLabel, InputAdornment, FormHelperText } from '@material-ui/core';
+import {
+  Collapse,
+  withStyles,
+  MenuItem,
+  Select,
+  Typography,
+  FormControl,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Input,
+  InputLabel,
+  InputAdornment,
+  FormHelperText,
+} from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
-import { Phases, Token } from 'constants';
+import { Token } from 'constants';
 
 import Progress from '../Progress';
 import styles from './styles';
@@ -47,24 +61,23 @@ export default class Option extends Component {
       amountPlaceholder,
     } = this.props;
 
-
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
     const { eventPage, wallet } = store;
     const { selectedOptionIdx } = eventPage;
 
     return (
-      <Collapse in={isExpanded || selectedOptionIdx === -1 || skipExpansion}>
+      <Collapse in={isExpanded(selectedOptionIdx) || selectedOptionIdx === -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
-            last: isLast || isExpanded,
-            first: isFirst || isExpanded,
+            last: isLast || isExpanded(selectedOptionIdx),
+            first: isFirst || isExpanded(selectedOptionIdx),
             is_result: isPrevResult,
           })}
         >
           <ExpansionPanel
-            expanded={isExpanded || skipExpansion}
-            onChange={skipExpansion ? null : option.toggleExpansion}
+            expanded={isExpanded(selectedOptionIdx) || skipExpansion}
+            onChange={skipExpansion ? null : () => eventPage.setSelectedOption(idx)}
             disabled={option.disabled || disabled}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -74,7 +87,12 @@ export default class Option extends Component {
                   {name}
                 </Typography>
                 <div className={classes.eventOptionProgress}>
-                  <Progress color="secondary" invalid={name === 'Invalid'} variant="determinate" value={percent} />
+                  <Progress
+                    color="secondary"
+                    invalid={name === 'Invalid'}
+                    variant="determinate"
+                    value={percent}
+                  />
                   <div className={classes.eventOptionProgressNum}>{percent}%</div>
                 </div>
                 <Typography variant="body2">

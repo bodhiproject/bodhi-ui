@@ -182,7 +182,7 @@ export default class EventStore {
         { txid: url },
         { address: url },
       ] },
-    includeRoundBets: true }, this.app);
+    includeRoundBets: true });
     [this.event] = items;
     // GraphQL calls
     // await this.queryTopics();
@@ -600,6 +600,15 @@ export default class EventStore {
     const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
       this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
+    }
+  }
+
+  @action
+  setSelectedOption = (selectedOptionIdx) => {
+    if (selectedOptionIdx === this.selectedOptionIdx) {
+      this.selectedOptionIdx = INIT.selectedOptionIdx;
+    } else {
+      this.selectedOptionIdx = selectedOptionIdx;
     }
   }
 

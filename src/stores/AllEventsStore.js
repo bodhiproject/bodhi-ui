@@ -73,7 +73,7 @@ export default class {
       const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
       const filter = { language: locale };
 
-      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account }, this.app);
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip, pendingTxsAddress: account });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

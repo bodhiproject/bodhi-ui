@@ -79,7 +79,7 @@ export default class {
 
       const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING };
 
-      const res = await events(graphqlClient, { filter, orderBy, limit, skip }, this.app);
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

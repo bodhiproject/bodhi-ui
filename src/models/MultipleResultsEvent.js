@@ -40,7 +40,7 @@ export default class MultipleResultsEvent {
   localizedInvalid // for invalid option
   url // URL to link to for the router
 
-  constructor(event, app) {
+  constructor(event) {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
@@ -54,7 +54,7 @@ export default class MultipleResultsEvent {
       },
     };
     this.url = `/event/${this.address ? this.address : this.txid}`;
-    this.results = event.results.map((result, i) => new Option(result, i, this, app));
+    this.results = event.results.map((result, i) => new Option(result, i, this));
   }
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);

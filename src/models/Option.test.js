@@ -1,4 +1,3 @@
-import { observable } from 'mobx';
 import { Token, Phases, OracleStatus } from 'constants';
 import Option from './Option';
 const localStorageMock = {
@@ -14,19 +13,6 @@ const { NAKA, NBOT } = Token;
 const { BETTING, VOTING } = Phases;
 
 describe('Option Model', () => {
-  const addr = {
-    address: 'qSu4uU8MGp2Ya6j9kQZAtizUfC82aCvGT1',
-    naka: 2000,
-    nbot: 100,
-  };
-  const app = observable({
-    sortBy: 'ASC',
-    wallet: { addresses: [addr] },
-    global: { syncBlockNum: 0 },
-    refreshing: false,
-    ui: { location: 0 },
-    eventPage: { selectedOptionIdx: 0 },
-  }); // mock the appstore
   let store;
   let oracle;
   beforeEach(() => {
@@ -51,9 +37,8 @@ describe('Option Model', () => {
     it('Constructor 1: centralized oracle unconfirmed', () => {
       const i = 0;
       const name = '0';
-      store = new Option(name, i, oracle, app);
+      store = new Option(name, i, oracle);
 
-      expect(store.app).toBe(app);
       expect(store.idx).toBe(i);
       expect(store.amount).toBe(oracle.amounts[i]);
       expect(store.isLast).not.toBeTruthy();
@@ -73,9 +58,8 @@ describe('Option Model', () => {
       const i = 0;
 
       oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
+      store = new Option(name, i, oracle);
 
-      expect(store.app).toBe(app);
       expect(store.idx).toBe(i);
       expect(store.amount).toBe(oracle.amounts[i]);
       expect(store.isLast).not.toBeTruthy();
@@ -98,9 +82,8 @@ describe('Option Model', () => {
       oracle.phase = VOTING;
       oracle.unconfirmed = false;
       oracle.optionIdxs = [0];
-      store = new Option(name, i, oracle, app);
+      store = new Option(name, i, oracle);
 
-      expect(store.app).toBe(app);
       expect(store.idx).toBe(i);
       expect(store.amount).toBe(oracle.amounts[i]);
       expect(store.isLast).toBeTruthy();
@@ -123,9 +106,8 @@ describe('Option Model', () => {
       oracle.phase = VOTING;
       oracle.unconfirmed = false;
       oracle.optionIdxs = [1];
-      store = new Option(name, i, oracle, app);
+      store = new Option(name, i, oracle);
 
-      expect(store.app).toBe(app);
       expect(store.idx).toBe(i);
       expect(store.amount).toBe(oracle.amounts[i]);
       expect(store.isLast).toBeTruthy();
@@ -138,42 +120,6 @@ describe('Option Model', () => {
       expect(store.isPrevResult).not.toBeTruthy();
       expect(store.maxAmount).toBe(0);
       expect(store.disabled).not.toBeTruthy();
-    });
-  });
-
-  describe('toggleExpansion()', () => {
-    it('toggleExpansion & expand', () => {
-      const name = '1';
-      const i = 1;
-
-      oracle.token = NBOT;
-      oracle.phase = VOTING;
-      oracle.optionIdxs = [1];
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      app.eventPage.selectedOptionIdx = 0;
-      expect(store.isExpanded).not.toBeTruthy();
-      store.toggleExpansion();
-      expect(app.eventPage.selectedOptionIdx).toBe(i);
-      expect(store.isExpanded).toBeTruthy();
-    });
-
-    it('toggleExpansion & unexpand', () => {
-      const name = 'cons test 4';
-      const i = 1;
-
-      oracle.token = NBOT;
-      oracle.phase = VOTING;
-      oracle.optionIdxs = [1];
-      oracle.unconfirmed = false;
-      store = new Option(name, i, oracle, app);
-
-      app.eventPage.selectedOptionIdx = 1;
-      expect(store.isExpanded).toBeTruthy();
-      store.toggleExpansion();
-      expect(app.eventPage.selectedOptionIdx).toBe(-1);
-      expect(store.isExpanded).not.toBeTruthy();
     });
   });
 });

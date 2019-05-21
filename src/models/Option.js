@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { action, computed } from 'mobx';
 import { Token, EVENT_STATUS } from 'constants';
 import { decimalToSatoshi } from '../helpers/utility';
 
@@ -16,12 +15,7 @@ export default class Option {
   token
   idx
 
-  @computed get isExpanded() {
-    return this.app.eventPage.selectedOptionIdx === this.idx;
-  }
-
-  constructor(optionName, i, event, app) {
-    this.app = app;
+  constructor(optionName, i, event) {
     this.idx = i;
     this.amount = event.roundBets[i] || 0;
     this.isLast = i === event.results.length - 1;
@@ -45,13 +39,5 @@ export default class Option {
     this.disabled = this.isPrevResult;
   }
 
-  @action
-  toggleExpansion = () => {
-    const { eventPage } = this.app;
-    if (eventPage.selectedOptionIdx == this.idx) { // eslint-disable-line
-      eventPage.selectedOptionIdx = -1;
-    } else {
-      eventPage.selectedOptionIdx = this.idx;
-    }
-  }
+  isExpanded = (selectedOptionIdx) => selectedOptionIdx === this.idx
 }
