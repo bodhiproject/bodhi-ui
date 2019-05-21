@@ -1,13 +1,12 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { FavoriteButton } from 'components';
+import { FavoriteButton, CountdownTime } from 'components';
 import styles from './styles';
-import { getEndTimeCountDownString } from '../../helpers';
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -17,7 +16,6 @@ export default class FavoriteCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     event: PropTypes.object.isRequired,
-    intl: intlShape.isRequired,
     onClick: PropTypes.func,
   };
 
@@ -58,30 +56,12 @@ export default class FavoriteCard extends Component {
   renderTimeLeft = () => {
     const {
       classes,
-      store: {
-        ui: {
-          currentTimeUnix,
-        },
-      },
-      intl: {
-        locale,
-        messages: localeMessages,
-      },
-      event: {
-        resultSetEndTime,
-        arbitrationEndTime,
-      },
+      event: { getEndTime },
     } = this.props;
-    const endTime = arbitrationEndTime || resultSetEndTime;
-    const timeLeft = endTime - currentTimeUnix;
 
     return (
       <div className={classes.infoItem}>
-        <i className={cx(classes.infoIcon, 'icon iconfont icon-ic_timer')}></i>
-        {timeLeft > 0
-          ? <Fragment>{getEndTimeCountDownString(timeLeft, locale, localeMessages, true)}</Fragment>
-          : <FormattedMessage id="str.end" defaultMessage="Ended" />
-        }
+        <CountdownTime endTime={getEndTime()} />
       </div>
     );
   }

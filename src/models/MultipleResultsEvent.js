@@ -3,8 +3,6 @@ import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
 import Option from './Option';
 
-const { ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING } = EVENT_STATUS;
-
 export default class MultipleResultsEvent {
   txid // Transaction ID returned when the event confirmed
   txStatus // One of: [PENDING, SUCCESS, FAIL]
@@ -59,8 +57,20 @@ export default class MultipleResultsEvent {
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
 
-  isUpcoming = (address) => this.status === ORACLE_RESULT_SETTING
+  isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
 
-  isOpenResultSetting = () => this.status === OPEN_RESULT_SETTING
+  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING
+
+  getEndTime = () => {
+    switch (this.status) {
+      case EVENT_STATUS.CREATED: return null;
+      case EVENT_STATUS.BETTING: return this.betEndTime;
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return this.resultSetEndTime;
+      case EVENT_STATUS.OPEN_RESULT_SETTING: return this.resultSetEndTime;
+      case EVENT_STATUS.ARBITRATION: return this.arbitrationEndTime;
+      case EVENT_STATUS.WITHDRAWING: return null;
+      default: throw Error(`Invalid status: ${this.status}`);
+    }
+  }
 }

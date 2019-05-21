@@ -82,26 +82,12 @@ export default class EventCard extends Component {
     return false;
   }
 
-  getEndTime = () => {
-    const { event, event: { status } } = this.props;
-    switch (status) {
-      case CREATED: return undefined;
-      case BETTING: return event.betEndTime;
-      case ORACLE_RESULT_SETTING: return event.resultSetEndTime;
-      case OPEN_RESULT_SETTING: return event.resultSetEndTime;
-      case ARBITRATION: return event.arbitrationEndTime;
-      case WITHDRAWING: return undefined;
-      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
-    }
-  }
-
   render() {
-    const { classes, index, onClick, store: { ui, naka: { account } } } = this.props;
-    const { address, name, isPending, isUpcoming, txid, url, status } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const { classes, index, onClick, store: { naka: { account } } } = this.props;
+    const { address, name, isPending, isUpcoming, url, status, getEndTime } = this.props.event;
+    const { formatMessage } = this.props.intl;
     const amountLabel = this.getAmountLabel();
-    const { currentTimeUnix } = ui;
-    const endTime = this.getEndTime();
+
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -129,7 +115,7 @@ export default class EventCard extends Component {
                   </div>
                 )}
                 <div className={classes.eventCardInfoItem}>
-                  <CountdownTime endTime={endTime} />
+                  <CountdownTime endTime={getEndTime()} />
                 </div>
               </div>
             </div>
