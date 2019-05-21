@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
+import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { fromAscii } from 'web3-utils';
@@ -12,15 +12,11 @@ import {
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
-const web3EthAbi = new AbiCoder();
-const INIT_VALUES = {
-};
-
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
 const BET_EVENT_FUNC_SIG = '885ab66d';
 const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
-const createEventFuncTypes = [
+const CREATE_EVENT_FUNC_TYPES = [
   'string',
   'bytes32[10]',
   'uint256',
@@ -29,27 +25,16 @@ const createEventFuncTypes = [
   'uint256',
   'address',
 ];
-const playEventFuncTypes = [
+const PLAY_EVENT_FUNC_TYPES = [
   'uint8',
 ];
+const web3EthAbi = new AbiCoder();
 
 export default class TransactionStore {
-  @observable transactions = [];
   app = undefined;
 
   constructor(app) {
     this.app = app;
-
-    // Naka Wallet logged in/out
-    reaction(
-      () => this.app.naka.loggedIn,
-      () => {
-        if (!this.app.naka.loggedIn) {
-          Object.assign(this, INIT_VALUES);
-          this.transactions.clear();
-        }
-      }
-    );
   }
 
   createEvent = async ({
@@ -69,7 +54,7 @@ export default class TransactionStore {
         throw new Error('excahngeRate not existed');
       }
       const paramsHex = web3EthAbi.encodeParameters(
-        createEventFuncTypes,
+        CREATE_EVENT_FUNC_TYPES,
         eventParams,
       ).substr(2);
 
@@ -107,7 +92,7 @@ export default class TransactionStore {
         throw new Error('excahngeRate not existed');
       }
       const paramsHex = web3EthAbi.encodeParameters(
-        playEventFuncTypes,
+        PLAY_EVENT_FUNC_TYPES,
         params,
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
@@ -130,8 +115,8 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  // TODO: handle for specific types
   onTxExecuted = async (tx, pendingTx) => {
+    // TODO: refresh Event Detail if the address is showing
     // Refresh detail page if one the same page
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.addPendingTx(pendingTx);
