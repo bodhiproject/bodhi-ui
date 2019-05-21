@@ -274,7 +274,7 @@ export default class EventStore {
   @action
   queryResultSets = async (address) => {
     const { graphqlClient } = this.app;
-    const resultSetFilter = { eventAddress: address };
+    const resultSetFilter = { eventAddress: address, status: TransactionStatus.SUCCESS };
     const resultSetOrderBy = { field: 'eventRound', direction: SortBy.ASCENDING };
     const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
     this.resultSetsHistory = res.items;
