@@ -190,8 +190,8 @@ export default class EventStore {
     // await this.queryOracles(txid);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
-    // await this.queryTransactions(this.event.address);
-    // await this.queryResultSets(this.event.address);
+    await this.queryTransactions(this.event.address);
+    await this.queryResultSets(this.event.address);
     // await this.getCurrentArbitrationEndTime();
     this.disableEventActionsIfNecessary();
 
@@ -275,10 +275,10 @@ export default class EventStore {
   @action
   queryResultSets = async (address) => {
     const { graphqlClient } = this.app;
-    const resultSetFilter = { eventAddress: address, status: TransactionStatus.SUCCESS };
+    const resultSetFilter = { eventAddress: address };
     const resultSetOrderBy = { field: 'eventRound', direction: SortBy.ASCENDING };
     const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
-    this.resultSetsHistory = res.item;
+    this.resultSetsHistory = res.items;
   }
 
   @action

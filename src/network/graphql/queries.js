@@ -238,7 +238,7 @@ class GraphQuery {
     const res = await this.client.query({
       query: this.query,
       variables: this.args,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache', // for fixing transactions query
     });
     return res.data[this.queryName];
   }
