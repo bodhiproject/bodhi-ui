@@ -98,6 +98,10 @@ export default class EventStore {
     return this.event && this.event.status === ARBITRATION;
   }
 
+  @computed get isWithdraw() {
+    return this.event && this.event.status === WITHDRAWING;
+  }
+
   @computed get buttonExtendProps() {
     if (!this.event) return {};
     if (this.event.currentRound === 0) {
@@ -181,7 +185,7 @@ export default class EventStore {
       await this.queryResultSets(this.event.address);
     }
     this.disableEventActionsIfNecessary();
-    this.selectedOptionIdx = 1;
+    // this.selectedOptionIdx = 1;
     console.log('TCL: this.event', this.event);
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold

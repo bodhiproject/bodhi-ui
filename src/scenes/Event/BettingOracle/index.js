@@ -27,15 +27,17 @@ const BettingOracle = withStyles(styles)(injectIntl(observer(({ store: { eventPa
       {!event.isArchived && (
         <EventWarning id={eventPage.eventWarningMessageId} amount={String(eventPage.amount)} type={eventPage.warningType} />
       )}
-      <Paper className={classes.withdrawingPaper}>
-        <WinningOutcome eventPage={eventPage} />
-        {Boolean(escrowClaim || nbotWinnings) && (
-          <Fragment>
-            <Reward event={event} eventPage={eventPage} />
-            <WithdrawTo />
-          </Fragment>
-        )}
-      </Paper>
+      { event.isWithdraw && (
+        <Paper className={classes.withdrawingPaper}>
+          <WinningOutcome eventPage={eventPage} />
+          {Boolean(escrowClaim || nbotWinnings) && (
+            <Fragment>
+              <Reward event={event} eventPage={eventPage} />
+              <WithdrawTo />
+            </Fragment>
+          )}
+        </Paper>
+      )}
       <Options event={event} amountInputDisabled={eventPage.isResultSetting} />
       {(eventPage.isResultSetting || eventPage.isArbitration) && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>
