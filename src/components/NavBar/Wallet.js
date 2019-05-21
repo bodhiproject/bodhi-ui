@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Badge, withStyles } from '@material-ui/core';
+import { IconButton, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
 import { Routes } from 'constants';

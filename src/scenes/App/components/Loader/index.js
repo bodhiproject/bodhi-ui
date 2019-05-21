@@ -5,10 +5,8 @@ import moment from 'moment';
 import { withStyles, Typography, Grid, LinearProgress } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-
 import AppConfig from '../../../../config/app';
 import styles from './styles';
-
 
 @withStyles(styles)
 @inject('store')
