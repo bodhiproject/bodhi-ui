@@ -5,8 +5,11 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
+import { Token, TransactionType } from 'constants';
+
 import styles from './styles';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
+import { stringToBN, satoshiToDecimal } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -37,12 +40,10 @@ export default class TxRow extends Component {
   }
 
   get description() {
-    const { intl, transaction: { optionIdx }, topic } = this.props;
-    if (topic && optionIdx !== null && optionIdx !== undefined) {
-      const optionName = topic.options[optionIdx];
-      return `#${optionIdx + 1} ${optionName === 'Invalid' && !topic.localizedInvalid
-        ? topic.localizedInvalid.parse(intl.locale)
-        : optionName}`;
+    const { intl, transaction: { resultIndex, resultName }, event } = this.props;
+    if (resultIndex !== null && resultIndex !== undefined) {
+      return `#${resultIndex} ${resultIndex === 0 ?
+        event.localizedInvalid.parse(intl.locale) : resultName}`;
     }
     return '';
   }
@@ -51,14 +52,26 @@ export default class TxRow extends Component {
     this.setState({ expanded: !this.state.expanded });
   };
 
+  getAmount = (transaction) => {
+    const { txType } = transaction;
+    let { amount } = transaction;
+    if (txType === TransactionType.CREATE_EVENT) {
+      amount = transaction.escrowAmount;
+    } else if (txType === TransactionType.WITHDRAW) {
+      amount = stringToBN(transaction.winningAmount) + stringToBN(transaction.escrowWithdrawAmount);
+      amount = amount.toString();
+    }
+
+    return satoshiToDecimal(amount);
+  }
+
   render() {
     const { classes, intl, transaction } = this.props;
-    const { txid, createdTime, amount, token, type, blockTime } = transaction;
-    let { status } = transaction;
+    const { txid, txType, txStatus, block: { blockTime: createdTime } } = transaction;
     const { expanded } = this.state;
-    if (transaction.constructor.name !== 'Transaction') status = 'SUCCESS';
+    const amount = this.getAmount(transaction);
     const statusMsg = (() => {
-      switch (status) {
+      switch (txStatus) {
         case 'PENDING': return messages.strPendingMsg;
         case 'SUCCESS': return messages.strSuccessMsg;
         default: return messages.strFailMsg;
@@ -68,10 +81,10 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{blockTime ? moment.unix(blockTime).format('LLL') : moment.unix(createdTime).format('LLL')}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
+          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
+          <TableCell padding="dense">{getTxTypeString(txType, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
-          <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>
+          <TableCell padding="dense">{!amount ? '' : `${amount} ${Token.NBOT}`}</TableCell>
           <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
           <TableCell padding="dense">
             <i
