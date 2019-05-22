@@ -18,7 +18,7 @@ import WithdrawTo from './WithdrawTo';
 import Option from './Option';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
-import Sidebar from './Sidebar';
+import { Sidebar } from './Sidebar';
 
 const messages = defineMessages({
   loadOracleMsg: {
@@ -179,8 +179,6 @@ export default class EventPage extends Component {
       },
     } = this.props;
 
-    console.log('NAKA: EventPage -> render -> loading', loading);
-    console.log('NAKA: EventPage -> render -> event', event);
     if (loading || !event) {
       return <Loading text={messages.loadOracleMsg} event='true' />;
     }

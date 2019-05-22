@@ -37,6 +37,7 @@ export default class EventResultHistory extends Component {
       />
     );
   }
+
   render() {
     const { resultSetsHistory } = this.props;
     return (

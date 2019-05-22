@@ -4,9 +4,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { ResponsiveTable } from 'components';
-
-import TxRow from './TxRow';
 import styles from './styles';
+import TxRow from './TxRow';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })

@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import { EventType } from 'constants';
 import { Tabs, Tab, withStyles } from '@material-ui/core';
-
 import styles from './styles';
-import { ResultHistory, TransactionHistory } from '../';
+import ResultHistory from './ResultHistory';
+import TransactionHistory from './TransactionHistory';
 
 const TAB_RESULT_HISTORY = 0;
 const TAB_MY_TRANSACTIONS = 1;
