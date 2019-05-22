@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
@@ -24,19 +25,19 @@ const WinningResult = ({ intl, eventPage }) => (
   </Typography>
 );
 
-const WinningOutcome = ({ intl, eventPage }) => (
+const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage } }) => (
   <Container>
     <WinningIcon />
     <WinningOutcomeTitle />
     <WinningResult intl={intl} eventPage={eventPage} />
-    {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
+    {console.log(eventPage.nbotWinnings)}
+    { eventPage.nbotWinnings ? (
       <Typography variant="caption">
         <FormattedMessage
           id="withdrawDetail.youBetYouVote"
-          defaultMessage="You bet {naka} NAKA. You voted {nbot} NBOT."
+          defaultMessage="You bet {nbot} NBOT."
           values={{
-            naka: eventPage.resultBetAmount,
-            nbot: eventPage.resultVoteAmount,
+            nbot: eventPage.nbotWinnings,
           }}
         />
       </Typography>
@@ -49,6 +50,6 @@ const WinningOutcome = ({ intl, eventPage }) => (
       </Typography>
     )}
   </Container>
-);
+)));
 
 export default injectIntl(WinningOutcome);

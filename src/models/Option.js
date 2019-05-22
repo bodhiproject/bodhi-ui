@@ -24,7 +24,7 @@ export default class Option {
     this.token = NBOT;
     this.phase = event.phase;
     this.value = `${this.amount} ${this.token}`;
-    if (event.token === NAKA) {
+    if (event.status !== EVENT_STATUS.ARBITRATION) {
       const totalBalance = _.sum(event.amounts);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {

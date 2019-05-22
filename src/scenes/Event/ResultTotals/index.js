@@ -17,19 +17,19 @@ const messages = defineMessages({
 
 const Options = ({ eventPage }) => (
   <Wrapper>
-    {_.map(eventPage.topic.options, (o, i) => <Option key={`option-${i}`} eventPage={eventPage} index={i} option={o} />)}
+    {_.map(eventPage.event.options, (o, i) => <Option key={`option-${i}`} eventPage={eventPage} index={i} option={o} />)}
   </Wrapper>
 );
 
-const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic } }) => (
+const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { event } }) => (
   <OptionWrapper>
     <OptionNumber>{index + 1}</OptionNumber>
-    <Typog variant="h6" data-small={topic.resultIdx === index}>
-      {option === 'Invalid' ? topic.localizedInvalid.parse(intl.locale) : option}
+    <Typog variant="h6" data-small={event.resultIdx === index}>
+      {option === 'Invalid' ? event.localizedInvalid.parse(intl.locale) : option}
     </Typog>
     <Typography variant="caption">
       {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {
-        naka: topic.nakaAmount[index], nbot: topic.nbotAmount[index],
+        naka: event.nakaAmount[index], nbot: event.nbotAmount[index],
       })}
     </Typography>
     {!!(eventPage.betBalances[index] || eventPage.voteBalances[index]) && (

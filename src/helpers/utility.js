@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
-import { fromWei } from 'web3-utils';
+import { fromWei, isHexStrict } from 'web3-utils';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
@@ -95,6 +95,21 @@ export function weiToDecimal(number) {
 
   const decimal = fromWei(number);
   return Number(decimal);
+}
+
+/**
+ * Return hex string starts with 0x.
+ * @param number {String} The hex string to convert.
+ * @return {String} The converted hex string.
+ */
+export function prefixedHex(number) {
+  if (!number) {
+    return number;
+  }
+
+  if (isHexStrict(number)) return number;
+
+  return `0x${number}`;
 }
 
 /**

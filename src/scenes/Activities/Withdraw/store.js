@@ -43,13 +43,19 @@ export default class {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = Routes.WITHDRAW; // change ui location, for tabs to render correctly
-    this.list = await this.fetch(this.limit, this.skip);
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.hasMore = true;
+    this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = true;
     });
   }
+
 
   @action
   loadMore = async () => {
@@ -89,7 +95,7 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       each(votes, ({ eventAddress, resultIndex }) => {
-        eventFilters.OR.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, resultIndex, language: locale });
+        eventFilters.OR.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, currentResultIndex: resultIndex, language: locale });
       });
       const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;

@@ -3,7 +3,7 @@ import { isEmpty, find, findIndex } from 'lodash';
 import { WalletAddress } from 'models';
 import promisify from 'js-promisify';
 
-import { satoshiToDecimal, weiToDecimal } from '../helpers/utility';
+import { satoshiToDecimal, weiToDecimal, prefixedHex } from '../helpers/utility';
 import getContracts from '../config/contracts';
 import TokenExchangeMeta from '../config/token-exchange';
 
@@ -115,8 +115,7 @@ export default class WalletStore {
 
     try {
       const balance = await promisify(this.nbotContract.balanceOf, [address]);
-      const nbot = satoshiToDecimal(balance.toString(16));
-
+      const nbot = satoshiToDecimal(prefixedHex(balance.toString(16)));
       // Update WalletAddress NBOT in list of addresses
       const index = findIndex(this.addresses, { address });
       if (index !== -1) {

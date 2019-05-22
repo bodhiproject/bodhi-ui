@@ -126,7 +126,7 @@ export default class EventPage extends Component {
       onClick = eventPage.set;
       msg = <FormattedMessage id="str.setResult" defaultMessage="Set Result" />;
     } else if (eventPage.isArbitration) {
-      onClick = eventPage.set;
+      onClick = eventPage.vote;
       msg = <FormattedMessage id="str.vote" defaultMessage="Vote" />;
     } else {
       return null;
@@ -179,7 +179,7 @@ export default class EventPage extends Component {
               <WithdrawTo />
             </Fragment>
           )}
-          <ResultTotals />
+          <ResultTotals eventPage={eventPage} />
         </Paper>
       </Fragment>
     );
@@ -207,7 +207,7 @@ export default class EventPage extends Component {
               ? this.renderActiveEventContent()
               : this.renderWithdrawContent()}
             <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
-            <HistoryTable />
+            {/* <HistoryTable /> */}
           </ContentContainer>
           <Sidebar endTime={event.betEndTime} />
         </PageContainer>

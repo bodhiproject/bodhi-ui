@@ -11,12 +11,12 @@ import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
-const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => {
-  if (withdrawableAddresses.length > 0) {
+const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddress }, wallet: { currentAddress } } }) => {
+  if (currentAddress !== '') {
     return (<Container>
       <WalletIcon />
       <WithdrawToLabel />
-      <WithdrawList withdrawableAddresses={withdrawableAddresses} />
+      <WithdrawList withdrawableAddress={withdrawableAddress} />
     </Container>);
   }
   return <Fragment />;
@@ -32,11 +32,11 @@ const WithdrawToLabel = () => (
   </Label>
 );
 
-const WithdrawList = ({ withdrawableAddresses }) => (
+const WithdrawList = ({ withdrawableAddress }) => (
   <ResponsiveTable>
     <TableHeader />
     <TableBody>
-      {withdrawableAddresses.map((addr, i) => <WinningWithdrawRow addr={addr} key={i} />)}
+      <WinningWithdrawRow addr={withdrawableAddress} />
     </TableBody>
   </ResponsiveTable>
 );
@@ -48,7 +48,7 @@ const TableHeader = () => (
         <FormattedMessage id="str.address" defaultMessage="Address" />
       </TableCell>
       <TableCell padding="dense">
-        <FormattedMessage id="str.type" defaultMessage="Type" />
+        <FormattedMessage id="str.escrow" defaultMessage="Escrow" />
       </TableCell>
       <TableCell padding="dense">
         <FormattedMessage id="str.amount" defaultMessage="Amount" />
@@ -61,16 +61,13 @@ const TableHeader = () => (
 );
 
 
-const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, nbotWon, nakaWon }, store, key }) => {
-  const { eventPage } = store;
+const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAmount, nbotWinnings }, store, key }) => {
+  const { eventPage: { didWithdraw, pendingWithdraw, withdraw } } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig(
-    { type, address },
-    eventPage.withdrawableAddresses,
-    eventPage.transactionHistoryItems,
-    eventPage.address,
+    pendingWithdraw,
+    didWithdraw,
   );
-  const nbotWonText = nbotWon ? `${nbotWon} ${Token.NBOT}` : '';
-  const nakaWonText = nakaWon ? `${nakaWon} ${Token.NAKA}` : '';
+  console.log(1);
 
   return (
     <TableRow key={key}>
@@ -79,19 +76,10 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, nb
         {disabled && <Warning id={id} message={message} className={warningType} />}
       </TableCell>
       <TableCell padding="dense">
-        {type === TransactionType.WITHDRAW_ESCROW && (
-          <FormattedMessage id="str.escrow" defaultMessage="Escrow">
-            {(txt) => i18nToUpperCase(txt)}
-          </FormattedMessage>
-        )}
-        {type === TransactionType.WITHDRAW && (
-          <FormattedMessage id="str.winnings" defaultMessage="Winnings">
-            {(txt) => i18nToUpperCase(txt)}
-          </FormattedMessage>
-        )}
+        {escrowAmount}
       </TableCell>
       <TableCell padding="dense">
-        {`${nbotWonText}${!_.isEmpty(nbotWonText) && !_.isEmpty(nakaWonText) ? ', ' : ''}${nakaWonText}`}
+        {nbotWinnings}
       </TableCell>
       <TableCell padding="dense">
         <Button
@@ -99,7 +87,7 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, nb
           variant="contained"
           color="primary"
           disabled={disabled}
-          onClick={() => eventPage.withdraw(address, type)}
+          onClick={() => withdraw()}
         >
           <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
         </Button>
@@ -109,15 +97,9 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, type, nb
 }));
 
 
-const getActionButtonConfig = (withdrawableAddress, withdrawableAddresses, getTransactionsReturn, address) => {
+const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
   // Already have a pending tx for this Topic
-  let pendingTxs = _.filter(getTransactionsReturn, {
-    type: withdrawableAddress.type,
-    status: TransactionStatus.PENDING,
-    topicAddress: address,
-    senderAddress: withdrawableAddress.address,
-  });
-  if (pendingTxs.length > 0) {
+  if (pendingWithdraw.length > 0) {
     return {
       show: true,
       disabled: true,
@@ -128,13 +110,7 @@ const getActionButtonConfig = (withdrawableAddress, withdrawableAddresses, getTr
   }
 
   // Already withdrawn with this address
-  pendingTxs = _.filter(getTransactionsReturn, {
-    type: withdrawableAddress.type,
-    status: TransactionStatus.SUCCESS,
-    topicAddress: address,
-    senderAddress: withdrawableAddress.address,
-  });
-  if (pendingTxs.length > 0) {
+  if (didWithdraw) {
     return {
       show: true,
       disabled: true,
@@ -144,20 +120,20 @@ const getActionButtonConfig = (withdrawableAddress, withdrawableAddresses, getTr
     };
   }
 
-  // Can withdraw winnings
-  if (_.find(withdrawableAddresses, {
-    type: withdrawableAddress.type,
-    address: withdrawableAddress.address,
-  })) {
-    return {
-      show: true,
-      disabled: false,
-    };
-  }
+  // // Can withdraw winnings
+  // if (_.find(withdrawableAddresses, {
+  //   type: withdrawableAddress.type,
+  //   address: withdrawableAddress.address,
+  // })) {
+  //   return {
+  //     show: true,
+  //     disabled: false,
+  //   };
+  // }
 
   return {
     show: true,
-    disabled: true,
+    disabled: false,
   };
 };
 

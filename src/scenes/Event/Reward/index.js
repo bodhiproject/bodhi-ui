@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import RewardTooltipContent from '../RewardTooltipContent';
@@ -10,6 +11,8 @@ import styles from '../Sidebar/styles';
 
 @withStyles(styles)
 @injectIntl
+@inject('store')
+@observer
 export default class Reward extends Component {
   renderTitle = () => (
     <Label>

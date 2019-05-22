@@ -13,6 +13,7 @@ import {
   biggestWinners,
   resultSets,
   totalResultBets,
+  withdraws,
 } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
@@ -21,9 +22,11 @@ const INIT = {
   loading: true,
   event: undefined,
   address: '',
+  escrowAmount: 0,
   resultBets: [],
   betterBets: [],
   resultSetsHistory: [],
+  pendingWithdraw: [],
   transactionHistoryItems: [],
   leaderboardBets: [],
   nbotWinnings: 0,
@@ -38,6 +41,7 @@ const INIT = {
     address: '',
   },
   leaderboardLimit: 5,
+  didWithdraw: false,
 };
 
 export default class EventStore {
@@ -57,6 +61,9 @@ export default class EventStore {
   @observable eventWarningMessageId = INIT.eventWarningMessageId
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
+  @observable escrowAmount = INIT.escrowAmount
+  @observable didWithdraw = INIT.didWithdraw
+  @observable pendingWithdraw = INIT.pendingWithdraw
   leaderboardLimit = INIT.leaderboardLimit
 
   @computed get eventName() {
@@ -120,6 +127,15 @@ export default class EventStore {
 
   @computed get selectedOption() {
     return (this.event.results && this.event.results[this.selectedOptionIdx]) || {};
+  }
+
+  @computed get withdrawableAddress() {
+    const { currentAddress } = this.app.wallet;
+    return {
+      address: currentAddress,
+      nbotWinnings: this.nbotWinnings,
+      escrowAmount: this.event.ownerAddress === currentAddress ? this.escrowAmount : 0,
+    };
   }
 
   constructor(app) {
@@ -191,16 +207,67 @@ export default class EventStore {
     this.disableEventActionsIfNecessary();
     if (this.isResultSetting) {
       // Set the amount field since we know the amount will be the consensus threshold
-      this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
+      this.amount = this.event.consensusThreshold.toString();
     }
 
     if (this.isWithdrawing) {
+      await this.getEscrowAmount();
+      await this.getDidWithdraw();
+      await this.queryPendingWithdraw();
       this.selectedOptionIdx = this.event.currentResultIndex;
       await this.queryTotalResultBets();
       await this.calculateWinnings();
     }
 
     this.loading = false;
+  }
+
+  @action
+  getEscrowAmount = async () => {
+    try {
+      const { data } = await axios.get(API.EVENT_ESCROW_AMOUNT);
+      this.escrowAmount = satoshiToDecimal(data.result);
+    } catch (error) {
+      runInAction(() => {
+        this.app.globalDialog.setError(
+          `${error.message} : ${error.response.data.error}`,
+          API.EVENT_ESCROW_AMOUNT,
+        );
+      });
+    }
+  }
+
+  @action
+  getDidWithdraw = async () => {
+    const address = this.event && this.event.address;
+    if (!address || !this.app.wallet.currentAddress) return;
+
+    try {
+      const { data } = await axios.get(API.DID_WITHDRAW, {
+        params: {
+          eventAddress: address,
+          address: this.app.wallet.currentAddress,
+        },
+      });
+      this.didWithdraw = data.result;
+    } catch (error) {
+      runInAction(() => {
+        this.app.globalDialog.setError(
+          `${error.message} : ${error.response.data.error}`,
+          API.DID_WITHDRAW,
+        );
+      });
+    }
+  }
+
+  @action
+  queryPendingWithdraw = async () => {
+    const address = this.event && this.event.address;
+    if (!address || !this.app.wallet.currentAddress) return;
+    const res = await withdraws(this.app.graphqlClient, {
+      filter: { eventAddress: address, txStatus: TransactionStatus.PENDING, winnerAddress: this.app.wallet.currentAddress },
+    });
+    this.pendingWithdraw = res.items;
   }
 
   @action
@@ -297,7 +364,7 @@ export default class EventStore {
           address: this.app.wallet.currentAddress,
         },
       });
-      this.nbotWinnings = data.result;
+      this.nbotWinnings = satoshiToDecimal(data.result);
     } catch (error) {
       runInAction(() => {
         this.app.globalDialog.setError(
@@ -471,6 +538,9 @@ export default class EventStore {
   withdraw = async () => {
     // TODO: finish when withdraw is done
     await this.app.tx.executeWithdraw({
+      eventAddress: this.event.address,
+      winningAmount: decimalToSatoshi(this.nbotWinnings),
+      escrowAmount: decimalToSatoshi(this.escrowAmount),
     });
   }
 }

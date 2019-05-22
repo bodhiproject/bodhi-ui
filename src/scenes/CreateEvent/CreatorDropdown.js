@@ -36,6 +36,7 @@ const CreatorDropdown = (({ classes, store: { createEvent, wallet: { addresses }
 ));
 
 const CreatorItem = observer(({ address, naka, nbot }) =>{
+ console.log('TCL: CreatorItem -> nbot', nbot);
  return (
   <option value={address}>
     {`${address}`}
