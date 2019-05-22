@@ -46,18 +46,13 @@ export function getTxTypeString(txType, intl) {
   const { formatMessage } = getIntlProvider(intl.locale, intl.messages);
 
   switch (txType) {
-    case TransactionType.APPROVE_CREATE_EVENT:
-    case TransactionType.APPROVE_SET_RESULT:
-    case TransactionType.APPROVE_VOTE: {
-      return formatMessage(strings.approveBotTransfer);
-    }
     case TransactionType.CREATE_EVENT: {
       return formatMessage(strings.createEvent);
     }
     case TransactionType.BET: {
       return formatMessage(strings.bet);
     }
-    case TransactionType.SET_RESULT: {
+    case TransactionType.RESULT_SET: {
       return formatMessage(strings.setResult);
     }
     case TransactionType.VOTE: {
@@ -65,15 +60,6 @@ export function getTxTypeString(txType, intl) {
     }
     case TransactionType.WITHDRAW: {
       return formatMessage(strings.withdraw);
-    }
-    case TransactionType.WITHDRAW_ESCROW: {
-      return formatMessage(strings.withdrawEscrow);
-    }
-    case TransactionType.TRANSFER: {
-      return formatMessage(strings.transfer);
-    }
-    case TransactionType.RESET_APPROVE: {
-      return formatMessage(strings.resetApproval);
     }
     default: {
       console.error(`Invalid txType: ${txType}`); // eslint-disable-line
