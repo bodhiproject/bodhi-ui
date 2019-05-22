@@ -6,7 +6,14 @@ import NP from 'number-precision';
 import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
 import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import { API } from '../../network/routes';
-import { events, transactions, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
+import {
+  events,
+  transactions,
+  mostBets,
+  biggestWinners,
+  resultSets,
+  totalResultBets,
+} from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
@@ -14,6 +21,8 @@ const INIT = {
   loading: true,
   event: undefined,
   address: '',
+  resultBets: [],
+  betterBets: [],
   resultSetsHistory: [],
   transactionHistoryItems: [],
   leaderboardBets: [],
@@ -35,6 +44,8 @@ export default class EventStore {
   @observable loading = INIT.loading
   @observable event = INIT.event
   @observable address = INIT.address
+  @observable resultBets = INIT.resultBets
+  @observable betterBets = INIT.betterBets
   @observable resultSetsHistory = INIT.resultSetsHistory
   @observable transactionHistoryItems = INIT.transactionHistoryItems
   @observable leaderboardBets = INIT.leaderboardBets
@@ -185,6 +196,7 @@ export default class EventStore {
 
     if (this.isWithdrawing) {
       this.selectedOptionIdx = this.event.currentResultIndex;
+      await this.queryTotalResultBets();
       await this.calculateWinnings();
     }
 
@@ -256,6 +268,21 @@ export default class EventStore {
   @action
   addPendingTx(pendingTransaction) {
     this.transactionHistoryItems.unshift(pendingTransaction);
+  }
+
+  @action
+  queryTotalResultBets = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    const res = await totalResultBets(this.app.graphqlClient, {
+      filter: {
+        eventAddress: address,
+        betterAddress: this.app.wallet.currentWalletAddress,
+      },
+    });
+    this.resultBets = res.resultBets;
+    this.betterBets = res.betterBets;
   }
 
   @action
