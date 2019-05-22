@@ -67,7 +67,8 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { txid, txType, txStatus, block: { blockTime: createdTime } } = transaction;
+    const { txid, txType, txStatus/* , block: { blockTime: createdTime } */ } = transaction;
+    const createdTime = 1;
     const { expanded } = this.state;
     const amount = this.getAmount(transaction);
     const statusMsg = (() => {

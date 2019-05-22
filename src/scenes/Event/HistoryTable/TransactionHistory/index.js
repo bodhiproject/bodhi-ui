@@ -15,7 +15,7 @@ export default class TransactionHistory extends Component {
   render() {
     const { store: { eventPage, wallet, naka }, myTransactions } = this.props;
     const { transactionHistoryItems, event } = eventPage;
-    console.log(transactionHistoryItems);
+
     return (
       <div>
         {transactionHistoryItems.length ? (
