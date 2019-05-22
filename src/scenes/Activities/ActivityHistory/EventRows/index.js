@@ -11,6 +11,7 @@ import { TransactionType } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
+import { stringToBN } from '../../../../helpers/utility';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -57,9 +58,8 @@ class EventRow extends Component {
         address = transaction.eventAddress;
         name = transaction.resultIndex;
       } else {
-        // TODO: fix this, these are both string values.
-        // need to convert to BN instances, add, then .toString()
-        amount = transaction.winningAmount + transaction.escrowWithdrawAmount;
+        amount = stringToBN(transaction.winningAmount) + stringToBN(transaction.escrowWithdrawAmount);
+        amount = amount.toString();
         address = transaction.eventAddress;
         name = 'Withdraw';
       }
