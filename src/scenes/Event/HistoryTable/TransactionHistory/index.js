@@ -14,7 +14,7 @@ import TxRow from './TxRow';
 export default class TransactionHistory extends Component {
   render() {
     const { store: { eventPage, wallet, naka } } = this.props;
-    const { transactionHistoryItems, topic } = eventPage;
+    const { transactionHistoryItems, event } = eventPage;
     return (
       <div>
         {transactionHistoryItems.length ? (
@@ -42,7 +42,7 @@ export default class TransactionHistory extends Component {
             </TableHead>
             <TableBody>
               {transactionHistoryItems.map((transaction) => (
-                (!(this.props.myTransactions && naka.account === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} topic={topic} />
+                (!(this.props.myTransactions && naka.account === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} event={event} />
               ))}
             </TableBody>
           </ResponsiveTable>
