@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, filter } from 'lodash';
+import { filter } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
@@ -12,81 +12,45 @@ import { maxTransactionFee } from '../../config/app';
 const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
   loading: false,
-  oracles: [],
-  topics: [],
-  resultSetsHistory: [],
-  leaderboardBets: [],
-  amount: '',
+  event: undefined,
   address: '',
-  topicAddress: '',
+  resultSetsHistory: [],
   transactionHistoryItems: [],
+  leaderboardBets: [],
+  nbotWinnings: 0,
+  amount: '',
   selectedOptionIdx: -1,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
-  escrowClaim: 0,
-  allowance: undefined,
-  nakaWinnings: 0,
-  nbotWinnings: 0,
-  withdrawableAddresses: [],
   activeStep: 0,
-  event: undefined,
   error: {
     amount: '',
     address: '',
   },
-  currentArbitrationEndTime: undefined,
+  leaderboardLimit: 5,
 };
 
 export default class EventStore {
   @observable loading = INIT.loading
-  @observable oracles = INIT.oracles
-  @observable leaderboardBets = INIT.leaderboardBets
-  @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
+  @observable event = INIT.event
   @observable address = INIT.address
-  @observable topicAddress = INIT.topicAddress
+  @observable resultSetsHistory = INIT.resultSetsHistory
   @observable transactionHistoryItems = INIT.transactionHistoryItems
-  @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
+  @observable leaderboardBets = INIT.leaderboardBets
+  @observable nbotWinnings = INIT.nbotWinnings
+  @observable amount = INIT.amount // Input amount to bet, vote, etc
+  @observable selectedOptionIdx = INIT.selectedOptionIdx // Current result index selected
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
-  @observable escrowClaim = INIT.escrowClaim
-  @observable allowance = INIT.allowance; // In Botoshi
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
-  @observable event = INIT.event
-  @observable topics = INIT.topics
-  @observable nakaWinnings = INIT.nakaWinnings
-  @observable nbotWinnings = INIT.nbotWinnings
-  @observable withdrawableAddresses = INIT.withdrawableAddresses
-  @observable resultSetsHistory = INIT.resultSetsHistory
-  @observable currentArbitrationEndTime = INIT.currentArbitrationEndTime
-  betBalances = []
-  voteBalances = []
-  leaderboardLimit = 5
-
-  @computed get amountDecimal() {
-    return satoshiToDecimal(this.allowance);
-  }
-
-  @computed get totalBetAmount() {
-    return sum(this.betBalances);
-  }
-
-  @computed get totalVoteAmount() {
-    return sum(this.voteBalances);
-  }
-
-  @computed get resultBetAmount() {
-    return this.betBalances[this.selectedOptionIdx];
-  }
-
-  @computed get resultVoteAmount() {
-    return this.voteBalances[this.selectedOptionIdx];
-  }
+  leaderboardLimit = INIT.leaderboardLimit
 
   @computed get isResultSetting() {
-    return this.event && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
+    return this.event
+      && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
   }
 
   @computed get isArbitration() {
@@ -101,14 +65,34 @@ export default class EventStore {
     if (!this.event) return {};
     if (this.event.currentRound === 0) {
       if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
-        return { buttonFunc: this.set, localeId: 'str.setResult', localeDefaultMessage: 'Set Result', type: 'setResult' };
+        return {
+          buttonFunc: this.set,
+          localeId: 'str.setResult',
+          localeDefaultMessage: 'Set Result',
+          type: 'setResult',
+        };
       }
-      return { buttonFunc: this.bet, localeId: 'bottomButtonText.placeBet', localeDefaultMessage: 'Place Bet', type: 'bet' };
+      return {
+        buttonFunc: this.bet,
+        localeId: 'bottomButtonText.placeBet',
+        localeDefaultMessage: 'Place Bet',
+        type: 'bet',
+      };
     }
     if (this.event.status === WITHDRAWING) {
-      return { buttonFunc: this.withdraw, localeId: 'str.withdraw', localeDefaultMessage: 'withdraw', type: 'withdraw' };
+      return {
+        buttonFunc: this.withdraw,
+        localeId: 'str.withdraw',
+        localeDefaultMessage: 'withdraw',
+        type: 'withdraw',
+      };
     }
-    return { buttonFunc: this.vote, localeId: 'str.vote', localeDefaultMessage: 'vote', type: 'vote' };
+    return {
+      buttonFunc: this.vote,
+      localeId: 'str.vote',
+      localeDefaultMessage: 'vote',
+      type: 'vote',
+    };
   }
 
   @computed get maxLeaderBoardSteps() {
@@ -189,9 +173,9 @@ export default class EventStore {
       () => this.updateLeaderBoard(),
     );
 
-    // Tx, amount, selected option, current wallet address, or allowance changes
+    // Tx list, amount, selected option, current wallet address changed
     reaction(
-      () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
+      () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
