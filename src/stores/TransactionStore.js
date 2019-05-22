@@ -369,7 +369,7 @@ export default class TransactionStore {
         token: getContracts().NakaBodhiToken.address,
         exchanger: nbotOwner,
         exchangeRate,
-        }]);
+      }]);
 
       Object.assign(tx, { txid });
 
