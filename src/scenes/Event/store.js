@@ -1,19 +1,19 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isEmpty, each, map, unzip, filter, fill } from 'lodash';
+import { sum, filter } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, EVENT_STATUS, TransactionStatus } from 'constants';
-import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
-import networkRoutes, { API } from '../../network/routes';
-import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
+import { EventType, SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
+import { toFixed, satoshiToDecimal } from '../../helpers/utility';
+import { API } from '../../network/routes';
+import { events, transactions, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { TOPIC, ORACLE } = EventType;
 const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
   type: undefined,
-  loading: true,
+  loading: false,
   oracles: [],
   topics: [],
   resultSetsHistory: [],
@@ -58,7 +58,6 @@ export default class EventStore {
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
   @observable event = INIT.event
-  // topic
   @observable topics = INIT.topics
   @observable nakaWinnings = INIT.nakaWinnings
   @observable nbotWinnings = INIT.nbotWinnings
@@ -72,15 +71,19 @@ export default class EventStore {
   @computed get amountDecimal() {
     return satoshiToDecimal(this.allowance);
   }
+
   @computed get totalBetAmount() {
     return sum(this.betBalances);
   }
+
   @computed get totalVoteAmount() {
     return sum(this.voteBalances);
   }
+
   @computed get resultBetAmount() {
     return this.betBalances[this.selectedOptionIdx];
   }
+
   @computed get resultVoteAmount() {
     return this.voteBalances[this.selectedOptionIdx];
   }
@@ -110,15 +113,11 @@ export default class EventStore {
     }
     return { buttonFunc: this.vote, localeId: 'str.vote', localeDefaultMessage: 'vote', type: 'vote' };
   }
-  @computed get topic() {
-    return find(this.topics, { address: this.topicAddress }) || {};
-  }
 
   @computed get maxLeaderBoardSteps() {
     return this.event.status === WITHDRAWING ? 2 : 1;
   }
 
-  // both
   @computed get selectedOption() {
     return (this.event.results && this.event.results[this.selectedOptionIdx]) || {};
   }
@@ -142,6 +141,8 @@ export default class EventStore {
 
   @action
   initEvent = async (url) => {
+    this.loading = true;
+
     const { items } = await events(this.app.graphqlClient, {
       filter: { OR: [{ txid: url }, { address: url }] },
       includeRoundBets: true,
@@ -156,11 +157,11 @@ export default class EventStore {
     }
 
     this.disableEventActionsIfNecessary();
-    // this.selectedOptionIdx = 1;
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
     }
+
     if (this.event.status === WITHDRAWING) {
       this.selectedOptionIdx = this.event.currentResultIndex;
       await this.calculateWinnings();
