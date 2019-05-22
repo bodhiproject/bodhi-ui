@@ -1,19 +1,15 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
-import { sum, filter } from 'lodash';
+import { filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
-import { FavoriteButton } from 'components';
-import { BigNumber } from 'bignumber.js';
-
+import { FavoriteButton, RaisedAmount, CountdownTime } from 'components';
 import EventWarning from '../EventWarning';
 import styles from './styles';
-import { getEndTimeCountDownString, satoshiToDecimal } from '../../helpers';
-import carousel from '../../scenes/Event/components/Leaderboard/carousel';
 
 const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
@@ -41,26 +37,6 @@ export default class EventCard extends Component {
     onClick: null,
   };
 
-  getAmountLabel = () => {
-    const { status, totalBets } = this.props.event;
-
-    switch (status) {
-      case CREATED:
-      case BETTING:
-      case ORACLE_RESULT_SETTING:
-      case OPEN_RESULT_SETTING:
-      case ARBITRATION:
-      case WITHDRAWING: {
-        // const amount = parseFloat(sum(amounts).toFixed(2));
-        return `${totalBets} NBOT`;
-      }
-      default: {
-        console.error(`Unhandled status: ${status}`); // eslint-disable-line
-        break;
-      }
-    }
-  }
-
   getButtonText = () => {
     const { status } = this.props.event;
     switch (status) {
@@ -83,26 +59,11 @@ export default class EventCard extends Component {
     return false;
   }
 
-  getEndTime = () => {
-    const { event, event: { status } } = this.props;
-    switch (status) {
-      case CREATED: return undefined;
-      case BETTING: return event.betEndTime;
-      case ORACLE_RESULT_SETTING: return event.resultSetEndTime;
-      case OPEN_RESULT_SETTING: return event.resultSetEndTime;
-      case ARBITRATION: return event.arbitrationEndTime;
-      case WITHDRAWING: return undefined;
-      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
-    }
-  }
-
   render() {
-    const { classes, index, onClick, store: { ui, naka: { account } } } = this.props;
-    const { address, name, isPending, isUpcoming, txid, url, status } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
-    const amountLabel = this.getAmountLabel();
-    const { currentTimeUnix } = ui;
-    const endTime = this.getEndTime();
+    const { classes, index, onClick, store: { naka: { account } } } = this.props;
+    const { address, name, isPending, isUpcoming, url, status, totalBets, getEndTime } = this.props.event;
+    const { formatMessage } = this.props.intl;
+
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -122,19 +83,11 @@ export default class EventCard extends Component {
                 <FavoriteButton eventAddress={address} />
               </div>
               <div className={classes.eventCardInfo}>
-                {amountLabel && (
-                  <div className={classes.eventCardInfoItem}>
-                    <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_token')}></i>
-                    {`${amountLabel} `}
-                    <FormattedMessage id="str.raised" defaultMessage="Raised" />
-                  </div>
-                )}
                 <div className={classes.eventCardInfoItem}>
-                  <i className={cx(classes.dashBoardCardIcon, 'icon iconfont icon-ic_timer')}></i>
-                  {endTime !== undefined
-                    ? <Fragment>{getEndTimeCountDownString(endTime - currentTimeUnix, locale, localeMessages)}</Fragment>
-                    : <FormattedMessage id="str.end" defaultMessage="Ended" />
-                  }
+                  <RaisedAmount amount={totalBets} />
+                </div>
+                <div className={classes.eventCardInfoItem}>
+                  <CountdownTime endTime={getEndTime()} />
                 </div>
               </div>
             </div>
