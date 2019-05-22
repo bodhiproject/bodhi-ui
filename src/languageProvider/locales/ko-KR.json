@@ -392,7 +392,7 @@
   "walletUnlockDialog.walletPassphraseRequired": "이 작업을 수행하려면이 지갑의 잠금을 해제해야합니다. 지갑 패스프레이즈를 입력하십시오.",
   "walletUnlockDialog.walletUnlocked": "지갑이 잠금 해제되었습니다.",
   "withdrawDetail.alreadyWithdrawn": "본 주소로 이미 철회를 했습니다.",
-  "withdrawDetail.returnRate": "반송 레이트 :",
+  "withdrawDetail.returnRateXPercent": "반송 레이트: {rate}%",
   "withdrawDetail.reward": "보상",
   "withdrawDetail.totalBetTotalVote": "총 베팅 금액 {naka} NAKA. 총 투표 금액 {nbot} NBOT.",
   "withdrawDetail.withdrawTo": "철회 대상",

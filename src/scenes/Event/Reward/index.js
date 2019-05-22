@@ -1,7 +1,5 @@
-import React, { Fragment, Component } from 'react';
-import styled from 'styled-components';
-import _ from 'lodash';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import React, { Component } from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import RewardTooltipContent from '../RewardTooltipContent';
 import Icon from '../Icon';
@@ -10,16 +8,54 @@ import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import styles from '../Sidebar/styles';
 
-const messages = defineMessages({
-  withdrawDetailReturnRateMsg: {
-    id: 'withdrawDetail.returnRate',
-    defaultMessage: 'Return rate:',
-  },
-});
-
 @withStyles(styles)
 @injectIntl
-class Reward extends Component {
+export default class Reward extends Component {
+  renderTitle = () => (
+    <Label>
+      <FormattedMessage id="withdrawDetail.reward" defaultMessage="REWARD">
+        {(txt) => i18nToUpperCase(txt)}
+      </FormattedMessage>
+    </Label>
+  )
+
+  renderReturnAmount = () => {
+    const {
+      classes,
+      store: {
+        eventPage: { nbotWinnings },
+      },
+    } = this.props;
+    // TODO: implement when Event store pulls TotalResultBets
+    // const betterBets = event && event.betterBets;
+    // const returnRate = ((nbotWinnings - betterBets) / betterBets) * 100;
+    const returnRate = 0;
+
+    return (
+      <div className={classes.colDiv}>
+        <Typography variant="h4">
+          <div className={classes.rowDiv}>
+            +{nbotWinnings} <div className={classes.tokenDiv}>NBOT</div>
+            <Tooltip
+              classes={{ tooltip: classes.rewardTooltip }}
+              id="tooltip-reward"
+              title={<RewardTooltipContent token="NBOT" {...props} />}
+            >
+              <i className="icon iconfont icon-ic_question" />
+            </Tooltip>
+          </div>
+        </Typography>
+        <Typography variant="caption">
+          <FormattedMessage
+            id="withdrawDetail.returnRateXPercent"
+            defaultMessage="Return rate: {rate}%"
+            values={{ rate: returnRate.toFixed(2) }}
+          />
+        </Typography>
+      </div>
+    );
+  }
+
   render() {
     const { eventPage, event, classes } = this.props;
     const { nbotWinnings, betBalances, voteBalances } = eventPage;
@@ -41,16 +77,10 @@ class Reward extends Component {
     if (nbotNakaWon > 0) {
       return (
         <Container>
-          <RewardIcon />
-          <RewardTitle />
+          <Icon type='token' />
+          {this.renderTitle()}
           <div className={classes.rowDiv}>
-            <BotUsed
-              nbotWinnings={eventPage.nbotWinnings}
-              // resultTokenAmount={resultVoteAmount}
-              // totalTokenAmount={totalVoteAmount}
-              // tokenWinnings={nbotWinnings}
-              // nbotReturnRate={nbotReturnRate}
-            />
+            {this.renderReturnAmount()}
           </div>
         </Container>
       );
@@ -58,45 +88,3 @@ class Reward extends Component {
     return null;
   }
 }
-
-const RewardIcon = () => <Icon type='token' />;
-
-const RewardTitle = () => (
-  <Label>
-    <FormattedMessage id="withdrawDetail.reward" defaultMessage="REWARD">
-      {(txt) => i18nToUpperCase(txt)}
-    </FormattedMessage>
-  </Label>
-);
-
-const Separator = styled.div`
-  display: inline-block;
-  width: 1px;
-  height: 75px;
-  background: ${props => props.theme.palette.divider};
-`;
-
-@withStyles(styles, { withTheme: true })
-@injectIntl
-class BotUsed extends Component {
-  render() {
-    const { nbotWinnings, nbotReturnRate, intl, classes, ...props } = this.props;
-    return (
-      <div className={classes.colDiv}>
-        <Typography variant="h4">
-          <div className={classes.rowDiv}>
-            +{nbotWinnings} <div className={classes.tokenDiv}>NBOT</div>
-            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="NBOT" {...props} />}>
-              <i className="icon iconfont icon-ic_question" />
-            </Tooltip>
-          </div>
-        </Typography>
-        <Typography variant="caption">
-          {/* {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${nbotReturnRate.toFixed(2)}%`} */}
-        </Typography>
-      </div>
-    );
-  }
-}
-
-export default Reward;

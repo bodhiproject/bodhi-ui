@@ -391,7 +391,7 @@
   "walletUnlockDialog.walletPassphraseRequired": "这个操作需要解锁您的钱包，请输入您的密码.",
   "walletUnlockDialog.walletUnlocked": "钱包已解锁！",
   "withdrawDetail.alreadyWithdrawn": "您已经使用过此地址提现。",
-  "withdrawDetail.returnRate": "回报率：",
+  "withdrawDetail.returnRateXPercent": "回报率：{rate}%",
   "withdrawDetail.reward": "回报",
   "withdrawDetail.totalBetTotalVote": "共投注 {naka} NAKA. 共筹集 {nbot} NBOT.",
   "withdrawDetail.withdrawTo": "提现到",
