@@ -1,4 +1,8 @@
 export default (theme) => ({
+  title: {
+    marginBottom: theme.padding.space5X.px,
+    fontSize: theme.sizes.font.large,
+  },
   actionButton: {
     marginTop: theme.padding.space5X.px,
     background: theme.palette.primary.main,

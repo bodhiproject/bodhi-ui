@@ -14,8 +14,11 @@ import { getEndTimeCountDownString } from '../../helpers';
 export default class CountdownTime extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    endTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number,
   };
+  static defaultProps = {
+    endTime: undefined,
+  }
 
   render() {
     const {
