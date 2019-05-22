@@ -1,21 +1,16 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
+import { sum, find, isEmpty, each, map, unzip, filter, fill } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, EVENT_STATUS, TransactionStatus } from 'constants';
-
+import { EventType, SortBy, TransactionType, EventWarningType, Token, EVENT_STATUS, TransactionStatus } from 'constants';
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes, { API } from '../../network/routes';
 import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
-import getContracts from '../../config/contracts';
 
-
-const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
-const { VOTING, RESULT_SETTING } = Phases;
-const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
-const paras = [Token.NAKA, Token.NBOT];
+const { TOPIC, ORACLE } = EventType;
+const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
   type: undefined,
   loading: true,
