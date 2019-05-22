@@ -212,7 +212,6 @@ export default class EventStore {
     }
 
     if (this.isWithdrawing) {
-      console.log(this.event);
       await this.getDidWithdraw();
       await this.queryPendingWithdraw();
       this.selectedOptionIdx = this.event.currentResultIndex;

@@ -7,7 +7,6 @@ import {
   addPendingBet,
   addPendingResultSet,
   addPendingWithdraw,
-  createTransaction,
 } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
