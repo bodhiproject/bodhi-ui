@@ -45,7 +45,8 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block: { blockTime: createdTime } } = transaction;
+      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus/* , block: { blockTime: createdTime } */ } = transaction;
+      const createdTime = 1;
       const { expanded } = this.state;
 
       // parse necessary data
