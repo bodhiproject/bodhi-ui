@@ -175,7 +175,10 @@ export default class EventStore {
 
     // Tx list, amount, selected option, current wallet address changed
     reaction(
-      () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress,
+      () => this.transactionHistoryItems
+        + this.amount
+        + this.selectedOptionIdx
+        + this.app.wallet.currentWalletAddress,
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
@@ -286,7 +289,8 @@ export default class EventStore {
     }
 
     // Has not reached betting start time
-    if (status === BETTING && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
+    if (status === BETTING
+      && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -294,7 +298,8 @@ export default class EventStore {
     }
 
     // Has not reached result setting start time
-    if ((status === ORACLE_RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+    if ((status === ORACLE_RESULT_SETTING)
+      && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -302,7 +307,9 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (status === ORACLE_RESULT_SETTING && !isOpenResultSetting() && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
+    if (status === ORACLE_RESULT_SETTING
+      && !isOpenResultSetting()
+      && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -330,7 +337,8 @@ export default class EventStore {
     }
 
     // Trying to bet more naka than you have or you just don't have enough NAKA period
-    if ((status === BETTING && this.amount > currentWalletNbot + maxTransactionFee) || notEnoughNbot) {
+    if ((status === BETTING && this.amount > currentWalletNbot + maxTransactionFee)
+      || notEnoughNbot) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNbot';
       return;
@@ -353,7 +361,8 @@ export default class EventStore {
     }
 
     // Enter an invalid amount
-    if ([BETTING, ARBITRATION].includes(status) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+    if ([BETTING, ARBITRATION].includes(status)
+      && (this.amount <= 0 || Number.isNaN(this.amount))) {
       this.buttonDisabled = true;
       this.error.amount = 'str.invalidAmount';
     }
@@ -367,7 +376,10 @@ export default class EventStore {
     const inputAmount = parseFloat(this.amount, 10);
     const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
-      this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
+      this.amount = String(toFixed(NP.minus(
+        consensusThreshold,
+        Number(this.selectedOption.amount)
+      )));
     }
   }
 
