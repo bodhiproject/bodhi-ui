@@ -128,6 +128,9 @@ export default class EventStore {
   }
 
   @action
+  reset = () => Object.assign(this, INIT);
+
+  @action
   async init({ txid, type, url }) {
     this.reset();
     this.txid = txid;
@@ -137,51 +140,23 @@ export default class EventStore {
     this.setReactions();
   }
 
-
-  @action
-  initTopic = async () => {
-    this.topicAddress = this.address;
-
-    // GraphQL calls
-    await this.queryTopics();
-    await this.queryOracles(this.address);
-    await this.queryTransactions(this.address);
-    await this.queryResultSets(this.address);
-
-    // API calls
-    await this.getEscrowAmount();
-    await this.calculateWinnings();
-    this.disableEventActionsIfNecessary();
-    await this.queryLeaderboard(Token.NAKA);
-    this.selectedOptionIdx = this.topic.resultIdx;
-    this.loading = false;
-  }
-
   @action
   initEvent = async (url) => {
-    console.log('TCL: initEvent -> url', url);
-    const { graphqlClient } = this.app;
-    const { items } = await events(graphqlClient, { filter: {
-      OR: [
-        { txid: url },
-        { address: url },
-      ] },
-    includeRoundBets: true });
+    const { items } = await events(this.app.graphqlClient, {
+      filter: { OR: [{ txid: url }, { address: url }] },
+      includeRoundBets: true,
+    });
     [this.event] = items;
-    this.address = this.event.address;
-    // GraphQL calls
-    // await this.queryTopics();
-    // await this.queryOracles(txid);
-    // await this.getAllowanceAmount();
-    // await this.queryLeaderboard(Token.NAKA);
+
     if (this.event) {
-      await this.queryLeaderboard();
-      await this.queryTransactions(this.event.address);
+      this.address = this.event.address;
       await this.queryResultSets(this.event.address);
+      await this.queryTransactions(this.event.address);
+      await this.queryLeaderboard();
     }
+
     this.disableEventActionsIfNecessary();
     // this.selectedOptionIdx = 1;
-    console.log('TCL: this.event', this.event);
     if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
@@ -252,35 +227,42 @@ export default class EventStore {
   }
 
   @action
-  queryTopics = async () => {
-    const { topics } = await queryAllTopics(this.app, [{ address: this.topicAddress }], undefined, 1);
-    this.topics = topics;
-  }
-
-  @action
-  queryOracles = async (address) => {
-    const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
-    this.oracles = oracles;
-  }
-
-  @action
   queryResultSets = async (address) => {
-    const { graphqlClient } = this.app;
-    const resultSetFilter = { eventAddress: address, txStatus: TransactionStatus.SUCCESS };
-    const resultSetOrderBy = { field: 'eventRound', direction: SortBy.ASCENDING };
-    const res = await resultSets(graphqlClient, { filter: resultSetFilter, orderBy: resultSetOrderBy });
+    const res = await resultSets(this.app.graphqlClient, {
+      filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
+      orderBy: { field: 'eventRound', direction: SortBy.ASCENDING },
+    });
     this.resultSetsHistory = res.items;
   }
 
   @action
+  queryTransactions = async (address) => {
+    const txs = await transactions(this.app.graphqlClient, {
+      filter: { eventAddress: address },
+      orderBy: { field: 'blockNum', direction: SortBy.DESCENDING },
+    });
+    const pendings = filter(txs.items, { txStatus: TransactionStatus.PENDING });
+    const confirmed = filter(txs.items, { txStatus: TransactionStatus.SUCCESS });
+    this.transactionHistoryItems = [...pendings, ...confirmed];
+  }
+
+  @action
   queryLeaderboard = async () => {
-    const bets = await mostBets(this.app.graphqlClient, { filter: { eventAddress: this.event.address }, limit: this.leaderboardLimit, skip: 0 });
+    const bets = await mostBets(this.app.graphqlClient, {
+      filter: { eventAddress: this.event.address },
+      limit: this.leaderboardLimit,
+      skip: 0,
+    });
     this.leaderboardBets = bets.items;
   }
 
   @action
   queryBiggestWinner = async () => {
-    const winners = await biggestWinners(this.app.graphqlClient, { filter: { eventAddress: this.event.address }, limit: this.leaderboardLimit, skip: 0 });
+    const winners = await biggestWinners(this.app.graphqlClient, {
+      filter: { eventAddress: this.event.address },
+      limit: this.leaderboardLimit,
+      skip: 0,
+    });
     this.leaderboardBets = winners;
   }
 
@@ -293,194 +275,28 @@ export default class EventStore {
     }
   }
 
-  @action
-  queryTransactions = async (address) => {
-    const { graphqlClient } = this.app;
-    const txFilter = { eventAddress: address };
-    const txOrderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
-    const txs = await transactions(graphqlClient, { filter: txFilter, orderBy: txOrderBy });
-    const pendings = filter(txs.items, { txStatus: TransactionStatus.PENDING });
-    const confirmed = filter(txs.items, { txStatus: TransactionStatus.SUCCESS });
-    this.transactionHistoryItems = [...pendings, ...confirmed];
-  }
-
+  // TODO: fix from TransactionStore
   @action
   addPendingTx(pendingTransaction) {
     this.transactionHistoryItems.unshift(pendingTransaction);
   }
 
   @action
-  getEscrowAmount = async () => {
-    try {
-      const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.currentAddress,
-      });
-      this.escrowAmount = satoshiToDecimal(data[0]);
-    } catch (error) {
-      runInAction(() => {
-        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
-      });
-    }
-  }
-
-  @action
   calculateWinnings = async () => {
     try {
       const { data } = await axios.get(API.CALCULATE_WINNINGS, {
-        params: { eventAddress: this.address, address: this.app.wallet.currentAddress },
+        params: {
+          eventAddress: this.address,
+          address: this.app.wallet.currentAddress,
+        },
       });
       this.nbotWinnings = data.result;
     } catch (error) {
       runInAction(() => {
-        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, API.CALCULATE_WINNINGS);
-      });
-    }
-  }
-
-  @action
-  getBetAndVoteBalances = async () => {
-    // Address is needed to get bet and vote balances
-    if (isEmpty(this.app.wallet.addresses)) {
-      this.betBalances = fill(Array(this.topic.options.length), 0);
-      this.voteBalances = fill(Array(this.topic.options.length), 0);
-      return;
-    }
-
-    try {
-      const { address: contractAddress, app: { wallet } } = this;
-
-      // Get all votes for this Topic
-      const voteFilters = [];
-      each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: contractAddress,
-          voterAddress: item.address,
-        });
-      });
-
-      // Filter unique votes
-      const allVotes = await queryAllVotes(voteFilters);
-      const uniqueVotes = [];
-      each(allVotes, (vote) => {
-        const { voterAddress, topicAddress } = vote;
-        if (!find(uniqueVotes, { voterAddress, topicAddress })) {
-          uniqueVotes.push(vote);
-        }
-      });
-
-      // Call bet and vote balances for each unique vote address and get arrays for each address
-      const betArrays = [];
-      const voteArrays = [];
-      for (let i = 0; i < uniqueVotes.length; i++) {
-        const voteObj = uniqueVotes[i];
-
-        const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterAddress,
-        });
-        betArrays.push(map(betBalances.data[0], satoshiToDecimal));
-
-        const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterAddress,
-        });
-        voteArrays.push(map(voteBalances.data[0], satoshiToDecimal));
-      }
-
-      // Sum all arrays by index into one array
-      this.betBalances = map(unzip(betArrays), sum);
-      this.voteBalances = map(unzip(voteArrays), sum);
-    } catch (error) {
-      runInAction(() => {
         this.app.globalDialog.setError(
           `${error.message} : ${error.response.data.error}`,
-          `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`,
+          API.CALCULATE_WINNINGS,
         );
-      });
-    }
-  }
-
-  @action
-  getWithdrawableAddresses = async () => {
-    // Address is needed to get withdrawable addresses
-    console.log('TCL: getWithdrawableAddresses -> this.app.wallet.addresses', this.app.wallet.addresses);
-    if (isEmpty(this.app.wallet.addresses)) {
-      this.withdrawableAddresses = [];
-      return;
-    }
-
-    try {
-      const { address: eventAddress, app: { wallet } } = this;
-      const withdrawableAddresses = [];
-
-      // Fetch Topic
-      const { topics } = await queryAllTopics(this.app, [{ address: eventAddress }]);
-      let topic;
-      if (!isEmpty(topics)) {
-        [topic] = topics;
-      } else {
-        throw new Error(`Unable to find topic ${eventAddress}`);
-      }
-
-      // Get all winning votes for this Topic
-      const voteFilters = [];
-      each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: topic.address,
-          optionIdx: topic.resultIdx,
-          voterAddress: item.address,
-        });
-
-        // Add escrow withdraw object if is event creator
-        if (item.address === topic.creatorAddress) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW_ESCROW,
-            address: item.address,
-            nbotWon: topic.escrowAmount,
-            nakaWon: 0,
-          });
-          this.escrowClaim = topic.escrowAmount;
-        }
-      });
-
-      // Filter unique votes
-      const votes = await queryAllVotes(voteFilters);
-      const filtered = [];
-      each(votes, (vote) => {
-        if (!find(filtered, {
-          voterAddress: vote.voterAddress,
-          topicAddress: vote.topicAddress,
-        })) {
-          filtered.push(vote);
-        }
-      });
-
-      // Calculate winnings for each winning vote
-      for (let i = 0; i < filtered.length; i++) {
-        const vote = filtered[i];
-
-        const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
-          contractAddress: topic.address,
-          senderAddress: vote.voterAddress,
-        });
-        const nbotWon = data ? satoshiToDecimal(data[0]) : 0;
-        const nakaWon = data ? satoshiToDecimal(data[1]) : 0;
-
-        // return only winning addresses
-        if (nbotWon || nakaWon) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW,
-            address: vote.voterAddress,
-            nbotWon,
-            nakaWon,
-          });
-        }
-      }
-
-      this.withdrawableAddresses = withdrawableAddresses;
-    } catch (error) {
-      runInAction(() => {
-        this.app.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.winnings);
       });
     }
   }
@@ -608,23 +424,4 @@ export default class EventStore {
       this.selectedOptionIdx = selectedOptionIdx;
     }
   }
-
-  bet = async () => {
-    await this.app.tx.executeBet({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
-  }
-
-  set = async () => {
-    await this.app.tx.executeSetResult({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
-  }
-
-  vote = async () => {
-    await this.app.tx.executeVote({ eventAddr: this.event.address, optionIdx: this.selectedOption.idx, amount: decimalToSatoshi(this.amount), eventRound: this.event.currentRound });
-  }
-
-  withdraw = async () => {
-    // TODO: finish when withdraw is done
-    await this.app.tx.executeWithdraw({});
-  }
-
-  reset = () => Object.assign(this, INIT);
 }

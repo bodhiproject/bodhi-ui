@@ -311,7 +311,6 @@ export default class CreateEventStore {
     try {
       const { data: { result } } = await axios.get(API.EVENT_ESCROW_AMOUNT);
       this.escrowAmount = satoshiToDecimal(result);
-      console.log('TCL: CreateEventStore -> getEscrowAmount -> API.EVENT_ESCROW_AMOUNT', API.EVENT_ESCROW_AMOUNT);
       return true;
     } catch (err) {
       this.app.globalDialog.setError(`${err.message} : ${err.response.data.error}`);

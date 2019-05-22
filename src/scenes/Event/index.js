@@ -6,9 +6,6 @@ import { Loading } from 'components';
 import { EventType } from 'constants';
 
 import BettingOracle from './BettingOracle';
-import VotingOracle from './VotingOracle';
-import ResultSettingOracle from './ResultSettingOracle';
-import WithdrawingTopic from './WithdrawingTopic';
 import BackButton from '../../components/BackButton';
 
 
