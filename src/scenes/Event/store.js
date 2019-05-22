@@ -3,16 +3,14 @@ import moment from 'moment';
 import { sum, filter } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
+import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
 import { toFixed, satoshiToDecimal } from '../../helpers/utility';
 import { API } from '../../network/routes';
 import { events, transactions, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
-const { TOPIC, ORACLE } = EventType;
 const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
-  type: undefined,
   loading: false,
   oracles: [],
   topics: [],
@@ -41,7 +39,6 @@ const INIT = {
 };
 
 export default class EventStore {
-  @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
   @observable leaderboardBets = INIT.leaderboardBets
@@ -130,10 +127,9 @@ export default class EventStore {
   reset = () => Object.assign(this, INIT);
 
   @action
-  async init({ txid, type, url }) {
+  async init({ txid, url }) {
     this.reset();
     this.txid = txid;
-    this.type = type;
     this.url = url;
     await this.initEvent(url);
     this.setReactions();
@@ -175,9 +171,15 @@ export default class EventStore {
     reaction(
       () => toJS(this.app.wallet.addresses),
       () => {
-        if (this.type === TOPIC) {
-          this.calculateWinnings();
-        }
+        if (this.event.status === WITHDRAWING) this.calculateWinnings();
+      }
+    );
+
+    // New block
+    reaction(
+      () => this.app.global.syncBlockNum + this.app.global.online,
+      async () => {
+        if (this.app.global.online) await this.initEvent(this.url);
       }
     );
 
@@ -187,42 +189,10 @@ export default class EventStore {
       () => this.updateLeaderBoard(),
     );
 
-    // New block
-    reaction(
-      () => this.app.global.syncBlockNum + this.app.global.online,
-      async () => {
-        // Fetch transactions during new block
-        if (this.app.global.online) {
-          switch (this.type) {
-            case TOPIC: {
-              await this.queryTransactions(this.event.address);
-              this.disableEventActionsIfNecessary();
-              // await this.updateLeaderBoard();
-              await this.queryResultSets(this.event.address);
-              break;
-            }
-            case ORACLE: {
-              await this.initEvent(this.url);
-              // await this.queryOracles(this.topicAddress);
-              // await this.getAllowanceAmount();
-              // await this.updateLeaderBoard();
-              // this.disableEventActionsIfNecessary();
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-        }
-      }
-    );
-
     // Tx, amount, selected option, current wallet address, or allowance changes
     reaction(
       () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
-      () => {
-        this.disableEventActionsIfNecessary();
-      },
+      () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
   }

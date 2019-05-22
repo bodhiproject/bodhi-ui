@@ -21,19 +21,8 @@ const messages = defineMessages({
 @observer
 export default class EventPage extends Component {
   componentDidMount() {
-    const { path, params } = this.props.match;
-    const type = EventType.ORACLE;
-    // if (path.startsWith('/topic')) {
-    //   type = EventType.TOPIC;
-    // } else if (path.startsWith('/oracle')) {
-    //   const { hashId } = params;
-    //   if (hashId) {
-    //     type = EventType.UNCONFIRMED;
-    //   } else {
-    //     type = EventType.ORACLE;
-    //   }
-    // }
-    this.props.store.eventPage.init({ ...params, type });
+    const { params } = this.props.match;
+    this.props.store.eventPage.init({ ...params });
   }
 
   componentWillUnmount() {
