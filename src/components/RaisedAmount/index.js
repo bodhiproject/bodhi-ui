@@ -13,7 +13,7 @@ import styles from './styles';
 export default class RaisedAmount extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    amount: PropTypes.string.isRequired,
+    amount: PropTypes.number.isRequired,
   };
 
   render() {
