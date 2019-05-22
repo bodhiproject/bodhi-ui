@@ -361,9 +361,15 @@ export default class TransactionStore {
   executeWithdraw = async (tx) => {
     try {
       const { type, senderAddress, topicAddress } = tx;
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+
       const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
         .at(topicAddress);
-      const txid = await promisify(nbotMethods.withdraw, []);
+      const txid = await promisify(nbotMethods.withdraw, [{
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+        }]);
 
       Object.assign(tx, { txid });
 
