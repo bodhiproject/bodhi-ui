@@ -52,8 +52,8 @@ export default class MultipleResultsEvent {
         return this[locale.slice(0, 2)];
       },
     };
-    this.url = `/event/${this.address ? this.address : this.txid}`;
     this.results = event.results.map((result, i) => new Option(result, i, this));
+    this.url = `/event/${this.address ? this.address : this.txid}`;
   }
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
