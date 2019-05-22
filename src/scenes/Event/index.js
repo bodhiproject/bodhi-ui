@@ -12,10 +12,11 @@ import {
   ImportantNote,
 } from 'components';
 import styles from './styles';
+import Option from './Option';
 import WinningOutcome from './WinningOutcome';
 import Reward from './Reward';
 import WithdrawTo from './WithdrawTo';
-import Option from './Option';
+import ResultTotals from './ResultTotals';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
 import { Sidebar } from './Sidebar';
@@ -65,42 +66,16 @@ export default class EventPage extends Component {
   renderEventWarning = () => {
     const {
       store: {
-        eventPage,
         eventPage: { eventWarningMessageId, amount, warningType },
       },
     } = this.props;
 
-    return !eventPage.isWithdrawing && (
+    return (
       <EventWarning
         id={eventWarningMessageId}
         amount={String(amount)}
         type={warningType}
       />
-    );
-  }
-
-  renderWithdrawContent = () => {
-    const {
-      classes,
-      store: {
-        eventPage,
-        eventPage: { event, nbotWinnings },
-        wallet: { currentWalletAddress },
-      },
-    } = this.props;
-    const allowWithdraw = Boolean(nbotWinnings)
-      || event.ownerAddress === currentWalletAddress;
-
-    return eventPage.isWithdrawing && (
-      <Paper className={classes.withdrawingPaper}>
-        <WinningOutcome eventPage={eventPage} />
-        {allowWithdraw && (
-          <Fragment>
-            <Reward event={event} eventPage={eventPage} />
-            <WithdrawTo />
-          </Fragment>
-        )}
-      </Paper>
     );
   }
 
@@ -171,6 +146,45 @@ export default class EventPage extends Component {
     );
   }
 
+  // Renders sections for bet, set, vote statuses
+  renderActiveEventContent = () => (
+    <Fragment>
+      {this.renderEventWarning()}
+      {this.renderOptions()}
+      {this.renderConsensusThresholdMessage()}
+      {this.renderActionButton()}
+    </Fragment>
+  )
+
+  // Renders sections for withdraw status
+  renderWithdrawContent = () => {
+    const {
+      classes,
+      store: {
+        eventPage,
+        eventPage: { event, nbotWinnings },
+        wallet: { currentWalletAddress },
+      },
+    } = this.props;
+    const allowWithdraw = Boolean(nbotWinnings)
+      || event.ownerAddress === currentWalletAddress;
+
+    return (
+      <Fragment>
+        <Paper className={classes.withdrawingPaper}>
+          <WinningOutcome eventPage={eventPage} />
+          {allowWithdraw && (
+            <Fragment>
+              <Reward event={event} eventPage={eventPage} />
+              <WithdrawTo />
+            </Fragment>
+          )}
+          <ResultTotals />
+        </Paper>
+      </Fragment>
+    );
+  }
+
   render() {
     const {
       store: {
@@ -189,15 +203,11 @@ export default class EventPage extends Component {
         <PageContainer>
           <ContentContainer>
             {this.renderTitle()}
-            {this.renderEventWarning()}
-            {this.renderWithdrawContent()}
-            {this.renderOptions()}
-            {this.renderConsensusThresholdMessage()}
-            <Fragment>
-              {this.renderActionButton()}
-              <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
-              <HistoryTable />
-            </Fragment>
+            {!eventPage.isWithdrawing
+              ? this.renderActiveEventContent()
+              : this.renderWithdrawContent()}
+            <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
+            <HistoryTable />
           </ContentContainer>
           <Sidebar endTime={event.betEndTime} />
         </PageContainer>
