@@ -123,40 +123,8 @@ export default class EventStore {
     this.reset();
     this.txid = txid;
     this.url = url;
-    await this.initEvent(url);
     this.setReactions();
-  }
-
-  @action
-  initEvent = async (url) => {
-    const { items } = await events(this.app.graphqlClient, {
-      filter: { OR: [{ txid: url }, { address: url }] },
-      includeRoundBets: true,
-    });
-    [this.event] = items;
-
-    if (!this.event) {
-      this.loading = false;
-      return;
-    }
-
-    this.address = this.event.address;
-    await this.queryResultSets(this.event.address);
-    await this.queryTransactions(this.event.address);
-    await this.queryLeaderboard();
-
-    this.disableEventActionsIfNecessary();
-    if (this.isResultSetting) {
-      // Set the amount field since we know the amount will be the consensus threshold
-      this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
-    }
-
-    if (this.isWithdrawing) {
-      this.selectedOptionIdx = this.event.currentResultIndex;
-      await this.calculateWinnings();
-    }
-
-    this.loading = false;
+    await this.initEvent();
   }
 
   setReactions = () => {
@@ -172,7 +140,7 @@ export default class EventStore {
     reaction(
       () => this.app.global.syncBlockNum + this.app.global.online,
       async () => {
-        if (this.app.global.online) await this.initEvent(this.url);
+        if (this.app.global.online) await this.initEvent();
       }
     );
 
@@ -194,7 +162,40 @@ export default class EventStore {
   }
 
   @action
-  queryResultSets = async (address) => {
+  initEvent = async () => {
+    if (!this.url) return;
+
+    const { items } = await events(this.app.graphqlClient, {
+      filter: { OR: [{ txid: this.url }, { address: this.url }] },
+      includeRoundBets: true,
+    });
+    [this.event] = items;
+    if (!this.event) return;
+
+    this.address = this.event.address;
+    await this.queryResultSets();
+    await this.queryTransactions();
+    await this.queryLeaderboard();
+
+    this.disableEventActionsIfNecessary();
+    if (this.isResultSetting) {
+      // Set the amount field since we know the amount will be the consensus threshold
+      this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
+    }
+
+    if (this.isWithdrawing) {
+      this.selectedOptionIdx = this.event.currentResultIndex;
+      await this.calculateWinnings();
+    }
+
+    this.loading = false;
+  }
+
+  @action
+  queryResultSets = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
     const res = await resultSets(this.app.graphqlClient, {
       filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
       orderBy: { field: 'eventRound', direction: SortBy.ASCENDING },
@@ -203,7 +204,10 @@ export default class EventStore {
   }
 
   @action
-  queryTransactions = async (address) => {
+  queryTransactions = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
     const txs = await transactions(this.app.graphqlClient, {
       filter: { eventAddress: address },
       orderBy: { field: 'blockNum', direction: SortBy.DESCENDING },
@@ -215,8 +219,11 @@ export default class EventStore {
 
   @action
   queryLeaderboard = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
     const bets = await mostBets(this.app.graphqlClient, {
-      filter: { eventAddress: this.event.address },
+      filter: { eventAddress: address },
       limit: this.leaderboardLimit,
       skip: 0,
     });
@@ -225,8 +232,11 @@ export default class EventStore {
 
   @action
   queryBiggestWinner = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
     const winners = await biggestWinners(this.app.graphqlClient, {
-      filter: { eventAddress: this.event.address },
+      filter: { eventAddress: address },
       limit: this.leaderboardLimit,
       skip: 0,
     });
@@ -250,10 +260,13 @@ export default class EventStore {
 
   @action
   calculateWinnings = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
     try {
       const { data } = await axios.get(API.CALCULATE_WINNINGS, {
         params: {
-          eventAddress: this.address,
+          eventAddress: address,
           address: this.app.wallet.currentAddress,
         },
       });
