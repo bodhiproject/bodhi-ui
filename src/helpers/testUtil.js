@@ -32,7 +32,7 @@ function getMockGlobalStore() {
   return observable({
     localWallet: false,
     syncBlockNum: 1,
-    syncBlockTime: '1506768969',
+    syncBlockTime: 1506768969,
     online: true,
   });
 }

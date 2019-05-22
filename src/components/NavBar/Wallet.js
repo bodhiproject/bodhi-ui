@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Badge, withStyles } from '@material-ui/core';
+import { IconButton, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import cx from 'classnames';
 import { Routes } from 'constants';
@@ -14,14 +14,11 @@ const Wallet = ({ classes, history, store: { global, naka } }) => {
 
   return (
     <div className={classes.rightButtonContainer}>
-      <IconButton className={classes.navButton} onClick={() => naka.loggedIn ? history.push(Routes.WALLET) : naka.openPopover()}>
-        <Badge
-          classes={{ badge: classes.walletStatusBadge }}
-          color={naka.loggedIn ? 'secondary' : 'error'}
-          badgeContent=""
-        >
-          <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
-        </Badge>
+      <IconButton
+        className={classes.navButton}
+        onClick={() => naka.loggedIn ? history.push(Routes.WALLET) : naka.openPopover()}
+      >
+        <i className={cx('icon', 'iconfont', 'icon-ic_wallet')} />
       </IconButton>
     </div>
   );

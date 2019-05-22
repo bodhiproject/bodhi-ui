@@ -1,12 +1,11 @@
 import React from 'react';
-import { withStyles, Hidden, IconButton, Badge, Backdrop } from '@material-ui/core';
+import { withStyles, Hidden, IconButton, Backdrop } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
 import { Routes } from 'constants';
-
 import styles from './styles';
 import ActionableBadge from './components/ActionableBadge';
 
@@ -58,13 +57,7 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
           naka.openPopover();
         }}
       >
-        <Badge
-          classes={{ badge: classes.walletStatusBadge }}
-          color={naka.loggedIn ? 'secondary' : 'error'}
-          badgeContent=""
-        >
-          <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
-        </Badge>
+        <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
       </div>
     </Hidden>
     <Link to={Routes.SETTINGS}>

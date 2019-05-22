@@ -10,8 +10,7 @@ const INIT_VALUES = {
   localWallet: false,
   syncPercent: 0,
   syncBlockNum: 0,
-  syncBlockTime: '',
-  peerNodeCount: 0,
+  syncBlockTime: 0,
   userData: {
     resultSettingCount: 0,
     withdrawCount: 0,
@@ -26,7 +25,6 @@ export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
-  @observable peerNodeCount = INIT_VALUES.peerNodeCount
   @observable socketOnline = INIT_VALUES.socketOnline
   @observable internetOnline = INIT_VALUES.internetOnline
   userData = observable({
@@ -65,6 +63,7 @@ export default class GlobalStore {
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
 
+    // Handle websocket connection changes
     wsLink.subscriptionClient.onConnected(this.setOnline, this);
     wsLink.subscriptionClient.onReconnected(this.setOnline, this);
     wsLink.subscriptionClient.onDisconnected(this.setOffline, this);
