@@ -83,6 +83,19 @@ export function satoshiToDecimal(number) {
 }
 
 /**
+ * Converts String to a big number.
+ * @param number {String} The number string to convert.
+ * @return {BigNumber} The converted big number.
+ */
+export function stringToBN(number) {
+  if (!number) {
+    return number;
+  }
+
+  return BigNumber(number);
+}
+
+/**
  * Converts wei to a decimal number.
  * @param number {String} The wei to convert.
  * @return {String} The converted decimal number.
