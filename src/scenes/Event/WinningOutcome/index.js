@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Typography } from '@material-ui/core';
-import { Icon } from '../components';
-import { Container, Label } from './components';
+import Icon from '../Icon';
+import Container from '../Container';
+import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 
 const messages = defineMessages({
@@ -12,26 +13,6 @@ const messages = defineMessages({
     defaultMessage: 'You bet {naka} NAKA. You voted {nbot} NBOT.',
   },
 });
-
-export const WinningOutcome = injectIntl(({ eventPage, intl }) => (
-  <Container>
-    <WinningIcon />
-    <WinningOutcomeTitle />
-    <OutcomeOption>{eventPage.selectedOption.name === 'Invalid' ? eventPage.event.localizedInvalid.parse(intl.locale) : eventPage.selectedOption.name}</OutcomeOption>
-    {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
-      <Typography variant="caption">
-        {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { naka: eventPage.resultBetAmount, nbot: eventPage.resultVoteAmount })}
-      </Typography>
-    ) : (
-      <Typography variant="caption">
-        <FormattedMessage
-          id="topic.didNotBetOrVote"
-          defaultMessage="You did not bet or vote on the winning outcome."
-        />
-      </Typography>
-    )}
-  </Container>
-));
 
 const WinningIcon = () => <Icon type='reward' />;
 
@@ -50,4 +31,22 @@ const OutcomeOption = styled(Typography)`
   margin-bottom: ${props => props.theme.padding.spaceX.px} !important;
 `;
 
-// export default WinningOutcome;
+export default injectIntl(({ eventPage, intl }) => (
+  <Container>
+    <WinningIcon />
+    <WinningOutcomeTitle />
+    <OutcomeOption>{eventPage.selectedOption.name === 'Invalid' ? eventPage.event.localizedInvalid.parse(intl.locale) : eventPage.selectedOption.name}</OutcomeOption>
+    {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
+      <Typography variant="caption">
+        {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { naka: eventPage.resultBetAmount, nbot: eventPage.resultVoteAmount })}
+      </Typography>
+    ) : (
+      <Typography variant="caption">
+        <FormattedMessage
+          id="topic.didNotBetOrVote"
+          defaultMessage="You did not bet or vote on the winning outcome."
+        />
+      </Typography>
+    )}
+  </Container>
+));

@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
-
-import RewardTooltipContent from './RewardTooltipContent';
-import { Icon } from '../components';
-import { Container, Label } from './components';
+import RewardTooltipContent from '../RewardTooltipContent';
+import Icon from '../Icon';
+import Container from '../Container';
+import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
-import styles from './styles';
+import styles from '../Sidebar/styles';
 
 const messages = defineMessages({
   withdrawDetailReturnRateMsg: {

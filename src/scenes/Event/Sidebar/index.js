@@ -37,7 +37,7 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, end
 )));
 
 const SidebarContainer = withStyles(styles)(({ children, classes }) => (
-  <Grid className={classes.oracleSidebarContainer} item xs={12} md={4}>
+  <Grid className={classes.sidebarContainer} item xs={12} md={4}>
     {children}
   </Grid>
 ));

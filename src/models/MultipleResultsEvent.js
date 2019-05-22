@@ -60,7 +60,7 @@ export default class MultipleResultsEvent {
   isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
 
-  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING
+  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING;
 
   getEndTime = () => {
     switch (this.status) {

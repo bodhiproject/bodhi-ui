@@ -6,10 +6,10 @@ import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableBody, TableHead, TableRow, TableCell, Button, withStyles } from '@material-ui/core';
 import { Warning, ResponsiveTable } from 'components';
-import { Icon } from '../components';
-import { Container, Label } from './components';
+import Icon from '../Icon';
+import Container from '../Container';
+import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
-import styles from './styles';
 
 const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddresses } } }) => {
   if (withdrawableAddresses.length > 0) {
@@ -32,14 +32,14 @@ const WithdrawToLabel = () => (
   </Label>
 );
 
-const WithdrawList = withStyles(styles)(({ withdrawableAddresses }) => (
+const WithdrawList = ({ withdrawableAddresses }) => (
   <ResponsiveTable>
     <TableHeader />
     <TableBody>
       {withdrawableAddresses.map((addr, i) => <WinningWithdrawRow addr={addr} key={i} />)}
     </TableBody>
   </ResponsiveTable>
-));
+);
 
 const TableHeader = () => (
   <TableHead>

@@ -1,4 +1,6 @@
+export { default as BackButton } from './BackButton';
 export { default as BottomBar } from './BottomBar';
+export { default as ContentContainer } from './ContentContainer';
 export { default as CountdownTime } from './CountdownTime';
 export { default as CurrentAllowanceNote } from './CurrentAllowanceNote';
 export { default as GlobalDialog } from './GlobalDialog';
@@ -10,6 +12,7 @@ export { default as GlobalSnackbar } from './GlobalSnackbar';
 export { default as ImportantNote } from './ImportantNote';
 export * from './Loading';
 export * from './NakaWalletPrompt';
+export { default as PageContainer } from './PageContainer';
 export { default as RaisedAmount } from './RaisedAmount';
 export { default as ResponsiveTable } from './ResponsiveTable';
 export { default as StepperVertRight } from './StepperVertRight';

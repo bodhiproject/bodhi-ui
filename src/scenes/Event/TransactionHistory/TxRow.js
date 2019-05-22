@@ -7,7 +7,7 @@ import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 
 import styles from './styles';
-import { getTxTypeString } from '../../../../helpers/stringUtil';
+import { getTxTypeString } from '../../../helpers/stringUtil';
 
 const messages = defineMessages({
   strPendingMsg: {

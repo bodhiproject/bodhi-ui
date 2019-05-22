@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-
-export const Container = styled.div`
+export default styled.div`
   width: 100%;
   display: block;
   position: relative;

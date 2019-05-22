@@ -4,14 +4,14 @@ import { filter } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
-import { toFixed, satoshiToDecimal } from '../../helpers/utility';
+import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import { API } from '../../network/routes';
 import { events, transactions, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
 const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
-  loading: false,
+  loading: true,
   event: undefined,
   address: '',
   resultSetsHistory: [],
@@ -48,6 +48,14 @@ export default class EventStore {
   @observable error = INIT.error
   leaderboardLimit = INIT.leaderboardLimit
 
+  @computed get eventName() {
+    return this.event && this.event.name;
+  }
+
+  @computed get isBetting() {
+    return this.event && this.event.status === BETTING;
+  }
+
   @computed get isResultSetting() {
     return this.event
       && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
@@ -57,7 +65,7 @@ export default class EventStore {
     return this.event && this.event.status === ARBITRATION;
   }
 
-  @computed get isWithdraw() {
+  @computed get isWithdrawing() {
     return this.event && this.event.status === WITHDRAWING;
   }
 
@@ -121,28 +129,29 @@ export default class EventStore {
 
   @action
   initEvent = async (url) => {
-    this.loading = true;
-
     const { items } = await events(this.app.graphqlClient, {
       filter: { OR: [{ txid: url }, { address: url }] },
       includeRoundBets: true,
     });
     [this.event] = items;
 
-    if (this.event) {
-      this.address = this.event.address;
-      await this.queryResultSets(this.event.address);
-      await this.queryTransactions(this.event.address);
-      await this.queryLeaderboard();
+    if (!this.event) {
+      this.loading = false;
+      return;
     }
 
+    this.address = this.event.address;
+    await this.queryResultSets(this.event.address);
+    await this.queryTransactions(this.event.address);
+    await this.queryLeaderboard();
+
     this.disableEventActionsIfNecessary();
-    if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
+    if (this.isResultSetting) {
       // Set the amount field since we know the amount will be the consensus threshold
       this.amount = satoshiToDecimal(this.event.consensusThreshold.toString());
     }
 
-    if (this.event.status === WITHDRAWING) {
+    if (this.isWithdrawing) {
       this.selectedOptionIdx = this.event.currentResultIndex;
       await this.calculateWinnings();
     }
@@ -390,5 +399,38 @@ export default class EventStore {
     } else {
       this.selectedOptionIdx = selectedOptionIdx;
     }
+  }
+
+  bet = async () => {
+    await this.app.tx.executeBet({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+  }
+
+  set = async () => {
+    await this.app.tx.executeSetResult({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+  }
+
+  vote = async () => {
+    await this.app.tx.executeVote({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+  }
+
+  withdraw = async () => {
+    // TODO: finish when withdraw is done
+    await this.app.tx.executeWithdraw({
+    });
   }
 }

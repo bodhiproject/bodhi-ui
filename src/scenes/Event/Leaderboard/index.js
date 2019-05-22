@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Bu
 import { Routes } from 'constants';
 import MobileStepper from './carousel';
 import styles from './styles';
-import { satoshiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal } from '../../../helpers/utility';
 
 const messages = defineMessages({
   mostNBOT: {

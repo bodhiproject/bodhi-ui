@@ -4,7 +4,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import _ from 'lodash';
 import { ResponsiveTable } from 'components';
-
 import styles from './styles';
 
 const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, nakaWon, nbotNakaWon, classes }) => {

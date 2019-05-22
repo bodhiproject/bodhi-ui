@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@material-ui/core';
-
+import { PageContainer, ContentContainer } from 'components';
 import styles from './styles';
-import _Leaderboard from '../Event/components/Leaderboard';
-import { Row, Content } from '../Event/components';
+import _Leaderboard from '../Event/Leaderboard';
 
 const messages = defineMessages({
   totalEvents: {
@@ -34,16 +33,16 @@ export default class Leaderboard extends Component {
   render() {
     const { eventCount, participantCount, totalBets } = this.props.store.leaderboard;
     return (
-      <Row>
+      <PageContainer>
         <SidebarContainer>
           <Card title={messages.totalEvents} value={eventCount} />
           <Card title={messages.totalParticipants} value={participantCount} />
           <Card title={messages.totalBets} value={totalBets} />
         </SidebarContainer>
-        <Content>
+        <ContentContainer>
           <_Leaderboard maxSteps={1} />
-        </Content>
-      </Row>
+        </ContentContainer>
+      </PageContainer>
     );
   }
 }

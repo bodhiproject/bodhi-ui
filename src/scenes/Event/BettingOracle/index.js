@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 import { Grid, withStyles, Paper } from '@material-ui/core';
 import { EventWarning, ImportantNote } from 'components';
-
 import styles from './styles';
 import { Sidebar, Row, Content, Title, Button, Option, HistoryTable, WinningOutcome, Reward, WithdrawTo } from '../components';
 import Leaderboard from '../components/Leaderboard';

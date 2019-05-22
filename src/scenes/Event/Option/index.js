@@ -20,9 +20,8 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Token } from 'constants';
-
-import Progress from '../Progress';
 import styles from './styles';
+import Progress from '../Progress';
 
 const messages = defineMessages({
   oracleOptionIsPrevResultMsg: {
