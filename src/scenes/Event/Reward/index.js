@@ -39,7 +39,7 @@ export default class Reward extends Component {
             <Tooltip
               classes={{ tooltip: classes.rewardTooltip }}
               id="tooltip-reward"
-              title={<RewardTooltipContent token="NBOT" {...props} />}
+              title={<RewardTooltipContent token="NBOT" />}
             >
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
