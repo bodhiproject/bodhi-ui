@@ -7,7 +7,7 @@ import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, EV
 
 import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import networkRoutes, { API } from '../../network/routes';
-import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, resultSets } from '../../network/graphql/queries';
+import { events, transactions, queryAllOracles, queryAllTopics, queryAllVotes, mostBets, biggestWinners, resultSets } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 import getContracts from '../../config/contracts';
 
@@ -22,7 +22,7 @@ const INIT = {
   oracles: [],
   topics: [],
   resultSetsHistory: [],
-  leaderboardVotes: [],
+  leaderboardBets: [],
   amount: '',
   address: '',
   topicAddress: '',
@@ -50,7 +50,7 @@ export default class EventStore {
   @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
   @observable oracles = INIT.oracles
-  @observable leaderboardVotes = INIT.leaderboardVotes
+  @observable leaderboardBets = INIT.leaderboardBets
   @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
   @observable address = INIT.address
   @observable topicAddress = INIT.topicAddress
@@ -126,6 +126,10 @@ export default class EventStore {
     return find(this.oracles, { token: Token.NAKA }) || {};
   }
 
+  @computed get maxLeaderBoardSteps() {
+    return this.event.status === WITHDRAWING ? 2 : 1;
+  }
+
   // both
   @computed get selectedOption() {
     return (this.event.results && this.event.results[this.selectedOptionIdx]) || {};
@@ -184,12 +188,14 @@ export default class EventStore {
       ] },
     includeRoundBets: true });
     [this.event] = items;
+    this.address = this.event.address;
     // GraphQL calls
     // await this.queryTopics();
     // await this.queryOracles(txid);
     // await this.getAllowanceAmount();
     // await this.queryLeaderboard(Token.NAKA);
     if (this.event) {
+      await this.queryLeaderboard();
       await this.queryTransactions(this.event.address);
       await this.queryResultSets(this.event.address);
     }
@@ -230,7 +236,7 @@ export default class EventStore {
             case TOPIC: {
               await this.queryTransactions(this.event.address);
               this.disableEventActionsIfNecessary();
-              await this.updateLeaderBoard();
+              // await this.updateLeaderBoard();
               await this.queryResultSets(this.event.address);
               break;
             }
@@ -282,21 +288,21 @@ export default class EventStore {
   }
 
   @action
-  queryLeaderboard = async (token) => {
-    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
-    this.leaderboardVotes = votes;
+  queryLeaderboard = async () => {
+    const bets = await mostBets(this.app.graphqlClient, { filter: { eventAddress: this.event.address }, limit: this.leaderboardLimit, skip: 0 });
+    this.leaderboardBets = bets.items;
   }
 
   @action
   queryBiggestWinner = async () => {
-    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
-    this.leaderboardVotes = winners;
+    const winners = await biggestWinners(this.app.graphqlClient, { filter: { eventAddress: this.event.address }, limit: this.leaderboardLimit, skip: 0 });
+    this.leaderboardBets = winners;
   }
 
   @action
   updateLeaderBoard = async () => {
     if (this.activeStep < 2) {
-      await this.queryLeaderboard(paras[this.activeStep]);
+      await this.queryLeaderboard();
     } else {
       await this.queryBiggestWinner();
     }

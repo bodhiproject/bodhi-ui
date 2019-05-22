@@ -16,13 +16,9 @@ const messages = defineMessages({
     id: 'leaderboard.totalParticipants',
     defaultMessage: 'Total Participants',
   },
-  totalNAKA: {
-    id: 'leaderboard.totalNAKA',
-    defaultMessage: 'Total bet in NAKA',
-  },
-  totalNBOT: {
-    id: 'leaderboard.totalNBOT',
-    defaultMessage: 'Total voted in NBOT',
+  totalBets: {
+    id: 'leaderboard.totalBets',
+    defaultMessage: 'Total bets in NBOT',
   },
 });
 
@@ -36,17 +32,16 @@ export default class Leaderboard extends Component {
   }
 
   render() {
-    const { eventCount, participantsCount, totalNBOT, totalNAKA } = this.props.store.leaderboard;
+    const { eventCount, participantCount, totalBets } = this.props.store.leaderboard;
     return (
       <Row>
         <SidebarContainer>
           <Card title={messages.totalEvents} value={eventCount} />
-          <Card title={messages.totalParticipants} value={participantsCount} />
-          <Card title={messages.totalNAKA} value={totalNAKA} />
-          <Card title={messages.totalNBOT} value={totalNBOT} />
+          <Card title={messages.totalParticipants} value={participantCount} />
+          <Card title={messages.totalBets} value={totalBets} />
         </SidebarContainer>
         <Content>
-          <_Leaderboard maxSteps={2} />
+          <_Leaderboard maxSteps={1} />
         </Content>
       </Row>
     );

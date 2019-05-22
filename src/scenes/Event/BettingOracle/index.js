@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
 });
 
-const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) => (
+const BettingOracle = observer(({ store: { eventPage, eventPage: { event, maxLeaderBoardSteps } } }) => (
   <Row>
     <Content>
       <Title>{event.name}</Title>
@@ -31,7 +31,7 @@ const BettingOracle = observer(({ store: { eventPage, eventPage: { event } } }) 
       {(eventPage.isResultSetting || eventPage.isArbitration) && <MustStakeConsensusThresold consensusThreshold={satoshiToDecimal(event.consensusThreshold)} />}
       <Fragment>
         <BetButton eventpage={eventPage} />
-        <Leaderboard maxSteps={1} />
+        <Leaderboard maxSteps={maxLeaderBoardSteps} />
         <HistoryTable />
       </Fragment>
     </Content>
