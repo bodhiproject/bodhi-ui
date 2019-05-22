@@ -25,7 +25,7 @@ export default class Option {
     this.phase = event.phase;
     this.value = `${this.amount} ${this.token}`;
     if (event.status !== EVENT_STATUS.ARBITRATION) {
-      const totalBalance = _.sum(event.amounts);
+      const totalBalance = _.sum(event.roundBets);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
     } else {
       this.isPrevResult = event.currentResultIndex === i;
@@ -33,7 +33,7 @@ export default class Option {
         ? event.consensusThreshold - decimalToSatoshi(this.amount) : undefined;
 
       const threshold = this.isPrevResult ? 0 : event.consensusThreshold;
-      this.percent = threshold === 0 ? threshold : _.round((decimalToSatoshi(this.amount) / threshold) * 100);
+      this.percent = threshold === 0 ? threshold : _.round((this.amount / threshold) * 100);
     }
 
     this.disabled = this.isPrevResult;
