@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Grid, withWidth, withStyles } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
-import { Loading } from '../Loading';
+import Loading from '../Loading';
 import styles from './styles';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 
