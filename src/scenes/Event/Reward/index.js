@@ -7,7 +7,7 @@ import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
-import styles from '../Sidebar/styles';
+import styles from './styles';
 
 @withStyles(styles)
 @injectIntl

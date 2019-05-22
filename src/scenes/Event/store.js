@@ -348,8 +348,8 @@ export default class EventStore {
         betterAddress: this.app.wallet.currentWalletAddress,
       },
     });
-    this.resultBets = res.resultBets;
-    this.betterBets = res.betterBets;
+    this.resultBets = res.resultBets || [];
+    this.betterBets = res.betterBets || [];
   }
 
   @action
@@ -368,7 +368,7 @@ export default class EventStore {
     } catch (error) {
       runInAction(() => {
         this.app.globalDialog.setError(
-          `${error.message} : ${error.response.data.error}`,
+          `${error.message}`,
           API.CALCULATE_WINNINGS,
         );
       });

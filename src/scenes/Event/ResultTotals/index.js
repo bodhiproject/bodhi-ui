@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 const messages = defineMessages({
   withdrawDetailTotalBetTotalVoteMsg: {
     id: 'withdrawDetail.totalBetTotalVote',
-    defaultMessage: 'Total bet amount {naka} NAKA. Total voted amount {nbot} NBOT.',
+    defaultMessage: 'Total bet amount {totalBets} NBOT. You bet amount {youBet} NBOT.',
   },
   withdrawDetailYouBetYouVoteMsg: {
     id: 'withdrawDetail.youBetYouVote',
@@ -17,28 +17,22 @@ const messages = defineMessages({
 
 const Options = ({ eventPage }) => (
   <Wrapper>
-    {_.map(eventPage.event.options, (o, i) => <Option key={`option-${i}`} eventPage={eventPage} index={i} option={o} />)}
+    {_.map(eventPage.event.results, (o, i) => <Option key={`option-${i}`} eventPage={eventPage} index={i} option={o} />)}
   </Wrapper>
 );
 
-const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { event } }) => (
+
+const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { event, resultBets, betterBets } }) => (
   <OptionWrapper>
     <OptionNumber>{index + 1}</OptionNumber>
-    <Typog variant="h6" data-small={event.resultIdx === index}>
-      {option === 'Invalid' ? event.localizedInvalid.parse(intl.locale) : option}
+    <Typog variant="h6" data-small={event.currentResultIndex === index}>
+      {option.name === 'Invalid' ? event.localizedInvalid.parse(intl.locale) : option.name}
     </Typog>
     <Typography variant="caption">
       {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {
-        naka: event.nakaAmount[index], nbot: event.nbotAmount[index],
+        totalBets: resultBets[index], youBet: betterBets[index],
       })}
     </Typography>
-    {!!(eventPage.betBalances[index] || eventPage.voteBalances[index]) && (
-      <div>
-        <Typography variant="caption">
-          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { naka: eventPage.betBalances[index], nbot: eventPage.voteBalances[index] })}
-        </Typography>
-      </div>
-    )}
   </OptionWrapper>
 ));
 

@@ -179,8 +179,8 @@ export default class EventPage extends Component {
               <WithdrawTo />
             </Fragment>
           )}
-          <ResultTotals eventPage={eventPage} />
         </Paper>
+        <ResultTotals eventPage={eventPage} />
       </Fragment>
     );
   }

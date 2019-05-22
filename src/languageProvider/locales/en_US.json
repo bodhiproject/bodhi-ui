@@ -393,7 +393,7 @@
   "withdrawDetail.alreadyWithdrawn": "You have already withdrawn with this address.",
   "withdrawDetail.returnRateXPercent": "Return rate: {rate}%",
   "withdrawDetail.reward": "REWARD",
-  "withdrawDetail.totalBetTotalVote": "Total bet amount {naka} NAKA. Total voted amount {nbot} NBOT.",
+  "withdrawDetail.totalBetTotalVote": "Total bet amount {totalBets} NBOT. You voted amount {youBet} NBOT.",
   "withdrawDetail.withdrawTo": "WITHDRAW TO",
   "withdrawDetail.youBetYouVote": "You bet {naka} NAKA. You voted {nbot} NBOT.",
   "withdrawDialog.amountExceedLimit": "Amount exceed the limit",

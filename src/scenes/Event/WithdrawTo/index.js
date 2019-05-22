@@ -67,7 +67,6 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAm
     pendingWithdraw,
     didWithdraw,
   );
-  console.log(1);
 
   return (
     <TableRow key={key}>
@@ -98,17 +97,6 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAm
 
 
 const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
-  // Already have a pending tx for this Topic
-  if (pendingWithdraw.length > 0) {
-    return {
-      show: true,
-      disabled: true,
-      id: 'str.pendingTransactionDisabledMsg',
-      message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
-      warningTypeClass: 'pending',
-    };
-  }
-
   // Already withdrawn with this address
   if (didWithdraw) {
     return {
@@ -120,16 +108,16 @@ const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
     };
   }
 
-  // // Can withdraw winnings
-  // if (_.find(withdrawableAddresses, {
-  //   type: withdrawableAddress.type,
-  //   address: withdrawableAddress.address,
-  // })) {
-  //   return {
-  //     show: true,
-  //     disabled: false,
-  //   };
-  // }
+  // Already have a pending tx for this Topic
+  if (pendingWithdraw.length > 0) {
+    return {
+      show: true,
+      disabled: true,
+      id: 'str.pendingTransactionDisabledMsg',
+      message: 'You have a pending transaction for this event. Please wait until it\'s confirmed before doing another transaction.',
+      warningTypeClass: 'pending',
+    };
+  }
 
   return {
     show: true,

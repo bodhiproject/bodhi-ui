@@ -16,7 +16,7 @@ export default (theme) => ({
     position: 'relative',
     marginBottom: theme.padding.spaceX.px,
     minWidth: '10%',
-    margin: '0 auto',
+    // margin: '0 auto',
   },
   tokenDiv: {
     fontSize: theme.sizes.font.xSmall,
