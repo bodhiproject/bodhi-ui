@@ -30,7 +30,6 @@ const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage } })
     <WinningIcon />
     <WinningOutcomeTitle />
     <WinningResult intl={intl} eventPage={eventPage} />
-    {console.log(eventPage.nbotWinnings)}
     { eventPage.nbotWinnings ? (
       <Typography variant="caption">
         <FormattedMessage

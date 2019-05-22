@@ -200,6 +200,7 @@ export default class EventStore {
     if (!this.event) return;
 
     this.address = this.event.address;
+    this.escrowAmount = this.event.escrowAmount;
     await this.queryResultSets();
     await this.queryTransactions();
     await this.queryLeaderboard();
@@ -211,7 +212,6 @@ export default class EventStore {
     }
 
     if (this.isWithdrawing) {
-      await this.getEscrowAmount();
       await this.getDidWithdraw();
       await this.queryPendingWithdraw();
       this.selectedOptionIdx = this.event.currentResultIndex;
@@ -220,21 +220,6 @@ export default class EventStore {
     }
 
     this.loading = false;
-  }
-
-  @action
-  getEscrowAmount = async () => {
-    try {
-      const { data } = await axios.get(API.EVENT_ESCROW_AMOUNT);
-      this.escrowAmount = satoshiToDecimal(data.result);
-    } catch (error) {
-      runInAction(() => {
-        this.app.globalDialog.setError(
-          `${error.message} : ${error.response.data.error}`,
-          API.EVENT_ESCROW_AMOUNT,
-        );
-      });
-    }
   }
 
   @action
