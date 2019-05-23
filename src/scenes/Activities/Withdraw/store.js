@@ -83,7 +83,7 @@ export default class {
       const { naka: { account }, ui: { locale } } = this.app;
 
       const betFilters = { betterAddress: account };
-      const eventFilters = { OR: [{ status: EVENT_STATUS.WITHDRAW, ownerAddress: account, language: locale }] };
+      const eventFilters = { OR: [{ status: EVENT_STATUS.WITHDRAWING, ownerAddress: account, language: locale }] };
 
       // Filter votes
       let votes = await bets(graphqlClient, { filter: betFilters });
