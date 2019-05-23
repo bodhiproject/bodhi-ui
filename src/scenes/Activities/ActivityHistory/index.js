@@ -106,7 +106,7 @@ const EventHistoryContent = inject('store')(observer(({ classes, store: { activi
       <Grid container spacing={0} className={classes.historyTableWrapper}>
         <Table className={classes.historyTable}>
           <Header />
-          {/* <EventRows /> */}
+          <EventRows />
           <Footer />
         </Table>
       </Grid>
