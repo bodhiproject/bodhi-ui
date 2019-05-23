@@ -76,14 +76,24 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
+      const {
+        graphqlClient,
+        naka: { account, checkLoggedIn },
+        ui: { locale },
+        global: { eventVersion },
+      } = this.app;
 
-      const { naka: { checkLoggedIn }, graphqlClient } = this.app;
       await checkLoggedIn();
-      const { naka: { account }, ui: { locale } } = this.app;
 
       const betFilters = { betterAddress: account };
-      const eventFilters = { OR: [{ status: EVENT_STATUS.WITHDRAWING, ownerAddress: account, language: locale }] };
+      const eventFilters = { OR: [
+        {
+          status: EVENT_STATUS.WITHDRAWING,
+          ownerAddress: account,
+          language: locale,
+          version: eventVersion,
+        },
+      ] };
 
       // Filter votes
       let votes = await bets(graphqlClient, { filter: betFilters });
@@ -95,8 +105,14 @@ export default class {
 
       // Fetch topics against votes that have the winning result index
       each(votes, ({ eventAddress, resultIndex }) => {
-        eventFilters.OR.push({ status: EVENT_STATUS.WITHDRAWING, address: eventAddress, currentResultIndex: resultIndex, language: locale });
+        eventFilters.OR.push({
+          status: EVENT_STATUS.WITHDRAWING,
+          address: eventAddress,
+          currentResultIndex: resultIndex,
+          language: locale,
+        });
       });
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
       const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;

@@ -71,10 +71,22 @@ export default class {
     if (this.hasMore) {
       const { naka: { checkLoggedIn }, graphqlClient } = this.app;
       await checkLoggedIn();
-      const { naka: { account }, ui: { locale } } = this.app;
+      const {
+        naka: { account },
+        ui: { locale },
+        global: { eventVersion },
+      } = this.app;
       const filter = { OR: [
-        { status: EVENT_STATUS.OPEN_RESULT_SETTING, language: locale },
-        { status: EVENT_STATUS.ORACLE_RESULT_SETTING, ownerAddress: account, language: locale },
+        {
+          status: EVENT_STATUS.OPEN_RESULT_SETTING,
+          language: locale,
+          version: eventVersion,
+        }, {
+          status: EVENT_STATUS.ORACLE_RESULT_SETTING,
+          ownerAddress: account,
+          language: locale,
+          version: eventVersion,
+        },
       ] };
 
       const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING };
