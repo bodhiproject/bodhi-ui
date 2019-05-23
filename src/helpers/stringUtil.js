@@ -4,14 +4,6 @@ import { TransactionType } from 'constants';
 import { getIntlProvider } from './i18nUtil';
 
 const strings = defineMessages({
-  resetApproval: {
-    id: 'tx.resetApproval',
-    defaultMessage: 'Reset Approval',
-  },
-  approveBotTransfer: {
-    id: 'tx.approveBotTransfer',
-    defaultMessage: 'Approve NBOT Transfer',
-  },
   createEvent: {
     id: 'str.createEvent',
     defaultMessage: 'Create Event',
@@ -31,14 +23,6 @@ const strings = defineMessages({
   withdraw: {
     id: 'str.withdraw',
     defaultMessage: 'Withdraw',
-  },
-  withdrawEscrow: {
-    id: 'str.withdrawEscrow',
-    defaultMessage: 'Withdraw Escrow',
-  },
-  transfer: {
-    id: 'str.transfer',
-    defaultMessage: 'Transfer',
   },
 });
 
