@@ -11,7 +11,7 @@ import { TransactionType } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { stringToBN } from '../../../../helpers/utility';
+import { stringToBN, satoshiToDecimal } from '../../../../helpers/utility';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -59,7 +59,7 @@ class EventRow extends Component {
         address = transaction.eventAddress;
         name = transaction.resultIndex;
       } else {
-        amount = stringToBN(transaction.winningAmount) + stringToBN(transaction.escrowWithdrawAmount);
+        amount = stringToBN(transaction.winningAmount).add(stringToBN(transaction.escrowWithdrawAmount));
         amount = amount.toString();
         address = transaction.eventAddress;
         name = 'Withdraw';
@@ -73,7 +73,7 @@ class EventRow extends Component {
             <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
               {name || ''}
             </NameLinkCell>
-            <TableCell numeric>{`${amount || ''}`}</TableCell>
+            <TableCell numeric>{`${satoshiToDecimal(amount) || ''}`}</TableCell>
             <TableCell numeric>{cumulativeGasUsed}</TableCell>
             <TableCell>
               <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
