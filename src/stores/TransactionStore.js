@@ -62,7 +62,7 @@ export default class TransactionStore {
     if (!exchangeRate) throw Error('exchangeRate not defined');
 
     return {
-      token: NakaBodhiToken[this.app.naka.network.toLowerCase()],
+      token: NakaBodhiToken()[this.app.naka.network.toLowerCase()],
       exchanger: nbotOwner,
       exchangeRate,
     };
@@ -186,12 +186,12 @@ export default class TransactionStore {
       }
 
       const { network } = this.app.naka;
-      const nbotMethods = window.naka.eth.contract(NakaBodhiToken.abi)
-        .at(NakaBodhiToken[network.toLowerCase()]);
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
-        eventFactoryAddr: EventFactory[network.toLowerCase()],
+        eventFactoryAddr: EventFactory()[network.toLowerCase()],
         escrowAmt: amountSatoshi,
         gas: 3000000,
       });
@@ -233,8 +233,8 @@ export default class TransactionStore {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
       const { network } = this.app.naka;
-      const nbotMethods = window.naka.eth.contract(NakaBodhiToken.abi)
-        .at(NakaBodhiToken[network.toLowerCase()]);
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -275,8 +275,8 @@ export default class TransactionStore {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
       const { network } = this.app.naka;
-      const nbotMethods = window.naka.eth.contract(NakaBodhiToken.abi)
-        .at(NakaBodhiToken[network.toLowerCase()]);
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const setResultParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -321,8 +321,8 @@ export default class TransactionStore {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
       const { network } = this.app.naka;
-      const nbotMethods = window.naka.eth.contract(NakaBodhiToken.abi)
-        .at(NakaBodhiToken[network.toLowerCase()]);
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,

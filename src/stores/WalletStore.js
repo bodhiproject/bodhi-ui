@@ -63,8 +63,8 @@ export default class WalletStore {
       return;
     }
 
-    this.nbotContract = window.naka.eth.contract(NakaBodhiToken.abi)
-      .at(NakaBodhiToken[network.toLowerCase()]);
+    this.nbotContract = window.naka.eth.contract(NakaBodhiToken().abi)
+      .at(NakaBodhiToken()[network.toLowerCase()]);
 
     // If setting Naka Wallet's account for the first time or the address changes, fetch the NBOT balance right away.
     // After the initial NBOT balance fetch, it will refetch on every new block.
@@ -129,10 +129,10 @@ export default class WalletStore {
   fetchExchangeRate = async () => {
     if (!this.nbotOwner) return;
 
-    const exchangeMethod = window.naka.eth.contract(TokenExchange.abi)
-      .at(TokenExchange[this.app.naka.network.toLowerCase()]);
+    const exchangeMethod = window.naka.eth.contract(TokenExchange().abi)
+      .at(TokenExchange()[this.app.naka.network.toLowerCase()]);
     const rate = await promisify(exchangeMethod.getRate, [
-      NakaBodhiToken[this.app.naka.network.toLowerCase()],
+      NakaBodhiToken()[this.app.naka.network.toLowerCase()],
       this.nbotOwner,
     ]);
     this.exchangeRate = rate.toString(16);
