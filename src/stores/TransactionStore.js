@@ -8,7 +8,7 @@ import {
   addPendingResultSet,
   addPendingWithdraw,
 } from '../network/graphql/mutations';
-import { NakaBodhiToken } from '../config/contracts';
+import { NakaBodhiToken, EventFactory } from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
@@ -187,7 +187,7 @@ export default class TransactionStore {
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
-        eventFactoryAddr: getContracts().EventFactory.address,
+        eventFactoryAddr: EventFactory[network.toLowerCase()],
         escrowAmt: amountSatoshi,
         gas: 3000000,
       });

@@ -1,3 +1,5 @@
+const { sortBy, map } = require('lodash');
+
 /* eslint-disable */
 const contracts = {
   1: {
@@ -42,3 +44,11 @@ export default contracts;
 export const TokenExchange = () => contracts['0'].TokenExchange;
 
 export const NakaBodhiToken = () => contracts['0'].NakaBodhiToken;
+
+export const EventFactory = () => {
+  // Get latest version
+  let keys = Object.keys(contracts);
+  keys = sortBy(map(keys, key => Number(key)));
+  const latestVersion = keys[keys.length - 1];
+  return contracts[`${latestVersion}`].EventFactory;
+};
