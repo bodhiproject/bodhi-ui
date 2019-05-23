@@ -5,8 +5,11 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
+import { Token } from 'constants';
+
 import styles from './styles';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
+import { satoshiToDecimal } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -37,12 +40,10 @@ export default class TxRow extends Component {
   }
 
   get description() {
-    const { intl, transaction: { optionIdx }, topic } = this.props;
-    if (topic && optionIdx !== null && optionIdx !== undefined) {
-      const optionName = topic.options[optionIdx];
-      return `#${optionIdx + 1} ${optionName === 'Invalid' && !topic.localizedInvalid
-        ? topic.localizedInvalid.parse(intl.locale)
-        : optionName}`;
+    const { intl, transaction: { resultIndex, resultName }, event } = this.props;
+    if (resultIndex !== null && resultIndex !== undefined) {
+      return `#${resultIndex} ${resultIndex === 0 ?
+        event.localizedInvalid.parse(intl.locale) : resultName}`;
     }
     return '';
   }
@@ -53,12 +54,11 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { txid, createdTime, amount, token, type, blockTime } = transaction;
-    let { status } = transaction;
+    const { txid, txType, txStatus, block, amount } = transaction;
     const { expanded } = this.state;
-    if (transaction.constructor.name !== 'Transaction') status = 'SUCCESS';
+    const blockTime = block ? block.blockTime : messages.strPendingMsg;
     const statusMsg = (() => {
-      switch (status) {
+      switch (txStatus) {
         case 'PENDING': return messages.strPendingMsg;
         case 'SUCCESS': return messages.strSuccessMsg;
         default: return messages.strFailMsg;
@@ -68,10 +68,10 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{blockTime ? moment.unix(blockTime).format('LLL') : moment.unix(createdTime).format('LLL')}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
+          <TableCell padding="dense">{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+          <TableCell padding="dense">{getTxTypeString(txType, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
-          <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>
+          <TableCell padding="dense">{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>
           <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
           <TableCell padding="dense">
             <i

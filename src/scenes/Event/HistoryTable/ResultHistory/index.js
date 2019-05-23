@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
+import { map } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { ResponsiveTable } from 'components';
-import { Token, Phases } from 'constants';
+import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
 
@@ -13,6 +13,10 @@ const messages = defineMessages({
   emptyTxHistoryMsg: {
     id: 'str.emptyResultSetHistory',
     defaultMessage: 'There are no previous results for now.',
+  },
+  strPendingMsg: {
+    id: 'str.pending',
+    defaultMessage: 'Pending',
   },
 });
 
@@ -77,14 +81,14 @@ export default class EventResultHistory extends Component {
 }
 
 const ResultRows = ({ resultSetsHistory, intl, getTypeText }) => map(resultSetsHistory, (resultSet, index) => {
-  const { resultIdx, amount, block: { blockTime } } = resultSet;
-
+  const { resultIndex, resultName, amount, block } = resultSet;
+  const blockTime = block ? block.blockTime : messages.strPendingMsg;
   return (
     <TableRow key={`result-${index}`}>
-      <TableCell padding="dense">{moment.unix(blockTime).format('LLL')}</TableCell>
+      <TableCell padding="dense">{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
       <TableCell padding="dense">{getTypeText(resultSet, index)}</TableCell>
-      <TableCell padding="dense">{resultIdx}</TableCell>
-      <TableCell padding="dense">{`${amount} NBOT`}</TableCell>
+      <TableCell padding="dense">{`${resultIndex} ${resultName}`}</TableCell>
+      <TableCell padding="dense">{`${amount} ${Token.NBOT}`}</TableCell>
     </TableRow>
   );
 });

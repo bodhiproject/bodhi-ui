@@ -318,8 +318,11 @@ export async function bets(client, args) {
  */
 export async function resultSets(client, args) {
   const res = await new GraphQuery(client, QUERY_RESULT_SETS, args).execute();
-  res.items = map(res.items, (resultSet) => new ResultSet(resultSet));
-  return res;
+  const tmp = {};
+  tmp.items = map(res.items, (resultSet) => new ResultSet(resultSet));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**

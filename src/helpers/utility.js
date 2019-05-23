@@ -1,8 +1,7 @@
-import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import { isNaN, isFinite, isUndefined, orderBy } from 'lodash';
 import { defineMessages } from 'react-intl';
-import { fromWei, isHexStrict, numberToHex } from 'web3-utils';
+import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
 
@@ -57,8 +56,8 @@ export function decimalToSatoshi(number) {
     return number;
   }
 
-  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return new BigNumber(number).multipliedBy(conversionBN).toString(10);
+  const conversionBN = toBN(SATOSHI_CONVERSION);
+  return toBN(number).mul(conversionBN).toString(10);
 }
 
 /**
@@ -73,13 +72,26 @@ export function satoshiToDecimal(number) {
 
   let bn;
   if (isNaN(Number(number))) {
-    bn = new BigNumber(number, 16);
+    bn = toBN(number, 16);
   } else {
-    bn = new BigNumber(number);
+    bn = toBN(number);
   }
 
-  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return bn.dividedBy(conversionBN).toNumber();
+  const conversionBN = toBN(SATOSHI_CONVERSION);
+  return bn.div(conversionBN).toNumber();
+}
+
+/**
+ * Converts String to a big number.
+ * @param number {String} The number string to convert.
+ * @return {BigNumber} The converted big number.
+ */
+export function stringToBN(number) {
+  if (!number) {
+    return number;
+  }
+
+  return toBN(number);
 }
 
 /**
@@ -117,8 +129,8 @@ export function gasToNaka(gas) {
     return undefined;
   }
 
-  const gasCostBN = new BigNumber(GAS_COST);
-  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
+  const gasCostBN = toBN(GAS_COST);
+  return toBN(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /**
