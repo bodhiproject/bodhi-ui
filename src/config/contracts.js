@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+const contracts = {
   1: {
     EventFactory: {
       mainnet: '',
@@ -36,4 +36,9 @@ export default {
     },
   },
 };
+export default contracts;
 /* eslint-enable */
+
+export const TokenExchange = () => contracts['0'].TokenExchange;
+
+export const NakaBodhiToken = () => contracts['0'].NakaBodhiToken;
