@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
-const { split } = require('lodash');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
@@ -44,8 +43,8 @@ const getBuildFolder = () => {
   let buildFolder = resolveApp('build');
 
   // Replace default build folder if OUTPATH_PATH set
-  if (process.env.OUTPUT_PATH) {
-    buildFolder = process.env.OUTPUT_PATH;
+  if (process.env.BUILD_PATH) {
+    buildFolder = process.env.BUILD_PATH;
   }
 
   return buildFolder;

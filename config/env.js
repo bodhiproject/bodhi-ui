@@ -57,6 +57,11 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 const REACT_APP = /^REACT_APP_/i;
 
 function getClientEnvironment(publicUrl) {
+  // Validate required env vars
+  if (!process.env.NETWORK) throw Error('Missing NETWORK in env');
+  if (!process.env.API_HOSTNAME) throw Error('Missing API_HOSTNAME in env');
+  if (!process.env.SSL) throw Error('Missing SSL in env');
+
   const raw = Object.keys(process.env)
     .filter((key) => REACT_APP.test(key))
     .reduce(
