@@ -1,9 +1,7 @@
-import { observable, action, reaction, runInAction, toJS } from 'mobx';
-import { orderBy, isEmpty, each } from 'lodash';
-import { TransactionType, SortBy, Routes } from 'constants';
-
-import { getDetailPagePath } from '../../../helpers/utility';
-import { transactions, events } from '../../../network/graphql/queries';
+import { observable, action, reaction, runInAction } from 'mobx';
+import { orderBy, filter } from 'lodash';
+import { TransactionStatus, SortBy, Routes } from 'constants';
+import { transactions } from '../../../network/graphql/queries';
 
 const QUERY_LIMIT = 500;
 const INIT_VALUES = {
@@ -131,11 +129,14 @@ export default class {
     await checkLoggedIn();
     const { naka: { account } } = this.app;
 
-    const filter = { transactorAddress: account };
+    const filters = { transactorAddress: account };
 
-    const res = await transactions(graphqlClient, { filter, limit, skip });
+    const res = await transactions(graphqlClient, { filter: filters, limit, skip });
 
-    return res.items;
+    const pending = filter(res.items, { txStatus: TransactionStatus.PENDING });
+    const confirmed = filter(res.items, { txStatus: TransactionStatus.SUCCESS });
+
+    return [...pending, ...confirmed];
   }
 
   /**

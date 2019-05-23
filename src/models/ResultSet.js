@@ -15,7 +15,6 @@ export default class ResultSet {
 
   constructor(resultSet) {
     Object.assign(this, resultSet);
-    console.log('TCL: ResultSet -> constructor -> resultSet', resultSet);
     this.amount = satoshiToDecimal(resultSet.amount);
     this.amountSatoshi = resultSet.amount;
   }
