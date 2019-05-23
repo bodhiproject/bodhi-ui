@@ -115,8 +115,6 @@ export default class EventPage extends Component {
       },
     } = this.props;
 
-    if (eventPage.isWithdrawing) return null;
-
     let msg;
     let onClick;
     if (eventPage.isBetting) {

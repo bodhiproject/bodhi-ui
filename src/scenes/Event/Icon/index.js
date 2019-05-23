@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-
-const Icon = styled(({ type = '', className }) => (
+export default styled(({ type = '', className }) => (
   <i className={`icon iconfont icon-ic_${type} ${className}`} />
 ))`
   height: ${props => props.theme.sizes.icon.large};
@@ -14,5 +13,3 @@ const Icon = styled(({ type = '', className }) => (
   left: 0;
   top: -7px;
 `;
-
-export default Icon;
