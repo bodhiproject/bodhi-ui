@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
-const { split } = require('lodash');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
@@ -42,12 +41,6 @@ function getServedPath(appPackageJson) {
  */
 const getBuildFolder = () => {
   let buildFolder = resolveApp('build');
-  process.argv.forEach((arg) => {
-    // Use build folder specified in commandline argument if found
-    if (arg.startsWith('--output=')) {
-      buildFolder = (split(arg, '=', 2))[1];
-    }
-  });
   return buildFolder;
 };
 
