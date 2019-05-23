@@ -1,5 +1,5 @@
 import { TransactionType } from 'constants';
-import { stringToBN, satoshiToDecimal } from '../../../../helpers/utility';
+import { stringToBN } from '../helpers/utility';
 
 export default class Transaction {
   txType // One of: [CREATE_EVENT, BET, RESULT_SET, VOTE, WITHDRAW]

@@ -45,30 +45,13 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus/* , block: { blockTime: createdTime } */ } = transaction;
-      const createdTime = 1;
+      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block: { blockTime }, name, address, amount } = transaction;
       const { expanded } = this.state;
-
-      // parse necessary data
-      let { name, address, amount } = transaction;
-      if (txType === TransactionType.CREATE_EVENT) {
-        amount = transaction.escrowAmount;
-      } else if (txType === TransactionType.BET
-        || txType === TransactionType.RESULT_SET
-        || txType === TransactionType.VOTE) {
-        address = transaction.eventAddress;
-        name = transaction.resultIndex;
-      } else {
-        amount = stringToBN(transaction.winningAmount).add(stringToBN(transaction.escrowWithdrawAmount));
-        amount = amount.toString();
-        address = transaction.eventAddress;
-        name = 'Withdraw';
-      }
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell>{moment.unix(createdTime).format('LLL')}</TableCell>
+            <TableCell>{moment.unix(blockTime).format('LLL')}</TableCell>
             <TableCell>{getTxTypeString(txType, intl)}</TableCell>
             <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
               {name || ''}
