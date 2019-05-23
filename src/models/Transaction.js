@@ -25,7 +25,6 @@ export default class Transaction {
     } else {
       this.amount = stringToBN(transaction.winningAmount).add(stringToBN(transaction.escrowWithdrawAmount));
       this.amount = this.amount.toString();
-      this.name = 'Withdraw';
     }
   }
 }

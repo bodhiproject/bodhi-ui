@@ -5,11 +5,11 @@ import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
-import { Token, TransactionType } from 'constants';
+import { Token } from 'constants';
 
 import styles from './styles';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { stringToBN, satoshiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -52,25 +52,10 @@ export default class TxRow extends Component {
     this.setState({ expanded: !this.state.expanded });
   };
 
-  getAmount = (transaction) => {
-    const { txType } = transaction;
-    let { amount } = transaction;
-    if (txType === TransactionType.CREATE_EVENT) {
-      amount = transaction.escrowAmount;
-    } else if (txType === TransactionType.WITHDRAW) {
-      amount = stringToBN(transaction.winningAmount) + stringToBN(transaction.escrowWithdrawAmount);
-      amount = amount.toString();
-    }
-
-    return satoshiToDecimal(amount);
-  }
-
   render() {
     const { classes, intl, transaction } = this.props;
-    const { txid, txType, txStatus/* , block: { blockTime: createdTime } */ } = transaction;
-    const createdTime = 1;
+    const { txid, txType, txStatus, block: { blockTime }, amount } = transaction;
     const { expanded } = this.state;
-    const amount = this.getAmount(transaction);
     const statusMsg = (() => {
       switch (txStatus) {
         case 'PENDING': return messages.strPendingMsg;
@@ -82,10 +67,10 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
+          <TableCell padding="dense">{moment.unix(blockTime).format('LLL')}</TableCell>
           <TableCell padding="dense">{getTxTypeString(txType, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
-          <TableCell padding="dense">{!amount ? '' : `${amount} ${Token.NBOT}`}</TableCell>
+          <TableCell padding="dense">{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>
           <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
           <TableCell padding="dense">
             <i
