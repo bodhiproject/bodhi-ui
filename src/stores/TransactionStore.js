@@ -8,7 +8,11 @@ import {
   addPendingResultSet,
   addPendingWithdraw,
 } from '../network/graphql/mutations';
-import { NakaBodhiToken, EventFactory } from '../config/contracts';
+import {
+  NakaBodhiToken,
+  EventFactory,
+  MultipleResultsEvent,
+} from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
@@ -219,7 +223,6 @@ export default class TransactionStore {
     }
   }
 
-
   /**
    * Executes a bet.
    * @param {number} index Index of the Transaction object.
@@ -361,8 +364,8 @@ export default class TransactionStore {
   @action
   executeWithdraw = async (tx) => {
     try {
-      const { eventAddress, winningAmount, escrowAmount } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
+      const { eventAddress, winningAmount, escrowAmount, version } = tx;
+      const nbotMethods = window.naka.eth.contract(MultipleResultsEvent(version).abi)
         .at(eventAddress);
       const pbtParams = this.getPayByTokenParams();
       const txid = await promisify(nbotMethods.withdraw, [{

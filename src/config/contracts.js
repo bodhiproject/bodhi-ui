@@ -52,3 +52,6 @@ export const EventFactory = () => {
   const latestVersion = keys[keys.length - 1];
   return contracts[`${latestVersion}`].EventFactory;
 };
+
+export const MultipleResultsEvent = (version) =>
+  contracts[`${version}`].MultipleResultsEvent;

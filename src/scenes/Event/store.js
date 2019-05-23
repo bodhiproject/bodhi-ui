@@ -538,6 +538,7 @@ export default class EventStore {
       eventAddress: this.event.address,
       winningAmount: decimalToSatoshi(this.nbotWinnings),
       escrowAmount: decimalToSatoshi(this.escrowAmount),
+      version: this.event.version,
     });
   }
 }
