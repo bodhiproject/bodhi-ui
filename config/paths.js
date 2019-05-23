@@ -42,15 +42,6 @@ function getServedPath(appPackageJson) {
  */
 const getBuildFolder = () => {
   let buildFolder = resolveApp('build');
-
-  // Replace default build folder if OUTPATH_PATH set
-  if (process.env.BUILD_PATH) {
-    buildFolder = process.env.BUILD_PATH;
-
-    // Make dir if it doesn't exist
-    fsExtra.ensureDirSync(buildFolder);
-  }
-
   return buildFolder;
 };
 

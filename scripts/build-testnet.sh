@@ -1,4 +1,13 @@
 #!/bin/sh
-# should be run from root folder
-sudo mkdir -p /var/www/bodhi/testnet
+# Script should be run from root folder
+
+DEPLOY_PATH=/var/www/bodhi/testnet/
+
+echo "Building Testnet UI..."
 node scripts/build-testnet.js
+
+echo "Creating output path..."
+sudo mkdir -p $DEPLOY_PATH
+
+echo "Copying build folder to output path..."
+sudo cp -a build/. $DEPLOY_PATH
