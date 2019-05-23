@@ -87,7 +87,7 @@ function getClientEnvironment(publicUrl) {
         SSL: process.env.SSL,
       }
     );
-  console.log('Environment Vars:\n', raw);
+  console.log('Environment:\n', raw);
 
   // Stringify all values so we can feed into Webpack DefinePlugin
   const stringified = {
