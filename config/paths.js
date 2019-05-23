@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const fsExtra = require('fs-extra');
 const url = require('url');
 
 // Make sure any symlinks in the project folder are resolved:
