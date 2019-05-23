@@ -1,6 +1,11 @@
 const { sortBy, map } = require('lodash');
 
 /* eslint-disable */
+/**
+ * IMPORTANT:
+ * Each new version needs to have EventFactory and MultipleResultsEvent data.
+ * The key is the version number. Should be in sequential order.
+ */
 const contracts = {
   1: {
     EventFactory: {
@@ -45,13 +50,21 @@ export const TokenExchange = () => contracts['0'].TokenExchange;
 
 export const NakaBodhiToken = () => contracts['0'].NakaBodhiToken;
 
+/**
+ * Gets the latest EventFactory contract metadata.
+ * @return {object} Latest EventFactory contract metadata.
+ */
 export const EventFactory = () => {
-  // Get latest version
   let keys = Object.keys(contracts);
   keys = sortBy(map(keys, key => Number(key)));
   const latestVersion = keys[keys.length - 1];
   return contracts[`${latestVersion}`].EventFactory;
 };
 
+/**
+ * Gets the MultipleResultsEvent contract metadata.
+ * @param {number} version Version of the contract.
+ * @return {object} MultipleResultsEvent contract metadata.
+ */
 export const MultipleResultsEvent = (version) =>
   contracts[`${version}`].MultipleResultsEvent;
