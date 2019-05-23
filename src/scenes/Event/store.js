@@ -539,6 +539,5 @@ export default class EventStore {
       winningAmount: decimalToSatoshi(this.nbotWinnings),
       escrowAmount: decimalToSatoshi(this.escrowAmount),
     });
-    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 }
