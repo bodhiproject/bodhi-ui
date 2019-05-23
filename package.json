@@ -127,7 +127,7 @@
     "start:local": "node scripts/start-local.js",
     "start:mainnet": "node scripts/start-mainnet.js",
     "start:testnet": "node scripts/start-testnet.js",
-    "build:testnet": "node scripts/build-testnet.js",
+    "build:testnet": "./scripts/build-testnet.sh",
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
