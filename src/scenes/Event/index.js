@@ -205,7 +205,7 @@ export default class EventPage extends Component {
               ? this.renderActiveEventContent()
               : this.renderWithdrawContent()}
             <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
-            {/* <HistoryTable /> */}
+            <HistoryTable />
           </ContentContainer>
           <Sidebar endTime={event.betEndTime} />
         </PageContainer>

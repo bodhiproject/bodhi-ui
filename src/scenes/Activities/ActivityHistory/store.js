@@ -134,6 +134,7 @@ export default class {
     const filter = { transactorAddress: account };
 
     const res = await transactions(graphqlClient, { filter, limit, skip });
+
     return res.items;
   }
 

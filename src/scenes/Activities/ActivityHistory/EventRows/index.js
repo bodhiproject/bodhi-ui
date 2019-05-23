@@ -4,15 +4,29 @@ import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 import moment from 'moment';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
-import { TransactionType } from 'constants';
+import { Token } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { stringToBN, satoshiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal } from '../../../../helpers/utility';
 
+const messages = defineMessages({
+  strPendingMsg: {
+    id: 'str.pending',
+    defaultMessage: 'Pending',
+  },
+  strSuccessMsg: {
+    id: 'str.success',
+    defaultMessage: 'Success',
+  },
+  strFailMsg: {
+    id: 'str.fail',
+    defaultMessage: 'Fail',
+  },
+});
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @withRouter
@@ -45,19 +59,20 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block: { blockTime }, name, address, amount } = transaction;
+      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block, name, address, amount } = transaction;
+      const blockTime = block ? block.blockTime : messages.strPendingMsg;
       const { expanded } = this.state;
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell>{moment.unix(blockTime).format('LLL')}</TableCell>
+            <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
             <TableCell>{getTxTypeString(txType, intl)}</TableCell>
             <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
               {name || ''}
             </NameLinkCell>
-            <TableCell numeric>{`${satoshiToDecimal(amount) || ''}`}</TableCell>
-            <TableCell numeric>{cumulativeGasUsed}</TableCell>
+            <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
+            <TableCell numeric>{satoshiToDecimal(cumulativeGasUsed)}</TableCell>
             <TableCell>
               <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
                 {(txt) => i18nToUpperCase(txt)}
