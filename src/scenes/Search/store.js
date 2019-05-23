@@ -62,8 +62,14 @@ export default class SearchStore {
     this.loading = true;
 
     // Fetch events and filter by status
+    const {
+      graphqlClient,
+      global: { eventVersion },
+    } = this.app;
+
     try {
-      this.events = await searchEvents(this.app.graphqlClient, {
+      this.events = await searchEvents(graphqlClient, {
+        filter: { version: eventVersion },
         orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
         searchPhrase: this.phrase,
       });
