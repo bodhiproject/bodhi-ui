@@ -54,8 +54,9 @@ export default class TxRow extends Component {
 
   render() {
     const { classes, intl, transaction } = this.props;
-    const { txid, txType, txStatus, block: { blockTime }, amount } = transaction;
+    const { txid, txType, txStatus, block, amount } = transaction;
     const { expanded } = this.state;
+    const blockTime = block ? block.blockTime : messages.strPendingMsg;
     const statusMsg = (() => {
       switch (txStatus) {
         case 'PENDING': return messages.strPendingMsg;
@@ -67,7 +68,7 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{moment.unix(blockTime).format('LLL')}</TableCell>
+          <TableCell padding="dense">{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
           <TableCell padding="dense">{getTxTypeString(txType, intl)}</TableCell>
           <TableCell padding="dense">{this.description}</TableCell>
           <TableCell padding="dense">{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>
