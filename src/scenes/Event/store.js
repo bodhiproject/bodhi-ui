@@ -93,40 +93,6 @@ export default class EventStore {
     return this.event && this.event.status === WITHDRAWING;
   }
 
-  @computed get buttonExtendProps() {
-    if (!this.event) return {};
-    if (this.event.currentRound === 0) {
-      if ([ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status)) {
-        return {
-          buttonFunc: this.set,
-          localeId: 'str.setResult',
-          localeDefaultMessage: 'Set Result',
-          type: 'setResult',
-        };
-      }
-      return {
-        buttonFunc: this.bet,
-        localeId: 'bottomButtonText.placeBet',
-        localeDefaultMessage: 'Place Bet',
-        type: 'bet',
-      };
-    }
-    if (this.event.status === WITHDRAWING) {
-      return {
-        buttonFunc: this.withdraw,
-        localeId: 'str.withdraw',
-        localeDefaultMessage: 'withdraw',
-        type: 'withdraw',
-      };
-    }
-    return {
-      buttonFunc: this.vote,
-      localeId: 'str.vote',
-      localeDefaultMessage: 'vote',
-      type: 'vote',
-    };
-  }
-
   @computed get maxLeaderBoardSteps() {
     return this.event.status === WITHDRAWING ? 2 : 1;
   }
