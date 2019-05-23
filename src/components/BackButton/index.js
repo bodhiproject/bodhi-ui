@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { withStyles, Button } from '@material-ui/core';
 import { ChevronLeft } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
 import styles from './styles';
 
 @withRouter

@@ -7,6 +7,7 @@ import {
   Withdraw,
   Transaction,
   SyncInfo,
+  TotalResultBets,
 } from 'models';
 import {
   PAGINATED_EVENTS,
@@ -16,6 +17,7 @@ import {
   PAGINATED_WITHDRAWS,
   PAGINATED_TRANSACTIONS,
   SYNC_INFO,
+  TOTAL_RESULT_BETS,
   ALL_STATS,
   PAGINATED_MOST_BETS,
   BIGGEST_WINNER,
@@ -29,13 +31,14 @@ const QUERY_RESULT_SETS = 'resultSets';
 const QUERY_WITHDRAWS = 'withdraws';
 const QUERY_TRANSACTIONS = 'transactions';
 const QUERY_SYNC_INFO = 'syncInfo';
+const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
 const QUERY_ALL_STATS = 'allStats';
 const QUERY_MOST_BETS = 'mostBets';
 const QUERY_BIGGEST_WINNERS = 'biggestWinners';
 
 /**
  * Example query arguments:
- * - filter: [{ status: 'BETTING' }]
+ * - filter: { status: 'BETTING' }
  * - orderBy: [{ field: 'blockNum', direction: 'ASC' }]
  * - limit: 100
  * - skip: 50
@@ -177,6 +180,18 @@ const QUERIES = {
     query {
       syncInfo {
         ${SYNC_INFO}
+      }
+    }
+  `,
+
+  totalResultBets: gql`
+    query(
+      $filter: TotalResultBetsFilter
+    ) {
+      totalResultBets(
+        filter: $filter
+      ) {
+        ${TOTAL_RESULT_BETS}
       }
     }
   `,
@@ -340,6 +355,17 @@ export async function transactions(client, args) {
 export async function syncInfo(client) {
   const res = await new GraphQuery(client, QUERY_SYNC_INFO).execute();
   return new SyncInfo(res);
+}
+
+/**
+ * Queries the total result bets for an event.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function totalResultBets(client, args) {
+  const res = await new GraphQuery(client, QUERY_TOTAL_RESULT_BETS, args).execute();
+  return new TotalResultBets(res);
 }
 
 /**

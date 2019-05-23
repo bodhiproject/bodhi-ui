@@ -43,13 +43,19 @@ export default class {
 
   @action
   init = async () => {
-    Object.assign(this, INIT_VALUES); // reset to initial state
     this.app.ui.location = Routes.WITHDRAW; // change ui location, for tabs to render correctly
-    this.list = await this.fetch(this.limit, this.skip);
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.hasMore = true;
+    this.list = await this.fetch(this.limit, 0);
     runInAction(() => {
       this.loaded = true;
     });
   }
+
 
   @action
   loadMore = async () => {

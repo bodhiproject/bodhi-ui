@@ -15,7 +15,7 @@ import ResultSetStartTime from './ResultSetStartTime';
 import ResultSetEndTime from './ResultSetEndTime';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
-import { Loading as _Loading } from '../../components/Loading';
+import { Loading as _Loading } from '../../components/';
 
 const messages = defineMessages({
   createEscrowNoteTitleMsg: {

@@ -41,6 +41,7 @@ export default class MultipleResultsEvent {
   constructor(event) {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
+    this.consensusThreshold = satoshiToDecimal(event.consensusThreshold);
     this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {
@@ -51,8 +52,8 @@ export default class MultipleResultsEvent {
         return this[locale.slice(0, 2)];
       },
     };
-    this.url = `/event/${this.address ? this.address : this.txid}`;
     this.results = event.results.map((result, i) => new Option(result, i, this));
+    this.url = `/event/${this.address ? this.address : this.txid}`;
   }
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
@@ -60,7 +61,7 @@ export default class MultipleResultsEvent {
   isUpcoming = (address) => this.status === EVENT_STATUS.ORACLE_RESULT_SETTING
     && address !== this.ownerAddress;
 
-  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING
+  isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING;
 
   getEndTime = () => {
     switch (this.status) {

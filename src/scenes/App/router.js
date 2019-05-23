@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { Routes } from 'constants';
-
 import asyncComponent from '../../helpers/AsyncFunc';
-
 
 const AppRouter = ({ url }) => {
   // Remove trailing '/' from url so that we can use `${url}/topic` below
@@ -31,17 +29,7 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}/oracle/:topicAddress/:address/:txid`}
-        component={asyncComponent(() => import('../Event'))}
-      />
-      <Route
-        exact
         path={`${url}/event/:url`}
-        component={asyncComponent(() => import('../Event'))}
-      />
-      <Route
-        exact
-        path={`${url}/topic/:address`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route

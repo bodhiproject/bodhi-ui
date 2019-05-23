@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
-import _ from 'lodash';
+import { isNaN, isFinite, isUndefined, orderBy } from 'lodash';
 import { defineMessages } from 'react-intl';
-import { fromWei } from 'web3-utils';
-
+import { fromWei, isHexStrict, numberToHex } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
 
@@ -73,7 +72,7 @@ export function satoshiToDecimal(number) {
   }
 
   let bn;
-  if (_.isNaN(Number(number))) {
+  if (isNaN(Number(number))) {
     bn = new BigNumber(number, 16);
   } else {
     bn = new BigNumber(number);
@@ -98,12 +97,23 @@ export function weiToDecimal(number) {
 }
 
 /**
+ * Returns hex string with hex prefix.
+ * @param number {String|Number} The number to convert.
+ * @return {String} The converted hex string.
+ */
+export function numToHex(number) {
+  if (isUndefined(number)) return number;
+  if (isHexStrict(number)) return number;
+  return numberToHex(number);
+}
+
+/**
  * Converts the gas number to NAKA cost.
  * @param gas {Number} The gas number to convert.
  * @return {Number} The gas amount represented as NAKA.
  */
 export function gasToNaka(gas) {
-  if (!gas || !_.isFinite(gas)) {
+  if (!gas || !isFinite(gas)) {
     return undefined;
   }
 
@@ -175,7 +185,7 @@ export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
  */
 export function getDetailPagePath(oracles) {
   if (oracles.length) {
-    const sorted = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
+    const sorted = orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
     const latestOracle = sorted[0];
 
     // construct url for oracle or topic

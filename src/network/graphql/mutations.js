@@ -89,15 +89,15 @@ const MUTATIONS = {
       $txid: String!
       $eventAddress: String!
       $winnerAddress: String!
-      $winningAmount: Int!
-      $escrowWithdrawAmount: String!
+      $winningAmount: String!
+      $escrowAmount: String!
     ) {
       addPendingWithdraw(
         txid: $txid
         eventAddress: $eventAddress
         winnerAddress: $winnerAddress
         winningAmount: $winningAmount
-        escrowWithdrawAmount: $escrowWithdrawAmount
+        escrowAmount: $escrowAmount
       ) {
         ${WITHDRAW}
       }

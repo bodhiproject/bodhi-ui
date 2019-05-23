@@ -6,7 +6,7 @@ import {
   addPendingEvent,
   addPendingBet,
   addPendingResultSet,
-  createTransaction,
+  addPendingWithdraw,
 } from '../network/graphql/mutations';
 import getContracts from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
@@ -37,7 +37,7 @@ export default class TransactionStore {
   }
 
   handleReqError = (err, reqName) => {
-    const { components: { globalDialog } } = this.app;
+    const { globalDialog } = this.app;
     if (err.networkError
       && err.networkError.result.errors
       && err.networkError.result.errors.length > 0) {
@@ -360,23 +360,34 @@ export default class TransactionStore {
   @action
   executeWithdraw = async (tx) => {
     try {
-      const { type, senderAddress, topicAddress } = tx;
+      const { eventAddress, winningAmount, escrowAmount } = tx;
+      const { nbotOwner, exchangeRate } = this.app.wallet;
+
       const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
-        .at(topicAddress);
-      const txid = await promisify(nbotMethods.withdraw, []);
+        .at(eventAddress);
+      const txid = await promisify(nbotMethods.withdraw, [{
+        token: getContracts().NakaBodhiToken.address,
+        exchanger: nbotOwner,
+        exchangeRate,
+      }]);
 
       Object.assign(tx, { txid });
 
       if (txid) {
         // Create pending tx on server
-        const pendingTx = await createTransaction('withdraw', {
-          type,
+        const {
+          graphqlClient,
+          wallet: { currentWalletAddress: { address } },
+        } = this.app;
+        const res = await addPendingWithdraw(graphqlClient, {
           txid,
-          senderAddress,
-          topicAddress,
+          eventAddress,
+          winnerAddress: address,
+          winningAmount,
+          escrowAmount,
         });
 
-        await this.onTxExecuted(tx, pendingTx);
+        await this.onTxExecuted(res);
         Tracking.track('event-withdraw');
       }
     } catch (err) {
