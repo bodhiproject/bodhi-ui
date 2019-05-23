@@ -61,10 +61,6 @@ export default class GlobalStore {
         }
       }
     );
-    reaction(
-      () => this.eventVersion,
-      () => console.log(this.eventVersion),
-    );
 
     // Call syncInfo once to init the wallet addresses used by other stores
     this.subscribeSyncInfo();
