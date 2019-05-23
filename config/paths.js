@@ -42,12 +42,12 @@ function getServedPath(appPackageJson) {
  */
 const getBuildFolder = () => {
   let buildFolder = resolveApp('build');
-  process.argv.forEach((arg) => {
-    // Use build folder specified in commandline argument if found
-    if (arg.startsWith('--output=')) {
-      buildFolder = (split(arg, '=', 2))[1];
-    }
-  });
+
+  // Replace default build folder if OUTPATH_PATH set
+  if (process.env.OUTPUT_PATH) {
+    buildFolder = process.env.OUTPUT_PATH;
+  }
+
   return buildFolder;
 };
 
