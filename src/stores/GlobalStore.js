@@ -8,6 +8,9 @@ import { wsLink } from '../network/graphql';
 
 const INIT_VALUES = {
   localWallet: false,
+  socketOnline: false,
+  internetOnline: navigator.onLine,
+  eventVersion: 1,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
@@ -16,17 +19,16 @@ const INIT_VALUES = {
     withdrawCount: 0,
     totalCount: 0,
   },
-  socketOnline: false,
-  internetOnline: navigator.onLine,
 };
 
 export default class GlobalStore {
   @observable localWallet = INIT_VALUES.localWallet
+  @observable socketOnline = INIT_VALUES.socketOnline
+  @observable internetOnline = INIT_VALUES.internetOnline
+  @observable eventVersion = INIT_VALUES.eventVersion
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
-  @observable socketOnline = INIT_VALUES.socketOnline
-  @observable internetOnline = INIT_VALUES.internetOnline
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     withdrawCount: INIT_VALUES.userData.withdrawCount,
@@ -58,6 +60,10 @@ export default class GlobalStore {
           this.app.wallet.fetchExchangeRate();
         }
       }
+    );
+    reaction(
+      () => this.eventVersion,
+      () => console.log(this.eventVersion),
     );
 
     // Call syncInfo once to init the wallet addresses used by other stores
@@ -102,6 +108,9 @@ export default class GlobalStore {
       this.syncBlockTime = syncInfo.blockTime;
     });
   }
+
+  @action
+  setEventVersion = (eventVersion) => this.eventVersion = eventVersion;
 
   /**
    * Gets the actionable item count for all the addresses the user owns.
