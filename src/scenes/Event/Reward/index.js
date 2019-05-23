@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { sum } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import RewardTooltipContent from '../RewardTooltipContent';
@@ -26,13 +27,9 @@ export default class Reward extends Component {
     const {
       classes,
       store: {
-        eventPage: { nbotWinnings },
+        eventPage: { nbotWinnings, returnRate, totalInvestment, profitOrLoss },
       },
     } = this.props;
-    // TODO: implement when Event store pulls TotalResultBets
-    // const betterBets = event && event.betterBets;
-    // const returnRate = ((nbotWinnings - betterBets) / betterBets) * 100;
-    const returnRate = 0;
 
     return (
       <div className={classes.colDiv}>
@@ -42,7 +39,7 @@ export default class Reward extends Component {
             <Tooltip
               classes={{ tooltip: classes.rewardTooltip }}
               id="tooltip-reward"
-              title={<RewardTooltipContent token="NBOT" />}
+              title={<RewardTooltipContent token="NBOT" totalInvestment={totalInvestment} profitOrLoss={profitOrLoss} />}
             >
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>

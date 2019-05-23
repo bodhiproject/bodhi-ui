@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { filter } from 'lodash';
+import { filter, sum } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
@@ -25,6 +25,9 @@ const INIT = {
   escrowAmount: 0,
   resultBets: [],
   betterBets: [],
+  totalInvestment: 0,
+  returnRate: 0,
+  profitOrLoss: 0,
   resultSetsHistory: [],
   pendingWithdraw: [],
   transactionHistoryItems: [],
@@ -64,6 +67,9 @@ export default class EventStore {
   @observable escrowAmount = INIT.escrowAmount
   @observable didWithdraw = INIT.didWithdraw
   @observable pendingWithdraw = INIT.pendingWithdraw
+  @observable totalInvestment = INIT.totalInvestment
+  @observable returnRate = INIT.returnRate
+  @observable profitOrLoss = INIT.profitOrLoss
   leaderboardLimit = INIT.leaderboardLimit
 
   @computed get eventName() {
@@ -330,11 +336,12 @@ export default class EventStore {
     const res = await totalResultBets(this.app.graphqlClient, {
       filter: {
         eventAddress: address,
-        betterAddress: this.app.wallet.currentWalletAddress,
+        betterAddress: this.app.wallet.currentAddress,
       },
     });
     this.resultBets = res.resultBets || [];
     this.betterBets = res.betterBets || [];
+    this.totalInvestment = sum(this.betterBets);
   }
 
   @action
@@ -345,11 +352,14 @@ export default class EventStore {
     try {
       const { data } = await axios.get(API.CALCULATE_WINNINGS, {
         params: {
+          // calcaulateWinnings working event address: 0xe272f0793b97a3606f7a4e1eed2abaded67a9376
           eventAddress: address,
           address: this.app.wallet.currentAddress,
         },
       });
       this.nbotWinnings = satoshiToDecimal(data.result);
+      this.returnRate = ((this.nbotWinnings - this.totalInvestment) / this.totalInvestment) * 100;
+      this.profitOrLoss = this.nbotWinnings - this.totalInvestment;
     } catch (error) {
       runInAction(() => {
         this.app.globalDialog.setError(
