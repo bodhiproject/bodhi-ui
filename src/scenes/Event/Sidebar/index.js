@@ -23,6 +23,10 @@ const message = defineMessages({
     id: 'str.resultSetter',
     defaultMessage: 'Result Setter',
   },
+  eventVersionMsg: {
+    id: 'str.eventVersion',
+    defaultMessage: 'Version',
+  },
 });
 
 const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, endTime }) => (
@@ -31,6 +35,7 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, end
       <EndDate endTime={endTime} />
       <Funding event={event} />
       <ResultSetter event={event} />
+      <Version event={event} />
     </EventInfo>
     <StepperVertRight />
   </SidebarContainer>
@@ -52,6 +57,10 @@ const Funding = ({ event: { totalBets } }) => (
 
 const ResultSetter = ({ event }) => (
   <EventInfoBlock id={message.strResultSetterMsg.id} content={event.centralizedOracle} />
+);
+
+const Version = ({ event }) => (
+  <EventInfoBlock id={message.eventVersionMsg.id} content={event.version} />
 );
 
 const EventInfo = styled.div`
