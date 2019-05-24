@@ -510,6 +510,7 @@ export default class EventStore {
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   set = async () => {
@@ -519,6 +520,7 @@ export default class EventStore {
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   vote = async () => {
@@ -528,10 +530,10 @@ export default class EventStore {
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   withdraw = async () => {
-    // TODO: finish when withdraw is done
     await this.app.tx.executeWithdraw({
       eventAddress: this.event.address,
       winningAmount: decimalToSatoshi(this.nbotWinnings),
