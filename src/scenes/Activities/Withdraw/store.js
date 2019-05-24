@@ -1,7 +1,6 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { isEmpty, each, find } from 'lodash';
-import { EVENT_STATUS, Routes, SortBy } from 'constants';
-import { bets, events, withdrawableEvents } from '../../../network/graphql/queries';
+import { Routes, SortBy } from 'constants';
+import { withdrawableEvents } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
