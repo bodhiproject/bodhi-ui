@@ -70,6 +70,7 @@ const MUTATIONS = {
       $resultIndex: Int!
       $amount: String!
       $eventRound: Int!
+      $fromVote: Boolean
     ) {
       addPendingResultSet(
         txid: $txid
@@ -78,6 +79,7 @@ const MUTATIONS = {
         resultIndex: $resultIndex
         amount: $amount
         eventRound: $eventRound
+        fromVote: $fromVote
       ) {
         ${RESULT_SET}
       }
@@ -154,6 +156,7 @@ export const addPendingBet = async (client, args) => {
  * @return {object} Mutation result.
  */
 export const addPendingResultSet = async (client, args) => {
+  console.log(args);
   const res = await new GraphMutation(client, MUTA_ADD_PENDING_RESULT_SET, args)
     .execute();
   const { data: { addPendingResultSet: resultSet } } = res;

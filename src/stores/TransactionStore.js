@@ -301,7 +301,9 @@ export default class TransactionStore {
           resultIndex: optionIdx,
           amount,
           eventRound,
+          fromVote: false,
         });
+        console.log(res);
 
         await this.onTxExecuted(res);
         Tracking.track('event-setResult');

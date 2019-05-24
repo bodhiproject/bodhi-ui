@@ -100,6 +100,7 @@ export const RESULT_SET = `
   amount
   eventRound
   resultName
+  fromVote
 `;
 
 export const PAGINATED_RESULT_SETS = `
