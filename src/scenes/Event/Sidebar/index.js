@@ -47,7 +47,7 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
   </Grid>
 ));
 
-const EndDate = inject('store')(observer(injectIntl(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
+const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 
