@@ -23,7 +23,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.naka.account) + this.app.global.syncBlockNum,
+      () => toJS(this.app.naka.account),
       () => {
         if (this.app.ui.location === Routes.WITHDRAW) {
           this.init();

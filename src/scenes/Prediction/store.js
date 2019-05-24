@@ -26,7 +26,7 @@ export default class PredictionStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing.status,
+      () => this.sortBy + toJS(this.app.wallet.addresses) + this.app.refreshing.status,
       () => {
         if (this.app.ui.location === Routes.PREDICTION) {
           this.init();
