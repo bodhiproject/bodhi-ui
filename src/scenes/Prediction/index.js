@@ -21,7 +21,7 @@ export default class Prediction extends Component {
     ));
     return (
       <Fragment>
-        {events.length > 0 && <TopActions />}
+        <TopActions />
         <InfiniteScroll
           spacing={theme.padding.space3X.value}
           data={events}
