@@ -11,7 +11,7 @@ import { Token } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { satoshiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal, weiToDecimal } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -58,10 +58,11 @@ class EventRow extends Component {
     }
 
     render() {
-      const { transaction, intl, classes } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed }, txStatus, block, name, address, amount } = transaction;
+      const { transaction, intl, classes, store: { wallet: { exchangeRate } } } = this.props;
+      const { txType, txid, txReceipt: { cumulativeGasUsed, gasPrice }, txStatus, block, name, address, amount } = transaction;
       const blockTime = block ? block.blockTime : messages.strPendingMsg;
       const { expanded } = this.state;
+      const gasFee = (satoshiToDecimal(gasPrice) / weiToDecimal(exchangeRate)) * satoshiToDecimal(cumulativeGasUsed);
 
       return (
         <Fragment>
@@ -72,7 +73,7 @@ class EventRow extends Component {
               {name || ''}
             </NameLinkCell>
             <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
-            <TableCell numeric>{satoshiToDecimal(cumulativeGasUsed)}</TableCell>
+            <TableCell numeric>{satoshiToDecimal(gasFee)}</TableCell>
             <TableCell>
               <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
                 {(txt) => i18nToUpperCase(txt)}
