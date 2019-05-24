@@ -22,7 +22,7 @@ const Options = ({ eventPage }) => (
 );
 
 
-const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { event, resultBets, betterBets } }) => (
+const Option = injectIntl(({ option, index, intl, eventPage: { event, resultBets, betterBets } }) => (
   <OptionWrapper>
     <OptionNumber>{index + 1}</OptionNumber>
     <Typog variant="h6" data-small={event.currentResultIndex === index}>

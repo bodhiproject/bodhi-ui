@@ -1,5 +1,4 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import _ from 'lodash';
 import { EVENT_STATUS, Routes, SortBy } from '../../constants';
 import { events } from '../../network/graphql/queries';
 

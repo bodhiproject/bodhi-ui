@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
@@ -13,7 +12,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { eventPage, wallet, naka }, myTransactions } = this.props;
+    const { store: { eventPage, naka }, myTransactions } = this.props;
     const { transactionHistoryItems, event } = eventPage;
 
     return (

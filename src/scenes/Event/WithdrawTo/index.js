@@ -1,10 +1,8 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
-import _ from 'lodash';
-import { TransactionStatus, TransactionType, Token } from 'constants';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { TableBody, TableHead, TableRow, TableCell, Button, withStyles } from '@material-ui/core';
+import { TableBody, TableHead, TableRow, TableCell, Button } from '@material-ui/core';
 import { Warning, ResponsiveTable } from 'components';
 import Icon from '../Icon';
 import Container from '../Container';

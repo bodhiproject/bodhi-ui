@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { Token, EVENT_STATUS } from 'constants';
 import { decimalToSatoshi } from '../helpers/utility';
 
-const { NAKA, NBOT } = Token;
+const { NBOT } = Token;
 
 export default class Option {
   name

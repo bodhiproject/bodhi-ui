@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
-import _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString, satoshiToDecimal } from '../../../helpers';
+import { getEndTimeCountDownString } from '../../../helpers';
 import styles from './styles';
 
 const message = defineMessages({
