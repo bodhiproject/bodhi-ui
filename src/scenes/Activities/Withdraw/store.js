@@ -1,7 +1,7 @@
 import { observable, action, runInAction, reaction, toJS } from 'mobx';
 import { isEmpty, each, find } from 'lodash';
 import { EVENT_STATUS, Routes, SortBy } from 'constants';
-import { bets, events } from '../../../network/graphql/queries';
+import { bets, events, withdrawableEvents } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // loading state?
@@ -78,42 +78,18 @@ export default class {
     if (this.hasMore) {
       const {
         graphqlClient,
-        naka: { account, checkLoggedIn },
+        naka: { checkLoggedIn },
         ui: { locale },
         global: { eventVersion },
       } = this.app;
 
       await checkLoggedIn();
+      const { naka: { account } } = this.app;
+      if (!account) return INIT_VALUES.list;
 
-      const betFilters = { betterAddress: account };
-      const eventFilters = { OR: [
-        {
-          status: EVENT_STATUS.WITHDRAWING,
-          ownerAddress: account,
-          language: locale,
-          version: eventVersion,
-        },
-      ] };
-
-      // Filter votes
-      let votes = await bets(graphqlClient, { filter: betFilters });
-      votes = votes.items.reduce((accumulator, vote) => {
-        const { betterAddress, eventAddress, resultIndex } = vote;
-        if (!find(accumulator, { betterAddress, eventAddress, resultIndex })) accumulator.push(vote);
-        return accumulator;
-      }, []);
-
-      // Fetch topics against votes that have the winning result index
-      each(votes, ({ eventAddress, resultIndex }) => {
-        eventFilters.OR.push({
-          status: EVENT_STATUS.WITHDRAWING,
-          address: eventAddress,
-          currentResultIndex: resultIndex,
-          language: locale,
-        });
-      });
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
-      const res = await events(graphqlClient, { filter: eventFilters, orderBy, limit, skip });
+      const filter = { withdrawerAddress: account, language: locale, version: eventVersion };
+      const res = await withdrawableEvents(graphqlClient, { filter, orderBy, limit, skip });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;

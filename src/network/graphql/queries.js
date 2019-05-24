@@ -95,7 +95,7 @@ const QUERIES = {
       $limit: Int
       $skip: Int
     ) {
-      events(
+      withdrawableEvents(
         filter: $filter
         orderBy: $orderBy
         limit: $limit
