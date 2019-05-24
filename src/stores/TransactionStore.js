@@ -8,7 +8,11 @@ import {
   addPendingResultSet,
   addPendingWithdraw,
 } from '../network/graphql/mutations';
-import getContracts from '../config/contracts';
+import {
+  NakaBodhiToken,
+  EventFactory,
+  MultipleResultsEvent,
+} from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
 const CREATE_EVENT_FUNC_SIG = '2b2601bf';
@@ -52,6 +56,18 @@ export default class TransactionStore {
     }
   }
 
+  getPayByTokenParams = () => {
+    const { nbotOwner, exchangeRate } = this.app.wallet;
+    if (!nbotOwner) throw Error('exchanger not defined');
+    if (!exchangeRate) throw Error('exchangeRate not defined');
+
+    return {
+      token: NakaBodhiToken()[this.app.naka.network.toLowerCase()],
+      exchanger: nbotOwner,
+      exchangeRate,
+    };
+  }
+
   createEvent = async ({
     nbotMethods,
     eventParams,
@@ -61,27 +77,19 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
-      const { nbotOwner, exchangeRate } = this.app.wallet;
-      if (!nbotOwner) {
-        throw new Error('exchanger not existed');
-      }
-      if (!exchangeRate) {
-        throw new Error('excahngeRate not existed');
-      }
       const paramsHex = web3EthAbi.encodeParameters(
         CREATE_EVENT_FUNC_TYPES,
         eventParams,
       ).substr(2);
-
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
+
       // Send tx
+      const pbtParams = this.getPayByTokenParams();
       const txid = await promisify(
         nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
         [eventFactoryAddr, escrowAmt, data, {
-          token: getContracts().NakaBodhiToken.address,
-          exchanger: nbotOwner,
-          exchangeRate,
           gas,
+          ...pbtParams,
         }]
       );
       return txid;
@@ -102,26 +110,19 @@ export default class TransactionStore {
   }) => {
     try {
       // Construct params
-      const { nbotOwner, exchangeRate } = this.app.wallet;
-      if (!nbotOwner) {
-        throw new Error('exchanger not existed');
-      }
-      if (!exchangeRate) {
-        throw new Error('excahngeRate not existed');
-      }
       const paramsHex = web3EthAbi.encodeParameters(
         PLAY_EVENT_FUNC_TYPES,
         params,
       ).substr(2);
       const data = `0x${eventFuncSig}${paramsHex}`;
+
       // Send tx
+      const pbtParams = this.getPayByTokenParams();
       const txid = await promisify(
         nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
         [eventAddr, amount, data, {
-          token: getContracts().NakaBodhiToken.address,
-          exchanger: nbotOwner,
-          exchangeRate,
           gas,
+          ...pbtParams,
         }]
       );
       return txid;
@@ -184,12 +185,13 @@ export default class TransactionStore {
         }
       }
 
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
-        .at(getContracts().NakaBodhiToken.address);
+      const { network } = this.app.naka;
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const txid = await this.createEvent({
         nbotMethods,
         eventParams: createEventParams,
-        eventFactoryAddr: getContracts().EventFactory.address,
+        eventFactoryAddr: EventFactory()[network.toLowerCase()],
         escrowAmt: amountSatoshi,
         gas: 3000000,
       });
@@ -221,7 +223,6 @@ export default class TransactionStore {
     }
   }
 
-
   /**
    * Executes a bet.
    * @param {number} index Index of the Transaction object.
@@ -231,8 +232,9 @@ export default class TransactionStore {
   executeBet = async (tx) => {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
-        .at(getContracts().NakaBodhiToken.address);
+      const { network } = this.app.naka;
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const betParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -272,8 +274,9 @@ export default class TransactionStore {
   executeSetResult = async (tx) => {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
-        .at(getContracts().NakaBodhiToken.address);
+      const { network } = this.app.naka;
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const setResultParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -317,8 +320,9 @@ export default class TransactionStore {
   executeVote = async (tx) => {
     try {
       const { eventAddr, optionIdx, amount, eventRound } = tx;
-      const nbotMethods = window.naka.eth.contract(getContracts().NakaBodhiToken.abi)
-        .at(getContracts().NakaBodhiToken.address);
+      const { network } = this.app.naka;
+      const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
+        .at(NakaBodhiToken()[network.toLowerCase()]);
       const voteParams = [optionIdx];
       const txid = await this.playEvent({
         nbotMethods,
@@ -360,15 +364,12 @@ export default class TransactionStore {
   @action
   executeWithdraw = async (tx) => {
     try {
-      const { eventAddress, winningAmount, escrowAmount } = tx;
-      const { nbotOwner, exchangeRate } = this.app.wallet;
-
-      const nbotMethods = window.naka.eth.contract(getContracts().MultipleResultsEvent.abi)
+      const { eventAddress, winningAmount, escrowAmount, version } = tx;
+      const nbotMethods = window.naka.eth.contract(MultipleResultsEvent(version).abi)
         .at(eventAddress);
+      const pbtParams = this.getPayByTokenParams();
       const txid = await promisify(nbotMethods.withdraw, [{
-        token: getContracts().NakaBodhiToken.address,
-        exchanger: nbotOwner,
-        exchangeRate,
+        ...pbtParams,
       }]);
 
       Object.assign(tx, { txid });

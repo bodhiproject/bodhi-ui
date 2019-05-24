@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Paper, Typography, Select, MenuItem, Grid, withStyles } from '@material-ui/core';
+import { Paper, List, ListItem, Typography, Select, MenuItem, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { Routes } from 'constants';
 
@@ -10,6 +10,18 @@ const messages = defineMessages({
   languageSetting: {
     id: 'settings.languageSetting',
     defaultMessage: 'Language:',
+  },
+  languageSettingDesc: {
+    id: 'settings.languageSettingDesc',
+    defaultMessage: 'You will only see events with this language.',
+  },
+  eventVersionSetting: {
+    id: 'settings.eventVersionSetting',
+    defaultMessage: 'Event Version:',
+  },
+  eventVersionSettingDesc: {
+    id: 'settings.eventVersionSettingDesc',
+    defaultMessage: 'You will only see events with this version.',
   },
 });
 
@@ -22,37 +34,78 @@ export default class Settings extends Component {
     this.props.store.ui.location = Routes.SETTINGS;
   }
 
+  renderSettingInfo = (message, subMessage) => {
+    const { classes, intl } = this.props;
+    return (
+      <div className={classes.settingDescription}>
+        <Typography variant="subtitle1" className={classes.settingName}>
+          {intl.formatMessage(message)}
+        </Typography>
+        <Typography variant="subtitle2">
+          {intl.formatMessage(subMessage)}
+        </Typography>
+      </div>
+    );
+  }
+
+  renderLangSelector = () => {
+    const { classes, store: { ui } } = this.props;
+    return (
+      <ListItem className={classes.settingContainer}>
+        {this.renderSettingInfo(
+          messages.languageSetting,
+          messages.languageSettingDesc
+        )}
+        <Select
+          variant="outlined"
+          name="lang"
+          value={ui.locale}
+          onChange={(e) => ui.changeLocale(e.target.value)}
+        >
+          <MenuItem value="en-US">English</MenuItem>
+          <MenuItem value="zh-Hans-CN">中文</MenuItem>
+          <MenuItem value="ko-KR">한국어</MenuItem>
+        </Select>
+      </ListItem>
+    );
+  }
+
+  renderVersionSelector = () => {
+    const { classes, store: { global } } = this.props;
+    return (
+      <ListItem className={classes.settingContainer}>
+        {this.renderSettingInfo(
+          messages.eventVersionSetting,
+          messages.eventVersionSettingDesc
+        )}
+        <Select
+          variant="outlined"
+          name="eventVersion"
+          value={global.eventVersion}
+          onChange={(e) => global.setEventVersion(e.target.value)}
+        >
+          <MenuItem value={1}>1</MenuItem>
+          <MenuItem value={0}>0</MenuItem>
+        </Select>
+      </ListItem>
+    );
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <Paper className={classes.root} elevation={0}>
-        <Typography variant="h4" className={classes.headerText}>
+        <Typography variant="h6" className={classes.headerText}>
           <FormattedMessage id="settings.settings" defaultMessage="Settings" />
         </Typography>
-        <Grid container className={classes.settingGridContainer}>
-          <Grid item xs={12} sm={4}>
-            <SettingName message={messages.languageSetting} />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <LanguageSelector {...this.props} />
-          </Grid>
-        </Grid>
+        <Paper elevation={2}>
+          <List component="nav">
+            {this.renderLangSelector()}
+            {this.renderVersionSelector()}
+          </List>
+        </Paper>
       </Paper>
     );
   }
 }
-
-const SettingName = withStyles(styles)(injectIntl(({ classes, intl, message }) => (
-  <Typography variant="h6" className={classes.settingName}>
-    {intl.formatMessage(message)}
-  </Typography>
-)));
-
-const LanguageSelector = inject('store')(observer(({ store: { ui } }) => (
-  <Select value={ui.locale} name="lang" onChange={(e) => ui.changeLocale(e.target.value)}>
-    <MenuItem value="en-US">English</MenuItem>
-    <MenuItem value="zh-Hans-CN">中文</MenuItem>
-    <MenuItem value="ko-KR">한국어</MenuItem>
-  </Select>
-)));
