@@ -82,7 +82,6 @@ export default class TransactionStore {
         eventParams,
       ).substr(2);
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
-      console.log('NAKA: TransactionStore -> data', data);
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
