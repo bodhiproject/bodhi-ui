@@ -59,10 +59,10 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes, store: { wallet: { exchangeRate } } } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed, gasPrice }, txStatus, block, name, address, amount } = transaction;
+      const { txType, txid, txReceipt: { cumulativeGasUsed, gasPrice, gasUsed }, txStatus, block, name, address, amount } = transaction;
       const blockTime = block ? block.blockTime : messages.strPendingMsg;
       const { expanded } = this.state;
-      const gasFee = (satoshiToDecimal(gasPrice) / weiToDecimal(exchangeRate)) * satoshiToDecimal(cumulativeGasUsed);
+      const gasFee = (satoshiToDecimal(gasPrice) / weiToDecimal(exchangeRate)) * (cumulativeGasUsed ? satoshiToDecimal(cumulativeGasUsed) : satoshiToDecimal(gasUsed));
 
       return (
         <Fragment>
@@ -73,7 +73,7 @@ class EventRow extends Component {
               {name || ''}
             </NameLinkCell>
             <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
-            <TableCell numeric>{satoshiToDecimal(gasFee)}</TableCell>
+            <TableCell numeric>{`${satoshiToDecimal(gasFee)} ${Token.NBOT}`}</TableCell>
             <TableCell>
               <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
                 {(txt) => i18nToUpperCase(txt)}
