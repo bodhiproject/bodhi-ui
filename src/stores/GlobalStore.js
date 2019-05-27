@@ -1,8 +1,5 @@
 import { observable, action, reaction, toJS, computed } from 'mobx';
-import { OracleStatus, Token } from 'constants';
-import { each, find, isEmpty } from 'lodash';
 import { SyncInfo } from 'models';
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes } from '../network/graphql/queries';
 import { subscribeSyncInfo } from '../network/graphql/subscriptions';
 import { wsLink } from '../network/graphql';
 
@@ -10,7 +7,7 @@ const INIT_VALUES = {
   localWallet: false,
   socketOnline: false,
   internetOnline: navigator.onLine,
-  eventVersion: 1,
+  eventVersion: 2,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,

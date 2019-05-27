@@ -84,6 +84,7 @@ export default class Settings extends Component {
           value={global.eventVersion}
           onChange={(e) => global.setEventVersion(e.target.value)}
         >
+          <MenuItem value={2}>2</MenuItem>
           <MenuItem value={1}>1</MenuItem>
           <MenuItem value={0}>0</MenuItem>
         </Select>
