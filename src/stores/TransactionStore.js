@@ -1,7 +1,7 @@
 import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
-import { toHex } from 'web3-utils';
+import { toHex, padRight } from 'web3-utils';
 import {
   addPendingEvent,
   addPendingBet,
@@ -82,6 +82,7 @@ export default class TransactionStore {
         eventParams,
       ).substr(2);
       const data = `0x${CREATE_EVENT_FUNC_SIG}${paramsHex}`;
+      console.log('NAKA: TransactionStore -> data', data);
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
@@ -179,9 +180,9 @@ export default class TransactionStore {
       ];
       for (let i = 0; i < 10; i++) {
         if (createEventParams[1][i]) {
-          createEventParams[1][i] = toHex(createEventParams[1][i]);
+          createEventParams[1][i] = padRight(toHex(createEventParams[1][i]), 64);
         } else {
-          createEventParams[1][i] = toHex('');
+          createEventParams[1][i] = padRight(toHex(''), 64);
         }
       }
 
