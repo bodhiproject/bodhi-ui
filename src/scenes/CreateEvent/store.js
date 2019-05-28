@@ -270,6 +270,7 @@ export default class CreateEventStore {
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
       this.creator = this.app.wallet.currentAddress;
+      this.resultSetter = this.app.wallet.currentAddress;
       this.loaded = true;
     });
   }
