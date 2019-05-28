@@ -25,7 +25,7 @@ const message = defineMessages({
   },
   eventVersionMsg: {
     id: 'str.eventVersion',
-    defaultMessage: 'Version',
+    defaultMessage: 'Event Version',
   },
 });
 
