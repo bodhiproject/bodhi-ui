@@ -84,6 +84,7 @@
   "eventInfo.predictionFund": "예측 기금",
   "eventInfo.voteVolume": "투표 볼륨",
   "eventInfo.voteVolumn": "투표 볼륨",
+  "str.eventVersion": "이벤트 버전",
   "events.empty": "There is no ongoing events",
   "help": "도움말",
   "invalid": "무효의",

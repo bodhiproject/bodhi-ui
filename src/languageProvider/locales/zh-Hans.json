@@ -84,6 +84,7 @@
   "eventInfo.predictionFund": "预测总金额",
   "eventInfo.voteVolume": "仲裁总金额",
   "eventInfo.voteVolumn": "仲裁总金额",
+  "str.eventVersion": "事件版本",
   "events.empty": "There is no ongoing events",
   "help": "帮助",
   "invalid": "无效",

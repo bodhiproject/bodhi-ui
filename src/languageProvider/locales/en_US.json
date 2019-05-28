@@ -81,6 +81,7 @@
   "eventHistory.viewEvent": "View Event",
   "eventInfo.endDate": "Ending Date",
   "eventInfo.fund": "Funding",
+  "str.eventVersion": "Event Version",
   "eventInfo.predictionFund": "Prediction Fund",
   "eventInfo.voteVolume": "Voting Volume",
   "eventInfo.voteVolumn": "Votting Volume",
