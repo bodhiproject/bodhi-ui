@@ -470,33 +470,33 @@ export default class EventStore {
   }
 
   bet = async () => {
+    this.setSelectedOption(INIT.selectedOptionIdx);
     await this.app.tx.executeBet({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
-    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   set = async () => {
+    this.setSelectedOption(INIT.selectedOptionIdx);
     await this.app.tx.executeSetResult({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
-    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   vote = async () => {
+    this.setSelectedOption(INIT.selectedOptionIdx);
     await this.app.tx.executeVote({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,
       amount: decimalToSatoshi(this.amount),
       eventRound: this.event.currentRound,
     });
-    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   withdraw = async () => {
