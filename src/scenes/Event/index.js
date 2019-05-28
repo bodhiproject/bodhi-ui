@@ -11,6 +11,7 @@ import {
   EventWarning,
   ImportantNote,
 } from 'components';
+import { EVENT_STATUS } from 'constants';
 import styles from './styles';
 import Option from './Option';
 import WinningOutcome from './WinningOutcome';
@@ -80,15 +81,16 @@ export default class EventPage extends Component {
   }
 
   renderOptions = () => {
-    const { classes, store: { eventPage } } = this.props;
+    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status } } } } = this.props;
     return (
       <Grid className={classes.optionGrid}>
-        {eventPage.event.results.map((option, i) => (
+        {results.map((option, i) => (
+          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== 0)) &&
           <Option
             key={i}
             option={option}
-            disabled={eventPage.isWithdrawing}
-            amountInputDisabled={eventPage.isResultSetting}
+            disabled={isWithdrawing}
+            amountInputDisabled={isResultSetting}
           />
         ))}
       </Grid>
