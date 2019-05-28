@@ -207,7 +207,7 @@ export default class EventPage extends Component {
             <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
             <HistoryTable />
           </ContentContainer>
-          <Sidebar endTime={event.betEndTime} />
+          <Sidebar endTime={event.getEndTime()} />
         </PageContainer>
       </Fragment>
     );
