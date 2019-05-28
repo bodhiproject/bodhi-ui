@@ -23,7 +23,6 @@ export const SearchBarField = withStyles(styles)(injectIntl(inject('store')(({ i
       placeholder={intl.formatMessage({ id: 'search.placeholder', defaultMessage: 'Type to begin search' })}
       className={classes.searchBarTextField}
       InputProps={{
-        autoFocus: true,
         disableUnderline: true,
         classes: {
           input: classes.searchBarInput,
