@@ -77,19 +77,16 @@ export default class ArbitrationStore {
       const {
         graphqlClient,
         naka: { account },
-        ui: { locale },
         global: { eventVersion },
       } = this.app;
 
       const filter = { OR: [
         {
           status: EVENT_STATUS.ARBITRATION,
-          language: locale,
           version: eventVersion,
         },
         {
           status: EVENT_STATUS.ORACLE_RESULT_SETTING,
-          language: locale,
           version: eventVersion,
         },
       ] };
