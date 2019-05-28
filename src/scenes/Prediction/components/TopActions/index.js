@@ -52,18 +52,6 @@ export default class TopActions extends Component {
             </Button>
           )}
         </Grid>
-        <Grid item xs={6} className={classes.dashboardActionsRight}>
-          <span className={classes.dashboardActionsSortLabel}>
-            <FormattedMessage id="sort.label" defaultMessage="Sort By" />
-          </span>
-          <Card className={classes.dashboardActionsSort}>
-            <FormControl>
-              <Select disableUnderline className={classes.dashboardActionsSelect} value={prediction.sortBy} onChange={e => prediction.sortBy = e.target.value}>
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
-              </Select>
-            </FormControl>
-          </Card>
-        </Grid>
       </Grid>
     );
   }
