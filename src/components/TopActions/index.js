@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles } from '@material-ui/core';
+import { Button, Grid, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 
-import { SortBy } from '../../constants';
 import styles from './styles';
 
 @injectIntl
@@ -24,7 +23,7 @@ export default class TopActions extends Component {
 
   render() {
     const { classes, noCreateEventButton, fontSize, store } = this.props;
-    const { sortBy, createEvent } = store;
+    const { createEvent } = store;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>

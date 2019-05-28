@@ -8,14 +8,9 @@ import { inject, observer } from 'mobx-react';
 import {
   Button,
   Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  Card,
   withStyles,
 } from '@material-ui/core';
 
-import { SortBy } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -33,7 +28,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { prediction } } = this.props;
+    const { classes, noCreateEventButton, fontSize, store } = this.props;
     const { createEvent } = store;
 
     return (
