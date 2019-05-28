@@ -56,9 +56,13 @@ export default class Reward extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const nbotNakaWon = 1;
-    if (nbotNakaWon > 0) {
+    const {
+      classes,
+      store: {
+        eventPage: { nbotWinnings },
+      },
+    } = this.props;
+    if (nbotWinnings > 0) {
       return (
         <Container>
           <Icon type='token' />
