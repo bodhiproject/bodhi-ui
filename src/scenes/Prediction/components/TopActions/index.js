@@ -8,14 +8,9 @@ import { inject, observer } from 'mobx-react';
 import {
   Button,
   Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  Card,
   withStyles,
 } from '@material-ui/core';
 
-import { SortBy } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -33,7 +28,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { prediction } } = this.props;
+    const { classes, noCreateEventButton, fontSize, store } = this.props;
     const { createEvent } = store;
 
     return (
@@ -51,18 +46,6 @@ export default class TopActions extends Component {
               <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
             </Button>
           )}
-        </Grid>
-        <Grid item xs={6} className={classes.dashboardActionsRight}>
-          <span className={classes.dashboardActionsSortLabel}>
-            <FormattedMessage id="sort.label" defaultMessage="Sort By" />
-          </span>
-          <Card className={classes.dashboardActionsSort}>
-            <FormControl>
-              <Select disableUnderline className={classes.dashboardActionsSelect} value={prediction.sortBy} onChange={e => prediction.sortBy = e.target.value}>
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}><FormattedMessage id="sort.byEndTime" defaultMessage="End Time" /></MenuItem>
-              </Select>
-            </FormControl>
-          </Card>
         </Grid>
       </Grid>
     );
