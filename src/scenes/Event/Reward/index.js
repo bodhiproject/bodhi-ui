@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { sum } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import RewardTooltipContent from '../RewardTooltipContent';
@@ -57,24 +56,13 @@ export default class Reward extends Component {
   }
 
   render() {
-    const { eventPage, event, classes } = this.props;
-    const { nbotWinnings, betBalances, voteBalances } = eventPage;
-    // const totalBetAmount = _.sum(betBalances);
-    // const totalVoteAmount = _.sum(voteBalances);
-    // const nakaReturnRate = totalBetAmount ? ((nakaWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
-    // const nbotReturnRate = totalVoteAmount ? ((nbotWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
-    // const resultBetAmount = betBalances[event.resultIdx];
-    // const resultVoteAmount = voteBalances[event.resultIdx];
-    // const totalNakaWinningBets = eventPage.event.nakaAmount[event.resultIdx];
-    // const totalNakaBets = _.sum(event.nakaAmount);
-    // const totalLosingNakaBets = totalNakaBets - totalNakaWinningBets;
-    // const losersNakaReward = totalLosingNakaBets / 100;
-    // const losersAdjustedNaka = totalLosingNakaBets - losersNakaReward;
-    // const nakaWon = ((resultBetAmount / totalNakaWinningBets) * losersAdjustedNaka) || 0;
-    // const totalNbotWinningBets = event.nbotAmount[event.resultIdx];
-    // const nbotNakaWon = ((resultVoteAmount / totalNbotWinningBets) * losersNakaReward) || 0;
-    const nbotNakaWon = 1;
-    if (nbotNakaWon > 0) {
+    const {
+      classes,
+      store: {
+        eventPage: { nbotWinnings },
+      },
+    } = this.props;
+    if (nbotWinnings > 0) {
       return (
         <Container>
           <Icon type='token' />

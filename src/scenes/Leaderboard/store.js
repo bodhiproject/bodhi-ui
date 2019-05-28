@@ -1,5 +1,5 @@
 import { observable, action, reaction, toJS } from 'mobx';
-import { Token, Routes } from 'constants';
+import { Routes } from 'constants';
 
 import { allStats, mostBets } from '../../network/graphql/queries';
 import { satoshiToDecimal } from '../../helpers/utility';

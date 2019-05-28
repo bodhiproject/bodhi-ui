@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
-import _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString, satoshiToDecimal } from '../../../helpers';
+import { getEndTimeCountDownString } from '../../../helpers';
 import styles from './styles';
 
 const message = defineMessages({
@@ -47,7 +45,7 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
   </Grid>
 ));
 
-const EndDate = inject('store')(observer(injectIntl(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
+const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 

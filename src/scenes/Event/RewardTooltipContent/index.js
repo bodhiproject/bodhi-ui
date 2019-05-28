@@ -2,7 +2,6 @@ import React from 'react';
 import { withStyles, TableBody, TableCell, TableRow, Divider } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
-import _ from 'lodash';
 import { ResponsiveTable } from 'components';
 import styles from './styles';
 
