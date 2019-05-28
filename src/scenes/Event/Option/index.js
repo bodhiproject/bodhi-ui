@@ -4,8 +4,6 @@ import { withRouter } from 'react-router-dom';
 import {
   Collapse,
   withStyles,
-  MenuItem,
-  Select,
   Typography,
   FormControl,
   ExpansionPanel,
