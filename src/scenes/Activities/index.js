@@ -11,9 +11,9 @@ import ActivityHistory from './ActivityHistory';
 import styles from './styles';
 const { SET, WITHDRAW, ACTIVITY_HISTORY } = Routes;
 
-const TAB_SET = 0;
-const TAB_WITHDRAW = 1;
-const TAB_HISTORY = 2;
+const TAB_HISTORY = 0;
+const TAB_SET = 1;
+const TAB_WITHDRAW = 2;
 
 const messages = defineMessages({
   set: {
@@ -110,6 +110,11 @@ export default class Activities extends Component {
           scrollButtons='off'
         >
           <Tab
+            label={this.props.intl.formatMessage(messages.history)}
+            className={classes.activitiesTabButton}
+            classes={{ label: classes.activitiesTabLabel }}
+          />
+          <Tab
             label={this.getTabLabel(EventStatus.SET)}
             className={classes.activitiesTabButton}
             classes={{ label: classes.activitiesTabLabel }}
@@ -119,16 +124,11 @@ export default class Activities extends Component {
             className={classes.activitiesTabButton}
             classes={{ label: classes.activitiesTabLabel }}
           />
-          <Tab
-            label={this.props.intl.formatMessage(messages.history)}
-            className={classes.activitiesTabButton}
-            classes={{ label: classes.activitiesTabLabel }}
-          />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
+          {this.tabIdx === TAB_HISTORY && <ActivityHistory />}
           {this.tabIdx === TAB_SET && <ResultSetting />}
           {this.tabIdx === TAB_WITHDRAW && <Withdraw />}
-          {this.tabIdx === TAB_HISTORY && <ActivityHistory />}
         </div>
       </div>
     );
