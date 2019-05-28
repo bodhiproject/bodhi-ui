@@ -138,6 +138,11 @@ const styles = (theme) => ({
       fontSize: theme.sizes.font.xxSmall,
     },
   },
+  flag: {
+    width: theme.sizes.font.medium,
+    verticalAlign: 'middle',
+    paddingRight: theme.padding.spaceX.px,
+  },
 });
 
 export default styles;
