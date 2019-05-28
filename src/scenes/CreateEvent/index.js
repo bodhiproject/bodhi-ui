@@ -8,7 +8,6 @@ import { EventWarningType } from 'constants';
 
 import styles from './styles';
 import Title from './Title';
-import CreatorDropdown from './CreatorDropdown';
 import PredictionStartTime from './PredictionStartTime';
 import PredictionEndTime from './PredictionEndTime';
 import ResultSetStartTime from './ResultSetStartTime';
@@ -60,7 +59,6 @@ const CreateEventDetail = ({ classes }) => (
       <EscrowAmountNote />
       <EventWarning />
       <Title />
-      <CreatorDropdown />
       <PredictionStartTime />
       <PredictionEndTime />
       <ResultSetStartTime />
