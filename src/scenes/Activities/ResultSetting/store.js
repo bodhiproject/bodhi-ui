@@ -79,12 +79,10 @@ export default class {
       const filter = { OR: [
         {
           status: EVENT_STATUS.OPEN_RESULT_SETTING,
-          language: locale,
           version: eventVersion,
         }, {
           status: EVENT_STATUS.ORACLE_RESULT_SETTING,
           ownerAddress: account,
-          language: locale,
           version: eventVersion,
         },
       ] };

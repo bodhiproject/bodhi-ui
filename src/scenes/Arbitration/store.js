@@ -84,12 +84,10 @@ export default class ArbitrationStore {
       const filter = { OR: [
         {
           status: EVENT_STATUS.ARBITRATION,
-          language: locale,
           version: eventVersion,
         },
         {
           status: EVENT_STATUS.ORACLE_RESULT_SETTING,
-          language: locale,
           version: eventVersion,
         },
       ] };
