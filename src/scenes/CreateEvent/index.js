@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
 import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
@@ -27,7 +28,7 @@ const messages = defineMessages({
   },
 });
 
-const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } } }) => (
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded, creating } } }) => (
   <Fragment>
     <Dialog
       className={classes.createDialog}
@@ -36,7 +37,7 @@ const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } }
       maxWidth='md'
       open={isOpen}
     >
-      {!loaded ? <Loading /> : <CreateEventDetail classes={classes} />}
+      {!loaded ? <Loading /> : <CreateEventDetail classes={classes} creating={creating} />}
     </Dialog>
   </Fragment>
 );
@@ -50,7 +51,7 @@ const Loading = () => (
   </Fragment>
 );
 
-const CreateEventDetail = ({ classes }) => (
+const CreateEventDetail = ({ classes, creating }) => (
   <Fragment>
     <DialogTitle className={classes.createDialogTitle}>
       <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
@@ -65,6 +66,14 @@ const CreateEventDetail = ({ classes }) => (
       <ResultSetEndTime />
       <Outcomes />
       <ResultSetter />
+      <Dialog
+        className={classes.createDialog}
+        classes={{ paper: classes.createDialogPaper }}
+        maxWidth='md'
+        open={creating}
+      >
+        <Loading />
+      </Dialog>
     </DialogContent>
     <DialogActions className={classes.footer}>
       <CancelButton />
@@ -90,9 +99,9 @@ const CancelButton = withStyles(styles)(inject('store')(({ classes, store: { cre
   </Button>
 )));
 
-const PublishButton = withStyles(styles)(inject('store')(observer(({ classes, store: { createEvent } }) => (
+const PublishButton = withStyles(styles)(withRouter(inject('store')(observer(({ classes, store: { createEvent }, ...props }) => (
   <Button
-    onClick={createEvent.submit}
+    onClick={() => createEvent.submit(props)}
     disabled={createEvent.submitting || !createEvent.hasEnoughFee}
     color="primary"
     variant="contained"
@@ -101,6 +110,6 @@ const PublishButton = withStyles(styles)(inject('store')(observer(({ classes, st
     <Create className={classes.buttonIcon} />
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
-))));
+)))));
 
 export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));

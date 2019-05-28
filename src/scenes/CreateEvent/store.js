@@ -6,7 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { toHex, isAddress } from 'web3-utils';
 
-import { TransactionType, TransactionStatus, Token } from 'constants';
+import { TransactionType, TransactionStatus, Routes } from 'constants';
 import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
@@ -75,6 +75,7 @@ const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
   isOpen: false,
   loaded: false,
+  creating: false,
   escrowAmount: undefined,
   averageBlockTime: 3,
   txFees: [],
@@ -117,6 +118,7 @@ export default class CreateEventStore {
   // form fields
   @observable isOpen = INIT.isOpen
   @observable loaded = INIT.loaded
+  @observable creating = INIT.creating
   @observable title = INIT.title
   @observable creator = INIT.creator // address
   @observable prediction = INIT.prediction
@@ -459,12 +461,13 @@ export default class CreateEventStore {
   }
 
   @action
-  submit = async () => {
+  submit = async ({ ...props }) => {
     this.validateAll();
     if (!this.isAllValid) return;
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
+    this.creating = true;
     await this.app.tx.executeCreateEvent({
       senderAddress: this.app.wallet.currentAddress,
       name: this.title,
@@ -479,6 +482,7 @@ export default class CreateEventStore {
     });
 
     this.close();
+    props.history.push(Routes.ACTIVITY_HISTORY);
   }
 
   close = () => Object.assign(this, INIT)
