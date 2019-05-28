@@ -62,9 +62,9 @@ export default class Settings extends Component {
           value={ui.locale}
           onChange={(e) => ui.changeLocale(e.target.value)}
         >
-          <MenuItem value="en-US">English</MenuItem>
-          <MenuItem value="zh-Hans-CN">中文</MenuItem>
-          <MenuItem value="ko-KR">한국어</MenuItem>
+          <MenuItem value="en-US"><img src='/images/us.svg' alt='cup' className={classes.flag} />English</MenuItem>
+          <MenuItem value="zh-Hans-CN"><img src='/images/china.svg' alt='cup' className={classes.flag} />中文</MenuItem>
+          <MenuItem value="ko-KR"><img src='/images/korea.svg' alt='cup' className={classes.flag} />한국어</MenuItem>
         </Select>
       </ListItem>
     );

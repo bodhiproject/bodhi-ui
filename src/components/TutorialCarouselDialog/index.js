@@ -94,9 +94,9 @@ export default class TutorialCarouselDialog extends Component {
             onChange={(e) => ui.changeLocale(e.target.value)}
             disableUnderline
           >
-            <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+            <MenuItem value="en-US"><img src='/images/us.svg' alt='cup' className={classes.flag} />English</MenuItem>
+            <MenuItem value="zh-Hans-CN"><img src='/images/china.svg' alt='cup' className={classes.flag} />中文</MenuItem>
+            <MenuItem value="ko-KR"><img src='/images/korea.svg' alt='cup' className={classes.flag} />한국어</MenuItem>
           </Select>
           <div className={classes.contentWrapper}>
             <div className={classes.tutorialDialogContentWrapper}>
