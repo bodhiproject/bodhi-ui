@@ -78,7 +78,6 @@ export default class {
       const {
         graphqlClient,
         naka: { checkLoggedIn },
-        ui: { locale },
         global: { eventVersion },
       } = this.app;
 

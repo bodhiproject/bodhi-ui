@@ -80,7 +80,6 @@ export default class PredictionStore {
       const {
         graphqlClient,
         naka: { account },
-        ui: { locale },
         global: { eventVersion },
       } = this.app;
 

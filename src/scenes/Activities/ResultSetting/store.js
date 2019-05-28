@@ -73,7 +73,6 @@ export default class {
       await checkLoggedIn();
       const {
         naka: { account },
-        ui: { locale },
         global: { eventVersion },
       } = this.app;
       const filter = { OR: [

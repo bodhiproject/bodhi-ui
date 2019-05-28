@@ -77,7 +77,6 @@ export default class ArbitrationStore {
       const {
         graphqlClient,
         naka: { account },
-        ui: { locale },
         global: { eventVersion },
       } = this.app;
 
