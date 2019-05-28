@@ -23,7 +23,7 @@ export default class ArbitrationStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses),
       () => {
         if (this.app.ui.location === Routes.ARBITRATION) {
           this.init();

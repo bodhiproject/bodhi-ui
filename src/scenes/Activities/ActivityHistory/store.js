@@ -52,17 +52,6 @@ export default class {
         }
       }
     );
-    // New block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      async () => {
-        if (this.transactions.length > 0) {
-          const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);
-          this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
-          this.setDisplayedTxs();
-        }
-      },
-    );
     // Wallet addresses changed
     reaction(
       () => this.app.naka.account,

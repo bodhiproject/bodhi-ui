@@ -22,7 +22,7 @@ export default class LeaderboardStore {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.global.online,
+      () => toJS(this.app.wallet.addresses) + this.app.global.online,
       () => {
         if (this.app.ui.location === Routes.LEADERBOARD) {
           this.init();

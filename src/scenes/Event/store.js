@@ -137,7 +137,7 @@ export default class EventStore {
 
     // New block
     reaction(
-      () => this.app.global.syncBlockNum + this.app.global.online,
+      () => this.app.global.online,
       async () => {
         if (this.app.global.online) await this.initEvent();
       }
