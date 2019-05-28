@@ -7,7 +7,6 @@ import { isEmpty } from 'lodash';
 import BodhiLogo from './Logo';
 import Prediction from './Prediction';
 import Arbitration from './Arbitration';
-import Wallet from './Wallet';
 import { SearchButton, SearchBarField } from './Search';
 import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
@@ -53,7 +52,6 @@ export default class NavBar extends Component {
             </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>
-              {/* <Wallet {...this.props} /> */}
               <MyActivities {...this.props} />
               <DropdownMenuButton />
             </Hidden>
