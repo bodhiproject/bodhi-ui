@@ -2,6 +2,7 @@ import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { toHex, padRight } from 'web3-utils';
+import { TransactionType } from 'constants';
 import {
   addPendingEvent,
   addPendingBet,
@@ -143,8 +144,9 @@ export default class TransactionStore {
     if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
       await this.app.eventPage.addPendingTx(pendingTx);
     }
-
-    this.app.txSentDialog.open(tx.txid);
+    if (tx.txType !== TransactionType.CREATE_EVENT) {
+      this.app.txSentDialog.open(tx.txid);
+    }
   }
 
   /**
