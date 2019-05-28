@@ -65,9 +65,6 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
       </div>
     </Link>
-    <div className={classes.navDropdownLinkItem} onClick={ui.onHelpButtonClick}>
-      <FormattedMessage id="help" defaultMessage="Help" />
-    </div>
     <Backdrop invisible open={ui.dropdownMenuOpen} onClick={ui.toggleDropdownMenu} />
   </div>
 ))));
