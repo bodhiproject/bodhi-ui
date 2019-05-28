@@ -4,8 +4,6 @@ import { withRouter } from 'react-router-dom';
 import {
   Collapse,
   withStyles,
-  MenuItem,
-  Select,
   Typography,
   FormControl,
   ExpansionPanel,
@@ -62,7 +60,7 @@ export default class Option extends Component {
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
     const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
-    const { eventPage, wallet } = store;
+    const { eventPage } = store;
     const { selectedOptionIdx } = eventPage;
 
     return (
@@ -112,12 +110,6 @@ export default class Option extends Component {
                   amountPlaceholder={amountPlaceholder}
                   error={eventPage.error.amount && intl.formatMessage({ id: eventPage.error.amount })}
                 />
-                <AddressSelect
-                  classes={classes}
-                  value={wallet.currentAddress}
-                  onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
-                  error={eventPage.error.address && intl.formatMessage({ id: eventPage.error.address })}
-                />
               </div>
             )}
           </ExpansionPanel>
@@ -151,23 +143,3 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, error, ...props
   </ExpansionPanelDetails>
 );
 
-const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { addresses } }, error, ...props }) => (
-  <ExpansionPanelDetails>
-    <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
-      <div className={classes.eventOptionIcon}>
-        <i className="icon iconfont icon-ic_wallet"></i>
-      </div>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="address" shrink>ADDRESS</InputLabel>
-        <Select inputProps={{ id: 'address' }} {...props}>
-          {addresses.map(({ address, nbot, naka }) => (
-            <MenuItem key={address} value={address}>
-              {`${address} (${naka ? Number(naka).toFixed(2) : 0} NAKA, ${nbot ? Number(nbot).toFixed(2) : 0} NBOT)`}
-            </MenuItem>
-          ))}
-        </Select>
-        {!!error && <FormHelperText error>{error}</FormHelperText>}
-      </FormControl>
-    </div>
-  </ExpansionPanelDetails>
-)));
