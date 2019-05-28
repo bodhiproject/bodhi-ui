@@ -51,12 +51,12 @@ export class DateTimePickerCombo extends Component {
           />
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
         </FormControl>
-        {isDatePickerOpen && (
+        {/* {isDatePickerOpen && (
           <DateTimePickerDialog
             value={value}
             onChange={this.onPickerReturn}
           />
-        )}
+        )} */}
       </Fragment>
     );
   }
