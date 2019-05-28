@@ -112,12 +112,6 @@ export default class Option extends Component {
                   amountPlaceholder={amountPlaceholder}
                   error={eventPage.error.amount && intl.formatMessage({ id: eventPage.error.amount })}
                 />
-                <AddressSelect
-                  classes={classes}
-                  value={wallet.currentAddress}
-                  onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
-                  error={eventPage.error.address && intl.formatMessage({ id: eventPage.error.address })}
-                />
               </div>
             )}
           </ExpansionPanel>
