@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { TextField, FormControl, FormHelperText, InputAdornment, IconButton, withStyles } from '@material-ui/core';
+import { TextField, FormControl, FormHelperText, InputAdornment, IconButton, withStyles, Card, CardContent, Typography } from '@material-ui/core';
 import { Event as EventIcon } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -29,27 +29,16 @@ export class DateTimePickerCombo extends Component {
     return (
       <Fragment>
         <FormControl fullWidth={fullWidth}>
-          <TextField
-            disabled
-            fullWidth={fullWidth}
-            value={moment.unix(value).format('YYYY-MM-DDTHH:mm')}
-            error={Boolean(error)}
-            type="datetime-local"
-            InputProps={{
-              classes: { input: classes.createEventTextField },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    color="default"
-                    onClick={() => this.setState({ isDatePickerOpen: true })}
-                  >
-                    <EventIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            {...props}
-          />
+          <Card className={classes.card} onClick={() => this.setState({ isDatePickerOpen: true })}>
+            <CardContent>
+              <Typography variant="h6">
+                {moment.unix(value).format('MMM Do YYYY')}
+              </Typography>
+              <Typography variant="h6">
+                {moment.unix(value).format('HH:mm')}
+              </Typography>
+            </CardContent>
+          </Card>
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
         </FormControl>
         {isDatePickerOpen && (

@@ -35,6 +35,9 @@ const styles = (theme) => ({
     },
     color: 'black',
   },
+  card: {
+    boxShadow: '1px 2px 10px 4px #888888',
+  },
 });
 
 export default styles;
