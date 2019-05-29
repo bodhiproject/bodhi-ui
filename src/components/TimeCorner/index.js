@@ -43,9 +43,9 @@ export default class TimeCorner extends Component {
       <div className={classes.container}>
         {endTime !== undefined
           ? (
-            <Typography variant="body1">
+            <div variant="body1">
               {this.renderCorner()}
-            </Typography>
+            </div>
           )
           : (
             <Typography variant="body1">
