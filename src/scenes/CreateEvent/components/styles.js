@@ -33,6 +33,7 @@ const styles = (theme) => ({
       fontSize: theme.sizes.font.xxSmall,
       height: 20,
     },
+    color: 'black',
   },
 });
 

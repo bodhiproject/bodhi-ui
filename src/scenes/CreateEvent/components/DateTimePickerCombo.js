@@ -30,6 +30,7 @@ export class DateTimePickerCombo extends Component {
       <Fragment>
         <FormControl fullWidth={fullWidth}>
           <TextField
+            disabled
             fullWidth={fullWidth}
             value={moment.unix(value).format('YYYY-MM-DDTHH:mm')}
             error={Boolean(error)}
@@ -39,7 +40,7 @@ export class DateTimePickerCombo extends Component {
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton
-                    color="inherit"
+                    color="black"
                     onClick={() => this.setState({ isDatePickerOpen: true })}
                   >
                     <EventIcon />
@@ -51,12 +52,12 @@ export class DateTimePickerCombo extends Component {
           />
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
         </FormControl>
-        {/* {isDatePickerOpen && (
+        {isDatePickerOpen && (
           <DateTimePickerDialog
             value={value}
             onChange={this.onPickerReturn}
           />
-        )} */}
+        )}
       </Fragment>
     );
   }
