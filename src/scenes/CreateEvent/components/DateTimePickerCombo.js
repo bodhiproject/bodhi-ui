@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { TextField, FormControl, FormHelperText, InputAdornment, IconButton, withStyles } from '@material-ui/core';
+import { TextField, FormControl, FormHelperText, InputAdornment, IconButton, withStyles, Card, CardContent, Typography } from '@material-ui/core';
 import { Event as EventIcon } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -24,32 +24,24 @@ export class DateTimePickerCombo extends Component {
   }
 
   render() {
-    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, ...props } = this.props;
+    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, title, ...props } = this.props;
     const { isDatePickerOpen } = this.state;
     return (
       <Fragment>
         <FormControl fullWidth={fullWidth}>
-          <TextField
-            disabled
-            fullWidth={fullWidth}
-            value={moment.unix(value).format('YYYY-MM-DDTHH:mm')}
-            error={Boolean(error)}
-            type="datetime-local"
-            InputProps={{
-              classes: { input: classes.createEventTextField },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    color="default"
-                    onClick={() => this.setState({ isDatePickerOpen: true })}
-                  >
-                    <EventIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            {...props}
-          />
+          <Card className={classes.card} onClick={() => this.setState({ isDatePickerOpen: true })}>
+            <CardContent>
+              <Typography>
+                {title}
+              </Typography>
+              <Typography variant="subtitle1">
+                {moment.unix(value).format('HH:mm')}
+              </Typography>
+              <Typography variant="subtitle1">
+                {moment.unix(value).format('MMM Do YYYY')}
+              </Typography>
+            </CardContent>
+          </Card>
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
         </FormControl>
         {isDatePickerOpen && (

@@ -93,4 +93,9 @@ module.exports = {
     CREATE_EVENT: 3500000,
     DORACLE_CREATE: 1500000,
   },
+
+  TimeCardTitle: {
+    START_TIME: 'Start Time',
+    END_TIME: 'End Time',
+  },
 };
