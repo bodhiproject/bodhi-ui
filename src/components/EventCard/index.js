@@ -1,14 +1,13 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
+import { injectIntl, defineMessages } from 'react-intl';
+import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
-import { FavoriteButton, RaisedAmount, CountdownTime, Option, TimeCorner } from 'components';
+import { FavoriteButton, RaisedAmount, Option, TimeCorner } from 'components';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
@@ -37,7 +36,6 @@ export default class EventCard extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     onClick: PropTypes.func,
   };
 
@@ -69,8 +67,6 @@ export default class EventCard extends Component {
 
   renderOptions = () => {
     const { classes, event: { results, status } } = this.props;
-    // console.log('TCL: EventCard -> renderOptions -> results', results);
-    console.log('TCL: EventCard -> renderOptions -> this.props', this.props);
     return (
       <Grid className={classes.optionGrid}>
         {results.map((option, i) => (
@@ -78,8 +74,6 @@ export default class EventCard extends Component {
           <Option
             key={i}
             option={option}
-            // disabled={isWithdrawing}
-            // amountInputDisabled={isResultSetting}
           />
         ))}
       </Grid>
@@ -89,8 +83,6 @@ export default class EventCard extends Component {
   render() {
     const { classes, index, onClick, store: { naka: { account } } } = this.props;
     const { address, name, isPending, isUpcoming, url, status, totalBets, getEndTime, getEventDesc } = this.props.event;
-    const { formatMessage } = this.props.intl;
-    console.log(getEndTime());
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -118,12 +110,12 @@ export default class EventCard extends Component {
                   {this.renderOptions()}
                 </Grid>
                 <Grid item xs={4}>
-                <div className={classes.eventCardInfo}>
-                <div className={classes.eventCardInfoItem}>
-                  {/* <CountdownTime endTime={getEndTime()} /> */}
-                  <TimeCorner endTime={getEndTime()} />
-                </div>
-              </div>
+                  <div className={classes.eventCardInfo}>
+                    <div className={classes.eventCardInfoItem}>
+                      {/* <CountdownTime endTime={getEndTime()} /> */}
+                      <TimeCorner endTime={getEndTime()} />
+                    </div>
+                  </div>
                 </Grid>
               </Grid>
 
