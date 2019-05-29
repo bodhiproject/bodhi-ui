@@ -24,18 +24,21 @@ export class DateTimePickerCombo extends Component {
   }
 
   render() {
-    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, ...props } = this.props;
+    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, title, ...props } = this.props;
     const { isDatePickerOpen } = this.state;
     return (
       <Fragment>
         <FormControl fullWidth={fullWidth}>
           <Card className={classes.card} onClick={() => this.setState({ isDatePickerOpen: true })}>
             <CardContent>
-              <Typography variant="h6">
-                {moment.unix(value).format('MMM Do YYYY')}
+              <Typography>
+                {title}
               </Typography>
-              <Typography variant="h6">
+              <Typography variant="subtitle1">
                 {moment.unix(value).format('HH:mm')}
+              </Typography>
+              <Typography variant="subtitle1">
+                {moment.unix(value).format('MMM Do YYYY')}
               </Typography>
             </CardContent>
           </Card>
