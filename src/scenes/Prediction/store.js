@@ -94,6 +94,7 @@ export default class PredictionStore {
         limit,
         skip,
         pendingTxsAddress: account,
+        includeRoundBets: true,
       });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;

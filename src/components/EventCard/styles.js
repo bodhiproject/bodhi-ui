@@ -1,7 +1,7 @@
 const styles = (theme) => ({
   eventCard: {
     position: 'relative',
-    borderRadius: '5px',
+    borderRadius: '15px',
     boxShadow: '0px 0px 20px 0px rgba(0,0,0,0.05)',
     border: '2px solid rgba(0,0,0,0.075)',
     '&:hover': {
@@ -17,7 +17,7 @@ const styles = (theme) => ({
     position: 'relative',
     padding: theme.padding.space3X.px,
     '&.top': {
-      height: '320px',
+      height: '360px',
     },
     '&.button': {
       textAlign: 'center',
@@ -35,7 +35,6 @@ const styles = (theme) => ({
     paddingBottom: '10px',
   },
   eventCardName: {
-    marginBottom: theme.padding.space2X.px,
     display: '-webkit-box', // For multiline text overflow ellipsis
     maxHeight: '160px',
     margin: '0 auto',
@@ -45,6 +44,7 @@ const styles = (theme) => ({
     textOverflow: 'ellipsis',
     fontWeight: '700',
     color: 'rgba(0,0,0,0.75)',
+    fontFamily: 'Noto Sans TC,sans-serif!important',
   },
   eventCardNameBundle: {
     display: 'flex',
@@ -65,12 +65,16 @@ const styles = (theme) => ({
     marginRight: theme.padding.spaceX.px,
   },
   eventCardInfo: {
-    position: 'absolute',
-    bottom: theme.padding.space3X.px,
+    bottom: theme.padding.space2X.px,
     color: theme.palette.text.primary,
+    position: 'absolute',
+  },
+  alignBottom: {
+    position: 'absolute',
+    bottom: '13px',
   },
   eventCardInfoItem: {
-    padding: '3px 0px',
+    padding: '5px',
   },
 });
 

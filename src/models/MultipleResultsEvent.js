@@ -1,5 +1,6 @@
 import { map } from 'lodash';
 import { EVENT_STATUS } from 'constants';
+import moment from 'moment';
 import { satoshiToDecimal } from '../helpers/utility';
 import Option from './Option';
 
@@ -71,6 +72,18 @@ export default class MultipleResultsEvent {
       case EVENT_STATUS.OPEN_RESULT_SETTING: return this.resultSetEndTime;
       case EVENT_STATUS.ARBITRATION: return this.arbitrationEndTime;
       case EVENT_STATUS.WITHDRAWING: return null;
+      default: throw Error(`Invalid status: ${this.status}`);
+    }
+  }
+
+  getEventDesc = () => {
+    switch (this.status) {
+      case EVENT_STATUS.CREATED: return 'creating';
+      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
+      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
+      case EVENT_STATUS.WITHDRAWING: return 'finished';
       default: throw Error(`Invalid status: ${this.status}`);
     }
   }

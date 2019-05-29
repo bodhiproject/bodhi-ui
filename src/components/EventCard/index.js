@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -7,7 +8,7 @@ import { Grid, Card, Divider, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
-import { FavoriteButton, RaisedAmount, CountdownTime } from 'components';
+import { FavoriteButton, RaisedAmount, CountdownTime, Option, TimeCorner } from 'components';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
@@ -19,6 +20,13 @@ const messages = defineMessages({
   arbitrate: { id: 'bottomButtonText.arbitrate', defaultMessage: 'Arbitrate' },
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
+  creating: { id: 'card.creating', defaultMessage: 'Creating' },
+  predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
+  predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
+  resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },
+  resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
+  arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
+  finished: { id: 'card.finished', defaultMessage: 'Finished' },
 });
 
 @injectIntl
@@ -59,11 +67,30 @@ export default class EventCard extends Component {
     return false;
   }
 
+  renderOptions = () => {
+    const { classes, event: { results, status } } = this.props;
+    // console.log('TCL: EventCard -> renderOptions -> results', results);
+    console.log('TCL: EventCard -> renderOptions -> this.props', this.props);
+    return (
+      <Grid className={classes.optionGrid}>
+        {results.map((option, i) => (
+          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== 0)) &&
+          <Option
+            key={i}
+            option={option}
+            // disabled={isWithdrawing}
+            // amountInputDisabled={isResultSetting}
+          />
+        ))}
+      </Grid>
+    );
+  }
+
   render() {
     const { classes, index, onClick, store: { naka: { account } } } = this.props;
-    const { address, name, isPending, isUpcoming, url, status, totalBets, getEndTime } = this.props.event;
+    const { address, name, isPending, isUpcoming, url, status, totalBets, getEndTime, getEventDesc } = this.props.event;
     const { formatMessage } = this.props.intl;
-
+    console.log(getEndTime());
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Link to={url}>
@@ -74,6 +101,7 @@ export default class EventCard extends Component {
               {isUpcoming(account) && <EventWarning id="str.upcoming" message="Upcoming" type={EventWarningType.ORANGE} />}
               {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
               {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
+              <div>{<EventWarning id={messages[getEventDesc()].id} message={messages[getEventDesc()].defaultMessage} type={EventWarningType.INFO} />}</div>
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
                   <Typography variant="h6" className={classes.eventCardName}>
@@ -82,21 +110,24 @@ export default class EventCard extends Component {
                 </div>
                 <FavoriteButton eventAddress={address} />
               </div>
-              <div className={classes.eventCardInfo}>
+              <div className={classes.eventCardInfoItem}>
+                <RaisedAmount amount={totalBets} />
+              </div>
+              <Grid container className={classes.alignBottom}>
+                <Grid item xs={8} className={classes.rowLeft}>
+                  {this.renderOptions()}
+                </Grid>
+                <Grid item xs={4}>
+                <div className={classes.eventCardInfo}>
                 <div className={classes.eventCardInfoItem}>
-                  <RaisedAmount amount={totalBets} />
-                </div>
-                <div className={classes.eventCardInfoItem}>
-                  <CountdownTime endTime={getEndTime()} />
+                  {/* <CountdownTime endTime={getEndTime()} /> */}
+                  <TimeCorner endTime={getEndTime()} />
                 </div>
               </div>
-            </div>
-            <Divider />
-            <div className={cx(classes.eventCardSection, 'button')}>
-              {isUpcoming(account)
-                ? <FormattedMessage id="str.waitForResultSetting" defaultMessage="Waiting for result setting" />
-                : formatMessage(this.getButtonText())
-              }
+                </Grid>
+              </Grid>
+
+
             </div>
           </Card>
         </Link>

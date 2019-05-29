@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import { Grid, withStyles } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
 import { DateTimePickerCombo } from './DateTimePickerCombo';
