@@ -67,7 +67,7 @@ export default class NakaStore {
   handleNakaWalletAccountChange = async () => {
     const [acct] = this.app.global.naka.eth.accounts;
     this.account = acct;
-
+    this.loggedIn = !!this.account;
     if (this.account) {
       const data = await promisify(this.app.global.naka.eth.getBalance, [this.account]);
       this.balance = data.toString(10);
@@ -81,7 +81,6 @@ export default class NakaStore {
       this.network = NETWORK.TESTNET;
     }
 
-    this.loggedIn = !!this.account;
     this.app.wallet.onNakaAccountChange({ loggedIn: this.loggedIn, network: this.network, address: this.account, balance: this.balance });
   }
 
