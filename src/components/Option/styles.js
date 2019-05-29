@@ -25,6 +25,9 @@ const styles = (theme) => ({
     '&.last': {
       marginBottom: theme.padding.space2X.px,
     },
+    '&:hover': {
+      transform: 'scale(1.025)',
+    },
   },
   overText: {
     position: 'absolute',

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { Typography, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 import { getEndTimeCornerString } from '../../helpers';
@@ -48,9 +48,9 @@ export default class TimeCorner extends Component {
             </div>
           )
           : (
-            <Typography variant="body1">
+            <div variant="body1">
               <FormattedMessage id="str.end" defaultMessage="Ended" />
-            </Typography>
+            </div>
           )
         }
       </div>
