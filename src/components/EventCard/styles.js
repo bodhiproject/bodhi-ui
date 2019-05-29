@@ -17,7 +17,7 @@ const styles = (theme) => ({
     position: 'relative',
     padding: theme.padding.space3X.px,
     '&.top': {
-      height: '360px',
+      height: '400px',
     },
     '&.button': {
       textAlign: 'center',
