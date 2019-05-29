@@ -40,7 +40,7 @@ export class DateTimePickerCombo extends Component {
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton
-                    color="black"
+                    color="default"
                     onClick={() => this.setState({ isDatePickerOpen: true })}
                   >
                     <EventIcon />

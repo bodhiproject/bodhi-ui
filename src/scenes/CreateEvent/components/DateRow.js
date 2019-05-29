@@ -10,10 +10,5 @@ export const DateRow = withStyles(styles, { withTheme: true })(injectIntl(({ cla
     <Grid item xs={12} sm={6}>
       <DateTimePickerCombo fullWidth error={error} {...props} />
     </Grid>
-    <Grid item xs>
-      <Typography variant="body2">
-        {blockNum ? `~ ${intl.formatMessage({ id: 'str.block', defaultMessage: 'Block' })} ${blockNum}` : ''}
-      </Typography>
-    </Grid>
   </Grid>
 )));
