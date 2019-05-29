@@ -7,6 +7,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.space2X.px,
     [theme.breakpoints.down('xs')]: {
       margin: 0,
+      marginBottom: '16px',
     },
   },
   [EventWarningType.INFO]: {
