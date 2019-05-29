@@ -9,10 +9,8 @@ import { EventWarningType } from 'constants';
 
 import styles from './styles';
 import Title from './Title';
-import PredictionStartTime from './PredictionStartTime';
-import PredictionEndTime from './PredictionEndTime';
-import ResultSetStartTime from './ResultSetStartTime';
-import ResultSetEndTime from './ResultSetEndTime';
+import PredictionPeriod from './PredictionPeriod';
+import ResultSetPeriod from './ResultSetPeriod';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
 import { Loading as _Loading } from '../../components/';
@@ -60,10 +58,8 @@ const CreateEventDetail = ({ classes, creating }) => (
       <EscrowAmountNote />
       <EventWarning />
       <Title />
-      <PredictionStartTime />
-      <PredictionEndTime />
-      <ResultSetStartTime />
-      <ResultSetEndTime />
+      <PredictionPeriod />
+      <ResultSetPeriod />
       <Outcomes />
       <ResultSetter />
       <Dialog
