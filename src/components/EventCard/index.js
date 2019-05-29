@@ -112,14 +112,11 @@ export default class EventCard extends Component {
                 <Grid item xs={4}>
                   <div className={classes.eventCardInfo}>
                     <div className={classes.eventCardInfoItem}>
-                      {/* <CountdownTime endTime={getEndTime()} /> */}
-                      <TimeCorner endTime={getEndTime()} />
+                      {getEndTime() && <TimeCorner endTime={getEndTime()} />}
                     </div>
                   </div>
                 </Grid>
               </Grid>
-
-
             </div>
           </Card>
         </Link>
