@@ -6,7 +6,6 @@ import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning as _EventWarning, ImportantNote } from 'components';
 import { EventWarningType } from 'constants';
-
 import styles from './styles';
 import Title from './Title';
 import PredictionPeriod from './PredictionPeriod';

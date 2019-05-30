@@ -12,7 +12,6 @@ import { defineMessages } from 'react-intl';
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import { GRAPHQL, API } from '../../network/routes';
-import { isProduction, defaults } from '../../config/app';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
