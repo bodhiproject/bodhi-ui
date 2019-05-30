@@ -5,11 +5,9 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  withStyles,
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { map } from 'lodash';
-import styles from './styles';
 import { Section } from '../components';
 
 const messages = defineMessages({
@@ -23,7 +21,6 @@ const messages = defineMessages({
   },
 });
 
-@withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
 @observer
