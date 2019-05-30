@@ -240,12 +240,6 @@ export default class CreateEventStore {
     );
   }
 
-  getArbitrationTimeOptions = () => {
-    return [
-      { lengthHours: 48,  }
-    ];
-  }
-
   /**
    * Calculates the estimated block based on current block and future date.
    * @param {number} futureDateUnix Future date in Unix format.
@@ -261,7 +255,6 @@ export default class CreateEventStore {
   open = async () => {
     Tracking.track('dashboard-createEventClick');
     this.isOpen = true;
-    this.loaded = true;
     this.currentBlock = this.app.global.syncBlockNum;
     
     // Check if there is a current address
@@ -284,13 +277,13 @@ export default class CreateEventStore {
       this.close();
       return;
     }
-
     // Fetch arbitration lengths from ConfigManager
     const thresholdsSuccess = await this.getConsensusThresholds();
     if (!thresholdsSuccess) {
       this.close();
       return;
     }
+    this.constructArbOptions();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
@@ -327,6 +320,7 @@ export default class CreateEventStore {
   getArbitrationLengths = async () => {
     try {
       const { data: { result } } = await axios.get(API.ARBITRATION_LENGTH);
+      // TODO: Change seconds to hours (or minutes?)
       this.arbLengths = result;
       return true;
     } catch (err) {
@@ -375,6 +369,11 @@ export default class CreateEventStore {
   addOutcome = (outcome = '') => {
     this.outcomes.push(outcome);
     this.error.outcomes.push(outcome);
+  }
+
+  @action
+  onArbOptionChange = (index) => {
+    this.arbOptionSelected = index;
   }
 
   @action

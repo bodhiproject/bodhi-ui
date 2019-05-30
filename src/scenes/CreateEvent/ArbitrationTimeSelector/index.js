@@ -8,6 +8,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
+import { map } from 'lodash';
 import styles from './styles';
 import { Section } from '../components';
 
@@ -16,6 +17,10 @@ const messages = defineMessages({
     id: 'create.arbitrationTime',
     defaultMessage: 'Arbitration Time',
   },
+  xHoursForXNbot: {
+    id: 'create.xHoursForXNbot',
+    defaultMessage: '{hours} hours for {nbot} NBOT',
+  },
 });
 
 @withStyles(styles, { withTheme: true })
@@ -23,28 +28,35 @@ const messages = defineMessages({
 @inject('store')
 @observer
 export default class ArbitrationTimeSelector extends Component {
-  renderRadioButton = (value) => (
+  onChange = (event, value) => {
+    this.props.store.createEvent.onArbOptionChange(Number(value));
+  };
+
+  renderRadioButton = (arbOption, index) => (
     <FormControlLabel
-      label={value}
-      value={value}
+      value={index}
+      label={this.props.intl.formatMessage(messages.xHoursForXNbot, {
+        hours: arbOption.length,
+        nbot: arbOption.threshold,
+      })}
       control={<Radio color="primary" />}
     />
   );
 
   render() {
     const {
-      classes,
-      store: { createEvent: { arbitrationReward } },
+      store: { createEvent: { arbOptions, arbOptionSelected } },
     } = this.props;
 
     return (
       <Section column title={messages.arbitrationTime}>
         <FormControl component="fieldset">
-          <RadioGroup name="arbitrationTime">
-            {this.renderRadioButton('First')}
-            {this.renderRadioButton('Second')}
-            {this.renderRadioButton('Third')}
-            {this.renderRadioButton('Fourth')}
+          <RadioGroup
+            name="arbitrationTime"
+            value={arbOptionSelected}
+            onChange={this.onChange}
+          >
+            {map(arbOptions, (opt, idx) => this.renderRadioButton(opt, idx))}
           </RadioGroup>
         </FormControl>
       </Section>
