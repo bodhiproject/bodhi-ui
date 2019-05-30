@@ -31,7 +31,8 @@ export default class ArbitrationOptionSelector extends Component {
 
   renderRadioButton = (arbOption, index) => (
     <FormControlLabel
-      value={index}
+      key={index}
+      value={`${index}`}
       label={this.props.intl.formatMessage(messages.xHoursForXNbot, {
         hours: arbOption.length,
         nbot: arbOption.threshold,
@@ -50,7 +51,7 @@ export default class ArbitrationOptionSelector extends Component {
         <FormControl component="fieldset">
           <RadioGroup
             name="arbitrationTime"
-            value={arbOptionSelected}
+            value={`${arbOptionSelected}`}
             onChange={this.onChange}
           >
             {map(arbOptions, (opt, idx) => this.renderRadioButton(opt, idx))}

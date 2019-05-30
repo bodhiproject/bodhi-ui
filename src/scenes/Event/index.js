@@ -38,7 +38,7 @@ const messages = defineMessages({
 });
 
 @injectIntl
-@withStyles(styles)
+@withStyles(styles, { withTheme: true })
 @withRouter
 @inject('store')
 @observer
