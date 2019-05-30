@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FormControl, TextField, FormHelperText, Button, withStyles } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, withStyles } from '@material-ui/core';
 import { Section, SelectAddressDialog } from './components';
 
 import styles from './styles';
@@ -45,11 +45,5 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
     )}
   </FormControl>
 ))));
-
-const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
-  <Button className={classes.selectAddressButton} variant="contained" color="primary" size="small" {...props}>
-    {intl.formatMessage(messages.select)}
-  </Button>
-)));
 
 export default inject('store')(observer(ResultSetter));
