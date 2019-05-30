@@ -9,7 +9,7 @@ import { Section } from './components';
 import styles from './styles';
 
 const MIN_OPTION_NUMBER = 2;
-const MAX_OPTION_NUMBER = 10;
+const MAX_OPTION_NUMBER = 3;
 
 const messages = defineMessages({
   createOutcomeNameMsg: {
