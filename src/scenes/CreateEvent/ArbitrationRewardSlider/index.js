@@ -5,9 +5,14 @@ import { Slider } from '@material-ui/lab';
 @inject('store')
 @observer
 export default class ArbitrationRewardSliderr extends Component {
+  onChange = (event, value) => {
+  }
+
   render() {
     return (
-      <Slider min={1} max={50} value={10} />
+      <div>
+        <Slider min={1} max={50} value={10} step={1} onChange={this.onChange} />
+      </div>
     );
   }
 }

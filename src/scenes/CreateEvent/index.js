@@ -12,6 +12,7 @@ import PredictionPeriod from './PredictionPeriod';
 import ResultSetPeriod from './ResultSetPeriod';
 import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
+import ArbitrationRewardSlider from './ArbitrationRewardSlider';
 import { Loading as _Loading } from '../../components/';
 
 const messages = defineMessages({
@@ -61,6 +62,7 @@ const CreateEventDetail = ({ classes, creating }) => (
       <ResultSetPeriod />
       <Outcomes />
       <ResultSetter />
+      <ArbitrationRewardSlider />
       <Dialog
         className={classes.createDialog}
         classes={{ paper: classes.createDialogPaper }}
