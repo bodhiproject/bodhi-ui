@@ -20,6 +20,7 @@ const CREATE_EVENT_FUNC_SIG = '2b2601bf';
 const BET_EVENT_FUNC_SIG = '885ab66d';
 const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
+
 const CREATE_EVENT_FUNC_TYPES = [
   'string',
   'bytes32[3]',
@@ -28,6 +29,8 @@ const CREATE_EVENT_FUNC_TYPES = [
   'uint256',
   'uint256',
   'address',
+  'uint8',
+  'uint256',
 ];
 const PLAY_EVENT_FUNC_TYPES = [
   'uint8',
