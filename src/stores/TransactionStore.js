@@ -167,9 +167,12 @@ export default class TransactionStore {
         resultSetStartTime,
         resultSetEndTime,
         amountSatoshi,
+        arbitrationOptionIndex,
+        arbitrationRewardPercentage,
         language,
       } = tx;
 
+      // Construct params for executing tx
       const createEventParams = [
         name,
         toJS(results),
@@ -178,7 +181,10 @@ export default class TransactionStore {
         resultSetStartTime,
         resultSetEndTime,
         centralizedOracle,
+        arbitrationOptionIndex,
+        arbitrationRewardPercentage,
       ];
+      // Format results to bytes32 types
       for (let i = 0; i < 10; i++) {
         if (createEventParams[1][i]) {
           createEventParams[1][i] = padRight(toHex(createEventParams[1][i]), 64);
@@ -187,6 +193,7 @@ export default class TransactionStore {
         }
       }
 
+      // Execute tx
       const { network } = this.app.naka;
       const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
         .at(NakaBodhiToken()[network.toLowerCase()]);
@@ -198,8 +205,8 @@ export default class TransactionStore {
         gas: 3000000,
       });
 
-      Object.assign(tx, { txid });
       // Create pending tx on server
+      Object.assign(tx, { txid });
       if (txid) {
         const { graphqlClient } = this.app;
         const res = await addPendingEvent(graphqlClient, {
