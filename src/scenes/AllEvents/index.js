@@ -29,7 +29,7 @@ const Events = observer(({ allEvents: { list, loadMoreEvents, loaded, loadingMor
   const events = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
   return (
     <InfiniteScroll
-      spacing={theme.padding.space3X.value}
+      spacing={2}
       data={events}
       loadMore={loadMoreEvents}
       loadingMore={loadingMore}

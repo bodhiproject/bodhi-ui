@@ -23,7 +23,7 @@ export default class Prediction extends Component {
       <Fragment>
         <TopActions />
         <InfiniteScroll
-          spacing={theme.padding.space3X.value}
+          spacing={2}
           data={events}
           loadMore={loadMore}
           loadingMore={loadingMore}

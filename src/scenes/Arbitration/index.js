@@ -22,7 +22,7 @@ export default class Arbitration extends Component {
       <Fragment>
         {events.length > 0 && <TopActions />}
         <InfiniteScroll
-          spacing={theme.padding.space3X.value}
+          spacing={2}
           data={events}
           loadMore={loadMore}
           loadingMore={loadingMore}

@@ -169,7 +169,7 @@ export default class Search extends Component {
         <div>
           {this.renderTabs()}
           <div className={classes.searchTabContainer}>
-            <Grid container spacing={theme.padding.space3X.value}>
+            <Grid container spacing={2}>
               {loading
                 ? <Loading message={messages.searchingMsg} />
                 : this.renderEvents()
