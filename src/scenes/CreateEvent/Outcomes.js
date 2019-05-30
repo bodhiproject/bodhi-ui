@@ -57,11 +57,10 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
         value={outcome}
         onChange={e => createEvent.outcomes[i] = String(e.target.value)}
         onBlur={() => createEvent.validateOutcome(i)}
-        placeholder={intl.formatMessage(messages.createOutcomeNameMsg)}
+        placeholder={`${intl.formatMessage(messages.createOutcomeNameMsg)} #${i + 1}`}
         error={Boolean(createEvent.error.outcomes[i])}
         InputProps={{
           classes: { input: classes.createEventTextField },
-          startAdornment: <InputAdornment position="start" classes={{ positionStart: classes.createEventInputAdornment }}>#{i + 1}</InputAdornment>,
         }}
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
