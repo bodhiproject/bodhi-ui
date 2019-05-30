@@ -9,7 +9,8 @@ const styles = (theme) => ({
     overflow: 'auto',
   },
   createDialogTitle: {
-    padding: `${theme.padding.space2X.px} ${theme.padding.space3X.px} 0 ${theme.padding.space3X.px}`,
+    padding: `${theme.padding.space2X.px} ${theme.padding.space3X.px}`,
+    borderBottom: theme.border,
   },
   escrowAmountNote: {
     margin: `${theme.padding.space3X.px} 0 0 0`,
@@ -38,7 +39,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.spaceX.px,
   },
   footer: {
-    margin: theme.padding.space3X.px,
+    borderTop: theme.border,
   },
   buttonIcon: {
     fontSize: theme.sizes.icon.small,
