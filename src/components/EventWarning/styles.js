@@ -4,9 +4,10 @@ const styles = (theme) => ({
   warningWrapper: {
     borderRadius: theme.borderRadius,
     padding: theme.padding.spaceX.px,
-    marginBottom: theme.padding.space3X.px,
+    marginBottom: theme.padding.space2X.px,
     [theme.breakpoints.down('xs')]: {
       margin: 0,
+      marginBottom: '16px',
     },
   },
   [EventWarningType.INFO]: {

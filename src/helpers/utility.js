@@ -154,6 +154,23 @@ export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isSh
 }
 
 /**
+ * Converts a timestamp to the display string.
+ * @param unix {Number} The timestamp to convert. Formatted in unix time format.
+ * @return {Array} An array inclue time and date
+ */
+export function getEndTimeCornerString(unix) {
+  const ret = {};
+  const dest = moment.unix(unix);
+  ret.time = dest.format('h:mm a');
+  if (dest.isSame(moment(), 'year')) {
+    ret.day = dest.format('MMM Do');
+  } else {
+    ret.day = dest.format('MMM Do YY');
+  }
+  return ret;
+}
+
+/**
  * Shortens address string by only showing the first and last couple characters.
  * @param text {String} Origin address
  * @param maxLength {Number} Length of output string, including 3 dots

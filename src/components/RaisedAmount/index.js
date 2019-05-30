@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Typography } from '@material-ui/core';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import cx from 'classnames';
+import { injectIntl } from 'react-intl';
 import styles from './styles';
 
 @injectIntl
@@ -24,12 +23,11 @@ export default class RaisedAmount extends Component {
 
     return (
       <div className={classes.container}>
-        <i className={cx(classes.icon, 'icon iconfont icon-ic_token')}></i>
+        <Typography variant="body1" className={classes.amountText}>
+          Vol.
+        </Typography>
         <Typography variant="body1" className={classes.amountText}>
           {`${amount} NBOT`}
-        </Typography>
-        <Typography variant="body1">
-          <FormattedMessage id="str.raised" defaultMessage="Raised" />
         </Typography>
       </div>
     );
