@@ -91,6 +91,7 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
+  arbitrationReward: 10,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -124,6 +125,7 @@ export default class CreateEventStore {
   @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
+  @observable arbitrationReward = INIT.arbitrationReward
   @observable error = INIT.error
 
   @computed get hasEnoughFee() {
