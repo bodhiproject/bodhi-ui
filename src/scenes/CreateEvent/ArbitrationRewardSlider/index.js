@@ -23,6 +23,22 @@ export default class ArbitrationRewardSlider extends Component {
     createEvent.arbitrationReward = value;
   }
 
+  renderCurrentValue = () => {
+    const {
+      classes,
+      store: { createEvent: { arbitrationReward } },
+    } = this.props;
+    return (
+      <Typography
+        className={classes.currentValue}
+        color="primary"
+        variant="body2"
+      >
+        {`${arbitrationReward}%`}
+      </Typography>
+    );
+  };
+
   renderBound = (value) => (
     <Typography variant="body1" >
       {value}
@@ -34,9 +50,11 @@ export default class ArbitrationRewardSlider extends Component {
       classes,
       store: { createEvent: { arbitrationReward } },
     } = this.props;
+
     return (
       <Section column title={messages.arbitrationReward}>
-        <div className={classes.contentContainer}>
+        {this.renderCurrentValue()}
+        <div className={classes.sliderContainer}>
           {this.renderBound(1)}
           <Slider
             className={classes.slider}
