@@ -49,7 +49,6 @@
   "create.nameLong": "Event name is too long.",
   "create.namePlaceholder": "e.g. Who will be the next president of the United States?",
   "create.outcomeName": "Outcome Name",
-  "create.pendingExists": "You can only create 1 event at a time. Please wait until your other Event is created.",
   "create.publish": "Publish",
   "create.required": "Required",
   "create.resultIndex": "Result",

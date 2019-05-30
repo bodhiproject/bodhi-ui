@@ -55,10 +55,6 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
-  createPendingExists: {
-    id: 'create.pendingExists',
-    defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-  },
   invalidAddress: {
     id: 'create.invalidAddress',
     defaultMessage: 'Invalid address',
@@ -92,6 +88,7 @@ const INIT = {
   outcomes: ['', ''],
   resultSetter: '',
   arbitrationReward: 10,
+  arbTimeOptionSelected: 0,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -126,6 +123,7 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable arbitrationReward = INIT.arbitrationReward
+  @observable arbTimeOptionSelected = INIT.arbTimeOptionSelected
   @observable error = INIT.error
 
   @computed get hasEnoughFee() {
@@ -236,6 +234,12 @@ export default class CreateEventStore {
     );
   }
 
+  getArbitrationTimeOptions = () => {
+    return [
+      { lengthHours: 48,  }
+    ];
+  }
+
   /**
    * Calculates the estimated block based on current block and future date.
    * @param {number} futureDateUnix Future date in Unix format.
@@ -276,34 +280,6 @@ export default class CreateEventStore {
       this.resultSetter = this.app.wallet.currentAddress;
       this.loaded = true;
     });
-  }
-
-  /**
-   * Checks for any pending create event txs for the current wallet address.
-   * @return {boolean} True if the current wallet address has pending create txs.
-   */
-  hasPendingCreateTxs = async () => {
-    try {
-      const { currentAddress } = this.app.wallet;
-      const { PENDING } = TransactionStatus;
-      const filters = [
-        { status: PENDING, type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: currentAddress },
-        { status: PENDING, type: TransactionType.CREATE_EVENT, senderAddress: currentAddress },
-      ];
-      const pendingCreates = await queryAllTransactions(filters);
-      if (pendingCreates.length > 0) {
-        this.app.globalDialog.setError({
-          id: 'create.pendingExists',
-          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-        });
-        this.close();
-        return true;
-      }
-    } catch (err) {
-      this.app.globalDialog.setError(err.message, `${GRAPHQL.HTTP}/all-transactions`);
-      this.close();
-    }
-    return false;
   }
 
   /**
