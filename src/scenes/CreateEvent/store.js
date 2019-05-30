@@ -72,8 +72,9 @@ const INIT = {
   loaded: false,
   creating: false,
   escrowAmount: undefined,
-  arbLengths: undefined,
-  thresholdOptions: undefined,
+  arbLengths: [],
+  thresholdOptions: [],
+  arbOptions: [],
   averageBlockTime: 3,
   txFees: [],
   resultSetterDialogOpen: false,
@@ -90,7 +91,7 @@ const INIT = {
   outcomes: ['', ''],
   resultSetter: '',
   arbitrationReward: 10,
-  arbTimeOptionSelected: 0,
+  arbOptionSelected: 0,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -110,8 +111,9 @@ const INIT = {
 
 export default class CreateEventStore {
   @observable escrowAmount = INIT.escrowAmount // decimal number
-  @observable arbLengths = INIT.arbLengths // array of numbers
-  @observable thresholdOptions = INIT.thresholdOptions // array of decimal numbers
+  arbLengths = INIT.arbLengths // array of numbers
+  thresholdOptions = INIT.thresholdOptions // array of decimal numbers
+  @observable arbOptions = INIT.arbOptions
   averageBlockTime = INIT.averageBlockTime
   @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
@@ -127,7 +129,7 @@ export default class CreateEventStore {
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
   @observable arbitrationReward = INIT.arbitrationReward
-  @observable arbTimeOptionSelected = INIT.arbTimeOptionSelected
+  @observable arbOptionSelected = INIT.arbOptionSelected
   @observable error = INIT.error
 
   @computed get hasEnoughFee() {
@@ -347,6 +349,20 @@ export default class CreateEventStore {
       this.app.globalDialog.setError(`${err.message}: ${err.response.data.error}`);
     }
     return false;
+  }
+
+  @action
+  constructArbOptions = () => {
+    if (this.arbLengths.length !== this.thresholdOptions.length) return;
+
+    const opts = [];
+    each(this.arbLengths, (arbLength, index) => {
+      opts.push({
+        length: arbLength,
+        threshold: this.thresholdOptions[index],
+      });
+    });
+    this.arbOptions = opts;
   }
 
   @action
