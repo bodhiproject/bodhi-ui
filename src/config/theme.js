@@ -628,11 +628,6 @@ bodhiTheme.overrides = {
         fontSize: xxSmallText,
       },
     },
-    numeric: {
-      [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(spaceX),
-      },
-    },
   },
   MuiDialog: {
     paper: {
