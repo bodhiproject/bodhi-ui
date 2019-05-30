@@ -5,7 +5,7 @@ import styles from './styles';
 
 export default withStyles(styles)(injectIntl(({ classes, text, intl, ...props }) => (
   <div className={classes.col} {...props} >
-    <CircularProgress color="primary" />
+    <CircularProgress color="primary" size={32} thickness={5} />
     {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </div>
 )));

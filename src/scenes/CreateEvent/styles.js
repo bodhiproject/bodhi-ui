@@ -1,4 +1,11 @@
 const styles = (theme) => ({
+  loadingDialog: {
+    width: 400,
+    height: 200,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   createDialog: {
     overflow: 'auto',
     [theme.breakpoints.down('xs')]: {

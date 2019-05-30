@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
 import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning as _EventWarning, ImportantNote } from 'components';
+import { EventWarning as _EventWarning, ImportantNote, Loading } from 'components';
 import { EventWarningType } from 'constants';
 import styles from './styles';
 import Title from './Title';
@@ -14,7 +14,6 @@ import Outcomes from './Outcomes';
 import ResultSetter from './ResultSetter';
 import ArbitrationRewardSlider from './ArbitrationRewardSlider';
 import ArbitrationOptionSelector from './ArbitrationOptionSelector';
-import { Loading as _Loading } from '../../components/';
 
 const messages = defineMessages({
   createEscrowNoteTitleMsg: {
@@ -25,61 +24,11 @@ const messages = defineMessages({
     id: 'create.escrowNoteDesc',
     defaultMessage: 'You will need to deposit {amount} NBOT in escrow to create an event. You can withdraw it when the event is in the Withdraw stage.',
   },
+  pleaseWait: {
+    id: 'str.pleasewait',
+    defaultMessage: 'Please Wait',
+  },
 });
-
-const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded, creating } } }) => (
-  <Fragment>
-    <Dialog
-      className={classes.createDialog}
-      classes={{ paper: classes.createDialogPaper }}
-      fullWidth={loaded}
-      maxWidth='md'
-      open={isOpen}
-    >
-      {!loaded ? <Loading /> : <CreateEventDetail classes={classes} creating={creating} />}
-    </Dialog>
-  </Fragment>
-);
-
-const Loading = () => (
-  <Fragment>
-    <DialogTitle>
-      <FormattedMessage id="str.pleasewait" defaultMessage="Please Wait" />
-    </DialogTitle>
-    <_Loading />
-  </Fragment>
-);
-
-const CreateEventDetail = ({ classes, creating }) => (
-  <Fragment>
-    <DialogTitle className={classes.createDialogTitle}>
-      <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-    </DialogTitle>
-    <DialogContent>
-      <EscrowAmountNote />
-      <EventWarning />
-      <Title />
-      <PredictionPeriod />
-      <ResultSetPeriod />
-      <Outcomes />
-      <ResultSetter />
-      <ArbitrationRewardSlider />
-      <ArbitrationOptionSelector />
-      <Dialog
-        className={classes.createDialog}
-        classes={{ paper: classes.createDialogPaper }}
-        maxWidth='md'
-        open={creating}
-      >
-        <Loading />
-      </Dialog>
-    </DialogContent>
-    <DialogActions className={classes.footer}>
-      <CancelButton />
-      <PublishButton />
-    </DialogActions>
-  </Fragment>
-);
 
 const EventWarning = inject('store')(observer(({ store: { createEvent: { hasEnoughFee, warning } } }) => (
   !hasEnoughFee && <_EventWarning id={warning.id} message={warning.message} type={EventWarningType.ERROR} />
@@ -110,5 +59,42 @@ const PublishButton = withStyles(styles)(withRouter(inject('store')(observer(({ 
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
 )))));
+
+const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } } }) => (
+  <Dialog
+    className={classes.createDialog}
+    classes={{ paper: classes.createDialogPaper }}
+    fullWidth={loaded}
+    maxWidth='md'
+    open={isOpen}
+  >
+    <DialogTitle className={classes.createDialogTitle}>
+      <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+    </DialogTitle>
+    <DialogContent>
+      {loaded ? (
+        <Fragment>
+          <EscrowAmountNote />
+          <EventWarning />
+          <Title />
+          <PredictionPeriod />
+          <ResultSetPeriod />
+          <Outcomes />
+          <ResultSetter />
+          <ArbitrationRewardSlider />
+          <ArbitrationOptionSelector />
+        </Fragment>
+      ) : (
+        <Loading text={messages.pleaseWait} />
+      )}
+    </DialogContent>
+    {loaded && (
+      <DialogActions className={classes.footer}>
+        <CancelButton />
+        <PublishButton />
+      </DialogActions>
+    )}
+  </Dialog>
+);
 
 export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));
