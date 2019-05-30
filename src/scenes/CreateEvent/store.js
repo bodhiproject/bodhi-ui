@@ -90,7 +90,7 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
-  arbitrationReward: 10,
+  arbRewardPercent: 10,
   arbOptionSelected: 0,
   // if one of these in error is set, the form field will display the associated error message
   error: {
@@ -128,7 +128,7 @@ export default class CreateEventStore {
   @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
-  @observable arbitrationReward = INIT.arbitrationReward
+  @observable arbRewardPercent = INIT.arbRewardPercent
   @observable arbOptionSelected = INIT.arbOptionSelected
   @observable error = INIT.error
 
@@ -372,6 +372,11 @@ export default class CreateEventStore {
   }
 
   @action
+  setArbRewardPercent = (percent) => {
+    this.arbRewardPercent = percent;
+  }
+
+  @action
   onArbOptionChange = (index) => {
     this.arbOptionSelected = index;
   }
@@ -522,6 +527,8 @@ export default class CreateEventStore {
       resultSetStartTime: this.resultSetting.startTime,
       resultSetEndTime: this.resultSetting.endTime,
       amountSatoshi: escrowAmountSatoshi,
+      arbitrationOptionIndex: this.arbOptionSelected,
+      arbitrationRewardPercentage: this.arbRewardPercent,
       language :this.app.ui.locale,
     });
 

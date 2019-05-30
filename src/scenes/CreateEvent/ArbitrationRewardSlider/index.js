@@ -19,14 +19,13 @@ const messages = defineMessages({
 @observer
 export default class ArbitrationRewardSlider extends Component {
   onChange = (event, value) => {
-    const { store: { createEvent } } = this.props;
-    createEvent.arbitrationReward = value;
+    this.props.store.createEvent.setArbRewardPercent(Number(value));
   }
 
   renderCurrentValue = () => {
     const {
       classes,
-      store: { createEvent: { arbitrationReward } },
+      store: { createEvent: { arbRewardPercent } },
     } = this.props;
     return (
       <Typography
@@ -34,7 +33,7 @@ export default class ArbitrationRewardSlider extends Component {
         color="primary"
         variant="body2"
       >
-        {`${arbitrationReward}%`}
+        {`${arbRewardPercent}%`}
       </Typography>
     );
   };
@@ -48,7 +47,7 @@ export default class ArbitrationRewardSlider extends Component {
   render() {
     const {
       classes,
-      store: { createEvent: { arbitrationReward } },
+      store: { createEvent: { arbRewardPercent } },
     } = this.props;
 
     return (
@@ -60,7 +59,7 @@ export default class ArbitrationRewardSlider extends Component {
             className={classes.slider}
             min={1}
             max={50}
-            value={arbitrationReward}
+            value={arbRewardPercent}
             step={1}
             onChange={this.onChange}
           />
