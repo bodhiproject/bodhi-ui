@@ -24,7 +24,7 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 @observer
-export default class ArbitrationTimeSelector extends Component {
+export default class ArbitrationOptionSelector extends Component {
   onChange = (event, value) => {
     this.props.store.createEvent.onArbOptionChange(Number(value));
   };
