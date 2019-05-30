@@ -1,5 +1,5 @@
 {
-  "Loading Oracle...": "Loading Oracle...",
+  "Loading Event...": "Loading Event...",
   "activitiesTab.History": "Activities History",
   "activitiesTab.Set": "Result Setting",
   "balance.info": "If you would like to encrypt, backup, or restore your wallet, please do this from the Naka Wallet. In the application menu, there is a \"Launch Naka Wallet\" option.",
@@ -102,7 +102,7 @@
   "load.allEvents": "loading",
   "load.eventList": "loading",
   "load.more": "loading more",
-  "load.oracle": "Loading Oracle...",
+  "load.oracle": "Loading Event...",
   "loader.blockNum": "Latest Block Number",
   "loader.blockTime": "Latest Block Time",
   "loading": "Loading...",

@@ -22,7 +22,7 @@ const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
 const CREATE_EVENT_FUNC_TYPES = [
   'string',
-  'bytes32[10]',
+  'bytes32[3]',
   'uint256',
   'uint256',
   'uint256',
@@ -185,7 +185,7 @@ export default class TransactionStore {
         arbitrationRewardPercentage,
       ];
       // Format results to bytes32 types
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 3; i++) {
         if (createEventParams[1][i]) {
           createEventParams[1][i] = padRight(toHex(createEventParams[1][i]), 64);
         } else {
