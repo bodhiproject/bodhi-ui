@@ -41,7 +41,7 @@ export default class HistoryTable extends Component {
         <Tabs
           indicatorColor="primary"
           textColor="primary"
-          fullWidth
+          variant="fullWidth"
           value={tabValue}
           onChange={this.handleChange}
         >

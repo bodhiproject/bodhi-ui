@@ -93,7 +93,7 @@ export default class Search extends Component {
         className={classes.searchTabWrapper}
         indicatorColor="primary"
         textColor="primary"
-        fullWidth
+        variant="fullWidth"
         value={search.tabIdx}
         onChange={(e, v) => search.onTabChange(v)}
       >
