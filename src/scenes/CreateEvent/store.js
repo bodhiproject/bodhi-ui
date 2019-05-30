@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   createValidBetEndMsg: {
     id: 'create.validBetEnd',
-    defaultMessage: 'Must be at least 1 day after Prediction Start Time',
+    defaultMessage: 'Must be at least 30 minutes after Prediction Start Time',
   },
   createValidResultSetStartMsg: {
     id: 'create.validResultSetStart',
@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   createValidResultSetEndMsg: {
     id: 'create.validResultSetEnd',
-    defaultMessage: 'Must be at least 1 day after Result Setting Start Time',
+    defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
   },
   strNotEnoughNbotMsg: {
     id: 'str.notEnoughNbot',
@@ -65,6 +65,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
+const VALIDATE_TIME_GAP_MIN_SEC = 30 * 60;
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
@@ -422,7 +423,7 @@ export default class CreateEventStore {
   validatePredictionEndTime = () => {
     if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = messages.createDatePastMsg.id;
-    } else if (this.prediction.endTime - this.prediction.startTime < TIME_GAP_MIN_SEC) {
+    } else if (this.prediction.endTime - this.prediction.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
       this.error.prediction.endTime = '';
@@ -444,7 +445,7 @@ export default class CreateEventStore {
   validateResultSettingEndTime = () => {
     if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = messages.createDatePastMsg.id;
-    } else if (this.resultSetting.endTime - this.resultSetting.startTime < TIME_GAP_MIN_SEC) {
+    } else if (this.resultSetting.endTime - this.resultSetting.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.resultSetting.endTime = messages.createValidResultSetEndMsg.id;
     } else {
       this.error.resultSetting.endTime = '';
