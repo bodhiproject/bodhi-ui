@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   createValidBetEndMsg: {
     id: 'create.validBetEnd',
-    defaultMessage: 'Must be at least 30 minutes after Prediction Start Time',
+    defaultMessage: 'Must be at least 1 day after Prediction Start Time',
   },
   createValidResultSetStartMsg: {
     id: 'create.validResultSetStart',
@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   createValidResultSetEndMsg: {
     id: 'create.validResultSetEnd',
-    defaultMessage: 'Must be at least 30 minutes after Result Setting Start Time',
+    defaultMessage: 'Must be at least 1 day after Result Setting Start Time',
   },
   strNotEnoughNbotMsg: {
     id: 'str.notEnoughNbot',
@@ -256,7 +256,7 @@ export default class CreateEventStore {
     Tracking.track('dashboard-createEventClick');
     this.isOpen = true;
     this.currentBlock = this.app.global.syncBlockNum;
-    
+
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
       this.app.naka.openPopover('naka.loginToView');
