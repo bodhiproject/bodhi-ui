@@ -1,8 +1,8 @@
-const { sortBy, map } = require('lodash');
-const TokenExchangeMeta = require('./contracts/token-exchange');
-const NakaBodhiTokenMeta = require('./contracts/naka-bodhi-token');
-const EventFactoryMeta = require('./contracts/event-factory');
-const MultipleResultsEventMeta = require('./contracts/multiple-results-event');
+import { sortBy, map } from 'lodash';
+import TokenExchangeMeta from './contracts/token-exchange';
+import NakaBodhiTokenMeta from './contracts/naka-bodhi-token';
+import EventFactoryMeta from './contracts/event-factory';
+import MultipleResultsEventMeta from './contracts/multiple-results-event';
 
 /**
  * Gets the TokenExchange contract metadata.
