@@ -55,7 +55,7 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
       <TextField
         fullWidth
         value={outcome}
-        onChange={e => createEvent.outcomes[i] = e.target.value}
+        onChange={e => createEvent.outcomes[i] = String(e.target.value)}
         onBlur={() => createEvent.validateOutcome(i)}
         placeholder={intl.formatMessage(messages.createOutcomeNameMsg)}
         error={Boolean(createEvent.error.outcomes[i])}
