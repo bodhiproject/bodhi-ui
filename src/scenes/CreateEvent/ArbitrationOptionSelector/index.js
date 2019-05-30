@@ -26,7 +26,7 @@ const messages = defineMessages({
 @observer
 export default class ArbitrationOptionSelector extends Component {
   onChange = (event, value) => {
-    this.props.store.createEvent.onArbOptionChange(Number(value));
+    this.props.store.createEvent.setArbOptionSelected(Number(value));
   };
 
   renderRadioButton = (arbOption, index) => (

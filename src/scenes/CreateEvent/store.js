@@ -377,7 +377,7 @@ export default class CreateEventStore {
   }
 
   @action
-  onArbOptionChange = (index) => {
+  setArbOptionSelected = (index) => {
     this.arbOptionSelected = index;
   }
 
