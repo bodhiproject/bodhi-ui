@@ -156,19 +156,16 @@ export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isSh
 /**
  * Converts a timestamp to the display string.
  * @param unix {Number} The timestamp to convert. Formatted in unix time format.
- * @param locale {Object}} Locale object that the Intl is using.
- * @param localeMessages {Object} LocalMessages object that the Intl is using.
- * @param isShort {Boolean} Whether to show shorter version.
  * @return {Array} An array inclue time and date
  */
 export function getEndTimeCornerString(unix) {
-  const ret = [];
+  const ret = {};
   const dest = moment.unix(unix);
-  ret[0] = dest.format('h:mm a');
+  ret.time = dest.format('h:mm a');
   if (dest.isSame(moment(), 'year')) {
-    ret[1] = dest.format('MMM Do');
+    ret.day = dest.format('MMM Do');
   } else {
-    ret[1] = dest.format('MMM Do YY');
+    ret.day = dest.format('MMM Do YY');
   }
   return ret;
 }

@@ -24,7 +24,7 @@ export default class RaisedAmount extends Component {
     return (
       <div className={classes.container}>
         <Typography variant="body1" className={classes.amountText}>
-          Vol:
+          Vol.
         </Typography>
         <Typography variant="body1" className={classes.amountText}>
           {`${amount} NBOT`}

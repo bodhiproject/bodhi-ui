@@ -1,21 +1,8 @@
 const styles = (theme) => ({
-  eventOptionCollapse: {
-    paddingTop: '1px',
-    '&.last': {
-      paddingBottom: theme.padding.spaceX.px,
-    },
-    '&.is_result span': {
-      display: 'none !important',
-    },
-    '&.is_result.first': {
-      paddingTop: 1,
-    },
-  },
   eventOptionWrapper: {
     width: '100%',
     display: 'block',
     position: 'relative',
-    // paddingLeft: theme.padding.space5X.px,
     paddingRight: '0 !important',
     marginTop: theme.padding.spaceX.px,
     marginBottom: theme.padding.spaceX.px,
@@ -39,6 +26,9 @@ const styles = (theme) => ({
     whiteSpace: 'nowrap',
     lineHeight: '3em',
     paddingLeft: theme.padding.spaceX.px,
+    color: '#fe0672',
+    fontSize: '1.05rem',
+    fontWeight: '400',
   },
   eventOptionNum: {
     background: theme.palette.background.grey,
@@ -78,10 +68,12 @@ const styles = (theme) => ({
     position: 'absolute',
     right: 0,
     top: 0,
-    fontWeight: theme.typography.fontWeightBold,
-    color: theme.palette.text.primary,
     height: '100%',
     paddingRight: theme.padding.spaceX.px,
+    color: '#fe0672',
+    fontSize: '1.05rem',
+    fontWeight: '400',
+    fontFamily: 'Noto Sans TC, sans-serif',
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
@@ -89,6 +81,7 @@ const styles = (theme) => ({
   },
   root: {
     height: '100%',
+    boxShadow: '0 2px 10px rgba(0,0,0,.2) !important',
   },
 });
 

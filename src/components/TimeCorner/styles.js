@@ -3,6 +3,7 @@ export default (theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingLeft: theme.padding.space2X.px,
   },
   icon: {
     marginRight: theme.padding.spaceX.px,
@@ -15,5 +16,12 @@ export default (theme) => ({
     borderRadius: '9px',
     fontSize: '0.75rem',
     backgroundColor: '#f4f5f7',
+  },
+  hourText: {
+    textAlign: 'righ',
+    color: '#3f4d5a',
+    fontWeight: '400',
+    fontSize: '1.15rem',
+    marginBottom: '.5rem',
   },
 });

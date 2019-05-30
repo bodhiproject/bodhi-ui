@@ -43,8 +43,10 @@ const styles = (theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     fontWeight: '700',
-    color: 'rgba(0,0,0,0.75)',
-    fontFamily: 'Noto Sans TC,sans-serif!important',
+    fontFamily: 'Noto Sans TC,sans-serif !important',
+    color: '#3f4d5a',
+    fontSize: '1.05rem',
+    textAlign: 'left',
   },
   eventCardNameBundle: {
     display: 'flex',
@@ -73,8 +75,12 @@ const styles = (theme) => ({
     position: 'absolute',
     bottom: '13px',
   },
-  eventCardInfoItem: {
-    padding: '5px',
+  stateText: {
+    color: '#9aa5b1',
+    textAlign: 'left',
+    fontSize: '.82rem',
+    fontWeight: '200',
+    marginBottom: '.5rem',
   },
 });
 

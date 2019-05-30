@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import {
   withStyles,
 } from '@material-ui/core';
-import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
 import styles from './styles';
 import Progress from '../Progress';
@@ -36,26 +35,16 @@ export default class Option extends Component {
   render() {
     const {
       classes,
-      store,
       option,
       intl,
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, isLast, isFirst, isExpanded, value } = option;
-    const { eventPage } = store;
-    const { selectedOptionIdx } = eventPage;
+    const { isPrevResult, percent, value } = option;
 
     return (
-      <div
-        className={cx(classes.eventOptionCollapse, {
-          last: isLast || isExpanded(selectedOptionIdx),
-          first: isFirst || isExpanded(selectedOptionIdx),
-          is_result: isPrevResult,
-        })}
-      >
+      <div>
         <div className={classes.eventOptionWrapper}>
-
           <div className={classes.eventOptionProgress}>
             <span className={classes.overText}>
               <span>{`${name}`}</span>
@@ -68,7 +57,6 @@ export default class Option extends Component {
               className={classes.root}
             />
             <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}</span></div>
-
           </div>
         </div>
       </div>

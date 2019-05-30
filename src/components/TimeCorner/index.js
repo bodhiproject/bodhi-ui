@@ -27,8 +27,8 @@ export default class TimeCorner extends Component {
     const time = getEndTimeCornerString(endTime);
     return (
       <div>
-        <div>{time[0]}</div>
-        <span className={classes.badge}>{time[1]}</span>
+        <div className={classes.hourText}>{time.time}</div>
+        <span className={classes.badge}>{time.day}</span>
       </div>
     );
   }

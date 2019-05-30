@@ -6,6 +6,9 @@ const styles = (theme) => ({
       'background-color': theme.palette.error.dark,
     },
   },
+  colorSecondary: {
+    backgroundColor: '#fff !important',
+  },
 });
 
 export default styles;

@@ -8,6 +8,7 @@ import styles from './styles';
 const Progress = ({ classes, invalid, className, ...props }) => (
   <LinearProgress
     {...props}
+    classes={{ colorSecondary: classes.colorSecondary }}
     className={cx(className, classes, {
       [classes.invalid]: invalid,
     })}
