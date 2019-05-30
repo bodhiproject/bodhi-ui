@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { TextField, FormControl, FormHelperText, InputAdornment, IconButton, withStyles, Card, CardContent, Typography } from '@material-ui/core';
-import { Event as EventIcon } from '@material-ui/icons';
+import { FormControl, FormHelperText, withStyles, Card, CardContent, Typography } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
 
@@ -24,7 +23,7 @@ export class DateTimePickerCombo extends Component {
   }
 
   render() {
-    const { classes, value, fullWidth, error, errorMsg, errorText, blockNum, intl, title, ...props } = this.props;
+    const { classes, value, fullWidth, error, intl, title } = this.props;
     const { isDatePickerOpen } = this.state;
     return (
       <Fragment>
