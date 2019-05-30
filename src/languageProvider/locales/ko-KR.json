@@ -66,7 +66,6 @@
   "create.resultTooLong": "결과 이름이 너무 깁니다.",
   "create.results": "결과",
   "create.resultsMsg": "결과 이름은 비워 둘 수 없습니다.",
-  "create.selectMyAddress": "내 주소 선택",
   "create.title": "제목",
   "create.validBetEnd": "예측 시작 시간 후 30분 이상이어야합니다.",
   "create.validResultSetEnd": "결과 설정 시작 시간 후 30분 이상이어야합니다.",

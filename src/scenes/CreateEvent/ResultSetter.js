@@ -11,9 +11,9 @@ const messages = defineMessages({
     id: 'create.resultSetterPlaceholder',
     defaultMessage: 'e.g. qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna',
   },
-  createSelectMyAddressMsg: {
-    id: 'create.selectMyAddress',
-    defaultMessage: 'Select My Address',
+  select: {
+    id: 'create.select',
+    defaultMessage: 'Select',
   },
   strResultSetterMsg: {
     id: 'str.resultSetter',
@@ -49,7 +49,7 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
 
 const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
   <Button className={classes.selectAddressButton} variant="contained" color="primary" size="small" {...props}>
-    {intl.formatMessage(messages.createSelectMyAddressMsg)}
+    {intl.formatMessage(messages.select)}
   </Button>
 )));
 

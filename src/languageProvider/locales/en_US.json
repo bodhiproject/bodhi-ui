@@ -66,7 +66,7 @@
   "create.resultTooLong": "Result name is too long.",
   "create.results": "Results",
   "create.resultsMsg": "Result name cannot be empty.",
-  "create.selectMyAddress": "Select My Address",
+  "create.select": "Select",
   "create.title": "Title",
   "create.validBetEnd": "Must be at least 30 minutes after Prediction Start Time",
   "create.validResultSetEnd": "Must be at least 30 minutes after Result Setting Start Time",
