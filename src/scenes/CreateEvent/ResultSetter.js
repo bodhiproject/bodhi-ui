@@ -33,7 +33,6 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
     <TextField
       InputProps={{
         classes: { input: classes.createEventTextField },
-        endAdornment: <SelectAddressButton onClick={() => createEvent.resultSetterDialogOpen = true} />,
       }}
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
