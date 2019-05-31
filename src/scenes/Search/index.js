@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Grid, Tabs, Tab, withStyles } from '@material-ui/core';
 import { EventStatus } from 'constants';
-import theme from '../../config/theme';
 import EventCard from '../../components/EventCard';
 import Loading from '../../components/EventListLoading';
 import styles from './styles';

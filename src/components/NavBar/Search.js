@@ -20,7 +20,10 @@ export const SearchBarField = withStyles(styles)(injectIntl(inject('store')(({ i
   <div className={classes.searchBarField}>
     <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
     <TextField
-      placeholder={intl.formatMessage({ id: 'search.placeholder', defaultMessage: 'Type to begin search' })}
+      placeholder={intl.formatMessage({
+        id: 'search.placeholder',
+        defaultMessage: 'Search by Event Name, Event Address, Result Setter Address...',
+      })}
       className={classes.searchBarTextField}
       InputProps={{
         disableUnderline: true,

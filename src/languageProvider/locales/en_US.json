@@ -156,7 +156,7 @@
   "search.bet": "Betting",
   "search.emptySearchResult": "Oops, your search has no results.",
   "search.loading": "Searching...",
-  "search.placeholder": "Search by Event Name, Topic Address, Result Setter Address...",
+  "search.placeholder": "Search by Event Name, Event Address, Result Setter Address...",
   "search.set": "Result Setting",
   "search.vote": "Voting",
   "search.withdraw": "Withdraw",
