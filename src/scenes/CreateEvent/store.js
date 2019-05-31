@@ -263,7 +263,7 @@ export default class CreateEventStore {
   }
 
   @action
-  open = async () => {
+  init = async () => {
     Tracking.track('dashboard-createEventClick');
     this.currentBlock = this.app.global.syncBlockNum;
 

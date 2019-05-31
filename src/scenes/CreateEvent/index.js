@@ -38,7 +38,7 @@ const messages = defineMessages({
 @observer
 export default class CreateEvent extends Component {
   componentDidMount() {
-    this.props.store.createEvent.open();
+    this.props.store.createEvent.init();
   }
 
   render() {
