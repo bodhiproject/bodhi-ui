@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
   tutorial1Content1Msg: {
     id: 'tutorial1.content1',
-    defaultMessage: 'Naka uses the Bitcoin wallet infrastructure.',
+    defaultMessage: 'Naka uses the Ethereum wallet infrastructure.',
   },
   tutorial1Content2Msg: {
     id: 'tutorial1.content2',
