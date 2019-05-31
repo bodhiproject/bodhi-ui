@@ -4,6 +4,7 @@ import { AppBar, Collapse, Toolbar, withStyles, IconButton, Hidden } from '@mate
 import { Menu } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
+import styles from './styles';
 import BodhiLogo from './Logo';
 import Prediction from './Prediction';
 import Arbitration from './Arbitration';
@@ -12,7 +13,6 @@ import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
-import styles from './styles';
 import { Favorite } from './Favorite';
 
 @withStyles(styles, { withTheme: true })
@@ -50,7 +50,7 @@ export default class NavBar extends Component {
               </Hidden>
               <Favorite {...this.props} />
             </div>
-            <SearchButton classes={classes} />
+            <SearchButton />
             <Hidden xsDown>
               <MyActivities {...this.props} />
               <DropdownMenuButton />
