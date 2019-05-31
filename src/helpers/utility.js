@@ -55,9 +55,13 @@ export function decimalToSatoshi(number) {
   if (!number) {
     return number;
   }
+  const toStringNumber = String(number);
+  const splitArr = toStringNumber.split('.');
+  const integerPart = splitArr[0];
+  const decimalPart = Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION;
 
   const conversionBN = toBN(SATOSHI_CONVERSION);
-  return toBN(number).mul(conversionBN).toString(10);
+  return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
 }
 
 /**
@@ -78,7 +82,10 @@ export function satoshiToDecimal(number) {
   }
 
   const conversionBN = toBN(SATOSHI_CONVERSION);
-  return bn.div(conversionBN).toNumber();
+  const integerPart = bn.div(conversionBN).toNumber();
+  const decimalPartInBN = bn.sub(conversionBN.mul(toBN(integerPart)));
+  const decimalPart = decimalPartInBN.toNumber() / SATOSHI_CONVERSION;
+  return integerPart + decimalPart;
 }
 
 /**

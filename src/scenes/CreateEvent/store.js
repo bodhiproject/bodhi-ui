@@ -527,6 +527,7 @@ export default class CreateEventStore {
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
+    console.log('TCL: CreateEventStore -> submit -> escrowAmountSatoshi', escrowAmountSatoshi);
     // this.isOpen = false;
     props.history.push(Routes.ACTIVITY_HISTORY);
     this.creating = true;
