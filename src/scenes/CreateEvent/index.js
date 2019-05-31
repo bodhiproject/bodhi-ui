@@ -57,7 +57,7 @@ export default class CreateEvent extends Component {
       <Fragment>
         <BackButton />
         <PageContainer>
-          <ContentContainer>
+          <ContentContainer noSideBar>
             <Typography variant="h4" className={classes.title}>
               <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
             </Typography>
@@ -71,8 +71,10 @@ export default class CreateEvent extends Component {
             <ArbitrationRewardSlider />
             <ArbitrationOptionSelector />
             <div className={classes.footer}>
-              <CancelButton />
-              <PublishButton />
+              <div className={classes.buttons}>
+                <CancelButton />
+                <PublishButton />
+              </div>
             </div>
           </ContentContainer>
         </PageContainer>

@@ -50,7 +50,11 @@ const styles = (theme) => ({
     marginBottom: theme.padding.spaceX.px,
   },
   footer: {
+    textAlign: 'right',
     borderTop: theme.border,
+  },
+  buttons: {
+    marginTop: 16,
   },
   buttonIcon: {
     fontSize: theme.sizes.icon.small,
