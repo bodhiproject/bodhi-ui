@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   tutorial5Content4Msg: {
     id: 'tutorial5.content4',
-    defaultMessage: 'When you see your balance on Bodhi Dapp, the Qtum Wallet, or view your transactions on the Qtum Explorer, you are seeing data on the blockchain, not in our personal systems.',
+    defaultMessage: 'When you see your balance on Bodhi Dapp, the Naka Wallet, or view your transactions on the Naka Explorer, you are seeing data on the blockchain, not in our personal systems.',
   },
 });
 

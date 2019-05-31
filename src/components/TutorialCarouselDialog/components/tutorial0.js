@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   tutorial0Content2Msg: {
     id: 'tutorial0.content2',
-    defaultMessage: 'Bodhi Dapp is NOT a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain.',
+    defaultMessage: 'Bodhi Dapp is NOT a standalone wallet. We use the Naka Core Wallet to handle all transactions and interactions with the Naka blockchain.',
   },
   tutorial0Content3Msg: {
     id: 'tutorial0.content3',

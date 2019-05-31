@@ -7,7 +7,7 @@ import { Routes } from 'constants';
 import styles from './styles';
 
 const Wallet = ({ classes, history, store: { global, naka } }) => {
-  // Local wallet means transactions are handled via a local wallet program, eg. Qtum Wallet.
+  // Local wallet means transactions are handled via a local wallet program, eg. Naka Wallet.
   if (global.localWallet) {
     return null;
   }
