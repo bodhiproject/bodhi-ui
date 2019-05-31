@@ -77,12 +77,10 @@ export default class {
     if (this.hasMore) {
       const {
         graphqlClient,
-        naka: { checkLoggedIn },
+        naka: { account },
         global: { eventVersion },
       } = this.app;
 
-      await checkLoggedIn();
-      const { naka: { account } } = this.app;
       if (!account) return INIT_VALUES.list;
 
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };

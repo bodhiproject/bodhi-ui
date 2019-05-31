@@ -69,11 +69,10 @@ export default class {
 
   fetch = async (limit = this.limit, skip = this.skip) => {
     if (this.hasMore) {
-      const { naka: { checkLoggedIn }, graphqlClient } = this.app;
-      await checkLoggedIn();
       const {
         naka: { account },
         global: { eventVersion },
+        graphqlClient,
       } = this.app;
       const filter = { OR: [
         {
