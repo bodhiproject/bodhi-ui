@@ -84,10 +84,6 @@ export default class NakaStore {
     this.app.wallet.onNakaAccountChange({ loggedIn: this.loggedIn, network: this.network, address: this.account, balance: this.balance });
   }
 
-  checkLoggedIn = async () => {
-    if (!this.loggedIn) await window.ethereum.enable();
-  }
-
   @action
   openPopover = async (messageId) => {
     this.popoverOpen = true;

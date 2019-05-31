@@ -125,9 +125,7 @@ export default class {
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
     // Address is required for the request filters
-    const { naka: { checkLoggedIn }, graphqlClient } = this.app;
-    await checkLoggedIn();
-    const { naka: { account } } = this.app;
+    const { naka: { account }, graphqlClient } = this.app;
 
     const filters = { transactorAddress: account };
 
