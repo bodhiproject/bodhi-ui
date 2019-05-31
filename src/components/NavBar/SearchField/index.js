@@ -43,7 +43,10 @@ export default class SearchBarField extends Component {
             },
           }}
         />
-        <div className="icon iconfont icon-ic_close" onClick={ui.disableSearchBarMode} />
+        <div
+          className={`icon iconfont icon-ic_close ${classes.closeButton}`}
+          onClick={ui.disableSearchBarMode}
+        />
       </div>
     );
   }

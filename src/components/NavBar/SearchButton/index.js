@@ -17,7 +17,10 @@ export default class SearchButton extends Component {
     } = this.props;
 
     return (
-      <div className={classes.rightButtonContainer} onClick={ui.enableSearchBarMode}>
+      <div
+        className={classes.rightButtonContainer}
+        onClick={ui.enableSearchBarMode}
+      >
         <Button className={classes.searchButtonIcon}>
           <div className="icon iconfont icon-ic_search" />
           <Typography className={cx(classes.navButton, classes.searchBarFont)}>

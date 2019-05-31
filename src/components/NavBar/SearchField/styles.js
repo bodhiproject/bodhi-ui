@@ -26,4 +26,7 @@ export default (theme) => ({
     padding: `0px ${theme.padding.space2X.px}`,
     borderLeft: `2px solid ${theme.palette.text.hint}`,
   },
+  closeButton: {
+    cursor: 'pointer',
+  },
 });
