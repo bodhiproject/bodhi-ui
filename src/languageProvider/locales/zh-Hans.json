@@ -346,7 +346,7 @@
   "tutorial.previous": "前一个",
   "tutorial0.content0": "菩提Dapps是一个免费，开源的客户端界面。",
   "tutorial0.content1": "它可以让你直接与区块链互动，同时让您对自己密钥及资金有全方面的掌控。",
-  "tutorial0.content2": "Bodhi Dapp is NOT a standalone wallet. We use the Naka Core Wallet to handle all transactions and interactions with the Naka blockchain.",
+  "tutorial0.content2": "Bodhi Dapp is NOT a standalone wallet. We use the Naka Wallet to handle all transactions and interactions with the Naka blockchain.",
   "tutorial0.content3": "您且只有您需对您的安全负责。 这里的安全性是指所有有关区块链及数字货币的安全性。",
   "tutorial0.title": "菩提APP是做什么的",
   "tutorial1.content0": "Assuming you have not used the Naka Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Naka wallet.",

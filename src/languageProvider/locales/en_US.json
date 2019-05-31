@@ -345,7 +345,7 @@
   "tutorial.previous": "Previous",
   "tutorial0.content0": "Bodhi Dapp is a free, open-source, client-side interface.",
   "tutorial0.content1": "It allows you to interact directly with the blockchain while remaining in full control of your keys & your funds.",
-  "tutorial0.content2": "Bodhi Dapp is NOT a standalone wallet. We use the Naka Core Wallet to handle all transactions and interactions with the Naka blockchain.",
+  "tutorial0.content2": "Bodhi Dapp is NOT a standalone wallet. We use the Naka Wallet to handle all transactions and interactions with the Naka blockchain.",
   "tutorial0.content3": "YOU and ONLY YOU are responsible for your security. This saying is applicable for all things related to blockchain and cryptocurrency.",
   "tutorial0.title": "What Is The Bodhi App",
   "tutorial1.content0": "Assuming you have not used the Naka Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Naka wallet.",
