@@ -9,34 +9,30 @@ import { ContentItem } from './contentItem';
 const messages = defineMessages({
   tutorial1Content0Msg: {
     id: 'tutorial1.content0',
-    defaultMessage: 'Assuming you have not used the Naka Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Naka wallet. ',
+    defaultMessage: 'Assuming you have not used the Naka Wallet client before, when you first open the Bodhi Dapp, you need to download a Naka wallet extension. ',
   },
   tutorial1Content1Msg: {
     id: 'tutorial1.content1',
-    defaultMessage: 'Naka uses the Bitcoin Core wallet infrastructure.',
+    defaultMessage: 'Naka uses the Ethereum wallet infrastructure.',
   },
   tutorial1Content2Msg: {
     id: 'tutorial1.content2',
-    defaultMessage: 'Bitcoin wallets already contain roughly 100 different addresses assigned to one wallet. This is why you might see new addresses appearing in your wallet.',
+    defaultMessage: 'The Naka Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
   },
   tutorial1Content3Msg: {
     id: 'tutorial1.content3',
-    defaultMessage: 'The Naka Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
+    defaultMessage: 'We never transmit, receive, or store your private key, passphrase, or other account information.',
   },
   tutorial1Content4Msg: {
     id: 'tutorial1.content4',
-    defaultMessage: 'We never transmit, receive, or store your private key, passphrase, or other account information.',
+    defaultMessage: 'You are simply using our interface to interact directly with the Naka blockchain.',
   },
   tutorial1Content5Msg: {
     id: 'tutorial1.content5',
-    defaultMessage: 'You are simply using our interface to interact directly with the Naka blockchain.',
+    defaultMessage: 'If you send your public key (Naka address) to someone, they can send you NAKA or NBOT.',
   },
   tutorial1Content6Msg: {
     id: 'tutorial1.content6',
-    defaultMessage: 'If you send your public key (Naka address) to someone, they can send you NAKA or NBOT.',
-  },
-  tutorial1Content7Msg: {
-    id: 'tutorial1.content7',
     defaultMessage: 'If you send your passphrase, wallet data file, and/or private key to someone, they now have full control of your account.',
   },
 });
@@ -54,7 +50,6 @@ const Tutorial1 = ({ classes }) => (
       <ContentItem id={messages.tutorial1Content4Msg.id} defaultMessage={messages.tutorial1Content4Msg.defaultMessage} />
       <ContentItem id={messages.tutorial1Content5Msg.id} defaultMessage={messages.tutorial1Content5Msg.defaultMessage} />
       <ContentItem id={messages.tutorial1Content6Msg.id} defaultMessage={messages.tutorial1Content6Msg.defaultMessage} />
-      <ContentItem id={messages.tutorial1Content7Msg.id} defaultMessage={messages.tutorial1Content7Msg.defaultMessage} />
     </ul>
   </div>
 );
