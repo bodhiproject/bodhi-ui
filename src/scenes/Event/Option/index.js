@@ -79,7 +79,6 @@ export default class Option extends Component {
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.eventOptionWrapper}>
-                <div className={classes.eventOptionNum}>{idx + 1}</div>
                 <Typography variant="h6">
                   {name}
                 </Typography>
