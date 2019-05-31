@@ -137,7 +137,7 @@
   "navBar.leaderboard": "리더 보드",
   "navBar.settings": "설정",
   "navbar.arbitration": "NBOT 배심원",
-  "navbar.prediction": "Prediction",
+  "navbar.prediction": "예측",
   "note.currentAllowanceMessage": "이것은 귀하의 현재 NBOT 승인 금액을 나타냅니다. 이 금액까지 사용할 수 있습니다. 현재 승인 된 금액이 0보다 크고 승인 된 금액을 늘리려는 경우 트랜잭션을 먼저 수행하여 0으로 다시 설정해야합니다.",
   "note.currentAllowanceTitle": "현재 수당: {allowance} NBOT",
   "oracle.betStartTimeDisabledText": "베팅 시작 시간이 아직 시작되지 않았습니다.",
