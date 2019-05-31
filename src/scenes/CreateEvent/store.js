@@ -162,6 +162,18 @@ export default class CreateEventStore {
       },
     };
   }
+  @computed get predictionPeriod() {
+    const { prediction: { startTime, endTime } } = this;
+    const ms = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'));
+    const d = moment.duration(ms);
+    return Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
+  }
+  @computed get resultSettingPeriod() {
+    const { resultSetting: { startTime, endTime } } = this;
+    const ms = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'));
+    const d = moment.duration(ms);
+    return Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
+  }
   @computed get isAllValid() {
     const { title, creator, prediction, resultSetting, outcomes, resultSetter } = this.error;
     return (

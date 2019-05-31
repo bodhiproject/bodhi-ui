@@ -5,10 +5,10 @@ import { injectIntl } from 'react-intl';
 
 import styles from './styles';
 
-export const Section = injectIntl(withStyles(styles, { withTheme: true })(({ title, children, column = false, intl, classes }) => (
+export const Section = injectIntl(withStyles(styles, { withTheme: true })(({ title, children, column = false, intl, classes, note }) => (
   <SectionContainer>
     <Grid item xs={12} sm={3} className={classes.createEventSectionTitle}>
-      {intl.formatMessage(title)}
+      {note ? `${intl.formatMessage(title)}: ${note}` : `${intl.formatMessage(title)}`}
     </Grid>
     <Grid item xs={12} sm={9} style={{ flexDirection: column ? 'column' : 'row', display: 'flex' }}>
       {children}

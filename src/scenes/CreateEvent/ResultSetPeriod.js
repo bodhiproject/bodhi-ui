@@ -12,8 +12,8 @@ const messages = defineMessages({
   },
 });
 
-const ResultSetPeriod = observer(({ store: { createEvent } }) => (
-  <Section title={messages.createResultSetStartTimeMsg}>
+const ResultSetPeriod = observer(({ store: { createEvent, createEvent: { resultSettingPeriod } } }) => (
+  <Section title={messages.createResultSetStartTimeMsg} note={resultSettingPeriod}>
     <DateRow
       error={createEvent.error.resultSetting.startTime}
       onChange={e => moment(e.target.value).isValid && (createEvent.resultSetting.startTime = moment(e.target.value).utc().unix())}
