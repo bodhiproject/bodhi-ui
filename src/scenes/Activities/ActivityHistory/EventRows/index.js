@@ -73,7 +73,6 @@ class EventRow extends Component {
               {name || ''}
             </NameLinkCell>
             <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
-            <TableCell numeric>{`${satoshiToDecimal(gasFee)} ${Token.NBOT}`}</TableCell>
             <TableCell>
               <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
                 {(txt) => i18nToUpperCase(txt)}

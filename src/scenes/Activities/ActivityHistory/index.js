@@ -42,13 +42,6 @@ const headerCols = [
     sortable: true,
   },
   {
-    id: 'fee',
-    name: 'str.fee',
-    nameDefault: 'Gas Fee (NAKA)',
-    numeric: true,
-    sortable: true,
-  },
-  {
     id: 'status',
     name: 'str.status',
     nameDefault: 'Status',
