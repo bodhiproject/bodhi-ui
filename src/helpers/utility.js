@@ -58,7 +58,8 @@ export function decimalToSatoshi(number) {
   const toStringNumber = String(number);
   const splitArr = toStringNumber.split('.');
   const integerPart = splitArr[0];
-  const decimalPart = Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION;
+
+  const decimalPart = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
 
   const conversionBN = toBN(SATOSHI_CONVERSION);
   return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
