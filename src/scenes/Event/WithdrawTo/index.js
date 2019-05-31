@@ -42,16 +42,16 @@ const WithdrawList = ({ withdrawableAddress }) => (
 const TableHeader = () => (
   <TableHead>
     <TableRow>
-      <TableCell padding="dense">
+      <TableCell>
         <FormattedMessage id="str.address" defaultMessage="Address" />
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         <FormattedMessage id="str.escrow" defaultMessage="Escrow" />
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         <FormattedMessage id="str.amount" defaultMessage="Amount" />
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         <FormattedMessage id="str.actions" defaultMessage="Actions" />
       </TableCell>
     </TableRow>
@@ -68,17 +68,17 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAm
 
   return (
     <TableRow key={key}>
-      <TableCell padding="dense">
+      <TableCell>
         <Address>{address}</Address>
         {disabled && <Warning id={id} message={message} className={warningType} />}
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         {escrowAmount}
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         {nbotWinnings}
       </TableCell>
-      <TableCell padding="dense">
+      <TableCell>
         <Button
           size="small"
           variant="contained"

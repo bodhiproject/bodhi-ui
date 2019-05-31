@@ -50,16 +50,16 @@ export default class EventResultHistory extends Component {
           <ResponsiveTable>
             <TableHead>
               <TableRow>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.date" defaultMessage="Date" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.amount" defaultMessage="Amount" />
                 </TableCell>
               </TableRow>
@@ -85,10 +85,10 @@ const ResultRows = ({ resultSetsHistory, intl, getTypeText }) => map(resultSetsH
   const blockTime = block ? block.blockTime : messages.strPendingMsg;
   return (
     <TableRow key={`result-${index}`}>
-      <TableCell padding="dense">{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
-      <TableCell padding="dense">{getTypeText(resultSet, index)}</TableCell>
-      <TableCell padding="dense">{`${resultIndex} ${resultName}`}</TableCell>
-      <TableCell padding="dense">{`${amount} ${Token.NBOT}`}</TableCell>
+      <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+      <TableCell>{getTypeText(resultSet, index)}</TableCell>
+      <TableCell>{`${resultIndex} ${resultName}`}</TableCell>
+      <TableCell>{`${amount} ${Token.NBOT}`}</TableCell>
     </TableRow>
   );
 });

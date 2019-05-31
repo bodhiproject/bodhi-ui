@@ -21,22 +21,22 @@ export default class TransactionHistory extends Component {
           <ResponsiveTable>
             <TableHead>
               <TableRow>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.date" defaultMessage="Date" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.type" defaultMessage="Type" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.description" defaultMessage="Description" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.amount" defaultMessage="Amount" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                   <FormattedMessage id="str.status" defaultMessage="Status" />
                 </TableCell>
-                <TableCell padding="dense">
+                <TableCell>
                 </TableCell>
               </TableRow>
             </TableHead>

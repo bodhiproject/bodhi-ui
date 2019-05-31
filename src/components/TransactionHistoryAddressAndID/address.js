@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 
 const TransactionHistoryAddress = ({ classes, transaction, colSpan }) => (
-  <TableCell padding="dense" colSpan={colSpan}>
+  <TableCell colSpan={colSpan}>
     <div className={classes.txidWrapper}>
       <div>
         <FormattedMessage id="str.addressUsed" defaultMessage="Address Used" />

@@ -1,8 +1,9 @@
 import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
-import { toHex, padRight } from 'web3-utils';
+import { utf8ToHex, padRight } from 'web3-utils';
 import { TransactionType } from 'constants';
+import { cloneDeep } from 'lodash';
 import {
   addPendingEvent,
   addPendingBet,
@@ -20,6 +21,7 @@ const CREATE_EVENT_FUNC_SIG = '2b2601bf';
 const BET_EVENT_FUNC_SIG = '885ab66d';
 const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
+
 const CREATE_EVENT_FUNC_TYPES = [
   'string',
   'bytes32[3]',
@@ -28,6 +30,8 @@ const CREATE_EVENT_FUNC_TYPES = [
   'uint256',
   'uint256',
   'address',
+  'uint8',
+  'uint256',
 ];
 const PLAY_EVENT_FUNC_TYPES = [
   'uint8',
@@ -175,7 +179,7 @@ export default class TransactionStore {
       // Construct params for executing tx
       const createEventParams = [
         name,
-        toJS(results),
+        cloneDeep(results),
         betStartTime,
         betEndTime,
         resultSetStartTime,
@@ -187,9 +191,9 @@ export default class TransactionStore {
       // Format results to bytes32 types
       for (let i = 0; i < 3; i++) {
         if (createEventParams[1][i]) {
-          createEventParams[1][i] = padRight(toHex(createEventParams[1][i]), 64);
+          createEventParams[1][i] = padRight(utf8ToHex(createEventParams[1][i]), 64);
         } else {
-          createEventParams[1][i] = padRight(toHex(''), 64);
+          createEventParams[1][i] = padRight(utf8ToHex(''), 64);
         }
       }
 
