@@ -79,8 +79,10 @@ export function satoshiToDecimal(number) {
   if (isNaN(Number(number))) {
     bn = toBN(number, 16);
   } else {
-    number -= (number % 1);
-    bn = toBN(number);
+    const toStringNumber = String(number);
+    const splitArr = toStringNumber.split('.');
+    const integerPart = splitArr[0];
+    bn = toBN(integerPart);
   }
 
   const conversionBN = toBN(SATOSHI_CONVERSION);
