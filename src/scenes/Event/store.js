@@ -110,6 +110,14 @@ export default class EventStore {
     };
   }
 
+  @computed get remainingConsensusThreshold() {
+    const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
+    return toFixed(NP.minus(
+      consensusThreshold,
+      Number(this.selectedOption.amount)
+    ));
+  }
+
   constructor(app) {
     this.app = app;
   }
