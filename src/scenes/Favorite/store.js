@@ -1,7 +1,7 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import { each } from 'lodash';
 import { STORAGE_KEY } from '../../config/app';
-import { EVENT_STATUS, Routes, SortBy } from '../../constants';
+import { Routes, SortBy } from '../../constants';
 import { events } from '../../network/graphql/queries';
 
 const INIT_VALUES = {

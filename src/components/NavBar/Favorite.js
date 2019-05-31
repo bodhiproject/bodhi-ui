@@ -8,13 +8,13 @@ import { Routes, EventStatus } from 'constants';
 import styles from './styles';
 import NavLink from './components/NavLink';
 
-export const Favorite = withStyles(styles)(inject('store')(observer(({ classes, store: { favorite, ui } }) => (
+export const Favorite = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <NavLink to={Routes.FAVORITE}>
     <Button
-      data-index={EventStatus.VOTE}
+      data-index={EventStatus.FAVORITE}
       className={cx(
         classes.navButton,
-        ui.location === Routes.ARBITRATION ? 'selected' : '',
+        ui.location === Routes.FAVORITE ? 'selected' : '',
       )}
     >
       <FavoriteIcon />

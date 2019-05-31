@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import { TextField, InputAdornment, FormControl, FormHelperText, Button, withStyles } from '@material-ui/core';
+import { TextField, FormControl, FormHelperText, Button, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 
 import { Section } from './components';
