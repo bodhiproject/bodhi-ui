@@ -98,7 +98,7 @@ export default class EventCard extends Component {
     const { classes, index, onClick } = this.props;
     const { address, name, isPending, url, status, totalBets, getEndTime } = this.props.event;
     return (
-      <Grid item xs={12} sm={6} md={4} lg={3}>
+      <Grid item xs={12} sm={6} lg={4}>
         <Link to={url}>
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
