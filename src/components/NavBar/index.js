@@ -12,7 +12,6 @@ import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import styles from './styles';
-import FavoriteDrawer from '../FavoriteDrawer';
 import { Favorite } from './Favorite';
 
 @withStyles(styles, { withTheme: true })
@@ -48,7 +47,7 @@ export default class NavBar extends Component {
                 <Prediction {...this.props} />
                 <Arbitration {...this.props} />
               </Hidden>
-              <Favorite />
+              <Favorite {...this.props} />
             </div>
             <SearchButton classes={classes} />
             <Hidden xsDown>
@@ -76,7 +75,6 @@ export default class NavBar extends Component {
         <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>
           <SearchResult />
         </Collapse>
-        <FavoriteDrawer />
       </AppBar>
     );
   }

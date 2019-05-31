@@ -8,7 +8,6 @@ export { default as GlobalDialog } from './GlobalDialog';
 export { default as EventListLoading } from './EventListLoading';
 export { default as EventWarning } from './EventWarning';
 export { default as FavoriteButton } from './FavoriteButton';
-export { default as FavoriteCard } from './FavoriteCard';
 export { default as GlobalSnackbar } from './GlobalSnackbar';
 export { default as ImportantNote } from './ImportantNote';
 export { default as Loading } from './Loading';

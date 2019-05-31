@@ -1,4 +1,4 @@
-import { action, runInAction, toJS } from 'mobx';
+import { action, runInAction } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { utf8ToHex, padRight } from 'web3-utils';

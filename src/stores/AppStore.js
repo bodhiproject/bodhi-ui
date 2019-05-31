@@ -8,6 +8,7 @@ import WalletStore from './WalletStore';
 import TransactionStore from './TransactionStore';
 import AllEventsStore from './AllEventsStore';
 import ArbitrationStore from '../scenes/Arbitration/store';
+import FavoriteStore from '../scenes/Favorite/store';
 import PredictionStore from '../scenes/Prediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
@@ -19,7 +20,6 @@ import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import GlobalDialogStore from '../components/GlobalDialog/store';
 import TxSentDialogStore from '../components/TxSentDialog/store';
-import FavoriteStore from '../components/FavoriteDrawer/store';
 
 class AppStore {
   @observable graphqlClient = undefined;

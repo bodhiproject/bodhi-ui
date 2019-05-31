@@ -29,6 +29,11 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
+        path={`${url}${Routes.FAVORITE}`}
+        component={asyncComponent(() => import('../Favorite'))}
+      />
+      <Route
+        exact
         path={`${url}/event/:url`}
         component={asyncComponent(() => import('../Event'))}
       />
