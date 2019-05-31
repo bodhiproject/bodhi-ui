@@ -40,18 +40,8 @@ export default (theme) => ({
     justifyContent: 'flex-end',
   },
   bottomBarTxt: {
-    [theme.breakpoints.up('sm')]: {
-      '&.blockNum': {
-        marginRight: theme.padding.space2X.px,
-      },
-    },
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.sizes.font.xxSmall,
-    },
-    [theme.breakpoints.up('xs')]: {
-      '&.network': {
-        marginRight: theme.padding.space2X.px,
-      },
     },
   },
 });
