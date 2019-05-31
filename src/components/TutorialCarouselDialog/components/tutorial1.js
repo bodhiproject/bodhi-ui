@@ -9,11 +9,11 @@ import { ContentItem } from './contentItem';
 const messages = defineMessages({
   tutorial1Content0Msg: {
     id: 'tutorial1.content0',
-    defaultMessage: 'Assuming you have not used the Qtum Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Qtum wallet. ',
+    defaultMessage: 'Assuming you have not used the Naka Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Naka wallet. ',
   },
   tutorial1Content1Msg: {
     id: 'tutorial1.content1',
-    defaultMessage: 'Qtum uses the Bitcoin Core wallet infrastructure.',
+    defaultMessage: 'Naka uses the Bitcoin Core wallet infrastructure.',
   },
   tutorial1Content2Msg: {
     id: 'tutorial1.content2',
@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   tutorial1Content3Msg: {
     id: 'tutorial1.content3',
-    defaultMessage: 'The Qtum Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
+    defaultMessage: 'The Naka Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
   },
   tutorial1Content4Msg: {
     id: 'tutorial1.content4',
@@ -29,11 +29,11 @@ const messages = defineMessages({
   },
   tutorial1Content5Msg: {
     id: 'tutorial1.content5',
-    defaultMessage: 'You are simply using our interface to interact directly with the Qtum blockchain.',
+    defaultMessage: 'You are simply using our interface to interact directly with the Naka blockchain.',
   },
   tutorial1Content6Msg: {
     id: 'tutorial1.content6',
-    defaultMessage: 'If you send your public key (Qtum address) to someone, they can send you NAKA or NBOT.',
+    defaultMessage: 'If you send your public key (Naka address) to someone, they can send you NAKA or NBOT.',
   },
   tutorial1Content7Msg: {
     id: 'tutorial1.content7',
@@ -44,7 +44,7 @@ const messages = defineMessages({
 const Tutorial1 = ({ classes }) => (
   <div>
     <Typography variant="h4" classes={{ subtitle1: classes.tutorialDialogContentTitle }}>
-      <FormattedMessage id="tutorial1.title" defaultMessage="Bodhi Dapp Uses The Qtum Wallet" />
+      <FormattedMessage id="tutorial1.title" defaultMessage="Bodhi Dapp Uses The Naka Wallet" />
     </Typography>
     <ul className={classes.contentList}>
       <ContentItem id={messages.tutorial1Content0Msg.id} defaultMessage={messages.tutorial1Content0Msg.defaultMessage} />
