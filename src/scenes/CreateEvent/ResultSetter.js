@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FormControl, TextField, FormHelperText, Button, withStyles } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, withStyles } from '@material-ui/core';
 import { Section, SelectAddressDialog } from './components';
 
 import styles from './styles';
@@ -11,9 +11,9 @@ const messages = defineMessages({
     id: 'create.resultSetterPlaceholder',
     defaultMessage: 'e.g. qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna',
   },
-  createSelectMyAddressMsg: {
-    id: 'create.selectMyAddress',
-    defaultMessage: 'Select My Address',
+  select: {
+    id: 'create.select',
+    defaultMessage: 'Select',
   },
   strResultSetterMsg: {
     id: 'str.resultSetter',
@@ -33,7 +33,6 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
     <TextField
       InputProps={{
         classes: { input: classes.createEventTextField },
-        endAdornment: <SelectAddressButton onClick={() => createEvent.resultSetterDialogOpen = true} />,
       }}
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
@@ -46,11 +45,5 @@ const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ cla
     )}
   </FormControl>
 ))));
-
-const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
-  <Button className={classes.selectAddressButton} variant="contained" color="primary" size="small" {...props}>
-    {intl.formatMessage(messages.createSelectMyAddressMsg)}
-  </Button>
-)));
 
 export default inject('store')(observer(ResultSetter));

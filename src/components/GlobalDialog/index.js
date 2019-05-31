@@ -12,10 +12,6 @@ const messages = defineMessages({
     id: 'str.error',
     defaultMessage: 'Error',
   },
-  'create.pendingExists': {
-    id: 'create.pendingExists',
-    defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-  },
 });
 
 @injectIntl

@@ -1,12 +1,11 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { withStyles } from '@material-ui/core';
-import cx from 'classnames';
+import { CircularProgress, withStyles } from '@material-ui/core';
 import styles from './styles';
 
 export default withStyles(styles)(injectIntl(({ classes, text, intl, ...props }) => (
   <div className={classes.col} {...props} >
-    <div className={props.event ? cx(classes.loading, 'event') : classes.loading} {...props} />
+    <CircularProgress color="primary" size={32} thickness={5} />
     {text && intl.formatMessage({ id: text.id, defaultMessage: text.defaultMessage })}
   </div>
 )));

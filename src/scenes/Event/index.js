@@ -25,7 +25,7 @@ import { Sidebar } from './Sidebar';
 const messages = defineMessages({
   loadOracleMsg: {
     id: 'load.oracle',
-    defaultMessage: 'Loading Oracle...',
+    defaultMessage: 'Loading Event...',
   },
   consensusThreshold: {
     id: 'oracle.consensusThreshold',
@@ -38,7 +38,7 @@ const messages = defineMessages({
 });
 
 @injectIntl
-@withStyles(styles)
+@withStyles(styles, { withTheme: true })
 @withRouter
 @inject('store')
 @observer

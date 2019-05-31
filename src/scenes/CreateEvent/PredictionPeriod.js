@@ -12,8 +12,8 @@ const messages = defineMessages({
   },
 });
 
-const PredictionPeriod = observer(({ store: { createEvent } }) => (
-  <Section title={messages.createBetStartTimeMsg}>
+const PredictionPeriod = observer(({ store: { createEvent, createEvent: { predictionPeriod } } }) => (
+  <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
     <DateRow
       error={createEvent.error.prediction.startTime}
       onChange={e => moment(e.target.value).isValid && (createEvent.prediction.startTime = moment(e.target.value).utc().unix())}

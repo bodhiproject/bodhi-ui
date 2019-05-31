@@ -8,7 +8,7 @@ import { EXPLORER } from '../../network/routes';
 
 
 const TransactionHistoryID = ({ classes, transaction, colSpan }) => (
-  <TableCell padding="dense" colSpan={colSpan}>
+  <TableCell colSpan={colSpan}>
     <div className={classes.txidWrapper}>
       <div>
         <FormattedMessage id="str.transactionIdX" defaultMessage="Transaction ID: {txid}" values={{ txid: '' }} />

@@ -12,7 +12,6 @@ import { defineMessages } from 'react-intl';
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import { GRAPHQL, API } from '../../network/routes';
-import { isProduction, defaults } from '../../config/app';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
@@ -56,10 +55,6 @@ const messages = defineMessages({
     id: 'create.nameLong',
     defaultMessage: 'Event name is too long.',
   },
-  createPendingExists: {
-    id: 'create.pendingExists',
-    defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-  },
   invalidAddress: {
     id: 'create.invalidAddress',
     defaultMessage: 'Invalid address',
@@ -70,6 +65,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
+const VALIDATE_TIME_GAP_MIN_SEC = 30 * 60;
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
@@ -77,6 +73,9 @@ const INIT = {
   loaded: false,
   creating: false,
   escrowAmount: undefined,
+  arbLengths: [],
+  thresholdOptions: [],
+  arbOptions: [],
   averageBlockTime: 3,
   txFees: [],
   resultSetterDialogOpen: false,
@@ -92,6 +91,8 @@ const INIT = {
   },
   outcomes: ['', ''],
   resultSetter: '',
+  arbRewardPercent: 10,
+  arbOptionSelected: 0,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -111,6 +112,9 @@ const INIT = {
 
 export default class CreateEventStore {
   @observable escrowAmount = INIT.escrowAmount // decimal number
+  arbLengths = INIT.arbLengths // array of numbers
+  thresholdOptions = INIT.thresholdOptions // array of decimal numbers
+  @observable arbOptions = INIT.arbOptions
   averageBlockTime = INIT.averageBlockTime
   @observable txFees = INIT.txFees
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
@@ -125,6 +129,8 @@ export default class CreateEventStore {
   @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
   @observable resultSetter = INIT.resultSetter // address
+  @observable arbRewardPercent = INIT.arbRewardPercent
+  @observable arbOptionSelected = INIT.arbOptionSelected
   @observable error = INIT.error
 
   @computed get hasEnoughFee() {
@@ -155,6 +161,18 @@ export default class CreateEventStore {
         endTime: this.calculateBlock(resultSetting.endTime),
       },
     };
+  }
+  @computed get predictionPeriod() {
+    const { prediction: { startTime, endTime } } = this;
+    const ms = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'));
+    const d = moment.duration(ms);
+    return Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
+  }
+  @computed get resultSettingPeriod() {
+    const { resultSetting: { startTime, endTime } } = this;
+    const ms = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'));
+    const d = moment.duration(ms);
+    return Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
   }
   @computed get isAllValid() {
     const { title, creator, prediction, resultSetting, outcomes, resultSetter } = this.error;
@@ -250,7 +268,8 @@ export default class CreateEventStore {
   open = async () => {
     Tracking.track('dashboard-createEventClick');
     this.isOpen = true;
-    this.loaded = true;
+    this.currentBlock = this.app.global.syncBlockNum;
+
     // Check if there is a current address
     if (isEmpty(this.app.wallet.currentAddress)) {
       this.app.naka.openPopover('naka.loginToView');
@@ -258,13 +277,26 @@ export default class CreateEventStore {
       return;
     }
 
-    // Close if unable to get the escrow amount
+    // Fetch escrow amount from ConfigManager
     const escrowAmountSuccess = await this.getEscrowAmount();
     if (!escrowAmountSuccess) {
       this.close();
       return;
     }
-    this.currentBlock = this.app.global.syncBlockNum;
+
+    // Fetch arbitration lengths from ConfigManager
+    const arbLengthsSuccess = await this.getArbitrationLengths();
+    if (!arbLengthsSuccess) {
+      this.close();
+      return;
+    }
+    // Fetch arbitration lengths from ConfigManager
+    const thresholdsSuccess = await this.getConsensusThresholds();
+    if (!thresholdsSuccess) {
+      this.close();
+      return;
+    }
+    this.constructArbOptions();
 
     runInAction(async () => {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
@@ -278,34 +310,6 @@ export default class CreateEventStore {
   }
 
   /**
-   * Checks for any pending create event txs for the current wallet address.
-   * @return {boolean} True if the current wallet address has pending create txs.
-   */
-  hasPendingCreateTxs = async () => {
-    try {
-      const { currentAddress } = this.app.wallet;
-      const { PENDING } = TransactionStatus;
-      const filters = [
-        { status: PENDING, type: TransactionType.APPROVE_CREATE_EVENT, senderAddress: currentAddress },
-        { status: PENDING, type: TransactionType.CREATE_EVENT, senderAddress: currentAddress },
-      ];
-      const pendingCreates = await queryAllTransactions(filters);
-      if (pendingCreates.length > 0) {
-        this.app.globalDialog.setError({
-          id: 'create.pendingExists',
-          defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-        });
-        this.close();
-        return true;
-      }
-    } catch (err) {
-      this.app.globalDialog.setError(err.message, `${GRAPHQL.HTTP}/all-transactions`);
-      this.close();
-    }
-    return false;
-  }
-
-  /**
    * Fetches the escrow amount from the API.
    * @return {boolean} True if the API call was successful.
    */
@@ -316,10 +320,56 @@ export default class CreateEventStore {
       this.escrowAmount = satoshiToDecimal(result);
       return true;
     } catch (err) {
-      this.app.globalDialog.setError(`${err.message} : ${err.response.data.error}`);
-      this.close();
+      this.app.globalDialog.setError(`${err.message}: ${err.response.data.error}`);
     }
     return false;
+  }
+
+  /**
+   * Fetches the arbitration lengths from the API.
+   * @return {boolean} True if the API call was successful.
+   */
+  @action
+  getArbitrationLengths = async () => {
+    try {
+      const { data: { result } } = await axios.get(API.ARBITRATION_LENGTH);
+      // TODO: Change seconds to hours (or minutes?)
+      this.arbLengths = result;
+      return true;
+    } catch (err) {
+      this.app.globalDialog.setError(`${err.message}: ${err.response.data.error}`);
+    }
+    return false;
+  }
+
+  /**
+   * Fetches the consensus thresholds from the API.
+   * @return {boolean} True if the API call was successful.
+   */
+  @action
+  getConsensusThresholds = async () => {
+    try {
+      const { data: { result } } = await axios.get(API.STARTING_CONSENSUS_THRESHOLD);
+      this.thresholdOptions = map(result, satoshiToDecimal);
+      return true;
+    } catch (err) {
+      this.app.globalDialog.setError(`${err.message}: ${err.response.data.error}`);
+    }
+    return false;
+  }
+
+  @action
+  constructArbOptions = () => {
+    if (this.arbLengths.length !== this.thresholdOptions.length) return;
+
+    const opts = [];
+    each(this.arbLengths, (arbLength, index) => {
+      opts.push({
+        length: arbLength,
+        threshold: this.thresholdOptions[index],
+      });
+    });
+    this.arbOptions = opts;
   }
 
   @action
@@ -332,6 +382,16 @@ export default class CreateEventStore {
   addOutcome = (outcome = '') => {
     this.outcomes.push(outcome);
     this.error.outcomes.push(outcome);
+  }
+
+  @action
+  setArbRewardPercent = (percent) => {
+    this.arbRewardPercent = percent;
+  }
+
+  @action
+  setArbOptionSelected = (index) => {
+    this.arbOptionSelected = index;
   }
 
   @action
@@ -375,7 +435,7 @@ export default class CreateEventStore {
   validatePredictionEndTime = () => {
     if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = messages.createDatePastMsg.id;
-    } else if (this.prediction.endTime - this.prediction.startTime < TIME_GAP_MIN_SEC) {
+    } else if (this.prediction.endTime - this.prediction.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
       this.error.prediction.endTime = '';
@@ -397,7 +457,7 @@ export default class CreateEventStore {
   validateResultSettingEndTime = () => {
     if (this.isBeforeNow(this.resultSetting.endTime)) {
       this.error.resultSetting.endTime = messages.createDatePastMsg.id;
-    } else if (this.resultSetting.endTime - this.resultSetting.startTime < TIME_GAP_MIN_SEC) {
+    } else if (this.resultSetting.endTime - this.resultSetting.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.resultSetting.endTime = messages.createValidResultSetEndMsg.id;
     } else {
       this.error.resultSetting.endTime = '';
@@ -480,6 +540,8 @@ export default class CreateEventStore {
       resultSetStartTime: this.resultSetting.startTime,
       resultSetEndTime: this.resultSetting.endTime,
       amountSatoshi: escrowAmountSatoshi,
+      arbitrationOptionIndex: this.arbOptionSelected,
+      arbitrationRewardPercentage: this.arbRewardPercent,
       language :this.app.ui.locale,
     });
 

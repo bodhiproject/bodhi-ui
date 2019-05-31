@@ -93,7 +93,7 @@ export default class Search extends Component {
         className={classes.searchTabWrapper}
         indicatorColor="primary"
         textColor="primary"
-        fullWidth
+        variant="fullWidth"
         value={search.tabIdx}
         onChange={(e, v) => search.onTabChange(v)}
       >
@@ -169,7 +169,7 @@ export default class Search extends Component {
         <div>
           {this.renderTabs()}
           <div className={classes.searchTabContainer}>
-            <Grid container spacing={theme.padding.space3X.value}>
+            <Grid container spacing={2}>
               {loading
                 ? <Loading message={messages.searchingMsg} />
                 : this.renderEvents()

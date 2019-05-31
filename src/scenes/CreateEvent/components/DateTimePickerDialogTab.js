@@ -31,7 +31,7 @@ export class DateTimePickerDialogTab extends Component {
     return (
       <Tabs
         indicatorColor="primary"
-        fullWidth
+        variant="fullWidth"
         value={this.pickerViewToIndex(pickerView)}
         onChange={this.handleChange}
       >

@@ -24,7 +24,7 @@ export default class Withdraw extends Component {
       <Fragment>
         {account ? (
           <InfiniteScroll
-            spacing={theme.padding.space3X.value}
+            spacing={2}
             data={events}
             loadMore={loadMore}
             loadingMore={loadingMore}

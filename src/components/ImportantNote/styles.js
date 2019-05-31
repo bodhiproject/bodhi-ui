@@ -9,6 +9,7 @@ const styles = (theme) => ({
     width: theme.sizes.icon.large,
     height: theme.sizes.icon.large,
     backgroundColor: 'transparent',
+    padding: 0,
     '&:hover': {
       backgroundColor: 'transparent',
     },

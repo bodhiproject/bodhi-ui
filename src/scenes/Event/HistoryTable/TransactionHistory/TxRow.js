@@ -68,12 +68,12 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(txType, intl)}</TableCell>
-          <TableCell padding="dense">{this.description}</TableCell>
-          <TableCell padding="dense">{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>
-          <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
-          <TableCell padding="dense">
+          <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+          <TableCell>{getTxTypeString(txType, intl)}</TableCell>
+          <TableCell>{this.description}</TableCell>
+          <TableCell>{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>
+          <TableCell>{intl.formatMessage(statusMsg)}</TableCell>
+          <TableCell>
             <i
               className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowSize)}
               onClick={this.toggle}

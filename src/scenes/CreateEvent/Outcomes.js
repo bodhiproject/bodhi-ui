@@ -9,7 +9,7 @@ import { Section } from './components';
 import styles from './styles';
 
 const MIN_OPTION_NUMBER = 2;
-const MAX_OPTION_NUMBER = 10;
+const MAX_OPTION_NUMBER = 3;
 
 const messages = defineMessages({
   createOutcomeNameMsg: {
@@ -55,13 +55,12 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
       <TextField
         fullWidth
         value={outcome}
-        onChange={e => createEvent.outcomes[i] = e.target.value}
+        onChange={e => createEvent.outcomes[i] = String(e.target.value)}
         onBlur={() => createEvent.validateOutcome(i)}
-        placeholder={intl.formatMessage(messages.createOutcomeNameMsg)}
+        placeholder={`${intl.formatMessage(messages.createOutcomeNameMsg)} #${i + 1}`}
         error={Boolean(createEvent.error.outcomes[i])}
         InputProps={{
           classes: { input: classes.createEventTextField },
-          startAdornment: <InputAdornment position="start" classes={{ positionStart: classes.createEventInputAdornment }}>#{i + 1}</InputAdornment>,
         }}
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
