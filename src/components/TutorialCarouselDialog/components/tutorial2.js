@@ -13,14 +13,6 @@ const messages = defineMessages({
   },
   tutorial2Content1Msg: {
     id: 'tutorial2.content1',
-    defaultMessage: 'To encrypt your wallet, select “Launch Naka Wallet” in the application menu and follow the instructions here.',
-  },
-  tutorial2Content2Msg: {
-    id: 'tutorial2.content2',
-    defaultMessage: 'Bitcoin wallets already contain roughly 100 different addresses assigned to one wallet. This is why you might see new addresses appearing in your wallet.',
-  },
-  tutorial2Content3Msg: {
-    id: 'tutorial2.content3',
     defaultMessage: 'The Naka Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
   },
 });
@@ -34,28 +26,12 @@ const Tutorial2 = ({ classes }) => (
       <ContentItem id={messages.tutorial2Content0Msg.id} defaultMessage={messages.tutorial2Content0Msg.defaultMessage} />
       <li>
         <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#wallet-encryption" target="_blank">
-            https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#wallet-encryption
-          </a>
-        </Typography>
-      </li>
-      <li>
-        <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#wallet-backup" target="_blank">
-            https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#wallet-backup
-          </a>
-        </Typography>
-      </li>
-      <li>
-        <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#restore-wallet-backup" target="_blank">
-            https://github.com/qtumproject/qtum/wiki/Naka-Wallet-Tutorial#restore-wallet-backup
+          <a className={classes.link} href="https://medium.com/publicaio/a-complete-guide-to-using-metamask-updated-version-cd0d6f8c338f" target="_blank">
+          https://medium.com/publicaio/a-complete-guide-to-using-metamask-updated-version-cd0d6f8c338f
           </a>
         </Typography>
       </li>
       <ContentItem id={messages.tutorial2Content1Msg.id} defaultMessage={messages.tutorial2Content1Msg.defaultMessage} />
-      <ContentItem id={messages.tutorial2Content2Msg.id} defaultMessage={messages.tutorial2Content2Msg.defaultMessage} />
-      <ContentItem id={messages.tutorial2Content3Msg.id} defaultMessage={messages.tutorial2Content3Msg.defaultMessage} />
     </ul>
   </div>
 );
