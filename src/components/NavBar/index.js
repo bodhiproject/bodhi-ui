@@ -62,7 +62,7 @@ export default class NavBar extends Component {
                 color="inherit"
                 aria-label="Menu"
               >
-                <Menu />
+                <Menu />\
               </IconButton>
             </Hidden>
           </Toolbar>
