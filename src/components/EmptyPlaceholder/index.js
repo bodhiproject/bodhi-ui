@@ -3,6 +3,7 @@ import { inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Typography, withWidth, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Routes } from 'constants';
 import styles from './styles';
 
@@ -22,13 +23,14 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
       </Row>
       {ui.location === Routes.PREDICTION && !ui.searchBarMode &&
       <Row>
-        <Button
-          size={width === 'xs' ? 'small' : 'medium'}
-          color="primary"
-          onClick={createEvent.open}
-        >
-          <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
-        </Button>
+        <Link to={Routes.CREATE_EVENT}>
+          <Button
+            size={width === 'xs' ? 'small' : 'medium'}
+            color="primary"
+          >
+            <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
+          </Button>
+        </Link>
       </Row>
       }
     </Row>

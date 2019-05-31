@@ -12,7 +12,6 @@ import {
 
 import styles from './styles';
 import AppRouter from './router';
-import CreateEventFormDialog from '../CreateEvent';
 
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
@@ -27,7 +26,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <GlobalSnackbar />
         <GlobalDialog />
         <TxSentDialog />
-        <CreateEventFormDialog />
         <InstallNakaWalletPopover />
       </Fragment>
     )}

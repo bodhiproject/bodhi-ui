@@ -6,6 +6,10 @@ const styles = (theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  title: {
+    marginBottom: theme.padding.space5X.px,
+    fontSize: theme.sizes.font.large,
+  },
   createDialog: {
     overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
@@ -46,7 +50,11 @@ const styles = (theme) => ({
     marginBottom: theme.padding.spaceX.px,
   },
   footer: {
+    textAlign: 'right',
     borderTop: theme.border,
+  },
+  buttons: {
+    marginTop: 16,
   },
   buttonIcon: {
     fontSize: theme.sizes.icon.small,

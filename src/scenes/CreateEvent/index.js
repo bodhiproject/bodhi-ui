@@ -1,10 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Dialog, DialogContent, DialogActions, DialogTitle, Button, withStyles } from '@material-ui/core';
+import { Button, withStyles, Typography } from '@material-ui/core';
 import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { EventWarning as _EventWarning, ImportantNote, Loading } from 'components';
+import { EventWarning as _EventWarning, ImportantNote, Loading, BackButton, PageContainer,
+  ContentContainer } from 'components';
 import { EventWarningType } from 'constants';
 import styles from './styles';
 import Title from './Title';
@@ -29,6 +30,58 @@ const messages = defineMessages({
     defaultMessage: 'Please Wait',
   },
 });
+
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@withRouter
+@inject('store')
+@observer
+export default class CreateEvent extends Component {
+  componentDidMount() {
+    this.props.store.createEvent.init();
+  }
+
+  render() {
+    const {
+      store: {
+        createEvent: { loaded },
+      },
+      classes,
+    } = this.props;
+
+    if (!loaded) {
+      return <Loading text={messages.pleaseWait} />;
+    }
+
+    return (
+      <Fragment>
+        <BackButton />
+        <PageContainer>
+          <ContentContainer noSideBar>
+            <Typography variant="h4" className={classes.title}>
+              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+            </Typography>
+            <EscrowAmountNote />
+            <EventWarning />
+            <Title />
+            <PredictionPeriod />
+            <ResultSetPeriod />
+            <Outcomes />
+            <ResultSetter />
+            <ArbitrationRewardSlider />
+            <ArbitrationOptionSelector />
+            <div className={classes.footer}>
+              <div className={classes.buttons}>
+                <CancelButton />
+                <PublishButton />
+              </div>
+            </div>
+          </ContentContainer>
+        </PageContainer>
+      </Fragment>
+    );
+  }
+}
 
 const EventWarning = inject('store')(observer(({ store: { createEvent: { hasEnoughFee, warning } } }) => (
   !hasEnoughFee && <_EventWarning id={warning.id} message={warning.message} type={EventWarningType.ERROR} />
@@ -59,42 +112,3 @@ const PublishButton = withStyles(styles)(withRouter(inject('store')(observer(({ 
     <FormattedMessage id="create.publish" defaultMessage="Publish" />
   </Button>
 )))));
-
-const CreateEventDialog = ({ classes, store: { createEvent: { isOpen, loaded } } }) => (
-  <Dialog
-    className={classes.createDialog}
-    classes={{ paper: classes.createDialogPaper }}
-    fullWidth={loaded}
-    maxWidth='md'
-    open={isOpen}
-  >
-    <DialogTitle className={classes.createDialogTitle}>
-      <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-    </DialogTitle>
-    <DialogContent>
-      {loaded ? (
-        <Fragment>
-          <EscrowAmountNote />
-          <EventWarning />
-          <Title />
-          <PredictionPeriod />
-          <ResultSetPeriod />
-          <Outcomes />
-          <ResultSetter />
-          <ArbitrationRewardSlider />
-          <ArbitrationOptionSelector />
-        </Fragment>
-      ) : (
-        <Loading text={messages.pleaseWait} />
-      )}
-    </DialogContent>
-    {loaded && (
-      <DialogActions className={classes.footer}>
-        <CancelButton />
-        <PublishButton />
-      </DialogActions>
-    )}
-  </Dialog>
-);
-
-export default withStyles(styles)(inject('store')(observer(CreateEventDialog)));

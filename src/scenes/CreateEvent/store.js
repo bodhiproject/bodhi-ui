@@ -69,7 +69,6 @@ const VALIDATE_TIME_GAP_MIN_SEC = 30 * 60;
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
-  isOpen: false,
   loaded: false,
   creating: false,
   escrowAmount: undefined,
@@ -92,7 +91,7 @@ const INIT = {
   outcomes: ['', ''],
   resultSetter: '',
   arbRewardPercent: 10,
-  arbOptionSelected: 0,
+  arbOptionSelected: 1,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
@@ -120,7 +119,6 @@ export default class CreateEventStore {
   @observable resultSetterDialogOpen = INIT.resultSetterDialogOpen
 
   // form fields
-  @observable isOpen = INIT.isOpen
   @observable loaded = INIT.loaded
   @observable creating = INIT.creating
   @observable title = INIT.title
@@ -265,17 +263,9 @@ export default class CreateEventStore {
   }
 
   @action
-  open = async () => {
+  init = async () => {
     Tracking.track('dashboard-createEventClick');
-    this.isOpen = true;
     this.currentBlock = this.app.global.syncBlockNum;
-
-    // Check if there is a current address
-    if (isEmpty(this.app.wallet.currentAddress)) {
-      this.app.naka.openPopover('naka.loginToView');
-      this.close();
-      return;
-    }
 
     // Fetch escrow amount from ConfigManager
     const escrowAmountSuccess = await this.getEscrowAmount();
@@ -527,7 +517,6 @@ export default class CreateEventStore {
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
-    // this.isOpen = false;
     props.history.push(Routes.ACTIVITY_HISTORY);
     this.creating = true;
     await this.app.tx.executeCreateEvent({

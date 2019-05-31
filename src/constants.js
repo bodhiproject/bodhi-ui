@@ -18,6 +18,7 @@ module.exports = {
     ALL_EVENTS: '/all-events',
     SETTINGS: '/settings',
     LEADERBOARD: '/leaderboard',
+    CREATE_EVENT: '/create-event',
   },
 
   EventType: {

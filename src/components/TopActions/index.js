@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Button, Grid, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
-
+import { Routes } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -29,16 +30,17 @@ export default class TopActions extends Component {
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={6}>
           {!noCreateEventButton && (
-            <Button
-              variant="contained"
-              size="medium"
-              color="primary"
-              className={classes.createEventButton}
-              onClick={createEvent.open}
-            >
-              <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
-              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-            </Button>
+            <Link to={Routes.CREATE_EVENT}>
+              <Button
+                variant="contained"
+                size="medium"
+                color="primary"
+                className={classes.createEventButton}
+              >
+                <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
+                <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+              </Button>
+            </Link>
           )}
         </Grid>
       </Grid>
