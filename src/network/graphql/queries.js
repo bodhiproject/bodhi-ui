@@ -70,18 +70,18 @@ const QUERIES = {
 
   searchEvents: gql`
     query(
-      $searchPhrase: String
-      $filter: EventFilter
+      $filter: SearchEventsFilter
       $orderBy: [Order!]
       $limit: Int
       $skip: Int
+      $searchPhrase: String
     ) {
       searchEvents(
-        searchPhrase: $searchPhrase
         filter: $filter
         orderBy: $orderBy
         limit: $limit
         skip: $skip
+        searchPhrase: $searchPhrase
       ) {
         ${MULTIPLE_RESULTS_EVENT}
       }
