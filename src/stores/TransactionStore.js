@@ -1,8 +1,9 @@
 import { action, runInAction, toJS } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
-import { toHex, padRight } from 'web3-utils';
+import { utf8ToHex, padRight } from 'web3-utils';
 import { TransactionType } from 'constants';
+import { cloneDeep } from 'lodash';
 import {
   addPendingEvent,
   addPendingBet,
@@ -178,7 +179,7 @@ export default class TransactionStore {
       // Construct params for executing tx
       const createEventParams = [
         name,
-        toJS(results),
+        cloneDeep(results),
         betStartTime,
         betEndTime,
         resultSetStartTime,
@@ -190,9 +191,9 @@ export default class TransactionStore {
       // Format results to bytes32 types
       for (let i = 0; i < 3; i++) {
         if (createEventParams[1][i]) {
-          createEventParams[1][i] = padRight(toHex(createEventParams[1][i]), 64);
+          createEventParams[1][i] = padRight(utf8ToHex(createEventParams[1][i]), 64);
         } else {
-          createEventParams[1][i] = padRight(toHex(''), 64);
+          createEventParams[1][i] = padRight(utf8ToHex(''), 64);
         }
       }
 
