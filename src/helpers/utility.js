@@ -79,6 +79,7 @@ export function satoshiToDecimal(number) {
   if (isNaN(Number(number))) {
     bn = toBN(number, 16);
   } else {
+    number -= (number % 1);
     bn = toBN(number);
   }
 
