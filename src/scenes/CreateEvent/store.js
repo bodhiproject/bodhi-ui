@@ -91,7 +91,7 @@ const INIT = {
   outcomes: ['', ''],
   resultSetter: '',
   arbRewardPercent: 10,
-  arbOptionSelected: 0,
+  arbOptionSelected: 1,
   // if one of these in error is set, the form field will display the associated error message
   error: {
     title: '',
