@@ -84,8 +84,8 @@ export function satoshiToDecimal(number) {
 
   const conversionBN = toBN(SATOSHI_CONVERSION);
   const integerPart = bn.div(conversionBN).toNumber();
-  const decimalPartInBN = bn.sub(conversionBN.mul(toBN(integerPart)));
-  const decimalPart = decimalPartInBN.toNumber() / SATOSHI_CONVERSION;
+  const decimalPartBN = bn.sub(conversionBN.mul(toBN(integerPart)));
+  const decimalPart = decimalPartBN.toNumber() / SATOSHI_CONVERSION;
   return integerPart + decimalPart;
 }
 
