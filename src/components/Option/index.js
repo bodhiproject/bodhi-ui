@@ -56,7 +56,7 @@ export default class Option extends Component {
               value={percent}
               className={classes.root}
             />
-            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}</span></div>
+            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
           </div>
         </div>
       </div>
