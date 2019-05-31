@@ -62,6 +62,11 @@ const AppRouter = ({ url }) => {
         path={`${url}${Routes.LEADERBOARD}`}
         component={asyncComponent(() => import('../Leaderboard'))}
       />
+      <Route
+        exact
+        path={`${url}${Routes.CREATE_EVENT}`}
+        component={asyncComponent(() => import('../CreateEvent'))}
+      />
     </Switch>
   );
 };
