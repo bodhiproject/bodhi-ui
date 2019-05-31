@@ -6,6 +6,10 @@ const styles = (theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  title: {
+    marginBottom: theme.padding.space5X.px,
+    fontSize: theme.sizes.font.large,
+  },
   createDialog: {
     overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
