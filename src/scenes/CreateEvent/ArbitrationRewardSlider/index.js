@@ -40,7 +40,7 @@ export default class ArbitrationRewardSlider extends Component {
 
   renderBound = (value) => (
     <Typography variant="body1" >
-      {value}
+      {`${value}%`}
     </Typography>
   );
 
