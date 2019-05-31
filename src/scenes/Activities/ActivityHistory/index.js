@@ -10,6 +10,7 @@ import EventRows from './EventRows';
 import Config from '../../../config/app';
 import Loading from '../../../components/EventListLoading';
 import EmptyPlaceholder from '../../../components/EmptyPlaceholder';
+import TopActions from '../../../components/TopActions';
 
 const headerCols = [
   {
@@ -83,18 +84,20 @@ export default class ActivityHistory extends Component {
     this.props.store.activities.history.init();
   }
 
-  render() {
+  renderContent() {
     const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
     const { loaded } = history;
-
     if (!loaded) return <Loading />;
+    if (currentAddress) return <EventHistoryContent history={history} classes={classes} />;
+
+    return <InstallNakaWalletInline />;
+  }
+
+  render() {
     return (
       <div>
-        {currentAddress ? (
-          <EventHistoryContent history={history} classes={classes} />
-        ) : (
-          <InstallNakaWalletInline />
-        )}
+        <TopActions />
+        {this.renderContent()}
       </div>
     );
   }
