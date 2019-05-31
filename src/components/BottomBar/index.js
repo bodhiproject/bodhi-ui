@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unused-state */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import { inject, observer } from 'mobx-react';
-import { Box, Paper, Grid, Typography, withStyles, withWidth } from '@material-ui/core';
+import { Box, Paper, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
@@ -11,7 +11,6 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
-@withWidth()
 @inject('store')
 @observer
 export default class BottomBar extends Component {
@@ -22,7 +21,6 @@ export default class BottomBar extends Component {
   render() {
     const {
       classes,
-      width,
       store: {
         global: { syncBlockTime, syncBlockNum, online },
         naka: { loggedIn },
@@ -32,21 +30,17 @@ export default class BottomBar extends Component {
     return (
       <Paper className={classes.paper}>
         <Box display="flex" justifyContent="flex-start">
-          <NetworkConnection width={width} online={online} loggedIn={loggedIn} />
+          <NetworkConnection online={online} loggedIn={loggedIn} />
         </Box>
         <Box display="flex" justifyContent="flex-end">
-          <BlockInfo
-            width={width}
-            blockNum={syncBlockNum}
-            blockTime={syncBlockTime}
-          />
+          <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />
         </Box>
       </Paper>
     );
   }
 }
 
-const NetworkConnection = withStyles(styles)(({ classes, width, online, loggedIn }) => (
+const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => (
   <div>
     <div className={classes.statusContainer}>
       {online
@@ -69,7 +63,7 @@ const NetworkConnection = withStyles(styles)(({ classes, width, online, loggedIn
   </div>
 ));
 
-const BlockInfo = withStyles(styles)(({ classes, width, blockNum, blockTime }) => (
+const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
   <div>
     <div className={classes.blockItemContainer}>
       <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
