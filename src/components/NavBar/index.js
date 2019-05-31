@@ -7,7 +7,8 @@ import { isEmpty } from 'lodash';
 import BodhiLogo from './Logo';
 import Prediction from './Prediction';
 import Arbitration from './Arbitration';
-import { SearchButton, SearchBarField } from './Search';
+import SearchField from './SearchField';
+import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
@@ -69,7 +70,7 @@ export default class NavBar extends Component {
         <DropdownMenu />
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchBarField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            <SearchField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>
