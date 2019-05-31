@@ -6,7 +6,7 @@ const styles = theme => ({
     marginTop: '40px',
   },
   outWrapper: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit(3),
     overflowX: 'auto',
     boxShadow: 'none',
   },
@@ -14,7 +14,7 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     height: 50,
-    paddingLeft: theme.spacing.unit * 4,
+    paddingLeft: theme.spacing.unit(4),
   },
   img: {
     height: 255,
