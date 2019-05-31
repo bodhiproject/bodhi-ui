@@ -11,6 +11,7 @@ module.exports = {
   Routes: {
     PREDICTION: '/',
     ARBITRATION: '/arbitration',
+    FAVORITE: '/favorite',
     WALLET: '/wallet',
     SET: '/activities/set',
     WITHDRAW: '/activities/withdraw',
