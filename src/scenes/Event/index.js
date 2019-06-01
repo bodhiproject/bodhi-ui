@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -31,9 +32,17 @@ const messages = defineMessages({
     id: 'oracle.consensusThreshold',
     defaultMessage: 'Consensus Threshold',
   },
+  remainingConsensusThreshold: {
+    id: 'oracle.remainingConsensusThreshold',
+    defaultMessage: 'Remaining Consensus Threshold',
+  },
   setResultExplanation: {
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
+  },
+  setRemainingExplanation: {
+    id: 'oracle.setRemainingExplanation',
+    defaultMessage: 'You can only stake up to the remaining Consensus Threshold amount.',
   },
 });
 
@@ -108,6 +117,15 @@ export default class EventPage extends Component {
     );
   }
 
+  renderRemainingConsensusThresholdMessage = () => {
+    const { intl, store: { eventPage: { selectedOption, isArbitration, remainingConsensusThreshold } } } = this.props;
+    const heading = `${intl.formatMessage(messages.remainingConsensusThreshold)} ${remainingConsensusThreshold} NBOT`;
+    const message = intl.formatMessage(messages.setRemainingExplanation);
+    if (isArbitration && !isEmpty(selectedOption)) {
+      return <ImportantNote heading={heading} message={message} />;
+    }
+  }
+
   renderActionButton = () => {
     const {
       classes,
@@ -152,6 +170,7 @@ export default class EventPage extends Component {
       {this.renderEventWarning()}
       {this.renderOptions()}
       {this.renderConsensusThresholdMessage()}
+      {this.renderRemainingConsensusThresholdMessage()}
       {this.renderActionButton()}
     </Fragment>
   )
