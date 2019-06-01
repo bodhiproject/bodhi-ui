@@ -1,11 +1,10 @@
 import React, { Fragment, Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormControl, FormHelperText, withStyles, Card, CardContent, Typography } from '@material-ui/core';
+import { TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
-
 import styles from './styles';
-
 import { DateTimePickerDialog } from './DateTimePickerDialog';
 
 @injectIntl
@@ -38,6 +37,9 @@ export class DateTimePickerCombo extends Component {
               </Typography>
               <Typography variant="subtitle1">
                 {moment.unix(value).format('MMM Do YYYY')}
+                <MuiPickersUtilsProvider>
+                  <TimePicker value={new Date()} />
+                </MuiPickersUtilsProvider>
               </Typography>
             </CardContent>
           </Card>
