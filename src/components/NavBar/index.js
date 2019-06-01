@@ -4,14 +4,15 @@ import { AppBar, Collapse, Toolbar, withStyles, IconButton, Hidden } from '@mate
 import { Menu } from '@material-ui/icons';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
+import styles from './styles';
 import BodhiLogo from './Logo';
 import Prediction from './Prediction';
 import Arbitration from './Arbitration';
-import { SearchButton, SearchBarField } from './Search';
+import SearchField from './SearchField';
+import SearchButton from './SearchButton';
 import MyActivities from './MyActivities';
 import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
-import styles from './styles';
 import { Favorite } from './Favorite';
 
 @withStyles(styles, { withTheme: true })
@@ -49,7 +50,7 @@ export default class NavBar extends Component {
               </Hidden>
               <Favorite {...this.props} />
             </div>
-            <SearchButton classes={classes} />
+            <SearchButton />
             <Hidden xsDown>
               <MyActivities {...this.props} />
               <DropdownMenuButton />
@@ -61,7 +62,7 @@ export default class NavBar extends Component {
                 color="inherit"
                 aria-label="Menu"
               >
-                <Menu />
+                <Menu />\
               </IconButton>
             </Hidden>
           </Toolbar>
@@ -69,7 +70,7 @@ export default class NavBar extends Component {
         <DropdownMenu />
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchBarField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            <SearchField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>
