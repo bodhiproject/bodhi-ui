@@ -25,7 +25,6 @@ const Title = withStyles(styles, { withTheme: true })(observer(({ classes, store
   <Section title={messages.createTitleMsg}>
     <FormControl fullWidth>
       <TextField
-        InputProps={{ classes: { input: classes.createEventTextField } }}
         placeholder={intl.formatMessage(messages.createNamePlaceholderMsg)}
         value={createEvent.title}
         onChange={e => createEvent.title = e.target.value}

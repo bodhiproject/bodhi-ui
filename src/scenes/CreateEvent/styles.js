@@ -26,11 +26,6 @@ const styles = (theme) => ({
   escrowAmountNote: {
     margin: `${theme.padding.space3X.px} 0 0 0`,
   },
-  createEventTextField: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall,
-    },
-  },
   createEventInputAdornment: {
     [theme.breakpoints.down('xs')]: {
       fontSize: theme.sizes.font.xxSmall,

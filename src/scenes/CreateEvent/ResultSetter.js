@@ -31,9 +31,6 @@ const ResultSetter = ({ store: { createEvent } }) => (
 const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, intl, createEvent }) => (
   <FormControl fullWidth>
     <TextField
-      InputProps={{
-        classes: { input: classes.createEventTextField },
-      }}
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
       placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}

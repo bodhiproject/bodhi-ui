@@ -59,9 +59,6 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ c
         onBlur={() => createEvent.validateOutcome(i)}
         placeholder={`${intl.formatMessage(messages.createOutcomeNameMsg)} #${i + 1}`}
         error={Boolean(createEvent.error.outcomes[i])}
-        InputProps={{
-          classes: { input: classes.createEventTextField },
-        }}
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}
