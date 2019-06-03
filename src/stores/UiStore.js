@@ -40,20 +40,23 @@ export default class UiStore {
     momentDurationFormat(moment);
     moment.updateLocale('en', {
       longDateFormat: {
-        LLL: 'M/D/YY H:mm:ss',
-        LLLL: 'MMM Do, YYYY H:mm:ss',
+        LL: 'MMM Do, H:mm a',
+        LLL: 'M/D/YY H:mm a',
+        LLLL: 'MMM Do, YYYY, H:mm a',
       },
     });
     moment.updateLocale('ko', {
       longDateFormat: {
-        LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY년 M월D일 H:mm:ss',
+        LL: 'M월D일 H:mm a',
+        LLL: 'YY/M/D H:mm a',
+        LLLL: 'YYYY년 M월D일 H:mm a',
       },
     });
     moment.updateLocale('zh-cn', {
       longDateFormat: {
+        LL: 'M月D日 H:mm a',
         LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY年M月D日 H:mm:ss',
+        LLLL: 'YYYY年M月D日 H:mm a',
       },
     });
 

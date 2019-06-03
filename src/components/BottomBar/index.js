@@ -93,7 +93,7 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
 
 const getTime = (blockTime) => {
   if (blockTime) {
-    return moment.unix(blockTime).format('MMM Do, hh:mm a');
+    return moment.unix(blockTime).format('LL');
   }
   return '';
 };
