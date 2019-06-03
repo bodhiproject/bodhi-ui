@@ -23,12 +23,11 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store } = this.props;
-    const { createEvent } = store;
+    const { classes, noCreateEventButton, fontSize } = this.props;
 
     return (
-      <Grid container className={classes.dashboardActionsWrapper} sm={12}>
-        <Grid item xs={12} sm={12}>
+      <Grid container className={classes.dashboardActionsWrapper}>
+        <Grid item xs={6}>
           {!noCreateEventButton && (
             <Link to={Routes.CREATE_EVENT}>
               <Button

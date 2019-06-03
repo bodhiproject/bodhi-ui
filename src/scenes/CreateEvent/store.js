@@ -533,7 +533,6 @@ export default class CreateEventStore {
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
-    props.history.push(Routes.ACTIVITY_HISTORY);
     this.creating = true;
     await this.app.tx.executeCreateEvent({
       senderAddress: this.app.wallet.currentAddress,
@@ -551,6 +550,7 @@ export default class CreateEventStore {
     });
 
     this.close();
+    props.history.push(Routes.ACTIVITY_HISTORY);
   }
 
   close = () => Object.assign(this, INIT)
