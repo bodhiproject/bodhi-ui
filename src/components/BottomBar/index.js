@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import { Box, Paper, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { sumBy } from 'lodash';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
@@ -91,17 +90,6 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
     </div>
   </div>
 ));
-
-const getNBOTBalance = (wallet) => {
-  const walletAddresses = wallet.addresses;
-  let totalNbot = 0;
-  if (walletAddresses && walletAddresses.length) {
-    totalNbot = sumBy(walletAddresses, (address) => address.nbot ? address.nbot : 0);
-  } else {
-    return '';
-  }
-  return totalNbot.toFixed(2);
-};
 
 const getTime = (blockTime) => {
   if (blockTime) {
