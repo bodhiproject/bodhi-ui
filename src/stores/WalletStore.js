@@ -7,7 +7,9 @@ import { NakaBodhiToken, TokenExchange } from '../config/contracts';
 
 const INIT_VALUE = {
   addresses: [],
-  currentWalletAddress: undefined,
+  address: undefined,
+  nbot: undefined,
+  naka: undefined,
   nbotContract: undefined,
   nbotOwner: undefined,
   exchangeRate: undefined,
@@ -15,7 +17,11 @@ const INIT_VALUE = {
 
 export default class WalletStore {
   @observable addresses = INIT_VALUE.addresses;
-  @observable currentWalletAddress = INIT_VALUE.currentWalletAddress;
+  @observable currentWalletAddress = observable({
+    address: INIT_VALUE.address,
+    nbot: INIT_VALUE.nbot,
+    naka: INIT_VALUE.naka,
+  });
   @observable nbotOwner = INIT_VALUE.nbotOwner;
   @observable exchangeRate = INIT_VALUE.exchangeRate
   nbotContract = INIT_VALUE.nbotContract;
@@ -86,7 +92,7 @@ export default class WalletStore {
     }
 
     if (fetchInitNbotBalance) {
-      this.fetchNbotBalance(address);
+      await this.fetchNbotBalance(address);
       await this.fetchNbotOwner();
       await this.fetchExchangeRate();
     }

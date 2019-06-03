@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import moment from 'moment';
 import { EVENT_STATUS } from 'constants';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { isEmpty, each } from 'lodash';
-
+import { getTimeString } from '../../helpers';
 import styles from './styles';
 
 // Current step positions. Index defines which step the Event is in.
@@ -76,12 +75,12 @@ export default class StepperVertRight extends Component {
       description: `${formatMessage(messages.blockMsg)}: ${event.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      description: `${moment.unix(event.betStartTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(event.betEndTime).format('LLL')}`,
+      description: `${getTimeString(event.betStartTime)}
+        ${RANGE_SEPARATOR} ${getTimeString(event.betEndTime)}`,
     }, {
       title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Event Result Setting" />,
-      description: `${moment.unix(event.resultSetStartTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(event.resultSetEndTime).format('LLL')}`,
+      description: `${getTimeString(event.resultSetStartTime)}
+        ${RANGE_SEPARATOR} ${getTimeString(event.resultSetEndTime)}`,
     }];
 
     if (event.status === EVENT_STATUS.CREATED) {
@@ -94,7 +93,7 @@ export default class StepperVertRight extends Component {
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
-        description: `${moment.unix(event.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${getTimeString(event.resultSetEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
       current = OPEN_RESULT_SETTING;
@@ -105,8 +104,8 @@ export default class StepperVertRight extends Component {
       each(arbitrations, (item) => {
         value.push({
           title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-          description: `${moment.unix(lastArbitrationEndTime).format('LLL')}
-            ${RANGE_SEPARATOR} ${moment.unix(item.block.blockTime).format('LLL')}`,
+          description: `${getTimeString(lastArbitrationEndTime)}
+            ${RANGE_SEPARATOR} ${getTimeString(item.block.blockTime)}`,
         });
         lastArbitrationEndTime = item.block.blockTime;
       });
@@ -116,8 +115,8 @@ export default class StepperVertRight extends Component {
       // Add current arbitration step for event
       value.push({
         title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-        description: `${moment.unix(lastArbitrationEndTime).format('LLL')}
-          ${RANGE_SEPARATOR} ${moment.unix(currentArbitrationEndTime).format('LLL')}`,
+        description: `${getTimeString(lastArbitrationEndTime)}
+          ${RANGE_SEPARATOR} ${getTimeString(currentArbitrationEndTime)}`,
       });
       // Highlight last DecentralizedOracle voting
       current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
@@ -127,7 +126,7 @@ export default class StepperVertRight extends Component {
       // Add withdrawing step for TopicEvent
       value.push({
         title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
-        description: `${moment.unix(lastArbitrationEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${getTimeString(lastArbitrationEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
       if (syncBlockTime >= lastArbitrationEndTime) {

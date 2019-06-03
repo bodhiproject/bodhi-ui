@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { map } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
@@ -8,6 +7,7 @@ import { ResponsiveTable } from 'components';
 import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
+import { getTimeString } from '../../../../helpers';
 
 const messages = defineMessages({
   emptyTxHistoryMsg: {
@@ -85,7 +85,7 @@ const ResultRows = ({ resultSetsHistory, intl, getTypeText }) => map(resultSetsH
   const blockTime = block ? block.blockTime : messages.strPendingMsg;
   return (
     <TableRow key={`result-${index}`}>
-      <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+      <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
       <TableCell>{getTypeText(resultSet, index)}</TableCell>
       <TableCell>{`${resultIndex} ${resultName}`}</TableCell>
       <TableCell>{`${amount} ${Token.NBOT}`}</TableCell>

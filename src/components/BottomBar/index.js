@@ -22,8 +22,9 @@ export default class BottomBar extends Component {
     const {
       classes,
       store: {
-        global: { syncBlockTime, syncBlockNum, online },
+        global: { syncBlockTime, online },
         naka: { loggedIn },
+        wallet: { lastAddressWithdrawLimit },
       },
     } = this.props;
 
@@ -33,7 +34,7 @@ export default class BottomBar extends Component {
           <NetworkConnection online={online} loggedIn={loggedIn} />
         </Box>
         <Box display="flex" justifyContent="flex-end">
-          <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />
+          <Info blockTime={syncBlockTime} lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
         </Box>
       </Paper>
     );
@@ -63,16 +64,16 @@ const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => 
   </div>
 ));
 
-const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
+const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime }) => (
   <div>
     <div className={classes.blockItemContainer}>
       <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
         <span>
           <FormattedMessage
-            id="bottomBar.blockNum"
-            defaultMessage="Current Block Number"
+            id="bottomBar.blockTime"
+            defaultMessage="Current Block Time"
           />
-          {`: ${blockNum}`}
+          {`: ${getTime(blockTime)}`}
         </span>
       </Typography>
     </div>
@@ -80,12 +81,19 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
       <Typography variant="body2" className={classes.bottomBarTxt}>
         <span>
           <FormattedMessage
-            id="bottomBar.blockTime"
-            defaultMessage="Current Block Time"
+            id="bottomBar.nbotBalance"
+            defaultMessage="NBOT Balance"
           />
-          {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
+          {`: ${lastAddressWithdrawLimit.NBOT ? lastAddressWithdrawLimit.NBOT.toFixed(2) : ''}`}
         </span>
       </Typography>
     </div>
   </div>
 ));
+
+const getTime = (blockTime) => {
+  if (blockTime) {
+    return moment.unix(blockTime).format('LL');
+  }
+  return '';
+};

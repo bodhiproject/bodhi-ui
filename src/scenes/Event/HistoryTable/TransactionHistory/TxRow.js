@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
@@ -9,7 +8,7 @@ import { Token } from 'constants';
 
 import styles from './styles';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { satoshiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal, getTimeString } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -68,7 +67,7 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+          <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
           <TableCell>{getTxTypeString(txType, intl)}</TableCell>
           <TableCell>{this.description}</TableCell>
           <TableCell>{!amount ? '' : `${satoshiToDecimal(amount)} ${Token.NBOT}`}</TableCell>

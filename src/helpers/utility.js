@@ -156,15 +156,15 @@ export function gasToNaka(gas) {
  * @return {String} A string either showing "ended" or the duration in human friendly way.
  */
 export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isShort) {
-  const { day, hour, minute, second, end } = messages;
+  const { day, hour, minute, end } = messages;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
     return formatMessage(end);
   }
 
-  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} hh:mm:ss`);
-  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}] s[${formatMessage(second)}]`);
+  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} hh:mm`);
+  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}]`);
 }
 
 /**
@@ -182,6 +182,20 @@ export function getEndTimeCornerString(unix) {
     ret.day = dest.format('MMM Do YY');
   }
   return ret;
+}
+
+/**
+ * Converts a timestamp to the display string.
+ * @param unix {Number} The timestamp to convert. Formatted in unix time format.
+ * @return {String} A string representing the time, with or without year
+ */
+export function getTimeString(time) {
+  const dest = moment.unix(time);
+  if (dest.isSame(moment(), 'year')) {
+    // don't show year
+    return dest.format('LL');
+  }
+  return dest.format('LLLL');
 }
 
 /**

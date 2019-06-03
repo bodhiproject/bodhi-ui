@@ -1,11 +1,10 @@
 import React from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString } from '../../../helpers';
+import { getEndTimeCountDownString, getTimeString } from '../../../helpers';
 import styles from './styles';
 
 const message = defineMessages({
@@ -46,7 +45,7 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
 ));
 
 const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
-  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
+  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getTimeString(endTime)} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
 
 const Funding = ({ event: { totalBets } }) => (
