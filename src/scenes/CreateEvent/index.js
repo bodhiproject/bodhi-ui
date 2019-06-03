@@ -12,7 +12,6 @@ import Title from './Title';
 import PredictionPeriod from './PredictionPeriod';
 import ResultSetPeriod from './ResultSetPeriod';
 import Outcomes from './Outcomes';
-import ResultSetter from './ResultSetter';
 import ArbitrationRewardSlider from './ArbitrationRewardSlider';
 import ArbitrationOptionSelector from './ArbitrationOptionSelector';
 
