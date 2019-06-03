@@ -7,7 +7,7 @@ const INIT_VALUES = {
   localWallet: false,
   socketOnline: false,
   internetOnline: navigator.onLine,
-  eventVersion: 3,
+  eventVersion: 4,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
