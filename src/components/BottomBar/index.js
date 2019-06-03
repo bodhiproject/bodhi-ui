@@ -25,7 +25,7 @@ export default class BottomBar extends Component {
       store: {
         global: { syncBlockTime, online },
         naka: { loggedIn },
-        wallet,
+        wallet: { lastAddressWithdrawLimit },
       },
     } = this.props;
 
@@ -35,7 +35,7 @@ export default class BottomBar extends Component {
           <NetworkConnection online={online} loggedIn={loggedIn} />
         </Box>
         <Box display="flex" justifyContent="flex-end">
-          <Info blockTime={syncBlockTime} wallet={wallet} />
+          <Info blockTime={syncBlockTime} lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
         </Box>
       </Paper>
     );
@@ -65,7 +65,7 @@ const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => 
   </div>
 ));
 
-const Info = withStyles(styles)(({ classes, wallet, blockTime }) => (
+const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime }) => (
   <div>
     <div className={classes.blockItemContainer}>
       <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
@@ -74,7 +74,7 @@ const Info = withStyles(styles)(({ classes, wallet, blockTime }) => (
             id="bottomBar.blockTime"
             defaultMessage="Current Block Time"
           />
-          {blockTime ? `: ${moment.unix(blockTime).format('LLL')}` : ''}
+          {`: ${getTime(blockTime)}`}
         </span>
       </Typography>
     </div>
@@ -85,7 +85,7 @@ const Info = withStyles(styles)(({ classes, wallet, blockTime }) => (
             id="bottomBar.nbotBalance"
             defaultMessage="NBOT Balance"
           />
-          {`: ${getNBOTBalance(wallet)}`}
+          {`: ${lastAddressWithdrawLimit.NBOT ? lastAddressWithdrawLimit.NBOT.toFixed(2) : ''}`}
         </span>
       </Typography>
     </div>
@@ -97,6 +97,15 @@ const getNBOTBalance = (wallet) => {
   let totalNbot = 0;
   if (walletAddresses && walletAddresses.length) {
     totalNbot = sumBy(walletAddresses, (address) => address.nbot ? address.nbot : 0);
+  } else {
+    return '';
   }
   return totalNbot.toFixed(2);
+};
+
+const getTime = (blockTime) => {
+  if (blockTime) {
+    return moment.unix(blockTime).format('MMM Do, hh:mm a');
+  }
+  return '';
 };
