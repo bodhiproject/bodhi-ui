@@ -4,14 +4,14 @@ import { observable, computed, reaction, action, runInAction } from 'mobx';
 import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
-import { toHex, isAddress } from 'web3-utils';
+import { utf8ToHex, isAddress } from 'web3-utils';
 
-import { TransactionType, TransactionStatus, Routes } from 'constants';
+import { Routes } from 'constants';
 import { defineMessages } from 'react-intl';
 
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
-import { GRAPHQL, API } from '../../network/routes';
+import { API } from '../../network/routes';
 import { queryAllTransactions } from '../../network/graphql/queries';
 
 const messages = defineMessages({
@@ -403,7 +403,7 @@ export default class CreateEventStore {
   @action
   validateTitle = () => {
     // Remove hex prefix for length validation
-    const hexString = toHex(this.title || '').slice(2);
+    const hexString = utf8ToHex(this.title || '').slice(2);
     if (!this.title) {
       this.error.title = messages.createRequiredMsg.id;
     } else if (hexString && hexString.length > MAX_LEN_EVENTNAME_HEX) {
@@ -481,7 +481,7 @@ export default class CreateEventStore {
     }
 
     // Validate hex length
-    const hexString = toHex(outcome).slice(2); // Remove hex prefix for length validation
+    const hexString = utf8ToHex(outcome).slice(2); // Remove hex prefix for length validation
     if (hexString.length > MAX_LEN_RESULT_HEX) {
       this.error.outcomes[i] = messages.createResultTooLongMsg.id;
       return;
