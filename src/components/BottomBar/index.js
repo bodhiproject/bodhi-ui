@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import { Box, Paper, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { sumBy } from 'lodash';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
@@ -22,8 +23,9 @@ export default class BottomBar extends Component {
     const {
       classes,
       store: {
-        global: { syncBlockTime, syncBlockNum, online },
+        global: { syncBlockTime, online },
         naka: { loggedIn },
+        wallet,
       },
     } = this.props;
 
@@ -33,7 +35,7 @@ export default class BottomBar extends Component {
           <NetworkConnection online={online} loggedIn={loggedIn} />
         </Box>
         <Box display="flex" justifyContent="flex-end">
-          <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />
+          <Info blockTime={syncBlockTime} wallet={wallet} />
         </Box>
       </Paper>
     );
@@ -63,21 +65,10 @@ const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => 
   </div>
 ));
 
-const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
+const Info = withStyles(styles)(({ classes, wallet, blockTime }) => (
   <div>
     <div className={classes.blockItemContainer}>
       <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
-        <span>
-          <FormattedMessage
-            id="bottomBar.blockNum"
-            defaultMessage="Current Block Number"
-          />
-          {`: ${blockNum}`}
-        </span>
-      </Typography>
-    </div>
-    <div className={classes.blockItemContainer}>
-      <Typography variant="body2" className={classes.bottomBarTxt}>
         <span>
           <FormattedMessage
             id="bottomBar.blockTime"
@@ -87,5 +78,25 @@ const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
         </span>
       </Typography>
     </div>
+    <div className={classes.blockItemContainer}>
+      <Typography variant="body2" className={classes.bottomBarTxt}>
+        <span>
+          <FormattedMessage
+            id="bottomBar.nbotBalance"
+            defaultMessage="NBOT Balance"
+          />
+          {`: ${getNBOTBalance(wallet)}`}
+        </span>
+      </Typography>
+    </div>
   </div>
 ));
+
+const getNBOTBalance = (wallet) => {
+  const walletAddresses = wallet.addresses;
+  let totalNbot = 0;
+  if (walletAddresses && walletAddresses.length) {
+    totalNbot = sumBy(walletAddresses, (address) => address.nbot ? address.nbot : 0);
+  }
+  return totalNbot.toFixed(2);
+};
