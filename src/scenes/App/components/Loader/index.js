@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import moment from 'moment';
 import { withStyles, Typography, Grid, LinearProgress } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import AppConfig from '../../../../config/app';
 import styles from './styles';
+import { getTimeString } from '../../../../helpers';
 
 @withStyles(styles)
 @inject('store')
@@ -52,7 +52,7 @@ export default class Loader extends Component {
                 <FormattedMessage id="loader.blockTime" defaultMessage="Latest Block Time" />
               </Grid>
               <Grid item className={classes.loaderInfoData} xs={6}>
-                {moment.unix(syncBlockTime).format('LLL')}
+                {getTimeString(syncBlockTime)}
               </Grid>
             </Grid>
           )}

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import moment from 'moment';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
@@ -11,7 +10,7 @@ import { Token } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { satoshiToDecimal, weiToDecimal } from '../../../../helpers/utility';
+import { satoshiToDecimal, weiToDecimal, getTimeString } from '../../../../helpers/utility';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -67,7 +66,7 @@ class EventRow extends Component {
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell>{block ? moment.unix(blockTime).format('LLL') : intl.formatMessage(blockTime)}</TableCell>
+            <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
             <TableCell>{getTxTypeString(txType, intl)}</TableCell>
             <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
               {name || ''}
