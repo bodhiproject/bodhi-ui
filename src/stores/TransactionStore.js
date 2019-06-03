@@ -17,7 +17,7 @@ import {
 } from '../config/contracts';
 import Tracking from '../helpers/mixpanelUtil';
 
-const CREATE_EVENT_FUNC_SIG = '2b2601bf';
+const CREATE_EVENT_FUNC_SIG = '662edd20';
 const BET_EVENT_FUNC_SIG = '885ab66d';
 const SET_EVENT_FUNC_SIG = 'a6b4218b';
 const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
