@@ -49,17 +49,6 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         <FormattedMessage id="navBar.leaderboard" defaultMessage="Leaderboard" />
       </div>
     </Link>
-    <Hidden smUp>
-      <div
-        className={classes.navDropdownLinkItem}
-        onClick={() => {
-          ui.toggleDropdownMenu();
-          naka.openPopover();
-        }}
-      >
-        <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
-      </div>
-    </Hidden>
     <Link to={Routes.SETTINGS}>
       <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
         <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
