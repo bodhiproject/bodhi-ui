@@ -131,9 +131,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      runInAction(() => {
-        this.app.globalDialog.setError(`${err.message}`);
-      });
+      console.log('User cancelled');
     }
   };
 
