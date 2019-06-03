@@ -65,9 +65,9 @@ export default class CreateEvent extends Component {
             <EscrowAmountNote />
             <EventWarning />
             <Title />
+            <Outcomes />
             <PredictionPeriod />
             <ResultSetPeriod />
-            <Outcomes />
             <ResultSetter />
             <ArbitrationRewardSlider />
             <ArbitrationOptionSelector />
