@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Button, withStyles, Typography } from '@material-ui/core';
+import { Button, withStyles, Typography, DialogContent, Dialog } from '@material-ui/core';
 import { Clear, Create } from '@material-ui/icons';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { EventWarning as _EventWarning, ImportantNote, Loading, BackButton, PageContainer,
@@ -12,7 +12,6 @@ import Title from './Title';
 import PredictionPeriod from './PredictionPeriod';
 import ResultSetPeriod from './ResultSetPeriod';
 import Outcomes from './Outcomes';
-import ResultSetter from './ResultSetter';
 import ArbitrationRewardSlider from './ArbitrationRewardSlider';
 import ArbitrationOptionSelector from './ArbitrationOptionSelector';
 
@@ -45,7 +44,7 @@ export default class CreateEvent extends Component {
   render() {
     const {
       store: {
-        createEvent: { loaded },
+        createEvent: { loaded, creating },
       },
       classes,
     } = this.props;
@@ -65,10 +64,9 @@ export default class CreateEvent extends Component {
             <EscrowAmountNote />
             <EventWarning />
             <Title />
+            <Outcomes />
             <PredictionPeriod />
             <ResultSetPeriod />
-            <Outcomes />
-            <ResultSetter />
             <ArbitrationRewardSlider />
             <ArbitrationOptionSelector />
             <div className={classes.footer}>
@@ -79,6 +77,16 @@ export default class CreateEvent extends Component {
             </div>
           </ContentContainer>
         </PageContainer>
+        <Dialog
+          className={classes.createDialog}
+          classes={{ paper: classes.createDialogPaper }}
+          maxWidth='md'
+          open={creating}
+        >
+          <DialogContent>
+            <Loading text={messages.pleaseWait} />
+          </DialogContent>
+        </Dialog>
       </Fragment>
     );
   }

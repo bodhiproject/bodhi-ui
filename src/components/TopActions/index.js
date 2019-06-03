@@ -23,8 +23,7 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store } = this.props;
-    const { createEvent } = store;
+    const { classes, noCreateEventButton, fontSize } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>

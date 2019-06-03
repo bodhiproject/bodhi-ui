@@ -99,9 +99,8 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      runInAction(() => {
-        this.app.globalDialog.setError(`${err.message}`);
-      });
+      console.log('User cancelled');
+      return undefined;
     }
   };
 
@@ -132,9 +131,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      runInAction(() => {
-        this.app.globalDialog.setError(`${err.message}`);
-      });
+      console.log('User cancelled');
     }
   };
 
@@ -209,6 +206,10 @@ export default class TransactionStore {
         gas: 3000000,
       });
 
+      if (!txid) {
+        return undefined;
+      }
+
       // Create pending tx on server
       Object.assign(tx, { txid });
       if (txid) {
@@ -230,6 +231,7 @@ export default class TransactionStore {
         await this.onTxExecuted(res);
         Tracking.track('event-createEvent');
       }
+      return txid;
     } catch (err) {
       this.handleReqError(err, 'addPendingEvent');
     }
