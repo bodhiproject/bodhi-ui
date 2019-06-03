@@ -68,7 +68,6 @@ export default class CreateEvent extends Component {
             <Outcomes />
             <PredictionPeriod />
             <ResultSetPeriod />
-            <ResultSetter />
             <ArbitrationRewardSlider />
             <ArbitrationOptionSelector />
             <div className={classes.footer}>
