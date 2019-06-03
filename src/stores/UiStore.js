@@ -80,7 +80,6 @@ export default class UiStore {
 
   @action
   enableSearchBarMode = () => {
-    this.app.favorite.hideDrawer();
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
     document.getElementById('searchEventInput').focus();
