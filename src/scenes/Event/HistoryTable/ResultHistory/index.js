@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
+import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { ResponsiveTable } from 'components';
 import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString } from '../../../../helpers';
+import { getTimeString, satoshiToDecimal } from '../../../../helpers';
+import { EXPLORER } from '../../../../network/routes';
+import InfiniteScroll from '../../../../components/InfiniteScroll';
 
 const messages = defineMessages({
   emptyTxHistoryMsg: {
@@ -29,45 +31,68 @@ export default class EventResultHistory extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  getTypeText(resultSet, index) {
+  renderCardString = (resultSet, intl, classes, index) => {
+    const { txType, name, resultName } = resultSet;
     if (resultSet.eventRound === 0) {
-      return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
+      return (
+        <Fragment>
+          <span className={classes.bold}> Set </span>
+          {'"'}
+          <span className={classes.bold}>{resultName}</span>
+          {'" as result on Result Setting Round'}
+        </Fragment>
+      );
     }
     return (
-      <FormattedMessage
-        id="str.arbitrationRoundX"
-        defaultMessage="Arbitration Round {idx}"
-        values={{ idx: index - 1 }}
-      />
+      <Fragment>
+        {'"'}
+        <span className={classes.bold}>{resultName}</span>
+        {'" was '}
+        <span className={classes.bold}>Voted</span>
+        {` as result on Arbitration Round # ${index - 1}`}
+      </Fragment>
     );
   }
 
   render() {
-    const { resultSetsHistory } = this.props;
+    const { resultSetsHistory, intl, classes } = this.props;
+    const cards = resultSetsHistory.map((resultSet, index) => {
+      const { resultIndex, resultName, amount, block, txStatus } = resultSet;
+      const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
+      return (
+        <Grid container className={classes.grid} justify="center" key={`result-${index}`}>
+          <Grid item xs={10} sm={10}>
+            <Card
+              className={classes.card}
+            >
+              <CardContent>
+                <Typography color='textPrimary'>
+                  {this.renderCardString(resultSet, intl, classes, index)}
+                </Typography>
+              </CardContent>
+            </Card>
+            <div className={classes.note}>
+              <Typography color='textPrimary'>
+                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
+                  {'Detail'}
+                </a>
+              </Typography>
+            </div>
+          </Grid>
+        </Grid>
+      );
+    });
+
     return (
       <div>
         {resultSetsHistory.length ? (
-          <ResponsiveTable>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <FormattedMessage id="str.date" defaultMessage="Date" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.resultType" defaultMessage="Result Type" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.winningOutcome" defaultMessage="Winning Outcome" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.amount" defaultMessage="Amount" />
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <ResultRows resultSetsHistory={resultSetsHistory} getTypeText={this.getTypeText} {...this.props} />
-            </TableBody>
-          </ResponsiveTable>
+          <InfiniteScroll
+            spacing={0}
+            data={cards}
+            loadMore={() => { console.log('hello'); }}
+            loadingMore={false}
+          />
         ) : (
           <CenteredDiv>
             <Typography variant="body2">
@@ -79,16 +104,3 @@ export default class EventResultHistory extends Component {
     );
   }
 }
-
-const ResultRows = ({ resultSetsHistory, intl, getTypeText }) => map(resultSetsHistory, (resultSet, index) => {
-  const { resultIndex, resultName, amount, block } = resultSet;
-  const blockTime = block ? block.blockTime : messages.strPendingMsg;
-  return (
-    <TableRow key={`result-${index}`}>
-      <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
-      <TableCell>{getTypeText(resultSet, index)}</TableCell>
-      <TableCell>{`${resultIndex} ${resultName}`}</TableCell>
-      <TableCell>{`${amount} ${Token.NBOT}`}</TableCell>
-    </TableRow>
-  );
-});
