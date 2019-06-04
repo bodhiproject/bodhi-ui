@@ -198,9 +198,11 @@ class EventRow extends Component {
                 {this.renderCardString(transaction, intl, classes)}
               </CardContent>
             </Card>
-            <Typography>
-              {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . Detail`}
-            </Typography>
+            <div className={classes.note}>
+              <Typography>
+                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . Detail`}
+              </Typography>
+            </div>
           </Grid>
         </Fragment>
       );

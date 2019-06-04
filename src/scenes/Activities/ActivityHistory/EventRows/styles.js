@@ -29,7 +29,11 @@ const styles = (theme) => ({
     marginBottom: theme.padding.space3X.px,
   },
   bold: {
-    fontSize: 'bold',
+    fontWeight: 'bold',
+  },
+  note: {
+    marginTop: '10px',
+    marginBottom: '10px',
   },
 });
 
