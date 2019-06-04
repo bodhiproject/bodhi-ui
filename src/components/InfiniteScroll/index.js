@@ -53,6 +53,7 @@ export default class InfiniteScroll extends Component {
     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
     if (scrolledToBottom && this.props.hasMore) {
+      console.log('aaa');
       this.props.loadMore();
     }
   }

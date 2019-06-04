@@ -101,7 +101,6 @@ const EventHistoryContent = inject('store')(observer(({ classes, store: { activi
     transactions.length ? (
       <Grid container spacing={0} className={classes.historyTableWrapper}>
         <EventRows />
-        {/* <Footer /> */}
       </Grid>
     ) : (
       <EmptyPlaceholder message={messages.emptyTxHistoryMsg} />

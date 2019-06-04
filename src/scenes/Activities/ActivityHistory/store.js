@@ -95,6 +95,7 @@ export default class {
    * @return {[Transaction]} Tx array of the query.
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
+    console.log('hello');
     // Address is required for the request filters
     if (this.hasMore) {
       const { naka: { account }, graphqlClient } = this.app;
