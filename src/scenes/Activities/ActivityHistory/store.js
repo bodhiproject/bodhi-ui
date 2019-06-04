@@ -3,7 +3,7 @@ import { orderBy, filter } from 'lodash';
 import { TransactionStatus, SortBy, Routes } from 'constants';
 import { transactions } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 20;
+const QUERY_LIMIT = 500;
 const INIT_VALUES = {
   transactions: [],
   querySkip: 0,
@@ -95,7 +95,6 @@ export default class {
    * @return {[Transaction]} Tx array of the query.
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
-    console.log('hello');
     // Address is required for the request filters
     if (this.hasMore) {
       const { naka: { account }, graphqlClient } = this.app;

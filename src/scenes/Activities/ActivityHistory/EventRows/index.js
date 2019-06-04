@@ -131,7 +131,7 @@ class EventRow extends Component {
               {' on "'}
               <span className={classes.bold}>{name}</span>
               {'" in "'}
-              <span className={classes.bold}>{name}</span>
+              <span className={classes.bold}>XXX</span>
               {'" Event'}
             </Typography>
           );
@@ -144,7 +144,7 @@ class EventRow extends Component {
               {' "'}
               <span className={classes.bold}>{name}</span>
               {'" as result in "'}
-              <span className={classes.bold}>{name}</span>
+              <span className={classes.bold}>XXX</span>
               {'" Event'}
             </Typography>
           );
@@ -157,7 +157,7 @@ class EventRow extends Component {
               {' on "'}
               <span className={classes.bold}>{name}</span>
               {'" in "'}
-              <span className={classes.bold}>{name}</span>
+              <span className={classes.bold}>XXX</span>
               {'" Event'}
             </Typography>
           );
@@ -168,7 +168,7 @@ class EventRow extends Component {
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {`${amount} ${Token.NBOT} from "`}
-              <span className={classes.bold}>{name}</span>
+              <span className={classes.bold}>XXX</span>
               {'" Event'}
             </Typography>
           );
@@ -190,54 +190,27 @@ class EventRow extends Component {
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
-        <Grid item xs={12} sm={12} className={classes.border}>
-          <Card
-            className={classes.card}
-            onClick={this.onEventNameClick(eventAddress)}
-          >
-            <CardContent>
-              {this.renderCardString(transaction, intl, classes)}
-            </CardContent>
-          </Card>
-          <div className={classes.note}>
-            <Typography>
-              {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
-              <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
-                {'Detail'}
-              </a>
-            </Typography>
-          </div>
+        <Grid container xs={12} sm={12} className={classes.grid} justify="center">
+          <Grid item xs={10} sm={10}>
+            <Card
+              className={classes.card}
+              onClick={this.onEventNameClick(eventAddress)}
+            >
+              <CardContent>
+                {this.renderCardString(transaction, intl, classes)}
+              </CardContent>
+            </Card>
+            <div className={classes.note}>
+              <Typography>
+                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
+                  {'Detail'}
+                </a>
+              </Typography>
+            </div>
+          </Grid>
         </Grid>
       );
-      // return (
-      //   <Fragment>
-      //     <TableRow selected={expanded}>
-      //       <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
-      //       <TableCell>{getTxTypeString(txType, intl)}</TableCell>
-      //       <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
-      //         {name || ''}
-      //       </NameLinkCell>
-      //       <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
-      //       <TableCell>
-      //         <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
-      //           {(txt) => i18nToUpperCase(txt)}
-      //         </FormattedMessage>
-      //       </TableCell>
-      //       <TableCell>
-      //         <i
-      //           className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowIcon)}
-      //           onClick={this.onArrowIconClick}
-      //         />
-      //       </TableCell>
-      //     </TableRow>
-      //     <CollapsableItem expanded={expanded}>
-      //       <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
-      //         <TransactionHistoryAddress colSpan={3} transaction={transaction} />
-      //         <TransactionHistoryID colSpan={4} transaction={transaction} />
-      //       </TableRow>
-      //     </CollapsableItem>
-      //   </Fragment>
-      // );
     }
 }
 
