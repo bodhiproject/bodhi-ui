@@ -3,87 +3,53 @@ import { orderBy, filter } from 'lodash';
 import { TransactionStatus, SortBy, Routes } from 'constants';
 import { transactions } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 500;
+const QUERY_LIMIT = 20;
 const INIT_VALUES = {
   transactions: [],
-  displayedTxs: [],
-  tableOrder: SortBy.DESCENDING.toLowerCase(),
-  tableOrderBy: 'createdTime',
-  tablePerPage: 10,
-  tablePage: 0,
   querySkip: 0,
   queryPage: 0,
   loaded: false,
+  loadingMore: false,
+  hasMore: true,
 };
 
 export default class {
   @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
-  @observable displayedTxs = INIT_VALUES.displayedTxs; // Txs for the current table page, sliced from transactions
-  @observable tableOrder = INIT_VALUES.tableOrder; // UI table order
-  @observable tableOrderBy = INIT_VALUES.tableOrderBy; // UI table order by
-  @observable tablePerPage = INIT_VALUES.tablePerPage; // UI table per page
-  @observable tablePage = INIT_VALUES.tablePage; // UI table page
   querySkip = INIT_VALUES.querySkip; // Tx query skip
   queryPage = INIT_VALUES.queryPage; // Tx query page
+  @observable loadingMore = INIT_VALUES.loadingMore
   @observable loaded = INIT_VALUES.loaded;
+  @observable hasMore = INIT_VALUES.hasMore
 
   constructor(app) {
     this.app = app;
 
-    // Sort order changed
-    reaction(
-      () => this.tableOrder + this.tableOrderBy,
-      () => {
-        this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
-        this.setDisplayedTxs();
-      },
-    );
-    // Page or per page changed
-    reaction(
-      () => this.tablePage + this.tablePerPage,
-      () => {
-        this.setDisplayedTxs();
-
-        // Fetch more batches if needed
-        const txCount = this.transactions.length;
-        const lastPage = Math.ceil(txCount / this.tablePerPage);
-        if (txCount > 0 && this.tablePage + 1 === lastPage && lastPage * this.tablePerPage === txCount) {
-          this.loadMore();
-        }
-      }
-    );
     // Wallet addresses changed
     reaction(
       () => this.app.naka.account,
-      () => this.loadFirst(),
-    );
-    // New block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      async () => {
-        if (this.transactions.length > 0) {
-          const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);
-          this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
-          this.setDisplayedTxs();
+      () => {
+        if (this.app.ui.location === Routes.ACTIVITY_HISTORY) {
+          this.init();
         }
-      },
+      }
     );
+    // // New block
+    // reaction(
+    //   () => this.app.global.syncBlockNum,
+    //   async () => {
+    //     if (this.transactions.length > 0) {
+    //       const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);
+    //       this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
+    //       this.setDisplayedTxs();
+    //     }
+    //   },
+    // );
   }
 
   @action
   init = async () => {
     this.app.ui.location = Routes.ACTIVITY_HISTORY;
     await this.loadFirst();
-  }
-
-  /**
-   * Slices the current page of txs (out of the full tx list) based on the page and perPage.
-   */
-  @action
-  setDisplayedTxs() {
-    const start = this.tablePage === 0 ? 0 : this.tablePage * this.tablePerPage;
-    const end = (this.tablePage * this.tablePerPage) + this.tablePerPage;
-    this.displayedTxs = this.transactions.slice(start, end);
   }
 
   /**
@@ -97,12 +63,9 @@ export default class {
   @action
   loadFirst = async () => {
     Object.assign(this, INIT_VALUES);
-    const txs = await this.fetchHistory();
-    this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
-    this.setDisplayedTxs();
+    this.transactions = await this.fetchHistory();
 
     runInAction(() => {
-      this.batches = 1;
       this.loaded = true;
     });
   }
@@ -112,11 +75,19 @@ export default class {
    */
   @action
   loadMore = async () => {
-    this.querySkip += QUERY_LIMIT;
-    const moreTxs = await this.fetchHistory();
-    this.transactions = [...this.transactions, ...moreTxs];
-    this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
-    this.setDisplayedTxs();
+    if (this.hasMore) {
+      this.loadingMore = true;
+      this.querySkip += QUERY_LIMIT;
+      try {
+        const moreTxs = await this.fetchHistory();
+        runInAction(() => {
+          this.transactions = [...this.transactions, ...moreTxs];
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.skip -= this.limit;
+      }
+    }
   }
 
   /**
@@ -125,26 +96,21 @@ export default class {
    */
   fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
     // Address is required for the request filters
-    const { naka: { account }, graphqlClient } = this.app;
+    if (this.hasMore) {
+      const { naka: { account }, graphqlClient } = this.app;
 
-    const filters = { transactorAddress: account };
+      const filters = { transactorAddress: account };
 
-    const res = await transactions(graphqlClient, { filter: filters, limit, skip });
+      const res = await transactions(graphqlClient, { filter: filters, limit, skip });
 
-    const pending = filter(res.items, { txStatus: TransactionStatus.PENDING });
-    const confirmed = filter(res.items, { txStatus: TransactionStatus.SUCCESS });
+      const pending = filter(res.items, { txStatus: TransactionStatus.PENDING });
+      const confirmed = filter(res.items, { txStatus: TransactionStatus.SUCCESS });
 
-    return [...pending, ...confirmed];
-  }
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
 
-  /**
-   * Changes the orderBy and order.
-   * @param {string} columnName Field name of the column.
-   */
-  @action
-  sort = (columnName) => {
-    const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
-    this.tableOrderBy = columnName;
-    this.tableOrder = this.tableOrder === descending ? ascending : descending;
+      return [...pending, ...confirmed];
+    }
+    return INIT_VALUES.transactions;
   }
 }

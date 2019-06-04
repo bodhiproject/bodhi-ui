@@ -7,6 +7,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-i
 import { Grid, Card, CardContent, Typography, withStyles, TableBody, TableCell } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 import { Token, TransactionType } from 'constants';
+import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
@@ -189,26 +190,24 @@ class EventRow extends Component {
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
-        <Fragment>
-          <Grid item xs={12} sm={12} className={classes.border}>
-            <Card
-              className={classes.card}
-              onClick={this.onEventNameClick(eventAddress)}
-            >
-              <CardContent>
-                {this.renderCardString(transaction, intl, classes)}
-              </CardContent>
-            </Card>
-            <div className={classes.note}>
-              <Typography>
-                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
-                <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
-                  {'Detail'}
-                </a>
-              </Typography>
-            </div>
-          </Grid>
-        </Fragment>
+        <Grid item xs={12} sm={12} className={classes.border}>
+          <Card
+            className={classes.card}
+            onClick={this.onEventNameClick(eventAddress)}
+          >
+            <CardContent>
+              {this.renderCardString(transaction, intl, classes)}
+            </CardContent>
+          </Card>
+          <div className={classes.note}>
+            <Typography>
+              {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+              <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
+                {'Detail'}
+              </a>
+            </Typography>
+          </div>
+        </Grid>
       );
       // return (
       //   <Fragment>
@@ -242,9 +241,19 @@ class EventRow extends Component {
     }
 }
 
-const EventRows = ({ store: { activities: { history: { displayedTxs } } } }) => (
-  displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))
-);
+const EventRows = ({ store: { activities: { history: { transactions, loadMore, loadingMore } } } }) => {
+  const cards = transactions.map((transaction) => <EventRow key={transaction.txid} transaction={transaction} />); // eslint-disable-line
+  return (
+    <Fragment>
+      <InfiniteScroll
+        spacing={2}
+        data={cards}
+        loadMore={loadMore}
+        loadingMore={loadingMore}
+      />
+    </Fragment>
+  );
+};
 
 const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
   <TableCell>
