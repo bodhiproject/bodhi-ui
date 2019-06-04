@@ -544,7 +544,7 @@ export default class CreateEventStore {
       amountSatoshi: escrowAmountSatoshi,
       arbitrationOptionIndex: this.arbOptionSelected,
       arbitrationRewardPercentage: this.arbRewardPercent,
-      language :this.app.ui.locale,
+      language: this.app.ui.locale,
     });
     if (!txid) return;
     this.close();
