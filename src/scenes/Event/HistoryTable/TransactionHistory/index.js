@@ -3,6 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { ResponsiveTable } from 'components';
+import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import TxRow from './TxRow';
 
@@ -15,37 +16,18 @@ export default class TransactionHistory extends Component {
     const { store: { eventPage, naka }, myTransactions } = this.props;
     const { transactionHistoryItems, event } = eventPage;
 
+    const cards = transactionHistoryItems.map((transaction) => (
+      (!myTransactions || (myTransactions && naka.account.toLowerCase() === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} event={event} />
+    ));
     return (
       <div>
         {transactionHistoryItems.length ? (
-          <ResponsiveTable>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <FormattedMessage id="str.date" defaultMessage="Date" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.type" defaultMessage="Type" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.description" defaultMessage="Description" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.amount" defaultMessage="Amount" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="str.status" defaultMessage="Status" />
-                </TableCell>
-                <TableCell>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {transactionHistoryItems.map((transaction) => (
-                (!myTransactions || (myTransactions && naka.account.toLowerCase() === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} event={event} />
-              ))}
-            </TableBody>
-          </ResponsiveTable>
+          <InfiniteScroll
+            spacing={0}
+            data={cards}
+            loadMore={() => { console.log('hello'); }}
+            loadingMore={false}
+          />
         ) : (
           <CenteredDiv>
             <Typography variant="body2">

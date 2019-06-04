@@ -44,6 +44,7 @@ export default class HistoryTable extends Component {
           variant="fullWidth"
           value={tabValue}
           onChange={this.handleChange}
+          className={classes.tabs}
         >
           <Tab
             value={TAB_RESULT_HISTORY}
