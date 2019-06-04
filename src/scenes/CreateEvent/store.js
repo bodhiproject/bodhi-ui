@@ -533,7 +533,6 @@ export default class CreateEventStore {
 
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
-    this.creating = true;
     const txid = await this.app.tx.executeCreateEvent({
       senderAddress: this.app.wallet.currentAddress,
       name: this.title,
@@ -548,7 +547,6 @@ export default class CreateEventStore {
       arbitrationRewardPercentage: this.arbRewardPercent,
       language :this.app.ui.locale,
     });
-    this.creating = false;
     if (!txid) return;
     this.close();
     props.history.push(Routes.ACTIVITY_HISTORY);
