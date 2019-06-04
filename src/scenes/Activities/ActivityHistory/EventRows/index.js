@@ -114,18 +114,18 @@ class EventRow extends Component {
       switch (txType) {
         case TransactionType.CREATE_EVENT: {
           return (
-            <Typography>
+            <Fragment>
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {' "'}
               <span className={classes.bold}>{name}</span>
               {'" Event'}
-            </Typography>
+            </Fragment>
           );
         }
         case TransactionType.BET: {
           return (
-            <Typography>
+            <Fragment>
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {' on "'}
@@ -133,12 +133,12 @@ class EventRow extends Component {
               {'" in "'}
               <span className={classes.bold}>XXX</span>
               {'" Event'}
-            </Typography>
+            </Fragment>
           );
         }
         case TransactionType.RESULT_SET: {
           return (
-            <Typography>
+            <Fragment>
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {' "'}
@@ -146,12 +146,12 @@ class EventRow extends Component {
               {'" as result in "'}
               <span className={classes.bold}>XXX</span>
               {'" Event'}
-            </Typography>
+            </Fragment>
           );
         }
         case TransactionType.VOTE: {
           return (
-            <Typography>
+            <Fragment>
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {' on "'}
@@ -159,26 +159,26 @@ class EventRow extends Component {
               {'" in "'}
               <span className={classes.bold}>XXX</span>
               {'" Event'}
-            </Typography>
+            </Fragment>
           );
         }
         case TransactionType.WITHDRAW: {
           return (
-            <Typography>
+            <Fragment>
               {you}
               <span className={classes.bold}>{` ${action} `}</span>
               {`${amount} ${Token.NBOT} from "`}
               <span className={classes.bold}>XXX</span>
               {'" Event'}
-            </Typography>
+            </Fragment>
           );
         }
         default: {
           console.error(`Invalid txType: ${txType}`); // eslint-disable-line
           return (
-            <Typography>
+            <Fragment>
               {`Invalid txType: ${txType}`}
-            </Typography>
+            </Fragment>
           );
         }
       }
@@ -190,18 +190,20 @@ class EventRow extends Component {
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
-        <Grid container xs={12} sm={12} className={classes.grid} justify="center">
+        <Grid container className={classes.grid} justify="center">
           <Grid item xs={10} sm={10}>
             <Card
               className={classes.card}
               onClick={this.onEventNameClick(eventAddress)}
             >
               <CardContent>
-                {this.renderCardString(transaction, intl, classes)}
+                <Typography color='textPrimary'>
+                  {this.renderCardString(transaction, intl, classes)}
+                </Typography>
               </CardContent>
             </Card>
             <div className={classes.note}>
-              <Typography>
+              <Typography color='textPrimary'>
                 {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
                 <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
                   {'Detail'}

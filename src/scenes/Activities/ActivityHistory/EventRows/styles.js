@@ -17,7 +17,6 @@ const styles = (theme) => ({
     display: 'none',
   },
   card: {
-    color: 'black',
     height: '50%',
     borderRadius: '10px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
@@ -31,7 +30,7 @@ const styles = (theme) => ({
     marginBottom: theme.padding.space3X.px,
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   note: {
     marginTop: '10px',
