@@ -35,6 +35,9 @@ const styles = (theme) => ({
     marginTop: '10px',
     marginBottom: '10px',
   },
+  link: {
+    color: '#4D51F9',
+  },
 });
 
 export default styles;

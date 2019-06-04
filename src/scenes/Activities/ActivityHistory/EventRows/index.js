@@ -11,6 +11,7 @@ import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { satoshiToDecimal, weiToDecimal, getTimeString } from '../../../../helpers/utility';
+import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({
   strPendingMsg: {
@@ -184,7 +185,7 @@ class EventRow extends Component {
 
     render() {
       const { transaction, intl, classes, store: { wallet: { exchangeRate } } } = this.props;
-      const { txid, txStatus, block, address, amount } = transaction;
+      const { txid, txStatus, block, eventAddress, amount } = transaction;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
@@ -192,7 +193,7 @@ class EventRow extends Component {
           <Grid item xs={12} sm={12} className={classes.border}>
             <Card
               className={classes.card}
-              // onClick={() => this.props.store.createEvent.setArbOptionSelected(Number(idx))}
+              onClick={this.onEventNameClick(eventAddress)}
             >
               <CardContent>
                 {this.renderCardString(transaction, intl, classes)}
@@ -200,7 +201,10 @@ class EventRow extends Component {
             </Card>
             <div className={classes.note}>
               <Typography>
-                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . Detail`}
+                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
+                  {'Detail'}
+                </a>
               </Typography>
             </div>
           </Grid>
