@@ -36,17 +36,22 @@ export default class PredictionPeriod extends Component {
   render() {
     const {
       store: {
-        createEvent,
         createEvent: {
           predictionPeriod,
-          // prediction: { startTime, endTime },
+          prediction: { startTime: storeStartTime, endTime: storeEndTime },
           error: { prediction: { startTime: startTimeErr, endTime: endTimeErr } },
         },
       },
     } = this.props;
     const { startTime, endTime } = this.state;
-    console.log('NAKA: PredictionPeriod -> render -> startTime', startTime);
-    console.log('NAKA: PredictionPeriod -> render -> endTime', endTime);
+
+    // Hnadle if the store times changed due to reactions
+    if (storeStartTime !== startTime || storeEndTime !== endTime) {
+      this.setState({
+        startTime: storeStartTime,
+        endTime: storeEndTime,
+      });
+    }
 
     return (
       <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
