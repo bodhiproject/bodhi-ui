@@ -7,6 +7,7 @@ import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
+  Card,
   Loading,
   BackButton,
   PageContainer,
@@ -72,11 +73,11 @@ export default class EventPage extends Component {
   }
 
   getEventDesc = () => {
-    const { status } = this.props.store.eventPage.event;
+    const { event, event: { status } } = this.props.store.eventPage;
     switch (status) {
       case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
       case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
       case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
       case EVENT_STATUS.WITHDRAWING: return 'finished';

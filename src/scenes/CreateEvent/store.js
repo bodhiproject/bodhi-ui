@@ -65,7 +65,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
-const VALIDATE_TIME_GAP_MIN_SEC = 30 * 60;
+const VALIDATE_TIME_GAP_MIN_SEC = 1 * 60;
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {
@@ -444,6 +444,7 @@ export default class CreateEventStore {
     } else if (this.prediction.endTime - this.prediction.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
+      console.log('1233');
       this.error.prediction.endTime = '';
     }
   }
@@ -504,11 +505,13 @@ export default class CreateEventStore {
 
   @action
   validateResultSetter = () => {
+    console.log(this.resultSetter);
     if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
     } else if (!isAddress(this.resultSetter)) {
       this.error.resultSetter = messages.invalidAddress.id;
     } else {
+      console.log('1222aaa');
       this.error.resultSetter = '';
     }
   }
@@ -530,7 +533,6 @@ export default class CreateEventStore {
   submit = async ({ ...props }) => {
     this.validateAll();
     if (!this.isAllValid) return;
-
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
     const txid = await this.app.tx.executeCreateEvent({

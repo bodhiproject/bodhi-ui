@@ -4,9 +4,6 @@ const styles = (theme) => ({
     '&.last': {
       paddingBottom: theme.padding.spaceX.px,
     },
-    '&.is_result span': {
-      display: 'none !important',
-    },
     '&.is_result.first': {
       paddingTop: 1,
     },
@@ -90,14 +87,21 @@ const styles = (theme) => ({
   expansionPanelRoot: {
     boxShadow: 'none !important',
   },
+  expansionPanelDisabled: {
+    backgroundColor: 'transparent !important',
+  },
   expansionPanelSummaryRoot: {
     padding: '0',
+  },
+  expansionPanelSummaryDisabled: {
+    opacity: '1 !important',
   },
   expansionPanelSummaryContent: {
     margin: 0,
   },
   expandIcon: {
     top: '-5px',
+    width: '38px',
   },
 });
 

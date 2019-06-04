@@ -32,8 +32,6 @@ const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, end
       <EventInfo>
         <EndDate endTime={endTime} />
         <Funding event={event} />
-        <ResultSetter event={event} />
-        <Version event={event} />
       </EventInfo>
     </Card>
     <StepperVertRight />
@@ -52,14 +50,6 @@ const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { c
 
 const Funding = ({ event: { totalBets } }) => (
   <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${totalBets} NBOT`} />
-);
-
-const ResultSetter = ({ event }) => (
-  <EventInfoBlock id={message.strResultSetterMsg.id} content={event.centralizedOracle} />
-);
-
-const Version = ({ event }) => (
-  <EventInfoBlock id={message.eventVersionMsg.id} content={event.version} />
 );
 
 const EventInfo = styled.div`

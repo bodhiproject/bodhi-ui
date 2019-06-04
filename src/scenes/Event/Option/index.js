@@ -76,9 +76,9 @@ export default class Option extends Component {
             expanded={isExpanded(selectedOptionIdx) || skipExpansion}
             onChange={skipExpansion ? null : () => eventPage.setSelectedOption(idx)}
             disabled={option.disabled || disabled}
-            classes={{ root: classes.expansionPanelRoot }}
+            classes={{ root: classes.expansionPanelRoot, disabled: classes.expansionPanelDisabled }}
           >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} classes={{ root: classes.expansionPanelSummaryRoot, content: classes.expansionPanelSummaryContent, expandIcon: classes.expandIcon }}>
+            <ExpansionPanelSummary expandIcon={isPrevResult ? <img src="/images/icon-tick_bordered.svg" alt='leaderboard' /> : <ExpandMoreIcon />} classes={{ root: classes.expansionPanelSummaryRoot, content: classes.expansionPanelSummaryContent, expandIcon: classes.expandIcon, disabled: classes.expansionPanelSummaryDisabled }}>
               <div className={classes.eventOptionWrapper}>
                 <Typography variant="h6" className={classes.overText}>
                   {name}
