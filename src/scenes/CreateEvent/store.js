@@ -123,6 +123,10 @@ export default class CreateEventStore {
   @observable creating = INIT.creating
   @observable title = INIT.title
   @observable creator = INIT.creator // address
+  @observable betStartTime = INIT.betStartTime
+  @observable betEndTime = INIT.betEndTime
+  @observable resultSetStartTime = INIT.resultSetStartTime
+  @observable resultSetEndTime = INIT.resultSetEndTime
   @observable prediction = INIT.prediction
   @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
@@ -229,25 +233,25 @@ export default class CreateEventStore {
       }
     );
     // check date valiation when date changed
-    reaction(
-      () => this.prediction.startTime,
-      () => {
-        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
-          this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
-        }
-        this.validatePredictionStartTime();
-      }
-    );
+    // reaction(
+    //   () => this.prediction.startTime,
+    //   () => {
+    //     if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
+    //       this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+    //     }
+    //     this.validatePredictionStartTime();
+    //   }
+    // );
     // check date valiation when date changed
-    reaction(
-      () => this.prediction.endTime,
-      () => {
-        if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
-          this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
-        }
-        this.validatePredictionEndTime();
-      }
-    );
+    // reaction(
+    //   () => this.prediction.endTime,
+    //   () => {
+    //     if (this.prediction.endTime - this.resultSetting.startTime > -TIME_GAP_MIN_SEC) {
+    //       this.resultSetting.startTime = moment.unix(this.prediction.endTime).unix();
+    //     }
+    //     this.validatePredictionEndTime();
+    //   }
+    // );
     // check date valiation when date changed
     reaction(
       () => this.resultSetting.startTime,

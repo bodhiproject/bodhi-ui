@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import moment from 'moment';
 import { TimeCardTitle } from 'constants';
-import { DateRow, Section } from './components';
+import { Section } from './components';
 import DateTimeCard from './DateTimeCard';
 
 const messages = defineMessages({
@@ -13,24 +12,38 @@ const messages = defineMessages({
   },
 });
 
-const PredictionPeriod = observer(({ store: { createEvent, createEvent: { predictionPeriod } } }) => (
-  <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
-    <DateTimeCard
-      error={createEvent.error.prediction.startTime}
-      onChange={e => moment(e.target.value).isValid && (createEvent.prediction.startTime = moment(e.target.value).utc().unix())}
-      value={createEvent.prediction.startTime}
-      blockNum={createEvent.blockNum.prediction.startTime}
-      title={TimeCardTitle.START_TIME}
-    />
-    <DateTimeCard
-      error={createEvent.error.prediction.endTime}
-      onChange={e => moment(e.target.value).isValid && (createEvent.prediction.endTime = moment(e.target.value).utc().unix())}
-      value={createEvent.prediction.endTime}
-      blockNum={createEvent.blockNum.prediction.endTime}
-      title={TimeCardTitle.END_TIME}
-    />
-  </Section>
-));
+@inject('store')
+@observer
+export default class PredictionPeriod extends Component {
+  render() {
+    const {
+      store: {
+        createEvent,
+        createEvent: {
+          predictionPeriod,
+          prediction: { startTime, endTime },
+          error: { prediction: { startTime: startTimeErr, endTime: endTimeErr } },
+        },
+      },
+    } = this.props;
+    console.log('NAKA: PredictionPeriod -> render -> startTime', startTime);
+    console.log('NAKA: PredictionPeriod -> render -> endTime', endTime);
 
-
-export default inject('store')(PredictionPeriod);
+    return (
+      <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
+        <DateTimeCard
+          title={TimeCardTitle.START_TIME}
+          dateUnix={startTime}
+          error={startTimeErr}
+          onChange={(date) => date.isValid && (createEvent.prediction.startTime = date.unix())}
+        />
+        <DateTimeCard
+          title={TimeCardTitle.END_TIME}
+          dateUnix={endTime}
+          error={endTimeErr}
+          onChange={(date) => date.isValid && (createEvent.prediction.startTime = date.unix())}
+        />
+      </Section>
+    );
+  }
+}
