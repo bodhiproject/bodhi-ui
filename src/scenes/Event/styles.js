@@ -40,4 +40,22 @@ export default (theme) => ({
     fontSize: theme.sizes.font.xSmall,
     fontWeight: theme.typography.fontWeightBold,
   },
+  pageRoot: {
+    backgroundColor: 'transparent !important',
+  },
+  activeEvent: {
+    backgroundColor: 'white',
+    padding: '20px',
+    boxShadow: '0 5px 20px rgba(0,0,0,.3) !important',
+    borderRadius: '12px !important',
+  },
+  stateText: {
+    textAlign: 'left',
+    fontSize: '.82rem',
+    fontWeight: '200',
+    marginBottom: '.5rem',
+  },
+  padLeft: {
+    paddingLeft: theme.padding.space3X.px,
+  },
 });

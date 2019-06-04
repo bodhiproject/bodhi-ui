@@ -42,7 +42,8 @@ export default class MultipleResultsEvent {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.consensusThreshold = satoshiToDecimal(event.consensusThreshold);
-    this.roundBets = map(this.roundBets, (bets) => satoshiToDecimal(bets));
+    this.roundBets = map(event.roundBets && event.roundBets.totalRoundBets, (bets) => satoshiToDecimal(bets));
+    this.userRoundBets = map(event.roundBets && event.roundBets.userRoundBets, (bets) => satoshiToDecimal(bets));
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {
       en: 'Invalid',

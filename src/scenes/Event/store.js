@@ -145,7 +145,7 @@ export default class EventStore {
 
     // New block
     reaction(
-      () => this.app.global.online,
+      () => this.app.global.online + toJS(this.app.wallet.addresses),
       async () => {
         if (this.app.global.online) await this.initEvent();
       }
@@ -171,10 +171,11 @@ export default class EventStore {
   @action
   initEvent = async () => {
     if (!this.url) return;
-
+    const userAddress = this.app.wallet.currentAddress || null;
     const { items } = await events(this.app.graphqlClient, {
       filter: { OR: [{ txid: this.url }, { address: this.url }] },
       includeRoundBets: true,
+      userAddress,
     });
     [this.event] = items;
     if (!this.event) return;

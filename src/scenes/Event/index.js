@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -21,6 +22,7 @@ import WithdrawTo from './WithdrawTo';
 import ResultTotals from './ResultTotals';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
+import Card from './Card';
 import { Sidebar } from './Sidebar';
 
 const messages = defineMessages({
@@ -44,6 +46,13 @@ const messages = defineMessages({
     id: 'oracle.setRemainingExplanation',
     defaultMessage: 'You can only stake up to the remaining Consensus Threshold amount.',
   },
+  creating: { id: 'card.creating', defaultMessage: 'Creating' },
+  predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
+  predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
+  resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },
+  resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
+  arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
+  finished: { id: 'card.finished', defaultMessage: 'Finished' },
 });
 
 @injectIntl
@@ -61,6 +70,19 @@ export default class EventPage extends Component {
     this.props.store.eventPage.reset();
   }
 
+  getEventDesc = () => {
+    const { status } = this.props.store.eventPage.event;
+    switch (status) {
+      case EVENT_STATUS.CREATED: return 'creating';
+      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
+      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
+      case EVENT_STATUS.WITHDRAWING: return 'finished';
+      default: throw Error(`Invalid status: ${this.status}`);
+    }
+  }
+
   renderTitle = () => {
     const {
       classes,
@@ -75,17 +97,21 @@ export default class EventPage extends Component {
 
   renderEventWarning = () => {
     const {
+      classes,
       store: {
         eventPage: { eventWarningMessageId, amount, warningType },
       },
     } = this.props;
 
     return (
-      <EventWarning
-        id={eventWarningMessageId}
-        amount={String(amount)}
-        type={warningType}
-      />
+      <div className={classes.padLeft}>
+        <div className={classes.stateText}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+        <EventWarning
+          id={eventWarningMessageId}
+          amount={String(amount)}
+          type={warningType}
+        />
+      </div>
     );
   }
 
@@ -131,7 +157,7 @@ export default class EventPage extends Component {
       classes,
       store: {
         eventPage,
-        eventPage: { event, buttonDisabled },
+        eventPage: { event, buttonDisabled, selectedOptionIdx },
       },
     } = this.props;
 
@@ -151,7 +177,7 @@ export default class EventPage extends Component {
     }
 
     return (
-      <Button
+      selectedOptionIdx !== -1 && <Button
         fullWidth
         size="large"
         variant="contained"
@@ -165,15 +191,20 @@ export default class EventPage extends Component {
   }
 
   // Renders sections for bet, set, vote statuses
-  renderActiveEventContent = () => (
-    <Fragment>
-      {this.renderEventWarning()}
-      {this.renderOptions()}
-      {this.renderConsensusThresholdMessage()}
-      {this.renderRemainingConsensusThresholdMessage()}
-      {this.renderActionButton()}
-    </Fragment>
-  )
+  renderActiveEventContent = () => {
+    const {
+      classes,
+    } = this.props;
+    return (
+      <Card>
+        {this.renderEventWarning()}
+        {this.renderOptions()}
+        {this.renderConsensusThresholdMessage()}
+        {this.renderRemainingConsensusThresholdMessage()}
+        {this.renderActionButton()}
+      </Card>
+    );
+  }
 
   // Renders sections for withdraw status
   renderWithdrawContent = () => {
@@ -210,6 +241,7 @@ export default class EventPage extends Component {
         eventPage,
         eventPage: { event, loading },
       },
+      classes,
     } = this.props;
 
     if (loading || !event) {
@@ -219,7 +251,7 @@ export default class EventPage extends Component {
     return (
       <Fragment>
         <BackButton />
-        <PageContainer>
+        <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer>
             {this.renderTitle()}
             {!eventPage.isWithdrawing
@@ -234,3 +266,5 @@ export default class EventPage extends Component {
     );
   }
 }
+
+const FormattedMessageFixed = (props) => <FormattedMessage {...props} />;

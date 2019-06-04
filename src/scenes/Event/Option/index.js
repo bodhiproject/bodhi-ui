@@ -59,7 +59,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
+    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase } = option;
     const { eventPage } = store;
     const { selectedOptionIdx } = eventPage;
 
@@ -76,23 +76,25 @@ export default class Option extends Component {
             expanded={isExpanded(selectedOptionIdx) || skipExpansion}
             onChange={skipExpansion ? null : () => eventPage.setSelectedOption(idx)}
             disabled={option.disabled || disabled}
+            classes={{ root: classes.expansionPanelRoot }}
           >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} classes={{ root: classes.expansionPanelSummaryRoot, content: classes.expansionPanelSummaryContent, expandIcon: classes.expandIcon }}>
               <div className={classes.eventOptionWrapper}>
-                <Typography variant="h6">
+                <Typography variant="h6" className={classes.overText}>
                   {name}
                 </Typography>
                 <div className={classes.eventOptionProgress}>
                   <Progress
                     color="secondary"
                     invalid={name === 'Invalid'}
-                    variant="determinate"
-                    value={percent}
+                    variant="buffer"
+                    value={userPercent}
+                    valueBuffer={percent}
                   />
-                  <div className={classes.eventOptionProgressNum}>{percent}%</div>
+                  <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
                 </div>
                 <Typography variant="body2">
-                  {isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}
+                  {`You bet ${userValue} NBOT`}
                 </Typography>
               </div>
             </ExpansionPanelSummary>
