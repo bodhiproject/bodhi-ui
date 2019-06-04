@@ -1,11 +1,11 @@
 import React, { Fragment, Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormControl, FormHelperText, withStyles, Card, CardContent, Typography } from '@material-ui/core';
-import { TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import styles from './styles';
 import { DateTimePickerDialog } from './DateTimePickerDialog';
+import DateTimePicker from './DateTimePicker';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -27,20 +27,21 @@ export class DateTimePickerCombo extends Component {
     return (
       <Fragment>
         <FormControl fullWidth={fullWidth}>
-          <Card className={classes.card} onClick={() => this.setState({ isDatePickerOpen: true })}>
+          <Card
+            className={classes.card}
+            // onClick={() => this.setState({ isDatePickerOpen: true })}
+          >
             <CardContent>
               <Typography>
                 {title}
               </Typography>
-              <Typography variant="subtitle1">
+              <DateTimePicker />
+              {/* <Typography variant="subtitle1">
                 {moment.unix(value).format('HH:mm')}
               </Typography>
               <Typography variant="subtitle1">
                 {moment.unix(value).format('MMM Do YYYY')}
-                <MuiPickersUtilsProvider>
-                  <TimePicker value={new Date()} />
-                </MuiPickersUtilsProvider>
-              </Typography>
+              </Typography> */}
             </CardContent>
           </Card>
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}
