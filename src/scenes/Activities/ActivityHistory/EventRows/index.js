@@ -4,9 +4,9 @@ import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
+import { Grid, Card, CardContent, Typography, withStyles, TableBody, TableCell } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
-import { Token } from 'constants';
+import { Token, TransactionType } from 'constants';
 import styles from './styles';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
@@ -24,6 +24,30 @@ const messages = defineMessages({
   strFailMsg: {
     id: 'str.fail',
     defaultMessage: 'Fail',
+  },
+  createEvent: {
+    id: 'action.createEvent',
+    defaultMessage: 'Create',
+  },
+  bet: {
+    id: 'action.bet',
+    defaultMessage: 'Bet',
+  },
+  setResult: {
+    id: 'action.setResult',
+    defaultMessage: 'Set',
+  },
+  vote: {
+    id: 'action.vote',
+    defaultMessage: 'Vote',
+  },
+  withdraw: {
+    id: 'action.withdraw',
+    defaultMessage: 'Withdraw',
+  },
+  strYou: {
+    id: 'str.you',
+    defaultMessage: 'You',
   },
 });
 @injectIntl
@@ -56,49 +80,164 @@ class EventRow extends Component {
       }
     }
 
+    getActionString = (transaction, intl) => {
+      const { txType } = transaction;
+      switch (txType) {
+        case TransactionType.CREATE_EVENT: {
+          return intl.formatMessage(messages.createEvent);
+        }
+        case TransactionType.BET: {
+          return intl.formatMessage(messages.bet);
+        }
+        case TransactionType.RESULT_SET: {
+          return intl.formatMessage(messages.setResult);
+        }
+        case TransactionType.VOTE: {
+          return intl.formatMessage(messages.vote);
+        }
+        case TransactionType.WITHDRAW: {
+          return intl.formatMessage(messages.withdraw);
+        }
+        default: {
+          console.error(`Invalid txType: ${txType}`); // eslint-disable-line
+          return '';
+        }
+      }
+    }
+
+    renderCardString = (transaction, intl, classes) => {
+      const you = intl.formatMessage(messages.strYou);
+      const action = this.getActionString(transaction, intl);
+      const { txType, name, amount } = transaction;
+      switch (txType) {
+        case TransactionType.CREATE_EVENT: {
+          return (
+            <Typography>
+              {you}
+              <span className={classes.bold}>{` ${action} `}</span>
+              {' "'}
+              <span className={classes.bold}>{name}</span>
+              {'" Event'}
+            </Typography>
+          );
+        }
+        case TransactionType.BET: {
+          return (
+            <Typography>
+              {you}
+              <span className={classes.bold}>{` ${action} `}</span>
+              {' on "'}
+              <span className={classes.bold}>{name}</span>
+              {'" in "'}
+              <span className={classes.bold}>{name}</span>
+              {'" Event'}
+            </Typography>
+          );
+        }
+        case TransactionType.RESULT_SET: {
+          return (
+            <Typography>
+              {you}
+              <span className={classes.bold}>{` ${action} `}</span>
+              {' "'}
+              <span className={classes.bold}>{name}</span>
+              {'" as result in "'}
+              <span className={classes.bold}>{name}</span>
+              {'" Event'}
+            </Typography>
+          );
+        }
+        case TransactionType.VOTE: {
+          return (
+            <Typography>
+              {you}
+              <span className={classes.bold}>{` ${action} `}</span>
+              {' on "'}
+              <span className={classes.bold}>{name}</span>
+              {'" in "'}
+              <span className={classes.bold}>{name}</span>
+              {'" Event'}
+            </Typography>
+          );
+        }
+        case TransactionType.WITHDRAW: {
+          return (
+            <Typography>
+              {you}
+              <span className={classes.bold}>{` ${action} `}</span>
+              {`${amount} ${Token.NBOT} from "`}
+              <span className={classes.bold}>{name}</span>
+              {'" Event'}
+            </Typography>
+          );
+        }
+        default: {
+          console.error(`Invalid txType: ${txType}`); // eslint-disable-line
+          return (
+            <Typography>
+              {`Invalid txType: ${txType}`}
+            </Typography>
+          );
+        }
+      }
+    }
+
     render() {
       const { transaction, intl, classes, store: { wallet: { exchangeRate } } } = this.props;
-      const { txType, txid, txReceipt: { cumulativeGasUsed, gasPrice, gasUsed }, txStatus, block, name, address, amount } = transaction;
-      const blockTime = block ? block.blockTime : messages.strPendingMsg;
-      const { expanded } = this.state;
-      const gasFee = (satoshiToDecimal(gasPrice) / weiToDecimal(exchangeRate)) * (cumulativeGasUsed ? satoshiToDecimal(cumulativeGasUsed) : satoshiToDecimal(gasUsed));
+      const { txid, txStatus, block, address, amount } = transaction;
+      const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
         <Fragment>
-          <TableRow selected={expanded}>
-            <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
-            <TableCell>{getTxTypeString(txType, intl)}</TableCell>
-            <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
-              {name || ''}
-            </NameLinkCell>
-            <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
-            <TableCell>
-              <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
-                {(txt) => i18nToUpperCase(txt)}
-              </FormattedMessage>
-            </TableCell>
-            <TableCell>
-              <i
-                className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowIcon)}
-                onClick={this.onArrowIconClick}
-              />
-            </TableCell>
-          </TableRow>
-          <CollapsableItem expanded={expanded}>
-            <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
-              <TransactionHistoryAddress colSpan={3} transaction={transaction} />
-              <TransactionHistoryID colSpan={4} transaction={transaction} />
-            </TableRow>
-          </CollapsableItem>
+          <Grid item xs={12} sm={12} className={classes.border}>
+            <Card
+              className={classes.card}
+              // onClick={() => this.props.store.createEvent.setArbOptionSelected(Number(idx))}
+            >
+              <CardContent>
+                {this.renderCardString(transaction, intl, classes)}
+              </CardContent>
+            </Card>
+            <Typography>
+              {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . Detail`}
+            </Typography>
+          </Grid>
         </Fragment>
       );
+      // return (
+      //   <Fragment>
+      //     <TableRow selected={expanded}>
+      //       <TableCell>{block ? getTimeString(blockTime) : intl.formatMessage(blockTime)}</TableCell>
+      //       <TableCell>{getTxTypeString(txType, intl)}</TableCell>
+      //       <NameLinkCell clickable onClick={this.onEventNameClick(address)}>
+      //         {name || ''}
+      //       </NameLinkCell>
+      //       <TableCell numeric>{amount ? `${satoshiToDecimal(amount)} ${Token.NBOT}` : ''}</TableCell>
+      //       <TableCell>
+      //         <FormattedMessage id={`str.${txStatus}`.toLowerCase()}>
+      //           {(txt) => i18nToUpperCase(txt)}
+      //         </FormattedMessage>
+      //       </TableCell>
+      //       <TableCell>
+      //         <i
+      //           className={cx(expanded ? 'icon-ic_down' : 'icon-ic_up', 'icon iconfont', classes.arrowIcon)}
+      //           onClick={this.onArrowIconClick}
+      //         />
+      //       </TableCell>
+      //     </TableRow>
+      //     <CollapsableItem expanded={expanded}>
+      //       <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
+      //         <TransactionHistoryAddress colSpan={3} transaction={transaction} />
+      //         <TransactionHistoryID colSpan={4} transaction={transaction} />
+      //       </TableRow>
+      //     </CollapsableItem>
+      //   </Fragment>
+      // );
     }
 }
 
 const EventRows = ({ store: { activities: { history: { displayedTxs } } } }) => (
-  <TableBody>
-    {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
-  </TableBody>
+  displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))
 );
 
 const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
