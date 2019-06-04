@@ -185,8 +185,8 @@ class EventRow extends Component {
     }
 
     render() {
-      const { transaction, intl, classes, store: { wallet: { exchangeRate } } } = this.props;
-      const { txid, txStatus, block, eventAddress, amount } = transaction;
+      const { transaction, intl, classes } = this.props;
+      const { txStatus, block, eventAddress, amount } = transaction;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
       return (
@@ -227,17 +227,5 @@ const EventRows = ({ store: { activities: { history: { transactions, loadMore, l
     </Fragment>
   );
 };
-
-const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
-  <TableCell>
-    <span className={clickable && classes.eventNameText} {...props} />
-  </TableCell>
-));
-
-const CollapsableItem = withStyles(styles)(({ expanded, children }) => (
-  <Fragment>
-    { expanded && children }
-  </Fragment>
-));
 
 export default inject('store')(observer(EventRows));
