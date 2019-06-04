@@ -2,6 +2,7 @@ export { default as BackButton } from './BackButton';
 export { default as BottomBar } from './BottomBar';
 export { default as ContentContainer } from './ContentContainer';
 export { default as CountdownTime } from './CountdownTime';
+export { default as DateTimePicker } from './DateTimePicker';
 export { default as TimeCorner } from './TimeCorner';
 export { default as CurrentAllowanceNote } from './CurrentAllowanceNote';
 export { default as GlobalDialog } from './GlobalDialog';

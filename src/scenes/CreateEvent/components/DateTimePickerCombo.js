@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import styles from './styles';
 import { DateTimePickerDialog } from './DateTimePickerDialog';
-import DateTimePicker from './DateTimePicker';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -27,21 +26,17 @@ export class DateTimePickerCombo extends Component {
     return (
       <Fragment>
         <FormControl fullWidth={fullWidth}>
-          <Card
-            className={classes.card}
-            // onClick={() => this.setState({ isDatePickerOpen: true })}
-          >
+          <Card className={classes.card} onClick={() => this.setState({ isDatePickerOpen: true })}>
             <CardContent>
               <Typography>
                 {title}
               </Typography>
-              <DateTimePicker />
-              {/* <Typography variant="subtitle1">
+              <Typography variant="subtitle1">
                 {moment.unix(value).format('HH:mm')}
               </Typography>
               <Typography variant="subtitle1">
                 {moment.unix(value).format('MMM Do YYYY')}
-              </Typography> */}
+              </Typography>
             </CardContent>
           </Card>
           {Boolean(error) && <FormHelperText error>{intl.formatMessage({ id: error })}</FormHelperText>}

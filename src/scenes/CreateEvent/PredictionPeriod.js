@@ -4,6 +4,7 @@ import { defineMessages } from 'react-intl';
 import moment from 'moment';
 import { TimeCardTitle } from 'constants';
 import { DateRow, Section } from './components';
+import DateTimeCard from './DateTimeCard';
 
 const messages = defineMessages({
   createBetStartTimeMsg: {
@@ -14,14 +15,14 @@ const messages = defineMessages({
 
 const PredictionPeriod = observer(({ store: { createEvent, createEvent: { predictionPeriod } } }) => (
   <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
-    <DateRow
+    <DateTimeCard
       error={createEvent.error.prediction.startTime}
       onChange={e => moment(e.target.value).isValid && (createEvent.prediction.startTime = moment(e.target.value).utc().unix())}
       value={createEvent.prediction.startTime}
       blockNum={createEvent.blockNum.prediction.startTime}
       title={TimeCardTitle.START_TIME}
     />
-    <DateRow
+    <DateTimeCard
       error={createEvent.error.prediction.endTime}
       onChange={e => moment(e.target.value).isValid && (createEvent.prediction.endTime = moment(e.target.value).utc().unix())}
       value={createEvent.prediction.endTime}
