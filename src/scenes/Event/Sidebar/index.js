@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid, withStyles } from '@material-ui/core';
-import { StepperVertRight } from 'components';
+import { StepperVertRight, Card } from 'components';
 import { getEndTimeCountDownString, getTimeString } from '../../../helpers';
 import styles from './styles';
 
@@ -28,12 +28,14 @@ const message = defineMessages({
 
 const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, endTime }) => (
   <SidebarContainer>
-    <EventInfo>
-      <EndDate endTime={endTime} />
-      <Funding event={event} />
-      <ResultSetter event={event} />
-      <Version event={event} />
-    </EventInfo>
+    <Card>
+      <EventInfo>
+        <EndDate endTime={endTime} />
+        <Funding event={event} />
+        <ResultSetter event={event} />
+        <Version event={event} />
+      </EventInfo>
+    </Card>
     <StepperVertRight />
   </SidebarContainer>
 )));
@@ -61,7 +63,7 @@ const Version = ({ event }) => (
 );
 
 const EventInfo = styled.div`
-  padding-bottom: ${props => props.theme.padding.space5X.px};
+  padding-bottom: ${props => props.theme.padding.spaceX.px};
 `;
 
 const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (

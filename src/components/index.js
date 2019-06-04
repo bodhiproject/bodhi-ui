@@ -13,6 +13,7 @@ export { default as ImportantNote } from './ImportantNote';
 export { default as Loading } from './Loading';
 export * from './NakaWalletPrompt';
 export { default as Option } from './Option';
+export { default as Card } from './Card';
 export { default as PageContainer } from './PageContainer';
 export { default as RaisedAmount } from './RaisedAmount';
 export { default as ResponsiveTable } from './ResponsiveTable';

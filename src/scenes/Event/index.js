@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import cx from 'classnames';
 import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
@@ -12,6 +13,7 @@ import {
   ContentContainer,
   EventWarning,
   ImportantNote,
+  Card,
 } from 'components';
 import { EVENT_STATUS } from 'constants';
 import styles from './styles';
@@ -22,7 +24,6 @@ import WithdrawTo from './WithdrawTo';
 import ResultTotals from './ResultTotals';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
-import Card from './Card';
 import { Sidebar } from './Sidebar';
 
 const messages = defineMessages({
@@ -89,7 +90,7 @@ export default class EventPage extends Component {
       store: { eventPage },
     } = this.props;
     return (
-      <Typography variant="h4" className={classes.title}>
+      <Typography variant="h4" className={cx(classes.title, classes.padLeft)}>
         {eventPage.eventName}
       </Typography>
     );
@@ -197,6 +198,7 @@ export default class EventPage extends Component {
     } = this.props;
     return (
       <Card>
+        {this.renderTitle()}
         {this.renderEventWarning()}
         {this.renderOptions()}
         {this.renderConsensusThresholdMessage()}
@@ -253,7 +255,6 @@ export default class EventPage extends Component {
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer>
-            {this.renderTitle()}
             {!eventPage.isWithdrawing
               ? this.renderActiveEventContent()
               : this.renderWithdrawContent()}
