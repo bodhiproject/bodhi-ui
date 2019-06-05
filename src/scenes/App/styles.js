@@ -3,7 +3,7 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   container: {
-    margin: `${theme.sizes.navHeight.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px} ${theme.padding.space5X.px}`,
+    margin: `${theme.sizes.navHeight.px} ${theme.padding.space5X.px} ${theme.padding.space7X.px} ${theme.padding.space5X.px}`,
     padding: `${theme.padding.space5X.px} 0 0 0`,
     [theme.breakpoints.down('xs')]: {
       margin: `${theme.sizes.navHeight.px} ${theme.padding.spaceX.px} ${theme.padding.space7X.px} ${theme.padding.spaceX.px}`,
