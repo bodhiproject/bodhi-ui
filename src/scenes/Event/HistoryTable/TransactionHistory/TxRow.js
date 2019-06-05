@@ -173,7 +173,7 @@ export default class TxRow extends Component {
           >
             <CardContent>
               <Typography color='textPrimary'>
-                {(naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
+                {(naka.account && naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
                 {this.renderCardString(transaction, intl, classes)}
               </Typography>
             </CardContent>

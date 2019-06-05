@@ -29,6 +29,13 @@ export const PENDING_TRANSACTIONS = `
   total
 `;
 
+export const ROUND_BETS = `
+  totalRoundBets
+  userRoundBets
+  totalBetRoundBets
+  userBetRoundBets
+`;
+
 // Transaction interface
 export const ITRANSACTION = `
   txType
@@ -64,7 +71,7 @@ export const MULTIPLE_RESULTS_EVENT = `
   status
   language
   pendingTxs { ${PENDING_TRANSACTIONS} }
-  roundBets
+  roundBets { ${ROUND_BETS} }
   totalBets
 `;
 

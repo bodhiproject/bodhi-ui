@@ -7,6 +7,7 @@ const { NBOT } = Token;
 export default class Option {
   name
   value
+  userValue
   percent
   isPrevResult
   maxAmount
@@ -35,7 +36,8 @@ export default class Option {
       const threshold = this.isPrevResult ? 0 : event.consensusThreshold;
       this.percent = threshold === 0 ? threshold : _.round((this.amount / threshold) * 100);
     }
-
+    this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
+    this.userValue = event.userRoundBets[i];
     this.disabled = this.isPrevResult;
   }
 

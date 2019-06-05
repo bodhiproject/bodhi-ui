@@ -4,9 +4,9 @@ import { EVENT_STATUS } from 'constants';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { isEmpty, each } from 'lodash';
+import { Card } from 'components';
 import { getTimeString } from '../../helpers';
 import styles from './styles';
-
 // Current step positions. Index defines which step the Event is in.
 const [TOPIC_CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING] = [0, 1, 2, 3];
 const messages = defineMessages({
@@ -38,20 +38,22 @@ export default class StepperVertRight extends Component {
     const steps = this.getSteps();
 
     return (
-      <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
-        {steps.value.map((item) => (
-          <Step key={item.title}>
-            <StepLabel className={classes.stepperVertRightLabel}>
-              <Typography variant="h6">
-                {item.title}
-              </Typography>
-              <Typography variant="caption">
-                {item.description}
-              </Typography>
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Card>
+        <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
+          {steps.value.map((item) => (
+            <Step key={item.title}>
+              <StepLabel className={classes.stepperVertRightLabel}>
+                <Typography variant="h6">
+                  {item.title}
+                </Typography>
+                <Typography variant="caption">
+                  {item.description}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Card>
     );
   }
 

@@ -11,7 +11,7 @@ export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 
-const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
+const EmptyPlaceholder = ({ store: { ui }, intl, ...props }) => {
   const { message, width } = props;
   return (
     <Row>

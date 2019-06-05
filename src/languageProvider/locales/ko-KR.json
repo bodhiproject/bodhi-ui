@@ -411,7 +411,7 @@
   "walletUnlockDialog.walletPassphrase": "지갑 패스프레이즈",
   "walletUnlockDialog.walletPassphraseRequired": "이 작업을 수행하려면이 지갑의 잠금을 해제해야합니다. 지갑 패스프레이즈를 입력하십시오.",
   "walletUnlockDialog.walletUnlocked": "지갑이 잠금 해제되었습니다.",
-  "withdrawDetail.alreadyWithdrawn": "본 주소로 이미 철회를 했습니다.",
+  "withdrawDetail.alreadyWithdrawn": "이미 철회했습니다.",
   "withdrawDetail.returnRate": "Return rate:",
   "withdrawDetail.returnRateXPercent": "반송 레이트: {rate}%",
   "withdrawDetail.reward": "보상",

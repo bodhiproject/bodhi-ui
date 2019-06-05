@@ -56,15 +56,17 @@ export default class Option extends Component {
       intl,
       disabled,
       amountPlaceholder,
+      actionText,
+      betSpecific,
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, isLast, isFirst, isExpanded, idx, value, token, phase } = option;
+    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase } = option;
     const { eventPage } = store;
-    const { selectedOptionIdx } = eventPage;
+    const { selectedOptionIdx, isWithdrawing } = eventPage;
 
     return (
-      <Collapse in={isExpanded(selectedOptionIdx) || selectedOptionIdx === -1 || skipExpansion}>
+      <Collapse in={isWithdrawing || isExpanded(selectedOptionIdx) || selectedOptionIdx === -1 || skipExpansion}>
         <div
           className={cx(classes.eventOptionCollapse, {
             last: isLast || isExpanded(selectedOptionIdx),
@@ -76,23 +78,35 @@ export default class Option extends Component {
             expanded={isExpanded(selectedOptionIdx) || skipExpansion}
             onChange={skipExpansion ? null : () => eventPage.setSelectedOption(idx)}
             disabled={option.disabled || disabled}
+            classes={{ root: classes.expansionPanelRoot, disabled: classes.expansionPanelDisabled }}
           >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <ExpansionPanelSummary
+              expandIcon={isPrevResult ?
+                <img src="/images/icon-tick_bordered.svg" alt='leaderboard' />
+                : <ExpandMoreIcon />}
+              classes={{
+                root: classes.expansionPanelSummaryRoot,
+                content: classes.expansionPanelSummaryContent,
+                expandIcon: cx(classes.expandIcon, betSpecific && classes.hideIcon),
+                disabled: classes.expansionPanelSummaryDisabled,
+              }}
+            >
               <div className={classes.eventOptionWrapper}>
-                <Typography variant="h6">
+                <Typography variant="h6" className={classes.overText}>
                   {name}
                 </Typography>
                 <div className={classes.eventOptionProgress}>
                   <Progress
                     color="secondary"
                     invalid={name === 'Invalid'}
-                    variant="determinate"
-                    value={percent}
+                    variant="buffer"
+                    value={userPercent}
+                    valueBuffer={percent}
                   />
-                  <div className={classes.eventOptionProgressNum}>{percent}%</div>
+                  <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
                 </div>
                 <Typography variant="body2">
-                  {isPrevResult ? intl.formatMessage(messages.oracleOptionIsPrevResultMsg) : value}
+                  {`You ${actionText} ${isPrevResult ? 0 : userValue} NBOT`}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

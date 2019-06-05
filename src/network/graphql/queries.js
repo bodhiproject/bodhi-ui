@@ -35,7 +35,6 @@ const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
 const QUERY_ALL_STATS = 'allStats';
 const QUERY_MOST_BETS = 'mostBets';
 const QUERY_BIGGEST_WINNERS = 'biggestWinners';
-
 /**
  * Example query arguments:
  * - filter: { status: 'BETTING' }
@@ -54,6 +53,8 @@ const QUERIES = {
       $skip: Int
       $pendingTxsAddress: String
       $includeRoundBets: Boolean
+      $roundBetsAddress: String
+      $includeBetRoundBets: Boolean
     ) {
       events(
         filter: $filter
@@ -62,6 +63,8 @@ const QUERIES = {
         skip: $skip
         pendingTxsAddress: $pendingTxsAddress
         includeRoundBets: $includeRoundBets
+        roundBetsAddress: $roundBetsAddress
+        includeBetRoundBets: $includeBetRoundBets
       ) {
         ${PAGINATED_EVENTS}
       }

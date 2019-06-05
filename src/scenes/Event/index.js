@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import cx from 'classnames';
+import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -11,6 +14,7 @@ import {
   ContentContainer,
   EventWarning,
   ImportantNote,
+  Card,
 } from 'components';
 import { EVENT_STATUS } from 'constants';
 import styles from './styles';
@@ -44,6 +48,13 @@ const messages = defineMessages({
     id: 'oracle.setRemainingExplanation',
     defaultMessage: 'You can only stake up to the remaining Consensus Threshold amount.',
   },
+  creating: { id: 'card.creating', defaultMessage: 'Creating' },
+  predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
+  predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
+  resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },
+  resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
+  arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
+  finished: { id: 'card.finished', defaultMessage: 'Finished' },
 });
 
 @injectIntl
@@ -61,13 +72,26 @@ export default class EventPage extends Component {
     this.props.store.eventPage.reset();
   }
 
+  getEventDesc = () => {
+    const { event, event: { status } } = this.props.store.eventPage;
+    switch (status) {
+      case EVENT_STATUS.CREATED: return 'creating';
+      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
+      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
+      case EVENT_STATUS.WITHDRAWING: return 'finished';
+      default: throw Error(`Invalid status: ${this.status}`);
+    }
+  }
+
   renderTitle = () => {
     const {
       classes,
       store: { eventPage },
     } = this.props;
     return (
-      <Typography variant="h4" className={classes.title}>
+      <Typography variant="h4" className={cx(classes.title, classes.padLeft)}>
         {eventPage.eventName}
       </Typography>
     );
@@ -75,31 +99,42 @@ export default class EventPage extends Component {
 
   renderEventWarning = () => {
     const {
+      classes,
       store: {
         eventPage: { eventWarningMessageId, amount, warningType },
       },
     } = this.props;
 
     return (
-      <EventWarning
-        id={eventWarningMessageId}
-        amount={String(amount)}
-        type={warningType}
-      />
+      <div className={classes.padLeft}>
+        <div className={classes.stateText}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+        <EventWarning
+          id={eventWarningMessageId}
+          amount={String(amount)}
+          type={warningType}
+        />
+      </div>
     );
   }
 
-  renderOptions = () => {
-    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status } } } } = this.props;
+  renderOptions = (actionText, betSpecific) => {
+    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
+    let asOptions = results;
+    if (betSpecific) {
+      asOptions = betResults;
+      asOptions = asOptions.slice(1);
+    }
     return (
       <Grid className={classes.optionGrid}>
-        {results.map((option, i) => (
+        {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== 0)) &&
           <Option
             key={i}
             option={option}
             disabled={isWithdrawing}
             amountInputDisabled={isResultSetting}
+            actionText={actionText}
+            betSpecific={betSpecific}
           />
         ))}
       </Grid>
@@ -131,7 +166,7 @@ export default class EventPage extends Component {
       classes,
       store: {
         eventPage,
-        eventPage: { event, buttonDisabled },
+        eventPage: { event, buttonDisabled, selectedOptionIdx },
       },
     } = this.props;
 
@@ -151,7 +186,7 @@ export default class EventPage extends Component {
     }
 
     return (
-      <Button
+      selectedOptionIdx !== -1 && <Button
         fullWidth
         size="large"
         variant="contained"
@@ -164,16 +199,42 @@ export default class EventPage extends Component {
     );
   }
 
+  renderBetContent = () => {
+    const {
+      classes,
+      store: {
+        eventPage: { event },
+      },
+    } = this.props;
+
+    return (
+      event.currentRound > 0 && <Fragment>
+        <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id='string.betEnded' defaultMessage='Event bet Ended' /></div>
+        {this.renderOptions('bet', true)}
+      </Fragment>
+    );
+  }
+
   // Renders sections for bet, set, vote statuses
-  renderActiveEventContent = () => (
-    <Fragment>
-      {this.renderEventWarning()}
-      {this.renderOptions()}
-      {this.renderConsensusThresholdMessage()}
-      {this.renderRemainingConsensusThresholdMessage()}
-      {this.renderActionButton()}
-    </Fragment>
-  )
+  renderActiveEventContent = () => {
+    const {
+      store: {
+        eventPage: { event },
+      },
+    } = this.props;
+    return (
+      <Card>
+        {this.renderTitle()}
+        {this.renderBetContent()}
+        {this.renderEventWarning()}
+        {this.renderOptions(event.currentRound > 0 ? 'vote' : 'bet')}
+        {this.renderConsensusThresholdMessage()}
+        {this.renderRemainingConsensusThresholdMessage()}
+        {this.renderActionButton()}
+      </Card>
+    );
+  }
+
 
   // Renders sections for withdraw status
   renderWithdrawContent = () => {
@@ -189,7 +250,9 @@ export default class EventPage extends Component {
       || event.ownerAddress === currentWalletAddress;
 
     return (
-      <Fragment>
+      <Card>
+        {this.renderTitle()}
+        {this.renderBetContent()}
         <Paper className={classes.withdrawingPaper}>
           <WinningOutcome eventPage={eventPage} />
           {allowWithdraw && (
@@ -199,8 +262,7 @@ export default class EventPage extends Component {
             </Fragment>
           )}
         </Paper>
-        <ResultTotals eventPage={eventPage} />
-      </Fragment>
+      </Card>
     );
   }
 
@@ -210,6 +272,7 @@ export default class EventPage extends Component {
         eventPage,
         eventPage: { event, loading },
       },
+      classes,
     } = this.props;
 
     if (loading || !event) {
@@ -219,9 +282,8 @@ export default class EventPage extends Component {
     return (
       <Fragment>
         <BackButton />
-        <PageContainer>
+        <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer>
-            {this.renderTitle()}
             {!eventPage.isWithdrawing
               ? this.renderActiveEventContent()
               : this.renderWithdrawContent()}
@@ -234,3 +296,5 @@ export default class EventPage extends Component {
     );
   }
 }
+
+const FormattedMessageFixed = (props) => <FormattedMessage {...props} />;

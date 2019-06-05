@@ -10,7 +10,9 @@ const Progress = ({ classes, invalid, className, ...props }) => (
     {...props}
     className={cx(className, classes, {
       [classes.invalid]: invalid,
+      [classes.root]: true,
     })}
+    classes={{ dashedColorSecondary: classes.dashedColorSecondary, dashed: classes.dashed }}
   />
 );
 

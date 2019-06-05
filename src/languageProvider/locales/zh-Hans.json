@@ -411,7 +411,7 @@
   "walletUnlockDialog.walletPassphrase": "钱包密码",
   "walletUnlockDialog.walletPassphraseRequired": "这个操作需要解锁您的钱包，请输入您的密码.",
   "walletUnlockDialog.walletUnlocked": "钱包已解锁！",
-  "withdrawDetail.alreadyWithdrawn": "您已经使用过此地址提现。",
+  "withdrawDetail.alreadyWithdrawn": "您已经提现。",
   "withdrawDetail.returnRate": "Return rate:",
   "withdrawDetail.returnRateXPercent": "回报率：{rate}%",
   "withdrawDetail.reward": "回报",

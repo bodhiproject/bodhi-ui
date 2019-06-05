@@ -4,9 +4,6 @@ const styles = (theme) => ({
     '&.last': {
       paddingBottom: theme.padding.spaceX.px,
     },
-    '&.is_result span': {
-      display: 'none !important',
-    },
     '&.is_result.first': {
       paddingTop: 1,
     },
@@ -15,7 +12,7 @@ const styles = (theme) => ({
     width: '100%',
     display: 'block',
     position: 'relative',
-    paddingLeft: theme.padding.space5X.px,
+    paddingLeft: theme.padding.space3X.px,
     paddingRight: '0 !important',
     marginTop: theme.padding.spaceX.px,
     marginBottom: theme.padding.spaceX.px,
@@ -53,22 +50,61 @@ const styles = (theme) => ({
   },
   eventOptionProgress: {
     position: 'relative',
-    paddingRight: '50px',
     marginTop: theme.padding.spaceX.px,
     marginBottom: theme.padding.spaceX.px,
+    height: '50px',
   },
   eventOptionProgressNum: {
-    width: '50px',
-    lineHeight: 1,
+    width: '50%',
+    lineHeight: 1.5,
     textAlign: 'right',
     position: 'absolute',
     right: 0,
-    top: '-2px',
-    fontWeight: theme.typography.fontWeightBold,
-    color: theme.palette.text.primary,
+    top: 0,
+    height: '100%',
+    paddingRight: theme.padding.spaceX.px,
+    color: '#fe0672',
+    fontSize: '1.05rem',
+    fontWeight: '400',
+    fontFamily: 'Noto Sans TC, sans-serif',
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
+  },
+  overText: {
+    position: 'absolute',
+    zIndex: 100,
+    width: '50%',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    lineHeight: '3em',
+    paddingLeft: theme.padding.space2X.px,
+    color: '#fe0672',
+    fontSize: '1.05rem',
+    fontWeight: '400',
+  },
+  expansionPanelRoot: {
+    boxShadow: 'none !important',
+  },
+  expansionPanelDisabled: {
+    backgroundColor: 'transparent !important',
+  },
+  expansionPanelSummaryRoot: {
+    padding: '0',
+  },
+  expansionPanelSummaryDisabled: {
+    opacity: '1 !important',
+  },
+  expansionPanelSummaryContent: {
+    margin: 0,
+  },
+  expandIcon: {
+    top: '-5px',
+    width: '38px',
+  },
+  hideIcon: {
+    visibility: 'hidden',
   },
 });
 

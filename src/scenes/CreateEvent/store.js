@@ -530,7 +530,6 @@ export default class CreateEventStore {
   submit = async ({ ...props }) => {
     this.validateAll();
     if (!this.isAllValid) return;
-
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
 
     const txid = await this.app.tx.executeCreateEvent({
