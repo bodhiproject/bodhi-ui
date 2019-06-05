@@ -35,7 +35,6 @@ const styles = (theme) => ({
     paddingBottom: '10px',
   },
   eventCardName: {
-    display: '-webkit-box', // For multiline text overflow ellipsis
     maxHeight: '160px',
     margin: '0 auto',
     WebkitLineClamp: 5, // For multiline text overflow ellipsis
@@ -47,12 +46,14 @@ const styles = (theme) => ({
     color: '#3f4d5a',
     fontSize: '1.05rem',
     textAlign: 'left',
+    whiteSpace: 'nowrap',
   },
   eventCardNameBundle: {
     display: 'flex',
   },
   eventCardNameFlex: {
     flex: 1,
+    minWidth: 0,
   },
   unconfirmedTag: {
     background: theme.palette.secondary.light,

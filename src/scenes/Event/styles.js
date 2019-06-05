@@ -59,4 +59,9 @@ export default (theme) => ({
   padLeft: {
     paddingLeft: theme.padding.space3X.px,
   },
+  ellipsis: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
 });
