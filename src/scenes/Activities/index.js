@@ -106,23 +106,19 @@ export default class Activities extends Component {
           value={this.tabIdx}
           onChange={this.handleTabChange}
           className={classes.activitiesTabWrapper}
-          scrollable
           scrollButtons='off'
         >
           <Tab
             label={this.props.intl.formatMessage(messages.history)}
             className={classes.activitiesTabButton}
-            classes={{ label: classes.activitiesTabLabel }}
           />
           <Tab
             label={this.getTabLabel(EventStatus.SET)}
             className={classes.activitiesTabButton}
-            classes={{ label: classes.activitiesTabLabel }}
           />
           <Tab
             label={this.getTabLabel(EventStatus.WITHDRAW)}
             className={classes.activitiesTabButton}
-            classes={{ label: classes.activitiesTabLabel }}
           />
         </Tabs>
         <div className={classes.activitiesTabContainer}>
