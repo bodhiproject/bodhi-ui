@@ -78,7 +78,7 @@ export default class EventResultHistory extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${amount} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                {`${amount} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
                   {'Detail'}
                 </a>

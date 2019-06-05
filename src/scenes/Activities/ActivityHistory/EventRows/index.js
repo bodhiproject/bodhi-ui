@@ -204,7 +204,7 @@ class EventRow extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                {`${satoshiToDecimal(amount)} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
                   {'Detail'}
                 </a>
