@@ -3,7 +3,7 @@
 
 DEPLOY_PATH=/var/www/bodhi/mainnet/
 
-echo "Building Testnet UI..."
+echo "Building Mainnet UI..."
 node scripts/build-mainnet.js
 
 echo "Creating output path..."
