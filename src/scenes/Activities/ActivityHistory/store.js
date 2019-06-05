@@ -38,7 +38,12 @@ export default class {
       () => this.app.global.syncBlockNum,
       async () => {
         if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          this.init();
+          const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, true);
+          const old = this.transactions[0];
+          if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
+            || newTxs[0].txStatus !== old.txStatus)) {
+            this.transactions.splice(0, 1, newTxs[0]);
+          }
         }
       },
     );
@@ -92,9 +97,9 @@ export default class {
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
+  fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip, fetchBeginning = false) => {
     // Address is required for the request filters
-    if (this.hasMore) {
+    if (this.hasMore || fetchBeginning) {
       const { naka: { account }, graphqlClient } = this.app;
 
       const filters = { transactorAddress: account };
