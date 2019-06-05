@@ -7,7 +7,7 @@
 module.exports = {
   5: {
     mainnet: '0x5dc8deb07abc50dd5b51706b46b7d01227166a99',
-    mainnetDeployBlock: 3791154,
+    mainnetDeployBlock: 3789925,
     testnet: '0xae017b8048d79a45867a15345d55912ee4ecaf7c',
     testnetDeployBlock: 3755633,
     abi: [{"inputs": [{"name": "configManager","type": "address"}],"payable": false,"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"name": "eventAddress","type": "address"},{"indexed": true,"name": "ownerAddress","type": "address"}],"name": "MultipleResultsEventCreated","type": "event"},{"constant": false,"inputs": [{"name": "from","type": "address"},{"name": "value","type": "uint256"},{"name": "data","type": "bytes"}],"name": "tokenFallback","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [],"name": "withdrawEscrow","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "didWithdraw","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"}],
