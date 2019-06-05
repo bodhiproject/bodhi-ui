@@ -31,6 +31,7 @@ export default class Transaction {
       this.amount = stringToBN(transaction.winningAmount).add(stringToBN(transaction.escrowWithdrawAmount));
       this.amount = this.amount.toString();
       this.txSender = transaction.winnerAddress;
+      this.name = '';
     }
   }
 }
