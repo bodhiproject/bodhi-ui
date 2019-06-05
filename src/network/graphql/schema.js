@@ -1,7 +1,15 @@
+export const NEXT_SKIPS = `
+  nextEventSkip
+  nextBetSkip
+  nextResultSetSkip
+  nextWithdrawSkip
+`;
+
 export const PAGE_INFO = `
   hasNextPage
   pageNumber
   count
+  nextSkips { ${NEXT_SKIPS} }
 `;
 
 export const BLOCK = `

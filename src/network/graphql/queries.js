@@ -168,11 +168,13 @@ const QUERIES = {
       $filter: TransactionFilter
       $limit: Int
       $skip: Int
+      $skips: TransactionSkip
     ) {
       transactions(
         filter: $filter
         limit: $limit
         skip: $skip
+        skips: $skips
       ) {
         ${PAGINATED_TRANSACTIONS}
       }

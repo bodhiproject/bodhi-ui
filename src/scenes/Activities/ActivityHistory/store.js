@@ -3,23 +3,29 @@ import { filter } from 'lodash';
 import { TransactionStatus, Routes } from 'constants';
 import { transactions } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 500;
+const QUERY_LIMIT = 10;
 const INIT_VALUES = {
   transactions: [],
-  querySkip: 0,
-  queryPage: 0,
+  skip: 0, // skip for transaction
   loaded: false,
   loadingMore: false,
   hasMore: true,
+  eventSkip: 0, // skip when query events
+  betSkip: 0,
+  resultSetSkip: 0,
+  withdrawSkip: 0,
 };
 
 export default class {
   @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
-  querySkip = INIT_VALUES.querySkip; // Tx query skip
-  queryPage = INIT_VALUES.queryPage; // Tx query page
-  @observable loadingMore = INIT_VALUES.loadingMore
+  @observable loadingMore = INIT_VALUES.loadingMore;
   @observable loaded = INIT_VALUES.loaded;
-  @observable hasMore = INIT_VALUES.hasMore
+  @observable hasMore = INIT_VALUES.hasMore;
+  skip = INIT_VALUES.skip;
+  eventSkip = INIT_VALUES.eventSkip;
+  betSkip = INIT_VALUES.betSkip;
+  resultSetSkip = INIT_VALUES.resultSetSkip;
+  withdrawSkip = INIT_VALUES.withdrawSkip;
 
   constructor(app) {
     this.app = app;
@@ -34,19 +40,19 @@ export default class {
       }
     );
     // // New block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      async () => {
-        if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, true);
-          const old = this.transactions[0];
-          if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
-            || newTxs[0].txStatus !== old.txStatus)) {
-            this.transactions.splice(0, 1, newTxs[0]);
-          }
-        }
-      },
-    );
+    // reaction(
+    //   () => this.app.global.syncBlockNum,
+    //   async () => {
+    //     if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
+    //       const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, 0, 0, 0, 0, true);
+    //       const old = this.transactions[0];
+    //       if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
+    //         || newTxs[0].txStatus !== old.txStatus)) {
+    //         this.transactions.splice(0, 1, newTxs[0]);
+    //       }
+    //     }
+    //   },
+    // );
   }
 
   @action
@@ -80,7 +86,7 @@ export default class {
   loadMore = async () => {
     if (this.hasMore) {
       this.loadingMore = true;
-      this.querySkip += QUERY_LIMIT;
+      this.skip += QUERY_LIMIT;
       try {
         const moreTxs = await this.fetchHistory();
         runInAction(() => {
@@ -97,20 +103,31 @@ export default class {
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip, fetchBeginning = false) => {
+  fetchHistory = async (limit = QUERY_LIMIT, skip = this.skip,
+    eventSkip = this.eventSkip, betSkip = this.betSkip,
+    resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, fetchBeginning = false) => {
     // Address is required for the request filters
     if (this.hasMore || fetchBeginning) {
       const { naka: { account }, graphqlClient } = this.app;
 
       const filters = { transactorAddress: account };
 
-      const res = await transactions(graphqlClient, { filter: filters, limit, skip });
+      const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+      const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
+      console.log(`skip: ${skip}, eventSkip: ${eventSkip}, betSkip: ${betSkip}, resultSetSkip: ${resultSetSkip}, withdrawSkip: ${withdrawSkip}`);
+      console.log('TCL: res', res);
 
-      const pending = filter(res.items, { txStatus: TransactionStatus.PENDING });
-      const confirmed = filter(res.items, { txStatus: TransactionStatus.SUCCESS });
+      const { items, pageInfo } = res;
+      const pending = filter(items, { txStatus: TransactionStatus.PENDING });
+      const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
-      else this.hasMore = false;
+      if (pageInfo && !fetchBeginning) {
+        this.hasMore = pageInfo.hasNextPage;
+        this.eventSkip = pageInfo.nextSkips.nextEventSkip;
+        this.betSkip = pageInfo.nextSkips.nextBetSkip;
+        this.resultSetSkip = pageInfo.nextSkips.nextResultSetSkip;
+        this.withdrawSkip = pageInfo.nextSkips.nextWithdrawSkip;
+      } else if (!pageInfo) this.hasMore = false;
 
       return [...pending, ...confirmed];
     }
