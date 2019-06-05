@@ -215,7 +215,7 @@ class EventRow extends Component {
     }
 }
 
-const EventRows = ({ store: { activities: { history: { transactions, loadMore, loadingMore } } } }) => {
+const EventRows = ({ store: { history: { transactions, loadMore, loadingMore } } }) => {
   const cards = transactions.map((transaction) => <EventRow key={transaction.txid} transaction={transaction} />); // eslint-disable-line
   return (
     <Fragment>

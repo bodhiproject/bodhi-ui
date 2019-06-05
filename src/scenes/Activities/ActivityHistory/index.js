@@ -28,11 +28,11 @@ export default class ActivityHistory extends Component {
   };
 
   componentDidMount() {
-    this.props.store.activities.history.init();
+    this.props.store.history.init();
   }
 
   renderContent() {
-    const { classes, store: { activities: { history }, wallet: { currentAddress } } } = this.props;
+    const { classes, store: { history, wallet: { currentAddress } } } = this.props;
     const { loaded } = history;
     if (!loaded) return <Loading />;
     if (currentAddress) return <EventHistoryContent history={history} classes={classes} />;
@@ -50,7 +50,7 @@ export default class ActivityHistory extends Component {
   }
 }
 
-const EventHistoryContent = inject('store')(observer(({ classes, store: { activities: { history: { transactions } } } }) =>
+const EventHistoryContent = inject('store')(observer(({ classes, store: { history: { transactions } } }) =>
   (
     transactions.length ? (
       <Grid container spacing={0} className={classes.historyTableWrapper}>

@@ -39,20 +39,20 @@ export default class {
         }
       }
     );
-    // // New block
-    // reaction(
-    //   () => this.app.global.syncBlockNum,
-    //   async () => {
-    //     if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-    //       const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, 0, 0, 0, 0, true);
-    //       const old = this.transactions[0];
-    //       if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
-    //         || newTxs[0].txStatus !== old.txStatus)) {
-    //         this.transactions.splice(0, 1, newTxs[0]);
-    //       }
-    //     }
-    //   },
-    // );
+    // New block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
+          const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, 0, 0, 0, 0, true);
+          const old = this.transactions[0];
+          if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
+            || newTxs[0].txStatus !== old.txStatus)) {
+            this.transactions.splice(0, 1, newTxs[0]);
+          }
+        }
+      },
+    );
   }
 
   @action
