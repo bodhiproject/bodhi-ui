@@ -16,12 +16,17 @@ export default class TransactionHistory extends Component {
     const { store: { eventPage, naka }, myTransactions } = this.props;
     const { transactionHistoryItems, event } = eventPage;
 
-    const cards = transactionHistoryItems.map((transaction) => (
-      (!myTransactions || (myTransactions && naka.account.toLowerCase() === transaction.txReceipt.from)) && <TxRow key={transaction.txid} transaction={transaction} event={event} />
-    ));
+    let cards = [];
+    if (!myTransactions) {
+      cards = transactionHistoryItems.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+    } else {
+      cards = transactionHistoryItems
+        .filter(transaction => naka.account && naka.account.toLowerCase() === transaction.txSender)
+        .map(transaction => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+    }
     return (
       <div>
-        {transactionHistoryItems.length ? (
+        {cards.length > 0 ? (
           <InfiniteScroll
             spacing={0}
             data={cards}
