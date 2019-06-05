@@ -36,7 +36,9 @@ export default class EventResultHistory extends Component {
 
   renderCardString = (resultSet, intl, classes, index) => {
     const { store: { naka } } = this.props;
-    const { txType, eventRound, resultName, txSender } = resultSet;
+    const { txType, eventRound, txSender } = resultSet;
+    let { resultName } = resultSet;
+    if (resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
     if (eventRound === 0) {
       return (
         <Fragment>

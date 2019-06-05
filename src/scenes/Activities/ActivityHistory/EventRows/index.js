@@ -110,7 +110,10 @@ class EventRow extends Component {
     renderCardString = (transaction, intl, classes) => {
       const you = intl.formatMessage(messages.strYou);
       const action = this.getActionString(transaction, intl);
-      const { txType, name, amount } = transaction;
+      const { txType, amount } = transaction;
+      let { name } = transaction;
+      if (name.length > 20) name = `${name.slice(0, 6)}...${name.slice(-6)}`;
+
       switch (txType) {
         case TransactionType.CREATE_EVENT: {
           return (
