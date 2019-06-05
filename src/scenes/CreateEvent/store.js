@@ -444,7 +444,6 @@ export default class CreateEventStore {
     } else if (this.prediction.endTime - this.prediction.startTime < VALIDATE_TIME_GAP_MIN_SEC) {
       this.error.prediction.endTime = messages.createValidBetEndMsg.id;
     } else {
-      console.log('1233');
       this.error.prediction.endTime = '';
     }
   }
@@ -505,13 +504,11 @@ export default class CreateEventStore {
 
   @action
   validateResultSetter = () => {
-    console.log(this.resultSetter);
     if (!this.resultSetter) {
       this.error.resultSetter = messages.createRequiredMsg.id;
     } else if (!isAddress(this.resultSetter)) {
       this.error.resultSetter = messages.invalidAddress.id;
     } else {
-      console.log('1222aaa');
       this.error.resultSetter = '';
     }
   }

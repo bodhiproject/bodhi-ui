@@ -124,7 +124,6 @@ export default class EventPage extends Component {
       asOptions = betResults;
       asOptions = asOptions.slice(1);
     }
-    console.log('TCL: EventPage -> renderOptions -> asOptions', asOptions);
     return (
       <Grid className={classes.optionGrid}>
         {asOptions.map((option, i) => (
