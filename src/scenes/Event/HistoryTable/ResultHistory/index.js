@@ -36,8 +36,8 @@ export default class EventResultHistory extends Component {
 
   renderCardString = (resultSet, intl, classes, index) => {
     const { store: { naka } } = this.props;
-    const { txType, name, resultName, txSender } = resultSet;
-    if (resultSet.eventRound === 0) {
+    const { txType, eventRound, resultName, txSender } = resultSet;
+    if (eventRound === 0) {
       return (
         <Fragment>
           {(naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
@@ -54,7 +54,7 @@ export default class EventResultHistory extends Component {
         <span className={classes.bold}>{resultName}</span>
         {'" was '}
         <span className={classes.bold}>Voted</span>
-        {` as result on Arbitration Round # ${index - 1}`}
+        {` as result on Arbitration Round # ${eventRound}`}
       </Fragment>
     );
   }
