@@ -9,13 +9,14 @@ export default (theme) => ({
     color: theme.palette.primary.contrastText,
   },
   withdrawingPaper: {
-    padding: theme.padding.space5X.px,
+    padding: `${theme.padding.space5X.px} ${theme.padding.space5X.px} 0 ${theme.padding.space5X.px}`,
     [theme.breakpoints.down('md')]: {
       padding: theme.padding.space2X.px,
     },
     [theme.breakpoints.down('xs')]: {
       padding: `${theme.padding.space2X.px} ${theme.padding.spaceX.px}`,
     },
+    boxShadow: 'none !important',
   },
   rewardTooltip: {
     background: '#FFFFFF',

@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import cx from 'classnames';
@@ -117,17 +118,25 @@ export default class EventPage extends Component {
     );
   }
 
-  renderOptions = () => {
-    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status } } } } = this.props;
+  renderOptions = (actionText, betSpecific) => {
+    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
+    let asOptions = results;
+    if (betSpecific) {
+      asOptions = betResults;
+      asOptions = asOptions.slice(1);
+    }
+    console.log('TCL: EventPage -> renderOptions -> asOptions', asOptions);
     return (
       <Grid className={classes.optionGrid}>
-        {results.map((option, i) => (
+        {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== 0)) &&
           <Option
             key={i}
             option={option}
             disabled={isWithdrawing}
             amountInputDisabled={isResultSetting}
+            actionText={actionText}
+            betSpecific={betSpecific}
           />
         ))}
       </Grid>
@@ -192,22 +201,42 @@ export default class EventPage extends Component {
     );
   }
 
+  renderBetContent = () => {
+    const {
+      classes,
+      store: {
+        eventPage: { event },
+      },
+    } = this.props;
+
+    return (
+      event.currentRound > 0 && <Fragment>
+        <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id='string.betEnded' defaultMessage='Event bet Ended' /></div>
+        {this.renderOptions('bet', true)}
+      </Fragment>
+    );
+  }
+
   // Renders sections for bet, set, vote statuses
   renderActiveEventContent = () => {
     const {
-      classes,
+      store: {
+        eventPage: { event },
+      },
     } = this.props;
     return (
       <Card>
         {this.renderTitle()}
+        {this.renderBetContent()}
         {this.renderEventWarning()}
-        {this.renderOptions()}
+        {this.renderOptions(event.currentRound > 0 ? 'vote' : 'bet')}
         {this.renderConsensusThresholdMessage()}
         {this.renderRemainingConsensusThresholdMessage()}
         {this.renderActionButton()}
       </Card>
     );
   }
+
 
   // Renders sections for withdraw status
   renderWithdrawContent = () => {
@@ -223,7 +252,9 @@ export default class EventPage extends Component {
       || event.ownerAddress === currentWalletAddress;
 
     return (
-      <Fragment>
+      <Card>
+        {this.renderTitle()}
+        {this.renderBetContent()}
         <Paper className={classes.withdrawingPaper}>
           <WinningOutcome eventPage={eventPage} />
           {allowWithdraw && (
@@ -233,8 +264,7 @@ export default class EventPage extends Component {
             </Fragment>
           )}
         </Paper>
-        <ResultTotals eventPage={eventPage} />
-      </Fragment>
+      </Card>
     );
   }
 

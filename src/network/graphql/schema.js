@@ -32,6 +32,8 @@ export const PENDING_TRANSACTIONS = `
 export const ROUND_BETS = `
   totalRoundBets
   userRoundBets
+  totalBetRoundBets
+  userBetRoundBets
 `;
 
 // Transaction interface

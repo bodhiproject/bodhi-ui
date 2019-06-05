@@ -43,9 +43,6 @@ const TableHeader = () => (
   <TableHead>
     <TableRow>
       <TableCell>
-        <FormattedMessage id="str.address" defaultMessage="Address" />
-      </TableCell>
-      <TableCell>
         <FormattedMessage id="str.escrow" defaultMessage="Escrow" />
       </TableCell>
       <TableCell>
@@ -69,10 +66,6 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAm
   return (
     <TableRow key={key}>
       <TableCell>
-        <Address>{address}</Address>
-        {disabled && <Warning id={id} message={message} className={warningType} />}
-      </TableCell>
-      <TableCell>
         {escrowAmount}
       </TableCell>
       <TableCell>
@@ -88,6 +81,7 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAm
         >
           <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
         </Button>
+        {disabled && <Warning id={id} message={message} className={warningType} />}
       </TableCell>
     </TableRow>
   );
@@ -101,7 +95,7 @@ const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
       show: true,
       disabled: true,
       id: 'withdrawDetail.alreadyWithdrawn',
-      message: 'You have already withdrawn with this address.',
+      message: 'You have already withdrawn',
       warningTypeClass: 'withdrawn',
     };
   }

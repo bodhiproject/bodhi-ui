@@ -14,6 +14,7 @@ import {
   resultSets,
   totalResultBets,
   withdraws,
+  roundBets,
 } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
@@ -21,6 +22,7 @@ const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDR
 const INIT = {
   loading: true,
   event: undefined,
+  betRoundBets: undefined,
   address: '',
   escrowAmount: 0,
   resultBets: [],
@@ -70,6 +72,7 @@ export default class EventStore {
   @observable totalInvestment = INIT.totalInvestment
   @observable returnRate = INIT.returnRate
   @observable profitOrLoss = INIT.profitOrLoss
+  @observable betRoundBets = INIT.betRoundBets
   leaderboardLimit = INIT.leaderboardLimit
 
   @computed get eventName() {
@@ -176,10 +179,12 @@ export default class EventStore {
       filter: { OR: [{ txid: this.url }, { address: this.url }] },
       includeRoundBets: true,
       userAddress,
+      includeBetRoundBets: true,
     });
     [this.event] = items;
     if (!this.event) return;
-
+    console.log('TCL: this.event', this.event);
+    // if (this.event.currentRound > 0) await this.queryBettingRoundBets();
     this.address = this.event.address;
     this.escrowAmount = this.event.escrowAmount;
     await this.queryResultSets();
@@ -286,6 +291,19 @@ export default class EventStore {
       skip: 0,
     });
     this.leaderboardBets = winners;
+  }
+
+  @action
+  queryBettingRoundBets = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    this.betRoundBets = await roundBets(this.app.graphqlClient, {
+      eventAddress: address,
+      userAddress: this.app.wallet.currentAddress,
+      round: 0,
+    });
+    console.log('TCL: queryBettingRoundBets -> this.betRoundBets', this.betRoundBets);
   }
 
   @action

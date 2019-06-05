@@ -2,6 +2,7 @@ import { map } from 'lodash';
 import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
 import Option from './Option';
+import BetOption from './BetOption';
 
 export default class MultipleResultsEvent {
   txid // Transaction ID returned when the event confirmed
@@ -32,7 +33,10 @@ export default class MultipleResultsEvent {
   language // Language of the event
   pendingTxs // Counts of pending txs for the address passed in pendingTxsAddress param
   roundBets // Array of bets for the current round returned if includeRoundBets: true
+  userRoundBets
   totalBets // Total amount of bets for this event in decimals
+  betRoundBets
+  totalBetRoundBets
 
   // UI-specific vars
   localizedInvalid // for invalid option
@@ -44,6 +48,9 @@ export default class MultipleResultsEvent {
     this.consensusThreshold = satoshiToDecimal(event.consensusThreshold);
     this.roundBets = map(event.roundBets && event.roundBets.totalRoundBets, (bets) => satoshiToDecimal(bets));
     this.userRoundBets = map(event.roundBets && event.roundBets.userRoundBets, (bets) => satoshiToDecimal(bets));
+    this.betRoundBets = map(event.roundBets && event.roundBets.totalBetRoundBets, (bets) => satoshiToDecimal(bets));
+    this.userBetRoundBets = map(event.roundBets && event.roundBets.userBetRoundBets, (bets) => satoshiToDecimal(bets));
+
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {
       en: 'Invalid',
@@ -54,6 +61,7 @@ export default class MultipleResultsEvent {
       },
     };
     this.results = event.results.map((result, i) => new Option(result, i, this));
+    this.betResults = event.results.map((result, i) => new BetOption(result, i, this));
     this.url = `/event/${this.address ? this.address : this.txid}`;
   }
 
