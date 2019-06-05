@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
+import { inject, observer } from 'mobx-react';
 import { ResponsiveTable } from 'components';
 import { Token } from 'constants';
 import styles from './styles';
@@ -24,6 +25,8 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -32,10 +35,12 @@ export default class EventResultHistory extends Component {
   };
 
   renderCardString = (resultSet, intl, classes, index) => {
-    const { txType, name, resultName } = resultSet;
+    const { store: { naka } } = this.props;
+    const { txType, name, resultName, txSender } = resultSet;
     if (resultSet.eventRound === 0) {
       return (
         <Fragment>
+          {(naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
           <span className={classes.bold}> Set </span>
           {'"'}
           <span className={classes.bold}>{resultName}</span>
@@ -73,7 +78,7 @@ export default class EventResultHistory extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${satoshiToDecimal(amount)} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
+                {`${amount} ${Token.NBOT} . ${txStatus} . ${blockTime} . `}
                 <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
                   {'Detail'}
                 </a>

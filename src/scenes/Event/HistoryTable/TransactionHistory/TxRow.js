@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
 import cx from 'classnames';
@@ -52,21 +53,14 @@ const messages = defineMessages({
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
 export default class TxRow extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
     transaction: PropTypes.object.isRequired,
   };
-
-  get description() {
-    const { intl, transaction: { resultIndex, resultName }, event } = this.props;
-    if (resultIndex !== null && resultIndex !== undefined) {
-      return `#${resultIndex} ${resultIndex === 0 ?
-        event.localizedInvalid.parse(intl.locale) : resultName}`;
-    }
-    return '';
-  }
 
   getActionString = (transaction, intl) => {
     const { txType } = transaction;
@@ -165,8 +159,8 @@ export default class TxRow extends Component {
   }
 
   render() {
-    const { transaction, intl, classes } = this.props;
-    const { txStatus, block, amount } = transaction;
+    const { transaction, intl, classes, store: { naka } } = this.props;
+    const { txStatus, block, amount, txSender } = transaction;
     const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
 
     return (
@@ -177,6 +171,7 @@ export default class TxRow extends Component {
           >
             <CardContent>
               <Typography color='textPrimary'>
+                {(naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
                 {this.renderCardString(transaction, intl, classes)}
               </Typography>
             </CardContent>

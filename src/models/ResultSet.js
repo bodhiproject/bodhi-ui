@@ -12,10 +12,12 @@ export default class ResultSet {
   amount // Result set amount in decimals
   amountSatoshi // Result set amount in satoshi
   eventRound // Round of the event for the result set. 0 is set by Centralized Oracle. > 0 is set by arbitration.
+  txSender // Sender of this transaction
 
   constructor(resultSet) {
     Object.assign(this, resultSet);
     this.amount = satoshiToDecimal(resultSet.amount);
     this.amountSatoshi = resultSet.amount;
+    this.txSender = resultSet.centralizedOracleAddress;
   }
 }
