@@ -91,7 +91,7 @@ export default class EventPage extends Component {
       store: { eventPage },
     } = this.props;
     return (
-      <Typography variant="h4" className={cx(classes.title, classes.padLeft)}>
+      <Typography variant="h4" className={cx(classes.title, classes.padLeft, classes.ellipsis)}>
         {eventPage.eventName}
       </Typography>
     );
