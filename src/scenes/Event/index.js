@@ -120,6 +120,7 @@ export default class EventPage extends Component {
   renderOptions = (actionText, betSpecific) => {
     const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
     let asOptions = results;
+    asOptions = asOptions.slice(1).concat(asOptions[0]);
     if (betSpecific) {
       asOptions = betResults;
       asOptions = asOptions.slice(1);
@@ -127,7 +128,7 @@ export default class EventPage extends Component {
     return (
       <Grid className={classes.optionGrid}>
         {asOptions.map((option, i) => (
-          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== 0)) &&
+          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
           <Option
             key={i}
             option={option}
