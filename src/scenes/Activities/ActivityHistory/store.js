@@ -114,8 +114,6 @@ export default class {
 
       const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
       const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
-      console.log(`skip: ${skip}, eventSkip: ${eventSkip}, betSkip: ${betSkip}, resultSetSkip: ${resultSetSkip}, withdrawSkip: ${withdrawSkip}`);
-      console.log('TCL: res', res);
 
       const { items, pageInfo } = res;
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
