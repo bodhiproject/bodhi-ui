@@ -42,7 +42,7 @@ export default class EventResultHistory extends Component {
     if (eventRound === 0) {
       return (
         <Fragment>
-          {(naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
+          {(naka.account && naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
           <span className={classes.bold}> Set </span>
           {'"'}
           <span className={classes.bold}>{resultName}</span>
