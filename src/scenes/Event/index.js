@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { toJS } from 'mobx';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import cx from 'classnames';
@@ -22,7 +21,6 @@ import Option from './Option';
 import WinningOutcome from './WinningOutcome';
 import Reward from './Reward';
 import WithdrawTo from './WithdrawTo';
-import ResultTotals from './ResultTotals';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
 import { Sidebar } from './Sidebar';

@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableBody, TableHead, TableRow, TableCell, Button } from '@material-ui/core';
@@ -56,7 +55,7 @@ const TableHeader = () => (
 );
 
 
-const WinningWithdrawRow = inject('store')(observer(({ addr: { address, escrowAmount, nbotWinnings }, store, key }) => {
+const WinningWithdrawRow = inject('store')(observer(({ addr: { escrowAmount, nbotWinnings }, store, key }) => {
   const { eventPage: { didWithdraw, pendingWithdraw, withdraw } } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig(
     pendingWithdraw,
@@ -116,9 +115,5 @@ const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
     disabled: false,
   };
 };
-
-const Address = styled.div`
-  word-break: break-all;
-`;
 
 export default injectIntl(inject('store')(WithdrawTo));

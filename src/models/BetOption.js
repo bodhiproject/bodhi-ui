@@ -1,6 +1,5 @@
 import { sum, round } from 'lodash';
-import { Token, EVENT_STATUS } from 'constants';
-import { decimalToSatoshi } from '../helpers/utility';
+import { Token } from 'constants';
 
 const { NBOT } = Token;
 
@@ -32,5 +31,5 @@ export default class Option {
     this.disabled = true;
   }
 
-  isExpanded = (selectedOptionIdx) => false
+  isExpanded = () => false
 }

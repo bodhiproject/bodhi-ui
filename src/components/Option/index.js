@@ -40,7 +40,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, value } = option;
+    const { percent, value } = option;
 
     return (
       <div>

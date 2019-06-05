@@ -1,6 +1,6 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { orderBy, filter } from 'lodash';
-import { TransactionStatus, SortBy, Routes } from 'constants';
+import { filter } from 'lodash';
+import { TransactionStatus, Routes } from 'constants';
 import { transactions } from '../../../network/graphql/queries';
 
 const QUERY_LIMIT = 500;

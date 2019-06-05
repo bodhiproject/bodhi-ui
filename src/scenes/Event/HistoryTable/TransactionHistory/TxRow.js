@@ -2,13 +2,10 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
-import { TableCell, TableRow, withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
-import cx from 'classnames';
-import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
+import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import { getTxTypeString } from '../../../../helpers/stringUtil';
 import { satoshiToDecimal, getTimeString } from '../../../../helpers/utility';
 import { EXPLORER } from '../../../../network/routes';
 
