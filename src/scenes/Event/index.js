@@ -210,7 +210,7 @@ export default class EventPage extends Component {
 
     return (
       event.currentRound > 0 && <Fragment>
-        <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id='string.betEnded' defaultMessage='Event bet Ended' /></div>
+        <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessage id='string.betEnded' defaultMessage='Event bet Ended' /></div>
         {this.renderOptions('bet', true)}
       </Fragment>
     );
