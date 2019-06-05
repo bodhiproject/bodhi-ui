@@ -7,9 +7,9 @@ import styles from './styles';
 import ResultHistory from './ResultHistory';
 import TransactionHistory from './TransactionHistory';
 
-const TAB_RESULT_HISTORY = 0;
+const TAB_RESULT_HISTORY = 2;
 const TAB_MY_TRANSACTIONS = 1;
-const TAB_ALL_TRANSACTIONS = 2;
+const TAB_ALL_TRANSACTIONS = 0;
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -47,8 +47,8 @@ export default class HistoryTable extends Component {
           className={classes.tabs}
         >
           <Tab
-            value={TAB_RESULT_HISTORY}
-            label={intl.formatMessage({ id: 'str.resultHistory', defaultMessage: 'Result History' })}
+            value={TAB_ALL_TRANSACTIONS}
+            label={intl.formatMessage({ id: 'str.allTransactions', defaultMessage: 'All Transactions' })}
             className={classes.pickerTab}
           />
           <Tab
@@ -57,15 +57,15 @@ export default class HistoryTable extends Component {
             className={classes.pickerTab}
           />
           <Tab
-            value={TAB_ALL_TRANSACTIONS}
-            label={intl.formatMessage({ id: 'str.allTransactions', defaultMessage: 'All Transactions' })}
+            value={TAB_RESULT_HISTORY}
+            label={intl.formatMessage({ id: 'str.resultHistory', defaultMessage: 'Result History' })}
             className={classes.pickerTab}
           />
         </Tabs>
         <div className={classes.subTableContainer}>
-          {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
-          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
           {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
+          {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
+          {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
         </div>
       </div>
     );
