@@ -139,7 +139,7 @@ export default class EventStore {
     reaction(
       () => toJS(this.app.wallet.addresses),
       () => {
-        if (this.event.status === WITHDRAWING) this.calculateWinnings();
+        if (this.event && this.event.status === WITHDRAWING) this.calculateWinnings();
       }
     );
 
