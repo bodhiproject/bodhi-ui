@@ -8,7 +8,6 @@ import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
-  Card,
   Loading,
   BackButton,
   PageContainer,
