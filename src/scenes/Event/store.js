@@ -145,7 +145,7 @@ export default class EventStore {
 
     // New block
     reaction(
-      () => this.app.global.online + toJS(this.app.wallet.addresses),
+      () => this.app.global.online,
       async () => {
         if (this.app.global.online) await this.initEvent();
       }
@@ -322,7 +322,7 @@ export default class EventStore {
   @action
   calculateWinnings = async () => {
     const address = this.event && this.event.address;
-    if (!address) return;
+    if (!address || !this.app.wallet.currentAddress) return;
 
     try {
       const { data } = await axios.get(API.CALCULATE_WINNINGS, {
