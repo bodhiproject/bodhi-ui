@@ -102,7 +102,8 @@ export default class Leaderboard extends React.Component {
                     <CustomTableRow key={index} className={classes.entry}>
                       <CustomTableBodyCell component="th" scope="row">
                         {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />}
-                        {index > 2 && `#${index + 1}`}
+                        {index === 3 && '👍'}
+                        {index === 4 && '✊'}
                       </CustomTableBodyCell>
                       <CustomTableBodyCell>{row.betterAddress}</CustomTableBodyCell>
                       {!row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
