@@ -91,6 +91,11 @@ export default class Leaderboard extends React.Component {
             />
             <Paper className={classes.outWrapper}>
               <Table className={classes.table}>
+                <colgroup>
+                  <col width="5%" />
+                  <col width="70%" />
+                  <col width="25%" />
+                </colgroup>
                 <TableHead className={classes.tableHead}>
                   <TableRow>
                     <CustomTableHeadCell><FormattedMessage id='leaderboard.ranking' defaultMessage='Ranking' /></CustomTableHeadCell>
@@ -135,6 +140,10 @@ const CustomTableHeadCell = withStyles(theme => ({
 const CustomTableBodyCell = withStyles(theme => ({
   root: {
     borderColor: 'rgba(151, 151, 151, 0.1)',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    maxWidth: '1px',
   },
   body: {
     fontSize: theme.sizes.font.xSmall,
