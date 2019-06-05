@@ -1,14 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { map } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { ResponsiveTable } from 'components';
 import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString, satoshiToDecimal } from '../../../../helpers';
+import { getTimeString } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 
@@ -34,9 +32,9 @@ export default class EventResultHistory extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  renderCardString = (resultSet, intl, classes, index) => {
+  renderCardString = (resultSet, classes) => {
     const { store: { naka } } = this.props;
-    const { txType, eventRound, txSender } = resultSet;
+    const { eventRound, txSender } = resultSet;
     let { resultName } = resultSet;
     if (resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
     if (eventRound === 0) {
@@ -64,7 +62,7 @@ export default class EventResultHistory extends Component {
   render() {
     const { resultSetsHistory, intl, classes } = this.props;
     const cards = resultSetsHistory.map((resultSet, index) => {
-      const { resultIndex, resultName, amount, block, txStatus } = resultSet;
+      const { amount, block, txStatus } = resultSet;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
       return (
         <Grid container className={classes.grid} justify="center" key={`result-${index}`}>

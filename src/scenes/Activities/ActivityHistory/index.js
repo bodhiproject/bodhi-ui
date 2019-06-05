@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { Grid, withStyles } from '@material-ui/core';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { InstallNakaWalletInline } from 'components';
 
 import styles from './styles';

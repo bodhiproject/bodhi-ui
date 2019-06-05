@@ -1,17 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Grid, Card, CardContent, Typography, withStyles, TableBody, TableCell } from '@material-ui/core';
-import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
+import { injectIntl, intlShape, defineMessages } from 'react-intl';
+import { Grid, Card, CardContent, Typography, withStyles } from '@material-ui/core';
 import { Token, TransactionType } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
-import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
-import { getTxTypeString } from '../../../../helpers/stringUtil';
-import { satoshiToDecimal, weiToDecimal, getTimeString } from '../../../../helpers/utility';
+import { satoshiToDecimal, getTimeString } from '../../../../helpers/utility';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({

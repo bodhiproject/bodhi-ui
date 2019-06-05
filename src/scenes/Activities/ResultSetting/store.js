@@ -1,4 +1,4 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
+import { observable, action, runInAction, reaction } from 'mobx';
 import { EVENT_STATUS, Routes, SortBy } from 'constants';
 import { events } from '../../../network/graphql/queries';
 

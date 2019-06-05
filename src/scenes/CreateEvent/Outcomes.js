@@ -49,7 +49,7 @@ const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) =>
   </Button>
 )));
 
-const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, outcome, createEvent, i, intl }) => (
+const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ outcome, createEvent, i, intl }) => (
   <div>
     <FormControl fullWidth>
       <TextField

@@ -17,7 +17,7 @@ export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({
   </div>
 ))));
 
-export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, naka } }) => (
+export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <div className={cx(classes.navDropdown, ui.dropdownMenuOpen ? '' : 'hide')}>
     <Hidden smUp>
       <Link to={Routes.PREDICTION}>
