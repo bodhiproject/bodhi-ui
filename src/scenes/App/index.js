@@ -6,7 +6,6 @@ import {
   GlobalDialog,
   GlobalSnackbar,
   InstallNakaWalletPopover,
-  TxSentDialog,
   TutorialCarouselDialog,
 } from 'components';
 
@@ -25,7 +24,6 @@ const App = observer(({ classes, match: { url }, store }) => (
         <TutorialCarouselDialog />
         <GlobalSnackbar />
         <GlobalDialog />
-        <TxSentDialog />
         <InstallNakaWalletPopover />
       </Fragment>
     )}

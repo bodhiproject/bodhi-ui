@@ -130,6 +130,7 @@ export const PAGINATED_TRANSACTIONS = `
     ${ITRANSACTION}
     ... on MultipleResultsEvent {
       address
+      ownerAddress
       name
       escrowAmount
     }

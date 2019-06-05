@@ -11,6 +11,9 @@ const styles = (theme) => ({
   mainTableContainer: {
     marginTop: theme.padding.space5X.px,
   },
+  tabs: {
+    marginBottom: theme.padding.space3X.px,
+  },
 });
 
 export default styles;
