@@ -26,12 +26,11 @@ const message = defineMessages({
   },
 });
 
-const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, endTime }) => (
+const Sidebar = inject('store')(observer(({ endTime }) => (
   <SidebarContainer>
     <Card>
       <EventInfo>
         <EndDate endTime={endTime} />
-        <Funding event={event} />
       </EventInfo>
     </Card>
     <StepperVertRight />
@@ -47,10 +46,6 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
 const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getTimeString(endTime)} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
-
-const Funding = ({ event: { totalBets } }) => (
-  <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${totalBets} NBOT`} />
-);
 
 const EventInfo = styled.div`
   padding-bottom: ${props => props.theme.padding.spaceX.px};
