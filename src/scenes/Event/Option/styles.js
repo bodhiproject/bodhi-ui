@@ -1,13 +1,13 @@
 const styles = (theme) => ({
-  // eventOptionCollapse: {
-  //   paddingTop: '1px',
-  //   '&.last': {
-  //     paddingBottom: theme.padding.spaceX.px,
-  //   },
-  //   '&.is_result.first': {
-  //     paddingTop: 1,
-  //   },
-  // },
+  eventOptionCollapse: {
+    paddingTop: '1px',
+    '&.last': {
+      paddingBottom: theme.padding.spaceX.px,
+    },
+    '&.is_result.first': {
+      paddingTop: 1,
+    },
+  },
   eventOptionWrapper: {
     width: '100%',
     display: 'block',

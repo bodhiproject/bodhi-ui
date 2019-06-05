@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { sum, round } from 'lodash';
 import { Token, EVENT_STATUS } from 'constants';
 import { decimalToSatoshi } from '../helpers/utility';
 
@@ -25,9 +25,9 @@ export default class Option {
     this.token = NBOT;
     this.phase = event.phase;
     this.value = `${this.amount} ${this.token}`;
-    const totalBalance = _.sum(event.betRoundBets);
-    this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
-    this.userPercent = this.amount === 0 ? this.amount : _.round((event.userBetRoundBets[i] / this.amount) * this.percent);
+    const totalBalance = sum(event.betRoundBets);
+    this.percent = totalBalance === 0 ? totalBalance : round((this.amount / totalBalance) * 100);
+    this.userPercent = this.amount === 0 ? this.amount : round((event.userBetRoundBets[i] / this.amount) * this.percent);
     this.userValue = event.userBetRoundBets[i];
     this.disabled = true;
   }

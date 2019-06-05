@@ -80,7 +80,17 @@ export default class Option extends Component {
             disabled={option.disabled || disabled}
             classes={{ root: classes.expansionPanelRoot, disabled: classes.expansionPanelDisabled }}
           >
-            <ExpansionPanelSummary expandIcon={isPrevResult ? <img src="/images/icon-tick_bordered.svg" alt='leaderboard' /> : <ExpandMoreIcon />} classes={{ root: classes.expansionPanelSummaryRoot, content: classes.expansionPanelSummaryContent, expandIcon: cx(classes.expandIcon, betSpecific && classes.hideIcon), disabled: classes.expansionPanelSummaryDisabled }}>
+            <ExpansionPanelSummary
+              expandIcon={isPrevResult ?
+                <img src="/images/icon-tick_bordered.svg" alt='leaderboard' />
+                : <ExpandMoreIcon />}
+              classes={{
+                root: classes.expansionPanelSummaryRoot,
+                content: classes.expansionPanelSummaryContent,
+                expandIcon: cx(classes.expandIcon, betSpecific && classes.hideIcon),
+                disabled: classes.expansionPanelSummaryDisabled,
+              }}
+            >
               <div className={classes.eventOptionWrapper}>
                 <Typography variant="h6" className={classes.overText}>
                   {name}

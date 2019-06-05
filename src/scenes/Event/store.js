@@ -21,7 +21,6 @@ const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDR
 const INIT = {
   loading: true,
   event: undefined,
-  betRoundBets: undefined,
   address: '',
   escrowAmount: 0,
   resultBets: [],
@@ -71,7 +70,6 @@ export default class EventStore {
   @observable totalInvestment = INIT.totalInvestment
   @observable returnRate = INIT.returnRate
   @observable profitOrLoss = INIT.profitOrLoss
-  @observable betRoundBets = INIT.betRoundBets
   leaderboardLimit = INIT.leaderboardLimit
 
   @computed get eventName() {
