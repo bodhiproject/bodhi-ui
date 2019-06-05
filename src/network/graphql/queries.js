@@ -53,7 +53,7 @@ const QUERIES = {
       $skip: Int
       $pendingTxsAddress: String
       $includeRoundBets: Boolean
-      $userAddress: String
+      $roundBetsAddress: String
       $includeBetRoundBets: Boolean
     ) {
       events(
@@ -63,7 +63,7 @@ const QUERIES = {
         skip: $skip
         pendingTxsAddress: $pendingTxsAddress
         includeRoundBets: $includeRoundBets
-        userAddress: $userAddress
+        roundBetsAddress: $roundBetsAddress
         includeBetRoundBets: $includeBetRoundBets
       ) {
         ${PAGINATED_EVENTS}

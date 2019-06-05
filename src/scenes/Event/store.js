@@ -173,11 +173,11 @@ export default class EventStore {
   @action
   initEvent = async () => {
     if (!this.url) return;
-    const userAddress = this.app.wallet.currentAddress || null;
+    const roundBetsAddress = this.app.wallet.currentAddress || null;
     const { items } = await events(this.app.graphqlClient, {
       filter: { OR: [{ txid: this.url }, { address: this.url }] },
       includeRoundBets: true,
-      userAddress,
+      roundBetsAddress,
       includeBetRoundBets: true,
     });
     [this.event] = items;
