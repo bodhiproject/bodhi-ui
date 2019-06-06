@@ -47,7 +47,7 @@ export default class {
     reaction(
       () => this.app.naka.account,
       () => {
-        if (this.app.ui.location === Routes.ACTIVITY_HISTORY) {
+        if (this.app.ui.location === Routes.ACTIVITY_HISTORY || this.app.ui.location === Routes.EVENT) {
           this.init();
         }
       }
@@ -88,16 +88,13 @@ export default class {
 
       const myFilter = { eventAddress: address, transactorAddress: account };
       this.myTransactions = await this.fetchMyHistory(myFilter); // for my txs
+
+      // load result history
     }
   }
 
   /**
-   * It is necessary to fetch a big batch of txs for the purposes of pagination. We need to know the total count
-   * of all the txs for the table footer. This implementation goes like this:
-   * 1. Fetch big batch of txs (500)
-   * 2. Slice the txs per page (based on how many perPage is selected)
-   * 3. If there are more than the first batch of txs (> 500), then fetch the second batch when the user is on the last
-   *    page of the first batch. And so on for any further batches.
+   * Load the first 10 or 5 txs depending on the location
    */
   @action
   loadFirstTransactions = async (filters) => {
@@ -184,9 +181,9 @@ export default class {
     if (this.hasMore || fetchBeginning) {
       const { graphqlClient } = this.app;
 
-      const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+      const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
 
-      const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
+      const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
 
       const { items, pageInfo } = res;
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
@@ -194,10 +191,10 @@ export default class {
 
       if (pageInfo && !fetchBeginning) {
         this.hasMore = pageInfo.hasNextPage;
-        this.eventSkip = pageInfo.nextSkips.nextEventSkip;
-        this.betSkip = pageInfo.nextSkips.nextBetSkip;
-        this.resultSetSkip = pageInfo.nextSkips.nextResultSetSkip;
-        this.withdrawSkip = pageInfo.nextSkips.nextWithdrawSkip;
+        this.eventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
+        this.betSkip = pageInfo.nextTransactionSkips.nextBetSkip;
+        this.resultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
+        this.withdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
       } else if (!pageInfo) this.hasMore = false;
 
       return [...pending, ...confirmed];
@@ -216,9 +213,9 @@ export default class {
     if (this.myHasMore) {
       const { graphqlClient } = this.app;
 
-      const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+      const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
 
-      const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
+      const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
 
       const { items, pageInfo } = res;
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
@@ -226,10 +223,10 @@ export default class {
 
       if (pageInfo) {
         this.myHasMore = pageInfo.hasNextPage;
-        this.myEventSkip = pageInfo.nextSkips.nextEventSkip;
-        this.myBetSkip = pageInfo.nextSkips.nextBetSkip;
-        this.myResultSetSkip = pageInfo.nextSkips.nextResultSetSkip;
-        this.myWithdrawSkip = pageInfo.nextSkips.nextWithdrawSkip;
+        this.myEventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
+        this.myBetSkip = pageInfo.nextTransactionSkips.nextBetSkip;
+        this.myResultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
+        this.myWithdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
       } else if (!pageInfo) this.myHasMore = false;
 
       return [...pending, ...confirmed];

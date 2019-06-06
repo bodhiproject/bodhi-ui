@@ -1,4 +1,4 @@
-export const NEXT_SKIPS = `
+export const NEXT_TRANSACTION_SKIPS = `
   nextEventSkip
   nextBetSkip
   nextResultSetSkip
@@ -9,7 +9,7 @@ export const PAGE_INFO = `
   hasNextPage
   pageNumber
   count
-  nextSkips { ${NEXT_SKIPS} }
+  nextTransactionSkips { ${NEXT_TRANSACTION_SKIPS} }
 `;
 
 export const BLOCK = `
