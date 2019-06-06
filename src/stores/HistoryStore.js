@@ -1,7 +1,7 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter } from 'lodash';
 import { TransactionStatus, Routes } from 'constants';
-import { transactions } from '../../../network/graphql/queries';
+import { transactions } from '../network/graphql/queries';
 
 const EVENT_HISTORY_LIMIT = 5;
 const ACTIVITY_HISTORY_LIMIT = 10;
