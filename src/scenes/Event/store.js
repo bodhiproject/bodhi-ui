@@ -26,9 +26,7 @@ const INIT = {
   totalInvestment: 0,
   returnRate: 0,
   profitOrLoss: 0,
-  resultSetsHistory: [],
   pendingWithdraw: [],
-  transactionHistoryItems: [],
   leaderboardBets: [],
   nbotWinnings: 0,
   amount: '',
@@ -51,8 +49,6 @@ export default class EventStore {
   @observable address = INIT.address
   @observable resultBets = INIT.resultBets
   @observable betterBets = INIT.betterBets
-  @observable resultSetsHistory = INIT.resultSetsHistory
-  @observable transactionHistoryItems = INIT.transactionHistoryItems
   @observable leaderboardBets = INIT.leaderboardBets
   @observable nbotWinnings = INIT.nbotWinnings
   @observable amount = INIT.amount // Input amount to bet, vote, etc
@@ -271,7 +267,7 @@ export default class EventStore {
   // TODO: fix from TransactionStore
   @action
   addPendingTx(pendingTransaction) {
-    this.transactionHistoryItems.unshift(pendingTransaction);
+    this.app.history.transactions.unshift(pendingTransaction);
   }
 
   @action

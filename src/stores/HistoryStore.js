@@ -10,13 +10,21 @@ const INIT_VALUES = {
   myTransactions: [],
   resultSetsHistory: [],
   skip: 0, // skip for transaction
+  mySkip: 0,
+  resultSkip: 0,
   loaded: false,
   loadingMore: false,
   hasMore: true,
+  resultHasMore: true,
+  myHasMore: true,
   eventSkip: 0, // skip when query events
+  myEventSkip: 0,
   betSkip: 0,
+  myBetSkip: 0,
   resultSetSkip: 0,
+  myResultSetSkip: 0,
   withdrawSkip: 0,
+  myWithdrawSkip: 0,
   limit: 0,
 };
 
@@ -35,16 +43,16 @@ export default class {
   withdrawSkip = INIT_VALUES.withdrawSkip;
   // for My Transaction in Event page
   @observable myTransactions = INIT_VALUES.myTransactions;
-  @observable myHasMore = INIT_VALUES.hasMore;
-  @observable mySkip = INIT_VALUES.skip;
-  myEventSkip = INIT_VALUES.eventSkip;
-  myBetSkip = INIT_VALUES.betSkip;
-  myResultSetSkip = INIT_VALUES.resultSetSkip;
-  myWithdrawSkip = INIT_VALUES.withdrawSkip;
+  @observable myHasMore = INIT_VALUES.myHasMore;
+  @observable mySkip = INIT_VALUES.mySkip;
+  myEventSkip = INIT_VALUES.myEventSkip;
+  myBetSkip = INIT_VALUES.myBetSkip;
+  myResultSetSkip = INIT_VALUES.myResultSetSkip;
+  myWithdrawSkip = INIT_VALUES.myWithdrawSkip;
   // for result history in event page
   @observable resultSetsHistory = INIT_VALUES.resultSetsHistory;
-  @observable resultHasMore = INIT_VALUES.hasMore;
-  @observable resultSkip = INIT_VALUES.skip;
+  @observable resultHasMore = INIT_VALUES.resultHasMore;
+  @observable resultSkip = INIT_VALUES.resultSkip;
 
   constructor(app) {
     this.app = app;
