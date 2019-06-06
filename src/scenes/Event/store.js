@@ -275,12 +275,14 @@ export default class EventStore {
     const address = this.event && this.event.address;
     if (!address) return;
 
+    console.log('TCL: queryTotalResultBets -> this.app.wallet.currentAddress', this.app.wallet.currentAddress);
     const res = await totalResultBets(this.app.graphqlClient, {
       filter: {
         eventAddress: address,
         betterAddress: this.app.wallet.currentAddress,
       },
     });
+    console.log('TCL: queryTotalResultBets -> res', res);
     this.resultBets = res.resultBets || [];
     this.betterBets = res.betterBets || [];
     this.totalInvestment = sum(this.betterBets);

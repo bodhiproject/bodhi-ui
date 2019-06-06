@@ -189,6 +189,8 @@ export const SYNC_INFO = `
 export const TOTAL_RESULT_BETS = `
   resultBets
   betterBets
+  totalRound0Bets
+  betterRound0Bets
 `;
 
 export const ALL_STATS = `
