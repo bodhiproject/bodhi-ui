@@ -92,8 +92,7 @@ export default class {
       this.limit = EVENT_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
 
-      const myFilter = { eventAddress: address, transactorAddress: account };
-      this.myTransactions = await this.fetchMyHistory(myFilter); // for my txs
+      this.myTransactions = await this.fetchMyHistory(); // for my txs
 
       // load result history
       this.resultSetsHistory = await this.fetchResultHistory();
@@ -154,18 +153,11 @@ export default class {
   @action
   loadMoreMyTransactions = async () => {
     if (this.myHasMore) {
-      const { naka: { account }, eventPage: { event } } = this.app;
-      const address = event && event.address;
-
-      if (!address) return;
-
-      const myFilter = { eventAddress: address, transactorAddress: account };
-
       this.loadingMore = true;
       this.mySkip += this.limit;
 
       try {
-        const moreTxs = await this.fetchMyHistory(myFilter);
+        const moreTxs = await this.fetchMyHistory();
 
         runInAction(() => {
           this.myTransactions = [...this.myTransactions, ...moreTxs];
@@ -235,12 +227,17 @@ export default class {
    * Gets my tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchMyHistory = async (filters, limit = this.limit, skip = this.mySkip,
+  fetchMyHistory = async (limit = this.limit, skip = this.mySkip,
     eventSkip = this.myEventSkip, betSkip = this.myBetSkip,
     resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip) => {
     // Address is required for the request filters
     if (this.myHasMore) {
-      const { graphqlClient } = this.app;
+      const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
+      const address = event && event.address;
+
+      if (!address) return;
+
+      const filters = { eventAddress: address, transactorAddress: account };
 
       const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
 
