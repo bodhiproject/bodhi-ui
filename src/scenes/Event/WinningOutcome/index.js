@@ -6,6 +6,7 @@ import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { toFixed } from '../../../helpers/utility';
 
 const WinningIcon = () => <Icon type='reward' />;
 
@@ -36,7 +37,7 @@ const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage } })
           id="withdrawDetail.youBetYouVote"
           defaultMessage="You bet {nbot} NBOT."
           values={{
-            nbot: eventPage.nbotWinnings,
+            nbot: toFixed(eventPage.nbotWinnings),
           }}
         />
       </Typography>

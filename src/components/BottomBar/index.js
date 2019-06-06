@@ -8,6 +8,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
+import { toFixed } from '../../helpers/utility';
+
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -84,7 +86,7 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
             id="bottomBar.nbotBalance"
             defaultMessage="NBOT Balance"
           />
-          {`: ${lastAddressWithdrawLimit.NBOT ? lastAddressWithdrawLimit.NBOT.toFixed(2) : ''}`}
+          {`: ${lastAddressWithdrawLimit.NBOT ? toFixed(lastAddressWithdrawLimit.NBOT) : ''}`}
         </span>
       </Typography>
     </div>

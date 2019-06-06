@@ -277,7 +277,6 @@ export default class EventPage extends Component {
     if (loading || !event) {
       return <Loading text={messages.loadOracleMsg} event='true' />;
     }
-
     return (
       <Fragment>
         <BackButton />

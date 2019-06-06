@@ -7,6 +7,7 @@ import {
 import { injectIntl, defineMessages } from 'react-intl';
 import styles from './styles';
 import Progress from '../Progress';
+import { toFixed } from '../../helpers/utility';
 
 const messages = defineMessages({
   oracleOptionIsPrevResultMsg: {
@@ -56,7 +57,7 @@ export default class Option extends Component {
               value={percent}
               className={classes.root}
             />
-            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
+            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
           </div>
         </div>
       </div>

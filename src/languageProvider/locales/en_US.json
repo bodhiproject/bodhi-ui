@@ -273,6 +273,8 @@
   "str.withdrawing": "Withdrawing",
   "str.withdrawn": "Withdrawn",
   "str.you": "You",
+  "str.youBet": "You bet {value} NBOT",
+  "str.youVote": "You vote {value} NBOT",
   "string.betEnded": "Event bet Ended",
   "tnc.accept": "Accept",
   "tnc.acceptCheckboxText": "I accept the Terms and Conditions",

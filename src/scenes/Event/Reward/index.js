@@ -7,6 +7,7 @@ import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { toFixed } from '../../../helpers/utility';
 import styles from './styles';
 
 @withStyles(styles)
@@ -34,11 +35,11 @@ export default class Reward extends Component {
       <div className={classes.colDiv}>
         <Typography variant="h4">
           <div className={classes.rowDiv}>
-            +{nbotWinnings} <div className={classes.tokenDiv}>NBOT</div>
+            +{toFixed(nbotWinnings)} <div className={classes.tokenDiv}>NBOT</div>
             <Tooltip
               classes={{ tooltip: classes.rewardTooltip }}
               id="tooltip-reward"
-              title={<RewardTooltipContent token="NBOT" totalInvestment={totalInvestment} profitOrLoss={profitOrLoss} />}
+              title={<RewardTooltipContent token="NBOT" totalInvestment={toFixed(totalInvestment)} profitOrLoss={toFixed(profitOrLoss)} />}
             >
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
@@ -48,7 +49,7 @@ export default class Reward extends Component {
           <FormattedMessage
             id="withdrawDetail.returnRateXPercent"
             defaultMessage="Return rate: {rate}%"
-            values={{ rate: returnRate.toFixed(2) }}
+            values={{ rate: toFixed(returnRate) }}
           />
         </Typography>
       </div>

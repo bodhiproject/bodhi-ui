@@ -5,6 +5,7 @@ import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@mater
 import { PageContainer, ContentContainer } from 'components';
 import styles from './styles';
 import _Leaderboard from '../Event/Leaderboard';
+import { toFixed } from '../../helpers/utility';
 
 const messages = defineMessages({
   totalEvents: {
@@ -54,7 +55,7 @@ const Card = injectIntl(withStyles(styles)(({ title, value, classes, intl }) => 
         {intl.formatMessage(title)}
       </Typography>
       <Typography className={classes.cardContent}>
-        {value}
+        {toFixed(value)}
       </Typography>
     </CardContent>
   </_Card>

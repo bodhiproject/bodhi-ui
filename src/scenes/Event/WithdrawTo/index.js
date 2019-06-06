@@ -7,6 +7,7 @@ import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
+import { toFixed } from '../../../helpers/utility';
 
 const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddress }, wallet: { currentAddress } } }) => {
   if (currentAddress !== '') {
@@ -65,10 +66,10 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { escrowAmount, nbo
   return (
     <TableRow key={key}>
       <TableCell>
-        {escrowAmount}
+        {toFixed(escrowAmount)}
       </TableCell>
       <TableCell>
-        {nbotWinnings}
+        {toFixed(nbotWinnings)}
       </TableCell>
       <TableCell>
         <Button

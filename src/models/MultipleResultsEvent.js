@@ -79,7 +79,7 @@ export default class MultipleResultsEvent {
       case EVENT_STATUS.ORACLE_RESULT_SETTING: return this.resultSetEndTime;
       case EVENT_STATUS.OPEN_RESULT_SETTING: return this.resultSetEndTime;
       case EVENT_STATUS.ARBITRATION: return this.arbitrationEndTime;
-      case EVENT_STATUS.WITHDRAWING: return null;
+      case EVENT_STATUS.WITHDRAWING: return this.arbitrationEndTime;
       default: throw Error(`Invalid status: ${this.status}`);
     }
   }

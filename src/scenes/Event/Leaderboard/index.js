@@ -7,7 +7,7 @@ import { Routes } from 'constants';
 import { Card } from 'components';
 import MobileStepper from './carousel';
 import styles from './styles';
-import { satoshiToDecimal } from '../../../helpers/utility';
+import { satoshiToDecimal, toFixed } from '../../../helpers/utility';
 
 const messages = defineMessages({
   mostNBOT: {
@@ -92,9 +92,9 @@ export default class Leaderboard extends React.Component {
             <Paper className={classes.outWrapper}>
               <Table className={classes.table}>
                 <colgroup>
-                  <col width="5%" />
+                  <col width="10%" />
                   <col width="70%" />
-                  <col width="25%" />
+                  <col width="20%" />
                 </colgroup>
                 <TableHead className={classes.tableHead}>
                   <TableRow>
@@ -110,11 +110,10 @@ export default class Leaderboard extends React.Component {
                         <CustomTableBodyCell component="th" scope="row">
                           {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />}
                           {index === 3 && '👍'}
-                          {index === 4 && '✊'}
+                          {index >= 4 && '✊'}
                         </CustomTableBodyCell>
                         <CustomTableBodyCell>{row.betterAddress}</CustomTableBodyCell>
-                        {!row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount)}</CustomTableBodyCell>}
-                        {row.amount.naka && <CustomTableBodyCell>{satoshiToDecimal(row.amount.naka)} NAKA,{satoshiToDecimal(row.amount.nbot)} NBOT</CustomTableBodyCell>}
+                        <CustomTableBodyCell>{toFixed(satoshiToDecimal(row.amount))}</CustomTableBodyCell>
                       </CustomTableRow>
                     ))}
                 </TableBody>
