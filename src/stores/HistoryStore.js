@@ -44,7 +44,9 @@ export default class {
       () => this.app.global.syncBlockNum,
       async () => {
         if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          const newTxs = await this.fetchHistory(QUERY_LIMIT, 0, 0, 0, 0, 0, true);
+          const { naka: { account } } = this.app;
+          const filters = { transactorAddress: account };
+          const newTxs = await this.fetchHistory(filters, QUERY_LIMIT, 0, 0, 0, 0, 0, true);
           const old = this.transactions[0];
           if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
             || newTxs[0].txStatus !== old.txStatus)) {
@@ -57,8 +59,20 @@ export default class {
 
   @action
   init = async () => {
-    this.app.ui.location = Routes.ACTIVITY_HISTORY;
-    await this.loadFirst();
+    Object.assign(this, INIT_VALUES);
+    const { ui: { location }, eventPage } = this.app;
+    let filters;
+    if (location === Routes.ACTIVITY_HISTORY) {
+      const { naka: { account } } = this.app;
+      filters = { transactorAddress: account };
+    } else if (location === Routes.EVENT) {
+      const address = eventPage.event && eventPage.event.address;
+      if (!address) return;
+      filters = { eventAddress: address };
+    } else {
+      return;
+    }
+    await this.loadFirst(filters);
   }
 
   /**
@@ -70,9 +84,8 @@ export default class {
    *    page of the first batch. And so on for any further batches.
    */
   @action
-  loadFirst = async () => {
-    Object.assign(this, INIT_VALUES);
-    this.transactions = await this.fetchHistory();
+  loadFirst = async (filters) => {
+    this.transactions = await this.fetchHistory(filters);
 
     runInAction(() => {
       this.loaded = true;
@@ -83,12 +96,18 @@ export default class {
    * Queries another batches of txs and appends it to the full list.
    */
   @action
-  loadMore = async () => {
+  loadMoreTransactions = async () => {
     if (this.hasMore) {
+      const { ui: { location } } = this.app;
+      let filters;
+      if (location === Routes.ACTIVITY_HISTORY) {
+        const { naka: { account } } = this.app;
+        filters = { transactorAddress: account };
+      }
       this.loadingMore = true;
       this.skip += QUERY_LIMIT;
       try {
-        const moreTxs = await this.fetchHistory();
+        const moreTxs = await this.fetchHistory(filters);
         runInAction(() => {
           this.transactions = [...this.transactions, ...moreTxs];
           this.loadingMore = false; // stop showing the loading icon
@@ -103,14 +122,12 @@ export default class {
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchHistory = async (limit = QUERY_LIMIT, skip = this.skip,
+  fetchHistory = async (filters, limit = QUERY_LIMIT, skip = this.skip,
     eventSkip = this.eventSkip, betSkip = this.betSkip,
     resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, fetchBeginning = false) => {
     // Address is required for the request filters
     if (this.hasMore || fetchBeginning) {
       const { naka: { account }, graphqlClient } = this.app;
-
-      const filters = { transactorAddress: account };
 
       const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
       const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });

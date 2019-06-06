@@ -15,7 +15,7 @@ import {
   ImportantNote,
   Card,
 } from 'components';
-import { EVENT_STATUS } from 'constants';
+import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from './Option';
 import WinningOutcome from './WinningOutcome';
@@ -61,9 +61,11 @@ const messages = defineMessages({
 @inject('store')
 @observer
 export default class EventPage extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     const { params } = this.props.match;
-    this.props.store.eventPage.init({ ...params });
+    this.props.store.ui.location = Routes.EVENT;
+    await this.props.store.eventPage.init({ ...params });
+    this.props.store.history.init();
   }
 
   componentWillUnmount() {

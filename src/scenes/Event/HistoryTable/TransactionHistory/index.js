@@ -12,16 +12,15 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { eventPage, naka }, myTransactions } = this.props;
-    const { transactionHistoryItems, event } = eventPage;
+    const { store: { history: { transactions }, naka }, myTransactions } = this.props;
 
     let cards = [];
     if (!myTransactions) {
-      cards = transactionHistoryItems.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+      cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     } else {
-      cards = transactionHistoryItems
+      cards = transactions
         .filter(transaction => naka.account && naka.account.toLowerCase() === transaction.txSender)
-        .map(transaction => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+        .map(transaction => <TxRow key={transaction.txid} transaction={transaction} />);
     }
     return (
       <div>

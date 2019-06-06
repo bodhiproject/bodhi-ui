@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Grid, withStyles } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { InstallNakaWalletInline } from 'components';
-
+import { Routes } from 'constants';
 import styles from './styles';
 import EventRows from './EventRows';
 import Loading from '../../../components/EventListLoading';
@@ -28,6 +28,7 @@ export default class ActivityHistory extends Component {
   };
 
   componentDidMount() {
+    this.props.store.ui.location = Routes.ACTIVITY_HISTORY;
     this.props.store.history.init();
   }
 

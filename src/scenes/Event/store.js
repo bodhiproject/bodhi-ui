@@ -182,8 +182,8 @@ export default class EventStore {
     if (!this.event) return;
     this.address = this.event.address;
     this.escrowAmount = this.event.escrowAmount;
-    await this.queryResultSets();
-    await this.queryTransactions();
+    // await this.queryResultSets();
+    // await this.queryTransactions();
     await this.queryLeaderboard();
 
     this.disableEventActionsIfNecessary();

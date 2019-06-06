@@ -20,6 +20,7 @@ module.exports = {
     SETTINGS: '/settings',
     LEADERBOARD: '/leaderboard',
     CREATE_EVENT: '/create-event',
+    EVENT: '/event/:url',
   },
 
   EventType: {
