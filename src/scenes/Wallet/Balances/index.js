@@ -11,6 +11,7 @@ import { ResponsiveTable } from 'components';
 
 import styles from './styles';
 import Config from '../../../config/app';
+import { toFixed } from '../../../helpers/utility';
 
 
 @injectIntl
@@ -91,7 +92,7 @@ export default class MyBalances extends Component {
       <Grid container className={classes.totalsContainerGrid}>
         {items.map((item) => (
           <Grid item key={item.id} className={classes.totalsItemGrid}>
-            <Typography className={classes.totalsItemAmount}>{item.total.toFixed(2)}</Typography>
+            <Typography className={classes.totalsItemAmount}>{toFixed(item.total)}</Typography>
             <Typography variant="body2">
               <FormattedMessage id={item.name} default={item.nameDefault} />
             </Typography>

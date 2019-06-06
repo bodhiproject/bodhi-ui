@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { withStyles, Typography } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 import styles from './styles';
+import { toFixed } from '../../helpers/utility';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -27,7 +28,7 @@ export default class RaisedAmount extends Component {
           Vol.
         </Typography>
         <Typography variant="body1" className={classes.amountText}>
-          {`${amount} NBOT`}
+          {`${toFixed(amount)} NBOT`}
         </Typography>
       </div>
     );

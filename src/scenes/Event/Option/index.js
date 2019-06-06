@@ -20,6 +20,7 @@ import { injectIntl, defineMessages } from 'react-intl';
 import { Token } from 'constants';
 import styles from './styles';
 import Progress from '../Progress';
+import { toFixed } from '../../../helpers/utility';
 
 const messages = defineMessages({
   oracleOptionIsPrevResultMsg: {
@@ -29,6 +30,14 @@ const messages = defineMessages({
   invalidMsg: {
     id: 'invalid',
     defaultMessage: 'Invalid',
+  },
+  bet: {
+    id: 'str.youBet',
+    defaultMessage: 'You bet {value} NBOT',
+  },
+  youvote: {
+    id: 'str.youVote',
+    defaultMessage: 'You vote {value} NBOT',
   },
 });
 
@@ -106,7 +115,7 @@ export default class Option extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
                 </div>
                 <Typography variant="body2">
-                  {`You ${actionText} ${isPrevResult ? 0 : userValue} NBOT`}
+                  {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? 0 : toFixed(userValue) })}`}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

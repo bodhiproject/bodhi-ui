@@ -92,9 +92,9 @@ export default class Leaderboard extends React.Component {
             <Paper className={classes.outWrapper}>
               <Table className={classes.table}>
                 <colgroup>
-                  <col width="5%" />
+                  <col width="10%" />
                   <col width="70%" />
-                  <col width="25%" />
+                  <col width="20%" />
                 </colgroup>
                 <TableHead className={classes.tableHead}>
                   <TableRow>

@@ -1,11 +1,9 @@
 import moment from 'moment';
-import { isNaN, isFinite, isUndefined, orderBy } from 'lodash';
+import { isNaN, isFinite, isUndefined } from 'lodash';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
-import { OracleStatus, SortBy, Phases } from '../constants';
 
-const { BETTING, VOTING, RESULT_SETTING, PENDING, WITHDRAWING, UNCONFIRMED } = Phases;
 const SATOSHI_CONVERSION = 10 ** 8;
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
@@ -215,64 +213,6 @@ export function shortenAddress(text, maxLength) {
     : text;
 }
 
-/**
- * Checks to see if the unlocked until timestamp is before the current UNIX time.
- * @param isEncrypted {Boolean} Is the wallet encrypted.
- * @param unlockedUntil {Number|String} The UNIX timestamp in seconds to compare to.
- * @return {Boolean} If the user needs to unlock their wallet.
- */
-export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
-  if (!isEncrypted) {
-    return false;
-  }
-
-  if (unlockedUntil === 0) {
-    return true;
-  }
-
-  const now = moment();
-  const unlocked = moment.unix(unlockedUntil).subtract(1, 'hours');
-  return now.isSameOrAfter(unlocked);
-}
-
-/**
- * Returns the correct path of the latest Oracle to route to the detail page.
- * @param oracles {Array} Array of Oracle objects.
- * @return {String} The path to route the user to the correct detail page.
- */
-export function getDetailPagePath(oracles) {
-  if (oracles.length) {
-    const sorted = orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
-    const latestOracle = sorted[0];
-
-    // construct url for oracle or topic
-    let url;
-    if (latestOracle.status !== OracleStatus.WITHDRAW) {
-      url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
-    } else {
-      url = `/topic/${latestOracle.topicAddress}`;
-    }
-
-    return url;
-  }
-  return undefined;
-}
-
-/**
- * Takes an oracle object and returns which phase it is in.
- * @param {oracle} oracle
- */
-export const getPhase = ({ token, status }) => {
-  const [NBOT, NAKA] = [token === 'NBOT', token === 'NAKA'];
-  if (NAKA && status === 'CREATED') return UNCONFIRMED; // BETTING
-  if (NAKA && status === 'VOTING') return BETTING;
-  if (NBOT && status === 'VOTING') return VOTING;
-  if (NAKA && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((NBOT || NAKA) && status === 'PENDING') return PENDING; // VOTING
-  if ((NBOT || NAKA) && status === 'WITHDRAW') return WITHDRAWING;
-  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
-};
-
 export function toFixed(num) {
   let x = num;
   if (Math.abs(x) < 1.0) {
@@ -289,5 +229,15 @@ export function toFixed(num) {
       x += (new Array(e + 1)).join('0');
     }
   }
-  return x;
+  const splitArray = String(x).split('.');
+  splitArray[0] = splitArray[0].substring(0, 4);
+  let ret = splitArray[0];
+  if (splitArray.length > 1) {
+    splitArray[1] = splitArray[1].substring(0, 4);
+    splitArray[1].replace(/0+$/, '');
+    if (splitArray[1].length > 0) {
+      ret = `${ret}.${splitArray[1]}`;
+    }
+  }
+  return ret;
 }

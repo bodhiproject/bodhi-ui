@@ -274,6 +274,8 @@
   "str.withdrawing": "提现中",
   "str.withdrawn": "已提现",
   "str.you": "您",
+  "str.youBet": "您投注花费了{value}NBOT",
+  "str.youVote": "您仲裁花费了{value}NBOT",
   "string.betEnded": "事件投注截止",
   "tnc.accept": "接受",
   "tnc.acceptCheckboxText": "我接受条款及条件",
