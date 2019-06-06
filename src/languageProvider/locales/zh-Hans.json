@@ -10,7 +10,7 @@
   "balance.info": "如果您想加密，备份或恢复您的钱包，请在Naka钱包中进行。在程序菜单栏，有一个启动Naka钱包选项。",
   "bottomBar.blockNum": "当前区块数",
   "bottomBar.blockTime": "当前区块时间",
-  "bottomBar.nbotBalance": "NBOT余额",
+  "bottomBar.nbotBalance": "余额",
   "bottomBar.network": "网络",
   "bottomBar.offline": "离线",
   "bottomBar.online": "在线",

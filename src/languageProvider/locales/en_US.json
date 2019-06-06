@@ -10,7 +10,7 @@
   "balance.info": "If you would like to encrypt, backup, or restore your wallet, please do this from the Naka Wallet. In the application menu, there is a \"Launch Naka Wallet\" option.",
   "bottomBar.blockNum": "Current Block Number",
   "bottomBar.blockTime": "Current Block Time",
-  "bottomBar.nbotBalance": "NBOT Balance",
+  "bottomBar.nbotBalance": "Balance",
   "bottomBar.network": "Network",
   "bottomBar.offline": "Offline",
   "bottomBar.online": "Online",

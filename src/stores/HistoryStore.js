@@ -28,7 +28,7 @@ export default class {
   @observable loaded = INIT_VALUES.loaded;
   @observable hasMore = INIT_VALUES.hasMore;
   // for All Transaction in Event page and in Activity history page
-  skip = INIT_VALUES.skip;
+  @observable skip = INIT_VALUES.skip;
   eventSkip = INIT_VALUES.eventSkip;
   betSkip = INIT_VALUES.betSkip;
   resultSetSkip = INIT_VALUES.resultSetSkip;
@@ -36,7 +36,7 @@ export default class {
   // for My Transaction in Event page
   @observable myTransactions = INIT_VALUES.myTransactions;
   @observable myHasMore = INIT_VALUES.hasMore;
-  mySkip = INIT_VALUES.skip;
+  @observable mySkip = INIT_VALUES.skip;
   myEventSkip = INIT_VALUES.eventSkip;
   myBetSkip = INIT_VALUES.betSkip;
   myResultSetSkip = INIT_VALUES.resultSetSkip;
@@ -44,7 +44,7 @@ export default class {
   // for result history in event page
   @observable resultSetsHistory = INIT_VALUES.resultSetsHistory;
   @observable resultHasMore = INIT_VALUES.hasMore;
-  resultSkip = INIT_VALUES.skip;
+  @observable resultSkip = INIT_VALUES.skip;
 
   constructor(app) {
     this.app = app;

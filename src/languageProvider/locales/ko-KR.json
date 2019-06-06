@@ -10,7 +10,7 @@
   "balance.info": "지갑을 암호화, 백업 또는 복원하려면 Naka Wallet에서 본 작업을 수행해 주십시오. 응용 프로그램 메뉴에 \"Launch Naka Wallet\" 항목이 있습니다.",
   "bottomBar.blockNum": "현재 블록 번호",
   "bottomBar.blockTime": "현재 차단 시간",
-  "bottomBar.nbotBalance": "NBOT균형",
+  "bottomBar.nbotBalance": "균형",
   "bottomBar.network": "회로망",
   "bottomBar.offline": "오프라인",
   "bottomBar.online": "온라인",

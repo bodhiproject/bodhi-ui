@@ -350,9 +350,7 @@ export async function withdraws(client, args) {
  * @return {object} Query result.
  */
 export async function transactions(client, args) {
-  console.log(args);
   const res = await new GraphQuery(client, QUERY_TRANSACTIONS, args).execute();
-  console.log('TCL: transactions -> res', res);
 
   res.items = map(res.items, (tx) => new Transaction(tx));
   return res;

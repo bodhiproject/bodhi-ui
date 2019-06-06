@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import { Box, Paper, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Token } from 'constants';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
@@ -84,9 +85,9 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
         <span>
           <FormattedMessage
             id="bottomBar.nbotBalance"
-            defaultMessage="NBOT Balance"
+            defaultMessage="Balance"
           />
-          {`: ${lastAddressWithdrawLimit.NBOT ? toFixed(lastAddressWithdrawLimit.NBOT) : ''}`}
+          {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2)} ${Token.NBOT}` : ''}`}
         </span>
       </Typography>
     </div>
