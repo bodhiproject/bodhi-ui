@@ -4,7 +4,7 @@
 DEPLOY_PATH=/var/www/bodhi/mainnet/
 
 echo "Building Mainnet UI..."
-node scripts/build-mainnet.js
+node scripts/deploy-mainnet.js
 
 echo "Creating output path..."
 sudo mkdir -p $DEPLOY_PATH

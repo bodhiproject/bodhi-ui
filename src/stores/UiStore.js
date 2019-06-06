@@ -20,12 +20,12 @@ export default class UiStore {
 
   get defaultLocale() {
     let locale = navigator.language || navigator.userLanguage || '';
-    if (locale.startsWith('ko')) {
-      locale = 'ko-KR';
-    } else if (locale.startsWith('zh')) {
-      locale = 'zh-Hans-CN';
-    } else { // Location Other than ko and zh will now return en-US
+    if (locale.startsWith('en')) {
       locale = 'en-US';
+    } else if (locale.startsWith('ko')) {
+      locale = 'ko-KR';
+    } else { // Default lang is zh-Hans-CN
+      locale = 'zh-Hans-CN';
     }
     return locale;
   }

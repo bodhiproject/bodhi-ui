@@ -4,7 +4,7 @@
 DEPLOY_PATH=/var/www/bodhi/testnet/
 
 echo "Building Testnet UI..."
-node scripts/build-testnet.js
+node scripts/deploy-testnet.js
 
 echo "Creating output path..."
 sudo mkdir -p $DEPLOY_PATH
