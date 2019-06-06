@@ -35,7 +35,7 @@ const messages = defineMessages({
     id: 'str.youBet',
     defaultMessage: 'You bet {value} NBOT',
   },
-  youvote: {
+  vote: {
     id: 'str.youVote',
     defaultMessage: 'You vote {value} NBOT',
   },
