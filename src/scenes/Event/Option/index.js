@@ -35,7 +35,7 @@ const messages = defineMessages({
     id: 'str.youBet',
     defaultMessage: 'You bet {value} NBOT',
   },
-  youvote: {
+  vote: {
     id: 'str.youVote',
     defaultMessage: 'You vote {value} NBOT',
   },
@@ -115,6 +115,7 @@ export default class Option extends Component {
                   <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
                 </div>
                 <Typography variant="body2">
+                  {console.log('TCL:  -> render -> actionText', actionText)}
                   {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? 0 : toFixed(userValue) })}`}
                 </Typography>
               </div>
