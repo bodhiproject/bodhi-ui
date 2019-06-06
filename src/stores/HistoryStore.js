@@ -1,13 +1,14 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter } from 'lodash';
-import { TransactionStatus, Routes } from 'constants';
-import { transactions } from '../network/graphql/queries';
+import { TransactionStatus, Routes, SortBy } from 'constants';
+import { transactions, resultSets } from '../network/graphql/queries';
 
 const EVENT_HISTORY_LIMIT = 5;
 const ACTIVITY_HISTORY_LIMIT = 10;
 const INIT_VALUES = {
   transactions: [],
   myTransactions: [],
+  resultSetsHistory: [],
   skip: 0, // skip for transaction
   loaded: false,
   loadingMore: false,
@@ -20,13 +21,12 @@ const INIT_VALUES = {
 };
 
 export default class {
-  @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
-  @observable myTransactions = INIT_VALUES.myTransactions; // Full txs list fetched by batches
+  limit = INIT_VALUES.limit;
+
+  @observable transactions = INIT_VALUES.transactions;
   @observable loadingMore = INIT_VALUES.loadingMore;
   @observable loaded = INIT_VALUES.loaded;
   @observable hasMore = INIT_VALUES.hasMore;
-  @observable myHasMore = INIT_VALUES.hasMore;
-  limit = INIT_VALUES.limit;
   // for All Transaction in Event page and in Activity history page
   skip = INIT_VALUES.skip;
   eventSkip = INIT_VALUES.eventSkip;
@@ -34,11 +34,17 @@ export default class {
   resultSetSkip = INIT_VALUES.resultSetSkip;
   withdrawSkip = INIT_VALUES.withdrawSkip;
   // for My Transaction in Event page
+  @observable myTransactions = INIT_VALUES.myTransactions;
+  @observable myHasMore = INIT_VALUES.hasMore;
   mySkip = INIT_VALUES.skip;
   myEventSkip = INIT_VALUES.eventSkip;
   myBetSkip = INIT_VALUES.betSkip;
   myResultSetSkip = INIT_VALUES.resultSetSkip;
   myWithdrawSkip = INIT_VALUES.withdrawSkip;
+  // for result history in event page
+  @observable resultSetsHistory = INIT_VALUES.resultSetsHistory;
+  @observable resultHasMore = INIT_VALUES.hasMore;
+  resultSkip = INIT_VALUES.skip;
 
   constructor(app) {
     this.app = app;
@@ -90,6 +96,7 @@ export default class {
       this.myTransactions = await this.fetchMyHistory(myFilter); // for my txs
 
       // load result history
+      this.resultSetsHistory = await this.fetchResultHistory();
     }
   }
 
@@ -171,6 +178,28 @@ export default class {
   }
 
   /**
+   * Queries another batches of result history and appends it to the full list.
+   */
+  @action
+  loadMoreResultHistory = async () => {
+    if (this.resultHasMore) {
+      this.loadingMore = true;
+      this.resultSkip += this.limit;
+
+      try {
+        const moreTxs = await this.fetchResultHistory();
+
+        runInAction(() => {
+          this.resultSetsHistory = [...this.resultSetsHistory, ...moreTxs];
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.resultSkip -= this.limit;
+      }
+    }
+  }
+
+  /**
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
@@ -230,6 +259,36 @@ export default class {
       } else if (!pageInfo) this.myHasMore = false;
 
       return [...pending, ...confirmed];
+    }
+    return INIT_VALUES.transactions;
+  }
+
+  /**
+   * Gets event result history via API call.
+   * @return {[ResultSets]} Tx array of the query.
+   */
+  fetchResultHistory = async (limit = this.limit, skip = this.resultSkip) => {
+    // Address is required for the request filters
+    if (this.resultHasMore) {
+      const { eventPage: { event }, graphqlClient } = this.app;
+      const address = event && event.address;
+
+      if (!address) return;
+
+      const res = await resultSets(this.app.graphqlClient, {
+        filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
+        orderBy: { field: 'eventRound', direction: SortBy.DESCENDING },
+        limit,
+        skip,
+      });
+
+      const { items, pageInfo } = res;
+
+      if (pageInfo) {
+        this.resultHasMore = pageInfo.hasNextPage;
+      } else this.resultHasMore = false;
+
+      return items;
     }
     return INIT_VALUES.transactions;
   }

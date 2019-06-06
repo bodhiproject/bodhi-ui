@@ -34,7 +34,7 @@ export default class HistoryTable extends Component {
   };
 
   render() {
-    const { classes, intl, store: { eventPage: { resultSetsHistory } } } = this.props;
+    const { classes, intl, store: { history: { resultSetsHistory } } } = this.props;
     const { tabValue } = this.state;
 
     return (
