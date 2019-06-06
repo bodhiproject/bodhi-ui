@@ -87,15 +87,17 @@ export default class TxRow extends Component {
   renderCardString = (transaction, intl, classes) => {
     const action = this.getActionString(transaction, intl);
     const { txType, amount } = transaction;
-    let { name } = transaction;
-    if (name.length > 20) name = `${name.slice(0, 6)}...${name.slice(-6)}`;
+    let { eventName, resultName } = transaction;
+    if (eventName && eventName.length > 20) eventName = `${eventName.slice(0, 6)}...${eventName.slice(-6)}`;
+    if (resultName && resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
+
     switch (txType) {
       case TransactionType.CREATE_EVENT: {
         return (
           <Fragment>
             <span className={classes.bold}>{` ${action} `}</span>
             {' "'}
-            <span className={classes.bold}>{name}</span>
+            <span className={classes.bold}>{eventName}</span>
             {'" Event'}
           </Fragment>
         );
@@ -105,9 +107,9 @@ export default class TxRow extends Component {
           <Fragment>
             <span className={classes.bold}>{` ${action} `}</span>
             {' on "'}
-            <span className={classes.bold}>{name}</span>
+            <span className={classes.bold}>{resultName}</span>
             {'" in "'}
-            <span className={classes.bold}>XXX</span>
+            <span className={classes.bold}>{eventName}</span>
             {'" Event'}
           </Fragment>
         );
@@ -117,9 +119,9 @@ export default class TxRow extends Component {
           <Fragment>
             <span className={classes.bold}>{` ${action} `}</span>
             {' "'}
-            <span className={classes.bold}>{name}</span>
+            <span className={classes.bold}>{resultName}</span>
             {'" as result in "'}
-            <span className={classes.bold}>XXX</span>
+            <span className={classes.bold}>{eventName}</span>
             {'" Event'}
           </Fragment>
         );
@@ -129,9 +131,9 @@ export default class TxRow extends Component {
           <Fragment>
             <span className={classes.bold}>{` ${action} `}</span>
             {' on "'}
-            <span className={classes.bold}>{name}</span>
+            <span className={classes.bold}>{resultName}</span>
             {'" in "'}
-            <span className={classes.bold}>XXX</span>
+            <span className={classes.bold}>{eventName}</span>
             {'" Event'}
           </Fragment>
         );
@@ -141,7 +143,7 @@ export default class TxRow extends Component {
           <Fragment>
             <span className={classes.bold}>{` ${action} `}</span>
             {`${amount} ${Token.NBOT} from "`}
-            <span className={classes.bold}>XXX</span>
+            <span className={classes.bold}>{eventName}</span>
             {'" Event'}
           </Fragment>
         );
@@ -177,7 +179,7 @@ export default class TxRow extends Component {
           </Card>
           <div className={classes.note}>
             <Typography color='textPrimary'>
-              {`${satoshiToDecimal(amount)} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
+              {`${amount} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
               <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
                 {'Detail'}
               </a>
