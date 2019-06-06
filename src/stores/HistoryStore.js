@@ -7,6 +7,7 @@ const EVENT_HISTORY_LIMIT = 5;
 const ACTIVITY_HISTORY_LIMIT = 10;
 const INIT_VALUES = {
   transactions: [],
+  myTransactions: [],
   skip: 0, // skip for transaction
   loaded: false,
   loadingMore: false,
@@ -20,15 +21,24 @@ const INIT_VALUES = {
 
 export default class {
   @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
+  @observable myTransactions = INIT_VALUES.myTransactions; // Full txs list fetched by batches
   @observable loadingMore = INIT_VALUES.loadingMore;
   @observable loaded = INIT_VALUES.loaded;
   @observable hasMore = INIT_VALUES.hasMore;
+  @observable myHasMore = INIT_VALUES.hasMore;
   limit = INIT_VALUES.limit;
+  // for All Transaction in Event page and in Activity history page
   skip = INIT_VALUES.skip;
   eventSkip = INIT_VALUES.eventSkip;
   betSkip = INIT_VALUES.betSkip;
   resultSetSkip = INIT_VALUES.resultSetSkip;
   withdrawSkip = INIT_VALUES.withdrawSkip;
+  // for My Transaction in Event page
+  mySkip = INIT_VALUES.skip;
+  myEventSkip = INIT_VALUES.eventSkip;
+  myBetSkip = INIT_VALUES.betSkip;
+  myResultSetSkip = INIT_VALUES.resultSetSkip;
+  myWithdrawSkip = INIT_VALUES.withdrawSkip;
 
   constructor(app) {
     this.app = app;
@@ -63,21 +73,18 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-    const { ui: { location }, eventPage: { event } } = this.app;
-    let filters;
+    const { ui: { location }, eventPage: { event }, naka: { account } } = this.app;
+    const address = event ? event.address : undefined;
     if (location === Routes.ACTIVITY_HISTORY) {
-      const { naka: { account } } = this.app;
-      filters = { transactorAddress: account };
       this.limit = ACTIVITY_HISTORY_LIMIT;
+      await this.loadFirstTransactions({ transactorAddress: account });
     } else if (location === Routes.EVENT) {
-      const address = event && event.address;
       if (!address) return;
-      filters = { eventAddress: address };
       this.limit = EVENT_HISTORY_LIMIT;
-    } else {
-      return;
+      await this.loadFirstTransactions({ eventAddress: address }); // for all txs
+      const myFilter = { eventAddress: address, transactorAddress: account };
+      this.myTransactions = await this.fetchMyHistory(myFilter); // for my txs
     }
-    await this.loadFirst(filters);
   }
 
   /**
@@ -89,7 +96,7 @@ export default class {
    *    page of the first batch. And so on for any further batches.
    */
   @action
-  loadFirst = async (filters) => {
+  loadFirstTransactions = async (filters) => {
     this.transactions = await this.fetchHistory(filters);
 
     runInAction(() => {
@@ -129,6 +136,31 @@ export default class {
   }
 
   /**
+   * Queries another batches of my txs and appends it to the full list.
+   */
+  @action
+  loadMoreMyTransactions = async () => {
+    if (this.myHasMore) {
+      const { naka: { account }, eventPage: { event } } = this.app;
+      const address = event && event.address;
+      if (!address) return;
+      const myFilter = { eventAddress: address, transactorAddress: account };
+
+      this.loadingMore = true;
+      this.mySkip += this.limit;
+      try {
+        const moreTxs = await this.fetchMyHistory(myFilter);
+        runInAction(() => {
+          this.myTransactions = [...this.myTransactions, ...moreTxs];
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.mySkip -= this.limit;
+      }
+    }
+  }
+
+  /**
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
@@ -153,6 +185,37 @@ export default class {
         this.resultSetSkip = pageInfo.nextSkips.nextResultSetSkip;
         this.withdrawSkip = pageInfo.nextSkips.nextWithdrawSkip;
       } else if (!pageInfo) this.hasMore = false;
+
+      return [...pending, ...confirmed];
+    }
+    return INIT_VALUES.transactions;
+  }
+
+  /**
+   * Gets my tx history via API call.
+   * @return {[Transaction]} Tx array of the query.
+   */
+  fetchMyHistory = async (filters, limit = this.limit, skip = this.mySkip,
+    eventSkip = this.myEventSkip, betSkip = this.myBetSkip,
+    resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip) => {
+    // Address is required for the request filters
+    if (this.myHasMore) {
+      const { graphqlClient } = this.app;
+
+      const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+      const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
+
+      const { items, pageInfo } = res;
+      const pending = filter(items, { txStatus: TransactionStatus.PENDING });
+      const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
+
+      if (pageInfo) {
+        this.myHasMore = pageInfo.hasNextPage;
+        this.myEventSkip = pageInfo.nextSkips.nextEventSkip;
+        this.myBetSkip = pageInfo.nextSkips.nextBetSkip;
+        this.myResultSetSkip = pageInfo.nextSkips.nextResultSetSkip;
+        this.myWithdrawSkip = pageInfo.nextSkips.nextWithdrawSkip;
+      } else if (!pageInfo) this.myHasMore = false;
 
       return [...pending, ...confirmed];
     }

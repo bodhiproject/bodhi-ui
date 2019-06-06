@@ -66,7 +66,7 @@ export default class HistoryTable extends Component {
           </Tabs>
           <div className={classes.subTableContainer}>
             {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
-            {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory myTransactions />}
+            {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory showMyTransactions />}
             {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
           </div>
         </div>
