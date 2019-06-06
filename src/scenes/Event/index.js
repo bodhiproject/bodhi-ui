@@ -277,8 +277,6 @@ export default class EventPage extends Component {
     if (loading || !event) {
       return <Loading text={messages.loadOracleMsg} event='true' />;
     }
-    console.log(event.getEndTime());
-    console.log('TCL: EventPage -> render -> event', event);
     return (
       <Fragment>
         <BackButton />
