@@ -73,15 +73,19 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
+
     const { ui: { location }, eventPage: { event }, naka: { account } } = this.app;
     const address = event ? event.address : undefined;
+
     if (location === Routes.ACTIVITY_HISTORY) {
       this.limit = ACTIVITY_HISTORY_LIMIT;
       await this.loadFirstTransactions({ transactorAddress: account });
     } else if (location === Routes.EVENT) {
       if (!address) return;
+
       this.limit = EVENT_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
+
       const myFilter = { eventAddress: address, transactorAddress: account };
       this.myTransactions = await this.fetchMyHistory(myFilter); // for my txs
     }
@@ -111,20 +115,25 @@ export default class {
   loadMoreTransactions = async () => {
     if (this.hasMore) {
       const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
+      const address = event && event.address;
       let filters;
+
       if (location === Routes.ACTIVITY_HISTORY) {
         filters = { transactorAddress: account };
       } else if (location === Routes.EVENT) {
-        const address = event && event.address;
         if (!address) return;
+
         filters = { eventAddress: address };
       } else {
         return;
       }
+
       this.loadingMore = true;
       this.skip += this.limit;
+
       try {
         const moreTxs = await this.fetchHistory(filters);
+
         runInAction(() => {
           this.transactions = [...this.transactions, ...moreTxs];
           this.loadingMore = false; // stop showing the loading icon
@@ -143,13 +152,17 @@ export default class {
     if (this.myHasMore) {
       const { naka: { account }, eventPage: { event } } = this.app;
       const address = event && event.address;
+
       if (!address) return;
+
       const myFilter = { eventAddress: address, transactorAddress: account };
 
       this.loadingMore = true;
       this.mySkip += this.limit;
+
       try {
         const moreTxs = await this.fetchMyHistory(myFilter);
+
         runInAction(() => {
           this.myTransactions = [...this.myTransactions, ...moreTxs];
           this.loadingMore = false; // stop showing the loading icon
@@ -172,6 +185,7 @@ export default class {
       const { graphqlClient } = this.app;
 
       const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+
       const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
 
       const { items, pageInfo } = res;
@@ -203,6 +217,7 @@ export default class {
       const { graphqlClient } = this.app;
 
       const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+
       const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });
 
       const { items, pageInfo } = res;
