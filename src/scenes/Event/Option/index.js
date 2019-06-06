@@ -112,7 +112,7 @@ export default class Option extends Component {
                     value={userPercent}
                     valueBuffer={percent}
                   />
-                  <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{value}</span></div>
+                  <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
                 </div>
                 <Typography variant="body2">
                   {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? 0 : toFixed(userValue) })}`}

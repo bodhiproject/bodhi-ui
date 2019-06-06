@@ -57,7 +57,7 @@ export default class Option extends Component {
               value={percent}
               className={classes.root}
             />
-            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{toFixed(value)}</span></div>
+            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
           </div>
         </div>
       </div>

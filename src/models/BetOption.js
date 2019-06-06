@@ -23,7 +23,7 @@ export default class Option {
     this.name = optionName;
     this.token = NBOT;
     this.phase = event.phase;
-    this.value = `${this.amount} ${this.token}`;
+    this.value = this.amount;
     const totalBalance = sum(event.betRoundBets);
     this.percent = totalBalance === 0 ? totalBalance : round((this.amount / totalBalance) * 100);
     this.userPercent = this.amount === 0 ? this.amount : round((event.userBetRoundBets[i] / this.amount) * this.percent);
