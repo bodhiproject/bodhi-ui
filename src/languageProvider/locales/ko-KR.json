@@ -185,6 +185,7 @@
   "str.amount": "양",
   "str.anytime": "언제든지",
   "str.arbitrate": "중재",
+  "str.arbitrationReward": "중재 보상",
   "str.arbitrationRoundX": "중재 라운드 {idx}",
   "str.back": "뒤로",
   "str.backup": "나중에 복원 할 수있는 백업용 지갑 데이터파일을 작성합니다.",
