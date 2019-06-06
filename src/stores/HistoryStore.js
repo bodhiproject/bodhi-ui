@@ -3,7 +3,8 @@ import { filter } from 'lodash';
 import { TransactionStatus, Routes } from 'constants';
 import { transactions } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 10;
+const EVENT_HISTORY_LIMIT = 5;
+const ACTIVITY_HISTORY_LIMIT = 10;
 const INIT_VALUES = {
   transactions: [],
   skip: 0, // skip for transaction
@@ -14,6 +15,7 @@ const INIT_VALUES = {
   betSkip: 0,
   resultSetSkip: 0,
   withdrawSkip: 0,
+  limit: 0,
 };
 
 export default class {
@@ -21,6 +23,7 @@ export default class {
   @observable loadingMore = INIT_VALUES.loadingMore;
   @observable loaded = INIT_VALUES.loaded;
   @observable hasMore = INIT_VALUES.hasMore;
+  limit = INIT_VALUES.limit;
   skip = INIT_VALUES.skip;
   eventSkip = INIT_VALUES.eventSkip;
   betSkip = INIT_VALUES.betSkip;
@@ -46,7 +49,7 @@ export default class {
         if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
           const { naka: { account } } = this.app;
           const filters = { transactorAddress: account };
-          const newTxs = await this.fetchHistory(filters, QUERY_LIMIT, 0, 0, 0, 0, 0, true);
+          const newTxs = await this.fetchHistory(filters, ACTIVITY_HISTORY_LIMIT, 0, 0, 0, 0, 0, true);
           const old = this.transactions[0];
           if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
             || newTxs[0].txStatus !== old.txStatus)) {
@@ -60,15 +63,17 @@ export default class {
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
-    const { ui: { location }, eventPage } = this.app;
+    const { ui: { location }, eventPage: { event } } = this.app;
     let filters;
     if (location === Routes.ACTIVITY_HISTORY) {
       const { naka: { account } } = this.app;
       filters = { transactorAddress: account };
+      this.limit = ACTIVITY_HISTORY_LIMIT;
     } else if (location === Routes.EVENT) {
-      const address = eventPage.event && eventPage.event.address;
+      const address = event && event.address;
       if (!address) return;
       filters = { eventAddress: address };
+      this.limit = EVENT_HISTORY_LIMIT;
     } else {
       return;
     }
@@ -98,14 +103,19 @@ export default class {
   @action
   loadMoreTransactions = async () => {
     if (this.hasMore) {
-      const { ui: { location } } = this.app;
+      const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
       let filters;
       if (location === Routes.ACTIVITY_HISTORY) {
-        const { naka: { account } } = this.app;
         filters = { transactorAddress: account };
+      } else if (location === Routes.EVENT) {
+        const address = event && event.address;
+        if (!address) return;
+        filters = { eventAddress: address };
+      } else {
+        return;
       }
       this.loadingMore = true;
-      this.skip += QUERY_LIMIT;
+      this.skip += this.limit;
       try {
         const moreTxs = await this.fetchHistory(filters);
         runInAction(() => {
@@ -122,12 +132,12 @@ export default class {
    * Gets the tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchHistory = async (filters, limit = QUERY_LIMIT, skip = this.skip,
+  fetchHistory = async (filters, limit = this.limit, skip = this.skip,
     eventSkip = this.eventSkip, betSkip = this.betSkip,
     resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, fetchBeginning = false) => {
     // Address is required for the request filters
     if (this.hasMore || fetchBeginning) {
-      const { naka: { account }, graphqlClient } = this.app;
+      const { graphqlClient } = this.app;
 
       const skips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
       const res = await transactions(graphqlClient, { filter: filters, limit, skip, skips });

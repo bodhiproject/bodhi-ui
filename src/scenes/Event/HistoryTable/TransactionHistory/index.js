@@ -12,7 +12,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { history: { transactions }, naka }, myTransactions } = this.props;
+    const { store: { history: { transactions, loadingMore, loadMoreTransactions }, naka }, myTransactions } = this.props;
 
     let cards = [];
     if (!myTransactions) {
@@ -28,8 +28,8 @@ export default class TransactionHistory extends Component {
           <InfiniteScroll
             spacing={0}
             data={cards}
-            loadMore={() => { console.log('hello'); }}
-            loadingMore={false}
+            loadMore={loadMoreTransactions}
+            loadingMore={loadingMore}
           />
         ) : (
           <CenteredDiv>
