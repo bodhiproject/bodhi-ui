@@ -185,6 +185,7 @@
   "str.amount": "金额",
   "str.anytime": "任意时间",
   "str.arbitrate": "仲裁",
+  "str.arbitrationReward": "仲裁奖励",
   "str.arbitrationRoundX": "仲裁阶段 {idx}",
   "str.back": "返回",
   "str.backup": "创建一个钱包备份文件，可用于以后恢复。",

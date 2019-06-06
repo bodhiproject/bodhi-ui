@@ -97,7 +97,7 @@ export default class EventCard extends Component {
 
   render() {
     const { classes, index, onClick } = this.props;
-    const { address, name, isPending, url, status, totalBets, getEndTime } = this.props.event;
+    const { address, name, isPending, url, status, totalBets, getEndTime, arbitrationRewardPercentage } = this.props.event;
     return (
       <Grid item xs={12} sm={6} lg={4}>
         <Link to={url}>
@@ -115,6 +115,9 @@ export default class EventCard extends Component {
                   </Typography>
                 </div>
                 <FavoriteButton eventAddress={address} />
+              </div>
+              <div className={classes.eventCardInfoItem}>
+                <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
               </div>
               <div className={classes.eventCardInfoItem}>
                 <RaisedAmount amount={totalBets} />

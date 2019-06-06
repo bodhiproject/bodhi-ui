@@ -185,6 +185,7 @@
   "str.amount": "Amount",
   "str.anytime": "anytime",
   "str.arbitrate": "Arbitrate",
+  "str.arbitrationReward": "Arbitration Reward",
   "str.arbitrationRoundX": "Arbitration Round {idx}",
   "str.back": "Back",
   "str.backup": "Creates a backup wallet data file which can be restored later.",

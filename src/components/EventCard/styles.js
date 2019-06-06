@@ -83,6 +83,9 @@ const styles = (theme) => ({
     fontWeight: '200',
     marginBottom: '.5rem',
   },
+  eventCardInfoItem: {
+    padding: `${theme.padding.spaceX.px} 0px 0px`,
+  },
 });
 
 export default styles;

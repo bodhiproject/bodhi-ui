@@ -24,13 +24,18 @@ const message = defineMessages({
     id: 'str.eventVersion',
     defaultMessage: 'Event Version',
   },
+  eventArbitrationRewardPercentage: {
+    id: 'str.arbitrationReward',
+    defaultMessage: 'Arbitration Reward',
+  },
 });
 
-const Sidebar = inject('store')(observer(({ endTime }) => (
+const Sidebar = inject('store')(observer(({ store: { eventPage: { event } }, endTime }) => (
   <SidebarContainer>
     <Card>
       <EventInfo>
         <EndDate endTime={endTime} />
+        <ProfitCut event={event} />
       </EventInfo>
     </Card>
     <StepperVertRight />
@@ -46,6 +51,10 @@ const SidebarContainer = withStyles(styles)(({ children, classes }) => (
 const EndDate = injectIntl(inject('store')(observer(({ endTime, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
   <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getTimeString(endTime)} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
 ))));
+
+const ProfitCut = ({ event: { arbitrationRewardPercentage } }) => (
+  <EventInfoBlock id={message.eventArbitrationRewardPercentage.id} content={`${arbitrationRewardPercentage}%`} />
+);
 
 const EventInfo = styled.div`
   padding-bottom: ${props => props.theme.padding.spaceX.px};
