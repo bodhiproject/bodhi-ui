@@ -9,7 +9,6 @@ import { Token } from 'constants';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
-import { toFixed } from '../../helpers/utility';
 
 
 @injectIntl

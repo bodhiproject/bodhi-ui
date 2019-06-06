@@ -3,15 +3,13 @@ import moment from 'moment';
 import { filter, sum } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { SortBy, EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
+import { EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
 import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import { API } from '../../network/routes';
 import {
   events,
-  transactions,
   mostBets,
   biggestWinners,
-  resultSets,
   totalResultBets,
   withdraws,
 } from '../../network/graphql/queries';
@@ -182,8 +180,7 @@ export default class EventStore {
     if (!this.event) return;
     this.address = this.event.address;
     this.escrowAmount = this.event.escrowAmount;
-    // await this.queryResultSets();
-    // await this.queryTransactions();
+
     await this.queryLeaderboard();
 
     this.disableEventActionsIfNecessary();
@@ -234,32 +231,6 @@ export default class EventStore {
       filter: { eventAddress: address, txStatus: TransactionStatus.PENDING, winnerAddress: this.app.wallet.currentAddress },
     });
     this.pendingWithdraw = res.items;
-  }
-
-  @action
-  queryResultSets = async () => {
-    const address = this.event && this.event.address;
-    if (!address) return;
-
-    const res = await resultSets(this.app.graphqlClient, {
-      filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
-      orderBy: { field: 'eventRound', direction: SortBy.DESCENDING },
-    });
-    this.resultSetsHistory = res.items;
-  }
-
-  @action
-  queryTransactions = async () => {
-    const address = this.event && this.event.address;
-    if (!address) return;
-
-    const txs = await transactions(this.app.graphqlClient, {
-      filter: { eventAddress: address },
-      orderBy: { field: 'blockNum', direction: SortBy.DESCENDING },
-    });
-    const pendings = filter(txs.items, { txStatus: TransactionStatus.PENDING });
-    const confirmed = filter(txs.items, { txStatus: TransactionStatus.SUCCESS });
-    this.transactionHistoryItems = [...pendings, ...confirmed];
   }
 
   @action

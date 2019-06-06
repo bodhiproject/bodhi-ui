@@ -6,7 +6,7 @@ import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/co
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import { satoshiToDecimal, getTimeString } from '../../../../helpers/utility';
+import { getTimeString } from '../../../../helpers/utility';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({

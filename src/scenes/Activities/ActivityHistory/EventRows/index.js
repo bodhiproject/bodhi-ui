@@ -7,7 +7,7 @@ import { Grid, Card, CardContent, Typography, withStyles } from '@material-ui/co
 import { Token, TransactionType, TransactionStatus } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
-import { satoshiToDecimal, getTimeString } from '../../../../helpers/utility';
+import { getTimeString } from '../../../../helpers/utility';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({

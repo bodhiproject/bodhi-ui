@@ -1,4 +1,4 @@
-const styles = (theme) => ({
+const styles = () => ({
   card: {
     backgroundColor: 'white',
     padding: '20px',

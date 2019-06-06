@@ -12,7 +12,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { history: { transactions, myTransactions, loadingMore, loadMoreTransactions, loadMoreMyTransactions }, naka }, showMyTransactions } = this.props;
+    const { store: { history: { transactions, myTransactions, loadingMore, loadMoreTransactions, loadMoreMyTransactions } }, showMyTransactions } = this.props;
 
     let cards = [];
     if (!showMyTransactions) {
