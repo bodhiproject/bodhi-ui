@@ -85,6 +85,7 @@ export default class {
 
     if (location === Routes.ACTIVITY_HISTORY) {
       this.limit = ACTIVITY_HISTORY_LIMIT;
+      if (!account) return;
       await this.loadFirstTransactions({ transactorAddress: account });
     } else if (location === Routes.EVENT) {
       if (!address) return;
@@ -235,7 +236,7 @@ export default class {
       const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
       const address = event && event.address;
 
-      if (!address) return;
+      if (!address || !account) return;
 
       const filters = { eventAddress: address, transactorAddress: account };
 
@@ -272,7 +273,7 @@ export default class {
 
       if (!address) return;
 
-      const res = await resultSets(this.app.graphqlClient, {
+      const res = await resultSets(graphqlClient, {
         filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
         orderBy: { field: 'eventRound', direction: SortBy.DESCENDING },
         limit,
