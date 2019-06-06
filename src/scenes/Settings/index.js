@@ -72,6 +72,7 @@ export default class Settings extends Component {
 
   renderVersionSelector = () => {
     const { classes, store: { global } } = this.props;
+    const isTestnet = process.env.NETWORK === 'testnet';
     return (
       <ListItem className={classes.settingContainer}>
         {this.renderSettingInfo(
@@ -85,11 +86,11 @@ export default class Settings extends Component {
           onChange={(e) => global.setEventVersion(e.target.value)}
         >
           <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={0}>0</MenuItem>
+          {isTestnet && <MenuItem value={4}>4</MenuItem>}
+          {isTestnet && <MenuItem value={3}>3</MenuItem>}
+          {isTestnet && <MenuItem value={2}>2</MenuItem>}
+          {isTestnet && <MenuItem value={1}>1</MenuItem>}
+          {isTestnet && <MenuItem value={0}>0</MenuItem>}
         </Select>
       </ListItem>
     );
