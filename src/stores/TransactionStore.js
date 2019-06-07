@@ -99,7 +99,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      console.log('User cancelled');
+      console.log('User cancelled'); // eslint-disable-line
       return undefined;
     }
   };
@@ -131,7 +131,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      console.log('User cancelled');
+      console.log('User cancelled'); // eslint-disable-line
     }
   };
 

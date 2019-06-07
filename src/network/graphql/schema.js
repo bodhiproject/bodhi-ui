@@ -1,7 +1,15 @@
+export const NEXT_TRANSACTION_SKIPS = `
+  nextEventSkip
+  nextBetSkip
+  nextResultSetSkip
+  nextWithdrawSkip
+`;
+
 export const PAGE_INFO = `
   hasNextPage
   pageNumber
   count
+  nextTransactionSkips { ${NEXT_TRANSACTION_SKIPS} }
 `;
 
 export const BLOCK = `
@@ -90,6 +98,7 @@ export const BET = `
   amount
   eventRound
   resultName
+  eventName
 `;
 
 export const PAGINATED_BETS = `
@@ -107,6 +116,7 @@ export const RESULT_SET = `
   amount
   eventRound
   resultName
+  eventName
 `;
 
 export const PAGINATED_RESULT_SETS = `
@@ -122,6 +132,7 @@ export const WITHDRAW = `
   winnerAddress
   winningAmount
   escrowWithdrawAmount
+  eventName
 `;
 
 export const PAGINATED_WITHDRAWS = `
@@ -148,6 +159,7 @@ export const PAGINATED_TRANSACTIONS = `
       amount
       eventRound
       resultName
+      eventName
     }
     ... on ResultSet {
       eventAddress
@@ -156,12 +168,14 @@ export const PAGINATED_TRANSACTIONS = `
       amount
       eventRound
       resultName
+      eventName
     }
     ... on Withdraw {
       eventAddress
       winnerAddress
       winningAmount
       escrowWithdrawAmount
+      eventName
     }
   }
 `;

@@ -12,7 +12,7 @@ import FavoriteStore from '../scenes/Favorite/store';
 import PredictionStore from '../scenes/Prediction/store';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import WithdrawStore from '../scenes/Activities/Withdraw/store';
-import ActivityHistoryStore from '../scenes/Activities/ActivityHistory/store';
+import HistoryStore from './HistoryStore';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import LeaderboardStore from '../scenes/Leaderboard/store';
@@ -42,6 +42,7 @@ class AppStore {
   allEvents = {}
   activities = {}
   search = {}
+  history = {}
 
   constructor(graphqlClient) {
     this.graphqlClient = graphqlClient;
@@ -74,9 +75,9 @@ class AppStore {
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         withdraw: new WithdrawStore(this),
-        history: new ActivityHistoryStore(this),
       };
       this.search = new SearchStore(this);
+      this.history = new HistoryStore(this);
       // finished loading all stores, show UI
       this.loading = false;
     });

@@ -92,7 +92,7 @@ export default class GlobalStore {
   subscribeSyncInfo = () => {
     subscribeSyncInfo(this.app.graphqlClient, (err, data) => {
       if (err) {
-        console.error(err);
+        console.error(err); // eslint-disable-line
         return;
       }
       const syncInfo = new SyncInfo(data);

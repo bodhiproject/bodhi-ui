@@ -58,9 +58,8 @@ export default class StepperVertRight extends Component {
   }
 
   getSteps = () => {
-    const { intl: { formatMessage } } = this.props;
+    const { intl: { formatMessage }, store: { eventPage: { event }, history: { resultSetsHistory } } } = this.props;
     const { syncBlockTime } = this.props.store.global;
-    const { event, resultSetsHistory } = this.props.store.eventPage;
 
     const currentArbitrationEndTime = event.arbitrationEndTime;
     const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);

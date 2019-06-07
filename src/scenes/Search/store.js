@@ -75,7 +75,7 @@ export default class SearchStore {
       this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
       this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
     } catch (err) {
-      console.error(err);
+      console.error(err); // eslint-disable-line
       this.resetEvents();
     }
 

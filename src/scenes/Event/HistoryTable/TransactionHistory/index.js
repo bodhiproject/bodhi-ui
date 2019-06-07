@@ -12,16 +12,13 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { eventPage, naka }, myTransactions } = this.props;
-    const { transactionHistoryItems, event } = eventPage;
+    const { store: { history: { transactions, myTransactions, loadingMore, loadMoreTransactions, loadMoreMyTransactions } }, showMyTransactions } = this.props;
 
     let cards = [];
-    if (!myTransactions) {
-      cards = transactionHistoryItems.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+    if (!showMyTransactions) {
+      cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     } else {
-      cards = transactionHistoryItems
-        .filter(transaction => naka.account && naka.account.toLowerCase() === transaction.txSender)
-        .map(transaction => <TxRow key={transaction.txid} transaction={transaction} event={event} />);
+      cards = myTransactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     }
     return (
       <div>
@@ -29,8 +26,8 @@ export default class TransactionHistory extends Component {
           <InfiniteScroll
             spacing={0}
             data={cards}
-            loadMore={() => { console.log('hello'); }}
-            loadingMore={false}
+            loadMore={(showMyTransactions && loadMoreMyTransactions) || loadMoreTransactions}
+            loadingMore={loadingMore}
           />
         ) : (
           <CenteredDiv>

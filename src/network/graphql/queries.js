@@ -168,11 +168,13 @@ const QUERIES = {
       $filter: TransactionFilter
       $limit: Int
       $skip: Int
+      $transactionSkips: TransactionSkips
     ) {
       transactions(
         filter: $filter
         limit: $limit
         skip: $skip
+        transactionSkips: $transactionSkips
       ) {
         ${PAGINATED_TRANSACTIONS}
       }
@@ -349,6 +351,7 @@ export async function withdraws(client, args) {
  */
 export async function transactions(client, args) {
   const res = await new GraphQuery(client, QUERY_TRANSACTIONS, args).execute();
+
   res.items = map(res.items, (tx) => new Transaction(tx));
   return res;
 }
