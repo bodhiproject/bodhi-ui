@@ -177,7 +177,7 @@ export default class EventStore {
     this.address = this.event.address;
     this.escrowAmount = this.event.escrowAmount;
 
-    await this.queryLeaderboard();
+    this.queryLeaderboard();
 
     this.disableEventActionsIfNecessary();
     if (this.isResultSetting) {

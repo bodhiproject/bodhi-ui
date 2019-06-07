@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 import { injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, Typography, withStyles } from '@material-ui/core';
-import { Token, TransactionType, TransactionStatus } from 'constants';
+import { Token, TransactionType } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import { getTimeString } from '../../../../helpers/utility';

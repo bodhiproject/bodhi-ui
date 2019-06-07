@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { Token, TransactionStatus } from 'constants';
+import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
 import { getTimeString } from '../../../../helpers';
