@@ -244,7 +244,7 @@ export default class {
       const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
       const address = event && event.address;
 
-      if (!address || !account) return;
+      if (!address || !account) return INIT_VALUES.myTransactions;
 
       const filters = { eventAddress: address, transactorAddress: account };
 
@@ -266,7 +266,7 @@ export default class {
 
       return [...pending, ...confirmed];
     }
-    return INIT_VALUES.transactions;
+    return INIT_VALUES.myTransactions;
   }
 
   /**
@@ -279,7 +279,7 @@ export default class {
       const { eventPage: { event }, graphqlClient } = this.app;
       const address = event && event.address;
 
-      if (!address) return;
+      if (!address) return INIT_VALUES.resultSetsHistory;
 
       const res = await resultSets(graphqlClient, {
         filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
@@ -296,6 +296,6 @@ export default class {
 
       return items;
     }
-    return INIT_VALUES.transactions;
+    return INIT_VALUES.resultSetsHistory;
   }
 }
