@@ -116,12 +116,12 @@ export default class EventStore {
     const totalLossBets = totalBetsSum - totalWinningBets;
     const arbitrationShare = (totalLossBets * profitCut) / 100;
     const betShare = totalLossBets - arbitrationShare;
-    const betterBetsReturn = this.betterBets[resultIndex] + ((betShare * this.betterBets[resultIndex]) / this.totalBets[resultIndex]);
+    const betterBetsReturn = this.betterBets[resultIndex] + ((betShare * this.betterBets[resultIndex]) / this.totalBets[resultIndex]) || 0;
 
     const totalWinningVotes = this.totalVotes[resultIndex];
     const totalLossVotes = totalVotesSum - totalWinningVotes;
     const totalVotesShare = totalLossVotes + arbitrationShare;
-    const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]);
+    const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]) || 0;
     const totalInvestment = betterBetsSum + betterVotesSum + this.escrowAmount;
     return {
       address: currentAddress,
