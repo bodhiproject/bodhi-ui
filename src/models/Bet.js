@@ -8,6 +8,7 @@ export default class Bet {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   betterAddress // Better's address
+  txSender // Transaction sender address, same as above
   resultIndex // Result index the bet was placed on
   amount // Bet amount in decimals
   amountSatoshi // Bet amount in satoshi
@@ -17,5 +18,6 @@ export default class Bet {
     Object.assign(this, bet);
     this.amount = satoshiToDecimal(bet.amount);
     this.amountSatoshi = bet.amount;
+    this.txSender = bet.betterAddress;
   }
 }

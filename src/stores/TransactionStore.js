@@ -139,14 +139,11 @@ export default class TransactionStore {
    * Logic to execute after a tx has been executed.
    * @param {Transaction} tx Transaction obj that was executed.
    */
-  onTxExecuted = async (tx, pendingTx) => {
+  onTxExecuted = async (tx) => {
     // TODO: refresh Event Detail if the address is showing
     // Refresh detail page if one the same page
-    if (tx.topicAddress && tx.topicAddress === this.app.eventPage.topicAddress) {
-      await this.app.eventPage.addPendingTx(pendingTx);
-    }
-    if (tx.txType !== TransactionType.CREATE_EVENT) {
-      this.app.txSentDialog.open(tx.txid);
+    if (tx.eventAddress && tx.eventAddress === this.app.eventPage.address) {
+      this.app.eventPage.addPendingTx(tx);
     }
   }
 

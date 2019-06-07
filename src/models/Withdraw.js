@@ -8,6 +8,7 @@ export default class Withdraw {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   winnerAddress // Winner address
+  txSender // Transaction sender address
   winningAmount // Won amount in decimals
   winningAmountSatoshi // Won amount in satoshi
   escrowWithdrawAmount // Escrow amount withdrawn in decimals
@@ -19,5 +20,6 @@ export default class Withdraw {
     this.winningAmountSatoshi = withdraw.winningAmount;
     this.escrowWithdrawAmount = satoshiToDecimal(withdraw.escrowWithdrawAmount);
     this.escrowWithdrawAmountSatoshi = withdraw.escrowWithdrawAmount;
+    this.txSender = withdraw.winnerAddress;
   }
 }

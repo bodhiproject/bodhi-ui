@@ -277,6 +277,7 @@ export default class EventStore {
   @action
   addPendingTx(pendingTransaction) {
     this.app.history.transactions.unshift(pendingTransaction);
+    console.log('TCL: addPendingTx -> this.app.history.transactions', this.app.history.transactions);
   }
 
   @action
