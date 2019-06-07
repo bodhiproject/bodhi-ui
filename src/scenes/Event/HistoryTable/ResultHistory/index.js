@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { Token, TransactionStatus } from 'constants';
@@ -24,6 +24,18 @@ const messages = defineMessages({
     id: 'str.pending',
     defaultMessage: 'Pending',
   },
+  strRound0: {
+    id: 'resultHistoryEntry.round0',
+    defaultMessage: '{who} set "<b>{resultName}</b>" as result on "<b>Result Setting Round</b>"',
+  },
+  strRoundMore: {
+    id: 'resultHistoryEntry.roundMore',
+    defaultMessage: '"<b>{resultName}</b>" was voted as result on "<b>Arbitration Round #{eventRound}</b>"',
+  },
+  strYou: {
+    id: 'str.you',
+    defaultMessage: 'You',
+  },
 });
 
 @injectIntl
@@ -37,29 +49,31 @@ export default class EventResultHistory extends Component {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
-  renderCardString = (resultSet, classes) => {
-    const { store: { naka } } = this.props;
+  renderCardString = (resultSet, intl) => {
+    const { store: { naka: { account } } } = this.props;
     const { eventRound, txSender } = resultSet;
     let { resultName } = resultSet;
     if (resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
+
     if (eventRound === 0) {
+      const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`;
       return (
         <Fragment>
-          {(naka.account && naka.account.toLowerCase() === txSender && 'You') || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`}
-          <span className={classes.bold}> Set </span>
-          {'"'}
-          <span className={classes.bold}>{resultName}</span>
-          {'" as result on Result Setting Round'}
+          <FormattedHTMLMessage
+            id="resultHistoryEntry.round0"
+            defaultMessage={'{who} set "<b>{resultName}</b>" as result on "<b>Result Setting Round</b>"'}
+            values={{ who, resultName }}
+          />
         </Fragment>
       );
     }
     return (
       <Fragment>
-        {'"'}
-        <span className={classes.bold}>{resultName}</span>
-        {'" was '}
-        <span className={classes.bold}>Voted</span>
-        {` as result on Arbitration Round # ${eventRound}`}
+        <FormattedHTMLMessage
+          id="resultHistoryEntry.roundMore"
+          defaultMessage={'"<b>{resultName}</b>" was voted as result on "<b>Arbitration Round #{eventRound}</b>"'}
+          values={{ resultName, eventRound }}
+        />
       </Fragment>
     );
   }
@@ -80,7 +94,7 @@ export default class EventResultHistory extends Component {
             >
               <CardContent>
                 <Typography color='textPrimary'>
-                  {this.renderCardString(resultSet, intl, classes, index)}
+                  {this.renderCardString(resultSet, intl)}
                 </Typography>
               </CardContent>
             </Card>

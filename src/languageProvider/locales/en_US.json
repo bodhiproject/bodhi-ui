@@ -175,6 +175,8 @@
   "qrypto.notInstalled": "You have not installed Qrypto yet. Qrypto is a Chrome extension wallet that allows you to sign transaction requests from web dapps. It is strongly recommended that you install it to gain the full experience.",
   "qrypto.notLoggedIn": "You are not logged into Qrypto.",
   "qrypto.remindMeLater": "Remind Me Later",
+  "resultHistoryEntry.round0": "{who} set \"<b>{resultName}</b>\" as result on \"<b>Result Setting Round</b>\"",
+  "resultHistoryEntry.roundMore": "\"<b>{resultName}</b>\" was voted as result on \"<b>Arbitration Round #{eventRound}</b>\"",
   "search.bet": "Betting",
   "search.emptySearchResult": "Oops, your search has no results.",
   "search.loading": "Searching...",
