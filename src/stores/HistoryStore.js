@@ -189,19 +189,19 @@ export default class {
     this.updating = true;
     if (location === Routes.ACTIVITY_HISTORY) {
       const filters = { transactorAddress: account };
-      const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0);
+      const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
     } else if (location === Routes.EVENT) {
       if (!address) return;
 
       const filters = { eventAddress: address }; // for all txs
-      let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0);
+      let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
 
-      newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0); // for my txs
+      newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
       this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
       // load result history
-      newTxs = await this.fetchResultHistory(this.limit, 0);
+      newTxs = await this.fetchResultHistory(this.limit, 0, true);
       this.resultSetsHistory = this.updateTxs(this.resultSetsHistory, newTxs, HISTORY_TYPES.RESULT_SET_HISTORY);
     }
 
@@ -330,7 +330,7 @@ export default class {
    */
   fetchHistory = async (filters, limit = this.limit, skip = this.skip,
     eventSkip = this.eventSkip, betSkip = this.betSkip,
-    resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip) => {
+    resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, updating = false) => {
     // Address is required for the request filters
     if (this.hasMore || this.updating) {
       const { graphqlClient } = this.app;
@@ -343,13 +343,13 @@ export default class {
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
       const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (pageInfo && !this.updating) {
+      if (pageInfo && !updating) {
         this.hasMore = pageInfo.hasNextPage;
         this.eventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
         this.betSkip = pageInfo.nextTransactionSkips.nextBetSkip;
         this.resultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
         this.withdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
-      } else if (!pageInfo) this.hasMore = false;
+      } else if (!pageInfo && !updating) this.hasMore = false;
 
       return [...pending, ...confirmed];
     }
@@ -362,7 +362,7 @@ export default class {
    */
   fetchMyHistory = async (limit = this.limit, skip = this.mySkip,
     eventSkip = this.myEventSkip, betSkip = this.myBetSkip,
-    resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip) => {
+    resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip, updating = false) => {
     // Address is required for the request filters
     if (this.myHasMore || this.updating) {
       const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
@@ -380,13 +380,13 @@ export default class {
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
       const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (pageInfo && !this.updating) {
+      if (pageInfo && !updating) {
         this.myHasMore = pageInfo.hasNextPage;
         this.myEventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
         this.myBetSkip = pageInfo.nextTransactionSkips.nextBetSkip;
         this.myResultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
         this.myWithdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
-      } else if (!pageInfo) this.myHasMore = false;
+      } else if (!pageInfo && !updating) this.myHasMore = false;
 
       return [...pending, ...confirmed];
     }
@@ -397,7 +397,7 @@ export default class {
    * Gets event result history via API call.
    * @return {[ResultSets]} Tx array of the query.
    */
-  fetchResultHistory = async (limit = this.limit, skip = this.resultSkip) => {
+  fetchResultHistory = async (limit = this.limit, skip = this.resultSkip, updating = false) => {
     // Address is required for the request filters
     if (this.resultHasMore || this.updating) {
       const { eventPage: { event }, graphqlClient } = this.app;
@@ -414,9 +414,9 @@ export default class {
 
       const { items, pageInfo } = res;
 
-      if (pageInfo && !this.updating) {
+      if (pageInfo && !updating) {
         this.resultHasMore = pageInfo.hasNextPage;
-      } else this.resultHasMore = false;
+      } else if (!pageInfo && !updating) this.resultHasMore = false;
 
       return items;
     }
