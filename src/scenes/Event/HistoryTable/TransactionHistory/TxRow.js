@@ -44,31 +44,6 @@ export default class TxRow extends Component {
     transaction: PropTypes.object.isRequired,
   };
 
-  getActionString = (transaction, intl) => {
-    const { txType } = transaction;
-    switch (txType) {
-      case TransactionType.CREATE_EVENT: {
-        return intl.formatMessage(messages.createEvent);
-      }
-      case TransactionType.BET: {
-        return intl.formatMessage(messages.bet);
-      }
-      case TransactionType.RESULT_SET: {
-        return intl.formatMessage(messages.setResult);
-      }
-      case TransactionType.VOTE: {
-        return intl.formatMessage(messages.vote);
-      }
-      case TransactionType.WITHDRAW: {
-        return intl.formatMessage(messages.withdraw);
-      }
-      default: {
-        console.error(`Invalid txType: ${txType}`); // eslint-disable-line
-        return '';
-      }
-    }
-  }
-
   renderCardString = (transaction, intl, account) => {
     const { txType, amount, txSender } = transaction;
     let { eventName, resultName } = transaction;

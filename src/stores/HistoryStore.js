@@ -1,6 +1,6 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter } from 'lodash';
-import { TransactionStatus, Routes, SortBy } from 'constants';
+import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
 const EVENT_HISTORY_LIMIT = 5;
@@ -26,11 +26,17 @@ const INIT_VALUES = {
   withdrawSkip: 0,
   myWithdrawSkip: 0,
   limit: 0,
+  updating: false,
+};
+const HISTORY_TYPES = {
+  ALL_TRANSACTIONS: 0,
+  MY_TRANSACTIONS: 1,
+  RESULT_SET_HISTORY: 2,
 };
 
 export default class {
   limit = INIT_VALUES.limit;
-
+  updating = INIT_VALUES.updating;
   @observable transactions = INIT_VALUES.transactions;
   @observable loadingMore = INIT_VALUES.loadingMore;
   @observable loaded = INIT_VALUES.loaded;
@@ -70,18 +76,136 @@ export default class {
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
-        if (this.transactions.length > 0 && this.app.ui.location === Routes.ACTIVITY_HISTORY) {
-          const { naka: { account } } = this.app;
-          const filters = { transactorAddress: account };
-          const newTxs = await this.fetchHistory(filters, ACTIVITY_HISTORY_LIMIT, 0, 0, 0, 0, 0, true);
-          const old = this.transactions[0];
-          if (newTxs.length > 0 && (newTxs[0].txid !== old.txid
-            || newTxs[0].txStatus !== old.txStatus)) {
-            this.transactions.splice(0, 1, newTxs[0]);
-          }
-        }
+        if (!this.updating) await this.update();
       },
     );
+  }
+
+  // update skips so when loading more so that duplicate txs won't appear
+  updateSkips = (tx, type) => {
+    switch (tx.txType) {
+      case TransactionType.CREATE_EVENT: {
+        if (type === HISTORY_TYPES.ALL_TRANSACTIONS) {
+          this.eventSkip += 1;
+          this.skip += 1;
+        } else if (type === HISTORY_TYPES.MY_TRANSACTIONS) {
+          this.myEventSkip += 1;
+          this.mySkip += 1;
+        }
+        return;
+      }
+      case TransactionType.BET: {
+        if (type === HISTORY_TYPES.ALL_TRANSACTIONS) {
+          this.betSkip += 1;
+          this.skip += 1;
+        } else if (type === HISTORY_TYPES.MY_TRANSACTIONS) {
+          this.myBetSkip += 1;
+          this.mySkip += 1;
+        }
+        return;
+      }
+      case TransactionType.VOTE: {
+        if (type === HISTORY_TYPES.ALL_TRANSACTIONS) {
+          this.betSkip += 1;
+          this.skip += 1;
+        } else if (type === HISTORY_TYPES.MY_TRANSACTIONS) {
+          this.myBetSkip += 1;
+          this.mySkip += 1;
+        }
+        return;
+      }
+      case TransactionType.RESULT_SET: {
+        if (type === HISTORY_TYPES.ALL_TRANSACTIONS) {
+          this.resultSetSkip += 1;
+          this.skip += 1;
+        } else if (type === HISTORY_TYPES.MY_TRANSACTIONS) {
+          this.myResultSetSkip += 1;
+          this.mySkip += 1;
+        } else if (type === HISTORY_TYPES.RESULT_SET_HISTORY) {
+          this.resultSkip += 1;
+        }
+        return;
+      }
+      case TransactionType.WITHDRAW: {
+        if (type === HISTORY_TYPES.ALL_TRANSACTIONS) {
+          this.withdrawSkip += 1;
+          this.skip += 1;
+        } else if (type === HISTORY_TYPES.MY_TRANSACTIONS) {
+          this.myWithdrawSkip += 1;
+          this.mySkip += 1;
+        }
+        return;
+      }
+      default: {
+        console.error(`Invalid txType: ${txType}`); // eslint-disable-line
+      }
+    }
+  }
+
+  updateTxs = (oldTxs, newTxs, type) => {
+    const pendings = oldTxs.filter(tx => tx.txStatus === TransactionStatus.PENDING);
+    // remove all pendings
+    oldTxs = oldTxs.filter(tx => pendings.filter(pending => pending.txid === tx.txid).length === 0);
+    // record txids for updating
+    const pendingTxids = new Map();
+    pendings.map(tx => pendingTxids.set(tx.txid, tx));
+    const oldTxids = new Map();
+    oldTxs.map(tx => oldTxids.set(tx.txid, tx));
+    // search through newTxs
+    let confirmedAddOns = [];
+    let pendingAddOns = [];
+    const addOnTxids = new Map();
+    newTxs.forEach(tx => {
+      addOnTxids.set(tx.txid, tx);
+      if (pendingTxids.has(tx.txid)) {
+        if (tx.txStatus === TransactionStatus.PENDING) pendingAddOns = [...pendingAddOns, tx];
+        else if (tx.txStatus === TransactionStatus.SUCCESS) {
+          confirmedAddOns = [...confirmedAddOns, tx];
+          this.updateSkips(tx, type);
+        }
+      } else {
+        // new tx or old txs already has it
+        confirmedAddOns = [...confirmedAddOns, tx];
+        if (!oldTxids.has(tx.txid)) {
+          // new tx
+          this.updateSkips(tx, type);
+        }
+      }
+    });
+    // add back existing txs
+    oldTxs.forEach(tx => {
+      if (!addOnTxids.has(tx.txid)) {
+        confirmedAddOns = [...confirmedAddOns, tx];
+      }
+    });
+
+    return [...pendingAddOns, ...confirmedAddOns];
+  }
+
+  @action
+  update = async () => {
+    const { ui: { location }, eventPage: { event }, naka: { account } } = this.app;
+    const address = event ? event.address : undefined;
+    this.updating = true;
+    if (location === Routes.ACTIVITY_HISTORY) {
+      const filters = { transactorAddress: account };
+      const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0);
+      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+    } else if (location === Routes.EVENT) {
+      if (!address) return;
+
+      const filters = { eventAddress: address }; // for all txs
+      let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0);
+      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+
+      newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0); // for my txs
+      this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
+      // load result history
+      newTxs = await this.fetchResultHistory(this.limit, 0);
+      this.resultSetsHistory = this.updateTxs(this.resultSetsHistory, newTxs, HISTORY_TYPES.RESULT_SET_HISTORY);
+    }
+
+    this.updating = false;
   }
 
   @action
@@ -206,9 +330,9 @@ export default class {
    */
   fetchHistory = async (filters, limit = this.limit, skip = this.skip,
     eventSkip = this.eventSkip, betSkip = this.betSkip,
-    resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, fetchBeginning = false) => {
+    resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip) => {
     // Address is required for the request filters
-    if (this.hasMore || fetchBeginning) {
+    if (this.hasMore || this.updating) {
       const { graphqlClient } = this.app;
 
       const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
@@ -219,7 +343,7 @@ export default class {
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
       const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (pageInfo && !fetchBeginning) {
+      if (pageInfo && !this.updating) {
         this.hasMore = pageInfo.hasNextPage;
         this.eventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
         this.betSkip = pageInfo.nextTransactionSkips.nextBetSkip;
@@ -240,7 +364,7 @@ export default class {
     eventSkip = this.myEventSkip, betSkip = this.myBetSkip,
     resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip) => {
     // Address is required for the request filters
-    if (this.myHasMore) {
+    if (this.myHasMore || this.updating) {
       const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
       const address = event && event.address;
 
@@ -256,7 +380,7 @@ export default class {
       const pending = filter(items, { txStatus: TransactionStatus.PENDING });
       const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (pageInfo) {
+      if (pageInfo && !this.updating) {
         this.myHasMore = pageInfo.hasNextPage;
         this.myEventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
         this.myBetSkip = pageInfo.nextTransactionSkips.nextBetSkip;
@@ -275,7 +399,7 @@ export default class {
    */
   fetchResultHistory = async (limit = this.limit, skip = this.resultSkip) => {
     // Address is required for the request filters
-    if (this.resultHasMore) {
+    if (this.resultHasMore || this.updating) {
       const { eventPage: { event }, graphqlClient } = this.app;
       const address = event && event.address;
 
@@ -290,7 +414,7 @@ export default class {
 
       const { items, pageInfo } = res;
 
-      if (pageInfo) {
+      if (pageInfo && !this.updating) {
         this.resultHasMore = pageInfo.hasNextPage;
       } else this.resultHasMore = false;
 
