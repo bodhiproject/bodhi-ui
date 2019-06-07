@@ -82,7 +82,9 @@ export default class UiStore {
   enableSearchBarMode = () => {
     this.searchBarMode = true;
     document.body.style.overflow = 'hidden';
-    document.getElementById('searchEventInput').focus();
+    window.setTimeout(() => document.getElementById('searchEventInput').focus(), 0);
+    // document.getElementById('searchEventInput').focus();
+    // console.log(document.getElementById('searchEventInput').focus);
   }
 
   @action
