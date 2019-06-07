@@ -3,13 +3,18 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
-import { Token, TransactionType } from 'constants';
+import { Token, TransactionType, TransactionStatus } from 'constants';
 
 import styles from './styles';
 import { getTimeString } from '../../../../helpers/utility';
+import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({
+  strDetailMsg: {
+    id: 'str.detail',
+    defaultMessage: 'Detail',
+  },
   strPendingMsg: {
     id: 'str.pending',
     defaultMessage: 'Pending',
@@ -142,6 +147,7 @@ export default class TxRow extends Component {
     const { transaction, intl, classes, store: { naka: { account } } } = this.props;
     const { txStatus, block, amount } = transaction;
     const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
+    const status = getStatusString(txStatus, intl);
 
     return (
       <Grid container className={classes.grid} justify="center">
@@ -157,9 +163,9 @@ export default class TxRow extends Component {
           </Card>
           <div className={classes.note}>
             <Typography color='textPrimary'>
-              {`${amount} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
+              {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
               <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
-                {'Detail'}
+                {intl.formatMessage(messages.strDetailMsg)}
               </a>
             </Typography>
           </div>

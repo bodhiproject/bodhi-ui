@@ -8,6 +8,7 @@ import { Token, TransactionType, TransactionStatus } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import { getTimeString } from '../../../../helpers/utility';
+import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({
@@ -71,31 +72,6 @@ class EventRow extends Component {
         const { history } = this.props;
         const nextLocation = `/event/${eventAddress}`;
         if (nextLocation) history.push(nextLocation);
-      }
-    }
-
-    getActionString = (transaction, intl) => {
-      const { txType } = transaction;
-      switch (txType) {
-        case TransactionType.CREATE_EVENT: {
-          return intl.formatMessage(messages.createEvent);
-        }
-        case TransactionType.BET: {
-          return intl.formatMessage(messages.bet);
-        }
-        case TransactionType.RESULT_SET: {
-          return intl.formatMessage(messages.setResult);
-        }
-        case TransactionType.VOTE: {
-          return intl.formatMessage(messages.vote);
-        }
-        case TransactionType.WITHDRAW: {
-          return intl.formatMessage(messages.withdraw);
-        }
-        default: {
-          console.error(`Invalid txType: ${txType}`); // eslint-disable-line
-          return '';
-        }
       }
     }
 
@@ -172,25 +148,11 @@ class EventRow extends Component {
       }
     }
 
-    getStatusString = (txStatus, intl) => {
-      switch (txStatus) {
-        case TransactionStatus.PENDING: {
-          return intl.formatMessage(messages.strPendingMsg);
-        }
-        case TransactionStatus.SUCCESS: {
-          return intl.formatMessage(messages.strSuccessMsg);
-        }
-        default: {
-          return intl.formatMessage(messages.strFailMsg);
-        }
-      }
-    }
-
     render() {
       const { transaction, intl, classes } = this.props;
       const { txStatus, block, eventAddress, amount } = transaction;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
-      const status = this.getStatusString(txStatus, intl);
+      const status = getStatusString(txStatus, intl);
 
       return (
         <Grid container className={classes.grid} justify="center">

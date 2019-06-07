@@ -3,14 +3,19 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { Token } from 'constants';
+import { Token, TransactionStatus } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
 import { getTimeString } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
+import { getStatusString } from '../../../../helpers/stringUtil';
 
 const messages = defineMessages({
+  strDetailMsg: {
+    id: 'str.detail',
+    defaultMessage: 'Detail',
+  },
   emptyTxHistoryMsg: {
     id: 'str.emptyResultSetHistory',
     defaultMessage: 'There are no previous results for now.',
@@ -61,9 +66,12 @@ export default class EventResultHistory extends Component {
 
   render() {
     const { resultSetsHistory, intl, classes, store: { history: { loadMoreResultHistory, loadingMore } } } = this.props;
+
     const cards = resultSetsHistory.map((resultSet, index) => {
       const { amount, block, txStatus } = resultSet;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
+      const status = getStatusString(txStatus, intl);
+
       return (
         <Grid container className={classes.grid} justify="center" key={`result-${index}`}>
           <Grid item xs={10} sm={10}>
@@ -78,9 +86,9 @@ export default class EventResultHistory extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${amount} ${Token.NBOT} · ${txStatus} · ${blockTime} · `}
+                {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
-                  {'Detail'}
+                  {intl.formatMessage(messages.strDetailMsg)}
                 </a>
               </Typography>
             </div>
