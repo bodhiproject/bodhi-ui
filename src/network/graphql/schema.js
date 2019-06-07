@@ -75,6 +75,7 @@ export const MULTIPLE_RESULTS_EVENT = `
   currentRound
   currentResultIndex
   consensusThreshold
+  previousConsensusThreshold
   arbitrationEndTime
   status
   language

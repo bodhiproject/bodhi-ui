@@ -28,6 +28,7 @@ export default class MultipleResultsEvent {
   currentRound // Current round of Oracle
   currentResultIndex // Current winning result index
   consensusThreshold // Current consensus threshold for the round in decimals
+  previousConsensusThreshold // Previous consensus threshold for the round in decimals
   arbitrationEndTime // Timestamp of the end of the arbitration round
   status // Event status. One of: [CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING]
   language // Language of the event
@@ -46,6 +47,7 @@ export default class MultipleResultsEvent {
     Object.assign(this, event);
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.consensusThreshold = satoshiToDecimal(event.consensusThreshold);
+    this.previousConsensusThreshold = event.previousConsensusThreshold && satoshiToDecimal(event.previousConsensusThreshold);
     this.roundBets = map(event.roundBets && event.roundBets.totalRoundBets, (bets) => satoshiToDecimal(bets));
     this.userRoundBets = map(event.roundBets && event.roundBets.userRoundBets, (bets) => satoshiToDecimal(bets));
     this.betRoundBets = map(event.roundBets && event.roundBets.totalBetRoundBets, (bets) => satoshiToDecimal(bets));
