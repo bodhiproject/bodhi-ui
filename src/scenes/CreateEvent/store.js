@@ -65,7 +65,7 @@ const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
 const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
-const VALIDATE_TIME_GAP_MIN_SEC = 30 * 60;
+const VALIDATE_TIME_GAP_MIN_SEC = 2 * 60;
 
 const nowPlus = seconds => moment().add(seconds, 's').unix();
 const INIT = {

@@ -187,10 +187,10 @@ export const SYNC_INFO = `
 `;
 
 export const TOTAL_RESULT_BETS = `
-  resultBets
+  totalBets
   betterBets
-  totalRound0Bets
-  betterRound0Bets
+  totalVotes
+  betterVotes
 `;
 
 export const ALL_STATS = `
