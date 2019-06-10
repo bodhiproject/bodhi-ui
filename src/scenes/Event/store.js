@@ -3,7 +3,7 @@ import moment from 'moment';
 import { filter, sum } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventWarningType, EVENT_STATUS, TransactionStatus } from 'constants';
+import { EventWarningType, EVENT_STATUS, TransactionStatus, Routes } from 'constants';
 import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
 import { API } from '../../network/routes';
 import {
@@ -160,6 +160,15 @@ export default class EventStore {
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
+    // Update on new block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (this.app.ui.location === Routes.EVENT) {
+          await this.initEvent();
+        }
+      },
+    );
   }
 
   @action
@@ -264,7 +273,6 @@ export default class EventStore {
     }
   }
 
-  // TODO: fix from TransactionStore
   @action
   addPendingTx(pendingTransaction) {
     this.app.history.transactions.unshift(pendingTransaction);
