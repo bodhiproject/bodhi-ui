@@ -149,9 +149,12 @@ export default class EventPage extends Component {
   renderConsensusThresholdMessage = () => {
     const { intl, store: { eventPage } } = this.props;
     const { consensusThreshold, previousConsensusThreshold } = eventPage.event;
-    let heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT`;
+    let heading;
     if (eventPage.isArbitration) {
-      heading = `${heading}. ${intl.formatMessage(messages.previousConsensusThreshold)} ${previousConsensusThreshold} NBOT`;
+      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT.
+      ${intl.formatMessage(messages.previousConsensusThreshold)} ${previousConsensusThreshold} NBOT`;
+    } else {
+      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT`;
     }
     const message = intl.formatMessage(messages.setResultExplanation);
 
