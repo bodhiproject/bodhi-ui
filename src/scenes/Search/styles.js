@@ -8,7 +8,7 @@ const styles = (theme) => ({
     marginBottom: '0px',
   },
   searchTabContainer: {
-    marginTop: theme.sizes.navHeight.px,
+    marginTop: 20,
   },
 });
 
