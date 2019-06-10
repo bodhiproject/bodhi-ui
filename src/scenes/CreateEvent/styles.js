@@ -69,6 +69,9 @@ const styles = (theme) => ({
   cardSelected: {
     color: '#fe0672',
   },
+  textFieldInput: {
+    height: '30px',
+  },
 });
 
 export default styles;
