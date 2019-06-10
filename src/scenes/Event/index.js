@@ -30,9 +30,13 @@ const messages = defineMessages({
     id: 'load.oracle',
     defaultMessage: 'Loading Event...',
   },
-  consensusThreshold: {
-    id: 'oracle.consensusThreshold',
-    defaultMessage: 'Consensus Threshold',
+  currentConsensusThreshold: {
+    id: 'oracle.currentConsensusThreshold',
+    defaultMessage: 'Current Consensus Threshold',
+  },
+  previousConsensusThreshold: {
+    id: 'oracle.previousConsensusThreshold',
+    defaultMessage: 'Previous Consensus Threshold',
   },
   remainingConsensusThreshold: {
     id: 'oracle.remainingConsensusThreshold',
@@ -144,8 +148,14 @@ export default class EventPage extends Component {
 
   renderConsensusThresholdMessage = () => {
     const { intl, store: { eventPage } } = this.props;
-    const threshold = eventPage.event.consensusThreshold;
-    const heading = `${intl.formatMessage(messages.consensusThreshold)} ${threshold} NBOT`;
+    const { consensusThreshold, previousConsensusThreshold } = eventPage.event;
+    let heading;
+    if (eventPage.isArbitration) {
+      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT.
+      ${intl.formatMessage(messages.previousConsensusThreshold)} ${previousConsensusThreshold} NBOT`;
+    } else {
+      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT`;
+    }
     const message = intl.formatMessage(messages.setResultExplanation);
 
     return (eventPage.isResultSetting || eventPage.isArbitration) && (

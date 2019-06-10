@@ -23,6 +23,7 @@ const styles = (theme) => ({
     fontSize: theme.sizes.font.small,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
+    whiteSpace: 'pre-line',
   },
   message: {
     fontSize: theme.sizes.font.xSmall,
