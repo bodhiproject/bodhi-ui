@@ -67,6 +67,7 @@ const styles = (theme) => ({
     fontSize: '1.05rem',
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
+    zIndex: 100,
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
