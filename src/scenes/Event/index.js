@@ -243,11 +243,11 @@ export default class EventPage extends Component {
       store: {
         eventPage,
         eventPage: { event, nbotWinnings },
-        wallet: { currentWalletAddress },
+        wallet: { currentAddress },
       },
     } = this.props;
     const allowWithdraw = Boolean(nbotWinnings)
-      || event.ownerAddress === currentWalletAddress;
+    || event.ownerAddress === currentAddress;
 
     return (
       <Card>
