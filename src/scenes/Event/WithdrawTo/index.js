@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { TableBody, TableRow, TableCell, Button, withStyles } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { Warning, ResponsiveTable } from 'components';
 import Icon from '../Icon';
 import Container from '../Container';
@@ -11,13 +10,6 @@ import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { toFixed } from '../../../helpers/utility';
 import styles from './styles';
 
-
-const useTableRowStyles = makeStyles(() => ({
-  root: {
-    border: '1px solid rgba(151, 151, 151, 0.1)',
-  },
-}));
-
 const messages = defineMessages({
   escrow: {
     id: 'str.escrow',
@@ -25,7 +17,7 @@ const messages = defineMessages({
   },
   totalBet: {
     id: 'str.totalBet',
-    defaultMessage: 'Your Total Bet',
+    defaultMessage: 'Your Total Bets',
   },
   totalBetReturn: {
     id: 'str.totalBetReturn',
@@ -33,7 +25,7 @@ const messages = defineMessages({
   },
   totalVote: {
     id: 'str.totalVote',
-    defaultMessage: 'Your Total Vote',
+    defaultMessage: 'Your Total Votes',
   },
   totalVoteReturn: {
     id: 'str.totalVoteReturn',
@@ -84,7 +76,7 @@ const WithdrawButton = withStyles(styles)(inject('store')(observer(({ store, cla
         color="primary"
         disabled={disabled}
         className={classes.button}
-        onClick={() => withdraw()}
+        onClick={withdraw}
       >
         <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
       </Button>
@@ -120,16 +112,15 @@ const WithdrawList = ({
 );
 
 
-const CustomTableRow = ({ text, value, percent }) => {
-  const classes = useTableRowStyles();
-  if (!value || value === 0) return null;
+const CustomTableRow = withStyles(styles)(({ text, value, percent, classes }) => {
+  if (!value) return null;
   return (
     <TableRow className={classes.root}>
       <TableCell className={classes.root}><FormattedMessageFixed id={messages[text].id} defaultMessage={messages[text].defaultMessage} /></TableCell>
       <TableCell className={classes.root}>{`${toFixed(value)} ${percent ? `(${toFixed(percent)}%)` : ''}`}</TableCell>
     </TableRow>
   );
-};
+});
 
 const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
   // Already withdrawn with this address

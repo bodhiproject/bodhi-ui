@@ -113,14 +113,14 @@ export default class EventStore {
     const totalVotesSum = sum(this.totalVotes);
 
     const totalWinningBets = this.totalBets[resultIndex];
-    const totalLossBets = totalBetsSum - totalWinningBets;
-    const arbitrationShare = (totalLossBets * profitCut) / 100;
-    const betShare = totalLossBets - arbitrationShare;
+    const totalLosingBets = totalBetsSum - totalWinningBets;
+    const arbitrationShare = (totalLosingBets * profitCut) / 100;
+    const betShare = totalLosingBets - arbitrationShare;
     const betterBetsReturn = this.betterBets[resultIndex] + ((betShare * this.betterBets[resultIndex]) / this.totalBets[resultIndex]) || 0;
 
     const totalWinningVotes = this.totalVotes[resultIndex];
-    const totalLossVotes = totalVotesSum - totalWinningVotes;
-    const totalVotesShare = totalLossVotes + arbitrationShare;
+    const totalLosingVotes = totalVotesSum - totalWinningVotes;
+    const totalVotesShare = totalLosingVotes + arbitrationShare;
     const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]) || 0;
     const totalInvestment = betterBetsSum + betterVotesSum + this.escrowAmount;
     return {
