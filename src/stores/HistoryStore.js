@@ -1,5 +1,5 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { filter } from 'lodash';
+import { filter, uniqBy } from 'lodash';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
@@ -192,7 +192,10 @@ export default class {
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
     } else if (location === Routes.EVENT) {
-      if (!address) return;
+      if (!address) {
+        this.updating = false;
+        return;
+      }
 
       const filters = { eventAddress: address }; // for all txs
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
@@ -272,6 +275,7 @@ export default class {
 
         runInAction(() => {
           this.transactions = [...this.transactions, ...moreTxs];
+          this.transactions = uniqBy(this.transactions, 'txid');
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {
@@ -294,6 +298,7 @@ export default class {
 
         runInAction(() => {
           this.myTransactions = [...this.myTransactions, ...moreTxs];
+          this.myTransactions = uniqBy(this.myTransactions, 'txid');
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {
@@ -316,6 +321,7 @@ export default class {
 
         runInAction(() => {
           this.resultSetsHistory = [...this.resultSetsHistory, ...moreTxs];
+          this.resultSetsHistory = uniqBy(this.resultSetsHistory, 'txid');
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {

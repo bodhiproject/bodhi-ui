@@ -140,7 +140,6 @@ export default class TransactionStore {
    * @param {Transaction} tx Transaction obj that was executed.
    */
   onTxExecuted = async (tx) => {
-    // TODO: refresh Event Detail if the address is showing
     // Refresh detail page if one the same page
     if (tx.eventAddress && tx.eventAddress === this.app.eventPage.address) {
       this.app.eventPage.addPendingTx(tx);
