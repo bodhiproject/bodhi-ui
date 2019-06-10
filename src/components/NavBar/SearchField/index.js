@@ -27,7 +27,6 @@ export default class SearchBarField extends Component {
             id: 'search.placeholder',
             defaultMessage: 'Search by Event Name, Event Address, Result Setter Address...',
           })}
-          // inputRef={ui.autofocus}
           InputProps={{
             disableUnderline: true,
             classes: {

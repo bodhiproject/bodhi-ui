@@ -83,13 +83,6 @@ export default class UiStore {
     this.searchBarMode = true;
     this.dropdownMenuOpen = false;
     document.body.style.overflow = 'hidden';
-    // window.setTimeout(() => document.getElementById('searchEventInput').focus(), 100);
-  }
-
-  autofocus = input => {
-    if (input) {
-      window.setTimeout(() => input.focus(), 0);
-    }
   }
 
   @action
