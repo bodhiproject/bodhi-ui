@@ -2,7 +2,6 @@ import { action } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { utf8ToHex, padRight } from 'web3-utils';
-import { TransactionType } from 'constants';
 import { cloneDeep } from 'lodash';
 import {
   addPendingEvent,
