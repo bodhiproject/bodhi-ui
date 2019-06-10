@@ -101,10 +101,10 @@ export default class Option extends Component {
               }}
             >
               <div className={classes.eventOptionWrapper}>
-                <Typography variant="h6" className={classes.overText}>
-                  {name}
-                </Typography>
                 <div className={classes.eventOptionProgress}>
+                  <Typography variant="h6" className={classes.overText}>
+                    {name}
+                  </Typography>
                   <Progress
                     color="secondary"
                     invalid={name === 'Invalid'}

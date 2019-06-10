@@ -237,7 +237,7 @@ export default class EventPage extends Component {
       <Card>
         {this.renderTitle()}
         {this.renderBetContent()}
-        {this.renderEventWarning()}
+        {/* {this.renderEventWarning()} */}
         {this.renderOptions(event.currentRound > 0 ? 'vote' : 'bet')}
         {this.renderConsensusThresholdMessage()}
         {this.renderRemainingConsensusThresholdMessage()}
