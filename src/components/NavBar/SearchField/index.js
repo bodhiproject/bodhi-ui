@@ -21,6 +21,7 @@ export default class SearchBarField extends Component {
       <div className={classes.searchBarField}>
         <div className={`icon iconfont icon-ic_search ${classes.searchBarLeftIcon}`} />
         <TextField
+          autoFocus
           className={classes.searchBarTextField}
           placeholder={intl.formatMessage({
             id: 'search.placeholder',
