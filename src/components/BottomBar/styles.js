@@ -12,6 +12,7 @@ export default (theme) => ({
     [theme.breakpoints.down('sm')]: {
       padding: `${theme.padding.spaceX.px}`,
     },
+    zIndex: 200,
   },
   statusContainer: {
     display: 'flex',
