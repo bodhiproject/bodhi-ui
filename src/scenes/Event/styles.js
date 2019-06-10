@@ -2,6 +2,7 @@ export default (theme) => ({
   title: {
     marginBottom: theme.padding.space5X.px,
     fontSize: theme.sizes.font.large,
+    wordWrap: 'break-word',
   },
   actionButton: {
     marginTop: theme.padding.space5X.px,
@@ -58,10 +59,5 @@ export default (theme) => ({
   },
   padLeft: {
     paddingLeft: theme.padding.space3X.px,
-  },
-  ellipsis: {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
   },
 });
