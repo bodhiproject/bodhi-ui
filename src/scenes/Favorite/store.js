@@ -101,6 +101,7 @@ export default class FavoriteStore {
         orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
         limit,
         skip,
+        includeRoundBets: true ,
       });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
