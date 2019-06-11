@@ -55,6 +55,7 @@ const messages = defineMessages({
   resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },
   resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
   arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
+  arbitrationComingSoon: { id: 'card.arbitrationComingSoon', defaultMessage: 'Arbitration Coming Soon' },
   finished: { id: 'card.finished', defaultMessage: 'Finished' },
 });
 
@@ -77,11 +78,18 @@ export default class EventPage extends Component {
   }
 
   getEventDesc = () => {
-    const { event, event: { status } } = this.props.store.eventPage;
+    const {
+      store: {
+        eventPage: { event, event: { status, centralizedOracle } },
+        wallet: { currentAddress },
+      },
+    } = this.props;
     switch (status) {
       case EVENT_STATUS.CREATED: return 'creating';
       case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING:
+        if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
+        return moment().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
       case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
       case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
       case EVENT_STATUS.WITHDRAWING: return 'finished';
