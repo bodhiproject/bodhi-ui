@@ -1,8 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button, Typography } from '@material-ui/core';
 import { Routes } from 'constants';
 import { Card } from 'components';
 import MobileStepper from './carousel';
@@ -50,7 +51,8 @@ export default class Leaderboard extends React.Component {
   };
 
   render() {
-    const { classes, theme, intl, maxSteps } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event: { address } } } } = this.props;
+    const url = `/event_history/${address}`;
     let leaderboardBets = [];
     let activeStep = 0;
     let leaderboardLimit = 5;
@@ -121,6 +123,14 @@ export default class Leaderboard extends React.Component {
             </Paper>
           </div>
         </div>
+        <Link to={url}>
+          <div className={classes.bottomButton}>
+            <Typography color='textPrimary' className={classes.bottomButtonText}>
+              <FormattedMessage id="str.seeAll" defaultMessage="See All " />
+              <KeyboardArrowRight className={classes.bottomButtonIcon} />
+            </Typography>
+          </div>
+        </Link>
       </Card>
     );
   }
