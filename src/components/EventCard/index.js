@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -83,7 +83,7 @@ export default class EventCard extends Component {
     const { classes, event: { results, status } } = this.props;
     const asOptions = results.slice(1).concat(results[0]);
     return (
-      <Grid className={classes.optionGrid}>
+      <Fragment className={classes.optionGrid}>
         {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
           <Option
@@ -91,7 +91,7 @@ export default class EventCard extends Component {
             option={option}
           />
         ))}
-      </Grid>
+      </Fragment>
     );
   }
 
@@ -116,24 +116,24 @@ export default class EventCard extends Component {
                 </div>
                 <FavoriteButton eventAddress={address} />
               </div>
-              <div className={classes.eventCardInfoItem}>
-                <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
-              </div>
-              <div className={classes.eventCardInfoItem}>
-                <RaisedAmount amount={totalBets} />
-              </div>
-              <Grid container className={classes.alignBottom}>
-                <Grid item xs={8} className={classes.rowLeft}>
-                  {this.renderOptions()}
-                </Grid>
-                <Grid item xs={4}>
-                  <div className={classes.eventCardInfo}>
-                    <div className={classes.eventCardInfoItem}>
-                      {getEndTime() && <TimeCorner endTime={getEndTime()} />}
-                    </div>
+              <div className={classes.eventCardNameBundle}>
+                <div className={classes.eventCardNameFlex}>
+                  <div className={classes.eventCardInfoItem}>
+                    <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
                   </div>
-                </Grid>
-              </Grid>
+                  <div className={classes.eventCardInfoItem}>
+                    <RaisedAmount amount={totalBets} />
+                  </div>
+                </div>
+                <div className={classes.eventCardInfo}>
+                  <div className={classes.eventCardInfoItem}>
+                    {getEndTime() && <TimeCorner endTime={getEndTime()} />}
+                  </div>
+                </div>
+              </div>
+              <div container className={classes.alignBottom}>
+                {this.renderOptions()}
+              </div>
             </div>
           </Card>
         </Link>
