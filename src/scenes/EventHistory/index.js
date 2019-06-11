@@ -19,39 +19,14 @@ import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from './Option';
 import HistoryTable from './HistoryTable';
+import WinningOutcome from './WinningOutcome';
+import WithdrawTo from './WithdrawTo';
 
 const messages = defineMessages({
-  loadOracleMsg: {
-    id: 'load.oracle',
-    defaultMessage: 'Loading Event...',
+  loadHistoryMsg: {
+    id: 'load.history',
+    defaultMessage: 'Loading Event History...',
   },
-  currentConsensusThreshold: {
-    id: 'oracle.currentConsensusThreshold',
-    defaultMessage: 'Current Consensus Threshold',
-  },
-  previousConsensusThreshold: {
-    id: 'oracle.previousConsensusThreshold',
-    defaultMessage: 'Previous Consensus Threshold',
-  },
-  remainingConsensusThreshold: {
-    id: 'oracle.remainingConsensusThreshold',
-    defaultMessage: 'Remaining Consensus Threshold',
-  },
-  setResultExplanation: {
-    id: 'oracle.setResultExplanation',
-    defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
-  },
-  setRemainingExplanation: {
-    id: 'oracle.setRemainingExplanation',
-    defaultMessage: 'You can only stake up to the remaining Consensus Threshold amount.',
-  },
-  creating: { id: 'card.creating', defaultMessage: 'Creating' },
-  predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
-  predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
-  resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },
-  resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
-  arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
-  finished: { id: 'card.finished', defaultMessage: 'Finished' },
 });
 
 @injectIntl
@@ -97,7 +72,7 @@ export default class EventHistory extends Component {
   }
 
   renderOptions = (actionText, betSpecific) => {
-    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
+    const { classes, store: { eventPage: { isResultSetting, event: { results, status, betResults } } } } = this.props;
     let asOptions = results;
     asOptions = asOptions.slice(1).concat(asOptions[0]);
     if (betSpecific) {
@@ -111,7 +86,7 @@ export default class EventHistory extends Component {
           <Option
             key={i}
             option={option}
-            disabled={isWithdrawing}
+            disabled
             amountInputDisabled={isResultSetting}
             actionText={actionText}
             betSpecific={betSpecific}
@@ -153,6 +128,26 @@ export default class EventHistory extends Component {
     );
   }
 
+  // Renders sections for withdraw status
+  renderWithdrawContent = () => {
+    const {
+      classes,
+      store: {
+        eventPage,
+      },
+    } = this.props;
+
+    return (
+      <Card>
+        {this.renderTitle()}
+        {this.renderBetContent()}
+        <Paper className={classes.withdrawingPaper}>
+          <WinningOutcome eventPage={eventPage} />
+        </Paper>
+      </Card>
+    );
+  }
+
   render() {
     const {
       store: {
@@ -163,14 +158,16 @@ export default class EventHistory extends Component {
     } = this.props;
 
     if (loading || !event) {
-      return <Loading text={messages.loadOracleMsg} event='true' />;
+      return <Loading text={messages.loadHistoryMsg} event='true' />;
     }
     return (
       <Fragment>
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer noSideBar>
-            {this.renderActiveEventContent()}
+            {!eventPage.isWithdrawing
+              ? this.renderActiveEventContent()
+              : this.renderWithdrawContent()}
             <HistoryTable />
           </ContentContainer>
         </PageContainer>
