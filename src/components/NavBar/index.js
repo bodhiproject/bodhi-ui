@@ -70,7 +70,7 @@ export default class NavBar extends Component {
         <DropdownMenu />
         <Collapse in={ui.searchBarMode}>
           <Toolbar className={classes.searchBarWrapper}>
-            <SearchField onSearchBarKeyDown={this.handleSearchBarKeyDown} />
+            {ui.searchBarMode && <SearchField onSearchBarKeyDown={this.handleSearchBarKeyDown} />}
           </Toolbar>
         </Collapse>
         <Collapse in={ui.searchBarMode && !isEmpty(search.phrase)}>

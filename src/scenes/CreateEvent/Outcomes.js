@@ -49,7 +49,7 @@ const AddButton = injectIntl(withStyles(styles)(({ intl, classes, ...props }) =>
   </Button>
 )));
 
-const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ outcome, createEvent, i, intl }) => (
+const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, outcome, createEvent, i, intl }) => (
   <div>
     <FormControl fullWidth>
       <TextField
@@ -59,6 +59,11 @@ const Outcome = injectIntl(withStyles(styles, { withTheme: true })(observer(({ o
         onBlur={() => createEvent.validateOutcome(i)}
         placeholder={`${intl.formatMessage(messages.createOutcomeNameMsg)} #${i + 1}`}
         error={Boolean(createEvent.error.outcomes[i])}
+        InputProps={{
+          classes: {
+            input: classes.textFieldInput,
+          },
+        }}
       />
       {createEvent.outcomes.length > MIN_OPTION_NUMBER && <RemoveIcon index={i} />}
       {!!createEvent.error.outcomes[i] && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.outcomes[i] })}</FormHelperText>}

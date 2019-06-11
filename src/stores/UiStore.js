@@ -81,8 +81,8 @@ export default class UiStore {
   @action
   enableSearchBarMode = () => {
     this.searchBarMode = true;
+    this.dropdownMenuOpen = false;
     document.body.style.overflow = 'hidden';
-    window.setTimeout(() => document.getElementById('searchEventInput').focus(), 0);
   }
 
   @action

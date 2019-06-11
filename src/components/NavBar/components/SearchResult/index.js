@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Grid } from '@material-ui/core';
 
 import styles from './styles';
 import Search from '../../../../scenes/Search';
@@ -13,9 +13,9 @@ export default class SearchResult extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.resultWrapper}>
-        <div className={classes.result}>
+        <Grid container className={classes.result} justify="center">
           <Search />
-        </div>
+        </Grid>
       </div>
     );
   }

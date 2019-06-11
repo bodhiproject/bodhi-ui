@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
 });
 
-const Title = withStyles(styles, { withTheme: true })(observer(({ store: { createEvent }, intl }) => (
+const Title = withStyles(styles, { withTheme: true })(observer(({ classes, store: { createEvent }, intl }) => (
   <Section title={messages.createTitleMsg}>
     <FormControl fullWidth>
       <TextField
@@ -31,6 +31,11 @@ const Title = withStyles(styles, { withTheme: true })(observer(({ store: { creat
         onBlur={createEvent.validateTitle}
         error={!!createEvent.error.title}
         fullWidth
+        InputProps={{
+          classes: {
+            input: classes.textFieldInput,
+          },
+        }}
       />
       {!!createEvent.error.title && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.title })}</FormHelperText>}
     </FormControl>

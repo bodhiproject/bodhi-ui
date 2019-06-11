@@ -165,7 +165,7 @@ export default class Search extends Component {
 
     return (
       <Fragment>
-        <div>
+        <Grid item xs={11}>
           {this.renderTabs()}
           <div className={classes.searchTabContainer}>
             <Grid container spacing={2}>
@@ -175,7 +175,7 @@ export default class Search extends Component {
               }
             </Grid>
           </div>
-        </div>
+        </Grid>
       </Fragment>
     );
   }

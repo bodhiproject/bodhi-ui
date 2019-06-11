@@ -15,15 +15,9 @@ export default (theme) => ({
     verticalAlign: 'middle',
   },
   searchBarInput: {
-    fontSize: theme.sizes.font.medium,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall,
-    },
+    height: '40px',
   },
   searchBarInputBase: {
-    height: '48px',
-    lineHeight: '48px',
-    padding: `0px ${theme.padding.space2X.px}`,
     borderLeft: `2px solid ${theme.palette.text.hint}`,
   },
   closeButton: {
