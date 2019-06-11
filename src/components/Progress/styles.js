@@ -2,8 +2,11 @@
 
 const styles = (theme) => ({
   invalid: {
-    '& > div': {
+    '& > div:nth-child(2)': {
       'background-color': theme.palette.error.dark,
+    },
+    '& > div:nth-child(3)': {
+      'background-color': '#e48181',
     },
   },
   root: {

@@ -37,7 +37,7 @@ export default class Option {
         ? event.consensusThreshold - decimalToSatoshi(this.amount) : undefined;
 
       const threshold = this.isPrevResult ? event.previousConsensusThreshold : event.consensusThreshold;
-      this.percent = this.isPrevResult ? _.round((event.previousRoundBets[i] / threshold) * 100) : _.round((this.amount / threshold) * 100);
+      this.percent = this.isPrevResult ? 100 : _.round((this.amount / threshold) * 100);
       if (this.isPrevResult) {
         this.userPercent = _.round((event.previousRoundUserBets[i] / event.previousRoundBets[i]) * this.percent);
       } else {
