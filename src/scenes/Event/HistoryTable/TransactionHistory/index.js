@@ -12,12 +12,14 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { history: { transactions, myTransactions, loadingMore, loadMoreTransactions, loadMoreMyTransactions } }, showMyTransactions } = this.props;
-
+    const { store: { history: { loadingMore } }, showMyTransactions } = this.props;
+    let { store: { history: { transactions, myTransactions } } } = this.props;
     let cards = [];
     if (!showMyTransactions) {
+      transactions = transactions.slice(0, 5);
       cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     } else {
+      myTransactions = myTransactions.slice(0, 5);
       cards = myTransactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     }
     return (
@@ -26,7 +28,7 @@ export default class TransactionHistory extends Component {
           <InfiniteScroll
             spacing={0}
             data={cards}
-            loadMore={(showMyTransactions && loadMoreMyTransactions) || loadMoreTransactions}
+            loadMore={() => {}}
             loadingMore={loadingMore}
           />
         ) : (
