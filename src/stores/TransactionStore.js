@@ -200,6 +200,8 @@ export default class TransactionStore {
         escrowAmt: amountSatoshi,
         gas: 3000000,
       });
+      // TODO: remove after mobile apps are done debugging
+      console.log('Returned to dapp after create event');
 
       if (!txid) {
         return undefined;
@@ -253,6 +255,8 @@ export default class TransactionStore {
         amount,
         gas: 300000,
       });
+      // TODO: remove after mobile apps are done debugging
+      console.log('Returned to dapp after bet');
       Object.assign(tx, { txid });
       if (txid) {
         // Create pending tx on server
