@@ -1,13 +1,41 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { TableBody, TableHead, TableRow, TableCell, Button } from '@material-ui/core';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { TableBody, TableRow, TableCell, Button, withStyles } from '@material-ui/core';
 import { Warning, ResponsiveTable } from 'components';
 import Icon from '../Icon';
 import Container from '../Container';
 import Label from '../Label';
 import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 import { toFixed } from '../../../helpers/utility';
+import styles from './styles';
+
+const messages = defineMessages({
+  escrow: {
+    id: 'str.escrow',
+    defaultMessage: 'Escrow',
+  },
+  totalBet: {
+    id: 'str.totalBet',
+    defaultMessage: 'Your Total Bets',
+  },
+  totalBetReturn: {
+    id: 'str.totalBetReturn',
+    defaultMessage: 'Your Total Bet Return',
+  },
+  totalVote: {
+    id: 'str.totalVote',
+    defaultMessage: 'Your Total Votes',
+  },
+  totalVoteReturn: {
+    id: 'str.totalVoteReturn',
+    defaultMessage: 'Your Total Vote Return',
+  },
+  totalReturn: {
+    id: 'str.totalReturn',
+    defaultMessage: 'Your Total Return',
+  },
+});
 
 const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddress }, wallet: { currentAddress } } }) => {
   if (currentAddress !== '') {
@@ -15,6 +43,7 @@ const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddress }, wall
       <WalletIcon />
       <WithdrawToLabel />
       <WithdrawList withdrawableAddress={withdrawableAddress} />
+      <WithdrawButton />
     </Container>);
   }
   return <Fragment />;
@@ -22,41 +51,17 @@ const WithdrawTo = observer(({ store: { eventPage: { withdrawableAddress }, wall
 
 const WalletIcon = () => <Icon type='wallet' />;
 
+const FormattedMessageFixed = (props) => <FormattedMessage {...props} />;
+
 const WithdrawToLabel = () => (
   <Label>
-    <FormattedMessage id="withdrawDetail.withdrawTo" defaultMessage="WITHDRAW TO">
+    <FormattedMessage id="withdrawDetail.detail" defaultMessage="Detail">
       {(txt) => i18nToUpperCase(txt)}
     </FormattedMessage>
   </Label>
 );
 
-const WithdrawList = ({ withdrawableAddress }) => (
-  <ResponsiveTable>
-    <TableHeader />
-    <TableBody>
-      <WinningWithdrawRow addr={withdrawableAddress} />
-    </TableBody>
-  </ResponsiveTable>
-);
-
-const TableHeader = () => (
-  <TableHead>
-    <TableRow>
-      <TableCell>
-        <FormattedMessage id="str.escrow" defaultMessage="Escrow" />
-      </TableCell>
-      <TableCell>
-        <FormattedMessage id="str.amount" defaultMessage="Amount" />
-      </TableCell>
-      <TableCell>
-        <FormattedMessage id="str.actions" defaultMessage="Actions" />
-      </TableCell>
-    </TableRow>
-  </TableHead>
-);
-
-
-const WinningWithdrawRow = inject('store')(observer(({ addr: { escrowAmount, nbotWinnings }, store, key }) => {
+const WithdrawButton = withStyles(styles)(inject('store')(observer(({ store, classes }) => {
   const { eventPage: { didWithdraw, pendingWithdraw, withdraw } } = store;
   const { id, message, warningType, disabled } = getActionButtonConfig(
     pendingWithdraw,
@@ -64,29 +69,58 @@ const WinningWithdrawRow = inject('store')(observer(({ addr: { escrowAmount, nbo
   );
 
   return (
-    <TableRow key={key}>
-      <TableCell>
-        {toFixed(escrowAmount)}
-      </TableCell>
-      <TableCell>
-        {toFixed(nbotWinnings)}
-      </TableCell>
-      <TableCell>
-        <Button
-          size="small"
-          variant="contained"
-          color="primary"
-          disabled={disabled}
-          onClick={() => withdraw()}
-        >
-          <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
-        </Button>
-        {disabled && <Warning id={id} message={message} className={warningType} />}
-      </TableCell>
+    <Fragment>
+      <Button
+        size="small"
+        variant="contained"
+        color="primary"
+        disabled={disabled}
+        className={classes.button}
+        onClick={withdraw}
+      >
+        <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
+      </Button>
+      {disabled && <Warning id={id} message={message} className={warningType} />}
+    </Fragment>
+  );
+})));
+
+
+const WithdrawList = ({
+  withdrawableAddress: {
+    escrow,
+    yourTotalBets,
+    yourTotalBetsReturn,
+    yourTotalBetsReturnRate,
+    yourTotalVotes,
+    yourTotalVotesReturn,
+    yourTotalVotesReturnRate,
+    yourTotalReturn,
+    yourTotalReturnRate,
+  },
+}) => (
+  <ResponsiveTable>
+    <TableBody>
+      <CustomTableRow text='escrow' value={escrow} />
+      <CustomTableRow text='totalBet' value={yourTotalBets} />
+      <CustomTableRow text='totalBetReturn' value={yourTotalBetsReturn} percent={yourTotalBetsReturnRate} />
+      <CustomTableRow text='totalVote' value={yourTotalVotes} />
+      <CustomTableRow text='totalVoteReturn' value={yourTotalVotesReturn} percent={yourTotalVotesReturnRate} />
+      <CustomTableRow text='totalReturn' value={yourTotalReturn} percent={yourTotalReturnRate} />
+    </TableBody>
+  </ResponsiveTable>
+);
+
+
+const CustomTableRow = withStyles(styles)(({ text, value, percent, classes }) => {
+  if (!value) return null;
+  return (
+    <TableRow className={classes.root}>
+      <TableCell className={classes.root}><FormattedMessageFixed id={messages[text].id} defaultMessage={messages[text].defaultMessage} /></TableCell>
+      <TableCell className={classes.root}>{`${toFixed(value)} ${percent ? `(${toFixed(percent)}%)` : ''}`}</TableCell>
     </TableRow>
   );
-}));
-
+});
 
 const getActionButtonConfig = (pendingWithdraw, didWithdraw) => {
   // Already withdrawn with this address

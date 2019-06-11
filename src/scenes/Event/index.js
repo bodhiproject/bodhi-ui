@@ -19,7 +19,6 @@ import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from './Option';
 import WinningOutcome from './WinningOutcome';
-import Reward from './Reward';
 import WithdrawTo from './WithdrawTo';
 import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
@@ -254,11 +253,11 @@ export default class EventPage extends Component {
       store: {
         eventPage,
         eventPage: { event, nbotWinnings },
-        wallet: { currentWalletAddress },
+        wallet: { currentAddress },
       },
     } = this.props;
     const allowWithdraw = Boolean(nbotWinnings)
-      || event.ownerAddress === currentWalletAddress;
+    || event.ownerAddress === currentAddress;
 
     return (
       <Card>
@@ -268,7 +267,6 @@ export default class EventPage extends Component {
           <WinningOutcome eventPage={eventPage} />
           {allowWithdraw && (
             <Fragment>
-              <Reward event={event} eventPage={eventPage} />
               <WithdrawTo />
             </Fragment>
           )}

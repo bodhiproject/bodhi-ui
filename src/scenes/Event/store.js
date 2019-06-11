@@ -21,8 +21,10 @@ const INIT = {
   event: undefined,
   address: '',
   escrowAmount: 0,
-  resultBets: [],
+  totalBets: [],
   betterBets: [],
+  totalVotes: [],
+  betterVotes: [],
   totalInvestment: 0,
   returnRate: 0,
   profitOrLoss: 0,
@@ -47,8 +49,10 @@ export default class EventStore {
   @observable loading = INIT.loading
   @observable event = INIT.event
   @observable address = INIT.address
-  @observable resultBets = INIT.resultBets
+  @observable totalBets = INIT.totalBets
   @observable betterBets = INIT.betterBets
+  @observable totalVotes = INIT.totalVotes
+  @observable betterVotes = INIT.betterVotes
   @observable leaderboardBets = INIT.leaderboardBets
   @observable nbotWinnings = INIT.nbotWinnings
   @observable amount = INIT.amount // Input amount to bet, vote, etc
@@ -97,9 +101,49 @@ export default class EventStore {
 
   @computed get withdrawableAddress() {
     const { currentAddress } = this.app.wallet;
+    const resultIndex = this.event && this.event.currentResultIndex;
+    const profitCut = this.event && this.event.arbitrationRewardPercentage;
+    if (this.betterBets.length === 0 ||
+      this.betterVotes.length === 0 ||
+      this.totalBets.length === 0 ||
+      this.totalVotes.length === 0) return {};
+    const betterBetsSum = sum(this.betterBets);
+    const betterVotesSum = sum(this.betterVotes);
+    const totalBetsSum = sum(this.totalBets);
+    const totalVotesSum = sum(this.totalVotes);
+    let totalWinningBets;
+    let totalLosingBets;
+    let arbitrationShare;
+    let betShare;
+    let betterBetsReturn;
+    if (resultIndex === 0) {
+      betterBetsReturn = betterBetsSum;
+      arbitrationShare = 0;
+    } else {
+      totalWinningBets = this.totalBets[resultIndex];
+      totalLosingBets = totalBetsSum - totalWinningBets;
+      arbitrationShare = (totalLosingBets * profitCut) / 100;
+      betShare = totalLosingBets - arbitrationShare;
+      betterBetsReturn = this.betterBets[resultIndex] + ((betShare * this.betterBets[resultIndex]) / this.totalBets[resultIndex]) || 0;
+    }
+
+    const totalWinningVotes = this.totalVotes[resultIndex];
+    const totalLosingVotes = totalVotesSum - totalWinningVotes;
+    const totalVotesShare = totalLosingVotes + arbitrationShare;
+    const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]) || 0;
+    const totalInvestment = betterBetsSum + betterVotesSum + this.escrowAmount;
     return {
       address: currentAddress,
-      nbotWinnings: this.nbotWinnings,
+      escrow: this.escrowAmount,
+      yourTotalBets: betterBetsSum,
+      yourTotalBetsReturn: betterBetsReturn,
+      yourTotalBetsReturnRate: (betterBetsReturn / betterBetsSum) * 100,
+      yourTotalVotes: betterVotesSum,
+      yourTotalVotesReturn: betterVotesReturn,
+      yourTotalVotesReturnRate: (betterVotesReturn / betterVotesSum) * 100,
+      yourTotalReturn: betterBetsReturn + betterVotesReturn + this.escrowAmount,
+      yourWinningInvestment: this.betterBets[resultIndex] + this.betterVotes[resultIndex],
+      yourTotalReturnRate: ((betterBetsReturn + betterVotesReturn + this.escrowAmount) / totalInvestment) * 100,
       escrowAmount: this.event.ownerAddress === currentAddress ? this.escrowAmount : 0,
     };
   }
@@ -132,8 +176,12 @@ export default class EventStore {
     // Wallet addresses list changed
     reaction(
       () => toJS(this.app.wallet.addresses),
-      () => {
-        if (this.event && this.event.status === WITHDRAWING) this.calculateWinnings();
+      async () => {
+        if (this.event && this.event.status === WITHDRAWING) {
+          await this.queryTotalResultBets();
+          await this.calculateWinnings();
+          await this.getDidWithdraw();
+        }
       }
     );
 
@@ -289,8 +337,11 @@ export default class EventStore {
         betterAddress: this.app.wallet.currentAddress,
       },
     });
-    this.resultBets = res.resultBets || [];
+
+    this.totalBets = res.totalBets || [];
     this.betterBets = res.betterBets || [];
+    this.totalVotes = res.totalVotes || [];
+    this.betterVotes = res.betterVotes || [];
     this.totalInvestment = sum(this.betterBets);
   }
 

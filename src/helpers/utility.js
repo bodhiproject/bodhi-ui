@@ -234,7 +234,7 @@ export function toFixed(num) {
   let ret = splitArray[0];
   if (splitArray.length > 1) {
     splitArray[1] = splitArray[1].substring(0, 4);
-    splitArray[1].replace(/0+$/, '');
+    splitArray[1] = splitArray[1].replace(/0+$/, '');
     if (splitArray[1].length > 0) {
       ret = `${ret}.${splitArray[1]}`;
     }

@@ -26,18 +26,18 @@ const WinningResult = ({ intl, eventPage }) => (
   </Typography>
 );
 
-const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage } }) => (
+const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage, eventPage: { withdrawableAddress } } }) => (
   <Container>
     <WinningIcon />
     <WinningOutcomeTitle />
     <WinningResult intl={intl} eventPage={eventPage} />
-    { eventPage.nbotWinnings ? (
+    { withdrawableAddress.yourWinningInvestment ? (
       <Typography variant="caption">
         <FormattedMessage
           id="withdrawDetail.youBetYouVote"
           defaultMessage="You bet {nbot} NBOT."
           values={{
-            nbot: toFixed(eventPage.nbotWinnings),
+            nbot: toFixed(withdrawableAddress.yourWinningInvestment),
           }}
         />
       </Typography>

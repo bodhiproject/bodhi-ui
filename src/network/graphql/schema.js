@@ -188,8 +188,10 @@ export const SYNC_INFO = `
 `;
 
 export const TOTAL_RESULT_BETS = `
-  resultBets
+  totalBets
   betterBets
+  totalVotes
+  betterVotes
 `;
 
 export const ALL_STATS = `
