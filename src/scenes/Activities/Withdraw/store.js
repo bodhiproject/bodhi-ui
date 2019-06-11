@@ -85,7 +85,7 @@ export default class {
 
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING };
       const filter = { withdrawerAddress: account, version: eventVersion };
-      const res = await withdrawableEvents(graphqlClient, { filter, orderBy, limit, skip });
+      const res = await withdrawableEvents(graphqlClient, { filter, orderBy, limit, skip, includeRoundBets: true });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
       return res.items;
