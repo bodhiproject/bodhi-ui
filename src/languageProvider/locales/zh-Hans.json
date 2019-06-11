@@ -44,7 +44,7 @@
   "create.addOutcome": "添加结果",
   "create.alertFail": "啊，有些错误发生",
   "create.alertSuc": "这笔交易已经被广播到区块链. \n 您可以通过以下链接查看详细信息 ",
-  "create.arbitrationReward": "仲裁奖励",
+  "create.arbitrationReward": "仲裁抽成",
   "create.arbitrationTime": "仲裁时间",
   "create.betEndBlock": "投注结束区块数",
   "create.betEndBlocksExtra": "用户投注结束时间",
