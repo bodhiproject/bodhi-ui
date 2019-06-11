@@ -1,46 +1,36 @@
-/* eslint-disable no-unused-vars */
-const HOSTNAME_MAINNET = 'puti.io';
-const HOSTNAME_TESTNET = 'dev.puti.io';
-const HOSTNAME_REGTEST = 'test.puti.io';
+const SSL = process.env.SSL === 'true';
+const HOSTNAME = process.env.API_HOSTNAME;
+const HTTP_ROUTE = `${SSL ? 'https' : 'http'}://${HOSTNAME}`;
+const WS_ROUTE = `${SSL ? 'wss' : 'ws'}://${HOSTNAME}/graphql`;
+const EXPLORER_URL = process.env.NETWORK === 'mainnet'
+  ? 'https://explorer.nakachain.org'
+  : 'https://testnet.explorer.nakachain.org';
 
-const PORT_MAINNET = 8989;
-const PORT_TESTNET = 6767;
-const PORT_REGTEST = 5555;
-/* eslint-enable no-unused-vars */
+export const GRAPHQL = {
+  HTTP: `${HTTP_ROUTE}/graphql`,
+  SUBS: WS_ROUTE,
+};
 
-const PORT = process.env.API_PORT ? Number(process.env.API_PORT) : PORT_REGTEST;
-const HOSTNAME = process.env.API_HOSTNAME ? process.env.API_HOSTNAME : HOSTNAME_REGTEST;
-const HTTP_ROUTE = `${process.env.PROTOCOL_HTTP || 'https'}://${HOSTNAME}:${PORT}`;
-const WS_ROUTE = `${process.env.PROTOCOL_WS || 'wss'}://${HOSTNAME}:${PORT}/graphql`;
+export const API = {
+  EVENT_FACTORY_ADDRESS: `${HTTP_ROUTE}/config-manager/event-factory-address`,
+  EVENT_ESCROW_AMOUNT: `${HTTP_ROUTE}/config-manager/event-escrow-amount`,
+  ARBITRATION_LENGTH: `${HTTP_ROUTE}/config-manager/arbitration-length`,
+  STARTING_CONSENSUS_THRESHOLD: `${HTTP_ROUTE}/config-manager/starting-consensus-threshold`,
+  THRESHOLD_PERCENT_INCREASE: `${HTTP_ROUTE}/config-manager/threshold-percent-increase`,
+  CALCULATE_WINNINGS: `${HTTP_ROUTE}/multiple-results-event/calculate-winnings`,
+  VERSION: `${HTTP_ROUTE}/multiple-results-event/version`,
+  ROUND: `${HTTP_ROUTE}/multiple-results-event/round`,
+  RESULT_INDEX: `${HTTP_ROUTE}/multiple-results-event/result-index`,
+  CONSENSUS_THRESHOLD: `${HTTP_ROUTE}/multiple-results-event/consensus-threshold`,
+  ARBITRATION_END_TIME: `${HTTP_ROUTE}/multiple-results-event/arbitration-end-time`,
+  EVENT_METADATA: `${HTTP_ROUTE}/multiple-results-event/event-metadata`,
+  CENTRALIZED_METADATA: `${HTTP_ROUTE}/multiple-results-event/centralized-metadata`,
+  CONFIG_METADATA: `${HTTP_ROUTE}/multiple-results-event/config-metadata`,
+  TOTAL_BETS: `${HTTP_ROUTE}/multiple-results-event/total-bets`,
+  DID_WITHDRAW: `${HTTP_ROUTE}/multiple-results-event/did-withdraw`,
+  DID_WITHDRAW_ESCROW: `${HTTP_ROUTE}/multiple-results-event/did-withdraw-escrow`,
+};
 
-const BASE_QTUM_WEB = `https://${HOSTNAME === HOSTNAME_MAINNET ? 'explorer' : 'testnet'}.qtum.org`;
-const BASE_INSIGHT = `${BASE_QTUM_WEB}/insight-api`;
-
-export default {
-  graphql: {
-    http: `${HTTP_ROUTE}/graphql`,
-    subs: WS_ROUTE,
-  },
-  api: {
-    allowance: `${HTTP_ROUTE}/allowance`,
-    botBalance: `${HTTP_ROUTE}/bot-balance`,
-    eventEscrowAmount: `${HTTP_ROUTE}/event-escrow-amount`,
-    winnings: `${HTTP_ROUTE}/winnings`,
-    betBalances: `${HTTP_ROUTE}/bet-balances`,
-    voteBalances: `${HTTP_ROUTE}/vote-balances`,
-    transactionCost: `${HTTP_ROUTE}/transaction-cost`,
-    validateAddress: `${HTTP_ROUTE}/validate-address`,
-    getWalletInfo: `${HTTP_ROUTE}/get-wallet-info`,
-    unlockWallet: `${HTTP_ROUTE}/wallet-passphrase`,
-    encryptWallet: `${HTTP_ROUTE}/encrypt-wallet`,
-    backupWallet: `${HTTP_ROUTE}/backup-wallet`,
-    importWallet: `${HTTP_ROUTE}/import-wallet`,
-    walletPassphraseChange: `${HTTP_ROUTE}/wallet-passphrase-change`,
-  },
-  insight: {
-    totals: `${BASE_INSIGHT}/statistics/total`,
-  },
-  explorer: {
-    tx: process.env.LOCAL_WALLET === 'true' ? 'https://qtumhost/tx' : `${BASE_QTUM_WEB}/tx`,
-  },
+export const EXPLORER = {
+  TX: `${EXPLORER_URL}/tx`,
 };

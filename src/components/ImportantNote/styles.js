@@ -9,6 +9,7 @@ const styles = (theme) => ({
     width: theme.sizes.icon.large,
     height: theme.sizes.icon.large,
     backgroundColor: 'transparent',
+    padding: 0,
     '&:hover': {
       backgroundColor: 'transparent',
     },
@@ -22,6 +23,7 @@ const styles = (theme) => ({
     fontSize: theme.sizes.font.small,
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.primary,
+    whiteSpace: 'pre-line',
   },
   message: {
     fontSize: theme.sizes.font.xSmall,

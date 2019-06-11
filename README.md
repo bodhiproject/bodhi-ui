@@ -33,8 +33,6 @@ $ npm install
 ### Development Environment
 To run the development server, run the corresponding run script and the API will point to the remote server with the correct port. After compilation, it will show success commands & automatically redirect to the browser. Any code changes will be observed and will hot reload.
 ```
-// Accepted Flags
---localwallet   // Change compatibility for tx signing with a local wallet program, eg. Qtum Wallet
 
 // Mainnet chain
 $ yarn start:mainnet
@@ -60,7 +58,6 @@ To create an optimized production build of the app, you need to run a build comm
 ```
 // Accepted Flags
 --chain=        // Sets the chain env variables. One of: mainnet, testnet, regtest
---localwallet   // Change compatibility for tx signing with a local wallet program, eg. Qtum Wallet
 --output=       // Sets the output folder of the build files
 
 // Mainnet chain

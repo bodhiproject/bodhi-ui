@@ -1,11 +1,16 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { CssBaseline, withStyles } from '@material-ui/core';
-import { BottomBar, GlobalDialog, ExecuteTxDialog, GlobalSnackbar, InstallQryptoPopover, TxSentDialog, PendingTxsSnackbar, TutorialCarouselDialog, WalletUnlockDialog } from 'components';
+import {
+  BottomBar,
+  GlobalDialog,
+  GlobalSnackbar,
+  InstallNakaWalletPopover,
+  TutorialCarouselDialog,
+} from 'components';
 
 import styles from './styles';
 import AppRouter from './router';
-import CreateEventFormDialog from '../CreateEvent';
 
 const App = observer(({ classes, match: { url }, store }) => (
   <div className={classes.root}>
@@ -18,13 +23,8 @@ const App = observer(({ classes, match: { url }, store }) => (
 
         <TutorialCarouselDialog />
         <GlobalSnackbar />
-        <PendingTxsSnackbar />
         <GlobalDialog />
-        <ExecuteTxDialog />
-        <TxSentDialog />
-        <CreateEventFormDialog />
-        <InstallQryptoPopover />
-        <WalletUnlockDialog />
+        <InstallNakaWalletPopover />
       </Fragment>
     )}
     <CssBaseline />

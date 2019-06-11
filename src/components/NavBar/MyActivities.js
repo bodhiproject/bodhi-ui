@@ -11,7 +11,7 @@ import NavLink from './components/NavLink';
 import ActionableBadge from './components/ActionableBadge';
 
 const MyActivities = ({ classes, store: { ui } }) => {
-  const selected = includes([Routes.SET, Routes.FINALIZE, Routes.WITHDRAW, Routes.ACTIVITY_HISTORY], ui.location)
+  const selected = includes([Routes.SET, Routes.WITHDRAW, Routes.ACTIVITY_HISTORY], ui.location)
     ? 'selected'
     : '';
 

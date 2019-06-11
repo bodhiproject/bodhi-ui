@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unused-state */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import { inject, observer } from 'mobx-react';
-import { Paper, Grid, Typography, withStyles } from '@material-ui/core';
-import { CheckCircle as CheckCircleIcon, RemoveCircle as RemoveCircleIcon } from '@material-ui/icons';
+import { Box, Paper, Typography, withStyles } from '@material-ui/core';
+import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Token } from 'constants';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-
 import styles from './styles';
 
 
@@ -21,62 +21,81 @@ export default class BottomBar extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { syncBlockTime, syncBlockNum, peerNodeCount, online } = this.props.store.global;
+    const {
+      classes,
+      store: {
+        global: { syncBlockTime, online },
+        naka: { loggedIn },
+        wallet: { lastAddressWithdrawLimit },
+      },
+    } = this.props;
+
     return (
-      <Paper className={classes.bottomBarWrapper}>
-        <NetworkConnection peerNodeCount={peerNodeCount} online={online} />
-        {syncBlockTime && <BlockInfo blockNum={syncBlockNum} blockTime={syncBlockTime} />}
+      <Paper className={classes.paper}>
+        <Box display="flex" justifyContent="flex-start">
+          <NetworkConnection online={online} loggedIn={loggedIn} />
+        </Box>
+        <Box display="flex" justifyContent="flex-end">
+          <Info blockTime={syncBlockTime} lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
+        </Box>
       </Paper>
     );
   }
 }
 
-const BlockInfo = withStyles(styles)(({ classes, blockNum, blockTime }) => (
-  <Grid container item xs={12} md={7} className={classes.bottomBarBlockInfoWrapper}>
-    <Grid item xs={12} sm={6}>
-      <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockNum}><FormattedMessage id="bottomBar.blockNum" defaultMessage="Current Block Number" />{`: ${blockNum}`}</span>
+const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => (
+  <div>
+    <div className={classes.statusContainer}>
+      {online
+        ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+        : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
+      }
+      <Typography variant="body2" className={cx(classes.bottomBarTxt, 'network')}>
+        <FormattedMessage id="bottomBar.network" defaultMessage="Network" />
       </Typography>
-    </Grid>
-    <Grid item xs={12} sm={6}>
+    </div>
+    <div className={classes.statusContainer}>
+      {loggedIn
+        ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+        : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
+      }
       <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span className={classes.bottomBarBlockTime}><FormattedMessage id="bottomBar.blockTime" defaultMessage="Current Block Time" />: {blockTime ? moment.unix(blockTime).format('LLL') : ''}</span>
+        <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
       </Typography>
-    </Grid>
-  </Grid>
+    </div>
+  </div>
 ));
 
-const NetworkConnection = withStyles(styles)(({ classes, peerNodeCount, online }) => (
-  <Grid container item xs={12} md={6} className={classes.bottomBarNetworkWrapper}>
-    {online ? (
-      <Fragment>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <CheckCircleIcon className={cx(classes.bottomBarNetworkIcon, 'online')} />
-            <FormattedMessage id="bottomBar.online" defaultMessage="Online" />:
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            {`${peerNodeCount} `}
-            <FormattedMessage id="bottomBar.peers" defaultMessage="peers" />
-          </Typography>
-        </Grid>
-      </Fragment>
-    ) : (
-      <Fragment>
-        <Grid item xs={12} sm={2}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <RemoveCircleIcon className={cx(classes.bottomBarNetworkIcon, 'offline')} />
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" className={classes.bottomBarTxt}>
-            <FormattedMessage id="bottomBar.offline" defaultMessage="Offline" />
-          </Typography>
-        </Grid>
-      </Fragment>
-    )}
-  </Grid>
+const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime }) => (
+  <div>
+    <div className={classes.blockItemContainer}>
+      <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
+        <span>
+          <FormattedMessage
+            id="bottomBar.blockTime"
+            defaultMessage="Current Block Time"
+          />
+          {`: ${getTime(blockTime)}`}
+        </span>
+      </Typography>
+    </div>
+    <div className={classes.blockItemContainer}>
+      <Typography variant="body2" className={classes.bottomBarTxt}>
+        <span>
+          <FormattedMessage
+            id="bottomBar.nbotBalance"
+            defaultMessage="Balance"
+          />
+          {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2)} ${Token.NBOT}` : ''}`}
+        </span>
+      </Typography>
+    </div>
+  </div>
 ));
+
+const getTime = (blockTime) => {
+  if (blockTime) {
+    return moment.unix(blockTime).format('LL');
+  }
+  return '';
+};

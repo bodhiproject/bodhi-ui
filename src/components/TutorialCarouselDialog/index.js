@@ -11,7 +11,6 @@ import {
 import cx from 'classnames';
 import { injectIntl, defineMessages, intlShape } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-
 import styles from './styles';
 import Tutorial0 from './components/tutorial0';
 import Tutorial1 from './components/tutorial1';
@@ -21,6 +20,7 @@ import Tutorial4 from './components/tutorial4';
 import Tutorial5 from './components/tutorial5';
 import Tutorial6 from './components/tutorial6';
 import TermsAndConditions from './components/termsAndConditions';
+import { STORAGE_KEY } from '../../config/app';
 
 const messages = defineMessages({
   iAcceptLetsStart: {
@@ -50,7 +50,7 @@ export default class TutorialCarouselDialog extends Component {
 
   state = {
     currentIndex: 0,
-    openTutorial: !JSON.parse(localStorage.getItem('tutorialDisplayed')),
+    openTutorial: !JSON.parse(localStorage.getItem(STORAGE_KEY.TUTORIAL_DISPLAYED)),
   }
 
   components = [Tutorial0, Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6, TermsAndConditions]
@@ -75,7 +75,7 @@ export default class TutorialCarouselDialog extends Component {
 
   closeTutorial = () => {
     this.setState({ openTutorial: false });
-    localStorage.setItem('tutorialDisplayed', true);
+    localStorage.setItem(STORAGE_KEY.TUTORIAL_DISPLAYED, true);
   }
 
   render() {
@@ -94,9 +94,9 @@ export default class TutorialCarouselDialog extends Component {
             onChange={(e) => ui.changeLocale(e.target.value)}
             disableUnderline
           >
-            <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+            <MenuItem value="en-US"><img src='/images/us.svg' alt='cup' className={classes.flag} />English</MenuItem>
+            <MenuItem value="zh-Hans-CN"><img src='/images/china.svg' alt='cup' className={classes.flag} />中文</MenuItem>
+            <MenuItem value="ko-KR"><img src='/images/korea.svg' alt='cup' className={classes.flag} />한국어</MenuItem>
           </Select>
           <div className={classes.contentWrapper}>
             <div className={classes.tutorialDialogContentWrapper}>

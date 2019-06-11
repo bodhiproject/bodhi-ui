@@ -1,382 +1,407 @@
-import { isArray, isString, forEach, isEmpty, each, isFinite, map } from 'lodash';
-import gql from 'graphql-tag';
-import { Transaction, Oracle, Topic, SyncInfo, Vote, ResultSet, Withdraw } from 'models';
+import { gql } from 'apollo-boost';
+import { map } from 'lodash';
+import {
+  MultipleResultsEvent,
+  Bet,
+  ResultSet,
+  Withdraw,
+  Transaction,
+  SyncInfo,
+  TotalResultBets,
+} from 'models';
+import {
+  PAGINATED_EVENTS,
+  MULTIPLE_RESULTS_EVENT,
+  PAGINATED_BETS,
+  PAGINATED_RESULT_SETS,
+  PAGINATED_WITHDRAWS,
+  PAGINATED_TRANSACTIONS,
+  SYNC_INFO,
+  TOTAL_RESULT_BETS,
+  ALL_STATS,
+  PAGINATED_MOST_BETS,
+  BIGGEST_WINNER,
+} from './schema';
 
-import client from './';
-import { TYPE, isValidEnum, getTypeDef } from './schema';
-import { isProduction } from '../../config/app';
+const QUERY_EVENTS = 'events';
+const QUERY_SEARCH_EVENTS = 'searchEvents';
+const QUERY_WITHDRAWABLE_EVENTS = 'withdrawableEvents';
+const QUERY_BETS = 'bets';
+const QUERY_RESULT_SETS = 'resultSets';
+const QUERY_WITHDRAWS = 'withdraws';
+const QUERY_TRANSACTIONS = 'transactions';
+const QUERY_SYNC_INFO = 'syncInfo';
+const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
+const QUERY_ALL_STATS = 'allStats';
+const QUERY_MOST_BETS = 'mostBets';
+const QUERY_BIGGEST_WINNERS = 'biggestWinners';
+/**
+ * Example query arguments:
+ * - filter: { status: 'BETTING' }
+ * - orderBy: [{ field: 'blockNum', direction: 'ASC' }]
+ * - limit: 100
+ * - skip: 50
+ * - searchPhrase: 'How much is Apple going to be worth in 2019'
+ * - pendingTxsAddress: '0xd5d087daabc73fc6cc5d9c1131b93acbd53a2428'
+ */
+const QUERIES = {
+  events: gql`
+    query(
+      $filter: EventFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+      $pendingTxsAddress: String
+      $includeRoundBets: Boolean
+      $roundBetsAddress: String
+      $includeBetRoundBets: Boolean
+    ) {
+      events(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+        pendingTxsAddress: $pendingTxsAddress
+        includeRoundBets: $includeRoundBets
+        roundBetsAddress: $roundBetsAddress
+        includeBetRoundBets: $includeBetRoundBets
+      ) {
+        ${PAGINATED_EVENTS}
+      }
+    }
+  `,
 
-if (!isProduction()) {
-  window.queries = '';
-}
+  searchEvents: gql`
+    query(
+      $filter: SearchEventsFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+      $searchPhrase: String
+    ) {
+      searchEvents(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+        searchPhrase: $searchPhrase
+      ) {
+        ${MULTIPLE_RESULTS_EVENT}
+      }
+    }
+  `,
+
+  withdrawableEvents: gql`
+    query(
+      $filter: WithdrawableEventFilter!
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      withdrawableEvents(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_EVENTS}
+      }
+    }
+  `,
+
+  bets: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      bets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_BETS}
+      }
+    }
+  `,
+
+  resultSets: gql`
+    query(
+      $filter: ResultSetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      resultSets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_RESULT_SETS}
+      }
+    }
+  `,
+
+  withdraws: gql`
+    query(
+      $filter: WithdrawFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      withdraws(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_WITHDRAWS}
+      }
+    }
+  `,
+
+  transactions: gql`
+    query(
+      $filter: TransactionFilter
+      $limit: Int
+      $skip: Int
+      $transactionSkips: TransactionSkips
+    ) {
+      transactions(
+        filter: $filter
+        limit: $limit
+        skip: $skip
+        transactionSkips: $transactionSkips
+      ) {
+        ${PAGINATED_TRANSACTIONS}
+      }
+    }
+  `,
+
+  syncInfo: gql`
+    query {
+      syncInfo {
+        ${SYNC_INFO}
+      }
+    }
+  `,
+
+  totalResultBets: gql`
+    query(
+      $filter: TotalResultBetsFilter
+    ) {
+      totalResultBets(
+        filter: $filter
+      ) {
+        ${TOTAL_RESULT_BETS}
+      }
+    }
+  `,
+
+  allStats: gql`
+    query {
+      allStats {
+        ${ALL_STATS}
+      }
+    }
+  `,
+
+  mostBets: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      mostBets(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_MOST_BETS}
+      }
+    }
+  `,
+
+  biggestWinners: gql`
+    query(
+      $filter: BetFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      biggestWinners(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${BIGGEST_WINNER}
+      }
+    }
+  `,
+};
 
 class GraphQuery {
-  constructor(queryName, type) {
+  constructor(client, queryName, args) {
+    this.client = client;
     this.queryName = queryName;
-    this.type = type;
-    this.filters = undefined;
-    this.orderBy = undefined;
-    this.params = {};
-    this.searchPhrase = undefined;
-  }
-
-  setFilters(filters) {
-    this.filters = filters;
-  }
-
-  setOrderBy(orderBy) {
-    this.orderBy = orderBy;
-  }
-
-  setSearchPhrase(phrase) {
-    this.searchPhrase = phrase;
-  }
-
-  addParam(key, value) {
-    this.params[key] = value;
-  }
-
-  formatObject(obj) {
-    const str = Object
-      .keys(obj)
-      .map((key) => {
-        const value = obj[key];
-        if (key === 'language') return ''; // remove this if we need filter based on language in the future
-        if (isArray(value)) return `${key}: [${value.map((val) => JSON.stringify(val))}]`;
-        if (isValidEnum(key, value) || !isString(value)) {
-          // Enums require values without quotes
-          return `${key}: ${value}`;
-        }
-        return `${key}: ${JSON.stringify(value)}`;
-      })
-      .join(', ');
-    return `{ ${str} }`;
-  }
-
-  getFilterString() {
-    let filterStr = '';
-    if (this.filters) {
-      // Create entire string for OR: [] as objects
-      forEach(this.filters, (obj) => {
-        if (!isEmpty(filterStr)) {
-          filterStr = filterStr.concat(', ');
-        }
-        filterStr = filterStr.concat(this.formatObject(obj));
-      });
-      filterStr = `
-      filter: {
-        OR: [
-          ${filterStr}
-        ]
-      }
-      `;
-    }
-    return filterStr;
-  }
-
-  getOrderByString() {
-    let orderByStr = '';
-    if (this.orderBy) {
-      orderByStr = this.formatObject(this.orderBy);
-    }
-    return isEmpty(orderByStr) ? '' : `orderBy: ${orderByStr}`;
-  }
-
-  getSearchPhraseString() {
-    let phraseStr = '';
-    if (this.searchPhrase) {
-      phraseStr = JSON.stringify(this.searchPhrase);
-    }
-    return isEmpty(phraseStr) ? '' : `searchPhrase: ${phraseStr}`;
-  }
-
-  getParamsString() {
-    let str = '';
-    const keys = Object.keys(this.params);
-    if (keys.length > 0) {
-      each(keys, (key) => {
-        if (!isEmpty(str)) {
-          str = str.concat(', ');
-        }
-
-        str = str.concat(`${key}: ${this.params[key]}`);
-      });
-    }
-    return str;
-  }
-
-  build() {
-    const filterStr = this.getFilterString();
-    const orderByStr = this.getOrderByString();
-    const searchPhraseStr = this.getSearchPhraseString();
-    const paramsStr = this.getParamsString();
-    const needsParentheses = !isEmpty(filterStr) || !isEmpty(orderByStr) || !isEmpty(paramsStr) || !isEmpty(searchPhraseStr);
-
-    const parenthesesOpen = needsParentheses ? '(' : '';
-    const parenthesesClose = needsParentheses ? ')' : '';
-    const query = `
-      query {
-        ${this.queryName}${parenthesesOpen}
-          ${searchPhraseStr}
-          ${filterStr}
-          ${orderByStr}
-          ${paramsStr}
-        ${parenthesesClose} {
-          ${getTypeDef(this.type)}
-        }
-      }
-    `;
-    return query;
+    this.query = QUERIES[queryName];
+    this.args = args;
   }
 
   async execute() {
-    const query = this.build();
-    // Post query to window
-    if (!isProduction()) {
-      window.queries += `\n${query}`;
-    }
-
-    const res = await client.query({
-      query: gql`${query}`,
-      fetchPolicy: 'network-only',
+    const res = await this.client.query({
+      query: this.query,
+      variables: this.args,
+      fetchPolicy: 'no-cache', // for fixing transactions query
     });
     return res.data[this.queryName];
   }
 }
 
-/*
-* Queries allTopics from GraphQL with optional filters.
-* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
-* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'ASC' }
-*/
-export async function queryAllTopics(app, filters, orderBy, limit, skip) {
-  const request = new GraphQuery('allTopics', TYPE.paginatedTopics);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  if (isFinite(limit) && limit > 0) {
-    request.addParam('limit', limit);
-  }
-  if (isFinite(skip) && skip >= 0) {
-    request.addParam('skip', skip);
-  }
-  const result = await request.execute();
-
-  return {
-    totalCount: result.totalCount,
-    topics: map(result.topics, (topic) => new Topic(topic, app)),
-    pageInfo: result.pageInfo,
-  };
-}
-
-/*
-* Queries allOracles from GraphQL with optional filters.
-* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
-* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
-*/
-export async function queryAllOracles(app, filters, orderBy, limit, skip) {
-  const request = new GraphQuery('allOracles', TYPE.paginatedOracles);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  if (isFinite(limit) && limit > 0) {
-    request.addParam('limit', limit);
-  }
-  if (isFinite(skip) && skip >= 0) {
-    request.addParam('skip', skip);
-  }
-  const result = await request.execute();
-  return {
-    totalCount: result.totalCount,
-    oracles: map(result.oracles, (oracle) => new Oracle(oracle, app)),
-    pageInfo: result.pageInfo,
-  };
-}
-
-/*
-* Queries allVotes from GraphQL with optional filters.
-* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
-* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
-*/
-export async function queryAllVotes(filters, orderBy) {
-  const request = new GraphQuery('allVotes', TYPE.vote);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  const result = await request.execute();
-  return map(result, (vote) => new Vote(vote));
-}
-
-/*
-* Queries allVotes from GraphQL with optional filters.
-* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
-* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
-*/
-export async function queryMostVotes(filters, orderBy, limit, skip) {
-  const request = new GraphQuery('mostVotes', TYPE.paginatedAccumulatedVotes);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  if (isFinite(limit) && limit > 0) {
-    request.addParam('limit', limit);
-  }
-  if (isFinite(skip) && skip >= 0) {
-    request.addParam('skip', skip);
-  }
-  const result = await request.execute();
-  return result;
-}
-
-export async function queryWinners(filters, orderBy, limit, skip) {
-  const request = new GraphQuery('winners', TYPE.winners);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  if (isFinite(limit) && limit > 0) {
-    request.addParam('limit', limit);
-  }
-  if (isFinite(skip) && skip >= 0) {
-    request.addParam('skip', skip);
-  }
-  const result = await request.execute();
-  return result;
-}
-
-export async function queryLeaderboardStats() {
-  const request = new GraphQuery('leaderboardStats', TYPE.leaderboardStats);
-  const result = await request.execute();
-  return result;
-}
-
-/*
-* Queries allTransactions from GraphQL with optional filters.
-* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
-* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
-*/
-export async function queryAllTransactions(filters, orderBy, limit, skip) {
-  const request = new GraphQuery('allTransactions', TYPE.transaction);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  if (isFinite(limit) && limit > 0) {
-    request.addParam('limit', limit);
-  }
-  if (isFinite(skip) && skip >= 0) {
-    request.addParam('skip', skip);
-  }
-  const result = await request.execute();
-  return map(result, (tx) => new Transaction(tx));
-}
-
-/*
-* Queries syncInfo from GraphQL.
-* @param includeBalances {Boolean} Should include address balances array
-*/
-export async function querySyncInfo(includeBalance) {
-  const request = new GraphQuery('syncInfo', TYPE.syncInfo);
-  if (includeBalance) {
-    request.addParam('includeBalance', includeBalance);
-  }
-  const result = await request.execute();
-  return new SyncInfo(result);
+/**
+ * Queries all events.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function events(client, args) {
+  const res = await new GraphQuery(client, QUERY_EVENTS, args).execute();
+  const tmp = {};
+  tmp.items = map(res.items, (event) => new MultipleResultsEvent(event));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**
- * Search for Oracles that contains phrase either in title or result setter address
- * @param {String} phrase The keyword param for search
- * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
- * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
- * @return {Promise} Search result from graphql
+ * Searches all events by a search phrase.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
  */
-export async function searchOracles(app, phrase, filters, orderBy) {
-  const request = new GraphQuery('searchOracles', TYPE.oracle);
-  if (!isEmpty(phrase)) {
-    request.setSearchPhrase(phrase);
-  }
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  request.addParam('limit', 1000); // how to do unlimited search??
-  const result = await request.execute();
-  return map(result, (oracle) => new Oracle(oracle, app));
+export async function searchEvents(client, args) {
+  const res = await new GraphQuery(client, QUERY_SEARCH_EVENTS, args).execute();
+  return map(res, (event) => new MultipleResultsEvent(event));
 }
 
 /**
- * Search for Topics that contains phrase either in title or result setter address
- * @param {String} phrase The keyword param for search
- * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
- * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
- * @return {Promise} Search result from graphql
+ * Queries events that the user can withdraw from.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
  */
-export async function searchTopics(app, phrase, filters, orderBy) {
-  const request = new GraphQuery('searchTopics', TYPE.topic);
-  if (!isEmpty(phrase)) {
-    request.setSearchPhrase(phrase);
-  }
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  request.addParam('limit', 1000);
-  const result = await request.execute();
-  return map(result, (topic) => new Topic(topic, app));
+export async function withdrawableEvents(client, args) {
+  const res = await new GraphQuery(client, QUERY_WITHDRAWABLE_EVENTS, args)
+    .execute();
+  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
+  return res;
 }
 
 /**
- * Search for Result Sets
- * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
- * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
- * @return {Promise} result sets from graphql
+ * Queries all bets.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
  */
-export async function queryResultSets(filters, orderBy) {
-  const request = new GraphQuery('resultSets', TYPE.resultSet);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  const result = await request.execute();
-  return map(result, (resultset) => new ResultSet(resultset));
+export async function bets(client, args) {
+  const res = await new GraphQuery(client, QUERY_BETS, args).execute();
+  res.items = map(res.items, (bet) => new Bet(bet));
+  return res;
 }
 
 /**
- * Search for withdraws
- * @param {Array} filters Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
- * @param {Object} orderBy Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
- * @return {Promise} Search result from graphql
+ * Queries all result sets.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
  */
-export async function queryWithdraws(filters, orderBy) {
-  const request = new GraphQuery('withdraws', TYPE.withdraw);
-  if (!isEmpty(filters)) {
-    request.setFilters(filters);
-  }
-  if (!isEmpty(orderBy)) {
-    request.setOrderBy(orderBy);
-  }
-  const result = await request.execute();
-  return map(result, (withdraw) => new Withdraw(withdraw));
+export async function resultSets(client, args) {
+  const res = await new GraphQuery(client, QUERY_RESULT_SETS, args).execute();
+  const tmp = {};
+  tmp.items = map(res.items, (resultSet) => new ResultSet(resultSet));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
+}
+
+/**
+ * Queries all withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function withdraws(client, args) {
+  const res = await new GraphQuery(client, QUERY_WITHDRAWS, args).execute();
+  res.items = map(res.items, (withdraw) => new Withdraw(withdraw));
+  return res;
+}
+
+/**
+ * Queries all transactions.
+ * Returns concatenated list of Events, Bets, ResultSets, and Withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function transactions(client, args) {
+  const res = await new GraphQuery(client, QUERY_TRANSACTIONS, args).execute();
+
+  res.items = map(res.items, (tx) => new Transaction(tx));
+  return res;
+}
+
+/**
+ * Queries sync info.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @return {object} Query result.
+ */
+export async function syncInfo(client) {
+  const res = await new GraphQuery(client, QUERY_SYNC_INFO).execute();
+  return new SyncInfo(res);
+}
+
+/**
+ * Queries the total result bets for an event.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function totalResultBets(client, args) {
+  const res = await new GraphQuery(client, QUERY_TOTAL_RESULT_BETS, args).execute();
+  return new TotalResultBets(res);
+}
+
+/**
+ * Queries sync info.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @return {object} Query result.
+ */
+export async function allStats(client) {
+  return new GraphQuery(client, QUERY_ALL_STATS).execute();
+}
+
+/**
+ * Queries most bets given the filters.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function mostBets(client, args) {
+  return new GraphQuery(client, QUERY_MOST_BETS, args).execute();
+}
+
+/**
+ * Queries the biggest winners based on an event address.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function biggestWinners(client, args) {
+  return new GraphQuery(client, QUERY_BIGGEST_WINNERS, args).execute();
 }

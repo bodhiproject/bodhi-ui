@@ -21,7 +21,7 @@ export function createTopic(
   const newTransaction = {
     createdTime: moment.unix(),
     status: 'PENDING',
-    token: 'BOT',
+    token: 'NBOT',
     txid: cryptoRandomString(64),
     type: 'APPROVECREATEEVENT',
     createdBlock: 0,
@@ -57,7 +57,7 @@ export function createBetTx(version, topicAddress, oracleAddress, optionIdx, amo
     topicAddress,
     oracleAddress,
     optionIdx,
-    token: 'QTUM',
+    token: 'NAKA',
     amount,
     type: 'BET',
     status: 'PENDING',
@@ -73,9 +73,6 @@ export function createSetResultTx(version, topicAddress, oracleAddress, optionId
 }
 
 export function createVoteTx(version, topicAddress, oracleAddress, optionIdx, amount, senderAddress) { // eslint-disable-line
-}
-
-export function createFinalizeResultTx(version, topicAddress, oracleAddress, senderAddress) { // eslint-disable-line
 }
 
 export function createWithdrawTx(type, version, topicAddress, senderAddress) { // eslint-disable-line

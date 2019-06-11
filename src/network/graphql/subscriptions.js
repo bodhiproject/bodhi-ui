@@ -1,30 +1,26 @@
-import gql from 'graphql-tag';
+import { gql } from 'apollo-boost';
+import { SYNC_INFO } from './schema';
 
-import { getTypeDef } from './schema';
-
-const subscriptions = {
-  onSyncInfo: `
-    subscription OnSyncInfo {
+const SUBSCRIPTIONS = {
+  onSyncInfo: gql`
+    subscription {
       onSyncInfo {
-        ${getTypeDef('SyncInfo')}
-      }
-    }
-  `,
-  onApproveSuccess: `
-    subscription OnApproveSuccess {
-      onApproveSuccess {
-        ${getTypeDef('Transaction')}
+        ${SYNC_INFO}
       }
     }
   `,
 };
 
-function getSubscription(name) {
-  return gql`${subscriptions[name]}`;
-}
-
-export default getSubscription;
-export const channels = {
-  ON_SYNC_INFO: 'onSyncInfo',
-  ON_APPROVE_SUCCESS: 'onApproveSuccess',
+export const subscribeSyncInfo = async (client, cb) => {
+  client.subscribe({
+    query: SUBSCRIPTIONS.onSyncInfo,
+    fetchPolicy: 'network-only',
+  }).subscribe({
+    next(res) {
+      cb(null, res.data.onSyncInfo);
+    },
+    error(err) {
+      cb(err);
+    },
+  });
 };

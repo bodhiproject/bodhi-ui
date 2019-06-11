@@ -12,10 +12,6 @@ const messages = defineMessages({
     id: 'str.error',
     defaultMessage: 'Error',
   },
-  'create.pendingExists': {
-    id: 'create.pendingExists',
-    defaultMessage: 'You can only create 1 event at a time. Please wait until your other Event is created.',
-  },
 });
 
 @injectIntl
@@ -29,7 +25,7 @@ export default class GlobalDialog extends Component {
 
   render() {
     const { classes, intl } = this.props;
-    const { globalDialog } = this.props.store.components;
+    const { globalDialog } = this.props.store;
     const { visible, title, heading, body } = globalDialog;
 
     const formattedTitle = title && title.id ? intl.formatMessage(messages[title.id]) : title;

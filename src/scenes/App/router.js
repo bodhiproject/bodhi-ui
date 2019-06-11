@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { Routes } from 'constants';
-
 import asyncComponent from '../../helpers/AsyncFunc';
-
 
 const AppRouter = ({ url }) => {
   // Remove trailing '/' from url so that we can use `${url}/topic` below
@@ -21,27 +19,22 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.QTUM_PREDICTION}`}
-        component={asyncComponent(() => import('../QtumPrediction'))}
+        path={`${url}${Routes.PREDICTION}`}
+        component={asyncComponent(() => import('../Prediction'))}
       />
       <Route
         exact
-        path={`${url}${Routes.BOT_COURT}`}
-        component={asyncComponent(() => import('../BotCourt'))}
+        path={`${url}${Routes.ARBITRATION}`}
+        component={asyncComponent(() => import('../Arbitration'))}
       />
       <Route
         exact
-        path={`${url}/oracle/:topicAddress/:address/:txid`}
-        component={asyncComponent(() => import('../Event'))}
+        path={`${url}${Routes.FAVORITE}`}
+        component={asyncComponent(() => import('../Favorite'))}
       />
       <Route
         exact
-        path={`${url}/oracle/:hashId`}
-        component={asyncComponent(() => import('../Event'))}
-      />
-      <Route
-        exact
-        path={`${url}/topic/:address`}
+        path={`${url}${Routes.EVENT}`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route
@@ -61,11 +54,6 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.FINALIZE}`}
-        component={asyncComponent(() => import('../Activities'))}
-      />
-      <Route
-        exact
         path={`${url}${Routes.WITHDRAW}`}
         component={asyncComponent(() => import('../Activities'))}
       />
@@ -76,13 +64,13 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.FAVORITE}`}
-        component={asyncComponent(() => import('../Activities'))}
+        path={`${url}${Routes.LEADERBOARD}`}
+        component={asyncComponent(() => import('../Leaderboard'))}
       />
       <Route
         exact
-        path={`${url}${Routes.LEADERBOARD}`}
-        component={asyncComponent(() => import('../Leaderboard'))}
+        path={`${url}${Routes.CREATE_EVENT}`}
+        component={asyncComponent(() => import('../CreateEvent'))}
       />
     </Switch>
   );

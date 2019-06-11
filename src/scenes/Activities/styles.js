@@ -18,7 +18,10 @@ const styles = (theme) => ({
     },
   },
   activitiesTabContainer: {
-    marginTop: theme.sizes.navHeight.px,
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.sizes.navHeight.px,
+    },
+    marginTop: 40,
   },
   notLoggedInContainer: {
     top: 0,

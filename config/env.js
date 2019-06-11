@@ -57,6 +57,11 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 const REACT_APP = /^REACT_APP_/i;
 
 function getClientEnvironment(publicUrl) {
+  // Validate required env vars
+  if (!process.env.NETWORK) throw Error('Missing NETWORK in env');
+  if (!process.env.API_HOSTNAME) throw Error('Missing API_HOSTNAME in env');
+  if (!process.env.SSL) throw Error('Missing SSL in env');
+
   const raw = Object.keys(process.env)
     .filter((key) => REACT_APP.test(key))
     .reduce(
@@ -77,15 +82,12 @@ function getClientEnvironment(publicUrl) {
         OS_USERNAME: os.userInfo().username,
         OS_PLATFORM: os.platform(),
         OS_ARCH: os.arch(),
-        CHAIN_NETWORK: process.env.CHAIN_NETWORK,
+        NETWORK: process.env.NETWORK,
         API_HOSTNAME: process.env.API_HOSTNAME,
-        API_PORT: process.env.API_PORT,
-        PROTOCOL_HTTP: process.env.PROTOCOL_HTTP,
-        PROTOCOL_WS: process.env.PROTOCOL_WS,
-        LOCAL_WALLET: process.env.LOCAL_WALLET,
+        SSL: process.env.SSL,
       }
     );
-  console.log('Environment Vars:\n', raw);
+  console.log('Environment:\n', raw);
 
   // Stringify all values so we can feed into Webpack DefinePlugin
   const stringified = {

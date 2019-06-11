@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import moment from 'moment';
+import { EVENT_STATUS } from 'constants';
 import { Stepper, Step, StepLabel, Typography, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { isEmpty, each } from 'lodash';
-
+import { Card } from 'components';
+import { getTimeString } from '../../helpers';
 import styles from './styles';
-
 // Current step positions. Index defines which step the Event is in.
 const [TOPIC_CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING] = [0, 1, 2, 3];
 const messages = defineMessages({
@@ -30,114 +30,109 @@ const messages = defineMessages({
 @observer
 export default class StepperVertRight extends Component {
   render() {
-    const { global: { syncBlockTime }, eventPage: { oracles } } = this.props.store;
+    const { global: { syncBlockTime }, eventPage: { event } } = this.props.store;
     const { classes } = this.props;
 
-    if (!syncBlockTime || isEmpty(oracles)) return null;
+    if (!syncBlockTime || isEmpty(event)) return null;
 
     const steps = this.getSteps();
 
     return (
-      <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
-        {steps.value.map((item) => (
-          <Step key={item.title}>
-            <StepLabel className={classes.stepperVertRightLabel}>
-              <Typography variant="h6">
-                {item.title}
-              </Typography>
-              <Typography variant="caption">
-                {item.description}
-              </Typography>
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Card>
+        <Stepper activeStep={steps.current} orientation="vertical" className={classes.stepperVertRightWrapper}>
+          {steps.value.map((item) => (
+            <Step key={item.title}>
+              <StepLabel className={classes.stepperVertRightLabel}>
+                <Typography variant="h6">
+                  {item.title}
+                </Typography>
+                <Typography variant="caption">
+                  {item.description}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Card>
     );
   }
 
   getSteps = () => {
-    const { intl: { formatMessage }, isTopicDetail = false } = this.props;
+    const { intl: { formatMessage }, store: { eventPage: { event }, history: { resultSetsHistory } } } = this.props;
     const { syncBlockTime } = this.props.store.global;
-    const { cOracle: centralized, dOracles: decentralized } = this.props.store.eventPage;
 
-    const cOracle = centralized;
-    const dOracles = decentralized;
+    const currentArbitrationEndTime = event.arbitrationEndTime;
     const RANGE_SEPARATOR = formatMessage(messages.cardInfoMsg);
     const ANYTIME = formatMessage(messages.anytimeMsg);
 
+    let current;
+    const arbitrations = resultSetsHistory.slice(1);
+    let lastArbitrationEndTime = event.resultSetEndTime;
+    const numOfDOracles = arbitrations.length;
+
     // Init all events with these steps
     const value = [{
-      title: <FormattedMessage id="cardInfo.topic" defaultMessage="Topic Created" />,
-      description: `${formatMessage(messages.blockMsg)}: ${cOracle.blockNum || ''}`,
+      title: <FormattedMessage id="cardInfo.topic" defaultMessage="Event Created" />,
+      description: `${formatMessage(messages.blockMsg)}: ${event.blockNum || ''}`,
     }, {
       title: <FormattedMessage id="str.betting" defaultMessage="Betting" />,
-      description: `${moment.unix(cOracle.startTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(cOracle.endTime).format('LLL')}`,
+      description: `${getTimeString(event.betStartTime)}
+        ${RANGE_SEPARATOR} ${getTimeString(event.betEndTime)}`,
     }, {
-      title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Oracle Result Setting" />,
-      description: `${moment.unix(cOracle.resultSetStartTime).format('LLL')}
-        ${RANGE_SEPARATOR} ${moment.unix(cOracle.resultSetEndTime).format('LLL')}`,
+      title: <FormattedMessage id="cardInfo.orResultSet" defaultMessage="Event Result Setting" />,
+      description: `${getTimeString(event.resultSetStartTime)}
+        ${RANGE_SEPARATOR} ${getTimeString(event.resultSetEndTime)}`,
     }];
 
-    let current;
-    if (!isEmpty(dOracles)) { // DecentralizedOracle and Topic detail
-      // Add all voting steps of each DecentralizedOracle
-      each(dOracles, (item) => {
-        value.push({
-          title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
-          description: `${moment.unix(item.startTime).format('LLL')}
-            ${RANGE_SEPARATOR} ${moment.unix(item.endTime).format('LLL')}`,
-        });
-      });
-
-      const numOfDOracles = dOracles.length;
-      const lastDOracle = dOracles[dOracles.length - 1];
-      if (isTopicDetail) {
-        // Add withdrawing step for TopicEvent
-        value.push({
-          title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
-          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
-        });
-
-        if (syncBlockTime >= lastDOracle.endTime) {
-          // Highlight withdrawal
-          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
-        } else {
-          current = null;
-        }
-      } else {
-        // Add finalizing step for DecentralizedOracle
-        value.push({
-          title: <FormattedMessage id="cardInfo.final" defaultMessage="Finalizing" />,
-          description: `${moment.unix(lastDOracle.endTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
-        });
-
-        if (syncBlockTime >= lastDOracle.startTime && syncBlockTime < lastDOracle.endTime) {
-          // Highlight last DecentralizedOracle voting
-          current = ORACLE_RESULT_SETTING + numOfDOracles;
-        } else if (syncBlockTime >= lastDOracle.endTime) {
-          // Highlight finalizing
-          current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
-        } else {
-          current = null;
-        }
-      }
-    } else { // CentralizedOracle detail
+    if (event.status === EVENT_STATUS.CREATED) {
+      current = TOPIC_CREATED;
+    } else if (event.status === EVENT_STATUS.BETTING) {
+      current = BETTING;
+    } else if (event.status === EVENT_STATUS.ORACLE_RESULT_SETTING) {
+      current = ORACLE_RESULT_SETTING;
+    } else if (event.status === EVENT_STATUS.OPEN_RESULT_SETTING) { // CentralizedOracle detail
       // Only show open result setting in CentralizedOracle
       value.push({
         title: <FormattedMessage id="cardInfo.opResultSet" defaultMessage="Open Result Setting" />,
-        description: `${moment.unix(cOracle.resultSetEndTime).format('LLL')} ${RANGE_SEPARATOR} ${ANYTIME}`,
+        description: `${getTimeString(event.resultSetEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
       });
 
-      // Set step number
-      if (syncBlockTime < cOracle.startTime) {
-        current = TOPIC_CREATED;
-      } else if (syncBlockTime >= cOracle.startTime && syncBlockTime < cOracle.resultSetStartTime) {
-        current = BETTING;
-      } else if (syncBlockTime >= cOracle.resultSetStartTime && syncBlockTime < cOracle.resultSetEndTime) {
-        current = ORACLE_RESULT_SETTING;
-      } else if (syncBlockTime >= cOracle.resultSetEndTime) {
-        current = OPEN_RESULT_SETTING;
+      current = OPEN_RESULT_SETTING;
+    }
+
+    if (!isEmpty(arbitrations)) { // DecentralizedOracle and Topic detail
+      // Add all voting steps of each DecentralizedOracle
+      each(arbitrations, (item) => {
+        value.push({
+          title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
+          description: `${getTimeString(lastArbitrationEndTime)}
+            ${RANGE_SEPARATOR} ${getTimeString(item.block.blockTime)}`,
+        });
+        lastArbitrationEndTime = item.block.blockTime;
+      });
+    }
+
+    if (event.status === EVENT_STATUS.ARBITRATION) {
+      // Add current arbitration step for event
+      value.push({
+        title: <FormattedMessage id="cardInfo.arbitration" defaultMessage="Arbitration" />,
+        description: `${getTimeString(lastArbitrationEndTime)}
+          ${RANGE_SEPARATOR} ${getTimeString(currentArbitrationEndTime)}`,
+      });
+      // Highlight last DecentralizedOracle voting
+      current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
+    }
+
+    if (event.status === EVENT_STATUS.WITHDRAWING) {
+      // Add withdrawing step for TopicEvent
+      value.push({
+        title: <FormattedMessage id="cardInfo.withdraw" defaultMessage="Withdraw" />,
+        description: `${getTimeString(lastArbitrationEndTime)} ${RANGE_SEPARATOR} ${ANYTIME}`,
+      });
+
+      if (syncBlockTime >= lastArbitrationEndTime) {
+        // Highlight withdrawal
+        current = ORACLE_RESULT_SETTING + numOfDOracles + 1;
       } else {
         current = null;
       }

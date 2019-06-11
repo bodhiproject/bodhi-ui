@@ -1,12 +1,11 @@
 import React from 'react';
-import { withStyles, Hidden, IconButton, Badge, Backdrop } from '@material-ui/core';
+import { withStyles, Hidden, IconButton, Backdrop } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
 import { Routes } from 'constants';
-
 import styles from './styles';
 import ActionableBadge from './components/ActionableBadge';
 
@@ -18,17 +17,17 @@ export const DropdownMenuButton = withStyles(styles)(inject('store')(observer(({
   </div>
 ))));
 
-export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui, qrypto } }) => (
+export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ classes, store: { ui } }) => (
   <div className={cx(classes.navDropdown, ui.dropdownMenuOpen ? '' : 'hide')}>
     <Hidden smUp>
-      <Link to={Routes.QTUM_PREDICTION}>
+      <Link to={Routes.PREDICTION}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.qtumPrediction" defaultMessage="QTUM Prediction" />
+          <FormattedMessage id="navbar.prediction" defaultMessage="Prediction" />
         </div>
       </Link>
-      <Link to={Routes.BOT_COURT}>
+      <Link to={Routes.ARBITRATION}>
         <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
-          <FormattedMessage id="navbar.botCourt" defaultMessage="BOT Court" />
+          <FormattedMessage id="navbar.arbitration" defaultMessage="Arbitration" />
         </div>
       </Link>
       <Link to={Routes.ACTIVITY_HISTORY}>
@@ -50,31 +49,11 @@ export const DropdownMenu = withStyles(styles)(inject('store')(observer(({ class
         <FormattedMessage id="navBar.leaderboard" defaultMessage="Leaderboard" />
       </div>
     </Link>
-    <Hidden smUp>
-      <div
-        className={classes.navDropdownLinkItem}
-        onClick={() => {
-          ui.toggleDropdownMenu();
-          qrypto.openPopover();
-        }}
-      >
-        <Badge
-          classes={{ badge: classes.walletStatusBadge }}
-          color={qrypto.loggedIn ? 'secondary' : 'error'}
-          badgeContent=""
-        >
-          <FormattedMessage id="str.wallet" defaultMessage="Wallet" />
-        </Badge>
-      </div>
-    </Hidden>
     <Link to={Routes.SETTINGS}>
       <div className={classes.navDropdownLinkItem} onClick={ui.toggleDropdownMenu}>
         <FormattedMessage id="navBar.settings" defaultMessage="Settings" />
       </div>
     </Link>
-    <div className={classes.navDropdownLinkItem} onClick={ui.onHelpButtonClick}>
-      <FormattedMessage id="help" defaultMessage="Help" />
-    </div>
     <Backdrop invisible open={ui.dropdownMenuOpen} onClick={ui.toggleDropdownMenu} />
   </div>
 ))));

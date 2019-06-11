@@ -7,7 +7,7 @@ import styles from './styles';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 
 const BodhiLogo = ({ classes }) => (
-  <Link to={Routes.QTUM_PREDICTION}>
+  <Link to={Routes.PREDICTION}>
     <ImageLocaleWrapper
       appliedLanguages={['zh-Hans-CN']}
       src="/images/bodhi-logo.svg"

@@ -10,10 +10,8 @@ import { SortBy } from 'constants';
 import { ResponsiveTable } from 'components';
 
 import styles from './styles';
-import DepositDialog from './DepositDialog';
-import WithdrawDialog from './WithdrawDialog';
 import Config from '../../../config/app';
-import Tracking from '../../../helpers/mixpanelUtil';
+import { toFixed } from '../../../helpers/utility';
 
 
 @injectIntl
@@ -32,11 +30,6 @@ export default class MyBalances extends Component {
       order: SortBy.ASCENDING.toLowerCase(),
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
-      selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
-      depositDialogVisible: false,
-      withdrawDialogVisible: false,
     };
 
     this.getTotalsGrid = this.getTotalsGrid.bind(this);
@@ -46,22 +39,11 @@ export default class MyBalances extends Component {
     this.getTableBody = this.getTableBody.bind(this);
     this.getAddrCopiedSnackBar = this.getAddrCopiedSnackBar.bind(this);
     this.onCopyClicked = this.onCopyClicked.bind(this);
-    this.onDepositClicked = this.onDepositClicked.bind(this);
-    this.handleDepositDialogClose = this.handleDepositDialogClose.bind(this);
-    this.onWithdrawClicked = this.onWithdrawClicked.bind(this);
-    this.onWithdraw = this.onWithdraw.bind(this);
     this.onAddrCopiedSnackbarClosed = this.onAddrCopiedSnackbarClosed.bind(this);
   }
 
   render() {
     const { classes } = this.props;
-    const {
-      selectedAddress,
-      selectedAddressQtum,
-      selectedAddressBot,
-      depositDialogVisible,
-      withdrawDialogVisible,
-    } = this.state;
 
     return (
       <Paper className={classes.myBalancePaper}>
@@ -75,22 +57,6 @@ export default class MyBalances extends Component {
             {this.getTableBody()}
           </ResponsiveTable>
           {this.getAddrCopiedSnackBar()}
-          <DepositDialog
-            dialogVisible={depositDialogVisible}
-            onClose={this.handleDepositDialogClose}
-            onCopyClicked={this.onCopyClicked}
-            walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
-          />
-          <WithdrawDialog
-            dialogVisible={withdrawDialogVisible}
-            onClose={this.handleWithdrawDialogClose}
-            onWithdraw={this.onWithdraw}
-            walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
-          />
         </Grid>
       </Paper>
     );
@@ -99,26 +65,26 @@ export default class MyBalances extends Component {
   getTotalsGrid() {
     const { classes, store: { wallet } } = this.props;
 
-    let totalQtum = 0;
-    let totalBot = 0;
+    let totalNaka = 0;
+    let totalNbot = 0;
     const walletAddresses = wallet.addresses;
     if (walletAddresses && walletAddresses.length) {
-      totalQtum = _.sumBy(walletAddresses, (address) => address.qtum ? address.qtum : 0);
-      totalBot = _.sumBy(walletAddresses, (address) => address.bot ? address.bot : 0);
+      totalNaka = _.sumBy(walletAddresses, (address) => address.naka ? address.naka : 0);
+      totalNbot = _.sumBy(walletAddresses, (address) => address.nbot ? address.nbot : 0);
     }
 
     const items = [
       {
-        id: 'qtum',
-        name: 'str.qtum',
-        nameDefault: 'QTUM',
-        total: totalQtum,
+        id: 'naka',
+        name: 'str.naka',
+        nameDefault: 'NAKA',
+        total: totalNaka,
       },
       {
-        id: 'bot',
-        name: 'str.bot',
-        nameDefault: 'BOT',
-        total: totalBot,
+        id: 'nbot',
+        name: 'str.nbot',
+        nameDefault: 'NBOT',
+        total: totalNbot,
       },
     ];
 
@@ -126,7 +92,7 @@ export default class MyBalances extends Component {
       <Grid container className={classes.totalsContainerGrid}>
         {items.map((item) => (
           <Grid item key={item.id} className={classes.totalsItemGrid}>
-            <Typography className={classes.totalsItemAmount}>{item.total.toFixed(2)}</Typography>
+            <Typography className={classes.totalsItemAmount}>{toFixed(item.total)}</Typography>
             <Typography variant="body2">
               <FormattedMessage id={item.name} default={item.nameDefault} />
             </Typography>
@@ -153,25 +119,18 @@ export default class MyBalances extends Component {
         sortable: false,
       },
       {
-        id: 'qtum',
-        name: 'str.qtum',
-        nameDefault: 'QTUM',
+        id: 'naka',
+        name: 'str.naka',
+        nameDefault: 'NAKA',
         numeric: true,
         sortable: true,
       },
       {
-        id: 'bot',
-        name: 'str.bot',
-        nameDefault: 'BOT',
+        id: 'nbot',
+        name: 'str.nbot',
+        nameDefault: 'NBOT',
         numeric: true,
         sortable: true,
-      },
-      {
-        id: 'actions',
-        name: 'str.actions',
-        nameDefault: 'Actions',
-        numeric: false,
-        sortable: false,
       },
     ];
 
@@ -270,36 +229,10 @@ export default class MyBalances extends Component {
               </CopyToClipboard>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body2">{item.qtum}</Typography>
+              <Typography variant="body2">{item.naka}</Typography>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body2">{item.bot}</Typography>
-            </TableCell>
-            <TableCell>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.tableRowActionButton}
-                onClick={this.onDepositClicked}
-                data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
-              >
-                <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.tableRowActionButton}
-                onClick={this.onWithdrawClicked}
-                data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
-              >
-                <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
-              </Button>
+              <Typography variant="body2">{item.nbot}</Typography>
             </TableCell>
           </TableRow>))}
       </TableBody>
@@ -332,55 +265,6 @@ export default class MyBalances extends Component {
   onCopyClicked() {
     this.setState({
       addrCopiedSnackbarVisible: true,
-    });
-  }
-
-  onDepositClicked(event) {
-    this.setState({
-      selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
-      depositDialogVisible: true,
-    });
-
-    Tracking.track('myWallet-depositDialogOpen');
-  }
-
-  handleDepositDialogClose = () => {
-    this.setState({
-      selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
-      depositDialogVisible: false,
-    });
-  };
-
-  onWithdrawClicked(event) {
-    const { wallet } = this.props.store;
-
-    this.setState({
-      selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
-      withdrawDialogVisible: true,
-    });
-    wallet.setCurrentWalletAddress(event.currentTarget.getAttribute('data-address'));
-
-    Tracking.track('myWallet-withdrawDialogOpen');
-  }
-
-  handleWithdrawDialogClose = () => {
-    this.setState({
-      selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
-      withdrawDialogVisible: false,
-    });
-  };
-
-  onWithdraw() {
-    this.setState({
-      withdrawDialogVisible: false,
     });
   }
 

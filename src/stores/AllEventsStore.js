@@ -1,14 +1,12 @@
-import { observable, action, runInAction, computed, reaction, toJS } from 'mobx';
-import _ from 'lodash';
-import { OracleStatus, Routes } from 'constants';
-import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
+import { observable, action, runInAction, reaction, toJS } from 'mobx';
+import { SortBy, Routes } from 'constants';
+import { events } from '../network/graphql/queries';
 
 const INIT_VALUES = {
   loaded: false, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
-  hasMoreTopics: true, // has more topics to fetch?
-  hasMoreOracles: true, // has more oracles to fetch?
+  hasMore: true,
   skip: 0, // skip
 };
 
@@ -17,18 +15,14 @@ export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
   @observable list = INIT_VALUES.list
-  @observable hasMoreTopics = INIT_VALUES.hasMoreTopics
-  @observable hasMoreOracles = INIT_VALUES.hasMoreOracles
-  @computed get hasMore() {
-    return this.hasMoreOracles || this.hasMoreTopics;
-  }
+  @observable hasMore = INIT_VALUES.hasMore
   @observable skip = INIT_VALUES.skip
   @observable limit = 24
 
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing,
+      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.refreshing,
       () => {
         if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();
@@ -73,23 +67,26 @@ export default class {
   }
 
   fetchAllEvents = async (limit = this.limit, skip = this.skip) => {
-    limit /= 2; // eslint-disable-line
-    skip /= 2; // eslint-disable-line
-    const orderBy = { field: 'blockNum', direction: this.app.sortBy };
-    let topics = [];
-    let oracles = [];
-    if (this.hasMoreTopics) {
-      const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-      const { topics: aliasTopics, pageInfo } = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
-      topics = aliasTopics;
-      this.hasMoreTopics = pageInfo.hasNextPage;
+    if (this.hasMore) {
+      const {
+        graphqlClient,
+        naka: { account },
+        global: { eventVersion },
+      } = this.app;
+
+      const filter = { version: eventVersion };
+      const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
+      const res = await events(graphqlClient, {
+        filter,
+        orderBy,
+        limit,
+        skip,
+        pendingTxsAddress: account,
+      });
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
+      return res.items;
     }
-    if (this.hasMoreOracles) {
-      const { oracles: aliasOracles, pageInfo } = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
-      this.hasMoreOracles = pageInfo.hasNextPage;
-      oracles = aliasOracles;
-    }
-    const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());
-    return allEvents;
+    return INIT_VALUES.list;
   }
 }

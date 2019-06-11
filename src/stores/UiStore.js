@@ -2,18 +2,16 @@ import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
-
+import { STORAGE_KEY, faqUrls } from '../config/app';
 import locales from '../languageProvider';
-import { faqUrls } from '../config/app';
 import Tracking from '../helpers/mixpanelUtil';
 
 export default class UiStore {
-  @observable location = Routes.QTUM_PREDICTION
-  @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
+  @observable location = Routes.PREDICTION
+  @observable locale = localStorage.getItem(STORAGE_KEY.LOCALE) || this.defaultLocale
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
   @observable currentTimeUnix = 0;
-  @observable favoriteDrawerOpen = false;
   counterInterval = null;
 
   get localeMessages() {
@@ -22,12 +20,12 @@ export default class UiStore {
 
   get defaultLocale() {
     let locale = navigator.language || navigator.userLanguage || '';
-    if (locale.startsWith('ko')) {
-      locale = 'ko-KR';
-    } else if (locale.startsWith('zh')) {
-      locale = 'zh-Hans-CN';
-    } else { // Location Other than ko and zh will now return en-US
+    if (locale.startsWith('en')) {
       locale = 'en-US';
+    } else if (locale.startsWith('ko')) {
+      locale = 'ko-KR';
+    } else { // Default lang is zh-Hans-CN
+      locale = 'zh-Hans-CN';
     }
     return locale;
   }
@@ -42,20 +40,23 @@ export default class UiStore {
     momentDurationFormat(moment);
     moment.updateLocale('en', {
       longDateFormat: {
-        LLL: 'M/D/YY H:mm:ss',
-        LLLL: 'MMM Do, YYYY H:mm:ss',
+        LL: 'MMM Do, H:mm a',
+        LLL: 'M/D/YY H:mm a',
+        LLLL: 'MMM Do, YYYY, H:mm a',
       },
     });
     moment.updateLocale('ko', {
       longDateFormat: {
-        LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY년 M월D일 H:mm:ss',
+        LL: 'M월D일 H:mm a',
+        LLL: 'YY/M/D H:mm a',
+        LLLL: 'YYYY년 M월D일 H:mm a',
       },
     });
     moment.updateLocale('zh-cn', {
       longDateFormat: {
+        LL: 'M月D日 H:mm a',
         LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY年M月D日 H:mm:ss',
+        LLLL: 'YYYY年M月D日 H:mm a',
       },
     });
 
@@ -63,7 +64,7 @@ export default class UiStore {
       () => this.locale,
       () => {
         moment.locale(locales[this.locale].momentlocale);
-        localStorage.setItem('bodhi_dapp_lang', this.locale);
+        localStorage.setItem(STORAGE_KEY.LOCALE, this.locale);
       },
       { fireImmediately: true }
     );
@@ -78,17 +79,10 @@ export default class UiStore {
   }
 
   @action
-  showFavoriteDrawer = () => this.favoriteDrawerOpen = true;
-
-  @action
-  hideFavoriteDrawer = () => this.favoriteDrawerOpen = false;
-
-  @action
   enableSearchBarMode = () => {
-    this.hideFavoriteDrawer();
     this.searchBarMode = true;
+    this.dropdownMenuOpen = false;
     document.body.style.overflow = 'hidden';
-    document.getElementById('searchEventInput').focus();
   }
 
   @action

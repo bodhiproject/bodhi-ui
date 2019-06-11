@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@material-ui/core';
-
+import { PageContainer, ContentContainer } from 'components';
 import styles from './styles';
-import _Leaderboard from '../Event/components/Leaderboard';
-import { Row, Content } from '../Event/components';
+import _Leaderboard from '../Event/Leaderboard';
+import { toFixed } from '../../helpers/utility';
 
 const messages = defineMessages({
   totalEvents: {
@@ -16,13 +16,9 @@ const messages = defineMessages({
     id: 'leaderboard.totalParticipants',
     defaultMessage: 'Total Participants',
   },
-  totalQTUM: {
-    id: 'leaderboard.totalQTUM',
-    defaultMessage: 'Total bet in QTUM',
-  },
-  totalBOT: {
-    id: 'leaderboard.totalBOT',
-    defaultMessage: 'Total voted in BOT',
+  totalBets: {
+    id: 'leaderboard.totalBets',
+    defaultMessage: 'Total bets in NBOT',
   },
 });
 
@@ -36,19 +32,18 @@ export default class Leaderboard extends Component {
   }
 
   render() {
-    const { eventCount, participantsCount, totalBOT, totalQTUM } = this.props.store.leaderboard;
+    const { eventCount, participantCount, totalBets } = this.props.store.leaderboard;
     return (
-      <Row>
+      <PageContainer>
         <SidebarContainer>
           <Card title={messages.totalEvents} value={eventCount} />
-          <Card title={messages.totalParticipants} value={participantsCount} />
-          <Card title={messages.totalQTUM} value={totalQTUM} />
-          <Card title={messages.totalBOT} value={totalBOT} />
+          <Card title={messages.totalParticipants} value={participantCount} />
+          <Card title={messages.totalBets} value={totalBets} />
         </SidebarContainer>
-        <Content>
-          <_Leaderboard maxSteps={2} />
-        </Content>
-      </Row>
+        <ContentContainer>
+          <_Leaderboard maxSteps={1} />
+        </ContentContainer>
+      </PageContainer>
     );
   }
 }
@@ -60,7 +55,7 @@ const Card = injectIntl(withStyles(styles)(({ title, value, classes, intl }) => 
         {intl.formatMessage(title)}
       </Typography>
       <Typography className={classes.cardContent}>
-        {value}
+        {toFixed(value)}
       </Typography>
     </CardContent>
   </_Card>

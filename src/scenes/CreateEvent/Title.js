@@ -25,13 +25,17 @@ const Title = withStyles(styles, { withTheme: true })(observer(({ classes, store
   <Section title={messages.createTitleMsg}>
     <FormControl fullWidth>
       <TextField
-        InputProps={{ classes: { input: classes.createEventTextField } }}
         placeholder={intl.formatMessage(messages.createNamePlaceholderMsg)}
         value={createEvent.title}
         onChange={e => createEvent.title = e.target.value}
         onBlur={createEvent.validateTitle}
         error={!!createEvent.error.title}
         fullWidth
+        InputProps={{
+          classes: {
+            input: classes.textFieldInput,
+          },
+        }}
       />
       {!!createEvent.error.title && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.title })}</FormHelperText>}
     </FormControl>

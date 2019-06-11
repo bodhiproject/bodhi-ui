@@ -244,8 +244,6 @@ export const theme = {
         marginTop: px(spaceX),
         marginBottom: px(spaceX),
         borderCollapse: 'separate',
-      },
-      label: {
         fontSize: xxSmallText,
         textTransform: 'none !important',
       },
@@ -291,6 +289,12 @@ export const theme = {
         lineHeight: lineHeight24,
         padding: `8px ${px(space2X)}`,
         color: textColorDarkGrey,
+
+        '&$error': {
+          '&:after': {
+            borderBottomColor: `${supportColorRed100} !important`,
+          },
+        },
       },
       input: {
         padding: 0,
@@ -300,18 +304,15 @@ export const theme = {
           borderBottom: `2px solid ${primaryBrandColor}`,
         },
       },
-      error: {
-        '&:after': {
-          borderBottomColor: `${supportColorRed100} !important`,
-        },
-      },
     },
     MuiFormHelperText: {
-      error: {
-        fontSize: xxSmallText,
-        lineHeight: lineHeight16,
-        color: `${supportColorRed100} !important`,
-        marginTop: 0,
+      root: {
+        '&$error': {
+          fontSize: xxSmallText,
+          lineHeight: lineHeight16,
+          color: `${supportColorRed100} !important`,
+          marginTop: 0,
+        },
       },
     },
     MuiSvgIcon: {
@@ -625,11 +626,6 @@ bodhiTheme.overrides = {
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
         fontSize: xxSmallText,
-      },
-    },
-    numeric: {
-      [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(spaceX),
       },
     },
   },

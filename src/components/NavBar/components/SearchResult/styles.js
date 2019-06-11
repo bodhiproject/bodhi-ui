@@ -7,8 +7,7 @@ const styles = () => ({
     height: 'calc(100vh - 70px)',
   },
   result: {
-    margin: '40px',
-    padding: '0px 40px 40px 40px',
+    marginTop: '10px',
   },
 });
 

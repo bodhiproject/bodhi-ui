@@ -1,117 +1,159 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, find, isUndefined, sumBy, isNull, isEmpty, each, map, unzip, filter, fill, includes, orderBy } from 'lodash';
+import { filter, sum } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
-import { EventType, SortBy, TransactionType, EventWarningType, Token, Phases, TransactionStatus } from 'constants';
-
-import { toFixed, decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
-import networkRoutes from '../../network/routes';
-import { queryAllTransactions, queryAllOracles, queryAllTopics, queryAllVotes, queryMostVotes, queryWinners, queryResultSets, queryWithdraws } from '../../network/graphql/queries';
+import { EventWarningType, EVENT_STATUS, TransactionStatus, Routes } from 'constants';
+import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utility';
+import { API } from '../../network/routes';
+import {
+  events,
+  mostBets,
+  biggestWinners,
+  totalResultBets,
+  withdraws,
+} from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
-const { UNCONFIRMED, TOPIC, ORACLE } = EventType;
-const { BETTING, VOTING, RESULT_SETTING, FINALIZING } = Phases;
-const paras = [Token.QTUM, Token.BOT];
-
+const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
-  type: undefined,
   loading: true,
-  oracles: [],
-  topics: [],
-  leaderboardVotes: [],
-  amount: '',
+  event: undefined,
   address: '',
-  topicAddress: '',
-  transactionHistoryItems: [],
+  escrowAmount: 0,
+  totalBets: [],
+  betterBets: [],
+  totalVotes: [],
+  betterVotes: [],
+  totalInvestment: 0,
+  returnRate: 0,
+  profitOrLoss: 0,
+  pendingWithdraw: [],
+  leaderboardBets: [],
+  nbotWinnings: 0,
+  amount: '',
   selectedOptionIdx: -1,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
-  escrowClaim: 0,
-  hashId: '',
-  allowance: undefined,
-  qtumWinnings: 0,
-  botWinnings: 0,
-  withdrawableAddresses: [],
   activeStep: 0,
   error: {
     amount: '',
     address: '',
   },
+  leaderboardLimit: 5,
+  didWithdraw: false,
 };
 
 export default class EventStore {
-  @observable type = INIT.type // One of EventType: [UNCONFIRMED, TOPIC, ORACLE]
   @observable loading = INIT.loading
-  @observable oracles = INIT.oracles
-  @observable leaderboardVotes = INIT.leaderboardVotes
-  @observable amount = INIT.amount // Input amount to bet, vote, etc. for each event option
+  @observable event = INIT.event
   @observable address = INIT.address
-  @observable topicAddress = INIT.topicAddress
-  @observable transactionHistoryItems = INIT.transactionHistoryItems
-  @observable selectedOptionIdx = INIT.selectedOptionIdx // Current option selected for an Oracle
+  @observable totalBets = INIT.totalBets
+  @observable betterBets = INIT.betterBets
+  @observable totalVotes = INIT.totalVotes
+  @observable betterVotes = INIT.betterVotes
+  @observable leaderboardBets = INIT.leaderboardBets
+  @observable nbotWinnings = INIT.nbotWinnings
+  @observable amount = INIT.amount // Input amount to bet, vote, etc
+  @observable selectedOptionIdx = INIT.selectedOptionIdx // Current result index selected
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
-  @observable escrowClaim = INIT.escrowClaim
-  @observable hashId = INIT.hashId
-  @observable allowance = INIT.allowance; // In Botoshi
   @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
+  @observable escrowAmount = INIT.escrowAmount
+  @observable didWithdraw = INIT.didWithdraw
+  @observable pendingWithdraw = INIT.pendingWithdraw
+  @observable totalInvestment = INIT.totalInvestment
+  @observable returnRate = INIT.returnRate
+  @observable profitOrLoss = INIT.profitOrLoss
+  leaderboardLimit = INIT.leaderboardLimit
 
-  // topic
-  @observable topics = INIT.topics
-  @observable qtumWinnings = INIT.qtumWinnings
-  @observable botWinnings = INIT.botWinnings
-  @observable withdrawableAddresses = INIT.withdrawableAddresses
-  betBalances = []
-  voteBalances = []
-  leaderboardLimit = 5
+  @computed get eventName() {
+    return this.event && this.event.name;
+  }
 
-  @computed get amountDecimal() {
-    return satoshiToDecimal(this.allowance);
+  @computed get isBetting() {
+    return this.event && this.event.status === BETTING;
   }
-  @computed get totalBetAmount() {
-    return sum(this.betBalances);
+
+  @computed get isResultSetting() {
+    return this.event
+      && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
   }
-  @computed get totalVoteAmount() {
-    return sum(this.voteBalances);
+
+  @computed get isArbitration() {
+    return this.event && this.event.status === ARBITRATION;
   }
-  @computed get resultBetAmount() {
-    return this.betBalances[this.selectedOptionIdx];
+
+  @computed get isWithdrawing() {
+    return this.event && this.event.status === WITHDRAWING;
   }
-  @computed get resultVoteAmount() {
-    return this.voteBalances[this.selectedOptionIdx];
+
+  @computed get maxLeaderBoardSteps() {
+    return this.event.status === WITHDRAWING ? 2 : 1;
   }
-  @computed get topic() {
-    return find(this.topics, { address: this.topicAddress }) || {};
-  }
-  // For Oracle only
-  @computed get unconfirmed() {
-    return isUndefined(this.topicAddress) && isUndefined(this.address);
-  }
-  @computed get dOracles() { // [BOT] - VOTING -> PENDING/WAITRESULT -> WITHDRAW
-    return this.oracles.filter(({ token }) => token === Token.BOT);
-  }
-  @computed get cOracle() {
-    // [QTUM] - CREATED -> BETTING -> WAITRESULT -> OPENRESULTSET -> PENDING -> WITHDRAW
-    // mainly: BETTING & RESULT SETTING phases
-    return find(this.oracles, { token: Token.QTUM }) || {};
-  }
-  @computed get oracle() {
-    if (this.unconfirmed) {
-      return find(this.oracles, { hashId: this.hashId });
-    }
-    return find(this.oracles, { address: this.address }) || {};
-  }
-  // both
+
   @computed get selectedOption() {
-    return (this.event.options && this.event.options[this.selectedOptionIdx]) || {};
+    return (this.event.results && this.event.results[this.selectedOptionIdx]) || {};
   }
-  @computed get event() {
-    if (this.type === TOPIC) return this.topic;
-    return this.oracle;
+
+  @computed get withdrawableAddress() {
+    const { currentAddress } = this.app.wallet;
+    const resultIndex = this.event && this.event.currentResultIndex;
+    const profitCut = this.event && this.event.arbitrationRewardPercentage;
+    if (this.betterBets.length === 0 ||
+      this.betterVotes.length === 0 ||
+      this.totalBets.length === 0 ||
+      this.totalVotes.length === 0) return {};
+    const betterBetsSum = sum(this.betterBets);
+    const betterVotesSum = sum(this.betterVotes);
+    const totalBetsSum = sum(this.totalBets);
+    const totalVotesSum = sum(this.totalVotes);
+    let totalWinningBets;
+    let totalLosingBets;
+    let arbitrationShare;
+    let betShare;
+    let betterBetsReturn;
+    if (resultIndex === 0) {
+      betterBetsReturn = betterBetsSum;
+      arbitrationShare = 0;
+    } else {
+      totalWinningBets = this.totalBets[resultIndex];
+      totalLosingBets = totalBetsSum - totalWinningBets;
+      arbitrationShare = (totalLosingBets * profitCut) / 100;
+      betShare = totalLosingBets - arbitrationShare;
+      betterBetsReturn = this.betterBets[resultIndex] + ((betShare * this.betterBets[resultIndex]) / this.totalBets[resultIndex]) || 0;
+    }
+
+    const totalWinningVotes = this.totalVotes[resultIndex];
+    const totalLosingVotes = totalVotesSum - totalWinningVotes;
+    const totalVotesShare = totalLosingVotes + arbitrationShare;
+    const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]) || 0;
+    const totalInvestment = betterBetsSum + betterVotesSum + this.escrowAmount;
+    return {
+      address: currentAddress,
+      escrow: this.escrowAmount,
+      yourTotalBets: betterBetsSum,
+      yourTotalBetsReturn: betterBetsReturn,
+      yourTotalBetsReturnRate: (betterBetsReturn / betterBetsSum) * 100,
+      yourTotalVotes: betterVotesSum,
+      yourTotalVotesReturn: betterVotesReturn,
+      yourTotalVotesReturnRate: (betterVotesReturn / betterVotesSum) * 100,
+      yourTotalReturn: betterBetsReturn + betterVotesReturn + this.escrowAmount,
+      yourWinningInvestment: this.betterBets[resultIndex] + this.betterVotes[resultIndex],
+      yourTotalReturnRate: ((betterBetsReturn + betterVotesReturn + this.escrowAmount) / totalInvestment) * 100,
+      escrowAmount: this.event.ownerAddress === currentAddress ? this.escrowAmount : 0,
+    };
+  }
+
+  @computed get remainingConsensusThreshold() {
+    const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
+    return toFixed(NP.minus(
+      consensusThreshold,
+      Number(this.selectedOption.amount)
+    ));
   }
 
   constructor(app) {
@@ -119,80 +161,35 @@ export default class EventStore {
   }
 
   @action
-  async init({ topicAddress, address, txid, type, hashId }) {
+  reset = () => Object.assign(this, INIT);
+
+  @action
+  async init({ txid, url }) {
     this.reset();
-    this.topicAddress = topicAddress;
-    this.address = address;
     this.txid = txid;
-    this.type = type;
-    this.hashId = hashId;
-
-    if (type === UNCONFIRMED) {
-      await this.initUnconfirmedOracle();
-    } else if (type === TOPIC) {
-      await this.initTopic();
-    } else {
-      await this.initOracle();
-    }
-
+    this.url = url;
     this.setReactions();
-  }
-
-  /**
-   * Show unconfirmed Oracle page.
-   * Find unconfirmed Oracle based on txid since a mutated Oracle won't have a topicAddress or oracleAddress.
-   */
-  @action
-  initUnconfirmedOracle = async () => {
-    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }], undefined, 1);
-    this.oracles = oracles;
-    this.loading = false;
-  }
-
-  @action
-  initTopic = async () => {
-    this.topicAddress = this.address;
-
-    // GraphQL calls
-    await this.queryTopics();
-    await this.queryOracles(this.address);
-    await this.queryTransactions(this.address);
-
-    // API calls
-    await this.getEscrowAmount();
-    await this.calculateWinnings();
-    this.disableEventActionsIfNecessary();
-    await this.queryLeaderboard(Token.QTUM);
-    this.selectedOptionIdx = this.topic.resultIdx;
-    this.loading = false;
-  }
-
-  @action
-  initOracle = async () => {
-    // GraphQL calls
-    await this.queryTopics();
-    await this.queryOracles(this.topicAddress);
-    await this.queryTransactions(this.topicAddress);
-    await this.getAllowanceAmount();
-    await this.queryLeaderboard(Token.QTUM);
-    this.disableEventActionsIfNecessary();
-
-    if (this.oracle.phase === RESULT_SETTING) {
-      // Set the amount field since we know the amount will be the consensus threshold
-      this.amount = this.oracle.consensusThreshold.toString();
-    }
-
-    this.loading = false;
+    await this.initEvent();
   }
 
   setReactions = () => {
     // Wallet addresses list changed
     reaction(
       () => toJS(this.app.wallet.addresses),
-      () => {
-        if (this.type === TOPIC) {
-          this.calculateWinnings();
+      async () => {
+        if (this.event && this.event.status === WITHDRAWING) {
+          await this.queryTotalResultBets();
+          await this.calculateWinnings();
+          await this.getDidWithdraw();
         }
+      }
+    );
+
+    // New block
+    reaction(
+      () => this.app.global.online,
+      async () => {
+        if (this.app.global.online) await this.initEvent();
       }
     );
 
@@ -202,305 +199,174 @@ export default class EventStore {
       () => this.updateLeaderBoard(),
     );
 
-    // Current wallet address changed
+    // Tx list, amount, selected option, current wallet address changed
     reaction(
-      () => this.app.wallet.currentAddress,
-      () => this.getAllowanceAmount(),
-    );
-
-    // New block
-    reaction(
-      () => this.app.global.syncBlockNum + this.app.global.online,
-      async () => {
-        // Fetch transactions during new block
-        if (this.app.global.online) {
-          switch (this.type) {
-            case UNCONFIRMED: {
-              this.verifyConfirmedOracle();
-              break;
-            }
-            case TOPIC: {
-              await this.queryTransactions(this.address);
-              this.disableEventActionsIfNecessary();
-              await this.updateLeaderBoard();
-              break;
-            }
-            case ORACLE: {
-              await this.queryTransactions(this.topicAddress);
-              await this.queryOracles(this.topicAddress);
-              await this.getAllowanceAmount();
-              await this.updateLeaderBoard();
-              this.disableEventActionsIfNecessary();
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-        }
-      }
-    );
-
-    // Tx, amount, selected option, current wallet address, or allowance changes
-    reaction(
-      () => this.transactionHistoryItems + this.amount + this.selectedOptionIdx + this.app.wallet.currentWalletAddress + this.allowance,
-      () => {
-        if (this.type === TOPIC || this.type === ORACLE) {
-          this.disableEventActionsIfNecessary();
-        }
-      },
+      () => this.transactionHistoryItems
+        + this.amount
+        + this.selectedOptionIdx
+        + this.app.wallet.currentWalletAddress,
+      () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
-  }
-
-  @action
-  verifyConfirmedOracle = async () => {
-    const { oracles } = await queryAllOracles(this.app, [{ hashId: this.hashId }]);
-    if (!isNull(oracles[0].topicAddress)) {
-      const { topicAddress, address, txid } = oracles[0];
-      this.app.router.push(`/oracle/${topicAddress}/${address}/${txid}`);
-    }
-  }
-
-  @action
-  queryTopics = async () => {
-    const { topics } = await queryAllTopics(this.app, [{ address: this.topicAddress }], undefined, 1);
-    this.topics = topics;
-  }
-
-  @action
-  queryOracles = async (address) => {
-    const { oracles } = await queryAllOracles(this.app, [{ topicAddress: address }], { field: 'blockNum', direction: SortBy.ASCENDING });
-    this.oracles = oracles;
-  }
-
-  @action
-  queryLeaderboard = async (token) => {
-    const { votes } = await queryMostVotes([{ topicAddress: this.topicAddress, token }], null, 5, 0);
-    this.leaderboardVotes = votes;
-  }
-
-  @action
-  queryBiggestWinner = async () => {
-    const winners = await queryWinners({ filter: { topicAddress: this.topicAddress, optionIdx: this.topic.resultIdx } });
-    this.leaderboardVotes = winners;
-  }
-
-  @action
-  updateLeaderBoard = async () => {
-    if (this.activeStep < 2) {
-      await this.queryLeaderboard(paras[this.activeStep]);
-    } else {
-      await this.queryBiggestWinner();
-    }
-  }
-
-  @action
-  queryTransactions = async (address) => {
-    const pendings = await queryAllTransactions(
-      [{ topicAddress: address, status: TransactionStatus.PENDING }, { topicAddress: address, status: TransactionStatus.FAIL }],
-      { field: 'createdTime', direction: SortBy.DESCENDING },
-    );
-    const withdraws = await queryWithdraws([{ topicAddress: address }]);
-
-    const resultSets = await queryResultSets([{ topicAddress: address }]);
-    const finalizes = filter(resultSets, { oracleAddress: null });
-
-    const transactions = await queryAllVotes([{ topicAddress: address }]);
-    const votes = filter(transactions, { type: TransactionType.VOTE });
-    const resultSetsWithAmount = filter(transactions, { type: TransactionType.SET_RESULT });
-    const bets = filter(transactions, { type: TransactionType.BET });
-
-    let confirmed = [...withdraws, ...finalizes, ...votes, ...resultSetsWithAmount, ...bets];
-    confirmed = orderBy(confirmed, ['blockTime'], ['desc']);
-
-    this.transactionHistoryItems = [...pendings, ...confirmed];
-  }
-
-  @action
-  addPendingTx(pendingTransaction) {
-    this.transactionHistoryItems.unshift(pendingTransaction);
-  }
-
-  @action
-  getEscrowAmount = async () => {
-    try {
-      const { data } = await axios.post(networkRoutes.api.eventEscrowAmount, {
-        senderAddress: this.app.wallet.currentAddress,
-      });
-      this.escrowAmount = satoshiToDecimal(data[0]);
-    } catch (error) {
-      runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.eventEscrowAmount);
-      });
-    }
-  }
-
-  /**
-   * Gets the allowance amount for result setting and voting oracles.
-   * The allowance is the current amount of BOT approved for transfer.
-   */
-  @action
-  getAllowanceAmount = async () => {
-    if (includes([RESULT_SETTING, VOTING], this.oracle.phase)) {
-      this.allowance = await this.app.wallet.checkAllowance(this.app.wallet.currentAddress, this.topicAddress);
-    }
-  }
-
-  @action
-  calculateWinnings = async () => {
-    await this.getBetAndVoteBalances();
-    await this.getWithdrawableAddresses();
-
-    this.botWinnings = sumBy(this.withdrawableAddresses, a => (
-      a.type === TransactionType.WITHDRAW && a.botWon ? a.botWon : 0
-    ));
-    this.qtumWinnings = sumBy(this.withdrawableAddresses, ({ qtumWon }) => qtumWon);
-  }
-
-  @action
-  getBetAndVoteBalances = async () => {
-    // Address is needed to get bet and vote balances
-    if (isEmpty(this.app.wallet.addresses)) {
-      this.betBalances = fill(Array(this.topic.options.length), 0);
-      this.voteBalances = fill(Array(this.topic.options.length), 0);
-      return;
-    }
-
-    try {
-      const { address: contractAddress, app: { wallet } } = this;
-
-      // Get all votes for this Topic
-      const voteFilters = [];
-      each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: contractAddress,
-          voterAddress: item.address,
-        });
-      });
-
-      // Filter unique votes
-      const allVotes = await queryAllVotes(voteFilters);
-      const uniqueVotes = [];
-      each(allVotes, (vote) => {
-        const { voterAddress, topicAddress } = vote;
-        if (!find(uniqueVotes, { voterAddress, topicAddress })) {
-          uniqueVotes.push(vote);
+    // Update on new block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (this.app.ui.location === Routes.EVENT) {
+          await this.initEvent();
         }
+      },
+    );
+  }
+
+  @action
+  initEvent = async () => {
+    if (!this.url) return;
+    const roundBetsAddress = this.app.wallet.currentAddress || null;
+    const { items } = await events(this.app.graphqlClient, {
+      filter: { OR: [{ txid: this.url }, { address: this.url }] },
+      includeRoundBets: true,
+      roundBetsAddress,
+      includeBetRoundBets: true,
+    });
+    [this.event] = items;
+    if (!this.event) return;
+    this.address = this.event.address;
+    this.escrowAmount = this.event.escrowAmount;
+
+    this.queryLeaderboard();
+
+    this.disableEventActionsIfNecessary();
+    if (this.isResultSetting) {
+      // Set the amount field since we know the amount will be the consensus threshold
+      this.amount = this.event.consensusThreshold.toString();
+    }
+
+    if (this.isWithdrawing) {
+      await this.getDidWithdraw();
+      await this.queryPendingWithdraw();
+      this.selectedOptionIdx = this.event.currentResultIndex;
+      await this.queryTotalResultBets();
+      await this.calculateWinnings();
+    }
+
+    this.loading = false;
+  }
+
+  @action
+  getDidWithdraw = async () => {
+    const address = this.event && this.event.address;
+    if (!address || !this.app.wallet.currentAddress) return;
+
+    try {
+      const { data } = await axios.get(API.DID_WITHDRAW, {
+        params: {
+          eventAddress: address,
+          address: this.app.wallet.currentAddress,
+        },
       });
-
-      // Call bet and vote balances for each unique vote address and get arrays for each address
-      const betArrays = [];
-      const voteArrays = [];
-      for (let i = 0; i < uniqueVotes.length; i++) {
-        const voteObj = uniqueVotes[i];
-
-        const betBalances = await axios.post(networkRoutes.api.betBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterAddress,
-        });
-        betArrays.push(map(betBalances.data[0], satoshiToDecimal));
-
-        const voteBalances = await axios.post(networkRoutes.api.voteBalances, { // eslint-disable-line
-          contractAddress,
-          senderAddress: voteObj.voterAddress,
-        });
-        voteArrays.push(map(voteBalances.data[0], satoshiToDecimal));
-      }
-
-      // Sum all arrays by index into one array
-      this.betBalances = map(unzip(betArrays), sum);
-      this.voteBalances = map(unzip(voteArrays), sum);
+      this.didWithdraw = data.result;
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(
+        this.app.globalDialog.setError(
           `${error.message} : ${error.response.data.error}`,
-          `${networkRoutes.api.betBalances} ${networkRoutes.api.voteBalances}`,
+          API.DID_WITHDRAW,
         );
       });
     }
   }
 
   @action
-  getWithdrawableAddresses = async () => {
-    // Address is needed to get withdrawable addresses
-    if (isEmpty(this.app.wallet.addresses)) {
-      this.withdrawableAddresses = [];
-      return;
+  queryPendingWithdraw = async () => {
+    const address = this.event && this.event.address;
+    if (!address || !this.app.wallet.currentAddress) return;
+    const res = await withdraws(this.app.graphqlClient, {
+      filter: { eventAddress: address, txStatus: TransactionStatus.PENDING, winnerAddress: this.app.wallet.currentAddress },
+    });
+    this.pendingWithdraw = res.items;
+  }
+
+  @action
+  queryLeaderboard = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    const bets = await mostBets(this.app.graphqlClient, {
+      filter: { eventAddress: address },
+      limit: this.leaderboardLimit,
+      skip: 0,
+    });
+    this.leaderboardBets = bets.items;
+  }
+
+  @action
+  queryBiggestWinner = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    const winners = await biggestWinners(this.app.graphqlClient, {
+      filter: { eventAddress: address },
+      limit: this.leaderboardLimit,
+      skip: 0,
+    });
+    this.leaderboardBets = winners;
+  }
+
+  @action
+  updateLeaderBoard = async () => {
+    if (this.activeStep < 2) {
+      await this.queryLeaderboard();
+    } else {
+      await this.queryBiggestWinner();
     }
+  }
+
+  @action
+  addPendingTx(pendingTransaction) {
+    this.app.history.transactions.unshift(pendingTransaction);
+  }
+
+  @action
+  queryTotalResultBets = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    const res = await totalResultBets(this.app.graphqlClient, {
+      filter: {
+        eventAddress: address,
+        betterAddress: this.app.wallet.currentAddress,
+      },
+    });
+
+    this.totalBets = res.totalBets || [];
+    this.betterBets = res.betterBets || [];
+    this.totalVotes = res.totalVotes || [];
+    this.betterVotes = res.betterVotes || [];
+    this.totalInvestment = sum(this.betterBets);
+  }
+
+  @action
+  calculateWinnings = async () => {
+    const address = this.event && this.event.address;
+    if (!address || !this.app.wallet.currentAddress) return;
 
     try {
-      const { address: eventAddress, app: { wallet } } = this;
-      const withdrawableAddresses = [];
-
-      // Fetch Topic
-      const { topics } = await queryAllTopics(this.app, [{ address: eventAddress }]);
-      let topic;
-      if (!isEmpty(topics)) {
-        [topic] = topics;
-      } else {
-        throw new Error(`Unable to find topic ${eventAddress}`);
-      }
-
-      // Get all winning votes for this Topic
-      const voteFilters = [];
-      each(wallet.addresses, (item) => {
-        voteFilters.push({
-          topicAddress: topic.address,
-          optionIdx: topic.resultIdx,
-          voterAddress: item.address,
-        });
-
-        // Add escrow withdraw object if is event creator
-        if (item.address === topic.creatorAddress) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW_ESCROW,
-            address: item.address,
-            botWon: topic.escrowAmount,
-            qtumWon: 0,
-          });
-          this.escrowClaim = topic.escrowAmount;
-        }
+      const { data } = await axios.get(API.CALCULATE_WINNINGS, {
+        params: {
+          // calcaulateWinnings working event address: 0xe272f0793b97a3606f7a4e1eed2abaded67a9376
+          eventAddress: address,
+          address: this.app.wallet.currentAddress,
+        },
       });
-
-      // Filter unique votes
-      const votes = await queryAllVotes(voteFilters);
-      const filtered = [];
-      each(votes, (vote) => {
-        if (!find(filtered, {
-          voterAddress: vote.voterAddress,
-          topicAddress: vote.topicAddress,
-        })) {
-          filtered.push(vote);
-        }
-      });
-
-      // Calculate winnings for each winning vote
-      for (let i = 0; i < filtered.length; i++) {
-        const vote = filtered[i];
-
-        const { data } = await axios.post(networkRoutes.api.winnings, { // eslint-disable-line
-          contractAddress: topic.address,
-          senderAddress: vote.voterAddress,
-        });
-        const botWon = data ? satoshiToDecimal(data[0]) : 0;
-        const qtumWon = data ? satoshiToDecimal(data[1]) : 0;
-
-        // return only winning addresses
-        if (botWon || qtumWon) {
-          withdrawableAddresses.push({
-            type: TransactionType.WITHDRAW,
-            address: vote.voterAddress,
-            botWon,
-            qtumWon,
-          });
-        }
-      }
-
-      this.withdrawableAddresses = withdrawableAddresses;
+      this.nbotWinnings = satoshiToDecimal(data.result);
+      this.returnRate = ((this.nbotWinnings - this.totalInvestment) / this.totalInvestment) * 100;
+      this.profitOrLoss = this.nbotWinnings - this.totalInvestment;
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, networkRoutes.api.winnings);
+        this.app.globalDialog.setError(
+          `${error.message}`,
+          API.CALCULATE_WINNINGS,
+        );
       });
     }
   }
@@ -511,11 +377,12 @@ export default class EventStore {
    */
   @action
   disableEventActionsIfNecessary = () => {
-    const { phase, resultSetterAddress, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.oracle;
+    if (!this.event) return;
+    const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const currentWalletQtum = wallet.currentWalletAddress ? wallet.currentWalletAddress.qtum : 0;
-    const notEnoughQtum = currentWalletQtum < maxTransactionFee;
+    const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : 0;
+    const notEnoughNbot = currentWalletNbot < maxTransactionFee;
 
     this.buttonDisabled = false;
     this.warningType = '';
@@ -524,7 +391,7 @@ export default class EventStore {
 
     // Trying to vote over the consensus threshold - currently not way to trigger
     const amountNum = Number(this.amount);
-    if (phase === VOTING && this.amount && this.selectedOptionIdx >= 0) {
+    if (status === ARBITRATION && this.amount && this.selectedOptionIdx >= 0) {
       const maxVote = NP.minus(consensusThreshold, this.selectedOption.amount);
       if (amountNum > maxVote) {
         this.buttonDisabled = true;
@@ -534,7 +401,8 @@ export default class EventStore {
     }
 
     // Has not reached betting start time
-    if (phase === BETTING && currBlockTime.isBefore(moment.unix(this.oracle.startTime))) {
+    if (status === BETTING
+      && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -542,7 +410,8 @@ export default class EventStore {
     }
 
     // Has not reached result setting start time
-    if ((phase === RESULT_SETTING) && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+    if ((status === ORACLE_RESULT_SETTING)
+      && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -550,7 +419,9 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (phase === RESULT_SETTING && !isOpenResultSetting && resultSetterAddress !== wallet.currentAddress) {
+    if (status === ORACLE_RESULT_SETTING
+      && !isOpenResultSetting()
+      && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.cOracleDisabledText';
@@ -565,42 +436,28 @@ export default class EventStore {
       return;
     }
 
-    // Trying to set result or vote when not enough QTUM or BOT
+    // Trying to set result or vote when not enough NBOT
     const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
-    const currentBot = filteredAddress.length > 0 ? filteredAddress[0].bot : 0; // # of BOT at currently selected address
+    const currentNbot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
     if ((
-      (phase === VOTING && currentBot < this.amount)
-      || (phase === RESULT_SETTING && currentBot < consensusThreshold)
-    ) && notEnoughQtum) {
+      (status === ARBITRATION && currentNbot < this.amount)
+      || ((status === ORACLE_RESULT_SETTING || status === OPEN_RESULT_SETTING) && currentNbot < consensusThreshold)
+    ) && notEnoughNbot) {
       this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughQtumAndBot';
+      this.error.amount = 'str.notEnoughNbot';
       return;
     }
 
-    // Error getting allowance amount
-    if (phase === VOTING && !this.allowance) {
+    // Trying to bet more naka than you have or you just don't have enough NAKA period
+    if ((status === BETTING && this.amount > currentWalletNbot + maxTransactionFee)
+      || notEnoughNbot) {
       this.buttonDisabled = true;
-      this.error.address = 'str.errorGettingAllowance';
-      return;
-    }
-
-    // Trying to bet more qtum than you have or you just don't have enough QTUM period
-    if ((phase === BETTING && this.amount > currentWalletQtum + maxTransactionFee) || notEnoughQtum) {
-      this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughQtum';
-      return;
-    }
-
-    // Not enough bot for setting the result or voting
-    if ((phase === RESULT_SETTING && currentBot < consensusThreshold && this.selectedOptionIdx !== -1)
-      || (phase === VOTING && currentBot < this.amount)) {
-      this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughBot';
+      this.error.amount = 'str.notEnoughNbot';
       return;
     }
 
     // Did not select a result
-    if (phase !== FINALIZING && this.selectedOptionIdx === -1) {
+    if (this.selectedOptionIdx === -1) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.selectResultDisabledText';
@@ -608,7 +465,7 @@ export default class EventStore {
     }
 
     // Did not enter an amount
-    if ([BETTING, VOTING].includes(phase) && (!this.amount)) {
+    if ([BETTING, ARBITRATION].includes(status) && (!this.amount)) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.enterAmountDisabledText';
@@ -616,7 +473,8 @@ export default class EventStore {
     }
 
     // Enter an invalid amount
-    if ([BETTING, VOTING].includes(phase) && (this.amount <= 0 || Number.isNaN(this.amount))) {
+    if ([BETTING, ARBITRATION].includes(status)
+      && (this.amount <= 0 || Number.isNaN(this.amount))) {
       this.buttonDisabled = true;
       this.error.amount = 'str.invalidAmount';
     }
@@ -625,78 +483,63 @@ export default class EventStore {
   // Auto-fixes the amount field onBlur if trying to vote over the threshold
   @action
   fixAmount = () => {
-    if (this.oracle.phase !== VOTING) return;
+    if (this.event.status !== ARBITRATION) return;
 
     const inputAmount = parseFloat(this.amount, 10);
-    const consensusThreshold = parseFloat(this.oracle.consensusThreshold, 10);
+    const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
-      this.amount = String(toFixed(NP.minus(consensusThreshold, Number(this.selectedOption.amount))));
+      this.amount = String(toFixed(NP.minus(
+        consensusThreshold,
+        Number(this.selectedOption.amount)
+      )));
+    }
+  }
+
+  @action
+  setSelectedOption = (selectedOptionIdx) => {
+    if (selectedOptionIdx === this.selectedOptionIdx) {
+      this.selectedOptionIdx = INIT.selectedOptionIdx;
+    } else {
+      this.selectedOptionIdx = selectedOptionIdx;
     }
   }
 
   bet = async () => {
-    await this.app.tx.addBetTx(this.oracle.topicAddress, this.oracle.address, this.selectedOption.idx, this.amount);
+    await this.app.tx.executeBet({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
-  setResult = async () => {
-    const { isAllowanceEnough } = this.app.wallet;
-    const { topicAddress } = this.oracle;
-    const oracleAddress = this.oracle.address;
-    const optionIdx = this.selectedOption.idx;
-    const amountSatoshi = decimalToSatoshi(this.amount);
-
-    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // Has allowance less than the consensus threshold, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
-    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // No previous allowance, approve now
-      await this.app.tx.addApproveSetResultTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
-      // Has enough allowance, set the result
-      await this.app.tx.addSetResultTx(
-        undefined,
-        this.app.wallet.currentAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amountSatoshi,
-      );
-    }
+  set = async () => {
+    await this.app.tx.executeSetResult({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
   vote = async () => {
-    const { isAllowanceEnough } = this.app.wallet;
-    const { topicAddress } = this.oracle;
-    const oracleAddress = this.oracle.address;
-    const optionIdx = this.selectedOption.idx;
-    const amountSatoshi = decimalToSatoshi(this.amount);
-
-    if (this.allowance > 0 && !isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // Has allowance less than the vote amount, needs to reset
-      await this.app.tx.addResetApproveTx(topicAddress, topicAddress, oracleAddress);
-    } else if (!isAllowanceEnough(this.allowance, amountSatoshi)) {
-      // No previous allowance, approve now
-      await this.app.tx.addApproveVoteTx(topicAddress, oracleAddress, optionIdx, amountSatoshi);
-    } else {
-      // Has enough allowance, place vote
-      await this.app.tx.addVoteTx(
-        undefined,
-        this.app.wallet.currentAddress,
-        topicAddress,
-        oracleAddress,
-        optionIdx,
-        amountSatoshi,
-      );
-    }
+    await this.app.tx.executeVote({
+      eventAddr: this.event.address,
+      optionIdx: this.selectedOption.idx,
+      amount: decimalToSatoshi(this.amount),
+      eventRound: this.event.currentRound,
+    });
+    this.setSelectedOption(INIT.selectedOptionIdx);
   }
 
-  finalize = async () => {
-    await this.app.tx.addFinalizeResultTx(this.oracle.topicAddress, this.oracle.address);
+  withdraw = async () => {
+    await this.app.tx.executeWithdraw({
+      eventAddress: this.event.address,
+      winningAmount: decimalToSatoshi(this.nbotWinnings),
+      escrowAmount: decimalToSatoshi(this.escrowAmount),
+      version: this.event.version,
+    });
   }
-
-  withdraw = async (senderAddress, type) => {
-    await this.app.tx.addWithdrawTx(type, this.topic.address);
-  }
-
-  reset = () => Object.assign(this, INIT);
 }

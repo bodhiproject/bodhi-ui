@@ -4,15 +4,14 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
-
-import Routes from '../routes';
+import { GRAPHQL } from '../routes';
 
 const httpLink = new HttpLink({
-  uri: Routes.graphql.http,
+  uri: GRAPHQL.HTTP,
 });
 
 export const wsLink = new WebSocketLink({
-  uri: Routes.graphql.subs,
+  uri: GRAPHQL.SUBS,
   options: {
     reconnect: true,
   },

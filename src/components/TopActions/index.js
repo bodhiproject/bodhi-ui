@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Grid, FormControl, Select, MenuItem, Card, withStyles } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Button, Grid, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
-
-import { SortBy } from '../../constants';
+import { Routes } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -23,46 +23,24 @@ export default class TopActions extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store } = this.props;
-    const { sortBy, createEvent } = store;
+    const { classes, noCreateEventButton, fontSize } = this.props;
 
     return (
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={6}>
           {!noCreateEventButton && (
-            <Button
-              variant="contained"
-              size="medium"
-              color="primary"
-              className={classes.createEventButton}
-              onClick={createEvent.open}
-            >
-              <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
-              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-            </Button>
-          )}
-        </Grid>
-        <Grid item xs={6} className={classes.dashboardActionsRight}>
-          <span className={classes.dashboardActionsSortLabel}>
-            <FormattedMessage id="sort.label" defaultMessage="Sort By" />
-          </span>
-          <Card className={classes.dashboardActionsSort}>
-            <FormControl>
-              <Select
-                disableUnderline
-                className={classes.dashboardActionsSelect}
-                value={sortBy}
-                onChange={e => store.sortBy = e.target.value}
+            <Link to={Routes.CREATE_EVENT}>
+              <Button
+                variant="contained"
+                size="medium"
+                color="primary"
+                className={classes.createEventButton}
               >
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.ASCENDING}>
-                  <FormattedMessage id="sort.ascEndTime" defaultMessage="End Earliest" />
-                </MenuItem>
-                <MenuItem className={classes.dashboardActionsMenuItem} value={SortBy.DESCENDING}>
-                  <FormattedMessage id="sort.descEndTime" defaultMessage="End Latest" />
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Card>
+                <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
+                <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+              </Button>
+            </Link>
+          )}
         </Grid>
       </Grid>
     );

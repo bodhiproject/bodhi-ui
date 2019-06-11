@@ -1,5 +1,5 @@
-const styles = (theme) => ({
-  bottomBarWrapper: {
+export default (theme) => ({
+  paper: {
     position: 'fixed',
     bottom: 0,
     left: 0,
@@ -12,15 +12,17 @@ const styles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       padding: `${theme.padding.spaceX.px}`,
     },
+    zIndex: 200,
   },
-  bottomBarNetworkWrapper: {
-    flexBasis: 130,
+  statusContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  bottomBarNetworkIcon: {
-    marginBottom: '-2px',
-    marginRight: '4px',
-    width: 14,
-    height: 14,
+  statusIcon: {
+    marginRight: 4,
+    width: 16,
+    height: 16,
     '&.online': {
       color: theme.palette.secondary.main,
     },
@@ -28,18 +30,15 @@ const styles = (theme) => ({
       color: theme.palette.error.dark,
     },
   },
-  bottomBarBlockInfoWrapper: {
-    flexBasis: 490,
-    textAlign: 'right',
+  blockInfoContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
-  bottomBarBlockNum: {
-    paddingRight: theme.padding.spaceX.px,
-    [theme.breakpoints.down('sm')]: {
-      paddingRight: 0,
-    },
-  },
-  bottomBarBlockTime: {
-
+  blockItemContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
   bottomBarTxt: {
     [theme.breakpoints.down('sm')]: {
@@ -47,5 +46,3 @@ const styles = (theme) => ({
     },
   },
 });
-
-export default styles;

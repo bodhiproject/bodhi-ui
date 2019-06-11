@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Grid, withWidth, withStyles } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
-import { Loading } from '../Loading';
+import Loading from '../Loading';
 import styles from './styles';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 
@@ -52,7 +52,7 @@ export default class InfiniteScroll extends Component {
     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-    if (scrolledToBottom && this.props.hasMore) {
+    if (scrolledToBottom && this.props.hasMore && !this.props.loadingMore) {
       this.props.loadMore();
     }
   }

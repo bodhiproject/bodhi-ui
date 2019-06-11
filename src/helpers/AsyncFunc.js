@@ -4,7 +4,6 @@ import ReactPlaceholder from 'react-placeholder';
 import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
 import NavBar from '../components/NavBar';
-import FavoriteDrawer from '../components/FavoriteDrawer';
 
 export default function asyncComponent(importComponent) {
   class AsyncFunc extends React.Component {
@@ -42,7 +41,6 @@ export default function asyncComponent(importComponent) {
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
           <div>
             <NavBar {...this.props} />
-            <FavoriteDrawer />
             {Component}
           </div>
         </ReactPlaceholder>

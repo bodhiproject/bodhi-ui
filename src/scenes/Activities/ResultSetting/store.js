@@ -1,11 +1,9 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { isEmpty, each } from 'lodash';
-import { Token, OracleStatus, Routes, SortBy } from 'constants';
-
-import { queryAllOracles } from '../../../network/graphql/queries';
+import { observable, action, runInAction, reaction } from 'mobx';
+import { EVENT_STATUS, Routes, SortBy } from 'constants';
+import { events } from '../../../network/graphql/queries';
 
 const INIT_VALUES = {
-  loaded: false, // loading state?
+  loaded: false, // loading state
   loadingMore: false, // for laoding icon?
   list: [], // data list
   hasMore: true, // has more data to fetch?
@@ -24,7 +22,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => this.app.naka.account,
       () => {
         if (this.app.ui.location === Routes.SET) {
           this.init();
@@ -54,11 +52,6 @@ export default class {
 
   @action
   loadMore = async () => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
-
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit; // pump the skip eg. from 0 to 24
@@ -75,27 +68,30 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
-
-    // we want to fetch all *Oracles* which is related to QtTUM token and OpenResultSet status
     if (this.hasMore) {
-      const filters = [{ token: Token.QTUM, status: OracleStatus.OPEN_RESULT_SET, language: this.app.ui.locale }];
-      each(this.app.wallet.addresses, (addressObj) => {
-        filters.push({
-          token: Token.QTUM,
-          status: OracleStatus.WAIT_RESULT,
-          resultSetterAddress: addressObj.address,
-          language: this.app.ui.locale,
-        });
-      });
-      const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const data = await queryAllOracles(this.app, filters, orderBy, limit, skip);
-      this.hasMore = data.pageInfo.hasNextPage;
-      return data.oracles;
+      const {
+        naka: { account },
+        global: { eventVersion },
+        graphqlClient,
+      } = this.app;
+      const filter = { OR: [
+        {
+          status: EVENT_STATUS.OPEN_RESULT_SETTING,
+          version: eventVersion,
+        }, {
+          status: EVENT_STATUS.ORACLE_RESULT_SETTING,
+          ownerAddress: account,
+          version: eventVersion,
+        },
+      ] };
+
+      const orderBy = { field: 'resultSetEndTime', direction: SortBy.ASCENDING };
+
+      const res = await events(graphqlClient, { filter, orderBy, limit, skip });
+      if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
+      else this.hasMore = false;
+      return res.items;
     }
-    return INIT_VALUES.list; // default return
+    return INIT_VALUES.list;
   }
 }

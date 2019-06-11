@@ -56,63 +56,11 @@ const styles = (theme) => ({
       borderLeft: '1px solid rgba(0,0,0,0.2)',
     },
   },
-  searchButtonIcon: {
-    color: 'rgba(255,255,255,0.65)',
-    '&.selected': {
-      color: 'white',
-    },
-    '&:hover': {
-      color: 'white',
-    },
-  },
   searchBarWrapper: {
     height: theme.sizes.navHeight.px,
     lineHeight: theme.sizes.navHeight.px,
     background: 'white',
     color: 'rgba(0, 0, 0, 1)',
-  },
-  searchBarTextField: {
-    width: '100%',
-    margin: 'auto',
-    verticalAlign: 'middle',
-  },
-  searchBarInputBase: {
-    height: '48px',
-    lineHeight: '48px',
-    padding: `0px ${theme.padding.space2X.px}`,
-    borderLeft: `2px solid ${theme.palette.text.hint}`,
-  },
-  searchBarInput: {
-    fontSize: theme.sizes.font.medium,
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.sizes.font.xxSmall,
-    },
-  },
-  searchBarLeftIcon: {
-    fontSize: theme.sizes.font.medium,
-    color: theme.palette.primary.main,
-    paddingRight: theme.padding.space3X.value,
-  },
-  searchBarFont: {
-    paddingLeft: theme.padding.spaceX.px,
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
-  },
-  searchBarField: {
-    margin: 'auto',
-    display: 'flex',
-    width: '90%',
-  },
-  walletStatusBadge: {
-    width: 10,
-    height: 10,
-    top: '-6px',
-    right: '-4px',
-    [theme.breakpoints.down('xs')]: {
-      top: '3px',
-      right: '-13px',
-    },
   },
   myActivitiesWrapper: {
     display: 'flex',

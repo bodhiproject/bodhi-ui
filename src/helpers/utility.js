@@ -1,12 +1,9 @@
-import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
-import _ from 'lodash';
+import { isNaN, isFinite, isUndefined } from 'lodash';
 import { defineMessages } from 'react-intl';
-
+import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
-import { OracleStatus, SortBy, Phases } from '../constants';
 
-const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
 const SATOSHI_CONVERSION = 10 ** 8;
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
@@ -56,9 +53,17 @@ export function decimalToSatoshi(number) {
   if (!number) {
     return number;
   }
+  const toStringNumber = String(number);
+  const splitArr = toStringNumber.split('.');
+  const integerPart = splitArr[0];
 
-  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return new BigNumber(number).multipliedBy(conversionBN).toString(10);
+  const decimalPartToCheck = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
+  const decimalPartToCheckString = String(decimalPartToCheck);
+  const decimalString = decimalPartToCheckString.split('.');
+  const decimalPart = decimalString[0];
+
+  const conversionBN = toBN(SATOSHI_CONVERSION);
+  return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
 }
 
 /**
@@ -72,28 +77,72 @@ export function satoshiToDecimal(number) {
   }
 
   let bn;
-  if (_.isNaN(Number(number))) {
-    bn = new BigNumber(number, 16);
+  if (isNaN(Number(number))) {
+    bn = toBN(number, 16);
   } else {
-    bn = new BigNumber(number);
+    const toStringNumber = String(number);
+    const splitArr = toStringNumber.split('.');
+    const integerPart = splitArr[0];
+    bn = toBN(integerPart);
   }
 
-  const conversionBN = new BigNumber(SATOSHI_CONVERSION);
-  return bn.dividedBy(conversionBN).toNumber();
+  const conversionBN = toBN(SATOSHI_CONVERSION);
+  const integerPart = bn.div(conversionBN).toNumber();
+  const decimalPartBN = bn.sub(conversionBN.mul(toBN(integerPart)));
+  const decimalPart = decimalPartBN.toNumber() / SATOSHI_CONVERSION;
+  return integerPart + decimalPart;
 }
 
 /**
- * Converts the gas number to QTUM cost.
- * @param gas {Number} The gas number to convert.
- * @return {Number} The gas amount represented as QTUM.
+ * Converts String to a big number.
+ * @param number {String} The number string to convert.
+ * @return {BigNumber} The converted big number.
  */
-export function gasToQtum(gas) {
-  if (!gas || !_.isFinite(gas)) {
+export function stringToBN(number) {
+  if (!number) {
+    return number;
+  }
+
+  return toBN(number);
+}
+
+/**
+ * Converts wei to a decimal number.
+ * @param number {String} The wei to convert.
+ * @return {String} The converted decimal number.
+ */
+export function weiToDecimal(number) {
+  if (!number) {
+    return number;
+  }
+
+  const decimal = fromWei(number);
+  return Number(decimal);
+}
+
+/**
+ * Returns hex string with hex prefix.
+ * @param number {String|Number} The number to convert.
+ * @return {String} The converted hex string.
+ */
+export function numToHex(number) {
+  if (isUndefined(number)) return number;
+  if (isHexStrict(number)) return number;
+  return numberToHex(number);
+}
+
+/**
+ * Converts the gas number to NAKA cost.
+ * @param gas {Number} The gas number to convert.
+ * @return {Number} The gas amount represented as NAKA.
+ */
+export function gasToNaka(gas) {
+  if (!gas || !isFinite(gas)) {
     return undefined;
   }
 
-  const gasCostBN = new BigNumber(GAS_COST);
-  return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
+  const gasCostBN = toBN(GAS_COST);
+  return toBN(gas).multipliedBy(gasCostBN).toNumber();
 }
 
 /**
@@ -105,15 +154,46 @@ export function gasToQtum(gas) {
  * @return {String} A string either showing "ended" or the duration in human friendly way.
  */
 export function getEndTimeCountDownString(unixDiff, locale, localeMessages, isShort) {
-  const { day, hour, minute, second, end } = messages;
+  const { day, hour, minute, end } = messages;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
     return formatMessage(end);
   }
 
-  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} hh:mm:ss`);
-  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}] s[${formatMessage(second)}]`);
+  if (isShort) return moment.duration(unixDiff, 'seconds').format(`+d${formatMessage(day)} hh:mm`);
+  return moment.duration(unixDiff, 'seconds').format(`d[${formatMessage(day)}] h[${formatMessage(hour)}] m[${formatMessage(minute)}]`);
+}
+
+/**
+ * Converts a timestamp to the display string.
+ * @param unix {Number} The timestamp to convert. Formatted in unix time format.
+ * @return {Array} An array inclue time and date
+ */
+export function getEndTimeCornerString(unix) {
+  const ret = {};
+  const dest = moment.unix(unix);
+  ret.time = dest.format('h:mm a');
+  if (dest.isSame(moment(), 'year')) {
+    ret.day = dest.format('MMM Do');
+  } else {
+    ret.day = dest.format('MMM Do YY');
+  }
+  return ret;
+}
+
+/**
+ * Converts a timestamp to the display string.
+ * @param unix {Number} The timestamp to convert. Formatted in unix time format.
+ * @return {String} A string representing the time, with or without year
+ */
+export function getTimeString(time) {
+  const dest = moment.unix(time);
+  if (dest.isSame(moment(), 'year')) {
+    // don't show year
+    return dest.format('LL');
+  }
+  return dest.format('LLLL');
 }
 
 /**
@@ -133,65 +213,6 @@ export function shortenAddress(text, maxLength) {
     : text;
 }
 
-/**
- * Checks to see if the unlocked until timestamp is before the current UNIX time.
- * @param isEncrypted {Boolean} Is the wallet encrypted.
- * @param unlockedUntil {Number|String} The UNIX timestamp in seconds to compare to.
- * @return {Boolean} If the user needs to unlock their wallet.
- */
-export function doesUserNeedToUnlockWallet(isEncrypted, unlockedUntil) {
-  if (!isEncrypted) {
-    return false;
-  }
-
-  if (unlockedUntil === 0) {
-    return true;
-  }
-
-  const now = moment();
-  const unlocked = moment.unix(unlockedUntil).subtract(1, 'hours');
-  return now.isSameOrAfter(unlocked);
-}
-
-/**
- * Returns the correct path of the latest Oracle to route to the detail page.
- * @param oracles {Array} Array of Oracle objects.
- * @return {String} The path to route the user to the correct detail page.
- */
-export function getDetailPagePath(oracles) {
-  if (oracles.length) {
-    const sorted = _.orderBy(oracles, ['blockNum'], [SortBy.DESCENDING.toLowerCase()]);
-    const latestOracle = sorted[0];
-
-    // construct url for oracle or topic
-    let url;
-    if (latestOracle.status !== OracleStatus.WITHDRAW) {
-      url = `/oracle/${latestOracle.topicAddress}/${latestOracle.address}/${latestOracle.txid}`;
-    } else {
-      url = `/topic/${latestOracle.topicAddress}`;
-    }
-
-    return url;
-  }
-  return undefined;
-}
-
-/**
- * Takes an oracle object and returns which phase it is in.
- * @param {oracle} oracle
- */
-export const getPhase = ({ token, status }) => {
-  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && status === 'CREATED') return UNCONFIRMED; // BETTING
-  if (QTUM && status === 'VOTING') return BETTING;
-  if (BOT && status === 'VOTING') return VOTING;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
-  if (BOT && status === 'WAITRESULT') return FINALIZING;
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
-  throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
-};
-
 export function toFixed(num) {
   let x = num;
   if (Math.abs(x) < 1.0) {
@@ -208,5 +229,15 @@ export function toFixed(num) {
       x += (new Array(e + 1)).join('0');
     }
   }
-  return x;
+  const splitArray = String(x).split('.');
+  splitArray[0] = splitArray[0].substring(0, 4);
+  let ret = splitArray[0];
+  if (splitArray.length > 1) {
+    splitArray[1] = splitArray[1].substring(0, 4);
+    splitArray[1] = splitArray[1].replace(/0+$/, '');
+    if (splitArray[1].length > 0) {
+      ret = `${ret}.${splitArray[1]}`;
+    }
+  }
+  return ret;
 }

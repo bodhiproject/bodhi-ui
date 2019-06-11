@@ -3,6 +3,7 @@ import { inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Typography, withWidth, Button, withStyles } from '@material-ui/core';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Routes } from 'constants';
 import styles from './styles';
 
@@ -10,7 +11,7 @@ export const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 
-const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
+const EmptyPlaceholder = ({ store: { ui }, intl, ...props }) => {
   const { message, width } = props;
   return (
     <Row>
@@ -20,15 +21,16 @@ const EmptyPlaceholder = ({ store: { ui, createEvent }, intl, ...props }) => {
           {intl.formatMessage({ id: message.id, defaultMessage: message.defaultMessage })}
         </Typography>
       </Row>
-      {ui.location === Routes.QTUM_PREDICTION && !ui.searchBarMode &&
+      {ui.location === Routes.PREDICTION && !ui.searchBarMode &&
       <Row>
-        <Button
-          size={width === 'xs' ? 'small' : 'medium'}
-          color="primary"
-          onClick={createEvent.open}
-        >
-          <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
-        </Button>
+        <Link to={Routes.CREATE_EVENT}>
+          <Button
+            size={width === 'xs' ? 'small' : 'medium'}
+            color="primary"
+          >
+            <FormattedMessage id="create.dialogTitle" defaultMessage="CREATE EVENT" />
+          </Button>
+        </Link>
       </Row>
       }
     </Row>
