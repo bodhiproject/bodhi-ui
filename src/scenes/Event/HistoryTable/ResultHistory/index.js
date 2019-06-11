@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { Token } from 'constants';
+import { Token, Routes } from 'constants';
+import { KeyboardArrowRight } from '@material-ui/icons';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
 import { getTimeString, toFixed } from '../../../../helpers';
@@ -115,12 +117,22 @@ export default class EventResultHistory extends Component {
     return (
       <div>
         {resultSetsHistory.length ? (
-          <InfiniteScroll
-            spacing={0}
-            data={cards}
-            loadMore={() => {}}
-            loadingMore={loadingMore}
-          />
+          <Fragment>
+            <InfiniteScroll
+              spacing={0}
+              data={cards}
+              loadMore={() => {}}
+              loadingMore={loadingMore}
+            />
+            <Link to={Routes.CREATE_EVENT}>
+              <div className={classes.bottomButton}>
+                <Typography color='textPrimary' className={classes.bottomButtonText}>
+                  <FormattedMessage id="str.seeAll" defaultMessage="See All " />
+                  <KeyboardArrowRight className={classes.bottomButtonIcon} />
+                </Typography>
+              </div>
+            </Link>
+          </Fragment>
         ) : (
           <CenteredDiv>
             <Typography variant="body2">

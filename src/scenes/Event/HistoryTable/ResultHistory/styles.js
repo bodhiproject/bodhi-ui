@@ -13,10 +13,10 @@ const styles = (theme) => ({
     height: '50%',
     borderRadius: '10px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+    marginTop: theme.padding.space2X.px,
   },
   grid: {
     borderBottom: theme.border,
-    marginBottom: theme.padding.space3X.px,
   },
   bold: {
     fontWeight: '900',
@@ -30,6 +30,19 @@ const styles = (theme) => ({
   },
   content: {
     width: '80%',
+  },
+  bottomButton: {
+    borderTop: theme.border,
+    textAlign: 'center',
+  },
+  bottomButtonText: {
+    marginTop: theme.padding.space2X.px,
+    '&:active': {
+      transform: 'translateY(4px)',
+    },
+  },
+  bottomButtonIcon: {
+    verticalAlign: 'text-bottom',
   },
 });
 

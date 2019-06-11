@@ -23,7 +23,6 @@ const styles = (theme) => ({
   },
   grid: {
     borderTop: theme.border,
-
   },
   bold: {
     fontWeight: '900',
@@ -37,6 +36,19 @@ const styles = (theme) => ({
   },
   content: {
     width: '80%',
+  },
+  bottomButton: {
+    borderTop: theme.border,
+    textAlign: 'center',
+  },
+  bottomButtonText: {
+    marginTop: theme.padding.space2X.px,
+    '&:active': {
+      transform: 'translateY(4px)',
+    },
+  },
+  bottomButtonIcon: {
+    verticalAlign: 'text-bottom',
   },
 });
 

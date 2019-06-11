@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, withStyles } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
+import { Routes } from 'constants';
+import { KeyboardArrowRight } from '@material-ui/icons';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import TxRow from './TxRow';
@@ -12,7 +15,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { store: { history: { loadingMore } }, showMyTransactions } = this.props;
+    const { classes, store: { history: { loadingMore } }, showMyTransactions } = this.props;
     let { store: { history: { transactions, myTransactions } } } = this.props;
     let cards = [];
     if (!showMyTransactions) {
@@ -25,12 +28,22 @@ export default class TransactionHistory extends Component {
     return (
       <div>
         {cards.length > 0 ? (
-          <InfiniteScroll
-            spacing={0}
-            data={cards}
-            loadMore={() => {}}
-            loadingMore={loadingMore}
-          />
+          <Fragment>
+            <InfiniteScroll
+              spacing={0}
+              data={cards}
+              loadMore={() => {}}
+              loadingMore={loadingMore}
+            />
+            <Link to={Routes.CREATE_EVENT}>
+              <div className={classes.bottomButton}>
+                <Typography color='textPrimary' className={classes.bottomButtonText}>
+                  <FormattedMessage id="str.seeAll" defaultMessage="See All " />
+                  <KeyboardArrowRight className={classes.bottomButtonIcon} />
+                </Typography>
+              </div>
+            </Link>
+          </Fragment>
         ) : (
           <CenteredDiv>
             <Typography variant="body2">
