@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
-import { Tabs, Tab, withStyles } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { injectIntl, intlShape, FormattedMessage, defineMessages } from 'react-intl';
+import { Tabs, Tab, withStyles, Typography } from '@material-ui/core';
+import { KeyboardArrowRight } from '@material-ui/icons';
+import { Routes } from 'constants';
 import { Card } from 'components';
 import styles from './styles';
 import ResultHistory from './ResultHistory';
@@ -11,6 +14,13 @@ import TransactionHistory from './TransactionHistory';
 const TAB_RESULT_HISTORY = 2;
 const TAB_MY_TRANSACTIONS = 1;
 const TAB_ALL_TRANSACTIONS = 0;
+
+const messages = defineMessages({
+  strSeeAll: {
+    id: 'str.seeAll',
+    defaultMessage: 'See All ',
+  },
+});
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -46,7 +56,6 @@ export default class HistoryTable extends Component {
             variant="fullWidth"
             value={tabValue}
             onChange={this.handleChange}
-            className={classes.tabs}
           >
             <Tab
               value={TAB_ALL_TRANSACTIONS}
@@ -70,6 +79,14 @@ export default class HistoryTable extends Component {
             {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
           </div>
         </div>
+        <Link to={Routes.CREATE_EVENT}>
+          <div className={classes.bottomButton}>
+            <Typography color='textPrimary' className={classes.bottomButtonText}>
+              <FormattedMessage id="str.seeAll" defaultMessage="See All " />
+              <KeyboardArrowRight className={classes.bottomButtonIcon} />
+            </Typography>
+          </div>
+        </Link>
       </Card>
     );
   }
