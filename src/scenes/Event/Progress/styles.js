@@ -11,11 +11,9 @@ const styles = (theme) => ({
     boxShadow: '0 2px 10px rgba(0,0,0,.2) !important',
     backgroundColor: 'white !important',
   },
-  dashedColorSecondary: {
-    backgroundImage: 'none !important',
-  },
   dashed: {
     animation: 'none',
+    backgroundImage: 'none !important',
     backgroundColor: 'white !important',
   },
 });

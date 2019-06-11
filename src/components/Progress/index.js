@@ -8,10 +8,11 @@ import styles from './styles';
 const Progress = ({ classes, invalid, className, ...props }) => (
   <LinearProgress
     {...props}
-    classes={{ colorSecondary: classes.colorSecondary }}
     className={cx(className, classes, {
       [classes.invalid]: invalid,
+      [classes.root]: true,
     })}
+    classes={{ dashedColorSecondary: classes.dashedColorSecondary, dashed: classes.dashed }}
   />
 );
 

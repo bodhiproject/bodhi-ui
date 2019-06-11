@@ -83,6 +83,7 @@ export default class {
         skip,
         pendingTxsAddress: account,
         includeRoundBets: true,
+        roundBetsAddress: account,
       });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;

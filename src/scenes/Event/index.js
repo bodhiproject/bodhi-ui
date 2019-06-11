@@ -80,8 +80,8 @@ export default class EventPage extends Component {
     const { event, event: { status } } = this.props.store.eventPage;
     switch (status) {
       case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
       case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
       case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
       case EVENT_STATUS.WITHDRAWING: return 'finished';
@@ -131,6 +131,12 @@ export default class EventPage extends Component {
     }
     return (
       <Grid className={classes.optionGrid}>
+        {
+          betSpecific ?
+            <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessage id='string.betEnded' defaultMessage='Event bet Ended' /></div>
+            :
+            <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+        }
         {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
           <Option
@@ -212,15 +218,13 @@ export default class EventPage extends Component {
 
   renderBetContent = () => {
     const {
-      classes,
       store: {
-        eventPage: { event },
+        eventPage: { event, selectedOptionIdx },
       },
     } = this.props;
 
     return (
-      event.currentRound > 0 && <Fragment>
-        <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessage id='string.betEnded' defaultMessage='Event bet Ended' /></div>
+      event.currentRound > 0 && selectedOptionIdx === -1 && <Fragment>
         {this.renderOptions('bet', true)}
       </Fragment>
     );

@@ -95,6 +95,7 @@ export default class FavoriteStore {
     }
     if (this.hasMore) {
       const filters = [];
+      const roundBetsAddress = this.app.wallet.currentAddress || null;
       each(this.favAddresses, (addr) => filters.push({ address: addr }));
       const res = await events(this.app.graphqlClient, {
         filter: { OR: filters },
@@ -102,6 +103,7 @@ export default class FavoriteStore {
         limit,
         skip,
         includeRoundBets: true,
+        roundBetsAddress,
       });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;

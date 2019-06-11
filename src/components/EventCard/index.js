@@ -61,8 +61,8 @@ export default class EventCard extends Component {
     const { status } = this.props.event;
     switch (status) {
       case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
       case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
       case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
       case EVENT_STATUS.WITHDRAWING: return 'finished';

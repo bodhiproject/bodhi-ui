@@ -38,6 +38,8 @@ export default class MultipleResultsEvent {
   totalBets // Total amount of bets for this event in decimals
   betRoundBets
   totalBetRoundBets
+  previousRoundUserBets
+  previousRoundBets
 
   // UI-specific vars
   localizedInvalid // for invalid option
@@ -52,6 +54,8 @@ export default class MultipleResultsEvent {
     this.userRoundBets = map(event.roundBets && event.roundBets.userRoundBets, (bets) => satoshiToDecimal(bets));
     this.betRoundBets = map(event.roundBets && event.roundBets.totalBetRoundBets, (bets) => satoshiToDecimal(bets));
     this.userBetRoundBets = map(event.roundBets && event.roundBets.userBetRoundBets, (bets) => satoshiToDecimal(bets));
+    this.previousRoundBets = map(event.roundBets && event.roundBets.previousRoundBets, (bets) => satoshiToDecimal(bets));
+    this.previousRoundUserBets = map(event.roundBets && event.roundBets.previousRoundUserBets, (bets) => satoshiToDecimal(bets));
 
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {

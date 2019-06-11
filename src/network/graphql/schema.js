@@ -42,6 +42,8 @@ export const ROUND_BETS = `
   userRoundBets
   totalBetRoundBets
   userBetRoundBets
+  previousRoundUserBets
+  previousRoundBets
 `;
 
 // Transaction interface

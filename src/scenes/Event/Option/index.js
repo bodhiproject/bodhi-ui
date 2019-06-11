@@ -70,7 +70,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase } = option;
+    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase, isBetting } = option;
     const { eventPage } = store;
     const { selectedOptionIdx, isWithdrawing } = eventPage;
 
@@ -109,7 +109,7 @@ export default class Option extends Component {
                     <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
                   </div>
                   <Progress
-                    color="secondary"
+                    color={isBetting ? 'primary' : 'secondary'}
                     invalid={name === 'Invalid'}
                     variant="buffer"
                     value={userPercent}
@@ -117,7 +117,7 @@ export default class Option extends Component {
                   />
                 </div>
                 <Typography variant="body2">
-                  {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? '0.00' : toFixed(userValue) })}`}
+                  {`${intl.formatMessage(messages[actionText], { value: toFixed(userValue) })}`}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

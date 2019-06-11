@@ -6,8 +6,15 @@ const styles = (theme) => ({
       'background-color': theme.palette.error.dark,
     },
   },
-  colorSecondary: {
-    backgroundColor: '#fff !important',
+  root: {
+    height: '100% !important',
+    boxShadow: '0 2px 10px rgba(0,0,0,.2) !important',
+    backgroundColor: 'white !important',
+  },
+  dashed: {
+    animation: 'none',
+    backgroundColor: 'white !important',
+    backgroundImage: 'none !important',
   },
 });
 
