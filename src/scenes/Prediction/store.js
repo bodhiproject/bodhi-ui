@@ -10,7 +10,7 @@ const INIT_VALUES = {
   hasMore: true, // has more data to fetch?
   skip: 0, // skip
   limit: 16, // loading batch amount
-  sortBy: SortBy.DEFAULT,
+  sortBy: SortBy.ASCENDING,
 };
 
 export default class PredictionStore {
