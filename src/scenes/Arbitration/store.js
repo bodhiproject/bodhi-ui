@@ -86,7 +86,7 @@ export default class ArbitrationStore {
           version: eventVersion,
         },
       ] };
-      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING };
+      const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
       const res = await events(graphqlClient, {
         filter,
         orderBy,
