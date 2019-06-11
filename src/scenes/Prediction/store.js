@@ -87,7 +87,7 @@ export default class PredictionStore {
         { status: EVENT_STATUS.BETTING, version: eventVersion },
         { status: EVENT_STATUS.CREATED, version: eventVersion },
       ] };
-      const orderBy = { field: 'resultSetEndTime', direction: this.sortBy };
+      const orderBy = { field: 'betEndTime', direction: this.sortBy };
       const res = await events(graphqlClient, {
         filter,
         orderBy,
