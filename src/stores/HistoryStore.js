@@ -3,7 +3,7 @@ import { filter, uniqBy } from 'lodash';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
-const EVENT_HISTORY_LIMIT = 10;
+const EVENT_HISTORY_LIMIT = 1;
 const EVENT_DETAIL_HISTORY_LIMIT = 5;
 const ACTIVITY_HISTORY_LIMIT = 10;
 const INIT_VALUES = {

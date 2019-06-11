@@ -62,7 +62,7 @@ const messages = defineMessages({
 export default class EventHistory extends Component {
   async componentDidMount() {
     const { params } = this.props.match;
-    this.props.store.ui.location = Routes.EVENT;
+    this.props.store.ui.location = Routes.EVENT_HISTORY;
     await this.props.store.eventPage.init({ ...params });
     this.props.store.history.init();
   }
@@ -169,7 +169,7 @@ export default class EventHistory extends Component {
       <Fragment>
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
-          <ContentContainer>
+          <ContentContainer noSideBar>
             {this.renderActiveEventContent()}
             <HistoryTable />
           </ContentContainer>

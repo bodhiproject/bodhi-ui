@@ -80,7 +80,7 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { intl, classes, store: { history: { resultSetsHistory, loadingMore } } } = this.props;
+    const { intl, classes, store: { history: { resultSetsHistory, loadingMore, loadMoreResultHistory } } } = this.props;
     const cards = resultSetsHistory.map((resultSet, index) => {
       const { amount, block, txStatus } = resultSet;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
@@ -117,7 +117,7 @@ export default class EventResultHistory extends Component {
           <InfiniteScroll
             spacing={0}
             data={cards}
-            loadMore={() => {}}
+            loadMore={loadMoreResultHistory}
             loadingMore={loadingMore}
           />
         ) : (

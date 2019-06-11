@@ -15,7 +15,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { classes, store: { history: { transactions, myTransactions, loadingMore } }, showMyTransactions } = this.props;
+    const { classes, store: { history: { transactions, myTransactions, loadingMore, loadMoreMyTransactions, loadMoreTransactions } }, showMyTransactions } = this.props;
     let cards = [];
     if (!showMyTransactions) {
       cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
@@ -28,7 +28,7 @@ export default class TransactionHistory extends Component {
           <InfiniteScroll
             spacing={0}
             data={cards}
-            loadMore={() => {}}
+            loadMore={(showMyTransactions && loadMoreMyTransactions) || loadMoreTransactions}
             loadingMore={loadingMore}
           />
         ) : (
