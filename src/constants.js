@@ -21,6 +21,7 @@ module.exports = {
     LEADERBOARD: '/leaderboard',
     CREATE_EVENT: '/create-event',
     EVENT: '/event/:url',
+    EVENT_HISTORY: '/event_history/:url',
   },
 
   EventType: {

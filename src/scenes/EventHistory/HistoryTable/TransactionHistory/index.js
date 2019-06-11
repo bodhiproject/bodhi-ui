@@ -15,36 +15,22 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { classes, store: { history: { loadingMore }, eventPage: { event: { address } } }, showMyTransactions } = this.props;
-    const url = `/event_history/${address}`;
-    let { store: { history: { transactions, myTransactions } } } = this.props;
+    const { classes, store: { history: { transactions, myTransactions, loadingMore } }, showMyTransactions } = this.props;
     let cards = [];
     if (!showMyTransactions) {
-      transactions = transactions.slice(0, 5);
       cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     } else {
-      myTransactions = myTransactions.slice(0, 5);
       cards = myTransactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     }
     return (
       <div>
         {cards.length > 0 ? (
-          <Fragment>
-            <InfiniteScroll
-              spacing={0}
-              data={cards}
-              loadMore={() => {}}
-              loadingMore={loadingMore}
-            />
-            <Link to={url}>
-              <div className={classes.bottomButton}>
-                <Typography color='textPrimary' className={classes.bottomButtonText}>
-                  <FormattedMessage id="str.seeAll" defaultMessage="See All " />
-                  <KeyboardArrowRight className={classes.bottomButtonIcon} />
-                </Typography>
-              </div>
-            </Link>
-          </Fragment>
+          <InfiniteScroll
+            spacing={0}
+            data={cards}
+            loadMore={() => {}}
+            loadingMore={loadingMore}
+          />
         ) : (
           <CenteredDiv>
             <Typography variant="body2">

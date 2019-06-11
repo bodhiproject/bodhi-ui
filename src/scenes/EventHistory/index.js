@@ -18,11 +18,7 @@ import {
 import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from './Option';
-import WinningOutcome from './WinningOutcome';
-import WithdrawTo from './WithdrawTo';
-import Leaderboard from './Leaderboard';
 import HistoryTable from './HistoryTable';
-import { Sidebar } from './Sidebar';
 
 const messages = defineMessages({
   loadOracleMsg: {
@@ -63,10 +59,9 @@ const messages = defineMessages({
 @withRouter
 @inject('store')
 @observer
-export default class EventPage extends Component {
+export default class EventHistory extends Component {
   async componentDidMount() {
     const { params } = this.props.match;
-    console.log('TCL: EventPage -> componentDidMount -> params', params);
     this.props.store.ui.location = Routes.EVENT;
     await this.props.store.eventPage.init({ ...params });
     this.props.store.history.init();
@@ -101,26 +96,6 @@ export default class EventPage extends Component {
     );
   }
 
-  renderEventWarning = () => {
-    const {
-      classes,
-      store: {
-        eventPage: { eventWarningMessageId, amount, warningType },
-      },
-    } = this.props;
-
-    return (
-      <div className={classes.padLeft}>
-        <div className={classes.stateText}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
-        <EventWarning
-          id={eventWarningMessageId}
-          amount={String(amount)}
-          type={warningType}
-        />
-      </div>
-    );
-  }
-
   renderOptions = (actionText, betSpecific) => {
     const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
     let asOptions = results;
@@ -143,70 +118,6 @@ export default class EventPage extends Component {
           />
         ))}
       </Grid>
-    );
-  }
-
-  renderConsensusThresholdMessage = () => {
-    const { intl, store: { eventPage } } = this.props;
-    const { consensusThreshold, previousConsensusThreshold } = eventPage.event;
-    let heading;
-    if (eventPage.isArbitration) {
-      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT.
-      ${intl.formatMessage(messages.previousConsensusThreshold)} ${previousConsensusThreshold} NBOT`;
-    } else {
-      heading = `${intl.formatMessage(messages.currentConsensusThreshold)} ${consensusThreshold} NBOT`;
-    }
-    const message = intl.formatMessage(messages.setResultExplanation);
-
-    return (eventPage.isResultSetting || eventPage.isArbitration) && (
-      <ImportantNote heading={heading} message={message} />
-    );
-  }
-
-  renderRemainingConsensusThresholdMessage = () => {
-    const { intl, store: { eventPage: { selectedOption, isArbitration, remainingConsensusThreshold } } } = this.props;
-    const heading = `${intl.formatMessage(messages.remainingConsensusThreshold)} ${remainingConsensusThreshold} NBOT`;
-    const message = intl.formatMessage(messages.setRemainingExplanation);
-    if (isArbitration && !isEmpty(selectedOption)) {
-      return <ImportantNote heading={heading} message={message} />;
-    }
-  }
-
-  renderActionButton = () => {
-    const {
-      classes,
-      store: {
-        eventPage,
-        eventPage: { event, buttonDisabled, selectedOptionIdx },
-      },
-    } = this.props;
-
-    let msg;
-    let onClick;
-    if (eventPage.isBetting) {
-      onClick = eventPage.bet;
-      msg = <FormattedMessage id="bottomButtonText.placeBet" defaultMessage="Place Bet" />;
-    } else if (eventPage.isResultSetting) {
-      onClick = eventPage.set;
-      msg = <FormattedMessage id="str.setResult" defaultMessage="Set Result" />;
-    } else if (eventPage.isArbitration) {
-      onClick = eventPage.vote;
-      msg = <FormattedMessage id="str.vote" defaultMessage="Vote" />;
-    } else {
-      return null;
-    }
-
-    return (
-      selectedOptionIdx !== -1 && <Button
-        fullWidth
-        size="large"
-        variant="contained"
-        className={classes.actionButton}
-        onClick={onClick}
-        disabled={event.isPending() || buttonDisabled}
-      >
-        {msg}
-      </Button>
     );
   }
 
@@ -237,41 +148,7 @@ export default class EventPage extends Component {
       <Card>
         {this.renderTitle()}
         {this.renderBetContent()}
-        {/* {this.renderEventWarning()} */}
         {this.renderOptions(event.currentRound > 0 ? 'vote' : 'bet')}
-        {this.renderConsensusThresholdMessage()}
-        {this.renderRemainingConsensusThresholdMessage()}
-        {this.renderActionButton()}
-      </Card>
-    );
-  }
-
-
-  // Renders sections for withdraw status
-  renderWithdrawContent = () => {
-    const {
-      classes,
-      store: {
-        eventPage,
-        eventPage: { event, nbotWinnings },
-        wallet: { currentAddress },
-      },
-    } = this.props;
-    const allowWithdraw = Boolean(nbotWinnings)
-    || event.ownerAddress === currentAddress;
-
-    return (
-      <Card>
-        {this.renderTitle()}
-        {this.renderBetContent()}
-        <Paper className={classes.withdrawingPaper}>
-          <WinningOutcome eventPage={eventPage} />
-          {allowWithdraw && (
-            <Fragment>
-              <WithdrawTo />
-            </Fragment>
-          )}
-        </Paper>
       </Card>
     );
   }
@@ -293,13 +170,9 @@ export default class EventPage extends Component {
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer>
-            {!eventPage.isWithdrawing
-              ? this.renderActiveEventContent()
-              : this.renderWithdrawContent()}
-            <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
+            {this.renderActiveEventContent()}
             <HistoryTable />
           </ContentContainer>
-          <Sidebar endTime={event.getEndTime()} />
         </PageContainer>
       </Fragment>
     );

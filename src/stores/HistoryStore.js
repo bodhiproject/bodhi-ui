@@ -3,7 +3,8 @@ import { filter, uniqBy } from 'lodash';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
-const EVENT_HISTORY_LIMIT = 5;
+const EVENT_HISTORY_LIMIT = 10;
+const EVENT_DETAIL_HISTORY_LIMIT = 5;
 const ACTIVITY_HISTORY_LIMIT = 10;
 const INIT_VALUES = {
   transactions: [],
@@ -223,6 +224,16 @@ export default class {
       if (!account) return;
       await this.loadFirstTransactions({ transactorAddress: account });
     } else if (location === Routes.EVENT) {
+      if (!address) return;
+
+      this.limit = EVENT_DETAIL_HISTORY_LIMIT;
+      await this.loadFirstTransactions({ eventAddress: address }); // for all txs
+
+      this.myTransactions = await this.fetchMyHistory(); // for my txs
+
+      // load result history
+      this.resultSetsHistory = await this.fetchResultHistory();
+    } else if (location === Routes.EVENT_HISTORY) {
       if (!address) return;
 
       this.limit = EVENT_HISTORY_LIMIT;
