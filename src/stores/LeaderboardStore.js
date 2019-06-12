@@ -12,21 +12,30 @@ const INIT_VALUES = {
   participantCount: 0,
   totalBets: '',
   leaderboardBets: [],
+  leaderboardWinners: [],
+  leaderboardDisplay: [],
   activeStep: 0,
   leaderboardLimit: 0,
   skip: 0,
   hasMore: true,
+  winnerSkip: 0,
+  winnerHasMore: true,
 };
 
 export default class {
   @observable eventCount = INIT_VALUES.eventCount
   @observable participantCount = INIT_VALUES.participantCount
   @observable totalBets = INIT_VALUES.totalBets
+  @observable leaderboardDisplay = INIT_VALUES.leaderboardDisplay
   @observable leaderboardBets = INIT_VALUES.leaderboardBets
   @observable activeStep = INIT_VALUES.activeStep
   leaderboardLimit = INIT_VALUES.leaderboardLimit;
   skip = INIT_VALUES.skip;
   hasMore = INIT_VALUES.hasMore;
+  // for biggest winners
+  @observable leaderboardWinners = INIT_VALUES.leaderboardWinners
+  winnerSkip = INIT_VALUES.winnerSkip;
+  winnerHasMore = INIT_VALUES.winnerHasMore;
 
   constructor(app) {
     this.app = app;
@@ -49,10 +58,16 @@ export default class {
       }
     );
     // Leaderboard tab changed
-    // reaction(
-    //   () => this.activeStep,
-    //   () => this.updateLeaderBoard(),
-    // );
+    reaction(
+      () => this.activeStep,
+      () => {
+        if (this.activeStep < 1) {
+          this.leaderboardDisplay = this.leaderboardBets;
+        } else {
+          this.leaderboardDisplay = this.leaderboardWinners;
+        }
+      }
+    );
   }
 
   @action
@@ -78,37 +93,26 @@ export default class {
 
       filters = { eventAddress: address };
     }
-    await this.loadFirstLeaderboard(filters);
+    await this.loadFirstLeaderboardBets(filters);
+    await this.loadFirstBiggestWinners(filters);
+    this.leaderboardDisplay = this.leaderboardBets;
   }
 
-  // @action
-  // updateLeaderBoard = async () => {
-  //   if (this.activeStep < 2) {
-  //     await this.queryLeaderboard();
-  //   } else {
-  //     await this.queryBiggestWinner();
-  //   }
-  // }
-
   @action
-  queryBiggestWinner = async () => {
-    const address = this.event && this.event.address;
-    if (!address) return;
+  loadFirstBiggestWinners = async (filters) => {
+    this.leaderboardWinners = await this.fetchLeaderboardWinners(filters);
 
-    const winners = await biggestWinners(this.app.graphqlClient, {
-      filter: { eventAddress: address },
-      limit: this.leaderboardLimit,
-      skip: 0,
+    runInAction(() => {
+      this.loaded = true;
     });
-    this.leaderboardBets = winners;
   }
 
   /**
    * Load the first 10 or 5 txs depending on the location
    */
   @action
-  loadFirstLeaderboard = async (filters) => {
-    this.leaderboardBets = await this.fetchLeaderboard(filters);
+  loadFirstLeaderboardBets = async (filters) => {
+    this.leaderboardBets = await this.fetchLeaderboardBets(filters);
 
     runInAction(() => {
       this.loaded = true;
@@ -153,11 +157,10 @@ export default class {
   }
 
   /**
-   * Gets the leaderboard via API call.
+   * Gets the leaderboard bets via API call.
    * @return {[MostBet]} leaderboard array of the query.
    */
-  fetchLeaderboard = async (filters = {}, limit = this.leaderboardLimit, skip = this.skip) => {
-    // Address is required for the request filters
+  fetchLeaderboardBets = async (filters = {}, limit = this.leaderboardLimit, skip = this.skip) => {
     if (this.hasMore) {
       const { graphqlClient } = this.app;
 
@@ -177,5 +180,27 @@ export default class {
       return items;
     }
     return INIT_VALUES.leaderboardBets;
+  }
+
+  /**
+   * Gets the leaderboard winners via API call.
+   * @return {[BiggestWinner]} leaderboard array of the query.
+   */
+  fetchLeaderboardWinners = async (filters = {}, limit = this.leaderboardLimit, skip = this.winnerSkip) => {
+    // Address is required for the request filters
+    if (this.winnerHasMore && !isEmpty(filters)) {
+      const { graphqlClient } = this.app;
+
+      const res = await biggestWinners(graphqlClient, { filter: filters, limit, skip });
+
+      // const { items, pageInfo } = res;
+
+      // if (pageInfo) {
+      //   this.winnerHasMore = pageInfo.hasNextPage;
+      // } else if (!pageInfo) this.winnerHasMore = false;
+
+      return res;
+    }
+    return INIT_VALUES.leaderboardWinners;
   }
 }

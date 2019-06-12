@@ -29,34 +29,22 @@ const tabs = [messages.mostNBOT, messages.biggestWinner];
 @observer
 export default class Leaderboard extends React.Component {
   handleNext = () => {
-    const { ui: { location } } = this.props.store;
-    if (location === Routes.LEADERBOARD) {
-      const { leaderboard } = this.props.store;
-      leaderboard.activeStep += 1;
-    } else {
-      const { eventPage } = this.props.store;
-      eventPage.activeStep += 1;
-    }
+    const { leaderboard } = this.props.store;
+    leaderboard.activeStep += 1;
   };
 
   handleBack = () => {
-    const { ui: { location } } = this.props.store;
-    if (location === Routes.LEADERBOARD) {
-      const { leaderboard } = this.props.store;
-      leaderboard.activeStep -= 1;
-    } else {
-      const { eventPage } = this.props.store;
-      eventPage.activeStep -= 1;
-    }
+    const { leaderboard } = this.props.store;
+    leaderboard.activeStep -= 1;
   };
 
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardBets, activeStep, leaderboardLimit } } } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, leaderboardLimit } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
 
-    if (leaderboardBets.length < leaderboardLimit) {
-      for (let i = leaderboardBets.length; i < leaderboardLimit; i++) {
-        leaderboardBets.push({ voterAddress: '', amount: '' });
+    if (leaderboardDisplay.length < leaderboardLimit) {
+      for (let i = leaderboardDisplay.length; i < leaderboardLimit; i++) {
+        leaderboardDisplay.push({ voterAddress: '', amount: '' });
       }
     }
     return (
@@ -99,7 +87,7 @@ export default class Leaderboard extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {leaderboardBets.map((row, index) =>
+                  {leaderboardDisplay.map((row, index) =>
                     (
                       <CustomTableRow key={index} className={classes.entry}>
                         <CustomTableBodyCell component="th" scope="row">
