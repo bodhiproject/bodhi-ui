@@ -66,10 +66,10 @@ const messages = defineMessages({
 export default class EventPage extends Component {
   async componentDidMount() {
     const { params } = this.props.match;
-    console.log('TCL: EventPage -> componentDidMount -> params', params);
     this.props.store.ui.location = Routes.EVENT;
     await this.props.store.eventPage.init({ ...params });
     this.props.store.history.init();
+    this.props.store.leaderboard.init();
   }
 
   componentWillUnmount() {

@@ -1,7 +1,7 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { filter, uniqBy } from 'lodash';
+import { uniqBy, isEmpty } from 'lodash';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
-import { mostBets, allStats } from '../network/graphql/queries';
+import { mostBets, allStats, biggestWinners } from '../network/graphql/queries';
 import { satoshiToDecimal } from '../helpers/utility';
 
 const EVENT_LEADERBOARD_LIMIT = 10;
@@ -13,7 +13,7 @@ const INIT_VALUES = {
   totalBets: '',
   leaderboardBets: [],
   activeStep: 0,
-  limit: 0,
+  leaderboardLimit: 0,
   skip: 0,
   hasMore: true,
 };
@@ -24,7 +24,7 @@ export default class {
   @observable totalBets = INIT_VALUES.totalBets
   @observable leaderboardBets = INIT_VALUES.leaderboardBets
   @observable activeStep = INIT_VALUES.activeStep
-  limit = INIT_VALUES.limit;
+  leaderboardLimit = INIT_VALUES.leaderboardLimit;
   skip = INIT_VALUES.skip;
   hasMore = INIT_VALUES.hasMore;
 
@@ -48,37 +48,67 @@ export default class {
         }
       }
     );
-    reaction(
-      () => this.activeStep,
-      () => this.loadLeaderboard(),
-    );
+    // Leaderboard tab changed
+    // reaction(
+    //   () => this.activeStep,
+    //   () => this.updateLeaderBoard(),
+    // );
   }
 
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
 
-    const { ui: { location } } = this.app;
+    const { ui: { location }, eventPage: { event } } = this.app;
+    const address = event && event.address;
 
+    let filters = {};
     if (location === Routes.LEADERBOARD) {
-      this.limit = GLOBAL_LEADERBOARD_LIMIT;
+      this.leaderboardLimit = GLOBAL_LEADERBOARD_LIMIT;
       const res = await allStats(this.app.graphqlClient);
       Object.assign(this, res, { totalBets: satoshiToDecimal(res.totalBets) });
-      await this.loadFirstLeaderboard();
     } else if (location === Routes.EVENT) {
-      this.limit = EVENT_DETAIL_LEADERBOARD_LIMIT;
+      this.leaderboardLimit = EVENT_DETAIL_LEADERBOARD_LIMIT;
+      if (!address) return;
+
+      filters = { eventAddress: address };
     } else if (location === Routes.EVENT_LEADERBOARD) {
-      this.limit = EVENT_LEADERBOARD_LIMIT;
+      this.leaderboardLimit = EVENT_LEADERBOARD_LIMIT;
+      if (!address) return;
+
+      filters = { eventAddress: address };
     }
-    await this.loadFirstLeaderboard();
+    await this.loadFirstLeaderboard(filters);
+  }
+
+  // @action
+  // updateLeaderBoard = async () => {
+  //   if (this.activeStep < 2) {
+  //     await this.queryLeaderboard();
+  //   } else {
+  //     await this.queryBiggestWinner();
+  //   }
+  // }
+
+  @action
+  queryBiggestWinner = async () => {
+    const address = this.event && this.event.address;
+    if (!address) return;
+
+    const winners = await biggestWinners(this.app.graphqlClient, {
+      filter: { eventAddress: address },
+      limit: this.leaderboardLimit,
+      skip: 0,
+    });
+    this.leaderboardBets = winners;
   }
 
   /**
    * Load the first 10 or 5 txs depending on the location
    */
   @action
-  loadFirstLeaderboard = async () => {
-    this.leaderboardBets = await this.fetchLeaderboard();
+  loadFirstLeaderboard = async (filters) => {
+    this.leaderboardBets = await this.fetchLeaderboard(filters);
 
     runInAction(() => {
       this.loaded = true;
@@ -126,12 +156,17 @@ export default class {
    * Gets the leaderboard via API call.
    * @return {[MostBet]} leaderboard array of the query.
    */
-  fetchLeaderboard = async (limit = this.limit, skip = this.skip) => {
+  fetchLeaderboard = async (filters = {}, limit = this.leaderboardLimit, skip = this.skip) => {
     // Address is required for the request filters
     if (this.hasMore) {
       const { graphqlClient } = this.app;
 
-      const res = await mostBets(graphqlClient, { limit, skip });
+      let res;
+      if (isEmpty(filters)) {
+        res = await mostBets(graphqlClient, { limit, skip });
+      } else {
+        res = await mostBets(graphqlClient, { filter: filters, limit, skip });
+      }
 
       const { items, pageInfo } = res;
 

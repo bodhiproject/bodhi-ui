@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Grid, withStyles, Card as _Card, CardContent, Typography } from '@material-ui/core';
 import { PageContainer, ContentContainer } from 'components';
+import { Routes } from 'constants';
 import styles from './styles';
 import _Leaderboard from '../Event/Leaderboard';
 import { toFixed } from '../../helpers/utility';
@@ -28,6 +29,7 @@ const messages = defineMessages({
 @observer
 export default class Leaderboard extends Component {
   componentDidMount() {
+    this.props.store.ui.location = Routes.LEADERBOARD;
     this.props.store.leaderboard.init();
   }
 

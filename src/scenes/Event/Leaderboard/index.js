@@ -51,16 +51,9 @@ export default class Leaderboard extends React.Component {
   };
 
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location } } } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardBets, activeStep, leaderboardLimit } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
-    let leaderboardBets = [];
-    let activeStep = 0;
-    let leaderboardLimit = 5;
-    if (location === Routes.LEADERBOARD) {
-      ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.leaderboard);
-    } else {
-      ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.eventPage);
-    }
+
     if (leaderboardBets.length < leaderboardLimit) {
       for (let i = leaderboardBets.length; i < leaderboardLimit; i++) {
         leaderboardBets.push({ voterAddress: '', amount: '' });

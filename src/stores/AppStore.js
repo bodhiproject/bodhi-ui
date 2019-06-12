@@ -15,7 +15,7 @@ import WithdrawStore from '../scenes/Activities/Withdraw/store';
 import HistoryStore from './HistoryStore';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
-import LeaderboardStore from '../scenes/Leaderboard/store';
+import LeaderboardStore from './LeaderboardStore';
 import SearchStore from '../scenes/Search/store';
 import GlobalSnackbarStore from '../components/GlobalSnackbar/store';
 import GlobalDialogStore from '../components/GlobalDialog/store';
