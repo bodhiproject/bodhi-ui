@@ -6,17 +6,16 @@ import moment from 'moment';
 import styles from './styles';
 
 const DateTimePicker = ({ classes, dateUnix, onChange }) => (
-  <div>
-    <_DateTimePicker
-      variant="inline"
-      value={moment.unix(dateUnix)}
-      onChange={onChange}
-      onAccept={onChange}
-      disablePast
-      dateRangeIcon={<DateRange className={classes.tabIcon} />}
-      timeIcon={<AccessTime className={classes.tabIcon} />}
-    />
-  </div>
+  <_DateTimePicker
+    variant="inline"
+    value={moment.unix(dateUnix)}
+    onChange={onChange}
+    onAccept={onChange}
+    disablePast
+    dateRangeIcon={<DateRange className={classes.tabIcon} />}
+    timeIcon={<AccessTime className={classes.tabIcon} />}
+    fullWidth
+  />
 );
 
 export default withStyles(styles, { withTheme: true })(DateTimePicker);

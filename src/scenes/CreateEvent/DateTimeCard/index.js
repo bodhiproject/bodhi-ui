@@ -19,10 +19,7 @@ const DateTimeCard = ({ classes, intl, title, dateUnix, error, onChange }) => (
         <Card className={classes.card}>
           <CardContent>
             <Typography>{title}</Typography>
-            <DateTimePicker
-              dateUnix={dateUnix}
-              onChange={onChange}
-            />
+            <DateTimePicker dateUnix={dateUnix} onChange={onChange} />
             {error && (
               <FormHelperText error>
                 {intl.formatMessage({ id: error })}
