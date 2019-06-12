@@ -230,7 +230,6 @@ export function toFixed(num) {
     }
   }
   const splitArray = String(x).split('.');
-  splitArray[0] = splitArray[0].substring(0, 4);
   let ret = splitArray[0];
   if (splitArray.length > 1) {
     splitArray[1] = splitArray[1].substring(0, 4);
