@@ -382,6 +382,7 @@ export default class TransactionStore {
         .at(eventAddress);
       const pbtParams = this.getPayByTokenParams();
       const txid = await promisify(nbotMethods.withdraw, [{
+        gas: 200000,
         ...pbtParams,
       }]);
 
