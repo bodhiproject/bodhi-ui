@@ -20,10 +20,12 @@ const INIT_VALUES = {
   hasMore: true,
   winnerSkip: 0,
   winnerHasMore: true,
+  loadingMore: false,
 };
 
 export default class {
   @observable eventCount = INIT_VALUES.eventCount
+  @observable loadingMore = INIT_VALUES.loadingMore
   @observable participantCount = INIT_VALUES.participantCount
   @observable totalBets = INIT_VALUES.totalBets
   @observable leaderboardDisplay = INIT_VALUES.leaderboardDisplay
@@ -123,15 +125,13 @@ export default class {
    * Queries another batches of txs and appends it to the full list.
    */
   @action
-  loadMoreTransactions = async () => {
+  loadMoreLeaderboardBets = async () => {
     if (this.hasMore) {
       const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
       const address = event && event.address;
-      let filters;
+      let filters = {};
 
-      if (location === Routes.ACTIVITY_HISTORY) {
-        filters = { transactorAddress: account };
-      } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
+      if (location === Routes.EVENT || location === Routes.EVENT_LEADERBOARD) {
         if (!address) return;
 
         filters = { eventAddress: address };
@@ -140,18 +140,17 @@ export default class {
       }
 
       this.loadingMore = true;
-      this.skip += this.limit;
+      this.skip += this.leaderboardLimit;
 
       try {
-        const moreTxs = await this.fetchHistory(filters);
+        const moreBets = await this.fetchLeaderboardBets(filters);
 
         runInAction(() => {
-          this.transactions = [...this.transactions, ...moreTxs];
-          this.transactions = uniqBy(this.transactions, 'txid');
+          this.leaderboardBets = [...this.leaderboardBets, ...moreBets];
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {
-        this.skip -= this.limit;
+        this.skip -= this.leaderboardLimit;
       }
     }
   }
