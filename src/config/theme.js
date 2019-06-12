@@ -306,13 +306,11 @@ export const theme = {
       },
     },
     MuiFormHelperText: {
-      root: {
-        '&$error': {
-          fontSize: xxSmallText,
-          lineHeight: lineHeight16,
-          color: `${supportColorRed100} !important`,
-          marginTop: 0,
-        },
+      error: {
+        marginTop: 4,
+        fontSize: xxSmallText,
+        lineHeight: lineHeight16,
+        color: supportColorRed100,
       },
     },
     MuiSvgIcon: {

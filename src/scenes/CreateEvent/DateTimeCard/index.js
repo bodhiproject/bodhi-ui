@@ -23,13 +23,13 @@ const DateTimeCard = ({ classes, intl, title, dateUnix, error, onChange }) => (
               dateUnix={dateUnix}
               onChange={onChange}
             />
+            {error && (
+              <FormHelperText error>
+                {intl.formatMessage({ id: error })}
+              </FormHelperText>
+            )}
           </CardContent>
         </Card>
-        {error && (
-          <FormHelperText error>
-            {intl.formatMessage({ id: error })}
-          </FormHelperText>
-        )}
       </FormControl>
     </Grid>
   </Grid>
