@@ -55,12 +55,8 @@ const styles = (theme) => ({
     height: '50px',
   },
   eventOptionProgressNum: {
-    width: '50%',
     lineHeight: 1.5,
     textAlign: 'right',
-    position: 'absolute',
-    right: 0,
-    top: 0,
     height: '100%',
     paddingRight: theme.padding.spaceX.px,
     color: '#fe0672',
@@ -68,14 +64,13 @@ const styles = (theme) => ({
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
     zIndex: 100,
+    whiteSpace: 'nowrap',
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
   },
   overText: {
-    position: 'absolute',
     zIndex: 100,
-    width: '50%',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -106,6 +101,13 @@ const styles = (theme) => ({
   },
   hideIcon: {
     visibility: 'hidden',
+  },
+  textWrapper: {
+    width: '100%',
+    height: 50,
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 });
 
