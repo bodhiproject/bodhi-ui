@@ -15,6 +15,10 @@ const DateTimePicker = ({ classes, dateUnix, onChange }) => (
     dateRangeIcon={<DateRange className={classes.tabIcon} />}
     timeIcon={<AccessTime className={classes.tabIcon} />}
     fullWidth
+    InputProps={{ classes: {
+      root: classes.pickerRoot,
+      input: classes.pickerInput,
+    } }}
   />
 );
 
