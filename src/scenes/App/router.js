@@ -77,6 +77,11 @@ const AppRouter = ({ url }) => {
         path={`${url}${Routes.EVENT_HISTORY}`}
         component={asyncComponent(() => import('../EventHistory'))}
       />
+      <Route
+        exact
+        path={`${url}${Routes.EVENT_LEADERBOARD}`}
+        component={asyncComponent(() => import('../EventLeaderboard'))}
+      />
     </Switch>
   );
 };

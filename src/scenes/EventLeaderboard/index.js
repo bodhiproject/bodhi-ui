@@ -18,8 +18,8 @@ import {
 import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from '../Event/Option';
-import HistoryTable from './HistoryTable';
 import WinningOutcome from '../Event/WinningOutcome';
+import Leaderboard from '../Event/Leaderboard';
 
 const messages = defineMessages({
   loadHistoryMsg: {
@@ -33,7 +33,7 @@ const messages = defineMessages({
 @withRouter
 @inject('store')
 @observer
-export default class EventHistory extends Component {
+export default class EventLeaderboard extends Component {
   async componentDidMount() {
     const { params } = this.props.match;
     this.props.store.ui.location = Routes.EVENT_HISTORY;
@@ -167,7 +167,7 @@ export default class EventHistory extends Component {
             {!eventPage.isWithdrawing
               ? this.renderActiveEventContent()
               : this.renderWithdrawContent()}
-            <HistoryTable />
+            <Leaderboard maxSteps={eventPage.maxLeaderBoardSteps} />
           </ContentContainer>
         </PageContainer>
       </Fragment>

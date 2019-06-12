@@ -51,12 +51,12 @@ export default class Leaderboard extends React.Component {
   };
 
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event: { address } } } } = this.props;
-    const url = `/event_history/${address}`;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location } } } = this.props;
+    const url = event ? `/event_leaderboard/${event.address}` : undefined;
     let leaderboardBets = [];
     let activeStep = 0;
     let leaderboardLimit = 5;
-    if (this.props.store.ui.location === Routes.LEADERBOARD) {
+    if (location === Routes.LEADERBOARD) {
       ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.leaderboard);
     } else {
       ({ leaderboardBets, activeStep, leaderboardLimit } = this.props.store.eventPage);
@@ -123,14 +123,14 @@ export default class Leaderboard extends React.Component {
             </Paper>
           </div>
         </div>
-        <Link to={url}>
+        {url && location === Routes.EVENT && <Link to={url}>
           <div className={classes.bottomButton}>
             <Typography color='textPrimary' className={classes.bottomButtonText}>
               <FormattedMessage id="str.seeAll" defaultMessage="See All " />
               <KeyboardArrowRight className={classes.bottomButtonIcon} />
             </Typography>
           </div>
-        </Link>
+        </Link>}
       </Card>
     );
   }
