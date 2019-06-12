@@ -102,9 +102,12 @@ export default class Option extends Component {
             >
               <div className={classes.eventOptionWrapper}>
                 <div className={classes.eventOptionProgress}>
-                  <Typography variant="h6" className={classes.overText}>
-                    {name}
-                  </Typography>
+                  <div className={classes.textWrapper}>
+                    <Typography variant="h6" className={classes.overText}>
+                      {name}
+                    </Typography>
+                    <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+                  </div>
                   <Progress
                     color="secondary"
                     invalid={name === 'Invalid'}
@@ -112,7 +115,6 @@ export default class Option extends Component {
                     value={userPercent}
                     valueBuffer={percent}
                   />
-                  <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
                 </div>
                 <Typography variant="body2">
                   {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? 0 : toFixed(userValue) })}`}

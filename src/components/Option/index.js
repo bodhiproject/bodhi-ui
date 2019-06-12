@@ -47,9 +47,12 @@ export default class Option extends Component {
       <div>
         <div className={classes.eventOptionWrapper}>
           <div className={classes.eventOptionProgress}>
-            <span className={classes.overText}>
-              <span>{`${name}`}</span>
-            </span>
+            <div className={classes.textWrapper}>
+              <span className={classes.overText}>
+                {`${name}`}
+              </span>
+              <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+            </div>
             <Progress
               color="secondary"
               invalid={name === 'Invalid'}
@@ -57,7 +60,6 @@ export default class Option extends Component {
               value={percent}
               className={classes.root}
             />
-            <div className={classes.eventOptionProgressNum}>{percent}%<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
           </div>
         </div>
       </div>
