@@ -32,19 +32,39 @@ export default class Option {
       this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
     } else {
       this.isPrevResult = event.currentResultIndex === i;
-      this.value = this.isPrevResult ? event.previousRoundBets[i] : this.amount;
+      if (this.isPrevResult) {
+        if (event.currentRound === 1) {
+          this.value = this.amount;
+        } else {
+          this.value = event.previousRoundBets[i];
+        }
+      } else {
+        this.value = this.amount;
+      }
       this.maxAmount = event.status === EVENT_STATUS.ARBITRATION
         ? event.consensusThreshold - decimalToSatoshi(this.amount) : undefined;
 
       const threshold = this.isPrevResult ? event.previousConsensusThreshold : event.consensusThreshold;
       this.percent = this.isPrevResult ? 100 : _.round((this.amount / threshold) * 100);
       if (this.isPrevResult) {
-        this.userPercent = _.round((event.previousRoundUserBets[i] / event.previousRoundBets[i]) * this.percent);
+        if (event.currentRound === 1) {
+          this.userPercent = _.round((event.userRoundBets[i] / event.roundBets[i]) * this.percent);
+        } else {
+          this.userPercent = _.round((event.previousRoundUserBets[i] / event.previousRoundBets[i]) * this.percent);
+        }
       } else {
         this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
       }
     }
-    this.userValue = this.isPrevResult ? event.previousRoundUserBets[i] : event.userRoundBets[i];
+    if (this.isPrevResult) {
+      if (event.currentRound === 1) {
+        this.userValue = event.userRoundBets[i];
+      } else {
+        this.userValue = event.previousRoundUserBets[i];
+      }
+    } else {
+      this.userValue = event.userRoundBets[i];
+    }
     this.disabled = this.isPrevResult;
     this.isBetting = event.currentRound === 0;
   }

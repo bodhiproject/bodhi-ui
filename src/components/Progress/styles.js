@@ -6,7 +6,7 @@ const styles = (theme) => ({
       'background-color': theme.palette.error.dark,
     },
     '& > div:nth-child(3)': {
-      'background-color': '#e48181',
+      'background-color': theme.palette.error.light,
     },
   },
   root: {
