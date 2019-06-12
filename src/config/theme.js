@@ -143,13 +143,12 @@ export const theme = {
     divider: borderColor,
   },
   typography: {
-    useNextVariants: true,
     fontFamily: fontLato,
     fontSize: fontSizeBody1,
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
-    fontWeightBold, // additional var
+    fontWeightBold,
     h1: {
       fontSize: fontSizeH1,
       fontWeight: fontWeightRegular,
@@ -179,11 +178,8 @@ export const theme = {
       lineHeight: lineHeightSm,
       color: textColorDarkGrey,
     },
-    body2: {
-      fontSize: fontSizeBody2,
-      fontWeight: fontWeightRegular,
-      lineHeight: lineHeightLg,
-      color: textColorMediumGrey,
+    subtitle2: {
+      fontSize: fontSizeSubtitle2,
     },
     body1: {
       fontSize: fontSizeBody1,
@@ -191,29 +187,26 @@ export const theme = {
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
+    body2: {
+      fontSize: fontSizeBody2,
+      fontWeight: fontWeightRegular,
+      lineHeight: lineHeightLg,
+      color: textColorMediumGrey,
+    },
+    button: {
+      fontSize: fontSizeButton,
+    },
     caption: {
       fontSize: fontSizeCaption,
       fontWeight: fontWeightBold,
       lineHeight: lineHeightSm,
       color: textColorLightGrey,
     },
-    micro: {
+    overline: {
       fontSize: fontSizeOverline,
-      fontWeight: fontWeightBold,
-      lineHeight: lineHeightSm,
-      color: textColorLightGrey,
-    },
-    label: {
-      fontSize: fontSizeCaption,
-      fontWeight: fontWeightRegular,
-      lineHeight: lineHeightLg,
-    },
-    link: {
-      fontSize: fontSizeBody2,
-      fontWeight: fontWeightBold,
-      lineHeight: lineHeightLg,
     },
   },
+
   /* Component overrides */
   overrides: {
     MuiLinearProgress: {
@@ -337,6 +330,7 @@ export const theme = {
       },
     },
   },
+
   /* User-defined */
   padding: {
     spaceX: {
