@@ -3,12 +3,12 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import moment from 'moment';
 import { Grid, Card, Typography, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { filter } from 'lodash';
 import { EventWarningType, TransactionStatus, TransactionType, EVENT_STATUS } from 'constants';
 import { FavoriteButton, RaisedAmount, Option, TimeCorner } from 'components';
+import { getEventDesc } from '../../helpers/utility';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
@@ -57,19 +57,6 @@ export default class EventCard extends Component {
     }
   }
 
-  getEventDesc = () => {
-    const { status } = this.props.event;
-    switch (status) {
-      case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(this.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment().isBefore(moment.unix(this.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
-      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
-      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
-      case EVENT_STATUS.WITHDRAWING: return 'finished';
-      default: throw Error(`Invalid status: ${this.status}`);
-    }
-  }
-
   get isWithdrawn() {
     const { event: { status, transactions } } = this.props;
     if (status !== WITHDRAWING) return false;
@@ -80,7 +67,7 @@ export default class EventCard extends Component {
   }
 
   renderOptions = () => {
-    const { classes, event: { results, status } } = this.props;
+    const { event: { results, status } } = this.props;
     const asOptions = results.slice(1).concat(results[0]);
     return (
       <Fragment>
@@ -96,8 +83,8 @@ export default class EventCard extends Component {
   }
 
   render() {
-    const { classes, index, onClick } = this.props;
-    const { address, name, isPending, url, status, totalBets, getEndTime, arbitrationRewardPercentage } = this.props.event;
+    const { classes, index, onClick, event, store: { wallet: { currentAddress } } } = this.props;
+    const { address, name, isPending, url, status, totalBets, getEndTime, arbitrationRewardPercentage } = event;
     return (
       <Grid item xs={12} sm={6} lg={4}>
         <Link to={url}>
@@ -107,7 +94,7 @@ export default class EventCard extends Component {
               {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
               {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
               {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
-              <div className={classes.stateText}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+              <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
               <div className={classes.eventCardNameBundle}>
                 <div className={classes.eventCardNameFlex}>
                   <Typography variant="h6" className={classes.eventCardName}>

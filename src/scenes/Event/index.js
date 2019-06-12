@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import cx from 'classnames';
-import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -16,6 +15,7 @@ import {
   Card,
 } from 'components';
 import { EVENT_STATUS, Routes } from 'constants';
+import { getEventDesc } from '../../helpers/utility';
 import styles from './styles';
 import Option from './Option';
 import WinningOutcome from './WinningOutcome';
@@ -77,26 +77,6 @@ export default class EventPage extends Component {
     this.props.store.eventPage.reset();
   }
 
-  getEventDesc = () => {
-    const {
-      store: {
-        eventPage: { event, event: { status, centralizedOracle } },
-        wallet: { currentAddress },
-      },
-    } = this.props;
-    switch (status) {
-      case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING:
-        if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
-        return moment().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
-      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
-      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
-      case EVENT_STATUS.WITHDRAWING: return 'finished';
-      default: throw Error(`Invalid status: ${this.status}`);
-    }
-  }
-
   renderTitle = () => {
     const {
       classes,
@@ -113,13 +93,14 @@ export default class EventPage extends Component {
     const {
       classes,
       store: {
-        eventPage: { eventWarningMessageId, amount, warningType },
+        eventPage: { eventWarningMessageId, amount, warningType, event },
+        wallet: { currentAddress },
       },
     } = this.props;
 
     return (
       <div className={classes.padLeft}>
-        <div className={classes.stateText}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+        <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
         <EventWarning
           id={eventWarningMessageId}
           amount={String(amount)}
@@ -130,7 +111,7 @@ export default class EventPage extends Component {
   }
 
   renderOptions = (actionText, betSpecific) => {
-    const { classes, store: { eventPage: { isWithdrawing, isResultSetting, event: { results, status, betResults } } } } = this.props;
+    const { classes, store: { wallet: { currentAddress }, eventPage: { isWithdrawing, isResultSetting, event, event: { results, status, betResults } } } } = this.props;
     let asOptions = results;
     asOptions = asOptions.slice(1).concat(asOptions[0]);
     if (betSpecific) {
@@ -143,7 +124,7 @@ export default class EventPage extends Component {
           betSpecific ?
             <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessage id='string.betEnded' defaultMessage='Event bet Ended' /></div>
             :
-            <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id={messages[this.getEventDesc()].id} defaultMessage={messages[this.getEventDesc()].defaultMessage} /></div>
+            <div className={cx(classes.stateText, classes.padLeft)}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
         }
         {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
