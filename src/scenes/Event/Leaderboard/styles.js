@@ -75,6 +75,14 @@ const styles = theme => ({
   bottomButtonIcon: {
     verticalAlign: 'text-bottom',
   },
+  grid: {
+    borderBottom: theme.border,
+    fontFamily: 'Lato, Helvetica, Arial, sans-serif',
+    fontWeight: '700',
+    color: '#666666',
+    fontSize: '0.75rem',
+    height: '2rem',
+  },
 });
 
 export default styles;

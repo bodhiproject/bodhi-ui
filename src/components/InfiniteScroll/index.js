@@ -58,14 +58,14 @@ export default class InfiniteScroll extends Component {
   }
 
   render() {
-    const { data, spacing, loadingMore } = this.props;
+    const { data, spacing, loadingMore, noEmptyPlaceholder } = this.props;
     return data.length > 0 ? (
       <Grid container spacing={spacing}>
         {data}
         {loadingMore && <LoadingMore />}
       </Grid>
     ) : (
-      <EmptyPlaceholder message={messages.eventsEmptyMsg} />
+      !noEmptyPlaceholder && <EmptyPlaceholder message={messages.eventsEmptyMsg} />
     );
   }
 }

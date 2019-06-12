@@ -3,12 +3,13 @@ import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button, Typography } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button, Typography, Grid } from '@material-ui/core';
 import { Routes } from 'constants';
 import { Card } from 'components';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal, toFixed } from '../../../helpers/utility';
+import InfiniteScroll from '../../../components/InfiniteScroll';
 
 const messages = defineMessages({
   mostNBOT: {
@@ -19,8 +20,11 @@ const messages = defineMessages({
     id: 'leaderboard.biggestWinners',
     defaultMessage: 'Biggest Winners',
   },
+  strYou: {
+    id: 'str.you',
+    defaultMessage: 'You',
+  },
 });
-
 const tabs = [messages.mostNBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
@@ -38,15 +42,55 @@ export default class Leaderboard extends React.Component {
     leaderboard.activeStep -= 1;
   };
 
+  renderHeader = () => {
+    const { classes } = this.props;
+    return (
+      <Grid container className={classes.grid} justify="flex-start">
+        <Grid item xs={2} sm={2}>
+          <FormattedMessage id="leaderboard.ranking" defaultMessage="Ranking" />
+        </Grid>
+        <Grid item xs={8} sm={8}>
+          <FormattedMessage id="leaderboard.address" defaultMessage="Address" />
+        </Grid>
+        <Grid item xs={2} sm={2}>
+          <FormattedMessage id="leaderboard.amount" defaultMessage="Amount" />
+        </Grid>
+      </Grid>
+    );
+  }
+
+  renderEntry = (row, index) => {
+    const { classes, intl, store: { naka: { account } } } = this.props;
+    const { betterAddress, amount } = row;
+    if (!betterAddress) return;
+    const ranking = (index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />)
+                    || (index === 3 && '👍') || (index >= 4 && '✊');
+
+    const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || `${betterAddress.slice(0, 6)}...${betterAddress.slice(-6)}`;
+    return (
+      <Grid container className={classes.grid} key={index} alignItems='center'>
+        <Grid item xs={2} sm={2}>
+          {ranking}
+        </Grid>
+        <Grid item xs={8} sm={8}>
+          <Typography>
+            {address}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} sm={2}>
+          <Typography>
+            {toFixed(satoshiToDecimal(row.amount), true)}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  }
+
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, leaderboardLimit } } } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, leaderboardLimit, loadingMore } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
 
-    if (leaderboardDisplay.length < leaderboardLimit) {
-      for (let i = leaderboardDisplay.length; i < leaderboardLimit; i++) {
-        leaderboardDisplay.push({ voterAddress: '', amount: '' });
-      }
-    }
+    const displays = leaderboardDisplay.map((row, index) => this.renderEntry(row, index));
     return (
       <Card>
         <div className={classes.root}>
@@ -73,34 +117,14 @@ export default class Leaderboard extends React.Component {
               }
             />
             <Paper className={classes.outWrapper}>
-              <Table className={classes.table}>
-                <colgroup>
-                  <col width="10%" />
-                  <col width="70%" />
-                  <col width="20%" />
-                </colgroup>
-                <TableHead className={classes.tableHead}>
-                  <TableRow>
-                    <CustomTableHeadCell><FormattedMessage id='leaderboard.ranking' defaultMessage='Ranking' /></CustomTableHeadCell>
-                    <CustomTableHeadCell><FormattedMessage id='leaderboard.address' defaultMessage='Address' /></CustomTableHeadCell>
-                    <CustomTableHeadCell><FormattedMessage id='leaderboard.amount' defaultMessage='Amount' /></CustomTableHeadCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {leaderboardDisplay.map((row, index) =>
-                    (
-                      <CustomTableRow key={index} className={classes.entry}>
-                        <CustomTableBodyCell component="th" scope="row">
-                          {index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />}
-                          {index === 3 && '👍'}
-                          {index >= 4 && '✊'}
-                        </CustomTableBodyCell>
-                        <CustomTableBodyCell>{row.betterAddress}</CustomTableBodyCell>
-                        <CustomTableBodyCell>{toFixed(satoshiToDecimal(row.amount), true)}</CustomTableBodyCell>
-                      </CustomTableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              {this.renderHeader()}
+              <InfiniteScroll
+                spacing={0}
+                data={displays}
+                loadMore={() => {}}
+                loadingMore={loadingMore}
+                noEmptyPlaceholder
+              />
             </Paper>
           </div>
         </div>
