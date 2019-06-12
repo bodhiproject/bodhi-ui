@@ -5,6 +5,7 @@ import { createMuiTheme } from '@material-ui/core';
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
 // Type scale
+// TODO: remove these after replacing with fontSize...
 const xxxSmallText = '0.625rem';
 const xxSmallText = '0.75rem';
 const xSmallText = '0.875rem';
@@ -13,6 +14,20 @@ const mediumText = '1.25rem';
 const largeText = '1.5rem';
 const xLargeText = '2rem';
 const xxLargeText = '3rem';
+
+const fontSizeH1 = '3rem';
+const fontSizeH2 = '2.75rem';
+const fontSizeH3 = '2.5rem';
+const fontSizeH4 = '2.125rem';
+const fontSizeH5 = '2rem';
+const fontSizeH6 = '1.5rem';
+const fontSizeSubtitle1 = '1rem';
+const fontSizeSubtitle2 = '0.875rem';
+const fontSizeBody1 = '1rem';
+const fontSizeBody2 = '0.875rem';
+const fontSizeButton = '0.875rem';
+const fontSizeCaption = '0.75rem';
+const fontSizeOverline = '0.75rem';
 
 // Font weight
 const fontWeightBold = 700;
