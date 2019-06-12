@@ -50,12 +50,12 @@ export default class MultipleResultsEvent {
     this.escrowAmount = satoshiToDecimal(event.escrowAmount);
     this.consensusThreshold = satoshiToDecimal(event.consensusThreshold);
     this.previousConsensusThreshold = event.previousConsensusThreshold && satoshiToDecimal(event.previousConsensusThreshold);
-    this.roundBets = map(event.roundBets && event.roundBets.totalRoundBets, (bets) => satoshiToDecimal(bets));
-    this.userRoundBets = map(event.roundBets && event.roundBets.userRoundBets, (bets) => satoshiToDecimal(bets));
-    this.betRoundBets = map(event.roundBets && event.roundBets.totalBetRoundBets, (bets) => satoshiToDecimal(bets));
-    this.userBetRoundBets = map(event.roundBets && event.roundBets.userBetRoundBets, (bets) => satoshiToDecimal(bets));
-    this.previousRoundBets = map(event.roundBets && event.roundBets.previousRoundBets, (bets) => satoshiToDecimal(bets));
-    this.previousRoundUserBets = map(event.roundBets && event.roundBets.previousRoundUserBets, (bets) => satoshiToDecimal(bets));
+    this.roundBets = map(event.roundBets && event.roundBets.singleTotalRoundBets[this.currentRound], (bets) => satoshiToDecimal(bets));
+    this.userRoundBets = map(event.roundBets && event.roundBets.singleUserRoundBets[this.currentRound], (bets) => satoshiToDecimal(bets));
+    this.betRoundBets = map(event.roundBets && event.roundBets.singleTotalRoundBets[0], (bets) => satoshiToDecimal(bets));
+    this.userBetRoundBets = map(event.roundBets && event.roundBets.singleUserRoundBets[0], (bets) => satoshiToDecimal(bets));
+    this.previousRoundBets = map(event.roundBets && event.roundBets.singleTotalRoundBets[this.currentRound - 1], (bets) => satoshiToDecimal(bets));
+    this.previousRoundUserBets = map(event.roundBets && event.roundBets.singleUserRoundBets[this.currentRound - 1], (bets) => satoshiToDecimal(bets));
 
     this.totalBets = satoshiToDecimal(event.totalBets);
     this.localizedInvalid = {

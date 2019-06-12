@@ -213,7 +213,6 @@ export default class EventStore {
       filter: { OR: [{ txid: this.url }, { address: this.url }] },
       includeRoundBets: true,
       roundBetsAddress,
-      includeBetRoundBets: true,
     });
     [this.event] = items;
     if (!this.event) return;

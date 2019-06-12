@@ -38,12 +38,8 @@ export const PENDING_TRANSACTIONS = `
 `;
 
 export const ROUND_BETS = `
-  totalRoundBets
-  userRoundBets
-  totalBetRoundBets
-  userBetRoundBets
-  previousRoundUserBets
-  previousRoundBets
+  singleUserRoundBets
+  singleTotalRoundBets
 `;
 
 // Transaction interface

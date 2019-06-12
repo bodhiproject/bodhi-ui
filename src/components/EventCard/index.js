@@ -83,7 +83,7 @@ export default class EventCard extends Component {
     const { classes, event: { results, status } } = this.props;
     const asOptions = results.slice(1).concat(results[0]);
     return (
-      <Fragment className={classes.optionGrid}>
+      <Fragment>
         {asOptions.map((option, i) => (
           (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
           <Option
@@ -131,7 +131,7 @@ export default class EventCard extends Component {
                   </div>
                 </div>
               </div>
-              <div container className={classes.alignBottom}>
+              <div className={classes.alignBottom}>
                 {this.renderOptions()}
               </div>
             </div>

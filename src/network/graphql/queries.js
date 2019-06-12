@@ -54,7 +54,6 @@ const QUERIES = {
       $pendingTxsAddress: String
       $includeRoundBets: Boolean
       $roundBetsAddress: String
-      $includeBetRoundBets: Boolean
     ) {
       events(
         filter: $filter
@@ -64,7 +63,6 @@ const QUERIES = {
         pendingTxsAddress: $pendingTxsAddress
         includeRoundBets: $includeRoundBets
         roundBetsAddress: $roundBetsAddress
-        includeBetRoundBets: $includeBetRoundBets
       ) {
         ${PAGINATED_EVENTS}
       }
