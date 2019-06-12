@@ -152,6 +152,15 @@ export const theme = {
       marginLeft: '0',
       color: textColorDarkGrey,
     },
+    h2: {
+      fontSize: '2.75rem',
+    },
+    h3: {
+      fontSize: '2.5rem',
+    },
+    h4: {
+      fontSize: '2.125rem',
+    },
     h5: {
       fontSize: xLargeText,
       fontWeight: fontWeightRegular,
