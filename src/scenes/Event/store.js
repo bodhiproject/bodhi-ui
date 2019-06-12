@@ -245,6 +245,7 @@ export default class EventStore {
     if (this.isWithdrawing) {
       await this.getDidWithdraw();
       await this.queryPendingWithdraw();
+      if (!this.event) return;
       this.selectedOptionIdx = this.event.currentResultIndex;
       await this.queryTotalResultBets();
       await this.calculateWinnings();

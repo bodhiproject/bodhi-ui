@@ -41,10 +41,6 @@ export default class EventHistory extends Component {
     this.props.store.history.init();
   }
 
-  componentWillUnmount() {
-    this.props.store.eventPage.reset();
-  }
-
   getEventDesc = () => {
     const { event, event: { status } } = this.props.store.eventPage;
     switch (status) {

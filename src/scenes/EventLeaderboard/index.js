@@ -22,9 +22,9 @@ import WinningOutcome from '../Event/WinningOutcome';
 import Leaderboard from '../Event/Leaderboard';
 
 const messages = defineMessages({
-  loadHistoryMsg: {
-    id: 'load.history',
-    defaultMessage: 'Loading Event History...',
+  loadLeaderboardMsg: {
+    id: 'load.leaderboard',
+    defaultMessage: 'Loading Event Leaderboard...',
   },
 });
 
@@ -36,13 +36,9 @@ const messages = defineMessages({
 export default class EventLeaderboard extends Component {
   async componentDidMount() {
     const { params } = this.props.match;
-    this.props.store.ui.location = Routes.EVENT_HISTORY;
+    this.props.store.ui.location = Routes.EVENT_LEADERBOARD;
     await this.props.store.eventPage.init({ ...params });
-    this.props.store.history.init();
-  }
-
-  componentWillUnmount() {
-    this.props.store.eventPage.reset();
+    await this.props.store.leaderboard.init();
   }
 
   getEventDesc = () => {
@@ -157,7 +153,7 @@ export default class EventLeaderboard extends Component {
     } = this.props;
 
     if (loading || !event) {
-      return <Loading text={messages.loadHistoryMsg} event='true' />;
+      return <Loading text={messages.loadLeaderboardMsg} event='true' />;
     }
     return (
       <Fragment>

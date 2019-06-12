@@ -126,7 +126,7 @@ export default class {
    */
   @action
   loadMoreLeaderboardBets = async () => {
-    if (this.hasMore) {
+    if (this.hasMore && this.leaderboardBets.length > 0) {
       const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
       const address = event && event.address;
       let filters = {};
@@ -135,8 +135,6 @@ export default class {
         if (!address) return;
 
         filters = { eventAddress: address };
-      } else {
-        return;
       }
 
       this.loadingMore = true;
@@ -147,6 +145,7 @@ export default class {
 
         runInAction(() => {
           this.leaderboardBets = [...this.leaderboardBets, ...moreBets];
+          this.leaderboardDisplay = this.leaderboardBets;
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {
