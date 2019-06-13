@@ -6,7 +6,7 @@ export default (theme) => ({
   },
   pickerInput: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.sizes.font.xxSmall,
+      fontSize: theme.sizes.font.small,
     },
   },
   tabIcon: {
