@@ -37,7 +37,7 @@
     "moment-duration-format": "^2.2.2",
     "nprogress": "^0.2.0",
     "number-precision": "^1.2.0",
-    "numeral": "2.0.4",
+    "numbro": "^2.1.2",
     "postcss-inline-rtl": "^0.9.8",
     "prop-types": "^15.6.1",
     "react": "^16.8.6",

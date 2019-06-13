@@ -1,5 +1,5 @@
 import moment from 'moment';
-import numeral from 'numeral';
+import numbro from 'numbro';
 import { EVENT_STATUS } from 'constants';
 import { isNaN, isFinite, isUndefined } from 'lodash';
 import { defineMessages } from 'react-intl';
@@ -216,7 +216,7 @@ export function toFixed(num, isFullNumber) {
     return Number(num).toFixed(2);
   }
 
-  return numeral(Number(num).toFixed(8)).format('0.00a');
+  return numbro(num).format({ average: true, mantissa: 2 });
 }
 
 export function getEventDesc(event, currentAddress) {
