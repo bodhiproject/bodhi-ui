@@ -53,8 +53,8 @@ export default (theme) => ({
   },
   stateText: {
     textAlign: 'left',
-    fontSize: '.82rem',
-    fontWeight: '200',
+    fontSize: '1rem',
+    fontWeight: '800',
     marginBottom: '.5rem',
   },
   padLeft: {

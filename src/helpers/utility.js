@@ -1,11 +1,10 @@
 import moment from 'moment';
 import numeral from 'numeral';
-
+import { EVENT_STATUS } from 'constants';
 import { isNaN, isFinite, isUndefined } from 'lodash';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
-
 const SATOSHI_CONVERSION = 10 ** 8;
 const GAS_COST = 0.0000004;
 const messages = defineMessages({
@@ -211,10 +210,26 @@ export function shortenAddress(text, maxLength) {
 }
 
 export function toFixed(num, isFullNumber) {
-  if (!num) return '0.00';
+  if (String(num).length === 0) return '';
+  if (Number(num) !== 0 && !num) return '';
   if (isFullNumber) {
     return Number(num).toFixed(2);
   }
 
   return numeral(Number(num).toFixed(8)).format('0.00a');
+}
+
+export function getEventDesc(event, currentAddress) {
+  const { status, centralizedOracle } = event;
+  switch (status) {
+    case EVENT_STATUS.CREATED: return 'creating';
+    case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+    case EVENT_STATUS.ORACLE_RESULT_SETTING:
+      if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
+      return moment().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+    case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
+    case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
+    case EVENT_STATUS.WITHDRAWING: return 'finished';
+    default: throw Error(`Invalid status: ${this.status}`);
+  }
 }

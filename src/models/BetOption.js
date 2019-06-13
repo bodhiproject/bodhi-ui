@@ -14,6 +14,7 @@ export default class Option {
   phase
   token
   idx
+  isBetting
 
   constructor(optionName, i, event) {
     this.idx = i;
@@ -29,6 +30,7 @@ export default class Option {
     this.userPercent = this.amount === 0 ? this.amount : round((event.userBetRoundBets[i] / this.amount) * this.percent);
     this.userValue = event.userBetRoundBets[i];
     this.disabled = true;
+    this.isBetting = true;
   }
 
   isExpanded = () => false

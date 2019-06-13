@@ -41,7 +41,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { percent, value } = option;
+    const { percent, userPercent, value, isBetting } = option;
 
     return (
       <div>
@@ -54,11 +54,11 @@ export default class Option extends Component {
               <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
             </div>
             <Progress
-              color="secondary"
+              color={isBetting ? 'primary' : 'secondary'}
               invalid={name === 'Invalid'}
-              variant="determinate"
-              value={percent}
-              className={classes.root}
+              variant="buffer"
+              value={userPercent}
+              valueBuffer={percent}
             />
           </div>
         </div>

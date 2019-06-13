@@ -63,10 +63,13 @@ export default class SearchStore {
 
     // Fetch events and filter by status
     const { graphqlClient } = this.app;
+    const roundBetsAddress = this.app.wallet.currentAddress || null;
     try {
       this.events = await searchEvents(graphqlClient, {
         orderBy: [{ field: 'blockNum', direction: SortBy.DESCENDING }],
         searchPhrase: this.phrase,
+        includeRoundBets: true,
+        roundBetsAddress,
       });
       this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
       this.sets = filter(this.events, (e) =>

@@ -70,11 +70,11 @@ const styles = (theme) => ({
   eventCardInfo: {
     bottom: theme.padding.space2X.px,
     color: theme.palette.text.primary,
-    position: 'absolute',
   },
   alignBottom: {
     position: 'absolute',
     bottom: '13px',
+    width: 'calc(100% - 48px)',
   },
   stateText: {
     color: '#9aa5b1',
