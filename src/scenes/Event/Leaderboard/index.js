@@ -3,7 +3,7 @@ import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Paper, Button, Typography, Grid } from '@material-ui/core';
+import { withStyles, Paper, Button, Typography, Grid } from '@material-ui/core';
 import { Routes } from 'constants';
 import { Card } from 'components';
 import MobileStepper from './carousel';
@@ -140,33 +140,3 @@ export default class Leaderboard extends React.Component {
     );
   }
 }
-
-const CustomTableHeadCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.white,
-    borderBottom: '1px solid rgba(151, 151, 151, 0.1)',
-  },
-  body: {
-    fontSize: theme.sizes.font.xSmall,
-  },
-}))(TableCell);
-
-const CustomTableBodyCell = withStyles(theme => ({
-  root: {
-    borderColor: 'rgba(151, 151, 151, 0.1)',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    maxWidth: '1px',
-  },
-  body: {
-    fontSize: theme.sizes.font.xSmall,
-  },
-}))(TableCell);
-
-const CustomTableRow = withStyles(() => ({
-  head: {
-    border: '1px solid blue',
-    height: '48px',
-  },
-}))(TableRow);

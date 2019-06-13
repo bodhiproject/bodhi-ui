@@ -1,10 +1,10 @@
 import { observable, action, reaction, runInAction } from 'mobx';
-import { uniqBy, isEmpty } from 'lodash';
-import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
+import { isEmpty } from 'lodash';
+import { Routes } from 'constants';
 import { mostBets, allStats, biggestWinners } from '../network/graphql/queries';
 import { satoshiToDecimal } from '../helpers/utility';
 
-const EVENT_LEADERBOARD_LIMIT = 1;
+const EVENT_LEADERBOARD_LIMIT = 10;
 const EVENT_DETAIL_LEADERBOARD_LIMIT = 5;
 const GLOBAL_LEADERBOARD_LIMIT = 10;
 const INIT_VALUES = {
@@ -42,13 +42,6 @@ export default class {
   constructor(app) {
     this.app = app;
 
-    // // New block
-    // reaction(
-    //   () => this.app.global.syncBlockNum,
-    //   async () => {
-    //     if (!this.updating) await this.update();
-    //   },
-    // );
     reaction(
       () => this.app.naka.account + this.app.global.online,
       () => {
@@ -127,7 +120,7 @@ export default class {
   @action
   loadMoreLeaderboardBets = async () => {
     if (this.hasMore && this.leaderboardBets.length > 0) {
-      const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
+      const { ui: { location }, eventPage: { event } } = this.app;
       const address = event && event.address;
       let filters = {};
 
@@ -160,7 +153,7 @@ export default class {
   @action
   loadMoreLeaderboardBiggestWinners = async () => {
     if (this.winnerHasMore && this.leaderboardWinners.length > 0) {
-      const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
+      const { ui: { location }, eventPage: { event } } = this.app;
       const address = event && event.address;
       let filters = {};
 

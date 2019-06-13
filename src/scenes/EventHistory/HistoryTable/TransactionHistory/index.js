@@ -1,10 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, withStyles } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Routes } from 'constants';
-import { KeyboardArrowRight } from '@material-ui/icons';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import TxRow from './TxRow';
@@ -15,7 +12,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { classes, store: { history: { transactions, myTransactions, loadingMore, loadMoreMyTransactions, loadMoreTransactions } }, showMyTransactions } = this.props;
+    const { store: { history: { transactions, myTransactions, loadingMore, loadMoreMyTransactions, loadMoreTransactions } }, showMyTransactions } = this.props;
     let cards = [];
     if (!showMyTransactions) {
       cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);

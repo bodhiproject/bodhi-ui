@@ -1,11 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { Token, Routes } from 'constants';
-import { KeyboardArrowRight } from '@material-ui/icons';
+import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
 import { getTimeString } from '../../../../helpers';

@@ -3,7 +3,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, withStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Routes } from 'constants';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';

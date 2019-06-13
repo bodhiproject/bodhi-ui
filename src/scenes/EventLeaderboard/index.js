@@ -1,18 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import cx from 'classnames';
 import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
+import { Typography, Grid, Paper, withStyles } from '@material-ui/core';
 import {
   Loading,
   BackButton,
   PageContainer,
   ContentContainer,
-  EventWarning,
-  ImportantNote,
   Card,
 } from 'components';
 import { EVENT_STATUS, Routes } from 'constants';
@@ -170,5 +167,3 @@ export default class EventLeaderboard extends Component {
     );
   }
 }
-
-const FormattedMessageFixed = (props) => <FormattedMessage {...props} />;
