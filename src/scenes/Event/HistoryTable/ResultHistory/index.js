@@ -81,7 +81,8 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { intl, classes, store: { history: { loadingMore } } } = this.props;
+    const { intl, classes, store: { history: { loadingMore }, eventPage: { event: { address } } } } = this.props;
+    const url = `/event_history/${address}`;
     let { resultSetsHistory } = this.props;
     resultSetsHistory = resultSetsHistory.slice(0, 5);
     const cards = resultSetsHistory.map((resultSet, index) => {
@@ -124,7 +125,7 @@ export default class EventResultHistory extends Component {
               loadMore={() => {}}
               loadingMore={loadingMore}
             />
-            <Link to={Routes.CREATE_EVENT}>
+            <Link to={url}>
               <div className={classes.bottomButton}>
                 <Typography color='textPrimary' className={classes.bottomButtonText}>
                   <FormattedMessage id="str.seeAll" defaultMessage="See All " />
