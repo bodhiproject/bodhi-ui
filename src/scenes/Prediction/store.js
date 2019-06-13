@@ -101,7 +101,7 @@ export default class PredictionStore {
 
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
-      return res.items.filter(item => item.betEndTime > currentTimeUnix);
+      return res.items.filter(item => item.betEndTime > currentTimeUnix); // TODO: delete filter after server add pre-resultset status
     }
     return INIT_VALUES.list;
   }

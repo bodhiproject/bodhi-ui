@@ -45,13 +45,13 @@ export default class Leaderboard extends React.Component {
     const { classes } = this.props;
     return (
       <Grid container className={classes.grid} justify="flex-start">
-        <Grid item xs={2} sm={2}>
+        <Grid item xs={1}>
           <FormattedMessage id="leaderboard.ranking" defaultMessage="Ranking" />
         </Grid>
-        <Grid item xs={8} sm={8}>
+        <Grid item xs={8}>
           <FormattedMessage id="leaderboard.address" defaultMessage="Address" />
         </Grid>
-        <Grid item xs={2} sm={2}>
+        <Grid item xs={3}>
           <FormattedMessage id="leaderboard.amount" defaultMessage="Amount" />
         </Grid>
       </Grid>
@@ -68,15 +68,15 @@ export default class Leaderboard extends React.Component {
     const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || `${betterAddress.slice(0, 6)}...${betterAddress.slice(-6)}`;
     return (
       <Grid container className={classes.grid} key={index} alignItems='center'>
-        <Grid item xs={2} sm={2}>
+        <Grid item xs={1}>
           {ranking}
         </Grid>
-        <Grid item xs={8} sm={8}>
+        <Grid item xs={8}>
           <Typography>
             {address}
           </Typography>
         </Grid>
-        <Grid item xs={2} sm={2}>
+        <Grid item xs={3}>
           <Typography>
             {toFixed(satoshiToDecimal(amount), true)}
           </Typography>
