@@ -30,41 +30,31 @@ export default class Option {
       const totalBalance = _.sum(event.roundBets);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
       this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
+      this.userValue = event.userRoundBets[i];
     } else {
       this.isPrevResult = event.currentResultIndex === i;
       if (this.isPrevResult) {
+        this.percent = 100;
         if (event.currentRound === 1) {
           this.value = this.amount;
+          this.userPercent = _.round((event.userRoundBets[i] / event.roundBets[i]) * this.percent);
+          this.userValue = event.userRoundBets[i];
         } else {
           this.value = event.previousRoundBets[i];
+          this.userPercent = _.round((event.previousRoundUserBets[i] / event.previousRoundBets[i]) * this.percent);
+          this.userValue = event.previousRoundUserBets[i];
         }
       } else {
+        const threshold = event.consensusThreshold;
         this.value = this.amount;
+        this.percent = _.round((this.amount / threshold) * 100);
+        this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
+        this.userValue = event.userRoundBets[i];
       }
       this.maxAmount = event.status === EVENT_STATUS.ARBITRATION
         ? event.consensusThreshold - decimalToSatoshi(this.amount) : undefined;
+    }
 
-      const threshold = this.isPrevResult ? event.previousConsensusThreshold : event.consensusThreshold;
-      this.percent = this.isPrevResult ? 100 : _.round((this.amount / threshold) * 100);
-      if (this.isPrevResult) {
-        if (event.currentRound === 1) {
-          this.userPercent = _.round((event.userRoundBets[i] / event.roundBets[i]) * this.percent);
-        } else {
-          this.userPercent = _.round((event.previousRoundUserBets[i] / event.previousRoundBets[i]) * this.percent);
-        }
-      } else {
-        this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
-      }
-    }
-    if (this.isPrevResult) {
-      if (event.currentRound === 1) {
-        this.userValue = event.userRoundBets[i];
-      } else {
-        this.userValue = event.previousRoundUserBets[i];
-      }
-    } else {
-      this.userValue = event.userRoundBets[i];
-    }
     this.disabled = this.isPrevResult;
     this.isBetting = event.currentRound === 0;
   }
