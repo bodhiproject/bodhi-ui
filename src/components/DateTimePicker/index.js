@@ -5,6 +5,8 @@ import { DateTimePicker as _DateTimePicker } from '@material-ui/pickers';
 import moment from 'moment';
 import styles from './styles';
 
+const formatDate = (date) => date.format('MMM D, YYYY H:ma');
+
 const DateTimePicker = ({ classes, dateUnix, onChange }) => (
   <_DateTimePicker
     variant="inline"
@@ -19,6 +21,7 @@ const DateTimePicker = ({ classes, dateUnix, onChange }) => (
       root: classes.pickerRoot,
       input: classes.pickerInput,
     } }}
+    labelFunc={(date) => formatDate(date)}
   />
 );
 
