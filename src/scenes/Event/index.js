@@ -280,7 +280,6 @@ export default class EventPage extends Component {
     return (
       <Fragment>
         <Helmet>
-          <meta charSet="utf-8" />
           <meta name="description" content={event.name} />
           {/* <meta name="results" content={event.results[0].name} /> */}
         </Helmet>
