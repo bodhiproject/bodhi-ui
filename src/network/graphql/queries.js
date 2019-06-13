@@ -76,6 +76,8 @@ const QUERIES = {
       $limit: Int
       $skip: Int
       $searchPhrase: String
+      $includeRoundBets: Boolean
+      $roundBetsAddress: String
     ) {
       searchEvents(
         filter: $filter
@@ -83,6 +85,8 @@ const QUERIES = {
         limit: $limit
         skip: $skip
         searchPhrase: $searchPhrase
+        includeRoundBets: $includeRoundBets
+        roundBetsAddress: $roundBetsAddress
       ) {
         ${MULTIPLE_RESULTS_EVENT}
       }
@@ -95,12 +99,16 @@ const QUERIES = {
       $orderBy: [Order!]
       $limit: Int
       $skip: Int
+      $includeRoundBets: Boolean
+      $roundBetsAddress: String
     ) {
       withdrawableEvents(
         filter: $filter
         orderBy: $orderBy
         limit: $limit
         skip: $skip
+        includeRoundBets: $includeRoundBets
+        roundBetsAddress: $roundBetsAddress
       ) {
         ${PAGINATED_EVENTS}
       }

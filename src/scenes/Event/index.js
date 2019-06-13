@@ -207,7 +207,7 @@ export default class EventPage extends Component {
     } = this.props;
 
     return (
-      event.currentRound > 0 && selectedOptionIdx === -1 && <Fragment>
+      ((event.currentRound > 0 && selectedOptionIdx === -1) || (event.status === EVENT_STATUS.WITHDRAWING)) && <Fragment>
         {this.renderOptions('bet', true)}
       </Fragment>
     );

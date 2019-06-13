@@ -26,7 +26,7 @@ export default class Option {
     this.token = NBOT;
     this.phase = event.phase;
     this.value = this.amount;
-    if (event.status !== EVENT_STATUS.ARBITRATION) {
+    if (event.currentRound === 0) {
       const totalBalance = _.sum(event.roundBets);
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100);
       this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent);
