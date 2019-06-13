@@ -78,7 +78,7 @@ export default class Leaderboard extends React.Component {
         </Grid>
         <Grid item xs={2} sm={2}>
           <Typography>
-            {toFixed(satoshiToDecimal(row.amount), true)}
+            {toFixed(satoshiToDecimal(amount), true)}
           </Typography>
         </Grid>
       </Grid>
