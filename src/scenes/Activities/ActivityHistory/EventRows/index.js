@@ -7,7 +7,7 @@ import { Grid, Card, CardContent, Typography, withStyles } from '@material-ui/co
 import { Token, TransactionType } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
-import { getTimeString } from '../../../../helpers/utility';
+import { getTimeString, toFixed } from '../../../../helpers/utility';
 import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
@@ -132,7 +132,7 @@ class EventRow extends Component {
               <FormattedHTMLMessage
                 id="historyEntry.withdraw"
                 defaultMessage={'{who} <b>Withdrew {amount} NBOT</b> from "<b>{eventName}</b>" Event'}
-                values={{ who: intl.formatMessage(messages.strYou), amount, eventName }}
+                values={{ who: intl.formatMessage(messages.strYou), amount: toFixed(amount, true), eventName }}
               />
             </Fragment>
           );
@@ -169,7 +169,7 @@ class EventRow extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
+                {`${toFixed(amount, true)} ${Token.NBOT} · ${status} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
                   {intl.formatMessage(messages.strDetailMsg)}
                 </a>

@@ -55,7 +55,7 @@ const Card = injectIntl(withStyles(styles)(({ title, value, classes, intl }) => 
         {intl.formatMessage(title)}
       </Typography>
       <Typography className={classes.cardContent}>
-        {toFixed(value)}
+        {toFixed(value, true)}
       </Typography>
     </CardContent>
   </_Card>

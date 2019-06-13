@@ -37,7 +37,7 @@ const WinningOutcome = inject('store')(observer(({ intl, store: { eventPage, eve
           id="withdrawDetail.youBetYouVote"
           defaultMessage="You bet {nbot} NBOT."
           values={{
-            nbot: toFixed(withdrawableAddress.yourWinningInvestment),
+            nbot: toFixed(withdrawableAddress.yourWinningInvestment, true),
           }}
         />
       </Typography>

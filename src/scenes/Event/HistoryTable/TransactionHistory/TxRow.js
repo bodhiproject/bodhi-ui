@@ -6,7 +6,7 @@ import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/co
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import { getTimeString } from '../../../../helpers/utility';
+import { getTimeString, toFixed } from '../../../../helpers/utility';
 import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
@@ -102,7 +102,7 @@ export default class TxRow extends Component {
             <FormattedHTMLMessage
               id="historyEntry.withdraw"
               defaultMessage={'{who} <b>Withdrew {amount} NBOT</b> from "<b>{eventName}</b>" Event'}
-              values={{ who, amount, eventName }}
+              values={{ who, amount: toFixed(amount, true), eventName }}
             />
           </Fragment>
         );
@@ -138,7 +138,7 @@ export default class TxRow extends Component {
           </Card>
           <div className={classes.note}>
             <Typography color='textPrimary'>
-              {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
+              {`${toFixed(amount, true)} ${Token.NBOT} · ${status} · ${blockTime} · `}
               <a href={`${EXPLORER.TX}/${transaction.txid}`} target="_blank" className={classes.link}>
                 {intl.formatMessage(messages.strDetailMsg)}
               </a>

@@ -86,7 +86,7 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
             id="bottomBar.nbotBalance"
             defaultMessage="Balance"
           />
-          {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2)} ${Token.NBOT}` : '0.00'}`}
+          {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2, true)} ${Token.NBOT}` : '0.00'}`}
         </span>
       </Typography>
     </div>

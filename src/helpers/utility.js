@@ -1,4 +1,6 @@
 import moment from 'moment';
+import numeral from 'numeral';
+
 import { isNaN, isFinite, isUndefined } from 'lodash';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
@@ -53,15 +55,10 @@ export function decimalToSatoshi(number) {
   if (!number) {
     return number;
   }
-  const toStringNumber = String(number);
+  const toStringNumber = Number(number).toFixed(8);
   const splitArr = toStringNumber.split('.');
   const integerPart = splitArr[0];
-
-  const decimalPartToCheck = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
-  const decimalPartToCheckString = String(decimalPartToCheck);
-  const decimalString = decimalPartToCheckString.split('.');
-  const decimalPart = decimalString[0];
-
+  const decimalPart = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
   const conversionBN = toBN(SATOSHI_CONVERSION);
   return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
 }
@@ -213,30 +210,11 @@ export function shortenAddress(text, maxLength) {
     : text;
 }
 
-export function toFixed(num) {
-  let x = num;
-  if (Math.abs(x) < 1.0) {
-    const e = parseInt(x.toString().split('e-')[1], 10);
-    if (e) {
-      x *= 10 ** (e - 1);
-      x = `0.${(new Array(e)).join('0')}${x.toString().substring(2)}`;
-    }
-  } else {
-    let e = parseInt(x.toString().split('+')[1], 10);
-    if (e > 20) {
-      e -= 20;
-      x /= 10 ** e;
-      x += (new Array(e + 1)).join('0');
-    }
+export function toFixed(num, isFullNumber) {
+  if (!num) return '0.00';
+  if (isFullNumber) {
+    return Number(num).toFixed(2);
   }
-  const splitArray = String(x).split('.');
-  let ret = splitArray[0];
-  if (splitArray.length > 1) {
-    splitArray[1] = splitArray[1].substring(0, 4);
-    splitArray[1] = splitArray[1].replace(/0+$/, '');
-    if (splitArray[1].length > 0) {
-      ret = `${ret}.${splitArray[1]}`;
-    }
-  }
-  return ret;
+
+  return numeral(Number(num).toFixed(8)).format('0.00a');
 }

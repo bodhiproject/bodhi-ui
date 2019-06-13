@@ -117,7 +117,7 @@ export default class Option extends Component {
                   />
                 </div>
                 <Typography variant="body2">
-                  {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? 0 : toFixed(userValue) })}`}
+                  {`${intl.formatMessage(messages[actionText], { value: isPrevResult ? '0.00' : toFixed(userValue) })}`}
                 </Typography>
               </div>
             </ExpansionPanelSummary>

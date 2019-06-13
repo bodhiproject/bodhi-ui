@@ -153,7 +153,7 @@ export default class EventStore {
     return toFixed(NP.minus(
       consensusThreshold,
       Number(this.selectedOption.amount)
-    ));
+    ), true);
   }
 
   constructor(app) {
@@ -488,10 +488,10 @@ export default class EventStore {
     const inputAmount = parseFloat(this.amount, 10);
     const consensusThreshold = parseFloat(this.event.consensusThreshold, 10);
     if (inputAmount + Number(this.selectedOption.amount) > consensusThreshold) {
-      this.amount = String(toFixed(NP.minus(
+      this.amount = String(NP.minus(
         consensusThreshold,
         Number(this.selectedOption.amount)
-      )));
+      ).toFixed(8));
     }
   }
 
