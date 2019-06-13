@@ -55,15 +55,10 @@ export function decimalToSatoshi(number) {
   if (!number) {
     return number;
   }
-  const toStringNumber = String(number);
+  const toStringNumber = Number(number).toFixed(8);
   const splitArr = toStringNumber.split('.');
   const integerPart = splitArr[0];
-
-  const decimalPartToCheck = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
-  const decimalPartToCheckString = String(decimalPartToCheck);
-  const decimalString = decimalPartToCheckString.split('.');
-  const decimalPart = decimalString[0];
-
+  const decimalPart = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
   const conversionBN = toBN(SATOSHI_CONVERSION);
   return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
 }
@@ -218,7 +213,8 @@ export function shortenAddress(text, maxLength) {
 export function toFixed(num, isFullNumber) {
   if (!num) return '0.00';
   if (isFullNumber) {
-    return num.toFixed(2);
+    return Number(num).toFixed(2);
   }
-  return numeral(num.toFixed(8)).format('0.00a');
+
+  return numeral(Number(num).toFixed(8)).format('0.00a');
 }

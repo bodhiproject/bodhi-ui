@@ -1,4 +1,5 @@
 import { TransactionType } from 'constants';
+import { isNumber } from 'lodash';
 import { stringToBN, satoshiToDecimal } from '../helpers/utility';
 
 export default class Transaction {
@@ -32,7 +33,10 @@ export default class Transaction {
       this.amount = this.amount.toString();
       this.txSender = transaction.winnerAddress;
     }
-
+    if (isNumber(this.amount)) {
+      // Remove this line when Apollo libaray fixed
+      this.amount = this.amount.toFixed(8);
+    }
     this.amount = satoshiToDecimal(this.amount);
   }
 }
