@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { withRouter, Link } from 'react-router-dom';
-import { withStyles, Button, Typography } from '@material-ui/core';
+import { withStyles, Typography } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';

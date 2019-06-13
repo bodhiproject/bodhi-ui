@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Typography, withStyles } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { KeyboardArrowRight } from '@material-ui/icons';
 import { SeeAllButton } from 'components';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
@@ -15,7 +13,7 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { classes, store: { history: { loadingMore, limit, hasMore, myHasMore }, eventPage: { event: { address } } }, showMyTransactions } = this.props;
+    const { store: { history: { loadingMore, limit, hasMore, myHasMore }, eventPage: { event: { address } } }, showMyTransactions } = this.props;
     let displayHasMore = hasMore;
     const url = `/event_history/${address}`;
     let { store: { history: { transactions, myTransactions } } } = this.props;

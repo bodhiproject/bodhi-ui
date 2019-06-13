@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles, Paper, Button, Typography, Grid } from '@material-ui/core';
 import { Routes } from 'constants';
