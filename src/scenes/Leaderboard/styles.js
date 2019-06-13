@@ -27,7 +27,7 @@ const styles = (theme) => ({
   },
   cardContent: {
     color: '#585AFA',
-    fontSize: theme.sizes.font.largeText,
+    fontSize: theme.typography.h6.fontSize,
   },
 });
 

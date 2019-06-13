@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import moment from 'moment';
 import { TimeCardTitle } from 'constants';
-import { DateRow, Section } from './components';
+import { Section } from './components';
+import DateTimeCard from './DateTimeCard';
 
 const messages = defineMessages({
   createResultSetStartTimeMsg: {
@@ -12,23 +12,65 @@ const messages = defineMessages({
   },
 });
 
-const ResultSetPeriod = observer(({ store: { createEvent, createEvent: { resultSettingPeriod } } }) => (
-  <Section title={messages.createResultSetStartTimeMsg} note={resultSettingPeriod}>
-    <DateRow
-      error={createEvent.error.resultSetting.startTime}
-      onChange={e => moment(e.target.value).isValid && (createEvent.resultSetting.startTime = moment(e.target.value).utc().unix())}
-      value={createEvent.resultSetting.startTime}
-      blockNum={createEvent.blockNum.resultSetting.startTime}
-      title={TimeCardTitle.START_TIME}
-    />
-    <DateRow
-      error={createEvent.error.resultSetting.endTime}
-      onChange={e => moment(e.target.value).isValid && (createEvent.resultSetting.endTime = moment(e.target.value).utc().unix())}
-      value={createEvent.resultSetting.endTime}
-      blockNum={createEvent.blockNum.resultSetting.endTime}
-      title={TimeCardTitle.END_TIME}
-    />
-  </Section>
-));
+@inject('store')
+@observer
+export default class ResultSetPeriod extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      startTime: props.store.createEvent.resultSetting.startTime,
+      endTime: props.store.createEvent.resultSetting.endTime,
+    };
+  }
 
-export default inject('store')(ResultSetPeriod);
+  onStartTimeChange = (date) => {
+    this.setState({ startTime: date.unix() });
+    this.props.store.createEvent.resultSetting.startTime = date.unix();
+  }
+
+  onEndTimeChange = (date) => {
+    this.setState({ endTime: date.unix() });
+    this.props.store.createEvent.resultSetting.endTime = date.unix();
+  }
+
+  render() {
+    const {
+      store: {
+        createEvent: {
+          resultSettingPeriod,
+          resultSetting: { startTime: storeStartTime, endTime: storeEndTime },
+          error: { resultSetting: { startTime: startTimeErr, endTime: endTimeErr } },
+        },
+      },
+    } = this.props;
+    const { startTime, endTime } = this.state;
+
+    // Hnadle if the store times changed due to reactions
+    if (storeStartTime !== startTime || storeEndTime !== endTime) {
+      this.setState({
+        startTime: storeStartTime,
+        endTime: storeEndTime,
+      });
+    }
+
+    return (
+      <Section
+        title={messages.createResultSetStartTimeMsg}
+        note={resultSettingPeriod}
+      >
+        <DateTimeCard
+          title={TimeCardTitle.START_TIME}
+          dateUnix={startTime}
+          error={startTimeErr}
+          onChange={this.onStartTimeChange}
+        />
+        <DateTimeCard
+          title={TimeCardTitle.END_TIME}
+          dateUnix={endTime}
+          error={endTimeErr}
+          onChange={this.onEndTimeChange}
+        />
+      </Section>
+    );
+  }
+}

@@ -5,14 +5,19 @@ import { createMuiTheme } from '@material-ui/core';
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
 // Type scale
-const xxxSmallText = '0.625rem';
-const xxSmallText = '0.75rem';
-const xSmallText = '0.875rem';
-const smallText = '1rem';
-const mediumText = '1.25rem';
-const largeText = '1.5rem';
-const xLargeText = '2rem';
-const xxLargeText = '3rem';
+const fontSizeH1 = '3rem';
+const fontSizeH2 = '2.75rem';
+const fontSizeH3 = '2.5rem';
+const fontSizeH4 = '2.125rem';
+const fontSizeH5 = '2rem';
+const fontSizeH6 = '1.5rem';
+const fontSizeSubtitle1 = '1rem';
+const fontSizeSubtitle2 = '0.875rem';
+const fontSizeBody1 = '1rem';
+const fontSizeBody2 = '0.875rem';
+const fontSizeButton = '0.875rem';
+const fontSizeCaption = '0.75rem';
+const fontSizeOverline = '0.75rem';
 
 // Font weight
 const fontWeightBold = 700;
@@ -138,69 +143,70 @@ export const theme = {
     divider: borderColor,
   },
   typography: {
-    useNextVariants: true,
     fontFamily: fontLato,
-    fontSize: smallText,
+    fontSize: fontSizeBody1,
     fontWeightLight,
     fontWeightRegular,
     fontWeightMedium,
-    fontWeightBold, // additional var
+    fontWeightBold,
     h1: {
-      fontSize: xxLargeText,
+      fontSize: fontSizeH1,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightSm,
       marginLeft: '0',
       color: textColorDarkGrey,
+    },
+    h2: {
+      fontSize: fontSizeH2,
+    },
+    h3: {
+      fontSize: fontSizeH3,
+    },
+    h4: {
+      fontSize: fontSizeH4,
     },
     h5: {
-      fontSize: xLargeText,
+      fontSize: fontSizeH5,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDarkGrey,
     },
-    // large text (i.e. title on prediction title)
     h6: {
-      fontSize: largeText,
+      fontSize: fontSizeH6,
       fontWeight: fontWeightBold,
       lineHeight: lineHeightSm,
       color: textColorDarkGrey,
     },
-    body2: {
-      fontSize: xSmallText,
-      fontWeight: fontWeightRegular,
-      lineHeight: lineHeightLg,
-      color: textColorMediumGrey,
+    subtitle2: {
+      fontSize: fontSizeSubtitle2,
     },
     body1: {
-      fontSize: smallText,
+      fontSize: fontSizeBody1,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
       color: textColorMediumGrey,
     },
-    caption: {
-      fontSize: xxSmallText,
-      fontWeight: fontWeightBold,
-      lineHeight: lineHeightSm,
-      color: textColorLightGrey,
-    },
-    micro: {
-      fontSize: xxxSmallText,
-      fontWeight: fontWeightBold,
-      lineHeight: lineHeightSm,
-      color: textColorLightGrey,
-    },
-    label: {
-      fontSize: xxSmallText,
+    body2: {
+      fontSize: fontSizeBody2,
       fontWeight: fontWeightRegular,
       lineHeight: lineHeightLg,
+      color: textColorMediumGrey,
     },
-    link: {
-      fontSize: xSmallText,
+    button: {
+      fontSize: fontSizeButton,
+    },
+    caption: {
+      fontSize: fontSizeCaption,
       fontWeight: fontWeightBold,
-      lineHeight: lineHeightLg,
+      lineHeight: lineHeightSm,
+      color: textColorLightGrey,
+    },
+    overline: {
+      fontSize: fontSizeOverline,
     },
   },
+
   /* Component overrides */
   overrides: {
     MuiLinearProgress: {
@@ -244,7 +250,7 @@ export const theme = {
         marginTop: px(spaceX),
         marginBottom: px(spaceX),
         borderCollapse: 'separate',
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
         textTransform: 'none !important',
       },
     },
@@ -264,7 +270,7 @@ export const theme = {
       tooltip: {
         backgroundColor: primaryBrandColor,
         color: white,
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
         padding: spaceX,
       },
     },
@@ -285,7 +291,7 @@ export const theme = {
     },
     MuiInput: {
       root: {
-        fontSize: smallText,
+        fontSize: fontSizeBody1,
         lineHeight: lineHeight24,
         padding: `8px ${px(space2X)}`,
         color: textColorDarkGrey,
@@ -308,10 +314,10 @@ export const theme = {
     MuiFormHelperText: {
       root: {
         '&$error': {
-          fontSize: xxSmallText,
+          marginTop: 4,
+          fontSize: fontSizeCaption,
           lineHeight: lineHeight16,
-          color: `${supportColorRed100} !important`,
-          marginTop: 0,
+          color: supportColorRed100,
         },
       },
     },
@@ -326,6 +332,7 @@ export const theme = {
       },
     },
   },
+
   /* User-defined */
   padding: {
     spaceX: {
@@ -395,14 +402,14 @@ export const theme = {
       small: px(iconSizeSm),
     },
     font: {
-      xxLarge: xxLargeText,
-      xLarge: xLargeText,
-      large: largeText,
-      medium: mediumText,
-      small: smallText,
-      xSmall: xSmallText,
-      xxSmall: xxSmallText,
-      xxxSmall: xxxSmallText,
+      xxLarge: fontSizeH1,
+      xLarge: fontSizeH5,
+      large: fontSizeH6,
+      medium: fontSizeSubtitle1,
+      small: fontSizeBody1,
+      xSmall: fontSizeBody2,
+      xxSmall: fontSizeCaption,
+      xxxSmall: fontSizeOverline,
     },
     table: {
       minWidth: 1316, // TODO: Adjust accordingly once full screen width logic is implemented
@@ -424,13 +431,13 @@ bodhiTheme.typography = {
   ...bodhiTheme.typography,
   // large headline (i.e. title on prediction title)
   subtitle1: {
-    fontSize: mediumText,
+    fontSize: fontSizeSubtitle1,
     fontWeight: fontWeightBold,
     lineHeight: lineHeightSm,
     marginLeft: '0',
     color: textColorDarkGrey,
     [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: smallText,
+      fontSize: fontSizeBody1,
       fontWeight: fontWeightBold,
       lineHeight: lineHeight32,
     },
@@ -441,7 +448,7 @@ bodhiTheme.overrides = {
   ...bodhiTheme.overrides,
   MuiButton: {
     root: {
-      fontSize: xSmallText,
+      fontSize: fontSizeBody2,
       lineHeight: lineHeight24,
       padding: `4px ${px(space2X)}`,
       fontWeight: fontWeightBold,
@@ -453,7 +460,7 @@ bodhiTheme.overrides = {
         padding: px(spaceX),
         minWidth: 64,
         minHeight: 32,
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
       },
     },
     contained: {
@@ -571,7 +578,7 @@ bodhiTheme.overrides = {
       },
     },
     sizeLarge: {
-      fontSize: smallText,
+      fontSize: fontSizeBody1,
       lineHeight: lineHeight24,
       padding: `12px ${px(space3X)}`,
       fontWeight: fontWeightBold,
@@ -579,7 +586,7 @@ bodhiTheme.overrides = {
       minHeight: 'auto',
     },
     sizeSmall: {
-      fontSize: xxSmallText,
+      fontSize: fontSizeCaption,
       lineHeight: lineHeight16,
       padding: `4px ${px(space2X)}`,
       fontWeight: fontWeightBold,
@@ -596,12 +603,12 @@ bodhiTheme.overrides = {
     selectRoot: {
       [bodhiTheme.breakpoints.down('xs')]: {
         margin: 0,
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
       },
     },
     caption: {
       [bodhiTheme.breakpoints.down('xs')]: {
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
       },
     },
     actions: {
@@ -613,7 +620,7 @@ bodhiTheme.overrides = {
   MuiTableCell: {
     body: {
       color: textColorMediumGrey,
-      fontSize: xxSmallText,
+      fontSize: fontSizeCaption,
       paddingTop: px(space3X),
       paddingBottom: px(space3X),
       [bodhiTheme.breakpoints.down('md')]: {
@@ -622,10 +629,10 @@ bodhiTheme.overrides = {
     },
     head: {
       fontWeight: fontWeightBold,
-      fontSize: xxSmallText,
+      fontSize: fontSizeCaption,
       [bodhiTheme.breakpoints.down('md')]: {
         padding: px(spaceX),
-        fontSize: xxSmallText,
+        fontSize: fontSizeCaption,
       },
     },
   },

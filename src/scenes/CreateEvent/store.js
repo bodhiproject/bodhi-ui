@@ -1,14 +1,10 @@
-/* eslint-disable */
-
 import { observable, computed, reaction, action, runInAction } from 'mobx';
-import { sumBy, map, filter, isUndefined, isEmpty, each } from 'lodash';
+import { sumBy, map, filter, isUndefined, each } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
 import { utf8ToHex, isAddress } from 'web3-utils';
-
 import { Routes } from 'constants';
 import { defineMessages } from 'react-intl';
-
 import { decimalToSatoshi, satoshiToDecimal } from '../../helpers/utility';
 import Tracking from '../../helpers/mixpanelUtil';
 import { API } from '../../network/routes';
@@ -123,6 +119,10 @@ export default class CreateEventStore {
   @observable creating = INIT.creating
   @observable title = INIT.title
   @observable creator = INIT.creator // address
+  @observable betStartTime = INIT.betStartTime
+  @observable betEndTime = INIT.betEndTime
+  @observable resultSetStartTime = INIT.resultSetStartTime
+  @observable resultSetEndTime = INIT.resultSetEndTime
   @observable prediction = INIT.prediction
   @observable resultSetting = INIT.resultSetting
   @observable outcomes = INIT.outcomes
@@ -162,30 +162,30 @@ export default class CreateEventStore {
   }
   @computed get predictionPeriod() {
     const { prediction: { startTime, endTime } } = this;
-    const time = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'), 'minutes');
-    const year = Math.floor(time/365/24/60);
-    const day = Math.floor(time/24/60%365);
-    const hour = Math.floor(time/60%24);
-    const min = time%60;
-    let period = "";
-    if (year > 0) period += ' ' + year + ' years';
-    if (day > 0) period += ' ' + day + ' days';
-    if (hour > 0) period += ' ' + hour + ' hours';
-    if (min > 0) period += ' ' + min + ' min';
+    const time = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'), 'LLL'), 'minutes');
+    const year = Math.floor(time / 365 / 24 / 60);
+    const day = Math.floor((time / 24 / 60) % 365);
+    const hour = Math.floor((time / 60) % 24);
+    const min = time % 60;
+    let period = '';
+    if (year > 0) period += ` ${year} years`;
+    if (day > 0) period += ` ${day} days`;
+    if (hour > 0) period += ` ${hour} hours`;
+    if (min > 0) period += ` ${min} min`;
     return period;
   }
   @computed get resultSettingPeriod() {
     const { resultSetting: { startTime, endTime } } = this;
-    const time = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'),'LLL'), 'minutes');
-    const year = Math.floor(time/365/24/60);
-    const day = Math.floor(time/24/60%365);
-    const hour = Math.floor(time/60%24);
-    const min = time%60;
-    let period = "";
-    if (year > 0) period += ' ' + year + ' years';
-    if (day > 0) period += ' ' + day + ' days';
-    if (hour > 0) period += ' ' + hour + ' hours';
-    if (min > 0) period += ' ' + min + ' min';
+    const time = moment(moment.unix(endTime).format('LLL'), 'LLL').diff(moment(moment.unix(startTime).format('LLL'), 'LLL'), 'minutes');
+    const year = Math.floor(time / 365 / 24 / 60);
+    const day = Math.floor((time / 24 / 60) % 365);
+    const hour = Math.floor((time / 60) % 24);
+    const min = time % 60;
+    let period = '';
+    if (year > 0) period += ` ${year} years`;
+    if (day > 0) period += ` ${day} days`;
+    if (hour > 0) period += ` ${hour} hours`;
+    if (min > 0) period += ` ${min} min`;
     return period;
   }
   @computed get isAllValid() {
@@ -273,7 +273,7 @@ export default class CreateEventStore {
    * @return {number} Estimated future block.
    */
   calculateBlock = (futureDateUnix) => {
-    const currentBlock = this.currentBlock
+    const { currentBlock } = this;
     const diffSec = futureDateUnix - moment().unix();
     return Math.round(diffSec / this.averageBlockTime) + currentBlock;
   }
@@ -544,7 +544,7 @@ export default class CreateEventStore {
       amountSatoshi: escrowAmountSatoshi,
       arbitrationOptionIndex: this.arbOptionSelected,
       arbitrationRewardPercentage: this.arbRewardPercent,
-      language :this.app.ui.locale,
+      language: this.app.ui.locale,
     });
     if (!txid) return;
     this.close();
