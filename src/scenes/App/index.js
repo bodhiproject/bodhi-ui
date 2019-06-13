@@ -8,11 +8,12 @@ import {
   InstallNakaWalletPopover,
   TutorialCarouselDialog,
 } from 'components';
+import { Routes } from 'constants';
 
 import styles from './styles';
 import AppRouter from './router';
 
-const App = observer(({ classes, match: { url }, store }) => (
+const App = observer(({ classes, match: { url }, store, store: { ui } }) => (
   <div className={classes.root}>
     {!store.loading && (
       <Fragment>
@@ -20,8 +21,7 @@ const App = observer(({ classes, match: { url }, store }) => (
           <AppRouter url={url} />
         </div>
         <BottomBar />
-
-        <TutorialCarouselDialog />
+        {ui.location === Routes.PREDICTION && <TutorialCarouselDialog />}
         <GlobalSnackbar />
         <GlobalDialog />
         <InstallNakaWalletPopover />
