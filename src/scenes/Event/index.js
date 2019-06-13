@@ -281,8 +281,8 @@ export default class EventPage extends Component {
       <Fragment>
         <Helmet>
           <meta charSet="utf-8" />
-          <meta name="title" content={event.name} />
-          <meta name="results" content={event.results[0].name} />
+          <meta name="description" content={event.name} />
+          {/* <meta name="results" content={event.results[0].name} /> */}
         </Helmet>
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
