@@ -4,10 +4,9 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLM
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { Token } from 'constants';
-import { SeeAllButton } from 'components';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString, toFixed } from '../../../../helpers';
+import { getTimeString } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import { getStatusString } from '../../../../helpers/stringUtil';
@@ -46,7 +45,6 @@ const messages = defineMessages({
 export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    resultSetsHistory: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
@@ -80,10 +78,7 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { intl, classes, store: { history: { loadingMore, resultHasMore, limit }, eventPage: { event: { address } } } } = this.props;
-    const url = `/event_history/${address}`;
-    let { resultSetsHistory } = this.props;
-    resultSetsHistory = resultSetsHistory.slice(0, 5);
+    const { intl, classes, store: { history: { resultSetsHistory, loadingMore, loadMoreResultHistory } } } = this.props;
     const cards = resultSetsHistory.map((resultSet, index) => {
       const { amount, block, txStatus } = resultSet;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
@@ -103,7 +98,7 @@ export default class EventResultHistory extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${toFixed(amount, true)} ${Token.NBOT} · ${status} · ${blockTime} · `}
+                {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
                   {intl.formatMessage(messages.strDetailMsg)}
                 </a>
@@ -117,15 +112,12 @@ export default class EventResultHistory extends Component {
     return (
       <div>
         {resultSetsHistory.length ? (
-          <Fragment>
-            <InfiniteScroll
-              spacing={0}
-              data={cards}
-              loadMore={() => {}}
-              loadingMore={loadingMore}
-            />
-            {cards.length === limit && resultHasMore && <SeeAllButton url={url} />}
-          </Fragment>
+          <InfiniteScroll
+            spacing={0}
+            data={cards}
+            loadMore={loadMoreResultHistory}
+            loadingMore={loadingMore}
+          />
         ) : (
           <CenteredDiv>
             <Typography variant="body2">

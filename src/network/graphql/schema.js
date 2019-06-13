@@ -217,3 +217,9 @@ export const BIGGEST_WINNER = `
   betterAddress
   amount
 `;
+
+export const PAGINATED_BIGGEST_WINNER = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${BIGGEST_WINNER} }
+`;

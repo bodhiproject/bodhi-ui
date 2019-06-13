@@ -20,7 +20,7 @@ import {
   TOTAL_RESULT_BETS,
   ALL_STATS,
   PAGINATED_MOST_BETS,
-  BIGGEST_WINNER,
+  PAGINATED_BIGGEST_WINNER,
 } from './schema';
 
 const QUERY_EVENTS = 'events';
@@ -240,7 +240,7 @@ const QUERIES = {
         limit: $limit
         skip: $skip
       ) {
-        ${BIGGEST_WINNER}
+        ${PAGINATED_BIGGEST_WINNER}
       }
     }
   `,

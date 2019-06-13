@@ -1,13 +1,19 @@
 const styles = (theme) => ({
   detailTxWrapper: {
     marginTop: theme.padding.space5X.px,
-    overflowY: 'auto',
   },
   detailTxTitle: {
     marginBottom: theme.padding.space2X.px,
   },
   arrowSize: {
     fontSize: '8px',
+  },
+  centeredDiv: {
+    display: 'grid',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: '20px',
   },
   card: {
     height: '50%',
@@ -16,7 +22,7 @@ const styles = (theme) => ({
     marginTop: theme.padding.space2X.px,
   },
   grid: {
-    borderBottom: theme.border,
+    borderTop: theme.border,
   },
   bold: {
     fontWeight: '900',
@@ -30,6 +36,19 @@ const styles = (theme) => ({
   },
   content: {
     width: '80%',
+  },
+  bottomButton: {
+    borderTop: theme.border,
+    textAlign: 'center',
+  },
+  bottomButtonText: {
+    marginTop: theme.padding.space2X.px,
+    '&:active': {
+      transform: 'translateY(4px)',
+    },
+  },
+  bottomButtonIcon: {
+    verticalAlign: 'text-bottom',
   },
 });
 

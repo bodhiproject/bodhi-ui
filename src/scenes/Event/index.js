@@ -69,6 +69,7 @@ export default class EventPage extends Component {
     this.props.store.ui.location = Routes.EVENT;
     await this.props.store.eventPage.init({ ...params });
     this.props.store.history.init();
+    this.props.store.leaderboard.init();
   }
 
   componentWillUnmount() {

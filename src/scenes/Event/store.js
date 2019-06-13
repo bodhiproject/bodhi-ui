@@ -8,8 +8,6 @@ import { toFixed, satoshiToDecimal, decimalToSatoshi } from '../../helpers/utili
 import { API } from '../../network/routes';
 import {
   events,
-  mostBets,
-  biggestWinners,
   totalResultBets,
   withdraws,
 } from '../../network/graphql/queries';
@@ -29,19 +27,16 @@ const INIT = {
   returnRate: 0,
   profitOrLoss: 0,
   pendingWithdraw: [],
-  leaderboardBets: [],
   nbotWinnings: 0,
   amount: '',
   selectedOptionIdx: -1,
   buttonDisabled: false,
   warningType: '',
   eventWarningMessageId: '',
-  activeStep: 0,
   error: {
     amount: '',
     address: '',
   },
-  leaderboardLimit: 5,
   didWithdraw: false,
 };
 
@@ -53,14 +48,12 @@ export default class EventStore {
   @observable betterBets = INIT.betterBets
   @observable totalVotes = INIT.totalVotes
   @observable betterVotes = INIT.betterVotes
-  @observable leaderboardBets = INIT.leaderboardBets
   @observable nbotWinnings = INIT.nbotWinnings
   @observable amount = INIT.amount // Input amount to bet, vote, etc
   @observable selectedOptionIdx = INIT.selectedOptionIdx // Current result index selected
   @observable buttonDisabled = INIT.buttonDisabled
   @observable warningType = INIT.warningType
   @observable eventWarningMessageId = INIT.eventWarningMessageId
-  @observable activeStep = INIT.activeStep;
   @observable error = INIT.error
   @observable escrowAmount = INIT.escrowAmount
   @observable didWithdraw = INIT.didWithdraw
@@ -68,7 +61,6 @@ export default class EventStore {
   @observable totalInvestment = INIT.totalInvestment
   @observable returnRate = INIT.returnRate
   @observable profitOrLoss = INIT.profitOrLoss
-  leaderboardLimit = INIT.leaderboardLimit
 
   @computed get eventName() {
     return this.event && this.event.name;
@@ -193,12 +185,6 @@ export default class EventStore {
       }
     );
 
-    // Leaderboard tab changed
-    reaction(
-      () => this.activeStep,
-      () => this.updateLeaderBoard(),
-    );
-
     // Tx list, amount, selected option, current wallet address changed
     reaction(
       () => this.transactionHistoryItems
@@ -234,8 +220,6 @@ export default class EventStore {
     this.address = this.event.address;
     this.escrowAmount = this.event.escrowAmount;
 
-    this.queryLeaderboard();
-
     this.disableEventActionsIfNecessary();
     if (this.isResultSetting) {
       // Set the amount field since we know the amount will be the consensus threshold
@@ -245,6 +229,7 @@ export default class EventStore {
     if (this.isWithdrawing) {
       await this.getDidWithdraw();
       await this.queryPendingWithdraw();
+      if (!this.event) return;
       this.selectedOptionIdx = this.event.currentResultIndex;
       await this.queryTotalResultBets();
       await this.calculateWinnings();
@@ -284,41 +269,6 @@ export default class EventStore {
       filter: { eventAddress: address, txStatus: TransactionStatus.PENDING, winnerAddress: this.app.wallet.currentAddress },
     });
     this.pendingWithdraw = res.items;
-  }
-
-  @action
-  queryLeaderboard = async () => {
-    const address = this.event && this.event.address;
-    if (!address) return;
-
-    const bets = await mostBets(this.app.graphqlClient, {
-      filter: { eventAddress: address },
-      limit: this.leaderboardLimit,
-      skip: 0,
-    });
-    this.leaderboardBets = bets.items;
-  }
-
-  @action
-  queryBiggestWinner = async () => {
-    const address = this.event && this.event.address;
-    if (!address) return;
-
-    const winners = await biggestWinners(this.app.graphqlClient, {
-      filter: { eventAddress: address },
-      limit: this.leaderboardLimit,
-      skip: 0,
-    });
-    this.leaderboardBets = winners;
-  }
-
-  @action
-  updateLeaderBoard = async () => {
-    if (this.activeStep < 2) {
-      await this.queryLeaderboard();
-    } else {
-      await this.queryBiggestWinner();
-    }
   }
 
   @action
