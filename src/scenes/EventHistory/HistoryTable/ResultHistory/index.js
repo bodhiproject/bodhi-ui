@@ -86,7 +86,7 @@ export default class EventResultHistory extends Component {
 
       return (
         <Grid container className={classes.grid} justify="center" key={`result-${index}`}>
-          <Grid item xs={10} sm={10}>
+          <Grid item xs={10}>
             <Card
               className={classes.card}
             >

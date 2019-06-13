@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles, Paper, Button, Typography, Grid } from '@material-ui/core';
 import { Routes } from 'constants';
-import { Card } from 'components';
+import { Card, SeeAllButton } from 'components';
 import MobileStepper from './carousel';
 import styles from './styles';
 import { satoshiToDecimal, toFixed } from '../../../helpers/utility';
@@ -64,7 +64,7 @@ export default class Leaderboard extends React.Component {
     const { betterAddress, amount } = row;
     if (!betterAddress) return;
     const ranking = (index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />)
-                    || (index === 3 && '👍') || (index >= 4 && '✊');
+      || (index === 3 && '👍') || (index >= 4 && '✊');
 
     const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || `${betterAddress.slice(0, 6)}...${betterAddress.slice(-6)}`;
     return (
@@ -87,7 +87,8 @@ export default class Leaderboard extends React.Component {
   }
 
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadingMore } } } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location },
+      leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadingMore, leaderboardLimit, diaplayHasMore } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
 
     const displays = leaderboardDisplay.map((row, index) => this.renderEntry(row, index));
@@ -128,14 +129,7 @@ export default class Leaderboard extends React.Component {
             </Paper>
           </div>
         </div>
-        {url && location === Routes.EVENT && <Link to={url}>
-          <div className={classes.bottomButton}>
-            <Typography color='textPrimary' className={classes.bottomButtonText}>
-              <FormattedMessage id="str.seeAll" defaultMessage="See All " />
-              <KeyboardArrowRight className={classes.bottomButtonIcon} />
-            </Typography>
-          </div>
-        </Link>}
+        {url && location === Routes.EVENT && displays.length === leaderboardLimit && diaplayHasMore && <SeeAllButton url={url} />}
       </Card>
     );
   }

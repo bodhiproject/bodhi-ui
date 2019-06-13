@@ -6,8 +6,6 @@ const styles = (theme) => ({
     padding: 10,
     maxWidth: '100%',
   },
-  subTableContainer: {
-  },
   mainTableContainer: {
     marginTop: theme.padding.space5X.px,
   },

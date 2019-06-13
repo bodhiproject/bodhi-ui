@@ -21,6 +21,7 @@ const INIT_VALUES = {
   winnerSkip: 0,
   winnerHasMore: true,
   loadingMore: false,
+  diaplayHasMore: true,
 };
 
 export default class {
@@ -33,11 +34,13 @@ export default class {
   @observable activeStep = INIT_VALUES.activeStep
   leaderboardLimit = INIT_VALUES.leaderboardLimit;
   skip = INIT_VALUES.skip;
-  hasMore = INIT_VALUES.hasMore;
+  @observable hasMore = INIT_VALUES.hasMore;
   // for biggest winners
   @observable leaderboardWinners = INIT_VALUES.leaderboardWinners
   winnerSkip = INIT_VALUES.winnerSkip;
-  winnerHasMore = INIT_VALUES.winnerHasMore;
+  @observable winnerHasMore = INIT_VALUES.winnerHasMore;
+
+  @observable diaplayHasMore = INIT_VALUES.diaplayHasMore;
 
   constructor(app) {
     this.app = app;
@@ -58,8 +61,10 @@ export default class {
       () => {
         if (this.activeStep < 1) {
           this.leaderboardDisplay = this.leaderboardBets;
+          this.diaplayHasMore = this.hasMore;
         } else {
           this.leaderboardDisplay = this.leaderboardWinners;
+          this.diaplayHasMore = this.winnerHasMore;
         }
       }
     );
@@ -91,6 +96,7 @@ export default class {
     await this.loadFirstLeaderboardBets(filters);
     await this.loadFirstBiggestWinners(filters);
     this.leaderboardDisplay = this.leaderboardBets;
+    this.diaplayHasMore = this.hasMore;
   }
 
   @action

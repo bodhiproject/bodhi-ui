@@ -4,6 +4,7 @@ import { Typography, withStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { KeyboardArrowRight } from '@material-ui/icons';
+import { SeeAllButton } from 'components';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
 import TxRow from './TxRow';
@@ -14,7 +15,8 @@ import TxRow from './TxRow';
 @observer
 export default class TransactionHistory extends Component {
   render() {
-    const { classes, store: { history: { loadingMore }, eventPage: { event: { address } } }, showMyTransactions } = this.props;
+    const { classes, store: { history: { loadingMore, limit, hasMore, myHasMore }, eventPage: { event: { address } } }, showMyTransactions } = this.props;
+    let displayHasMore = hasMore;
     const url = `/event_history/${address}`;
     let { store: { history: { transactions, myTransactions } } } = this.props;
     let cards = [];
@@ -22,6 +24,7 @@ export default class TransactionHistory extends Component {
       transactions = transactions.slice(0, 5);
       cards = transactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     } else {
+      displayHasMore = myHasMore;
       myTransactions = myTransactions.slice(0, 5);
       cards = myTransactions.map((transaction) => <TxRow key={transaction.txid} transaction={transaction} />);
     }
@@ -35,14 +38,7 @@ export default class TransactionHistory extends Component {
               loadMore={() => {}}
               loadingMore={loadingMore}
             />
-            <Link to={url}>
-              <div className={classes.bottomButton}>
-                <Typography color='textPrimary' className={classes.bottomButtonText}>
-                  <FormattedMessage id="str.seeAll" defaultMessage="See All " />
-                  <KeyboardArrowRight className={classes.bottomButtonIcon} />
-                </Typography>
-              </div>
-            </Link>
+            {cards.length === limit && displayHasMore && <SeeAllButton url={url} />}
           </Fragment>
         ) : (
           <CenteredDiv>

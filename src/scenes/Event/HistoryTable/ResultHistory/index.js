@@ -5,6 +5,7 @@ import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLM
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
 import { Token } from 'constants';
+import { SeeAllButton } from 'components';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
@@ -81,7 +82,7 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { intl, classes, store: { history: { loadingMore }, eventPage: { event: { address } } } } = this.props;
+    const { intl, classes, store: { history: { loadingMore, resultHasMore, limit }, eventPage: { event: { address } } } } = this.props;
     const url = `/event_history/${address}`;
     let { resultSetsHistory } = this.props;
     resultSetsHistory = resultSetsHistory.slice(0, 5);
@@ -92,7 +93,7 @@ export default class EventResultHistory extends Component {
 
       return (
         <Grid container className={classes.grid} justify="center" key={`result-${index}`}>
-          <Grid item xs={10} sm={10}>
+          <Grid item xs={10}>
             <Card
               className={classes.card}
             >
@@ -125,14 +126,7 @@ export default class EventResultHistory extends Component {
               loadMore={() => {}}
               loadingMore={loadingMore}
             />
-            <Link to={url}>
-              <div className={classes.bottomButton}>
-                <Typography color='textPrimary' className={classes.bottomButtonText}>
-                  <FormattedMessage id="str.seeAll" defaultMessage="See All " />
-                  <KeyboardArrowRight className={classes.bottomButtonIcon} />
-                </Typography>
-              </div>
-            </Link>
+            {cards.length === limit && resultHasMore && <SeeAllButton url={url} />}
           </Fragment>
         ) : (
           <CenteredDiv>
