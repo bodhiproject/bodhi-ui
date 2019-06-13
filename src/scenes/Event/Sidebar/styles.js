@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   sidebarContainer: {
-    padding: `${theme.padding.space7X.px}`,
+    padding: `0 ${theme.padding.space7X.px} ${theme.padding.space7X.px}`,
     overflowX: 'hidden',
     textAlign: 'right',
     [theme.breakpoints.down('sm')]: {
