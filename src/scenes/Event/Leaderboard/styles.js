@@ -7,7 +7,6 @@ const styles = theme => ({
   },
   outWrapper: {
     marginTop: theme.spacing(3),
-    overflowX: 'auto',
     boxShadow: 'none',
   },
   header: {
