@@ -191,13 +191,13 @@ export default class {
 
       const res = await biggestWinners(graphqlClient, { filter: filters, limit, skip });
 
-      // const { items, pageInfo } = res;
+      const { items, pageInfo } = res;
 
-      // if (pageInfo) {
-      //   this.winnerHasMore = pageInfo.hasNextPage;
-      // } else if (!pageInfo) this.winnerHasMore = false;
+      if (pageInfo) {
+        this.winnerHasMore = pageInfo.hasNextPage;
+      } else if (!pageInfo) this.winnerHasMore = false;
 
-      return res;
+      return items;
     }
     return INIT_VALUES.leaderboardWinners;
   }
