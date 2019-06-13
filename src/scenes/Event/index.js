@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import cx from 'classnames';
+import { Helmet } from 'react-helmet';
+
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -277,6 +279,11 @@ export default class EventPage extends Component {
     }
     return (
       <Fragment>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <meta name="title" content={event.name} />
+          <meta name="results" content={event.results[0].name} />
+        </Helmet>
         <BackButton />
         <PageContainer classes={{ root: classes.pageRoot }}>
           <ContentContainer>
