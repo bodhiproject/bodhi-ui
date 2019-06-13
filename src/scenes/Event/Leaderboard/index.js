@@ -113,7 +113,7 @@ export default class Leaderboard extends React.Component {
                           {index >= 4 && '✊'}
                         </CustomTableBodyCell>
                         <CustomTableBodyCell>{row.betterAddress}</CustomTableBodyCell>
-                        <CustomTableBodyCell>{toFixed(satoshiToDecimal(row.amount))}</CustomTableBodyCell>
+                        <CustomTableBodyCell>{toFixed(satoshiToDecimal(row.amount), true)}</CustomTableBodyCell>
                       </CustomTableRow>
                     ))}
                 </TableBody>

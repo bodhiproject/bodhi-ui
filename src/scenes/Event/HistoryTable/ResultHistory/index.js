@@ -6,7 +6,7 @@ import { inject, observer } from 'mobx-react';
 import { Token } from 'constants';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString } from '../../../../helpers';
+import { getTimeString, toFixed } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import { getStatusString } from '../../../../helpers/stringUtil';
@@ -100,7 +100,7 @@ export default class EventResultHistory extends Component {
             </Card>
             <div className={classes.note}>
               <Typography color='textPrimary'>
-                {`${amount} ${Token.NBOT} · ${status} · ${blockTime} · `}
+                {`${toFixed(amount, true)} ${Token.NBOT} · ${status} · ${blockTime} · `}
                 <a href={`${EXPLORER.TX}/${resultSet.txid}`} target="_blank" className={classes.link}>
                   {intl.formatMessage(messages.strDetailMsg)}
                 </a>

@@ -35,11 +35,11 @@ export default class Reward extends Component {
       <div className={classes.colDiv}>
         <Typography variant="h4">
           <div className={classes.rowDiv}>
-            +{toFixed(nbotWinnings)} <div className={classes.tokenDiv}>NBOT</div>
+            +{toFixed(nbotWinnings, true)} <div className={classes.tokenDiv}>NBOT</div>
             <Tooltip
               classes={{ tooltip: classes.rewardTooltip }}
               id="tooltip-reward"
-              title={<RewardTooltipContent token="NBOT" totalInvestment={toFixed(totalInvestment)} profitOrLoss={toFixed(profitOrLoss)} />}
+              title={<RewardTooltipContent token="NBOT" totalInvestment={toFixed(totalInvestment, true)} profitOrLoss={toFixed(profitOrLoss, true)} />}
             >
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
@@ -49,7 +49,7 @@ export default class Reward extends Component {
           <FormattedMessage
             id="withdrawDetail.returnRateXPercent"
             defaultMessage="Return rate: {rate}%"
-            values={{ rate: toFixed(returnRate) }}
+            values={{ rate: toFixed(returnRate, true) }}
           />
         </Typography>
       </div>

@@ -117,7 +117,7 @@ const CustomTableRow = withStyles(styles)(({ text, value, percent, classes }) =>
   return (
     <TableRow className={classes.root}>
       <TableCell className={classes.root}><FormattedMessageFixed id={messages[text].id} defaultMessage={messages[text].defaultMessage} /></TableCell>
-      <TableCell className={classes.root}>{`${toFixed(value)} ${percent ? `(${toFixed(percent)}%)` : ''}`}</TableCell>
+      <TableCell className={classes.root}>{`${toFixed(value, true)} ${percent ? `(${toFixed(percent, true)}%)` : ''}`}</TableCell>
     </TableRow>
   );
 });
