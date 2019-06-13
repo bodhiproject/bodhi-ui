@@ -87,7 +87,7 @@ export default class Leaderboard extends React.Component {
   }
 
   render() {
-    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadingMore } } } = this.props;
+    const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location }, leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadingMore } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
 
     const displays = leaderboardDisplay.map((row, index) => this.renderEntry(row, index));
@@ -121,7 +121,7 @@ export default class Leaderboard extends React.Component {
               <InfiniteScroll
                 spacing={0}
                 data={displays}
-                loadMore={loadMoreLeaderboardBets}
+                loadMore={activeStep === 0 ? loadMoreLeaderboardBets : loadMoreLeaderboardBiggestWinners}
                 loadingMore={loadingMore}
                 noEmptyPlaceholder
               />

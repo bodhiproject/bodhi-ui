@@ -23,7 +23,6 @@ const messages = defineMessages({
 @observer
 export default class InfiniteScroll extends Component {
   static propTypes = {
-    hasMore: PropTypes.bool,
     loadingMore: PropTypes.bool,
     loadMore: PropTypes.func,
     spacing: PropTypes.number,
@@ -31,7 +30,6 @@ export default class InfiniteScroll extends Component {
   };
 
   static defaultProps = {
-    hasMore: true,
     loadMore: undefined,
     loadingMore: false,
     spacing: undefined,
@@ -52,7 +50,7 @@ export default class InfiniteScroll extends Component {
     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
     const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-    if (scrolledToBottom && this.props.hasMore && !this.props.loadingMore) {
+    if (scrolledToBottom && !this.props.loadingMore) {
       this.props.loadMore();
     }
   }

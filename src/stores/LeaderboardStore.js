@@ -4,7 +4,7 @@ import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { mostBets, allStats, biggestWinners } from '../network/graphql/queries';
 import { satoshiToDecimal } from '../helpers/utility';
 
-const EVENT_LEADERBOARD_LIMIT = 10;
+const EVENT_LEADERBOARD_LIMIT = 1;
 const EVENT_DETAIL_LEADERBOARD_LIMIT = 5;
 const GLOBAL_LEADERBOARD_LIMIT = 10;
 const INIT_VALUES = {
@@ -122,7 +122,7 @@ export default class {
   }
 
   /**
-   * Queries another batches of txs and appends it to the full list.
+   * Queries another batches of leaderboard bets and appends it to the full list.
    */
   @action
   loadMoreLeaderboardBets = async () => {
@@ -131,7 +131,7 @@ export default class {
       const address = event && event.address;
       let filters = {};
 
-      if (location === Routes.EVENT || location === Routes.EVENT_LEADERBOARD) {
+      if (location === Routes.EVENT_LEADERBOARD) {
         if (!address) return;
 
         filters = { eventAddress: address };
@@ -150,6 +150,41 @@ export default class {
         });
       } catch (e) {
         this.skip -= this.leaderboardLimit;
+      }
+    }
+  }
+
+  /**
+   * Queries another batches of leaderboard winners and appends it to the full list.
+   */
+  @action
+  loadMoreLeaderboardBiggestWinners = async () => {
+    if (this.winnerHasMore && this.leaderboardWinners.length > 0) {
+      const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
+      const address = event && event.address;
+      let filters = {};
+
+      if (location === Routes.EVENT_LEADERBOARD) {
+        if (!address) return;
+
+        filters = { eventAddress: address };
+      } else {
+        return;
+      }
+
+      this.loadingMore = true;
+      this.winnerSkip += this.leaderboardLimit;
+
+      try {
+        const moreWinners = await this.fetchLeaderboardWinners(filters);
+
+        runInAction(() => {
+          this.leaderboardWinners = [...this.leaderboardWinners, ...moreWinners];
+          this.leaderboardDisplay = this.leaderboardWinners;
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.winnerSkip -= this.leaderboardLimit;
       }
     }
   }
