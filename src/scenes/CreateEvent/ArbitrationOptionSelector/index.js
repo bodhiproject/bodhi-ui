@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import numbro from 'numbro';
 import {
   FormControl,
   Grid,
@@ -48,7 +49,7 @@ export default class ArbitrationOptionSelector extends Component {
             variant="subtitle1"
             className={createEvent.arbOptionSelected === idx ? classes.cardSelected : ''}
           >
-            {`${opt.length / 3600} Hours`}
+            {`${numbro(opt.length / 3600).format({ trimMantissa: true, mantissa: 2 })} Hours`}
           </Typography>
         </CardContent>
       </Card>
