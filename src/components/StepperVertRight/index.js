@@ -91,7 +91,7 @@ export default class StepperVertRight extends Component {
 
     if (event.status === EVENT_STATUS.CREATED) {
       current = TOPIC_CREATED;
-    } else if (event.status === EVENT_STATUS.BETTING) {
+    } else if ([EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(event.status)) {
       current = BETTING;
     } else if (event.status === EVENT_STATUS.ORACLE_RESULT_SETTING) {
       current = ORACLE_RESULT_SETTING;
