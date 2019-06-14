@@ -15,9 +15,6 @@ export default class ImportantNote extends Component {
     open: false,
   };
 
-  componentDidMount() {
-  }
-
   handleTooltipOpen = () => this.setState({ open: true });
   handleTooltipClose = () => this.setState({ open: false });
 
