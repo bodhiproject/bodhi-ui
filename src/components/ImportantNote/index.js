@@ -1,22 +1,46 @@
-import React from 'react';
-import { withStyles, IconButton, Tooltip, Typography } from '@material-ui/core';
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { withStyles, IconButton, Tooltip, Typography, ClickAwayListener } from '@material-ui/core';
+import { injectIntl } from 'react-intl';
 import cx from 'classnames';
 
 import styles from './styles';
 
-const ImportantNote = ({ classes, heading, message, ...props }) => (
-  heading && message && (
-    <div {...props}>
-      <div className={classes.iconHeadingContainer}>
-        <Tooltip title={<span>{message}</span>}>
-          <IconButton className={classes.iconButton} disableRipple>
-            <i className={cx('icon iconfont icon-ic_info', classes.icon)} />
-          </IconButton>
-        </Tooltip>
-        <Typography className={classes.heading}>{heading}</Typography>
-      </div>
-    </div>
-  )
-);
+@injectIntl
+@withStyles(styles, { withTheme: true })
+@inject('store')
+@observer
+export default class ImportantNote extends Component {
+  state = {
+    open: false,
+  };
 
-export default withStyles(styles)((ImportantNote));
+  componentDidMount() {
+  }
+
+  handleTooltipOpen = () => this.setState({ open: true });
+  handleTooltipClose = () => this.setState({ open: false });
+
+  render() {
+    const { classes, heading, message } = this.props;
+    const { open } = this.state;
+
+    return heading && message && (
+      <div>
+        <ClickAwayListener onClickAway={this.handleTooltipClose}>
+          <div className={classes.iconHeadingContainer}>
+            <Tooltip
+              title={<span>{message}</span>}
+              open={open}
+            >
+              <IconButton className={classes.iconButton} disableRipple onClick={this.handleTooltipOpen} >
+                <i className={cx('icon iconfont icon-ic_info', classes.icon)} />
+              </IconButton>
+            </Tooltip>
+            <Typography className={classes.heading}>{heading}</Typography>
+          </div>
+        </ClickAwayListener>
+      </div>
+    );
+  }
+}

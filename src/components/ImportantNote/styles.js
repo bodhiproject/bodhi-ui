@@ -1,5 +1,6 @@
 const styles = (theme) => ({
   iconHeadingContainer: {
+    width: 'fit-content',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
