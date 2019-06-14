@@ -71,7 +71,7 @@ export default class SearchStore {
         includeRoundBets: true,
         roundBetsAddress,
       });
-      this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
+      this.bets = filter(this.events, (event) => [EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(event.status));
       this.sets = filter(this.events, (e) =>
         e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
         || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);

@@ -224,7 +224,8 @@ export function getEventDesc(event, currentAddress) {
   const { status, centralizedOracle } = event;
   switch (status) {
     case EVENT_STATUS.CREATED: return 'creating';
-    case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+    case EVENT_STATUS.PRE_BETTING: return 'predictionComingSoon';
+    case EVENT_STATUS.BETTING: return 'predictionInProgress';
     case EVENT_STATUS.ORACLE_RESULT_SETTING:
       if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
       return moment().isBefore(moment.unix(event.resultSetStartTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';

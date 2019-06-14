@@ -30,7 +30,7 @@ export default class MultipleResultsEvent {
   consensusThreshold // Current consensus threshold for the round in decimals
   previousConsensusThreshold // Previous consensus threshold for the round in decimals
   arbitrationEndTime // Timestamp of the end of the arbitration round
-  status // Event status. One of: [CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING]
+  status // Event status. One of: [CREATED, PRE_BETTING, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING]
   language // Language of the event
   pendingTxs // Counts of pending txs for the address passed in pendingTxsAddress param
   roundBets // Array of bets for the current round returned if includeRoundBets: true
@@ -81,6 +81,7 @@ export default class MultipleResultsEvent {
   getEndTime = () => {
     switch (this.status) {
       case EVENT_STATUS.CREATED: return null;
+      case EVENT_STATUS.PRE_BETTING:
       case EVENT_STATUS.BETTING: return this.betEndTime;
       case EVENT_STATUS.ORACLE_RESULT_SETTING: return this.resultSetEndTime;
       case EVENT_STATUS.OPEN_RESULT_SETTING: return this.resultSetEndTime;
