@@ -85,6 +85,14 @@ export default class ArbitrationStore {
           status: EVENT_STATUS.ARBITRATION,
           version: eventVersion,
         },
+        {
+          status: EVENT_STATUS.OPEN_RESULT_SETTING,
+          version: eventVersion,
+        }, {
+          status: EVENT_STATUS.ORACLE_RESULT_SETTING,
+          ownerAddress: account,
+          version: eventVersion,
+        },
       ] };
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
       const res = await events(graphqlClient, {
