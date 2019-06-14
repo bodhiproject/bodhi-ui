@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { Grid, withStyles } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
-import { InstallNakaWalletInline } from 'components';
+import { NoWalletPrompt } from 'components';
 import { Routes } from 'constants';
 import styles from './styles';
 import EventRows from './EventRows';
@@ -38,7 +38,7 @@ export default class ActivityHistory extends Component {
     if (!loaded) return <Loading />;
     if (currentAddress) return <EventHistoryContent history={history} classes={classes} />;
 
-    return <InstallNakaWalletInline />;
+    return <NoWalletPrompt inline />;
   }
 
   render() {
