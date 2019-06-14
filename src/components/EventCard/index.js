@@ -21,6 +21,7 @@ const messages = defineMessages({
   withdraw: { id: 'str.withdraw', defaultMessage: 'Withdraw' },
   archived: { id: 'bottomButtonText.archived', defaultMessage: 'Archived' },
   creating: { id: 'card.creating', defaultMessage: 'Creating' },
+  arbitrationComingSoon: { id: 'card.arbitrationComingSoon', defaultMessage: 'Arbitration Coming Soon' },
   predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
   predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
   resultSettingComingSoon: { id: 'card.resultSettingComingSoon', defaultMessage: 'Result Setting Coming Soon' },

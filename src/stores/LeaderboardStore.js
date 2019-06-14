@@ -6,7 +6,7 @@ import { satoshiToDecimal } from '../helpers/utility';
 
 const EVENT_LEADERBOARD_LIMIT = 10;
 const EVENT_DETAIL_LEADERBOARD_LIMIT = 5;
-const GLOBAL_LEADERBOARD_LIMIT = 10;
+const GLOBAL_LEADERBOARD_LIMIT = 15;
 const INIT_VALUES = {
   eventCount: 0,
   participantCount: 0,
