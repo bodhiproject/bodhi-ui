@@ -7,6 +7,7 @@ import {
   GlobalSnackbar,
   InstallNakaWalletPopover,
   TutorialCarouselDialog,
+  NoWalletDialog,
 } from 'components';
 import { Routes } from 'constants';
 
@@ -25,6 +26,7 @@ const App = observer(({ classes, match: { url }, store, store: { ui } }) => (
         <GlobalSnackbar />
         <GlobalDialog />
         <InstallNakaWalletPopover />
+        <NoWalletDialog />
       </Fragment>
     )}
     <CssBaseline />

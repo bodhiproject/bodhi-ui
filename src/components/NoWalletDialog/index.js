@@ -6,10 +6,10 @@ import { SentimentVeryDissatisfied } from '@material-ui/icons';
 import { FormattedMessage } from 'react-intl';
 import styles from './styles';
 import { urls } from '../../config/app';
-import AppStoreBadge from '../../../public/images/app_store_badge.png';
-import GooglePlayBadge from '../../../public/images/google_play_badge.png';
-import ChromeWebStoreBadge from '../../../public/images/chrome_web_store_badge.png';
 
+const AppStoreBadge = '/images/app_store_badge.png';
+const GooglePlayBadge = '/images/google_play_badge.png';
+const ChromeWebStoreBadge = '/images/chrome_web_store_badge.png';
 @withStyles(styles)
 @inject('store')
 @observer
@@ -21,7 +21,7 @@ class NoWalletDialog extends Component {
   renderBadge = (badge, url) => {
     const { classes } = this.props;
     return (
-      <Grid item xs={12} sm={4} align="center">
+      <Grid item xs={4} align="center">
         <a href={url} target="_blank" rel="noopener noreferrer">
           <img src={badge} className={classes.badgeImg} alt="badge" />
         </a>
@@ -41,22 +41,22 @@ class NoWalletDialog extends Component {
       <Dialog
         open={noWalletDialogVisible}
         onClose={hideNoWalletDialog}
+        PaperProps={{ classes: { root: classes.dialog } }}
       >
         <div className={classes.root}>
-          <SentimentVeryDissatisfied className={classes.icon} />
-          <Typography variant="h6">
+          <img src="/images/naka_logo.png" alt="Naka Wallet Logo" className={classes.icon} />
+          <div className={classes.text}>
             <FormattedMessage
               id="naka.notDetected"
               defaultMessage="Naka Wallet was not detected."
             />
-          </Typography>
-          <Typography variant="h6" className={classes.loggedInText}>
+          </div>
+          <div className={classes.text}>
             <FormattedMessage
-              id="naka.notInstalled"
-              defaultMessage="You have not installed Naka Wallet yet. Naka Wallet is a Chrome extension wallet that allows you to sign transaction requests from web dapps. It is strongly recommended that you install it to gain the full experience."
+              id="naka.refresh"
+              defaultMessage="Please make sure you are logged in and refresh the page."
             />
-          </Typography>
-
+          </div>
           <Grid
             container
             spacing={0}

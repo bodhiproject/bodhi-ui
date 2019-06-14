@@ -4,14 +4,28 @@ export default theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing.four,
+    textAlign: 'center',
+    padding: theme.padding.space4X.px,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: theme.sizes.font.xxSmall,
+    },
+  },
+  dialog: {
+    textAlign: 'center',
+    width: '70%',
   },
   icon: {
     width: 80,
     height: 80,
+    marginBottom: theme.padding.space3X.px,
+    [theme.breakpoints.down('xs')]: {
+      width: 40,
+      height: 40,
+    },
   },
-  loggedInText: {
-    marginBottom: theme.spacing.three,
+  text: {
+    fontWeight: 'bold',
+    marginBottom: theme.padding.space3X.px,
   },
   storeContainer: {
     width: '100%',
@@ -21,5 +35,9 @@ export default theme => ({
   },
   badgeImg: {
     height: 40,
+    [theme.breakpoints.down('xs')]: {
+      height: 20,
+      width: 60,
+    },
   },
-})
+});
