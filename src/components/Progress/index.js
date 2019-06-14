@@ -12,7 +12,12 @@ const Progress = ({ classes, invalid, className, ...props }) => (
       [classes.invalid]: invalid,
       [classes.root]: true,
     })}
-    classes={{ dashedColorSecondary: classes.dashedColorSecondary, dashed: classes.dashed }}
+    classes={{
+      dashedColorSecondary: classes.dashedColorSecondary,
+      dashed: classes.dashed,
+      colorPrimary: classes.colorPrimary,
+      colorSecondary: classes.colorSecondary,
+    }}
   />
 );
 

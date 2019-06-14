@@ -19,6 +19,12 @@ const styles = (theme) => ({
     backgroundImage: 'none !important',
     backgroundColor: 'white !important',
   },
+  colorPrimary: {
+    backgroundColor: '#C4C5FD',
+  },
+  colorSecondary: {
+    backgroundColor: '#a7f0f2',
+  },
 });
 
 export default styles;
