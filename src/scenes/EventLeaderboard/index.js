@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import cx from 'classnames';
-import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Grid, Paper, withStyles } from '@material-ui/core';
 import {

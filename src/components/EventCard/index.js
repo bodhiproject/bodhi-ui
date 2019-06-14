@@ -12,7 +12,7 @@ import { getEventDesc } from '../../helpers/utility';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
-const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
+const { WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
